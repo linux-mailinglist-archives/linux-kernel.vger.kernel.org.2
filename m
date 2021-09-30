@@ -2,177 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571CF41D433
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7197D41D3F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348567AbhI3HNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:13:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:37293 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348502AbhI3HNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:13:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="221917055"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="221917055"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 00:11:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="539319350"
-Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2021 00:11:49 -0700
-Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mVqEO-0003zI-Gt; Thu, 30 Sep 2021 07:11:48 +0000
-Date:   Thu, 30 Sep 2021 15:11:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 85784470efa2d5733e86679ba05d310ece81b20f
-Message-ID: <6155630b.LEX8hVxZEVl8lQQ5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1348517AbhI3HLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:11:06 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24158 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348516AbhI3HK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:10:57 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKkpd19fvz1DHJf;
+        Thu, 30 Sep 2021 15:07:53 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 30 Sep 2021 15:09:13 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 30 Sep 2021 15:09:12 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <ryabinin.a.a@gmail.com>,
+        <akpm@linux-foundation.org>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <bpf@vger.kernel.org>,
+        <linux-alpha@vger.kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v4 00/11] sections: Unify kernel sections range check and use
+Date:   Thu, 30 Sep 2021 15:11:32 +0800
+Message-ID: <20210930071143.63410-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 85784470efa2d5733e86679ba05d310ece81b20f  x86/smp: Remove unnecessary assignment to local var freq_scale
+There are three head files(kallsyms.h, kernel.h and sections.h) which
+include the kernel sections range check, let's make some cleanup and
+unify them.
 
-elapsed time: 790m
+1. cleanup arch specific text/data check and fix address boundary check
+   in kallsyms.h
+2. make all the basic/core kernel range check function into sections.h
+3. update all the callers, and use the helper in sections.h to simplify
+   the code
 
-configs tested: 117
-configs skipped: 76
+After this series, we have 5 APIs about kernel sections range check in
+sections.h
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ * is_kernel_rodata()		--- already in sections.h
+ * is_kernel_core_data()	--- come from core_kernel_data() in kernel.h
+ * is_kernel_inittext()		--- come from kernel.h and kallsyms.h
+ * __is_kernel_text()		--- add new internal helper
+ * __is_kernel()		--- add new internal helper
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210929
-arm                      pxa255-idp_defconfig
-arm                         lpc32xx_defconfig
-arm                            qcom_defconfig
-powerpc                   lite5200b_defconfig
-arm                             rpc_defconfig
-sparc64                          alldefconfig
-sh                            shmin_defconfig
-xtensa                              defconfig
-powerpc                         ps3_defconfig
-sh                                  defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                       imx_v6_v7_defconfig
-sh                   secureedge5410_defconfig
-arm                          iop32x_defconfig
-arm                         socfpga_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-powerpc                     asp8347_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-arc                                 defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     ksi8560_defconfig
-parisc                           allyesconfig
-arm                       mainstone_defconfig
-mips                           ip27_defconfig
-powerpc                      walnut_defconfig
-sh                        sh7757lcr_defconfig
-arm                         shannon_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-powerpc                      pmac32_defconfig
-mips                         cobalt_defconfig
-x86_64               randconfig-c001-20210929
-arm                  randconfig-c002-20210929
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20210929
-i386                 randconfig-a005-20210929
-i386                 randconfig-a002-20210929
-i386                 randconfig-a006-20210929
-i386                 randconfig-a004-20210929
-i386                 randconfig-a003-20210929
-x86_64               randconfig-a002-20210929
-x86_64               randconfig-a005-20210929
-x86_64               randconfig-a001-20210929
-x86_64               randconfig-a006-20210929
-x86_64               randconfig-a003-20210929
-x86_64               randconfig-a004-20210929
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Note: For the last two helpers, people should not use directly, consider to
+      use corresponding function in kallsyms.h.
 
-clang tested configs:
-powerpc              randconfig-c003-20210929
-mips                 randconfig-c004-20210929
-arm                  randconfig-c002-20210929
-x86_64               randconfig-c007-20210929
-riscv                randconfig-c006-20210929
-s390                 randconfig-c005-20210929
-i386                 randconfig-c001-20210929
-x86_64               randconfig-a014-20210929
-x86_64               randconfig-a011-20210929
-x86_64               randconfig-a013-20210929
-x86_64               randconfig-a015-20210929
-x86_64               randconfig-a012-20210929
-x86_64               randconfig-a016-20210929
-i386                 randconfig-a014-20210929
-i386                 randconfig-a013-20210929
-i386                 randconfig-a016-20210929
-i386                 randconfig-a011-20210929
-i386                 randconfig-a015-20210929
-i386                 randconfig-a012-20210929
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-hexagon              randconfig-r045-20210929
-riscv                randconfig-r042-20210929
-hexagon              randconfig-r041-20210929
-s390                 randconfig-r044-20210929
+v4:
+- Use core_kernel_text() in powerpc sugguested Christophe Leroy, build
+  test only
+- Use is_kernel_text() in alpha and microblaze, build test only on
+  next-20210929
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v3:
+https://lore.kernel.org/linux-arch/20210926072048.190336-1-wangkefeng.wang@huawei.com/
+- Add Steven's RB to patch2
+- Introduce two internal helper, then use is_kernel_text() in core_kernel_text()
+  and is_kernel() in kernel_or_module_addr() suggested by Steven
+
+v2:
+https://lore.kernel.org/linux-arch/20210728081320.20394-1-wangkefeng.wang@huawei.com/
+- add ACK/RW to patch2, and drop inappropriate fix tag
+- keep 'core' to check kernel data, suggestted by Steven Rostedt
+  <rostedt@goodmis.org>, rename is_kernel_data() to is_kernel_core_data()
+- drop patch8 which is merged
+- drop patch9 which is resend independently
+
+v1:
+https://lore.kernel.org/linux-arch/20210626073439.150586-1-wangkefeng.wang@huawei.com
+
+
+Kefeng Wang (11):
+  kallsyms: Remove arch specific text and data check
+  kallsyms: Fix address-checks for kernel related range
+  sections: Move and rename core_kernel_data() to is_kernel_core_data()
+  sections: Move is_kernel_inittext() into sections.h
+  x86: mm: Rename __is_kernel_text() to is_x86_32_kernel_text()
+  sections: Provide internal __is_kernel() and __is_kernel_text() helper
+  mm: kasan: Use is_kernel() helper
+  extable: Use is_kernel_text() helper
+  powerpc/mm: Use core_kernel_text() helper
+  microblaze: Use is_kernel_text() helper
+  alpha: Use is_kernel_text() helper
+
+ arch/alpha/kernel/traps.c      |  4 +-
+ arch/microblaze/mm/pgtable.c   |  3 +-
+ arch/powerpc/mm/pgtable_32.c   |  7 +---
+ arch/x86/kernel/unwind_orc.c   |  2 +-
+ arch/x86/mm/init_32.c          | 14 +++----
+ include/asm-generic/sections.h | 75 ++++++++++++++++++++++++++--------
+ include/linux/kallsyms.h       | 13 +-----
+ include/linux/kernel.h         |  2 -
+ kernel/extable.c               | 33 ++-------------
+ kernel/locking/lockdep.c       |  3 --
+ kernel/trace/ftrace.c          |  2 +-
+ mm/kasan/report.c              |  2 +-
+ net/sysctl_net.c               |  2 +-
+ 13 files changed, 78 insertions(+), 84 deletions(-)
+
+-- 
+2.26.2
+
