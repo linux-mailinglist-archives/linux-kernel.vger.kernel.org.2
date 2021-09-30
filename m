@@ -2,82 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B6841DF1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA5041DF08
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352022AbhI3QgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350921AbhI3QgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:36:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A9BC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=dGRVuVHbzksQmbzJlQOqYbJI1FUMHbOyKl7nGX1/loQ=; b=gK4ZdfX8FmPi5KpCz29ShyheUC
-        g2gwIY4nbVPa1HUbgwM0XTb/YC1yUVdHsJzut0smgk6b471+UULwDI5DnRXWOFkTYNkuSqNqYjCik
-        bkRN8Vbdosul7jlVD6znOnZa98NX+WmVJ6R3wICFOYOWPjx6ipMI/6tzPsxDwTm8GFRvnz4x18W8Z
-        wku78QJr2r3uTH21eBqUDqtwe+QUefjWoWfjZvwM6dyQbBOnW0tVImlR7gmrEJdzS6WV8s26LjpQj
-        ZJh8Ggl6jxEJr0z0M3OEhCUxJrJJCYJqvE2uSF3Qf1YGnxLxewjdEjPk2ThWrG+HcT1Zufgx5t/lY
-        MUdXqvQg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVyzW-00D4DU-Tm; Thu, 30 Sep 2021 16:33:10 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [RFC] mm: Optimise put_pages_list()
-Date:   Thu, 30 Sep 2021 17:32:58 +0100
-Message-Id: <20210930163258.3114404-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S1351103AbhI3QbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350390AbhI3QbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:31:06 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDBD761250;
+        Thu, 30 Sep 2021 16:29:21 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:33:16 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
+Subject: Re: [PATCH v2 1/1] iio/scmi: Add reading "raw" attribute.
+Message-ID: <20210930173316.3a111130@jic23-huawei>
+In-Reply-To: <20210927132202.17335-2-andriy.tryshnivskyy@opensynergy.com>
+References: <20210927132202.17335-1-andriy.tryshnivskyy@opensynergy.com>
+        <20210927132202.17335-2-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of calling put_page() one page at a time, pop pages off
-the list if there are other refcounts and pass the remainder
-to free_unref_page_list().  This should be a speed improvement,
-but I have no measurements to support that.  It's also not very
-widely used today, so I can't say I've really tested it.  I'm only
-bothering with this patch because I'd like the IOMMU code to use it
-https://lore.kernel.org/lkml/20210930162043.3111119-1-willy@infradead.org/
+On Mon, 27 Sep 2021 16:22:02 +0300
+Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/swap.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+> reading "raw" attribute in scmi_iio_read_raw.
+> 
+> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Hi Andriy,
 
-diff --git a/mm/swap.c b/mm/swap.c
-index af3cad4e5378..f6b38398fa6f 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -139,13 +139,14 @@ EXPORT_SYMBOL(__put_page);
-  */
- void put_pages_list(struct list_head *pages)
- {
--	while (!list_empty(pages)) {
--		struct page *victim;
-+	struct page *page, *next;
- 
--		victim = lru_to_page(pages);
--		list_del(&victim->lru);
--		put_page(victim);
-+	list_for_each_entry_safe(page, next, pages, lru) {
-+		if (!put_page_testzero(page))
-+			list_del(&page->lru);
- 	}
-+
-+	free_unref_page_list(pages);
- }
- EXPORT_SYMBOL(put_pages_list);
- 
--- 
-2.32.0
+Looks good to me, but I'll leave it on list to get feedback form the
+driver maintainer for this one.
+
+Feel free to poke if no reply in next 2 weeks.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 45 +++++++++++++++++++++-
+>  1 file changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> index 7cf2bf282cef..c6a9dc6ad140 100644
+> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -286,6 +286,9 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+>  	s8 scale;
+>  	int ret;
+> +	int err;
+> +	u32 sensor_config;
+> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_SCALE:
+> @@ -300,6 +303,45 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+>  		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_RAW:
+> +		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					   SCMI_SENS_CFG_SENSOR_ENABLE);
+> +		err = sensor->handle->sensor_ops->config_set(
+> +			sensor->handle, sensor->sensor_info->id, sensor_config);
+> +		if (err) {
+> +			dev_err(&iio_dev->dev,
+> +				"Error in enabling sensor %s err %d",
+> +				sensor->sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		err = sensor->handle->sensor_ops->reading_get_timestamped(
+> +			sensor->handle, sensor->sensor_info->id,
+> +			sensor->sensor_info->num_axis, readings);
+> +		if (err) {
+> +			dev_err(&iio_dev->dev,
+> +				"Error in reading raw attribute for sensor %s err %d",
+> +				sensor->sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					   SCMI_SENS_CFG_SENSOR_DISABLE);
+> +		err = sensor->handle->sensor_ops->config_set(
+> +			sensor->handle, sensor->sensor_info->id, sensor_config);
+> +		if (err) {
+> +			dev_err(&iio_dev->dev,
+> +				"Error in enabling sensor %s err %d",
+> +				sensor->sensor_info->name, err);
+> +			return err;
+> +		}
+> +		/* Check if raw value fits 32 bits */
+> +		if (readings[ch->scan_index].value < INT_MIN ||
+> +		    readings[ch->scan_index].value > INT_MAX)
+> +			return -ERANGE;
+> +		/* Use 32-bit value, since practically there is no need in 64 bits */
+> +		*val = (int)readings[ch->scan_index].value;
+> +		return IIO_VAL_INT;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -381,7 +423,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+>  	iio_chan->type = type;
+>  	iio_chan->modified = 1;
+>  	iio_chan->channel2 = mod;
+> -	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> +	iio_chan->info_mask_separate =
+> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
+>  	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+>  	iio_chan->info_mask_shared_by_type_available =
+>  		BIT(IIO_CHAN_INFO_SAMP_FREQ);
+
