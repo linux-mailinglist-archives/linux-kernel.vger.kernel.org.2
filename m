@@ -2,188 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3AA41D063
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809DF41D06C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347011AbhI3ADY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:03:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347859AbhI3ADW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:03:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B87E60184;
-        Thu, 30 Sep 2021 00:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632960100;
-        bh=dJu+qoSYytXCntZ9VoyDUnxKzy7n3SvCY1HOqOstcDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mHyO+6z9jqRCC3lycddn6do3eaxVZSsH6Ilql0at70vpT5T8rodyw40+KtN07CM8U
-         FhmhjNwUyeyQVoHJMRWPHi8PR7WVUOKaEwZo2HZ0rAwtaI4vVP+C4Pdyc1Cmcg3ark
-         MK5Wi3jPDJIrT8YWmuygS9d1T/i1S0U1fEhCGhQr50MPtU1uLrrkUmlk8tB/CCfE/A
-         6YUxWYadEMtNZBDuDAisnJS/N25uda6W9J9PuzPOI5cHLetKiKM0iryinhW86YnUjd
-         3zuzlq6fduX68S9L16UEVvFpS/LxX5SLx7CYSnLHor0w3vV7XYHDXV0QOU39Op/Yed
-         k/7iIyEiqLoDw==
-Date:   Wed, 29 Sep 2021 19:05:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>,
+        id S1346536AbhI3AFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231238AbhI3AFO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 20:05:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B00C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gzbQERF6x+EIArRP2/cV+6lI/UWsckEqZ6f0LRsHXHE=; b=Ey0f+HiKfvoPWo/hz+noSNujur
+        6gQgigq8p2t2KAHbZv1BxL0OSABG9G3Ktig6espCV3/GHaJYX9PLlythflNNGjNLRUC0CaVyfjBBa
+        upFVYit1P3V6n35QOVJsXviB3CHJSPB402F3EEXwjgNYJTn+Qei0lT0pMo/5ll+ub141nSpThBFg8
+        1TJr2e8SnFD3DbfK3B/pBi0WXOSZDqXMPfwIGfsh7cxDedXgXThhixbTQQeTUSV+63r7HQSNXZkk8
+        T6nAGyd21JAIunBmt5LEYo0LzpQoTXGJdyXUgaTp1K+bu7bGQOuXT4ApbNKksvrrL1fNHHltzwmU8
+        9DYjtniw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVjVB-00CM5V-Bf; Thu, 30 Sep 2021 00:01:11 +0000
+Date:   Thu, 30 Sep 2021 01:00:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the kspp-gustavo tree
-Message-ID: <20210930000545.GA358523@embeddedor>
-References: <20210930095300.73be1555@canb.auug.org.au>
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
+Message-ID: <YVT+KWFA8hfSKU+m@casper.infradead.org>
+References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
+ <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
+ <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
+ <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+ <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+ <YVSopxYWegtQJ3iD@casper.infradead.org>
+ <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930095300.73be1555@canb.auug.org.au>
+In-Reply-To: <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:53:00AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Sep 29, 2021 at 04:41:48PM -0700, Song Liu wrote:
+> The issue is NOT caused by concurrent khugepaged:collapse_file() and
+> truncate_pagecache(inode, 0). With some printks, we can see a clear
+> time gap (>2 second )  between collapse_file() finishes, and
+> truncate_pagecache() (which crashes soon). Therefore, my earlier
+> suggestion that adds deny_write_access() to collapse_file() does NOT
+> work.
 > 
-> After merging the kspp-gustavo tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
+> The crash is actually caused by concurrent truncate_pagecache(inode, 0).
+> If I change the number of write thread in stress_madvise_dso.c to one,
+> (IOW, one thread_read and one thread_write), I cannot reproduce the
+> crash anymore.
 > 
-> kernel/trace/ftrace.c: In function 'ftrace_ops_get_list_func':
-> kernel/trace/ftrace.c:128:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Wcast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> kernel/trace/ftrace.c:174:10: note: in expansion of macro 'ftrace_ops_list_func'
->   174 |   return ftrace_ops_list_func;
->       |          ^~~~~~~~~~~~~~~~~~~~
-> kernel/trace/ftrace.c: In function 'update_ftrace_function':
-> kernel/trace/ftrace.c:128:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Wcast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> kernel/trace/ftrace.c:207:10: note: in expansion of macro 'ftrace_ops_list_func'
->   207 |   func = ftrace_ops_list_func;
->       |          ^~~~~~~~~~~~~~~~~~~~
-> kernel/trace/ftrace.c:128:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Wcast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> kernel/trace/ftrace.c:220:14: note: in expansion of macro 'ftrace_ops_list_func'
->   220 |  if (func == ftrace_ops_list_func) {
->       |              ^~~~~~~~~~~~~~~~~~~~
-> kernel/trace/ftrace.c: In function 'ftrace_modify_all_code':
-> kernel/trace/ftrace.c:128:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Wcast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> kernel/trace/ftrace.c:2698:35: note: in expansion of macro 'ftrace_ops_list_func'
->  2698 |   err = ftrace_update_ftrace_func(ftrace_ops_list_func);
->       |                                   ^~~~~~~~~~~~~~~~~~~~
-> kernel/trace/ftrace.c:128:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Wcast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> kernel/trace/ftrace.c:2708:41: note: in expansion of macro 'ftrace_ops_list_func'
->  2708 |  if (update && ftrace_trace_function != ftrace_ops_list_func) {
->       |                                         ^~~~~~~~~~~~~~~~~~~~
+> I think this means we cannot fix this issue in collapse_file(), because it
+> finishes long before the crash.
 
-The above are new to me, thanks for the report, Stephen. I'll address
-them. 
+Ah!  So are we missing one or more of these locks:
 
-> In file included from kernel/bpf/hashtab.c:8:
-> kernel/bpf/hashtab.c: In function 'htab_map_gen_lookup':
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
->   374 |   .imm   = ((FUNC) - __bpf_call_base) })
->       |              ^~~~
-> kernel/bpf/hashtab.c:671:26: note: in expansion of macro 'BPF_CAST_CALL'
->   671 |  *insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
->       |                          ^~~~~~~~~~~~~
-> kernel/bpf/hashtab.c: In function 'htab_lru_map_gen_lookup':
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
->   374 |   .imm   = ((FUNC) - __bpf_call_base) })
->       |              ^~~~
-> kernel/bpf/hashtab.c:712:26: note: in expansion of macro 'BPF_CAST_CALL'
->   712 |  *insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
->       |                          ^~~~~~~~~~~~~
-> kernel/bpf/hashtab.c: In function 'htab_of_map_gen_lookup':
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'void * (*)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> include/linux/filter.h:374:14: note: in definition of macro 'BPF_EMIT_CALL'
->   374 |   .imm   = ((FUNC) - __bpf_call_base) })
->       |              ^~~~
-> kernel/bpf/hashtab.c:2400:26: note: in expansion of macro 'BPF_CAST_CALL'
->  2400 |  *insn++ = BPF_EMIT_CALL(BPF_CAST_CALL(__htab_map_lookup_elem));
->       |                          ^~~~~~~~~~~~~
-> In file included from include/linux/bpf_verifier.h:9,
->                  from kernel/bpf/verifier.c:12:
-> kernel/bpf/verifier.c: In function 'jit_subprogs':
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'unsigned int (*)(const void *, const struct bpf_insn *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12472:16: note: in expansion of macro 'BPF_CAST_CALL'
-> 12472 |    insn->imm = BPF_CAST_CALL(func[subprog]->bpf_func) -
->       |                ^~~~~~~~~~~~~
-> kernel/bpf/verifier.c: In function 'do_misc_fixups':
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'void * (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12953:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12953 |     insn->imm = BPF_CAST_CALL(ops->map_lookup_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, void *, void *, u64)' {aka 'int (* const)(struct bpf_map *, void *, void *, long long unsigned int)'} to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12957:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12957 |     insn->imm = BPF_CAST_CALL(ops->map_update_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12961:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12961 |     insn->imm = BPF_CAST_CALL(ops->map_delete_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, void *, u64)' {aka 'int (* const)(struct bpf_map *, void *, long long unsigned int)'} to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12965:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12965 |     insn->imm = BPF_CAST_CALL(ops->map_push_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12969:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12969 |     insn->imm = BPF_CAST_CALL(ops->map_pop_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12973:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12973 |     insn->imm = BPF_CAST_CALL(ops->map_peek_elem) -
->       |                 ^~~~~~~~~~~~~
-> include/linux/filter.h:366:4: warning: cast between incompatible function types from 'int (* const)(struct bpf_map *, u32,  u64)' {aka 'int (* const)(struct bpf_map *, unsigned int,  long long unsigned int)'} to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Wcast-function-type]
->   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
->       |    ^
-> kernel/bpf/verifier.c:12977:17: note: in expansion of macro 'BPF_CAST_CALL'
-> 12977 |     insn->imm = BPF_CAST_CALL(ops->map_redirect) -
->       |                 ^~~~~~~~~~~~~
+	inode_lock(inode);
+	filemap_invalidate_lock(mapping);
 
-All these are already fixed in bpf-next:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=3d717fad5081b8e3bda76d86907fad95398cbde8
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=102acbacfd9a96d101abd96d1a7a5bf92b7c3e8e
-
-> 
-> Introduced by commit
-> 
->   ffea83dd8823 ("Makefile: Enable -Wcast-function-type")
-> 
-> Please either fix all these or revert that commit for now.
-
-Yep; I'll remove the commit and go take a look at ftrace.
-
-Thanks for the report!
---
-Gustavo
-
-
+in the open path?
