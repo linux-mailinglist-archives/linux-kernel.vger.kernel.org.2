@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716DF41DCC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E8741DCC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352016AbhI3O5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351985AbhI3O5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:57:43 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60399C06176A;
-        Thu, 30 Sep 2021 07:56:00 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id g41so26407732lfv.1;
-        Thu, 30 Sep 2021 07:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uaAT5wob0YiOJmkWdlUFhs2KZnxNPqhCjHclKoH74vs=;
-        b=M6M4cVtrgzJCn3k1Nx3Js2ddtxJSAL5FKq0toORwn5TSYaQJo4j+glrjZH0j1AkKjC
-         Nr0C/u3n/0g0kgj8dViKf+o1Do2dyB4FtAh8knqyaWQlQIiNg/uMsi3gT0TVFUQtC1WF
-         ZPYk8lJJJYxdD/OpZ7oF9y//oLSSyTY6JPipc94TpMGO2BwVchhCWY929/aTSLyhhFtP
-         8M040RATCSTsG9Y5mPSe7DPmhgHmNl9OoGzadsiG2NLUUB9FmyKbzTPeKmNxKqnFB53/
-         iQkSw6y0glt88aWPg9gVW4GyMt1VUvsdkkF14/j0BbRtXjJBGq8K2YWX2lZ6sywuWhOs
-         naNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uaAT5wob0YiOJmkWdlUFhs2KZnxNPqhCjHclKoH74vs=;
-        b=TbTb+auJNUZQ/aBNA+ggy9oEuSuK4h60dsGrFdfK4nDBpJQ6cRBDOcOR6CBYr0W8L4
-         ykEmQs8e78Qn6vliQNRcD7zRK1mRZoaiU6AV2xQ3X9zqlwbJN9CkRl5GZNwbHmHpOs4z
-         Pru+0AkaASsR0PbRGrngSlVW3Cy8i+XSIBkWBVI2R6R0ckjZzErwbKKq05kguxH42x82
-         5Ht0rpAbd6AMQsaQi9unas9lrVKgeGtjoTq0lBwKheWNHDjkGFldcz3E5ea5vV+CuQuC
-         s7J2SetzmkcVqUg1pNztuHeXTLLrYWnkriLr+2FwLX4CRz3tviI5fjJT8vPRgvsKJV01
-         WgcA==
-X-Gm-Message-State: AOAM5314fzCo7XBTeJQfKqMwqK1OMoC7ELEe6yZ13bLTaxPm8tL2G+y+
-        7HF1OgnnUipXuljWUxC8LHskmFATNwc=
-X-Google-Smtp-Source: ABdhPJztldcpWswKHWSNTSLhS+h7rgGDHOMYE8V6m4YP8LB2puVHqMF8A8QSLxInr3/kKXcryoWeNg==
-X-Received: by 2002:ac2:4896:: with SMTP id x22mr6592226lfc.257.1633013740388;
-        Thu, 30 Sep 2021 07:55:40 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
-        by smtp.googlemail.com with ESMTPSA id x128sm396434lff.102.2021.09.30.07.55.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 07:55:39 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] dt-bindings: memory: tegra20: emc: Document
- optional LPDDR properties
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210929200305.4245-1-digetx@gmail.com>
- <20210929200305.4245-2-digetx@gmail.com>
- <2df06f23-1a5e-f6e9-8e2c-0bb4c93fe23c@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b4309371-fac4-00dc-418e-86c2cf8a8902@gmail.com>
-Date:   Thu, 30 Sep 2021 17:55:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1352063AbhI3O7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352018AbhI3O7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:59:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E18966128E;
+        Thu, 30 Sep 2021 14:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633013841;
+        bh=Ul6eldZNU2CyYIjwQhqq+NM/92KkckTfZvBzAyidh0U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qU8OrPaMSytRZUhHLphRmXUU8eJafDbVZdicAkGC6IPTwxIHpPMfnF4bqsgWXNEXn
+         lv4xdKF/dclZfeqCvb9Dx4xCxEGOntmdjjDRAhcyPiwq2yFrpO+S5PsPbFqzxZOOvt
+         ZSBdRCvQej1tY9T+7OYM/c3k1WhoDaJKLQPKCsEuJG5VlJoD9EzLrmoRwp55NGmPqj
+         2G2uGw9BdnWp+iYb7FpjWHxDKH5BJJWV+cptWJMgUvdrrmkbAbsyE34HAmUMY+9nWb
+         F1zLc41Om3yeVXR/dHYY0Pw7M2Po0D4Vybl5GO6RN/qnAlqqHIxbMmdzvM7LlPXBLM
+         XIjFyg/ruuQ/w==
+Received: by mail-oi1-f182.google.com with SMTP id s69so7554699oie.13;
+        Thu, 30 Sep 2021 07:57:21 -0700 (PDT)
+X-Gm-Message-State: AOAM5314oN1eR4Cav+aP7uniNQmPh1/RMyrepz4KqBLR6/HXfC+dgm/2
+        mTdA820sHUVkVzcrb+2xEfN6HOhOpJXYzu5xagE=
+X-Google-Smtp-Source: ABdhPJxa7tQhbO5f833cDMIA7bEkH5e0OAXqjiEZue1VHO80HjU/rF6NrjrxNY3sjNSzuMzQUZw70y41rVMYG0MtyU8=
+X-Received: by 2002:aca:32c2:: with SMTP id y185mr3140111oiy.47.1633013841293;
+ Thu, 30 Sep 2021 07:57:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2df06f23-1a5e-f6e9-8e2c-0bb4c93fe23c@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210923063027.166247-1-xiaokang.qian@arm.com>
+ <YVK1u4BgVAa84fMa@sol.localdomain> <CAMj1kXHeJBUAzcLHRNYDbbUDe5vRS7Bxy_LKF5gdRLJca7TNRQ@mail.gmail.com>
+ <PA4PR08MB60168642B59CCFC91A3F4ABDEEAA9@PA4PR08MB6016.eurprd08.prod.outlook.com>
+In-Reply-To: <PA4PR08MB60168642B59CCFC91A3F4ABDEEAA9@PA4PR08MB6016.eurprd08.prod.outlook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 30 Sep 2021 16:57:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEHOscYf0qxdzAw2u_J+zb2dXfWdK07MkBZUnJZv0Ds0g@mail.gmail.com>
+Message-ID: <CAMj1kXEHOscYf0qxdzAw2u_J+zb2dXfWdK07MkBZUnJZv0Ds0g@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm64/gcm-ce - unroll factors to 4-way interleave
+ of aes and ghash
+To:     Xiaokang Qian <Xiaokang.Qian@arm.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will@kernel.org>, nd <nd@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2021 09:54, Krzysztof Kozlowski пишет:
-> On 29/09/2021 22:03, Dmitry Osipenko wrote:
->> Some Tegra20 boards don't use RAM code for the memory chip identification
->> and the identity information should read out from LPDDR chip in this case.
->> Document new optional generic LPDDR properties that will be used for the
->> memory chip identification if RAM code isn't provided.
-> 
-> Please mention how they are going to be used. Naively I would assume
-> that these new properties describe the RAM you have. However it seems
-> you do not use them to configure the device but to compare with the
-> device. Why do you need them?
+On Thu, 30 Sept 2021 at 03:32, Xiaokang Qian <Xiaokang.Qian@arm.com> wrote:
+>
+> Thanks for the review.
+>
+> I will firstly change the decrypt path to compare the tag using SIMD code=
+, and then  pass all of the self tests include fuzz tests(enabled by CONFIG=
+_CRYPTO_MANAGER_EXTRA_TESTS=3Dy), big endian ,little endian tests.
+>
 
-Yes, the properties describe hardware configuration of external DRAM
-chip. This information is read-only and it's actually used for
-configuring SoC memory controller. This MC configuration is already
-pre-configured by bootloader and partially it shouldn't be ever touched
-by software. Kernel driver needs to reconfigure only a part of hardware
-on memory freq changes. The memory timing data is tuned for a specific
-DRAM chip and board, it doesn't include info which identifies the chip.
-So we need to read out DRAM config from hardware and find the matching
-timing in a device-tree by comparing the chip-unique properties. Note
-that only LPDDR chips have that chip-identity info. Regular DDR chips
-require SPD or other means, like NVMEM in case of Tegra.
+OK
 
-I'll extend the commit message.
+> About the 1K data point, I just remember that the 1420 bytes packet is co=
+mmonly used in IPSEC.
+>
 
-...
->> +          - 4 # S4 (4 words prefetch architecture)
->> +          - 2 # S2 (2 words prefetch architecture)
-> 
-> I think instead you should use generic lpddr{2,3} bindings - have a
-> separate node and reference it via a phandle.
+Yes, but your code is faster than the existing code for 1420 byte
+packets, right? So why should we keep the original code? We don't use
+GCM for block storage, and if IPsec throughput is a key performance
+metric for your system, you are likely to be using the maximum packet
+size so 1420 bytes not 1k.
 
-It indeed shouldn't be a problem to create lpddr binding and move these
-props there.
 
-Extra phandle shouldn't be needed, should be fine to keep these new DRAM
-properties within the chip-descriptor nodes that we already have in
-tegra device-trees. We'll only need to $ref the lpddr binding for the
-descriptor node in the binding. I.e. to make it similar to regulator
-bindings where there is generic regulator.yaml + hw-specific properties.
-
-I'll try to implement this in v2, thanks!
+>
+> -----Original Message-----
+> From: Ard Biesheuvel <ardb@kernel.org>
+> Sent: Wednesday, September 29, 2021 5:04 AM
+> To: Eric Biggers <ebiggers@kernel.org>
+> Cc: Xiaokang Qian <Xiaokang.Qian@arm.com>; Herbert Xu <herbert@gondor.apa=
+na.org.au>; David S. Miller <davem@davemloft.net>; Catalin Marinas <Catalin=
+.Marinas@arm.com>; Will Deacon <will@kernel.org>; nd <nd@arm.com>; Linux Cr=
+ypto Mailing List <linux-crypto@vger.kernel.org>; Linux ARM <linux-arm-kern=
+el@lists.infradead.org>; Linux Kernel Mailing List <linux-kernel@vger.kerne=
+l.org>
+> Subject: Re: [PATCH] crypto: arm64/gcm-ce - unroll factors to 4-way inter=
+leave of aes and ghash
+>
+> On Tue, 28 Sept 2021 at 08:27, Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > On Thu, Sep 23, 2021 at 06:30:25AM +0000, XiaokangQian wrote:
+> > > To improve performance on cores with deep piplines such as A72,N1,
+> > > implement gcm(aes) using a 4-way interleave of aes and ghash
+> > > (totally
+> > > 8 blocks in parallel), which can make full utilize of pipelines
+> > > rather than the 4-way interleave we used currently. It can gain
+> > > about 20% for big data sizes such that 8k.
+> > >
+> > > This is a complete new version of the GCM part of the combined
+> > > GCM/GHASH driver, it will co-exist with the old driver, only serve
+> > > for big data sizes. Instead of interleaving four invocations of AES
+> > > where each chunk of 64 bytes is encrypted first and then ghashed,
+> > > the new version uses a more coarse grained approach where a chunk of
+> > > 64 bytes is encrypted and at the same time, one chunk of 64 bytes is
+> > > ghashed (or ghashed and decrypted in the converse case).
+> > >
+> > > The table below compares the performance of the old driver and the
+> > > new one on various micro-architectures and running in various modes
+> > > with various data sizes.
+> > >
+> > >             |     AES-128       |     AES-192       |     AES-256    =
+   |
+> > >      #bytes | 1024 | 1420 |  8k | 1024 | 1420 |  8k | 1024 | 1420 |  =
+8k |
+> > >      -------+------+------+-----+------+------+-----+------+------+--=
+---+
+> > >         A72 | 5.5% |  12% | 25% | 2.2% |  9.5%|  23%| -1%  |  6.7%| 1=
+9% |
+> > >         A57 |-0.5% |  9.3%| 32% | -3%  |  6.3%|  26%| -6%  |  3.3%| 2=
+1% |
+> > >         N1  | 0.4% |  7.6%|24.5%| -2%  |  5%  |  22%| -4%  |  2.7%|
+> > > 20% |
+> > >
+> > > Signed-off-by: XiaokangQian <xiaokang.qian@arm.com>
+> >
+> > Does this pass the self-tests, including the fuzz tests which are
+> > enabled by CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy?
+> >
+>
+> Please test both little-endian and big-endian. (Note that you don't need =
+a big-endian user space for this - the self tests are executed before the r=
+ootfs is mounted)
+>
+> Also, you will have to rebase this onto the latest cryptodev tree, which =
+carries some changes I made recently to this driver.
+>
+> Finally, I'd like to discuss whether we really need two separate drivers =
+here. The 1k data point is not as relevant as the other ones, which show a =
+worthwhile speedup for all micro architectures and data sizes (although I w=
+ill give this a spin on TX2 myself when I have the
+> chance)
+>
+> *If* we switch to this implementation completely, I would like to keep th=
+e improvement I added recently to the decrypt path to compare the tag using=
+ SIMD code, rather than copying it out and using memcmp().
+> Could you look into adopting this for this version as well?
+>
+> --
+> Ard.
