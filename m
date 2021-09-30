@@ -2,101 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E98441D4AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB79641D4B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348825AbhI3HqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348701AbhI3HqS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:46:18 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39385C06161C;
-        Thu, 30 Sep 2021 00:44:36 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4HKlcy40WXzQklR;
-        Thu, 30 Sep 2021 09:44:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:message-id:from:from:date:date:received; s=
-        mail20150812; t=1632987871; bh=0oOhnY/84xZj6hK/qrECeQA+ibgdAdY7+
-        4wyOChyhlE=; b=PlVz50NXqlVhr74M+/SC8c0I7qwBxRINtuv6HNzxwSPu3HgOR
-        I4wMMcvncB8Nw3J4pcW9yrtwTkgjCDRMn1hdFa8MQc8Qh6SL8Alk8IcrDiE9+0GH
-        WOsGN6fslFsTeiIqiJ6qwy6WS1Z8l+IttseggERx0DeQITBlX8IGQw+6fuNDDRY0
-        lDoYaYYZRZ7SynFp4SQLTWvG8T1coLmAJxwlSmK2ncKU473F37dmksBSMuJBLKEo
-        5AIgMUptHjwOzw/2fk+rUr7IMf+RMqKSvaLLWWroAUIvzRxpsUBkN9a3Z9QpUbJs
-        iLA/DAV404sZwCkEyxLTGUqfW9eGi/1JPsKdQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1632987872;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mcVKbCcSwBUudoYGAJZwo16RXU+ZQDQ9wrZUU4fk9g8=;
-        b=KRk5bvZ72gexKynBoyFySR26LkfZEF7Mq0/K3WCAZ6O1ESgs9xpytdkHaoVC4ylmbHF2FW
-        mser7shUzJi4rgN+G4RNEavdM2JM6T/2IdkxE7KN/QxTKkUqu06XRL061fBWPh410diLEJ
-        SidKCiPD3Lukdc7/ft57HxMWUHg6Tn1exphKap5TATlVUHq1LYO2r4GbrEZDuXr9TSy+hC
-        suLQ62vazWS48ODNK68UFaCdQ18AbcdWRk4+elbWsv5SmzX9tMk/vKxs3l/KLT2aqPftl9
-        AamO6H2VLjE693f+mCcXxvSAL0BnRyUo/v0lTqvUVIKbLNtV3O/pv/9EI29MCw==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Date:   Thu, 30 Sep 2021 09:44:31 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Message-ID: <1624640454.149631.1632987871186@office.mailbox.org>
-Subject: [BUG] kernel BUG at mm/slub.c - possible BFQ issue?
+        id S1348832AbhI3Hsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:48:37 -0400
+Received: from mga12.intel.com ([192.55.52.136]:12165 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348806AbhI3Hsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:48:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204611576"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="204611576"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 00:46:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="539330686"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2021 00:46:49 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVqmH-00040t-0d; Thu, 30 Sep 2021 07:46:49 +0000
+Date:   Thu, 30 Sep 2021 15:46:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:objtool/core] BUILD SUCCESS
+ db2b0c5d7b6f19b3c2cab08c531b65342eb5252b
+Message-ID: <61556b52.o9KCrvdPwhDQ6GqB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: 9A24C26B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/core
+branch HEAD: db2b0c5d7b6f19b3c2cab08c531b65342eb5252b  objtool: Support pv_opsindirect calls for noinstr
 
-I encounter a hard freeze on both 5.14 and 5.15 when using BFQ.
-Unfortunately, I do not have a full error log, because the computer
-totally freezes and slightly corrupts the display, so it's
-impossible to read the entire message.
+elapsed time: 794m
 
-However, what I could get is the following:
+configs tested: 134
+configs skipped: 3
 
-  kernel BUG at mm/slub.c:379
-  invalid opcode: 0000 [#1]
-  RIP: 0010:__slab_free
-  [...]
-  Call Trace:
-  bfq_set_next_ioprio_data
-  [...]
-  bfq_put_queue
-  bfq_insert_requests
-  [...]
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This issue appears more or less randomly and it sometimes takes a
-little while to reproduce it (running fio helps).
-The call trace always contains references to BFQ, but they are not
-always the exact same. Once, I could see on the corrupted display
-the message "general protection fault".
-I could reproduce this issue on two computers.
+gcc tested configs:
+arm                              allmodconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210929
+arm                      pxa255-idp_defconfig
+arm                         lpc32xx_defconfig
+arm                            qcom_defconfig
+powerpc                   lite5200b_defconfig
+arm                             rpc_defconfig
+sparc64                          alldefconfig
+sh                            shmin_defconfig
+xtensa                              defconfig
+powerpc                         ps3_defconfig
+sh                                  defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       imx_v6_v7_defconfig
+sh                   secureedge5410_defconfig
+arm                          iop32x_defconfig
+arm                         socfpga_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+powerpc                     asp8347_defconfig
+arm                      integrator_defconfig
+arm                         lpc18xx_defconfig
+powerpc                       ebony_defconfig
+mips                            ar7_defconfig
+mips                        bcm47xx_defconfig
+mips                     loongson2k_defconfig
+arc                                 defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     ksi8560_defconfig
+parisc                           allyesconfig
+arm                       mainstone_defconfig
+mips                           ip27_defconfig
+powerpc                      walnut_defconfig
+sh                        sh7757lcr_defconfig
+m68k                            q40_defconfig
+sh                        edosk7760_defconfig
+arm                           stm32_defconfig
+arm                           tegra_defconfig
+arm                         shannon_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           h5000_defconfig
+powerpc                        cell_defconfig
+powerpc                      pmac32_defconfig
+mips                         cobalt_defconfig
+x86_64               randconfig-c001-20210929
+arm                  randconfig-c002-20210929
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                              defconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+i386                 randconfig-a001-20210929
+i386                 randconfig-a005-20210929
+i386                 randconfig-a002-20210929
+i386                 randconfig-a006-20210929
+i386                 randconfig-a004-20210929
+i386                 randconfig-a003-20210929
+x86_64               randconfig-a002-20210929
+x86_64               randconfig-a005-20210929
+x86_64               randconfig-a001-20210929
+x86_64               randconfig-a006-20210929
+x86_64               randconfig-a003-20210929
+x86_64               randconfig-a004-20210929
+arc                  randconfig-r043-20210929
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-Not quite sure but I *think* the issue first appeared somewhere around
-5.14.5 or 5.14.6, during which time BFQ only got the following commit:
+clang tested configs:
+powerpc              randconfig-c003-20210929
+mips                 randconfig-c004-20210929
+arm                  randconfig-c002-20210929
+x86_64               randconfig-c007-20210929
+riscv                randconfig-c006-20210929
+s390                 randconfig-c005-20210929
+i386                 randconfig-c001-20210929
+x86_64               randconfig-a014-20210929
+x86_64               randconfig-a011-20210929
+x86_64               randconfig-a013-20210929
+x86_64               randconfig-a015-20210929
+x86_64               randconfig-a012-20210929
+x86_64               randconfig-a016-20210929
+i386                 randconfig-a014-20210929
+i386                 randconfig-a013-20210929
+i386                 randconfig-a016-20210929
+i386                 randconfig-a011-20210929
+i386                 randconfig-a015-20210929
+i386                 randconfig-a012-20210929
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+hexagon              randconfig-r045-20210929
+riscv                randconfig-r042-20210929
+hexagon              randconfig-r041-20210929
+s390                 randconfig-r044-20210929
 
-  (88013a0c5d99) block, bfq: honor already-setup queue merges
-
-5.13 doesn't seem to be affected AFAICS.
-
-Does anyone have an idea what is going on?
-I will now revert the above commit and see if that helps...
-
-Thanks,
-Tor
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
