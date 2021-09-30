@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1BB41D9DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDDF41D9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350888AbhI3MfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:35:11 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:51535 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350339AbhI3MfK (ORCPT
+        id S1350895AbhI3MgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350458AbhI3MgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1633005206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dINmbKQuoSuwcjjwI59ZTgbgDNydobyH36DWyQ4IiJE=;
-        b=WlAIKKVHRalHZB0DwbTf+PUIgvl/v0Lt8tHEYJDFPsTnArvD7m0/au2hFUpNib+kZpPLJh
-        +p+ypZlOiQZqfDGaNZM97LurrLKY/pCAnVc/RldhaD7auRSdChA+0zwOO84r1tzw+vDhfv
-        bRf/fhP6x9kXC0xgCGawuappabyK31w=
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01lp2057.outbound.protection.outlook.com [104.47.0.57]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-9-ctqt8nizO3K9nubEjvT3bA-1;
- Thu, 30 Sep 2021 14:33:25 +0200
-X-MC-Unique: ctqt8nizO3K9nubEjvT3bA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GzNZyUHBnVlMrwGfmd5Y4uqUB3rUrE0tAzJFk0dVmWutdzE+lekRPYgv3jDjdVA3+Wk9jgMax6x/cS35wdgAB+csU1XDYI95aANMyV+yJ5bGj0T2Oyw+3fiY8tmiv1LrGrfAEeTR8PGcHQq5zJRHHb0fqjjVWxgVaXXUXFbhHup0fveK9tOA68u51C1UDj8n/ilofh6E1IrC2mnUY/g0XbyD0s1RIclLH4z5ImwjbZmA5eyywt8Ac177KUFrs/7buZRQIaP8hOWdqVBT9YUbzdJ2COXvuLyMnzIfeHkLq206zs+Qw2xTjuCIskpheT4RhYG+CgfegbdYeKh9Z1uVsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=dINmbKQuoSuwcjjwI59ZTgbgDNydobyH36DWyQ4IiJE=;
- b=a9eKSJlRc1RmDIs8axrWEnaHFRrA/wXsVoVTxo2iyqr4mvwxOfkLLKgN+Bc0cYvsCDBfcHyvL4kgL5iC3cFLGagIKxyDkKcJmM/YDDyjjGxkAK+6l+YMcAvmY27inOiURPwEgSDPEdD7IVo0j1Rnjr/VWKpuLNHDjr0LwHOGl/wqYZzM2txSd5UXfNv1YbOIhPByyMhBDbT2i3m9W/Rf3BownjbLBsDp5eGTTIDZY2bdXWfQ+Ab/2YG3KZ6cWHG3jvAPoCyLLH0p5fswwuo7PEJMu1UeXgBheC9ywxtBu2jRzy3DXjt+bAudY5GaMFOBNz0kYHmx4NMIePka9b+ZbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0402MB3933.eurprd04.prod.outlook.com (2603:10a6:803:24::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.19; Thu, 30 Sep
- 2021 12:33:22 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
- 12:33:22 +0000
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 0/6] xen/x86: PV boot speedup
-Message-ID: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
-Date:   Thu, 30 Sep 2021 14:33:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM6P191CA0040.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:209:7f::17) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Thu, 30 Sep 2021 08:36:20 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA3AC06176F
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:34:37 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id x20so9779868wrg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HRgJEndOuR4ynn0OPA7sKb8RToaEd1xX8/0RUVPc1gs=;
+        b=PRGDsSbneH4StUFwwnRbLwzVrVS8dXAQMsfx9rpM11hullUX4XhH0L8xtDo2A/JSkh
+         vfBLbBJodUO8FPeQngR5h+hr4KzarQc3FnV7xoLaGEAqs4Mq3Nxqk8Tka17mIGHBR8Od
+         esOL2mV/wXFcVwgwNwRbo3Q3ZQnzpznbdz36TaU/MQyMq8aXDMshuKrRT/qvB5Sm90Uq
+         GVOsPer9/U8+t0an4EcH7UcvvfTO0BqQiwyNuympdIbRjiTOy6VmqkBA9QuR13uL6a8c
+         3cEBsixjLbEzKXW6P/6E1GmBNN1bveSx8Y12kRb7bitYdhJf98gFz7TxmEcyjy9XVeIp
+         srug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HRgJEndOuR4ynn0OPA7sKb8RToaEd1xX8/0RUVPc1gs=;
+        b=v9ougz9fNvgPxiAfMXPeq1Z3/LYt1YkiNMAyCT9ga2ITS9gqLLGSom19wBmO+aqg+6
+         YQerV/M82fqDkCMT91Tql4joYcqo7IyYTy+pZF4PuKUxofGcUjcaNzi634acZy1b/O8V
+         RC97rjFyCN/xABCeV/lPv5PoO0fnfZ0UJn7lMfYC+5eQ8WdN+e/a6qt0T5d2FJVRWDuu
+         AVFxWsfHewYRHJGdnfFyizfyMHFG1tD+LQWs6j0ZJtfgN58hWc+YRfnBMx0K+/O+XWB5
+         kNjIj23m0mKz03BlRLarTx4h3u8JrOvmK8zYxCW36gwvXBukI8noLC5P7NawFhzJ1f+h
+         K+AQ==
+X-Gm-Message-State: AOAM53323I99SMSNc43xv3LCSNK86fsyLLLi/ntm1Di/JdJuXK1srkzS
+        yxAJfUGKDq++LHZbTS6F/DyqLQ==
+X-Google-Smtp-Source: ABdhPJzruR/5Ef2zjhhdSPBNA0SVjA7uVPC3/lwtP8K1MW5Z2+vlJQr3w2Z7LogtLW9jhnrPbK8iNw==
+X-Received: by 2002:a5d:66d0:: with SMTP id k16mr5973546wrw.98.1633005275981;
+        Thu, 30 Sep 2021 05:34:35 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id u5sm3175142wrg.57.2021.09.30.05.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 05:34:35 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 13:34:33 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <YVWu2RoSqEzcG79I@google.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
+ <YVWDsFE7qyH6AwxR@google.com>
+ <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
 MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by AM6P191CA0040.EURP191.PROD.OUTLOOK.COM (2603:10a6:209:7f::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Thu, 30 Sep 2021 12:33:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 145504e2-5acd-4064-9e41-08d9840e7de5
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3933:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB393332E315927CCE328E05E2B3AA9@VI1PR0402MB3933.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +gk4dW9Mi/6VrXtJN5I+qBA7rRec8OQONkT/feLYU6MPVrQPjeASSk5E+nPUPIk8KQchuwyvjIF0gH0/6bIUwln+dpVKXbsiT9/oBlsggKqtLB+vvu5MpWhB+EQf+X1IyE88j3/7KoDxDpFxX4iI8uDsx+m1duIExdllLwGnbFc6igv99NqX/O5stJIDscimoUkSeU3nN+nVMPnWJi25OGQAtvW+DDmigIUEexUHmpUtmAS09zM8+GS4LcEdh2rIUWygMblw9amIBkPATKRfpJuQEpcg3yuYb87ytvC88tPjzGoD1bKbPAw7onznskS65dl/DPNZ7O4YGj3ifH6WpuGhlSQHOtVe6mHG9RBckRMS76qBUZBsEubbvB4w7cOAcdJyWQHyyxwE5ucVpFqocUm/gtFjF70Hcy2tDilj8tqQzjazP/PM0AnBlJEnqlPLGnY7BWdd/Q/3Ff5VRd2ZHCSF0Q6OS3Cbq0QCCSF6/LLQclwSfQUGONSE0UQOu4r+w8rKo4yzFsw71SnCZ6Z0130/waBw+QHjj84KCf97cpkm+5akP4gnTqhcYyv4God4Hc6yzoYB6aAm6Oyv717Vjis8Fw0LW+eS6cUENaOz7Gh163KvMW2/ouwwqZP9WXMykhFVS3tbCCquk6lPTVJzlEsB1GM9S9nVsRvUuqB7hhxoyOiR9Ew63qHAZphQbHSHNIQdbh0UvqPRchGGNb0W6CNObMC628P7GIg4uDI3v7g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(66556008)(66476007)(2616005)(31686004)(4744005)(36756003)(508600001)(26005)(956004)(2906002)(66946007)(86362001)(8676002)(6486002)(31696002)(16576012)(8936002)(38100700002)(316002)(110136005)(54906003)(83380400001)(5660300002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c1hhbkNESDgzNUpoczZ2UHBQb3loeGdSYmc0RGs3WGlrSmJYMWVqMUJhWXZr?=
- =?utf-8?B?Y0dFaE1zWVRiaUg1YjN3L1F5b0QwUzhBVG1RbnBLN3BhZ0pwMG1FdGl5YWNz?=
- =?utf-8?B?RERHL2h1dlpJOHlyaEh0ZUQvNTcyOHMvR1lvU2dNVlZEWmJDd3VZSFJsczds?=
- =?utf-8?B?eWNRWlhTWHdnTFhnOVNpd0lrMU52RlY1aWNjdldmRGZWR2FXREs2ek5MeDRq?=
- =?utf-8?B?VDdiWWdxWTFSZWdrWXF2YTBTQnBzTEtOTFhBcjhOWGdtcGpvTjRVWWszR0Nn?=
- =?utf-8?B?dk1QRTc1YlR4bExEcTRFdXBFRyt4dk95ZG1kcG9HYUVNWXdsdzBkTHdrVTJG?=
- =?utf-8?B?YkVHcVU1Vjh3ZzRWSENPU2dveitwb3dRVFBKUDljc1A2SXBlMHBGZE83Q1VM?=
- =?utf-8?B?TkJ4bjZmRkxGR0pvTHdoZDkvcnM2alZsSkdpUlVJaGVaYXZ6bnRVNXlwMGlm?=
- =?utf-8?B?N2p2bEdIZzJqdWJWUXh5c1JqZVZpVWR0c2M5Ulp5VGRnUlhXMWJldW9RT3Jv?=
- =?utf-8?B?OURaVENVY3crak56TUtRdmgyWkt6TVM5azVoZ2NYV2d3akVOYk8yeG8xcUov?=
- =?utf-8?B?ZFhKWkRPUmRDNXlVVGpNM01QeUcvN3EvVUtPVU9lejljTXVWODVERC83UGcw?=
- =?utf-8?B?K2FTalhKUHEvYXZlQVVYbklmNW4zd0x4bmI4TXdKSCtJNzZaYXE0ZDByZ1lH?=
- =?utf-8?B?R0J2SSthYURtRERtcGNET3M1SWxQdGh1M0N6bmFTdEM1alBVYk1ubytsT1FV?=
- =?utf-8?B?UU1DSGpoTGhKU09Pa003dmdxRXdueG1PL3RzNEVpS1BZRUhBdk5KRXpRQkdv?=
- =?utf-8?B?dzFqTERtL05OVTBsaUV4WEFyREZDcGhybUUzT0JyTlI2cTJHWGViVFpSU1JD?=
- =?utf-8?B?ZXl5V2tjb05KeUsxQ2V4RDRiUC9kdDZuMHNXVUtCWnZuc2xUUnV3MDREWlhT?=
- =?utf-8?B?UTFKNW8reTV3R1dWVnNhYXBSSVpETHhiS2dxYi8zUzk5U21oN0h6WHdaQURG?=
- =?utf-8?B?MXZ5L0xISElPMEIvRUp4ZThJRU1UZkVtM2VqdGdkUTgvU0xWeFk1TmFWQUd6?=
- =?utf-8?B?MkVtbWdXdVBXS2lraDh3Rm9OZk5WeUYxUGo5b1VPalh3RkljaTFGYmNRVVhM?=
- =?utf-8?B?emcvMUtMdGs0S1VPd1o0Z0lCWk8yb1JXUU84ZlR1R0RnODNjdFJveFAzQ0VZ?=
- =?utf-8?B?TjM1YWdFZFVzRktpVGVtUnQ4Tm9tNkdwNTFvZ2dsM2xadWMvRzh2K05TSXln?=
- =?utf-8?B?MnBCNU40SkpCQWhHT29TaGhFSlBlVlBrRXBPdmxlZ1lQQ2pJNWx5d3dsb0Yv?=
- =?utf-8?B?cEptWUd5bXFCa25SUGNMUXVaRzJ1Y2tIb1VHWGpmNkhmNkNQamxIWGdGdWZW?=
- =?utf-8?B?Unc1NXR4MkNjZmpta1hKTlRzVWU3Mlo0d0p0VTR1NS94alFJajRXS3U2M2dy?=
- =?utf-8?B?aVVrTEI1aUM3YkJ0c0FoOUxsb0VpeGJaYWwzSi9qb1JTOVBYNWRxU2JlZUdn?=
- =?utf-8?B?K1N5cmU0UkFwR0NVaFl1TnJRVDlyUkltVDU5RTB3M2IzemlqR2NKZTFSODRq?=
- =?utf-8?B?ZFQxaC9Va2FGY2JSSGxKQ2JFTjJlZFcyWDhiZGhIM0ZhUUhEcDVlL3FlanJx?=
- =?utf-8?B?Z0JwdVpKOEpvT2hPM2pWWFRvdkJScWsyZnl5cUVVZUsyNjdJWnU1N1BGUkYx?=
- =?utf-8?B?RkZZS0cyckNXRFRoanZSaU84OUNnUG1USXVBQm1qNGEzQmc2MElidkdZTTFq?=
- =?utf-8?Q?/PEu0jqNBcW0wPB5oOkUgG7r9lRBGWQexFBtp7w?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 145504e2-5acd-4064-9e41-08d9840e7de5
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:33:22.7384
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YDNSFHOsNsp3WrDw566oCfQV4enP/5r9f3FhoSkz9jrndrNJsrXGblX/GtE/ZqLWM+onV+sr75/sAAYkbMQRJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3933
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The observed (by the human eye) performance difference of early boot
-between native and PV-on-Xen was just too large to not look into. As
-it turns out, gaining performance back wasn't all that difficult.
+On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> >   It sounds like a lack of testing is your main concern.
+> > 
+> >   How can I help here?  What H/W do I need to be able to fully test this?
+> 
+> The changes here need to be tested on affected platforms (ARMv7 and
+> ARMv8), when built as a modules on some types of regular distros (e.g.
+> Arch, Ubuntu). From each of such boot I would be happy to see number of
+> new dmesg warnings/errors plus number of probe deferrals.
+> 
+> Since the drivers could be switched to modules (and some distros might
+> do it), they might be hit by surprise regressions in boot performance
+> due to probe deferrals. This should be also checked on these platforms.
+> Geert pointed out before that clocks in many cases are not optional -
+> driver needs them and will wait defer.
+> 
+> Assuming of course that boot succeeds. Minor differences in boot speed
+> should not be a problem, I think, because distro anyway chosen
+> all-module approach so it accepts the penalty.
 
-While the series (re)introduces a small number of PTWR emulations on
-the boot path (from phys_pte_init()), there has been a much larger
-number of them post-boot. Hence I think if this was of concern, the
-post-boot instances would want eliminating first.
+Do you have any suggestions in terms of devboards?
 
-Some of the later changes aren'r directly related to the main goal of
-the series; these address aspects noticed while doing the investigation.
-
-1: streamline set_pte_mfn()
-2: restore (fix) xen_set_pte_init() behavior
-3: adjust xen_set_fixmap()
-4: adjust handling of the L3 user vsyscall special page table
-5: there's no highmem anymore in PV mode
-6: restrict PV Dom0 identity mapping
-
-Jan
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
