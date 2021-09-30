@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082E041E06C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8127541E06F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352918AbhI3SAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352882AbhI3SAK (ORCPT
+        id S1352933AbhI3SAm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 14:00:42 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:47060 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352882AbhI3SAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:00:10 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DB1C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id a3so8364343oid.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ODaJrzhlII7IaX+qlNLhzszeBmnqReAaw8HMQDA91KQ=;
-        b=bTQg8VLL960aI4MFPT4bL+ziwayamEyzDehDR1iOJFMPkxj/2Nk4rKVj9YVCEdzD6b
-         UrAEhn7yK+oZWFVFV9a2Vsk+1xTPbIH4KRcCLTJq6nYecBRghntzlrD0p0OATanZSj0t
-         St0+87W3xKmk6mTdbO+IC0+LpfWha2ZwUXZQM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ODaJrzhlII7IaX+qlNLhzszeBmnqReAaw8HMQDA91KQ=;
-        b=qJTDOSwe9b4Z57/+eDlO8kE8oRMYpFxPzyZaRpQur7N6yh1sx0C5YR4h8vRYUtZt8L
-         XmtG5dWAB94CVJvznIRHfBD+cuulmfSyWEVkN0UoH9cTJ3V7OKDnm6VWBbLMIhp2s0Rv
-         tEF55rsbZUc+mZy/R3jJ5exil67MeQA0R+A1PMpeqQF4IMb2ogWP+odLU2PhKKjngdD7
-         BC7HMa6n1SZy2dCF/jIbd+qXdVItm465NFPS0fqX476xMPFQ7LsBc0zifbpDfoH6BgjO
-         iF6JgWRxOd3du37rKfS+HFTFR7R3Bl7BcT+WCFQ7e/ICqaviK9CVOrWQY28BNbBjGxmx
-         CRZg==
-X-Gm-Message-State: AOAM5329epTj5GaHJwXTsyF3Gh7w3aQiqRD3A1VEtuyydhAdz4BwKWfC
-        knDDRLn/tOw+g3KXRgjIVWwrSIJMqmC+hzseTkhEBg==
-X-Google-Smtp-Source: ABdhPJx0TbzSitN4I1kanbYg8IkdrXr3mPw09WhLirZ71+GW8AkE5QIIHBvLl1NRDRFk/IIUhiDGGlyQIyMalzrBWvE=
-X-Received: by 2002:aca:42d7:: with SMTP id p206mr501591oia.32.1633024707214;
- Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 30 Sep 2021 10:58:26 -0700
-MIME-Version: 1.0
-In-Reply-To: <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
-References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
- <1629282424-4070-2-git-send-email-mkrishn@codeaurora.org> <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
- <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 30 Sep 2021 10:58:26 -0700
-Message-ID: <CAE-0n53kQU=8pdcWR0OZap1wDgxxwed0qvfaGruc71YT5Cj1iA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] arm64: dts: qcom: sc7280: add display dt nodes
-To:     mkrishn@codeaurora.org
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
-        sbillaka@codeaurora.org, abhinavk@codeaurora.org,
-        robdclark@gmail.com, bjorn.andersson@linaro.org,
-        khsieh@codeaurora.org, rajeevny@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 30 Sep 2021 14:00:41 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 12109CED17;
+        Thu, 30 Sep 2021 19:58:55 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: add quirk disabling query LE tx power
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210930141256.19943-1-redecorating@protonmail.com>
+Date:   Thu, 30 Sep 2021 19:58:54 +0200
+Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        regressions@lists.linux.dev, sonnysasaka@chromium.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
+References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
+ <20210930063106.19881-1-redecorating@protonmail.com>
+ <20210930141256.19943-1-redecorating@protonmail.com>
+To:     Orlando Chamberlain <redecorating@protonmail.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting mkrishn@codeaurora.org (2021-09-30 04:56:59)
-> On 2021-08-19 01:27, Stephen Boyd wrote:
-> > Quoting Krishna Manikandan (2021-08-18 03:27:02)
-> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> >> index 53a21d0..fd7ff1c 100644
-> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> >> +
-> >> +                       status = "disabled";
-> >> +
-> >> +                       mdp: mdp@ae01000 {
-> >
-> > display-controller@ae01000
->
-> Stephen,
->     In the current driver code, there is a substring comparison for "mdp"
-> in device node name as part of probe sequence. If "mdp" is not present
-> in the node name, it will
->     return an error resulting in probe failure. Can we continue using mdp
-> as nodename instead of display controller?
->
+Hi Orlando,
 
-Can we fix the driver to not look for node names and look for compatible
-strings instead? It took me a minute to find compare_name_mdp() in
-drivers/gpu/drm/msm/msm_drv.c to understand what you're talking about.
-Perhaps looking for qcom,mdp5 in there will be sufficient instead of
-looking at the node name.
+> Querying LE tx power on startup broke Bluetooth on some Broadcom chips
+> in Apple computers (at least MacBookPro16,1 and iMac20,1). Added a quirk
+> disabling this query for affected devices, based off their common chip
+> id 150. Affected devices will not be able to query LE tx power, however
+> they were not doing this before.
+> 
+> Fixes: 7c395ea521e6m ("Bluetooth: Query LE tx power on startup")
+> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
+> ---
+> drivers/bluetooth/btbcm.c   | 4 ++++
+> include/net/bluetooth/hci.h | 8 ++++++++
+> net/bluetooth/hci_core.c    | 3 ++-
+> 3 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
+> index e4182acee488..4ecc50d93107 100644
+> --- a/drivers/bluetooth/btbcm.c
+> +++ b/drivers/bluetooth/btbcm.c
+> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
+> 		return PTR_ERR(skb);
+> 
+> 	bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
+> +
+> +	if (skb->data[1] == 150)
+> +		set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
+> +
+> 	kfree_skb(skb);
+> 
+> 	/* Read Controller Features */
+> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+> index b80415011dcd..5e0dd0c39ade 100644
+> --- a/include/net/bluetooth/hci.h
+> +++ b/include/net/bluetooth/hci.h
+> @@ -246,6 +246,14 @@ enum {
+> 	 * HCI after resume.
+> 	 */
+> 	HCI_QUIRK_NO_SUSPEND_NOTIFIER,
+> +
+> +	/*
+> +	 * When this quirk is set, LE tx power is not queried on startup.
+> +	 *
+> +	 * This quirk can be set before hci_register_dev is called or
+> +	 * during the hdev->setup vendor callback.
+> +	 */
+> +	HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER,
+> };
+> 
+> /* HCI device flags */
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index 8a47a3017d61..16e39739c662 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -742,7 +742,8 @@ static int hci_init3_req(struct hci_request *req, unsigned long opt)
+> 			hci_req_add(req, HCI_OP_LE_READ_ADV_TX_POWER, 0, NULL);
+> 		}
+> 
+> -		if (hdev->commands[38] & 0x80) {
+> +		if (hdev->commands[38] & 0x80 &&
+> +			!test_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks)) {
+> 			/* Read LE Min/Max Tx Power*/
+> 			hci_req_add(req, HCI_OP_LE_READ_TRANSMIT_POWER,
+> 				    0, NULL);
+
+so I really need the btmon traces from the device init (so unload and reload the module) and we need to see what commands are supported and what commands are failing.
+
+Since you say this is on a MacBook, I assume this is an UART based Broadcom chip. Sometimes Broadcom has been really flaky with their actually implemented commands. However in some cases firmware updates do fix this. So any chance you can boot OS X and check that the latest firmware is loaded.
+
+Regards
+
+Marcel
+
