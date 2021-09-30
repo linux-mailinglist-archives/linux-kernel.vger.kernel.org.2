@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1914E41DDC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37E241DDC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345220AbhI3PmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S1345651AbhI3PnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345057AbhI3Plz (ORCPT
+        with ESMTP id S1345545AbhI3PnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:41:55 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33836C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:40:13 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id q205so8118164iod.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:40:13 -0700 (PDT)
+        Thu, 30 Sep 2021 11:43:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113EFC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:41:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i25so27072098lfg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3rSIy18tZojmsrzjfN9FHZFTJAPBKRcMqEY55dmth7w=;
-        b=H/6IrwGnlqZqz+Zp8FvojRJnoTCF0J5joy+th6XZ0bLY8vA5ptPZ73KFd0zpaZOPFm
-         2UdU+uTV0yCGeeqr6jasZs757aIgb2S7xNZZVJBQ9RpW69ufXMWRkQRLTdrvY3PoqoCP
-         8Zcmk0EEifP+TrZ20drZqiFfCjmtAZ+ckByzn938xj+0J58xoFUlcomtD4wlKPMB6X0d
-         m8zWToLc/1L+aSh8wG+DwXntZzFfiW1P4i0iCH6wDWzD6Kd4/AWqSa/pgTA+90sZGTRp
-         aqlrq/x2jzWUyAPBygKkDKMxNbISBOvEagt+YgKjcD+Eql4RNSlO/vJEBdztAXKp6MvM
-         RW6w==
+        bh=vkiMt/G7bFXAXpJDQxe1pxlr8eHxyYeyKBiifpqcCv8=;
+        b=cgIhgC2Dc4NbQWA+Np0faZRjXOIfA5Q6JS57HlBiEUSQSUzjg4MSeF5mSEA9WS0CGt
+         QmPmhU1bRPjJ2fFdWpZ7Za+A+gMd7/S4KXUjERWkNLNvaFZv0jFlFkYfBNtsi1PjY+Fl
+         bF3Tf/931BXCeVPfJNiYweKFHD76VytKHwKHubp1EE7fznmMpsb02OvqAFfSbohtFdHv
+         wUi3B6dEfrHtvwHrKrQ+U4cRGTC4qUgbVSJWcabR86XIbSo6RJchJVnXr+GrVCwDLhbH
+         Quzu5MAw6J5Fct26H4B0MUfbbS9p3k/KGUMnFU+iMrX3iuhR8QykVx51mEy/vYXEuT63
+         9IrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3rSIy18tZojmsrzjfN9FHZFTJAPBKRcMqEY55dmth7w=;
-        b=H3U5LvvWsY+ed/Ae/fP/eUCBgd+rqDiU4/XPOnKZIxl2Gg7BsX9jxDAz7OevxW7s1A
-         N57bPtn1jZwKbGoxuuovGrCG8qSrORxFPKHWv1yPbcBCEzp2NqOavQOoZcr4ht193JGe
-         6MlK/jBLtFZTlbxh8lbHyiHMpZxpRdaDm5sxRCarvqUWPTTxMbXCPFOl8l5RH2V2qmXi
-         TR3Ia/Vj1FmY2tUoaUlrKWXwZzz1WroYFhNAjL2G4gfEn0xAgTY2sleOpqV6IGadu3c2
-         anaQ0IZ2Suz/KKiycNlozoFmhMyi/3R9/ecs+tokVRn0GI5+KZdURZ6zBkAe2WVhyiwG
-         gdbw==
-X-Gm-Message-State: AOAM530baPJmjlkmu83BQae2JI6448Ve93z7B/NNxPiUX69G1lOKhr7k
-        F3qtWbcIFKvdovnf0QceJHLJDKs5RuqRfwEOrH70Og==
-X-Google-Smtp-Source: ABdhPJyQb/uJaGJlYxt7XHtcYu354PpX7r3E/vrRNXFvnIQvH5kFYsuh7+ZNQ0DQrpwz0sv8l9mUREABQvbBsBgcVPs=
-X-Received: by 2002:a6b:f915:: with SMTP id j21mr4456834iog.98.1633016412417;
- Thu, 30 Sep 2021 08:40:12 -0700 (PDT)
+        bh=vkiMt/G7bFXAXpJDQxe1pxlr8eHxyYeyKBiifpqcCv8=;
+        b=SDBKuE9YxrlzPli7YpmgMh7Qz+AJPyOm0+cO4UZ+XZEPNwB3CDAAhqsiVUNo5mZE58
+         cGUPCuKe7BCgXorPmLxK9JdagKVQaTjuxbJJznfEcjpG3YBmd3/2hhlVR8xIlu27Brlh
+         V1zGKVI4rld3hVplvFVM7Jty/lEED69y6Kq4qOrKkRpAjJfndD4zRJOxEGT8LDHS9ALo
+         5MH5vV2QFc0AskL9urefA5KFsp0H74YdgcYPzwIgUFijHDNzpvaC1cmEm44zPF/VZWe0
+         4tW6zi/OMSFwd51pEu1YYIh5cUwdu2cMHZ6UHhf7orbjFEXO0qsXSXnz9q1MXIS+o9It
+         +rrw==
+X-Gm-Message-State: AOAM530FnoOzBcWhnxB6846ukDoFrNq5lYbKa4O8HqzR3axTFkxg6uZW
+        e/jHIELEbpazIjNsPsDZn/EOCOA1f1bbzgfX2YkMRg==
+X-Google-Smtp-Source: ABdhPJzbQx3xPiacL41rCJErivYDM0vWUswmTjCsb5uUGMEo7NJ89zBn/DGOalij/ndQl9CH3MaHruCT6FaEoOS8rOg=
+X-Received: by 2002:a2e:4e11:: with SMTP id c17mr6415015ljb.19.1633016487609;
+ Thu, 30 Sep 2021 08:41:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930030557.1426-1-bjorn.andersson@linaro.org> <20210930030557.1426-2-bjorn.andersson@linaro.org>
-In-Reply-To: <20210930030557.1426-2-bjorn.andersson@linaro.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Thu, 30 Sep 2021 08:40:00 -0700
-Message-ID: <CAD=FV=UY7=gr4xFOR40fWA42B2T0jFS+=bOmwSb2_=ebTN7gXw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] drm/bridge: ti-sn65dsi86: Use regmap_bulk_write API
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-pwm <linux-pwm@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+ <20210924080632.28410-3-zhiyong.tao@mediatek.com> <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
+In-Reply-To: <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 30 Sep 2021 17:41:16 +0200
+Message-ID: <CACRpkdbWR_kmvMuHMTOjxLDqN6rq7zhrWcZxfi2L3Atau=TLSw@mail.gmail.com>
+Subject: Re: [PATCH v14 2/5] dt-bindings: pinctrl: mt8195: change pull up/down description
+To:     Rob Herring <robh@kernel.org>
+Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Rob,
 
-On Wed, Sep 29, 2021 at 8:06 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> The multi-register u16 write operation can use regmap_bulk_write()
-> instead of two separate regmap_write() calls.
->
-> It's uncertain if this has any effect on the actual updates of the
-> underlying registers, but this at least gives the hardware the
-> opportunity and saves us one transation on the bus.
+how do you want me to act with this patch set, as it is already
+merged and I was pretty happy since it is a v14 and feeling
+it was getting a bit over-reviewed....
 
-s/transation/transaction/
+Are the binding problems solvable in incremental patches
+or do you think I should pull out the patch series?
 
-
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> Changes since v5:
-> - Extracted this hunk from patch 3.
->
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-
-Looks keen. I'll plan to apply this after giving it a few days on the
-list to make sure nobody is upset, though I'm not sure why they would
-be. ;-)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Yours,
+Linus Walleij
