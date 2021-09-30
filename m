@@ -2,132 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF12341DB0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA4C41DB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351404AbhI3NbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:31:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:46581 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349444AbhI3NbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:31:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="288841024"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="288841024"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 06:29:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="521211747"
-Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 06:29:13 -0700
-Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-To:     Ryan Lee <RyanS.Lee@maximintegrated.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
- <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
- <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <0d866050-9fbf-4f76-ab9e-0bb83a933924@linux.intel.com>
-Date:   Thu, 30 Sep 2021 08:29:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1351459AbhI3Nba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351450AbhI3Nb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:31:29 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F32C06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:29:46 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id i23so10117104wrb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=q+R3lw9hSs/DZNzD1ywHyamm1IrGhxmkV4ENbV1GCU4=;
+        b=DgISTWDu6rOHfzRjV6Qlml3/7p6txDssydTajODz+GlRBwZnnZJ+mHqxja6SLqqzZS
+         eyqevG/RTJ1e19LvzUSviCvcRdY/ZQlLzVjdheF0j9oYG2VCjjxYzy70fFH6h8wQFIl1
+         heZTwo8Ij6lQSgsdYl1dZiwV3X78qZHJLVBF7Te55QST9l020nZl0zdexD6cQxRMEf6W
+         SRIUEGew9SLXCrM/mV3q/VEp2npSKkXBbZ5+s2TfsplI/1q6wc/x7KyW1mrI5x5IDs/H
+         NBJzxCeq6cVp7HZB2iCl43ejKQHiNBQy43JZ3VV5ezx4T/8upAw3Pc/u2fcrSEWOZw/o
+         CpiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=q+R3lw9hSs/DZNzD1ywHyamm1IrGhxmkV4ENbV1GCU4=;
+        b=5X2BTeNcvqNWggnVWc8HE8J8rBw9HInp4M4y7I95vPnoq7pfFLOPFUUZ24n0JFyIVO
+         Dt/KxOKx/w1KaPTe6r0DsG4c0ZWWLiS2ru2kE7vYsmXl0px0kwsQ6uT1Z7osWpKTIiYP
+         2mWJ5AK+PVvGSOEWJK9QWUy0P4UEYGoFtgMLKAYIcXB1SFBkOBddUS3Yl0gHETGfSFNY
+         lANhgEhuaMpuXOL/0dDPqOowhai5MN4a+s27UgV2GEJLB4D5r6VNTRZlJt/jxHSz0oTb
+         R0ug6JcBGtFrXQYAOR3FvDUDvnpkMEQKQT04bGMODfa29QFQ/wjRNbxu11JA9n4rOsaU
+         OjLA==
+X-Gm-Message-State: AOAM532H93kb51PwQ9CR9UnSLUwWj99AmxYGp7whSavF+sny6n/BHDY1
+        62EpKeocOIS/BMN1NNCNg69VDw==
+X-Google-Smtp-Source: ABdhPJy/y/6uR/KPQ8dQ/+hV2n00qqTbyI2pfOM4zKq4a5jrPB98oGnv1D/dr/8czG2Kuq8YEDugGw==
+X-Received: by 2002:adf:eac8:: with SMTP id o8mr5785614wrn.273.1633008585451;
+        Thu, 30 Sep 2021 06:29:45 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id x21sm4825619wmc.14.2021.09.30.06.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 06:29:44 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 14:29:42 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <YVW7xoHaLdGHBoEQ@google.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <YVWCK5QO331rfhJJ@google.com>
+ <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com>
+ <YVWwBz8jrznqXah4@google.com>
+ <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
 
-> I do not see #3063 issue on my side. No initialization failure or time-out has occurred.
+> On 30/09/2021 14:39, Lee Jones wrote:
+> > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > 
+> >> On 30/09/2021 11:23, Lee Jones wrote:
+> >>> [0] Full disclosure: part of my role at Linaro is to keep the Android
+> >>> kernel running as close to Mainline as possible and encourage/push the
+> >>> upstream-first mantra, hence my involvement with this and other sets.
+> >>> I assure you all intentions are good and honourable.  If you haven't
+> >>> already seen it, please see Todd's most recent update on the goals and
+> >>> status of GKI:
+> >>>
+> >>>   Article: https://tinyurl.com/saaen3sp
+> >>>   Video:   https://youtu.be/O_lCFGinFPM
+> >>>
+> >>
+> >> Side topic, why this patchset is in your scope or Will's/Google's scope?
+> >> Just drop it from Android main kernel, it will not be your problem. I
+> >> mean, really, you don't need this patchset in your tree at all. The only
+> >> platform which needs it, the only platform which will loose something
+> >> will be one specific vendor. Therefore this will be an incentive for
+> >> them to join both discussions and upstream development. :)
+> > 
+> > How would they fix this besides upstreaming support for unreleased
+> > work-in-progress H/W?
+> > 
+> > Haven't I explained this several times already? :)
+> 
+> Either that way or the same as Will's doing but that's not my question.
+> I understand you flush the queue of your GKI patches to be closer to
+> upstream. Reduce the backlog/burden. you can achieve your goal by simply
+> dropping such patch and making it not your problem. :)
 
-It's rather random, we've only seen the error in long daily tests.
+git reset --hard mainline/master   # job done - tea break  :)
 
-> Now I'm trying to solve the issue with max98373_io_init() function as suggested instead of adding
-> regmap_cache_dirty() in the suspend function.
-> max98373_io_init() was not called from max98373_update_status() when audio resume because
-> max98373->hw_init was 1 and Status was SDW_SLAVE_ATTACHED.
-> max98373_update_status() do not get SDW_SLAVE_UNATTACHED.
-> I confirmed that the issue could be resolved if SDW_SLAVE_UNATTACHED event arrives at
-> max98373_update_status() before SDW_SLAVE_ATTACHED is triggered.
-> Actually sdw_handle_slave_status() get SDW_SLAVE_UNATTACHED but this function exits at
-> https://github.com/thesofproject/linux/blob/topic/sof-dev/drivers/soundwire/bus.c#L1765
-> before reaching to https://github.com/thesofproject/linux/blob/topic/sof-dev/drivers/soundwire/bus.c#L1825
-> I'm not sure how to solve this issue because this code is commonly
-used for other Soundwire drivers as well.
->
+Seriously though, we wish to encourage the use of GKI so all vendors
+can enjoy the benefits of more easily updateable/secure code-bases.
 
-There may be a confusion here.
+I can't see how pushing back on seamlessly benign changes would
+benefit them or anyone else.
 
-The SoundWire spec says the device will show up as Device #0. That means
-the status[0] = ATTACHED.
-
-The driver reads the devID registers and programs the device number N.
-The device will then report as device #N in PING frames. The controller
-hardware will detect that device and call the function to update the
-status a second time.
-
-> I share the debug messages for the resume event as your reference.
-> [  127.490644] [DEBUG3] intel_resume_runtime
-> [  127.490655] [DEBUG3] intel_resume_runtime SDW_INTEL_CLK_STOP_BUS_RESET
-> [  127.490658] [DEBUG3] intel_init
-> [  127.490660] [DEBUG3] intel_link_power_up
-> [  127.490977] [DEBUG3] intel_resume_runtime SDW_UNATTACH_REQUEST_MASTER_RESET ..
-> [  127.490980] [DEBUG4] sdw_clear_slave_status request: 1
-> [  127.490983] [DEBUG4] sdw_modify_slave_status, ID:7, status: 0
-> [  127.490986] [DEBUG4] sdw_modify_slave_status, ID:3, status: 0
-> [  127.490994] [DEBUG3] intel_shim_wake wake_enable:0
-> [  127.491060] [DEBUG3] intel_shim_wake wake_enable:0
-> [  127.491191] [DEBUG] max98373_resume, first_hw_init: 1, unattach_request: 1
-> [  127.491194] [DEBUG] max98373_resume, INF MODE: 0
-> [  127.491953] [DEBUG4] sdw_handle_slave_status IN
-> [  127.491956] [DEBUG4] sdw_handle_slave_status, status[1] : 0, slave->status: 0, id:7	// UNATTACHED
-> [  127.491958] [DEBUG4] sdw_handle_slave_status, status[2] : 0, slave->status: 0, id:3
-> [  127.491960] [DEBUG4] sdw_handle_slave_status IN2 status[0] = 1
-> [  127.492808] [DEBUG4] sdw_handle_slave_status IN
-> [  127.492810] [DEBUG4] sdw_handle_slave_status, status[1] : 1, slave->status: 0, id:7	// ATTACHED
-> [  127.492812] [DEBUG4] sdw_handle_slave_status, status[2] : 1, slave->status: 0, id:3
-> [  127.492814] [DEBUG4] sdw_handle_slave_status IN2 status[0] = 0
-> [  127.492816] [DEBUG4] sdw_handle_slave_status IN3
-> [  127.492818] [DEBUG4] sdw_handle_slave_status status[1] = SDW_SLAVE_ATTACHED, slave->status : 0, slave:7, prev_status:0
-> [  127.492820] [DEBUG4] sdw_modify_slave_status, ID:7, status: 1
-> [  127.493008] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:7
-> [  127.493010] [DEBUG4] sdw_update_slave_status update_status(1) OUT
-> [  127.493012] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slave :7
-> [  127.493015] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->first_hw_init: 1, status: 1
-> [  127.493017] [DEBUG4] sdw_handle_slave_status status[2] = SDW_SLAVE_ATTACHED, slave->status : 0, slave:3, prev_status:0
-> [  127.493019] [DEBUG4] sdw_modify_slave_status, ID:3, status: 1
-> [  127.493199] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:3
-> [  127.493201] [DEBUG4] sdw_update_slave_status update_status(1) OUT
-> [  127.493204] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slave :3
-> [  127.493207] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->first_hw_init: 1, status: 1
-
-I don't really see anything in this sequence that differs from my
-explanations?
-
-The update_status() is only called when the device has a non-zero device
-number.
-
-There may be a real problem with update_status() not being called but I
-just don't see it so far.
-
-One way to improve the traces would be to use dev_dbg, that way we'd
-have a trace of which device is being handled. There are two devices
-managed by the same driver, a trace with pr_dbg doesn't tell us much.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
