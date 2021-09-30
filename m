@@ -2,250 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA67F41D81B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8578E41D81E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350157AbhI3KyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:54:02 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39304
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350172AbhI3KyA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:54:00 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B68A440283
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632999137;
-        bh=IXdF+Px2IPPBasNnxm33nxmrPP5ltJ+hhzJPPAqE+rA=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=ryrqg6+JMl8tJi4VQwHIauzm8nBdjvDV5VETn+6HBNhb5FJ3heZe8UTcdM1ysAtxt
-         RthU8LPDXJpzjpj9WVHT2J1HZf4lXYmvFFHihvemFZYC9At4ih/daeKSeGi6wPlV69
-         SeyuTuSW4ZqaQricgdG4zC5WOw0LC7veFa1BtOTuMb4PQADJ8tIqyk6EmhENUkFpkR
-         KOHZDMTce3yuVX77rkZZkmLrNtB61puXKDMJfbmZi7RrypwVj029VQefCWN9JOullc
-         Sz6spFbtCogxt0VZv4eTsK4QkeP/jE93U7tHAHIFrszYCEFdH9ztNoYCrhpJ763myI
-         SZBpK/HdrOTAg==
-Received: by mail-lf1-f71.google.com with SMTP id bp11-20020a056512158b00b003fc7d722819so5239057lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:52:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IXdF+Px2IPPBasNnxm33nxmrPP5ltJ+hhzJPPAqE+rA=;
-        b=pEMK5YLWob361urceocryxX5pS+6O692E1iiVs0f7LVx12SIPOmMY+mQ+rf+4Lzi2U
-         ou3wUeuE4p+9rDNHjduWF2a8enUohMLGKznqX07THTrHzYMsoeevfEDYcdK0Ldn4harT
-         M4aLG2KLQh/j8aBQrJ1jWEGaAztEfphVDpEWS+qSfus/qp6QTwW+78OuNQtIX0SH2HCK
-         eXZJkoYYHeDdvdYyefC0EqjAEckb3k4feSbZaruBwvJP9ELYarJH6aApHcW0z3dge8ju
-         enqL+GGUP7FveCJwB9KvhST9VzUl8H1leTbFY2eOXfSeaL8B+AHxzI+KU4GZjXdRT/NC
-         X9HA==
-X-Gm-Message-State: AOAM531acoo+5YVQ2UubP6AgnW1NRnz+hkKxxABcR4CTdneDv3TBnO4V
-        F6jS/ku6oqHvzNXrPd3Hi49I//8PzFb1J39btSwpwRXVG/ve2Je/IIhw2vGFEZIQcwCkmBT+pMx
-        WZ/0HjzcntIZ3l7LwfYREWhR2pzkewe3xoX3JiPE1nQ==
-X-Received: by 2002:a19:4895:: with SMTP id v143mr5214333lfa.622.1632999134979;
-        Thu, 30 Sep 2021 03:52:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyP1XCL6lSBqwYJx+1KtdIMtCBYDdtJrS4cpFezKFo6ZYlspxly5txMX2ta+SKXWbBz1VKdtg==
-X-Received: by 2002:a19:4895:: with SMTP id v143mr5214307lfa.622.1632999134719;
-        Thu, 30 Sep 2021 03:52:14 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id b25sm329579lfi.151.2021.09.30.03.52.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 03:52:14 -0700 (PDT)
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <YVWCK5QO331rfhJJ@google.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <d79df9ff-fc22-8d29-011d-c3cb7dbbfa4e@canonical.com>
-Date:   Thu, 30 Sep 2021 12:52:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1350170AbhI3KyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:54:23 -0400
+Received: from mail-mw2nam12on2068.outbound.protection.outlook.com ([40.107.244.68]:47969
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1350161AbhI3KyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:54:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VLPUReZeIFgVld4zUFLcPzQkSmc9C5uhQZmDUm4TMx954zKy0ED6D9tQpn3gvttGW3Uv75DMIwEsjuXA/r1ltqwM3GDffKPTw3XUS114zzZub9b1bNK1U5QiUNUDsvlbv4LFxh8OPNJ3idlH4f+LE7WEY4a/cGrh+y4XIL8dCVdE38+B55/yt4SapZDt5DZiDeLdTt30YeFCeNfXc0wdZqrSDhDh1SPuGI32DFozPjOANW0aPsMbDK3c6U8TyHc2Rv/ZL3tSH2UW3+twbsPVjVK8DTKtemR+v315egKfi9nPqBuU6OsAEYQUHC6lYMmKJ+YCRqxdEOzw+g2RGtK5Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Bw9As1pVhFEH4N2f+7EK1Tt1kfDGkCb/nth9qS+zFH8=;
+ b=iaJ7sO6AgI4p8KDiBjidiDHlh3TIo5lvZgtp07zfujJ2UbmYkB5GkxfO1vdWY8uXFXrIcdgzI6Icld4nk/8L+kZxI70e7R8t9FvHGNfdzwBM1GQo0FN6RWqchEoiVSTCDAzHDmVpWWOjh0kK6lHEi6m2r9EFZ3sIhYlim6z4mcyxZ5EoaPeW0R1G+kFPEvFj3/y8r6vyYnui/ilp0NCfvqc2L8iFjO6ahKmydbRcaGziA1EoxONilBc2r3vZh7ndZZ8CNuX7Rxr0PeB6Xl/Gdw99zbRH5ZDETn4am8lbfqAG2XekQ3g91iPLK0GJpsRjwnfPDxtwIZl8izQ3/VG98A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bw9As1pVhFEH4N2f+7EK1Tt1kfDGkCb/nth9qS+zFH8=;
+ b=WHloOcpzJXui6h1SjkxKHyHKLbAN5+SYliijSp4FULI0rgz/bm8gQvHzmLs3Zc+GMoWTA+oAiGMr0Hlhifqe+0fXroL+PoWVLqYPLnnuBF1ie6WhLbeRSHz5ofgAvbn+B8A0yR7tvaLqqLsiAbBw0t5/Yjf75qcOtRPOaThOq6A=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN3PR03MB2195.namprd03.prod.outlook.com (2a01:111:e400:7bb9::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Thu, 30 Sep
+ 2021 10:52:38 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::19a1:1a10:ff3b:be65]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::19a1:1a10:ff3b:be65%7]) with mapi id 15.20.4544.021; Thu, 30 Sep 2021
+ 10:52:38 +0000
+Date:   Thu, 30 Sep 2021 18:52:29 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] x86/process: directly use try_get_task_stack()
+ return value in get_wchan
+Message-ID: <20210930185229.09d463ab@xhacker.debian>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0004.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::17) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
 MIME-Version: 1.0
-In-Reply-To: <YVWCK5QO331rfhJJ@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from xhacker.debian (192.147.44.204) by BYAPR05CA0004.namprd05.prod.outlook.com (2603:10b6:a03:c0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.8 via Frontend Transport; Thu, 30 Sep 2021 10:52:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a4ef40d9-79d6-47a9-5750-08d984006adf
+X-MS-TrafficTypeDiagnostic: BN3PR03MB2195:
+X-Microsoft-Antispam-PRVS: <BN3PR03MB219530639B4F12B587FDDF21EDAA9@BN3PR03MB2195.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:669;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V3t4MroGzKjcJz93HRAxZEnImDOXR11iNvdKb+Ou3qEVan7FX/U2v//u6kZFGfH1GKBGgmJwuhXN1lc6XBM4rw91/py/Eq5+r6EgL0jSmuFeJComkibect7yz70G91F/eF1mWdl6dI88qH67RYGIWq7djhNCBd+jRShV1TBi0yM2wApG/Gs3oKCF6pHzHujbQ9qgeTPhiTqrY3exs4RW6D5ylM9HSV1XLezL5c8n3MRk2kiReH0QVBqYjklEHkKbMMxLQY+8XDx37wpt/54XsnoTg3FPypnT+tUOC6+SXjHEqthxg/UBf+tOTcGC58DajT4R4ocGP24I/oI7eTAwf0zY9nML4VZsAYVitRkm/9MKPQNsv8ZoSpAY4AzfFVTj3MlQFXNRN/+TJKIS+vZU/SScK6AnGNIxGy9qNaKQNjqiKjWBoTruadroW9DSFuZDHqQkshX4hI8sFu1Wzzux6QeF/VuDJ7qsSPHAP7HmZ3BJBnbMgAD7gdsYAe1jkS7MwenQzEpaNVgmNVI0iom6nk/6m4E6CiagIB1FZR6doiq7hH9uBaiAxqVgua9zRyC2yI2UOhe+tr09p8nO4jB4KUfjXX8fV4MsQqGnw962xVdbrji1f0n0N2fY25908PJUc2WU8KF/taPxk/+jo9+bQzPGcsK0LTZ1od5fDt06NYdSYPLaWjFXy8D43nPJ/KFEdSoLlOOpAXlqvfW50B1L1g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(38350700002)(1076003)(8936002)(4744005)(6506007)(7696005)(52116002)(8676002)(110136005)(6666004)(508600001)(316002)(83380400001)(38100700002)(86362001)(66946007)(2906002)(26005)(9686003)(66476007)(4326008)(66556008)(55016002)(186003)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tI+oFHzYkuKktvTMY1bCidK5WVXLl/1C/7NGErYr870XLnbqKc2Ji7Bpnuam?=
+ =?us-ascii?Q?6riYvS9sz1l2TBGk5BoLUzfEVCTBiyXsvkLSD61g8CQgoaI5VzsRUJ9pvURK?=
+ =?us-ascii?Q?XD0G6qvXtfP5wYnO9dVAPpUStir4jREj4OOUbwhz7ORTpgtRHul2fZD0Rxhf?=
+ =?us-ascii?Q?rJ6GmjUspowloxfgiNU7sYGO9YTqyT5F3+REDtqg7U9mE2p3KieKNTq5Njva?=
+ =?us-ascii?Q?zs+Y1U4l/YNIgZm9mhPiRfesqwaV3R7SjpisEyHmk6GMhgWGyTzDaj16lpZw?=
+ =?us-ascii?Q?vU2BQPe2lqdoimZmvFdzW3WVb+SGk3P+CjUOvOYqC6C3zrKAc3EgHOluFtJ1?=
+ =?us-ascii?Q?SYIi66F3L2/kteS1qnfsPIJwkCGVnRORHp1JVnGX6U7Sntgi6p5CfptLGgR5?=
+ =?us-ascii?Q?r+NotOhDLYBnbA/V2W42JP0/HDo4V9JDymSojqnSP9MsVEH1scZ3c3/cPgD4?=
+ =?us-ascii?Q?u6PehF08gjIK0sal0CUVKPKULMtzYxIuo3PjFZAuA4i0GVM9FxiWVOMrwHaV?=
+ =?us-ascii?Q?dSmbBipWHzqtmO1RUI0KbJBY782tHzANux84Pcl92qH04z3lemfRcgrhxHpL?=
+ =?us-ascii?Q?6h4o+i9ovQG5L7zs5N9nTS6PmFCJ2TYj8Le4qCFJR7WXgpV0tkmjLkcaULpv?=
+ =?us-ascii?Q?cYfscF/vJKfHror+r9AN2C0BCjCB7g18NJ+cRPMNec/2ww9BlMQwhD89wTf1?=
+ =?us-ascii?Q?tKzIrQijuq7unnmOeUwP4HWUx+hMDT8rBguAZ5weveupkTe4yOJVz+sBIbrc?=
+ =?us-ascii?Q?HY71I9zJh6kZsVGLWJXIkG+1yLorVJzN8L+3wvE2T8pLRAl9uAaXk4ylMN76?=
+ =?us-ascii?Q?3QIYSqpgnf+hnRHbSJRpixe95TJJs47nJ9+eCJPUTL5mHgsSRxkhIv12HhGF?=
+ =?us-ascii?Q?dQOx3Npyx0dZiPj5eEnNTx3U616rCN6DV4cgSLmbB1hAQ3qhnGGYvDGFeLfX?=
+ =?us-ascii?Q?2EzlUU6cxLMgermwBvzaK1eTGpXxdVuGoNQ424OKIP0vybSF89AcgxLeAe8y?=
+ =?us-ascii?Q?5HTPwHRinS3fxYCNBrWvX8m57cw+QO/peTic2tk61/58T+s1DUefxXiLR1aY?=
+ =?us-ascii?Q?bNptR/KHuqVo8t87RUfPC+4DTRYU9mkeTi5MXpYwI0GNmDpd4BojcRAbH4R0?=
+ =?us-ascii?Q?yPpo25RAKV8ihe3qHQ4OuD6XK1ASRH+W15RwGsg4t2GPxJawH9L0Czpnkizx?=
+ =?us-ascii?Q?sciERRAZov1v9LBKDw72KUapsNEi9hgt+7PVov6ClC9J1nvMv1IdO0ABu3L9?=
+ =?us-ascii?Q?sK65lx7lfvTNrJAYX0XVKLR5WjFRJ9RMnf3uPvwGLCI/sa3qGNfXpaWSAMu8?=
+ =?us-ascii?Q?8oyvQOwmi8wilGfms4OlbJ2M?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4ef40d9-79d6-47a9-5750-08d984006adf
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 10:52:37.8479
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T3joCC2qPARdWUKCxeW66rl5eNVFPsK0nyU2db6dcxitl6xcKQL0L8w5tEgsDOc3ic5HHnWv53LjalbJDA5k0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR03MB2195
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 11:23, Lee Jones wrote:
-> I've taken the liberty of cherry-picking some of the points you have
-> reiteratted a few times.  Hopefully I can help to address them
-> adequently.
-> 
-> On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
->> Reminder: these are essential drivers and all Exynos platforms must have
->> them as built-in (at least till someone really tests this on multiple
->> setups).
-> 
->> Therefore I don't agree with calling it a "problem" that we select
->> *necessary* drivers for supported platforms. It's by design - supported
->> platforms should receive them without ability to remove.
-> 
->> The selected drivers are essential for supported platforms.
-> 
-> SoC specific drivers are only essential/necessary/required in
-> images designed to execute solely on a platform that requires them.
-> For a kernel image which is designed to be generic i.e. one that has
-> the ability to boot on vast array of platforms, the drivers simply
-> have to be *available*.
+try_get_task_stack() has already properly gets target task's stack,
+no need to call task_stack_page() again.
 
-By "essential", I meant drivers which are needed for supported platform
-to boot properly. Also without significant performance penalty due to
-probe deferrals.
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ arch/x86/kernel/process.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Therefore if someone selects ARCH_EXYNOS in mainline kernel, it means
-he/she wants such devices to be working fine with generic kernel.
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 1d9463e3096b..d4a6503b3878 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -950,12 +950,9 @@ unsigned long get_wchan(struct task_struct *p)
+ 	if (p == current || task_is_running(p))
+ 		return 0;
+ 
+-	if (!try_get_task_stack(p))
+-		return 0;
+-
+-	start = (unsigned long)task_stack_page(p);
++	start = (unsigned long)try_get_task_stack(p);
+ 	if (!start)
+-		goto out;
++		return 0;
+ 
+ 	/*
+ 	 * Layout of the stack page:
+-- 
+2.32.0
 
-This is the difference with term "drivers have to be available".
-
-> 
-> Forcing all H/W drivers that are only *potentially* utilised on *some*
-> platforms as core binary built-ins doesn't make any technical sense.
-> The two most important issues this causes are image size and a lack of
-> configurability/flexibility relating to real-world application i.e.
-> the one issue we already agreed upon; H/W or features that are too
-> new (pre-release).
-
-Geert responded here. If drivers are essential for supported platforms
-to boot, having them built-in has technical sense.
-For other drivers not and we do not discuss such cases.
-
-> 
-> Bloating a generic kernel with potentially hundreds of unnecessary
-> drivers that will never be executed in the vast majority of instances
-> doesn't achieve anything.  If we have a kernel image that has the
-> ability to boot on 10's of architectures which have 10's of platforms
-> each, that's a whole host of unused/wasted executable space.
-
-Geert responded here.
-
-> 
-> In order for vendors to work more closely with upstream, they need the
-> ability to over-ride a *few* drivers to supplement them with some
-> functionality which they believe provides them with a competitive edge
-> (I think you called this "value-add" before) prior to the release of a
-> device.  This is a requirement that cannot be worked around.
-> 
-> By insisting on drivers (most of which will not be executed in the
-> vast majority of cases) to be built-in, you are insisting on a
-> downstream kernel fork, which all of us would like to avoid [0].
-
-The same with all the DTS and hundreds of drivers you keep out of tree.
-
-> 
-> [0] Full disclosure: part of my role at Linaro is to keep the Android
-> kernel running as close to Mainline as possible and encourage/push the
-> upstream-first mantra, hence my involvement with this and other sets.
-> I assure you all intentions are good and honourable.  If you haven't
-> already seen it, please see Todd's most recent update on the goals and
-> status of GKI:
-> 
->   Article: https://tinyurl.com/saaen3sp
->   Video:   https://youtu.be/O_lCFGinFPM
-> 
->> We don't even know what are these unsupported, downstream platforms
->> you want customize kernel for. They cannot be audited, cannot be
->> compared.  Affecting upstream platforms just because
->> vendor/downstream does not want to mainline some code is
->> unacceptable. Please upstream your drivers and DTS.
-> 
->> You also mentioned downstream devices but without actually ever defining
->> them. Please be more specific. What SoC, what hardware?
-> 
-> Accepting changes based on the proviso that vendors upstream all of
-> their work-in-progress solutions is an unfair position.  
-
-You twisted (or ignored) my words here. I said before - sacrificing any
-mainline platform (e.g. reliable boot for distro) for an out-of-tree
-vendor which does no want to upstream drivers is the unfair position.
-One of the incentives of upstreaming is to be able to shape kernel and
-be considered in kernel upstream decisions. That's the privileged for
-upstreamed platforms - they have an impact.
-
-Vendor decides to stay out - fine, vendor's choice. You loose impact.
-Any sad words like "oh upstream does not want to change for me" should
-receive a message: "please join the upstream :), so we will change
-together".
-
-> We already
-> discussed why upstreaming support for bleeding edge H/W and
-> functionality is unrealistic in terms of competitive advantage.
-
-Nope, my last point was not responded to. You said that there is no
-point for vendor to upstream bleeding edge HW. Then you said that there
-is also little point to upstream older HW.
-
-Basically following this approach you agree that vendor does not have to
-do anything because it is inconvenient for him.
-
-However upstream has to adapt to downstream vendor, right?
-
-No, this is *unfair to all the platforms we upstreamed*.
-
-> 
-> Besides, we might not be talking about new silicon at all (I don't
-> believe anyone alluded to that).  The flexibility in configuration
-> simply allows for generic upstream drivers to be swapped out for ones
-> which may have more or slightly different functionality (that can't be
-> publicly shared until release).
-> 
->> Please explain why Exynos is special that it does not require essential
->> drivers to be selected as built-in. For example why aren't same changes
->> done for Renesas?
-> 
->> Everyone else are working like this. NXP, Renesas, Xilinx, TI, Rockchip,
->> AllWinner. Samsung or Google is not special to receive an exception for
->> this.
-> 
-> Exynos isn't special in this regard.  This applies to any vendor who
-> releases Android images and wishes to be solve all of the issues the
-> GKI project addresses (please read the article above for more about
-> this).
-
-We have then slightly different goals, because you are driven by Android
-release images and this is why you are less interested in NXP and
-Renesas. Only some vendors should receive such changes? No, in upstream
-we are not focusing on any specific distro and there are other uses of
-Exynos (and NXP and Renesas) platforms. Therefore the choice/policy and
-overall design tries to match all vendors, not only some subset
-convenient to Android.
-
-If Android (or some vendor) wants to have exception for a specific
-driver/platform, it must do it in upstream way, by contributing, not by
-changing to match downstream needs while ignoring other users.
-
-Best regards,
-Krzysztof
