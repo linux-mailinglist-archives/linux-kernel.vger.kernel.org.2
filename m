@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98B941DF0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E1141DF12
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351162AbhI3Qbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:31:51 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:29236 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350390AbhI3Qbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:31:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1633019408;
-  x=1664555408;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YKTWABdQZqR7HaqaZXw25w4v3fuWDZ8wcygmkT5L9KE=;
-  b=In0RHO6X0Ljc+WPYCnb+Unb6wlv4tP/HAl9AfldNUHwqK9LVqL8N0Pbk
-   MPmydedDLHiSMtWwf7tsEdBpBYbw2LZXMAMP+lCyayK6ZJWDWUoVFA0qr
-   5q8gEj4+2MQdMWsy7rOsiJB9OaPSKAa2rq1QgYB6G/3Okcmx49dmS57ZV
-   M6AyCYZDqafnXfhL1h1Gu/LOzsARl2W/9D+8n8k+V72X8tQklw8hW10Cc
-   sjhB1REneSRurGl/dyhOj7ZWTOSfSLnm4n6BLKmfAkKNhNCntlqjAWK/R
-   qfJWX9nVU1Cut1lvTf8wZt1q7Mw59qZ6OWn9+uw1KK3i3+t6UXZHJQk6h
-   A==;
-Date:   Thu, 30 Sep 2021 18:30:05 +0200
-From:   Borys Movchan <borysmn@axis.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210930163005.yd4mfqybetorx5f5@lnxborysmn.se.axis.com>
-References: <20210930160241.9691-1-borysmn@axis.com>
+        id S1351377AbhI3QcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:32:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35977 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351345AbhI3QcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:32:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633019426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7/zMdrPeVyZNLTntHruwDpYub+H9qwtzzzSUntktcA=;
+        b=Y3+XlroLA5TtOUcqWUR5haHikw0SJVLqBzWXn5InZ2zgRSGgjZ2tTrBMRs4HcGyGb0AWFM
+        ofLQ+LtiGFkzEOtJgCm/NvDetOHnxxp46whs0VsIoXWO1hKgY8AKWIpvGN0R2qIFzkRu11
+        x/yu/UMVRMAiC+d7an5WpDsYSHJaU28=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-z2r_DDwdMRWSxVzVoPhJUw-1; Thu, 30 Sep 2021 12:30:22 -0400
+X-MC-Unique: z2r_DDwdMRWSxVzVoPhJUw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FA3A18125C0;
+        Thu, 30 Sep 2021 16:30:19 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3A2B1017E3E;
+        Thu, 30 Sep 2021 16:30:18 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:30:17 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
+Message-ID: <YVXmGTo5Uzp44QQq@stefanha-x1.localdomain>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IzEoHzzIxT1o87/+"
 Content-Disposition: inline
-In-Reply-To: <20210930160241.9691-1-borysmn@axis.com>
-User-Agent: NeoMutt/20180716
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail04w.axis.com (10.20.40.10) To se-mail07w.axis.com
- (10.20.40.13)
+In-Reply-To: <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coming back to my change, a quick reminder of the latest questions and some
-updated answers:
 
-> > If detected that the TPM is in the Upgrade or Failure mode, the function
-> > sets TPM_CHIP_FLAG_LIMITED_MODE flag.
->
-> Does this apply for TPM 1.2? Are there differences?
+--IzEoHzzIxT1o87/+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As I mentioned earlier, I am not familiar with TPM 1.2. However, to
-generalize the answer, such a state, like a firmware upgrade does make
-sense on TPM 1.2. From what I know it is performed using different calls
-to TPM but the concept is there.
+On Tue, Sep 28, 2021 at 09:31:34PM -0700, Andy Lutomirski wrote:
+> On Mon, Sep 13, 2021, at 1:01 PM, Sohil Mehta wrote:
+> > User Interrupts Introduction
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> >
+> > User Interrupts (Uintr) is a hardware technology that enables delivering
+> > interrupts directly to user space.
+> >
+> > Today, virtually all communication across privilege boundaries happens =
+by going
+> > through the kernel. These include signals, pipes, remote procedure call=
+s and
+> > hardware interrupt based notifications. User interrupts provide the fou=
+ndation
+> > for more efficient (low latency and low CPU utilization) versions of th=
+ese
+> > common operations by avoiding transitions through the kernel.
+> >
+>=20
+> ...
+>=20
+> I spent some time reviewing the docs (ISE) and contemplating how this all=
+ fits together, and I have a high level question:
+>=20
+> Can someone give an example of a realistic workload that would benefit fr=
+om SENDUIPI and precisely how it would use SENDUIPI?  Or an example of a re=
+alistic workload that would benefit from hypothetical device-initiated user=
+ interrupts and how it would use them?  I'm having trouble imagining someth=
+ing that wouldn't work as well or better by simply polling, at least on DMA=
+-coherent architectures like x86.
 
-> Maybe for consistency call it TPM_CHIP_FLAG_UPGRADE_MODE? It makes easier
-> to "connect dots" later on (has probably something to do TPM_RC_UPGRADE).
+I was wondering the same thing. One thing came to mind:
 
-Reconsidered and implemented appropriate change. See the patch.
+An application that wants to be *interrupted* from what it's doing
+rather than waiting until the next polling point. For example,
+applications that are CPU-intensive and have green threads. I can't name
+a real application like this though :P.
 
-> > -     if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> > +     if (chip->flags & TPM_CHIP_FLAG_TPM2 && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)) {
->
-> You cannot rely on validity of TPM_CHIP_FLAG_TPM2, as tpm_tis driver
-> uses a TPM command to probe the TPM version.
+Stefan
 
-I never intended to relay on TPM_CHIP_FLAG_TPM2. In this case the point
-to avoid calling cdev_device_add if the chip is not TPM2 or is in
-firmware Upgrade/Recovery mode.
+--IzEoHzzIxT1o87/+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> >        rc = tpm2_get_cc_attrs_tbl(chip);
-> > +     if (rc) {
->
-> Why all rc's apply?
+-----BEGIN PGP SIGNATURE-----
 
-The standard doesn't specify what RC should be returned if TPM is in
-Recovery mode. What the standard agrees on is that the underlying call
-will fail.
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmFV5hkACgkQnKSrs4Gr
+c8gkYAf8DF5mZAyvdq7MYNw7V3LLjLXQA/PJX65e9s/VzX1DOImgxepjEQfAkQUT
+/IncDgMu0mkE0+jU/ZwEngFzI77d5uDzt/xV8cVHjqfE7vCy8SASNg4HFijkl7aF
+aS+vZ2XK89S28S8ocQ/d7GPE80E+IEuxjInzASwimHFCmFtW8U+ka4CmIxbsw6e1
+1ahYfTSnKrwSR2qSzW7cwU4WZFibG0TR0Lgz/oBm9dQuqu7IArWmSTNRKAQPJtqU
+Q+TtjQh/s1Gvvzq8gvdBB6/2mWVE4fUfwatayUBb3HdcUt+5/J32kT/vjeY9HSZL
+PkwYaTLC72ly4H9nhy2lYDD7XbfgFQ==
+=O0C0
+-----END PGP SIGNATURE-----
 
-> > +             dev_info(&chip->dev, "TPM is in failure mode, functionality limited\n");
->
-> Here is again a different name for the same thing (different than
-> TPM_CHIP_FLAG_LIMITED_MODE).
+--IzEoHzzIxT1o87/+--
 
-The logic behind this check goes like that: Assume that if we reached
-this point TPM is not in Upgrade mode. Although, it can still be in
-Recovery mode. If the tpm2_get_cc_attrs_tbl() call fails, then my
-assumption is that TPM requires firmware recovery.
-
-This mode is introduced to handle situations when TPM firmware Upgrade
-failed. In such a case TPM allows to flash only original firmware to bring
-the functionality back. There is a predefined list of calls to which TPM
-is going to answer in this mode. Responses to other calls are vendor-dependent.
-
-Another assumption here is that if for some reason there is a communication
-error occurred at this point it will be caught here. Any better ideas
-on how to handle this are welcome.
-
---
-Kind regards,
-Borys
