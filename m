@@ -2,129 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4069941DFF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A1F41E015
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352462AbhI3RTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348476AbhI3RTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:19:33 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B78F66137A;
-        Thu, 30 Sep 2021 17:17:45 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 18:21:40 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com, Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH v17 0/9] Introduce the Counter character device
- interface
-Message-ID: <20210930182140.0475e772@jic23-huawei>
-In-Reply-To: <cover.1632884256.git.vilhelm.gray@gmail.com>
-References: <cover.1632884256.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1352579AbhI3RYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352565AbhI3RYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:24:46 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF1DC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:23:02 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id e15so28421928lfr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H8Db515P2u3wr8eXpxbK+mdL07rAEGHZYTKLOrQ0Ezw=;
+        b=BLudoU1R5T/CW89tzCG/kuhg5sdEQS1uJDH9zxbhJO16UL5oDpz87cOexihq6kA0GQ
+         sfvfHJEXVSEKxpc4dG6OIUZ+biW+n9i/NjdbEc4QgrozJY5506juVmjJfXLkX6ZD6fh9
+         D3o7GNWJEvwNHDxhF694ejAjzK1CpMMUJxxDWz7MxszI5XZPKG7F9YhYU/jzaA3hIcvJ
+         AFbLyOIkHHZfNuL+z1mlniTqeo5VhnJfGAye/bZlcP43dq8u0O+K5qj+QHJA4e60VGIb
+         f5CBFez0yMwbHYeNzDgpiSzFFPM4+N58pVNaALuRu1BkxWOq5xqnJlLdkOzUsfCw+ryt
+         ODgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H8Db515P2u3wr8eXpxbK+mdL07rAEGHZYTKLOrQ0Ezw=;
+        b=yrbLrzbD5pLB6hvINqGAhqNTQ6RYfrv67T1jzxbY70Hw8n1pj+uBbxZjCssvTcETZJ
+         HDx0UHPoSwFVQhNqYjFhgMHRY8ViAduInRwUF3cD6YILKN5VO8H4uK85ZOYtTp8pSRsS
+         ogHelnxqF/ogoqCVyx8oSumfbFjDaP+R7qtwPGm/CzPB3MqaUZGzhgLy57H9C76/jN0x
+         N230WMeroCGmACJ8vxUZsxG0Hp+igyODDY8CDvib0m/xwxQNY0+nfUghdjOnTAB1Tb02
+         TNf0zGf7Ax8n3aK7VQLl7k0ZtbEMaATNiaMlOGGoGKw9znosVVwEiwC/IX0Xh3wSWbGV
+         tufw==
+X-Gm-Message-State: AOAM531lUZ5U7ovGvZwq4ugNejTpyphB1LAwv7e9JZVlG92ty5bHh/aq
+        lM0c39FA2Fg2M8gXUUiYVzjojmm1YdDE9nB3grXw1w==
+X-Google-Smtp-Source: ABdhPJyvjrJEB0rRbVB9O+YguaIBi4LthEutwQhoaWse0IUnkg0n/FYjG3RqA3+pw+y/Sq3ipUz9tZwJgyVXblJ7cmQ=
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr393783lfg.550.1633022580476;
+ Thu, 30 Sep 2021 10:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210930162302.2344542-1-nathan@kernel.org> <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
+In-Reply-To: <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 30 Sep 2021 10:22:49 -0700
+Message-ID: <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        "Koenig, Christian" <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 12:15:57 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+On Thu, Sep 30, 2021 at 10:10 AM Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> Applied.  Thanks!
+>
+> Alex
+>
+> On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > Clang warns:
 
-> Changes in v17:
->  - A couple minor improvements to documentation from review suggestions
->  - chrdev_lock redeclared as atomic_t; BITMAP was not necessary because
->    chrdev_lock is a single flag
->  - test_and_set_bit_lock(), clear_bit_unlock(), and clear_bit(),
->    replaced respectively with atomic_add_unless(), atomic_dec(), and
->    atomic_set()
->  - counter_comp_read_is_equal() and counter_comp_read_is_set() macros
->    implemented in order to properly test counter_comp structures' read
->    callback states
->  - counter_sysfs_add() call performed before counter_chrdev_add() call
->    in counter_register() in order to match unwinding sequence
->  - for-loop utilized in counter-example.c in order to simplify code
->  - counter-example.c returns 1 on error instead of -errno; errno may be
->    modified after a subsequent library call so we can't depend on it
-> 
-> For convenience, this patchset is also available on my personal git
-> repo: https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v17
-> 
-> A Counter character device interface is introduced that allows Counter
-> events and associated data to be read() by userspace; the
-> events_configure() and watch_validate() driver callbacks are introduced
-> to support Counter events; and IRQ support is added to the
-> 104-QUAD-8 driver, serving as an example of how to support the new
-> Counter events functionality.
-
-Applied to the togreg branch of iio.git and pushed out as testing for
-0-day to see if we missed anything!
-
-I couldn't resist hitting lore.kernel.org for some archaeology on whether
-this broke records for a series on the IIO list (i.e. one I'd actually
-reviewed :)
-
-It has the dubious honour of being the only series to reach v17 that has
-been posted to linux-iio@vger.kernel.org as far as records go back.
-
-Peter Rosin's MUX series got to v15 and that seems to be the previous
-record holder joint with an mxs-lradc set from a while back.
-
-Perhaps not a record you wanted to get, but it shows impressive grit
-and determination!
-
-Jonathan
-
-> 
-> William Breathitt Gray (9):
->   counter: Move counter enums to uapi header
->   counter: Add character device interface
->   docs: counter: Document character device interface
->   tools/counter: Create Counter tools
->   counter: Implement signalZ_action_component_id sysfs attribute
->   counter: Implement *_component_id sysfs attributes
->   counter: Implement events_queue_size sysfs attribute
->   counter: 104-quad-8: Replace mutex with spinlock
->   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> 
->  Documentation/ABI/testing/sysfs-bus-counter   |  29 +
->  Documentation/driver-api/generic-counter.rst  | 177 ++++--
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  MAINTAINERS                                   |   2 +
->  drivers/counter/104-quad-8.c                  | 256 ++++++--
->  drivers/counter/Kconfig                       |   6 +-
->  drivers/counter/Makefile                      |   2 +-
->  drivers/counter/counter-chrdev.c              | 578 ++++++++++++++++++
->  drivers/counter/counter-chrdev.h              |  14 +
->  drivers/counter/counter-core.c                |  56 +-
->  drivers/counter/counter-sysfs.c               | 123 +++-
->  include/linux/counter.h                       |  98 +--
->  include/uapi/linux/counter.h                  | 154 +++++
->  tools/Makefile                                |  13 +-
->  tools/counter/Build                           |   1 +
->  tools/counter/Makefile                        |  53 ++
->  tools/counter/counter_example.c               |  92 +++
->  17 files changed, 1509 insertions(+), 146 deletions(-)
->  create mode 100644 drivers/counter/counter-chrdev.c
->  create mode 100644 drivers/counter/counter-chrdev.h
->  create mode 100644 include/uapi/linux/counter.h
->  create mode 100644 tools/counter/Build
->  create mode 100644 tools/counter/Makefile
->  create mode 100644 tools/counter/counter_example.c
-> 
-> 
-> base-commit: a5ae0cfd53aaf031c2e9ba048281776fa67047c2
-
+Any chance AMDGPU folks can look into adding clang to the CI roster?
+-- 
+Thanks,
+~Nick Desaulniers
