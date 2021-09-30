@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E95841E238
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5357541E23C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344566AbhI3T1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:27:23 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15139 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhI3T1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:27:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="288924680"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="288924680"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:25:38 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="438153571"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.252.134.229]) ([10.252.134.229])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:25:38 -0700
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065953-mutt-send-email-mst@kernel.org>
- <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <ecba96f4-3675-608f-b8ac-6f461da76a63@linux.intel.com>
-Date:   Thu, 30 Sep 2021 12:25:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1347272AbhI3T22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:28:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27024 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhI3T21 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:28:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633030003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=84aioMVzye4mu3+jKsp5Lz9dVTyI5BIn8daf8EFsh/I=;
+        b=BQq+bC0hpp9fUdAEgXk60bvNNuiFjLty5D+AgoGZrDRK9j9gj701BC6VSqE4phOzfZkuk6
+        3jgNm77XTZMOkG4LXR80W410WmVp3HiEaCmS5TvI6AmiNlpkTuOgLZMecndOFEC22h72L5
+        gnzG5A92Udn7kiHqy6Oh9PcqRBBdWzc=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-tDseWlyqOKmnMGqoe6vHUA-1; Thu, 30 Sep 2021 15:26:42 -0400
+X-MC-Unique: tDseWlyqOKmnMGqoe6vHUA-1
+Received: by mail-oi1-f197.google.com with SMTP id o22-20020a05680803d600b002763c423af6so4886429oie.20
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:26:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=84aioMVzye4mu3+jKsp5Lz9dVTyI5BIn8daf8EFsh/I=;
+        b=NEqQOz6x2Iebuod6c0hsfuonTXwtZwSOOx9bwB7BYndLglOYfxx4Binfbkr22S6Rf4
+         eaDWlUQLsjy5cH20C0jMwlnJAg5UnUjzmml21LJ3yJxQRW9U+cKyAQwlzBC7YMB8OBsQ
+         gCIIVcSVT3w5JaNxithNshNpNRjkMS1hfyjZnsUxjkVnhz0h8XjsaKmWDQb4Vrbkr+fZ
+         6zQoKQzLT3K5qDE2WlWWe1WWaOqSchmgktrUX9IIKMVUgtFuYOFTORchguVwtihdCLKk
+         iaRcbXcvAGh34ZUy2hxRLSAs7MOJz50VBBgiYTxphc+3BD78Q3VIlarmuMHj6ko/mk9t
+         7nDA==
+X-Gm-Message-State: AOAM532lYj6r4MhpKVn4phfDX9+xVUwV48cPP8oWXwod4NzdmQDXYdE/
+        N+tX5VPdD3xor+WgxM1auj75nWiJTuuxc4hupJ9ghOf1TfRi75VdnuhOHl8wQjuUCkG3+zJ6KHg
+        4HY4Fpy6EhlFYT8xs5rF6VBPc
+X-Received: by 2002:a4a:b282:: with SMTP id k2mr6154860ooo.11.1633030001820;
+        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzul+KG+HIrMR3r/kdHh8q4z01ZL0Yv343OQE1gnyfoE9GjNSC5C76UwoXDsn37+QmYhDN5kQ==
+X-Received: by 2002:a4a:b282:: with SMTP id k2mr6154840ooo.11.1633030001550;
+        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id x4sm748421otq.25.2021.09.30.12.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 12:26:38 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org, x86@kernel.org, live-patching@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
+ __entry_tramp_text_end
+Message-ID: <20210930192638.xwemcsohivoynwx3@treble>
+References: <20210927170122.GA9201@C02TD0UTHF1T.local>
+ <20210927171812.GB9201@C02TD0UTHF1T.local>
+ <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
+ <20210928103543.GF1924@C02TD0UTHF1T.local>
+ <20210929013637.bcarm56e4mqo3ndt@treble>
+ <YVQYQzP/vqNWm/hO@hirez.programming.kicks-ass.net>
+ <20210929085035.GA33284@C02TD0UTHF1T.local>
+ <YVQ5F9aT7oSEKenh@hirez.programming.kicks-ass.net>
+ <20210929103730.GC33284@C02TD0UTHF1T.local>
+ <YVRRWzXqhMIpwelm@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVRRWzXqhMIpwelm@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 01:43:23PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 29, 2021 at 11:37:30AM +0100, Mark Rutland wrote:
+> 
+> > > This is because _ASM_EXTABLE only generates data for another section.
+> > > There doesn't need to be code continuity between these two asm
+> > > statements.
+> > 
+> > I think you've missed my point. It doesn't matter that the
+> > asm_volatile_goto() doesn't contain code, and this is solely about the
+> > *state* expected at entry/exit from each asm block being different.
+> 
+> Urgh.. indeed :/
 
-On 9/30/2021 8:18 AM, Kuppuswamy, Sathyanarayanan wrote:
->
->
-> On 9/30/21 6:36 AM, Dan Williams wrote:
->>> And in particular, not all virtio drivers are hardened -
->>> I think at this point blk and scsi drivers have been hardened - so
->>> treating them all the same looks wrong.
->> My understanding was that they have been audited, Sathya?
->
-> Yes, AFAIK, it has been audited. Andi also submitted some patches
-> related to it. Andi, can you confirm.
->
-> We also authorize the virtio at PCI ID level. And currently we allow
-> console, block and net virtio PCI devices.
->
-> { PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_NET) },
-> { PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_BLOCK) },
-> { PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_CONSOLE) },
->
-The only drivers that are being audited and fuzzed are these three 
-virtio drivers (in addition to some other x86 code outside the driver model)
+So much for that idea :-/
 
--Andi
+To fix the issue of the wrong .fixup code symbol names getting printed,
+we could (as Mark suggested) add a '__fixup_text_start' symbol at the
+start of the .fixup section.  And then remove all other symbols in the
+.fixup section.
+
+For x86, that means removing the kvm_fastop_exception symbol and a few
+others.  That way it's all anonymous code, displayed by the kernel as
+"__fixup_text_start+0x1234".  Which isn't all that useful, but still
+better than printing the wrong symbol.
+
+But there's still a bigger problem: the function with the faulting
+instruction doesn't get reported in the stack trace.
+
+For example, in the up-thread bug report, __d_lookup() bug report
+doesn't get printed, even though its anonymous .fixup code is running in
+the context of the function and will be branching back to it shortly.
+
+Even worse, this means livepatch is broken, because if for example
+__d_lookup()'s .fixup code gets preempted, __d_lookup() can get skipped
+by a reliable stack trace.
+
+So we may need to get rid of .fixup altogether.  Especially for arches
+which support livepatch.
+
+We can replace some of the custom .fixup handlers with generic handlers
+like x86 does, which do the fixup work in exception context.  This
+generally works better for more generic work like putting an error code
+in a certain register and resuming execution at the subsequent
+instruction.
+
+However a lot of the .fixup code is rather custom and doesn't
+necessarily work well with that model.
+
+In such cases we could just move the .fixup code into the function
+(inline for older compilers; out-of-line for compilers that support
+CC_HAS_ASM_GOTO_OUTPUT).
+
+Alternatively we could convert each .fixup code fragment into a proper
+function which returns to a specified resume point in the function, and
+then have the exception handler emulate a call to it like we do with
+int3_emulate_call().
+
+-- 
+Josh
 
