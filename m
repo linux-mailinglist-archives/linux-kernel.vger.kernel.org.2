@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FF641DDCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0923041DDCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345719AbhI3Pnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:43:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345133AbhI3Pns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:43:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6903E61361;
-        Thu, 30 Sep 2021 15:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633016525;
-        bh=Ld6gmKgj4ZkpFLxu/49x5Bat/dDZqy1PdYTRqKMcEmA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jlXDpf2+6u93jQCh2igjEF8goUz2IeBzFfBCaMWtFFxkZjzaF6vMhu5iyclcS2D9v
-         HgWr48obLMbc1RwdspGfSjMZwkf1KYlYnCjo/JsLTD3Bi5Cm++W0LfBVdB8ro8mCU9
-         kSM4wFHPbJnX7jdweMj71nqIa7JClCr0nmAoNJBAlqwfpKpG6uEBhUA3hieCETQpQ+
-         Nb2qg3A+Lh9vp3M5KF4NBR6SvhMRuP3mpfj7ca7qXSqiEM0BJTOZgixsB/pWrJV8KL
-         7pEmG1CMnW/2Yy1Axg8lY3ZaSUmjZ7pL+4wslkhFveEPYTCenBKtBrwgVFOEAYcumK
-         rRe9dhWEx714w==
-Received: by pali.im (Postfix)
-        id E29DEE79; Thu, 30 Sep 2021 17:42:02 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 17:42:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-Message-ID: <20210930154202.cvw3it3edv7pmqtb@pali>
-References: <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
- <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
- <YS/rn8b0O3FPBbtm@google.com>
- <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
- <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
- <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
- <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
- <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
- <20210923202231.t2zjoejpxrbbe5hc@pali>
- <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
+        id S1345756AbhI3PoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:44:16 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:31909 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345053AbhI3PoP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:44:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633016553; x=1664552553;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=n1AiGLe1CHr9FbYW3RUlxBigQhawVhWX5kiq5823Vvg=;
+  b=HXZ4YaD0MEZd6+Dsb8EQkvMzEaLv710zbUYFM4fzbj2LZixtBKcF1TEs
+   HPUAQzB/OOkgwrGCT74Ay2lmhnANFCMIGn8aC9lgOIUBcSMLzmEm4C+dI
+   EsHaB8uQzY26bA7wPYwL/dWQuc2b8/mmKZMdLT81Fc+a8D0vYcTILGeN0
+   eb+Rt2Wplk7L93e+GWVHm+bs8B74hh3+Jb8piSRchwYE+JCd+KSr9IKkC
+   FkjajeAu3wmeNP9Yw5V1R1iG7xZf4cmfNwn70IoUoan7nTVT7E3uPz8Xb
+   a070/55qbMmE3AUPM3pRpNm4BF8vrVZu2QlIkJrSOL7fE7WzMDq5g84YS
+   A==;
+IronPort-SDR: sxtetZVLS7GDqe0LyHTrxGvi6x8fRgXNsnNGO9Ifk17USK71NnhVB1c71XGaebuWX8Umc/ZuzS
+ Y2ix+FsYAtNoF9NacN6we316wMmw+cZGHjjC3l5BkNFghoWquXV8H4q7ZaXjqGf8pP25UNZj8n
+ 6ESy297qOe4CR4rVLzSDhj0ORFq+ztO6tX9HHaXNGBf6scm5QMaMmXk+WnTv0n9681UWwFR+79
+ G0LbGMfmlTjIXKJZZ+nH9b2Q6l/3eZ01Mx+TxET1/deyWOpSKthU1bLwH7Og0XfGOtTHMlLMfI
+ 5dFuHyKLb7GL25G0nKVCFtoS
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="146284142"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 08:42:31 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 30 Sep 2021 08:42:31 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 08:42:29 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/3] ARM: at91: pm: fixes
+Date:   Thu, 30 Sep 2021 18:42:16 +0300
+Message-ID: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 30 September 2021 17:38:43 Jonas Dreßler wrote:
-> On 9/23/21 10:22 PM, Pali Rohár wrote:
-> > On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
-> > > On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
-> > > > On 9/22/21 2:50 PM, Jonas Dreßler wrote:
-> > > 
-> > > ...
-> > > 
-> > > > - Just calling mwifiex_write_reg() once and then blocking until the card
-> > > > wakes up using my delay-loop doesn't fix the issue, it's actually
-> > > > writing multiple times that fixes the issue
-> > > > 
-> > > > These observations sound a lot like writes (and even reads) are actually
-> > > > being dropped, don't they?
-> > > 
-> > > It sounds like you're writing into a not ready (fully powered on) device.
-> > 
-> > This reminds me a discussion with Bjorn about CRS response returned
-> > after firmware crash / reset when device is not ready yet:
-> > https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
-> > 
-> > Could not be this similar issue? You could check it via reading
-> > PCI_VENDOR_ID register from config space. And if it is not valid value
-> > then card is not really ready yet.
-> > 
-> > > To check this, try to put a busy loop for reading and check the value
-> > > till it gets 0.
-> > > 
-> > > Something like
-> > > 
-> > >    unsigned int count = 1000;
-> > > 
-> > >    do {
-> > >      if (mwifiex_read_reg(...) == 0)
-> > >        break;
-> > >    } while (--count);
-> > > 
-> > > 
-> > > -- 
-> > > With Best Regards,
-> > > Andy Shevchenko
-> 
-> I've tried both reading PCI_VENDOR_ID and the firmware status using a busy
-> loop now, but sadly none of them worked. It looks like the card always
-> replies with the correct values even though it sometimes won't wake up after
-> that.
-> 
-> I do have one new observation though, although I've no clue what could be
-> happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we can
-> "predict" the wakeup failure because exactly one (usually around the 20th)
-> of those 1000 reads will fail.
+Hi,
 
-What does "fail" means here?
+The following series adds fixes for AT91 platform power management 
+code.
 
-> Maybe the firmware actually tries to wake up,
-> encounters an error somewhere in its wakeup routines and then goes down a
-> special failure code path. That code path keeps the cards CPU so busy that
-> at some point a PCI_VENDOR_ID request times out?
-> 
-> Or well, maybe the card actually wakes up fine, but we don't receive the
-> interrupt on our end, so many possibilities...
+Thank you,
+Claudiu Beznea
+
+Changes in v2:
+- removed fixes tag from patch 2/3 and edited commit description
+- s/TBL/TLB/g in patch 3/3
+
+Claudiu Beznea (3):
+  ARM: dts: at91: sama7g5ek: add suspend voltage for ddr3l rail
+  ARM: at91: pm: group constants and addresses loading
+  ARM: at91: pm: preload base address of controllers in tlb
+
+ arch/arm/boot/dts/at91-sama7g5ek.dts |  2 ++
+ arch/arm/mach-at91/pm_suspend.S      | 42 ++++++++++++++++++++++------
+ 2 files changed, 35 insertions(+), 9 deletions(-)
+
+-- 
+2.25.1
+
