@@ -2,175 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B741DE5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49FC41DE8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348106AbhI3QHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348015AbhI3QHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:07:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 240B5613A9;
-        Thu, 30 Sep 2021 16:05:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633017918;
-        bh=2NKb+EOcixlHXFwCusyqun807YKMXY+3F2kog04gvrQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=TfG/xEZvsCG8dTUXUGC22WhnRq7LMObNMAKOQoD03HkKVAr4QEwMZG6/QvxXthzk1
-         5kGBnL+pCoAuISPPxmRSCrd9k+aC/XPEBGq/y6C+0oNrgNfmrWxmJABxGkplcwheXf
-         bbLlrO3Ytnbq8lEBZUTv0KfjxSYvY7eA/HEdzby3RR6vXBU7HMR57+od60aPEKBLhD
-         6hpb4w7GfrjN43CTLJloNi4RD/9eC8yv/1LJZmHq/QVn3/6rxwtUi5PODDd65D0HDi
-         7ICl5vGOext0eGotriNLD6VtdykPzUvjKrckGuRg81AyEm0RPjkrLhFQ/wra0qZF4F
-         jef70G2dvTSWw==
-Date:   Thu, 30 Sep 2021 11:05:16 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 2/4] PCI/ASPM: Remove struct
- pcie_link_state.clkpm_capable
-Message-ID: <20210930160516.GA887797@bhelgaas>
+        id S1349182AbhI3QPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:15:16 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42636 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1349136AbhI3QPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:15:05 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UDFMr6004359;
+        Thu, 30 Sep 2021 18:13:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=WA2LajeF8VZdGihemfmP2b2B7HQnkua+zsIiBEQnIes=;
+ b=jqCwMr8hAUj3QE0DQ/lUL/U+cP3lJQ0ZpoEDXf/glIsUxSueryOwxbypgVlcZPoMxYi1
+ cJQsVNEsurgQ+PGYqC/JHkBGurU/lK1bds2p6l9Suiw8fO79K5SLMdiP+rcfPRKX7Tz4
+ 8im7SSjQdCYjOPIXEPdQEdBz6OE7U8zL6bW5fBzUKg5guI/DE3ruuk5kTOJiwP+t8Tg2
+ x4Zm352KZ6Kp9sFX+3DwkBKiq66krZ+HlPRO3d6teICQ3Rx0sZ1ySfbxZWrQJoBqWgsq
+ FLzz/cdEqMIItXvVeDU50DDEKJ75bfwISVTIwt9l9ihVlZqz559PX1G1Sy+WYDV2ljNo Rw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bddy9rymu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 18:13:07 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0952E10002A;
+        Thu, 30 Sep 2021 18:13:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EF521238687;
+        Thu, 30 Sep 2021 18:13:04 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep 2021 18:13:04
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        <arnaud.pouliquen@foss.st.com>, Suman Anna <s-anna@ti.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>
+Subject: [PATCH v8 0/2] Add rpmsg tty driver
+Date:   Thu, 30 Sep 2021 18:05:18 +0200
+Message-ID: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929004400.25717-3-refactormyself@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-30_05,2021-09-30_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:43:58AM +0200, Saheed O. Bolarinwa wrote:
-> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
-> 
-> The clkpm_capable member of the struct pcie_link_state indicates
-> if the device is Clock PM capable. This can be calculated when
-> it is needed.
+This new revision reopens subject started a long time ago. Previous revision discussions
+available here [1]. 
 
-... because it comes from Link Capabilities, a read-only register.
+This patchset introduces a TTY console on top of the RPMsg framework which
+enables the following use cases:
+- Provide a console to communicate easily with the remote processor application.
+- Provide an interface to get the remote processor log traces without ring
+  buffer limitation.
+- Ease the migration from MPU + MCU processors to multi core processors
+  (MPU and MCU integrated in one processor) by offering a virtual serial link.
 
-> This patch:
->   - removes clkpm_capable from struct pcie_link_state
->   - moves the calculation of clkpm_capable into
->     pcie_is_clkpm_capable()
->   - replaces references to clkpm_capable with a call to
->     pcie_is_clkpm_capable()
+An alternative of this proposed solution would consist in using the virtio
+console:
+The drawback with that solution is that it requires a specific virtio buffer
+(in addition to the one already used for RPMsg) which does not fit with remote
+processors with little memory. The proposed solution allows to multiplex the
+console with the other rpmsg services, optimizing the memory.
 
-No need to say "this patch"; commit logs *always* refer to "this
-patch".  Reword in imperative sentence structure, as if giving
-commands, e.g.,
+The first patch adds an API to the rpmsg framework ('get max transmission unit')
+and the second one is the rpmsg tty driver itself.
 
-  Remove pcie_link_state.clkpm_capable and replace it with
-  pcie_is_clkpm_capable(), which computes the value from Link
-  Capabilities as needed.
+Update vs previous revision [1]:
+  - simplify the patch by removing the control part(CTS) to keep only the stream part.
+  - rebase on kernel V5.15-rc1
+  - take into account v7 review comments.
 
-> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
-> ---
->  drivers/pci/pcie/aspm.c | 39 ++++++++++++++++++++++-----------------
->  1 file changed, 22 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index c23da9a4e2fb..9e65da9a22dd 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -61,7 +61,6 @@ struct pcie_link_state {
->  	u32 aspm_disable:7;		/* Disabled ASPM state */
->  
->  	/* Clock PM state */
-> -	u32 clkpm_capable:1;		/* Clock PM capable? */
->  	u32 clkpm_enabled:1;		/* Current Clock PM state */
->  	u32 clkpm_disable:1;		/* Clock PM disabled */
->  
-> @@ -146,6 +145,25 @@ static int pcie_get_clkpm_state(struct pci_dev *pdev)
->  	return enabled;
->  }
->  
-> +static int pcie_is_clkpm_capable(struct pci_dev *pdev)
-> +{
-> +	int capable = 1;
-> +	u32 reg32;
-> +	struct pci_dev *child;
-> +	struct pci_bus *linkbus = pdev->subordinate;
-> +
-> +	/* All functions should have the same cap state, take the worst */
-> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
-> +		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
-> +		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
-> +			capable = 0;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return capable;
+Notice that I kept the Acked-by and Reviewed-by in "rpmsg: core: add API to get MTU" commit
+even though I'm not sure if it's still relevant after such a long period...
 
-  static bool pcie_is_clkpm_capable()
-  {
-    list_for_each_entry(child, &linkbus->devices, bus_list) {
-      pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &cap);
-      if (!(cap & PCI_EXP_LNKCAP_CLKPM))
-	return false;
-    }
-    return true;
-  }
+[1] https://lkml.org/lkml/2020/3/24/1394 
 
-> +}
-> +
->  static int policy_to_clkpm_state(struct pcie_link_state *link)
->  {
->  	switch (aspm_policy) {
-> @@ -177,11 +195,12 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
->  
->  static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  {
-> +	int capable = pcie_is_clkpm_capable(link->pdev);
->  	/*
->  	 * Don't enable Clock PM if the link is not Clock PM capable
->  	 * or Clock PM is disabled
->  	 */
-> -	if (!link->clkpm_capable || link->clkpm_disable)
-> +	if (!capable || link->clkpm_disable)
+Arnaud Pouliquen (2):
+  rpmsg: core: add API to get MTU
+  tty: add rpmsg driver
 
-I think I'd just call pcie_is_clkpm_capable() directly in the "if"
-condition to avoid the local variable, as you did below in
-aspm_ctrl_attrs_are_visible().
+ Documentation/serial/tty_rpmsg.rst |  15 ++
+ drivers/rpmsg/rpmsg_core.c         |  21 +++
+ drivers/rpmsg/rpmsg_internal.h     |   2 +
+ drivers/rpmsg/virtio_rpmsg_bus.c   |  10 ++
+ drivers/tty/Kconfig                |   9 +
+ drivers/tty/Makefile               |   1 +
+ drivers/tty/rpmsg_tty.c            | 275 +++++++++++++++++++++++++++++
+ include/linux/rpmsg.h              |  10 ++
+ 8 files changed, 343 insertions(+)
+ create mode 100644 Documentation/serial/tty_rpmsg.rst
+ create mode 100644 drivers/tty/rpmsg_tty.c
 
->  		enable = 0;
->  	/* Need nothing if the specified equals to current state */
->  	if (link->clkpm_enabled == enable)
-> @@ -191,21 +210,7 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  
->  static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
->  {
-> -	int capable = 1;
-> -	u32 reg32;
-> -	struct pci_dev *child;
-> -	struct pci_bus *linkbus = link->pdev->subordinate;
-> -
-> -	/* All functions should have the same cap and state, take the worst */
-> -	list_for_each_entry(child, &linkbus->devices, bus_list) {
-> -		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
-> -		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
-> -			capable = 0;
-> -			break;
-> -		}
-> -	}
->  	link->clkpm_enabled = pcie_get_clkpm_state(link->pdev);
-> -	link->clkpm_capable = capable;
+-- 
+2.17.1
 
-This makes good sense to me because PCI_EXP_LNKCAP_CLKPM is read-only
-and there's no need to cache the boot-time value because we can always
-recompute clkpm_capable if we need it.
-
->  	link->clkpm_disable = blacklist ? 1 : 0;
->  }
->  
-> @@ -1346,7 +1351,7 @@ static umode_t aspm_ctrl_attrs_are_visible(struct kobject *kobj,
->  		return 0;
->  
->  	if (n == 0)
-> -		return link->clkpm_capable ? a->mode : 0;
-> +		return pcie_is_clkpm_capable(link->pdev) ? a->mode : 0;
->  
->  	return link->aspm_capable & aspm_state_map[n - 1] ? a->mode : 0;
->  }
-> -- 
-> 2.20.1
-> 
