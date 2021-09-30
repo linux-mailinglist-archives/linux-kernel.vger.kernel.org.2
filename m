@@ -2,229 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F141DAAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D348341DAB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350165AbhI3NJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:09:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41664 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351311AbhI3NJa (ORCPT
+        id S1350717AbhI3NKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:10:19 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45230
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350508AbhI3NKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:09:30 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 30 Sep 2021 09:10:12 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6B654203BB;
-        Thu, 30 Sep 2021 13:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633007266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i1SW8NPZGg1GriXI8CfQXVexUlt3KJF4BcMKC51Kwak=;
-        b=LPlYtfdJpzZoWGEb9OpP3I+Ro64B6sDmaWTwNzu+WURecbGDciVR+wilIgJJT0FcNfWA0b
-        QkqhidCcc22ktXKB6zBhOlcDjxvHZJaLkGBvb0gyZp/XHrLod0MDWsz/Pjenue+MJHQSlC
-        6USfxJ0g+eShB767YAxj/m6iTzNMHzI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEA2613AF5;
-        Thu, 30 Sep 2021 13:07:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DesOM6G2VWG1VAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 30 Sep 2021 13:07:45 +0000
-Subject: Re: [PATCH v2 09/10] xen-blkfront: add error handling support for
- add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        colyli@suse.de, kent.overstreet@gmail.com, kbusch@kernel.org,
-        sagi@grimberg.me, vishal.l.verma@intel.com,
-        dan.j.williams@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
-        boris.ostrovsky@oracle.com, sstabellini@kernel.org,
-        minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org
-Cc:     xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210927220039.1064193-1-mcgrof@kernel.org>
- <20210927220039.1064193-10-mcgrof@kernel.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <50f5fcbe-fb34-1cb8-1965-dd3bfd7e1f12@suse.com>
-Date:   Thu, 30 Sep 2021 15:07:44 +0200
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8E428405FA
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633007306;
+        bh=hUl4AzMPgOLZrORvQmrSxH7LjjpDiFvnLVFli7UcmE4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=g4blcrIOznhYm3kComtzSMOi5fPys2jYnfW2R4L0wO9PXcI39EC0bxATKQDG37A5x
+         qN4gSwZ7l9qfqXLc66LsW9+UobDBo/JCVe/bNbk+1erwG53MJ6cd8EtHpG43bfzIhj
+         zXPPeYziqkFZXcHzfar418q/ibqxB8cU7jSdph0Wjcnnke/qcz0kmZl/Z9fVRpZyps
+         VEkRnjPv6fwQuR+SB9K5oHuUClr3t/w28/KkOgnaQr6xzCrfdbFMOggxiysgePjJNu
+         B2X4L+1gaO5kh04iWXhzJE89ScecsNzW3qiuev/71dyvd/Qf0HL7s1BxtneEQLh28n
+         u122ga0O8ho0w==
+Received: by mail-lf1-f72.google.com with SMTP id n22-20020a0565120ad600b003fcc09af59fso5545621lfu.21
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:08:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hUl4AzMPgOLZrORvQmrSxH7LjjpDiFvnLVFli7UcmE4=;
+        b=pWQvPyccFjDBIGs7ieCbQ0/lvdLOpwaphAfeKTd5vZ3AnqeNX0cURFXkq43sB25u+l
+         Q/ZPdbHGmewYSl7C/2XPcIKRKS7W6gCSjmMBeTGd1G2EOn6faeOWbFJtxfpoS3/BIK0s
+         4R4eziQgGFdIW0mbucftepSJccrgTBid6utxYliTqC+ZZCXNir/iewdOc7o2DgLDd/iw
+         xboGiTxAMKJnYrDDTQFEXf87Qg/WWqHrXS4CzAeUg3A9TDGsIGv6wjFu5DkaWeEloRaL
+         6ApC8bUw6lPmKrM13gIM8Es6lAF6wN5UhI6o+ZZZYPXPnA1l/wdTSQLnxOyLBnI/FrIu
+         5xaQ==
+X-Gm-Message-State: AOAM530bqfHYX1YMDO+UMdytF/qmzB9Cmp16qLDPw+6B+s9XZrW+MwX0
+        lkC3PscPeIQ2sja6pVb9tr+3+t4CayVic5b3wDUA3QJcn/kSegaswURk1JetU39Fe44Ucmy27c4
+        xfEcXi4s0uxblRMPetJBJiYfegziiqiV1y4o8KpFqNA==
+X-Received: by 2002:a05:6512:3093:: with SMTP id z19mr5967983lfd.242.1633007305687;
+        Thu, 30 Sep 2021 06:08:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjm3vd0EFvqL7ckfqAQvq9Lo79q9lkx+VOJUC5cK4B1tRx3+/dBYuyWUn8tO852nNIwX6f3w==
+X-Received: by 2002:a05:6512:3093:: with SMTP id z19mr5967946lfd.242.1633007305455;
+        Thu, 30 Sep 2021 06:08:25 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id r3sm367245lfc.131.2021.09.30.06.08.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 06:08:24 -0700 (PDT)
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <YVWCK5QO331rfhJJ@google.com>
+ <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com>
+ <YVWwBz8jrznqXah4@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com>
+Date:   Thu, 30 Sep 2021 15:08:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210927220039.1064193-10-mcgrof@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C"
+In-Reply-To: <YVWwBz8jrznqXah4@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C
-Content-Type: multipart/mixed; boundary="ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk, colyli@suse.de,
- kent.overstreet@gmail.com, kbusch@kernel.org, sagi@grimberg.me,
- vishal.l.verma@intel.com, dan.j.williams@intel.com, dave.jiang@intel.com,
- ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
- boris.ostrovsky@oracle.com, sstabellini@kernel.org, minchan@kernel.org,
- ngupta@vflare.org, senozhatsky@chromium.org
-Cc: xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <50f5fcbe-fb34-1cb8-1965-dd3bfd7e1f12@suse.com>
-Subject: Re: [PATCH v2 09/10] xen-blkfront: add error handling support for
- add_disk()
-References: <20210927220039.1064193-1-mcgrof@kernel.org>
- <20210927220039.1064193-10-mcgrof@kernel.org>
-In-Reply-To: <20210927220039.1064193-10-mcgrof@kernel.org>
+On 30/09/2021 14:39, Lee Jones wrote:
+> On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> 
+>> On 30/09/2021 11:23, Lee Jones wrote:
+>>> [0] Full disclosure: part of my role at Linaro is to keep the Android
+>>> kernel running as close to Mainline as possible and encourage/push the
+>>> upstream-first mantra, hence my involvement with this and other sets.
+>>> I assure you all intentions are good and honourable.  If you haven't
+>>> already seen it, please see Todd's most recent update on the goals and
+>>> status of GKI:
+>>>
+>>>   Article: https://tinyurl.com/saaen3sp
+>>>   Video:   https://youtu.be/O_lCFGinFPM
+>>>
+>>
+>> Side topic, why this patchset is in your scope or Will's/Google's scope?
+>> Just drop it from Android main kernel, it will not be your problem. I
+>> mean, really, you don't need this patchset in your tree at all. The only
+>> platform which needs it, the only platform which will loose something
+>> will be one specific vendor. Therefore this will be an incentive for
+>> them to join both discussions and upstream development. :)
+> 
+> How would they fix this besides upstreaming support for unreleased
+> work-in-progress H/W?
+> 
+> Haven't I explained this several times already? :)
 
---ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa
-Content-Type: multipart/mixed;
- boundary="------------657B867CC90834C60D5C497D"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------657B867CC90834C60D5C497D
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 28.09.21 00:00, Luis Chamberlain wrote:
-> We never checked for errors on device_add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new error
-> handling. The function xlvbd_alloc_gendisk() typically does the
-> unwinding on error on allocating the disk and creating the tag,
-> but since all that error handling was stuffed inside
-> xlvbd_alloc_gendisk() we must repeat the tag free'ing as well.
->=20
-> We set the info->rq to NULL to ensure blkif_free() doesn't crash
-> on blk_mq_stop_hw_queues() on device_add_disk() error as the queue
-> will be long gone by then.
->=20
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Either that way or the same as Will's doing but that's not my question.
+I understand you flush the queue of your GKI patches to be closer to
+upstream. Reduce the backlog/burden. you can achieve your goal by simply
+dropping such patch and making it not your problem. :)
 
 
-Juergen
-
-
---------------657B867CC90834C60D5C497D
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------657B867CC90834C60D5C497D--
-
---ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa--
-
---O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFVtqAFAwAAAAAACgkQsN6d1ii/Ey9/
-Ggf9Fzrs35IrfdUjKBrgggetJDMgl6I0Cc/n6Jtov78ZI8feS38DFu/MBlJr7yJi7nDb927EgLkY
-Y12gOa0cyy+IViB/FsDGnzneZefxCV8ddwXHxUCK087pTn/rAExcemxNE6AQuP4c+Sg8SCgYbLuq
-VMaH5zOY5g4WAv7oC5wxvUNRJDun8GXGkc3nrpqjmmK1jlQ3eYGUIuHk4I7aD4Ms75pVOywkbpOg
-C9JTmp+fz8MknREAfAwX9343sfEr0+yceuLOx508VcF7asOTuQe78cbszDRUqWjUKvBniise0zdL
-XkmSEsvS4U6iJZ0ZvU8D1pH443giDVPA6cWx9XIbQg==
-=r4+e
------END PGP SIGNATURE-----
-
---O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C--
+Best regards,
+Krzysztof
