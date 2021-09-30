@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C59541D788
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE9341D790
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349978AbhI3KV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:21:26 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:53094
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349839AbhI3KVZ (ORCPT
+        id S1349914AbhI3KWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349893AbhI3KWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:21:25 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6D53040DD7;
-        Thu, 30 Sep 2021 10:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632997181;
-        bh=3HqHjju1V6qHP4N5Fhu3jHizcZDAmcAuKPY+5zu5uUA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=DFRDD/IITmkIue9vNoR3GTyvYtqoCl6x8xNqCh44bOrIaKBe5ViQ72pzhF6bTUzRX
-         QOQbRPbmQsAdXhHoAKdXcN9IX5FajlToixLg62JCJLkHn6MoQcuthfwpEd7yknMeZW
-         S7ouknTJ6ZkUf25UoKwzDButS2mUuLkbi02jvpT3lYNqiZXfzCOfhWOT02bFkPcE/b
-         sq48NTIIKEHq/0/96U8MR55YEeDWu69UiAAPI4PwdedbZnfF0LR1qLSfzIEiabLTle
-         VH3y2WHtIop8PjVnRD0Qu10XNDd0K7iEuofStKZzOxethnuJ91bdBGD/QknAKCERqX
-         l2TP0jwsOo0Jg==
-From:   Colin King <colin.king@canonical.com>
-To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Verne <nverne@chromium.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/virtio: fix potential integer overflow on shift of a int
-Date:   Thu, 30 Sep 2021 11:19:41 +0100
-Message-Id: <20210930101941.16546-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 30 Sep 2021 06:22:17 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE8AC06176A;
+        Thu, 30 Sep 2021 03:20:34 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s17so19878165edd.8;
+        Thu, 30 Sep 2021 03:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g2lTT1u/Fn4oWAUqyMELvnYcYq+0z0mii+LOMpZnQQ8=;
+        b=Uq4l7ePOVZemVxv2Fn4TJXeAeh3rZynmWGdNYWSjrqVANG0rDiWkLwKKcCqNWN16cK
+         O4224AlUZ8e5tATcbWAGSRdTlxJ5SVFSu0Vrsd0bSCfGiEGnUGzb1zg4tAQ1E1NxA8o7
+         eDK4MVGSEsOkgath7AKUyNkl+OAATm8Ps2NHnOiMUgFoUVZdWQHTef+Aqt/uoNMbXztY
+         VqHWyqtsBDp/Si2obHzbPh3THD1USP2CckrQZx/CY+G8p+KnHCnn+nAJB1NGN1fgkoWW
+         AGWwFi2dBe7D97gAXE1tu++dFXazUKSRRLAJVio2YK2u+kmZ/xl13BcBj1hzhBwfrSZv
+         uNdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g2lTT1u/Fn4oWAUqyMELvnYcYq+0z0mii+LOMpZnQQ8=;
+        b=HolUYF96SsMOp8xS8xyg1pBBSlKaThMt+Uiba4LKLatlVKrP42K+1tjxMsF1vNSkLi
+         guKn9XxGFB1qzEKwLXP1mMbuBAjo+EyWDYlBcTBtyc3A0tCRJCzN6n4jbyACSyKI05ED
+         j7ebEHBUThJjMTUcsYIDDNHvcqXKgnJgHQ61aMt6EUsXjpOQfWJ6RUvCH7HH/uImki6C
+         6kqJmn2uVvKdf5dI6WxmRxhh05Gv3qaZRJzui6Gx4chy9ox7MbxGPs5zgt5/WGp+g8CO
+         ZyL+iI7+CcbW7KaSWw9vCRSUH5sfltWiR2unDHjb+ktPTWTXtF/prAQru1nzeJqx7+w6
+         FcwQ==
+X-Gm-Message-State: AOAM530y/5aFXgsHW7o9Nft+LNuzXogTeN/gu549mgb/r1byc4/yEWfx
+        o+RUB83WvplVTBsQwZu/C9v10S6jo9PWCruvt/4=
+X-Google-Smtp-Source: ABdhPJwmULVoGBwUWpTGObIO+XIg9tb84jNzomfSYUNs8wermBb5UWAtchFWmNaRStkEXOYvu8ZSspTOV+S4ULqWY1k=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr5625227ejd.425.1632997232508;
+ Thu, 30 Sep 2021 03:20:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210929170804.GA778424@bhelgaas> <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
+ <YVWL3PyYRanGTlVG@kuha.fi.intel.com>
+In-Reply-To: <YVWL3PyYRanGTlVG@kuha.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 30 Sep 2021 13:19:54 +0300
+Message-ID: <CAHp75Vc9hxqy=vrVfuS_cPLCVxZ=KgxZUaD=-rU9W3KH=tAX9Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device properties
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Sep 30, 2021 at 1:06 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+> On Thu, Sep 30, 2021 at 10:33:27AM +0800, Zhangfei Gao wrote:
 
-The left shift of unsigned int 32 bit integer constant 1 is evaluated
-using 32 bit arithmetic and then assigned to a signed 64 bit integer.
-In the case where i is 32 or more this can lead to an overflow. Fix
-this by shifting the value 1ULL instead.
+...
 
-Addresses-Coverity: ("Uninitentional integer overflow")
-Fixes: 8d6b006e1f51 ("drm/virtio: implement context init: handle VIRTGPU_CONTEXT_PARAM_POLL_RINGS_MASK")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/virtio/virtgpu_ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> If the device is really never removed, then we could also constify the
+> node and the properties in it. Then the patch would look like this:
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_ioctl.c b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-index 5618a1d5879c..b3b0557d72cf 100644
---- a/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-@@ -819,7 +819,7 @@ static int virtio_gpu_context_init_ioctl(struct drm_device *dev,
- 	if (vfpriv->ring_idx_mask) {
- 		valid_ring_mask = 0;
- 		for (i = 0; i < vfpriv->num_rings; i++)
--			valid_ring_mask |= 1 << i;
-+			valid_ring_mask |= 1ULL << i;
- 
- 		if (~valid_ring_mask & vfpriv->ring_idx_mask) {
- 			ret = -EINVAL;
+I'm not sure the user can't force removal of the device (via PCI
+rescan, for example,, or via unbind/bind cycle). I guess this way
+should be really taken carefully.
+
 -- 
-2.32.0
-
+With Best Regards,
+Andy Shevchenko
