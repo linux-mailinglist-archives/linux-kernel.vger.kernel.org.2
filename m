@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC61041E066
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082E041E06C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352915AbhI3R7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        id S1352918AbhI3SAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352882AbhI3R7h (ORCPT
+        with ESMTP id S1352882AbhI3SAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:59:37 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123ABC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:57:55 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id k24so7057577pgh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:57:55 -0700 (PDT)
+        Thu, 30 Sep 2021 14:00:10 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DB1C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id a3so8364343oid.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g6bz22D6xwh6dY6ebf3YVMVwbapBNBp7nh6i3iRX4rg=;
-        b=dOKiID32WTuG8C1FY2tDSCXxPTOcTSojqkYxtMXC81eBn/3A6Aez9SSrNtOe43/vqZ
-         r14bP3+HhfILcH+mSy8qbeihv9hjIQXbOsvQAQoJGyCKi69gMmOvcfw3hK26OXgksxet
-         6+FGEby1cJgq/DR2sx0qdTMffsxJehFBI0/Jf/sVsQgmrcbIcBz6EdQNrgyPsTt1ZPgS
-         ZCrOOjiBSKNIPp+/HCaTNKw6aPf7kK6fUNTW2E3WZsyf88X/+1OL9qKMSq5fRaxxt2F7
-         DIRuiz0ePqm6/qsgCz/Hfrbu/DHfLIfGouCHbrROrDb5RKPxOQPBaXqRmADH9pI1E8cY
-         amAw==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=ODaJrzhlII7IaX+qlNLhzszeBmnqReAaw8HMQDA91KQ=;
+        b=bTQg8VLL960aI4MFPT4bL+ziwayamEyzDehDR1iOJFMPkxj/2Nk4rKVj9YVCEdzD6b
+         UrAEhn7yK+oZWFVFV9a2Vsk+1xTPbIH4KRcCLTJq6nYecBRghntzlrD0p0OATanZSj0t
+         St0+87W3xKmk6mTdbO+IC0+LpfWha2ZwUXZQM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g6bz22D6xwh6dY6ebf3YVMVwbapBNBp7nh6i3iRX4rg=;
-        b=x4UlrPbKqL1GtFcN2d2gKA8cIOOUythbmOU+/txTOOcjbbgE/sqJfsgIU12450tvJc
-         Dt78uECTiWLlZJx0XGC+1CilO4zFR/tmIIeMvBgK2c4OdUU/wYHsO3tSnY2uzJkaoWJI
-         +12i6C1WQ9h2mSbF2SBptJWQNtfyhG3cKO/m1XT8g3I3/IUhZItTU+QiyqZPbgakEp3A
-         csfB2S+ziiA0SIF+Kma9CKhqi+YWW4why4oJCOhVDWL7+Lr7JhYr+pCSY0+EwDTD7qZq
-         la40plvWfaRSmrBmVF3okWht4p5hTCL2atfByGPTTtDqGDnqGkW53ND5l87P05pHGDqZ
-         lGLw==
-X-Gm-Message-State: AOAM530f8OAfyjpb8s7jEEC5VsEby4qQS49huIFxAwcFvbjpgqwozmQ+
-        4bdifqCKo02/1fZt9douA+5LQg==
-X-Google-Smtp-Source: ABdhPJxFoKp6KZ5DBAWAIpSMmQfLSbSbpU7b0scWhFG5joQHGKa00Znngko+61mQV7anI0cielGpPw==
-X-Received: by 2002:aa7:8887:0:b0:43c:83fe:2c56 with SMTP id z7-20020aa78887000000b0043c83fe2c56mr5591779pfe.82.1633024674520;
-        Thu, 30 Sep 2021 10:57:54 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s188sm3436085pfb.44.2021.09.30.10.57.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 10:57:53 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:57:51 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-Subject: Re: [PATCH v2 01/17] coresight: trbe: Fix incorrect access of the
- sink specific data
-Message-ID: <20210930175751.GC3047827@p14s>
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-2-suzuki.poulose@arm.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=ODaJrzhlII7IaX+qlNLhzszeBmnqReAaw8HMQDA91KQ=;
+        b=qJTDOSwe9b4Z57/+eDlO8kE8oRMYpFxPzyZaRpQur7N6yh1sx0C5YR4h8vRYUtZt8L
+         XmtG5dWAB94CVJvznIRHfBD+cuulmfSyWEVkN0UoH9cTJ3V7OKDnm6VWBbLMIhp2s0Rv
+         tEF55rsbZUc+mZy/R3jJ5exil67MeQA0R+A1PMpeqQF4IMb2ogWP+odLU2PhKKjngdD7
+         BC7HMa6n1SZy2dCF/jIbd+qXdVItm465NFPS0fqX476xMPFQ7LsBc0zifbpDfoH6BgjO
+         iF6JgWRxOd3du37rKfS+HFTFR7R3Bl7BcT+WCFQ7e/ICqaviK9CVOrWQY28BNbBjGxmx
+         CRZg==
+X-Gm-Message-State: AOAM5329epTj5GaHJwXTsyF3Gh7w3aQiqRD3A1VEtuyydhAdz4BwKWfC
+        knDDRLn/tOw+g3KXRgjIVWwrSIJMqmC+hzseTkhEBg==
+X-Google-Smtp-Source: ABdhPJx0TbzSitN4I1kanbYg8IkdrXr3mPw09WhLirZ71+GW8AkE5QIIHBvLl1NRDRFk/IIUhiDGGlyQIyMalzrBWvE=
+X-Received: by 2002:aca:42d7:: with SMTP id p206mr501591oia.32.1633024707214;
+ Thu, 30 Sep 2021 10:58:27 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 30 Sep 2021 10:58:26 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921134121.2423546-2-suzuki.poulose@arm.com>
+In-Reply-To: <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
+References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
+ <1629282424-4070-2-git-send-email-mkrishn@codeaurora.org> <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
+ <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 30 Sep 2021 10:58:26 -0700
+Message-ID: <CAE-0n53kQU=8pdcWR0OZap1wDgxxwed0qvfaGruc71YT5Cj1iA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] arm64: dts: qcom: sc7280: add display dt nodes
+To:     mkrishn@codeaurora.org
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        sbillaka@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, bjorn.andersson@linaro.org,
+        khsieh@codeaurora.org, rajeevny@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 02:41:05PM +0100, Suzuki K Poulose wrote:
-> The TRBE driver wrongly treats the aux private data as the TRBE driver
-> specific buffer for a given perf handle, while it is the ETM PMU's
-> event specific data. Fix this by correcting the instance to use
-> appropriate helper.
-> 
-> Fixes: 3fbf7f011f242 ("coresight: sink: Add TRBE driver")
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index d4c57aed05e5..e3d73751d568 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -363,7 +363,7 @@ static unsigned long __trbe_normal_offset(struct perf_output_handle *handle)
->  
->  static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
->  {
-> -	struct trbe_buf *buf = perf_get_aux(handle);
-> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+Quoting mkrishn@codeaurora.org (2021-09-30 04:56:59)
+> On 2021-08-19 01:27, Stephen Boyd wrote:
+> > Quoting Krishna Manikandan (2021-08-18 03:27:02)
+> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> index 53a21d0..fd7ff1c 100644
+> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> +
+> >> +                       status = "disabled";
+> >> +
+> >> +                       mdp: mdp@ae01000 {
+> >
+> > display-controller@ae01000
+>
+> Stephen,
+>     In the current driver code, there is a substring comparison for "mdp"
+> in device node name as part of probe sequence. If "mdp" is not present
+> in the node name, it will
+>     return an error resulting in probe failure. Can we continue using mdp
+> as nodename instead of display controller?
+>
 
-I really wonder how things got to work before...
-
-I have fixed the 13-character SHA in the "Fixes" tag and added this patch to my
-local tree.  More comments tomorrow.
-
-Thanks,
-Mathieu
-
->  	u64 limit = __trbe_normal_offset(handle);
->  	u64 head = PERF_IDX2OFF(handle->head, buf);
->  
-> -- 
-> 2.24.1
-> 
+Can we fix the driver to not look for node names and look for compatible
+strings instead? It took me a minute to find compare_name_mdp() in
+drivers/gpu/drm/msm/msm_drv.c to understand what you're talking about.
+Perhaps looking for qcom,mdp5 in there will be sufficient instead of
+looking at the node name.
