@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7344D41E274
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6891B41E276
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347577AbhI3TwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:52:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34250 "EHLO mga06.intel.com"
+        id S1347131AbhI3Ty0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:54:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345816AbhI3TwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:52:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="286294774"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="286294774"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:50:16 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="480065078"
-Received: from rnmathur-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.105.173])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:50:15 -0700
-Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
- USB/Thunderbolt to core
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Yehezkel Bernat <yehezkelshb@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CA+CmpXtXn5wjxwow5va5u9qHcQDLkd4Sh2dcqB545SXaxV1GkQ@mail.gmail.com>
- <CAPcyv4iNp41mZcpzGCPR9Xty83j+abk_SOxvsx1xaQ8wALRv0Q@mail.gmail.com>
- <CA+CmpXvGCAny-WHGioJQHF9ZZ5pCaR-E_rw5oeE82xC30naVXg@mail.gmail.com>
- <CAPcyv4ixqiMw1KTB8rbzzrtaErV4PT3R3XqshHhAXv6Ohjzs1Q@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <c701ca61-4e7d-1060-102f-8f92dd6e6802@linux.intel.com>
-Date:   Thu, 30 Sep 2021 12:50:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1345816AbhI3TyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B61CB6128C;
+        Thu, 30 Sep 2021 19:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633031561;
+        bh=CXvy6PdBkhcfVgqmS4LcJkP5IHuDAOxPW0V+G5W0JGQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QhmGWal/y7/eTwmaqgbAxVr/9Qj2BUbiAU+4JVnIj55FGwYD5PZbr6sYR2TKtjUBg
+         zv9j7aySzUCpKOOreIrVvDtDOdk2FwGMpFaxR6G+Bja3QLFsrYW1JhUKFfmTn+lgyj
+         hg67r0mOSUyDl63YMxn3y9YB7z1zy2TDeeQfcEsv7B4owDPVJNGafCHKzNr9e/V4KT
+         E/tbMS/vkumw6LZL7jh+bFvpvpDEpwxaCB8HsYbNsvfOp0sbcekS83U7m7QHkpQbBT
+         HgQSH+3a7cPM9rlaKoaF+JBYQJFA4yVO5vjmMoZhZT9Vr2p0ftQZj+5GvjAlmGXApr
+         uMQilrPh0CfNg==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, bvanassche@acm.org
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 1/2] scsi: ufs: retry START_STOP on UNIT_ATTENTION
+Date:   Thu, 30 Sep 2021 12:52:36 -0700
+Message-Id: <20210930195237.1521436-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4ixqiMw1KTB8rbzzrtaErV4PT3R3XqshHhAXv6Ohjzs1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 57d104c153d3 ("ufs: add UFS power management support") made the UFS
+driver submit a REQUEST SENSE command before submitting a power management
+command to a WLUN to clear the POWER ON unit attention. Instead of
+submitting a REQUEST SENSE command before submitting a power management
+command, retry the power management command until it succeeds.
 
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-On 9/30/21 12:04 PM, Dan Williams wrote:
->>> That's why it was highlighted in the changelog. Hopefully a
->>> Thunderbolt developer can confirm if it is a non-issue.
->>> Documentation/ABI/testing/sysfs-bus-thunderbolt does not seem to
->>> answer this question about whether authorized_show and
->>> authorized_store need to be symmetric.
->> Apparently, Bolt does read it [1] and cares about it [2].
-> Ah, thank you!
-> 
-> Yeah, looks like the conversion to bool was indeed too hopeful.
-> 
-
-IIUC, the end result of value "2" in authorized sysfs is to just
-"authorize" or "de-authorize". In that case, can the user space
-driver adapt to this int->bool change? Just want to know the
-possibility.
-
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 3841ab49f556..1f21d371e231 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8630,7 +8630,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 	struct scsi_sense_hdr sshdr;
+ 	struct scsi_device *sdp;
+ 	unsigned long flags;
+-	int ret;
++	int ret, retries;
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	sdp = hba->sdev_ufs_device;
+@@ -8665,8 +8665,14 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 	 * callbacks hence set the RQF_PM flag so that it doesn't resume the
+ 	 * already suspended childs.
+ 	 */
+-	ret = scsi_execute(sdp, cmd, DMA_NONE, NULL, 0, NULL, &sshdr,
+-			START_STOP_TIMEOUT, 0, 0, RQF_PM, NULL);
++	for (retries = 3; retries > 0; --retries) {
++		ret = scsi_execute(sdp, cmd, DMA_NONE, NULL, 0, NULL, &sshdr,
++				START_STOP_TIMEOUT, 0, 0, RQF_PM, NULL);
++		if (!scsi_status_is_check_condition(ret) ||
++				!scsi_sense_valid(&sshdr) ||
++				sshdr.sense_key != UNIT_ATTENTION)
++			break;
++	}
+ 	if (ret) {
+ 		sdev_printk(KERN_WARNING, sdp,
+ 			    "START_STOP failed for power mode: %d, result %x\n",
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.33.0.800.g4c38ced690-goog
+
