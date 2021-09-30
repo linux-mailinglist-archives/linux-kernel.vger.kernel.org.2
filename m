@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C47C41D54E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D25441D559
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348976AbhI3IQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:16:45 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3893 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348991AbhI3IQn (ORCPT
+        id S1349113AbhI3IX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:23:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37732 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349083AbhI3IX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:16:43 -0400
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HKmDN6K3Vz6F95B;
-        Thu, 30 Sep 2021 16:11:48 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 30 Sep 2021 10:14:59 +0200
-Received: from [10.47.26.77] (10.47.26.77) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 30 Sep
- 2021 09:14:58 +0100
-Subject: Re: [PATCH v2 2/3] acornscsi: remove tagged queuing vestiges
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1631696835-136198-1-git-send-email-john.garry@huawei.com>
- <1631696835-136198-3-git-send-email-john.garry@huawei.com>
- <CAK8P3a3U+yaRe+P68DMQy_37jog=9gz7-dkHT10Vev3FrvMYyg@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <327ae6c3-a64a-66b4-a2ec-ce66d5a39eeb@huawei.com>
-Date:   Thu, 30 Sep 2021 09:17:52 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 30 Sep 2021 04:23:58 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F0DDF1FE3A;
+        Thu, 30 Sep 2021 08:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632990134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x2lV+mK2M7/NdUSiHiSSKoGAAQWF1PWc4g6uu1e2Vpk=;
+        b=NmHM2p/H9RmlpIS4pPmVitWptYM1NJYJWjHCPiSwLS4Yz1/xD6urgKJZxoeEAj2cCpCC7q
+        z0Ion9ov98vnSS0L2D3jl3NkgfBtCsude8gecww9rIKbnzE4TVFVIc4qAT3n3f6AEDZvA3
+        oA+nDgCJAgLg4jDXJFAy8jTChajF2Vg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632990134;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x2lV+mK2M7/NdUSiHiSSKoGAAQWF1PWc4g6uu1e2Vpk=;
+        b=lyV0YFiFjWMtwdsfSTlf+dynVDBJWSLoYopHvFyN6PNbxYVQ22fEYyRUc9GHQrKRJ1GLjL
+        e8gkjrK3Q0Xqx3DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1063140D0;
+        Thu, 30 Sep 2021 08:22:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AolJMrZzVWEtLAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 30 Sep 2021 08:22:14 +0000
+Message-ID: <a6919b32-e789-7ed9-bab7-8235638e9c12@suse.cz>
+Date:   Thu, 30 Sep 2021 10:22:14 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3U+yaRe+P68DMQy_37jog=9gz7-dkHT10Vev3FrvMYyg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] mm: remove useless lines in enable_cpucache()
 Content-Language: en-US
+To:     Shi Lei <shi_lei@massclouds.com>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210930034845.2539-1-shi_lei@massclouds.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210930034845.2539-1-shi_lei@massclouds.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.26.77]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 08:21, Arnd Bergmann wrote:
-> On Wed, Sep 15, 2021 at 11:16 AM John Garry<john.garry@huawei.com>  wrote:
->> From: Hannes Reinecke<hare@suse.de>
->>
->> The acornscsi driver has a config option to enable tagged queuing,
->> but this option gets disabled in the driver itself with the comment
->> 'needs to be debugged'.
->> As this is a_really_  old driver I doubt anyone will be wanting to
->> invest time here, so remove the tagged queue vestiges and make
->> our live easier.
->>
->> Signed-off-by: Hannes Reinecke<hare@suse.de>
->> jpg: Use scsi_cmd_to_rq()
->> Signed-off-by: John Garry<john.garry@huawei.com>
-> A few thousand randconfig builds later, I actually came across
-> building this driver.
+On 9/30/21 05:48, Shi Lei wrote:
+> These lines are useless, so remove them.
+
+I would clarify that they are useless after commit 10befea91b61 ("mm:
+memcg/slab: use a single set of kmem_caches for all allocations")
+
+
+
+> Signed-off-by: Shi Lei <shi_lei@massclouds.com>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  mm/slab.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
->> @@ -1821,7 +1776,7 @@ int acornscsi_reconnect_finish(AS_Host *host)
->>          host->scsi.disconnectable = 0;
->>          if (host->SCpnt->device->id  == host->scsi.reconnected.target &&
->>              host->SCpnt->device->lun == host->scsi.reconnected.lun &&
->> -           host->SCpnt->tag         == host->scsi.reconnected.tag) {
->> +           scsi_cmd_to_tag(host->SCpnt) == host->scsi.reconnected.tag) {
->>   #if (DEBUG & (DEBUG_QUEUES|DEBUG_DISCON))
->>              DBG(host->SCpnt, printk("scsi%d.%c: reconnected",
->>                      host->host->host_no, acornscsi_target(host)));
-> drivers/scsi/arm/acornscsi.c: In function 'acornscsi_reconnect_finish':
-> drivers/scsi/arm/acornscsi.c:1779:6: error: implicit declaration of
-> function 'scsi_cmd_to_tag'; did you mean 'scsi_cmd_to_rq'?
-> [-Werror=implicit-function-declaration]
->        scsi_cmd_to_tag(host->SCpnt) == host->scsi.reconnected.tag) {
->        ^~~~~~~~~~~~~~~
->        scsi_cmd_to_rq
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 4d826394ffcb..01775fe0e002 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3900,8 +3900,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
+>  	if (err)
+>  		goto end;
+>  
+> -	if (limit && shared && batchcount)
+> -		goto skip_setup;
+>  	/*
+>  	 * The head array serves three purposes:
+>  	 * - create a LIFO ordering, i.e. return objects that are cache-warm
+> @@ -3944,7 +3942,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
+>  		limit = 32;
+>  #endif
+>  	batchcount = (limit + 1) / 2;
+> -skip_setup:
+>  	err = do_tune_cpucache(cachep, limit, batchcount, shared, gfp);
+>  end:
+>  	if (err)
 > 
-> I have no idea what this is meant to do instead, but scsi_cmd_to_tag()
-> does not appear to be defined in any kernel I can find.
-
-Hannes added new function scsi_cmd_to_tag() in v1 series, but I removed 
-it when I reposted the v2 series. But then missed this reference.
-
-I think the build fix should be as follows:
-
---- a/drivers/scsi/arm/acornscsi.c
-+++ b/drivers/scsi/arm/acornscsi.c
-@@ -1776,7 +1776,7 @@ int acornscsi_reconnect_finish(AS_Host *host)
-        host->scsi.disconnectable = 0;
-        if (host->SCpnt->device->id  == host->scsi.reconnected.target &&
-            host->SCpnt->device->lun == host->scsi.reconnected.lun &&
--           scsi_cmd_to_tag(host->SCpnt) == host->scsi.reconnected.tag) {
-+           scsi_cmd_to_rq(host->SCpnt)->tag == 
-host->scsi.reconnected.tag) {
-
-Let me know if you want us to post a patch for this.
-
-Thanks,
-John
-
 
