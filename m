@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F5041DF24
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CFD41DF2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352038AbhI3QiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S1352160AbhI3Qkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349182AbhI3QiM (ORCPT
+        with ESMTP id S1352035AbhI3Qko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:38:12 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9D3C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:36:29 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id u22so8058192oie.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=YLNQN4UIBLgIxsaAyY5e+qsF4GYVsk+RnVC8CY1VgXQ=;
-        b=SChrTpZeJO36IrVgRGFu+4OzzLK9x7NS9ZHKnu/V1SaFcj1Dl0qZF36kIKgQEVAiYi
-         KQRwek+8y64lPlVn0aNNEu7uhc7n1qtmrM02mNkoLQ3v+DrbAvW6+8eta9yRJ9cDiaD2
-         1l2kLzWZDg4VOUyGKj2SDAnX1jVOB9B7GDrEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=YLNQN4UIBLgIxsaAyY5e+qsF4GYVsk+RnVC8CY1VgXQ=;
-        b=yB2h/GxCdA8lrTFVJddbZ0TrzZkBVMUa/Tc/smo8JG8CxIb20ry5qpf1Q0WAfc497h
-         /nThuN+QRrh7i6pF2hE+1UVD7kr5/26v4mpB1RMJO4i18qlC15KvrQNTB+BLcbNa+ewq
-         IUDfgCjI3CXuR2GDPnO7Gecl3PF3OayKxmjPrxSkAtOYPGg1owCsL95DsBbrJTHYu+hN
-         7kNrzePyBonUE2ehBY+wN/VOZOg3cZq2AErLgBUDEwog4EqmvdRx1fIL8PVn2KCPD6i9
-         r7/Mzy83KqaPERNsr9LiKs8xGNqDaw6DvsBlzIBUQ3lbiN5s8dF8Gii381nyHvNuVA5V
-         ofVg==
-X-Gm-Message-State: AOAM532hGJ26ptSQViID78d2mTKUq1nW5SeeIYCCvHWECUILs3P6F2nD
-        7LD5Ua8NtG4SVvt/htetGS3dHG2KEQw5FD0Iyt0d4w==
-X-Google-Smtp-Source: ABdhPJzFbOWJdP3wcC29hCKejMnkAXwgEkkcl9dc+T9uX90YcE8WEepACBJwwr7v4YMHhg2tLm2yOLCiPljroNZyX2U=
-X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr162552oiw.164.1633019788653;
- Thu, 30 Sep 2021 09:36:28 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 30 Sep 2021 09:36:28 -0700
+        Thu, 30 Sep 2021 12:40:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26DEC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:39:01 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 18:38:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633019939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bfyxy9FKVnpBOR385KJqgLwbAYCIUV3vt3a58Pj39Tg=;
+        b=2tiT2n5+VhjPdsd1VJ2an7XV1XipKcASoazP3VLLQQthWIBQ6npiKHG11uONPdqwIAjVIm
+        bdaNrxElEbpkBYZIdWzvyLKCEtVym0DKcsO3bkFk6oZTP7VMJYN+6FzRYiI2emf9porMwV
+        1GIisOQ9TdykD7XJEBR3OYKbZoevAhdk8Dg5JIK4epb8qjSyfOp75AhpRAHLGvq7ImcC6r
+        DKC8mWb9bvm0ZsZeBr3RxgWIonurnkgyFkWHPFb8JBWQ7F97xmFQO75zzhuqWORXp6LwUd
+        pWS6OCLlzle+S+LO+l4DWKmF89qHwBUuvkf+OcgnVErdS9rYSH8vdUaIqRQnIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633019939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bfyxy9FKVnpBOR385KJqgLwbAYCIUV3vt3a58Pj39Tg=;
+        b=+lLIM6zBLf9mZ1jfFTo3d13W5oY7larBnVLUXwC98ADVHUCrXcPPr4z/JZM9tOFQlgpt0o
+        YV9305wxNlLdZ/Cw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
+ PREEMPT_RT
+Message-ID: <20210930163858.orndmu5xfxue3zck@linutronix.de>
+References: <20210927211919.310855-1-bigeasy@linutronix.de>
+ <20210927211919.310855-5-bigeasy@linutronix.de>
+ <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
+ <20210930095348.tud6jdcenfkfzugz@linutronix.de>
+ <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1633015924-881-5-git-send-email-deesin@codeaurora.org>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org> <1633015924-881-5-git-send-email-deesin@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 30 Sep 2021 09:36:28 -0700
-Message-ID: <CAE-0n538vv-P-MWXNL=MixHy9sfH20XYk=i_AJXWwGKS2_bFxw@mail.gmail.com>
-Subject: Re: [PATCH V1 3/3] rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        mathieu.poirier@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-09-30 08:32:04)
-> Add TICOMGET and TIOCMSET ioctl support for rpmsg char device nodes
-> to get/set the low level transport signals.
+On 2021-09-30 16:39:51 [+0200], Peter Zijlstra wrote:
+> > > I think the problem was something Jolsa found a while ago, where perf
+> > > defers to an irq_work (from NMI context) and that irq_work wants to
+> > > deliver signals, which it can't on -RT, so the whole thing gets punted
+> > > to softirq. With the end-result that if you self-profile RT tasks,
+> > > things come apart or something.
+> > 
+> > For signals (at least on x86) we this ARCH_RT_DELAYS_SIGNAL_SEND thingy
+> > where the signal is delayed until exit_to_user_mode_loop().
+> 
+> Yeah, I think that is what started much of the entry rework.. the signal
+> rework is still pending.
+
+posix timer were also guilty here :)
+
+> > perf_pending_event() is the only non-HARD on RT (on the perf side). I
+> > think that is due to perf_event_wakeup() where we have wake_up_all() and
+> 
+> Right, and that is exactly the problem, that needs to run at a higher
+> prio than the task that needs it, but softirq makes that 'difficult'.
+> 
+> One possible 'solution' would be to, instead of softirq, run the thing
+> as a kthread (worker or otherwise) such that userspace can at least set
+> the priority and has a small chance of making it work.
 >
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Runing them all at the same prio still sucks (much like the single
+> net-RX thing), but at least a kthread is somewhat controllable.
 
-Is Chris the author? Because if so then there should be a From: Chris
-line before the commit text starts.
+I could replace the softirq processing with a per-CPU thread. This
+should work. But I would have to (still) delay the wake-up of the thread
+to the timer tick - or - we try the wake from the irqwork-self-IPI. I
+just don't know how many will arrive back-to-back. The RCU callback
+(rcu_preempt_deferred_qs_handler()) pops up a lot. By my naive guesswork
+I would say that the irqwork is not needed since preempt-enable
+somewhere should do needed scheduling. But then commit
+  0864f057b050b ("rcu: Use irq_work to get scheduler's attention in clean context")
 
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> ---
->  drivers/rpmsg/rpmsg_char.c | 43 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
->
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 2bebc9b..60a889b 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -19,6 +19,7 @@
->  #include <linux/rpmsg.h>
->  #include <linux/skbuff.h>
->  #include <linux/slab.h>
-> +#include <linux/termios.h>
->  #include <linux/uaccess.h>
->  #include <uapi/linux/rpmsg.h>
->
-> @@ -76,6 +77,9 @@ struct rpmsg_eptdev {
->         spinlock_t queue_lock;
->         struct sk_buff_head queue;
->         wait_queue_head_t readq;
-> +
-> +       u32 rsigs;
-> +       bool sig_pending;
->  };
->
->  static int rpmsg_eptdev_destroy(struct device *dev, void *data)
-> @@ -120,6 +124,18 @@ static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
->         return 0;
->  }
->
-> +static int rpmsg_sigs_cb(struct rpmsg_device *rpdev, void *priv, u32 sigs)
-> +{
-> +       struct rpmsg_eptdev *eptdev = priv;
-> +
-> +       eptdev->rsigs = sigs;
-> +       eptdev->sig_pending = true;
-> +
-> +       /* wake up any blocking processes, waiting for signal notification */
+claims it is not enough.
 
-Comment would be better if it indicated what function these waiters are
-in instead of saying what wake_up_interruptible() does. Also, what is
-interruptible for?
+> > read_lock_irqsave().
+> 
+> That one is really vexing, that really is just signal delivery to self
+> but even when signal stuff is fixed, we're stuck behind that fasync
+> rwlock :/
 
-> +       wake_up_interruptible(&eptdev->readq);
+Yea. We are already in a RCU section and then this.
 
-Nitpick: Add newline here.
-
-> +       return 0;
-> +}
-> +
->  static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->  {
->         struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
-> @@ -276,10 +297,32 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->                                unsigned long arg)
->  {
->         struct rpmsg_eptdev *eptdev = fp->private_data;
-> +       bool set;
-> +       u32 val;
-> +       int ret;
->
->         if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->                 return -EINVAL;
-
-This should be deleted?
-
->
-> +       switch (cmd) {
-> +       case TIOCMGET:
-> +               eptdev->sig_pending = false;
-> +               ret = put_user(eptdev->rsigs, (int __user *)arg);
-> +               break;
-> +       case TIOCMSET:
-> +               ret = get_user(val, (int __user *)arg);
-> +               if (ret)
-> +                       break;
-> +               set = (val & TIOCM_DTR) ? true : false;
-> +               ret = rpmsg_set_flow_control(eptdev->ept, set);
-> +               break;
-> +       case RPMSG_DESTROY_EPT_IOCTL:
-> +               ret = rpmsg_eptdev_destroy(&eptdev->dev, NULL);
-> +               break;
-> +       default:
-> +               ret = -EINVAL;
-> +       }
-> +
->         return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
-
-This should be replaced with return ret?
+Sebastian
