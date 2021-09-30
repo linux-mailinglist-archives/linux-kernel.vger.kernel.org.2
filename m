@@ -2,131 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1148F41DCB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8680A41DCBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352003AbhI3Ox1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:53:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46860 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351935AbhI3Ox0 (ORCPT
+        id S1351965AbhI3Oz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351915AbhI3Oz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:53:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id AA2232003B;
-        Thu, 30 Sep 2021 14:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633013502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7UMsJP7OUZHXdosqHccx8PfVbVZmFr+TX6TvsVLAlzc=;
-        b=p9jN8Yu/BpaUeW4SkvSnWNgOZFT8eYkXWF5kfKD2iHa4ZAK41E9HtNVO69KcpRqfZ/w6/p
-        8mKwf3SFDGcFiFbO99VDsahxQRiM2G4poXJjGvf2XOJq+VpOYLW5tAIjEhUkhJxKNiF5MT
-        aMDLXu8ipzyoFNYYcp/fyqA1OAFqr+w=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 401D4A4666;
-        Thu, 30 Sep 2021 14:51:42 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 16:51:42 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
-Message-ID: <YVXO/hsDJQh1FOgy@alley>
-References: <20210929115036.4851-1-laoar.shao@gmail.com>
- <20210929115036.4851-3-laoar.shao@gmail.com>
- <202109291109.FAF3F47BA@keescook>
- <CALOAHbB3_q0stoUyqZdScZR3_edJE5ncmys6HNiQrBZTEgGVMw@mail.gmail.com>
+        Thu, 30 Sep 2021 10:55:26 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7509DC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:53:43 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id t189so7587305oie.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VIxcNt9zqnRNapqvBD226bMsuD2C6DbQkjAikT4Sfbs=;
+        b=EZLK+026N367xK6Of3/3GFxZQGgcXh52/fAR/gMfyylEAMSLOjaGozS4BXHjQ0K/0K
+         LUGvtSWNBkGbj3vK3NaM3SSlSlmXhEBUukIBUMcuNDEBcaKo29JVDhFwVhFH5z1k0Gvo
+         Ejswi89qmuPtm2VivBxcTHW0bvbYqPLLm6Tc3PzXOGXXcHhChpAuSOGvtGhsYNz0v3KQ
+         BCmp3DFDvaFHNeB2EP8FOGXDwgmbJCMGTjiU4uOYAgFnK7ihgh13gwKXhmDN4C7/EHGa
+         0rhUVaPzBMur7fhj0lIC2F9eei/bW7mAO/kPsVadZyD1N39peE9xlYhe4pUyXEryKfZq
+         A7Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VIxcNt9zqnRNapqvBD226bMsuD2C6DbQkjAikT4Sfbs=;
+        b=occYuU+lbB/9v72DSt0AadnhXiRVspEHjDz740uH2QyawdAfr0BHxUZZm3Uogy8Gls
+         w8E1a8KfAwn4fzqP5AqOaMt+vpg9uiuzFWQizxOSPklQljjIcTScnfkqm9B202K+mDjZ
+         VdVRSZx+vLMx8roUX0ijOlq/+nDqNPv4oDpGHVaHqZMBIngj2V40N3WOp3ptBdWGoqow
+         XPmbcB76q8eEpB341nTJsIkGyySVe+SKceUBuKF5X+Ia4G1xQXsZtgvML9A4+bAjQUl9
+         BZVK6ua9w8jwic629RmIoUw9mKGevhJaXfoDJR1gDwtmnlS0cQEe2FcWmRpEzQWEhs35
+         3jrQ==
+X-Gm-Message-State: AOAM5304iY7aFVsQ0AHIH+kGkwe1NdSYPJ0udvsSAw6V5IDgJKNa/aGr
+        4TZQl5gxZT4fWSozqQqRTfAHKg==
+X-Google-Smtp-Source: ABdhPJxoDnNjjvVhWww8Ms5gJnrwtghVKekf8KDWX4JcOvmCGqZvKZBxs7JTCgp9mPP+WeYCpgBpGA==
+X-Received: by 2002:aca:744:: with SMTP id 65mr3319322oih.174.1633013622716;
+        Thu, 30 Sep 2021 07:53:42 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m26sm606177otf.12.2021.09.30.07.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:53:42 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 07:55:31 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
+Message-ID: <YVXP46FvzmZ1xDvY@ripper>
+References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
+ <YUfZbsf3MX1aQJ2+@builder.lan>
+ <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
+ <YUoHr0F9qjr2Toeb@ripper>
+ <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbB3_q0stoUyqZdScZR3_edJE5ncmys6HNiQrBZTEgGVMw@mail.gmail.com>
+In-Reply-To: <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-09-30 20:41:40, Yafang Shao wrote:
-> On Thu, Sep 30, 2021 at 2:11 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, Sep 29, 2021 at 11:50:33AM +0000, Yafang Shao wrote:
-> > > task->comm is defined as an array embedded in struct task_struct before.
-> > > This patch changes it to a char pointer. It will be allocated in the fork
-> > > and freed when the task is freed.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > ---
-> > >  include/linux/sched.h |  2 +-
-> > >  kernel/fork.c         | 19 +++++++++++++++++++
-> > >  2 files changed, 20 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > > index e12b524426b0..b387b5943db4 100644
-> > > --- a/include/linux/sched.h
-> > > +++ b/include/linux/sched.h
-> > > @@ -1051,7 +1051,7 @@ struct task_struct {
-> > >        * - access it with [gs]et_task_comm()
-> > >        * - lock it with task_lock()
-> > >        */
-> > > -     char                            comm[TASK_COMM_LEN];
-> > > +     char                            *comm;
-> >
-> > This, I think, is basically a non-starter. It adds another kmalloc to
-> > the fork path without a well-justified reason. TASK_COMM_LEN is small,
-> > yes, but why is growing it valuable enough to slow things down?
-> >
-> > (Or, can you prove that this does NOT slow things down? It seems like
-> > it would.)
-> >
+On Thu 30 Sep 02:46 PDT 2021, Rajendra Nayak wrote:
+
 > 
-> Right, the new kmalloc would take some extra latency.
-> Seems it is not easy to measure which one is more valuable.
+> 
+> On 9/21/2021 9:56 PM, Bjorn Andersson wrote:
+> > On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
+> > 
+> > > 
+> > > 
+> > > On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
+> > > > On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
+> > > > 
+> > > > > From: Prasad Sodagudi <psodagud@codeaurora.org>
+> > > > > 
+> > > > > egpio is a scheme which allows special power Island Domain IOs
+> > > > > (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+> > > > > TLMM functions with Island Domain functions.
+> > > > > With this scheme, an IO can be controlled both by the cpu running
+> > > > > linux and the Island processor. This provides great flexibility to
+> > > > > re-purpose the Island IOs for regular TLMM usecases.
+> > > > > 
+> > > > > 2 new bits are added to ctl_reg, egpio_present is a read only bit
+> > > > > which shows if egpio feature is available or not on a given gpio.
+> > > > > egpio_enable is the read/write bit and only effective if egpio_present
+> > > > > is 1. Once its set, the Island IO is controlled from Chip TLMM.
+> > > > > egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+> > > > > 
+> > > > > The support exists on most recent qcom SoCs, and we add support
+> > > > > for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
+> > > > > 
+> > > > 
+> > > > I was under the impression that this feature would allow you to
+> > > > repurpose pins for use either by the remote island or by apps.
+> > > 
+> > > thats right, you can repurpose the pins for usage by apps by setting
+> > > the egpio_enable to 1, when set to 0 its owned by the island processor.
+> > 
+> > Good.
+> > 
+> > > > 
+> > > > But if I understand your proposal, you check to see if the pin is
+> > > > "egpio capable" for a pin and if so just sets the bit - muxing it to
+> > > > apps (or the island?).
+> > > 
+> > > Right, so if there is a request for a egpio-capable pin, the driver
+> > > flips the ownership. Are you suggesting having some kind of checks to determine
+> > > who should own it?
+> > > 
+> > 
+> > I see, I missed that nuance. So Linux will steal any pins that are
+> > mentioned in DT. But that would mean that you're relying on someone else
+> > to ensure that this bit is cleared for the other pins and you would not
+> > be able to explicitly flip the state back to island mode in runtime.
+> > 
+> > I would prefer that this was more explicit.
+> > 
+> > > > It seems reasonable that this would be another pinmux state for these
+> > > > pins, rather than just flipping them all in one or the other direction.
+> > > 
+> > > hmm, I don't understand. This is not a pinmux state, its a switch to decide
+> > > the ownership.
+> > 
+> > But does it mux the pin to the island, or does it state that the island
+> > is now in charge of the associated TLMM registers?
+> 
+> The island processor does not access the APPS TLMM register space, it has its
+> own TLMM register space that it configures. APPS TLMM registers control its
+> mux/conf settings and Island TLMM registers controls its mux/conf. So essentially
+> there are 2 sets of registers to control the same pin.
+> This bit is more like a top level mux which decides what register settings
+> take affect.
+> 
 
-Honestly, I do not think that this exercise is worth it. The patchset
-adds a lot of complexity and potential problems just to extend
-comm from 16 to 24 for kthreads.
+"One mux to rule them all" :)
 
-Is the problem real or just cosmetic?
+When we switch this mux towards the Island TLMM, do we need to configure
+the APPS TLMM in a particular way, or does the state of that not matter?
 
-If you really want it then it would be much easier to increase
-TASK_COMM_LEN. task_struct is growing rather regularly. Extra
-8 bytes should be acceptable.
-
-If you want to make it more acceptable then keep 16 for
-CONFIG_BASE_SMALL.
+Would it be reasonable to say that when muxed towards the island the
+apps should always be in gpio mux with some predetermined properties, to
+save power?
 
 
-> > > diff --git a/kernel/fork.c b/kernel/fork.c
-> > > index 38681ad44c76..227aec240501 100644
-> > > --- a/kernel/fork.c
-> > > +++ b/kernel/fork.c
-> > > @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
-> > >       bpf_task_storage_free(tsk);
-> > >       exit_creds(tsk);
-> > >       delayacct_tsk_free(tsk);
-> > > +     task_comm_free(tsk);
+To reiterate, as proposed, mentioning a egpio-capable pin in the apps
+DTS will cause it to be muxed to the APSS TLMM. But I'm not convinced
+that we don't have scenarios where one might want to dynamically mux the
+pin between island and apss tlmm.
 
-Just one example of the potential problems. Are you sure that nobody
-will access tsk->comm after this point?
+My suggestion is that even that it's two independent muxes controlled in
+the apps tlmm, we'd express them in the same pinmux, i.e. we'd have
+something like:
 
-task->comm is widely used to describe the affected task_struct because
-it is user friendly.
+some-local-state {
+	pins = "gpio1";
+	function = "gpio";
+	output-high;
+};
 
-Also __put_task_struct() later calls also profile_handoff_task() that might
-get registered even by some external module.
+some-remote-state {
+	pins = "gpio1";
+	function = "island"; /* or just egpio... ? */
+};
 
-Best Regards,
-Petr
+One case I imaging where this could be useful is to allow Linux to
+configure a known state of pins when the island isn't running, from the
+remoteproc driver and then flip it over to island mode before booting
+the remote.
 
-PS: I think that the fork performance is important. It is tested by
-benchmarks, for example, lmbench. But for me, the reliability is even
-more important and any pointer/alloc/free just adds another weak
-point.
+Regards,
+Bjorn
