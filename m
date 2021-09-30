@@ -2,97 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E028B41DC94
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2C241DC83
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351087AbhI3Onu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S1349768AbhI3Olw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348952AbhI3Ons (ORCPT
+        with ESMTP id S1349735AbhI3Olu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:43:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446A0C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Egjnz23MRRc2Eq0mP2OOoBetktHSOuEeQVcHOJ6ZEGs=; b=iNcGtuVmRObx7CF3YbzfDfcTJR
-        rHaSvq6E5aw1YkFyOfnf0w4SFB/94FG92xmPTO6NuQALbU4SYTl7bxLfqw8hGN412FuEAJYZOqAin
-        bjdwgzde7TKi1l7NurDyFFja4U7JyMfj2k7jkYUPzinmPpOdxLKDoE3rqgReKuOglKZ+UJJZC8/DB
-        TQGpMCJtj8VtwPADQMsnH/viwrddci7yDh9DS4Yn3MrzUq5zyEzbHvn7qWF+NvWDG4NsuZr8aIT9i
-        cVnhhj5DUnzfkeAnDdfk78NJCfgKbTewfcTdPZe00XjxJL4t1scw1y184wgt0ngRvE56cW4PNuMGq
-        eOdHeLyA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVxE0-00CxUP-U4; Thu, 30 Sep 2021 14:40:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE7AD30023F;
-        Thu, 30 Sep 2021 16:39:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2E62212EE533; Thu, 30 Sep 2021 16:39:51 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 16:39:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
- PREEMPT_RT
-Message-ID: <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
-References: <20210927211919.310855-1-bigeasy@linutronix.de>
- <20210927211919.310855-5-bigeasy@linutronix.de>
- <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
- <20210930095348.tud6jdcenfkfzugz@linutronix.de>
+        Thu, 30 Sep 2021 10:41:50 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE85C06176A;
+        Thu, 30 Sep 2021 07:40:08 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so7608415otu.0;
+        Thu, 30 Sep 2021 07:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfNuIE13rp6z3b7uF6jThydpTcuxttUW3ys5+lgpqPo=;
+        b=gV7o4AFdt1RodSQAGVag/GYyWfCSyJgmiLleyx4GzHYzqtsyBOD/Kq0iyY4Z5T41M2
+         NHRAEuYA+EbVKf0qbntik82QtiDd/SQgqeHZKhAVNBMp6aDKo0BV9cZCZM4w2G+c7O9+
+         6270u3l+SsO0LhLrBsiOOU+3s7KoSO9M2SF9j8a/9435DLOnOYct2vnuYJR9QE+MaL4K
+         wbhRO/oUARGSD8ekKuhWK5twG4QCzylQwkVcJAuIS9iZYHiCQHG0eCYzWKQ59bkq8S8i
+         tbExTq9etBkE1E11JT7mY8FuYT1OXRXZLZdB1K8A9gdhKu6LKDPkzBRKanl/ImT4r7FL
+         8Qbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfNuIE13rp6z3b7uF6jThydpTcuxttUW3ys5+lgpqPo=;
+        b=fyptCAecTO1tzv8pQC+11B5N03UZI2iuwXH+X+Aw+0mnyvjYeW2VgP7rpcTJ75F+VF
+         wB1woKeCFgAzzTEHS1AJoGdxa0TZmHiFPylWY/Onyl0azgAY+V0JIGcQYIGsYtt8UDm8
+         5hZ/sH5eYIz67JNg1cS91iJv9smjSkRpibo+Aw3WNDkh+ppQEr2pZihSxtIxnety6MSo
+         ksS4X18bEK4Dh+V+r4OXdv5BzrILXL+Tp2fZ1SdMJPHgfnKEXMzebqaso4YSDWMCs95U
+         uPa2qOl/Ac1afprPfnI90L+yMvcWCbwhLPoLic2fcaVS92/8lC/x30zZIAAGmfn0j90n
+         59Zw==
+X-Gm-Message-State: AOAM5334hiQPiK0ViS45VqwoERGmp9SwEnCZIa8lfjX2axVg0BJrakk8
+        X09KyPg/4xBiGR1tvrXHi142d9+FJGRJ9i8V9u/0lz/OhRg=
+X-Google-Smtp-Source: ABdhPJwxPwxuaPZrNznZ2yZIstQTbncfMK+o2gabhB1vBkk2haAb2o5/Ihza/qp5DQcKRLSsvg80TEjpB2+QSPoSlBg=
+X-Received: by 2002:a9d:4e91:: with SMTP id v17mr5603250otk.297.1633012807777;
+ Thu, 30 Sep 2021 07:40:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930095348.tud6jdcenfkfzugz@linutronix.de>
+References: <20210930113527.49659-1-mie@igel.co.jp>
+In-Reply-To: <20210930113527.49659-1-mie@igel.co.jp>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 30 Sep 2021 22:39:56 +0800
+Message-ID: <CAD=hENdLYFGUaYWHbbwPd9kte5pHY6Vs8zjiDn0P8_AeeovCkA@mail.gmail.com>
+Subject: Re: [PATCH] Provider/rxe: Allocate rxe/ib objs by calloc
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:53:48AM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-09-30 11:07:18 [+0200], Peter Zijlstra wrote:
-> > 
-> > IIRC we have existing problems in -RT due to this irq_work softirq muck.
-> 
-> We have existing problems in -RT due irq_work being used without knowing
-> the consequences.
+On Thu, Sep 30, 2021 at 7:35 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+> Some rxe/ib objects are allocated by malloc() and initialize manually
+> respectively. To prevent a bug caused by memory uninitialization, this
+> patch change to use calloc().
 
-Obviously :-)
+Thanks a lot.
 
-> > I think the problem was something Jolsa found a while ago, where perf
-> > defers to an irq_work (from NMI context) and that irq_work wants to
-> > deliver signals, which it can't on -RT, so the whole thing gets punted
-> > to softirq. With the end-result that if you self-profile RT tasks,
-> > things come apart or something.
-> 
-> For signals (at least on x86) we this ARCH_RT_DELAYS_SIGNAL_SEND thingy
-> where the signal is delayed until exit_to_user_mode_loop().
+Zhu Yanjun
 
-Yeah, I think that is what started much of the entry rework.. the signal
-rework is still pending.
-
-> perf_pending_event() is the only non-HARD on RT (on the perf side). I
-> think that is due to perf_event_wakeup() where we have wake_up_all() and
-
-Right, and that is exactly the problem, that needs to run at a higher
-prio than the task that needs it, but softirq makes that 'difficult'.
-
-One possible 'solution' would be to, instead of softirq, run the thing
-as a kthread (worker or otherwise) such that userspace can at least set
-the priority and has a small chance of making it work.
-
-Runing them all at the same prio still sucks (much like the single
-net-RX thing), but at least a kthread is somewhat controllable.
-
-> read_lock_irqsave().
-
-That one is really vexing, that really is just signal delivery to self
-but even when signal stuff is fixed, we're stuck behind that fasync
-rwlock :/
+>
+> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> ---
+>  providers/rxe/rxe.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> index 3533a325..788a1bbd 100644
+> --- a/providers/rxe/rxe.c
+> +++ b/providers/rxe/rxe.c
+> @@ -104,7 +104,7 @@ static struct ibv_pd *rxe_alloc_pd(struct ibv_context *context)
+>         struct ib_uverbs_alloc_pd_resp resp;
+>         struct ibv_pd *pd;
+>
+> -       pd = malloc(sizeof(*pd));
+> +       pd = calloc(1, sizeof(*pd));
+>         if (!pd)
+>                 return NULL;
+>
+> @@ -225,7 +225,7 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+>         struct ib_uverbs_reg_mr_resp resp;
+>         int ret;
+>
+> -       vmr = malloc(sizeof(*vmr));
+> +       vmr = calloc(1, sizeof(*vmr));
+>         if (!vmr)
+>                 return NULL;
+>
+> @@ -382,7 +382,7 @@ static struct ibv_cq *rxe_create_cq(struct ibv_context *context, int cqe,
+>         struct urxe_create_cq_resp resp = {};
+>         int ret;
+>
+> -       cq = malloc(sizeof(*cq));
+> +       cq = calloc(1, sizeof(*cq));
+>         if (!cq)
+>                 return NULL;
+>
+> @@ -594,7 +594,7 @@ static struct ibv_srq *rxe_create_srq(struct ibv_pd *pd,
+>         struct urxe_create_srq_resp resp;
+>         int ret;
+>
+> -       srq = malloc(sizeof(*srq));
+> +       srq = calloc(1, sizeof(*srq));
+>         if (srq == NULL)
+>                 return NULL;
+>
+> @@ -1167,7 +1167,7 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *ibpd,
+>         struct rxe_qp *qp;
+>         int ret;
+>
+> -       qp = malloc(sizeof(*qp));
+> +       qp = calloc(1, sizeof(*qp));
+>         if (!qp)
+>                 goto err;
+>
+> @@ -1659,7 +1659,7 @@ static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd, struct ibv_ah_attr *attr)
+>                 return NULL;
+>         }
+>
+> -       ah = malloc(sizeof(*ah));
+> +       ah = calloc(1, sizeof(*ah));
+>         if (ah == NULL)
+>                 return NULL;
+>
+> --
+> 2.17.1
+>
