@@ -2,158 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF4041E491
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AF241E497
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhI3XHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhI3XHJ (ORCPT
+        id S1348740AbhI3XNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:13:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53248 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhI3XM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:07:09 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DE4C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:05:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id v127so5831032wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/0ppBwTzFJyZU29k8NnFVLUpHHN0JjRi2ilKWlfGyr0=;
-        b=m2W5aSaVDKwfE3FNc+9wDnzbsnXUemJv1W/XOL/bODteZ54AjfeknMIk0XJmaHIXGk
-         IiFldHCpDiSZXB27lktyzl2WdQPvYj3GRqi8aPca+9ZHwQcJmIG5J8FJN0hoAhaVb1k+
-         naiQmaAMU4RBS1xtI88TWO0YEWcBcRQd9Uginpojd5BDJeMmA9NjJbdeQxKK2sCfQSUn
-         5MChR5QLV+mKB60e4Q1RLjzDCuDr7HZm1GjYr8l2nOhDnuTm40eF28v517eCMIhPqBYk
-         ZV6hrXHgC/yExiT/3vMJd8W88pibHT05YG3ZLzzvsXjQF9wswSfYciSVljvHFrnhA0ZX
-         0qEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/0ppBwTzFJyZU29k8NnFVLUpHHN0JjRi2ilKWlfGyr0=;
-        b=JpbfyIOPqNuBtciEOsKUWoyNOV4VRbuGzdUF6nFuGfbC+/AQYGigtXahE0Jp/tLVKU
-         EKbGDW21ubWwXkJvfCye0ZrifwEZ/L59nqjIs+NiNHbghh2AoPT+FhnLZ0JnQSEBZdBo
-         iVnNfu/6vjjTS9xWJw3qu98ciai3COxjgCBVMFlw3NzZtR9ZH94AohXtsLcfyZOS1Nxm
-         I7HupRcwVBYK5D/26B9Com8vhGBgHB5ok+jjGkpimTU7eL4bx27/TJr2S9MJ007lCHq5
-         kwd3FJPoUWslbMhuYSW6zJ13uzm7A/UGtkpZnzwo8TfOHSTDcQUdXLiFb6cYHpVzSMHQ
-         gl0g==
-X-Gm-Message-State: AOAM530Bfs961oZQ2OAdAzwAh/iphjjeGD0LI7U2K/U48wIhToHHYPUW
-        dOOOfXfBBHX+Hza3teBJGeWUDaa5qIky00LwVTNZ1g==
-X-Google-Smtp-Source: ABdhPJyQKGxZL9U7h8OsHsmjGbjG2xDqezB1BjC2QfAaVsqTUNY3IYI2VzP39BmKu96VSzdwhdlAS9X09q/4zRwh8Fw=
-X-Received: by 2002:a7b:c453:: with SMTP id l19mr1390669wmi.7.1633043121905;
- Thu, 30 Sep 2021 16:05:21 -0700 (PDT)
+        Thu, 30 Sep 2021 19:12:57 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633043472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yo+TYluRAlDqPIHiwUd1zfkElfADG2oaYeODsMOInaM=;
+        b=H/LMn1DxDY26ScZTfsxs2K5eAyxF1TenwThY7/5G46bO1VSJsX0PYh38Pm15CSrcaXgOar
+        LAXlVO1eeD8zhh9qRTxkMtvtMd1BxfF0xQYU/D8GybXIf/YpppONe4Z7YNyqeljQR1NLNV
+        bj4/pS5LLdUt/ESS9kJ6DkGKQI6j3/Rr3k4nVrnianM1YHss6Ql3UVPZxf+QxrXnCXpGSy
+        rpnomXDwmSHa+u+eWHWnwQ0ewIYiSw9X6nGjtSVTxm0SF3lC12NvfDzzM+iUHgWpc8Bllo
+        YwWC2OiZAbCyhxvlk50WCx/xIkk6wAzSjRZiK5+yXamnCWqW8Ze+6I39Ll2ZGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633043472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yo+TYluRAlDqPIHiwUd1zfkElfADG2oaYeODsMOInaM=;
+        b=ZA/73UylhQajg5VN4tT7pXnPmch/+Qaqs6O+2X+npusBnIoX7089S85la+ijLmQ6FEhfSy
+        85VK+NCbxGB8MICw==
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
+ on x86
+In-Reply-To: <20210930172206.1a34279b@oasis.local.home>
+References: <163163030719.489837.2236069935502195491.stgit@devnote2>
+ <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+ <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
+ <874ka17t8s.ffs@tglx> <20210930172206.1a34279b@oasis.local.home>
+Date:   Fri, 01 Oct 2021 01:11:12 +0200
+Message-ID: <87wnmx64mn.ffs@tglx>
 MIME-Version: 1.0
-References: <20210930222048.1692635-1-dlatypov@google.com> <20210930222048.1692635-5-dlatypov@google.com>
-In-Reply-To: <20210930222048.1692635-5-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 1 Oct 2021 07:05:10 +0800
-Message-ID: <CABVgOS=SVHSrnTaa0hYsyn8KV_A7FCTaAmDx5ST6Jb2k4TXWSg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] kunit: tool: support running each suite/test separately
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 6:21 AM Daniel Latypov <dlatypov@google.com> wrote:
+On Thu, Sep 30 2021 at 17:22, Steven Rostedt wrote:
+> On Thu, 30 Sep 2021 21:34:11 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> The new --run_isolated flag makes the tool boot the kernel once per
-> suite or test, preventing leftover state from one suite to impact the
-> other. This can be useful as a starting point to debugging test
-> hermeticity issues.
+>> Masami, feel free to merge them over your tree. If not, let me know and
+>> I'll pick them up tomorrow morning.
 >
-> Note: it takes a lot longer, so people should not use it normally.
->
-> Consider the following very simplified example:
->
->   bool disable_something_for_test = false;
->   void function_being_tested() {
->     ...
->     if (disable_something_for_test) return;
->     ...
->   }
->
->   static void test_before(struct kunit *test)
->   {
->     disable_something_for_test = true;
->     function_being_tested();
->     /* oops, we forgot to reset it back to false */
->   }
->
->   static void test_after(struct kunit *test)
->   {
->     /* oops, now "fixing" test_before can cause test_after to fail! */
->     function_being_tested();
->   }
->
-> Presented like this, the issues are obvious, but it gets a lot more
-> complicated to track down as the amount of test setup and helper
-> functions increases.
->
-> Another use case is memory corruption. It might not be surfaced as a
-> failure/crash in the test case or suite that caused it. I've noticed in
-> kunit's own unit tests, the 3rd suite after might be the one to finally
-> crash after an out-of-bounds write, for example.
->
-> Example usage:
->
-> Per suite:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
-> ...
-> Starting KUnit Kernel (1/7)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> ....
-> Testing complete. 5 tests run. 0 failed. 0 crashed. 0 skipped.
-> Starting KUnit Kernel (2/7)...
-> ============================================================
-> ======== [PASSED] kunit-try-catch-test ========
-> ...
->
-> Per test:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
-> Starting KUnit Kernel (1/23)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> [PASSED] parse_filter_test
-> ============================================================
-> Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
-> Starting KUnit Kernel (2/23)...
-> ============================================================
-> ======== [PASSED] kunit_executor_test ========
-> [PASSED] filter_subsuite_test
-> ...
->
-> It works with filters as well:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite example
-> ...
-> Starting KUnit Kernel (1/1)...
-> ============================================================
-> ======== [PASSED] example ========
-> ...
->
-> It also handles test filters, '*.*skip*' runs these 3 tests:
->   kunit_status.kunit_status_mark_skipped_test
->   example.example_skip_test
->   example.example_mark_skipped_test
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
-> ---
+> Masami usually goes through my tree. Want me to take it or do you want
+> to?
 
-Thanks -- this version works for me.
+Now I'm really confused. Masami poke Ingo to merge stuff which goes
+usually through your tree !?!
 
-I think the requirement that test and suite names contain neither full
-stops nor spaces is a reasonable one. There aren't any current tests
-which would break it, as far as I know.
+But sure, feel free to pick it up. I have enough stuff on my plate
+already.
 
-Cheers,
--- David
+Thanks,
+
+        tglx
