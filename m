@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602E341E51E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8715D41E51F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350760AbhI3XyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
+        id S1350682AbhI3Xz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:55:26 -0400
+Received: from mga11.intel.com ([192.55.52.93]:9674 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350449AbhI3XyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:54:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C87876124D;
-        Thu, 30 Sep 2021 23:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633045939;
-        bh=OLll2I34s+GJblJ/EknxqjbF2vBQhG9L9rum++osrXU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dpeR/32gdT9egDViUVPwMvi7X2hl5x3hz1ATeZoRuxRt2+/1KQyR/wU9a74lef0+n
-         49WG3kBElEj+qf5Q/MaVhVLj/YpNZgNvI4Dam0Dztxrh4UEpQ81iRgWRPH81q7oKcE
-         2Z5KOTaXfBHe/+zOdn1kZIvgFykW/FQ8WVeSGGYoHzi0aMfmMDCYSaRP0y+2F1NXHS
-         rhqrFVOTK2jmU61Kj/teeek1LEG9g4WoWCSSSmTbkOXWKmNiNYfUQAhBVNxjUGNo3T
-         39zDFwS0uIU/CKIM5+T7yFDn3epvQiilDxJaxLV2rZdltP2kQvqJA5p9zo0TIDE6FK
-         6hB1fp9gckS/Q==
-Date:   Thu, 30 Sep 2021 18:52:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com
-Subject: Re: [RFC PATCH 2/3 v2] PCI/ASPM: Remove struct
- pcie_link_state.acceptable
-Message-ID: <20210930235217.GA925639@bhelgaas>
+        id S230218AbhI3XzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:55:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222118539"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="222118539"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:53:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="521394356"
+Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:53:41 -0700
+Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+To:     Ryan Lee <RyanS.Lee@maximintegrated.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+ <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+ <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
+ <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <SJ0PR11MB5661A19958E5E41125FDD695E7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <15dd3868-7023-67c2-991c-a0083f59f0b5@linux.intel.com>
+Date:   Thu, 30 Sep 2021 18:53:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916084926.32614-3-refactormyself@gmail.com>
+In-Reply-To: <SJ0PR11MB5661A19958E5E41125FDD695E7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:49:25AM +0200, Saheed O. Bolarinwa wrote:
-> The acceptable latencies for each device on the bus are calculated within
-> pcie_aspm_cap_init() and cached in struct pcie_link_state.acceptable. They
-> are only used in pcie_aspm_check_latency() to validate actual latencies.
-> Thus, it is possible to avoid caching these values.
-> 
-> This patch:
->   - removes `acceptable` from struct pcie_link_state
->   - calculates the acceptable latency for each device directly
->   - removes the calculations done within pcie_aspm_cap_init()
-> 
-> Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
-> ---
->  drivers/pci/pcie/aspm.c | 27 ++++++++-------------------
->  1 file changed, 8 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 9e85dfc56657..0c0c055823f1 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -65,12 +65,6 @@ struct pcie_link_state {
->  	u32 clkpm_enabled:1;		/* Current Clock PM state */
->  	u32 clkpm_default:1;		/* Default Clock PM state by BIOS */
->  	u32 clkpm_disable:1;		/* Clock PM disabled */
-> -
-> -	/*
-> -	 * Endpoint acceptable latencies. A pcie downstream port only
-> -	 * has one slot under it, so at most there are 8 functions.
-> -	 */
-> -	struct aspm_latency acceptable[8];
->  };
->  
->  static int aspm_disabled, aspm_force;
-> @@ -389,7 +383,7 @@ static struct pci_dev *pci_function_0(struct pci_bus *linkbus)
->  
->  static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->  {
-> -	u32 latency, lnkcap_up, lnkcap_dw, l1_switch_latency = 0;
-> +	u32 reg32, latency, encoding, lnkcap_up, lnkcap_dw, l1_switch_latency = 0;
->  	struct pci_dev *downstream;
->  	struct aspm_latency latency_up, latency_dw;
->  	struct aspm_latency *acceptable;
-> @@ -402,7 +396,13 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->  
->  	link = endpoint->bus->self->link_state;
->  	downstream = pci_function_0(link->pdev->subordinate);
-> -	acceptable = &link->acceptable[PCI_FUNC(endpoint->devfn)];
-> +	pcie_capability_read_dword(endpoint, PCI_EXP_DEVCAP, &reg32);
 
-I think you can use endpoint->devcap here, can't you?
+> I tried to find the reason why the amp was not detached from the bus properly and
+> found information about CLOCK_STOP_NOW bit in 0x0044 SCP_Ctrl register.
+> It seems like 0x2(ClockStopNow) needs to be configured before the host CLOCK STOP.
+> I was able to get a good result if I add this command in the amp driver suspend function.
+> The amp driver receives the detachment event and register restoration was done properly
+> after the audio resume.
+> I can modify the amp driver for this change but it looks like this needs to be done
+> from the host side. May I have a comment on this? Thanks.
 
-> +	/* Calculate endpoint L0s acceptable latency */
-> +	encoding = (reg32 & PCI_EXP_DEVCAP_L0S) >> 6;
-> +	acceptable->l0s = calc_l0s_acceptable(encoding);
-> +	/* Calculate endpoint L1 acceptable latency */
-> +	encoding = (reg32 & PCI_EXP_DEVCAP_L1) >> 9;
-> +	acceptable->l1 = calc_l1_acceptable(encoding);
+This register is already taken care of in drivers/soundwire/intel.c and
+cadence_master.c
 
-I think it's a little weird that we call pcie_aspm_check_latency() for
-all the functions in a multi-function device.  It's true that they can
-all have different acceptable latencies, but they're all on the
-downstream end of the same link, so they will all see the same exit
-latencies.
+for pm_runtime suspend, the sequence uses sdw_cdns_clock_stop(), which
+will try and prepare devices for clock-stop with a callback, in case any
+imp-def registers is required, then it will call sdw_bus_clk_stop()
+which does a broadcast write:
 
-I would think we could compute the minimum latency across all the
-functions and do a single check to see whether the link can meet that.
-But that would be material for a future patch, not this one.
+sdw_bus_clk_stop(struct sdw_bus *bus)
+{
+	int ret;
 
->  	while (link) {
->  		/* Read direction exit latencies */
-> @@ -664,22 +664,11 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
->  
->  	/* Get and check endpoint acceptable latencies */
->  	list_for_each_entry(child, &linkbus->devices, bus_list) {
-> -		u32 reg32, encoding;
-> -		struct aspm_latency *acceptable =
-> -			&link->acceptable[PCI_FUNC(child->devfn)];
->  
->  		if (pci_pcie_type(child) != PCI_EXP_TYPE_ENDPOINT &&
->  		    pci_pcie_type(child) != PCI_EXP_TYPE_LEG_END)
->  			continue;
->  
-> -		pcie_capability_read_dword(child, PCI_EXP_DEVCAP, &reg32);
-> -		/* Calculate endpoint L0s acceptable latency */
-> -		encoding = (reg32 & PCI_EXP_DEVCAP_L0S) >> 6;
-> -		acceptable->l0s = calc_l0s_acceptable(encoding);
-> -		/* Calculate endpoint L1 acceptable latency */
-> -		encoding = (reg32 & PCI_EXP_DEVCAP_L1) >> 9;
-> -		acceptable->l1 = calc_l1_acceptable(encoding);
-> -
->  		pcie_aspm_check_latency(child);
->  	}
->  }
-> -- 
-> 2.20.1
-> 
+	/*
+	 * broadcast clock stop now, attached Slaves will ACK this,
+	 * unattached will ignore
+	 */
+	ret = sdw_bwrite_no_pm(bus, SDW_BROADCAST_DEV_NUM,
+			       SDW_SCP_CTRL, SDW_SCP_CTRL_CLK_STP_NOW);
+	if (ret < 0) {
+		if (ret != -ENODATA)
+			dev_err(bus->dev, "ClockStopNow Broadcast msg failed %d\n", ret);
+		return ret;
+	}
+
+The codec driver is not supposed to set this bit on its own, what this
+indicates is that the clock will actually stop at the end of the frame.
+Only the master/controller driver can transmit this - there's a very
+strong reason why its a bus functionality.
+
+The other point is that on pm_runtime resume, the Intel host will start
+a SEVERE_RESET sequence. That's a bit different from the 'traditional'
+description of the clock stop due to a power optimization on the Intel
+side (see more below), but doing a reset has precedence over any other
+configuration that might have happened before the clock stopped so the
+amplifier SHALL transition to UNATTACHED on a reset.
+
+Somehow it looks like the amplifiers don't see the clock stopped and
+don't see the reset, that's rather surprising.
+
+If this happens for system suspend/resume, then it's a different story:
+we don't use the clock stop mode at all, the bus will be completely
+reconfigured.
+
+You could try to see if the results change by using the 'traditional'
+clock stop mode with a kernel module parameters
+
+option snd-sof-intel-hda-common sdw_clock_stop_quirks=0
+
+the default is SDW_INTEL_CLK_STOP_BUS_RESET
+
+/*
+ * Require a bus reset (and complete re-enumeration) when exiting
+ * clock stop modes. This may be needed if the controller power was
+ * turned off and all context lost. This quirk shall not be used if a
+ * Slave device needs to remain enumerated and keep its context,
+ * e.g. to provide the reasons for the wake, report acoustic events or
+ * pass a history buffer.
+ */
+#define SDW_INTEL_CLK_STOP_BUS_RESET		BIT(3)
+
+In this case, the bus will not be reset, I wonder if this is the part
+that's problematic for the amplifier.
+
+Hope this helps
+-Pierre
