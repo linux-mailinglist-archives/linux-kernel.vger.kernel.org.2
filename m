@@ -2,167 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0051041D2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA8941D2FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348203AbhI3GDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:03:54 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48835 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348194AbhI3GDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:03:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uq5snVM_1632981729;
-Received: from 30.21.164.99(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uq5snVM_1632981729)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 30 Sep 2021 14:02:09 +0800
-Subject: Re: [PATCH] tty: tty_buffer: Fix the softlockup issue in
- flush_to_ldisc
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
-References: <1632971498-57869-1-git-send-email-guanghuifeng@linux.alibaba.com>
- <YVVNSS/+RInLPpx/@kroah.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <63fe76af-0918-2b04-3f71-8572700d6ec1@linux.alibaba.com>
-Date:   Thu, 30 Sep 2021 14:02:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1348211AbhI3GEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:04:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4003 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348184AbhI3GEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:04:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204593418"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="204593418"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 23:02:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="708873824"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Sep 2021 23:02:39 -0700
+Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
+To:     Can Guo <cang@codeaurora.org>, Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
+ <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
+ <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
+ <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
+ <27e9265371e96d0bcc06139ce5f0e026@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <bd99231e-1831-5384-1c01-30b158d0affe@intel.com>
+Date:   Thu, 30 Sep 2021 09:02:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YVVNSS/+RInLPpx/@kroah.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <27e9265371e96d0bcc06139ce5f0e026@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On 2021/9/30 13:38, Greg KH wrote:
-> On Thu, Sep 30, 2021 at 11:11:38AM +0800, Guanghui Feng wrote:
->> When I run ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
->> which look like this one:
+On 30/09/2021 06:57, Can Guo wrote:
+> On 2021-09-30 02:15, Bart Van Assche wrote:
+>> On 9/28/21 8:31 PM, Can Guo wrote:
+>>> On 2021-09-18 01:27, Bart Van Assche wrote:
+>>>> On 9/16/21 6:51 PM, Can Guo wrote:
+>>>>> Assume a scenario where task A and B call ufshcd_devfreq_scale()
+>>>>> simultaneously. After task B calls downgrade_write() [1], but before it
+>>>>> calls down_read() [3], if task A calls down_write() [2], when task B calls
+>>>>> down_read() [3], it will lead to dead lock.
+>>>>
+>>>> Something is wrong with the above description. The downgrade_write() call is
+>>>> not followed by down_read() but by up_read(). Additionally, I don't see how
+>>>> concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock.
+>>>
+>>> As mentioned in the commit msg, the down_read() [3] is from ufshcd_wb_ctrl().
+>>>
+>>> Task A -
+>>> down_write [2]
+>>> ufshcd_clock_scaling_prepare
+>>> ufshcd_devfreq_scale
+>>> ufshcd_clkscale_enable_store
+>>>
+>>> Task B -
+>>> down_read [3]
+>>> ufshcd_exec_dev_cmd
+>>> ufshcd_query_flag
+>>> ufshcd_wb_ctrl
+>>> downgrade_write [1]
+>>> ufshcd_devfreq_scale
+>>> ufshcd_devfreq_target
+>>> devfreq_set_target
+>>> update_devfreq
+>>> devfreq_performance_handler
+>>> governor_store
+>>>
+>>>
+>>>> If one thread calls downgrade_write() and another thread calls down_write()
+>>>> immediately, that down_write() call will block until the other thread has called up_read()
+>>>> without triggering a deadlock.
+>>>
+>>> Since the down_write() caller is blocked, the down_read() caller, which comes after
+>>> down_write(), is blocked too, no? downgrade_write() keeps lock owner as it is, but
+>>> it does not change the fact that readers and writers can be blocked by each other.
 >>
->>    watchdog: BUG: soft lockup - CPU#41 stuck for 67s! [kworker/u192:2:106867]
->>    CPU: 41 PID: 106867 Comm: kworker/u192:2 Kdump: loaded Tainted: G           OE     5.10.23 #1
->>    Hardware name: H3C R4960 G3/BC82AMDDA, BIOS 1.70 01/07/2021
->>    Workqueue: events_unbound flush_to_ldisc
->>    pstate: 00c00009 (nzcv daif +PAN +UAO -TCO BTYPE=--)
->>    pc : slip_unesc+0x80/0x214 [slip]
->>    lr : slip_receive_buf+0x84/0x100 [slip]
->>    sp : ffff80005274bce0
->>    x29: ffff80005274bce0 x28: 0000000000000000
->>    x27: ffff00525626fcc8 x26: ffff800011921078
->>    x25: 0000000000000000 x24: 0000000000000004
->>    x23: ffff00402b4059c0 x22: ffff00402b405940
->>    x21: ffff205d87b81e21 x20: ffff205d87b81b9b
->>    x19: 0000000000000000 x18: 0000000000000000
->>    x17: 0000000000000000 x16: 0000000000000000
->>    x15: 0000000000000000 x14: 5f5f5f5f5f5f5f5f
->>    x13: 5f5f5f5f5f5f5f5f x12: 5f5f5f5f5f5f5f5f
->>    x11: 5f5f5f5f5f5f5f5f x10: 5f5f5f5f5f5f5f5f
->>    x9 : ffff8000097d7628 x8 : ffff205d87b85e20
->>    x7 : 0000000000000000 x6 : 0000000000000001
->>    x5 : ffff8000097dc008 x4 : ffff8000097d75a4
->>    x3 : ffff205d87b81e1f x2 : 0000000000000005
->>    x1 : 000000000000005f x0 : ffff00402b405940
->>    Call trace:
->>     slip_unesc+0x80/0x214 [slip]
->>     tty_ldisc_receive_buf+0x64/0x80
->>     tty_port_default_receive_buf+0x50/0x90
->>     flush_to_ldisc+0xbc/0x110
->>     process_one_work+0x1d4/0x4b0
->>     worker_thread+0x180/0x430
->>     kthread+0x11c/0x120
->>    Kernel panic - not syncing: softlockup: hung tasks
->>    CPU: 41 PID: 106867 Comm: kworker/u192:2 Kdump: loaded Tainted: G           OEL    5.10.23 #1
->>    Hardware name: H3C R4960 G3/BC82AMDDA, BIOS 1.70 01/07/2021
->>    Workqueue: events_unbound flush_to_ldisc
->>    Call trace:
->>     dump_backtrace+0x0/0x1ec
->>     show_stack+0x24/0x30
->>     dump_stack+0xd0/0x128
->>     panic+0x15c/0x374
->>     watchdog_timer_fn+0x2b8/0x304
->>     __run_hrtimer+0x88/0x2c0
->>     __hrtimer_run_queues+0xa4/0x120
->>     hrtimer_interrupt+0xfc/0x270
->>     arch_timer_handler_phys+0x40/0x50
->>     handle_percpu_devid_irq+0x94/0x220
->>     __handle_domain_irq+0x88/0xf0
->>     gic_handle_irq+0x84/0xfc
->>     el1_irq+0xc8/0x180
->>     slip_unesc+0x80/0x214 [slip]
->>     tty_ldisc_receive_buf+0x64/0x80
->>     tty_port_default_receive_buf+0x50/0x90
->>     flush_to_ldisc+0xbc/0x110
->>     process_one_work+0x1d4/0x4b0
->>     worker_thread+0x180/0x430
->>     kthread+0x11c/0x120
->>    SMP: stopping secondary CPUs
+>> Please use the upstream function names when posting upstream patches.
+>> I think that
+>> ufshcd_wb_ctrl() has been renamed into ufshcd_wb_toggle().
 >>
->> In the testcase pty04, there are multple processes and we only pay close attention to the
->> first three actually. The first process call the write syscall to send data to the pty master
->> with all one's strength(tty_write->file_tty_write->do_tty_write->n_tty_write call chain).
->> The second process call the read syscall to receive data by the pty slave(with PF_PACKET socket).
->> The third process will wait a moment in which the first two processes will do there work and then
->> it call ioctl to hangup the pty pair which will cease the first two process read/write to the pty.
->> Before hangup the pty, the first process send data to the pty buffhead with high speed. At the same
->> time if the workqueue is waken up, the workqueue will do the flush_to_ldisc to pop data from pty
->> master's buffhead to line discipline in a loop until there is no more data left without any on one's
->> own schedule which will result in doing work in flush_to_ldisc for a long time. As kernel configured
->> without CONFIG_PREEMPT, there maybe occurs softlockup in the flush_to_ldisc. So I add cond_resched
->> in the flush_to_ldisc while loop to avoid it.
+>> So the deadlock is caused by nested locking - one task holding a
+>> reader lock, another
+>> task calling down_write() and next the first task grabbing the reader
+>> lock recursively?
+>> I prefer one of the following two solutions above the patch that has
+>> been posted since
+>> I expect that both alternatives will result in easier to maintain UFS code:
+>> - Fix the down_read() implementation. Making down_read() wait in case
+>> of nested locking
+>>   seems wrong to me.
+>> - Modify the UFS driver such that it does not lock
+>> hba->clk_scaling_lock recursively.
 > 
-> Please properly wrap your changelog text at 72 columns.
-> 
-> 
->>
->> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
->> ---
->>   drivers/tty/tty_buffer.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
->> index bd2d915..77b92f9 100644
->> --- a/drivers/tty/tty_buffer.c
->> +++ b/drivers/tty/tty_buffer.c
->> @@ -534,6 +534,7 @@ static void flush_to_ldisc(struct work_struct *work)
->>   		if (!count)
->>   			break;
->>   		head->read += count;
->> +		cond_resched();
-> 
-> This is almost never the correct solution for fixing a problem in the
-> kernel anymore.
-> 
-> And if it is, it needs to be documented really really well.  I think you
-> just slowed down the overall throughput of a tty device by adding this
-> call, so are you sure you didn't break something?
-> 
-> And why are you not running with a preempt kernel here?  What prevents
-> that from being enabled to solve issues like this?
+> My current change is the 2nd solution - drop the hba->clk_scaling_lock
+> before calls ufshcd_wb_toggle() to avoid recursive lock.
 
-For server scenario, we usually select CONFIG_PREEMPT_VOLUNTARY instead 
-of selecting CONFIG_PREEMPT. So for this stress test case, lots of data 
-need to receive in the loop in the flush_to_ldisc(), which will block 
-other threads to be scheduled for a long time on this CPU if no 
-scheduling check.
+I have been looking at elevating hba->clk_scaling_lock to be a general purpose
+lock for ufshcd.  That includes allowing down_read if down_write is held already.
+The plan being to hold down_write during the error handler instead of releasing it,
+which would plug some gaps in synchronization.
 
-For the throughput concern, I think we can change to below code to avoid 
-impacting the throughput, which means only need rescheduling if 
-necessary, and also fix the softlockup issue.
+So the locking code would look like this:
 
-+ if (need_resched())
-+	cond_resched();
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index a42a289eaef93..63b6a26e3a327 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -898,7 +898,8 @@ struct ufs_hba {
+ 	enum bkops_status urgent_bkops_lvl;
+ 	bool is_urgent_bkops_lvl_checked;
+ 
+-	struct rw_semaphore clk_scaling_lock;
++	struct rw_semaphore host_rw_sem;
++	struct task_struct *excl_task;
+ 	unsigned char desc_size[QUERY_DESC_IDN_MAX];
+ 	atomic_t scsi_block_reqs_cnt;
+ 
+@@ -1418,4 +1419,42 @@ static inline int ufshcd_rpmb_rpm_put(struct ufs_hba *hba)
+ 	return pm_runtime_put(&hba->sdev_rpmb->sdev_gendev);
+ }
+ 
++static inline void ufshcd_down_read(struct ufs_hba *hba)
++{
++	if (hba->excl_task != current)
++		down_read(&hba->host_rw_sem);
++}
++
++static inline void ufshcd_up_read(struct ufs_hba *hba)
++{
++	if (hba->excl_task != current)
++		up_read(&hba->host_rw_sem);
++}
++
++static inline int ufshcd_down_read_trylock(struct ufs_hba *hba)
++{
++	if (hba->excl_task == current)
++		return 1;
++
++	return down_read_trylock(&hba->host_rw_sem);
++}
++
++static inline void ufshcd_down_write(struct ufs_hba *hba)
++{
++	down_write(&hba->host_rw_sem);
++	hba->excl_task = current;
++}
++
++static inline void ufshcd_up_write(struct ufs_hba *hba)
++{
++	hba->excl_task = NULL;
++	up_write(&hba->host_rw_sem);
++}
++
++static inline void ufshcd_downgrade_write(struct ufs_hba *hba)
++{
++	hba->excl_task = NULL;
++	downgrade_write(&hba->host_rw_sem);
++}
++
+ #endif /* End of Header */
 
-> 
-> Also, having only one CPU burning through a network workload like this
-> seems correct to me, why would you want the CPU to stop handling the
-> data being sent to it like this?  You have at least 40 other ones to do
-> other things here :)
-> 
-> thanks,
-> 
-> greg k-h
-> 
+
+
+
