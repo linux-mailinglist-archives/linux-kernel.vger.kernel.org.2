@@ -2,197 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAC641D09D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A59D41D0A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347470AbhI3Agy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        id S1347367AbhI3Ai0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347396AbhI3Agv (ORCPT
+        with ESMTP id S1345611AbhI3AiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:36:51 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC1DC06176A
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:35:09 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id m26so3432851pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:35:09 -0700 (PDT)
+        Wed, 29 Sep 2021 20:38:25 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDFAC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:36:43 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id w19so9374712ybs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XjJMyo4nepY67DLXBfdTq1qdfOniUTOoSKlZO422mI0=;
-        b=c/uR3dVM+1NVe4obbihceA7rgd8OA3E91zAv+gUeWoCAc7PfSZl1E1/2TwtoCrvWJq
-         6TD0hT9OuycedZg4J6eFUAvC/nBuDeH4nOZpqyFtIj+ym/scWUXWB7hZdGo42QpdJl5h
-         NCbO35gOrQB1k0gimHMkZ3z1HMzd2H3Z1XeR8=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X2m4wTYkqfAEhAyNUuV6Q8DZUcckAKLYKf6ImK4uiq8=;
+        b=ghVBCvPquoWEts3xJ7bN5dEsukBUk9jPfKIf8PHvNz7cc+rkkYrGhYcNzAF7AoYGTs
+         bTHz4n5qKuy4EN0bMG/So4x30K8B/B8RhPi3xH1qpHxopuKczW/GQZdRMnqBow1NTD+2
+         L2RBMh5hk+Hmu/n1wpMTM6KJrMJWZPp0Uyhuo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XjJMyo4nepY67DLXBfdTq1qdfOniUTOoSKlZO422mI0=;
-        b=v34/AsXS/LJAGNs2ideiOc8i7ek1iPi8unKYccq0UAHYZYqvjyvNnDKA5HDXrFCghI
-         o/269FAaatJ0nM1t/hdk+Ys0VqTB0JDuYBsqbLNJ4cbtjSrf9jgOB9golzv0epmm6Pme
-         VcXPktELBiX6kF/DekSXMBlJLj00WcpUnDPfLuwiTiBPqewETo3fcP0oW3tmLPDyd3KQ
-         TzUngh6t9hxTbZ3zBWITFFEcyLCllPqTEo71VwKyZFpibKBn31H0QcZ3KHDIHxYhNDsi
-         7VS//bysuAbE4s5/h8ohIedAGFQ5gGFAbc0vxnvjjVmKx1vASKqbh+b+TNq65a0y5Rah
-         E9Hw==
-X-Gm-Message-State: AOAM532+keia9yLcalkmnB0fP4IkshrVz/bxhJwTh1Bw5rU1jtDTtmMv
-        A8lrM3sy7sQwlzUrmTB1Aa9m7DkanuPihw==
-X-Google-Smtp-Source: ABdhPJzCl8vaM3acFT6ZGZlpSD0orUBM5WLa1c4jnTLVnWtCLiy3A2a6dGM0AmTqMoh5N1nCrM0mZQ==
-X-Received: by 2002:a62:3881:0:b0:44b:6639:6c20 with SMTP id f123-20020a623881000000b0044b66396c20mr1336754pfa.78.1632962108997;
-        Wed, 29 Sep 2021 17:35:08 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:b6b6:ed63:b801:ded7])
-        by smtp.gmail.com with ESMTPSA id 23sm711648pgk.89.2021.09.29.17.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 17:35:08 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: sc7180: Support Parade ps8640 edp bridge
-Date:   Wed, 29 Sep 2021 17:34:58 -0700
-Message-Id: <20210929173343.v2.3.I630340a51130f4582dbe14e42f673b74e0531a2b@changeid>
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-In-Reply-To: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X2m4wTYkqfAEhAyNUuV6Q8DZUcckAKLYKf6ImK4uiq8=;
+        b=kxlXeYv0I1dccuaSs7oJdVmWTa0fNZG3XRjCzu8Z42uEEFltmI7Jc1ihKmuuJ3CoKR
+         WKbV8Y+LTZJTHSZvTlrsCBIZhpPq3CTIQ9FwI5rdxWOIkHmLqPCDgsrULXVtZiiW1FJu
+         jvj823/CmRDyM5bR+SKc/XVI29VtWAX0hz/Yo7cfD2xwZ6NYksinpJbR0BDpF02JiLwZ
+         fPUyd/ZLhGJgT9yEnVikVoZ6dNETVKlrUEflRVVr3imH4FqcgN+JBWRW3bvtD2gR/T4n
+         6NF3IAz9YMONHFKMxtE+Us0ZgxbK1ot1/CGX37kVs1je10SNwBkftvJKS35X0GaK1Pl/
+         BS9w==
+X-Gm-Message-State: AOAM5337HkuGQbmVz9NqJKvUA51Nie+HKRW+3hQLnnaKzV56ETEbOJl7
+        143epIyT51W63Eqv8YMzL3hrL0wKdOOoZNb0J0uGzQ==
+X-Google-Smtp-Source: ABdhPJznCK1TcaJ2m1s/SvhUqd/Ojpr+AV8TBGoPuQSyyTXZr4Nts/uCljWIvIeL46o6a+EhgDfRxNdf1hd5krrVdk8=
+X-Received: by 2002:a05:6902:1547:: with SMTP id r7mr3495128ybu.72.1632962202554;
+ Wed, 29 Sep 2021 17:36:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930083201.16636e24@canb.auug.org.au>
+In-Reply-To: <20210930083201.16636e24@canb.auug.org.au>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 30 Sep 2021 09:36:32 +0900
+Message-ID: <CAD=HUj5XF9eNj+1oZZq6CcHfe-ii+M3z97BNPkSY9qW2BHaJbQ@mail.gmail.com>
+Subject: Re: linux-next: Fixes tags need some work in the iommu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a dts fragment file to support the sc7180 boards with the second
-source edp bridge, Parade ps8640.
+On Thu, Sep 30, 2021 at 7:32 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commits
+>
+>   06e620345d54 ("iommu/dma: Fix arch_sync_dma for map")
+>   08ae5d4a1ae9 ("iommu/dma: Fix sync_sg with swiotlb")
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
+It looks like the Fixes messages got rewritten along with the tags in
+the subject lines.
 
-Changes in v2:
-- Add the definition of edp_brij_i2c and some other properties to
-  ps8640 dts, making it match ti-sn65dsi86 dts better
+-David
 
- .../qcom/sc7180-trogdor-parade-ps8640.dtsi    | 108 ++++++++++++++++++
- 1 file changed, 108 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
-new file mode 100644
-index 000000000000..c274ab41bd67
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-parade-ps8640.dtsi
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Trogdor dts fragment for the boards with Parade ps8640 edp bridge
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/ {
-+	pp3300_brij_ps8640: pp3300-brij-ps8640 {
-+		compatible = "regulator-fixed";
-+		status = "okay";
-+		regulator-name = "pp3300_brij_ps8640";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_pp3300_edp_brij_ps8640>;
-+
-+		vin-supply = <&pp3300_a>;
-+	};
-+};
-+
-+&dsi0_out {
-+	remote-endpoint = <&ps8640_in>;
-+};
-+
-+edp_brij_i2c: &i2c2 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	ps8640_bridge: edp-bridge@8 {
-+		compatible = "parade,ps8640";
-+		reg = <0x8>;
-+
-+		powerdown-gpios = <&tlmm 104 GPIO_ACTIVE_LOW>;
-+		reset-gpios = <&tlmm 11 GPIO_ACTIVE_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&edp_brij_en>, <&edp_brij_ps8640_rst>;
-+
-+		vdd12-supply = <&pp1200_brij>;
-+		vdd33-supply = <&pp3300_brij_ps8640>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				ps8640_in: endpoint {
-+					remote-endpoint = <&dsi0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				ps8640_out: endpoint {
-+					remote-endpoint = <&panel_in_edp>;
-+				};
-+			};
-+		};
-+
-+		aux_bus: aux-bus {
-+			panel: panel {
-+				/* Compatible will be filled in per-board */
-+				power-supply = <&pp3300_dx_edp>;
-+				backlight = <&backlight>;
-+
-+				port {
-+					panel_in_edp: endpoint {
-+						remote-endpoint = <&ps8640_out>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&tlmm {
-+	edp_brij_ps8640_rst: edp-brij-ps8640-rst {
-+		pinmux {
-+			pins = "gpio11";
-+			function = "gpio";
-+		};
-+
-+		pinconf {
-+			pins = "gpio11";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+	};
-+
-+	en_pp3300_edp_brij_ps8640: en-pp3300-edp-brij-ps8640 {
-+		pinmux {
-+			pins = "gpio32";
-+			function = "gpio";
-+		};
-+
-+		pinconf {
-+			pins = "gpio32";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+	};
-+};
--- 
-2.33.0.685.g46640cef36-goog
-
+> Fixes tag
+>
+>   Fixes: 82612d66d51d ("iommu: Allow the iommu/dma api to use bounce buffers")
+>
+> has these problem(s):
+>
+>   - Subject does not match target commit subject
+>     Just use
+>         git log -1 --format='Fixes: %h ("%s")'
+>
+> --
+> Cheers,
+> Stephen Rothwell
