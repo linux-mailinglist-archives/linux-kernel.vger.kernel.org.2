@@ -2,140 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EB941DAB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1844B41DABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348606AbhI3NKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:10:42 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:59657 "EHLO pegase2.c-s.fr"
+        id S1349468AbhI3NLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:11:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40038 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235496AbhI3NKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:10:41 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HKtqF6rlCz9sTd;
-        Thu, 30 Sep 2021 15:08:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uup-HwASZHAe; Thu, 30 Sep 2021 15:08:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKtqF5fKsz9sTF;
-        Thu, 30 Sep 2021 15:08:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AAE588B773;
-        Thu, 30 Sep 2021 15:08:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id azUS0K5khefq; Thu, 30 Sep 2021 15:08:57 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E67B8B763;
-        Thu, 30 Sep 2021 15:08:56 +0200 (CEST)
-Subject: Re: [PATCH v2 5/7] sched: move CPU field back into thread_info if
- THREAD_INFO_IN_TASK=y
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20210930125813.197418-1-ardb@kernel.org>
- <20210930125813.197418-6-ardb@kernel.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
-Date:   Thu, 30 Sep 2021 15:08:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210930125813.197418-6-ardb@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+        id S234439AbhI3NLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:11:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205331927"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="205331927"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 06:09:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="476984809"
+Received: from srpawnik.iind.intel.com ([10.223.107.57])
+  by orsmga007.jf.intel.com with ESMTP; 30 Sep 2021 06:09:55 -0700
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     lenb@kernel.org, tony.luck@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sumeet.r.pawnikar@intel.com
+Subject: [PATCH] tools/power turbostat: print power values upto three decimal
+Date:   Thu, 30 Sep 2021 18:40:18 +0530
+Message-Id: <20210930131018.30100-1-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Print power values upto three decimal places in watts.
 
+Suggested-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Le 30/09/2021 à 14:58, Ard Biesheuvel a écrit :
-> THREAD_INFO_IN_TASK moved the CPU field out of thread_info, but this
-> causes some issues on architectures that define raw_smp_processor_id()
-> in terms of this field, due to the fact that #include'ing linux/sched.h
-> to get at struct task_struct is problematic in terms of circular
-> dependencies.
-> 
-> Given that thread_info and task_struct are the same data structure
-> anyway when THREAD_INFO_IN_TASK=y, let's move it back so that having
-> access to the type definition of struct thread_info is sufficient to
-> reference the CPU number of the current task.
-> 
-> Note that this requires THREAD_INFO_IN_TASK's definition of the
-> task_thread_info() helper to be updated, as task_cpu() takes a
-> pointer-to-const, whereas task_thread_info() (which is used to generate
-> lvalues as well), needs a non-const pointer. So make it a macro instead.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-> ---
->   arch/arm64/kernel/asm-offsets.c   |  1 -
->   arch/arm64/kernel/head.S          |  2 +-
->   arch/powerpc/kernel/asm-offsets.c |  2 +-
->   arch/powerpc/kernel/smp.c         |  2 +-
->   include/linux/sched.h             | 13 +------------
->   kernel/sched/sched.h              |  4 ----
->   6 files changed, 4 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> index cee9f3e9f906..0bfc048221af 100644
-> --- a/arch/arm64/kernel/asm-offsets.c
-> +++ b/arch/arm64/kernel/asm-offsets.c
-> @@ -27,7 +27,6 @@
->   int main(void)
->   {
->     DEFINE(TSK_ACTIVE_MM,		offsetof(struct task_struct, active_mm));
-> -  DEFINE(TSK_CPU,		offsetof(struct task_struct, cpu));
->     BLANK();
->     DEFINE(TSK_TI_CPU,		offsetof(struct task_struct, thread_info.cpu));
->     DEFINE(TSK_TI_FLAGS,		offsetof(struct task_struct, thread_info.flags));
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 17962452e31d..6a98f1a38c29 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -412,7 +412,7 @@ SYM_FUNC_END(__create_page_tables)
->   	scs_load \tsk
->   
->   	adr_l	\tmp1, __per_cpu_offset
-> -	ldr	w\tmp2, [\tsk, #TSK_CPU]
-> +	ldr	w\tmp2, [\tsk, #TSK_TI_CPU]
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 47d3ba895d6d..26f640f61010 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -4698,7 +4698,7 @@ int print_thermal(struct thread_data *t, struct core_data *c, struct pkg_data *p
+ 
+ void print_power_limit_msr(int cpu, unsigned long long msr, char *label)
+ {
+-	fprintf(outf, "cpu%d: %s: %sabled (%f Watts, %f sec, clamp %sabled)\n",
++	fprintf(outf, "cpu%d: %s: %sabled (%0.3f Watts, %f sec, clamp %sabled)\n",
+ 		cpu, label,
+ 		((msr >> 15) & 1) ? "EN" : "DIS",
+ 		((msr >> 0) & 0x7FFF) * rapl_power_units,
+@@ -4762,7 +4762,7 @@ int print_rapl(struct thread_data *t, struct core_data *c, struct pkg_data *p)
+ 			cpu, msr, (msr >> 63) & 1 ? "" : "UN");
+ 
+ 		print_power_limit_msr(cpu, msr, "PKG Limit #1");
+-		fprintf(outf, "cpu%d: PKG Limit #2: %sabled (%f Watts, %f* sec, clamp %sabled)\n",
++		fprintf(outf, "cpu%d: PKG Limit #2: %sabled (%0.3f Watts, %f* sec, clamp %sabled)\n",
+ 			cpu,
+ 			((msr >> 47) & 1) ? "EN" : "DIS",
+ 			((msr >> 32) & 0x7FFF) * rapl_power_units,
+-- 
+2.17.1
 
-Why do you need to change the name ?
-
-For powerpc64, you leave TASK_CPU.
-
->   	ldr	\tmp1, [\tmp1, \tmp2, lsl #3]
->   	set_this_cpu_offset \tmp1
->   	.endm
-> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-> index e563d3222d69..e37e4546034e 100644
-> --- a/arch/powerpc/kernel/asm-offsets.c
-> +++ b/arch/powerpc/kernel/asm-offsets.c
-> @@ -93,7 +93,7 @@ int main(void)
->   #endif /* CONFIG_PPC64 */
->   	OFFSET(TASK_STACK, task_struct, stack);
->   #ifdef CONFIG_SMP
-> -	OFFSET(TASK_CPU, task_struct, cpu);
-> +	OFFSET(TASK_CPU, task_struct, thread_info.cpu);
->   #endif
->   
->   #ifdef CONFIG_LIVEPATCH
-
-...
