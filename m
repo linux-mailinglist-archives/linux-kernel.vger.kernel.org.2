@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF8141D279
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3FD41D278
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236852AbhI3Env (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 00:43:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:28538 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348004AbhI3Enu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 00:43:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="205246077"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="205246077"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 21:42:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="437899154"
-Received: from yzhu3-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.37.25])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 21:42:06 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     Zhu Lingshan <lingshan.zhu@intel.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>
-Subject: [PATCH 1/1] virtio: Fix virtio transitional ids
-Date:   Wed, 29 Sep 2021 21:41:31 -0700
-Message-Id: <20210930044131.3742311-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1347991AbhI3Ent (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 00:43:49 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36294 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347942AbhI3Ens (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 00:43:48 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 1A9951053529;
+        Thu, 30 Sep 2021 14:42:03 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mVntS-000jJq-FD; Thu, 30 Sep 2021 14:42:02 +1000
+Date:   Thu, 30 Sep 2021 14:42:02 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     djwong@kernel.org, linux-xfs@vger.kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Message-ID: <20210930044202.GP2361455@dread.disaster.area>
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929212347.1139666-1-rkovhaev@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=epq8cqlX c=1 sm=1 tr=0 ts=6155401c
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
+        a=Wxa0iJoosyqG7NVgZfMA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d61914ea6ada ("virtio: update virtio id table, add
-transitional ids") adds transitional virtio PCI IDs. But it uses the ID
-range (1000-1009). But as per virtio spec [1], transitional PCI ID
-range is (0x1000-0x1009).
+On Wed, Sep 29, 2021 at 02:23:47PM -0700, Rustam Kovhaev wrote:
+> For kmalloc() allocations SLOB prepends the blocks with a 4-byte header,
+> and it puts the size of the allocated blocks in that header.
+> Blocks allocated with kmem_cache_alloc() allocations do not have that
+> header.
+> 
+> SLOB explodes when you allocate memory with kmem_cache_alloc() and then
+> try to free it with kfree() instead of kmem_cache_free().
+> SLOB will assume that there is a header when there is none, read some
+> garbage to size variable and corrupt the adjacent objects, which
+> eventually leads to hang or panic.
+> 
+> Let's make XFS work with SLOB by using proper free function.
+> 
+> Fixes: 9749fee83f38 ("xfs: enable the xfs_defer mechanism to process extents to free")
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 
-So modify the IDs to use hex values (0x1000-0x1009).
+IOWs, XFS has been broken on SLOB for over 5 years and nobody
+anywhere has noticed.
 
-[1] - https://docs.oasis-open.org/virtio/virtio/v1.1/virtio-v1.1.html
+And we've just had a discussion where the very best solution was to
+use kfree() on kmem_cache_alloc() objects so we didn't ahve to spend
+CPU doing global type table lookups or use an extra 8 bytes of
+memory per object to track the slab cache just so we could call
+kmem_cache_free() with the correct slab cache.
 
-Fixes: d61914ea6ada ("virtio: update virtio id table, add transitional ids")
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- include/uapi/linux/virtio_ids.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+But, of course, SLOB doesn't allow this and I was really tempted to
+solve that by adding a Kconfig "depends on SLAB|SLUB" option so that
+we don't have to care about SLOB not working.
 
-diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
-index 80d76b75bccd..7aa2eb766205 100644
---- a/include/uapi/linux/virtio_ids.h
-+++ b/include/uapi/linux/virtio_ids.h
-@@ -73,12 +73,12 @@
-  * Virtio Transitional IDs
-  */
- 
--#define VIRTIO_TRANS_ID_NET		1000 /* transitional virtio net */
--#define VIRTIO_TRANS_ID_BLOCK		1001 /* transitional virtio block */
--#define VIRTIO_TRANS_ID_BALLOON		1002 /* transitional virtio balloon */
--#define VIRTIO_TRANS_ID_CONSOLE		1003 /* transitional virtio console */
--#define VIRTIO_TRANS_ID_SCSI		1004 /* transitional virtio SCSI */
--#define VIRTIO_TRANS_ID_RNG		1005 /* transitional virtio rng */
--#define VIRTIO_TRANS_ID_9P		1009 /* transitional virtio 9p console */
-+#define VIRTIO_TRANS_ID_NET		0x1000 /* transitional virtio net */
-+#define VIRTIO_TRANS_ID_BLOCK		0x1001 /* transitional virtio block */
-+#define VIRTIO_TRANS_ID_BALLOON		0x1002 /* transitional virtio balloon */
-+#define VIRTIO_TRANS_ID_CONSOLE		0x1003 /* transitional virtio console */
-+#define VIRTIO_TRANS_ID_SCSI		0x1004 /* transitional virtio SCSI */
-+#define VIRTIO_TRANS_ID_RNG		0x1005 /* transitional virtio rng */
-+#define VIRTIO_TRANS_ID_9P		0x1009 /* transitional virtio 9p console */
- 
- #endif /* _LINUX_VIRTIO_IDS_H */
+However, as it turns out that XFS on SLOB has already been broken
+for so long, maybe we should just not care about SLOB code and
+seriously consider just adding a specific dependency on SLAB|SLUB...
+
+Thoughts?
+
+Cheers,
+
+Dave.
 -- 
-2.25.1
-
+Dave Chinner
+david@fromorbit.com
