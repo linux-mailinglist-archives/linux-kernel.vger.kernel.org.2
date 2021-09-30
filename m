@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457E641D535
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E673D41D530
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349071AbhI3IJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:09:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39175 "EHLO mga06.intel.com"
+        id S1349021AbhI3IIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:08:39 -0400
+Received: from muru.com ([72.249.23.125]:39052 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349131AbhI3IIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:08:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="286149407"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="286149407"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:05:01 -0700
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="476915768"
-Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.115])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:04:59 -0700
-Date:   Thu, 30 Sep 2021 16:05:23 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Oliver Sang <oliver.sang@intel.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        0day robot <lkp@intel.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [driver core]  eedc73d4f3:
- BUG:kernel_reboot-without-warning_in_boot_stage
-Message-ID: <YVVtnrEn4wg7QVGs@rli9-dbox>
-References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
- <20210929150240.GB12854@xsang-OptiPlex-9020>
- <YVSCs7BDC6ODf+oZ@kroah.com>
- <20210930055944.GA29843@xsang-OptiPlex-9020>
- <YVVX3ir2DHg0FUxF@kroah.com>
+        id S1349206AbhI3IH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:07:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id C235B8050;
+        Thu, 30 Sep 2021 08:06:44 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 11:06:13 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Paul Barker <paul.barker@sancloud.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: beaglebone black boot failure Linux v5.15.rc1
+Message-ID: <YVVv9YjIaEksXPEr@atomide.com>
+References: <YUQyQgFAOFnBlcdP@atomide.com>
+ <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
+ <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
+ <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
+ <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
+ <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
+ <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
+ <YUmOGFUFONR/ynfW@atomide.com>
+ <34b4c7a7-155c-5f06-c5c7-54489a59bce1@fi.rohmeurope.com>
+ <YUrt3fGQVIwmvuOv@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVVX3ir2DHg0FUxF@kroah.com>
+In-Reply-To: <YUrt3fGQVIwmvuOv@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:23:26AM +0200, Greg KH wrote:
-> On Thu, Sep 30, 2021 at 01:59:44PM +0800, Oliver Sang wrote:
-> > Hi, Greg KH,
+* Tony Lindgren <tony@atomide.com> [210922 08:49]:
+> * Vaittinen, Matti <Matti.Vaittinen@fi.rohmeurope.com> [210922 08:45]:
+> > Hi Tony & All,
 > > 
-> > On Wed, Sep 29, 2021 at 05:13:55PM +0200, Greg KH wrote:
-> > > On Wed, Sep 29, 2021 at 11:02:40PM +0800, kernel test robot wrote:
-> > > > 
-> > > > 
-> > > > Greeting,
-> > > > 
-> > > > FYI, we noticed the following commit (built with gcc-9):
-> > > > 
-> > > > commit: eedc73d4f330cf7a8d18d64f327837ae9a00d003 ("[PATCH] driver core: Switch to using the new API kobj_to_dev()")
-> > > > url: https://github.com/0day-ci/linux/commits/Yang-Li/driver-core-Switch-to-using-the-new-API-kobj_to_dev/20210929-102216
-> > > > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+> > 
+> > On 9/21/21 10:47, Tony Lindgren wrote:
+> > > * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
 > > > 
-> > > There is no such commit in my tree, or anywhere else I can see, so I
-> > > have no idea what is happening here :(
-> > > 
+> > > It also allows leaving out the udelay for dra7 iva reset. Care to try
+> > > this and see if it helps?
 > > 
-> > this report was sent to Yang Li, who is the patch author.
-> > https://lore.kernel.org/lkml/1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com/
+> > Thanks Tony. I applied your patch on top of v5.15-rc1 and my BBB booted 
+> > up successfully. I didn't give it more than few attempts though. Do you 
+> > think that could merged as a fix to mainline?
 > > 
-> > since Yang sent the patch to you, so our Rot automatically add you in
-> > the Cc list.
+> > If so - feel free to add a
+> > Tested-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 > 
-> That patch was sent back on March 1.  And was instantly rejected for the
-> obvious reason it was never tested :)
+> OK great, good to hear! And thanks for testing :) Yeah I'll post a proper
+> fix for mainline. But one thing to consider though..
 > 
-> Why is 0-day running on such old changes now?
-sorry about this Greg, that we have a storage crash in last 5 days, and
-the data seems not consistent after we recovered that old patches are
-re-scanned to be tested. We will manually check the existing data to
-avoid test old ones.
+> I'm wondering if we should always wait for the rstctrl bit to go down
+> before we even attempt to check the rststs bit if a rststs registe
+> exists.
 
-> 
-> And it is not obvious that this is being run on an email submission at
-> all, where would I have found that information in this response?  I see
-> a git id that points to a kernel tree.  No email link at all.
-We will improve this in our report to point out the original patch mail
-link whenever possible. Currently we show the git to provide the branch
-that we apply such mail patch for author to reproduce. But definitely,
-it is clearer to show explicitly that this is test against the mail patch.
+I've sent out a proper patch for this at [0] below, please review and
+test.
 
-> 
-> thanks,
-> 
-> greg k-h
+Regards,
+
+Tony
+
+[0] [PATCH] soc: ti: omap-prm: Fix external abort for am335x pruss
+    https://lore.kernel.org/linux-omap/20210930080100.56820-1-tony@atomide.com/T/#u
