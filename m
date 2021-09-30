@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A94241DDD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1EE41DDD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345809AbhI3PoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:44:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:31909 "EHLO
+        id S1345849AbhI3PoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:44:23 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:13156 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345053AbhI3PoR (ORCPT
+        with ESMTP id S1345816AbhI3PoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:44:17 -0400
+        Thu, 30 Sep 2021 11:44:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633016555; x=1664552555;
+  t=1633016558; x=1664552558;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=YvsqvIz8zOr3ivUKTHHuuOf1oT832h6IMldyet80HTk=;
-  b=pMAS2BNPJr0inPLOUTKOFYJmpne41L4TTot8iPcUo4desEkJWjY5/2X8
-   bERUe4MAdD2VjRheVryRe5Q9wo0BmPapt4gIplqyM8Ep+ED/wVyZ0xqu1
-   fie5R5b0HuZLY43CvLM0qvYIdO8bxiskNAO6yB863ub6dIm1xHJ/UJNpN
-   gM2ZTITKHqpN+1o56khjUNWX7U+RuNVyXeSbIcUxw8lMqMHxWTCs0nXVj
-   KPYGpWZ8neQbLjdrG24txV2L4lzJpthnuX5om3sQs8KOjI9vvcpWIjpMj
-   d3mox48sTq+5b66mUXhiX00eBUD5M0E2DUtwdYPytJyGbg7++Jh1L/mgd
-   w==;
-IronPort-SDR: He4AGs6TBfLNhhRWSRnSITdHUBd5ULwn6tBz0OJ5W/LiLM63q0h44AgMX/h7/WXgx3jz7piu/O
- 5Tp5PTgZ8qSMP2GZJiQCNhW9dx59fUGgT6Ebvu12zZpZDY9ByU3TbicTTPWg4XoeTgIzks9qi3
- THrtenN5dcOrP47yxCGt+ztNKX/j67zhuT3tG3RHfA5yik0g1wAC+l9pFbZNMCegu9xhp1boOL
- kD8wsGLYt4JBposllnnZ+183orqb6lY3DYbBZj3OmbhndyjlmyKdKAaN4HC9Y3hkNZbGt413kz
- UNXlE1keEfN4byzDzY7ggHpi
+  bh=k8rTAs71sYOBy5AaUJp/VkRWlqRjMEgAODabDK3o+O0=;
+  b=YgGw5uwfD3om3JW3hLc0YJqsrLIouYg9HiXY7cSOOkVHKbmdDUOYQQNg
+   UEcQL5qDI4nxP4Ewhad4TbSLiOFw2a/u01Xl2k4o/hNI0iUZeuxDsNC6T
+   7AwMWJeiqYsSEMGhMtvSUl17SPjRs7N6BvVn626aLD4TAhPOvQwcMBJSo
+   OTrBxEBHkossS9vIuJ6C6TBVkfNZ1qjoRDBVIRgbEwSSroyxgXJqwBNzk
+   +DDVtn9JBaNJw8aAUu3hGJtpWgOKR/VR8jRlLCodwGlMTzSdUzvA/ZOe5
+   UJpD3J346tkWMyGfqRvXcqZqE3cUEmH7rxDAV0VcZseDDwVgUmzLCfVMe
+   A==;
+IronPort-SDR: om+BUmowvRp8l5/Q9fEH/qQF+wec+POz3auxqoclxtx1R0+PKvmiJN87p4I8Xh3sYCZ/JXeEGh
+ aQsmlJ8kDMU4J6AEgiaWSGvpB9VjYaizp820S0+CAQr3DKLkLVaW454f0UdoKTLWUolFvraMv/
+ aHELLLx2Hrh0/0pCmZsSaACIEaFD+skYvVC11K6w0TwCxD9BMxujnHzNOINYKPCOjrqE4LfwQe
+ egSuMyrTByLLsd4xmUSYMkWHryTNCBp/7U3KZjiFoJbD2Ch6TU2pUsmZ4L/u7gkPjusaAxgTop
+ /iMkPhP05/9vBtkWvIJEcxZ8
 X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="146284152"
+   d="scan'208";a="138586105"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 08:42:34 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 08:42:37 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 30 Sep 2021 08:42:34 -0700
+ 15.1.2176.14; Thu, 30 Sep 2021 08:42:36 -0700
 Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 08:42:32 -0700
+ 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 08:42:34 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 1/3] ARM: dts: at91: sama7g5ek: add suspend voltage for ddr3l rail
-Date:   Thu, 30 Sep 2021 18:42:17 +0300
-Message-ID: <20210930154219.2214051-2-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 2/3] ARM: at91: pm: group constants and addresses loading
+Date:   Thu, 30 Sep 2021 18:42:18 +0300
+Message-ID: <20210930154219.2214051-3-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
 References: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
@@ -61,42 +61,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAMA7G5-EK board has DDR3L type of memory soldered. This needs 1.35V. The
-1.35V for DDR3L rail at run-time is selected by the proper configuration
-on SELV2 pin (for 1.35V it needs to be in high-z state). When suspended
-the MCP16502 PMIC soldered on SAMA7G5-EK will use different sets of
-configuration registers to provide proper voltages on its rail. Run-time
-configuration registers could be configured differently than suspend
-configuration register for MCP16502 (VSEL2 affects only run-time
-configuration). In suspend states the DDR3L memory soldered on SAMA7G5-EK
-switches to self-refresh. Even on self-refresh it needs to be powered by
-a 1.35V rail. Thus, make sure the PMIC is configured properly when system
-is suspended.
+Group constants and addresses loading. This commit prepares the field for
+the next one.
 
-Fixes: 7540629e2fc7 (ARM: dts: at91: add sama7g5 SoC DT and sama7g5-ek")
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/boot/dts/at91-sama7g5ek.dts | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/mach-at91/pm_suspend.S | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91-sama7g5ek.dts b/arch/arm/boot/dts/at91-sama7g5ek.dts
-index 4e6bcb7fdfd4..be905eb1da31 100644
---- a/arch/arm/boot/dts/at91-sama7g5ek.dts
-+++ b/arch/arm/boot/dts/at91-sama7g5ek.dts
-@@ -206,11 +206,13 @@ vddioddr: VDD_DDR {
+diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
+index cbd61a3bcab1..34f251fdb743 100644
+--- a/arch/arm/mach-at91/pm_suspend.S
++++ b/arch/arm/mach-at91/pm_suspend.S
+@@ -1014,6 +1014,15 @@ ENTRY(at91_pm_suspend_in_sram)
+ 	mov	tmp1, #0
+ 	mcr	p15, 0, tmp1, c7, c10, 4
  
- 					regulator-state-standby {
- 						regulator-on-in-suspend;
-+						regulator-suspend-microvolt = <1350000>;
- 						regulator-mode = <4>;
- 					};
- 
- 					regulator-state-mem {
- 						regulator-on-in-suspend;
-+						regulator-suspend-microvolt = <1350000>;
- 						regulator-mode = <4>;
- 					};
- 				};
++	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
++	str	tmp1, .mckr_offset
++	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
++	str	tmp1, .pmc_version
++	ldr	tmp1, [r0, #PM_DATA_MEMCTRL]
++	str	tmp1, .memtype
++	ldr	tmp1, [r0, #PM_DATA_MODE]
++	str	tmp1, .pm_mode
++
+ 	ldr	tmp1, [r0, #PM_DATA_PMC]
+ 	str	tmp1, .pmc_base
+ 	ldr	tmp1, [r0, #PM_DATA_RAMC0]
+@@ -1022,14 +1031,6 @@ ENTRY(at91_pm_suspend_in_sram)
+ 	str	tmp1, .sramc1_base
+ 	ldr	tmp1, [r0, #PM_DATA_RAMC_PHY]
+ 	str	tmp1, .sramc_phy_base
+-	ldr	tmp1, [r0, #PM_DATA_MEMCTRL]
+-	str	tmp1, .memtype
+-	ldr	tmp1, [r0, #PM_DATA_MODE]
+-	str	tmp1, .pm_mode
+-	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
+-	str	tmp1, .mckr_offset
+-	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
+-	str	tmp1, .pmc_version
+ 	/* Both ldrne below are here to preload their address in the TLB */
+ 	ldr	tmp1, [r0, #PM_DATA_SHDWC]
+ 	str	tmp1, .shdwc
 -- 
 2.25.1
 
