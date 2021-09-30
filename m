@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3641D4DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D093A41D4A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348880AbhI3H5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:57:51 -0400
-Received: from relay-b01.edpnet.be ([212.71.1.221]:36606 "EHLO
-        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348806AbhI3H5u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:57:50 -0400
-X-Greylist: delayed 837 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 03:57:49 EDT
-X-ASG-Debug-ID: 1632987728-15c4341a85b81220001-xx1T2L
-Received: from zotac.vandijck-laurijssen.be (94.105.120.149.dyn.edpnet.net [94.105.120.149]) by relay-b01.edpnet.be with ESMTP id gocwNBg9nSrzGfSh; Thu, 30 Sep 2021 09:42:08 +0200 (CEST)
-X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
-X-Barracuda-Effective-Source-IP: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
-X-Barracuda-Apparent-Source-IP: 94.105.120.149
-Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
-        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id D797D168301A;
-        Thu, 30 Sep 2021 09:42:07 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 09:42:06 +0200
-From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
- if receive TP.DT with error length
-Message-ID: <20210930074206.GB7502@x1.vandijck-laurijssen.be>
-X-ASG-Orig-Subj: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
- if receive TP.DT with error length
-Mail-Followup-To: Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
-User-Agent: Mutt/1.5.22 (2013-10-16)
-X-Barracuda-Connect: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
-X-Barracuda-Start-Time: 1632987728
-X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at edpnet.be
-X-Barracuda-Scan-Msg-Size: 2144
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 0.50
-X-Barracuda-Spam-Status: No, SCORE=0.50 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.92948
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-        0.50 BSF_RULE7568M          Custom Rule 7568M
+        id S1348822AbhI3Hom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348786AbhI3Hol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:44:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEFF461527;
+        Thu, 30 Sep 2021 07:42:58 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mVqiW-00Du57-Tz; Thu, 30 Sep 2021 08:42:57 +0100
+Date:   Thu, 30 Sep 2021 08:42:56 +0100
+Message-ID: <87h7e2tsov.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 14/16] arm64: Add a capability for FEAT_ECV
+In-Reply-To: <20210929160329.GE22029@willie-the-truck>
+References: <20210922211941.2756270-1-maz@kernel.org>
+        <20210922211941.2756270-15-maz@kernel.org>
+        <20210929160329.GE22029@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
-> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
-> cancel session when receive unexpected TP.DT message.
-
-SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
-However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
-If I remember well, they are even not 'reserved'.
-
+On Wed, 29 Sep 2021 17:03:30 +0100,
+Will Deacon <will@kernel.org> wrote:
 > 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  net/can/j1939/transport.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> On Wed, Sep 22, 2021 at 10:19:39PM +0100, Marc Zyngier wrote:
+> > Add a new capability to detect the Enhanced Counter Virtualization
+> > feature (FEAT_ECV).
+> > 
+> > Reviewed-by: Oliver Upton <oupton@google.com>
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
+> >  arch/arm64/tools/cpucaps       |  1 +
+> >  2 files changed, 11 insertions(+)
+> > 
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index f8a3067d10c6..26b11ce8fff6 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -1926,6 +1926,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+> >  		.sign = FTR_UNSIGNED,
+> >  		.min_field_value = 1,
+> >  	},
+> > +	{
+> > +		.desc = "Enhanced Counter Virtualization",
+> > +		.capability = ARM64_HAS_ECV,
+> > +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
+> > +		.matches = has_cpuid_feature,
+> > +		.sys_reg = SYS_ID_AA64MMFR0_EL1,
+> > +		.field_pos = ID_AA64MMFR0_ECV_SHIFT,
+> > +		.sign = FTR_UNSIGNED,
+> > +		.min_field_value = 1,
+> > +	},
 > 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index bb5c4b8..eedaeaf 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
->  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->  				 struct sk_buff *skb)
->  {
-> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
->  	struct j1939_priv *priv = session->priv;
->  	struct j1939_sk_buff_cb *skcb, *se_skcb;
->  	struct sk_buff *se_skb = NULL;
-> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->  
->  	skcb = j1939_skb_to_cb(skb);
->  	dat = skb->data;
-> -	if (skb->len <= 1)
-> +	if (skb->len != 8) {
->  		/* makes no sense */
-> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
->  		goto out_session_cancel;
+> Could we add a HWCAP for this and change the field to FTR_VISIBLE, please? I
+> know most users of the counter are indirected via the vDSO, but there are
+> some users out there using the counter directly and it would save them
+> having to probe via SIGILL if there was a hwcap available.
 
-I think this is a situation of
-"be strict on what you send, be tolerant on what you receive".
+Fair enough, I'll add that.
 
-Did you find a technical reason to abort a session because the last frame didn't
-bring overhead that you don't use?
+The problem of the vdso remains though, and is by far the most common
+user of the feature. Any idea on how to handle it? Patching the vdso
+is ugly, and I'd rather avoid it.
 
-Kind regards,
-Kurt
-> +	}
->  
->  	switch (session->last_cmd) {
->  	case 0xff:
-> @@ -1904,7 +1907,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->   out_session_cancel:
->  	kfree_skb(se_skb);
->  	j1939_session_timers_cancel(session);
-> -	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
-> +	j1939_session_cancel(session, abort);
->  	j1939_session_put(session);
->  }
->  
-> -- 
-> 2.9.5
-> 
+I briefly looked at using ifunc, but it is likely that the indirection
+would add an extra cost. Are we OK with that?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
