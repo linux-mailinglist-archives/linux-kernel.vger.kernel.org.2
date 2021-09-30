@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A784941E0A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9FA41E0A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353031AbhI3SIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        id S1353168AbhI3SJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353209AbhI3SID (ORCPT
+        with ESMTP id S1353218AbhI3SID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Sep 2021 14:08:03 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BA2C061779
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id t7-20020a258387000000b005b6d7220c79so8893101ybk.16
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:09 -0700 (PDT)
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ADBC0613E3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:11 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id t2-20020a05620a450200b0045e34e4f9c7so14188790qkp.18
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=JQBSJ8qj9mW2upriZ1hUokdADKSbuyuOL0tMdMaGIyA=;
-        b=s0zb3TFc82fA3XBAkcMpi6oec+ReyD7OcULFaBcO4uVLgtojliDt/V9XqnukzyaPol
-         A1j7FIPBDGl1ZjSc0ZQu19AnLj9TllbqEcwRN+TRer3xWWvadPs/ORvRkVe6dvTICt1G
-         ZJSeRN291POY2ZwlPuLkPJfEigA5ifAD8VVI7lIAbUsEkdzuPSZyBYmZlQ0B4+zCW2rr
-         qqRiFZDvF5dgJaJMlYRAszaI2SitdqSUKgdJ5pFoL9uuyAVwfeRdYywQggtwFRNBko2I
-         8/rrf+ej0B9GZ/BRIEXG3mVOFCf/XjamfkW4tLCotoa9+itW1Ey93cSEGhIpV3FRDA+r
-         bR9g==
+        bh=YTs3o+Lcv5DCr2QuauAOS05kw4e75hGm1Ap6LaNmDuQ=;
+        b=X2H89x2ZY/Vpdf/BQvunK6wfPqMyb4DEDk9pbiFs6nK3/2FbhHHbrE6V4xLhMLMO72
+         drYHTD2/KCJ6G99TSY9C0aO1sKa6Of2qEhogYWv2HQTGYu0JWgUpAaLMIJzwMu+or7pa
+         iHk0oBTabObWMRZMT4JZN8w06cBqyUEON9DOp1KFYQGQ3SL+tbs7p/0CMzwj/JX+J6Bv
+         wWym0ky/0NAtPtaaqTZBHkMxxafKQWsjUiZH+m2pu8IQRQNs99qH5Pfj/TWo3mDJ7327
+         NFrnHKXLRwYMI9ciPDGRpaNES499YGFq66cYMWgu6ugJqzdhsfWL/THEpUxc1niccano
+         aXmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JQBSJ8qj9mW2upriZ1hUokdADKSbuyuOL0tMdMaGIyA=;
-        b=LpV+Rcd+M0oWNjp1ZecTdLq4JR/YuTv9a0D3I4Tq9sG91CO6ZC2uWcTRa9ds5MYOHD
-         wR6kOWovdLCT0dvkl3KfvPDxLeaDnEfAznXIiNEDAkopA5gj600xTelqq4Yzx03WiERN
-         +xBmm36U/R+AUev1CZ4KznliOO6jymoNSdEtHeZqzvBrRzER2PfJ2iVLVg2BftrXGumg
-         pe2mW7qr3TpwZ3qDdQnh9E1Sa59pQX7FnTeoPKRxG7GVrkwmJ9CZdIYdCqGYCiXK+YOk
-         mDS3MY1S8zC+vuae3EzOtIRGgW8aogweCiBXiGC9t0K4wqNo0ck8nvE/11ozuQYwBzk6
-         5ncg==
-X-Gm-Message-State: AOAM5332oLHt3MR88vFmqZ0aJefyiTnuDSNoBOFUcfoMui43IEfpE8bk
-        FVXNik/bAmfaryVmZ0i5PE5OAlCt7JPvToX2vpw=
-X-Google-Smtp-Source: ABdhPJygJzfXzJubcmYgFAfGrc+L5exrHwzMqpfVKfj5yjqfYD02sPYHI+OV9HqYRb8L1IT/rL2I3DNS49v9knmwmuI=
+        bh=YTs3o+Lcv5DCr2QuauAOS05kw4e75hGm1Ap6LaNmDuQ=;
+        b=4zYTDacZqN+Lg10kcrJv1jCkG0POd6a2gMiUZYNECHQlfT/nrKJCzkqWdWeB1r+2ry
+         sDUMbi069ow0ZgXxlVDvhQMXTFQTWq0LYuO/uC49psYrvrxsBHAI10jcPFv1Nl4f77kq
+         8jRCUuIr3ALdvk8BXFM4pDA+uxPQ/SCaBUcZiVn3b5GoAb6C52wIA7sh/KTyIw8AAnuK
+         xawR9xzQ9IBGT+phNzZZwBn45YqiheEdIgdwCjIe8rHBLuJQDCQv/iH2kz7hP9k/4FwU
+         Op1qfl6dR+FGN5VwU2FEUldyeopgcZZOnYHYytJU8/sef6Zbt2c+95+mXWubrCsIgkod
+         bSVQ==
+X-Gm-Message-State: AOAM531FTYVyeSfn/uJ0pqqErd/urgiBzGUt8oNgJ0Hz6yyUWHakuQAs
+        UpIvuHiYkEQ3Cls+60X/w0rB7+6Re7EGJ9VgfIs=
+X-Google-Smtp-Source: ABdhPJxQHjdB5w0u1pGsQKGQzmTIef8NLz4brDiegqDKDUQgvgv1vEwzWyrPFnKCP//0W8Pt+jlJdM7oOGX+dho9Rwo=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:ce43:4366:95ca:d6e9])
- (user=samitolvanen job=sendgmr) by 2002:a25:21c2:: with SMTP id
- h185mr689359ybh.495.1633025168233; Thu, 30 Sep 2021 11:06:08 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:05:30 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a0c:8e8e:: with SMTP id
+ x14mr5086772qvb.67.1633025170495; Thu, 30 Sep 2021 11:06:10 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:05:31 -0700
 In-Reply-To: <20210930180531.1190642-1-samitolvanen@google.com>
-Message-Id: <20210930180531.1190642-15-samitolvanen@google.com>
+Message-Id: <20210930180531.1190642-16-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210930180531.1190642-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v4 14/15] x86, kprobes: Fix optprobe_template_func type mismatch
+Subject: [PATCH v4 15/15] x86, build: Allow CONFIG_CFI_CLANG to be selected
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -67,47 +67,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The optprobe_template_func symbol is defined in inline assembly,
-but it's not marked global, which conflicts with the C declaration
-needed for STACK_FRAME_NON_STANDARD and confuses the compiler when
-CONFIG_CFI_CLANG is enabled.
+Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled with
+Clang >= 13.
 
-Marking the symbol global would make the compiler happy, but as the
-compiler also generates a CFI jump table entry for all address-taken
-functions, the jump table ends up containing a jump to the .rodata
-section where optprobe_template_func resides, which results in an
-objtool warning.
-
-Use ASM_STACK_FRAME_NON_STANDARD instead to avoid both issues.
-
+Link: https://bugs.llvm.org/show_bug.cgi?id=51588
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/kernel/kprobes/opt.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 71425ebba98a..95375ef5deee 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -103,6 +103,7 @@ static void synthesize_set_arg1(kprobe_opcode_t *addr, unsigned long val)
- asm (
- 			".pushsection .rodata\n"
- 			"optprobe_template_func:\n"
-+			ASM_STACK_FRAME_NON_STANDARD(optprobe_template_func)
- 			".global optprobe_template_entry\n"
- 			"optprobe_template_entry:\n"
- #ifdef CONFIG_X86_64
-@@ -154,9 +155,6 @@ asm (
- 			"optprobe_template_end:\n"
- 			".popsection\n");
- 
--void optprobe_template_func(void);
--STACK_FRAME_NON_STANDARD(optprobe_template_func);
--
- #define TMPL_CLAC_IDX \
- 	((long)optprobe_template_clac - (long)optprobe_template_entry)
- #define TMPL_MOVE_IDX \
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 16e216b57863..ea6d255a125f 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -107,6 +107,7 @@ config X86
+ 	select ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP	if NR_CPUS <= 4096
+ 	select ARCH_SUPPORTS_LTO_CLANG
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
++	select ARCH_SUPPORTS_CFI_CLANG		if X86_64 && CLANG_VERSION >= 130000
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
 -- 
 2.33.0.800.g4c38ced690-goog
 
