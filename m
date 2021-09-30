@@ -2,235 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78341DC96
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0713B41DC8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351239AbhI3Ony (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:43:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47362 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351101AbhI3Onu (ORCPT
+        id S1350070AbhI3OnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351177AbhI3OnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:43:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633012927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nzXD5cjKF7FslAepTN5/nLeuBpN4bisQvTOXO6EZOBE=;
-        b=dT9tXUHUXOJgh7eYFmOdze7G0h/3SC/4Mj8uW4Yzqn5t7oaoIsU3l6Hn9AvQ0SicNWybak
-        coqfJnT6xSlnE6YdAZWcv2oLec1FcdEkxUxEONuNvWRbGTxU5k65MCJq/Ps1mYFJSThLTU
-        yVHU6DMdVES/qR/2z4C32nZewifCbEo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-Xcvgvp03MRmls9rkUeYCOg-1; Thu, 30 Sep 2021 10:42:04 -0400
-X-MC-Unique: Xcvgvp03MRmls9rkUeYCOg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA8C9101F024;
-        Thu, 30 Sep 2021 14:42:02 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B29E55F4E0;
-        Thu, 30 Sep 2021 14:41:41 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v1 3/3] memory-hotplug.rst: document the "auto-movable" online policy
-Date:   Thu, 30 Sep 2021 16:41:17 +0200
-Message-Id: <20210930144117.23641-4-david@redhat.com>
-In-Reply-To: <20210930144117.23641-1-david@redhat.com>
-References: <20210930144117.23641-1-david@redhat.com>
+        Thu, 30 Sep 2021 10:43:08 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16651C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:41:26 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b204-20020a1c80d5000000b0030cd967c674so1907512wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jd6p1BG5bXsteTlsZdjG0TNxqrqUF9NS4LOIvY0vvPc=;
+        b=UoRLbYNomhTcwEqW2LjkeHxxrWw0jAKLStEDClUN2PIxu/5HgNAAy7QF5sr9ItBr6F
+         2ppRLMfbmGMfGFEWq7CqwTvPVdwcwBMssEoDcCuoGKK1+u4Viw2jX4AHfsO7OdIezvEP
+         HIxbVTnkNSbO/tKacfsfb/aXNtevHP5jjfYPM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=jd6p1BG5bXsteTlsZdjG0TNxqrqUF9NS4LOIvY0vvPc=;
+        b=yId3+iiY9l4nqjx5SmD99UOMnZAmXCUoasd2bGdsX1Q3myhFPtbOLcpACHUFSJfhx2
+         ZvU1Ieruefb13L7f6Jzm9a5WAg601QvDx6chXVBCcMkPM9VcJ7dgO/qGxqYCoo35+zBF
+         qIkolmqHgn2y0CFODygii3F9hl/ntLhyHIbeY2MsorYqnxEhR+iBQ15Dmv4RrS0K7YKt
+         syRwPXNlZFNCpMH/LneDI7aDiveoBN1hwc4DzqXXsgb3Nps73hTJ6RHhjxKo1wZU8DEV
+         VS293MafiemWWjdUsym1oottmZoe6KT2fIyXwOUtYyk9ajCh/Hgeb9WgTeAUgXPPP8t5
+         zE8g==
+X-Gm-Message-State: AOAM531g5Alneb4ljfNWw3P6RK0Of94FgLA5aZMjR9m3rY5XNX0biKwA
+        N9CY4MhjtkI+3Zhkqj+Tpd1e8Q==
+X-Google-Smtp-Source: ABdhPJx3V8QVnWdaBVCJHD8epACgnyYdoZ5WVgHYPgE55mat6dTH1nFFSZUV547WHwjy+c7iWUZ6bg==
+X-Received: by 2002:a05:600c:24f:: with SMTP id 15mr5806244wmj.190.1633012884676;
+        Thu, 30 Sep 2021 07:41:24 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id l11sm3993979wms.45.2021.09.30.07.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:41:24 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 16:41:21 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
+        etom@igel.co.jp
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Add dma-buf support
+Message-ID: <YVXMkSDXybju88TU@phenom.ffwll.local>
+Mail-Followup-To: Shunsuke Mie <mie@igel.co.jp>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>, Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
+        etom@igel.co.jp
+References: <20210929041905.126454-1-mie@igel.co.jp>
+ <20210929041905.126454-3-mie@igel.co.jp>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210929041905.126454-3-mie@igel.co.jp>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit e83a437faa62 ("mm/memory_hotplug: introduce "auto-movable" online
-policy") we introduced a new memory online policy to automatically
-select a zone for memory blocks to be onlined. We added a way to
-set the active online policy and tunables for the auto-movable online
-policy. In follow-up commits we tweaked the "auto-movable" policy to also
-consider memory device details when selecting zones for memory blocks to
-be onlined.
+On Wed, Sep 29, 2021 at 01:19:05PM +0900, Shunsuke Mie wrote:
+> Implement a ib device operation ‘reg_user_mr_dmabuf’. Generate a
+> rxe_map from the memory space linked the passed dma-buf.
+> 
+> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++++++
+>  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
+>  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
+>  4 files changed, 156 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 1ca43b859d80..8bc19ea1a376 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
+>  void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr);
+>  int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+>  		     int access, struct rxe_mr *mr);
+> +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
+> +			    u64 iova, int access, struct rxe_mr *mr);
+>  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr);
+>  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+>  		enum rxe_mr_copy_dir dir);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index 53271df10e47..af6ef671c3a5 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -4,6 +4,7 @@
+>   * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+>   */
+>  
+> +#include <linux/dma-buf.h>
+>  #include "rxe.h"
+>  #include "rxe_loc.h"
+>  
+> @@ -245,6 +246,120 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+>  	return err;
+>  }
+>  
+> +static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
+> +			     struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct rxe_map_set *set;
+> +	struct rxe_phys_buf *buf = NULL;
+> +	struct rxe_map **map;
+> +	void *vaddr, *vaddr_end;
+> +	int num_buf = 0;
+> +	int err;
+> +	size_t remain;
+> +
+> +	mr->dmabuf_map = kzalloc(sizeof &mr->dmabuf_map, GFP_KERNEL);
 
-Let's document the new toggles and how the two online policies we have
-work.
+dmabuf_maps are just tagged pointers (and we could shrink them to actually
+just a tagged pointer if anyone cares about the overhead of the separate
+bool), allocating them seperately is overkill.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- .../admin-guide/mm/memory-hotplug.rst         | 128 +++++++++++++++---
- 1 file changed, 108 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-index ee00b70dedde..c20a2c0031cf 100644
---- a/Documentation/admin-guide/mm/memory-hotplug.rst
-+++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-@@ -165,9 +165,8 @@ Or alternatively::
- 
- 	% echo 1 > /sys/devices/system/memory/memoryXXX/online
- 
--The kernel will select the target zone automatically, usually defaulting to
--``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
--command line or if the memory block would intersect the ZONE_MOVABLE already.
-+The kernel will select the target zone automatically, depending on the
-+configured ``online_policy``.
- 
- One can explicitly request to associate an offline memory block with
- ZONE_MOVABLE by::
-@@ -198,6 +197,9 @@ Auto-onlining can be enabled by writing ``online``, ``online_kernel`` or
- 
- 	% echo online > /sys/devices/system/memory/auto_online_blocks
- 
-+Similarly to manual onlining, with ``online`` the kernel will select the
-+target zone automatically, depending on the configured ``online_policy``.
-+
- Modifying the auto-online behavior will only affect all subsequently added
- memory blocks only.
- 
-@@ -393,9 +395,11 @@ command line parameters are relevant:
- ======================== =======================================================
- ``memhp_default_state``	 configure auto-onlining by essentially setting
-                          ``/sys/devices/system/memory/auto_online_blocks``.
--``movable_node``	 configure automatic zone selection in the kernel. When
--			 set, the kernel will default to ZONE_MOVABLE, unless
--			 other zones can be kept contiguous.
-+``movable_node``	 configure automatic zone selection in the kernel when
-+			 using the ``contig-zones`` online policy. When
-+			 set, the kernel will default to ZONE_MOVABLE when
-+			 onlining a memory block, unless other zones can be kept
-+			 contiguous.
- ======================== =======================================================
- 
- Module Parameters
-@@ -414,20 +418,104 @@ and they can be observed (and some even modified at runtime) via::
- 
- The following module parameters are currently defined:
- 
--======================== =======================================================
--``memmap_on_memory``	 read-write: Allocate memory for the memmap from the
--			 added memory block itself. Even if enabled, actual
--			 support depends on various other system properties and
--			 should only be regarded as a hint whether the behavior
--			 would be desired.
--
--			 While allocating the memmap from the memory block
--			 itself makes memory hotplug less likely to fail and
--			 keeps the memmap on the same NUMA node in any case, it
--			 can fragment physical memory in a way that huge pages
--			 in bigger granularity cannot be formed on hotplugged
--			 memory.
--======================== =======================================================
-+================================ ===============================================
-+``memmap_on_memory``		 read-write: Allocate memory for the memmap from
-+				 the added memory block itself. Even if enabled,
-+				 actual support depends on various other system
-+				 properties and should only be regarded as a
-+				 hint whether the behavior would be desired.
-+
-+				 While allocating the memmap from the memory
-+				 block itself makes memory hotplug less likely
-+				 to fail and keeps the memmap on the same NUMA
-+				 node in any case, it can fragment physical
-+				 memory in a way that huge pages in bigger
-+				 granularity cannot be formed on hotplugged
-+				 memory.
-+``online_policy``		 read-write: Set the basic policy used for
-+				 automatic zone selection when onlining memory
-+				 blocks without specifying a target zone.
-+				 ``contig-zones`` has been the kernel default
-+				 before this parameter was added. After an
-+				 online policy was configured and memory was
-+				 online, the policy should not be changed
-+				 anymore.
-+
-+				 When set to ``contig-zones``, the kernel will
-+				 try keeping zones contiguous. If a memory block
-+				 intersects multiple zones or no zone, the
-+				 behavior depends on the ``movable_node`` kernel
-+				 command line parameter: default to ZONE_MOVABLE
-+				 if set, default to the applicable kernel zone
-+				 (usually ZONE_NORMAL) if not set.
-+
-+				 When set to ``auto-movable``, the kernel will
-+				 try onlining memory blocks to ZONE_MOVABLE if
-+				 possible according to the configuration and
-+				 memory device details. With this policy, one
-+				 can avoid zone imbalances when eventually
-+				 hotplugging a lot of memory later and still
-+				 wanting to be able to hotunplug as much as
-+				 possible reliably, very desirable in
-+				 virtualized environments. As one example, a
-+				 hotplugged DIMM will be onlined either
-+				 completely to ZONE_MOVABLE or completely to
-+				 ZONE_NORMAL, not a mixture.
-+				 As another example, as many memory blocks
-+				 belonging to a virtio-mem device will be
-+				 onlined to ZONE_MOVABLE as possible,
-+				 special-casing units of memory blocks that can
-+				 only get hotunplugged together. *This policy
-+				 does not protect from setups that are
-+				 problematic with ZONE_MOVABLE and does not
-+				 change the zone of memory blocks dynamically
-+				 after they were onlined.*
-+``auto_movable_ratio``		 read-write: Set the maximum MOVABLE:KERNEL
-+				 memory ratio in % for the ``auto-movable``
-+				 online policy. Whether the ratio applies only
-+				 for the system across all NUMA nodes or also
-+				 per NUMA nodes depends on the
-+				 ``auto_movable_numa_aware`` configuration.
-+
-+				 All accounting is based on present memory pages
-+				 in the zones combined with accounting per
-+				 memory device. Memory dedicated to the CMA
-+				 allocator is accounted as MOVABLE, although
-+				 residing on one of the kernel zones. The
-+				 possible ratio depends on the actual workload.
-+				 The kernel default is "301" %, for example,
-+				 allowing for hotplugging 24 GiB to a 8 GiB VM
-+				 and automatically onlining all hotplugged
-+				 memory to ZONE_MOVABLE in many setups. The
-+				 additional 1% deals with some pages being not
-+				 present, for example, because of some firmware
-+				 allocations.
-+
-+				 Note that ZONE_NORMAL memory provided by one
-+				 memory device does not allow for more
-+				 ZONE_MOVABLE memory for a different memory
-+				 device. As one example, onlining memory of a
-+				 hotplugged DIMM to ZONE_NORMAL will not allow
-+				 for another hotplugged DIMM to get onlined to
-+				 ZONE_MOVABLE automatically. In contrast, memory
-+				 hotplugged by a virtio-mem device that got
-+				 onlined to ZONE_NORMAL will allow for more
-+				 ZONE_MOVABLE memory within *the same*
-+				 virtio-mem device.
-+``auto_movable_numa_aware``	 read-write: Configure whether the
-+				 ``auto_movable_ratio`` in the ``auto-movable``
-+				 online policy also applies per NUMA
-+				 node in addition to the whole system across all
-+				 NUMA nodes. The kernel default is "Y".
-+
-+				 Disabling NUMA awareness can be helpful when
-+				 dealing with NUMA nodes that should be
-+				 completely hotunpluggable, onlining the memory
-+				 completely to ZONE_MOVABLE automatically if
-+				 possible.
-+
-+				 Parameter availability depends on CONFIG_NUMA.
-+================================ ===============================================
- 
- ZONE_MOVABLE
- ============
+> +	if (!mr->dmabuf_map) {
+> +		err = -ENOMEM;
+> +		goto err_out;
+> +	}
+> +
+> +	err = dma_buf_vmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> +	if (err)
+> +		goto err_free_dmabuf_map;
+> +
+> +	set = mr->cur_map_set;
+> +	set->page_shift = PAGE_SHIFT;
+> +	set->page_mask = PAGE_SIZE - 1;
+> +
+> +	map = set->map;
+> +	buf = map[0]->buf;
+> +
+> +	vaddr = mr->dmabuf_map->vaddr;
+
+dma_buf_map can be an __iomem too, you shouldn't dig around in this, but
+use the dma-buf-map.h helpers instead. On x86 (and I think also on most
+arm) it doesn't matter, but it's kinda not very nice in a pure software
+driver.
+
+If anything is missing in dma-buf-map.h wrappers just add more.
+
+Or alternatively you need to fail the import if you can't handle __iomem.
+
+Aside from these I think the dma-buf side here for cpu access looks
+reasonable now.
+-Daniel
+
+> +	vaddr_end = vaddr + umem_dmabuf->dmabuf->size;
+> +	remain = umem_dmabuf->dmabuf->size;
+> +
+> +	for (; remain; vaddr += PAGE_SIZE) {
+> +		if (num_buf >= RXE_BUF_PER_MAP) {
+> +			map++;
+> +			buf = map[0]->buf;
+> +			num_buf = 0;
+> +		}
+> +
+> +		buf->addr = (uintptr_t)vaddr;
+> +		if (remain >= PAGE_SIZE)
+> +			buf->size = PAGE_SIZE;
+> +		else
+> +			buf->size = remain;
+> +		remain -= buf->size;
+> +
+> +		num_buf++;
+> +		buf++;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_free_dmabuf_map:
+> +	kfree(mr->dmabuf_map);
+> +err_out:
+> +	return err;
+> +}
+> +
+> +static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
+> +{
+> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(mr->umem);
+> +
+> +	dma_buf_vunmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> +	kfree(mr->dmabuf_map);
+> +}
+> +
+> +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
+> +			    u64 iova, int access, struct rxe_mr *mr)
+> +{
+> +	struct ib_umem_dmabuf *umem_dmabuf;
+> +	struct rxe_map_set *set;
+> +	int err;
+> +
+> +	umem_dmabuf = ib_umem_dmabuf_get(pd->ibpd.device, start, length, fd,
+> +					 access, NULL);
+> +	if (IS_ERR(umem_dmabuf)) {
+> +		err = PTR_ERR(umem_dmabuf);
+> +		goto err_out;
+> +	}
+> +
+> +	rxe_mr_init(access, mr);
+> +
+> +	err = rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem), 0);
+> +	if (err) {
+> +		pr_warn("%s: Unable to allocate memory for map\n", __func__);
+> +		goto err_release_umem;
+> +	}
+> +
+> +	mr->ibmr.pd = &pd->ibpd;
+> +	mr->umem = &umem_dmabuf->umem;
+> +	mr->access = access;
+> +	mr->state = RXE_MR_STATE_VALID;
+> +	mr->type = IB_MR_TYPE_USER;
+> +
+> +	set = mr->cur_map_set;
+> +	set->length = length;
+> +	set->iova = iova;
+> +	set->va = start;
+> +	set->offset = ib_umem_offset(mr->umem);
+> +
+> +	err = rxe_map_dmabuf_mr(mr, umem_dmabuf);
+> +	if (err)
+> +		goto err_free_map_set;
+> +
+> +	return 0;
+> +
+> +err_free_map_set:
+> +	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
+> +err_release_umem:
+> +	ib_umem_release(&umem_dmabuf->umem);
+> +err_out:
+> +	return err;
+> +}
+> +
+>  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
+>  {
+>  	int err;
+> @@ -703,6 +818,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+>  {
+>  	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
+>  
+> +	if (mr->umem && mr->umem->is_dmabuf)
+> +		rxe_unmap_dmabuf_mr(mr);
+> +
+>  	ib_umem_release(mr->umem);
+>  
+>  	if (mr->cur_map_set)
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 9d0bb9aa7514..6191bb4f434d 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -916,6 +916,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+>  	return ERR_PTR(err);
+>  }
+>  
+> +static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+> +					    u64 length, u64 iova, int fd,
+> +					    int access, struct ib_udata *udata)
+> +{
+> +	int err;
+> +	struct rxe_dev *rxe = to_rdev(ibpd->device);
+> +	struct rxe_pd *pd = to_rpd(ibpd);
+> +	struct rxe_mr *mr;
+> +
+> +	mr = rxe_alloc(&rxe->mr_pool);
+> +	if (!mr) {
+> +		err = -ENOMEM;
+> +		goto err2;
+> +	}
+> +
+> +	rxe_add_index(mr);
+> +
+> +	rxe_add_ref(pd);
+> +
+> +	err = rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, access, mr);
+> +	if (err)
+> +		goto err3;
+> +
+> +	return &mr->ibmr;
+> +
+> +err3:
+> +	rxe_drop_ref(pd);
+> +	rxe_drop_index(mr);
+> +	rxe_drop_ref(mr);
+> +err2:
+> +	return ERR_PTR(err);
+> +}
+> +
+>  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+>  				  u32 max_num_sg)
+>  {
+> @@ -1081,6 +1114,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+>  	.query_qp = rxe_query_qp,
+>  	.query_srq = rxe_query_srq,
+>  	.reg_user_mr = rxe_reg_user_mr,
+> +	.reg_user_mr_dmabuf = rxe_reg_user_mr_dmabuf,
+>  	.req_notify_cq = rxe_req_notify_cq,
+>  	.resize_cq = rxe_resize_cq,
+>  
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index c807639435eb..0aa95ab06b6e 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -334,6 +334,8 @@ struct rxe_mr {
+>  
+>  	struct rxe_map_set	*cur_map_set;
+>  	struct rxe_map_set	*next_map_set;
+> +
+> +	struct dma_buf_map *dmabuf_map;
+>  };
+>  
+>  enum rxe_mw_state {
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.31.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
