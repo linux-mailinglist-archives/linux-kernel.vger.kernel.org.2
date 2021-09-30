@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D4141E361
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C3241E363
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245156AbhI3VcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S1344787AbhI3Vc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbhI3VcX (ORCPT
+        with ESMTP id S245527AbhI3Vc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:32:23 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF5C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:40 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id ba1so27281080edb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:40 -0700 (PDT)
+        Thu, 30 Sep 2021 17:32:27 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1DDC06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:43 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id n17so9079276vsr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z38Pff8rNHkpmHHsiE/EcUCBdc5ews9xWggX89bh2PM=;
-        b=jBAvtPK6du6rAgKGQHZ8yVhlGXtowsq1cPeEiyZLMNjDSNjApE6daz9tsuvoJam2RR
-         V5kqHkXN4gxDevQpociV+DaBSPpayl9qtBwZx3M51jbBSHiUM9/i0d9MzaeVBIN/DaES
-         xh/MaYZ/8tVeYIqhgeSWJdhOpE2vX9Yd74wZ4I+H99fYsedRii1WmATbxokDAzGUsV60
-         lw2NRN/VvGjRYuAM/ZFTp58iBWzehRpFr5YjLax05QN7U44row8IqCk3NpHeYb4RTyMk
-         f1lbjNFKxldJ8wpolsk4cKIHqCAOMVcyYZrbv5NrDP8sRbkZNr+/Ko69qhApcZj7IS/y
-         YAuA==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zLSt58KChb0zKG8PKQh+M0m0Zsjtb879w5vthwngNvk=;
+        b=ffA+Ahm0VIs14W4TMs1RP+eNn9ByJHvI1+hNv82MsKokoGcyuKvppUUqQvnoMjTUx0
+         ArkKNjt6d4hVyNBYHMttRyuqA1t0I9lUdd2KivdalDVZLDflAGvoMWuB4ea4Ma+7+Nl6
+         Dtj8sG3NiUAMdZG92rz1SBX5LXmDRZPGNuAWV9FSyzAclR2MJ3qdZe50KFQkn/P0Khmi
+         1QlwKK39ec8cQdh+j1B4oFJ6HxQYg6FzgblOkFL3evYxW7U7n92R+XpU7RctFRu77WSP
+         w/xwGnuArAqavl8jAvUrKKVpY8nuesZnd13GzU4601qwBIv4asJ5HVY6Fc1ezjhJMp0s
+         U7Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z38Pff8rNHkpmHHsiE/EcUCBdc5ews9xWggX89bh2PM=;
-        b=idGc8oUN0FKByV8smjac+Qkl6D4SPJj34xxFOgR94RDEI5qoVKfiThE3F7CO64N2R0
-         Q6mowNqmN6ersF9+z/WbrS+Blr7DIUll7KJAGJwUpfw4wWWXaLk/wxD+e459kmlDHlAg
-         Zdo7mqSQ2Y5P7xGClGxcVRxiaL6NJz5ewnEAmUkeeGMg2/W3oBlU+MGJwU5Ln4/mM/f6
-         gFm1iyNt+egy6MeQy/sXbiWd92VN0qABaR9ZvdBYm3CkUri2ckxz95az41n5HkIFm6GH
-         bm4423fa6lwtGis77seFniUbOQDopFhdWwElZQtUKw2Akg6REyFLypd/MMUGTNfdmdz7
-         u5+Q==
-X-Gm-Message-State: AOAM532T+ZqB88H/DaXu9jHGPxx58AtrDmsx3NUz6PyhW4vi9ymkhkxc
-        +44UxUi5BOmeqikyvjmJvE4=
-X-Google-Smtp-Source: ABdhPJyIs9IWzjK743hlXZoMFHInBnLRvDmLCWyajvYtiX/RZyuArU0Ujf4/VWAO+ti3AC/Ken4gfA==
-X-Received: by 2002:a17:906:ff51:: with SMTP id zo17mr1800990ejb.193.1633037438506;
-        Thu, 30 Sep 2021 14:30:38 -0700 (PDT)
-Received: from tom-desktop (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
-        by smtp.gmail.com with ESMTPSA id cb7sm2109271edb.49.2021.09.30.14.30.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 14:30:37 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 23:30:35 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
-Message-ID: <20210930213035.GA45822@tom-desktop>
-References: <20210926162527.21462-1-tomm.merciai@gmail.com>
- <20210926162527.21462-3-tomm.merciai@gmail.com>
- <YVHirHixyOIgvqKB@kroah.com>
- <20210927214624.GB6953@tom-desktop>
- <YVKdJdTxlNJ55zCy@kroah.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zLSt58KChb0zKG8PKQh+M0m0Zsjtb879w5vthwngNvk=;
+        b=3Zg1rTcirpVJ/sPuGnRRTNMvwUaZfctaJ3ihWDMB+twTVmSGc83t1LiWF4mZfKd/WQ
+         AuPTihF7SWSZwbtfxo/7GfWa2jPz9zR8LduCU5DBK9/WRzE2UZZhSgwvE5HTzbzTnXFB
+         Pyp+EJIv6dy+P9ECjD41uwLzQz5oNXSKdfImFuepgGJse3uRx8tSTn+ZL235NnIUrptS
+         7PRkpgLTgUaesPEECUI9GHDGLZwlcR3fEvW64YVyD9gLNBX17ZLVbTKCqPWzhDO7GAoF
+         V0FKlP57tqWl+IRJ2u4fl1y03Y0/s09N9oRDuyTOBEHArsah/6JQqKKAuyAJpHQELzEB
+         sk1w==
+X-Gm-Message-State: AOAM533Gxu/3UhEQzu1E0kDxUgNZRJSdLj6keFklzQQ3UDU3MNY9bMKW
+        9ffkb6NTTrWjRzC1fJPUXAc/4tRMhUfaF6bujTQ=
+X-Google-Smtp-Source: ABdhPJxvPPEH2ReZRnySdUuShbE4mttHPhbUIZnGqnlh/aCLqkdpNpDEHRDixrOF21usx72adljy+wmpKwREfNf3y54=
+X-Received: by 2002:a67:2c58:: with SMTP id s85mr1603191vss.35.1633037443093;
+ Thu, 30 Sep 2021 14:30:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVKdJdTxlNJ55zCy@kroah.com>
+Received: by 2002:a59:ccc2:0:b0:22c:2b44:1078 with HTTP; Thu, 30 Sep 2021
+ 14:30:42 -0700 (PDT)
+Reply-To: stefanopessaina123@gmail.com
+From:   Stefano Pessina <majoralanedward082@gmail.com>
+Date:   Thu, 30 Sep 2021 14:30:42 -0700
+Message-ID: <CADmPr8ZbjHhahQZVe557oHW1SNqiXZkZyaxN=GoeL7vRDUqN3w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 06:42:13AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Sep 27, 2021 at 11:46:24PM +0200, Tommaso Merciai wrote:
-> > On Mon, Sep 27, 2021 at 05:26:36PM +0200, Greg Kroah-Hartman wrote:
-> > > On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
-> > > > Replace camel case variable ldBmThreshold with snake case
-> > > > variable ld_bm_threshold.
-> > > 
-> > > Same here, what exactly does this name mean and why did you pick it?
-> > >
-> >   You are right the same here. What do you think about "bm_threshold"?
-> 
-> What does "bm" stand for?
+--=20
 
-  Got it. In the current variable name "l_" is for long (hungarian
-  notation), "dBm" is decibel milliwatts, signal strenght.
-  A good solution could be "dbm_threshold"?
+Hi, my foundation has chosen to donate $2,000,000.00 USD (Two Million
+dollars) to you in my ongoing charity program. You came out
+victorious. For more details and claims Email:
+stefanopessaina123@gmail.com
 
-  thanks.
-  tommaso
-
-> thanks,
-> 
-> greg k-h
+Best Regards,
+Mr. Stefano Pessina,
+Copyright =C2=A92020 The Stefano Pessina Foundation All Rights Reserved.
