@@ -2,217 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A4A41D945
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B26A41D949
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350664AbhI3L64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:58:56 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62516 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350708AbhI3L6u (ORCPT
+        id S1350609AbhI3MBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350490AbhI3MB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:58:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633003028; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=MgsTdvHC32CVeXQvpvDOvg9iOpH6jzoyvVH+Vm7ZG44=;
- b=Up9dbFO2J4O4b/ms8lqep/vq2TmgKug6fiTkvZXRmeOfNXnT3LDeasgXjl+nsEkWOX2unODW
- SVDaDv3XC6RAwVt8sJQZVozO+GSu5K5EH2w8gqQcNJkPCCy+tu4naIRnVrcs3+DUkasFtiqf
- A1hQMFE9F2mjufFMVtj0UCZQCpc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6155a60ca5a9bab6e879f251 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 11:57:00
- GMT
-Sender: mkrishn=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06212C4360D; Thu, 30 Sep 2021 11:57:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkrishn)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44068C4338F;
-        Thu, 30 Sep 2021 11:56:59 +0000 (UTC)
+        Thu, 30 Sep 2021 08:01:29 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC38EC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:59:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b15so24061850lfe.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2urBgTbrDy1NbbFIzmr42ZFWl2s0KjeYzYyD5qhFrc4=;
+        b=SeSsmgknghflT8KgWVilE0n1nVMjlidLm1JbPThgKYs00o83ve/58usCMiT1UJQiup
+         TsViclsHEIjqkC02jlO4Fo9xh+Fon2nEPRsMqXTMUqDnbSOkeAzOWaIc2wuBnh4m4ZfW
+         KTP0wXqe3cmarbNmH49O18Ib5hhePs2ARiuRzFWZvsP9ROZ0Y7JJIBlLWmG7OeWL0lzi
+         atncENt5GodChMDXdPDp72rG2m4iaBygNIhXmMUFovdkQilKaLJSgy03GdNRKEV81j+C
+         ZImf3vJa+omBvJeJRXFt0TRoQATw4nSvpUwPpupS6LofrSN9Jn9xO6hBhstGTXx0uqv/
+         ev0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2urBgTbrDy1NbbFIzmr42ZFWl2s0KjeYzYyD5qhFrc4=;
+        b=3jTY2kfGfZ8+S3Ocxu3++cYrKXozRfctDhsoZX8w7tw7P70jFEpZzgyUEO/8MHaP8G
+         vWWLx2wEKb37bMtWp33sgV5HJpQR6yfE1MR60lMENMJSlnH3O6Lb5BSRgXZ8aumVf9a4
+         Jdsb8wIl0OIDe6Qmh3zGSAsvaltoQuHE1wLQTR2Y/ni6YtyPXB7h5cT8kLYmq2UnLn3a
+         uB85pkfCtiOImjYPSCm6P/UQ0a8qxycPqWOdQhdBIgibiwm5onBe4+tGX3mhdXczkqTR
+         EJRrMYOi52R8zEAQsM7pgyR1sR7/PbdDJ2X9rrFJ23xfa7RnPVF5YppRDjDTfSVh7V9F
+         j+uQ==
+X-Gm-Message-State: AOAM533nOrYRADx0QXMa0E8NKeoXQKjImCcTbIwyZHCGRaAJfcUhcu3o
+        9rLmCdJze7GcHx4Bwxj8sVvCUbPQbyl8LtPyyQNFmg==
+X-Google-Smtp-Source: ABdhPJyOP0kOtwctz7szw16nkMPbZtUhsv6sIPeLPUqE+gW3MWhUQlbAU8CxYiYfN/IQGftPTZtDeD5NUdWLxalmNIY=
+X-Received: by 2002:a2e:160f:: with SMTP id w15mr5467653ljd.355.1633003185058;
+ Thu, 30 Sep 2021 04:59:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 30 Sep 2021 17:26:59 +0530
-From:   mkrishn@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
-        sbillaka@codeaurora.org, abhinavk@codeaurora.org,
-        robdclark@gmail.com, bjorn.andersson@linaro.org,
-        khsieh@codeaurora.org, rajeevny@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v1 2/4] arm64: dts: qcom: sc7280: add display dt nodes
-In-Reply-To: <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
-References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
- <1629282424-4070-2-git-send-email-mkrishn@codeaurora.org>
- <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
-Message-ID: <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
-X-Sender: mkrishn@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-9-pasha.tatashin@soleen.com> <20210929123513.GC21631@willie-the-truck>
+ <CA+CK2bDw3A7FkZoQbB-AQWHj89Azqjrm12WFQVcfQjS+2Tmgyg@mail.gmail.com> <20210930081607.GA23250@willie-the-truck>
+In-Reply-To: <20210930081607.GA23250@willie-the-truck>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 30 Sep 2021 07:59:07 -0400
+Message-ID: <CA+CK2bBEh9dMHSVfVLNSZgjb8TKHXfCgf34g5+XsbeuhSLajFw@mail.gmail.com>
+Subject: Re: [PATCH v17 08/15] arm64: kexec: configure EL2 vectors for kexec
+To:     Will Deacon <will@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-19 01:27, Stephen Boyd wrote:
-> Quoting Krishna Manikandan (2021-08-18 03:27:02)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 53a21d0..fd7ff1c 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -5,6 +5,7 @@
->>   * Copyright (c) 2020-2021, The Linux Foundation. All rights 
->> reserved.
->>   */
->> 
->> +#include <dt-bindings/clock/qcom,dispcc-sc7280.h>
->>  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
->>  #include <dt-bindings/clock/qcom,rpmh.h>
->>  #include <dt-bindings/interconnect/qcom,sc7280.h>
->> @@ -1424,6 +1425,90 @@
->>                         #power-domain-cells = <1>;
->>                 };
->> 
->> +               mdss: mdss@ae00000 {
-> 
-> subsystem@ae00000
-> 
->> +                       compatible = "qcom,sc7280-mdss";
->> +                       reg = <0 0x0ae00000 0 0x1000>;
->> +                       reg-names = "mdss";
->> +
->> +                       power-domains = <&dispcc 
->> DISP_CC_MDSS_CORE_GDSC>;
->> +
->> +                       clocks = <&gcc GCC_DISP_AHB_CLK>,
->> +                                <&dispcc DISP_CC_MDSS_AHB_CLK>,
->> +                               <&dispcc DISP_CC_MDSS_MDP_CLK>;
->> +                       clock-names = "iface", "ahb", "core";
->> +
->> +                       assigned-clocks = <&dispcc 
->> DISP_CC_MDSS_MDP_CLK>;
->> +                       assigned-clock-rates = <300000000>;
->> +
->> +                       interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-controller;
->> +                       #interrupt-cells = <1>;
->> +
->> +                       interconnects = <&mmss_noc MASTER_MDP0 0 
->> &mc_virt SLAVE_EBI1 0>;
->> +                       interconnect-names = "mdp0-mem";
->> +
->> +                       iommus = <&apps_smmu 0x900 0x402>;
->> +
->> +                       #address-cells = <2>;
->> +                       #size-cells = <2>;
->> +                       ranges;
->> +
->> +                       status = "disabled";
->> +
->> +                       mdp: mdp@ae01000 {
-> 
-> display-controller@ae01000
+On Thu, Sep 30, 2021 at 4:16 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 11:54:55PM -0400, Pasha Tatashin wrote:
+> > > > +/* Allocates pages for kexec page table */
+> > > > +static void *kexec_page_alloc(void *arg)
+> > > > +{
+> > > > +     struct kimage *kimage = (struct kimage *)arg;
+> > > > +     struct page *page = kimage_alloc_control_pages(kimage, 0);
+> > > > +
+> > > > +     if (!page)
+> > > > +             return NULL;
+> > > > +
+> > > > +     memset(page_address(page), 0, PAGE_SIZE);
+> > >
+> > > Hmm, I think we might be missing barriers here to ensure that the zeroes
+> > > are visible to the page-table walker before we plumb the page into the
+> > > page-table.
+> > >
+> > > Usually, that's taken care of by the smp_wmb() in __pXX_alloc() but I
+> > > can't see that here. Is it hiding?
+> >
+> > Based on the comment in __pte_alloc() that smp_wmb() is needed in
+> > order to synchronize pte setup with other cpus prior to making it
+> > visible to them. This is not needed here. First, by the time these
+> > page tables are used the other cpus are offlined (kexec reboot code is
+> > single threaded). Second, we never insert any entry into a page table
+> > that is actively used by any cpu.
+>
+> I think the comment there is wrong, but the barrier is still necessary.
+> How else do you guarantee that the page-table walker reads the zeroes from
+> the memset?
 
-Stephen,
-    In the current driver code, there is a substring comparison for "mdp" 
-in device node name as part of probe sequence. If "mdp" is not present 
-in the node name, it will
-    return an error resulting in probe failure. Can we continue using mdp 
-as nodename instead of display controller?
+True, good point. We are still safe because we have the following:
+cpu_install_ttbr0() is used to load trans_pgd tables both in kexec and
+hibernate cases.
 
-Thanks,
-Krishna
+cpu_install_ttbr0 has: local_flush_tlb_all()
 
+dsb(nshst);   // Ensure prior page-table updates have completed
+__tlbi(vmalle1);  // Invalidate the TLB
+dsb(nsh);   // Ensure the TLB invalidation has completed
+isb();  // Discard any instructions fetched from the old mapping
 
-> 
->> +                               compatible = "qcom,sc7280-dpu";
->> +                               reg = <0 0x0ae01000 0 0x8f030>,
->> +                                       <0 0x0aeb0000 0 0x2008>;
->> +                               reg-names = "mdp", "vbif";
->> +
->> +                               clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
->> +                                       <&gcc GCC_DISP_SF_AXI_CLK>,
->> +                                       <&dispcc 
->> DISP_CC_MDSS_AHB_CLK>,
->> +                                       <&dispcc 
->> DISP_CC_MDSS_MDP_LUT_CLK>,
->> +                                       <&dispcc 
->> DISP_CC_MDSS_MDP_CLK>,
->> +                                       <&dispcc 
->> DISP_CC_MDSS_VSYNC_CLK>;
->> +                               clock-names = "bus", "nrt_bus", 
->> "iface", "lut", "core",
->> +                                             "vsync";
-> 
-> One line per string please.
-> 
->> +                               assigned-clocks = <&dispcc 
->> DISP_CC_MDSS_MDP_CLK>,
->> +                                               <&dispcc 
->> DISP_CC_MDSS_VSYNC_CLK>,
->> +                                               <&dispcc 
->> DISP_CC_MDSS_AHB_CLK>;
->> +                               assigned-clock-rates = <300000000>,
->> +                                                       <19200000>,
->> +                                                       <19200000>;
->> +                               operating-points-v2 = 
->> <&mdp_opp_table>;
->> +                               power-domains = <&rpmhpd SC7280_CX>;
->> +
->> +                               interrupt-parent = <&mdss>;
->> +                               interrupts = <0>;
->> +
->> +                               status = "disabled";
->> +
->> +                               mdp_opp_table: mdp-opp-table {
-> 
-> mdp_opp_table: opp-table {
-> 
->> +                                       compatible = 
->> "operating-points-v2";
->> +
->> +                                       opp-200000000 {
->> +                                               opp-hz = /bits/ 64 
->> <200000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_low_svs>;
->> +                                       };
->> +
->> +                                       opp-300000000 {
->> +                                               opp-hz = /bits/ 64 
->> <300000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_svs>;
->> +                                       };
->> +
->> +                                       opp-380000000 {
->> +                                               opp-hz = /bits/ 64 
->> <380000000>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_svs_l1>;
->> +                                       };
->> +
->> +                                       opp-506666667 {
->> +                                               opp-hz = /bits/ 64 
->> <506666667>;
->> +                                               required-opps = 
->> <&rpmhpd_opp_nom>;
->> +                                       };
->> +                               };
->> +                       };
->> +               };
->> +
+Pasha
