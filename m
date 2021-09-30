@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A12F41DFA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF4E41DFA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352463AbhI3Q7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344261AbhI3Q7t (ORCPT
+        id S1350852AbhI3RAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:00:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36101 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348606AbhI3RAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:59:49 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE81C06176A;
-        Thu, 30 Sep 2021 09:58:06 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id u7so5508453pfg.13;
-        Thu, 30 Sep 2021 09:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2iXAlr5vsEQu3iMPBNV/eYnzlVsEAMgE+P6kwYZMas0=;
-        b=iU667m31jVVyrsbmRMnIe7Wm8ThBMjaKH/cihBFG8i3fQebrkZLnx7Hb3eKo9NCPnM
-         8sX5sA7j2nuQyFl6Ii92etVVEo5zG9xJXLaF5Zg7rZf/aJH1XBS/xaFT6fi7WTaVffZr
-         kxRtjvM/21/oiCPSgPo+UKPUF2JHEbIsjXOPRWdL8rzefuXRN8n6gTYFTuL/oyh9D0R4
-         TUSQCW7deSL3lALL1UyWPOHZTxjxxMYzgCXmZdIkOkitfYnPL7DBP0hDZm03g9jMg5PR
-         3i4rNzvFZsdmzxpzvd8e0GNtMTnG3jPcCbLQoq+6obwCTTxNalTfTA3q4YKw4bqOTRKx
-         Gcbg==
+        Thu, 30 Sep 2021 13:00:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633021135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ZIqihkoQq6wIRYi9LhWdCqUUXnDlaND1FW0gU9oESk=;
+        b=URRKfKKmc6Hp13hSYXiFatp0XEbVKKmFHyLq1rzgwfUf/2nEapSFo7zMkNz6uBuccGIjyd
+        yFm8iklcuf+rYLd90Th2JKdsNyrqKgHRkO+HoxoD0u2e9dHJBN4v+I77gFGCFych9FStJV
+        fwANpFM28HeVgzDQ9NAhVIU4iD1Zm8s=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-SGzMkS5DPzi8ZYJTkOv6kA-1; Thu, 30 Sep 2021 12:58:54 -0400
+X-MC-Unique: SGzMkS5DPzi8ZYJTkOv6kA-1
+Received: by mail-qv1-f72.google.com with SMTP id z6-20020a056214060600b0037a3f6bd9abso11285097qvw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:58:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2iXAlr5vsEQu3iMPBNV/eYnzlVsEAMgE+P6kwYZMas0=;
-        b=Vl+ZI+veCkDIW/pD0Bg67ajjDO9Pc5hzxNUmef0wXbIC7CDjLQlCKnTCHyL4jMrGKG
-         HzTOXXQoDkxLUIpUHFD8w8CO7VgLD36HtKlGxG5QHIns/RvU8t59weC8CU8nVm3HhHkV
-         5EMT8LagqZbWroeKNSPXG8+NVClfekuU8fuVhaZZyUbP84cxEtnOs3B+Hene1j/FRSgU
-         jJmNF13Rxo6Ps30y1YLI63bS7vaWRBPJ/b4COUtbBvJKPaMhhXnwYxdyrncwKFICUFbL
-         gwrkZN5wE8F1s1i2Fm7Rm3uU0KsKdmKD2tvVJAQ0eXLc5uyHbTOZdqvZFGMtALGyxEva
-         5kUQ==
-X-Gm-Message-State: AOAM533eCYmvbgKq4GyEw2cAvKEFlkzTzQCMqdOzbWMbqBgdHT1cZ5as
-        iw8VrVqDb0qXpz7faYfR9O8=
-X-Google-Smtp-Source: ABdhPJwpxiS1KnfPGNovs0OrG20RIbfBky7X0bYKn9z//HybBu9PnmkXte7geU3fetRkUeZGutSHTg==
-X-Received: by 2002:a05:6a00:9a:b0:44b:b8f9:1d72 with SMTP id c26-20020a056a00009a00b0044bb8f91d72mr5429360pfj.21.1633021085925;
-        Thu, 30 Sep 2021 09:58:05 -0700 (PDT)
-Received: from ilya-fury.hpicorp.net (S0106ac202e1e48e3.vs.shawcable.net. [96.55.136.179])
-        by smtp.gmail.com with ESMTPSA id h24sm3765952pfn.180.2021.09.30.09.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 09:58:04 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Greg Ungerer <gerg@kernel.org>,
-        Strontium <strntydog@gmail.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Felix Fietkau <nbd@nbd.name>
-Subject: [PATCH] MIPS: Revert "add support for buggy MT7621S core detection"
-Date:   Thu, 30 Sep 2021 09:57:41 -0700
-Message-Id: <20210930165741.9662-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=1ZIqihkoQq6wIRYi9LhWdCqUUXnDlaND1FW0gU9oESk=;
+        b=z0yGDeEw66Rv9SYixVWgU3WSvabT3jWaXKK/FNZSs2H7Z3HxQ8dqOIx8nbEaHPUFQ3
+         gxQqk5k8O6oIj5V2fdNbegMtFD49aNiiwlH3O2/YxFF3xxpUyrgXWDzFUHvJMAl7bL0R
+         gIvO/4AyS9VN2WvDV09EMoDCbV61HhW5TsHxw9FUwexQmQ9aDFVIhy7uYQmjXjljzoU2
+         xq2wtP6kuF8oqUS5K9py0JCH2nrrS7D52ks4sAlqpD0HRe0hpkiOq71oAWnjYSxNh2mG
+         5tTocpS299gR4/CZVfJjgHY1JaPpbswfk6TzpC4aBxmNQbgU9gh/Zu6X2iE5zxDYtg8L
+         5cIA==
+X-Gm-Message-State: AOAM531Oi1HHAYmnRILc/bHU4AiJWqFy8pL/qau/zFmJqTO0MNA4SxeR
+        TdQ6/JOs+OX9s+Ipd4c5MmBptRcULaTxAYj8mUEm3bwWpuOPiecI9nlaaZY9OMhMLCYslh9f445
+        fjGzFea4UYz5SocBXSnwgENzu
+X-Received: by 2002:a05:622a:3cb:: with SMTP id k11mr7575870qtx.233.1633021133603;
+        Thu, 30 Sep 2021 09:58:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAebG6rBOzuQnF7H08UlB7Hf8EqfYw6Ix04hP8U3b1W+2X0tPZ5kxUQJS2/YkFCWH8K3GZSw==
+X-Received: by 2002:a05:622a:3cb:: with SMTP id k11mr7575844qtx.233.1633021133402;
+        Thu, 30 Sep 2021 09:58:53 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id o13sm2111020qtk.37.2021.09.30.09.58.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 09:58:52 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v15 0/6] Add NUMA-awareness to qspinlock
+To:     Barry Song <21cnbao@gmail.com>, alex.kogan@oracle.com
+Cc:     arnd@arndb.de, bp@alien8.de, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com, guohanjun@huawei.com, hpa@zytor.com,
+        jglauber@marvell.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, mingo@redhat.com, peterz@infradead.org,
+        steven.sistare@oracle.com, tglx@linutronix.de, will.deacon@arm.com,
+        x86@kernel.org
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210930094447.9719-1-21cnbao@gmail.com>
+Message-ID: <a6340beb-3b4a-2518-9340-ea0fc7583dbe@redhat.com>
+Date:   Thu, 30 Sep 2021 12:58:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210930094447.9719-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 6decd1aad15f56b169217789630a0098b496de0e. CPULAUNCH
-register is not set properly by some bootloaders, causing a regression
-until a bootloader change is made, which is hard if not impossible on
-some embedded devices. Revert the change until a more robust core
-detection mechanism that works on MT7621S routers such as Netgear R6220
-as well as platforms like Digi EX15 can be made.
+On 9/30/21 5:44 AM, Barry Song wrote:
+>> We have done some performance evaluation with the locktorture module
+>> as well as with several benchmarks from the will-it-scale repo.
+>> The following locktorture results are from an Oracle X5-4 server
+>> (four Intel Xeon E7-8895 v3 @ 2.60GHz sockets with 18 hyperthreaded
+>> cores each). Each number represents an average (over 25 runs) of the
+>> total number of ops (x10^7) reported at the end of each run. The
+>> standard deviation is also reported in (), and in general is about 3%
+>> from the average. The 'stock' kernel is v5.12.0,
+> I assume x5-4 server has the crossbar topology and its numa diameter is
+> 1hop, and all tests were done on this kind of symmetrical topology. Am
+> I right?
+>
+>      ┌─┐                 ┌─┐
+>      │ ├─────────────────┤ │
+>      └─┤1               1└┬┘
+>        │  1           1   │
+>        │    1       1     │
+>        │      1   1       │
+>        │        1         │
+>        │      1   1       │
+>        │     1      1     │
+>        │   1         1    │
+>       ┌┼┐1             1  ├─┐
+>       │┼┼─────────────────┤ │
+>       └─┘                 └─┘
+>
+>
+> what if the hardware is using the ring topology and other topologies with
+> 2-hops or even 3-hops such as:
+>
+>       ┌─┐                 ┌─┐
+>       │ ├─────────────────┤ │
+>       └─┤                 └┬┘
+>         │                  │
+>         │                  │
+>         │                  │
+>         │                  │
+>         │                  │
+>         │                  │
+>         │                  │
+>        ┌┤                  ├─┐
+>        │┼┬─────────────────┤ │
+>        └─┘                 └─┘
+>
+>
+> or:
+>
+>
+>      ┌───┐       ┌───┐      ┌────┐      ┌─────┐
+>      │   │       │   │      │    │      │     │
+>      │   │       │   │      │    │      │     │
+>      ├───┼───────┼───┼──────┼────┼──────┼─────┤
+>      │   │       │   │      │    │      │     │
+>      └───┘       └───┘      └────┘      └─────┘
+>
+> do we need to consider the distances of numa nodes in the secondary
+> queue? does it still make sense to treat everyone else equal in
+> secondary queue?
 
-Link: https://lore.kernel.org/lkml/4d9e3b39-7caa-d372-5d7b-42dcec36fec7@kernel.org
-Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- arch/mips/include/asm/mips-cps.h | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+The purpose of this patch series is to minimize cacheline transfer from 
+one numa node to another. Taking the fine grained detail of the numa 
+topology into account will complicate the code without much performance 
+benefit from my point of view. Let's keep it simple first. We can always 
+improve it later on if one can show real benefit of doing so.
 
-diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
-index 35fb8ee6dd33..fd43d876892e 100644
---- a/arch/mips/include/asm/mips-cps.h
-+++ b/arch/mips/include/asm/mips-cps.h
-@@ -10,8 +10,6 @@
- #include <linux/io.h>
- #include <linux/types.h>
- 
--#include <asm/mips-boards/launch.h>
--
- extern unsigned long __cps_access_bad_size(void)
- 	__compiletime_error("Bad size for CPS accessor");
- 
-@@ -167,30 +165,11 @@ static inline uint64_t mips_cps_cluster_config(unsigned int cluster)
-  */
- static inline unsigned int mips_cps_numcores(unsigned int cluster)
- {
--	unsigned int ncores;
--
- 	if (!mips_cm_present())
- 		return 0;
- 
- 	/* Add one before masking to handle 0xff indicating no cores */
--	ncores = (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
--
--	if (IS_ENABLED(CONFIG_SOC_MT7621)) {
--		struct cpulaunch *launch;
--
--		/*
--		 * Ralink MT7621S SoC is single core, but the GCR_CONFIG method
--		 * always reports 2 cores. Check the second core's LAUNCH_FREADY
--		 * flag to detect if the second core is missing. This method
--		 * only works before the core has been started.
--		 */
--		launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
--		launch += 2; /* MT7621 has 2 VPEs per core */
--		if (!(launch->flags & LAUNCH_FREADY))
--			ncores = 1;
--	}
--
--	return ncores;
-+	return (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
- }
- 
- /**
--- 
-2.33.0
+Cheers,
+Longman
+
 
