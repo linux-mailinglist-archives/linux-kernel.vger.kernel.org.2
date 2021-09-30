@@ -2,159 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4959641D9F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E0541D9FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350959AbhI3MjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:39:11 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:21942 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350938AbhI3MjK (ORCPT
+        id S1350953AbhI3Mk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:40:27 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43928
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350458AbhI3MkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:39:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1633005446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPPXxxwugPBH+beN9q4uizgqAq1OKQYB05wUlCmlLlM=;
-        b=KE1jczkPjRiGYi1Af8INeMw6vNy/tRNOAmuF7RjGtwuJStzm7pFbWblctRGKbNnzGbFmHm
-        6+5D/2lvjvsACUAoH5cR/ca3Ns670cFhFGo4MwCdyQg3lwSzraeqD7E4FtoIF6KQfG9DVK
-        Lr9SWQhCsvs89C7bOEGCZex+b84Hbpo=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2107.outbound.protection.outlook.com [104.47.17.107])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-18-xfIf_bZcPQyeHCkSQiq7nA-2; Thu, 30 Sep 2021 14:37:25 +0200
-X-MC-Unique: xfIf_bZcPQyeHCkSQiq7nA-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XilTaAxqeBZWIJGbAE5s+aGyJxwBTKSk8JJIcQrGqZ56NngxDJh9hPmPvxM+fRJQTOOB8UH7l9TvHBP2yjvJNk2u7t5ZIXVOBZZ2pgHd2OUxBbsavaHT65oINnSGheq2AgnETqceJNhs8rRDrLvf2Mwn2fwG+z8yPgwpQ0X5wvFKQ6800h8iOyqyeGAtYYPQKIKTfP8YRaq8U+JObZf6Zc87ncHz9vA/3KQPwS8BTst102uFq1izpVMFUAglboi19KA1Le00aggzRFcl4Kz2GhsUCqQ3RoeahTcOaD0p8VzszyCWvwdBYEYwT25OcSHBfoi6/AJnFOskedlbBRqHgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=kPPXxxwugPBH+beN9q4uizgqAq1OKQYB05wUlCmlLlM=;
- b=L81yw8xq8kuaHu8deo1awIB9H4n/kFDii481Ozwug91sYMLO9KNforOxYqXeAE6KaYblcI6PkfRJkyuE0vNEbiKRemO9hHxneo51pjXTovhT0QgvlLRa3LoeEqVFyMTvLE8U0LwTwlzxbPVDsGpGfmycn48kUh1rwFCe/NG8SAZlhUocJtmcsqlJTfcuS8WQspEXM4XC2lZUIo8u27f6nEkyXYGPJwmU+p6/kqDEjKwZ0r8Z3BoblFLH0U9wXHh3Z7VCfMDJLFVg/+82qREaMopTNDrv7a8rQ3galWv6Dx1Fo5LuWX3RDraRs+KnxISelYZ3+zZEFD06EkxqCJ6VYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
- 2021 12:37:22 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
- 12:37:21 +0000
-Subject: [PATCH 6/6] xen/x86: restrict PV Dom0 identity mapping
-From:   Jan Beulich <jbeulich@suse.com>
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
-Message-ID: <038b8c02-3621-d66a-63ae-982ccf67ae88@suse.com>
-Date:   Thu, 30 Sep 2021 14:37:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
+        Thu, 30 Sep 2021 08:40:25 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 66781405FB
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633005522;
+        bh=9UEPWfr7ebPMheyY1ItfdUf+trBF8Xkd/Vl6hTzqSXw=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=v/Hhpuo4muIpVpv52hZR7Pjg4/TlIYvyM5MyzbieesJ4pOKTpP/UJUGBL4YO5NF2i
+         Ly7owuwG/5FyWPNwnDJry2WxhfSVun5wNHx9tILglX0/rGGLwS4lc7Bc8iRogqAkoW
+         0o3kd2MXUG5+I5FgE9+0OvmvUvKvyaxHjXTCCQJE0MDFDUT87qfRkOhiRH7sVj1dA0
+         mqJJ4QbAnhonsv6GbhrchXvRExKmviWMNybpf5auH8SpzqGKAYRjfD1ZHiuedhhOQp
+         /V6B9KkXIbHPDuq8LR/rHI+9hE17IqYEK6uRFJZBq5mTmdRPpz0Xvtag5BiTy5pF21
+         JQD6KE+BuwdvQ==
+Received: by mail-lf1-f70.google.com with SMTP id d22-20020a0565123d1600b003fd0097d747so5502504lfv.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:38:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9UEPWfr7ebPMheyY1ItfdUf+trBF8Xkd/Vl6hTzqSXw=;
+        b=VITw8zCLYD0N258nn02TQJQkcWuMonCEBicts8z5M08zQC5no1ztUbZVYUt0c3Zlrz
+         bb364+tqPSKkAE1KKQqJj2ERS609n3kYl9t7xux157WGVR9MvR81rB20kSyYzd//qW/L
+         GjwB3ASiWtiE9D9P4+UhYoJW4Dlsa3J7/bBAOydhiclLb+eRW04JeHnNWCcHcZSX/QuK
+         Sf1T8u/xZL5wY0haDx3/KGZK2wqEMUPushX8Pk/1QoHpyLxojUlguxwpTu89XMebUOBL
+         YbgdQc3Qy5W1I6Rw6eRvDxCtz2y3bFSwAtfZh79zPXHvzdJu2RM06foOZNZ/oeaoiktm
+         sAhQ==
+X-Gm-Message-State: AOAM533NQe2Pxs+/xBLwvEP7wAdym3CLQKnwehEiweHE226mx15s4U7l
+        DSt1xV0OYO++txfEPL0FX5ZpVgmiJorbsMxmIkQX8Otq9UU3GjHRXZ5SW2Z+1vZkyLyV14f+KVj
+        YrEPgS8MeLPFW6Ru5dqy6ipUGqkSYRMYCBTnomHurkw==
+X-Received: by 2002:a2e:98c4:: with SMTP id s4mr5529047ljj.316.1633005521795;
+        Thu, 30 Sep 2021 05:38:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4VmVl8yLsL1J3X6zPeVy08Dz03yCtDXig4BMfZlB5TReP45Vy4ZGUWpipnx+5aVpp7cIQEg==
+X-Received: by 2002:a2e:98c4:: with SMTP id s4mr5529018ljj.316.1633005521617;
+        Thu, 30 Sep 2021 05:38:41 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id x9sm152040lfr.246.2021.09.30.05.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 05:38:41 -0700 (PDT)
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Olof Johansson <olof@lixom.net>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
+ <YVWDsFE7qyH6AwxR@google.com>
+ <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
+ <YVWu2RoSqEzcG79I@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <5eb551d9-a26e-f4eb-6641-3264c2398adc@canonical.com>
+Date:   Thu, 30 Sep 2021 14:38:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YVWu2RoSqEzcG79I@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS8PR04CA0044.eurprd04.prod.outlook.com
- (2603:10a6:20b:312::19) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
-MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by AS8PR04CA0044.eurprd04.prod.outlook.com (2603:10a6:20b:312::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16 via Frontend Transport; Thu, 30 Sep 2021 12:37:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2cfb7984-2657-4317-0ae4-08d9840f0c60
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5600:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB56009F302F81D72F5CA19C83B3AA9@VI1PR04MB5600.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XvmdscEd9rEdQFfFcHzHE1yUzmCA78KefJFiaS7tFz7cTJRHRuJb5OVAubYJ/hJnDKcaueTs421LujF3q2Gq74K6EKMuda/8MmLMK15SeKvZ3iB+HEliVw3Vpkat8CpnlVaIWdyk8tBxSJs7E94elR/+7cS7aRfU3aJYV+fLwULbQSA471/n+h7e1H/Fq0AWl0TE/sVeGnAznw1QpzpaNU52beKmxKjL8DyTUSFpGt3U6ZaZ++2osWQekH0GlOyQ3VoPJXLiVnEPM+5E1k9uet3VlQdAY6j8zFRIM6B3FfkD+ojsMqME2UNz7+tFnjAQwfc/2BQafiOv6ElT7GUygYdOry4RH4o61ClJMhKGmCSsJI3mpsT+VMaYgxNOZvx1OwvTfH3K1CjFez0uYtKGWZQPegnhcRIB+co5wZB8Oac16+v19khbEap0d/Qi3CFgMLDotqVe5PRInBTTm2a0LxGvsgD84nD/a9igeJ9A7hjSiIPJ4+SUo4Uo1NMb/OLRohHufORSrIfFmfoPsCvx/DcEo8LAS9YbCSZX/nlBrkKnCONLsaGbmdnOWRGko1e7bfaBV/9UnPr+wsNs0Q/EPvzTFdbOtXAKIdfm4yH99c9aNpR7+25fXkiX2/JpwT2h2Pxjd5u92hxxQdMwtWRagqyiWt/0jC/YuBrtHUF89CQ5h+6NWmJ69+0oQYKrKgdDib07cB7P5+rAvc2CtRDwAyNDVfI2ThBQT8SVCYhhjaXbMBDOlMJ912X64JEspchd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(2906002)(316002)(5660300002)(83380400001)(38100700002)(66556008)(66476007)(66946007)(16576012)(110136005)(54906003)(8676002)(31696002)(8936002)(31686004)(4744005)(186003)(6486002)(956004)(4326008)(2616005)(36756003)(86362001)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M2p2R1N1S3czTkRsYXdxQ2MwZjdXdlAzVlYrVkRFWmNXVzhveTlQWlo4cWpE?=
- =?utf-8?B?dE1tNmNZUEcrU244WGl0c2Q5eWhhMXQ2WHQ5ck9qVDlEb1VCZnNaS0RCT0Vt?=
- =?utf-8?B?K2dXWWtLMm1DYWF4cjd4NDA1MEEvWXlnaU9jY0NkME9iTzFVbk01c2o0b2lW?=
- =?utf-8?B?MlJrK3R5d2Z0Y0kvTW1yck1PWHhEM3lIeUVmdVFscjZnZXFPMHJUcVFDV3kw?=
- =?utf-8?B?cjM4K0V5dEQrajhZT2dWMzhPdWNUWVZsUU9OSTlQTzNNL2tENlhMcld3NWRF?=
- =?utf-8?B?VWRaVCtKdnBrdmo3NkE3SWRQeUhURy9tV0YwcjlLYmdxZkVGTm9hTGdCdkFn?=
- =?utf-8?B?WUwwQmFpZDE3RUlDck8rdW53QWRERzJuRm51YVI3QTk0WlNGTWZWMFE3VXJY?=
- =?utf-8?B?aWRTdnBwWE9oZFhvLy9aMitGRUxUZENJcVhSRnhscC9pZUM5aVRZdlRyaWZU?=
- =?utf-8?B?cnYyUFVCS2NIcmxnNm05L2diNUVhaTN4NnFUeng4OWlpSGpjem9hcjI0MXhL?=
- =?utf-8?B?ZHp3MWRMQXc2QmhwK21XUVBHTHAxS2dwZ2Znc1pEbWY5eHdkYm9icmJFa09I?=
- =?utf-8?B?aU01ZGF0Qm13K3VsQnJYUHlQRSt5bENUeDRHcGFyNDg3WEZvd0M2V05oTk1W?=
- =?utf-8?B?STd3T1c1ZkcvSjdrSmJxRjFkNVBqZm5vdjVvWTFWRlRpNXpaakJ4NnlJTFdJ?=
- =?utf-8?B?dTlsMjV1N1JTQ01NWllUZW0wbUJZZ3NucnBzYno4a2dpT2JneVRFTURaQnZm?=
- =?utf-8?B?Ym9pbXdwUURvL0VvcEkxNEVIRHJDQWRIbmIzbXZseDNIZURDZ1FtaTNDUUh6?=
- =?utf-8?B?RjlGUGJKK1RYLzZGN29TYSs2eUg3dHhYNkJwR2pPeTZjRDhNM0Jsc2FFUTVt?=
- =?utf-8?B?Um9kRUxGU0E5c0QrRDBadis0VkVoa1Vqc3VzK0plMFE1R2UzNGJxZlZWZjd6?=
- =?utf-8?B?UWVrTVY1SS9nQmtTYkF6N1hFUW5iSVIxK0xxWWZwYmMrbnlxNlZ6c3g4ajNm?=
- =?utf-8?B?dzJsWGlYemxKWVhTRjhnVWhqVEJ2M3B2QmJoR0toNXZxNy9mdUNZZlhmRzlG?=
- =?utf-8?B?cjB1NTFEaklGcU1rTWQrc3dod2pEanpybWVhTzI3WEZEY1phQU9vbW9vT3dL?=
- =?utf-8?B?UGhCSFNIWU1JcDRPbnhmV05OYkNRRFRjY1R1Z2xRVHFSdHBCNXM3RWRWV3pk?=
- =?utf-8?B?UXYwL2prWnJ2R2VxZ055bXp5cGxzZVlKaFFrZTZWUXpEeCsrbUxtN3NRNVN3?=
- =?utf-8?B?d1ZMbEk1NTIzL2ZFalJ4Tm5vVmZBV1RPWUlOQWR6NXlkNFg5OGFIN1FsVlE5?=
- =?utf-8?B?WklRckQvRVV4aEJXUUdjQjJhSDJlc00xVmpvUW9Ba2pwSS95dzVtL3JlNm82?=
- =?utf-8?B?S3NNL0kwVDA5azBYOXNZdlVld1RuY0dnN2I2ZDkvYmRUY01FWVN3OExYUHAr?=
- =?utf-8?B?TkJpbk1XdXZEZVVheXh6UW45VFdqQUJQT0VjczYyNlVsTmlCVmozd21FMzJB?=
- =?utf-8?B?cmtkYzBrRCttcXlOK0h4eEo0aFIzZldyajA0UWN1WkxiRXBiMkgwZXdHWG9G?=
- =?utf-8?B?RkpnZWh2QXhTdHJPRnlJbEhkM1o4ZnJKczVMYmNwd1Vldk5GYWJ3TExIZ2xh?=
- =?utf-8?B?SUx1aC94eXIvTGNlWEhlNERJeEpyYVRuN3c0eWtweU5XYjI5TW5ZL0pzemY4?=
- =?utf-8?B?WFBEYXlEZFVqRmFHclJQRndWNzBpUEU0NFM4bEpRM0xaVWVCQ3ZzMGgySXgx?=
- =?utf-8?Q?93ZKV8oWsM+vckc/XhkCzli11oCJHU6m/B8ieBu?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cfb7984-2657-4317-0ae4-08d9840f0c60
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:37:21.8021
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N+68ucEy+pC2zMfLvWa3YBirMpv4MDFLr5fQVKEKl3arg/Yr/kg/vljVeeZ6LHuxaQ1Uv2OjsEoU6X25wHf1UQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5600
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When moving away RAM pages, there having been a mapping of those is not
-a proper indication that instead MMIO should be mapped there. At the
-point in time this effectively covers the low megabyte only. Mapping of
-that is, however, the job of init_mem_mapping(). Comparing the two one
-can also spot that we've been wrongly (or at least inconsistently) using
-PAGE_KERNEL_IO here.
+On 30/09/2021 14:34, Lee Jones wrote:
+> On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+>>>   It sounds like a lack of testing is your main concern.
+>>>
+>>>   How can I help here?  What H/W do I need to be able to fully test this?
+>>
+>> The changes here need to be tested on affected platforms (ARMv7 and
+>> ARMv8), when built as a modules on some types of regular distros (e.g.
+>> Arch, Ubuntu). From each of such boot I would be happy to see number of
+>> new dmesg warnings/errors plus number of probe deferrals.
+>>
+>> Since the drivers could be switched to modules (and some distros might
+>> do it), they might be hit by surprise regressions in boot performance
+>> due to probe deferrals. This should be also checked on these platforms.
+>> Geert pointed out before that clocks in many cases are not optional -
+>> driver needs them and will wait defer.
+>>
+>> Assuming of course that boot succeeds. Minor differences in boot speed
+>> should not be a problem, I think, because distro anyway chosen
+>> all-module approach so it accepts the penalty.
+> 
+> Do you have any suggestions in terms of devboards?
 
-Simply zap any such mappings instead.
+Minimal set:
+1. Something with Exynos4 (e.g. Odroid U3 with Exynos4412).
+2. Something with Exynos 5422/5800 (e.g. Odroid XU3/XU4/HC1/MC1 or
+Chromebook Peach Pi).
+3. Exynos5433 - TM2 or TM2E. Boards are not widely available, so we need
+to rely on provided testing by Samsung.
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
+What would be good is to also test Exynos3 boards, but this is also not
+widely available.
 
---- a/arch/x86/xen/setup.c
-+++ b/arch/x86/xen/setup.c
-@@ -425,13 +425,13 @@ static unsigned long __init xen_set_iden
- 	}
- 
- 	/*
--	 * If the PFNs are currently mapped, the VA mapping also needs
--	 * to be updated to be 1:1.
-+	 * If the PFNs are currently mapped, their VA mappings need to be
-+	 * zapped.
- 	 */
- 	for (pfn = start_pfn; pfn <= max_pfn_mapped && pfn < end_pfn; pfn++)
- 		(void)HYPERVISOR_update_va_mapping(
- 			(unsigned long)__va(pfn << PAGE_SHIFT),
--			mfn_pte(pfn, PAGE_KERNEL_IO), 0);
-+			native_make_pte(0), 0);
- 
- 	return remap_pfn;
- }
 
+Best regards,
+Krzysztof
