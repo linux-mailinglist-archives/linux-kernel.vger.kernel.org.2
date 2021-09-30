@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347F141DA64
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2E741DA65
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351207AbhI3NAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55822 "EHLO mail.kernel.org"
+        id S1351214AbhI3NAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348795AbhI3NAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:00:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D12A613A7;
-        Thu, 30 Sep 2021 12:58:49 +0000 (UTC)
+        id S1348795AbhI3NAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE90C61452;
+        Thu, 30 Sep 2021 12:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633006732;
-        bh=XaLJOpJXyC0/AKRC/2WDJUbGWh++7znRLGEqxEgcGtU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pg6avzB8dmvoh6yqYuxdxQ8IIXXPyCZbEjB1q+8QwdqsdhHx2F444zyJpayMKuXuy
-         nCuWJVvM+VywCxG4D0voRyTM+jLlY6gki14yu93KmBiOyJr7tpNFqQw+6ww/QgD+t1
-         sfxdWtM6DbD37v+mwbJYsCcs8xKkR4RLJpXDBoI85enXGAmaSExYkjDZcG29AEwpu1
-         ZUt2MWci2A3kBKUh9eAvkbv5iZxwx441R4DYcZT71Kv0U/ZggVnbqvFooD0Mr/ckc7
-         VCdzWMdYOLTXOTvi1/6RA69rzxCLYdjbIJ+XRuLzT0MDTHHAuXjVW4JB4d7KU0CldB
-         pJeNLUZ6FuUsw==
+        s=k20201202; t=1633006735;
+        bh=emladKJ0A33DnFCj9EHk8afqzI3B+MLuCGI9gHOGbvI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hcs+FekalTTYSum9FUiFFrkisEFmHPXipv4rtxVogorwZ9n97X0/AoH8jOz27DUqc
+         u7K8auSwYP9q4YnLxOx8lAYfFtPhMBiU77jBvMLm2eiVRYo+eLOFUcwUSsM9lOlCi8
+         kRf5vwGQmA1DJJDI1AXF5d5FeKaflR+dc6K0GJ41Qgpqpcu0Z63v5sc9u9cbjRFEuw
+         tl3hTwePHz1Fk/BInlahpOg6K0UcNxOxsrvqq/o9IR6tvuLPgHvIHlXs1HPVBQhQL/
+         vFyzjWInSZlKaVx8eLC8k4E9XbkW3wsSSvDX0sSMS7Gn2DnVdgtuGM0j9MS7tmpRKy
+         Hocvq7oUJ6hKw==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
@@ -37,92 +37,59 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH v2 0/7] Move task_struct::cpu back into thread_info
-Date:   Thu, 30 Sep 2021 14:58:06 +0200
-Message-Id: <20210930125813.197418-1-ardb@kernel.org>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 1/7] arm64: add CPU field to struct thread_info
+Date:   Thu, 30 Sep 2021 14:58:07 +0200
+Message-Id: <20210930125813.197418-2-ardb@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210930125813.197418-1-ardb@kernel.org>
+References: <20210930125813.197418-1-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c65eacbe290b ("sched/core: Allow putting thread_info into
-task_struct") mentions that, along with moving thread_info into
-task_struct, the cpu field is moved out of the former into the latter,
-as at that point, it was the intention to ultimately get rid of
-thread_info entirely, but this never happened.
+The CPU field will be moved back into thread_info even when
+THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
+struct thread_info.
 
-While collaborating with Keith on adding THREAD_INFO_IN_TASK support to
-ARM, we noticed that keeping CPU in task_struct is problematic for
-architectures that define raw_smp_processor_id() in terms of this field,
-as it requires linux/sched.h to be included, which causes a lot of pain
-in terms of circular dependencies (or 'header soup', as the original
-commit refers to it).
+Note that arm64 always has CONFIG_SMP=y so there is no point in guarding
+the CPU field with an #ifdef.
 
-For examples of how existing architectures work around this, please
-refer to patches #6 or #7. In the former case, it uses an awful
-asm-offsets hack to index thread_info/current without using its type
-definition. The latter approach simply keeps a copy of the task_struct
-CPU field in thread_info, and keeps it in sync at context switch time.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+---
+ arch/arm64/include/asm/thread_info.h | 1 +
+ arch/arm64/kernel/asm-offsets.c      | 1 +
+ 2 files changed, 2 insertions(+)
 
-We also discussed introducing yet another Kconfig symbol to indicate
-that the arch has THREAD_INFO_IN_TASK enabled but still prefers to keep
-its CPU field in thread_info, but simply keeping it in thread_info in
-all cases seems to be the cleanest approach here, so that is what this
-series implements.
-
-Changes since v1/RFC:
-- use macro for task_thread_info() to work around constness of
-  task_cpu()'s task_struct argument
-- add various acks
-- drop patch #8 for ARM - it was preliminary in the RFC, and it can be
-  taken as a fix in the ARM tree once THREAD_INFO_IN_TASK actually
-  lands.
-
-Code can be found here:
-https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=move-task-cpu-to-ti-v2
-
-Cc: Keith Packard <keithpac@amazon.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-
-Ard Biesheuvel (7):
-  arm64: add CPU field to struct thread_info
-  x86: add CPU field to struct thread_info
-  s390: add CPU field to struct thread_info
-  powerpc: add CPU field to struct thread_info
-  sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
-  powerpc: smp: remove hack to obtain offset of task_struct::cpu
-  riscv: rely on core code to keep thread_info::cpu updated
-
- arch/arm64/include/asm/thread_info.h   |  1 +
- arch/arm64/kernel/asm-offsets.c        |  2 +-
- arch/arm64/kernel/head.S               |  2 +-
- arch/powerpc/Makefile                  | 11 -----------
- arch/powerpc/include/asm/smp.h         | 17 +----------------
- arch/powerpc/include/asm/thread_info.h |  3 +++
- arch/powerpc/kernel/asm-offsets.c      |  4 +---
- arch/powerpc/kernel/smp.c              |  2 +-
- arch/riscv/kernel/asm-offsets.c        |  1 -
- arch/riscv/kernel/entry.S              |  5 -----
- arch/riscv/kernel/head.S               |  1 -
- arch/s390/include/asm/thread_info.h    |  1 +
- arch/x86/include/asm/thread_info.h     |  3 +++
- include/linux/sched.h                  | 13 +------------
- kernel/sched/sched.h                   |  4 ----
- 15 files changed, 14 insertions(+), 56 deletions(-)
-
+diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+index 6623c99f0984..c02bc8c183c3 100644
+--- a/arch/arm64/include/asm/thread_info.h
++++ b/arch/arm64/include/asm/thread_info.h
+@@ -42,6 +42,7 @@ struct thread_info {
+ 	void			*scs_base;
+ 	void			*scs_sp;
+ #endif
++	u32			cpu;
+ };
+ 
+ #define thread_saved_pc(tsk)	\
+diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+index 551427ae8cc5..cee9f3e9f906 100644
+--- a/arch/arm64/kernel/asm-offsets.c
++++ b/arch/arm64/kernel/asm-offsets.c
+@@ -29,6 +29,7 @@ int main(void)
+   DEFINE(TSK_ACTIVE_MM,		offsetof(struct task_struct, active_mm));
+   DEFINE(TSK_CPU,		offsetof(struct task_struct, cpu));
+   BLANK();
++  DEFINE(TSK_TI_CPU,		offsetof(struct task_struct, thread_info.cpu));
+   DEFINE(TSK_TI_FLAGS,		offsetof(struct task_struct, thread_info.flags));
+   DEFINE(TSK_TI_PREEMPT,	offsetof(struct task_struct, thread_info.preempt_count));
+ #ifdef CONFIG_ARM64_SW_TTBR0_PAN
 -- 
 2.30.2
 
