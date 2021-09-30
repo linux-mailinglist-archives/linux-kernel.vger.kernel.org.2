@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB76741E0B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CA441E0E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353319AbhI3SPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
+        id S1353361AbhI3STs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353127AbhI3SPR (ORCPT
+        with ESMTP id S1353388AbhI3STq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:15:17 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2094C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:13:34 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x27so29010297lfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:13:34 -0700 (PDT)
+        Thu, 30 Sep 2021 14:19:46 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D098C06176A;
+        Thu, 30 Sep 2021 11:18:04 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so7402079pjc.3;
+        Thu, 30 Sep 2021 11:18:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=21wP2EKfSU+Ufh6L89NcQ77tMoe103kEUQ8sF6bdyKQ=;
-        b=OS7caeMplZM3tXloeqoV0mGVdFu2x8udydvRK5CxCqAj/9B7fEol2nS3CmLNS2+T9W
-         5UEdZEm29xZOOBCLKoZk/DchNcmgW7C306wMUDAt/B3XMQBBpnLsmMVfMJa0L/g+zHMm
-         UkS8zVTlHqoAsZqs1Gl7M5nqVgw9Qzr7w7PhlcRPuM7GtJQQhNGCcWAeJvshm5ttIBdi
-         rB2vwTYfRs68oM+LzfczqETFCYuLVYoXFyJZ6+qO+lVtRtiTvsXHfEX+mIXEL1GqyG2u
-         U2a4SMYcJLLPOY77hURTMrBwc20IjuhVPtTAaLxFYpJ9u++6RG0a/YpUA5fTxKQ22jIO
-         53xg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v0dcJF6a5J2i4qY/SGIztVAuNG3UpRFiPiTeCiiLeXw=;
+        b=K7KcDmoEGcmRy/ev728uCqbOciKfkFzSCtcpwRhwBSXjOOXO6C9yxp68gTf7fZXdrX
+         pFU7uQFci1ftfymZhaG54CXV4f+9JZanZSpYyuB5XHz7/ZcEG+DYYOy8dME9qhxnYXgq
+         dJuzqZPmGalsmFmTpl29rLA4F7ukQ3KsdwqgbIGtZ6XLMh7k+3Ik9RkkvBSAGTLd98hQ
+         +wQbrHXcEYd23UwO4fq5x5f7DEfk8Ze5pRD3ZnICnbWxFkCKMKTqjr5PiAYDENnC/1Sg
+         ycjM7x+uz70iK9+3rQ5JlrT3enSXmJOB7o1ZAYbsRkEwaFelo9f5BiKHaCNCwo2len4h
+         pksQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=21wP2EKfSU+Ufh6L89NcQ77tMoe103kEUQ8sF6bdyKQ=;
-        b=l2LyI/rxr4touFZPbqKkSM7Eocv+kNECq7rr4gpTo4bQXJR6rCXDLp4+nl0eXIe5jF
-         VFAcCLSC30B7xVRxhzfcEh3nuu1+ozj8uJJubinm7r+v8Oq4+jKtykuJON3L7e0a0ByG
-         5pu0hYwJYp52YBV6+AhtcC2HBPhjoj1h2Ri/ksgKRG6jtlS/okoLmr8+2VTa7EQ4tSIn
-         5leaVZK9jUjqbHQ1/HuzLvL6CGvTO9KUKqrO5CN6Tv7nJZfixTbMIaB0ipSqVMPi6sri
-         3GekopTN1apdyIr+gma4sAOEhMAdKgYoZjCjMIkEoW8nmHKZJkniBvenrJX5sKS66/2A
-         2++Q==
-X-Gm-Message-State: AOAM5324M/QS2whMVSv4jy+wyulyYe/gSVAKwCSHDND0fUuasxxA4TMj
-        1J5sMNWOwRadeDAjkFBfTRw=
-X-Google-Smtp-Source: ABdhPJytVMhHv4TCK8GELEx5hOd4TlB/zAMKdLLbo/yDkc9oILmCbBxyiQ13M4IJewUL14FHijagag==
-X-Received: by 2002:a2e:9c8c:: with SMTP id x12mr7246029lji.332.1633025613181;
-        Thu, 30 Sep 2021 11:13:33 -0700 (PDT)
-Received: from [192.168.1.11] ([217.117.245.149])
-        by smtp.gmail.com with ESMTPSA id w4sm495026lfr.150.2021.09.30.11.13.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 11:13:32 -0700 (PDT)
-Message-ID: <7b77a803-7556-9343-74ea-ec98296d2f27@gmail.com>
-Date:   Thu, 30 Sep 2021 21:13:30 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v0dcJF6a5J2i4qY/SGIztVAuNG3UpRFiPiTeCiiLeXw=;
+        b=uU5BDPyBnZDebRhYFmkzc/neMBrhMIA3vhaxEv7Z1h1f+INo9HTtzuZ731h9ZEx3sI
+         aXmU+y36d4tRmAIgnoGsb9sQy63czqalu+PkdXSLBUpHbx/qSgCFNoqramdtiecCOjXC
+         4bDpLC/aUV/QWm4IQzLEIVlYSR4X7Pb9FgJEUP6z3iSDTegEi2rtKzbqNE1/ruZG/+PJ
+         4kf3aVYGC/b9BCcNCxDCGrs5msg85pVenqdzovYu90wNe/Mo2rxKFRvze2OzX2AN1FsT
+         rxcR8QUtpojpIWtWOaBgLusFgGDqPjvhFUidw7hdQSaM+edJjxFKnTDrBYA++iLfE8kf
+         Y3mQ==
+X-Gm-Message-State: AOAM533YQNmWex+Txsq7vBslJvBOTDz3hWP0UhyGE9bl4ezPjxTiBg+J
+        TtQuhUbUJ7iVO1xBApMOtHEPuFam9eT77gDYjpykpvKz
+X-Google-Smtp-Source: ABdhPJxC+hXxl9QBdPlY95tL8Mi61q4aBvm5ltbF6eOcGtgP+eJO2ujnk2r9nPH4D5QCN7Ls2L94LSSni/JO8cOdiJs=
+X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr14611570pjj.122.1633025883579;
+ Thu, 30 Sep 2021 11:18:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [syzbot] memory leak in bsg_register_queue
-Content-Language: en-US
-To:     syzbot <syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000323d2305cd29ade7@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <000000000000323d2305cd29ade7@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <163163030719.489837.2236069935502195491.stgit@devnote2> <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+In-Reply-To: <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 30 Sep 2021 11:17:52 -0700
+Message-ID: <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
+Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes on x86
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 01:16, syzbot wrote:
-> Hello,
-> 
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-> 
-> Reported-and-tested-by: syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com
-> 
-> Tested on:
-> 
-> commit:         1a0db774 scsi: bsg: Fix device unregistration
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a4a1f32762f17135
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cfe9b7cf55bb54ed4e57
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Note: testing is done by a robot and is best-effort only.
-> 
+On Tue, Sep 28, 2021 at 7:24 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Ingo,
+>
+> Can you merge this series to -tip tree since if I understand correctly,
+> all kprobes patches still should be merged via -tip tree.
+> If you don't think so anymore, I would like to handle the kprobe related
+> patches on my tree. Since many kprobes fixes/cleanups have not been
+> merged these months, it seems unhealthy now.
+>
+> Thank you,
 
-#syz fix: scsi: bsg: Fix device unregistration
+Linus,
 
+please suggest how to move these patches forward.
+We've been waiting for this fix for months now.
 
-With regards,
-Pavel Skripkin
+> On Tue, 14 Sep 2021 23:38:27 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> > Hello,
+> >
+> > This is the 11th version of the series to fix the stacktrace with kretprobe on x86.
+> >
+> > The previous version is here;
+> >
+> >  https://lore.kernel.org/all/162756755600.301564.4957591913842010341.stgit@devnote2/
+> >
+> > This version is rebased on the latest tip/master branch and includes the kprobe cleanup
+> > series[1][2]. No code change.
+> >
+> > [1] https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+> > [2] https://lore.kernel.org/linux-csky/20210727133426.2919710-1-punitagrawal@gmail.com/
+> >
+> >
+> > With this series, unwinder can unwind stack correctly from ftrace as below;
