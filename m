@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F28741DB01
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9A741DB04
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351377AbhI3NaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:30:06 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:47471 "EHLO
+        id S1351400AbhI3NaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:30:13 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:17432 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351362AbhI3NaF (ORCPT
+        with ESMTP id S1351386AbhI3NaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:30:05 -0400
+        Thu, 30 Sep 2021 09:30:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633008503; x=1664544503;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=WGH/7oHZ2lCij6lC7BGo1OaMpElgiKRYeW6ANkvGzVg=;
-  b=Vkp8WC2ioKQ37h6r35xan0z1zl8v+ZvtJdP0FEDpq/6vwp7gB/inMf2x
-   z9q/34ncvYn42lfADOZC7ZgAc5r/3TAZ/jyX/BIS3zX/bSkFvptCWz9uE
-   ui2M6BmE5QA2XGNGlH3JaN86ASST6aDcWo1X+jlPJoOo2z18VRlphyaJt
-   Chn/Z8dD2+iyQ8YX1yMG1Lt/MIHLh/ptSvlULB+Gm0aRODjJWrrbzIRW2
-   MybCrmTLPdcxoG+FaZsoasNMO7TMSpgvrhh8oavuUdP4G7jTNKhBjUMfg
-   r+shCFZmtG8MwUEKFm+Zbb4Aqg6i1QeScFQhFBHLdskZDs3EfsROep94A
-   A==;
-IronPort-SDR: /RNOiQNmjxpxi+yLj/icS2/tINUabZwNWoMF7i4ELTYDNGgSIuAqUYKAFLMystikET5LQ+oV3o
- +kpsXZEYJJvuVW7mxEV5c3KGACBZXoREGvjPhLAVdC5Y/FhVKj9NqsHapJ67bd+BAffWHlt2T4
- eyb5vEpmLU4znwZ0EY2B/bZq/PuzHKL7YkvYF2lEpGaVy5IapzFa8fOzFQrw7eJ+x3DGmVnsTx
- an8f/XButtGKNVcu+Ast32q1RkxQirm+LL+k9V+tPq//BqKhiZJkNXHncys2QNMWGS9An1G+fd
- kE5Ja8bXxBuy+ykI+rfIkD8T
+  t=1633008506; x=1664544506;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=tBS5epH0q6eCvymRi9e0lXppg+w8SolCNJJHP6DNxCY=;
+  b=DUxPqSh45zmfMdRHSWUTDAtR0uX6ExL0D8edborTvYOzLFvN7tFeMvrJ
+   9NYx6PskA4q15gSeW9N9PnMzBxH0eMFFEpOO53tVe0aGii4pxiEys1N38
+   5yWUawRr6MiFNckHWuZBrnG/qBENT2oA7bNAy3N8KlEc/bZ3cZUE1nGk8
+   DIMobdqZYEWHrPhZyeIUcmuv3LsqyIFmiNv3LomIYwruJBrRViOEXXQx4
+   lojeKFCAJoH6HsjwXQmvukwkrywE/nO8TxHft1WRq/CiMZ+Vc3YXrgkOl
+   r+30PZ3Z33RLzfsllOLBKoIobVflsn+kM5tlUgb6/MAv2p956CwDqiwSY
+   Q==;
+IronPort-SDR: e7FsoVLbCnl2ytg+8TVTCsTYap2FRNCxWhr93aw5K72dG/dBJbvdeSJ0DkHrdl9Vkes4WlLKtq
+ boIbwpUlkgAIe/wm+j9WYlq4Mg1KAJ5yQU6qvIXhWN65P067CnD9/A6hyNwZiCZkpJOyQedU2t
+ FbdYWSPuBrcsCmut/Qz9zNu8JdH0G7HMq/JvVaZzvxm8sIiNOFusamALoibwh5qVrNuFY+AbpY
+ FDulzckyj+Ke896HDiBrUqcALUOYLlzAtTgK/YeGY56rW6UrAAAcDd4m+leqJA7W44xOGPjgGN
+ Dicmk1NxTc0UBx8yYb3BhqgA
 X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="137988284"
+   d="scan'208";a="131255631"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 06:28:22 -0700
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 06:28:26 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 30 Sep 2021 06:28:21 -0700
+ 15.1.2176.14; Thu, 30 Sep 2021 06:28:25 -0700
 Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 06:28:17 -0700
+ 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 06:28:22 -0700
 From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 To:     <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
         <Eugen.Hristev@microchip.com>, <Kavyasree.Kotagiri@microchip.com>,
         <Manohar.Puri@microchip.com>
-Subject: [PATCH v7 0/3] Add driver for lan966x Generic Clock Controller
-Date:   Thu, 30 Sep 2021 18:58:12 +0530
-Message-ID: <20210930132815.15353-1-kavyasree.kotagiri@microchip.com>
+Subject: [PATCH v7 1/3] dt-bindings: clock: lan966x: Add binding includes for lan966x SoC clock IDs
+Date:   Thu, 30 Sep 2021 18:58:13 +0530
+Message-ID: <20210930132815.15353-2-kavyasree.kotagiri@microchip.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210930132815.15353-1-kavyasree.kotagiri@microchip.com>
+References: <20210930132815.15353-1-kavyasree.kotagiri@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds a device driver for Generic Clock Controller
-of lan966x SoC.
+LAN966X supports 14 clock outputs for its peripherals.
+This include file is introduced to use identifiers for clocks.
 
+Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 v6 -> v7:
-- Added Kconfig and Makefile entires for lan966x clock driver.
+- No changes.
 
 v5 -> v6:
-- Added Acked-by to dt-bindings file.
-- Removed "_clk" in clock-names.
-- Added Reviewed-by to Documentation file.
+- Added Acked-by.
 
 v4 -> v5:
-- In v4 dt-bindings, missed adding "clock-names" in required
-  properties and example. So, added them.
-- Returning proper error - PTR_ERR.
-- Removed unused variable "ret" in probe function.
+- No changes.
 
 v3 -> v4:
-- Updated "clocks" and added "clock-names" in dt-bindings.
-- Used clk_parent_data instead of of_clk_get_parent_name().
+- No changes.
 
 v2 -> v3:
-- Fixed dt_binding_check errors.
+- No changes.
 
 v1 -> v2:
-- Updated license in dt-bindings.
-- Updated example provided for clock controller node.
+- Updated license.
 
-Kavyasree Kotagiri (3):
-  dt-bindings: clock: lan966x: Add binding includes for lan966x SoC
-    clock IDs
-  dt-bindings: clock: lan966x: Add LAN966X Clock Controller
-  clk: lan966x: Add lan966x SoC clock driver
-
- .../bindings/clock/microchip,lan966x-gck.yaml |  57 +++++
- drivers/clk/Kconfig                           |   7 +
- drivers/clk/Makefile                          |   1 +
- drivers/clk/clk-lan966x.c                     | 236 ++++++++++++++++++
- include/dt-bindings/clock/microchip,lan966x.h |  28 +++
- 5 files changed, 329 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
- create mode 100644 drivers/clk/clk-lan966x.c
+ include/dt-bindings/clock/microchip,lan966x.h | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
  create mode 100644 include/dt-bindings/clock/microchip,lan966x.h
 
+diff --git a/include/dt-bindings/clock/microchip,lan966x.h b/include/dt-bindings/clock/microchip,lan966x.h
+new file mode 100644
+index 000000000000..fe36ed6d8b5f
+--- /dev/null
++++ b/include/dt-bindings/clock/microchip,lan966x.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2021 Microchip Inc.
++ *
++ * Author: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
++ */
++
++#ifndef _DT_BINDINGS_CLK_LAN966X_H
++#define _DT_BINDINGS_CLK_LAN966X_H
++
++#define GCK_ID_QSPI0		0
++#define GCK_ID_QSPI1		1
++#define GCK_ID_QSPI2		2
++#define GCK_ID_SDMMC0		3
++#define GCK_ID_PI		4
++#define GCK_ID_MCAN0		5
++#define GCK_ID_MCAN1		6
++#define GCK_ID_FLEXCOM0		7
++#define GCK_ID_FLEXCOM1		8
++#define GCK_ID_FLEXCOM2		9
++#define GCK_ID_FLEXCOM3		10
++#define GCK_ID_FLEXCOM4		11
++#define GCK_ID_TIMER		12
++#define GCK_ID_USB_REFCLK	13
++
++#define N_CLOCKS		14
++
++#endif
 -- 
 2.17.1
 
