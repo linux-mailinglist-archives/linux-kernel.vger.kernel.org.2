@@ -2,140 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEC141D8C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BC941D8CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350480AbhI3L3Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 07:29:24 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:38590 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350416AbhI3L3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:29:20 -0400
-Received: by mail-vs1-f54.google.com with SMTP id y141so6829599vsy.5;
-        Thu, 30 Sep 2021 04:27:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R0n80uXJhjvsdb8nwwGcbOkkET0omNYYJeYTRDyy/SI=;
-        b=yS26ctsKeX57aAlqf7NDam9jPkw5ohC09ymZYj4vIJp2uhNaZOg3h6VJrGm914h1WT
-         qznn/oG+2k35rk1uGid1H6Jm335JsLlOtim9EP8mZ3QqqQwV6qaoTS2ZDS3Ghb/XirpL
-         BYocf6z00jZ0DVR6eGtM6cryTi3RcTTSmUDPlhsKoM3bQ14TgLr+eD+2U7OKGEXGcgS/
-         mCCLw/4HoR9nz5FcXbkcHya/WxNQAHTqbCuNDNldQlrjarVHhfxSgcsP5FXCIpQQmQbS
-         47FKRYHwVyHDsJC6Opf6nj3Us/olWRyLeAwFlfBw+sAK5wmIUTIIQ1XDHbloX5ZEBHbU
-         5NBQ==
-X-Gm-Message-State: AOAM5329iBddJ6wd5bqD36SqOu5JGk9+teRNkepMASFFUyesx2gKyRtW
-        NOaba5DTotbe8ph+N5U9yvqExj3EI0GQaOrlxqM=
-X-Google-Smtp-Source: ABdhPJyXAN0F5dsiwjAjlfy6er6qYnriP1vB7GdQ+i/Kg/UMjTKXQJReCJpTewOKooCa0vrxgqXzqX6uevEBzNVhCpw=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr3191112vsl.9.1633001257163;
- Thu, 30 Sep 2021 04:27:37 -0700 (PDT)
+        id S1350477AbhI3Lc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:32:26 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25944 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350452AbhI3LcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 07:32:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="247701809"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="247701809"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 04:30:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="564038617"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Sep 2021 04:30:39 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVuGs-0004Ba-TE; Thu, 30 Sep 2021 11:30:38 +0000
+Date:   Thu, 30 Sep 2021 19:29:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ 7fae4c24a2b84a66c7be399727aca11e7a888462
+Message-ID: <61559fab.jCS59ugJhHpLmznE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
- <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
-In-Reply-To: <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 30 Sep 2021 13:27:25 +0200
-Message-ID: <CAMuHMdWRhNPUyWJ5f8V-w8TCw+AjF8EXC5RZ_9h7JLvJ4RvkEA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomasz,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: 7fae4c24a2b84a66c7be399727aca11e7a888462  x86: Increase exception stack sizes
 
-On Thu, Sep 30, 2021 at 1:01 PM Tomasz Figa <tomasz.figa@gmail.com> wrote:
-> 2021年9月30日(木) 18:23 Lee Jones <lee.jones@linaro.org>:
-> > I've taken the liberty of cherry-picking some of the points you have
-> > reiteratted a few times.  Hopefully I can help to address them
-> > adequently.
-> >
-> > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > > Reminder: these are essential drivers and all Exynos platforms must have
-> > > them as built-in (at least till someone really tests this on multiple
-> > > setups).
-> >
-> > > Therefore I don't agree with calling it a "problem" that we select
-> > > *necessary* drivers for supported platforms. It's by design - supported
-> > > platforms should receive them without ability to remove.
-> >
-> > > The selected drivers are essential for supported platforms.
-> >
-> > SoC specific drivers are only essential/necessary/required in
-> > images designed to execute solely on a platform that requires them.
-> > For a kernel image which is designed to be generic i.e. one that has
-> > the ability to boot on vast array of platforms, the drivers simply
-> > have to be *available*.
-> >
-> > Forcing all H/W drivers that are only *potentially* utilised on *some*
-> > platforms as core binary built-ins doesn't make any technical sense.
-> > The two most important issues this causes are image size and a lack of
-> > configurability/flexibility relating to real-world application i.e.
-> > the one issue we already agreed upon; H/W or features that are too
-> > new (pre-release).
-> >
-> > Bloating a generic kernel with potentially hundreds of unnecessary
-> > drivers that will never be executed in the vast majority of instances
-> > doesn't achieve anything.  If we have a kernel image that has the
-> > ability to boot on 10's of architectures which have 10's of platforms
-> > each, that's a whole host of unused/wasted executable space.
-> >
-> > In order for vendors to work more closely with upstream, they need the
-> > ability to over-ride a *few* drivers to supplement them with some
-> > functionality which they believe provides them with a competitive edge
-> > (I think you called this "value-add" before) prior to the release of a
-> > device.  This is a requirement that cannot be worked around.
->
-> [Chiming in as a clock driver sub-maintainer and someone who spent a
-> non-insignificant part of his life on SoC driver bring-up - not as a
-> Google employee.]
->
-> I'd argue that the proper way for them to achieve it would be to
-> extend the upstream frameworks and/or existing drivers with
-> appropriate APIs to allow their downstream modules to plug into what's
-> already available upstream.
+elapsed time: 1060m
 
-Yes, that's one possible solution.
-We do have to be careful this would not just become some fishy API
-to touch deeply buried internals, and for which there are no valid use
-cases in upstream.
+configs tested: 117
+configs skipped: 81
 
-Gr{oetje,eeting}s,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-                        Geert
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210929
+arm                      pxa255-idp_defconfig
+arm                         lpc32xx_defconfig
+arm                            qcom_defconfig
+powerpc                   lite5200b_defconfig
+arm                             rpc_defconfig
+sparc64                          alldefconfig
+sh                            shmin_defconfig
+xtensa                              defconfig
+powerpc                         ps3_defconfig
+sh                                  defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       imx_v6_v7_defconfig
+sh                   secureedge5410_defconfig
+arm                          iop32x_defconfig
+arm                         socfpga_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+powerpc                     asp8347_defconfig
+arm                      integrator_defconfig
+mips                     loongson2k_defconfig
+arc                                 defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     ksi8560_defconfig
+parisc                           allyesconfig
+arm                       mainstone_defconfig
+mips                           ip27_defconfig
+powerpc                      walnut_defconfig
+sh                        sh7757lcr_defconfig
+arm                         shannon_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           h5000_defconfig
+powerpc                        cell_defconfig
+powerpc                      pmac32_defconfig
+mips                         cobalt_defconfig
+x86_64               randconfig-c001-20210929
+arm                  randconfig-c002-20210929
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                 randconfig-a001-20210929
+i386                 randconfig-a005-20210929
+i386                 randconfig-a002-20210929
+i386                 randconfig-a006-20210929
+i386                 randconfig-a004-20210929
+i386                 randconfig-a003-20210929
+x86_64               randconfig-a002-20210929
+x86_64               randconfig-a005-20210929
+x86_64               randconfig-a001-20210929
+x86_64               randconfig-a006-20210929
+x86_64               randconfig-a003-20210929
+x86_64               randconfig-a004-20210929
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+clang tested configs:
+powerpc              randconfig-c003-20210929
+mips                 randconfig-c004-20210929
+arm                  randconfig-c002-20210929
+x86_64               randconfig-c007-20210929
+riscv                randconfig-c006-20210929
+s390                 randconfig-c005-20210929
+i386                 randconfig-c001-20210929
+x86_64               randconfig-a014-20210929
+x86_64               randconfig-a011-20210929
+x86_64               randconfig-a013-20210929
+x86_64               randconfig-a015-20210929
+x86_64               randconfig-a012-20210929
+x86_64               randconfig-a016-20210929
+i386                 randconfig-a014-20210929
+i386                 randconfig-a013-20210929
+i386                 randconfig-a016-20210929
+i386                 randconfig-a011-20210929
+i386                 randconfig-a015-20210929
+i386                 randconfig-a012-20210929
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+hexagon              randconfig-r045-20210929
+riscv                randconfig-r042-20210929
+hexagon              randconfig-r041-20210929
+s390                 randconfig-r044-20210929
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
