@@ -2,354 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0713B41DC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916B041DD74
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350070AbhI3OnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351177AbhI3OnI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:43:08 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16651C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:41:26 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id b204-20020a1c80d5000000b0030cd967c674so1907512wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jd6p1BG5bXsteTlsZdjG0TNxqrqUF9NS4LOIvY0vvPc=;
-        b=UoRLbYNomhTcwEqW2LjkeHxxrWw0jAKLStEDClUN2PIxu/5HgNAAy7QF5sr9ItBr6F
-         2ppRLMfbmGMfGFEWq7CqwTvPVdwcwBMssEoDcCuoGKK1+u4Viw2jX4AHfsO7OdIezvEP
-         HIxbVTnkNSbO/tKacfsfb/aXNtevHP5jjfYPM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=jd6p1BG5bXsteTlsZdjG0TNxqrqUF9NS4LOIvY0vvPc=;
-        b=yId3+iiY9l4nqjx5SmD99UOMnZAmXCUoasd2bGdsX1Q3myhFPtbOLcpACHUFSJfhx2
-         ZvU1Ieruefb13L7f6Jzm9a5WAg601QvDx6chXVBCcMkPM9VcJ7dgO/qGxqYCoo35+zBF
-         qIkolmqHgn2y0CFODygii3F9hl/ntLhyHIbeY2MsorYqnxEhR+iBQ15Dmv4RrS0K7YKt
-         syRwPXNlZFNCpMH/LneDI7aDiveoBN1hwc4DzqXXsgb3Nps73hTJ6RHhjxKo1wZU8DEV
-         VS293MafiemWWjdUsym1oottmZoe6KT2fIyXwOUtYyk9ajCh/Hgeb9WgTeAUgXPPP8t5
-         zE8g==
-X-Gm-Message-State: AOAM531g5Alneb4ljfNWw3P6RK0Of94FgLA5aZMjR9m3rY5XNX0biKwA
-        N9CY4MhjtkI+3Zhkqj+Tpd1e8Q==
-X-Google-Smtp-Source: ABdhPJx3V8QVnWdaBVCJHD8epACgnyYdoZ5WVgHYPgE55mat6dTH1nFFSZUV547WHwjy+c7iWUZ6bg==
-X-Received: by 2002:a05:600c:24f:: with SMTP id 15mr5806244wmj.190.1633012884676;
-        Thu, 30 Sep 2021 07:41:24 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l11sm3993979wms.45.2021.09.30.07.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:41:24 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 16:41:21 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Shunsuke Mie <mie@igel.co.jp>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
-        etom@igel.co.jp
-Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Add dma-buf support
-Message-ID: <YVXMkSDXybju88TU@phenom.ffwll.local>
-Mail-Followup-To: Shunsuke Mie <mie@igel.co.jp>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>, Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
-        etom@igel.co.jp
-References: <20210929041905.126454-1-mie@igel.co.jp>
- <20210929041905.126454-3-mie@igel.co.jp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210929041905.126454-3-mie@igel.co.jp>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+        id S245617AbhI3Pah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:30:37 -0400
+Received: from m12-15.163.com ([220.181.12.15]:37222 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245604AbhI3Paf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:30:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=11Z+EQIuOgiThyZL/z
+        m7yTs1InxlpsewWg/rDKPl+z4=; b=U3s6Mu4l1mkNi8cedq7VdCsxggNXdTCghQ
+        4dJ2iDW8B8hEJjDplXWcD42h25em/GkrMzIBWykxmnomAWozDrAdWway+u3Y4qju
+        jRN56ALM+eiuqsT1975ZgS3ll7oIz3oPqqqcNMAdQHhUCkI7rP49FQC9bz7kp/y8
+        GZofnFMWI=
+Received: from localhost.localdomain (unknown [171.221.149.2])
+        by smtp11 (Coremail) with SMTP id D8CowAD3+22wzFVh1aIpBA--.36381S2;
+        Thu, 30 Sep 2021 22:42:03 +0800 (CST)
+From:   Chen Lin <chen45464546@163.com>
+To:     will@kernel.org
+Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
+        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, chen.lin5@zte.com.cn,
+        Chen Lin <chen45464546@163.com>
+Subject: Re:Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
+Date:   Thu, 30 Sep 2021 22:41:30 +0800
+Message-Id: <1633012890-3118-1-git-send-email-chen45464546@163.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <20210930084247.GC23389@willie-the-truck>
+References: <20210930084247.GC23389@willie-the-truck>
+X-CM-TRANSID: D8CowAD3+22wzFVh1aIpBA--.36381S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw48Zr4xtry3ur4xCr45Wrg_yoW5Jry8pF
+        43C3W5tF4DWayDu34UJw48CFyaka1fJr47GFnrJa4Sy3s0qF92qFn7tryaka4qvrW0kw42
+        vryjqF1q9asrAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uov38UUUUU=
+X-Originating-IP: [171.221.149.2]
+X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/1tbiQgMenlaEAqVahwAAsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 01:19:05PM +0900, Shunsuke Mie wrote:
-> Implement a ib device operation ‘reg_user_mr_dmabuf’. Generate a
-> rxe_map from the memory space linked the passed dma-buf.
-> 
-> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
-> ---
->  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++++++
->  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
->  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
->  4 files changed, 156 insertions(+)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index 1ca43b859d80..8bc19ea1a376 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
->  void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr);
->  int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
->  		     int access, struct rxe_mr *mr);
-> +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
-> +			    u64 iova, int access, struct rxe_mr *mr);
->  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr);
->  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->  		enum rxe_mr_copy_dir dir);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index 53271df10e47..af6ef671c3a5 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -4,6 +4,7 @@
->   * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
->   */
->  
-> +#include <linux/dma-buf.h>
->  #include "rxe.h"
->  #include "rxe_loc.h"
->  
-> @@ -245,6 +246,120 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
->  	return err;
->  }
->  
-> +static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
-> +			     struct ib_umem_dmabuf *umem_dmabuf)
-> +{
-> +	struct rxe_map_set *set;
-> +	struct rxe_phys_buf *buf = NULL;
-> +	struct rxe_map **map;
-> +	void *vaddr, *vaddr_end;
-> +	int num_buf = 0;
-> +	int err;
-> +	size_t remain;
-> +
-> +	mr->dmabuf_map = kzalloc(sizeof &mr->dmabuf_map, GFP_KERNEL);
+At 2021-09-30 15:42:47, "Will Deacon" <will@kernel.org> wrote:
 
-dmabuf_maps are just tagged pointers (and we could shrink them to actually
-just a tagged pointer if anyone cares about the overhead of the separate
-bool), allocating them seperately is overkill.
+>On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
+>> From: Chen Lin <chen.lin5@zte.com.cn>
+>> 
+>> we should dump the real instructions before BUG in kernel mode, and
+>> compare this to the instructions from objdump.
+>> 
+>> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
+>> ---
+>>  arch/arm64/kernel/traps.c |    7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+>> index b03e383..621a9dd 100644
+>> --- a/arch/arm64/kernel/traps.c
+>> +++ b/arch/arm64/kernel/traps.c
+>> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
+>>  	if (call_undef_hook(regs) == 0)
+>>  		return;
+>>  
+>> -	BUG_ON(!user_mode(regs));
+>> +	if (!user_mode(regs)) {
+>> +		pr_emerg("Undef instruction in kernel, dump instr:");
+>> +		dump_kernel_instr(KERN_EMERG, regs);
+>> +		BUG();
+>> +	}
+>
+>Hmm, I'm not completely convinced about this as the instruction in the
+>i-cache could be completely different. I think the PC value (for addr2line)
+>is a lot more useful, and we should be printing that already.
+>
+>Maybe you can elaborate on a situation where this information was helpful?
+>
+>Thanks,
+>
+>Will
 
+Undef instruction occurs in some cases
 
-> +	if (!mr->dmabuf_map) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +
-> +	err = dma_buf_vmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
-> +	if (err)
-> +		goto err_free_dmabuf_map;
-> +
-> +	set = mr->cur_map_set;
-> +	set->page_shift = PAGE_SHIFT;
-> +	set->page_mask = PAGE_SIZE - 1;
-> +
-> +	map = set->map;
-> +	buf = map[0]->buf;
-> +
-> +	vaddr = mr->dmabuf_map->vaddr;
+1. CPU do not have the permission to execute the instruction or the current CPU
+ version does not support the instruction. For example, execute 
+ 'mrs x0, tcr_el3' under el1.
 
-dma_buf_map can be an __iomem too, you shouldn't dig around in this, but
-use the dma-buf-map.h helpers instead. On x86 (and I think also on most
-arm) it doesn't matter, but it's kinda not very nice in a pure software
-driver.
+2. The instruction is a normal instruction, but it is changed during board 
+running in some abnormal situation. eg: DDR bit flip, the normal instruction 
+will become an undefined one. By printing the instruction, we can see the 
+accurate instruction code and compare it with the instruction code from objdump
+to determine that it is a DDR issue.
 
-If anything is missing in dma-buf-map.h wrappers just add more.
+3. It is rare that the instructions seen through the CPU are inconsistent with 
+the instructions in the actual DDR.You can also compare the printed instructions
+with the instructions in memory(may through kdump) to determine that it is the
+CPU cache or some other issue.
 
-Or alternatively you need to fail the import if you can't handle __iomem.
+However, now the instruction code causing the sync 'undef instr exception' cannot be
+seen. The second and third type problem above cannot be determined.
 
-Aside from these I think the dma-buf side here for cpu access looks
-reasonable now.
--Daniel
+Before the commit 8a60419d36762a1 "arm64: force_signal_inject: WARN if called 
+from kernel context", the instructions can be printed when the CPU encounters an
+undef instruction in kernel mode. 
 
-> +	vaddr_end = vaddr + umem_dmabuf->dmabuf->size;
-> +	remain = umem_dmabuf->dmabuf->size;
-> +
-> +	for (; remain; vaddr += PAGE_SIZE) {
-> +		if (num_buf >= RXE_BUF_PER_MAP) {
-> +			map++;
-> +			buf = map[0]->buf;
-> +			num_buf = 0;
-> +		}
-> +
-> +		buf->addr = (uintptr_t)vaddr;
-> +		if (remain >= PAGE_SIZE)
-> +			buf->size = PAGE_SIZE;
-> +		else
-> +			buf->size = remain;
-> +		remain -= buf->size;
-> +
-> +		num_buf++;
-> +		buf++;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_free_dmabuf_map:
-> +	kfree(mr->dmabuf_map);
-> +err_out:
-> +	return err;
-> +}
-> +
-> +static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(mr->umem);
-> +
-> +	dma_buf_vunmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
-> +	kfree(mr->dmabuf_map);
-> +}
-> +
-> +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
-> +			    u64 iova, int access, struct rxe_mr *mr)
-> +{
-> +	struct ib_umem_dmabuf *umem_dmabuf;
-> +	struct rxe_map_set *set;
-> +	int err;
-> +
-> +	umem_dmabuf = ib_umem_dmabuf_get(pd->ibpd.device, start, length, fd,
-> +					 access, NULL);
-> +	if (IS_ERR(umem_dmabuf)) {
-> +		err = PTR_ERR(umem_dmabuf);
-> +		goto err_out;
-> +	}
-> +
-> +	rxe_mr_init(access, mr);
-> +
-> +	err = rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem), 0);
-> +	if (err) {
-> +		pr_warn("%s: Unable to allocate memory for map\n", __func__);
-> +		goto err_release_umem;
-> +	}
-> +
-> +	mr->ibmr.pd = &pd->ibpd;
-> +	mr->umem = &umem_dmabuf->umem;
-> +	mr->access = access;
-> +	mr->state = RXE_MR_STATE_VALID;
-> +	mr->type = IB_MR_TYPE_USER;
-> +
-> +	set = mr->cur_map_set;
-> +	set->length = length;
-> +	set->iova = iova;
-> +	set->va = start;
-> +	set->offset = ib_umem_offset(mr->umem);
-> +
-> +	err = rxe_map_dmabuf_mr(mr, umem_dmabuf);
-> +	if (err)
-> +		goto err_free_map_set;
-> +
-> +	return 0;
-> +
-> +err_free_map_set:
-> +	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
-> +err_release_umem:
-> +	ib_umem_release(&umem_dmabuf->umem);
-> +err_out:
-> +	return err;
-> +}
-> +
->  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
->  {
->  	int err;
-> @@ -703,6 +818,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
->  {
->  	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
->  
-> +	if (mr->umem && mr->umem->is_dmabuf)
-> +		rxe_unmap_dmabuf_mr(mr);
-> +
->  	ib_umem_release(mr->umem);
->  
->  	if (mr->cur_map_set)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 9d0bb9aa7514..6191bb4f434d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -916,6 +916,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->  	return ERR_PTR(err);
->  }
->  
-> +static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
-> +					    u64 length, u64 iova, int fd,
-> +					    int access, struct ib_udata *udata)
-> +{
-> +	int err;
-> +	struct rxe_dev *rxe = to_rdev(ibpd->device);
-> +	struct rxe_pd *pd = to_rpd(ibpd);
-> +	struct rxe_mr *mr;
-> +
-> +	mr = rxe_alloc(&rxe->mr_pool);
-> +	if (!mr) {
-> +		err = -ENOMEM;
-> +		goto err2;
-> +	}
-> +
-> +	rxe_add_index(mr);
-> +
-> +	rxe_add_ref(pd);
-> +
-> +	err = rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, access, mr);
-> +	if (err)
-> +		goto err3;
-> +
-> +	return &mr->ibmr;
-> +
-> +err3:
-> +	rxe_drop_ref(pd);
-> +	rxe_drop_index(mr);
-> +	rxe_drop_ref(mr);
-> +err2:
-> +	return ERR_PTR(err);
-> +}
-> +
->  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->  				  u32 max_num_sg)
->  {
-> @@ -1081,6 +1114,7 @@ static const struct ib_device_ops rxe_dev_ops = {
->  	.query_qp = rxe_query_qp,
->  	.query_srq = rxe_query_srq,
->  	.reg_user_mr = rxe_reg_user_mr,
-> +	.reg_user_mr_dmabuf = rxe_reg_user_mr_dmabuf,
->  	.req_notify_cq = rxe_req_notify_cq,
->  	.resize_cq = rxe_resize_cq,
->  
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index c807639435eb..0aa95ab06b6e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -334,6 +334,8 @@ struct rxe_mr {
->  
->  	struct rxe_map_set	*cur_map_set;
->  	struct rxe_map_set	*next_map_set;
-> +
-> +	struct dma_buf_map *dmabuf_map;
->  };
->  
->  enum rxe_mw_state {
-> -- 
-> 2.17.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
