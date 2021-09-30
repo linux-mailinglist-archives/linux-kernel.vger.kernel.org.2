@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA0841DE65
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAF241DE7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348561AbhI3QIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348196AbhI3QIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:08:11 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 492C2613A9;
-        Thu, 30 Sep 2021 16:06:27 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 17:10:23 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH] iio: adc: nau7802: convert probe to full device-managed
-Message-ID: <20210930171023.2bf5a414@jic23-huawei>
-In-Reply-To: <20210926154932.3287590-1-aardelean@deviqon.com>
-References: <20210926154932.3287590-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1348940AbhI3QNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348582AbhI3QNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:13:43 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5429C06176A;
+        Thu, 30 Sep 2021 09:12:00 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b15so27347352lfe.7;
+        Thu, 30 Sep 2021 09:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3vOhd3AxRBGGkQ1Ffsi6fx5ALF3ffB714UeOL8XqBU=;
+        b=nEkTOTrBqW70y++KGcwtoP3dePkqsP3/baqjSZkpHheBCDHsP1siCD8Y1BFBU9jQyO
+         8UDGfHNDWqE+AGmDygUGzFuWfe4t78xEAEml5WGju36hpmeaoWb3OUJnAF/XcATG/6dC
+         7Iik7Qw1LiXXqOPtoFDBmwRjC/kzsqcgv8KC5vD5L3PRO5s42MvzcApCwwp5ybfaO16I
+         J/z3t5w8djS3xthCuwDBzJkWmpueYK0RnE8w0RQLcCEXHtBKAUHzKZM493bI/v4xYLtX
+         Ly/+1pxqoa4gUtm9ct106ZFK84CNFVN7k1jEnyb6fStPe9WD89oLs+QnP8b40on/yeO4
+         JOkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3vOhd3AxRBGGkQ1Ffsi6fx5ALF3ffB714UeOL8XqBU=;
+        b=nelmMyeJSE+WjV0LozY0NDJHsS68KZWwLzoY9P4a0uuV5ATmai/5G4r39m57c8xsZJ
+         5VDdiUYqLnZBYA0Qy6LK3tvnMkjAv7LlSc4YJb5l2gJ3g2FW14DMS7th2x0x1d5gqVKV
+         7EAuOwMzXu27J8SmNqPkE29IIbRpctgIKmCIJv86Qp5a+b2wM6efuiN7fP8tEB6afBl1
+         /X12O/jNYKLw+wY2u1kPeuPtctHFqZ4ZXryx5yx4zcD0fM5x8zonHf23FK6/AgKE8ZJv
+         Zk3nRA/65T8TeSDdU7IbuGwN2Qr2cJvaeFsFVQ+VyWTY15tOMomJkhEJ2ocFaVg28eVW
+         O86Q==
+X-Gm-Message-State: AOAM530IkTMe+ceMvVY8ebatr2ACn3+kE0nDgbiwSXTeE3Mon5/6EZhG
+        GxBfkh/s6Qb1fCQ1byKa7TEq7fgv2DNpOu5xeSY=
+X-Google-Smtp-Source: ABdhPJybsD1xRfNr9pXfjZhq2UbsQcKOSv4i+MJkaa5zkp7oWk8aHl9JVTIliUgrIfDbXq0SkjetAGoAwSkKXZTPFHE=
+X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr51516lfb.161.1633018319217;
+ Thu, 30 Sep 2021 09:11:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
+ <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d1e5b178-47f5-9791-73e9-0c1f805b0fca@6wind.com> <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Cpp Code <cpp.code.lv@gmail.com>
+Date:   Thu, 30 Sep 2021 09:11:48 -0700
+Message-ID: <CAASuNyVe8z1R6xyCfSAxZbcrL3dej1n8TXXkqS-e8QvA6eWd+w@mail.gmail.com>
+Subject: Re: [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6 extension
+ header support
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        netdev@vger.kernel.org, pshelar@ovn.org,
+        "David S. Miller" <davem@davemloft.net>,
+        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sep 2021 18:49:32 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+On Wed, Sep 29, 2021 at 6:19 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 29 Sep 2021 08:19:05 +0200 Nicolas Dichtel wrote:
+> > > /* Insert a kernel only KEY_ATTR */
+> > > #define OVS_KEY_ATTR_TUNNEL_INFO    __OVS_KEY_ATTR_MAX
+> > > #undef OVS_KEY_ATTR_MAX
+> > > #define OVS_KEY_ATTR_MAX            __OVS_KEY_ATTR_MAX
+> > Following the other thread [1], this will break if a new app runs over an old
+> > kernel.
+>
+> Good point.
+>
+> > Why not simply expose this attribute to userspace and throw an error if a
+> > userspace app uses it?
+>
+> Does it matter if it's exposed or not? Either way the parsing policy
+> for attrs coming from user space should have a reject for the value.
+> (I say that not having looked at the code, so maybe I shouldn't...)
 
-> This is a trivial conversion to device-managed functions.
-> The mutex_destroy() calls are redundant, as the data will be free'd anyway.
-> 
-> And the IRQ and IIO register functions both have device-managed
-> equivalents.
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+To remove some confusion, there are some architectural nuances if we
+want to extend code without large refactor.
+The ovs_key_attr is defined only in kernel side. Userspace side is
+generated from this file. As well the code can be built without kernel
+modules.
+The code inside OVS repository and net-next is not identical, but I
+try to keep some consistency.
 
-+CC Maxime and Alexandre.
-
-Looks simple enough to me that I won't wait on their replies to queue it up.
-Obviously feedback welcome though!
-
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-to see if it can find stuff we missed.
-
-Thanks,
-
-Jonathan
-
-
-> ---
->  drivers/iio/adc/nau7802.c | 50 +++++++--------------------------------
->  1 file changed, 9 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/nau7802.c b/drivers/iio/adc/nau7802.c
-> index bb70b51d25b1..976c235f3079 100644
-> --- a/drivers/iio/adc/nau7802.c
-> +++ b/drivers/iio/adc/nau7802.c
-> @@ -428,8 +428,6 @@ static int nau7802_probe(struct i2c_client *client,
->  
->  	st = iio_priv(indio_dev);
->  
-> -	i2c_set_clientdata(client, indio_dev);
-> -
->  	indio_dev->name = dev_name(&client->dev);
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->info = &nau7802_info;
-> @@ -495,13 +493,13 @@ static int nau7802_probe(struct i2c_client *client,
->  	 * will enable them back when we will need them..
->  	 */
->  	if (client->irq) {
-> -		ret = request_threaded_irq(client->irq,
-> -				NULL,
-> -				nau7802_eoc_trigger,
-> -				IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
-> -				IRQF_NO_AUTOEN,
-> -				client->dev.driver->name,
-> -				indio_dev);
-> +		ret = devm_request_threaded_irq(&client->dev, client->irq,
-> +						NULL,
-> +						nau7802_eoc_trigger,
-> +						IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
-> +						IRQF_NO_AUTOEN,
-> +						client->dev.driver->name,
-> +						indio_dev);
->  		if (ret) {
->  			/*
->  			 * What may happen here is that our IRQ controller is
-> @@ -526,7 +524,7 @@ static int nau7802_probe(struct i2c_client *client,
->  		ret = i2c_smbus_write_byte_data(st->client, NAU7802_REG_CTRL2,
->  					  NAU7802_CTRL2_CRS(st->sample_rate));
->  		if (ret)
-> -			goto error_free_irq;
-> +			return ret;
->  	}
->  
->  	/* Setup the ADC channels available on the board */
-> @@ -536,36 +534,7 @@ static int nau7802_probe(struct i2c_client *client,
->  	mutex_init(&st->lock);
->  	mutex_init(&st->data_lock);
->  
-> -	ret = iio_device_register(indio_dev);
-> -	if (ret < 0) {
-> -		dev_err(&client->dev, "Couldn't register the device.\n");
-> -		goto error_device_register;
-> -	}
-> -
-> -	return 0;
-> -
-> -error_device_register:
-> -	mutex_destroy(&st->lock);
-> -	mutex_destroy(&st->data_lock);
-> -error_free_irq:
-> -	if (client->irq)
-> -		free_irq(client->irq, indio_dev);
-> -
-> -	return ret;
-> -}
-> -
-> -static int nau7802_remove(struct i2c_client *client)
-> -{
-> -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> -	struct nau7802_state *st = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	mutex_destroy(&st->lock);
-> -	mutex_destroy(&st->data_lock);
-> -	if (client->irq)
-> -		free_irq(client->irq, indio_dev);
-> -
-> -	return 0;
-> +	return devm_iio_device_register(&client->dev, indio_dev);
->  }
->  
->  static const struct i2c_device_id nau7802_i2c_id[] = {
-> @@ -582,7 +551,6 @@ MODULE_DEVICE_TABLE(of, nau7802_dt_ids);
->  
->  static struct i2c_driver nau7802_driver = {
->  	.probe = nau7802_probe,
-> -	.remove = nau7802_remove,
->  	.id_table = nau7802_i2c_id,
->  	.driver = {
->  		   .name = "nau7802",
-
+JFYI This is the file responsible for generating userspace part:
+https://github.com/openvswitch/ovs/blob/master/build-aux/extract-odp-netlink-h
+This is the how corresponding file for ovs_key_attr looks inside OVS:
+https://github.com/openvswitch/ovs/blob/master/datapath/linux/compat/include/linux/openvswitch.h
+one can see there are more values than in net-next version.
