@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1C641D2BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4230941D2BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348103AbhI3Ffg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348041AbhI3Fff (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:35:35 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF4BC06176A
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 22:33:53 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id h2so10475779ybi.13
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 22:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N+NKKdRK9RfodRzKXI8O8ct2lSBYNHsM7sxE9hBdFgs=;
-        b=JfRa6bsas3v+fIYF4C41qARornl22a530WFV/QpLTef0wGba+wr/ErL85dJ4Eg/biV
-         cWf/DLt+lIfU+4J8RVGZ7yoeeKdVW6RTgQmjd38B07nP11nqE6eYB4N4LABgygtw79M4
-         i7Njifo1MrZeppr8aG7Gu1BT5r1gdD3DRmTFdq3ei8Yntq+TbScnsGbvEWFS1adXCrAG
-         pWhBpaScmjzrr7KsDAbQ3brzdtAyIR6APcXDIoizwQpI2NjYMLWM2xJ6rSWXZeEon7i5
-         O0ZzKvp95fhdLXK9FF5q9AvaiUiRaUVKgskBYsb0FrNsOTjdYFGmhOibv/6oeX8gVAWD
-         bmHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N+NKKdRK9RfodRzKXI8O8ct2lSBYNHsM7sxE9hBdFgs=;
-        b=cXq8D1BYlA4ewkwCk8IJW7vS1OceIVrFSUn1YLHA5VV4GYmrVrCmvbP8rGUL2BlPco
-         OVTb1cDJrLi7saO0tGQv0WtIzKOI3QCcU0qCN2ea1gSRSyslmD0TR2aAVjRleiNjmcbs
-         QpE2M4H5GC/pt0wFyNj52dPGHF9YaimDw7X/XIzJP/iXlp0nFXuFWxQfeebDTDwtX6Uy
-         1sXCEFe0ChPuxKC6zGrld5THioNtngv6zjkJjcXrrgNVG88aksmDTj+JhAXevAPvMzRz
-         ZjxyC6EVoy0ez2wxW2XVXQOhZ1v3X7aJEy0DqzEnsT5BTQqDpEzqWyyfJUvgg25FEYqm
-         o//g==
-X-Gm-Message-State: AOAM532B7+ibGla7GutrmOA+ct5Vvdpu42fXL86mpqUIGE9JSHbaHhte
-        C1FKkFzf9b7qr67tyMM2GIi6foWQsUOSS834ABd8YQ==
-X-Google-Smtp-Source: ABdhPJwQhot8JmlxGg0ZAE8LuycN8IkkPQ2598Nm1DbCQ1RVLb3/Grm/uxdPC06spevHQcO4XCptOiGMkXn2NNUweWQ=
-X-Received: by 2002:a25:4684:: with SMTP id t126mr4148820yba.476.1632980032697;
- Wed, 29 Sep 2021 22:33:52 -0700 (PDT)
+        id S1348106AbhI3Fgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:36:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5455 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348041AbhI3Fgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:36:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212362136"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="212362136"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:34:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="539288452"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Sep 2021 22:34:47 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVoiV-0003uU-7a; Thu, 30 Sep 2021 05:34:47 +0000
+Date:   Thu, 30 Sep 2021 13:34:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/build] BUILD SUCCESS
+ 067595d728179219c120dd50b4dc711e92f1eb16
+Message-ID: <61554c6b.DpJK+Vb2zmsTLjxw%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
-In-Reply-To: <20210831231804.zozyenear45ljemd@skbuf>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 29 Sep 2021 22:33:16 -0700
-Message-ID: <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 4:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
-> > Rev B is interesting because switch0 and switch1 got genphy, while
-> > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
-> > interrupt properties, so don't loop back to their parent device.
->
-> This is interesting and not what I really expected to happen. It goes to
-> show that we really need more time to understand all the subtleties of
-> device dependencies before jumping on patching stuff.
->
-> In case the DSA tree contains more than one switch, different things
-> will happen in dsa_register_switch().
-> The tree itself is only initialized when the last switch calls
-> dsa_register_switch(). All the other switches just mark themselves as
-> present and exit probing early. See this piece of code in dsa_tree_setup:
->
->         complete = dsa_tree_setup_routing_table(dst);
->         if (!complete)
->                 return 0;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
+branch HEAD: 067595d728179219c120dd50b4dc711e92f1eb16  x86/boot: Fix make hdimage with older versions of mtools
 
-Hi Vladimir,
+elapsed time: 715m
 
-Can you point me to an example dts file that has a DSA tree with more
-than one switch and also point me to the switches that form the tree?
+configs tested: 27
+configs skipped: 82
 
-I'm working on a RFC series that tries to improve some stuff and
-having an example DTS to look at would help.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Saravana
+gcc tested configs:
+i386                 randconfig-c001-20210930
+x86_64               randconfig-c001-20210930
+i386                             allyesconfig
+i386                                defconfig
+x86_64               randconfig-a002-20210929
+x86_64               randconfig-a005-20210929
+x86_64               randconfig-a001-20210929
+x86_64               randconfig-a006-20210929
+x86_64               randconfig-a003-20210929
+x86_64               randconfig-a004-20210929
+i386                 randconfig-a001-20210929
+i386                 randconfig-a005-20210929
+i386                 randconfig-a002-20210929
+i386                 randconfig-a006-20210929
+i386                 randconfig-a004-20210929
+i386                 randconfig-a003-20210929
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
->
-> So it should be a general property of cross-chip DSA trees that all
-> switches except the last one will have the specific PHY driver probed
-> properly, and not the genphy.
->
-> Because all (N - 1) switches of a tree exit early in dsa_register_switch,
-> they have successfully probed by the time the last switch brings up the
-> tree, and brings up the PHYs on behalf of every other switch.
->
-> The last switch can connect to the PHY on behalf of the other switches
-> past their probe ending, and those PHYs should not defer probing because
-> their supplier is now probed. It is only that the last switch cannot
-> connect to the PHYs of its own ports.
->
-> So if this does not work (you say that there are 2 switches that use
-> genphy) I suspect there are also other bugs involved.
+clang tested configs:
+x86_64               randconfig-a014-20210929
+x86_64               randconfig-a011-20210929
+x86_64               randconfig-a013-20210929
+x86_64               randconfig-a015-20210929
+x86_64               randconfig-a012-20210929
+x86_64               randconfig-a016-20210929
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
