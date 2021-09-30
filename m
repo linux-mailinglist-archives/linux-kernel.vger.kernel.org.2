@@ -2,274 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C60E41D6B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEDA41D6BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349498AbhI3Jss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:48:48 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33241 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238648AbhI3Jsq (ORCPT
+        id S1349592AbhI3JtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:49:08 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25838 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349607AbhI3JtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:48:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632995223; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1zv1MV9MIiqZAbihdM/Y0vKW8mxRbW0fzXo48jf91+0=; b=W2CwjGsgYly3axsjRoK6EhRNslpusKrSozupcXaBumJgmgaT9m988LoAu7SRoORgiQgTGSTl
- ZmJAJ0ByLwp5+pEGbCHWGXkltQfuoiVofj03GToZ34UXQcQyf7LM7hEcC0DG9Tp6b2UIYDD9
- SrpFu6O73VVaN8b1G+8Df2VcCrk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6155878763b1f18658956cb4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 09:46:47
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 58D65C43460; Thu, 30 Sep 2021 09:46:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.222.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A94CCC4360D;
-        Thu, 30 Sep 2021 09:46:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A94CCC4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
- <YUfZbsf3MX1aQJ2+@builder.lan>
- <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
- <YUoHr0F9qjr2Toeb@ripper>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
-Date:   Thu, 30 Sep 2021 15:16:39 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 30 Sep 2021 05:49:04 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U9HF4h005479;
+        Thu, 30 Sep 2021 09:47:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=x9zN710GQesexp07I33EDu9Ve0pR++cEV7Txr2rtH9w=;
+ b=RL1dKMZSr9l5MgTBsA8BsG2LO47dAixAESa/gpKWIo5B6CHLz4jw8f61R07ssj2UeVPC
+ Y2q3e8J3wwiN+hdPgCRL/7Y1crO5YiT0Yq66i764gwI+TZk48Y6TyyZ+/Bo/BWaIYC5a
+ 4gzrUlP/uWJbctpQ2nKJ90i108sXdcoAmOETd2/s28kMm9hqsykREz3GO2UHXnX0f7W8
+ pDGqL6IoO4q3qyyqDaGdsIStRhyAsGtgat79ZyKO6izzclnbzLNJOyeHnV8UWs13fxNJ
+ zrSLFbUbBhgSDsKGCRhK5UDdHXpgoAZGd49TIxeOzpPGBhmc4Ed2gmuw9glpUhrbnmKt TQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bcf6d244e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 09:47:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18U9jAAh038784;
+        Thu, 30 Sep 2021 09:47:16 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+        by aserp3030.oracle.com with ESMTP id 3bd5watpay-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 09:47:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eKnj8prIimT7sH4ese85nrq7WupMREyDQarkMwYaq3WDZ0WT1khbhpCU3yNqFSePTOzMRFnOsTg48WnGOjGGl/9F7Jx+rfHJNmJwH/75IxbyEFzaDQehnbp6j/X/qBdOq0UYYSUunMIaMiavbMwRkm/nt9COuNj1pylZTiIT5EFFKFe8XNHP8LMGPTOr3Pq9SBlSTcmkreLmTDOnZujIBzu5vwOIe8Yttpa922UPhOIy7bxw9NfSdbjjaPev7qPVgSzgB/Wi30un3tM5x6ZutyhTMwOriJ4+JMgYc7SzEU+KeKnoE99rbFCqGuwW65R4fdbOsC32+/ViQgaQaN9LVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=x9zN710GQesexp07I33EDu9Ve0pR++cEV7Txr2rtH9w=;
+ b=lW1yW2eSywo/sTHrrHJXi9XPdFkvNFmU1ZNVTZqUHtCTL/G+14s+3PSEbJAG3BsGInW0TcG8TFWO9YhhjJSrHBIPfJDBIaP+d3xCUJd9A2scNQ1fdDrxIlUcn1Dq6toVv9PZAMX1dZ0pspZkqcAiqLQ8Faj3pUqlEELgINySeWSoaXkzKsExMmEKl8CCtElGdldWj1iKh7bHMN0TyrVEtt1bvcjlFQTc7M6Glb4VvquUax5i+9dHmHl4uoPZ2zPKWOR98/UH3qRR70OxpZM+81gU++ujpFy7ueAgD3AJEGPOGTbZu/vQEWJmgg7vOFfUnL7LJvjwVij2WuiLihsF+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x9zN710GQesexp07I33EDu9Ve0pR++cEV7Txr2rtH9w=;
+ b=f9b7JsEKJyPDP6FcaYbtC+yNIwCsuwSx/72gEvd+oTLMHd2cBLS2kHVf0HmRUnNvMzxdvGk4fiiBY1CDBXanaIk3TiLFFuaz0aXvL+4zfCXJtzorukqbaz4042ltvKlG2QjU5QOdelCZMMv0fFlf6g1uWQYSDGoL1KvDNnQphCU=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1549.namprd10.prod.outlook.com
+ (2603:10b6:300:26::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
+ 2021 09:47:13 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4544.021; Thu, 30 Sep 2021
+ 09:47:13 +0000
+Date:   Thu, 30 Sep 2021 12:46:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [driver-core:debugfs_cleanup 1/2] fs/d_path.c:59 prepend() warn:
+ unsigned 'p->len' is never less than zero.
+Message-ID: <202109301219.cZqUlzDk-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0038.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::9)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <YUoHr0F9qjr2Toeb@ripper>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from kadam (62.8.83.99) by JNAP275CA0038.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Thu, 30 Sep 2021 09:47:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a8795bdc-5afb-45c2-5049-08d983f747ac
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1549:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB15490BDB4B9B1D256374FA388EAA9@MWHPR10MB1549.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:202;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O8pK5R3YZtxLbK3Pe7SvC7IxCQgbcpaITHXx6dI98EbI4/6u0Dp1djrljpGa2hL9/+MUAImBhynuiCQJL3G2PSDjsGpIxNL9MnvvZGCPKBYC20M9iHKq3+XyOi3D74s1C33xOi4GOzEVFkZA7IMxcui6hv/94yThZ17nGE9mDWjGqfdL82MaH9GDkm5bPRvW9vhvTiPqItB+cneJ6LkLVp5LTYksNPf+0mQVBPCKw9jnfky4FQEi4uHeFzfOXeOczGTXF7AfkX1tXVkj7TTiCEIGf3iC+NxZbBCoIW+W0Mt5kpEYNkn5qByilnBT+jXWs7n62DyPZriHZ9jSy3JCW1xz0TJZtsmFmpKFm+E1qH6dEn5GZ6TeoaWRGde+BMVJ1KDyUsXhr4TEkCqrntIUWVYYIDFNuHf8KPk6BXaPeaE9mwWn4lPQ8SoR3Ng1j75HDS6hzS9mQ8eCpq1FyEuAYs5hmOQ6dkphbrbQHitQdPcwiAwc3bH8oLdKsZtO17T0UOD3FcSOfvGcEpVJJGRK0i2PLyM6vaiEbQlrH9cVjb+JaFLwJzaQxMl2h9Suk9tPOg7xA9AM8ayuScMf3AKy8WCg7CEMajlgAyJz6W7NvAxOjBTUfeOzlNDNo6g5rypR7X9ep12zKvgqbl5bl7qC7tM+NT+ZHsnOF1Wv3ZlSQ+WKkENC+PPDJNnGD6x1MHKNVFV5DVqZDITENoA2oJ1hstK/XQc/bnOguY6kYptTYkPvs3RH/mPbUyqRhwlg3lxgFDdIFmRjvf+WRN8TvAwZ86OTzUwiWUm77QNwQgSVEJW4TQDS6ffpMhARB7Gz4nf7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(66946007)(38100700002)(8676002)(1076003)(4326008)(86362001)(66556008)(956004)(38350700002)(2906002)(66476007)(6486002)(6496006)(52116002)(83380400001)(186003)(6916009)(9686003)(5660300002)(966005)(26005)(36756003)(6666004)(508600001)(44832011)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qr/m13Hs4p3PyKRcnoOMfwybyRTKo7UAhui8eonCMhsVTTRb/KXclrP17hdw?=
+ =?us-ascii?Q?Mqhbuy79nZvNZFrhovHBLsZDNQRRA2BJladnpq5Iy22nX4u//4g9d0nrWG6w?=
+ =?us-ascii?Q?o0gdZabbVEOrt06qvIZ/AxptTHHKfBUeulOkIZfip0sHE8GZlSzKoh7J/ybo?=
+ =?us-ascii?Q?5z/q69FUK0v3Uzf6xGtB7cVFJSzudEblHMh3BT9QbEhc/o5HpR9sglKJq0Eu?=
+ =?us-ascii?Q?yTFSv6iEK8tiUo5EKrpkmn+0kDE5RdwpxdqgIE8337Fh0fgC5vLsjOrQpUhh?=
+ =?us-ascii?Q?bslFBDzNiLlwPcZllvnpaMkSSkrs0gHIECYa3Nou9ZUAcKIhhuj2xJrKy6Q+?=
+ =?us-ascii?Q?+utAww1AntRfjXNE041WojtO04S97KFZwI4pgNWjdPXcu/uvLAYkEd8YarEM?=
+ =?us-ascii?Q?IS6YOfdqHEk8q6l8nYc4krxhgSgdxTuhmpXHTq8jy7sy+jtzuF8ZsQkwtVqr?=
+ =?us-ascii?Q?UWIifHEODdVwqViOyk5LU/LOBEhFc9N9ywhHXfu0NmEFN6OpRcBeYVuebHAq?=
+ =?us-ascii?Q?hTtoE2s0A82u9IkJEO7oJuGLt5f4Ak3CuTH6XM4+f5pY6wS2BbJYPffAIv7r?=
+ =?us-ascii?Q?rCXimnPlvebDBixVF5KnJz2GbRUjFITJxOMlW3mQn6qUaiQ3fBJQpBjJ1/85?=
+ =?us-ascii?Q?Kl9m7rzEvaIiJ9k3OSrsDmcV74bsefnos3b0dk6RPktI6def70UTyrc17dIR?=
+ =?us-ascii?Q?JYMGGvraWqh/+JWGwU75oU2Th8n8ul3dJ6tlJKxd3mvGjyZ9XQpTffnbqEc+?=
+ =?us-ascii?Q?iiCX/YR42EuOP/mpEaCDYyzlYww6e1bVMGTRZNLebrLgBliORGPswLmZY1bz?=
+ =?us-ascii?Q?//hEjbVnBea0ZjE82iFtSyziamwu8oui21l+Igj2ItwMqxHUBHQ7Ax8cS+hj?=
+ =?us-ascii?Q?q1RXNtOhMBBmD4t9Nf2ztIEE4z/Qf3z4Bq5fSYIUEnMZaCeerXL+iaK+qH2J?=
+ =?us-ascii?Q?astDGqZzrz1F5XYejQRxI1Eq8dOFlGEQEnmxt93+ZvcGp0F/hcz3N/XI4Urk?=
+ =?us-ascii?Q?Vsw6s48qlZFHPXSVwDx0O6f6GsH9T7dZVflolqumWTbTJE1fNKWFDzvN4BkA?=
+ =?us-ascii?Q?nBvu3CeRITdbSRFgr/+o3Z8MaHGgaQKIi9lk5J4lQewbwtYM+jUBxV19v08m?=
+ =?us-ascii?Q?VCVp61hbgm2jv5L61RvuWB2GNk9quIrGqG8VzJmVNvT4eVhC4hq/XAYc+CFt?=
+ =?us-ascii?Q?gdG+j1RyLSAxH6v4N1UKaY2jCHCGHVquF6d2i6ZLJ4Zjipe0/FRfrpZ4CU+z?=
+ =?us-ascii?Q?2Ki2x1fxBN2R5iu9BYDxIdi9lJkOePWFIRjWoQO+I7gxjBSrIL2eCgWqW4W6?=
+ =?us-ascii?Q?uiLLwClmaZo6XrLZi5MXoNUV?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8795bdc-5afb-45c2-5049-08d983f747ac
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 09:47:13.6868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XUEZVnNIx4rNh7LStal/FynC4hUcQhM+5xNpwNDqoPK3t49w7VyTq6/+FJYhcbJHDtN5AtvPud3zYC6mp+DBbHd9zJH7eihYcr5/gp+lW/Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1549
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10122 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109300060
+X-Proofpoint-GUID: -6RhgHx3nc7sTB8AblRJt3PSXzs6_NBa
+X-Proofpoint-ORIG-GUID: -6RhgHx3nc7sTB8AblRJt3PSXzs6_NBa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git debugfs_cleanup
+head:   c4535d1b074f3fdd9476e83526d4e9b53f41a7b5
+commit: 473082c5bbad92c5909ccf75fb28df699b94de82 [1/2] fs: make d_path-like functions all have unsigned size
+config: i386-randconfig-m021-20210929 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-On 9/21/2021 9:56 PM, Bjorn Andersson wrote:
-> On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
-> 
->>
->>
->> On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
->>> On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
->>>
->>>> From: Prasad Sodagudi <psodagud@codeaurora.org>
->>>>
->>>> egpio is a scheme which allows special power Island Domain IOs
->>>> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
->>>> TLMM functions with Island Domain functions.
->>>> With this scheme, an IO can be controlled both by the cpu running
->>>> linux and the Island processor. This provides great flexibility to
->>>> re-purpose the Island IOs for regular TLMM usecases.
->>>>
->>>> 2 new bits are added to ctl_reg, egpio_present is a read only bit
->>>> which shows if egpio feature is available or not on a given gpio.
->>>> egpio_enable is the read/write bit and only effective if egpio_present
->>>> is 1. Once its set, the Island IO is controlled from Chip TLMM.
->>>> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
->>>>
->>>> The support exists on most recent qcom SoCs, and we add support
->>>> for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
->>>>
->>>
->>> I was under the impression that this feature would allow you to
->>> repurpose pins for use either by the remote island or by apps.
->>
->> thats right, you can repurpose the pins for usage by apps by setting
->> the egpio_enable to 1, when set to 0 its owned by the island processor.
-> 
-> Good.
-> 
->>>
->>> But if I understand your proposal, you check to see if the pin is
->>> "egpio capable" for a pin and if so just sets the bit - muxing it to
->>> apps (or the island?).
->>
->> Right, so if there is a request for a egpio-capable pin, the driver
->> flips the ownership. Are you suggesting having some kind of checks to determine
->> who should own it?
->>
-> 
-> I see, I missed that nuance. So Linux will steal any pins that are
-> mentioned in DT. But that would mean that you're relying on someone else
-> to ensure that this bit is cleared for the other pins and you would not
-> be able to explicitly flip the state back to island mode in runtime.
-> 
-> I would prefer that this was more explicit.
-> 
->>> It seems reasonable that this would be another pinmux state for these
->>> pins, rather than just flipping them all in one or the other direction.
->>
->> hmm, I don't understand. This is not a pinmux state, its a switch to decide
->> the ownership.
-> 
-> But does it mux the pin to the island, or does it state that the island
-> is now in charge of the associated TLMM registers?
+smatch warnings:
+fs/d_path.c:59 prepend() warn: unsigned 'p->len' is never less than zero.
 
-The island processor does not access the APPS TLMM register space, it has its
-own TLMM register space that it configures. APPS TLMM registers control its
-mux/conf settings and Island TLMM registers controls its mux/conf. So essentially
-there are 2 sets of registers to control the same pin.
-This bit is more like a top level mux which decides what register settings
-take affect.
+vim +59 fs/d_path.c
 
-> If it's muxing the pin to the island, then it's conceptually just a
-> special mux state that we can represent in DT as another pinmux
-> function.
-> 
->> These egpio pins have regulator mux functions, some for apps, some for the
->> island processor, they might not always be used as gpios.
-> 
-> Right, so if egpio = 1 for a pin, then it works like any other pin
-> that's handled by the pinctrl-msm driver, with whatever muxing options
-> are available for the given pin.
-> 
-> But what happens when egpio = 0? Is the TLMM decoupled from the physical
-> pin, or does the island use the TLMM as well?
-> 
-> If it's not using the TLMM, do we need the TLMM to be in some particular
-> state?
-> 
-> 
-> What I'm proposing is that if the egpio is simply a first-line mux and
-> the TLMM isn't used when the pin is muxed towards the island. Then we
-> could add a custom 'function = "egpio"' muxing state and you could per
-> pin mux things explicitly, and possibly dynamically, to be routed to the
-> island.
-> 
-> Regards,
-> Bjorn
-> 
->>> PS. When I spoke with Prasad about this a couple of years ago, I think
->>> we talked about representing this as a pinconf property, but it seems to
->>> make more sense to me now that it would be a pinmux state.
->>>
->>> Regards,
->>> Bjorn
->>>
->>>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
->>>> [rnayak: rewrite commit log, minor rebase]
->>>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->>>> ---
->>>>    drivers/pinctrl/qcom/pinctrl-msm.c    | 4 ++++
->>>>    drivers/pinctrl/qcom/pinctrl-msm.h    | 2 ++
->>>>    drivers/pinctrl/qcom/pinctrl-sc7280.c | 2 ++
->>>>    drivers/pinctrl/qcom/pinctrl-sm8150.c | 2 ++
->>>>    drivers/pinctrl/qcom/pinctrl-sm8250.c | 2 ++
->>>>    drivers/pinctrl/qcom/pinctrl-sm8350.c | 2 ++
->>>>    6 files changed, 14 insertions(+)
->>>>
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
->>>> index 8476a8a..f4a2343 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
->>>> @@ -220,6 +220,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->>>>    	val = msm_readl_ctl(pctrl, g);
->>>>    	val &= ~mask;
->>>>    	val |= i << g->mux_bit;
->>>> +	/* Check if egpio present and enable that feature */
->>>> +	if (val & BIT(g->egpio_present))
->>>> +		val |= BIT(g->egpio_enable);
->>>> +
->>>>    	msm_writel_ctl(val, pctrl, g);
->>>>    	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
->>>> index e31a516..3635b31 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-msm.h
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
->>>> @@ -77,6 +77,8 @@ struct msm_pingroup {
->>>>    	unsigned drv_bit:5;
->>>>    	unsigned od_bit:5;
->>>> +	unsigned egpio_enable:5;
->>>> +	unsigned egpio_present:5;
->>>>    	unsigned oe_bit:5;
->>>>    	unsigned in_bit:5;
->>>>    	unsigned out_bit:5;
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
->>>> index afddf6d..607d459 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
->>>> @@ -43,6 +43,8 @@
->>>>    		.mux_bit = 2,			\
->>>>    		.pull_bit = 0,			\
->>>>    		.drv_bit = 6,			\
->>>> +		.egpio_enable = 12,		\
->>>> +		.egpio_present = 11,		\
->>>>    		.oe_bit = 9,			\
->>>>    		.in_bit = 0,			\
->>>>    		.out_bit = 1,			\
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-sm8150.c b/drivers/pinctrl/qcom/pinctrl-sm8150.c
->>>> index 7359bae..63a625a 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-sm8150.c
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-sm8150.c
->>>> @@ -56,6 +56,8 @@ enum {
->>>>    		.mux_bit = 2,			\
->>>>    		.pull_bit = 0,			\
->>>>    		.drv_bit = 6,			\
->>>> +		.egpio_enable = 12,		\
->>>> +		.egpio_present = 11,		\
->>>>    		.oe_bit = 9,			\
->>>>    		.in_bit = 0,			\
->>>>    		.out_bit = 1,			\
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-sm8250.c b/drivers/pinctrl/qcom/pinctrl-sm8250.c
->>>> index af144e7..ad4fd94 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-sm8250.c
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-sm8250.c
->>>> @@ -57,6 +57,8 @@ enum {
->>>>    		.mux_bit = 2,				\
->>>>    		.pull_bit = 0,				\
->>>>    		.drv_bit = 6,				\
->>>> +		.egpio_enable = 12,			\
->>>> +		.egpio_present = 11,			\
->>>>    		.oe_bit = 9,				\
->>>>    		.in_bit = 0,				\
->>>>    		.out_bit = 1,				\
->>>> diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
->>>> index 4d8f863..bb436dc 100644
->>>> --- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
->>>> +++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
->>>> @@ -46,6 +46,8 @@
->>>>    		.mux_bit = 2,			\
->>>>    		.pull_bit = 0,			\
->>>>    		.drv_bit = 6,			\
->>>> +		.egpio_enable = 12,		\
->>>> +		.egpio_present = 11,		\
->>>>    		.oe_bit = 9,			\
->>>>    		.in_bit = 0,			\
->>>>    		.out_bit = 1,			\
->>>> -- 
->>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->>>> of Code Aurora Forum, hosted by The Linux Foundation
->>>>
->>
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  56  static bool prepend(struct prepend_buffer *p, const char *str, int namelen)
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  57  {
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  58  	// Already overflowed?
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16 @59  	if (p->len < 0)
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+This is impossible now.
+
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  60  		return false;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  61  
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  62  	// Will overflow?
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  63  	if (p->len < namelen) {
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  64  		// Fill as much as possible from the end of the name
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  65  		str += namelen - p->len;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  66  		p->buf -= p->len;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  67  		prepend_copy(p->buf, str, p->len);
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  68  		p->len = -1;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  69  		return false;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  70  	}
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  71  
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  72  	// Fits fully
+ad08ae586586ea9 Al Viro        2021-05-12  73  	p->len -= namelen;
+ad08ae586586ea9 Al Viro        2021-05-12  74  	p->buf -= namelen;
+b0cfcdd9b9672ea Linus Torvalds 2021-07-16  75  	return prepend_copy(p->buf, str, namelen);
+7a5cf791a747640 Al Viro        2018-03-05  76  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+_______________________________________________
+devel mailing list
+devel@linuxdriverproject.org
+http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
+
