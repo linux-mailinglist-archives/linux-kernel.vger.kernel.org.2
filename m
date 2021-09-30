@@ -2,194 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABDA41D678
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F72B41D67B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349462AbhI3JiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:38:21 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20919 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349512AbhI3JiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:38:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204631296"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="204631296"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 02:36:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="479803107"
-Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Sep 2021 02:36:36 -0700
-Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mVsUV-000467-IN; Thu, 30 Sep 2021 09:36:35 +0000
-Date:   Thu, 30 Sep 2021 17:36:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- 8cd9da85d2bd87ce889043e7b1735723dd10eb89
-Message-ID: <61558515.OUxtQOnDEX4trLQt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1349473AbhI3Jjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:39:35 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56860
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349419AbhI3Jje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:39:34 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0AA71402CB
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632994666;
+        bh=4X6dQ0l1/8G9mRvlRpg8SXm7KFk/1WWtkX+qwHW3nT4=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ivBU7Oh7NXqLJ0lxFIFoiyIcdQdn1qociACLLt4u5VWr8uMM5XXVoKvz+qJ/G1E06
+         279hwswxU5ls5FmxUAeeONmZ9TgSKVondLPfxZxnGTyBA+e2QI1BKHI+qOn7MuVBtp
+         QV8GT7T5IJnXdTDJNgroZx+6EM7Gzir2A3BkY7b4J/PGt7ddYUrkEC/fTuSMsFrcpv
+         RSJwVz8nl67NMMvgH79KDxEFpUedhN48PlJsewyCcCxZFBd36I1GF7j1jjhypUIwi/
+         4QPDaYjtZdLaoBCpSIZAr2pjEPtHItTfSrdnXx8wfm0o3dD3Lk+E7FVccvDx7lhW7f
+         WJqQpUTk0VxzQ==
+Received: by mail-lf1-f71.google.com with SMTP id x33-20020a0565123fa100b003fcfd99073dso5092268lfa.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 02:37:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4X6dQ0l1/8G9mRvlRpg8SXm7KFk/1WWtkX+qwHW3nT4=;
+        b=fOdB1sdlKz/VQ7x+2+PjCklicgvBxuKfVy26azx5bkWLcyE5DtMvd2I1SPh9X0rAz4
+         KLQkboxnSNlVbph5USJcK7/K8Xrx9fvQ+nV+9RXcl+YNl7YPJmNnZhqWx4zEhj4M7XJi
+         WUuEdhtYAIJlkPWObqW24w6OLRcm5dkshrcJtLxnw1OIcGVK0H5gvp2tHJ2PaHm7kpqy
+         93NJ7UD3crZdcVV84icY4cKagknDnzA4JnoIegIZqRTt/moPAj6PYYya4RHDXJdCox2N
+         dPWIW4xAsxbinNlVacqqNAP+zk9kqRfu+Oe04dgcYVyui9qEv3qyOZuwkNZNtEb61dyR
+         Sa1Q==
+X-Gm-Message-State: AOAM5324Xh+Vikt0bJnMwxb7TRry0v8skv+mtjroxmwlxKswXwsK7IGs
+        gVLxbm+BC0RtM0eJgLINFkuSfftFNaZ4ev+i/G3dQM1VQE7BxRj/PVm1xTeomCP+1snvFHD6czV
+        c0yonfRewoJDJJVR3Qe2YEEPFC5zG5n7edAs6zAVMz8/96bQCYedmQ/56lg==
+X-Received: by 2002:a05:6512:32ca:: with SMTP id f10mr4992334lfg.498.1632994665302;
+        Thu, 30 Sep 2021 02:37:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNYcDzQ7LBIUZhurzYKgr9dBeC3UWYffeeYCMH3qAHDp44YUInp/6LuwNJ9oNdspH0hPtiIv8TSR06B420Fbg=
+X-Received: by 2002:a05:6512:32ca:: with SMTP id f10mr4992318lfg.498.1632994665112;
+ Thu, 30 Sep 2021 02:37:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
+ <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com> <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Thu, 30 Sep 2021 11:37:34 +0200
+Message-ID: <CA+zEjCtViMOXERby6A=wOKswQOFL60kTidc4+LY6_Y5svB_kLQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: 8cd9da85d2bd87ce889043e7b1735723dd10eb89  posix-cpu-timers: Prevent spuriously armed 0-value itimer
+On Wed, Sep 29, 2021 at 3:33 PM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
+>
+> On 24 September 2021 17:17, Alexandre Ghiti wrote:
+>
+> > > > +static int da9063_restart_notify(struct notifier_block *this,
+> > > > +                              unsigned long mode, void *cmd)
+> > > > +{
+> > > > +     struct da9063 *da9063 = container_of(this, struct da9063,
+> > > > restart_handler);
+> > > > +
+> > > > +     regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
+> > > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
+> > > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
+> > > > +
+> > > > +     return NOTIFY_DONE;
+> > > > +}
+> > >
+> > > I will talk with our HW team to clarify, but this sequence looks to be very
+> > > specific to the needs of the platform in question which doesn't feel right to
+> > > me. As was mentioned on another thread as well, the watchdog driver already
+> > has
+> > > a restart function to reset the device (and thus the system), so I don't believe
+> > > we should have multiple of these.
+> >
+> > From the discussion that happened here
+> > https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-
+> > support_tab_content,
+> > it does not seem possible to use the watchdog on a chip whose OTP does
+> > not set AUTOBOOT. But anyway, I'm looking forward to hearing from the
+> > HW team :)
+>
+> So I've discussed this internally and so far it's not completely clear how the
+> sequence you provided actually performs the reset as you suggest. It certainly
+> doesn't look like it should, so maybe this relates to an external pin somehow
+> triggering the restart in this particular scenario? I'd be interested to
+> understand which event bits are set when the board does restart to understand
+> what did actually trigger the boot-up.
+>
+> Regardless of this though, the consensus right now would be to use the RTC as a
+> wake event to restart the platform. An alarm can be set for a couple of seconds
+> into the future (or longer if required) and that would provide the event
+> required to come up from powerdown/shutdown, in the absence of AUTOBOOT being
+> set in OTP. I believe this would be the safest route to take in this case. You
+> can then just use the SHUTDOWN bit on CONTROL_F to take down the board.
+>
+> To reiterate, I believe this should be made a board specific quirk, rather than
+> as part of the generic MFD core of DA9063, as the timings may vary for other
+> platforms.
 
-elapsed time: 912m
+What timings are you referring to? Is the timing you're talking to the
+time between the shutdown and the tick that wakes the device up?
 
-configs tested: 134
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210929
-arm                      pxa255-idp_defconfig
-arm                         lpc32xx_defconfig
-arm                            qcom_defconfig
-powerpc                   lite5200b_defconfig
-arm                             rpc_defconfig
-sparc64                          alldefconfig
-sh                            shmin_defconfig
-xtensa                              defconfig
-powerpc                         ps3_defconfig
-sh                                  defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                       imx_v6_v7_defconfig
-sh                   secureedge5410_defconfig
-arm                          iop32x_defconfig
-arm                         socfpga_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-powerpc                     asp8347_defconfig
-arm                      integrator_defconfig
-arm                         lpc18xx_defconfig
-powerpc                       ebony_defconfig
-mips                            ar7_defconfig
-mips                        bcm47xx_defconfig
-mips                     loongson2k_defconfig
-arc                                 defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     ksi8560_defconfig
-parisc                           allyesconfig
-arm                       mainstone_defconfig
-mips                           ip27_defconfig
-powerpc                      walnut_defconfig
-sh                        sh7757lcr_defconfig
-m68k                            q40_defconfig
-sh                        edosk7760_defconfig
-arm                           stm32_defconfig
-arm                           tegra_defconfig
-arm                         shannon_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-powerpc                      pmac32_defconfig
-mips                         cobalt_defconfig
-x86_64               randconfig-c001-20210929
-arm                  randconfig-c002-20210929
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20210929
-i386                 randconfig-a005-20210929
-i386                 randconfig-a002-20210929
-i386                 randconfig-a006-20210929
-i386                 randconfig-a004-20210929
-i386                 randconfig-a003-20210929
-x86_64               randconfig-a002-20210929
-x86_64               randconfig-a005-20210929
-x86_64               randconfig-a001-20210929
-x86_64               randconfig-a006-20210929
-x86_64               randconfig-a003-20210929
-x86_64               randconfig-a004-20210929
-arc                  randconfig-r043-20210929
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-powerpc              randconfig-c003-20210929
-mips                 randconfig-c004-20210929
-arm                  randconfig-c002-20210929
-x86_64               randconfig-c007-20210929
-riscv                randconfig-c006-20210929
-s390                 randconfig-c005-20210929
-i386                 randconfig-c001-20210929
-x86_64               randconfig-a014-20210929
-x86_64               randconfig-a011-20210929
-x86_64               randconfig-a013-20210929
-x86_64               randconfig-a015-20210929
-x86_64               randconfig-a012-20210929
-x86_64               randconfig-a016-20210929
-i386                 randconfig-a014-20210929
-i386                 randconfig-a013-20210929
-i386                 randconfig-a016-20210929
-i386                 randconfig-a011-20210929
-i386                 randconfig-a015-20210929
-i386                 randconfig-a012-20210929
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-hexagon              randconfig-r045-20210929
-riscv                randconfig-r042-20210929
-hexagon              randconfig-r041-20210929
-s390                 randconfig-r044-20210929
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Because I have another series ready which uses a new device tree
+binding so that platforms that want the reset from the DA9063 can ask
+for it via the device tree. And then I could add a property "duration"
+that is platform dependent.
