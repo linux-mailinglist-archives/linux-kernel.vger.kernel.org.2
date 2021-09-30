@@ -2,155 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4456941DAC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777F741DAC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350178AbhI3NOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:14:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
+        id S1350434AbhI3NRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:17:04 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40988 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349892AbhI3NOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:14:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7256761528
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633007556;
-        bh=vHSfNPWmgwIIa9+j2tmKGBTEDiaUE/7eNtYnP7G/W4Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MGtqMo5E4xGTkHt1jJrxW8YHOcPFO6LUA7iPXBkoNrThnA0ffRV3HacMGjBlXi7AH
-         RNHpE4lexIfAM7aq6K6LgijwPx/6A6p5Y5SrzoY8RO4nc3WV3U9+Do//3GcXknocn1
-         wS7kEkFjzHqyOuluSTRw5D3ZZgG8uiokciZXS3uctswM3fwsUotYXHTKlp1i512dHM
-         tdtjS4eJw2XqnTU27/hYsF7pp7cV5k8CswjDFvpdYwFaNYFkFJiBOdmwgF5KllrrHI
-         JZ619kzb9PZiCVhV0p3CVsLaR8bB0IjAyylIqYloWAsSpF1ZMCv9JaviPjyRfkrNml
-         tntDlL5n/8AbA==
-Received: by mail-oi1-f172.google.com with SMTP id s24so7147426oij.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:12:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530Fq5hzv4ls2HuodYk0ZwAbKfc41/qlYDdvUt52s4ib4+MdrozP
-        mcpWj1E0jsTfYhO8fq4NVEhE3IBORGvEajSIkMk=
-X-Google-Smtp-Source: ABdhPJw8aCnwIHEA1Jv1HQMZO8zxfC4IOKBOuq+3Wj+bcPVnd8wKzwVnaZWqAwug1Q+dyXuyUb6l+3W1Ethn3DDUZGo=
-X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr2628592oiu.33.1633007555710;
- Thu, 30 Sep 2021 06:12:35 -0700 (PDT)
+        id S1350073AbhI3NRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:17:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6PZ49cSEBhLem0jcEWWbaHG2DFFufyxYvXcOVSWTwNQ=; b=2TM7VCntIA9nq6dLq8rKJqwp6J
+        YiJcyL1+ITpJL8GVCi2yTqCwmShQVOyTOpleGPYfeStm12QjEVV7OcEzN6d/SL1Zuh5/GmDA/pfTG
+        nEI4tarqOQWErLTFNqPgX9chKwCCZTvA5xelZWGD2isjcDsTluWj0cOG7YA9FvuIZQ1I=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mVvtx-008x3A-PZ; Thu, 30 Sep 2021 15:15:05 +0200
+Date:   Thu, 30 Sep 2021 15:15:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YVW4WX9oq9o318Im@lunn.ch>
+References: <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch>
+ <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch>
+ <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch>
+ <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch>
+ <20210831231804.zozyenear45ljemd@skbuf>
+ <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210930125813.197418-1-ardb@kernel.org> <20210930125813.197418-6-ardb@kernel.org>
- <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
-In-Reply-To: <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 30 Sep 2021 15:12:24 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
-Message-ID: <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sept 2021 at 15:09, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 30/09/2021 =C3=A0 14:58, Ard Biesheuvel a =C3=A9crit :
-> > THREAD_INFO_IN_TASK moved the CPU field out of thread_info, but this
-> > causes some issues on architectures that define raw_smp_processor_id()
-> > in terms of this field, due to the fact that #include'ing linux/sched.h
-> > to get at struct task_struct is problematic in terms of circular
-> > dependencies.
+On Wed, Sep 29, 2021 at 10:33:16PM -0700, Saravana Kannan wrote:
+> On Tue, Aug 31, 2021 at 4:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
 > >
-> > Given that thread_info and task_struct are the same data structure
-> > anyway when THREAD_INFO_IN_TASK=3Dy, let's move it back so that having
-> > access to the type definition of struct thread_info is sufficient to
-> > reference the CPU number of the current task.
+> > On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
+> > > Rev B is interesting because switch0 and switch1 got genphy, while
+> > > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
+> > > interrupt properties, so don't loop back to their parent device.
 > >
-> > Note that this requires THREAD_INFO_IN_TASK's definition of the
-> > task_thread_info() helper to be updated, as task_cpu() takes a
-> > pointer-to-const, whereas task_thread_info() (which is used to generate
-> > lvalues as well), needs a non-const pointer. So make it a macro instead=
-.
+> > This is interesting and not what I really expected to happen. It goes to
+> > show that we really need more time to understand all the subtleties of
+> > device dependencies before jumping on patching stuff.
 > >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-> > ---
-> >   arch/arm64/kernel/asm-offsets.c   |  1 -
-> >   arch/arm64/kernel/head.S          |  2 +-
-> >   arch/powerpc/kernel/asm-offsets.c |  2 +-
-> >   arch/powerpc/kernel/smp.c         |  2 +-
-> >   include/linux/sched.h             | 13 +------------
-> >   kernel/sched/sched.h              |  4 ----
-> >   6 files changed, 4 insertions(+), 20 deletions(-)
+> > In case the DSA tree contains more than one switch, different things
+> > will happen in dsa_register_switch().
+> > The tree itself is only initialized when the last switch calls
+> > dsa_register_switch(). All the other switches just mark themselves as
+> > present and exit probing early. See this piece of code in dsa_tree_setup:
 > >
-> > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-of=
-fsets.c
-> > index cee9f3e9f906..0bfc048221af 100644
-> > --- a/arch/arm64/kernel/asm-offsets.c
-> > +++ b/arch/arm64/kernel/asm-offsets.c
-> > @@ -27,7 +27,6 @@
-> >   int main(void)
-> >   {
-> >     DEFINE(TSK_ACTIVE_MM,             offsetof(struct task_struct, acti=
-ve_mm));
-> > -  DEFINE(TSK_CPU,            offsetof(struct task_struct, cpu));
-> >     BLANK();
-> >     DEFINE(TSK_TI_CPU,                offsetof(struct task_struct, thre=
-ad_info.cpu));
-> >     DEFINE(TSK_TI_FLAGS,              offsetof(struct task_struct, thre=
-ad_info.flags));
-> > diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> > index 17962452e31d..6a98f1a38c29 100644
-> > --- a/arch/arm64/kernel/head.S
-> > +++ b/arch/arm64/kernel/head.S
-> > @@ -412,7 +412,7 @@ SYM_FUNC_END(__create_page_tables)
-> >       scs_load \tsk
-> >
-> >       adr_l   \tmp1, __per_cpu_offset
-> > -     ldr     w\tmp2, [\tsk, #TSK_CPU]
-> > +     ldr     w\tmp2, [\tsk, #TSK_TI_CPU]
->
-> Why do you need to change the name ?
->
-> For powerpc64, you leave TASK_CPU.
->
+> >         complete = dsa_tree_setup_routing_table(dst);
+> >         if (!complete)
+> >                 return 0;
+> 
+> Hi Vladimir,
+> 
+> Can you point me to an example dts file that has a DSA tree with more
+> than one switch and also point me to the switches that form the tree?
+> 
+> I'm working on a RFC series that tries to improve some stuff and
+> having an example DTS to look at would help.
 
-Because arm64 has a clear idiom here, where TSK_TI_ is used for
-thread_info fields accessed via a task_struct pointer. Also, it only
-occurs once in the code.
+Some of the Zodiac boards have multiple switches. They are all Marvell
+switches, using the mv88e6xxx driver.
 
-Power does not seem to have this idiom, and TASK_CPU is used in many
-more places, so I don't think it makes sense to change its name.
+arch/arm/boot/dts/vf610-zii-dev-rev-b.dts
+arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
+arch/arm/boot/dts/vf610-zii-scu4-aib.dts
 
-
-> >       ldr     \tmp1, [\tmp1, \tmp2, lsl #3]
-> >       set_this_cpu_offset \tmp1
-> >       .endm
-> > diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/as=
-m-offsets.c
-> > index e563d3222d69..e37e4546034e 100644
-> > --- a/arch/powerpc/kernel/asm-offsets.c
-> > +++ b/arch/powerpc/kernel/asm-offsets.c
-> > @@ -93,7 +93,7 @@ int main(void)
-> >   #endif /* CONFIG_PPC64 */
-> >       OFFSET(TASK_STACK, task_struct, stack);
-> >   #ifdef CONFIG_SMP
-> > -     OFFSET(TASK_CPU, task_struct, cpu);
-> > +     OFFSET(TASK_CPU, task_struct, thread_info.cpu);
-> >   #endif
-> >
-> >   #ifdef CONFIG_LIVEPATCH
->
-> ...
+	Andrew
