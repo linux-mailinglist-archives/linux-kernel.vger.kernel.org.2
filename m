@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D466041DDB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6C641DDBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345060AbhI3Pkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S1345137AbhI3Pkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344621AbhI3Pkh (ORCPT
+        with ESMTP id S1345076AbhI3Pks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:40:37 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5C6C06176A;
-        Thu, 30 Sep 2021 08:38:54 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [80.241.60.233])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HKy8C3MNBzQk9N;
-        Thu, 30 Sep 2021 17:38:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210830123704.221494-2-verdre@v0yd.nl>
- <CA+ASDXPKZ0i5Bi11Q=qqppY8OCgw=7m0dnPn0s+y+GAvvQodog@mail.gmail.com>
- <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
- <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
- <YS/rn8b0O3FPBbtm@google.com> <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
- <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
- <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
- <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
- <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
- <20210923202231.t2zjoejpxrbbe5hc@pali>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-Message-ID: <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
-Date:   Thu, 30 Sep 2021 17:38:43 +0200
+        Thu, 30 Sep 2021 11:40:48 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281D9C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:39:05 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x27so26685549lfa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=itbG1ekuBIEb0/GfpKZaQh1cYlvDFGD/ZH0SvfHSVew=;
+        b=mw0aWFiS29aPcceoUVLPh3E/6s22lyYpxw41OCKkIaF2gSEeM6Gp5HPdpcz8OHou9t
+         sd3WzC8QJVgq0sycSKVjhZInALiCr34KE655vDMBGDh/i2TfY07RJ1gAUyghaOnKjJ1a
+         e8IdnuglciQ3jTmoOl5cL+5nniBH2EHRt75RIc6me6Vc4pfwEQJ5AxHbeVbrMKJrHPZP
+         47782SaTVV3QyZdG34lW3c0BXPruHuYdDQE8xTP9feCnfx3PsPGEIjXnv1WuQR+SPUZY
+         WOsWUO5fWdDeuG+zHRWw5PG+WlzZI+kzfItHXQm8LK2rPj2CF/SXGG//JtvX110pJJhT
+         5pwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=itbG1ekuBIEb0/GfpKZaQh1cYlvDFGD/ZH0SvfHSVew=;
+        b=PztYXThEqH9LbBwOD2W/vLBq19/ajJNlfLaPKLadO1FpcZdKC0PxR5u9dozjNQMo6o
+         JChfG+q9lJMbXpeV5XH6slZC3hQrpYG3PNwzHD+IQp+W6FMF79XASMW6H6zDQba6r3io
+         mKgqqPjDTCPD0KA4LAGhIdT4w++ZNOoTggov0z6CsPFcUuHO1ac0ut+eSoHQ3DuqSY3Q
+         AZCLjbehWypViXqZEps0O6qOjjFmAEaCrMghVmg2fnU661sOn8I3pBmMUrWZYgr+VqJe
+         AEHbn+TfmGpD9RnSTH9GIv7t8xwYQimcIG10aO34iKImF2UpbZSu8Ne6eqP/KFr9bx7p
+         +d2A==
+X-Gm-Message-State: AOAM530egI4Ehh+z9/2s/xlgOr3m0M5IbqDjFkatwiURzwAYQSrEH4vO
+        ah2Sy6/0RR/XV+0ywH9EEa6Z20h4NkIVLrCAT12Z9Q==
+X-Google-Smtp-Source: ABdhPJxGlVSlRnqDTNPKMZ7uXq/9ATNld698ZXtbR374gYRhj4Be2kA9QICDdh6CHDCAWbJzy/h2Ti+75NGrzQaZIoY=
+X-Received: by 2002:a05:6512:706:: with SMTP id b6mr6522994lfs.656.1633016341999;
+ Thu, 30 Sep 2021 08:39:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210923202231.t2zjoejpxrbbe5hc@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 08D8D271
+References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
+ <20210924080632.28410-3-zhiyong.tao@mediatek.com> <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
+ <37eac06e20d82c0fe37a5d8e5633cbbc48d4af29.camel@mediatek.com>
+In-Reply-To: <37eac06e20d82c0fe37a5d8e5633cbbc48d4af29.camel@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 30 Sep 2021 17:38:50 +0200
+Message-ID: <CACRpkdYbZi90YAFGBvZ65KD9tu9RaJt312dq5UZ9VYDuLKZOMg@mail.gmail.com>
+Subject: Re: [PATCH v14 2/5] dt-bindings: pinctrl: mt8195: change pull up/down description
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/21 10:22 PM, Pali Rohár wrote:
-> On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
->> On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
->>> On 9/22/21 2:50 PM, Jonas Dreßler wrote:
->>
->> ...
->>
->>> - Just calling mwifiex_write_reg() once and then blocking until the card
->>> wakes up using my delay-loop doesn't fix the issue, it's actually
->>> writing multiple times that fixes the issue
->>>
->>> These observations sound a lot like writes (and even reads) are actually
->>> being dropped, don't they?
->>
->> It sounds like you're writing into a not ready (fully powered on) device.
-> 
-> This reminds me a discussion with Bjorn about CRS response returned
-> after firmware crash / reset when device is not ready yet:
-> https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
-> 
-> Could not be this similar issue? You could check it via reading
-> PCI_VENDOR_ID register from config space. And if it is not valid value
-> then card is not really ready yet.
-> 
->> To check this, try to put a busy loop for reading and check the value
->> till it gets 0.
->>
->> Something like
->>
->>    unsigned int count = 1000;
->>
->>    do {
->>      if (mwifiex_read_reg(...) == 0)
->>        break;
->>    } while (--count);
->>
->>
->> -- 
->> With Best Regards,
->> Andy Shevchenko
+On Thu, Sep 30, 2021 at 3:54 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
 
-I've tried both reading PCI_VENDOR_ID and the firmware status using a 
-busy loop now, but sadly none of them worked. It looks like the card 
-always replies with the correct values even though it sometimes won't 
-wake up after that.
+> > > +  mediatek,rsel_resistance_in_si_unit:
+> >
+> > s/_/-/
+>
+> Hi Rob,
+>
+> what do you mean?
 
-I do have one new observation though, although I've no clue what could 
-be happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we 
-can "predict" the wakeup failure because exactly one (usually around the 
-20th) of those 1000 reads will fail. Maybe the firmware actually tries 
-to wake up, encounters an error somewhere in its wakeup routines and 
-then goes down a special failure code path. That code path keeps the 
-cards CPU so busy that at some point a PCI_VENDOR_ID request times out?
+It's a search/replace syntax used in sed (stream editor) meaning
+"replace _ with -" i.e.
+mediatek,rsel-resistance-in-si-unit
 
-Or well, maybe the card actually wakes up fine, but we don't receive the 
-interrupt on our end, so many possibilities...
+Yours,
+Linus Walleij
