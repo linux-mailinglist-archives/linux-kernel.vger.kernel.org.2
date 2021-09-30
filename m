@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAE541DC98
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A255C41DC9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351200AbhI3Oou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:44:50 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:60717 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1350272AbhI3Oot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:44:49 -0400
-Received: (qmail 465943 invoked by uid 1000); 30 Sep 2021 10:43:05 -0400
-Date:   Thu, 30 Sep 2021 10:43:05 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
- un-authorized devices
-Message-ID: <20210930144305.GA464826@rowland.harvard.edu>
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065807-mutt-send-email-mst@kernel.org>
- <YVXBNJ431YIWwZdQ@kroah.com>
+        id S1351225AbhI3Opa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:45:30 -0400
+Received: from www.zeus03.de ([194.117.254.33]:55074 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351213AbhI3OpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:45:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=zC0Alauy1GO2I9lyHxa0EfxWQbz8
+        B2+rwQmkFWLZr+w=; b=pVciIik0p6VGP3udU6MCYIxqkKUY8GygzNDt3dr10lV1
+        x766ShUFEUcOvUJT65QToDAgeM8MTBAN3nLWv1gKhosWZiBdpwhLI31NzKU6ardB
+        2v2fqIabltyNPKTFY3nKtuwAJL8h5q1XgxJhMgOC2zsX3STrgNcsJ+6LS1ULl/Y=
+Received: (qmail 2114006 invoked from network); 30 Sep 2021 16:43:37 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Sep 2021 16:43:37 +0200
+X-UD-Smtp-Session: l3s3148p1@9OrLeDfNOoYgARa4RV6LAWawlO8I9jL3
+Date:   Thu, 30 Sep 2021 16:43:37 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 5/6] memory: renesas-rpc-if: Drop usage of
+ RPCIF_DIRMAP_SIZE macro
+Message-ID: <YVXNGTfOdMgkqxPT@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210928140721.8805-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <YVXBwx7rxJLRhlTI@shikoro>
+ <CA+V-a8sZ0qudhbV7Fart-puNQO-ZHhDEG3OdRH=w_dbTHy2A7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+vXGT369GaKLNZZk"
 Content-Disposition: inline
-In-Reply-To: <YVXBNJ431YIWwZdQ@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+V-a8sZ0qudhbV7Fart-puNQO-ZHhDEG3OdRH=w_dbTHy2A7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 03:52:52PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Sep 30, 2021 at 06:59:36AM -0400, Michael S. Tsirkin wrote:
-> > On Wed, Sep 29, 2021 at 06:05:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> > > While the common case for device-authorization is to skip probe of
-> > > unauthorized devices, some buses may still want to emit a message on
-> > > probe failure (Thunderbolt), or base probe failures on the
-> > > authorization status of a related device like a parent (USB). So add
-> > > an option (has_probe_authorization) in struct bus_type for the bus
-> > > driver to own probe authorization policy.
-> > > 
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > 
-> > 
-> > 
-> > So what e.g. the PCI patch
-> > https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
-> > actually proposes is a list of
-> > allowed drivers, not devices. Doing it at the device level
-> > has disadvantages, for example some devices might have a legacy
-> > unsafe driver, or an out of tree driver. It also does not
-> > address drivers that poke at hardware during init.
-> 
-> Doing it at a device level is the only sane way to do this.
-> 
-> A user needs to say "this device is allowed to be controlled by this
-> driver".  This is the trust model that USB has had for over a decade and
-> what thunderbolt also has.
-> 
-> > Accordingly, I think the right thing to do is to skip
-> > driver init for disallowed drivers, not skip probe
-> > for specific devices.
-> 
-> What do you mean by "driver init"?  module_init()?
-> 
-> No driver should be touching hardware in their module init call.  They
-> should only be touching it in the probe callback as that is the only
-> time they are ever allowed to talk to hardware.  Specifically the device
-> that has been handed to them.
-> 
-> If there are in-kernel PCI drivers that do not do this, they need to be
-> fixed today.
-> 
-> We don't care about out-of-tree drivers for obvious reasons that we have
-> no control over them.
 
-I don't see any point in talking about "untrusted drivers".  If a 
-driver isn't trusted then it doesn't belong in your kernel.  Period.  
-When you load a driver into your kernel, you are implicitly trusting 
-it (aside from limitations imposed by security modules).  The code 
-it contains, the module_init code in particular, runs with full 
-superuser permissions.
+--+vXGT369GaKLNZZk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What use is there in loading a driver but telling the kernel "I don't 
-trust this driver, so don't allow it to probe any devices"?  Why not 
-just blacklist it so that it never gets modprobed in the first place?
 
-Alan Stern
+> Both the fixes would apply to the first patch itself i.e. when
+> resource_size was added in ca7d8b980b67 and later in 59e27d7c94aa
+> resource_size was moved online below (this would cause kernel panic
+> res is NULL). Do you agree?
+
+Yes. I do wonder a little if we need the Fixes tag for ca7d8b980b67
+because we fix 59e27d7c94aa which already fixes ca7d8b980b67, so there
+is a chain. But maybe redundancy doesn't hurt here. I don't mind.
+
+
+--+vXGT369GaKLNZZk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFVzRgACgkQFA3kzBSg
+Kba5Ag/+Nh2/+1ZBUs5G25GPrGF4qipbPyFFYvcGBkQ5Mx+GsiS9Z6jPdM3kjylF
++suiOYdPxy4HsRrZuu43cSb3SCK9Liem2sE1hvd3HmWk6jEhctIpKWzVBXEYahHS
+g+BqPhcwQVEYlZCC6k46ByedC+E9IgSR6/of2J+3lVqVnH3iZhQjC5lAyan70za3
+9Zo8mTCxqhaugRFrVl9tROKrQ6Kh1tYwQ7cRWvUbXS5Cx813m19TPXs+ieXFQTIq
+KR3j3xAbkLSNjr+Y6Nlz6/4gcbF+FL9Y2u2/ey7Vku1ER6gwjpREkx0vVa9Dhi6K
+HOoRCI1bP/4T7IuTJ4Nsz2Wlram+VfwqaEv5PLmzquWnOmWY8IqXhiC2JtR5FqoM
+zbZbqVvAdrGLI8Ca+ogT4BDxB06JlZkgOW3454Nfw5xNNW1mc05Yoy45uTLvN5sf
+LHrkLQ5HH3yxbbSl5bTAeUz2SWj8rHoCG4a/THVwY9sdd/iBV+mQlsGWd4XV++ES
+zydPwjo37x04T/95dRpOOMqXeB5Ob5j0V2Dki1+hCTsHLmS2Gy1wrjhPKGR4C9RI
+JC8s9wmC9dFgbcmNZGqdWyVA/0L9h7u2XdZR+nQb7ZTuHlbNoa44gElHaCOS4i4U
+opohmx5AwY2ItrBcROWpTF7GMGRO+eyRn1I2kFLrCvJKJmA4wXE=
+=nHUc
+-----END PGP SIGNATURE-----
+
+--+vXGT369GaKLNZZk--
