@@ -2,118 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AC141DA4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF9441DA61
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351174AbhI3M4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S1351194AbhI3NAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351127AbhI3M43 (ORCPT
+        with ESMTP id S1348276AbhI3M76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:56:29 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DAAC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:47 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id q205so7356273iod.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fH13Xgrw2lKv2ATD+0Vi8DFH5bvKRlk6OCHTv30PLdo=;
-        b=IoCT97nkjFhhN0OOhlCi5bM3V2hzYAoVVrQIBAHU+s/X8Om9nSY2RbrjeRmS6/eSe/
-         89Tg0r0/CuS9x0V++RvU8ZPcYvs13fYcZAJTe0lkD2SHsmLt2Ytvytom2B18NNR9Fy0z
-         hltXcoWYagJvzTbYnLLQmAy8fydopJW1EGyFoiUhr9AdB8/+7TXRZ9fj5q59+TMLzG2P
-         b8FooZA+WvG/6VOpiQXMscx1ZJGwhZ98HLNVLLYKRCyZDCESlBnzNd9ZPQx/eAi7wvxA
-         gKpXZvwYZut7CWOHKwzmI4Jho22HsFe58eaJEjmAjAQ6/+/M7F4q/TzBRhWxduGpAshF
-         ipSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fH13Xgrw2lKv2ATD+0Vi8DFH5bvKRlk6OCHTv30PLdo=;
-        b=zWXHj6BA2sEqY8b4fKYOD12ZCiPLttpdVjFPb9TLHi3hYIlM8U7aKvowJOZh1GG4XE
-         HyRYdZBx+2TakV6itlnJp2kH27nN5ik+Z+zV9qIZXTMndeVa57z/FbnbPN7KjsGWzp7/
-         7eDu0fiuwfw7eVzJNvbGtZVj0MRrp/bmvtRjP+o9IibZCslgEBQ0/2xO1BkECW+oNECg
-         oGO8etlPfL50a3A026MZumx29usUA6dHq/hyGI3N2841T7zhiWPwzIMGmymVBHtHwuHJ
-         cjqPIIQI0IVZpADycquP39NYvnXo+qOXYplowJkCZ5blKSvM0toknPMJ/T1Q2COUSkGp
-         mXGQ==
-X-Gm-Message-State: AOAM533X7CU/4t06Yx8Hng2U2y8ocvnAg0Xb8ccCBGksOrSo+1s+UgcA
-        Mmm4xwpJvXgoshdY3hPPiflX4kbZ6Y9nGbG6T2I=
-X-Google-Smtp-Source: ABdhPJyfgOPxTOyNIpjzalpQcNvMLKIfHdZhacjmG4CqwowmB8Xbd6yxc7iTtzE1oeGLnjEgFZ5VEmwq9eS/KCpfDEc=
-X-Received: by 2002:a05:6602:240d:: with SMTP id s13mr3756457ioa.94.1633006486680;
- Thu, 30 Sep 2021 05:54:46 -0700 (PDT)
+        Thu, 30 Sep 2021 08:59:58 -0400
+Received: from mail.fris.de (mail.fris.de [IPv6:2a01:4f8:c2c:390b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF517C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:58:15 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1D54BBFBED;
+        Thu, 30 Sep 2021 14:58:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
+        t=1633006691; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=mQP0IN/HZLMfyoaA/4d+d8dWL3535oW7YGMjdydR1ig=;
+        b=qeutuzyYZgLkH4wFo7j4ej+hcAFZNaX3EBJyYBWd9u5WsDa+SfWneXBJwoxffIQTYCMIBS
+        4XXoWptB+yJ+3oOnt8xhXsZW2cbVL3TvHe0rWfiALGeS5yeK1pHNK59LGMBEPZQf1OLfQx
+        p8yu42f9YpEemdC3nOTA9A2NS0MXaDyxcevTO7ZbvWYGj4U0fsYV4IpD6jkSgZQ3vi2qDr
+        SZxjz7mG7qZMKJF3iaao7Z6NfJDMQv5uP8pNuCqGDNjcw3ZcLB4Q6AN2qj5bmJWhPRBUOq
+        b5x1eed2bl1ULFKy3hZm6BdksOsH+SlYep20uHHlebGn7winEJIT/bt4iY4BwQ==
+From:   Frieder Schrempf <frieder@fris.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Steen Hegelund <steen.hegelund@microchip.com>
+Subject: [PATCH 1/3] net: phy: mscc: Add possibilty to disable combined LED mode
+Date:   Thu, 30 Sep 2021 14:57:43 +0200
+Message-Id: <20210930125747.2511954-1-frieder@fris.de>
 MIME-Version: 1.0
-References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-6-laoar.shao@gmail.com>
- <202109291120.C37E6C9E6@keescook>
-In-Reply-To: <202109291120.C37E6C9E6@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 30 Sep 2021 20:54:10 +0800
-Message-ID: <CALOAHbAki4sRrSZ6RY6Kp+nYSJ8-Ximray+wLP+e3N4GvUDWnw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] kernel/kthread: show a warning if kthread's comm is
- still trucated
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 2:20 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Sep 29, 2021 at 11:50:36AM +0000, Yafang Shao wrote:
-> > Show a warning if the ktrhead's comm is still trucated. Below is the
-> > result of my test case -
-> >
-> > __kthread_create_on_node:410: comm of pid 14 is truncated from "I-am-a-kthread-with-long-name" to "I-am-a-kthread-with-lon"
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->
-> I like this check as a reasonable way to make kthread authors aware of
-> the TASK_COMM_LEN limitation.
->
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Thanks for the review.
+By default the LED modes offer to combine two indicators like speed/link
+and activity in one LED. In order to use a LED only for the first of the
+two modes, the combined feature needs to be disabled.
 
-> > ---
-> >  kernel/kthread.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > index 6def951c605a..aa093f1f423a 100644
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -404,7 +404,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> >                * task is already visible to other tasks, so updating
-> >                * COMM must be protected.
-> >                */
-> > -             vsnprintf(name, sizeof(name), namefmt, args);
-> > +             if (vsnprintf(name, KTHREAD_COMM_LEN, namefmt, args) >=
-> > +                 KTHREAD_COMM_LEN)
-> > +                     pr_warn("%s:%d: comm of pid %d is truncated from \"%s\" to \"%s\"\n",
-> > +                             __func__, __LINE__, task->pid, namefmt, name);
-> > +
-> >               set_task_comm(task, name);
-> >               /*
-> >                * root may have changed our (kthreadd's) priority or CPU mask.
-> > --
-> > 2.17.1
-> >
->
-> --
-> Kees Cook
+In order to do this we introduce a boolean devicetree property
+'vsc8531,led-[N]-combine-disable' and wire it up to the matching
+bits in the LED behavior register.
 
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+ drivers/net/phy/mscc/mscc.h      |  5 ++++
+ drivers/net/phy/mscc/mscc_main.c | 47 ++++++++++++++++++++++++++++----
+ 2 files changed, 47 insertions(+), 5 deletions(-)
 
-
+diff --git a/drivers/net/phy/mscc/mscc.h b/drivers/net/phy/mscc/mscc.h
+index a50235fdf7d9..114b087fc89a 100644
+--- a/drivers/net/phy/mscc/mscc.h
++++ b/drivers/net/phy/mscc/mscc.h
+@@ -85,6 +85,10 @@ enum rgmii_clock_delay {
+ #define LED_MODE_SEL_MASK(x)		  (GENMASK(3, 0) << LED_MODE_SEL_POS(x))
+ #define LED_MODE_SEL(x, mode)		  (((mode) << LED_MODE_SEL_POS(x)) & LED_MODE_SEL_MASK(x))
+ 
++#define MSCC_PHY_LED_BEHAVIOR		  30
++#define LED_COMBINE_DIS_MASK(x)		  (1 << (x))
++#define LED_COMBINE_DIS(x, dis)		  (((dis) ? 1 : 0) << (x))
++
+ #define MSCC_EXT_PAGE_CSR_CNTL_17	  17
+ #define MSCC_EXT_PAGE_CSR_CNTL_18	  18
+ 
+@@ -363,6 +367,7 @@ struct vsc8531_private {
+ 	int rate_magic;
+ 	u16 supp_led_modes;
+ 	u32 leds_mode[MAX_LEDS];
++	bool leds_combine[MAX_LEDS];
+ 	u8 nleds;
+ 	const struct vsc85xx_hw_stat *hw_stats;
+ 	u64 *stats;
+diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+index 6e32da28e138..d42723e04c98 100644
+--- a/drivers/net/phy/mscc/mscc_main.c
++++ b/drivers/net/phy/mscc/mscc_main.c
+@@ -171,7 +171,8 @@ static void vsc85xx_get_stats(struct phy_device *phydev,
+ 
+ static int vsc85xx_led_cntl_set(struct phy_device *phydev,
+ 				u8 led_num,
+-				u8 mode)
++				u8 mode,
++				bool combine_disable)
+ {
+ 	int rc;
+ 	u16 reg_val;
+@@ -181,6 +182,10 @@ static int vsc85xx_led_cntl_set(struct phy_device *phydev,
+ 	reg_val &= ~LED_MODE_SEL_MASK(led_num);
+ 	reg_val |= LED_MODE_SEL(led_num, (u16)mode);
+ 	rc = phy_write(phydev, MSCC_PHY_LED_MODE_SEL, reg_val);
++	reg_val = phy_read(phydev, MSCC_PHY_LED_BEHAVIOR);
++	reg_val &= ~LED_COMBINE_DIS_MASK(led_num);
++	reg_val |= LED_COMBINE_DIS(led_num, combine_disable);
++	rc = phy_write(phydev, MSCC_PHY_LED_BEHAVIOR, reg_val);
+ 	mutex_unlock(&phydev->lock);
+ 
+ 	return rc;
+@@ -432,6 +437,21 @@ static int vsc85xx_dt_led_mode_get(struct phy_device *phydev,
+ 	return led_mode;
+ }
+ 
++static bool vsc85xx_dt_led_combine_get(struct phy_device *phydev,
++				       char *led)
++{
++	struct vsc8531_private *priv = phydev->priv;
++	struct device *dev = &phydev->mdio.dev;
++	struct device_node *of_node = dev->of_node;
++	bool led_combine = false;
++	int err;
++
++	if (!of_node)
++		return false;
++
++	return of_property_read_bool(of_node, led);
++}
++
+ #else
+ static int vsc85xx_edge_rate_magic_get(struct phy_device *phydev)
+ {
+@@ -444,13 +464,19 @@ static int vsc85xx_dt_led_mode_get(struct phy_device *phydev,
+ {
+ 	return default_mode;
+ }
++
++static bool vsc85xx_dt_led_combine_get(struct phy_device *phydev,
++				       char *led)
++{
++	return false;
++}
+ #endif /* CONFIG_OF_MDIO */
+ 
+ static int vsc85xx_dt_led_modes_get(struct phy_device *phydev,
+ 				    u32 *default_mode)
+ {
+ 	struct vsc8531_private *priv = phydev->priv;
+-	char led_dt_prop[28];
++	char led_dt_prop[32];
+ 	int i, ret;
+ 
+ 	for (i = 0; i < priv->nleds; i++) {
+@@ -463,6 +489,14 @@ static int vsc85xx_dt_led_modes_get(struct phy_device *phydev,
+ 		if (ret < 0)
+ 			return ret;
+ 		priv->leds_mode[i] = ret;
++
++		ret = sprintf(led_dt_prop,
++			      "vsc8531,led-%d-combine-disable", i);
++		if (ret < 0)
++			return ret;
++
++		priv->leds_combine[i] =
++			vsc85xx_dt_led_combine_get(phydev, led_dt_prop);
+ 	}
+ 
+ 	return 0;
+@@ -1779,7 +1813,8 @@ static int vsc8584_config_init(struct phy_device *phydev)
+ 		return ret;
+ 
+ 	for (i = 0; i < vsc8531->nleds; i++) {
+-		ret = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i]);
++		ret = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i],
++					   vsc8531->leds_combine[i]);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -1846,7 +1881,8 @@ static int vsc85xx_config_init(struct phy_device *phydev)
+ 		return rc;
+ 
+ 	for (i = 0; i < vsc8531->nleds; i++) {
+-		rc = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i]);
++		rc = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i],
++					  vsc8531->leds_combine[i]);
+ 		if (rc)
+ 			return rc;
+ 	}
+@@ -2099,7 +2135,8 @@ static int vsc8514_config_init(struct phy_device *phydev)
+ 		return ret;
+ 
+ 	for (i = 0; i < vsc8531->nleds; i++) {
+-		ret = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i]);
++		ret = vsc85xx_led_cntl_set(phydev, i, vsc8531->leds_mode[i],
++					   vsc8531->leds_combine[i]);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
-Thanks
-Yafang
+2.33.0
+
