@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFA241DE91
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4864B41DE94
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349211AbhI3QPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:15:35 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:45487 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349113AbhI3QPa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:15:30 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18UGDFBc8009853, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18UGDFBc8009853
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 1 Oct 2021 00:13:15 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 1 Oct 2021 00:13:15 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 30 Sep 2021 09:13:15 -0700
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Fri, 1 Oct 2021 00:13:14 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Oliver Neukum <oneukum@suse.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAYwXgIAAt/FQ
-Date:   Thu, 30 Sep 2021 16:13:14 +0000
-Message-ID: <9a23368b27bd42299e74235f1f8be3fa@realtek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
-In-Reply-To: <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [123.192.91.194]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMzAgpFWkyCAwMjozODowMA==?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        id S1349359AbhI3QPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:15:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53611 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349136AbhI3QPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:15:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225301309"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="225301309"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 09:13:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="521260621"
+Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 09:13:48 -0700
+Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
+To:     Sameer Pujar <spujar@nvidia.com>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        catalin.marinas@arm.com, will@kernel.org, perex@perex.cz,
+        tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        sharadg@nvidia.com, linux-arm-kernel@lists.infradead.org
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-2-git-send-email-spujar@nvidia.com>
+ <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
+ <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
+ <2f96f1aa-74f2-8ea8-3f43-e4da97400fde@linux.intel.com>
+ <647b1d54-dbd7-ce91-291d-d677ce908398@linux.intel.com>
+ <94861852-29ba-be9e-8c63-a70a01550b3a@nvidia.com>
+ <b68d3c04-07b5-966c-5cd3-8cc715cc470e@linux.intel.com>
+ <78e175f3-29cb-f059-427f-51210278c42a@nvidia.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <09bbf14a-a5a0-23c6-d557-66a3af1ac227@linux.intel.com>
+Date:   Thu, 30 Sep 2021 11:13:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+In-Reply-To: <78e175f3-29cb-f059-427f-51210278c42a@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T2xpdmVyIE5ldWt1bSA8b25ldWt1bUBzdXNlLmNvbT4NCj4gU2VudDogVGh1cnNkYXksIFNlcHRl
-bWJlciAzMCwgMjAyMSA1OjMwIFBNDQpbLi4uXQ0KPiBIaSwNCj4gDQo+IEhheWVzIHByb3Bvc2Vk
-IGEgc29sdXRpb24uIEJhc2ljYWxseSB5b3Ugc29sdmUgdGhpcyB0aGUgd2F5IEhJRCBvciBXRE0g
-ZG8gaXQNCj4gZGVsYXlpbmcgcmVzdWJtaXNzaW9uLiBUaGlzIG1ha2VzIG1lIHdvbmRlciB3aGV0
-aGVyIHRoaXMgcHJvYmxlbSBpcyBzcGVjaWZpYw0KPiB0byBhbnkgZHJpdmVyLiBJZiBpdCBpcyBu
-b3QsIGFzIEkgd291bGQgYXJndWUsIGRvIHdlIGhhdmUgYSBkZWZpY2llbmN5DQo+IGluIG91ciBB
-UEk/DQoNCkkgdGhpbmsgdGhlIG1ham9yIHF1ZXN0aW9uIGlzIHRoYXQgdGhlIGRyaXZlciBkb2Vz
-bid0IGtub3cgd2hldGhlcg0KaXQgaXMgbmVjZXNzYXJ5IHRvIHN0b3Agc3VibWl0dGluZyBidWxr
-IHRyYW5zZmVyIG9yIG5vdC4gVGhlcmUgYXJlDQp0d28gc2l0dWF0aW9ucyB3aXRoIHRoZSBzYW1l
-IGVycm9yIGNvZGUuIE9uZSBuZWVkcyB0byByZXN1Ym1pdA0KdGhlIGJ1bGsgdHJhbnNmZXIuIFRo
-ZSBvdGhlciBuZWVkcyB0byBzdG9wIHRoZSB0cmFuc2Zlci4gVGhlIG9yaWdpbmFsDQppZGVhIGlz
-IHRoYXQgdGhlIGRpc2Nvbm5lY3QgZXZlbnQgd291bGQgc3RvcCBzdWJtaXR0aW5nIHRyYW5zZmVy
-IGZvcg0KdGhlIHNlY29uZCBzaXR1YXRpb24uIEhvd2V2ZXIsIGZvciB0aGlzIGNhc2UsIHRoZSBk
-aXNjb25uZWN0IGV2ZW50DQpjb21lcyB2ZXJ5IGxhdGUsIHNvIHRoZSBzdWJtaXNzaW9uIGNvdWxk
-bid0IGJlIHN0b3BwZWQgaW4gdGltZS4NClRoZSBiZXN0IHNvbHV0aW9uIGlzIHRoZSBkcml2ZXIg
-Y291bGQgZ2V0IGFub3RoZXIgZXJyb3IgY29kZSB3aGljaA0KaW5kaWNhdGVzIHRoZSBkZXZpY2Ug
-aXMgZGlzYXBwZWFyIGZvciB0aGUgc2Vjb25kIHNpdHVhdGlvbi4gIFRoZW4sDQpJIGRvbid0IG5l
-ZWQgdG8gZG8gZGVsYXllZCByZXN1Ym1pc3Npb24uDQoNCkJlc3QgUmVnYXJkcywNCkhheWVzDQo=
+
+>>>> Can you describe the sequence that you used to start them? That may be
+>>>> useful to understand the criteria you used?
+>>> I have something like this:
+>>>
+>>> FE1  --> Crossbar -> Mixer Input1    |
+>>> FE2  --> Crossbar -> Mixer Input2    |
+>>> ...                                  | --> Mixer Output -->
+>>> ... |
+>>> FE10 --> Crossbar -> Mixer Input10   |
+>>>
+>>> All these FEs are started one after the other. This is an example of
+>>> 10x1. Similarly we can have 2x1, 3x1 etc.,
+>>> In our system, the crossbar [0] and mixer [1] are separate ASoC
+>>> components. Basically audio paths consist of a group of ASoC components
+>>> which are connected back to back.
+>> Not following. Can you explain how starting FE1 does not change the
+>> state of the mixer output then?
+>>
+>> Or is each 'Crossbar' instance a full-blown BE? In that case you have a
+>> 1:1 mapping between FE and BE, a *really* simple topology...
+> 
+> Yes 'Crossbar' exposes multiple ports and it is 1:1 mapping with FE.
+> Starting FE1 does configure mixer output.
+
+Ah ok, now I get the difference with the N:1 topology we used.
+Thanks for explaining this.
+
+>>> In the interim, may be we can have following patch to keep both systems
+>>> working and keep the discussion going to address the oustanding
+>>> requirements/issues?
+>>>
+>>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+>>> index ab25f99..0fbab50 100644
+>>> --- a/sound/soc/soc-pcm.c
+>>> +++ b/sound/soc/soc-pcm.c
+>>> @@ -1395,7 +1395,13 @@ static int dpcm_add_paths(struct
+>>> snd_soc_pcm_runtime *fe, int stream,
+>>>                  if (!fe->dpcm[stream].runtime && !fe->fe_compr)
+>>>                          continue;
+>>>
+>>> -               if ((be->dpcm[stream].state !=
+>>> SND_SOC_DPCM_STATE_NEW) &&
+>>> +               /*
+>>> +                * Filter for systems with 'component_chaining' enabled.
+>>> +                * This helps to avoid unnecessary re-configuration
+>>> of an
+>>> +                * already active BE on such systems.
+>>> +                */
+>>> +               if (fe->card->component_chaining &&
+>>> +                   (be->dpcm[stream].state !=
+>>> SND_SOC_DPCM_STATE_NEW) &&
+>>>                      (be->dpcm[stream].state !=
+>>> SND_SOC_DPCM_STATE_CLOSE))
+>>>                          continue;
+>> that wouldn't work. We need to support the STOP and START cases as well.
+>>
+> 
+> I meant with flag 'fe->card->component_chaining', which is currently
+> used by Tegra audio only.
+
+Ah yes, this may be a temporary solution that gets us both back to a
+'working solution'. Let me give it a try.
+Good discussion, thanks!
+-Pierre
