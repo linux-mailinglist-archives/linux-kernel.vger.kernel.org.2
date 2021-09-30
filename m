@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3C341DCE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194B941DCF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352050AbhI3PDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:03:42 -0400
-Received: from www.zeus03.de ([194.117.254.33]:34260 "EHLO mail.zeus03.de"
+        id S234440AbhI3PFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:05:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348704AbhI3PDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=r+o3vngVkdgztVQkxkUxvPMjJ9nS
-        mdIiV96Cw1ESXyc=; b=CXiUxsT2FblaWdUcBNRW+qgmMsmmSNwCXBs3DTwU3ScX
-        SFb0bWfx+QD6R2MfmlF/a2igkJAipQBxDcYehr3rhi05Ed8fZsydSIBOlYBHa91a
-        mqvamJacTStj4qLZENtzL7Z49MPxeNugnjA/yO0Q9qGWFe9JuNmPTeRtGVOPsTo=
-Received: (qmail 2119133 invoked from network); 30 Sep 2021 17:01:56 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Sep 2021 17:01:56 +0200
-X-UD-Smtp-Session: l3s3148p1@mcROujfNQIYgARa4RV6LAWawlO8I9jL3
-Date:   Thu, 30 Sep 2021 17:01:56 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 0/6] Add SPI Multi I/O Bus Controller support for RZ/G2L
-Message-ID: <YVXRZNxrgmfROlJy@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S230370AbhI3PFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:05:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E2B560F4A;
+        Thu, 30 Sep 2021 15:04:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633014244;
+        bh=nSTw+j4d2UCCKhsHid2M5WQ7GT4HxeOWxUwBItejV+c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=g11GVhubWbJ/GMBOb23KR6WPBnQbnsPapEPAmH9W/CkHL4SrnZ6OSbtFjLvlWWwVA
+         KI45hsV88rEDkrA4e9dQNzQPI63wb3PgbcgguUcOz9DEqcl+JUDxREpl7zAHJf05r4
+         EgArSxHg4bp6ARdwVMjfAU6NZ2jMy6WYnnx3r3UcgKD1bvzo36HdVJ+yDjeaeqc6Xs
+         Of2ntw2JDzgpJnzTlcyjEX4Sdl5Yx10fgBVug4nheliVVzuitooDJs+nRHUdDo95Zx
+         tndStmMdbBgumBc6UaOmEvZTg+43p8gVuuMe9Td4PFvkjWILpJQIRZsJJ2a/8RI5sW
+         3SmGakWn783xw==
+Date:   Thu, 30 Sep 2021 10:04:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: Convert to
+ device_create_managed_software_node()
+Message-ID: <20210930150402.GA877907@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gdec5ePrzlj11VEg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210930121246.22833-2-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 03:12:45PM +0300, Heikki Krogerus wrote:
+> In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
+> instead of device_add_properties() to set the "dma-can-stall"
+> property.
+> 
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+> Hi,
+> 
+> The commit message now says what Bjorn requested, except I left out
+> the claim that the patch fixes a lifetime issue.
 
---gdec5ePrzlj11VEg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks.
 
+The commit log should help reviewers determine whether the change is
+safe and necessary.  So far it doesn't have any hints along that line.
 
-> This patch series adds a couple of fixes for rpc-if driver and
-> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
+Comparing device_add_properties() [1] and
+device_create_managed_software_node() [2], the only difference in this
+case is that the latter sets "swnode->managed = true".  The function
+comment says "managed" means the lifetime of the swnode is tied to the
+lifetime of dev, hence my question about a lifetime issue.
 
-I did some basic testing on the Falcon board with a Renesas R-Car V3U
-SoC and did not find a regression, so:
+I can see that one reason for this change is to remove the last caller
+of device_add_properties(), so device_add_properties() itself can be
+removed.  That's a good reason for wanting to do it, and the commit
+log could mention it.
 
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+But it doesn't help me figure out whether it's safe.  For that,
+I need to know the effect of setting "managed = true".  Obviously
+it means *something*, but I don't know what.  It looks like the only
+test is in software_node_notify():
 
+  device_del
+    device_platform_notify_remove
+      software_node_notify_remove
+        sysfs_remove_link(dev_name)
+        sysfs_remove_link("software_node")
+        if (swnode->managed)                 <--
+          set_secondary_fwnode(dev, NULL)
+          kobject_put(&swnode->kobj)
+    device_remove_properties
+      if (is_software_node())
+        fwnode_remove_software_node
+          kobject_put(&swnode->kobj)
+        set_secondary_fwnode(dev, NULL)
 
---gdec5ePrzlj11VEg
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm not sure what's going on here; it looks like some redundancy with
+multiple calls of kobject_put() and set_secondary_fwnode().  Maybe you
+are in the process of removing device_remove_properties() as well as
+device_add_properties()?
 
------BEGIN PGP SIGNATURE-----
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/property.c?id=v5.14#n533
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/swnode.c?id=v5.14#n1083
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFV0WMACgkQFA3kzBSg
-KbbtBQ//UDqnFRl9bJ/3z/krcE5cI7mn3iuGbS97ZGR6nqRDvSvmbIiQPTreCPNU
-VQqMfbLoLkHM9O9u7UR7ucjggb7kveCz1wAtz4h0WPArBvFXJXbOaaeU2dodlk2Y
-tYZCGkrfn5FhaRokcMK9MbIBxwwv5ZIypR1DBdyvPD5tX4QujTBrX2z/XzGkCfn2
-be+IxS8ibDKnx2VwD0ErPa7la4fKcGVh+4bVd8Wn3fCC+1lTBXaQl5sIcgZnS2H0
-HdhETeXxJTPLpPWKNjkYbO9gQRiKQ9iM9tg34hLjWvrgkG45LCct/Q/UTI998yeh
-4OXhypsgoFKnLjNJXh3CLAV1Ud8xQvglWV5YkLEyeinTb2xdk4LX45h+DKDOmcHU
-0GD2VvzY3ilwcneSAFRlae6EuJ+lvw6AingESituuIOPCtAmDbQ3MYkZsFHwDW2K
-rHnVMKNT6ajsehg9jmwIBOr7zAU1YEG0WrTXDI1KzoeL8hhczcGVRnhGOv0CMSXY
-tGrqEiVC9hSX6trxx60N42hLwuMxF2E4aS6mi/CsdkfPYfoOJ4YEWuvkMc+iG4mB
-4znsrDwaBYF47lX96RsW6nSI8prCyOsvf42vyZ6OeWJYOOlAgBSh9wGJN2IuYeh8
-BRop7XCqLmNVFAt/Q9CXDgsmXKcB+dE82t0MtavGfuwukYE01D4=
-=o3Q2
------END PGP SIGNATURE-----
-
---gdec5ePrzlj11VEg--
+> There shouldn't be any functional impact.
+> 
+> thanks,
+> ---
+>  drivers/pci/quirks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index b6b4c803bdc94..fe5eedba47908 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -1850,7 +1850,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+>  	 * can set it directly.
+>  	 */
+>  	if (!pdev->dev.of_node &&
+> -	    device_add_properties(&pdev->dev, properties))
+> +	    device_create_managed_software_node(&pdev->dev, properties, NULL))
+>  		pci_warn(pdev, "could not add stall property");
+>  }
+>  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+> -- 
+> 2.33.0
+> 
