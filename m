@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE6C41D72D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2E641D729
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349747AbhI3KHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349744AbhI3KHQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:07:16 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BBAC06176C;
-        Thu, 30 Sep 2021 03:05:34 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 75so5693051pga.3;
-        Thu, 30 Sep 2021 03:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tUCu93B1vpXOt7rVT/VHSEoF5/1bf9+fBEaKI0gkxts=;
-        b=frK6mzU85ZlJgrbQyDP5MR6HkaDdlSc5oWEvc1hMs4/CwyQEqeJoalPGX+A6+szh3I
-         eL5LwgF0yD4HTYn32Zzh9cb64UOH1QwYoPshrX7CRRiAxeSZ6ItMAEIj5DHUEfNfY2Sq
-         IgWrBo0vtDPK2TorEPYquYMigT+ujOgNjtciA+Pzut1J2qWdPmMBvfVOvwOPBtQ9BQ72
-         dmTe7B97D5nNx0rhPVL98ojMyUuDifYRXuU/RmQoT9+wanpvZRX8ElWvD/Mc9rsABjCs
-         gJQJPOqleg8+/pi/Trh31rQUg4KjOHTenOTIgooDowza8Kxds2Yj2dxMMnuuvxp/ZxyX
-         EwWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tUCu93B1vpXOt7rVT/VHSEoF5/1bf9+fBEaKI0gkxts=;
-        b=oa/plI1RUWXOJ8Vzd5v1WS+PzMJz3ssl1GoEzV3Efdd/ChvE+7Vk6h34Qm6J/BO6C1
-         txaR+QWW4f7RR2Zg6qJwx8KETCGkGNldsnoW6HOT4lbgsTit+co15NJ6DHIycP+72DOL
-         f6RluFLeTzztVqZaqgSyf5zJ808Ba6qOTLB1mCAMqU4mT0vrzG7SQPiDBFwPrW7x+vTb
-         A3G8mtforzzEBZTFejQXVeaMe6EyWsHXGp/H8IzcX/fLAexZojtO3okNbW2niEl2ddIa
-         RSo22oFoYWxTfFR5PpeGha084uXeGAUhlpdeV2kgBI7nSk3lRFtnUOSCykHtkewRgSs0
-         Ah2Q==
-X-Gm-Message-State: AOAM531eAQnxUTMXTshlaETv+i59ptg1pGkYTyLhN7zQHcK2IH/u9yP3
-        r8iiF2UFX6V2gBWP7AIDPoQ=
-X-Google-Smtp-Source: ABdhPJxLpBoDLentgowSq7BYVkZbWr8XcA59pOS1I/wl7T+PKz6q2YUwlz95jj+3g9bSzgrzAod7ww==
-X-Received: by 2002:a63:131f:: with SMTP id i31mr4178307pgl.207.1632996333691;
-        Thu, 30 Sep 2021 03:05:33 -0700 (PDT)
-Received: from baohua-VirtualBox.localdomain (203-173-222-16.dialup.ihug.co.nz. [203.173.222.16])
-        by smtp.gmail.com with ESMTPSA id 130sm2568262pfz.77.2021.09.30.03.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 03:05:32 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     alex.kogan@oracle.com
-Cc:     arnd@arndb.de, bp@alien8.de, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com, guohanjun@huawei.com, hpa@zytor.com,
-        jglauber@marvell.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, longman@redhat.com, mingo@redhat.com,
-        peterz@infradead.org, steven.sistare@oracle.com,
-        tglx@linutronix.de, will.deacon@arm.com, x86@kernel.org
-Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow path of qspinlock
-Date:   Thu, 30 Sep 2021 18:05:14 +0800
-Message-Id: <20210930100514.10121-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210514200743.3026725-4-alex.kogan@oracle.com>
-References: <20210514200743.3026725-4-alex.kogan@oracle.com>
+        id S1349733AbhI3KHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:07:04 -0400
+Received: from mga02.intel.com ([134.134.136.20]:24980 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349679AbhI3KHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:07:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212408503"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="212408503"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 03:05:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="618055875"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 30 Sep 2021 03:05:17 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 30 Sep 2021 13:05:16 +0300
+Date:   Thu, 30 Sep 2021 13:05:16 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device
+ properties
+Message-ID: <YVWL3PyYRanGTlVG@kuha.fi.intel.com>
+References: <20210929170804.GA778424@bhelgaas>
+ <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/*
-> + * Implement a NUMA-aware version of MCS (aka CNA, or compact NUMA-aware lock).
-> + *
-> + * In CNA, spinning threads are organized in two queues, a primary queue for
-> + * threads running on the same NUMA node as the current lock holder, and a
-> + * secondary queue for threads running on other nodes. Schematically, it
-> + * looks like this:
-> + *
-> + *    cna_node
-> + *   +----------+     +--------+         +--------+
-> + *   |mcs:next  | --> |mcs:next| --> ... |mcs:next| --> NULL  [Primary queue]
-> + *   |mcs:locked| -.  +--------+         +--------+
-> + *   +----------+  |
-> + *                 `----------------------.
-> + *                                        v
-> + *                 +--------+         +--------+
-> + *                 |mcs:next| --> ... |mcs:next|            [Secondary queue]
-> + *                 +--------+         +--------+
-> + *                     ^                    |
-> + *                     `--------------------'
-> + *
+Hi guys,
 
-probably not only related with NUMA, it might be also related with cache topology.
-For example, one NUMA might has a couple of sub domains, each domain shares some
-last level cache. ZEN, Power and some ARM servers all have this kind of topology.
+On Thu, Sep 30, 2021 at 10:33:27AM +0800, Zhangfei Gao wrote:
+> On 2021/9/30 上午1:08, Bjorn Helgaas wrote:
+> > [+cc Zhangfei, author of 8304a3a199ee ("PCI: Set dma-can-stall for
+> > HiSilicon chips"), which added this]
+> > 
+> > On Wed, Sep 29, 2021 at 04:37:28PM +0300, Heikki Krogerus wrote:
+> > > Using device_create_managed_software_node() to inject the
+> > > properties in quirk_huawei_pcie_sva() instead of with the
+> > > old device_add_properties() API.
+> > > 
+> > > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > This is fine with me, but please update the subject line and commit
+> > log something like this:
+> > 
+> >    PCI: Convert to device_create_managed_software_node()
+> > 
+> >    In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
+> >    instead of device_add_properties() to set the "dma-can-stall"
+> >    property.
+> > 
+> >    This resolves a software node lifetime issue (see 151f6ff78cdf
+> >    ("software node: Provide replacement for device_add_properties()"))
+> >    and paves the way for removing device_add_properties() completely.
+> > 
+> > Actually, 8304a3a199ee was merged during the v5.15 merge window, so if
+> > this does in fact fix a lifetime issue, I can merge this before
+> > v5.15-final.
 
-lock synchronization within this smaller range should be much faster. anyway, it
-looks like a good start to be aware of numa only for this moment.
+It does not fix lifetime issues. This is because device_del() called
+device_remove_properties() unconditionally with every device.
 
-Thanks
-barry
+There should be no functional impact.
+
+> > I know *this* quirk applies to AMBA devices, and I assume they cannot
+> > be removed, so there's no actual lifetime problem in this particular
+> > case, but in general it looks like a problem for PCI devices.
+> Thanks Bjorn
+> This patch also works, though the quirk is for platform devices and not
+> removed.
+
+If the device is really never removed, then we could also constify the
+node and the properties in it. Then the patch would look like this:
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index b6b4c803bdc94..3dc7a1c62bf24 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -1833,13 +1833,17 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
+  * even when a "PCI" device turns out to be a regular old SoC device
+  * dressed up as a RCiEP and normal rules don't apply.
+  */
++static const struct property_entry huawei_pcie_sva_props[] = {
++       PROPERTY_ENTRY_BOOL("dma-can-stall"),
++       { }
++};
++
++static const struct software_node huawei_pcie_sva_swnode = {
++       .properties = huawei_pcie_sva_props,
++};
++
+ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+ {
+-       struct property_entry properties[] = {
+-               PROPERTY_ENTRY_BOOL("dma-can-stall"),
+-               {},
+-       };
+-
+        if (pdev->revision != 0x21 && pdev->revision != 0x30)
+                return;
+ 
+@@ -1850,7 +1854,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+         * can set it directly.
+         */
+        if (!pdev->dev.of_node &&
+-           device_add_properties(&pdev->dev, properties))
++           device_add_software_node(&pdev->dev, &huawei_pcie_sva_swnode))
+                pci_warn(pdev, "could not add stall property");
+ }
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+
+
+Let me know if you prefer it that way.
+
+thanks,
+
+-- 
+heikki
