@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4122F41DD7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C313E41DD7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343762AbhI3PcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:32:14 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:36276 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343650AbhI3PcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:32:12 -0400
-Received: from localhost.localdomain (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 47B01659AF;
-        Thu, 30 Sep 2021 11:30:26 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1633015829;
-        bh=FQFXP6PYgAZVPfZp2BPwwytEvdhGuTkspFSQKYYvv+8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=fmvl/HvKXqCmQkeoeslJjqXSgpeIk2ejsnu5NamFnIL+86jy1mNAMMbLB5vn+tGZf
-         HXfubBZ9az18Ydrtet3Dwg/qY6emdId7Vqv5VUnb+efp14/nQdPv4o4bLvjhRLwP7T
-         6zxGzlQXNfmQ9fzwWXdyTqGDZD+s/vGdyvZRLkYDtyoH7lqMn07E5EC+DOXSijymE0
-         R4l8obpvuZx72LUADmX3VYXHtJ5CJPi4SNkXA9r1k8JBW2TDKxeBJoTLhQ+CZD8Q4F
-         7ThcanSbLFbVRYNXy9PaXWaUjGarUraDyHX/afUETqD4PDqV1l/zhqf4bLmW2ZTuum
-         H/VVpn6qdzUrA==
-Message-ID: <91d12c483421cc7bd69d8ee7f28243d65877a7af.camel@mengyan1223.wang>
-Subject: Re: [PATCH V4 06/22] LoongArch: Add CPU definition headers
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Thu, 30 Sep 2021 23:30:24 +0800
-In-Reply-To: <20210927064300.624279-7-chenhuacai@loongson.cn>
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
-         <20210927064300.624279-7-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S1343869AbhI3Pcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:32:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55980 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233612AbhI3Pcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:32:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633015869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yt/zlKqP93kTWPAGGVE5ziZ1VrokRFvfUstwd3NI9zg=;
+        b=ZxP7Y9jL1oB9Pz/ZL/FiHIRvKN+0K58Yl6kOPa2Pj8udhHbPvIyWefr0pMtZ65IFuD92Jj
+        WSzN30vrOvEz2+Uy04xksKuwhVqQOwUCO1LHzpJeAgqEd00onyuj1dU5HbXufdJ/JA90Cd
+        VgfdoYsi3mjAH6fNXcOROewuDBl7Lag=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-MFKAeSR1MhGImMNrtei-zA-1; Thu, 30 Sep 2021 11:31:07 -0400
+X-MC-Unique: MFKAeSR1MhGImMNrtei-zA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6595CDF8A0;
+        Thu, 30 Sep 2021 15:31:06 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B2AA5BAE5;
+        Thu, 30 Sep 2021 15:31:05 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 16:30:59 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, oren@nvidia.com,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/1] driver core: use NUMA_NO_NODE during
+ device_initialize
+Message-ID: <YVXYMzRpVTCu9AyV@stefanha-x1.localdomain>
+References: <20210930142556.9999-1-mgurtovoy@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TC6Mln2Z2suHGcTr"
+Content-Disposition: inline
+In-Reply-To: <20210930142556.9999-1-mgurtovoy@nvidia.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-27 at 14:42 +0800, Huacai Chen wrote:
 
-> +#define t0     $r12    /* caller saved */
-> +#define t1     $r13
-> +#define t2     $r14
-> +#define t3     $r15
-> +#define t4     $r16
-> +#define t5     $r17
-> +#define t6     $r18
-> +#define t7     $r19
-> +#define t8     $r20
-> +#define x0     $r21
+--TC6Mln2Z2suHGcTr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the doc it's said x0 will be used to name a 256-bit vector register.
-Maybe it's better to rename this one?
+On Thu, Sep 30, 2021 at 05:25:56PM +0300, Max Gurtovoy wrote:
+> Don't use (-1) constant for setting initial device node. Instead, use
+> the generic NUMA_NO_NODE definition to indicate that "no node id
+> specified".
+>=20
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Thanks!
+
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--TC6Mln2Z2suHGcTr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmFV2DMACgkQnKSrs4Gr
+c8iA3Af8DLUJv7Sz46AwfS2FQMmVB+UV5KwvOwRxFTBdeG4h+ol4hc5W6VSeXIRP
+NLPasJQAciJdzVPnKTnQwtZ6txeKgqxUhBlfneiHk3jw2nfnGSac2IGkP35paH1r
+J7Nhif//6Oun8CEK9pIJ7vVwucun/W6varooxgwBdx/oUnncDnIvC71I8O/KXbC3
+yhf+AqrkFMK40r/y0Bp3Gu9aqm6iugw7ze+vJT2cxDu2mgP9CDtGFJDMmPwlKbhV
+4GBmyiLlMMIXDNwcJO17BzVGeRVJdbGATOyjYGFXEX3Awpa5v4SzLZSPrRYKeNc4
+HEriHC6DzMIdzA4xsoSd33ZHq0ZyXg==
+=J/SX
+-----END PGP SIGNATURE-----
+
+--TC6Mln2Z2suHGcTr--
 
