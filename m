@@ -2,128 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DF341E40A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512B641E40D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344895AbhI3Wll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343860AbhI3Wli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:41:38 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26635C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:39:55 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i4so31822056lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vpEK1RK+z1DYVOyk9DbEX3Qy0CptNAutN/+eoXhnNAg=;
-        b=MPcV1nKTG41YsS6nzyECLzS8XJcpcOFfbS7VcjU0nJu/vyyILaiw89TNbZRdv06fp/
-         Su2MmLA9dka8g53MV7Nlkf5KlBiC8susP2eemNZkkZ6deq7x1t0rsM+v1MbBcgAk5rBO
-         9wS9iw6ysXstOGP3itVu6SHxJoTKmTvSCEE99X50nF7tSPbEXiG3VsfZ0n9sYNzhlpz5
-         iWlmE7HHx0SjYIqoa6LfJiyqxsTCwSsw5Dq4iWAufzv11x0kG3zJGCH7FPkzlsLJvttm
-         nuq2hv0yG8538ZdydG/D4n44TePQPrpr69XoaMMfk46zVgUlx4+VnNTnaJ9/bjPyJE8w
-         IYvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vpEK1RK+z1DYVOyk9DbEX3Qy0CptNAutN/+eoXhnNAg=;
-        b=GXbu5S8SSJRio9J38yB7qG/piHLrJ0VuLDY3+lDzGaqe+7pRECvBsob70q8Eu2ys9l
-         gyjmV7Ih4g/DtY3Z4CJLE8YLwaN4w82lOe25kJj4i7ms2PLHgSHDXvTsq/7auBHwV+TX
-         RZ8y76cV3nRIl8EY3ml36MRF8tRxiwabfFQN9xRU5IwXsofplmPJVFwTaPYIFmW+4a34
-         eNVa9plwvPL+df6lTF1kW7ZXcdDRHFYUeHkMlS8S5wiJrZ1RJr6wG0txsyFUqqWOVpTg
-         ZofeWUrLk4MnLw1hE6AVF3TKn8RPc6A44GEdP5wuk83pb3rf7oh/VVG1TEu2R9EuKW6/
-         45Hw==
-X-Gm-Message-State: AOAM530fIIdXwwQn86zzF8sQBdgvgpL7HY7HLvODa9AUhZDA/7aJzzQI
-        crREm/okU93OPoUmOv0l+aag+5eKipQKWJLn0rPnXA==
-X-Google-Smtp-Source: ABdhPJysr58yCMlOKQdoTUQe1CpCXlV7Z0NZ/4XMkU/oHfVF8EPT50KZPM/Gvlr1q5u8LKPCiV9rRwIUOUwRmWuXU5E=
-X-Received: by 2002:a05:6512:1303:: with SMTP id x3mr1728584lfu.291.1633041593380;
- Thu, 30 Sep 2021 15:39:53 -0700 (PDT)
+        id S1346925AbhI3Wlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346149AbhI3Wlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 18:41:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A65FF619E7;
+        Thu, 30 Sep 2021 22:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633041602;
+        bh=tEUZDNk08RLI2Q8s7uNHjFnnEV4JanF0tL7ihxBzlvc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=CBXeYWRQIzd3Uuh3eTVhBDPBs6ffuHrEu05iYZv5ewerbdnBozZCe/XfoUFOTEpH5
+         LfAMZYSjphGVnYHo3kOcJwiraGavZZk3W6GMzpwGZpftES+vIHphlgcNFVWcusmLq2
+         xPh7V57memkvUoPsYwz9CdI27hmGVGSBe/+HhK1n5zfMhNHwlIqCskxbU5tmrb6cYA
+         qVBjBmcEczssYwa9Qdn5VslynowdsxWKVmUpHrdtD+/goGycK/qDTJHMt/NK82Lav5
+         rg4pR71yhkDsShTuUjkb6VwAmPvwbqOFZZO9LDsmWIzoZpXvOU1W93kOoVUlAjyRL2
+         CVr2JRZ/514LA==
+Date:   Thu, 30 Sep 2021 17:40:00 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/4] PCI/ASPM: Remove struct pcie_link_state.parent
+Message-ID: <20210930224000.GA908006@bhelgaas>
 MIME-Version: 1.0
-References: <20210903012236.160858-1-lizhijian@cn.fujitsu.com>
-In-Reply-To: <20210903012236.160858-1-lizhijian@cn.fujitsu.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 1 Oct 2021 00:39:42 +0200
-Message-ID: <CACRpkdaMYdc4WLcLFMKd3MyyKnQpdhP3Wxkx6YPoR+0YmH8ifw@mail.gmail.com>
-Subject: Re: [PATCH v2] selftests/gpio: Fix gpio compiling error
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929004315.22558-2-refactormyself@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
-
-thanks for your patch!
-
-It needs to be sent directly to Bartosz Golaszewski so he can apply
-it to the GPIO tree.
-
-Thanks!
-Linus Walleij
-
-On Fri, Sep 3, 2021 at 3:18 AM Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
->
-> [root@iaas-rpma gpio]# make
-> gcc     gpio-mockup-cdev.c  -o /home/lizhijian/linux/tools/testing/selfte=
-sts/gpio/gpio-mockup-cdev
-> gpio-mockup-cdev.c: In function =E2=80=98request_line_v2=E2=80=99:
-> gpio-mockup-cdev.c:24:30: error: storage size of =E2=80=98req=E2=80=99 is=
-n=E2=80=99t known
->    24 |  struct gpio_v2_line_request req;
->       |                              ^~~
-> gpio-mockup-cdev.c:32:14: error: =E2=80=98GPIO_V2_LINE_FLAG_OUTPUT=E2=80=
-=99 undeclared (first use in this function); did you mean =E2=80=98GPIOLINE=
-_FLAG_IS_OUT=E2=80=99?
->    32 |  if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
->       |              ^~~~~~~~~~~~~~~~~~~~~~~~
->
-> gpio-mockup-cdev.c includes <linux/gpio.h> which could be provided by
-> kernel-headers package, and where it's expected to declare
-> GPIO_V2_LINE_FLAG_OUTPUT. However distros or developers will not always
-> install the same kernel-header as we are compiling.
->
-> So we can tell compiler to search headers from linux tree simply like oth=
-ers,
-> such as sched.
->
-> CC: Philip Li <philip.li@intel.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
->
+On Wed, Sep 29, 2021 at 02:43:12AM +0200, Saheed O. Bolarinwa wrote:
+> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
+> 
+> Information cached in struct pcie_link_state.parent is accessible
+> via struct pci_dev.
+> 
+> This patch:
+>  - removes *parent* from the *struct pcie_link_state*
+>  - creates pci_get_parent() which returns the parent of a pci_dev
+>  - replaces references to pcie_link_state.parent with a call to
+>    pci_get_parent()
+>  - removes BUG_ON(root->parent), instead uses the parent's root
+> 
+> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
 > ---
-> V2: add more details about the fix
-> ---
->  tools/testing/selftests/gpio/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selfte=
-sts/gpio/Makefile
-> index 39f2bbe8dd3d..42ea7d2aa844 100644
-> --- a/tools/testing/selftests/gpio/Makefile
-> +++ b/tools/testing/selftests/gpio/Makefile
-> @@ -3,5 +3,6 @@
->  TEST_PROGS :=3D gpio-mockup.sh
->  TEST_FILES :=3D gpio-mockup-sysfs.sh
->  TEST_GEN_PROGS_EXTENDED :=3D gpio-mockup-cdev
-> +CFLAGS +=3D -I../../../../usr/include
->
->  include ../lib.mk
-> --
-> 2.31.1
->
->
->
+>  drivers/pci/pcie/aspm.c | 36 ++++++++++++++++++++++++++----------
+>  1 file changed, 26 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 013a47f587ce..414c04ffe962 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -50,7 +50,6 @@ struct pcie_link_state {
+>  	struct pci_dev *pdev;		/* Upstream component of the Link */
+>  	struct pci_dev *downstream;	/* Downstream component, function 0 */
+>  	struct pcie_link_state *root;	/* pointer to the root port link */
+> -	struct pcie_link_state *parent;	/* pointer to the parent Link state */
+>  	struct list_head sibling;	/* node in link_list */
+>  
+>  	/* ASPM state */
+> @@ -139,6 +138,14 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
+>  	return 0;
+>  }
+>  
+> +static struct pci_dev *pci_get_parent(struct pci_dev *pdev)
+> +{
+> +	if (!pdev || !pdev->bus->parent || !pdev->bus->parent->self)
+> +		return NULL;
+> +
+> +	return pdev->bus->parent->self;
+> +}
+
+I LOVE the idea of getting rid of the pcie_link_state.parent pointer.
+I think it's dumb to maintain a shadow hierarchy when we already HAVE
+a hierarchy in struct pci_dev.
+
+I'm not in love with the pci_get_parent() name because a pci_dev
+doesn't really have a "parent."  The closest thing to a parent would
+be the bridge upstream from the device, and that's not what this
+returns.
+
+This actually has to start from a Downstream Port (not an Endpoint)
+because the struct pcie_link_state is always associated with the
+upstream end of the link.
+
+And it actually returns the bridge that is *two* levels up, because
+that's the upstream end of the next link, so it's more like the
+"grandparent" of pdev, not the "parent."
+
+Example from my laptop:
+
+  0a:04.0 Downstream Port (switch A)    to [bus 0c-3d]
+  0c:00.0 Upstream Port (switch B)      to [bus 0d-3d]
+  0d:01.0 Downstream Port (switch B)    to [bus 0e]
+  0e:00.0 Upstream Port (Endpoint)      USB controller
+
+Here there are two links:
+
+  0a:04.0 --- 0c:00.0
+  0d:01.0 --- 0e:00.0
+
+and the pcie_link_states are associated with 0a:04.0 and 0d:01.0.
+
+If we start from 0d:01.0, which is the upstream end of the last link:
+
+  "pdev" is a pci_dev of a downstream port, e.g., 0d:01.0.
+  "pdev->bus" is the pci_bus pdev is on: [bus 0d].
+  "pdev->bus->self" is the bridge leading to "bus": 0c:00.0.
+  "pdev->bus->parent" is the parent pci_bus of [bus 0d]: [bus 0c].
+  "pdev->bus->parent->self" is the bridge leading to [bus 0c]: 0a:04.0.
+
+Sorry for the rambling, just trying to get this all clear in my head.
+
+Almost all the calls of pci_get_parent() look like this:
+
+  parent = pci_get_parent(link->pdev);
+  link = parent ? parent->link_state : NULL;
+
+What if you made something like this:
+
+  struct pcie_link_state *pcie_upstream_link(struct pcie_link_state *link)
+  {
+    struct pci_dev *bridge;
+
+    bridge = pci_upstream_bridge(link->pdev);
+    if (!bridge)
+      return NULL;
+
+    bridge = pci_upstream_bridge(bridge);
+    return bridge ? bridge->link_state : NULL;
+  }
+
+>  static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
+>  {
+>  	struct pci_dev *child;
+> @@ -379,6 +386,7 @@ static void encode_l12_threshold(u32 threshold_us, u32 *scale, u32 *value)
+>  static void pcie_aspm_check_latency(struct pci_dev *endpoint)
+>  {
+>  	u32 latency, l1_switch_latency = 0;
+> +	struct pci_dev *parent;
+>  	struct aspm_latency *acceptable;
+>  	struct pcie_link_state *link;
+>  
+> @@ -419,7 +427,8 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
+>  			link->aspm_capable &= ~ASPM_STATE_L1;
+>  		l1_switch_latency += 1000;
+>  
+> -		link = link->parent;
+> +		parent = pci_get_parent(link->pdev);
+> +		link = parent ? parent->link_state : NULL;
+>  	}
+>  }
+>  
+> @@ -793,9 +802,11 @@ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+>  
+>  static void pcie_config_aspm_path(struct pcie_link_state *link)
+>  {
+> +	struct pci_dev *parent;
+
+Missing a blank line here.
+
+>  	while (link) {
+>  		pcie_config_aspm_link(link, policy_to_aspm_state(link));
+> -		link = link->parent;
+> +		parent = pci_get_parent(link->pdev);
+> +		link = parent ? parent->link_state : NULL;
+>  	}
+>  }
+>  
+> @@ -864,16 +875,15 @@ static struct pcie_link_state *alloc_pcie_link_state(struct pci_dev *pdev)
+>  	    !pdev->bus->parent->self) {
+>  		link->root = link;
+>  	} else {
+> -		struct pcie_link_state *parent;
+> +		struct pci_dev *parent;
+>  
+> -		parent = pdev->bus->parent->self->link_state;
+> -		if (!parent) {
+> +		parent = pci_get_parent(pdev);
+> +		if (!parent->link_state) {
+>  			kfree(link);
+>  			return NULL;
+>  		}
+>  
+> -		link->parent = parent;
+> -		link->root = link->parent->root;
+> +		link->root = parent->link_state->root;
+>  	}
+>  
+>  	list_add(&link->sibling, &link_list);
+> @@ -962,7 +972,11 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev)
+>  static void pcie_update_aspm_capable(struct pcie_link_state *root)
+>  {
+>  	struct pcie_link_state *link;
+> -	BUG_ON(root->parent);
+> +	struct pci_dev *parent = pci_get_parent(root->pdev);
+> +
+> +	if (parent && parent->link_state)
+> +		root = parent->link_state->root;
+> +
+>  	list_for_each_entry(link, &link_list, sibling) {
+>  		if (link->root != root)
+>  			continue;
+> @@ -985,6 +999,7 @@ static void pcie_update_aspm_capable(struct pcie_link_state *root)
+>  /* @pdev: the endpoint device */
+>  void pcie_aspm_exit_link_state(struct pci_dev *pdev)
+>  {
+> +	struct pci_dev *parent_dev;
+>  	struct pci_dev *parent = pdev->bus->self;
+>  	struct pcie_link_state *link, *root, *parent_link;
+>  
+> @@ -1002,7 +1017,8 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
+>  
+>  	link = parent->link_state;
+>  	root = link->root;
+> -	parent_link = link->parent;
+> +	parent_dev = pci_get_parent(link->pdev);
+> +	parent_link = parent_dev ? parent_dev->link_state : NULL;
+>  
+>  	/* All functions are removed, so just disable ASPM for the link */
+>  	pcie_config_aspm_link(link, 0);
+> -- 
+> 2.20.1
+> 
