@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB30341DA26
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3807441DA2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351081AbhI3Msl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:48:41 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:50937 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349794AbhI3Msk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:48:40 -0400
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 18UCkUsI031268;
-        Thu, 30 Sep 2021 21:46:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 18UCkUsI031268
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633005991;
-        bh=QTVmnlg4EXLgMNWGaqhRXsGICBaozUUHczJ1G+1ORRY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D33rLXJOw70Lqc/bx5R09SiHYnqukGKFFrxXGSdRtJ/9+Fn+kNo9ScxJrpyQcCVOM
-         rH9wOhmGwe79sWJbRI4qX+A0RADYSsAviBlDz9UbOh+7K3qfJyeAHcSOMyaMwf1Cnz
-         XQqevDoRbnKkP+7ts1DBHIuRyOuoUOYbCotYCoZ//3ZbxOSgQq20OjX5x4q2erkFgA
-         Tpc2VhxBIyIBTCUNJ1nTkj4l/F4doW+KwGAy8wZZnkiWnR8NjstETbhLRXipCEEsVu
-         XiMwiTNvn6DbseeelapnulpgJ1OPymLeCo4plhiaSSWVD4Gap0E36ddLW2Tpp7R9Ze
-         IjXCYATtosEVg==
-X-Nifty-SrcIP: [209.85.214.175]
-Received: by mail-pl1-f175.google.com with SMTP id t4so3947641plo.0;
-        Thu, 30 Sep 2021 05:46:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533vg4etZygjbmuEvvhftMnrXu/ehjB5nVnBn0BO02GxtLN5mscc
-        5yq8EKopRd/KkAiFH+GkX2dYpSHms6scsHweuyY=
-X-Google-Smtp-Source: ABdhPJzpyqDL9Jf0nePfabDpHndqVil4Vjv6FnbbrifNx1wHyynn37xAtjzHeX5fXEI0C52sV3wFfJicViO3UHPhR5s=
-X-Received: by 2002:a17:90a:4414:: with SMTP id s20mr6243842pjg.144.1633005990304;
- Thu, 30 Sep 2021 05:46:30 -0700 (PDT)
+        id S1351103AbhI3MtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:49:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351087AbhI3MtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 08:49:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AB2161994;
+        Thu, 30 Sep 2021 12:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633006040;
+        bh=+LSXxf/C5lNbOrpCeow9qmR0dZ6TMRaZo780DicGs8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Or0BXotS/YChCOV++sPwAJYm3orZRArW42B+0g/1div/rnT3iAN3mslimfFCsHgm3
+         jFZd8DcVq9klRreeOvz24ToxVXHrokq0gRJUsGwWowBggNutxn2bTEEzdBoELCroDX
+         s4Sf7JteDCalbIhbDYv23sB7H+yrzKbFNUd7rgC3FusfK+q/xx5oJLa4ymw0VcUhyO
+         McBm2mutaV2o3IjCw9E9jfQirhLiTIa/7rTODxRS26BcRs6k1I+4sucrpF4VAt/UZg
+         ZufK9D6aM/hqD2lqXQ0StKRgm0KuFag0+/qK13reqGQRKSy0wQn547WDX+HkE3b96g
+         ZRjIx9tch7NUw==
+Date:   Thu, 30 Sep 2021 13:46:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     kernel@collabora.com, linux-spi@vger.kernel.org,
+        enric.balletbo@collabora.com, dafna3@gmail.com,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH] Revert "spi: modify set_cs_timing parameter"
+Message-ID: <20210930124630.GY4199@sirena.org.uk>
+References: <20210930120700.2564-1-dafna.hirschfeld@collabora.com>
+ <20210930122513.GX4199@sirena.org.uk>
+ <28f8af42-4535-ef9f-e521-712d37e2cb72@collabora.com>
 MIME-Version: 1.0
-References: <20210929225850.3889950-1-ndesaulniers@google.com>
- <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com> <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-In-Reply-To: <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 30 Sep 2021 21:45:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT+N2tyesqcooB91wtUD81S+M7wgd+kVW6iF3v83CYgaw@mail.gmail.com>
-Message-ID: <CAK7LNAT+N2tyesqcooB91wtUD81S+M7wgd+kVW6iF3v83CYgaw@mail.gmail.com>
-Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sKosZo66cxuwvnFI"
+Content-Disposition: inline
+In-Reply-To: <28f8af42-4535-ef9f-e521-712d37e2cb72@collabora.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:19 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Sep 29, 2021 at 4:28 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Wed, Sep 29, 2021 at 3:59 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > +static const struct secref_exception secref_allowlist[] = {
-> > > +       { .fromsym = "__first_node", .tosym = "numa_nodes_parsed" },
-> > > +       { .fromsym = "__next_node", .tosym = "numa_nodes_parsed" },
-> > > +       { .fromsym = "__nodes_weight", .tosym = "numa_nodes_parsed" },
-> > > +       { .fromsym = "early_get_smp_config", .tosym = "x86_init" },
-> > > +       { .fromsym = "test_bit", .tosym = "numa_nodes_parsed" },
-> > > +};
->
-> Thanks for your feedback.  This has been a long-standing issue with no
-> clear path forward; I was looking forward to your input.
->
-> >
-> > This list is basically made-up and random.
->
-> Definitely brittle.  And it contains checks that are specific to
-> basically one set of configs for one arch. It sucks to pay that cost
-> for unaffected architectures.
->
-> > Why did those functions not get inlined?
->
-> $ make LLVM=1 -j72 allmodconfig
-> $ make LLVM=1 -j72 arch/x86/mm/amdtopology.o KCFLAGS=-Rpass-missed=inline.
-> ...
-> arch/x86/mm/amdtopology.c:110:7: remark: 'test_bit' not inlined into
-> 'amd_numa_init' because too costly to inline (cost=115, threshold=45)
-> [-Rpass-missed=inline]
->                 if (node_isset(nodeid, numa_nodes_parsed)) {
->                     ^
-> arch/x86/mm/amdtopology.c:157:7: remark: '__nodes_weight' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=60,
-> threshold=45) [-Rpass-missed=inline]
->         if (!nodes_weight(numa_nodes_parsed))
->              ^
-> arch/x86/mm/amdtopology.c:171:2: remark: 'early_get_smp_config' not
-> inlined into 'amd_numa_init' because too costly to inline (cost=85,
-> threshold=45) [-Rpass-missed=inline]
->         early_get_smp_config();
->         ^
-> arch/x86/mm/amdtopology.c:178:2: remark: '__first_node' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=70,
-> threshold=45) [-Rpass-missed=inline]
->         for_each_node_mask(i, numa_nodes_parsed)
->         ^
-> arch/x86/mm/amdtopology.c:178:2: remark: '__next_node' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=95,
-> threshold=45) [-Rpass-missed=inline]
->
->
-> ie. for allmodconfig, the sanitizers add too much instrumentation to
-> the callees that they become too large to be considered profitable to
-> inline by the cost model.  Note that LLVM's inliner works bottom up,
-> not top down.
->
-> Though for the defconfig case...somehow the cost is more than with the
-> sanitizers...
->
-> arch/x86/mm/amdtopology.c:157:7: remark: '__nodes_weight' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=930,
-> threshold=45) [-Rpass-missed=inline]
->         if (!nodes_weight(numa_nodes_parsed))
->              ^
->
-> Looking at the output of `make LLVM=1 -j72
-> arch/x86/mm/amdtopology.ll`, @__nodes_weight is just some inline asm
-> (.altinstructions). I wonder if I need to teach the cost model about
-> `asm inline`...
->
-> For the allmodconfig build it looks like `__nodes_weight` calls
-> `__bitmap_weight` and the code coverage runtime hooks.
->
-> > Wouldn't it be better to make
-> > them always-inline?
->
-> Perhaps, see what that might look like:
-> https://github.com/ClangBuiltLinux/linux/issues/1302#issuecomment-807260475
-> Does that look better?
->
-> > Or, like in at least the early_get_smp_config() case, just make it be
-> > marked __init, so that if it doesn't get inlined it gets the right
-> > section?
->
-> In the case of early_get_smp_config(), that's what Boris suggested:
-> https://lore.kernel.org/lkml/20210225114533.GA380@zn.tnic/
 
+--sKosZo66cxuwvnFI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-__init works particularly for early_get_smp_config().
+On Thu, Sep 30, 2021 at 02:36:01PM +0200, Dafna Hirschfeld wrote:
+> hi, thanks for the fast feedback
+>=20
+> On 30.09.21 14:25, Mark Brown wrote:
+> > On Thu, Sep 30, 2021 at 02:07:00PM +0200, Dafna Hirschfeld wrote:
+> > > This reverts commit 04e6bb0d6bb127bac929fb35edd2dd01613c9520.
 
-For static line helpers that are called from __init and non-__init functions,
-maybe __ref will work.
+> > Which is not what the commit message nor the paste of the full hash
+> > claimed :/
 
-In my understanding, the .ref.text section is not free'd,
-but modpost bypasses the section mismatch checks.
+> What is the paste of the full hash?
 
-I am not sure what is a better approach for generic cases,
-__always_inline, __ref, or what else?
+The above.
 
+> Since the second commit is only a warning fixes I thought it is cumbersom=
+e to
+> send two separate reverting patches. Should I?
 
-I am not a big fan of this patch, at least...
-(The reason was already stated by Linus)
+No, you should write a proper commit log with (like I said) a normal
+subject line - basically, follow the process in submitting-patches.rst.
 
+> > Do we have any analysis as to why?  Do these devices use timing
+> > parameters in some way for example, or do the values written out to the
+> > device change in some way?
 
--- 
-Best Regards
-Masahiro Yamada
+> > You've provided no analysis here so it's hard to tell if this is just
+> > some random change that happens to change code generation slighly or if
+> > there's some actual reason why this might fix something.  I'll note that
+> > as far as I can see there are no users of this API upstream so I'm
+> > guessing that you've got some out of tree consumer driver which uses the
+> > API, it's possible that there was some error in updating that driver to
+> > the new interface which is causing the issue.
+
+> Actually the original commit not only change that callback 'set_cs_timing=
+' but it also
+> calls 'mtk_spi_set_hw_cs_timing' directly from the function "mtk_spi_prep=
+are_message".
+> So this actually influences all devices bound to this driver (in upstream)
+> I did some printing and it does change values that are written to registe=
+rs.
+
+OK, so that's something that should have been in the commit log,
+preferrably in a more detailed form that identifies what the change is.
+However changing the values written out is clearly not the intent of the
+patch and it is a substantially better API so can we not just fix things
+so that the old values are written out?  Why are we jumping straight to
+a revert here?
+
+--sKosZo66cxuwvnFI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFVsaUACgkQJNaLcl1U
+h9Bwtwf+MtvgKYtUudf/n47UjD7LDb/EwrRnWOQ95GC+BenNNQM1lBYriL17NgP0
+O9aGoqvc7JWUI698KrgSrsxHBSkDs0r8+tZQxZeEcbR5kUkOsoV0s98AlMjN2sHP
+LoZwtgN4j/2R6e70+Wc4NU0fv1E0dlbkgg0GKEvtxxsGgGkvxvDMPJg6SEOqpKwF
+gXowiuCHiI1TzZercbs5OCSSk9++MgiNOxNCNjMkWynYISicZB+LMbypkip7fGGZ
+fGPA9av8KaB7UVCG6L34ink0d4gMWXmjrmCAB7JeX+KtkhLU4ASbNkjIc1eaQU85
+kUoFycW/L766FtrdLQTy4+YScGyN/A==
+=AH+t
+-----END PGP SIGNATURE-----
+
+--sKosZo66cxuwvnFI--
