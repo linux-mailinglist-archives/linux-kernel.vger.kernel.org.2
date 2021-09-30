@@ -2,80 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B0741DEE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD88D41DEEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350358AbhI3QZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349659AbhI3QZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:25:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0D3C61139;
-        Thu, 30 Sep 2021 16:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633019028;
-        bh=SFAuczdPhuuWJXLs0XfQ/hIiVtLdDPdd1uYoA5KobTw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=t630z/tBR0JsvcDkaupuV6XlaWMEW+/eHqaJUiVwvD83oi7YkijX9RN+M1o+yJ5bG
-         ziAJANnhmGQaXAlrigMwECfvl+E9hk/uV6sqO8EagLzYN60qIWNFQ93rdFJ2lds7Hj
-         IssDWkkngoQgSVTzeAD3bej+vrLPM07TcDfCAQXipkOodUXqcr291Kb1ey0tMx/wJP
-         f4ezOH2JT6+OFB/UnDhnrjrSQgVQYC+a8hsRKvcJfA84QvvxjTR2TNYM4no4CBPYgw
-         xDjFVdXShUZSH8x1Wgs2bLHhMOZCPy/rcg1bBSPq+H+FOo4ZLPokMw28p6//9WZfMN
-         C447b766TxUdQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
-Date:   Thu, 30 Sep 2021 09:23:03 -0700
-Message-Id: <20210930162302.2344542-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.591.gddb1055343
+        id S1350497AbhI3Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350411AbhI3Q01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:26:27 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD5EC06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:24:44 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id 138so6347359qko.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=oVCTC+nt3p3+hMxDZO10YpzPmIzmwpHDbufnIhpB5sw=;
+        b=Qzvudx/7eTIRT7u9f/lsM4lO+MLgg9dJvfErxgBhnEydnevVQWd23+D5YUSGowYATg
+         5LHFyriFS29ECLsNuDA85jLdOXHfRyzXgbJK/06ZjgAk8HVJonpWUIlnVMatc67PxWT1
+         dn7yqZLpL85aZ8BeVtsKxdoUsWqTIj59egY14M/B//S1wnOh3KRf/3FL55A1Ucv+9BLn
+         jZPeDKdfHkv+LAbUR5/w9ZQdrTCYAyvVBBbLp+uFkKln1Y/zLhjlaaUsKhBgTmEBItm+
+         qlUqzUZVxpXlGnSKyFyL0+KmJa1pa0URiUh1DxnXvMKSutxbzIzA/l2jhx2tK1C9ilDH
+         ds/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=oVCTC+nt3p3+hMxDZO10YpzPmIzmwpHDbufnIhpB5sw=;
+        b=Gx9UB/Y98GVIApP2wQ6nI9N49K9Ufr01xsZr1cNfNPYwn4Ji+FJvn5NxXoAK7l6USu
+         qc/69pcr/W3s9oqqftJGk11pHfR/kkonKdkD/7VUFvNDnb8A41vFUlP35a9soI9Tq2KQ
+         +SqANyApHZsb1ueQiRN9sgAMkCzGOh94F5I6aPiSRC4Gj4BQw7Mz4TAPpRbXUHo3v2Mf
+         J0uaWq/a0FHdFcufn59GK1zNZCZQx3pVwwWAa7im/jY+PKecK+ChBItWyBz/ImYEVpVG
+         SC+QzmzkiKKlmcy7inmYD/PNI3cH4aLxqytF+WeXpn3z57MNjiS66CAMXxWWwwy65eox
+         PpyA==
+X-Gm-Message-State: AOAM531LTTDIxIjEbsfYAqgzlLwwwlOxZ85kmWHy/wrGPTJhV7PRPpCR
+        M1V3A7JvxU9ct7GVjJe9DN9+nQ==
+X-Google-Smtp-Source: ABdhPJwg8n4C63Fas9mtIKb7ayOW8k3lmOKYhJda6CIKMcYnXdwDezyohMM/ijUu5YJfcNLzaFD4WA==
+X-Received: by 2002:a37:d4f:: with SMTP id 76mr5649048qkn.385.1633019083624;
+        Thu, 30 Sep 2021 09:24:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id y15sm1798840qko.78.2021.09.30.09.24.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 09:24:43 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVyrS-000Hjq-5V; Thu, 30 Sep 2021 13:24:42 -0300
+Date:   Thu, 30 Sep 2021 13:24:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210930162442.GB67618@ziepe.ca>
+References: <20210929075019.48d07deb.alex.williamson@redhat.com>
+ <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+ <20210929091712.6390141c.alex.williamson@redhat.com>
+ <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
+ <20210929161433.GA1808627@ziepe.ca>
+ <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
+ <20210929232109.GC3544071@ziepe.ca>
+ <d8324d96-c897-b914-16c6-ad0bbb9b13a5@nvidia.com>
+ <20210930144752.GA67618@ziepe.ca>
+ <d5b68bb7-d4d3-e9d8-1834-dba505bb8595@nvidia.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d5b68bb7-d4d3-e9d8-1834-dba505bb8595@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+On Thu, Sep 30, 2021 at 06:32:07PM +0300, Max Gurtovoy wrote:
+> > Just prior to open device the vfio pci layer will generate a FLR to
+> > the function so we expect that post open_device has a fresh from reset
+> > fully running device state.
+> 
+> running also mean that the device doesn't have a clue on its internal state
+> ? or running means unfreezed and unquiesced ?
 
-drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:1017:10: error: expression which evaluates to zero treated as a null pointer constant of type 'struct pipe_ctx *' [-Werror,-Wnon-literal-null-conversion]
-                return false;
-                       ^~~~~
-1 error generated.
+The device just got FLR'd and it should be in a clean state and
+operating. Think the VM is booting for the first time.
 
-Use NULL instead of false since the function is returning a pointer
-rather than a boolean.
+> > > > driver will see RESUMING toggle off so it will trigger a
+> > > > de-serialization
+> > > You mean stop serialization ?
+> > No, I mean it will take all the migration data that has been uploaded
+> > through the migration region and de-serialize it into active device
+> > state.
+> 
+> you should feed the device way before that.
 
-Fixes: ff7e396f822f ("drm/amd/display: add cyan_skillfish display support")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1470
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't know what this means, when the resuming bit is set the
+migration data buffer is wiped and userspace should beging loading
+it. When the resuming bit is cleared whatever is in the migration
+buffer is deserialized into the current device internal state.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-index aec276e1db65..8523a048e6f6 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-@@ -1014,7 +1014,7 @@ static struct pipe_ctx *dcn201_acquire_idle_pipe_for_layer(
- 		ASSERT(0);
- 
- 	if (!idle_pipe)
--		return false;
-+		return NULL;
- 
- 	idle_pipe->stream = head_pipe->stream;
- 	idle_pipe->stream_res.tg = head_pipe->stream_res.tg;
+It is the opposite of saving. When the saving bit is set the current
+device state is serialized into the migration buffer and userspace and
+reads it out.
 
-base-commit: b47b99e30cca8906753c83205e8c6179045dd725
--- 
-2.33.0.591.gddb1055343
+> 1. you initialize at  _RUNNING bit == 001b. No problem.
+> 
+> 2. state stream arrives, migration SW raise _RESUMING bit. should it be 101b
+> or 100b ? for now it's 100b. But according to your statement is should be
+> 101b (invalid today) since device state can change. right ?
 
+Running means the device state chanages independently, the controlled
+change of the device state via deserializing the migration buffer is
+different. Both running and saving commands need running to be zero.
+
+ie commands that are marked invalid in the uapi comment are rejected
+at the start - and that is probably the core helper we should provide.
+
+> 3. Then you should indicate that all the state was serialized to the device
+> (actually to all the pci devices). 100b mean RESUMING and not RUNNING so
+> maybe this can say RESUMED and state can't change now ?
+
+State is not loaded into the device until the resuming bit is
+cleared. There is no RESUMED state until we incorporate Artem's
+proposal for an additional bit eg 1001b - running with DMA master
+disabled.
+
+Jason
