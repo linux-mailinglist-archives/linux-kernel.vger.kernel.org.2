@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2130941D381
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B011641D385
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348245AbhI3Gi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:38:28 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:41594 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348034AbhI3Gi0 (ORCPT
+        id S1348173AbhI3GjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348190AbhI3GjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:38:26 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id 244CC44A024E;
-        Thu, 30 Sep 2021 08:36:42 +0200 (CEST)
+        Thu, 30 Sep 2021 02:39:08 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E8DC06176C;
+        Wed, 29 Sep 2021 23:37:26 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso5995203otu.9;
+        Wed, 29 Sep 2021 23:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UpCMKte4+xNLfPIEFcorY2txGsUkKL05E8UxngAqFMw=;
+        b=N5ykDUOZTUBs2Y5qWszbpDqp88cTbjalX0dj3NmeVUvMuPOrOHLAaN3NqZfr7keKOp
+         njkX/0bdG6+fJIYpSQB+GXnLOZTAOWDwgZ2njIcR0CSDszZCD1NHQKOw0pyiDLCKqXQv
+         24aJuN/lB9NiuQSfnRcCV3THkBQqxs6wwtZpmIQHk8LihgnPU3ZtLVOTXu9WOwhmmEf1
+         BCgWe+xyHzPCiNmAtB5nlWFWL4TMO+UCT8H0MAUrvK83dq9VdN6xD6IaqHyG+lMq6B4v
+         kjKHvlOQ/RJwzHgBwe5r/IjMK/ErISKfAuTrZzmvtfckdpqvlZn5eUPQCe/RmRlI78k8
+         qPQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UpCMKte4+xNLfPIEFcorY2txGsUkKL05E8UxngAqFMw=;
+        b=rxfQx9eDJDkF0efDm84cPsYRuJAI235srCmnjqyAI6kPTPXVx1S/95fJjcIdLT47ak
+         +qkP7o8lmjug8PAp57QFHsvNHuDoCfbe9BLizM7EpOCjDZMHoXcREHwmu33lQUb7E9CR
+         MXCc41BeZQvG2MxZPmQXErFZeqhtbvbPY54gvubu2VtDvi4vY2waBVwhoXsfiUog3eBt
+         HWgp/9RygXQRNedupseeGSTnFwdJHVdBAl6rz79TIST2zmeKvUchwmnyYtc7k4nnITiZ
+         bwQW2m2lgRf8G7yzIpJZmYtDaczxK3u3U6YRaJN+zb500EF5wkDdGfVkJlC422CZl/H2
+         zQbA==
+X-Gm-Message-State: AOAM532F05MLweWecw65mEbtAI/A5EKhGtK7NkkwHUfUn5ynBHrNvxTp
+        J++pOPFnO9kCr1f8q4SxFZKS7hSzffd5sbCNO58=
+X-Google-Smtp-Source: ABdhPJxYSHNlbkBfgzm9RVq+rFNE58GGZ65ZfxotZSdw0rV8yudfRpYxR0498mEQjyXg/GMz0ISms1OLAQqNDtP3hus=
+X-Received: by 2002:a05:6830:1089:: with SMTP id y9mr3770951oto.335.1632983845807;
+ Wed, 29 Sep 2021 23:37:25 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 30 Sep 2021 08:36:42 +0200
-From:   Robin van der Gracht <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 14/19] auxdisplay: ht16k33: Move delayed work
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210914143835.511051-15-geert@linux-m68k.org>
-References: <20210914143835.511051-1-geert@linux-m68k.org>
- <20210914143835.511051-15-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <b30da88512b1bd91a94c033d148f4284@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
+In-Reply-To: <20210930062014.38200-2-mie@igel.co.jp>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 30 Sep 2021 14:37:14 +0800
+Message-ID: <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        dhobsong@igel.co.jp, taki@igel.co.jp, etom@igel.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Robin van der Gracht <robin@protonic.nl>
-
-On 2021-09-14 16:38, Geert Uytterhoeven wrote:
-> Move delayed_work from ht16k33_fbdev to ht16k33_priv, as it is not
-> specific to dot-matrix displays, but common to all display types.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+> Implement a new provider method for dma-buf base memory registration.
+>
+> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
 > ---
-> v6:
->   - No changes,
-> 
-> v5:
->   - No changes,
-> 
-> v4:
->   - No changes,
-> 
-> v3:
->   - No changes,
-> 
-> v2:
->   - No changes.
-> ---
->  drivers/auxdisplay/ht16k33.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-> index 75d326a823543898..c7a3a0e1fbb5d03e 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -65,11 +65,11 @@ struct ht16k33_fbdev {
->  	uint32_t refresh_rate;
->  	uint8_t *buffer;
->  	uint8_t *cache;
-> -	struct delayed_work work;
->  };
-> 
->  struct ht16k33_priv {
->  	struct i2c_client *client;
-> +	struct delayed_work work;
->  	struct ht16k33_keypad keypad;
->  	struct ht16k33_fbdev fbdev;
->  };
-> @@ -117,7 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
->  {
->  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-> 
-> -	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
-> +	schedule_delayed_work(&priv->work, HZ / fbdev->refresh_rate);
+>  providers/rxe/rxe.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> index 3c3ea8bb..84e00e60 100644
+> --- a/providers/rxe/rxe.c
+> +++ b/providers/rxe/rxe.c
+> @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+>         return &vmr->ibv_mr;
 >  }
-> 
->  /*
-> @@ -125,10 +125,9 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
->   */
->  static void ht16k33_fb_update(struct work_struct *work)
+>
+> +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
+> +                                       size_t length, uint64_t iova, int fd,
+> +                                       int access)
+> +{
+> +       struct verbs_mr *vmr;
+> +       int ret;
+> +
+> +       vmr = malloc(sizeof(*vmr));
+> +       if (!vmr)
+> +               return NULL;
+> +
+
+Do we need to set vmr to zero like the following?
+
+memset(vmr, 0, sizeof(*vmr));
+
+Zhu Yanjun
+
+> +       ret = ibv_cmd_reg_dmabuf_mr(pd, offset, length, iova, fd, access, vmr);
+> +       if (ret) {
+> +               free(vmr);
+> +               return NULL;
+> +       }
+> +
+> +       return &vmr->ibv_mr;
+> +}
+> +
+>  static int rxe_dereg_mr(struct verbs_mr *vmr)
 >  {
-> -	struct ht16k33_fbdev *fbdev =
-> -		container_of(work, struct ht16k33_fbdev, work.work);
-> -	struct ht16k33_priv *priv =
-> -		container_of(fbdev, struct ht16k33_priv, fbdev);
-> +	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
-> +						 work.work);
-> +	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-> 
->  	uint8_t *p1, *p2;
->  	int len, pos = 0, first = -1;
-> @@ -462,7 +461,7 @@ static int ht16k33_probe(struct i2c_client *client)
->  	}
->  	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
-> 
-> -	INIT_DELAYED_WORK(&fbdev->work, ht16k33_fb_update);
-> +	INIT_DELAYED_WORK(&priv->work, ht16k33_fb_update);
->  	fbdev->info->fbops = &ht16k33_fb_ops;
->  	fbdev->info->screen_base = (char __iomem *) fbdev->buffer;
->  	fbdev->info->screen_size = HT16K33_FB_SIZE;
-> @@ -502,7 +501,7 @@ static int ht16k33_remove(struct i2c_client *client)
->  	struct ht16k33_priv *priv = i2c_get_clientdata(client);
->  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-> 
-> -	cancel_delayed_work_sync(&fbdev->work);
-> +	cancel_delayed_work_sync(&priv->work);
->  	unregister_framebuffer(fbdev->info);
->  	framebuffer_release(fbdev->info);
->  	free_page((unsigned long) fbdev->buffer);
+>         int ret;
+> @@ -1706,6 +1726,7 @@ static const struct verbs_context_ops rxe_ctx_ops = {
+>         .alloc_pd = rxe_alloc_pd,
+>         .dealloc_pd = rxe_dealloc_pd,
+>         .reg_mr = rxe_reg_mr,
+> +       .reg_dmabuf_mr = rxe_reg_dmabuf_mr,
+>         .dereg_mr = rxe_dereg_mr,
+>         .alloc_mw = rxe_alloc_mw,
+>         .dealloc_mw = rxe_dealloc_mw,
+> --
+> 2.17.1
+>
