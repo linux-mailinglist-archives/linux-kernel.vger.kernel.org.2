@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE1341D6E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193F341D6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349648AbhI3KAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:00:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60486 "EHLO mail.kernel.org"
+        id S1349659AbhI3KAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:00:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349504AbhI3KAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D03615E2;
+        id S1349618AbhI3KAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:00:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B44D617E6;
         Thu, 30 Sep 2021 09:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632995944;
-        bh=EcQMCqZ6hJ0OCg9NAUge8n9Pch6KHPccpjuPzxh7O0A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SW7pjdwR9AIi4zwIetE5qF0As3jiBUbMhywYs+ISjVoaMwW5u2qEM36GWKTFZuxO0
-         45LSAAF6/fNCvcESjyvOvSH6gltuHGUhaA4HdSdklT6gek+d1gotahqzqyWtPKERcH
-         yeb3qu2HlMwVzdHEk4J4jcBhmupA0JnHjYDnKuJZtHozQetqYtTqqDZY/1hV8KNnRO
-         W/JXtNUUaydCaDHxZfxH+lj6qw1uA2JSnUCFnEHVaiSKoma04V4RO1eoDm6x2h0fjI
-         HsaJ7pU5XAKc+sqKPnYhfDjYaIboDxtym8SA2gFIXC6DMo+ImvYHYV6d6vCyGdAIVq
-         kDnFmn9TpIZ3g==
+        bh=pFht2crJ58fEPAb0efcLhPOBTsC8scTXAQlpfMeAVoo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=g3u6vAjExZV/slEx0BljKTqytQT0i1Xc2U1rhiCaKdNtohO5GUJmsDU3AQAifR8Kw
+         wLW6BnhQa+C8Sp2XafdeFqbkhiMOUrvz7Z4a0hHht7jbM2eV/fh00wngRkPESSFBZ2
+         RIZgx+DHPKCQjs1gSHejAjYZSX0Ucv5jI4khI8C+mnaOYU3EoM8sQl0j8VxzHqUuol
+         QD/KorZ0Srs6z3IfdMrR46BdSqNJVeATJ0idVx4Oy3rP7e1JK/4RPzMt37+hEsVScA
+         gaOdfRrxDDgHZHUq04cCMyPL5gDWh6p7Sgjij1M38bPsfDY76IgIuSxNuQfJac6niX
+         WQ9JNWpWA8hlQ==
 Received: by pali.im (Postfix)
-        id 8EBD7E79; Thu, 30 Sep 2021 11:59:01 +0200 (CEST)
+        id AEEF0169E; Thu, 30 Sep 2021 11:59:02 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -38,10 +38,12 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v7 0/6] serial: mvebu-uart: Support for higher baudrates
-Date:   Thu, 30 Sep 2021 11:58:32 +0200
-Message-Id: <20210930095838.28145-1-pali@kernel.org>
+Subject: [PATCH v7 1/6] math64: New DIV_U64_ROUND_CLOSEST helper
+Date:   Thu, 30 Sep 2021 11:58:33 +0200
+Message-Id: <20210930095838.28145-2-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210930095838.28145-1-pali@kernel.org>
+References: <20210930095838.28145-1-pali@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -49,48 +51,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series add support for baudrates higher than 230400 on
-Marvell Armada 37xx boards.
+Provide DIV_U64_ROUND_CLOSEST helper which uses div_u64 to perform
+division rounded to the closest integer using unsigned 64bit
+dividend and unsigned 32bit divisor.
 
-Changes in v7:
-* fixed lint errors in yaml binding file
+Signed-off-by: Pali Rohár <pali@kernel.org>
+---
+ include/linux/math64.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Changes in v6:
-* fixed yaml binding file and dts files
-
-Changes in v5:
-* fixed yaml binding file
-
-Changes in v4:
-* converted armada3700-uart-clock documentation to YAML
-* split documentation changes into two commits:
-  - first which adds clock documentation
-  - second which updates UART documentation
-
-Changes in v3:
-v3 is rebased on top of Linus master branch and all already applied patches
-were dropped. There are no changes in patches itself since v2.
-
-Pali Rohár (6):
-  math64: New DIV_U64_ROUND_CLOSEST helper
-  serial: mvebu-uart: implement UART clock driver for configuring UART
-    base clock
-  dt-bindings: mvebu-uart: document DT bindings for
-    marvell,armada-3700-uart-clock
-  dt-bindings: mvebu-uart: update information about UART clock
-  arm64: dts: marvell: armada-37xx: add device node for UART clock and
-    use it
-  serial: mvebu-uart: implement support for baudrates higher than 230400
-
- .../clock/marvell,armada-3700-uart-clock.yaml |  59 ++
- .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  14 +-
- drivers/tty/serial/Kconfig                    |   1 +
- drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
- include/linux/math64.h                        |  13 +
- 6 files changed, 667 insertions(+), 21 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
-
+diff --git a/include/linux/math64.h b/include/linux/math64.h
+index 2928f03d6d46..a14f40de1dca 100644
+--- a/include/linux/math64.h
++++ b/include/linux/math64.h
+@@ -300,6 +300,19 @@ u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div);
+ #define DIV64_U64_ROUND_CLOSEST(dividend, divisor)	\
+ 	({ u64 _tmp = (divisor); div64_u64((dividend) + _tmp / 2, _tmp); })
+ 
++/*
++ * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
++ * @dividend: unsigned 64bit dividend
++ * @divisor: unsigned 32bit divisor
++ *
++ * Divide unsigned 64bit dividend by unsigned 32bit divisor
++ * and round to closest integer.
++ *
++ * Return: dividend / divisor rounded to nearest integer
++ */
++#define DIV_U64_ROUND_CLOSEST(dividend, divisor)	\
++	({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
++
+ /*
+  * DIV_S64_ROUND_CLOSEST - signed 64bit divide with 32bit divisor rounded to nearest integer
+  * @dividend: signed 64bit dividend
 -- 
 2.20.1
 
