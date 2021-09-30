@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F8441E3C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4355641E3C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348158AbhI3WWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        id S1348472AbhI3WWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347909AbhI3WWk (ORCPT
+        with ESMTP id S1348505AbhI3WWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:22:40 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2B0C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:20:57 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id v10-20020ad4554a000000b0038250b18b6dso11898252qvy.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:20:57 -0700 (PDT)
+        Thu, 30 Sep 2021 18:22:42 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3286AC06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:20:59 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id h10-20020ac8584a000000b002a712bc435fso5360820qth.20
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:20:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=z6dVUuB/preBAw36L3iIbKM/7YhV1FOdhtHcIIfrVic=;
-        b=ULi4LhqTk8zMBfs13R14ymGCfISY4HCN8+7jauN/grgOxCjlJkXf9mhboF8zEufzGI
-         lZadeKsHjAqxwlcdZUh7Bho6EvktousLU/nxqjsCC+XtCx7KGU4nr3Ru2MOz47/nXVbj
-         abjvQ8yEF9TiS4weUFLanEKRxJPnWWniQgdWMlO3/TTZul5gShF7gd+7L2NjQyVdzXv9
-         FAgfCkIIEGJ7hmN0XnkH/xHg1Rlu3h5lMMbE+FKwhP640FF3VGpeY0YyoJuxrVBnXL77
-         s9uvyij4sgcjlX0+CDvQgNakZr198jHnW+WnrrMqW2R7mFCBNOFcLvk5TBErcJ2V3i0H
-         nnsw==
+        bh=ZWOGiAg/qbE1DMbUltGKFl+kd+3yzrZtbswNYmTN0Nw=;
+        b=JA1wjF/eWT7CmE0a0OIWWBxASbq7N8xp0S4DPIFLF9PYDmApZ2F2mdWMioiCdit3Px
+         uBwDISb+JMb/odfZQ8p/0LA7kLjlhbSl3zjZbVzzxSFjEqA1/RYNPIshbvxMxLcmerLT
+         8JpLNwO+vWnBW8SaWPIvBAis6iNvV9QRoP43ISe//q8UGnLmbk7hn9b4dWKG4nCSr7u9
+         Ip6WMEuHV9j7KEklRbq3dSYJG2696/dFF81jSdYWJCLVgCaXfyzYwNuSRON+aMhEuOL1
+         54s3JfxVuWwDjCts9wsJA1JPuHcu6zNZpS6kDdDulu6akDIL1ZbB1BkMgzP3oH/D+wdA
+         KCEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=z6dVUuB/preBAw36L3iIbKM/7YhV1FOdhtHcIIfrVic=;
-        b=caIZRblgIDi74uCUd8ufOipNyKSLIFPf/iCxuzvhSgf51vFXxmVUvM9Xzd0c6wqgoL
-         ZBtxC3Ciamyt7NiLn98vQL96LoIK5UzlExDy85zPB+KRPvUg/EvtlXrDVUSCMo4MLV9W
-         9wRkf9inuzuUgoBetdb52KXHJnWeVpF7jRu+s6fZRVhqKI3O1Q2hBM/fbPocxVBMgwHA
-         aEKaGETXqjdIulXumcVgopbgsc7+EnJ+/pN5iTaCWxT6JiB3YaN++YiB66UCvatksO86
-         usN5CdHhxSrkqLa3ylmSPVpuKYyjFAxh0owayvjGrSzN2iFtcRf3R9mIv1xaH2vurszD
-         6dXw==
-X-Gm-Message-State: AOAM531XfPst27Tj2rS8zBny+Y0wpFzJO/EyMSxNvJuuJRJ27FA7vV3r
-        bq5dV62OTP0AqVqMqVZrksbDFAnNfDpvGg==
-X-Google-Smtp-Source: ABdhPJy6zY9uLdr9/RnVJSpYxSgY0fyfYbNRel8JWj8su/esWhnAwm5ny7U8RYI+5wbtLcsMpyuZIryAivYdGg==
+        bh=ZWOGiAg/qbE1DMbUltGKFl+kd+3yzrZtbswNYmTN0Nw=;
+        b=ECrE5t+K9pd7OJ4U7snLVlkBCXb7/Z5i3hZZ5mX/fRqKGj0X1NV0TTBEidG205kPyp
+         8COG/ntcn96wvr937MmR8lAqTlHSXQNGPFTRnUTilTqfflVKgwQpxoFuYdzYGbGPY1M1
+         gVVs2OznYOZcIN7Gq77xxug4tgVLhEoEowY5wL3s05uk1TMj738FYAgx72O/GKSgy8dM
+         VeGYtg0f9LENlf43xBH5EJlPhr1Gk5d4bxp7qJoFhmFyDOzyCZ+vI7OsqGKvGMeVeani
+         9nZf+Qt+SzW3wZCOYPHlpZzCcwD2pr7MD+gwiSdCiuaPDtpiDg9HXd/gYB87y1lrKHmK
+         u9xg==
+X-Gm-Message-State: AOAM5328fW9RaM/2lCqFFj1JQA1vZE4Em8+wJfCmHoB+WZ1E8kQE2g6z
+        nQylTRWRCZiGa3BNQITgXAWzHVvEHqWSDw==
+X-Google-Smtp-Source: ABdhPJzCFMpymrlXlK+2UISUmsXAl92IYZVh24P5/61JzSVs99JDDUxgA8owqscTMiekwepyo+F0b4nM6euQJw==
 X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:39fa:d88:fb3b:880e])
- (user=dlatypov job=sendgmr) by 2002:ad4:5aa4:: with SMTP id
- u4mr6334829qvg.62.1633040456209; Thu, 30 Sep 2021 15:20:56 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 15:20:46 -0700
+ (user=dlatypov job=sendgmr) by 2002:a0c:aa99:: with SMTP id
+ f25mr7773849qvb.12.1633040458354; Thu, 30 Sep 2021 15:20:58 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 15:20:47 -0700
 In-Reply-To: <20210930222048.1692635-1-dlatypov@google.com>
-Message-Id: <20210930222048.1692635-3-dlatypov@google.com>
+Message-Id: <20210930222048.1692635-4-dlatypov@google.com>
 Mime-Version: 1.0
 References: <20210930222048.1692635-1-dlatypov@google.com>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v4 2/4] kunit: tool: factor exec + parse steps into a function
+Subject: [PATCH v4 3/4] kunit: tool: actually track how long it took to run tests
 From:   Daniel Latypov <dlatypov@google.com>
 To:     brendanhiggins@google.com, davidgow@google.com
 Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
@@ -62,153 +62,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently this code is copy-pasted between the normal "run" subcommand
-and the "exec" subcommand.
+This is a long standing bug in kunit tool.
+Since these files were added, run_kernel() has always yielded lines.
 
-Given we don't have any interest in just executing the tests without
-giving the user any indication what happened (i.e. parsing the output),
-make a function that does both this things and can be reused.
+That means, the call to run_kernel() returns before the kernel finishes
+executing tests, potentially before a single line of output is even
+produced.
 
-This will be useful when we allow more complicated ways of running
-tests, e.g. invoking the kernel multiple times instead of just once,
-etc.
+So code like this
+  time_start = time.time()
+  result = linux.run_kernel(...)
+  time_end = time.time()
 
-We remove input_data from the ParseRequest so the callers don't have to
-pass in a dummy value for this field. Named tuples are also immutable,
-so if they did pass in a dummy, exec_tests() would need to make a copy
-to call parse_tests().
+would only measure the time taken for python to give back the generator
+object.
 
-Removing it also makes KunitParseRequest match the other *Request types,
-as they only contain user arguments/flags, not data.
+From a caller's perspective, the only way to know the kernel has exited
+is for us to consume all the output from the `result` generator object.
+Alternatively, we could change run_kernel() to try and do its own book
+keeping and return the total time, but that doesn't seem worth it.
+
+This change makes us record `time_end` after we're done parsing all the
+output (which should mean we've consumed all of it, or errored out).
+That means we're including in the parsing time as well, but that should
+be quite small, and it's better than claiming it took 0s to run tests.
+
+Let's use this as an example:
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit example
+
+Before:
+Elapsed time: 7.684s total, 0.001s configuring, 4.692s building, 0.000s running
+
+After:
+Elapsed time: 6.283s total, 0.001s configuring, 3.202s building, 3.079s running
 
 Signed-off-by: Daniel Latypov <dlatypov@google.com>
 Reviewed-by: David Gow <davidgow@google.com>
 ---
- tools/testing/kunit/kunit.py | 44 ++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+ tools/testing/kunit/kunit.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 66f67af97971..31eec9f6ecc3 100755
+index 31eec9f6ecc3..5e717594df5b 100755
 --- a/tools/testing/kunit/kunit.py
 +++ b/tools/testing/kunit/kunit.py
-@@ -34,7 +34,7 @@ KunitExecRequest = namedtuple('KunitExecRequest',
-                               ['timeout', 'build_dir', 'alltests',
-                                'filter_glob', 'kernel_args'])
- KunitParseRequest = namedtuple('KunitParseRequest',
--			       ['raw_output', 'input_data', 'build_dir', 'json'])
-+			       ['raw_output', 'build_dir', 'json'])
- KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
- 					   'build_dir', 'alltests', 'filter_glob',
- 					   'kernel_args', 'json', 'make_options'])
-@@ -91,23 +91,25 @@ def build_tests(linux: kunit_kernel.LinuxSourceTree,
- 			   'built kernel successfully',
- 			   build_end - build_start)
- 
--def exec_tests(linux: kunit_kernel.LinuxSourceTree,
--	       request: KunitExecRequest) -> KunitResult:
-+def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
-+	       parse_request: KunitParseRequest) -> KunitResult:
- 	kunit_parser.print_with_timestamp('Starting KUnit Kernel ...')
- 	test_start = time.time()
--	result = linux.run_kernel(
-+	run_result = linux.run_kernel(
- 		args=request.kernel_args,
- 		timeout=None if request.alltests else request.timeout,
--                filter_glob=request.filter_glob,
-+		filter_glob=request.filter_glob,
+@@ -101,12 +101,14 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
+ 		filter_glob=request.filter_glob,
  		build_dir=request.build_dir)
  
- 	test_end = time.time()
-+	exec_time = test_end - test_start
- 
--	return KunitResult(KunitStatus.SUCCESS,
--			   result,
--			   test_end - test_start)
-+	# Named tuples are immutable, so we rebuild them here manually
 +	result = parse_tests(parse_request, run_result)
 +
-+	return KunitResult(status=result.status, result=result.result, elapsed_time=exec_time)
++	# run_kernel() doesn't block on the kernel exiting.
++	# That only happens after we get the last line of output from `run_result`.
++	# So exec_time here actually contains parsing + execution time, which is fine.
+ 	test_end = time.time()
+ 	exec_time = test_end - test_start
  
--def parse_tests(request: KunitParseRequest) -> KunitResult:
-+def parse_tests(request: KunitParseRequest, input_data: Iterable[str]) -> KunitResult:
- 	parse_start = time.time()
- 
- 	test_result = kunit_parser.TestResult(kunit_parser.TestStatus.SUCCESS,
-@@ -115,7 +117,7 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
- 					      'Tests not Parsed.')
- 
- 	if request.raw_output:
--		output: Iterable[str] = request.input_data
-+		output: Iterable[str] = input_data
- 		if request.raw_output == 'all':
- 			pass
- 		elif request.raw_output == 'kunit':
-@@ -126,7 +128,7 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
- 			print(line.rstrip())
- 
- 	else:
--		test_result = kunit_parser.parse_run_tests(request.input_data)
-+		test_result = kunit_parser.parse_run_tests(input_data)
- 	parse_end = time.time()
- 
- 	if request.json:
-@@ -165,15 +167,11 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 	exec_request = KunitExecRequest(request.timeout, request.build_dir,
- 				 request.alltests, request.filter_glob,
- 				 request.kernel_args)
--	exec_result = exec_tests(linux, exec_request)
--	if exec_result.status != KunitStatus.SUCCESS:
--		return exec_result
+-	# Named tuples are immutable, so we rebuild them here manually
+-	result = parse_tests(parse_request, run_result)
 -
- 	parse_request = KunitParseRequest(request.raw_output,
--					  exec_result.result,
- 					  request.build_dir,
- 					  request.json)
--	parse_result = parse_tests(parse_request)
-+
-+	exec_result = exec_tests(linux, exec_request, parse_request)
+ 	return KunitResult(status=result.status, result=result.result, elapsed_time=exec_time)
  
- 	run_end = time.time()
- 
-@@ -184,7 +182,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 				config_result.elapsed_time,
- 				build_result.elapsed_time,
- 				exec_result.elapsed_time))
--	return parse_result
-+	return exec_result
- 
- def add_common_opts(parser) -> None:
- 	parser.add_argument('--build_dir',
-@@ -381,15 +379,12 @@ def main(argv, linux=None):
- 						cli_args.alltests,
- 						cli_args.filter_glob,
- 						cli_args.kernel_args)
--		exec_result = exec_tests(linux, exec_request)
- 		parse_request = KunitParseRequest(cli_args.raw_output,
--						  exec_result.result,
- 						  cli_args.build_dir,
- 						  cli_args.json)
--		result = parse_tests(parse_request)
-+		result = exec_tests(linux, exec_request, parse_request)
- 		kunit_parser.print_with_timestamp((
--			'Elapsed time: %.3fs\n') % (
--				exec_result.elapsed_time))
-+			'Elapsed time: %.3fs\n') % (result.elapsed_time))
- 		if result.status != KunitStatus.SUCCESS:
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'parse':
-@@ -399,10 +394,9 @@ def main(argv, linux=None):
- 			with open(cli_args.file, 'r') as f:
- 				kunit_output = f.read().splitlines()
- 		request = KunitParseRequest(cli_args.raw_output,
--					    kunit_output,
- 					    None,
- 					    cli_args.json)
--		result = parse_tests(request)
-+		result = parse_tests(request, kunit_output)
- 		if result.status != KunitStatus.SUCCESS:
- 			sys.exit(1)
- 	else:
+ def parse_tests(request: KunitParseRequest, input_data: Iterable[str]) -> KunitResult:
 -- 
 2.33.0.800.g4c38ced690-goog
 
