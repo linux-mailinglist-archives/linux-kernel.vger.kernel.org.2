@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850FA41D3C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1CD41D3C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348441AbhI3G77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348434AbhI3G74 (ORCPT
+        id S1348447AbhI3HAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:00:23 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:41812 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231938AbhI3HAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:59:56 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5E9C06176A
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:58:13 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id z24so21005813lfu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AM58cnJzWheq7pN6e6L+Di8EyxwT/TZuwdLAOFe5lTM=;
-        b=zUA02mDiD7ySh4VXdtJEkfF+YdiTY26SnB/zKlU6AV6H7K06hWuMhIkqyICSRgwmLh
-         mMJqj75qYMRjZUryj8QznGOt1/uDr4q20FUyRlmfjvyWGDa9fNh1/KqmeTmllPC6LWsE
-         x4UA5ycScWSfPjOhkCW04pIaQRZYoSk1kxBDhV5iIfdgOPXgQIurppjGXWQBQKV44tdK
-         e3xYCw8TWtFK4EQHVWDRiAj+PrQUHjPo23h+iyjT1HwajPzvid5J/T6xDSKDma7HJFnH
-         Cj5iu6tWUHc/wClUvPhMJJqFlksmjgvu0yQ5HqUPJilAeIxDFCaEgOlTE9y+38eHL9g4
-         81Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AM58cnJzWheq7pN6e6L+Di8EyxwT/TZuwdLAOFe5lTM=;
-        b=0tKq9QDMnmQdIYcWR/Bcr+fg52U/jZCbBjy1CaXjzmGpUOLYgjRUph2c7rTHG7g/4i
-         kPPQ4+BS+AzMjoBHud5fGYDj3ZyM9fwCvOEF8j5xBWjG4x/+w3KxUyvEiyFcSgxIQZyQ
-         ywZ71y7VDiX8OonIqXNVLFHzCZ0VZ5hKf85PxIhaCPxTL1WmEc/BfTxtx2EMv1ib7BMT
-         CKPrxi4IP1PyZE4xfhT9CfesGAvWwExWKRD8ppGNPzcAX1boKwe5FdoJJl7H2pxFphFk
-         BvGUenTLGqEQLiTyBYGyrkGhGk6vYCgUfstNNQr+38hHZ9BZgKzYnTp1u78rdbF2YaNo
-         8PDg==
-X-Gm-Message-State: AOAM532kro/nxyjRBkVCkau1Qgl9ySmOMi1x9X6JWZ4oZPGMrCgfu4pg
-        u/TZ1bdhONrKszdWRHN/SBzhMHEkZeKJGHTVOOI80A==
-X-Google-Smtp-Source: ABdhPJyBqEgHtMpNYqgONgpO8bSsYcGCUmFFaeLYGEyFgNwtKcwbfga4y3No6ih2UN25mIxw8sdz+lK6j2VMsBbQMOg=
-X-Received: by 2002:a19:f507:: with SMTP id j7mr4119788lfb.645.1632985091555;
- Wed, 29 Sep 2021 23:58:11 -0700 (PDT)
+        Thu, 30 Sep 2021 03:00:22 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 6EDA744A024E;
+        Thu, 30 Sep 2021 08:58:38 +0200 (CEST)
 MIME-Version: 1.0
-References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
- <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
-In-Reply-To: <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Thu, 30 Sep 2021 15:58:00 +0900
-Message-ID: <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 30 Sep 2021 08:58:38 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 15/19] auxdisplay: ht16k33: Extract
+ ht16k33_brightness_set()
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210914143835.511051-16-geert@linux-m68k.org>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
+ <20210914143835.511051-16-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <39669058fbcac7d5612066e4f8146956@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyjzyj2000@=
-gmail.com>:
->
-> On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
-> >
-> > Implement a new provider method for dma-buf base memory registration.
-> >
-> > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
-> > ---
-> >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
-> >
-> > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-> > index 3c3ea8bb..84e00e60 100644
-> > --- a/providers/rxe/rxe.c
-> > +++ b/providers/rxe/rxe.c
-> > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd=
-, void *addr, size_t length,
-> >         return &vmr->ibv_mr;
-> >  }
-> >
-> > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t of=
-fset,
-> > +                                       size_t length, uint64_t iova, i=
-nt fd,
-> > +                                       int access)
-> > +{
-> > +       struct verbs_mr *vmr;
-> > +       int ret;
-> > +
-> > +       vmr =3D malloc(sizeof(*vmr));
-> > +       if (!vmr)
-> > +               return NULL;
-> > +
->
-> Do we need to set vmr to zero like the following?
->
-> memset(vmr, 0, sizeof(*vmr));
->
-> Zhu Yanjun
-Thank you for your quick response.
+Reviewed-by: Robin van der Gracht <robin@protonic.nl>
 
-I think it is better to clear the vmr. Actually the mlx5 driver allocates
-the vmr using calloc().
+On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+> Extract brightness handling into a helper function, so it can be called
+> from multiple places.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v6:
+>   - No changes,
+> 
+> v5:
+>   - No changes,
+> 
+> v4:
+>   - No changes,
+> 
+> v3:
+>   - Use "err" instead of "error" to be consistent with existing driver
+>     naming style,
+> 
+> v2:
+>   - No changes.
+> ---
+>  drivers/auxdisplay/ht16k33.c | 25 +++++++++++++++++++------
+>  1 file changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index c7a3a0e1fbb5d03e..928ac9722c142855 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -113,6 +113,22 @@ static int ht16k33_display_off(struct ht16k33_priv 
+> *priv)
+>  	return i2c_smbus_write_byte(priv->client, REG_DISPLAY_SETUP);
+>  }
+> 
+> +static int ht16k33_brightness_set(struct ht16k33_priv *priv,
+> +				  unsigned int brightness)
+> +{
+> +	int err;
+> +
+> +	if (brightness == 0)
+> +		return ht16k33_display_off(priv);
+> +
+> +	err = ht16k33_display_on(priv);
+> +	if (err)
+> +		return err;
+> +
+> +	return i2c_smbus_write_byte(priv->client,
+> +				    REG_BRIGHTNESS | (brightness - 1));
+> +}
+> +
+>  static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+>  {
+>  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> @@ -197,13 +213,10 @@ static int ht16k33_bl_update_status(struct 
+> backlight_device *bl)
+> 
+>  	if (bl->props.power != FB_BLANK_UNBLANK ||
+>  	    bl->props.fb_blank != FB_BLANK_UNBLANK ||
+> -	    bl->props.state & BL_CORE_FBBLANK || brightness == 0) {
+> -		return ht16k33_display_off(priv);
+> -	}
+> +	    bl->props.state & BL_CORE_FBBLANK)
+> +		brightness = 0;
+> 
+> -	ht16k33_display_on(priv);
+> -	return i2c_smbus_write_byte(priv->client,
+> -				    REG_BRIGHTNESS | (brightness - 1));
+> +	return ht16k33_brightness_set(priv, brightness);
+>  }
+> 
+>  static int ht16k33_bl_check_fb(struct backlight_device *bl, struct fb_info 
+> *fi)
 
-In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the malloc
-and not clear the vmr. I think It has to be fixed too. Should I make
-another patch to fix this problem?
+Met vriendelijke groet,
+Robin van der Gracht
 
-Thanks a lot.
-Shunsuke
-
-~
+-- 
+Protonic Holland
+Factorij 36
+1689AL Zwaag
++31 (0)229 212928
+https://www.protonic.nl
