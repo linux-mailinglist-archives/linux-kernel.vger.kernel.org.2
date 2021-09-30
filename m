@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE79541E241
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5D841E246
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343554AbhI3TbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhI3TbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:31:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78994C06176A;
-        Thu, 30 Sep 2021 12:29:35 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633030173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AIdCSYbm8ik7U+N6WK8d0kVM6bR1OsN7ZyYesBKBQCM=;
-        b=LZSN5dm7wppSXaxVXLB/LjNGJetLP/IT5oWLaUEObCWihxjRDlRB9NJPIWatWaMwqQPx7W
-        jw3rD5dj736d4lWN3WDUDiWguPq5kEfQUJIA3z8i+vUs+KkalFhtATH8fB+e7s1RCll0ZW
-        KGuRUrl4h+GHw1eszR99Vihp01mPzvQuuyYaU/NJWoc6tv9sq8tibPBmrFKXTF20EXWSB3
-        3cfUmk1RwpApIHHRclMAz+6gPLcRF0jit8LOn6QZLcnmBYZ17bXcwtIdI7DaGIXd9NQSpF
-        m/yLUIV5hDHoWLvh7rEpd8env6CUg5v6LPHDYUbKEJPqF1c4flLqUYyRIaTA2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633030173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AIdCSYbm8ik7U+N6WK8d0kVM6bR1OsN7ZyYesBKBQCM=;
-        b=rJPlIqbkUDGzGH6aIb23aL/mCDYZZ7u09DaDe2jY8HBzsD/KRAYer52sgY3urDo5GHIpt/
-        axkXkL5JtfpUXjDA==
-To:     Andy Lutomirski <luto@kernel.org>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        id S1344106AbhI3Tc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:32:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14228 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhI3TcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:32:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="205420300"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="205420300"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:30:25 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="438154658"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.252.134.229]) ([10.252.134.229])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:30:24 -0700
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
-In-Reply-To: <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-12-sohil.mehta@intel.com>
- <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
- <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
- <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com>
-Date:   Thu, 30 Sep 2021 21:29:32 +0200
-Message-ID: <877dex7tgj.ffs@tglx>
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065953-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
+ <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
+ <YVXWaF73gcrlvpnf@kroah.com>
+ <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <291d5e03-ccaa-3a73-cdcd-66cbe80fede1@linux.intel.com>
+Date:   Thu, 30 Sep 2021 12:30:23 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30 2021 at 11:08, Andy Lutomirski wrote:
-> On Tue, Sep 28, 2021, at 9:56 PM, Sohil Mehta wrote:
-> I think we have three choices:
+
+On 9/30/2021 12:04 PM, Kuppuswamy, Sathyanarayanan wrote:
 >
-> Use a fancy wrapper around SENDUIPI.  This is probably a bad idea.
 >
-> Treat the NV-2 as a real interrupt and honor affinity settings.  This
-> will be annoying and slow, I think, if it's even workable at all.
+> On 9/30/21 8:23 AM, Greg Kroah-Hartman wrote:
+>> On Thu, Sep 30, 2021 at 08:18:18AM -0700, Kuppuswamy, Sathyanarayanan 
+>> wrote:
+>>>
+>>>
+>>> On 9/30/21 6:36 AM, Dan Williams wrote:
+>>>>> And in particular, not all virtio drivers are hardened -
+>>>>> I think at this point blk and scsi drivers have been hardened - so
+>>>>> treating them all the same looks wrong.
+>>>> My understanding was that they have been audited, Sathya?
+>>>
+>>> Yes, AFAIK, it has been audited. Andi also submitted some patches
+>>> related to it. Andi, can you confirm.
+>>
+>> What is the official definition of "audited"?
+>
+>
+> In our case (Confidential Computing platform), the host is an un-trusted
+> entity. So any interaction with host from the drivers will have to be
+> protected against the possible attack from the host. For example, if we
+> are accessing a memory based on index value received from host, we have
+> to make sure it does not lead to out of bound access or when sharing the
+> memory with the host, we need to make sure only the required region is
+> shared with the host and the memory is un-shared after use properly.
+>
+> Elena can share more details, but it was achieved with static analysis
+> and fuzzing. Here is a presentation she is sharing about the work at the
+> Linux Security Summit:
+> https://static.sched.com/hosted_files/lssna2021/b6/LSS-HardeningLinuxGuestForCCC.pdf 
+>
+>
+> Andi, can talk more about the specific driver changes that came out of 
+> this
+> effort.
 
-We can make it a real interrupt in form of a per CPU interrupt, but
-affinity settings are not really feasible because the affinity is in the
-UPID.ndst field. So, yes we can target it to some CPU, but that's racy.
+The original virtio was quite easy to exploit because it put its free 
+list into the shared ring buffer.
 
-> Handle this case with faults instead of interrupts.  We could set a
-> reserved bit in UPID so that SENDUIPI results in #GP, decode it, and
-> process it.  This puts the onus on the actual task causing trouble,
-> which is nice, and it lets us find the UPID and target directly
-> instead of walking all of them.  I don't know how well it would play
-> with hypothetical future hardware-initiated uintrs, though.
+We had a patchkit to harden virtio originally, but after some discussion 
+we instead switched to Jason Wang's patchkit to move the virtio metadata 
+into protected memory, which fixed near all of the issues. These patches 
+have been already merged. There is one additional patch to limit the 
+virtio modes.
 
-I thought about that as well and dismissed it due to the hardware
-initiated ones but thinking more about it, those need some translation
-unit (e.g. irq remapping) anyway, so it might be doable to catch those
-as well. So we could just ignore them for now and go for the #GP trick
-and deal with the device initiated ones later when they come around :)
+There's an ongoing effort to audit (mostly finished I believe) and fuzz 
+the three virtio drivers (fuzzing is still ongoing).
 
-But even with that we still need to keep track of the armed ones per CPU
-so we can handle CPU hotunplug correctly. Sigh...
+There was also a range of changes outside virtio for code outside the 
+device model. Most of it was just disabling it though.
 
-Thanks,
-
-        tglx
-
+-Andi
 
