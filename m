@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C313E41DD7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738F441DD84
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343869AbhI3Pcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55980 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233612AbhI3Pcw (ORCPT
+        id S1344180AbhI3Pd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245317AbhI3Pd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:32:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633015869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yt/zlKqP93kTWPAGGVE5ziZ1VrokRFvfUstwd3NI9zg=;
-        b=ZxP7Y9jL1oB9Pz/ZL/FiHIRvKN+0K58Yl6kOPa2Pj8udhHbPvIyWefr0pMtZ65IFuD92Jj
-        WSzN30vrOvEz2+Uy04xksKuwhVqQOwUCO1LHzpJeAgqEd00onyuj1dU5HbXufdJ/JA90Cd
-        VgfdoYsi3mjAH6fNXcOROewuDBl7Lag=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-MFKAeSR1MhGImMNrtei-zA-1; Thu, 30 Sep 2021 11:31:07 -0400
-X-MC-Unique: MFKAeSR1MhGImMNrtei-zA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6595CDF8A0;
-        Thu, 30 Sep 2021 15:31:06 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B2AA5BAE5;
-        Thu, 30 Sep 2021 15:31:05 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 16:30:59 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, oren@nvidia.com,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/1] driver core: use NUMA_NO_NODE during
- device_initialize
-Message-ID: <YVXYMzRpVTCu9AyV@stefanha-x1.localdomain>
-References: <20210930142556.9999-1-mgurtovoy@nvidia.com>
+        Thu, 30 Sep 2021 11:33:28 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA0AC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:31:45 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id h132so3048718vke.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MMQZgqn6m+291rbD6FB65yGqtk2LWYklc58PG7BawH4=;
+        b=WeP91qmSgIXo1a/NFgp0fBJwwk/RQsIG6P3TGJEJBiYShkWapc/jobvYucjLJrBsuA
+         h2EV+zHcjy+Soh6Mfth9AW7mPPHQ+dx6X/FIFhiwhByHduZCcwZlwRyHztCr0gRmYYCR
+         Jn6XleEH08+3mv3q5L/ISO8/LIcjqsd6NXmpM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MMQZgqn6m+291rbD6FB65yGqtk2LWYklc58PG7BawH4=;
+        b=Gs9Etsb6rkZsw9I3o1yGEn8e5GfW5aaqfBsAfZYa6bjXvn1Ge2V9Nexo0ePqRhp32k
+         81UU2blcOvo/M6wqIAkvAJLcq5u3UwgDBqUDokSwUIJ4DfOJdTpObvqIkopUI7GJ7+cF
+         Kl+tE8uyZ/OQQxpfCR79HKJldhZV6HzGjLhxvx9gcaJdOnu/GznpZXKaN2GY7n0TXgcP
+         gQLC+u4KA8efTXAl+gtuoCJ7BdWo4ch8g4kjJCdI9D7LhKna9CcE5OoXYyR2/c6Vkobi
+         ky3T1fqwb1nPAhhziZuqNHQdzdW9GW/Rn3LS8DHUWkrZSQthku0nMG7CrKGq+/FHeABw
+         g3EQ==
+X-Gm-Message-State: AOAM532VjlWwbTYT9E0fMweMQpJ2y9Vt/HEfdU9wIIZd85aQ2goTipyP
+        1PvJseSXu+kokFrc+UjKh9EmoW/IwibI0JbBrsUtEg==
+X-Google-Smtp-Source: ABdhPJz5wnisH1ZAkrMyUoL5nwJGU72PDXvYsb979G+ivugO/mU+8liTpY1eHMQRJC1nHk6kOkqZL8h0N58DRETHcBY=
+X-Received: by 2002:a1f:f203:: with SMTP id q3mr3893652vkh.1.1633015904635;
+ Thu, 30 Sep 2021 08:31:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TC6Mln2Z2suHGcTr"
-Content-Disposition: inline
-In-Reply-To: <20210930142556.9999-1-mgurtovoy@nvidia.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210930124950.3069638-1-daniel@0x0f.com> <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
+In-Reply-To: <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Fri, 1 Oct 2021 00:31:34 +0900
+Message-ID: <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
+Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
 
---TC6Mln2Z2suHGcTr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 1 Oct 2021 at 00:24, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> And incorrect fix. See my patches regarding to the topic
+> (`git log --grep ACPI_PTR`) and do accordingly, i.e. drop
+> ACPI_PTR() for good.
 
-On Thu, Sep 30, 2021 at 05:25:56PM +0300, Max Gurtovoy wrote:
-> Don't use (-1) constant for setting initial device node. Instead, use
-> the generic NUMA_NO_NODE definition to indicate that "no node id
-> specified".
->=20
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> ---
->  drivers/base/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Something like 349bff48ae0f5f8aa2075d0bdc2091a30bd634f6?
 
-Thanks!
+Doesn't this mean the ACPI table ends up in kernels that will never use ACPI?
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Cheers,
 
---TC6Mln2Z2suHGcTr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmFV2DMACgkQnKSrs4Gr
-c8iA3Af8DLUJv7Sz46AwfS2FQMmVB+UV5KwvOwRxFTBdeG4h+ol4hc5W6VSeXIRP
-NLPasJQAciJdzVPnKTnQwtZ6txeKgqxUhBlfneiHk3jw2nfnGSac2IGkP35paH1r
-J7Nhif//6Oun8CEK9pIJ7vVwucun/W6varooxgwBdx/oUnncDnIvC71I8O/KXbC3
-yhf+AqrkFMK40r/y0Bp3Gu9aqm6iugw7ze+vJT2cxDu2mgP9CDtGFJDMmPwlKbhV
-4GBmyiLlMMIXDNwcJO17BzVGeRVJdbGATOyjYGFXEX3Awpa5v4SzLZSPrRYKeNc4
-HEriHC6DzMIdzA4xsoSd33ZHq0ZyXg==
-=J/SX
------END PGP SIGNATURE-----
-
---TC6Mln2Z2suHGcTr--
-
+Daniel
