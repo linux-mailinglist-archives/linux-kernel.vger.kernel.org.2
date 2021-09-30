@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3433341DBCD
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0A041DBCE
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351640AbhI3OC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:02:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41130 "EHLO vps0.lunn.ch"
+        id S1351674AbhI3OCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:02:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:54706 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351630AbhI3OCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:02:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=GqfIQMoOfvYuD6pFZH47BEA82MZMbwCc2wxffNr631k=; b=DqG3RCLA4PmCZb8wRSE56KUqb5
-        GpG5tzQjKiJKwKG+NmKP0uD/PpN3TIHtYdxXZy7TSoK0GfZotKPiPWXGj6AVRty+1jgm1fb0/GHXL
-        YETdopjEfvdjghnxucTDs9RdBHikKwa4aBrdX7HGl7EZZBAGybSD0k2sC2+1NdvAu7WQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mVwbx-008xOn-DF; Thu, 30 Sep 2021 16:00:33 +0200
-Date:   Thu, 30 Sep 2021 16:00:33 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YVXDAQc6RMvDjjFu@lunn.ch>
-References: <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
- <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch>
- <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch>
- <20210831231804.zozyenear45ljemd@skbuf>
- <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
- <20210930134343.ztq3hgianm34dvqb@skbuf>
+        id S1351650AbhI3OCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:02:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6049101E;
+        Thu, 30 Sep 2021 07:01:02 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30B4B3F70D;
+        Thu, 30 Sep 2021 07:01:01 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 15:00:59 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 2/3] arm64: entry: refactor EL1 interrupt entry logic
+Message-ID: <20210930140058.GD18258@lakrids.cambridge.arm.com>
+References: <20210930131708.35328-1-kernelfans@gmail.com>
+ <20210930131708.35328-3-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930134343.ztq3hgianm34dvqb@skbuf>
+In-Reply-To: <20210930131708.35328-3-kernelfans@gmail.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Andrew is testing with arch/arm/boot/dts/vf610-zii-dev-rev-b.dts.
+On Thu, Sep 30, 2021 at 09:17:07PM +0800, Pingfan Liu wrote:
+> From: Mark Rutland <mark.rutland@arm.com>
 > 
-> Graphically it looks like this:
-
-Nice ASCII art :-)
-
-This shows the flow of Ethernet frames thought the switch
-cluster. What is missing, and causing fw_devlink problems is the MDIO
-bus master for the PHYs, and the interrupt control where PHY
-interrupts are stored, and the linking from the PHY to the interrupt
-controller. Physically all these parts are inside the Ethernet switch
-package. But Linux models them as separate blocks. This is because in
-the general case, they are all discrete blocks. You have a MAC chip,
-and a PHY chip, and the PHY interrupt output it connected to a SoC
-GPIO.
-
+> Currently we distinguish IRQ and definitely-PNMI at entry/exit time
+> via the enter_el1_irq_or_nmi() and enter_el1_irq_or_nmi() helpers. In
+> subsequent patches we'll need to handle the two cases more distinctly
+> in the body of the exception handler.
 > 
->  +-----------------------------+
->  |          VF610 SoC          |
->  |          +--------+         |
->  |          |  fec1  |         |
->  +----------+--------+---------+
->                 | DSA master
->                 |
->                 | ethernet = <&fec1>;
->  +--------+----------+---------------------------+
->  |        |  port@6  |                           |
->  |        +----------+                           |
->  |        | CPU port |     dsa,member = <0 0>;   |
->  |        +----------+      -> tree 0, switch 0  |
->  |        |   cpu    |                           |
->  |        +----------+                           |
->  |                                               |
->  |            switch0                            |
->  |                                               |
->  +-----------+-----------+-----------+-----------+
+> To make this possible, this patch refactors el1_interrupt to be a
+> top-level dispatcher to separate handlers for the IRQ and PNMI cases,
+> removing the need for the enter_el1_irq_or_nmi() and
+> exit_el1_irq_or_nmi() helpers.
+> 
+> Note that since arm64_enter_nmi() calls __nmi_enter(), which
+> increments the preemt_count, we could never preempt when handling a
+> PNMI. We now only check for preemption in the IRQ case, which makes
+> this clearer.
+> 
+> There should be no functional change as a result of this patch.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joey Gouly <joey.gouly@arm.com>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Julien Thierry <julien.thierry@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
+> Cc: Pingfan Liu <kernelfans@gmail.com>
+> Cc: linux-kernel@vger.kernel.org
+> To: linux-arm-kernel@lists.infradead.org
 
-Inside the block above, is the interrupt controller and the MDIO bus
-master.
+As a heads-up, you need to add your Signed-off-by tag when you post
+patches from other people, even if you make no changes. See:
 
+https://www.kernel.org/doc/html/v5.14/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
 
->  |   port@0  |   port@1  |   port@2  |   port@5  |
->  +-----------+-----------+-----------+-----------+
->  |switch0phy0|switch0phy1|switch0phy2|   no PHY  |
->  +-----------+-----------+-----------+-----------+
+Other than that, this looks fine to me.
 
-The control path for these PHYs is over the MDIO bus. They are probed
-via the control path bus. These PHYs also have an interrupt output,
-which is wired to the interrupt controller above.
+Mark.
 
-
->  | user port | user port | user port | DSA port  |
->  +-----------+-----------+-----------+-----------+
->  |    lan0   |    lan1   |    lan2   |    dsa    |
->  +-----------+-----------+-----------+-----------+
-
-   Andrew
+> ---
+>  arch/arm64/kernel/entry-common.c | 44 ++++++++++++++++----------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 32f9796c4ffe..5f1473319fb0 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -219,22 +219,6 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
+>  		lockdep_hardirqs_on(CALLER_ADDR0);
+>  }
+>  
+> -static void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs)
+> -{
+> -	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
+> -		arm64_enter_nmi(regs);
+> -	else
+> -		enter_from_kernel_mode(regs);
+> -}
+> -
+> -static void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs)
+> -{
+> -	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
+> -		arm64_exit_nmi(regs);
+> -	else
+> -		exit_to_kernel_mode(regs);
+> -}
+> -
+>  static void __sched arm64_preempt_schedule_irq(void)
+>  {
+>  	lockdep_assert_irqs_disabled();
+> @@ -432,14 +416,19 @@ asmlinkage void noinstr el1h_64_sync_handler(struct pt_regs *regs)
+>  	}
+>  }
+>  
+> -static void noinstr el1_interrupt(struct pt_regs *regs,
+> -				  void (*handler)(struct pt_regs *))
+> +static __always_inline void
+> +__el1_pnmi(struct pt_regs *regs, void (*handler)(struct pt_regs *))
+>  {
+> -	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
+> -
+> -	enter_el1_irq_or_nmi(regs);
+> +	arm64_enter_nmi(regs);
+>  	do_interrupt_handler(regs, handler);
+> +	arm64_exit_nmi(regs);
+> +}
+>  
+> +static __always_inline void
+> +__el1_interrupt(struct pt_regs *regs, void (*handler)(struct pt_regs *))
+> +{
+> +	enter_from_kernel_mode(regs);
+> +	do_interrupt_handler(regs, handler);
+>  	/*
+>  	 * Note: thread_info::preempt_count includes both thread_info::count
+>  	 * and thread_info::need_resched, and is not equivalent to
+> @@ -448,8 +437,19 @@ static void noinstr el1_interrupt(struct pt_regs *regs,
+>  	if (IS_ENABLED(CONFIG_PREEMPTION) &&
+>  	    READ_ONCE(current_thread_info()->preempt_count) == 0)
+>  		arm64_preempt_schedule_irq();
+> +	exit_to_kernel_mode(regs);
+> +}
+> +
+> +static void noinstr el1_interrupt(struct pt_regs *regs,
+> +				  void (*handler)(struct pt_regs *))
+> +{
+> +	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
+> +
+> +	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
+> +		__el1_pnmi(regs, handler);
+> +	else
+> +		__el1_interrupt(regs, handler);
+>  
+> -	exit_el1_irq_or_nmi(regs);
+>  }
+>  
+>  asmlinkage void noinstr el1h_64_irq_handler(struct pt_regs *regs)
+> -- 
+> 2.31.1
+> 
