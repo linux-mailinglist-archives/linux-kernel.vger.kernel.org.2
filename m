@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF1741DAF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F28741DB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351403AbhI3N2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349521AbhI3N2i (ORCPT
+        id S1351377AbhI3NaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:30:06 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:47471 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351362AbhI3NaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:28:38 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA8FC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ez29o44AkkIcsIcpdmWWUPUZ2+d7FSmDVQK2AMmcXLw=; b=S3LmsDuYnxS+tZIRX1bRzGoYAx
-        TMAcwU5HDThAlYAiW38Iwwc+c9wCb9YvNQ9kUB+B7AQJnJIKv3JDFNiFa4bxJkHihaxYyTt6JUJeE
-        uW1QnMPsTRhI0QwFShZiYASVmv9MBgg4iDulUbh0c5P7WOChH8vRcJ+l4iNH/GewxTdw9Nmxc8pjf
-        4An8/V8zOpcFYio2uEO146TPDieUhml7LGcIHO84e/dQ2Yvk+c6+eZ4aVUuYLWbRSk0/v7M2JGwln
-        hzu6ShUdFwp7GLv4yNOMpjC3M135qenGzQ4ijSuC9CapdzVBqi4v+AYqVQ/O+W9sou5cNUmwJ35JB
-        W92nW5Dw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVw5E-006xfE-5P; Thu, 30 Sep 2021 13:26:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8387D300268;
-        Thu, 30 Sep 2021 15:26:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 486822C907DB9; Thu, 30 Sep 2021 15:26:42 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 15:26:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        arjan@linux.intel.com, srikar@linux.vnet.ibm.com,
-        maddy@linux.vnet.ibm.com, kjain@linux.ibm.com
-Subject: Re: [RFC] hrtimer: Fix the hrtimer_forward to use correct delta for
- expiry time
-Message-ID: <YVW7Eob25KYhooMN@hirez.programming.kicks-ass.net>
-References: <20210930125219.1658-1-atrajeev@linux.vnet.ibm.com>
+        Thu, 30 Sep 2021 09:30:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633008503; x=1664544503;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=WGH/7oHZ2lCij6lC7BGo1OaMpElgiKRYeW6ANkvGzVg=;
+  b=Vkp8WC2ioKQ37h6r35xan0z1zl8v+ZvtJdP0FEDpq/6vwp7gB/inMf2x
+   z9q/34ncvYn42lfADOZC7ZgAc5r/3TAZ/jyX/BIS3zX/bSkFvptCWz9uE
+   ui2M6BmE5QA2XGNGlH3JaN86ASST6aDcWo1X+jlPJoOo2z18VRlphyaJt
+   Chn/Z8dD2+iyQ8YX1yMG1Lt/MIHLh/ptSvlULB+Gm0aRODjJWrrbzIRW2
+   MybCrmTLPdcxoG+FaZsoasNMO7TMSpgvrhh8oavuUdP4G7jTNKhBjUMfg
+   r+shCFZmtG8MwUEKFm+Zbb4Aqg6i1QeScFQhFBHLdskZDs3EfsROep94A
+   A==;
+IronPort-SDR: /RNOiQNmjxpxi+yLj/icS2/tINUabZwNWoMF7i4ELTYDNGgSIuAqUYKAFLMystikET5LQ+oV3o
+ +kpsXZEYJJvuVW7mxEV5c3KGACBZXoREGvjPhLAVdC5Y/FhVKj9NqsHapJ67bd+BAffWHlt2T4
+ eyb5vEpmLU4znwZ0EY2B/bZq/PuzHKL7YkvYF2lEpGaVy5IapzFa8fOzFQrw7eJ+x3DGmVnsTx
+ an8f/XButtGKNVcu+Ast32q1RkxQirm+LL+k9V+tPq//BqKhiZJkNXHncys2QNMWGS9An1G+fd
+ kE5Ja8bXxBuy+ykI+rfIkD8T
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="137988284"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 06:28:22 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 30 Sep 2021 06:28:21 -0700
+Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 06:28:17 -0700
+From:   Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+To:     <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <Eugen.Hristev@microchip.com>, <Kavyasree.Kotagiri@microchip.com>,
+        <Manohar.Puri@microchip.com>
+Subject: [PATCH v7 0/3] Add driver for lan966x Generic Clock Controller
+Date:   Thu, 30 Sep 2021 18:58:12 +0530
+Message-ID: <20210930132815.15353-1-kavyasree.kotagiri@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930125219.1658-1-atrajeev@linux.vnet.ibm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 06:22:19PM +0530, Athira Rajeev wrote:
-> Hrtimer uses "hrtimer_forward" function to forward the timer
-> expiry. This function takes the "time" from when to forward
-> and how much "interval" to forward as inputs. In some cases, it
-> is observed that though correct interval is given to forward the
-> timer, the expiry time is set to value less than expected interval.
-> This will cause the timer to expire ahead of expected expiry time.
-> Before updating the timer expiry value, hrtimer_forward checks to
-> see if there is any delta between the time from when to forwad
-> and previously set expiry. And this behaviiour is observed when
-> delta is large value.
-> 
-> For example, consider case where we want to forward the expiry
-> from "now" to 10 milliseconds. Below is trace prints captured by
-> dumping the values used in "hrtimer_forward". And this instance is
-> captured while forwarding timer from perf event multiplexing code
-> which uses hrtimer.
-> 
-> <<>>
-> [001] d....   304.118944: perf_mux_hrtimer_restart: Restarting timer from perf_mux_hrtimer_restart
-> [001] d....   304.118945: hrtimer_forward: In nanoseconds, now is 303938589749, delta is 52868589749, hrtimer_get_expires(timer) is 251070000000, interval is 10000000
-> [001] d....   304.118945: hrtimer_forward: Caller is perf_mux_hrtimer_restart+0xb0/0x120
-> [001] d....   304.118946: hrtimer_forward: Caller's caller is merge_sched_in+0x268/0x4e0
-> [001] d....   304.118946: hrtimer_forward: orun is 5286
-> [001] d....   304.118947: hrtimer_forward: In hrtimer_add_expires_ns, before ktime_add_ns timer->node.expires in ns is 251070000000, timer->_softexpires is 251070000000,  ns is 52860000000
-> [001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires_ns, after ktime_add_ns timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
-> [001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, before ktime_add_safe, timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
-> [001] d....   304.118949: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, after ktime_add_safe, timer->node.expires in ns is 303940000000, timer->_softexpires is 303940000000
-> [001] d....   304.118949: hrtimer_forward: After hrtimer_add_expires, hrtimer_get_remaining in nanoseconds is 1405169
-> 
-> <<>>
-> 
-> In this example,
-> timer->node.expires = 251070000000 ns ( previously set expiry )
-> now = 303938589749 ns
-> delta = 52868589749 ns
-> 
-> Here delta is "52868589749" which is greater than the interval to
-> forward ( ie 10000000 ns ). Hence hrtimer_forwards adds this difference
-> to present timer->node.expires in hrtimer_add_expires_ns() function. But
-> instead of using actual "delta", code is using (delta/interval * interval)
-> as below:
-> 
-> <<>>
-> s64 incr = ktime_to_ns(interval);
-> orun = ktime_divns(delta, incr);
-> hrtimer_add_expires_ns(timer, incr * orun);
-> <<>>
-> 
-> Hence we are actually using "orun * 10000000". In this example, it will be
-> "52860000000" since "orun" does not include the mod value. Here we are
-> missing "8589749" nanoseconds in the timer expiry. Hence, the final expiry
-> time will be set to "303940000000".
-> 
-> Since we are not using exact delta, the hrtime remaining will be
-> around 1405169 nanoseconds and will cause the timer to expire in 1.4 ms
-> instead of 10 ms. Fix this by using "delta" instead of using the divided
-> value.
-> 
+This patch series adds a device driver for Generic Clock Controller
+of lan966x SoC.
 
-You misunderstand, the behaviour is correct and expected. What
-hrtimer_forward_now() does is guarantee the expiry time ends up on an
-integer multiple of @interval.
+v6 -> v7:
+- Added Kconfig and Makefile entires for lan966x clock driver.
 
-This is important to achieve periodic timers. Your patch would cause
-period drift.
+v5 -> v6:
+- Added Acked-by to dt-bindings file.
+- Removed "_clk" in clock-names.
+- Added Reviewed-by to Documentation file.
+
+v4 -> v5:
+- In v4 dt-bindings, missed adding "clock-names" in required
+  properties and example. So, added them.
+- Returning proper error - PTR_ERR.
+- Removed unused variable "ret" in probe function.
+
+v3 -> v4:
+- Updated "clocks" and added "clock-names" in dt-bindings.
+- Used clk_parent_data instead of of_clk_get_parent_name().
+
+v2 -> v3:
+- Fixed dt_binding_check errors.
+
+v1 -> v2:
+- Updated license in dt-bindings.
+- Updated example provided for clock controller node.
+
+Kavyasree Kotagiri (3):
+  dt-bindings: clock: lan966x: Add binding includes for lan966x SoC
+    clock IDs
+  dt-bindings: clock: lan966x: Add LAN966X Clock Controller
+  clk: lan966x: Add lan966x SoC clock driver
+
+ .../bindings/clock/microchip,lan966x-gck.yaml |  57 +++++
+ drivers/clk/Kconfig                           |   7 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/clk-lan966x.c                     | 236 ++++++++++++++++++
+ include/dt-bindings/clock/microchip,lan966x.h |  28 +++
+ 5 files changed, 329 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+ create mode 100644 drivers/clk/clk-lan966x.c
+ create mode 100644 include/dt-bindings/clock/microchip,lan966x.h
+
+-- 
+2.17.1
+
