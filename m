@@ -2,80 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC38E41E417
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE55741E414
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347946AbhI3WoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhI3WoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:44:07 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F76BC06176A;
-        Thu, 30 Sep 2021 15:42:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HL7Xt1Mvyz4xVP;
-        Fri,  1 Oct 2021 08:42:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633041742;
-        bh=Fw7ZflyyDrdHyzV56mp4VSB3MF2k67NkE7+G3Rl3yes=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QKmU207F/pKn/0liwnV94nwAxBYJ8fF+VgUT3o6VVcYtK01Wd5pqrpkyGrrOMzrOZ
-         QaZLGPlf31dmtlLhrG+vSum24mHNc7xpv2oB6waVUBO4I86UFksYHtG8uSpo5dUA00
-         RsVG1FDCjk9nn/QtsXJyoknTEnUDluQPibzEQV3ZDQKG0qp/j0AyQABHkN4oxOyyC9
-         fCe+x4YXH6JGPbqpZbn8iqFokWmp/YHWBzQRFj0hFED42xcyvoBmDnBkPKhTOShTp2
-         XCKkb3Ew5SFzEookIWPTxMUYMjV7bwwnrFWQlKFhFwcDv7igIYRlJi89XCfPzbnjrK
-         z/xslEkXY+SeA==
-Date:   Fri, 1 Oct 2021 08:42:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the kvm tree
-Message-ID: <20211001084221.78ddd9ee@canb.auug.org.au>
+        id S1347353AbhI3Wnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:43:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343554AbhI3Wnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 18:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FA9F6109E;
+        Thu, 30 Sep 2021 22:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633041719;
+        bh=FxgCKikKkujaOhD0GKVlpovh2JSLoa6S3E3sVjKqxC0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dGDIR4AzX+Adf/hTKvFpvU2ysWfztQWbBPb450/GzHL/nYyM8pG7uXYQYO12ToIq2
+         xMKbS51LnW3DeCWgI0ym0sVJmtBukbSZD+0dBOOasLaRHQJIA7FaNiMuACQ5wYwB8V
+         8j+HRERUIGt2XhvbB1QlWrIoPTq2o0lx20nz3rgnLIZLVRu7+JwQji2xmeMYCTzgI9
+         UxEfz0qKXBWOLn7s7naVQhz4rSnaxOFOBqeZfHb5lH6nrR7K6Oh92eTs/XD9zZDGxn
+         6UTM7U0bFFjrV5VD3HDtQfKq2IrpJw1Yak+ptLBONhPTdK+IYmMKbAbE+BZV2t5ovW
+         MKarUjHBFvcog==
+Date:   Thu, 30 Sep 2021 17:46:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        clang-built-linux@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3 1/8] rapidio: Avoid bogus __alloc_size warning
+Message-ID: <20210930224604.GA906353@embeddedor>
+References: <20210930222704.2631604-1-keescook@chromium.org>
+ <20210930222704.2631604-2-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o.FcVG.Zz3jywx3AKKtCZTu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930222704.2631604-2-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o.FcVG.Zz3jywx3AKKtCZTu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 30, 2021 at 03:26:57PM -0700, Kees Cook wrote:
+> After adding __alloc_size attributes to the allocators, GCC 9.3 (but not
+> later) may incorrectly evaluate the arguments to check_copy_size(),
+> getting seemingly confused by the size being returned from array_size().
+> Instead, perform the calculation once, which both makes the code more
+> readable and avoids the bug in GCC.
+> 
+>    In file included from arch/x86/include/asm/preempt.h:7,
+>                     from include/linux/preempt.h:78,
+>                     from include/linux/spinlock.h:55,
+>                     from include/linux/mm_types.h:9,
+>                     from include/linux/buildid.h:5,
+>                     from include/linux/module.h:14,
+>                     from drivers/rapidio/devices/rio_mport_cdev.c:13:
+>    In function 'check_copy_size',
+>        inlined from 'copy_from_user' at include/linux/uaccess.h:191:6,
+>        inlined from 'rio_mport_transfer_ioctl' at drivers/rapidio/devices/rio_mport_cdev.c:983:6:
+>    include/linux/thread_info.h:213:4: error: call to '__bad_copy_to' declared with attribute error: copy destination size is too small
+>      213 |    __bad_copy_to();
+>          |    ^~~~~~~~~~~~~~~
+> 
+> But the allocation size and the copy size are identical:
+> 
+> 	transfer = vmalloc(array_size(sizeof(*transfer), transaction.count));
+> 	if (!transfer)
+> 		return -ENOMEM;
+> 
+> 	if (unlikely(copy_from_user(transfer,
+> 				    (void __user *)(uintptr_t)transaction.block,
+> 				    array_size(sizeof(*transfer), transaction.count)))) {
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/linux-mm/202109091134.FHnRmRxu-lkp@intel.com/
+> Cc: Matt Porter <mporter@kernel.crashing.org>
+> Cc: Alexandre Bounine <alex.bou9@gmail.com>
+> Cc: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-Hi all,
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Commit
+Thanks
+--
+Gustavo
 
-  912fd696981d ("KVM: x86: SVM: don't set VMLOAD/VMSAVE intercepts on vCPU =
-reset")
-
-is missing a Signed-off-by from its author and committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/o.FcVG.Zz3jywx3AKKtCZTu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWPU0ACgkQAVBC80lX
-0GwmwwgAogW2GXM/xiK12ejpD1H+3yCWJQW/Gat2jUHi3Kr+B6nY5A/QTWfWN/hB
-j7EqkNBfRf59Bwxp80UdTSPwxYzh4OBfK4qNFl+XESXoPuJMpEq0ZR509u3fIdsp
-xnbFsJiLTv9/AHOA6ssrsdihwv5I5QK+cHmgqYGXDw1s3ySvT2LsZU69JihhjAcK
-EXoLnI7EJyXWN62yDGnqICbSa4LsZvjhg2agL8vxhbPad1vXvW9dvnBJYWJZFyod
-2/861IpkkSTmq+FXXXXpYlws8jsTDOqr/pms0FpR6nsLo4XfKc4ti7YGW/sUa32i
-XJW20TK3pZG6A44uex+ugN2s4Yu23w==
-=+AlV
------END PGP SIGNATURE-----
-
---Sig_/o.FcVG.Zz3jywx3AKKtCZTu--
+> ---
+>  drivers/rapidio/devices/rio_mport_cdev.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+> index 94331d999d27..7df466e22282 100644
+> --- a/drivers/rapidio/devices/rio_mport_cdev.c
+> +++ b/drivers/rapidio/devices/rio_mport_cdev.c
+> @@ -965,6 +965,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+>  	struct rio_transfer_io *transfer;
+>  	enum dma_data_direction dir;
+>  	int i, ret = 0;
+> +	size_t size;
+>  
+>  	if (unlikely(copy_from_user(&transaction, arg, sizeof(transaction))))
+>  		return -EFAULT;
+> @@ -976,13 +977,14 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+>  	     priv->md->properties.transfer_mode) == 0)
+>  		return -ENODEV;
+>  
+> -	transfer = vmalloc(array_size(sizeof(*transfer), transaction.count));
+> +	size = array_size(sizeof(*transfer), transaction.count);
+> +	transfer = vmalloc(size);
+>  	if (!transfer)
+>  		return -ENOMEM;
+>  
+>  	if (unlikely(copy_from_user(transfer,
+>  				    (void __user *)(uintptr_t)transaction.block,
+> -				    array_size(sizeof(*transfer), transaction.count)))) {
+> +				    size))) {
+>  		ret = -EFAULT;
+>  		goto out_free;
+>  	}
+> @@ -994,8 +996,7 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
+>  			transaction.sync, dir, &transfer[i]);
+>  
+>  	if (unlikely(copy_to_user((void __user *)(uintptr_t)transaction.block,
+> -				  transfer,
+> -				  array_size(sizeof(*transfer), transaction.count))))
+> +				  transfer, size)))
+>  		ret = -EFAULT;
+>  
+>  out_free:
+> -- 
+> 2.30.2
+> 
