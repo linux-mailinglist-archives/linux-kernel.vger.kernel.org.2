@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8715D41E51F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3542841E522
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350682AbhI3Xz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:55:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9674 "EHLO mga11.intel.com"
+        id S1350771AbhI3X4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhI3XzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:55:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222118539"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="222118539"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:53:42 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="521394356"
-Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:53:41 -0700
-Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-To:     Ryan Lee <RyanS.Lee@maximintegrated.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
- <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
- <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <SJ0PR11MB5661A19958E5E41125FDD695E7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <15dd3868-7023-67c2-991c-a0083f59f0b5@linux.intel.com>
-Date:   Thu, 30 Sep 2021 18:53:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <SJ0PR11MB5661A19958E5E41125FDD695E7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1350480AbhI3X4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:56:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F9B26023E;
+        Thu, 30 Sep 2021 23:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633046074;
+        bh=73KhGeYtZ75e81uz1AB6/UCkcwIpW+bZ6GQVr7mgLp8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=B1WNzD+A7gF24s2UflTHCQltbzDo63Y6FIFAnjd74NWiLgpGNnVOToYITZmhzHcTz
+         /tB0vymvSikHITXC7mG+njO7i46RiGyZFPr9VFY49bvYnq84o4osahnfR+va1wsMvJ
+         YTg9Kj9odwhfGB4lTodtZEPjjO3VZFxi73ABNwfj10PYseth6/8KtcpvDsKmgj1ilU
+         /qz+6JmfKFU2A5M9hE0DiWjlSQkS7C2lTxJTKgPlaBBrOsFav2+OkK5/dWP78OVJcd
+         pWXTQyYx8mWwRQKZLPKOroUFCEnINUKtNfPKDnmIhEr70UPac2nVDT3jyKnLBuKY0O
+         coezJsFjI9YIg==
+Date:   Fri, 1 Oct 2021 08:54:29 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20211001085429.eb031708a65f2f738479e93f@kernel.org>
+In-Reply-To: <874ka17t8s.ffs@tglx>
+References: <163163030719.489837.2236069935502195491.stgit@devnote2>
+        <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+        <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
+        <874ka17t8s.ffs@tglx>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 30 Sep 2021 21:34:11 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-> I tried to find the reason why the amp was not detached from the bus properly and
-> found information about CLOCK_STOP_NOW bit in 0x0044 SCP_Ctrl register.
-> It seems like 0x2(ClockStopNow) needs to be configured before the host CLOCK STOP.
-> I was able to get a good result if I add this command in the amp driver suspend function.
-> The amp driver receives the detachment event and register restoration was done properly
-> after the audio resume.
-> I can modify the amp driver for this change but it looks like this needs to be done
-> from the host side. May I have a comment on this? Thanks.
+> On Thu, Sep 30 2021 at 11:17, Alexei Starovoitov wrote:
+> 
+> > On Tue, Sep 28, 2021 at 7:24 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >>
+> >> Hi Ingo,
+> >>
+> >> Can you merge this series to -tip tree since if I understand correctly,
+> >> all kprobes patches still should be merged via -tip tree.
+> >> If you don't think so anymore, I would like to handle the kprobe related
+> >> patches on my tree. Since many kprobes fixes/cleanups have not been
+> >> merged these months, it seems unhealthy now.
+> >>
+> >> Thank you,
+> >
+> > Linus,
+> >
+> > please suggest how to move these patches forward.
+> > We've been waiting for this fix for months now.
+> 
+> Sorry, I've not paying attention to those as they are usually handled by
+> Ingo who seems to be lost in space.
+> 
+> Masami, feel free to merge them over your tree. If not, let me know and
+> I'll pick them up tomorrow morning.
 
-This register is already taken care of in drivers/soundwire/intel.c and
-cadence_master.c
+Thank you Thomas for your proposal. As I send in the other mail,
+if Steve can pick this as a part of tracing, I think that will be
+better.
 
-for pm_runtime suspend, the sequence uses sdw_cdns_clock_stop(), which
-will try and prepare devices for clock-stop with a callback, in case any
-imp-def registers is required, then it will call sdw_bus_clk_stop()
-which does a broadcast write:
+Thanks again,
 
-sdw_bus_clk_stop(struct sdw_bus *bus)
-{
-	int ret;
+> 
+> Thanks,
+> 
+>         tglx
 
-	/*
-	 * broadcast clock stop now, attached Slaves will ACK this,
-	 * unattached will ignore
-	 */
-	ret = sdw_bwrite_no_pm(bus, SDW_BROADCAST_DEV_NUM,
-			       SDW_SCP_CTRL, SDW_SCP_CTRL_CLK_STP_NOW);
-	if (ret < 0) {
-		if (ret != -ENODATA)
-			dev_err(bus->dev, "ClockStopNow Broadcast msg failed %d\n", ret);
-		return ret;
-	}
 
-The codec driver is not supposed to set this bit on its own, what this
-indicates is that the clock will actually stop at the end of the frame.
-Only the master/controller driver can transmit this - there's a very
-strong reason why its a bus functionality.
-
-The other point is that on pm_runtime resume, the Intel host will start
-a SEVERE_RESET sequence. That's a bit different from the 'traditional'
-description of the clock stop due to a power optimization on the Intel
-side (see more below), but doing a reset has precedence over any other
-configuration that might have happened before the clock stopped so the
-amplifier SHALL transition to UNATTACHED on a reset.
-
-Somehow it looks like the amplifiers don't see the clock stopped and
-don't see the reset, that's rather surprising.
-
-If this happens for system suspend/resume, then it's a different story:
-we don't use the clock stop mode at all, the bus will be completely
-reconfigured.
-
-You could try to see if the results change by using the 'traditional'
-clock stop mode with a kernel module parameters
-
-option snd-sof-intel-hda-common sdw_clock_stop_quirks=0
-
-the default is SDW_INTEL_CLK_STOP_BUS_RESET
-
-/*
- * Require a bus reset (and complete re-enumeration) when exiting
- * clock stop modes. This may be needed if the controller power was
- * turned off and all context lost. This quirk shall not be used if a
- * Slave device needs to remain enumerated and keep its context,
- * e.g. to provide the reasons for the wake, report acoustic events or
- * pass a history buffer.
- */
-#define SDW_INTEL_CLK_STOP_BUS_RESET		BIT(3)
-
-In this case, the bus will not be reset, I wonder if this is the part
-that's problematic for the amplifier.
-
-Hope this helps
--Pierre
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
