@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CA441E0E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014D741E0E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353361AbhI3STs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353388AbhI3STq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:19:46 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D098C06176A;
-        Thu, 30 Sep 2021 11:18:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so7402079pjc.3;
-        Thu, 30 Sep 2021 11:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v0dcJF6a5J2i4qY/SGIztVAuNG3UpRFiPiTeCiiLeXw=;
-        b=K7KcDmoEGcmRy/ev728uCqbOciKfkFzSCtcpwRhwBSXjOOXO6C9yxp68gTf7fZXdrX
-         pFU7uQFci1ftfymZhaG54CXV4f+9JZanZSpYyuB5XHz7/ZcEG+DYYOy8dME9qhxnYXgq
-         dJuzqZPmGalsmFmTpl29rLA4F7ukQ3KsdwqgbIGtZ6XLMh7k+3Ik9RkkvBSAGTLd98hQ
-         +wQbrHXcEYd23UwO4fq5x5f7DEfk8Ze5pRD3ZnICnbWxFkCKMKTqjr5PiAYDENnC/1Sg
-         ycjM7x+uz70iK9+3rQ5JlrT3enSXmJOB7o1ZAYbsRkEwaFelo9f5BiKHaCNCwo2len4h
-         pksQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v0dcJF6a5J2i4qY/SGIztVAuNG3UpRFiPiTeCiiLeXw=;
-        b=uU5BDPyBnZDebRhYFmkzc/neMBrhMIA3vhaxEv7Z1h1f+INo9HTtzuZ731h9ZEx3sI
-         aXmU+y36d4tRmAIgnoGsb9sQy63czqalu+PkdXSLBUpHbx/qSgCFNoqramdtiecCOjXC
-         4bDpLC/aUV/QWm4IQzLEIVlYSR4X7Pb9FgJEUP6z3iSDTegEi2rtKzbqNE1/ruZG/+PJ
-         4kf3aVYGC/b9BCcNCxDCGrs5msg85pVenqdzovYu90wNe/Mo2rxKFRvze2OzX2AN1FsT
-         rxcR8QUtpojpIWtWOaBgLusFgGDqPjvhFUidw7hdQSaM+edJjxFKnTDrBYA++iLfE8kf
-         Y3mQ==
-X-Gm-Message-State: AOAM533YQNmWex+Txsq7vBslJvBOTDz3hWP0UhyGE9bl4ezPjxTiBg+J
-        TtQuhUbUJ7iVO1xBApMOtHEPuFam9eT77gDYjpykpvKz
-X-Google-Smtp-Source: ABdhPJxC+hXxl9QBdPlY95tL8Mi61q4aBvm5ltbF6eOcGtgP+eJO2ujnk2r9nPH4D5QCN7Ls2L94LSSni/JO8cOdiJs=
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr14611570pjj.122.1633025883579;
- Thu, 30 Sep 2021 11:18:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <163163030719.489837.2236069935502195491.stgit@devnote2> <20210929112408.35b0ffe06b372533455d890d@kernel.org>
-In-Reply-To: <20210929112408.35b0ffe06b372533455d890d@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 30 Sep 2021 11:17:52 -0700
-Message-ID: <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes on x86
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
+        id S1353386AbhI3STk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:19:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353361AbhI3STg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:19:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D872619F6;
+        Thu, 30 Sep 2021 18:17:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633025873;
+        bh=4RQ1qh5PQ7XM7RwFtMMOsRZbOrpcEDqV2LixdSXaqaQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NcMcIOIVUYpLNdjieMCxW9vTCZQkAPA1RTJIT+vAMSCii54OoZLqYFL1QDtG400Da
+         s1rb2RbSVw3N8vQgqrk/0btNwqIT/wGpQFKpotYEeOFivMbN57aHGYp59s/ZtUZ0B2
+         sEskWcLRzTHv8tV4HNUM78y9tmMYtnd2aFLP3bAwS3A2EOnpe85/Dk9m0LW1/mE9xx
+         HTdCrrVQMghy4IKs6ixn+TxCODgibDVhBc/li+66lPTKhmxrY6BAdDussWa3ADpa6O
+         kRbyhUNjbH15m6SuxTOL5moe0FCYOKWEsRiGk+e/r962eb4Ts6SqpIcfm8E+9yzsHw
+         dCTbPDWB35JZw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0E6EA5C0433; Thu, 30 Sep 2021 11:17:53 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:17:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [PATCH] tools/memory-model: Provide extra ordering for
+ unlock+lock pair on the same CPU
+Message-ID: <20210930181753.GH880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210930130823.2103688-1-boqun.feng@gmail.com>
+ <20210930152033.GD464826@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930152033.GD464826@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 7:24 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hi Ingo,
->
-> Can you merge this series to -tip tree since if I understand correctly,
-> all kprobes patches still should be merged via -tip tree.
-> If you don't think so anymore, I would like to handle the kprobe related
-> patches on my tree. Since many kprobes fixes/cleanups have not been
-> merged these months, it seems unhealthy now.
->
-> Thank you,
+On Thu, Sep 30, 2021 at 11:20:33AM -0400, Alan Stern wrote:
+> On Thu, Sep 30, 2021 at 09:08:23PM +0800, Boqun Feng wrote:
+> > A recent discussion[1] shows that we are in favor of strengthening the
+> > ordering of unlock + lock on the same CPU: a unlock and a po-after lock
+> > should provide the so-called RCtso ordering, that is a memory access S
+> > po-before the unlock should be ordered against a memory access R
+> > po-after the lock, unless S is a store and R is a load.
+> > 
+> > The strengthening meets programmers' expection that "sequence of two
+> > locked regions to be ordered wrt each other" (from Linus), and can
+> > reduce the mental burden when using locks. Therefore add it in LKMM.
+> > 
+> > [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
+> > 
+> > Co-developed-by: Alan Stern <stern@rowland.harvard.edu>
+> > Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> > Alan,
+> > 
+> > I added the "Co-developed-by" and "Signed-off-by" tags since most of the
+> > work is done by you. Feel free to let me know if you want to change
+> > anything.
+> 
+> It looks good to me.  However, do we really want to add these litmus
+> tests to the kernel source, or would it be better to keep them with
+> the thousands of other tests in Paul's archives?
 
-Linus,
+Either way works for me.  But if they are referred to from within the
+kernel, it is best to have them in the kernel source.  Which might be seen
+as a reason to minimize referring to litmus tests from the kernel.  ;-)
 
-please suggest how to move these patches forward.
-We've been waiting for this fix for months now.
-
-> On Tue, 14 Sep 2021 23:38:27 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> > Hello,
-> >
-> > This is the 11th version of the series to fix the stacktrace with kretprobe on x86.
-> >
-> > The previous version is here;
-> >
-> >  https://lore.kernel.org/all/162756755600.301564.4957591913842010341.stgit@devnote2/
-> >
-> > This version is rebased on the latest tip/master branch and includes the kprobe cleanup
-> > series[1][2]. No code change.
-> >
-> > [1] https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
-> > [2] https://lore.kernel.org/linux-csky/20210727133426.2919710-1-punitagrawal@gmail.com/
-> >
-> >
-> > With this series, unwinder can unwind stack correctly from ftrace as below;
+							Thanx, Paul
