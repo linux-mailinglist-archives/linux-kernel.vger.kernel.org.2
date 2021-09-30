@@ -2,127 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C91341D8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC4341D8A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350510AbhI3L1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:27:46 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:40245 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350502AbhI3L1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:27:40 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HKrX903MTz9sX5;
-        Thu, 30 Sep 2021 13:25:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id obKTeRCmPpU8; Thu, 30 Sep 2021 13:25:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKrX64PLsz9sX3;
-        Thu, 30 Sep 2021 13:25:42 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F71E8B773;
-        Thu, 30 Sep 2021 13:25:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fnYy186E_2Gs; Thu, 30 Sep 2021 13:25:42 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 36CA78B763;
-        Thu, 30 Sep 2021 13:25:42 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18UBO9SS1558831
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 13:24:09 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18UBO9XY1558830;
-        Thu, 30 Sep 2021 13:24:09 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Andrew Morton <akpm@linux-foundation.org>, arnd@arndb.de
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH v3 4/4] s390: Use generic version of arch_is_kernel_initmem_freed()
-Date:   Thu, 30 Sep 2021 13:23:46 +0200
-Message-Id: <b6feb5dfe611a322de482762fc2df3a9eece70c7.1633001016.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <9ecfdee7dd4d741d172cb93ff1d87f1c58127c9a.1633001016.git.christophe.leroy@csgroup.eu>
-References: <9ecfdee7dd4d741d172cb93ff1d87f1c58127c9a.1633001016.git.christophe.leroy@csgroup.eu>
+        id S1350439AbhI3L1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350433AbhI3L1G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 07:27:06 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B48FC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:23 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so23962877lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q8PvzGV7RQh9r19dv7sQTAnPOmVRl05fj0IURPoGTjE=;
+        b=RXfkA+78yN2AQYzVjgxXgCUGzZNUhbTFuc4ZS4gofT3I8tJ2l+/uKe+ri6q1WKsmtt
+         JhkaOU7nWduEFt+meXYv3p6g3K2J6cecRxgrVhLl+L5SvKZR2o+stcNUAY0kyMJOyQ4k
+         xbpku8hUtiZ2b5dvIXGlfgnvzCe1TpZLKQGU2mE9ZutxqPKDscNkDX8L+3N71xBVPElG
+         5jrqMpTc7TwMmBOZgaeDHoik6ZSWNSMkMNf76y1ISu5XjYJcs4FuVvl0KmRg8azGnWwc
+         nyiR8sJHyPaxwHLA+DVVIBzxduHcE8yxJbTNKA8Ga3pLHglJngTOJl6TL13LWTdnVMJE
+         UnYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q8PvzGV7RQh9r19dv7sQTAnPOmVRl05fj0IURPoGTjE=;
+        b=LDsTTNaj/zQ8n0pFMbSiAxcgvoHN170OWIxeNaVJiu/1VFOWlzvBiqN9Wx6IGeH2hv
+         u4/kR39F8LAIRxbZFL3seujpVKZIerwmAPGSnlghxl4ZRzhvSBCn1k2EdkOaZ6DKURFX
+         k1rdK6iDMf1V6QyFv1woKB8lILo2bj+2Z1EUnRShOQ8hWTLwoeZzG+CDuBzy8Coq/Wz5
+         ooXNVBXI0k7j1KrUUQlICB8BldQ1cUC7wW+0I/E7e+5ooOwnS8PQCgch1fqSyhDhwq1Y
+         YpQuF/szBIgA7A5soRpmCCx5U5cZXxldwPbbpLJIBmBY/4sC8hPTV6Nvf+KUIXjj90/P
+         mfWw==
+X-Gm-Message-State: AOAM530Y9+IMmqAvFNg6YRhmWlzjsbaeuIgAEDquTfOXFZXcUeaGt25B
+        cpZko+8BlLoMp82qkiDF+ypL41aSacrAkU8Lrohs8g==
+X-Google-Smtp-Source: ABdhPJzqAgHZsEsSUpxycEma4VWu16tr1ftIM/UiErO8t6pDuEHCXDKqX+uW4bQjUZYqCDKNXtdclOjuZZIpv/IsnBQ=
+X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr169648lfd.167.1633001121852;
+ Thu, 30 Sep 2021 04:25:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210928073652.434690-1-narmstrong@baylibre.com>
+In-Reply-To: <20210928073652.434690-1-narmstrong@baylibre.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 30 Sep 2021 13:24:45 +0200
+Message-ID: <CAPDyKFqZX4BNZcZ3NgpPiMcabXj2-tetR8cEvy-LV3JSxRG-og@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic version of arch_is_kernel_initmem_freed() now does the same
-as s390 version.
+On Tue, 28 Sept 2021 at 09:37, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> The memory at the end of the controller only accepts 32bit read/write
+> accesses, but the arm64 memcpy_to/fromio implementation only uses 64bit
+> (which will be split into two 32bit access) and 8bit leading to incomplete
+> copies to/from this memory when the buffer is not multiple of 8bytes.
+>
+> Add a local copy using writel/readl accesses to make sure we use the right
+> memory access width.
+>
+> The switch to memcpy_to/fromio was done because of 285133040e6c
+> ("arm64: Import latest memcpy()/memmove() implementation"), but using memcpy
+> worked before since it mainly used 32bit memory acceses.
+>
+> Fixes: 103a5348c22c ("mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk")
+> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
+> Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Remove the s390 version.
+Applied for fixes and by adding a stable tag, thanks!
 
-Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3: No change
-v2: No change
----
- arch/s390/include/asm/sections.h | 12 ------------
- arch/s390/mm/init.c              |  3 ---
- 2 files changed, 15 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sections.h
-index 85881dd48022..3fecaa4e8b74 100644
---- a/arch/s390/include/asm/sections.h
-+++ b/arch/s390/include/asm/sections.h
-@@ -2,20 +2,8 @@
- #ifndef _S390_SECTIONS_H
- #define _S390_SECTIONS_H
- 
--#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
--
- #include <asm-generic/sections.h>
- 
--extern bool initmem_freed;
--
--static inline int arch_is_kernel_initmem_freed(unsigned long addr)
--{
--	if (!initmem_freed)
--		return 0;
--	return addr >= (unsigned long)__init_begin &&
--	       addr < (unsigned long)__init_end;
--}
--
- /*
-  * .boot.data section contains variables "shared" between the decompressor and
-  * the decompressed kernel. The decompressor will store values in them, and
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index a04faf49001a..8c6f258a6183 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -58,8 +58,6 @@ unsigned long empty_zero_page, zero_page_mask;
- EXPORT_SYMBOL(empty_zero_page);
- EXPORT_SYMBOL(zero_page_mask);
- 
--bool initmem_freed;
--
- static void __init setup_zero_pages(void)
- {
- 	unsigned int order;
-@@ -214,7 +212,6 @@ void __init mem_init(void)
- 
- void free_initmem(void)
- {
--	initmem_freed = true;
- 	__set_memory((unsigned long)_sinittext,
- 		     (unsigned long)(_einittext - _sinittext) >> PAGE_SHIFT,
- 		     SET_MEMORY_RW | SET_MEMORY_NX);
--- 
-2.31.1
 
+> ---
+> Changes since v1:
+> - added sg pre-validation at meson_mmc_request and dropped checks in meson_mmc_copy_buffer
+>
+>  drivers/mmc/host/meson-gx-mmc.c | 73 ++++++++++++++++++++++++++-------
+>  1 file changed, 59 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+> index 3f28eb4d17fe..8f36536cb1b6 100644
+> --- a/drivers/mmc/host/meson-gx-mmc.c
+> +++ b/drivers/mmc/host/meson-gx-mmc.c
+> @@ -746,7 +746,7 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
+>         writel(start, host->regs + SD_EMMC_START);
+>  }
+>
+> -/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
+> +/* local sg copy for dram_access_quirk */
+>  static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
+>                                   size_t buflen, bool to_buffer)
+>  {
+> @@ -764,21 +764,27 @@ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data
+>         sg_miter_start(&miter, sgl, nents, sg_flags);
+>
+>         while ((offset < buflen) && sg_miter_next(&miter)) {
+> -               unsigned int len;
+> +               unsigned int buf_offset = 0;
+> +               unsigned int len, left;
+> +               u32 *buf = miter.addr;
+>
+>                 len = min(miter.length, buflen - offset);
+> +               left = len;
+>
+> -               /* When dram_access_quirk, the bounce buffer is a iomem mapping */
+> -               if (host->dram_access_quirk) {
+> -                       if (to_buffer)
+> -                               memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
+> -                       else
+> -                               memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
+> +               if (to_buffer) {
+> +                       do {
+> +                               writel(*buf++, host->bounce_iomem_buf + offset + buf_offset);
+> +
+> +                               buf_offset += 4;
+> +                               left -= 4;
+> +                       } while (left);
+>                 } else {
+> -                       if (to_buffer)
+> -                               memcpy(host->bounce_buf + offset, miter.addr, len);
+> -                       else
+> -                               memcpy(miter.addr, host->bounce_buf + offset, len);
+> +                       do {
+> +                               *buf++ = readl(host->bounce_iomem_buf + offset + buf_offset);
+> +
+> +                               buf_offset += 4;
+> +                               left -= 4;
+> +                       } while (left);
+>                 }
+>
+>                 offset += len;
+> @@ -830,7 +836,11 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+>                 if (data->flags & MMC_DATA_WRITE) {
+>                         cmd_cfg |= CMD_CFG_DATA_WR;
+>                         WARN_ON(xfer_bytes > host->bounce_buf_size);
+> -                       meson_mmc_copy_buffer(host, data, xfer_bytes, true);
+> +                       if (host->dram_access_quirk)
+> +                               meson_mmc_copy_buffer(host, data, xfer_bytes, true);
+> +                       else
+> +                               sg_copy_to_buffer(data->sg, data->sg_len,
+> +                                                 host->bounce_buf, xfer_bytes);
+>                         dma_wmb();
+>                 }
+>
+> @@ -849,12 +859,43 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+>         writel(cmd->arg, host->regs + SD_EMMC_CMD_ARG);
+>  }
+>
+> +static int meson_mmc_validate_dram_access(struct mmc_host *mmc, struct mmc_data *data)
+> +{
+> +       struct scatterlist *sg;
+> +       int i;
+> +
+> +       /* Reject request if any element offset or size is not 32bit aligned */
+> +       for_each_sg(data->sg, sg, data->sg_len, i) {
+> +               if (!IS_ALIGNED(sg->offset, sizeof(u32)) ||
+> +                   !IS_ALIGNED(sg->length, sizeof(u32))) {
+> +                       dev_err(mmc_dev(mmc), "unaligned sg offset %u len %u\n",
+> +                               data->sg->offset, data->sg->length);
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static void meson_mmc_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  {
+>         struct meson_host *host = mmc_priv(mmc);
+>         bool needs_pre_post_req = mrq->data &&
+>                         !(mrq->data->host_cookie & SD_EMMC_PRE_REQ_DONE);
+>
+> +       /*
+> +        * The memory at the end of the controller used as bounce buffer for
+> +        * the dram_access_quirk only accepts 32bit read/write access,
+> +        * check the aligment and length of the data before starting the request.
+> +        */
+> +       if (host->dram_access_quirk && mrq->data) {
+> +               mrq->cmd->error = meson_mmc_validate_dram_access(mmc, mrq->data);
+> +               if (mrq->cmd->error) {
+> +                       mmc_request_done(mmc, mrq);
+> +                       return;
+> +               }
+> +       }
+> +
+>         if (needs_pre_post_req) {
+>                 meson_mmc_get_transfer_mode(mmc, mrq);
+>                 if (!meson_mmc_desc_chain_mode(mrq->data))
+> @@ -999,7 +1040,11 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+>         if (meson_mmc_bounce_buf_read(data)) {
+>                 xfer_bytes = data->blksz * data->blocks;
+>                 WARN_ON(xfer_bytes > host->bounce_buf_size);
+> -               meson_mmc_copy_buffer(host, data, xfer_bytes, false);
+> +               if (host->dram_access_quirk)
+> +                       meson_mmc_copy_buffer(host, data, xfer_bytes, false);
+> +               else
+> +                       sg_copy_from_buffer(data->sg, data->sg_len,
+> +                                           host->bounce_buf, xfer_bytes);
+>         }
+>
+>         next_cmd = meson_mmc_get_next_command(cmd);
+> --
+> 2.25.1
+>
