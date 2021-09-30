@@ -2,95 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8621C41D745
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D95F41D74A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349781AbhI3KLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:11:18 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:63344 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238316AbhI3KLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:11:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632996573; x=1664532573;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=T+FEBSdR2R1lgPhS9lJEjIF/H3DpmWpTBm+AgCb25Xo=;
-  b=0IfrnSCtAfGmc0yGCxHacxmxT/ZVC7W9qb641pag+Sdx+1IaMBrP7b2e
-   gznDmowvm0U7AihmSREZAgfv3J/gh9CImyz74iYl27KtyudoSKB4+/q4J
-   0ieDljj1izbeMxGXH0/YbBSgAg5LlW8glHrYfOmIE7FM9zB7h0HCKNTED
-   uVmBa6rPeAQHZoshPxilvW7M7WFq1xcAtYCDYUGx2IIABeYhp/+kqshG+
-   fLpyhu6rT9I8zoJAZlJkB3EBdlsRlfXvyN1inaSamZAYOgD60DoyoOYDN
-   mJU+j1mdL2AMgNwNc0YGYtuJgOEx2Nq4EngtQl3NMuvEUH5rScTi9Cs5r
-   w==;
-IronPort-SDR: q2GFmjCdmqmkf2Nrg+tjSy6vBCLo9jJaZDPJUfdq0eBAizg9SsYUMMthdf9IV7OojkCpuJpO1b
- Wn53rbK2PXM1lYbUTr1z6XnyM8JkpWLydAhTvZw/Aku51udfJ4otc2w/mfSLZZ3jEtoga2QdeT
- tLDqdUEPbS9wovN9a+BFfVYJdGO6wU4GxP/GWwJV5rly+ncfhcOgDH/Z1J782iDbr9LJOhlPdj
- DA8LGoTzu7Ho84iPpJIKPliqPkXDbAqgWGhMAFzxqsDiNxKhJMG2iNsPw5ttWAt4tedNZNgqwP
- FS2pr4C3xMJSJgDr7Ye2411e
+        id S1349796AbhI3KLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:11:45 -0400
+Received: from mga03.intel.com ([134.134.136.65]:21485 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349785AbhI3KLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:11:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225228654"
 X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="71214285"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 03:09:32 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 30 Sep 2021 03:09:32 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 03:09:30 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <sre@kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH] power: reset: at91-reset: check properly the return value of devm_of_iomap
-Date:   Thu, 30 Sep 2021 13:09:28 +0300
-Message-ID: <20210930100928.2211599-1-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
+   d="scan'208";a="225228654"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 03:09:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="618057269"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 30 Sep 2021 03:09:51 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 30 Sep 2021 13:09:50 +0300
+Date:   Thu, 30 Sep 2021 13:09:50 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [PATCH v3 4/6] usb: typec: tipd: Add support for Apple CD321X
+Message-ID: <YVWM7tQMZeeF+Wc3@kuha.fi.intel.com>
+References: <20210928155502.71372-1-sven@svenpeter.dev>
+ <20210928155502.71372-5-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928155502.71372-5-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_of_iomap() returns error code or valid pointer. Check its return
-value with IS_ERR().
+On Tue, Sep 28, 2021 at 05:55:00PM +0200, Sven Peter wrote:
+> Apple CD321x chips are a variant of the TI TPS 6598x chips.
+> The major differences are the changed interrupt numbers and
+> the concurrent connection to the SMC which we must not disturb.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
 
-Fixes: bd3127733f2c ("power: reset: at91-reset: use devm_of_iomap")
-Reported-by: Cristian Birsan <cristian.birsan@microchip.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/power/reset/at91-reset.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-reset.c
-index 026649409135..64def79d557a 100644
---- a/drivers/power/reset/at91-reset.c
-+++ b/drivers/power/reset/at91-reset.c
-@@ -193,7 +193,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	reset->rstc_base = devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NULL);
--	if (!reset->rstc_base) {
-+	if (IS_ERR(reset->rstc_base)) {
- 		dev_err(&pdev->dev, "Could not map reset controller address\n");
- 		return -ENODEV;
- 	}
-@@ -203,7 +203,7 @@ static int __init at91_reset_probe(struct platform_device *pdev)
- 		for_each_matching_node_and_match(np, at91_ramc_of_match, &match) {
- 			reset->ramc_lpr = (u32)match->data;
- 			reset->ramc_base[idx] = devm_of_iomap(&pdev->dev, np, 0, NULL);
--			if (!reset->ramc_base[idx]) {
-+			if (IS_ERR(reset->ramc_base[idx])) {
- 				dev_err(&pdev->dev, "Could not map ram controller address\n");
- 				of_node_put(np);
- 				return -ENODEV;
+> ---
+> changes since v2:
+>   - switched from of_device_get_match_data to of_device_is_compatible
+>     as suggested by Heikki
+>   - replace "int ret = 0" with "int ret" in cd321x_interrupt since ret
+>     doesn't need to be initialized
+> 
+> changes since v1:
+>   - new commit since Heikki suggested to just add a separate irq handler
+> 
+>  drivers/usb/typec/tipd/core.c     | 63 ++++++++++++++++++++++++++++++-
+>  drivers/usb/typec/tipd/tps6598x.h |  6 +++
+>  drivers/usb/typec/tipd/trace.h    | 23 +++++++++++
+>  3 files changed, 91 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index e785e4aa2d4b..cc4a154eabcb 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/acpi.h>
+>  #include <linux/module.h>
+> +#include <linux/of.h>
+>  #include <linux/power_supply.h>
+>  #include <linux/regmap.h>
+>  #include <linux/interrupt.h>
+> @@ -461,6 +462,51 @@ static void tps6598x_handle_plug_event(struct tps6598x *tps, u32 status)
+>  	}
+>  }
+>  
+> +static irqreturn_t cd321x_interrupt(int irq, void *data)
+> +{
+> +	struct tps6598x *tps = data;
+> +	u64 event;
+> +	u32 status;
+> +	int ret;
+> +
+> +	mutex_lock(&tps->lock);
+> +
+> +	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event);
+> +	if (ret) {
+> +		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+> +		goto err_unlock;
+> +	}
+> +	trace_cd321x_irq(event);
+> +
+> +	if (!event)
+> +		goto err_unlock;
+> +
+> +	if (!tps6598x_read_status(tps, &status))
+> +		goto err_clear_ints;
+> +
+> +	if (event & APPLE_CD_REG_INT_POWER_STATUS_UPDATE)
+> +		if (!tps6598x_read_power_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	if (event & APPLE_CD_REG_INT_DATA_STATUS_UPDATE)
+> +		if (!tps6598x_read_data_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	/* Handle plug insert or removal */
+> +	if (event & APPLE_CD_REG_INT_PLUG_EVENT)
+> +		tps6598x_handle_plug_event(tps, status);
+> +
+> +err_clear_ints:
+> +	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event);
+> +
+> +err_unlock:
+> +	mutex_unlock(&tps->lock);
+> +
+> +	if (event)
+> +		return IRQ_HANDLED;
+> +	return IRQ_NONE;
+> +}
+> +
+>  static irqreturn_t tps6598x_interrupt(int irq, void *data)
+>  {
+>  	struct tps6598x *tps = data;
+> @@ -620,6 +666,8 @@ static int devm_tps6598_psy_register(struct tps6598x *tps)
+>  
+>  static int tps6598x_probe(struct i2c_client *client)
+>  {
+> +	irq_handler_t irq_handler = tps6598x_interrupt;
+> +	struct device_node *np = client->dev.of_node;
+>  	struct typec_capability typec_cap = { };
+>  	struct tps6598x *tps;
+>  	struct fwnode_handle *fwnode;
+> @@ -658,6 +706,18 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (np && of_device_is_compatible(np, "apple,cd321x")) {
+> +		/* CD321X chips have all interrupts masked initially */
+> +		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+> +					APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+> +					APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+> +					APPLE_CD_REG_INT_PLUG_EVENT);
+> +		if (ret)
+> +			return ret;
+> +
+> +		irq_handler = cd321x_interrupt;
+> +	}
+> +
+>  	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -739,7 +799,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	}
+>  
+>  	ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> -					tps6598x_interrupt,
+> +					irq_handler,
+>  					IRQF_SHARED | IRQF_ONESHOT,
+>  					dev_name(&client->dev), tps);
+>  	if (ret) {
+> @@ -773,6 +833,7 @@ static int tps6598x_remove(struct i2c_client *client)
+>  
+>  static const struct of_device_id tps6598x_of_match[] = {
+>  	{ .compatible = "ti,tps6598x", },
+> +	{ .compatible = "apple,cd321x", },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+> diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+> index 003a577be216..e13b16419843 100644
+> --- a/drivers/usb/typec/tipd/tps6598x.h
+> +++ b/drivers/usb/typec/tipd/tps6598x.h
+> @@ -129,6 +129,12 @@
+>  #define TPS_REG_INT_HARD_RESET				BIT(1)
+>  #define TPS_REG_INT_PD_SOFT_RESET			BIT(0)
+>  
+> +/* Apple-specific TPS_REG_INT_* bits */
+> +#define APPLE_CD_REG_INT_DATA_STATUS_UPDATE		BIT(10)
+> +#define APPLE_CD_REG_INT_POWER_STATUS_UPDATE		BIT(9)
+> +#define APPLE_CD_REG_INT_STATUS_UPDATE			BIT(8)
+> +#define APPLE_CD_REG_INT_PLUG_EVENT			BIT(1)
+> +
+>  /* TPS_REG_POWER_STATUS bits */
+>  #define TPS_POWER_STATUS_CONNECTION(x)  TPS_FIELD_GET(BIT(0), (x))
+>  #define TPS_POWER_STATUS_SOURCESINK(x)	TPS_FIELD_GET(BIT(1), (x))
+> diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
+> index 5d09d6f78930..12cad1bde7cc 100644
+> --- a/drivers/usb/typec/tipd/trace.h
+> +++ b/drivers/usb/typec/tipd/trace.h
+> @@ -67,6 +67,13 @@
+>  		{ TPS_REG_INT_USER_VID_ALT_MODE_ATTN_VDM,	"USER_VID_ALT_MODE_ATTN_VDM" }, \
+>  		{ TPS_REG_INT_USER_VID_ALT_MODE_OTHER_VDM,	"USER_VID_ALT_MODE_OTHER_VDM" })
+>  
+> +#define show_cd321x_irq_flags(flags) \
+> +	__print_flags_u64(flags, "|", \
+> +		{ APPLE_CD_REG_INT_PLUG_EVENT,			"PLUG_EVENT" }, \
+> +		{ APPLE_CD_REG_INT_POWER_STATUS_UPDATE,		"POWER_STATUS_UPDATE" }, \
+> +		{ APPLE_CD_REG_INT_DATA_STATUS_UPDATE,		"DATA_STATUS_UPDATE" }, \
+> +		{ APPLE_CD_REG_INT_STATUS_UPDATE,		"STATUS_UPDATE" })
+> +
+>  #define TPS6598X_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
+>  						      TPS_STATUS_PP_5V0_SWITCH_MASK | \
+>  						      TPS_STATUS_PP_HV_SWITCH_MASK | \
+> @@ -207,6 +214,22 @@ TRACE_EVENT(tps6598x_irq,
+>  		      show_irq_flags(__entry->event2))
+>  );
+>  
+> +TRACE_EVENT(cd321x_irq,
+> +	    TP_PROTO(u64 event),
+> +	    TP_ARGS(event),
+> +
+> +	    TP_STRUCT__entry(
+> +			     __field(u64, event)
+> +			     ),
+> +
+> +	    TP_fast_assign(
+> +			   __entry->event = event;
+> +			   ),
+> +
+> +	    TP_printk("event=%s",
+> +		      show_cd321x_irq_flags(__entry->event))
+> +);
+> +
+>  TRACE_EVENT(tps6598x_status,
+>  	    TP_PROTO(u32 status),
+>  	    TP_ARGS(status),
+> -- 
+> 2.25.1
+
 -- 
-2.25.1
-
+heikki
