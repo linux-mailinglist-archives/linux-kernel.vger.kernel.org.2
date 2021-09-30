@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C2E41DD34
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC3641DD3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245512AbhI3PUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:20:05 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:40469 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S245339AbhI3PUD (ORCPT
+        id S245544AbhI3PUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245339AbhI3PUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:20:03 -0400
-Received: (qmail 472189 invoked by uid 1000); 30 Sep 2021 11:18:19 -0400
-Date:   Thu, 30 Sep 2021 11:18:19 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
-Message-ID: <20210930151819.GC464826@rowland.harvard.edu>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
+        Thu, 30 Sep 2021 11:20:19 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FFFC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id r2so6562408pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z/xgE/Y55JRJKfdAPlV0ukAj6bmYdIAVihPBePNuMEA=;
+        b=Z2IgmXvUaFEXY7MoioDiKe6ZZXF3Bz9nLqLBxBra5B6yYSfjaV6O3KO7hSmCQCYZwn
+         AJym7zohhwCmLwm3Ggn4jIJhrIwFaKsw7T0/Byaoj/Q4zb48yyrzljuLX9WGvrE8k0xl
+         YrDcPGeqFNU/vPgzQWAb2nzuj9yniB4QbcaIc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z/xgE/Y55JRJKfdAPlV0ukAj6bmYdIAVihPBePNuMEA=;
+        b=SmeKBl57MCcovR/CNYbLSS83NRDIfJ8fiSXBDYrt1e9/QaqiZ2Ruo87Ar3AXRgv2Yx
+         V3YgN07/eT89AbLp9xGQjEWQoduF76bHSOYYbrgH6kI+GVTkmwgm8xAT20kIvHdo5aNv
+         OzhU8S1KmeakUuR9K8LJVfE+/LpUsZVEIPLD3OHXOEDWZHWdr+sbfsklYdRYZIIryQPp
+         hDllt/qcWp1BABC9GbnPmdSfZLsj4VTuPKbLZUg3XrtdpNrNRHjcsY8nTMnVRdALHyV/
+         6JgeLcwKgyTqpbVKYn7N8e4lW5I4pMRs18NcRh02CzYYQRnBoo8MFi6BpO5mP/gqzeSx
+         s0aA==
+X-Gm-Message-State: AOAM533ZQe9NSdB0gFJWtJXabQW6Wksrwxasa9Z1TqUlKaVnFSSRd3IG
+        mAuGfhv0blo3PBCIdUdJ0QdNgw==
+X-Google-Smtp-Source: ABdhPJx9xd/CgJ2K56cg1nMviMwyZqmS6824yDtPEv7b6XWoioc9YvVjIpGU29bL2HCgdp9tPKZPhw==
+X-Received: by 2002:a63:1a64:: with SMTP id a36mr5432550pgm.225.1633015116124;
+        Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c22sm3022703pja.10.2021.09.30.08.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 08:18:35 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 08:18:34 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Jann Horn <jannh@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Anand K Mistry <amistry@google.com>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michael =?iso-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Tobin C. Harding" <me@tobin.cc>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Stefan Metzmacher <metze@samba.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 0/6] wchan: Fix ORC support and leaky fallback
+Message-ID: <202109300817.36A8D1D0A@keescook>
+References: <20210929220218.691419-1-keescook@chromium.org>
+ <20210930010157.mtn7pjyxkxokzmyh@treble>
+ <YVV36z4UZaL/vOBI@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YVV36z4UZaL/vOBI@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:30:17AM +0200, Oliver Neukum wrote:
+On Thu, Sep 30, 2021 at 10:40:11AM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 29, 2021 at 06:01:57PM -0700, Josh Poimboeuf wrote:
 > 
-> On 29.09.21 11:52, Jason-ch Chen wrote:
-> > On Wed, 2021-09-29 at 08:14 +0000, Hayes Wang wrote:
-> >>
-> > Hi Hayes,
-> >
-> > Sometimes Rx submits rapidly and the USB kernel driver of opensource
-> > cannot receive any disconnect event due to CPU heavy loading, which
-> > finally causes a system crash.
-> > Do you have any suggestions to modify the r8152 driver to prevent this
-> > situation happened?
-> >
-> > Regards,
-> > Jason
-> >
-> Hi,
+> > - Should we use a similar sched wrapper for /proc/$pid/stack to make its
+> >   raciness go away?
 > 
-> Hayes proposed a solution. Basically you solve this the way HID or WDM do it
-> delaying resubmission. This makes me wonder whether this problem is specific
-> to any driver. If it is not, as I would argue, do we have a deficiency
-> in our API?
+> Alternatively, can we make /stack go away? AFAICT the semantics of that
+> are far worse in that it wants the actual kernel stack of a task,
+> blocked or not, which is a total pain in the arse (not to mention a
+> giant infoleak and side-channel).
 > 
-> Should we have something like: usb_submit_delayed_urb() ?
+> > - At the risk of triggering a much larger patch set, I suspect
+> >   get_wchan() can be made generic ;-)  It's just a glorified wrapper
+> >   around stack_trace_save_tsk().
+> 
+> Done that for you :-)
 
-There has been some discussion about this in the past.
+Thanks! I wasn't sure the renaming was worth the churn, but the other
+cleanups make it much nicer. :)
 
-In general, -EPROTO is almost always a non-recoverable error.  In 
-usually occurs when a USB cable has been unplugged, before the 
-upstream hub has notified the kernel about the unplug event.  It also 
-can occur when the device's firmware has crashed.
+Do you want me to re-collect the resulting series, or do you have a tree
+already for -tip for this?
 
-I do tend to think there is a deficiency in our API, and that it 
-should be fixed by making the core logically disable an endpoint 
-(clear the ep->enabled flag) whenever an URB for that endpoint 
-completes with -EPROTO, -EILSEQ, or -ETIME status.  (In retrospect, 
-using three distinct status codes for these errors was a mistake.)  
-Then we wouldn't have to go through this piecemeal approach, 
-modifying individual drivers to make them give up whenever they get 
-one of these errors.
+-Kees
 
-But then we'd have also have to make sure drivers have a way to 
-logically re-enable endpoints, for the unlikely case that the error 
-can be recovered from.  Certainly set-config, set-interface, and 
-clear-halt should do this.  Anything else?
-
-Alan Stern
+-- 
+Kees Cook
