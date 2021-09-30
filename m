@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4351B41E2F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDC941E2F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345825AbhI3VEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:04:04 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:46079 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhI3VEC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:04:02 -0400
-Received: from [192.168.100.1] ([82.142.21.142]) by mrelayeu.kundenserver.de
- (mreue108 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MS3vJ-1mPDgh22d1-00TRvk; Thu, 30 Sep 2021 23:02:00 +0200
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20210323221430.3735147-1-laurent@vivier.eu>
- <20210323221430.3735147-3-laurent@vivier.eu>
- <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
- <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
- <c28b0c92-a997-6978-890f-4222f4bb8cc6@vivier.eu>
- <9f7ad0df-b58c-1b24-5c48-5ee6478260dd@physik.fu-berlin.de>
-From:   Laurent Vivier <laurent@vivier.eu>
-Message-ID: <7748de16-1087-1039-a1cc-5a94dc293dbb@vivier.eu>
-Date:   Thu, 30 Sep 2021 23:01:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1348571AbhI3VGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:06:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:14523 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229957AbhI3VGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:06:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="224944442"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="224944442"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 14:04:16 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="564452544"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 14:04:14 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mW3Dw-007G1g-5v;
+        Fri, 01 Oct 2021 00:04:12 +0300
+Date:   Fri, 1 Oct 2021 00:04:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
+Message-ID: <YVYmTL8WsgYnxPwc@smile.fi.intel.com>
+References: <20210930124950.3069638-1-daniel@0x0f.com>
+ <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
+ <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9f7ad0df-b58c-1b24-5c48-5ee6478260dd@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:KwAzeqLKWmeHvbBipaoWRg9gsbROUHqCygHskcptL60d6q9Kp5G
- +ElasxtHFdquzPB+XB8UuXpI0dBToT4jfg/z4/2CedMqcxtR86v1yMdvcCWMxQKCFe6N4VQ
- B9yNxtbzxan6zlCT8wpvoehKXG7Z0/QHg/PPRU5TTKE3k4He+YszGVJIhKrzUDJ75UmCcic
- KpCD9iMY7vy7l+SE+j9jA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IKF5m6Zp7xk=:dlUvunV4r2NsEQ1dBIzuiL
- Hk2Jna+3DuA2CjDSEwx4Tq0IqIevHdqPJ/XYeQllfdZWboVObG2TaqdTfKl2NknvrAVqFsN/x
- EPx/irCs5HZUgGVXL8JXQzVst1pplqpmpiAUqjrOMhU0CIhVgiUFggBYiv1PhtAudEuRT+DF/
- BoN1hb3LQJru92bfNLOa0+l6Kj3ObDy5caxmhCrfITtGn6E9cq7PisvnHXkl81DtnqN/PSbQK
- il173Q6HDhR9Aoi00SEjRxwfh9HXCrMRAtxb/ZELMMXqqOek7DTZIrcxsYK+D4fMSkJeeDwiD
- R5NdALSC9PvTslCAL8ZHhsp8GO2UZYNBA71GjlvXmp8CyMfD8K/wGHms4TdYuqoSjDVF7y+13
- Hef7U/fNXgX4Bde38ND5Q85DaLPz1zMiBcpDC2EUCB1K6GSQLerfxy+Y2WzC58GcsW8yXlHrv
- m1Mxj4P+Zior7rZ9OXSM5z3syNLLHhv0VH17/OjIuDwy4IZL2+YI8k+49ggr8irTlVwTD06/Q
- dPrwWRYuSGg0vWnt8QtTTapaeL9dJt9txhWbPQhzZDj7BkHLOi1zLcc1gJIZWHy8O1Ju/Y9Vx
- exrejKJznItYO0i2Ax7X9Wmq0CpFgLyZOPrVWsLIuasQDD51I6FnqmYeN/UzlH+7PW174Hqfm
- q5Uzx3DEeA9/hhjEi3xuomwQbJx7ZKXvo6X0Wm+7UDRUr+rmKIKeim6A/9SzoaVJVwHkF+OyT
- kEcuitxScfaqOyjdrpASH7y5lfqQI353XRbMig==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 30/09/2021 à 22:56, John Paul Adrian Glaubitz a écrit :
-> Hi Laurent!
+On Fri, Oct 01, 2021 at 12:31:34AM +0900, Daniel Palmer wrote:
+> On Fri, 1 Oct 2021 at 00:24, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > And incorrect fix. See my patches regarding to the topic
+> > (`git log --grep ACPI_PTR`) and do accordingly, i.e. drop
+> > ACPI_PTR() for good.
 > 
-> On 4/28/21 14:15, Laurent Vivier wrote:
->>> I have tested and reviewed your patch, great work!
->>> I'm confident this can make v5.14, with the small nits fixed.
->>
->> Thank you for your review.
->>
->> I will answer to some of your comments and update accordingly my patch.
+> Something like 349bff48ae0f5f8aa2075d0bdc2091a30bd634f6?
 > 
-> It looks like this patch somehow fell off the table, didn't it?
-> 
-> I was hoping to be able to build a virt kernel for Debian/m68k by default
-> in the near future.
+> Doesn't this mean the ACPI table ends up in kernels that will never use ACPI?
 
-Yes, I started to update my work according to the comments from Geert but didn't have time to finish.
+Yes. Is it a problem (*)? If so, you need to use ifdeffery, since __maybe_unused is
+not for the ID tables.
 
-Especially I tried to remove the LEGACY_TIMER_TICK, but it doesn't work, and as it has been tested
-like this by you and most of the other m68k targets uses it I think I will let the patch with it.
+*) while justifying this you also need to show why it's a problem specific
+to the ACPI IDs and not a problem for OF ones, which we have tons of in the
+Linux kernel without any guards (ifdeffery).
 
-I'm going to update my patch to have a v2, at least to have fresh reviews.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Laurent
+
