@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440E541E075
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5029541E073
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352956AbhI3SBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352908AbhI3SBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:01:48 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94F9C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id e24so8331290oig.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fw8pwH1OA13DiwW71Gp8zTFcOzlqtHtiksx8vBnSuZo=;
-        b=m5+pnYPhp5Mbbl/i9v8Rayru7Xk0LHfsYZ/3ARwECIFS8Pg8nv5paLDPvYkwyh4Ca0
-         arVdov2yDLqKrEtQAVe7Byn4CiqcTi2C0JwPArKj6xt/qkc65HNDbv4HSUHo1BqhTjPc
-         dJdaY85okFWxMiOoGC5V6/loSkBmKHz8mYi/LACtdatdLYOB1mU5NHnLYXDlYmUbE7wJ
-         PLbg0ZkPm+Ysz8O0c2kUx+pvWoWDVe3+WSgEKpw9nHMvoH2AmvHIn8NUt8C1uZf+4KTq
-         hxPOTJ0Z0JDOrTp9TBwHkHbKXbwNaxX6R2HQgMghcbkMssONuWMb+Q58XNPQfoEcXHMA
-         njIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fw8pwH1OA13DiwW71Gp8zTFcOzlqtHtiksx8vBnSuZo=;
-        b=Nv8ydDZNXZQWD8qvW7jOQWxmM167idlga2hr/cTYRItyuIL9KkxhsMA/FGJPddacz7
-         64SUE33YOxlujxEH/YXU4e+WgFxKV3sm6ug2QomoHzLVfytTeYugBppzrSSJanZjzbPR
-         upCO6kpDyoNGLDmQQjhtcNWzXVuuiV1Yys5EH9xG007454d/tyowh7sViU6yOtRAVc4V
-         qJzmz1QxU06MFIfGkoj8O/AsiNRMC3FSU/AucfOioIwMduGh3KSsKZeMqsYf8Fr2RV39
-         qs9rMkHx0nHwpySBkDJISpa0UosZheCOQjNweVTKTH0CHCNUYgGx3oyOjJUOFIXpc0Uv
-         LD6Q==
-X-Gm-Message-State: AOAM531WOfoWrLpAujHobNuP5JSGNe8KI06o7JBrE0fq878G12lIZX63
-        E/RlfbrfqqZ/qq7d80gVm+hnRR3p+9W2vqsSSkrf2F2O
-X-Google-Smtp-Source: ABdhPJwXt1IhVLGQOfviPEsWczuXrnB2viox7TeVfyjdkXam/lIb60V/M9UNSLtcAmDLi1dT0ZBzUFXTJQRA5PgV35o=
-X-Received: by 2002:a05:6808:1141:: with SMTP id u1mr440287oiu.123.1633024805243;
- Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
+        id S1352945AbhI3SBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352908AbhI3SBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B559619F6;
+        Thu, 30 Sep 2021 17:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633024798;
+        bh=XqDuBOd5I+ZLfLeu4Zc8sAqKLHJkcyPDVnlaZ94W4Bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DQe0F7QUVdz2wES6cxy6eiIAFN9CWXMQztKUAENKkZ+QfqIj9vebhKMI62Iwg3TIf
+         b7FZ68MX07LelJYt67SneH0Am6SJfghn1tQwqKBxp+QgLiXtLxaE6BdSXamRRlzUfl
+         4jt5M6vDeJCK9B4npitCqTOGfaFWfc3yWz2HX3IMDsXtqBuEYNGXHBsa9FCaZhvJJz
+         UuuOSgbZChp0i2LFbIqhIZCzJkchGeboWS5qrIH0ndD8BgKJAXZ4ay7Gqt2KaESnBY
+         0AXRZURRsq5e2JMU7LLp+Je/Ohm5yKxFt6+4uiyiEu98LfrTae3Hha7EEI6TFmNwji
+         GcIzSrQcIk4Dg==
+Date:   Thu, 30 Sep 2021 10:59:57 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Stephen <stephenackerman16@gmail.com>, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: kvm crash in 5.14.1?
+Message-ID: <20210930175957.GA10573@magnolia>
+References: <2b5ca6d3-fa7b-5e2f-c353-f07dcff993c1@gmail.com>
+ <16c7a433-6e58-4213-bc00-5f6196fe22f5@gmail.com>
+ <YVSEZTCbFZ+HD/f0@google.com>
 MIME-Version: 1.0
-References: <20210930162302.2344542-1-nathan@kernel.org> <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
- <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
-In-Reply-To: <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 30 Sep 2021 13:59:54 -0400
-Message-ID: <CADnq5_N=x-PFvU2oYtLLSHcos1G_K=2qhSE0+1LS=zuBNov0JQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        "Koenig, Christian" <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVSEZTCbFZ+HD/f0@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 1:23 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Sep 30, 2021 at 10:10 AM Alex Deucher <alexdeucher@gmail.com> wrote:
-> >
-> > Applied.  Thanks!
-> >
-> > Alex
-> >
-> > On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > Clang warns:
->
-> Any chance AMDGPU folks can look into adding clang to the CI roster?
+On Wed, Sep 29, 2021 at 03:21:09PM +0000, Sean Christopherson wrote:
+> On Tue, Sep 28, 2021, Stephen wrote:
+> > Hello,
+> > 
+> > I got this crash again on 5.14.7 in the early morning of the 27th.
+> > Things hung up shortly after I'd gone to bed. Uptime was 1 day 9 hours 9
+> > minutes.
+> 
+> ...
+> 
+> > BUG: kernel NULL pointer dereference, address: 0000000000000068
+> > #PF: supervisor read access in kernel mode
+> > #PF: error_code(0x0000) - not-present page
+> > PGD 0 P4D 0
+> > Oops: 0000 [#1] SMP NOPTI
+> > CPU: 21 PID: 8494 Comm: CPU 7/KVM Tainted: G            E     5.14.7 #32
+> > Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS ELITE WIFI/X570
+> > AORUS ELITE WIFI, BIOS F35 07/08/2021
+> > RIP: 0010:internal_get_user_pages_fast+0x738/0xda0
+> > Code: 84 24 a0 00 00 00 65 48 2b 04 25 28 00 00 00 0f 85 54 06 00 00 48
+> > 81 c4 a8 00 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <48> 81 78
+> > 68 a0 a3 >
+> 
+> I haven't reproduced the crash, but the code signature (CMP against an absolute
+> address) is quite distinct, and is consistent across all three crashes.  I'm pretty
+> sure the issue is that page_is_secretmem() doesn't check for a null page->mapping,
+> e.g. if the page is truncated, which IIUC can happen in parallel since gup() doesn't
+> hold the lock.
+> 
+> I think this should fix the problems?
+> 
+> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> index 21c3771e6a56..988528b5da43 100644
+> --- a/include/linux/secretmem.h
+> +++ b/include/linux/secretmem.h
+> @@ -23,7 +23,7 @@ static inline bool page_is_secretmem(struct page *page)
+>         mapping = (struct address_space *)
+>                 ((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
+> 
+> -       if (mapping != page->mapping)
+> +       if (!mapping || mapping != page->mapping)
 
-We can look into it.  We may already be doing it for some groups.
+I'll roll this out on my vm host and try to re-run the mass fuzztest
+overnight, though IT claims they're going to kill power to the whole
+datacenter until Monday(!)...
 
-Alex
+--D
 
-> --
-> Thanks,
-> ~Nick Desaulniers
+>                 return false;
+> 
+>         return mapping->a_ops == &secretmem_aops;
