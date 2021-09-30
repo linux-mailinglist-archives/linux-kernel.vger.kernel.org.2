@@ -2,218 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A2E41D82F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAF341D838
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350233AbhI3K6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350207AbhI3K6J (ORCPT
+        id S1350242AbhI3K65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:58:57 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:43930 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350206AbhI3K6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:58:09 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C171BC061771
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:56:25 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id t8so9374506wri.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/VMupglYU4EOxZ9GIvUTD4Oa9Wz9bmjm6P6VPn5LJEQ=;
-        b=m1SFtJApbC2xkdEpuLj5DyxW/ZNBB3L7xGICBs7nWMebGOeAqWLF6G98j1uRrydwdz
-         kW9Wv8B1NalzEcHPk886QneW10d5dpY+3Cfp5doLRn5nJGPqcxYpgVOrCDaiAkMk35Y+
-         cQ1gpG0C3q0MtwU07e4bd2uwrs3jzj+7az1QyIuHHbCmmqs17OG/Caf9trFEvntoVxFc
-         enDWOVWJFBMJxHgnMAIenc/2yvQwwVMFRm+mDFqFI0YoriBV8IfPY9Q7E8oAXVvItZ7a
-         vbQnrhdeb7cVt2u22M7t3zvtzg4wL1e1HkQNCeqxcHkySWPWv3Ler0H4IflvMKjzDiI7
-         jC8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/VMupglYU4EOxZ9GIvUTD4Oa9Wz9bmjm6P6VPn5LJEQ=;
-        b=gCfnrunUcWpaLg5EHvm+ZQlMhDGe3EQklCaPEhS251kjx2XhLBMn6fgBjL9BH/dauI
-         BZfCjSLZxau3aOvaOJidGqVGWKzYNP7R2fiooOO6ooNOBZ9JBtt7o3RPiNPUu2w+X+0m
-         ELfiPUwji8SgidEt0eJ0V+H2RjgVsROiBxFo2xzsNu00lYAbC66daEnbsaK/GXifeW2q
-         edXjKJQxK58WS4h2czhmAdd4XlnG03mJu9w0mMy70ml59MPLi0Z1bKUxEChEyVU++Tnt
-         fUwp//tNMhxURB36K4EE2CvD1PfVzG3zq02DBLMFgubkqRDbS3OVZuj9UbE56lUaWmJp
-         cN2g==
-X-Gm-Message-State: AOAM533i+deJMdrOYN7DzZVuVR5bx/eP6prBGOujyV9qNRqLp7smurC9
-        B3Qz7icMAePpAgQKoKFsXq8krQ==
-X-Google-Smtp-Source: ABdhPJypOUvaFKcTlUycVS7eKZhECtrth44ZiCPYHEO6MZ0vTZaWDKWjEfaWkJeRfx6pupOWXq6ZEw==
-X-Received: by 2002:a5d:47cf:: with SMTP id o15mr989697wrc.394.1632999384182;
-        Thu, 30 Sep 2021 03:56:24 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id c7sm3413926wmq.13.2021.09.30.03.56.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 03:56:23 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:56:21 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <YVWX1fFB1L1K3Mnn@google.com>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <YVWCK5QO331rfhJJ@google.com>
- <CAMuHMdVkF--Oq_EBRq-8Wn=E5DyOVzgSNYwo8ujf18zRCJSL9Q@mail.gmail.com>
+        Thu, 30 Sep 2021 06:58:54 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 70F2944A024E;
+        Thu, 30 Sep 2021 12:57:09 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Date:   Thu, 30 Sep 2021 12:57:09 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v6 19/19] auxdisplay: ht16k33: Add LED support
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210914143835.511051-20-geert@linux-m68k.org>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
+ <20210914143835.511051-20-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdVkF--Oq_EBRq-8Wn=E5DyOVzgSNYwo8ujf18zRCJSL9Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+Hi Geert,
 
-> Hi Lee,
+On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+> Instantiate a single LED based on the "led" subnode in DT.
+> This allows the user to control display brightness and blinking (backed
+> by hardware support) through the LED class API and triggers, and exposes
+> the display color.  The LED will be named
+> "auxdisplay:<color>:<function>".
 > 
-> On Thu, Sep 30, 2021 at 11:23 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > I've taken the liberty of cherry-picking some of the points you have
-> > reiteratted a few times.  Hopefully I can help to address them
-> > adequently.
-> >
-> > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > > Reminder: these are essential drivers and all Exynos platforms must have
-> > > them as built-in (at least till someone really tests this on multiple
-> > > setups).
-> >
-> > > Therefore I don't agree with calling it a "problem" that we select
-> > > *necessary* drivers for supported platforms. It's by design - supported
-> > > platforms should receive them without ability to remove.
-> >
-> > > The selected drivers are essential for supported platforms.
-> >
-> > SoC specific drivers are only essential/necessary/required in
-> > images designed to execute solely on a platform that requires them.
+> When running in dot-matrix mode and if no "led" subnode is found, the
+> driver falls back to the traditional backlight mode, to preserve
+> backwards compatibility.
 > 
-> Why?
-
-Because without them the image wouldn't functional on any level.
-
-But you're right, there is still no requirement for it to be built-in.
-
-> > For a kernel image which is designed to be generic i.e. one that has
-> > the ability to boot on vast array of platforms, the drivers simply
-> > have to be *available*.
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
+> ---
+> v6:
+>   - Add Reviewed-by,
+>   - Reorder operations in ht16k33_led_probe() to ease future conversion
+>     to device properties,
 > 
-> If the drivers are really essential/necessary/required, this precludes
-> running the generic kernel image on the platform that requires them,
-> making the kernel not sufficiently generic.
-
-If they are not at all present, then yes.  However that is not what is
-being suggested.  The essential functionality will be provided.  Just
-not built-in.
-
-> > Forcing all H/W drivers that are only *potentially* utilised on *some*
-> > platforms as core binary built-ins doesn't make any technical sense.
-> > The two most important issues this causes are image size and a lack of
-> > configurability/flexibility relating to real-world application i.e.
-> > the one issue we already agreed upon; H/W or features that are too
-> > new (pre-release).
+> v5:
+>   - Add missing select NEW_LEDS,
 > 
-> True, if "potentially".  If not potentially, they must be included.
-
-I'm not sure what you're trying to say here.  Would you mind elaborating?
-
-> > Bloating a generic kernel with potentially hundreds of unnecessary
-> > drivers that will never be executed in the vast majority of instances
-> > doesn't achieve anything.  If we have a kernel image that has the
-> > ability to boot on 10's of architectures which have 10's of platforms
-> > each, that's a whole host of unused/wasted executable space.
+> v4:
+>   - Add missing select LEDS_CLASS,
 > 
-> The key here is if the driver is required or not to use the platform,
-> and why it is required.  If the requirement comes from some deficiency
-> in the kernel code or config system, it should be fixed, if possible.
-> And the fix should be tested.
-> If it cannot be fixed, the driver should be included, else it would
-> preclude running the generic kernel on the affected platform.
-
-Sorry, I'm not following.
-
-> > In order for vendors to work more closely with upstream, they need the
-> > ability to over-ride a *few* drivers to supplement them with some
-> > functionality which they believe provides them with a competitive edge
-> > (I think you called this "value-add" before) prior to the release of a
-> > device.  This is a requirement that cannot be worked around.
-> >
-> > By insisting on drivers (most of which will not be executed in the
-> > vast majority of cases) to be built-in, you are insisting on a
-> > downstream kernel fork, which all of us would like to avoid [0].
-> >
-> > [0] Full disclosure: part of my role at Linaro is to keep the Android
-> > kernel running as close to Mainline as possible and encourage/push the
-> > upstream-first mantra, hence my involvement with this and other sets.
-> > I assure you all intentions are good and honourable.  If you haven't
-> > already seen it, please see Todd's most recent update on the goals and
-> > status of GKI:
-> >
-> >   Article: https://tinyurl.com/saaen3sp
-> >   Video:   https://youtu.be/O_lCFGinFPM
-> >
-> > > We don't even know what are these unsupported, downstream platforms
-> > > you want customize kernel for. They cannot be audited, cannot be
-> > > compared.  Affecting upstream platforms just because
-> > > vendor/downstream does not want to mainline some code is
-> > > unacceptable. Please upstream your drivers and DTS.
-> >
-> > > You also mentioned downstream devices but without actually ever defining
-> > > them. Please be more specific. What SoC, what hardware?
-> >
-> > Accepting changes based on the proviso that vendors upstream all of
-> > their work-in-progress solutions is an unfair position.  We already
-> > discussed why upstreaming support for bleeding edge H/W and
-> > functionality is unrealistic in terms of competitive advantage.
-> >
-> > Besides, we might not be talking about new silicon at all (I don't
-> > believe anyone alluded to that).  The flexibility in configuration
-> > simply allows for generic upstream drivers to be swapped out for ones
-> > which may have more or slightly different functionality (that can't be
-> > publicly shared until release).
+> v3:
+>   - Remove unneeded C++ comment,
+>   - Use "err" instead of "error" to be consistent with existing driver
+>     naming style,
+>   - Make the creation of the LED device dependent on the presence of the
+>     "led" subnode in DT, so it can be used in dot-matrix mode too.
+>   - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
+>     all LED properties from DT, instead of manual LED name construction
+>     based on just the "color" property,
 > 
-> The replacement drivers are already a downstream kernel fork, which you
-> would like to avoid?
+> v2:
+>   - Use "auxdisplay" instead of DRIVER_NAME in LED name.
+> ---
+>  drivers/auxdisplay/Kconfig   |   2 +
+>  drivers/auxdisplay/ht16k33.c | 124 ++++++++++++++++++++++++++++++-----
+>  2 files changed, 109 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+> index 42fc7b155de09dbc..e32ef7f9945d49b2 100644
+> --- a/drivers/auxdisplay/Kconfig
+> +++ b/drivers/auxdisplay/Kconfig
+> @@ -176,6 +176,8 @@ config HT16K33
+>  	select FB_SYS_IMAGEBLIT
+>  	select INPUT_MATRIXKMAP
+>  	select FB_BACKLIGHT
+> +	select NEW_LEDS
+> +	select LEDS_CLASS
+>  	select LINEDISP
+>  	help
+>  	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index 3b555e119e326cec..89ee5b4b3dfccb68 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/backlight.h>
+>  #include <linux/input.h>
+>  #include <linux/input/matrix_keypad.h>
+> +#include <linux/leds.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/mm.h>
+> 
+> @@ -34,6 +35,10 @@
+> 
+>  #define REG_DISPLAY_SETUP		0x80
+>  #define REG_DISPLAY_SETUP_ON		BIT(0)
+> +#define REG_DISPLAY_SETUP_BLINK_OFF	(0 << 1)
+> +#define REG_DISPLAY_SETUP_BLINK_2HZ	(1 << 1)
+> +#define REG_DISPLAY_SETUP_BLINK_1HZ	(2 << 1)
+> +#define REG_DISPLAY_SETUP_BLINK_0HZ5	(3 << 1)
+> 
+>  #define REG_ROWINT_SET			0xA0
+>  #define REG_ROWINT_SET_INT_EN		BIT(0)
+> @@ -94,12 +99,14 @@ struct ht16k33_seg {
+>  struct ht16k33_priv {
+>  	struct i2c_client *client;
+>  	struct delayed_work work;
+> +	struct led_classdev led;
+>  	struct ht16k33_keypad keypad;
+>  	union {
+>  		struct ht16k33_fbdev fbdev;
+>  		struct ht16k33_seg seg;
+>  	};
+>  	enum display_type type;
+> +	uint8_t blink;
+>  };
+> 
+>  static const struct fb_fix_screeninfo ht16k33_fb_fix = {
+> @@ -158,7 +165,7 @@ static DEVICE_ATTR(map_seg14, 0644, map_seg_show, 
+> map_seg_store);
+> 
+>  static int ht16k33_display_on(struct ht16k33_priv *priv)
+>  {
+> -	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON;
+> +	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON | priv->blink;
+> 
+>  	return i2c_smbus_write_byte(priv->client, data);
+>  }
+> @@ -173,8 +180,10 @@ static int ht16k33_brightness_set(struct ht16k33_priv 
+> *priv,
+>  {
+>  	int err;
+> 
+> -	if (brightness == 0)
+> +	if (brightness == 0) {
+> +		priv->blink = REG_DISPLAY_SETUP_BLINK_OFF;
+>  		return ht16k33_display_off(priv);
+> +	}
+> 
+>  	err = ht16k33_display_on(priv);
+>  	if (err)
+> @@ -184,6 +193,49 @@ static int ht16k33_brightness_set(struct ht16k33_priv 
+> *priv,
+>  				    REG_BRIGHTNESS | (brightness - 1));
+>  }
+> 
+> +static int ht16k33_brightness_set_blocking(struct led_classdev *led_cdev,
+> +					   enum led_brightness brightness)
+> +{
+> +	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
+> +						 led);
+> +
+> +	return ht16k33_brightness_set(priv, brightness);
+> +}
+> +
+> +static int ht16k33_blink_set(struct led_classdev *led_cdev,
+> +			     unsigned long *delay_on, unsigned long *delay_off)
+> +{
+> +	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
+> +						 led);
+> +	unsigned int delay;
+> +	uint8_t blink;
+> +	int err;
+> +
+> +	if (!*delay_on && !*delay_off) {
+> +		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
+> +		delay = 1000;
+> +	} else if (*delay_on <= 750) {
+> +		blink = REG_DISPLAY_SETUP_BLINK_2HZ;
+> +		delay = 500;
+> +	} else if (*delay_on <= 1500) {
+> +		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
+> +		delay = 1000;
+> +	} else {
+> +		blink = REG_DISPLAY_SETUP_BLINK_0HZ5;
+> +		delay = 2000;
+> +	}
+> +
+> +	err = i2c_smbus_write_byte(priv->client,
+> +				   REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON |
+> +				   blink);
+> +	if (err)
+> +		return err;
+> +
+> +	priv->blink = blink;
+> +	*delay_on = *delay_off = delay;
+> +	return 0;
+> +}
+> +
+>  static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+>  {
+>  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> @@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct 
+> *work)
+>  	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
+>  }
+> 
+> +static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
+> +			     unsigned int brightness)
+> +{
+> +	struct led_init_data init_data = {};
+> +	struct device_node *node;
+> +	int err;
+> +
+> +	/* The LED is optional */
+> +	node = of_get_child_by_name(dev->of_node, "led");
+> +	if (!node)
+> +		return 0;
+> +
+> +	init_data.fwnode = of_fwnode_handle(node);
+> +	init_data.devicename = "auxdisplay";
+> +	init_data.devname_mandatory = true;
+> +
+> +	led->brightness_set_blocking = ht16k33_brightness_set_blocking;
+> +	led->blink_set = ht16k33_blink_set;
+> +	led->flags = LED_CORE_SUSPENDRESUME;
+> +	led->brightness = brightness;
+> +	led->max_brightness = MAX_BRIGHTNESS;
 
-Avoid, yes, absolutely.
+What do you think about adding a default trigger and making it 'backlight'?
 
-However, in the real world of competitive tech, other than in extreme
-cases such as; fully open source, community driven, cute embedded
-hobby platforms, there will always be changes required on-top of
-upstream projects.  Even as upstream kernel developers we need to
-understand and respect that.
+led->default_trigger = "blacklight";
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Or as an alternative, suggesting linux,default-trigger = "backlight" in the
+docs? Since the led class won't respond to blank events by just making it's
+function LED_FUNCTION_BACKLIGHT.
+
+led {
+	function = LED_FUNCTION_BACKLIGHT;
+	color = <LED_COLOR_ID_GREEN>;
+	linux,default-trigger = "backlight";
+};
+
+I noticed blanking is broken. The backlight device (or LED device with
+backlight trigger) doens't get notified when the framebuffer is blanked since
+the driver doesn't implement fb_blank.
+
+Right now:
+
+echo 1 > /sys/class/graphics/fb0/blank                                        
+                                                             |
+sh: write error: Invalid argument
+
+Due to: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/video/fbdev/core/fbmem.c?h=v5.15-rc3#n1078
+
+Something like this fixes it.
+
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 89ee5b4b3dfc..0883d5252c81 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -346,6 +346,15 @@ static int ht16k33_mmap(struct fb_info *info, struct 
+vm_area_struct *vma)
+         return vm_map_pages_zero(vma, &pages, 1);
+  }
+
++/*
++ * Blank events will be passed to the backlight device (or the LED device if
++ * it's trigger is 'backlight') when we return 0 here.
++ */
++static int ht16k33_blank(int blank, struct fb_info *info)
++{
++       return 0;
++}
++
+  static const struct fb_ops ht16k33_fb_ops = {
+         .owner = THIS_MODULE,
+         .fb_read = fb_sys_read,
+@@ -354,6 +363,7 @@ static const struct fb_ops ht16k33_fb_ops = {
+         .fb_copyarea = sys_copyarea,
+         .fb_imageblit = sys_imageblit,
+         .fb_mmap = ht16k33_mmap,
++       .fb_blank = ht16k33_blank,
+  };
+
+  /*
+
+Feel free to include (something like) this in the patch stack.
+
+
+> +
+> +	err = devm_led_classdev_register_ext(dev, led, &init_data);
+> +	if (err)
+> +		dev_err(dev, "Failed to register LED\n");
+
+You might want to call ht16k33_brightness_set(priv, brightness) here to get a
+know value into the display setup register (0x80).
+
+Right now if I enable hardware blinking and (soft)reboot my board it keeps on
+blinking even after a re-probe.
+
+> +
+> +	return err;
+> +}
+> +
+>  static int ht16k33_keypad_probe(struct i2c_client *client,
+>  				struct ht16k33_keypad *keypad)
+>  {
+> @@ -498,24 +579,28 @@ static int ht16k33_fbdev_probe(struct device *dev,
+> struct ht16k33_priv *priv,
+>  			       uint32_t brightness)
+>  {
+>  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> -	struct backlight_properties bl_props;
+> -	struct backlight_device *bl;
+> +	struct backlight_device *bl = NULL;
+>  	int err;
+> 
+> -	/* Backlight */
+> -	memset(&bl_props, 0, sizeof(struct backlight_properties));
+> -	bl_props.type = BACKLIGHT_RAW;
+> -	bl_props.max_brightness = MAX_BRIGHTNESS;
+> +	if (!priv->led.dev) {
+> +		/* backwards compatibility with DT lacking an led subnode */
+> +		struct backlight_properties bl_props;
+> 
+> -	bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev, priv,
+> -					    &ht16k33_bl_ops, &bl_props);
+> -	if (IS_ERR(bl)) {
+> -		dev_err(dev, "failed to register backlight\n");
+> -		return PTR_ERR(bl);
+> -	}
+> +		memset(&bl_props, 0, sizeof(struct backlight_properties));
+> +		bl_props.type = BACKLIGHT_RAW;
+> +		bl_props.max_brightness = MAX_BRIGHTNESS;
+> +
+> +		bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev,
+> +						    priv, &ht16k33_bl_ops,
+> +						    &bl_props);
+> +		if (IS_ERR(bl)) {
+> +			dev_err(dev, "failed to register backlight\n");
+> +			return PTR_ERR(bl);
+> +		}
+> 
+> -	bl->props.brightness = brightness;
+> -	ht16k33_bl_update_status(bl);
+> +		bl->props.brightness = brightness;
+> +		ht16k33_bl_update_status(bl);
+> +	}
+> 
+>  	/* Framebuffer (2 bytes per column) */
+>  	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
+> @@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct
+> ht16k33_priv *priv,
+>  	struct ht16k33_seg *seg = &priv->seg;
+>  	int err;
+> 
+> -	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+> +	err = ht16k33_brightness_set(priv, brightness);
+
+This looks like a bugfix for patch 17, maybe move this change there?
+
+>  	if (err)
+>  		return err;
+> 
+> @@ -653,6 +738,11 @@ static int ht16k33_probe(struct i2c_client *client)
+>  		dft_brightness = MAX_BRIGHTNESS;
+>  	}
+> 
+> +	/* LED */
+> +	err = ht16k33_led_probe(dev, &priv->led, dft_brightness);
+> +	if (err)
+> +		return err;
+> +
+>  	/* Keypad */
+>  	if (client->irq > 0) {
+>  		err = ht16k33_keypad_probe(client, &priv->keypad);
+
+Gr{oetje,eeting}s,
+Robin
