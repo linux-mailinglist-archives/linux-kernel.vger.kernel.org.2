@@ -2,152 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F5841D52B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457E641D535
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348975AbhI3IH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:07:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6556 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1349047AbhI3IGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:06:18 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U817oZ013790;
-        Thu, 30 Sep 2021 04:04:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kkPJmvW2xAXV762eAmF0Upv9MHk9Nfc9lsbyksb+m98=;
- b=XoGjjkWjNyd6g3nXdrU3kQU0Kk9mErirbOnCCSf/Ta8yT6ihYQwbQxlNfDQmO9Ixk1+T
- 9psKnivPSNT7ZJ+6dGNWLOqVt4F2FriIwMV+buX2kAW1CqRoPhNxgk5pm3RJlnimSZEi
- xJT7cEo52qk1IoRCXnMlRNhXXtbVAzOGjG6p4W7pCjxERwh2Hz7OlZAPbgzug+aoOpl9
- NKfJLCH/CGT5rxyJpt6GQXkPSCTeimC9y5OpXLEWb2kIIaD3rNgT1gwvZCGgS8KYSdNj
- LqChFFVHS0+KkBBfbSJkry8k5z9GiZQXZxEZ6LTGbFgsgMJr5EhdCtb4iRfuOzC+8Zmu rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bd6phkuxj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 04:04:33 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18U7DGkP024633;
-        Thu, 30 Sep 2021 04:04:33 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bd6phkuwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 04:04:32 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18U8268k006351;
-        Thu, 30 Sep 2021 08:04:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3b9udagswj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 08:04:30 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18U84QaG066106
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 08:04:26 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58A93A404D;
-        Thu, 30 Sep 2021 08:04:26 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B797A406D;
-        Thu, 30 Sep 2021 08:04:24 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.49.149])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Sep 2021 08:04:24 +0000 (GMT)
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        linux-s390@vger.kernel.org
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <bd0bc232-8527-a4c7-d9be-3b4541914412@de.ibm.com>
-Date:   Thu, 30 Sep 2021 10:04:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1349071AbhI3IJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:09:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:39175 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349131AbhI3IIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:08:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="286149407"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="286149407"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:05:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="476915768"
+Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.115])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:04:59 -0700
+Date:   Thu, 30 Sep 2021 16:05:23 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Oliver Sang <oliver.sang@intel.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        0day robot <lkp@intel.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [driver core]  eedc73d4f3:
+ BUG:kernel_reboot-without-warning_in_boot_stage
+Message-ID: <YVVtnrEn4wg7QVGs@rli9-dbox>
+References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
+ <20210929150240.GB12854@xsang-OptiPlex-9020>
+ <YVSCs7BDC6ODf+oZ@kroah.com>
+ <20210930055944.GA29843@xsang-OptiPlex-9020>
+ <YVVX3ir2DHg0FUxF@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210930012049.3780865-1-pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TSWvZ-IXC16uKbmTdBeW7eF2-vSbc9Pd
-X-Proofpoint-GUID: 4bTrRFDLcPRUF63OhNJLCQZMPF6C0G-s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_02,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 clxscore=1011
- lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVVX3ir2DHg0FUxF@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 08:23:26AM +0200, Greg KH wrote:
+> On Thu, Sep 30, 2021 at 01:59:44PM +0800, Oliver Sang wrote:
+> > Hi, Greg KH,
+> > 
+> > On Wed, Sep 29, 2021 at 05:13:55PM +0200, Greg KH wrote:
+> > > On Wed, Sep 29, 2021 at 11:02:40PM +0800, kernel test robot wrote:
+> > > > 
+> > > > 
+> > > > Greeting,
+> > > > 
+> > > > FYI, we noticed the following commit (built with gcc-9):
+> > > > 
+> > > > commit: eedc73d4f330cf7a8d18d64f327837ae9a00d003 ("[PATCH] driver core: Switch to using the new API kobj_to_dev()")
+> > > > url: https://github.com/0day-ci/linux/commits/Yang-Li/driver-core-Switch-to-using-the-new-API-kobj_to_dev/20210929-102216
+> > > > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+> > > 
+> > > There is no such commit in my tree, or anywhere else I can see, so I
+> > > have no idea what is happening here :(
+> > > 
+> > 
+> > this report was sent to Yang Li, who is the patch author.
+> > https://lore.kernel.org/lkml/1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com/
+> > 
+> > since Yang sent the patch to you, so our Rot automatically add you in
+> > the Cc list.
+> 
+> That patch was sent back on March 1.  And was instantly rejected for the
+> obvious reason it was never tested :)
+> 
+> Why is 0-day running on such old changes now?
+sorry about this Greg, that we have a storage crash in last 5 days, and
+the data seems not consistent after we recovered that old patches are
+re-scanned to be tested. We will manually check the existing data to
+avoid test old ones.
 
+> 
+> And it is not obvious that this is being run on an email submission at
+> all, where would I have found that information in this response?  I see
+> a git id that points to a kernel tree.  No email link at all.
+We will improve this in our report to point out the original patch mail
+link whenever possible. Currently we show the git to provide the branch
+that we apply such mail patch for author to reproduce. But definitely,
+it is clearer to show explicitly that this is test against the mail patch.
 
-Am 30.09.21 um 03:20 schrieb Halil Pasic:
-> This patch fixes a regression introduced by commit 82e89ea077b9
-> ("virtio-blk: Add validation for block size in config space") and
-> enables similar checks in verify() on big endian platforms.
 > 
-> The problem with checking multi-byte config fields in the verify
-> callback, on big endian platforms, and with a possibly transitional
-> device is the following. The verify() callback is called between
-> config->get_features() and virtio_finalize_features(). That we have a
-> device that offered F_VERSION_1 then we have the following options
-> either the device is transitional, and then it has to present the legacy
-> interface, i.e. a big endian config space until F_VERSION_1 is
-> negotiated, or we have a non-transitional device, which makes
-> F_VERSION_1 mandatory, and only implements the non-legacy interface and
-> thus presents a little endian config space. Because at this point we
-> can't know if the device is transitional or non-transitional, we can't
-> know do we need to byte swap or not.
+> thanks,
 > 
-> The virtio spec explicitly states that the driver MAY read config
-> between reading and writing the features so saying that first accessing
-> the config before feature negotiation is done is not an option. The
-> specification ain't clear about setting the features multiple times
-> before FEATURES_OK, so I guess that should be fine.
-> 
-> I don't consider this patch super clean, but frankly I don't think we
-> have a ton of options. Another option that may or man not be cleaner,
-> but is also IMHO much uglier is to figure out whether the device is
-> transitional by rejecting _F_VERSION_1, then resetting it and proceeding
-> according tho what we have figured out, hoping that the characteristics
-> of the device didn't change.
-> 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> Reported-by: markver@us.ibm.com
-
-To make sure that it lands there, meybe add
-cc stable 5.14
-> ---
->   drivers/virtio/virtio.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index 0a5b54034d4b..9dc3cfa17b1c 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
->   		if (device_features & (1ULL << i))
->   			__virtio_set_bit(dev, i);
->   
-> +	/* Write back features before validate to know endianness */
-> +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
-> +		dev->config->finalize_features(dev);
-> +
->   	if (drv->validate) {
->   		err = drv->validate(dev);
->   		if (err)
-> 
-> base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
-> 
+> greg k-h
