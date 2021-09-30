@@ -2,438 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DE41D0FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9810541D106
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347632AbhI3BiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 21:38:25 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51992 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347601AbhI3BiT (ORCPT
+        id S1347655AbhI3BnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 21:43:10 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:60643 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347415AbhI3BnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:38:19 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F25A920B57C6;
-        Wed, 29 Sep 2021 18:36:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F25A920B57C6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1632965798;
-        bh=yVz0SRDypuQEZocLCWnQntJ8lEJf3vm2ezp/P8Dna+U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lBUkWpbPpVd9BaaxFAoiN0vb2ihlgCy1Y9fMuGAPTPaau8jutUdeUxzJYmlweJwxd
-         awgI80s3XRA0+HzhKF+JNFlE4yHvteGkv7RrugGJX+PSEyrO2AGhoOemJSFu4u+193
-         EswrQJSOZY1Sl1hNs09s+DkFr0eoz4Ht3q6gQweU=
-Received: by mail-pf1-f176.google.com with SMTP id s55so2455704pfw.4;
-        Wed, 29 Sep 2021 18:36:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533+VC8NjtQy580v/vpFA93GaXQZgp5fxp51NLtEX+fiuVZj69G0
-        BWTPLXxA6m/Oa/Jbrk588XPW+sJzCtEWiB+cif8=
-X-Google-Smtp-Source: ABdhPJwIFxgELAv6RTBRlOIltya6ebwo7t7pmJOL/o54PRlNSmUODZm9wLa6UB5fbLYUKtIdqxM3eFQlhSs+yNWlaQE=
-X-Received: by 2002:a63:24a:: with SMTP id 71mr2589602pgc.285.1632965797303;
- Wed, 29 Sep 2021 18:36:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929172234.31620-1-mcroce@linux.microsoft.com>
- <20210929172234.31620-2-mcroce@linux.microsoft.com> <CAJF2gTRSVeUOwmaUcpMJL+jOofvX5iWLRLCfMajQcut_T409qA@mail.gmail.com>
-In-Reply-To: <CAJF2gTRSVeUOwmaUcpMJL+jOofvX5iWLRLCfMajQcut_T409qA@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Thu, 30 Sep 2021 03:36:01 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1wHVY-yoUUDxT1mhv8HV=cmHZSwMP+8r-2CzNAYEn4DQ@mail.gmail.com>
-Message-ID: <CAFnufp1wHVY-yoUUDxT1mhv8HV=cmHZSwMP+8r-2CzNAYEn4DQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] riscv: optimized memcpy
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Wed, 29 Sep 2021 21:43:09 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HKbYx4gP4z4xR9;
+        Thu, 30 Sep 2021 11:41:25 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632966086;
+        bh=7qg2Fwc95KhARCTFHd1qt2bTSiCfEua6E/UBMlkGK5k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=C8FPByhrqplfQZJZvQl6/+K6AXLtFwgTlOCXWVmkmfEPVCwnlaMWMyJdxHcMk5dop
+         rdvji2ELuMmaOYZSYj86Ce0vjqpEvig5ocl1SL+dvoBdW06iX434F2Hp4S+ZfVgrDC
+         akdxfXXyYaXHKRj39864+l7wkyc6toyrCTk5QNf7dMU4P/5qPmIkcMJUAvaDU5ScBY
+         RLbD/9TO5jRyphpdI1CD0kfVLNMcHmkZF4DSJPdgn8rLswLjA38JptLORvFJ5HihrC
+         RG5lFyGF8VJHJicqbAh20efx3Bq41Tj2KtBhFwFFLcJlKBsicJ3dnyWni+kONUobzo
+         bZ2Gjb8umcq+Q==
+Date:   Thu, 30 Sep 2021 11:41:24 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210930114124.68a76832@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/iARep1OtUpfU1T8_0NGqEDB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 3:25 AM Guo Ren <guoren@kernel.org> wrote:
->
-> On Thu, Sep 30, 2021 at 1:22 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> >
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >
-> > Write a C version of memcpy() which uses the biggest data size allowed,
-> > without generating unaligned accesses.
-> >
-> > The procedure is made of three steps:
-> > First copy data one byte at time until the destination buffer is aligned
-> > to a long boundary.
-> > Then copy the data one long at time shifting the current and the next u8
-> > to compose a long at every cycle.
-> > Finally, copy the remainder one byte at time.
-> >
-> > On a BeagleV, the TCP RX throughput increased by 45%:
-> >
-> > before:
-> >
-> > $ iperf3 -c beaglev
-> > Connecting to host beaglev, port 5201
-> > [  5] local 192.168.85.6 port 44840 connected to 192.168.85.48 port 5201
-> > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> > [  5]   0.00-1.00   sec  76.4 MBytes   641 Mbits/sec   27    624 KBytes
-> > [  5]   1.00-2.00   sec  72.5 MBytes   608 Mbits/sec    0    708 KBytes
-> > [  5]   2.00-3.00   sec  73.8 MBytes   619 Mbits/sec   10    451 KBytes
-> > [  5]   3.00-4.00   sec  72.5 MBytes   608 Mbits/sec    0    564 KBytes
-> > [  5]   4.00-5.00   sec  73.8 MBytes   619 Mbits/sec    0    658 KBytes
-> > [  5]   5.00-6.00   sec  73.8 MBytes   619 Mbits/sec   14    522 KBytes
-> > [  5]   6.00-7.00   sec  73.8 MBytes   619 Mbits/sec    0    621 KBytes
-> > [  5]   7.00-8.00   sec  72.5 MBytes   608 Mbits/sec    0    706 KBytes
-> > [  5]   8.00-9.00   sec  73.8 MBytes   619 Mbits/sec   20    580 KBytes
-> > [  5]   9.00-10.00  sec  73.8 MBytes   619 Mbits/sec    0    672 KBytes
-> > - - - - - - - - - - - - - - - - - - - - - - - - -
-> > [ ID] Interval           Transfer     Bitrate         Retr
-> > [  5]   0.00-10.00  sec   736 MBytes   618 Mbits/sec   71             sender
-> > [  5]   0.00-10.01  sec   733 MBytes   615 Mbits/sec                  receiver
-> >
-> > after:
-> >
-> > $ iperf3 -c beaglev
-> > Connecting to host beaglev, port 5201
-> > [  5] local 192.168.85.6 port 44864 connected to 192.168.85.48 port 5201
-> > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> > [  5]   0.00-1.00   sec   109 MBytes   912 Mbits/sec   48    559 KBytes
-> > [  5]   1.00-2.00   sec   108 MBytes   902 Mbits/sec    0    690 KBytes
-> > [  5]   2.00-3.00   sec   106 MBytes   891 Mbits/sec   36    396 KBytes
-> > [  5]   3.00-4.00   sec   108 MBytes   902 Mbits/sec    0    567 KBytes
-> > [  5]   4.00-5.00   sec   106 MBytes   891 Mbits/sec    0    699 KBytes
-> > [  5]   5.00-6.00   sec   106 MBytes   891 Mbits/sec   32    414 KBytes
-> > [  5]   6.00-7.00   sec   106 MBytes   891 Mbits/sec    0    583 KBytes
-> > [  5]   7.00-8.00   sec   106 MBytes   891 Mbits/sec    0    708 KBytes
-> > [  5]   8.00-9.00   sec   106 MBytes   891 Mbits/sec   28    433 KBytes
-> > [  5]   9.00-10.00  sec   108 MBytes   902 Mbits/sec    0    591 KBytes
-> > - - - - - - - - - - - - - - - - - - - - - - - - -
-> > [ ID] Interval           Transfer     Bitrate         Retr
-> > [  5]   0.00-10.00  sec  1.04 GBytes   897 Mbits/sec  144             sender
-> > [  5]   0.00-10.01  sec  1.04 GBytes   894 Mbits/sec                  receiver
-> >
-> > And the decreased CPU time of the memcpy() is observable with perf top.
-> > This is the `perf top -Ue task-clock` output when doing the test:
-> >
-> > before:
-> >
-> > Overhead  Shared O  Symbol
-> >   42.22%  [kernel]  [k] memcpy
-> >   35.00%  [kernel]  [k] __asm_copy_to_user
-> >    3.50%  [kernel]  [k] sifive_l2_flush64_range
-> >    2.30%  [kernel]  [k] stmmac_napi_poll_rx
-> >    1.11%  [kernel]  [k] memset
-> >
-> > after:
-> >
-> > Overhead  Shared O  Symbol
-> >   45.69%  [kernel]  [k] __asm_copy_to_user
-> >   29.06%  [kernel]  [k] memcpy
-> >    4.09%  [kernel]  [k] sifive_l2_flush64_range
-> >    2.77%  [kernel]  [k] stmmac_napi_poll_rx
-> >    1.24%  [kernel]  [k] memset
-> >
-> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> >  arch/riscv/include/asm/string.h |   8 ++-
-> >  arch/riscv/kernel/riscv_ksyms.c |   2 -
-> >  arch/riscv/lib/Makefile         |   2 +-
-> >  arch/riscv/lib/memcpy.S         | 108 --------------------------------
-> >  arch/riscv/lib/string.c         |  90 ++++++++++++++++++++++++++
-> >  5 files changed, 97 insertions(+), 113 deletions(-)
-> >  delete mode 100644 arch/riscv/lib/memcpy.S
-> >  create mode 100644 arch/riscv/lib/string.c
-> >
-> > diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
-> > index 909049366555..6b5d6fc3eab4 100644
-> > --- a/arch/riscv/include/asm/string.h
-> > +++ b/arch/riscv/include/asm/string.h
-> > @@ -12,9 +12,13 @@
-> >  #define __HAVE_ARCH_MEMSET
-> >  extern asmlinkage void *memset(void *, int, size_t);
-> >  extern asmlinkage void *__memset(void *, int, size_t);
-> > +
-> > +#ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
-> What's the problem with the -O3 & -Os? If the user uses
-> CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3 that will cause bad performance
-> for memcpy?
-> Seems asm version is more compatible?
->
-> >  #define __HAVE_ARCH_MEMCPY
-> > -extern asmlinkage void *memcpy(void *, const void *, size_t);
-> > -extern asmlinkage void *__memcpy(void *, const void *, size_t);
-> > +extern void *memcpy(void *dest, const void *src, size_t count);
-> > +extern void *__memcpy(void *dest, const void *src, size_t count);
-> > +#endif
-> > +
-> >  #define __HAVE_ARCH_MEMMOVE
-> >  extern asmlinkage void *memmove(void *, const void *, size_t);
-> >  extern asmlinkage void *__memmove(void *, const void *, size_t);
-> > diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
-> > index 5ab1c7e1a6ed..3f6d512a5b97 100644
-> > --- a/arch/riscv/kernel/riscv_ksyms.c
-> > +++ b/arch/riscv/kernel/riscv_ksyms.c
-> > @@ -10,8 +10,6 @@
-> >   * Assembly functions that may be used (directly or indirectly) by modules
-> >   */
-> >  EXPORT_SYMBOL(memset);
-> > -EXPORT_SYMBOL(memcpy);
-> >  EXPORT_SYMBOL(memmove);
-> >  EXPORT_SYMBOL(__memset);
-> > -EXPORT_SYMBOL(__memcpy);
-> >  EXPORT_SYMBOL(__memmove);
-> > diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-> > index 25d5c9664e57..2ffe85d4baee 100644
-> > --- a/arch/riscv/lib/Makefile
-> > +++ b/arch/riscv/lib/Makefile
-> > @@ -1,9 +1,9 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  lib-y                  += delay.o
-> > -lib-y                  += memcpy.o
-> >  lib-y                  += memset.o
-> >  lib-y                  += memmove.o
-> >  lib-$(CONFIG_MMU)      += uaccess.o
-> >  lib-$(CONFIG_64BIT)    += tishift.o
-> > +lib-$(CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE) += string.o
-> >
-> >  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> > diff --git a/arch/riscv/lib/memcpy.S b/arch/riscv/lib/memcpy.S
-> > deleted file mode 100644
-> > index 51ab716253fa..000000000000
-> > --- a/arch/riscv/lib/memcpy.S
-> > +++ /dev/null
-> > @@ -1,108 +0,0 @@
-> > -/* SPDX-License-Identifier: GPL-2.0-only */
-> > -/*
-> > - * Copyright (C) 2013 Regents of the University of California
-> > - */
-> > -
-> > -#include <linux/linkage.h>
-> > -#include <asm/asm.h>
-> > -
-> > -/* void *memcpy(void *, const void *, size_t) */
-> > -ENTRY(__memcpy)
-> > -WEAK(memcpy)
-> > -       move t6, a0  /* Preserve return value */
-> > -
-> > -       /* Defer to byte-oriented copy for small sizes */
-> > -       sltiu a3, a2, 128
-> > -       bnez a3, 4f
-> > -       /* Use word-oriented copy only if low-order bits match */
-> > -       andi a3, t6, SZREG-1
-> > -       andi a4, a1, SZREG-1
-> > -       bne a3, a4, 4f
-> > -
-> > -       beqz a3, 2f  /* Skip if already aligned */
-> > -       /*
-> > -        * Round to nearest double word-aligned address
-> > -        * greater than or equal to start address
-> > -        */
-> > -       andi a3, a1, ~(SZREG-1)
-> > -       addi a3, a3, SZREG
-> > -       /* Handle initial misalignment */
-> > -       sub a4, a3, a1
-> > -1:
-> > -       lb a5, 0(a1)
-> > -       addi a1, a1, 1
-> > -       sb a5, 0(t6)
-> > -       addi t6, t6, 1
-> > -       bltu a1, a3, 1b
-> > -       sub a2, a2, a4  /* Update count */
-> > -
-> > -2:
-> > -       andi a4, a2, ~((16*SZREG)-1)
-> > -       beqz a4, 4f
-> > -       add a3, a1, a4
-> > -3:
-> > -       REG_L a4,       0(a1)
-> > -       REG_L a5,   SZREG(a1)
-> > -       REG_L a6, 2*SZREG(a1)
-> > -       REG_L a7, 3*SZREG(a1)
-> > -       REG_L t0, 4*SZREG(a1)
-> > -       REG_L t1, 5*SZREG(a1)
-> > -       REG_L t2, 6*SZREG(a1)
-> > -       REG_L t3, 7*SZREG(a1)
-> > -       REG_L t4, 8*SZREG(a1)
-> > -       REG_L t5, 9*SZREG(a1)
-> > -       REG_S a4,       0(t6)
-> > -       REG_S a5,   SZREG(t6)
-> > -       REG_S a6, 2*SZREG(t6)
-> > -       REG_S a7, 3*SZREG(t6)
-> > -       REG_S t0, 4*SZREG(t6)
-> > -       REG_S t1, 5*SZREG(t6)
-> > -       REG_S t2, 6*SZREG(t6)
-> > -       REG_S t3, 7*SZREG(t6)
-> > -       REG_S t4, 8*SZREG(t6)
-> > -       REG_S t5, 9*SZREG(t6)
-> > -       REG_L a4, 10*SZREG(a1)
-> > -       REG_L a5, 11*SZREG(a1)
-> > -       REG_L a6, 12*SZREG(a1)
-> > -       REG_L a7, 13*SZREG(a1)
-> > -       REG_L t0, 14*SZREG(a1)
-> > -       REG_L t1, 15*SZREG(a1)
-> > -       addi a1, a1, 16*SZREG
-> > -       REG_S a4, 10*SZREG(t6)
-> > -       REG_S a5, 11*SZREG(t6)
-> > -       REG_S a6, 12*SZREG(t6)
-> > -       REG_S a7, 13*SZREG(t6)
-> > -       REG_S t0, 14*SZREG(t6)
-> > -       REG_S t1, 15*SZREG(t6)
-> > -       addi t6, t6, 16*SZREG
-> > -       bltu a1, a3, 3b
-> > -       andi a2, a2, (16*SZREG)-1  /* Update count */
-> > -
-> > -4:
-> > -       /* Handle trailing misalignment */
-> > -       beqz a2, 6f
-> > -       add a3, a1, a2
-> > -
-> > -       /* Use word-oriented copy if co-aligned to word boundary */
-> > -       or a5, a1, t6
-> > -       or a5, a5, a3
-> > -       andi a5, a5, 3
-> > -       bnez a5, 5f
-> > -7:
-> > -       lw a4, 0(a1)
-> > -       addi a1, a1, 4
-> > -       sw a4, 0(t6)
-> > -       addi t6, t6, 4
-> > -       bltu a1, a3, 7b
-> > -
-> > -       ret
-> > -
-> > -5:
-> > -       lb a4, 0(a1)
-> > -       addi a1, a1, 1
-> > -       sb a4, 0(t6)
-> > -       addi t6, t6, 1
-> > -       bltu a1, a3, 5b
-> > -6:
-> > -       ret
-> > -END(__memcpy)
-> > diff --git a/arch/riscv/lib/string.c b/arch/riscv/lib/string.c
-> > new file mode 100644
-> > index 000000000000..bfc912ee23f8
-> > --- /dev/null
-> > +++ b/arch/riscv/lib/string.c
-> > @@ -0,0 +1,90 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * String functions optimized for hardware which doesn't
-> > + * handle unaligned memory accesses efficiently.
-> > + *
-> > + * Copyright (C) 2021 Matteo Croce
-> > + */
-> > +
-> > +#include <linux/types.h>
-> > +#include <linux/module.h>
-> > +
-> > +/* Minimum size for a word copy to be convenient */
-> > +#define BYTES_LONG     sizeof(long)
-> > +#define WORD_MASK      (BYTES_LONG - 1)
-> > +#define MIN_THRESHOLD  (BYTES_LONG * 2)
-> > +
-> > +/* convenience union to avoid cast between different pointer types */
-> > +union types {
-> > +       u8 *as_u8;
-> > +       unsigned long *as_ulong;
-> > +       uintptr_t as_uptr;
-> > +};
-> > +
-> > +union const_types {
-> > +       const u8 *as_u8;
-> > +       unsigned long *as_ulong;
-> > +       uintptr_t as_uptr;
-> > +};
-> > +
-> > +void *__memcpy(void *dest, const void *src, size_t count)
-> How about using __attribute__((optimize("-O2"))) here to replace your
-> previous "#ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE"?
->
-> > +{
-> > +       union const_types s = { .as_u8 = src };
-> > +       union types d = { .as_u8 = dest };
-> > +       int distance = 0;
-> > +
-> > +       if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-> > +               if (count < MIN_THRESHOLD)
-> > +                       goto copy_remainder;
-> > +
-> > +               /* Copy a byte at time until destination is aligned. */
-> > +               for (; d.as_uptr & WORD_MASK; count--)
-> > +                       *d.as_u8++ = *s.as_u8++;
-> > +
-> > +               distance = s.as_uptr & WORD_MASK;
-> > +       }
-> > +
-> > +       if (distance) {
-> > +               unsigned long last, next;
-> > +
-> > +               /*
-> > +                * s is distance bytes ahead of d, and d just reached
-> > +                * the alignment boundary. Move s backward to word align it
-> > +                * and shift data to compensate for distance, in order to do
-> > +                * word-by-word copy.
-> > +                */
-> > +               s.as_u8 -= distance;
-> > +
-> > +               next = s.as_ulong[0];
-> > +               for (; count >= BYTES_LONG; count -= BYTES_LONG) {
-> > +                       last = next;
-> > +                       next = s.as_ulong[1];
-> > +
-> > +                       d.as_ulong[0] = last >> (distance * 8) |
-> > +                                       next << ((BYTES_LONG - distance) * 8);
-> > +
-> > +                       d.as_ulong++;
-> > +                       s.as_ulong++;
-> > +               }
-> > +
-> > +               /* Restore s with the original offset. */
-> > +               s.as_u8 += distance;
-> > +       } else {
-> > +               /*
-> > +                * If the source and dest lower bits are the same, do a simple
-> > +                * 32/64 bit wide copy.
-> > +                */
-> > +               for (; count >= BYTES_LONG; count -= BYTES_LONG)
-> > +                       *d.as_ulong++ = *s.as_ulong++;
-> > +       }
-> > +
-> > +copy_remainder:
-> > +       while (count--)
-> > +               *d.as_u8++ = *s.as_u8++;
-> > +
-> > +       return dest;
-> > +}
-> > +EXPORT_SYMBOL(__memcpy);
-> > +
-> > +void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);
-> > +EXPORT_SYMBOL(memcpy);
-> > --
-> > 2.31.1
-> >
->
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+--Sig_/iARep1OtUpfU1T8_0NGqEDB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If CONFIG_CC_OPTIMIZE_FOR_SIZE I fallback to the generic
-implementations, which are very small.
-It's just an optimization to save more space when -Os is used.
+Hi all,
 
-CC_OPTIMIZE_FOR_PERFORMANCE_O3 is ARC specific.
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Regards,
--- 
-per aspera ad upstream
+  drivers/net/phy/bcm7xxx.c
+
+between commit:
+
+  d88fd1b546ff ("net: phy: bcm7xxx: Fixed indirect MMD operations")
+
+from the net tree and commit:
+
+  f68d08c437f9 ("net: phy: bcm7xxx: Add EPHY entry for 72165")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/phy/bcm7xxx.c
+index 27b6a3f507ae,3a29a1493ff1..000000000000
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@@ -415,93 -398,190 +415,277 @@@ static int bcm7xxx_28nm_ephy_config_ini
+  	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+  }
+ =20
+ +#define MII_BCM7XXX_REG_INVALID	0xff
+ +
+ +static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
+ +{
+ +	switch (regnum) {
+ +	case MDIO_CTRL1:
+ +		return MII_BCM7XXX_SHD_3_PCS_CTRL;
+ +	case MDIO_STAT1:
+ +		return MII_BCM7XXX_SHD_3_PCS_STATUS;
+ +	case MDIO_PCS_EEE_ABLE:
+ +		return MII_BCM7XXX_SHD_3_EEE_CAP;
+ +	case MDIO_AN_EEE_ADV:
+ +		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
+ +	case MDIO_AN_EEE_LPABLE:
+ +		return MII_BCM7XXX_SHD_3_EEE_LP;
+ +	case MDIO_PCS_EEE_WK_ERR:
+ +		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
+ +	default:
+ +		return MII_BCM7XXX_REG_INVALID;
+ +	}
+ +}
+ +
+ +static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
+ +{
+ +	return devnum =3D=3D MDIO_MMD_AN || devnum =3D=3D MDIO_MMD_PCS;
+ +}
+ +
+ +static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
+ +				      int devnum, u16 regnum)
+ +{
+ +	u8 shd =3D bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
+ +	int ret;
+ +
+ +	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
+ +	    shd =3D=3D MII_BCM7XXX_REG_INVALID)
+ +		return -EOPNOTSUPP;
+ +
+ +	/* set shadow mode 2 */
+ +	ret =3D __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
+ +				 MII_BCM7XXX_SHD_MODE_2, 0);
+ +	if (ret < 0)
+ +		return ret;
+ +
+ +	/* Access the desired shadow register address */
+ +	ret =3D __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
+ +	if (ret < 0)
+ +		goto reset_shadow_mode;
+ +
+ +	ret =3D __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
+ +
+ +reset_shadow_mode:
+ +	/* reset shadow mode 2 */
+ +	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
+ +			   MII_BCM7XXX_SHD_MODE_2);
+ +	return ret;
+ +}
+ +
+ +static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
+ +				       int devnum, u16 regnum, u16 val)
+ +{
+ +	u8 shd =3D bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
+ +	int ret;
+ +
+ +	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
+ +	    shd =3D=3D MII_BCM7XXX_REG_INVALID)
+ +		return -EOPNOTSUPP;
+ +
+ +	/* set shadow mode 2 */
+ +	ret =3D __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
+ +				 MII_BCM7XXX_SHD_MODE_2, 0);
+ +	if (ret < 0)
+ +		return ret;
+ +
+ +	/* Access the desired shadow register address */
+ +	ret =3D __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
+ +	if (ret < 0)
+ +		goto reset_shadow_mode;
+ +
+ +	/* Write the desired value in the shadow register */
+ +	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
+ +
+ +reset_shadow_mode:
+ +	/* reset shadow mode 2 */
+ +	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
+ +				  MII_BCM7XXX_SHD_MODE_2);
+ +}
+ +
++ static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
++ {
++ 	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
++=20
++ 	/* Reset PHY */
++ 	tmp =3D genphy_soft_reset(phydev);
++ 	if (tmp)
++ 		return tmp;
++=20
++ 	/* Reset AFE and PLL */
++ 	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
++ 	/* Clear reset */
++ 	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
++=20
++ 	/* Write PLL/AFE control register to select 54MHz crystal */
++ 	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
++ 	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
++=20
++ 	/* Change Ka,Kp,Ki to pdiv=3D1 */
++ 	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
++ 	/* Configuration override */
++ 	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
++=20
++ 	/* Change PLL_NDIV and PLL_NUDGE */
++ 	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
++ 	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
++=20
++ 	/* Reference frequency is 54Mhz, config_mode[15:14] =3D 3 (low
++ 	 * phase)
++ 	 */
++ 	bcm_phy_write_misc(phydev, 0x0030, 0x0003, 0xc036);
++=20
++ 	/* Initialize bypass mode */
++ 	bcm_phy_write_misc(phydev, 0x0032, 0x0003, 0x0000);
++ 	/* Bypass code, default: VCOCLK enabled */
++ 	bcm_phy_write_misc(phydev, 0x0033, 0x0000, 0x0002);
++ 	/* LDOs at default setting */
++ 	bcm_phy_write_misc(phydev, 0x0030, 0x0002, 0x01c0);
++ 	/* Release PLL reset */
++ 	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0001);
++=20
++ 	/* Bandgap curvature correction to correct default */
++ 	bcm_phy_write_misc(phydev, 0x0038, 0x0000, 0x0010);
++=20
++ 	/* Run RCAL */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x0038);
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003b);
++ 	udelay(2);
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003f);
++ 	mdelay(5);
++=20
++ 	/* AFE_CAL_CONFIG_0, Vref=3D1000, Target=3D10, averaging enabled */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x1c82);
++ 	/* AFE_CAL_CONFIG_0, no reset and analog powerup */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e82);
++ 	udelay(2);
++ 	/* AFE_CAL_CONFIG_0, start calibration */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f82);
++ 	udelay(100);
++ 	/* AFE_CAL_CONFIG_0, clear start calibration, set HiBW */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e86);
++ 	udelay(2);
++ 	/* AFE_CAL_CONFIG_0, start calibration with hi BW mode set */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f86);
++ 	udelay(100);
++=20
++ 	/* Adjust 10BT amplitude additional +7% and 100BT +2% */
++ 	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7ea);
++ 	/* Adjust 1G mode amplitude and 1G testmode1 */
++ 	bcm_phy_write_misc(phydev, 0x0038, 0x0002, 0xede0);
++=20
++ 	/* Read CORE_EXPA9 */
++ 	tmp =3D bcm_phy_read_exp(phydev, 0x00a9);
++ 	/* CORE_EXPA9[6:1] is rcalcode[5:0] */
++ 	rcalcode =3D (tmp & 0x7e) / 2;
++ 	/* Correct RCAL code + 1 is -1% rprogr, LP: +16 */
++ 	rcalnewcodelp =3D rcalcode + 16;
++ 	/* Correct RCAL code + 1 is -15 rprogr, 11: +10 */
++ 	rcalnewcode11 =3D rcalcode + 10;
++ 	/* Saturate if necessary */
++ 	if (rcalnewcodelp > 0x3f)
++ 		rcalnewcodelp =3D 0x3f;
++ 	if (rcalnewcode11 > 0x3f)
++ 		rcalnewcode11 =3D 0x3f;
++ 	/* REXT=3D1 BYP=3D1 RCAL_st1<5:0>=3Dnew rcal code */
++ 	tmp =3D 0x00f8 + rcalnewcodelp * 256;
++ 	/* Program into AFE_CAL_CONFIG_2 */
++ 	bcm_phy_write_misc(phydev, 0x0039, 0x0003, tmp);
++ 	/* AFE_BIAS_CONFIG_0 10BT bias code (Bias: E4) */
++ 	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7e4);
++ 	/* invert adc clock output and 'adc refp ldo current To correct
++ 	 * default
++ 	 */
++ 	bcm_phy_write_misc(phydev, 0x003b, 0x0000, 0x8002);
++ 	/* 100BT stair case, high BW, 1G stair case, alternate encode */
++ 	bcm_phy_write_misc(phydev, 0x003c, 0x0003, 0xf882);
++ 	/* 1000BT DAC transition method per Erol, bits[32], DAC Shuffle
++ 	 * sequence 1 + 10BT imp adjust bits
++ 	 */
++ 	bcm_phy_write_misc(phydev, 0x003d, 0x0000, 0x3201);
++ 	/* Non-overlap fix */
++ 	bcm_phy_write_misc(phydev, 0x003a, 0x0002, 0x0c00);
++=20
++ 	/* pwdb override (rxconfig<5>) to turn on RX LDO indpendent of
++ 	 * pwdb controls from DSP_TAP10
++ 	 */
++ 	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0020);
++=20
++ 	/* Remove references to channel 2 and 3 */
++ 	bcm_phy_write_misc(phydev, 0x003b, 0x0002, 0x0000);
++ 	bcm_phy_write_misc(phydev, 0x003b, 0x0003, 0x0000);
++=20
++ 	/* Set cal_bypassb bit rxconfig<43> */
++ 	bcm_phy_write_misc(phydev, 0x003a, 0x0003, 0x0800);
++ 	udelay(2);
++=20
++ 	/* Revert pwdb_override (rxconfig<5>) to 0 so that the RX pwr
++ 	 * is controlled by DSP.
++ 	 */
++ 	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0000);
++=20
++ 	/* Drop LSB */
++ 	rcalnewcode11d2 =3D (rcalnewcode11 & 0xfffe) / 2;
++ 	tmp =3D bcm_phy_read_misc(phydev, 0x003d, 0x0001);
++ 	/* Clear bits [11:5] */
++ 	tmp &=3D ~0xfe0;
++ 	/* set txcfg_ch0<5>=3D1 (enable + set local rcal) */
++ 	tmp |=3D 0x0020 | (rcalnewcode11d2 * 64);
++ 	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
++ 	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
++=20
++ 	tmp =3D bcm_phy_read_misc(phydev, 0x003d, 0x0000);
++ 	/* set txcfg<45:44>=3D11 (enable Rextra + invert fullscaledetect)
++ 	 */
++ 	tmp &=3D ~0x3000;
++ 	tmp |=3D 0x3000;
++ 	bcm_phy_write_misc(phydev, 0x003d, 0x0000, tmp);
++=20
++ 	return 0;
++ }
++=20
++ static int bcm7xxx_16nm_ephy_config_init(struct phy_device *phydev)
++ {
++ 	int ret, val;
++=20
++ 	ret =3D bcm7xxx_16nm_ephy_afe_config(phydev);
++ 	if (ret)
++ 		return ret;
++=20
++ 	ret =3D bcm_phy_set_eee(phydev, true);
++ 	if (ret)
++ 		return ret;
++=20
++ 	ret =3D bcm_phy_read_shadow(phydev, BCM54XX_SHD_SCR3);
++ 	if (ret < 0)
++ 		return ret;
++=20
++ 	val =3D ret;
++=20
++ 	/* Auto power down of DLL enabled,
++ 	 * TXC/RXC disabled during auto power down.
++ 	 */
++ 	val &=3D ~BCM54XX_SHD_SCR3_DLLAPD_DIS;
++ 	val |=3D BIT(8);
++=20
++ 	ret =3D bcm_phy_write_shadow(phydev, BCM54XX_SHD_SCR3, val);
++ 	if (ret < 0)
++ 		return ret;
++=20
++ 	return bcm_phy_enable_apd(phydev, true);
++ }
++=20
++ static int bcm7xxx_16nm_ephy_resume(struct phy_device *phydev)
++ {
++ 	int ret;
++=20
++ 	/* Re-apply workarounds coming out suspend/resume */
++ 	ret =3D bcm7xxx_16nm_ephy_config_init(phydev);
++ 	if (ret)
++ 		return ret;
++=20
++ 	return genphy_config_aneg(phydev);
++ }
++=20
+  static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+  {
+  	int ret;
+
+--Sig_/iARep1OtUpfU1T8_0NGqEDB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFVFcQACgkQAVBC80lX
+0GwQmAf9F9QgmSssLH9AGZwzdmxyzvU2A+1w2T8yG9mksX+FBAjvqFfQMRxzZneO
+wD7UkzKFuSDxoDbQwc4uyJ4GWgitO5BRN4I774tvW8oHd8OgdH578OHDq6kDAyMF
+5TuGxxl/EztGuujV6psce3GGxZ4rs6VJeQ1+WsBEguhyZgLRwiZ1BHNyZw3OJgGX
+kKqU9Bz9NwYqXnziLO9zp7xJ8kVNt8G2z+Sa4DXxYpbXIbrFpEkLUq6zmVL36Qh9
++58miD50wXb70qOF5lsDerWcyuIo3zjSVVw/hBKX69OrkK29GJxLklPNPqqVHTkM
+M95jOgv3Fm/nTDuIUgW3ePqedi9xhQ==
+=yeZb
+-----END PGP SIGNATURE-----
+
+--Sig_/iARep1OtUpfU1T8_0NGqEDB--
