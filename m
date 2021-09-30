@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DB041D8A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC0041D8AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350438AbhI3L1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        id S1350451AbhI3L1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350428AbhI3L1K (ORCPT
+        with ESMTP id S1350431AbhI3L1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:27:10 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF5EC061771
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:27 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id m3so23607414lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:26 -0700 (PDT)
+        Thu, 30 Sep 2021 07:27:12 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84493C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:29 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id b20so24022277lfv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fQ6FUBIM9thJqbhUS63FKjztr/wXj8cgKR4tXqEtQ7s=;
-        b=M8ozWpEVoGJuI2AqrfnJ8grrWDDy3hICF7yDn5elT2VNODPrJYZq/1dUel6ac/46xP
-         zEa4ct8ihuroQLVWvo/qmmiMqiX2DggNre9oKvXc0vf24Ebz0M/HbGz3afSH4J1u6rq1
-         LyhocEM49mPnbbAhmz7moVfZIjEkUNcoD8waWv58fPfoTi9DLf8ARV+yVPP84jkM673V
-         a7SKJ6LbWZg+qLSc4LiPoVIEpr2ItJFRHI+diEDfYRfSylO8ZIfFfFZI7yW55YzYx7qB
-         ubm3BkG7OWuXVr/J/RAsf20oczo8MMbv3w6DZSbx+LpER/VdzfgPMcX47k/RzsPVfrhY
-         X/KA==
+        bh=Ke+BZ+t9vF4CFbEDSnpC2W+EYJHQEFl6kKpmD6g3eV4=;
+        b=oyKPw1V9o9B7Wi1y655+90c7jwR37EqU3ZowZR3HqqKiu5GuCjyIx8VArNgqFZ1SQj
+         DXQLvA08h4KAOJp66yetZPTyJmgByquxJkKHb/+4CsVhx8hws1w7klbIN8HFEgIZmVjE
+         Wx+B2ECH9XBVpj2odxok8g1842irYIik4LsfT+ABocLh1T8Fk2PO+8ytakEtisN8bssG
+         OB59Tgl07rr8yzbHxkloCbnVTrd+2TkQLNEXbz6g3gPQuUd1gXca3CLO2ZFC/gdGsu7/
+         rW3vNF+b26ggrUz6o/P0gf9d5XWVCHYOWc+tKqx+utl8do32t1VtrL2aoplkkuYXijgS
+         8V+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fQ6FUBIM9thJqbhUS63FKjztr/wXj8cgKR4tXqEtQ7s=;
-        b=bvitRyWkoDTkSxBxDwIlLJ5YtGX24mFM0Movz5nZ5q0Z0ee2uSMf28wJopdlSyZ4aa
-         0+cn9kjWoF7fv6ekeY0OldmS7Yj2BzzXajX3UEjTgFWPpMYUecYWEe/DMzbIpqk8aY9j
-         B2NEnvE5MUP4a7v6ZBX1GbmfwKqojPnX+1PkcT+5PoxY4xQrVkK4jyhyrxFhDbWwsvzU
-         WFKanSI0iSolwGAu2HjAKYvdr9ZI2Tnt0YltEneuSlZpEYMItRaeiezImQSUQUH2OhAa
-         cAlVl01g7Z6068nXnCW/IJ7QaQjBMp8Jzo5luLHgGnFDt/uLwXTKIEFrVFqYgGppgt24
-         u96g==
-X-Gm-Message-State: AOAM530jPjqYq+ICEcoA8Q2TfSIe9zLTTCi6K6SRGpVDPi0xyscyc5jg
-        nUe5SFb09DJgk5sTRxa2o3B30rsENaDiKrKmvvIkFw==
-X-Google-Smtp-Source: ABdhPJyMnk07HkEmQ5T4dxMeflUqucQ/Q/tgaQvW78ey2NbZe+7L8S68QtEOQeKSrxWS+FGbmyyMpqTTZw1YJPCMLqM=
-X-Received: by 2002:a05:6512:3fa5:: with SMTP id x37mr5618301lfa.233.1633001124808;
- Thu, 30 Sep 2021 04:25:24 -0700 (PDT)
+        bh=Ke+BZ+t9vF4CFbEDSnpC2W+EYJHQEFl6kKpmD6g3eV4=;
+        b=42MM54NzrB/otfqXVrtzxQ+F8Msn5V7pU8GUYN65Y94oDbfmgC+GHsl/o/LR/UbmiH
+         YOGW9ubUwgobo++zQ3wpHrqOfofVEkPpmYt+p1zSXeiDKiKORx6RAxSuQsHwqanVUmE+
+         fEMlHrh94yolBkl+Yg9irKCXXUNDgG7pJ5v6/BTw1CIXe7bwAQv5ceVOwQoY7ilTC5Pr
+         3a31CYvZQSnCwcOmBdk/K5FNCr1+DEqKx9xAsR1pBFrUjc5xLm3dU6kvv2HLQp6TQQ2a
+         TEmhwaG7gA81mOTIkgscicKHgBgxvT7Cxbxn9fWEmWIEwjXIf0ewP2vJ+riRDLv4zLdk
+         wYNA==
+X-Gm-Message-State: AOAM533UcIwbbjdP8jNSt6wAC8FP4THNt0HKo+YtCgk3uw1RKpUCR2t6
+        oteWrOMKIjv6BA1IiMv8puYEmp+AH4nCF+Vwgqm3PohRtH8=
+X-Google-Smtp-Source: ABdhPJxPxKxrGrD/Gw8CRTBdOkQyaLCrwNtl/ZXD361kWQl5ZgdQbzfUJ0tW5GADs8knmpWWQeEwUNwRT/VMoI9aVAM=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr5427673lfb.71.1633001127934;
+ Thu, 30 Sep 2021 04:25:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
+References: <20210929111757.52625-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210929111757.52625-1-andriy.shevchenko@linux.intel.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 30 Sep 2021 13:24:48 +0200
-Message-ID: <CAPDyKFrWTDe83Thbf_JGLGmfKbJvFyCLEXgoOgg-=ROvV8yJrw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells dependency
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
+Date:   Thu, 30 Sep 2021 13:24:51 +0200
+Message-ID: <CAPDyKFrRC4Q4v+rZVVEaj3zdYdMGoO=WnLAocHnaJWk96zxmtg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mmc: slot-gpio: Refactor mmc_gpio_alloc()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 10:23, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Wed, 29 Sept 2021 at 13:17, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> The meta-schema already defines dependency between clock-cells and
-> clock-output-names.
+> Refactor mmc_gpio_alloc() to drop unneeded indentation level
+> and double condition. This increases readability of the code.
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
 Applied for next, thanks!
 
@@ -77,24 +74,55 @@ Uffe
 
 
 > ---
->  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 4 ----
->  1 file changed, 4 deletions(-)
+>  drivers/mmc/core/slot-gpio.c | 34 +++++++++++++++++-----------------
+>  1 file changed, 17 insertions(+), 17 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> index 23abb7e8b9d8..dd70431df0b7 100644
-> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> @@ -158,10 +158,6 @@ properties:
->      description:
->        The MIO bank number in which the command and data lines are configured.
+> diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
+> index 05e907451df9..e365d328f43c 100644
+> --- a/drivers/mmc/core/slot-gpio.c
+> +++ b/drivers/mmc/core/slot-gpio.c
+> @@ -39,24 +39,24 @@ static irqreturn_t mmc_gpio_cd_irqt(int irq, void *dev_id)
 >
-> -dependencies:
-> -  clock-output-names: [ '#clock-cells' ]
-> -  '#clock-cells': [ clock-output-names ]
+>  int mmc_gpio_alloc(struct mmc_host *host)
+>  {
+> -       struct mmc_gpio *ctx = devm_kzalloc(host->parent,
+> -                                           sizeof(*ctx), GFP_KERNEL);
 > -
->  required:
->    - compatible
->    - reg
+> -       if (ctx) {
+> -               ctx->cd_debounce_delay_ms = 200;
+> -               ctx->cd_label = devm_kasprintf(host->parent, GFP_KERNEL,
+> -                               "%s cd", dev_name(host->parent));
+> -               if (!ctx->cd_label)
+> -                       return -ENOMEM;
+> -               ctx->ro_label = devm_kasprintf(host->parent, GFP_KERNEL,
+> -                               "%s ro", dev_name(host->parent));
+> -               if (!ctx->ro_label)
+> -                       return -ENOMEM;
+> -               host->slot.handler_priv = ctx;
+> -               host->slot.cd_irq = -EINVAL;
+> -       }
+> +       const char *devname = dev_name(host->parent);
+> +       struct mmc_gpio *ctx;
+> +
+> +       ctx = devm_kzalloc(host->parent, sizeof(*ctx), GFP_KERNEL);
+> +       if (!ctx)
+> +               return -ENOMEM;
+> +
+> +       ctx->cd_debounce_delay_ms = 200;
+> +       ctx->cd_label = devm_kasprintf(host->parent, GFP_KERNEL, "%s cd", devname);
+> +       if (!ctx->cd_label)
+> +               return -ENOMEM;
+> +       ctx->ro_label = devm_kasprintf(host->parent, GFP_KERNEL, "%s ro", devname);
+> +       if (!ctx->ro_label)
+> +               return -ENOMEM;
+> +       host->slot.handler_priv = ctx;
+> +       host->slot.cd_irq = -EINVAL;
+>
+> -       return ctx ? 0 : -ENOMEM;
+> +       return 0;
+>  }
+>
+>  int mmc_gpio_get_ro(struct mmc_host *host)
 > --
-> 2.30.2
+> 2.33.0
 >
