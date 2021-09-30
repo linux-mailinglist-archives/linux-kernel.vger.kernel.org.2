@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D3341DC38
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E86A41DC3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349693AbhI3O2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S1350044AbhI3O3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348233AbhI3O2j (ORCPT
+        with ESMTP id S1348233AbhI3O3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:28:39 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8522CC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:26:56 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id q2so525861wrc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xCUW4DYpcvfuZtuU3plFLnVjCTEdDK5f8kHlUi+qoUE=;
-        b=kqGLwx12cDUzoC3iVNA+NJM4OhqKmVGWb+hkz/24TW+SqnZyjX4yHnJMTUGXjJhhrw
-         h2BmwKqV0WCPe/V8yNYQ7hjO+NER31wCIwxWNQMRKUE98UAzpMQ7rzPDlLVxuIhcFPuG
-         af1WBWnfuOzPTg+Stbh8+dP0FEJKH48b/M52E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=xCUW4DYpcvfuZtuU3plFLnVjCTEdDK5f8kHlUi+qoUE=;
-        b=7rWngQ7+M7GlDD9Ghvay6KSiiOykBwyPgbMzf2FoKjBP+oRh+dYfmmnEvFWBrMM0wx
-         wyceATC85HA9XxJ78gzX4AjGdtDhDmdheWzuXuf48FOG6jvIPeOYiqdtRUeDVr8tJZJm
-         Tb2FbvNymRedbd0AEx3CJZUE/pDQm8z9Oqaz67yW3jH43joCcjBM+9D9xGdjRtE8ekbr
-         Vtneq3qfXXRDgfYYdt9wdGX3jlEsjJALofcUp3QtTTeL8RyzXLRjbMiYwpy36/p6T3U/
-         OlmbT0Kq8VN7NiKX3Zt6uy4HR8M8NXO0wqXLRvfEuNmg1w5rGG/5uKV0cziwhUPlyP/h
-         VFtw==
-X-Gm-Message-State: AOAM532kpHJ9muv74xALAP2ydT12UXLRXf5bFm/InN9PJKQ9By4UZWlY
-        FTm+RQfeF5BfAqJZpTIq1M1SYA==
-X-Google-Smtp-Source: ABdhPJyM/Mb9G9Dw6E28dIKZojOERdji8EqoOdbiAVKePmWDkfGwO6V7NnENfyHJOM3wI39vpQhC9A==
-X-Received: by 2002:a5d:47a4:: with SMTP id 4mr6512514wrb.274.1633012015165;
-        Thu, 30 Sep 2021 07:26:55 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u5sm3443501wrg.57.2021.09.30.07.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:26:54 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 16:26:52 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
-Message-ID: <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
-Mail-Followup-To: Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210927142816.2069269-1-arnd@kernel.org>
- <202109270923.97AFDE89DB@keescook>
+        Thu, 30 Sep 2021 10:29:34 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C65AC06176A;
+        Thu, 30 Sep 2021 07:27:51 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HKwZD2LZLzQjf1;
+        Thu, 30 Sep 2021 16:27:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
+ ring write pointer
+To:     David Laight <David.Laight@ACULAB.COM>,
+        =?UTF-8?B?J1BhbGkgUm9ow6FyJw==?= <pali@kernel.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20210914114813.15404-1-verdre@v0yd.nl>
+ <20210914114813.15404-2-verdre@v0yd.nl>
+ <8f65f41a807c46d496bf1b45816077e4@AcuMS.aculab.com>
+ <20210922142726.guviqler5k7wnm52@pali>
+ <e0a4e0adc56148039f853ccb083be53a@AcuMS.aculab.com>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <ae8ca158-ad86-9c0d-7217-f9db3d2fc42e@v0yd.nl>
+Date:   Thu, 30 Sep 2021 16:27:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109270923.97AFDE89DB@keescook>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+In-Reply-To: <e0a4e0adc56148039f853ccb083be53a@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 3267726B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 09:23:45AM -0700, Kees Cook wrote:
-> On Mon, Sep 27, 2021 at 04:28:02PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
-> > 
-> > aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
-> > (.text+0x10cc): undefined reference to `framebuffer_alloc'
-> > 
-> > Tighten the dependency so it is only allowed in the case that DRM can
-> > link against FB.
-> > 
-> > Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
-> > Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 9/22/21 5:54 PM, David Laight wrote:
 > 
-> Thanks for fixing this!
+> From: Pali Rohár
+>> Sent: 22 September 2021 15:27
+>>
+>> On Wednesday 22 September 2021 14:03:25 David Laight wrote:
+>>> From: Jonas Dreßler
+>>>> Sent: 14 September 2021 12:48
+>>>>
+>>>> On the 88W8897 card it's very important the TX ring write pointer is
+>>>> updated correctly to its new value before setting the TX ready
+>>>> interrupt, otherwise the firmware appears to crash (probably because
+>>>> it's trying to DMA-read from the wrong place). The issue is present in
+>>>> the latest firmware version 15.68.19.p21 of the pcie+usb card.
+>>>>
+>>>> Since PCI uses "posted writes" when writing to a register, it's not
+>>>> guaranteed that a write will happen immediately. That means the pointer
+>>>> might be outdated when setting the TX ready interrupt, leading to
+>>>> firmware crashes especially when ASPM L1 and L1 substates are enabled
+>>>> (because of the higher link latency, the write will probably take
+>>>> longer).
+>>>>
+>>>> So fix those firmware crashes by always using a non-posted write for
+>>>> this specific register write. We do that by simply reading back the
+>>>> register after writing it, just as a few other PCI drivers do.
+>>>>
+>>>> This fixes a bug where during rx/tx traffic and with ASPM L1 substates
+>>>> enabled (the enabled substates are platform dependent), the firmware
+>>>> crashes and eventually a command timeout appears in the logs.
+>>>
+>>> I think you need to change your terminology.
+>>> PCIe does have some non-posted write transactions - but I can't
+>>> remember when they are used.
+>>
+>> In PCIe are all memory write requests as posted.
+>>
+>> Non-posted writes in PCIe are used only for IO and config requests. But
+>> this is not case for proposed patch change as it access only card's
+>> memory space.
+>>
+>> Technically this patch does not use non-posted memory write (as PCIe
+>> does not support / provide it), just adds something like a barrier and
+>> I'm not sure if it is really correct (you already wrote more details
+>> about it, so I will let it be).
+>>
+>> I'm not sure what is the correct terminology, I do not know how this
+>> kind of write-followed-by-read "trick" is correctly called.
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> I think it is probably best to say:
+>     "flush the posted write when setting the TX ring write pointer".
+> 
+> The write can get posted in any/all of the following places:
+> 1) The cpu store buffer.
+> 2) The PCIe host bridge.
+> 3) Any other PCIe bridges.
+> 4) The PCIe slave logic in the target.
+>     There could be separate buffers for each BAR,
+> 5) The actual target logic for that address block.
+>     The target (probably) will look a bit like an old fashioned cpu
+>     motherboard with the PCIe slave logic as the main bus master.
+> 
+> The readback forces all the posted write buffers be flushed.
+> 
+> In this case I suspect it is either flushing (5) or the extra
+> delay of the read TLP processing that 'fixes' the problem.
+> 
+> Note that depending on the exact code and host cpu the second
+> write may not need to wait for the response to the read TLP.
+> So the write, readback, write TLP may be back to back on the
+> actual PCIe link.
+> 
+> Although I don't have access to an actual PCIe monitor we
+> do have the ability to trace 'data' TLP into fpga memory
+> on one of our systems.
+> This is near real-time but they are slightly munged.
+> Watching the TLP can be illuminating!
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
-Stuffed into drm-misc-next.
+Thanks for the detailed explanations, it looks like indeed the read-back 
+is not the real fix here, a simple udelay(50) before sending the "TX 
+ready" interrupt also does the trick.
 
-Arnd, I guess I still can't volunteer you for commit rights so I don't
-have to bother with this anymore? It's nice to be lazy and comfy :-)
+                 } else {
++                       udelay(50);
++
+                         /* Send the TX ready interrupt */
+                         if (mwifiex_write_reg(adapter, PCIE_CPU_INT_EVENT,
+                                               CPU_INTR_DNLD_RDY)) {
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I've tested that for a week now and haven't seen any firmware crashes. 
+Interestingly enough it looks like the delay can also be added after 
+setting the "TX ready" interrupt, just not before updating the TX ring 
+write pointer.
+
+I have no idea if 50 usecs is a good duration to wait here, from trying 
+different values I found that 10 to 20 usecs is not enough, but who 
+knows, maybe that's platform dependent?
