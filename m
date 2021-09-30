@@ -2,206 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184B941D8CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4990341D8E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350492AbhI3Lc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:32:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51055 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350447AbhI3Lcz (ORCPT
+        id S1350520AbhI3LhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350459AbhI3LhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:32:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633001472;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBPiwjv88gBtXhEZKobvenYgzbrXuu/F7fjJxKqNYJ0=;
-        b=UvQQW7VoFjonICjoPDaFpzfRL2aLYlSBpLPaxmb1P3eITHIOvpOrBta4F0CDULXYhqYxik
-        Mnuvs6JU47R4eAV7I38yRx5Nm0MumPErVGDuqGDba7ZxC/ss47B7CvVDTHiheCGRla7hW3
-        Q6pcZspSkDk/IP8jj5+Tx0pTKYrEJy4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-ipkYATPkPvGje-CQoPUkIQ-1; Thu, 30 Sep 2021 07:31:11 -0400
-X-MC-Unique: ipkYATPkPvGje-CQoPUkIQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 004EE1084684;
-        Thu, 30 Sep 2021 11:31:10 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A4C760C82;
-        Thu, 30 Sep 2021 11:31:06 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-In-Reply-To: <20210930130350.0cdc7c65.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <87r1d64dl4.fsf@redhat.com> <20210930130350.0cdc7c65.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Thu, 30 Sep 2021 13:31:04 +0200
-Message-ID: <87ilyi47wn.fsf@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 30 Sep 2021 07:37:16 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A74C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:35:34 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id t189so6834922oie.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=B3Fs1aBIXktvYLGb2TVUnCvr2QaRY0CbNTHUGXHt+HU=;
+        b=iQEIwj08+MJhPX4gMi8OYV39VoxE8yvKN7UeZCGVdoIOyTFhg7v1jKLTWhpxS/LGEa
+         7u8RbcSg8ITkenlIUFsQV9jR77J+T1yO0PD//7sixR9W5XttQlGf+eEjUpdVHnTeUT1X
+         VW/JwX1qhJ8jLIdxu5P666VS8Jv0HmckvGOlyyve+dAlF0rL529sXKvj3FTkfwYI9klU
+         9KGNLPLSOA68dAFZI76dTdob39g9ZzyKxvJdUR62l7wAg85ZE0zZMggcpfTC9Z9bqV0B
+         ysPpmLloPlLNzSVmKH/P2BZYrlA2Ez1NboIiGlITipDhm//ckb6JM/cK/o2Zi5ele1Yg
+         AkgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=B3Fs1aBIXktvYLGb2TVUnCvr2QaRY0CbNTHUGXHt+HU=;
+        b=P4WtJZoA4cprrShpZLgGIQqhpgQwu1qvergIowWJTP4QVk9CdgU8iCuCDxplzyIqtA
+         6dcqsi/oyPfs6WQlpx7egLG5qaw3QiYXY85bhXOc2hBK1QoeU4dRzg66+BkM9GCAiCve
+         oYawgQGbRVhNuXhY59JhMoln54mJVDEIRsG9o7sdzDYiK6VJJs6VyPE4/+32oihWUZ/I
+         qHIoxkEnqZrLsXkzZ3eRgSKIsH1UF2eMO1xzRrgNsq0uwbMQrIOQKLJKs9+igMHychXm
+         i6yPQ0ziPgLNRK73UyktEvo7pUJOHXxo2Gdalpa7WhDYGmY+p5ypy4zVBrX15mNCT61D
+         lNLQ==
+X-Gm-Message-State: AOAM530wd9oWkK8It6x4NoBcZfv1cLCKGRdVdx11XAgL1PzbaGZhearA
+        Kmod7DxUCQz9GhHeUn80+2jjNg==
+X-Google-Smtp-Source: ABdhPJy5INDSJMlJcQdd5j2HBzFLTf88QFIAKmhJeAltP1c0EkyTOgER3wGh4aS89zWNpeSV1HyCQw==
+X-Received: by 2002:aca:32c2:: with SMTP id y185mr2335719oiy.47.1633001733390;
+        Thu, 30 Sep 2021 04:35:33 -0700 (PDT)
+Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
+        by smtp.gmail.com with ESMTPSA id k4sm500053oic.48.2021.09.30.04.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 04:35:32 -0700 (PDT)
+From:   Shunsuke Mie <mie@igel.co.jp>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mie@igel.co.jp
+Subject: [PATCH] Provider/rxe: Allocate rxe/ib objs by calloc
+Date:   Thu, 30 Sep 2021 20:35:27 +0900
+Message-Id: <20210930113527.49659-1-mie@igel.co.jp>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+Some rxe/ib objects are allocated by malloc() and initialize manually
+respectively. To prevent a bug caused by memory uninitialization, this
+patch change to use calloc().
 
-> On Thu, 30 Sep 2021 11:28:23 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
->
->> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
->> 
->> > This patch fixes a regression introduced by commit 82e89ea077b9
->> > ("virtio-blk: Add validation for block size in config space") and
->> > enables similar checks in verify() on big endian platforms.
->> >
->> > The problem with checking multi-byte config fields in the verify
->> > callback, on big endian platforms, and with a possibly transitional
->> > device is the following. The verify() callback is called between
->> > config->get_features() and virtio_finalize_features(). That we have a
->> > device that offered F_VERSION_1 then we have the following options
->> > either the device is transitional, and then it has to present the legacy
->> > interface, i.e. a big endian config space until F_VERSION_1 is
->> > negotiated, or we have a non-transitional device, which makes
->> > F_VERSION_1 mandatory, and only implements the non-legacy interface and
->> > thus presents a little endian config space. Because at this point we
->> > can't know if the device is transitional or non-transitional, we can't
->> > know do we need to byte swap or not.
->> >
->> > The virtio spec explicitly states that the driver MAY read config
->> > between reading and writing the features so saying that first accessing
->> > the config before feature negotiation is done is not an option. The
->> > specification ain't clear about setting the features multiple times
->> > before FEATURES_OK, so I guess that should be fine.
->> >
->> > I don't consider this patch super clean, but frankly I don't think we
->> > have a ton of options. Another option that may or man not be cleaner,
->> > but is also IMHO much uglier is to figure out whether the device is
->> > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
->> > according tho what we have figured out, hoping that the characteristics
->> > of the device didn't change.
->> >
->> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
->> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
->> > Reported-by: markver@us.ibm.com
->> > ---
->> >  drivers/virtio/virtio.c | 4 ++++
->> >  1 file changed, 4 insertions(+)
->> >
->> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
->> > index 0a5b54034d4b..9dc3cfa17b1c 100644
->> > --- a/drivers/virtio/virtio.c
->> > +++ b/drivers/virtio/virtio.c
->> > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
->> >  		if (device_features & (1ULL << i))
->> >  			__virtio_set_bit(dev, i);
->> >  
->> > +	/* Write back features before validate to know endianness */
->> > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
->> > +		dev->config->finalize_features(dev);  
->> 
->> This really looks like a mess :(
->> 
->> We end up calling ->finalize_features twice: once before ->validate, and
->> once after, that time with the complete song and dance. The first time,
->> we operate on one feature set; after validation, we operate on another,
->> and there might be interdependencies between the two (like a that a bit
->> is cleared because of another bit, which would not happen if validate
->> had a chance to clear that bit before).
->
-> Basically the second set is a subset of the first set.
+Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+---
+ providers/rxe/rxe.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-I don't think that's clear.
-
->
->> 
->> I'm not sure whether that is even a problem in the spec: while the
->> driver may read the config before finally accepting features
->
-> I'm not sure I'm following you. Let me please qoute the specification:
-> """
-> 4. Read device feature bits, and write the subset of feature bits
-> understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it. 
-> 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step. 
-> """
-> https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-930001
-
-Yes, exactly, it MAY read before accepting features. How does the device
-know whether the config space is little-endian or not?
-
->
->> , it does
->> not really make sense to do so before a feature bit as basic as
->> VERSION_1 which determines the endianness has been negotiated. 
->
-> Are you suggesting that ->verify() should be after
-> virtio_finalize_features()?
-
-No, that would defeat the entire purpose of verify. After
-virtio_finalize_features(), we are done with feature negotiation.
-
-> Wouldn't
-> that mean that verify() can't reject feature bits? But that is the whole
-> point of commit 82e89ea077b9 ("virtio-blk: Add validation for block size
-> in config space"). Do you think that the commit in question is
-> conceptually flawed? My understanding of the verify is, that it is supposed
-> to fence features and feature bits we can't support, e.g. because of
-> config space things, but I may be wrong.
-
-No, that commit is not really flawed on its own, I think the whole
-procedure may be problematic.
-
->
-> The trouble is, feature bits are not negotiated one by one, but basically all
-> at once. I suppose, I did the next best thing to first negotiating
-> VERSION_1.
-
-We probably need to special-case VERSION_1 to move at least forward;
-i.e. proceed as if we accepted it when reading the config space.
-
-The problem is that we do not know what the device assumes when we read
-the config space prior to setting FEATURES_OK. It may assume
-little-endian if it offered VERSION_1, or it may not. The spec does not
-really say what happens before feature negotiation has finished.
-
->
->
->> For
->> VERSION_1, we can probably go ahead and just assume that we will accept
->> it if offered, but what about other (future) bits?
->
-> I don't quite understand.
-
-There might be other bits in the future that change how the config space
-works. We cannot assume that any of those bits will be accepted if
-offered; i.e. we need a special hack for VERSION_1.
-
->
-> Anyway, how do you think we should solve this problem?
-
-This is a mess. For starters, we need to think about if we should do
-something in the spec, and if yes, what.. Then, we can probably think
-about how to implement that properly.
-
-As we have an error right now that is basically a regression, we
-probably need a band-aid to keep going. Not sure if your patch is the
-right approach, maybe we really need to special-case VERSION_1 (the
-"assume we accepted it" hack mentioned above.) This will likely fix the
-reported problem (I assume that is s390x on QEMU); do we know about
-other VMMs? Any other big-endian architectures?
-
-Anyone have any better suggestions?
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index 3533a325..788a1bbd 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -104,7 +104,7 @@ static struct ibv_pd *rxe_alloc_pd(struct ibv_context *context)
+ 	struct ib_uverbs_alloc_pd_resp resp;
+ 	struct ibv_pd *pd;
+ 
+-	pd = malloc(sizeof(*pd));
++	pd = calloc(1, sizeof(*pd));
+ 	if (!pd)
+ 		return NULL;
+ 
+@@ -225,7 +225,7 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	struct ib_uverbs_reg_mr_resp resp;
+ 	int ret;
+ 
+-	vmr = malloc(sizeof(*vmr));
++	vmr = calloc(1, sizeof(*vmr));
+ 	if (!vmr)
+ 		return NULL;
+ 
+@@ -382,7 +382,7 @@ static struct ibv_cq *rxe_create_cq(struct ibv_context *context, int cqe,
+ 	struct urxe_create_cq_resp resp = {};
+ 	int ret;
+ 
+-	cq = malloc(sizeof(*cq));
++	cq = calloc(1, sizeof(*cq));
+ 	if (!cq)
+ 		return NULL;
+ 
+@@ -594,7 +594,7 @@ static struct ibv_srq *rxe_create_srq(struct ibv_pd *pd,
+ 	struct urxe_create_srq_resp resp;
+ 	int ret;
+ 
+-	srq = malloc(sizeof(*srq));
++	srq = calloc(1, sizeof(*srq));
+ 	if (srq == NULL)
+ 		return NULL;
+ 
+@@ -1167,7 +1167,7 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *ibpd,
+ 	struct rxe_qp *qp;
+ 	int ret;
+ 
+-	qp = malloc(sizeof(*qp));
++	qp = calloc(1, sizeof(*qp));
+ 	if (!qp)
+ 		goto err;
+ 
+@@ -1659,7 +1659,7 @@ static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd, struct ibv_ah_attr *attr)
+ 		return NULL;
+ 	}
+ 
+-	ah = malloc(sizeof(*ah));
++	ah = calloc(1, sizeof(*ah));
+ 	if (ah == NULL)
+ 		return NULL;
+ 
+-- 
+2.17.1
 
