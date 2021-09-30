@@ -2,161 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E5941DDD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA98141DDD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345895AbhI3Po2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:44:28 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:31936 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345816AbhI3PoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:44:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633016562; x=1664552562;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SmX4ZduoWNa9T+QX9SzZQaa1c/SEhdpbKRtqYpTPzX8=;
-  b=T7uK9zS3ryz9ybWVjU+bxQqGzWKJw7nPlF5LeEchnkm1Z3JG0YBu0JRO
-   4r9YzD8S7GZIL+VCExv9++u/mphHZ0sKmKk0dYIvNbTGLR5291aAX+ony
-   +SGUiEvCZdOZ8WhxyDjYZIQm3DcV4pu0txO3kavKlqRHXESSQEY2KfGNX
-   /h5tNb56rN66TusrLZVsDBcjsnMVKqcxAx4cmf6MuKTMbhJgmArHQK4sx
-   98YtOZojjPVLaxYKuGAIpJYppKBotwTvpesGedgijliS4dCFVnfMlJhmt
-   dXYh8MIHDRCy2Zp+QMHDerbWSJsNB4TEpZBswsFWyQxDnJrtkGz0PLWNt
-   Q==;
-IronPort-SDR: Z+hFzDs3S5AIqjSQpbShBujrezhH4N3q3B3MStemOvzxNlCKtg/D5G1Iw8yWJm1yHl8pHGDrHS
- deHT9y7we3ct7VnK82iGTIlhwZD5SSVAjvsA7H/zSfcD5pcAa7eKHkk4ozYLk4PvUGDAIsFeb8
- 1gjbV2G3+UlG2sGK4do8HZuQmB22Sn+1ZC+vE45JdfBjvzquXZ058mjEPPv423mXd2OawYBmbA
- HCydYVIkZ7Fw68gL63IsCXo0MLVQ/F+Ky2HuvAdoksjxF2G1Q2FB1LO6LMj5SC8pRkbeUxQvoO
- 6qWLdt8IxhUg4JLWCxpNn5a4
+        id S1345855AbhI3PpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:45:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13607 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344638AbhI3Po7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:44:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225255777"
 X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="146284180"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Sep 2021 08:42:42 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 30 Sep 2021 08:42:39 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 08:42:37 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 3/3] ARM: at91: pm: preload base address of controllers in tlb
-Date:   Thu, 30 Sep 2021 18:42:19 +0300
-Message-ID: <20210930154219.2214051-4-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
-References: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
+   d="scan'208";a="225255777"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:43:16 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="709134016"
+Received: from kjepstei-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.212.192.243])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:43:15 -0700
+Date:   Thu, 30 Sep 2021 08:43:15 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v2 2/3] drm/i915/utils: do not depend on config being
+ defined
+Message-ID: <20210930154315.xb43gowfhmxucsm4@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20210929183357.1490204-1-lucas.demarchi@intel.com>
+ <20210929183357.1490204-3-lucas.demarchi@intel.com>
+ <2dd723c8-6aed-857c-23f3-d0381fcb52c2@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2dd723c8-6aed-857c-23f3-d0381fcb52c2@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In suspend/resume procedure for AT91 architecture different controllers
-(PMC, SHDWC, RAM, RAM PHY, SFRBU) are accessed to do the proper settings
-for power saving. Commit f0bbf17958e8 ("ARM: at91: pm: add self-refresh
-support for sama7g5") introduced the access to RAMC PHY controller for
-SAMA7G5. The access to this controller is done after RAMC ports are
-closed, thus any TLB walk necessary for RAMC PHY virtual address will
-fail. In the development branch this was not encountered. However, on
-current kernel the issue is reproducible.
+On Thu, Sep 30, 2021 at 11:00:06AM +0100, Steven Price wrote:
+>On 29/09/2021 19:33, Lucas De Marchi wrote:
+>> Like the IS_ENABLED() counterpart, we can make IS_CONFIG_NONZERO() to
+>> return the right thing when the config is not defined rather than a
+>> build error, with the limitation that it can't be used on preprocessor
+>> context.
+>>
+>> The trick here is that macro names can't start with a number or dash, so
+>> we stringify the argument and check that the first char is a number != 0
+>> (or starting with a dash to cover negative numbers). Except for -O0
+>> builds the strings are all eliminated.
+>>
+>> Taking CONFIG_DRM_I915_REQUEST_TIMEOUT in
+>> drivers/gpu/drm/i915/gem/i915_gem_context.c as example, we have the
+>> following output of the preprocessor:
+>>
+>> old:
+>>  if (((20000) != 0) &&
+>> new:
+>>  if (( ("20000"[0] > '0' && "20000"[0] < '9') || "20000"[0] == '-' ) &&
+>>
+>> New one looks worse, but is also eliminated from the object:
+>>
+>> $ size drivers/gpu/drm/i915/gem/i915_gem_context.o.*
+>>    text    data     bss     dec     hex filename
+>>   52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.new
+>>   52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.old
+>>
+>> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>> ---
+>>  drivers/gpu/drm/i915/i915_utils.h | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+>> index 02bbfa4d68d3..436ce612c46a 100644
+>> --- a/drivers/gpu/drm/i915/i915_utils.h
+>> +++ b/drivers/gpu/drm/i915/i915_utils.h
+>> @@ -28,6 +28,7 @@
+>>  #include <linux/list.h>
+>>  #include <linux/overflow.h>
+>>  #include <linux/sched.h>
+>> +#include <linux/stringify.h>
+>>  #include <linux/types.h>
+>>  #include <linux/workqueue.h>
+>>
+>> @@ -469,6 +470,9 @@ static inline bool timer_expired(const struct timer_list *t)
+>>   *
+>>   * Returns 0 if @config is 0, 1 if set to any value.
+>>   */
+>> -#define IS_CONFIG_NONZERO(config) ((config) != 0)
+>> +#define IS_CONFIG_NONZERO(config) (						\
+>> +	(__stringify_1(config)[0] > '0' && __stringify_1(config)[0] < '9') ||	\
+>
+>Shouldn't this be "<= '9'". Otherwise numbers starting with a 9 are not
+>"non zero".
 
-To solve the issue the previous mechanism of pre-loading the TLB with
-the RAMC PHY virtual address has been used. However, only the addition
-of this new pre-load breaks the functionality for ARMv5 based
-devices (SAM9X60). This behavior has been encountered previously
-while debugging this code and using the same mechanism for pre-loading
-address for different controllers (e.g. pin controller, the assumption
-being that other requested translations are replaced from TLB).
+yes! thanks for catching it. However from the other discussion it seems
+we can either
 
-To solve this new issue the TLB flush + the extension of pre-loading
-the rest of controllers to TLB (e.g. PMC, RAMC) has been added. The
-rest of the controllers should have been pre-loaded previously, anyway.
+a) just remove the macro, or
+b) use the simpler version that doesn't cover undefined values
 
-Fixes: f0bbf17958e8 ("ARM: at91: pm: add self-refresh support for sama7g5")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
+I will investigate those options.
 
-Hi Nicolas,
-
-Please link this patch with the previous one in this series ("ARM: at91:
-pm: group constants and addresses loading") with a Depends-on tag as this
-will fail to apply if backported to older kernel versions.
-
-Thank you,
-Claudiu Beznea
-
- arch/arm/mach-at91/pm_suspend.S | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-index 34f251fdb743..fdb4f63ecde4 100644
---- a/arch/arm/mach-at91/pm_suspend.S
-+++ b/arch/arm/mach-at91/pm_suspend.S
-@@ -1014,6 +1014,10 @@ ENTRY(at91_pm_suspend_in_sram)
- 	mov	tmp1, #0
- 	mcr	p15, 0, tmp1, c7, c10, 4
- 
-+	/* Flush tlb. */
-+	mov	r4, #0
-+	mcr	p15, 0, r4, c8, c7, 0
-+
- 	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
- 	str	tmp1, .mckr_offset
- 	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
-@@ -1023,23 +1027,42 @@ ENTRY(at91_pm_suspend_in_sram)
- 	ldr	tmp1, [r0, #PM_DATA_MODE]
- 	str	tmp1, .pm_mode
- 
-+	/*
-+	 * ldrne below are here to preload their address in the TLB as access
-+	 * to RAM may be limited while in self-refresh.
-+	 */
- 	ldr	tmp1, [r0, #PM_DATA_PMC]
- 	str	tmp1, .pmc_base
-+	cmp	tmp1, #0
-+	ldrne	tmp2, [tmp1, #0]
-+
- 	ldr	tmp1, [r0, #PM_DATA_RAMC0]
- 	str	tmp1, .sramc_base
-+	cmp	tmp1, #0
-+	ldrne	tmp2, [tmp1, #0]
-+
- 	ldr	tmp1, [r0, #PM_DATA_RAMC1]
- 	str	tmp1, .sramc1_base
-+	cmp	tmp1, #0
-+	ldrne	tmp2, [tmp1, #0]
-+
-+#ifndef CONFIG_SOC_SAM_V4_V5
-+	/* ldrne below are here to preload their address in the TLB */
- 	ldr	tmp1, [r0, #PM_DATA_RAMC_PHY]
- 	str	tmp1, .sramc_phy_base
--	/* Both ldrne below are here to preload their address in the TLB */
-+	cmp	tmp1, #0
-+	ldrne	tmp2, [tmp1, #0]
-+
- 	ldr	tmp1, [r0, #PM_DATA_SHDWC]
- 	str	tmp1, .shdwc
- 	cmp	tmp1, #0
- 	ldrne	tmp2, [tmp1, #0]
-+
- 	ldr	tmp1, [r0, #PM_DATA_SFRBU]
- 	str	tmp1, .sfrbu
- 	cmp	tmp1, #0
- 	ldrne	tmp2, [tmp1, #0x10]
-+#endif
- 
- 	/* Active the self-refresh mode */
- 	at91_sramc_self_refresh_ena
--- 
-2.25.1
-
+Lucas De Marchi
