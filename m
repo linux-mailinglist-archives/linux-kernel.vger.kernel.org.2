@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA4841E3F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB64141E3F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346929AbhI3Waq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        id S1345428AbhI3WcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhI3Wan (ORCPT
+        with ESMTP id S237087AbhI3Wb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:30:43 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A03BC06176A;
-        Thu, 30 Sep 2021 15:29:00 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HL7FH4Vf2z4xLs;
-        Fri,  1 Oct 2021 08:28:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633040934;
-        bh=iBGg7B6nCcHV+X3Y3NMsuA3k0lSEDhucAV/y/amUSI4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LUriSsjG+tI0mpnlgmiajJy7POBEiy3H2DEmUhiWAQgrd0wdB9f9TSGFPUmjys2oW
-         NtLofZbOVs7F/hIh71/4rYBCow5uOLYF0lJmQmO2DxIXh9yqMWbWW2WVE5tuK3rG/6
-         G+XQTK/JQ/9BZWq3TSPdUa4vY7QXDMQoJPMLC1upyAi5bLzXeGw9WByvoActvjIxpu
-         Bs7BJpj7SDFfHB6Jd7M+7GUdtyWTibferk6G8AgPB9qV0nER0YeCjoiH1PKFimyx5J
-         qirRtGSAMFVsMNlaqq+Ua0feW7V5De8K7B2VdB1Yr7QvT+itGwiUSYSQkaReFcMdVa
-         ODPwb1ro3R5gw==
-Date:   Fri, 1 Oct 2021 08:28:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the kvm-fixes tree
-Message-ID: <20211001082849.61f2316e@canb.auug.org.au>
+        Thu, 30 Sep 2021 18:31:59 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BF0C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:30:16 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id u7so6225483pfg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ay1V9ffhoIQpAyVwXtDPPJf/MtSlguJd/osoDxW8SDA=;
+        b=kVsHfZVKOYr6X7ZVCJLOUmZbyKyVf/bYM8s99VI4B80qJy7pPxA628vxCTsFzp7tyP
+         XSpU3MVW1ltSiWhVPbk+zaJMLCSAq0kFseKWHZ8+4JW5TyaIJrVmKMO922X8q/GK/TuJ
+         YVuK/6k0A3pH00DPOaraAo1wT5H3pv/3ClKf4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ay1V9ffhoIQpAyVwXtDPPJf/MtSlguJd/osoDxW8SDA=;
+        b=ZNXO0dHlPdQGVOioAaRgspskuRzwNHKkGo5sMVC4ywcaPCgwBbUlrKTYI+t8mlB1hw
+         DQv8r7pkxbqHnpbameQa3WArUs029zXb57QDi9PFJuoEqw4QHEa1RncWiH5dj9+B+QvK
+         1ch4tN0Z/xKh0X7WPFqEJvoMsTj2qYzeLrEi1Yht/B32879zeBANBSfuTbOPBab9PvqN
+         5OgewzS14bv1PopE5pf84Znkb4etg3UqrTE6bh/dKqAOU9AVZa4T0zQXZCBeSVK5tC80
+         wKrYHl127c0+lL7dklDKEuczWiELgIMj1ipiax6Etp8OpZqsDdOy5Kx8lPvWZoSKhZRY
+         4f3Q==
+X-Gm-Message-State: AOAM531cD8SBL00gJvDFoOj93D1D5UrsixBOAbBiv8gzSzU0DhTi4yMQ
+        mMcjOjxc6dafjsq9vZ1lzxqFcQ==
+X-Google-Smtp-Source: ABdhPJwZ793yTpzmrRHTCtRd2jlASWf7dvmXfH5zjJdW0TTlbdlf2QpIXv1clEmFFvWLEYrABHKSYA==
+X-Received: by 2002:a63:125f:: with SMTP id 31mr6964264pgs.98.1633041015750;
+        Thu, 30 Sep 2021 15:30:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p17sm5680848pjg.54.2021.09.30.15.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 15:30:15 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v3] docs: Explain the desired position of function attributes
+Date:   Thu, 30 Sep 2021 15:30:11 -0700
+Message-Id: <20210930223011.2632202-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/04gfg3hyt7obho/kWJUO3Qo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2757; h=from:subject; bh=3wGJertCA84vSipOAoJMdWC2Kpb30Chb+rYiYzarEXY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhVjpzJYBemhbhMV2SCbBlCVqtipvyBjBdX7HDeYGf 4SgtxWOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYVY6cwAKCRCJcvTf3G3AJiTpEA CTbq+h6g0PRtkcBqqqPBHTpRRub1OUpFluXUYffpv0W6UYQjeWYdubXisKrUg0YbF6RXqz/qrjjJgC 4yPj1dzMppohf81BqnBRPR5mwTf31SLI4QYvBSvfO6rHiGQL1ozIf2GklWAGE+WdxAmkaGbm//PjFY uGsO/PGsg7eRYp2v0WsRr4FhzVFhw7gsDjlpLUHtEf68W7Jwk9K2oSTUEq3+l8cEZZYHPMbF5b/vi7 eRy1hFZhJOya1qmBli8UuSn4hrmI7+iBD0i9FP0Kv0UeOwruc8CmrnONkjWCGeJYGviBfnFIq6GP0Q U1CpRG476qAUfL4X8LaE/2MzDIEVWCLFUa3ndx4FDJ/16R4fZEWOc98juTzkGONPx2lwpPCYPdH7AK Kynky1PcNAgQjN2ikfS23agy1n3RkWKZ9lvP0y3Kc0bidWyaYEU/dhEdm5Qd+Hm3cGinsDxU43uKvv kBA20jxfW4Sqlu0zty6cxM6MdGb+q/xEBxHimTiMDMPxKxiqaihnV26BUAhG9q8Jn4mIUXX/BiczXe 5dfQonXbRhAYjdo26Nu/oNqmPvdkrjRtxansaJqToBTiZUKoPKECnW64qc3Gnr/rUk352yZplQV9qD bO7LVdGDEyu1jFEq+0Zv3YD4/zOivFBunW0KwcAaeCK+8uu6oeJ9KkRLnpjg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/04gfg3hyt7obho/kWJUO3Qo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+While discussing how to format the addition of various function
+attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+close as possible to Linus's preferences for future reference.
 
-Hi all,
+(Though I note the dissent voiced by Joe Perches, Alexey Dobriyan, and
+others that would prefer all attributes live on a separate leading line.)
 
-In commit
+[1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/
 
-  773e89ab0056 ("ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixed-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ Documentation/process/coding-style.rst | 30 ++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-Fixes tag
+diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+index 42969ab37b34..1b0800591e73 100644
+--- a/Documentation/process/coding-style.rst
++++ b/Documentation/process/coding-style.rst
+@@ -487,6 +487,36 @@ because it is a simple way to add valuable information for the reader.
+ Do not use the ``extern`` keyword with function prototypes as this makes
+ lines longer and isn't strictly necessary.
+ 
++When writing a function declarations, please keep the `order of elements regular
++<https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/>`_.
++For example::
++
++ extern __init void * __must_check void action(enum magic value, size_t size,
++ 	u8 count, char *fmt, ...) __printf(4, 5) __malloc;
++
++The preferred order of elements for a function prototype is:
++
++- storage class (here, ``extern``, and things like ``static __always_inline`` even though
++  ``__always_inline`` is technically an attribute, it is treated like ``inline``)
++- storage class attributes (here, ``__init`` -- i.e. section declarations, but also things like ``__cold``)
++- return type (here, ``void *``)
++- return type attributes (here, ``__must_check``)
++- function name (here, ``action``)
++- function parameters (here, ``(enum magic value, size_t size, u8 count, char *fmt, ...)``, noting that parameter names should always be included)
++- function parameter attributes (here, ``__printf(4, 5)``)
++- function behavior attributes (here, ``__malloc``)
++
++Note that for a function definition (e.g. ``static inline``), the compiler does
++not allow function parameter attributes after the function parameters. In these
++cases, they should go after the storage class attributes (e.g. note the changed
++position of ``__printf(4, 5)``)::
++
++ static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
++ 		size_t size, u8 count, char *fmt, ...)
++ 		__malloc
++ {
++ 	...
++ }
+ 
+ 7) Centralized exiting of functions
+ -----------------------------------
+-- 
+2.30.2
 
-  Fixes: 95a3d4454bb1 ("Switch kvmclock data to a PER_CPU variable")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/04gfg3hyt7obho/kWJUO3Qo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWOiEACgkQAVBC80lX
-0GxZngf/aEI8Fbvi9VME5tfa9gT7cZ+rH923o9kJMlGpW41Svdd5PFoz9AMCa5W9
-Zg/0FTjiiN+zigHvCBBEmzsJ2Da93ZoQTSlFEkxpXdbf7xQfBVilHUpO/HLPnucw
-rXJT43jbbtu+6dphbtW/cYDlqV0vTcNuBzN4+kyjvvkqCrEyBoMx1PC6+37PJKZN
-5I5QUYJ7cXy1KY5IJF5yCe13AItFTktjNEnK0Kyz7LwlAyDJzRsEiO/ryXjPGYS2
-hEe+1ISjP/e9eymTJzkCEVgqCpLQuxajY96kLl84lbpIfXc6o/JEPsB9H5Qt/Rp/
-m0czNR7UoXz+dE/kk1Bbg3DXBD5rfw==
-=aICz
------END PGP SIGNATURE-----
-
---Sig_/04gfg3hyt7obho/kWJUO3Qo--
