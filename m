@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDDF41D9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989FF41D9E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350895AbhI3MgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350458AbhI3MgU (ORCPT
+        id S1350903AbhI3Mgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:36:46 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:46667 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350897AbhI3Mgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:36:20 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA3AC06176F
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:34:37 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x20so9779868wrg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HRgJEndOuR4ynn0OPA7sKb8RToaEd1xX8/0RUVPc1gs=;
-        b=PRGDsSbneH4StUFwwnRbLwzVrVS8dXAQMsfx9rpM11hullUX4XhH0L8xtDo2A/JSkh
-         vfBLbBJodUO8FPeQngR5h+hr4KzarQc3FnV7xoLaGEAqs4Mq3Nxqk8Tka17mIGHBR8Od
-         esOL2mV/wXFcVwgwNwRbo3Q3ZQnzpznbdz36TaU/MQyMq8aXDMshuKrRT/qvB5Sm90Uq
-         GVOsPer9/U8+t0an4EcH7UcvvfTO0BqQiwyNuympdIbRjiTOy6VmqkBA9QuR13uL6a8c
-         3cEBsixjLbEzKXW6P/6E1GmBNN1bveSx8Y12kRb7bitYdhJf98gFz7TxmEcyjy9XVeIp
-         srug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HRgJEndOuR4ynn0OPA7sKb8RToaEd1xX8/0RUVPc1gs=;
-        b=v9ougz9fNvgPxiAfMXPeq1Z3/LYt1YkiNMAyCT9ga2ITS9gqLLGSom19wBmO+aqg+6
-         YQerV/M82fqDkCMT91Tql4joYcqo7IyYTy+pZF4PuKUxofGcUjcaNzi634acZy1b/O8V
-         RC97rjFyCN/xABCeV/lPv5PoO0fnfZ0UJn7lMfYC+5eQ8WdN+e/a6qt0T5d2FJVRWDuu
-         AVFxWsfHewYRHJGdnfFyizfyMHFG1tD+LQWs6j0ZJtfgN58hWc+YRfnBMx0K+/O+XWB5
-         kNjIj23m0mKz03BlRLarTx4h3u8JrOvmK8zYxCW36gwvXBukI8noLC5P7NawFhzJ1f+h
-         K+AQ==
-X-Gm-Message-State: AOAM53323I99SMSNc43xv3LCSNK86fsyLLLi/ntm1Di/JdJuXK1srkzS
-        yxAJfUGKDq++LHZbTS6F/DyqLQ==
-X-Google-Smtp-Source: ABdhPJzruR/5Ef2zjhhdSPBNA0SVjA7uVPC3/lwtP8K1MW5Z2+vlJQr3w2Z7LogtLW9jhnrPbK8iNw==
-X-Received: by 2002:a5d:66d0:: with SMTP id k16mr5973546wrw.98.1633005275981;
-        Thu, 30 Sep 2021 05:34:35 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id u5sm3175142wrg.57.2021.09.30.05.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 05:34:35 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 13:34:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <YVWu2RoSqEzcG79I@google.com>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
- <YVWDsFE7qyH6AwxR@google.com>
- <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
-MIME-Version: 1.0
+        Thu, 30 Sep 2021 08:36:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1633005301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PbKi1v7uP9b6x4lBqFwjoXN28PwSTCvFjDe33pv1YU8=;
+        b=cWg/DoKMo8jMX2NCzV96eNxXPTBYNuYyo75/jRK5qa0a3nlGrin6ohDQixzyZ4pkRCSXzg
+        aPyBE1qjVxWnocWu0DAUkZHpQla64MxFBp6tJFNFy2w6vXq8i9+X7CuoIRSAQ9DLPVKU0z
+        kL91O/lFYjv80aW7nVPiB6/5PHLBgQY=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2106.outbound.protection.outlook.com [104.47.17.106])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-23-BQHqtiwQPkGOwPYhZzIz8Q-1; Thu, 30 Sep 2021 14:35:00 +0200
+X-MC-Unique: BQHqtiwQPkGOwPYhZzIz8Q-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V34JzRotiHrrRxaj62lpYZ6LyQ3MVAns8brGxGNFisP46zu+4Bm2gQlHGLyEaNO/mYdsKcps2/uKh53FHs1miNRKwNrotDJi0GKE25MeMCdi6EdDq+7bEXzwWmfCC8Vb1kNB12Y/ENAhsgdOo9/kBGb8A3SQi6CyQmtFGR2Cj7HDwFFsBBeBXkYWlRb1DWj8KV4OEqb/WmB7cJ0Kbr7cLj9rN+GXK8hzgdFgAKWWZTooUZXfHKjsfuxcaQeeSPGwcuMI2ymxJ6ThJi+/Gzo6yBGAPiXZbvdo1QyV3qp4O/MdGt2kicoZhgFD0IKSxP0aioVPgijZXbGVHGJjKq6hDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=PbKi1v7uP9b6x4lBqFwjoXN28PwSTCvFjDe33pv1YU8=;
+ b=LQaWmTodXJtHB8gox1R4O2husN39gb5WzDaABpRF4C7J/bmNGmaUtNjN3+3uYIZlrm0TEcfDGg5efuFYPH0DjLu30OXUp0HuoaKrvvEqJHui0ziurBKC5SFDY60KnXVXaBnCrRqLsSANtshNj84G6U2C1yb3EKEqQScH+xdTgNXFKrhbKHmFPVYHpJyM6BxRNuqtatM1BaxVEjPKKBCCzgnCI9D44vVMtbiSIMZzOKAdX1fhrg4Dmb2Caf7A7m/sVMaLxIofNos202jjOEFm4Vipd2BP67XaiIixaqoCxh77L9jN3GVCsU8COWchafe185LNCAzRBGzWMi2JgsCKtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VE1PR04MB6383.eurprd04.prod.outlook.com (2603:10a6:803:11b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
+ 2021 12:34:59 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
+ 12:34:59 +0000
+Subject: [PATCH 1/6] xen/x86: streamline set_pte_mfn()
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
+Message-ID: <b39c08e8-4a53-8bca-e6e7-3684a6cab8d0@suse.com>
+Date:   Thu, 30 Sep 2021 14:34:56 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS9PR06CA0226.eurprd06.prod.outlook.com
+ (2603:10a6:20b:45e::25) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by AS9PR06CA0226.eurprd06.prod.outlook.com (2603:10a6:20b:45e::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 12:34:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ceb9de9-bca4-4c85-34ae-08d9840eb73c
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6383:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB63839DD3C04C7A3272F8371BB3AA9@VE1PR04MB6383.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TC1mRBq40fgQodWv/jlWln35z0/4GeyyPOSAzy0hKfoTPda6IsbItMlXTXqjk/zB/Feoal2zVIeqmTdFCH/Jyff8olq8/F49T61Lj67kzXz8lTrJCffUHgnAIf0Zq8Vyy/kM8HBIFgGGySYmxbxVw+Q0IxOvGFs1GlMwkoqbeUVMIgqcXQkIwUSWWTmXkmrdBb28JuYF0nSZVt1zVbseyf753N/gdjc0kjj1dcoAe1vwTZS1Vagiyv52uN+9p/yUbuX5+AiznQ6ow7yxu52Y0uP6abHkiLK5SID5DEoYcFb2+R9X7icu86PQ6KhSRPIiG6FwNW4uGj1W61FyL5ptn/hcYCW/hC92OwxhaX0FBMyEfhvlO0c1avZA6HjTqr9BGjzaVY8ICZCB6+nWokNhH50wVIi2bY9nn8NkIDCFZR3easZXxAiDg4rWNaZG0LcHKvam5b55uuW9C8idAYt8hC7dW8mn0qCWfSiwuAt39d7XyTXZuxWAJrv//idBCe2b0mEMp4elJPtsXfWRM+6ZThKaG+EwpaZcgbYuJHBwl8rwpxeMh2E0qRtoC0vksGK4mL0msprkka+OgNt2cC6l9Ozp8XW8lJcQdtJghpA9vxrteUXg6YWbzOTgVAum6yuPQsTN/zd+PiNpH8wvUUQ247WmeGdhEiLTmNqJzLcKm+hdDH03qSG6BkR8uOUWbHS1pyE7ntpSjw3DAS6TMAvTEloO7pvc/llKV5r+nE7BO2M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(2616005)(186003)(956004)(508600001)(31686004)(66946007)(83380400001)(8936002)(86362001)(2906002)(31696002)(16576012)(316002)(38100700002)(110136005)(8676002)(36756003)(6486002)(66556008)(66476007)(54906003)(26005)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UFgzaXhGQkkrZHhQa2FhN1pXc0p6Yk8yRVBhNU1MaDRyVUJUUEsyWnZIdmxF?=
+ =?utf-8?B?UkxYVnNwKythcGpMRld5b205U2hjd1JHc3JPZ25rdHhMZlJyT1dEOVl6ZzBr?=
+ =?utf-8?B?MGVaNFprbDMxdFhBZmFkdzdrTjg1OXVjNHBaRjhUVklCTWRaejRDUll0UUlY?=
+ =?utf-8?B?a3pqa2xraDE2TFBoUnhWRUpSdnVXcUNta1dKTzRkRllqN0t5TnZGanQ3Mlk5?=
+ =?utf-8?B?Z1liTmp3NDhaRnRqNGlqZ0JEOElXRHVyelhISi9VLzBqY2VPUG9KRFJPK2ta?=
+ =?utf-8?B?YU9KNnF1RFVKSXFGYlpSOTh3cVd5c3V2VWFoTFRGSHM0WUdiNWN5Ykw1Y21r?=
+ =?utf-8?B?b3VKTTZtQUFMUzV4MmxuYlhZYjMxL3BqUDFpQ1ZmczB5M21wQ3Z4S1FyUzRR?=
+ =?utf-8?B?K1BFV3hjL2Q3TVV5WUg5S1luQW9DQ2RDa3pOZnd6eWtzeEpaOXU4OWxXKzM4?=
+ =?utf-8?B?U09peHgzM3FIZTVjejFsaFV3a0lOOFM2NUowcFdjZHpNMmhHaDlYaWNSWGpx?=
+ =?utf-8?B?a1owemxEdnQ3Q01ML2VHRXMzUDBKRUFEUEpLY0cxWmdwKzJUMVg4cnRrUU9C?=
+ =?utf-8?B?M24ycjQ4LytZQkR5MWV2b3lENjY2VGVSd0dzcnN5clZQYVJjYzZxVXRYMlg2?=
+ =?utf-8?B?T1kwRmVreDB6TkNqRGhEMUtNQ1VaYTNlNE5TcGtOVGVRMmx3c2RiYXM0K25N?=
+ =?utf-8?B?aEVzeTRRbWZVbFBLZHM0RVZSWlgxZTAyaUNRdEtqS0s4OWZ0Tm1HaWpRWUxl?=
+ =?utf-8?B?ZHhoWFFzYjV3aUcxNklEa3VLaXNGUkhiM3c3c3R4ZmVaaWZwMWw0WkZVLy9W?=
+ =?utf-8?B?M1haUmZJYnZMTHJleVhhd1ZmNFNYYlNLcXdCVVV0QUFBZXpjbnpZcWRvMHhL?=
+ =?utf-8?B?WitxVlZrM2MrZjlWTXl2MXF6c21wZnlnVE0yMmUyd3FJOWhKc2JqSjNiNXU0?=
+ =?utf-8?B?ZUs0STN5YWtlamxuSUhGcit4T0U5QjN1TnhGU1dmWTRoeTV3cDZ4QlpveGtm?=
+ =?utf-8?B?MEdvNlI4MnprTlcxR0JONkZMQ2NhUEhTaElIaExoVUpZVTlEL0Jyb0JOY2lH?=
+ =?utf-8?B?RUJPMXl3VlpqRmJzSkpBWVh0aklNU29DUkR6UTlMaTZTZ0ltNFlVTmlyWi9y?=
+ =?utf-8?B?SXA0bldKdHIwTm8rYUlZUFo5bjR2RHVBU1FVbU1KY0RNYjlyRmQwSEdYWk93?=
+ =?utf-8?B?ZnF3ekVkWk1UenU4Yk1heFQzUUpZbDZQbVBLaVd6ZHViNStwWkN1K1BOWkFI?=
+ =?utf-8?B?aFJ6Ri9FV0dxZEh0ejNCRFRTWklnUytQS2tpc0phYjVnWEV2SGpMMmo1TGI5?=
+ =?utf-8?B?NWVuamd4ZmJLNEl3cXRmdzRrMTFlaTVvQVUxczlqWE5CTlNGUDgvNzhXRTh5?=
+ =?utf-8?B?UzZ3eEhwelQ3Q3RzOUdMeno0Z00vV2c4YzN5KzlDOXlBVnFrSkVtd2hPUi9a?=
+ =?utf-8?B?QlZlczBodkVocVN6NldXWE01MkhwdUZFTC81SUY0RjkrOURKUzlMNWRKTUVB?=
+ =?utf-8?B?ZVRsQ0txRHgrSzkwMjBoRHlvVnVDQis5NlpSTEtodW5YTXRPeGNRMWM4Nk14?=
+ =?utf-8?B?QWM3UEpYWWZ3OVFoZXRUZWxyZmVXNDE5ZGlDQTJiY1dEVm91WFFYb0V1UVFu?=
+ =?utf-8?B?N29nUm44eFYyZE1PSXNYRkt2QldrWlBac2ZNSllkemwzTTdhN3Y4NW45NUZp?=
+ =?utf-8?B?QXZ4N2NUNDVlVERFcy9QTWd6TkFJWmxiKzF6TmhuZmRxcVZhY1U1emFMcUhy?=
+ =?utf-8?Q?KYJhkcLgwFGmV7C9CzW/n+9xxUGCX9gQ6alpI6m?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ceb9de9-bca4-4c85-34ae-08d9840eb73c
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:34:58.9369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MTCCM6GdL4RD5oKcxgFMrJJWni9iY3k6Cc66Fcm16BqN2uOyT8Q+giH0k25AdM9GSW7VfEOWDYcRVjjYFIxMLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6383
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> >   It sounds like a lack of testing is your main concern.
-> > 
-> >   How can I help here?  What H/W do I need to be able to fully test this?
-> 
-> The changes here need to be tested on affected platforms (ARMv7 and
-> ARMv8), when built as a modules on some types of regular distros (e.g.
-> Arch, Ubuntu). From each of such boot I would be happy to see number of
-> new dmesg warnings/errors plus number of probe deferrals.
-> 
-> Since the drivers could be switched to modules (and some distros might
-> do it), they might be hit by surprise regressions in boot performance
-> due to probe deferrals. This should be also checked on these platforms.
-> Geert pointed out before that clocks in many cases are not optional -
-> driver needs them and will wait defer.
-> 
-> Assuming of course that boot succeeds. Minor differences in boot speed
-> should not be a problem, I think, because distro anyway chosen
-> all-module approach so it accepts the penalty.
+In preparation for restoring xen_set_pte_init()'s original behavior of
+avoiding hypercalls, make set_pte_mfn() no longer use the standard
+set_pte() code path. That one is more complicated than the alternative
+of simply using an available hypercall directly. This way we can avoid
+introducing a fair number (2k on my test system) of cases where the
+hypervisor would trap-and-emulate page table updates.
 
-Do you have any suggestions in terms of devboards?
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--- a/arch/x86/xen/mmu_pv.c
++++ b/arch/x86/xen/mmu_pv.c
+@@ -241,9 +241,11 @@ static void xen_set_pmd(pmd_t *ptr, pmd_
+  * Associate a virtual page frame with a given physical page frame
+  * and protection flags for that frame.
+  */
+-void set_pte_mfn(unsigned long vaddr, unsigned long mfn, pgprot_t flags)
++void __init set_pte_mfn(unsigned long vaddr, unsigned long mfn, pgprot_t flags)
+ {
+-	set_pte_vaddr(vaddr, mfn_pte(mfn, flags));
++	if (HYPERVISOR_update_va_mapping(vaddr, mfn_pte(mfn, flags),
++					 UVMF_INVLPG))
++		BUG();
+ }
+ 
+ static bool xen_batched_set_pte(pte_t *ptep, pte_t pteval)
+
