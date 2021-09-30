@@ -2,146 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B733241DC66
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7B441DC6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350381AbhI3OhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348440AbhI3OhN (ORCPT
+        id S1350721AbhI3OkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:40:01 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53643 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348440AbhI3OjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:37:13 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1A4C06176A;
-        Thu, 30 Sep 2021 07:35:31 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t11so4144429plq.11;
-        Thu, 30 Sep 2021 07:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lYJPRniTRBZbff9MFqNleWr6TXhR2CJIGNuRoQ2wgy8=;
-        b=XQEYgilh70OAlHfZfNiT4UE+CVMlUBQBBEfmJuQpsArcbqLTUq2qLCSTq3g+lPTSuA
-         dsil27f5oQCy6Hg5aa+KT279e0Zeli5QMjLxeCUfpExxRMcIttaoa/SArfrgd0L7QeDt
-         mfDKQesUR1GNj5IQhtH5ailEAiefK2xyc2iA9qr7bKOlbC+AIpNDBmGB+OJMJ654bdBs
-         oRxExW0W3xlZF8SvT/AW6pnx7pdQ3jTfnxDto7MwUygnBoLsE4wygMbnmM0r20jPLdZC
-         rUn4GC2A9kzWvE1vXEif7hDxMrSX1heB5xMZEBfAR+h3FgM91M3BYcqQ5PcRaT25ebk0
-         QR3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lYJPRniTRBZbff9MFqNleWr6TXhR2CJIGNuRoQ2wgy8=;
-        b=pvp4M+chC2WEYc16DCsE75K69ornul7PrT1So9WgRJK7hkC24N5AjYroYGKeJkN+P5
-         D7qdyiExao5Srlr5Wd/UnV+atGq7hCPy5ddN82HMZMH3Ztng6XgirkoG8rqbhKgDIw+E
-         NfUSdaeY4kD4TWYgvQ5frmRYcaJg36gD+v6hWboWpd9lYzjfuikbBcJ5Z0rjWJNQ47UQ
-         srS4Cer5Pwd87o2Oo/ZlXGlste4X09AhA0GFK5eRdnglMLFQ7576t16XpCpoqhKvWsKk
-         AG0+RUrF5AOqEjh8aBGQM1jD9S+qHJvU6amGV7Fp0dsnHSND4KtlNXE/Xr86osvHvctR
-         779Q==
-X-Gm-Message-State: AOAM533oN/ULwVoSSB1bzHir4XNbwU2Sb6JgDiWs8zmGgTCkCoOhSSnJ
-        hoO+xCqvAOLqby16LEI/abs=
-X-Google-Smtp-Source: ABdhPJzOYNarPIvIznW68ec40qAzjkKpHUN+ruoL95o7U+ATJK1Bqw1yOg5bN+fboQvyHOo6Hz2vlg==
-X-Received: by 2002:a17:90a:db95:: with SMTP id h21mr13615635pjv.102.1633012530501;
-        Thu, 30 Sep 2021 07:35:30 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id d5sm2966317pjs.53.2021.09.30.07.35.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:35:29 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 07:35:27 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Sebastien Laveze <sebastien.laveze@oss.nxp.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
-        rui.sousa@oss.nxp.com
-Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
-Message-ID: <20210930143527.GA14158@hoboy.vegasvil.org>
-References: <20210927093250.202131-1-sebastien.laveze@oss.nxp.com>
- <20210927145916.GA9549@hoboy.vegasvil.org>
- <b9397ec109ca1055af74bd8f20be8f64a7a1c961.camel@oss.nxp.com>
- <20210927202304.GC11172@hoboy.vegasvil.org>
- <98a91f5889b346f7a3b347bebb9aab56bddfd6dc.camel@oss.nxp.com>
- <20210928133100.GB28632@hoboy.vegasvil.org>
- <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
+        Thu, 30 Sep 2021 10:39:18 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5A9F8580F9A;
+        Thu, 30 Sep 2021 10:37:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 30 Sep 2021 10:37:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=mx+31OMai8gbaIunBA/PcL9q6BG
+        p95XY+PT2AgPSDuI=; b=JYAPl8xuiMqjPKgj4D5TmY/fbL5ORVlyC8IMByPJoSf
+        rFfBL+JSOjLRSdKL5CxCCD28WWHdKcS8bZLdyvoJhjwKWH6QZC36Q9HENw8S3H77
+        6B5Rgt4ZU4WTAV64E2nivZ67w8+8v4Paz5nXCYViB/AyUQKWk4LL3uXMIzKTYdxa
+        7+9k0AB3UFf+ffa9LLX4bZO4LAm4UavnOc4TA8kjhJZGsXXAqRvOghy6oouQsE4u
+        6RLOrZF/jczhlgtVmGDzW9s6KZTvc3joQP+GcZA7Ym5h3ZbzOBB0I6R1V7+l8o16
+        oJ9pRD4b7y1v2wQoKeQAplg3SA7qJgd2iAj7rglptkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mx+31O
+        Mai8gbaIunBA/PcL9q6BGp95XY+PT2AgPSDuI=; b=Hkeiyi6U0uImqNh8Q55Fxq
+        5Nry+jvvYAqpMOLpeP4TG0HnSix9czmk62R+t3LeuI5Bv6MySvwi4cf+RYZneYjc
+        qrefVFoLOHlnXPM2AB4rdk9IyYKJn68YAtyH1/ZMUWmw/bpx3WBKXoA7cius8Mm4
+        FfQMp9tWPexnRflXcF4Sb7yqvNiHssoatzJMX7EEiNfWyAb7v9pRgYy30eZQjLfA
+        eWjBtrGfFqqsPHwl9qKRKxe3T9mNOGVIYX036yJ8sOT7DQbBoQ+8I4EZf5WCc1vB
+        PwRJLl9toGEyM3Ki6HXQV2BPclPvLwYsIfgLQlGWvIeGvxrmefEn75pjb8H8B7Dg
+        ==
+X-ME-Sender: <xms:n8tVYZ6NoqwsyUVPSsciMz5l00besVr288mFzIw4Srergzc8szvlbw>
+    <xme:n8tVYW5cEGblGsepamYCmpWYkiXDlSqm_gvfFcF2RmyVrNHXSPc9Ui9Xay_NW04-J
+    dXZWP9bfdOaqx1vwOU>
+X-ME-Received: <xmr:n8tVYQeHyrhpcAwjgmyOlsB5RLUtaS9DThMravEcO9FesdfSmUis3En0IPz9HwofSeARJ_lJvY_wTLTaEwON8omp>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgedgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdluddtmdenucfjughrpeffhffvuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepvfihtghhohcutehnuggvrhhsvghnuceothihtghhohesthihtghhoh
+    drphhiiiiirgeqnecuggftrfgrthhtvghrnhepffeukeekudejfefhjeevgeejgffhkefh
+    ffetleduvddufeekteelkeekhfefudejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigt
+    hhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:n8tVYSI043SLp-mQJrY7ZeLX0WxKyvFtInlS5134PNnWyRc107HnTg>
+    <xmx:n8tVYdKCL61aT7mZ7jTwLvL67HqH_TN4mvqlcLO31N8jT34r0mujKw>
+    <xmx:n8tVYbz7QaM8utHAVyjZo0hpkJ93z2FHR3PHtpcbieOEAyclOBiLdw>
+    <xmx:o8tVYXaDZEfAVQibC0xnGAOZQCbAZFQs3K32yigrzQPaHYTn2EKdKw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Sep 2021 10:37:17 -0400 (EDT)
+Date:   Thu, 30 Sep 2021 08:37:15 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Tobin C. Harding" <me@tobin.cc>, linux-hardening@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Jann Horn <jannh@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Anand K Mistry <amistry@google.com>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michael =?iso-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Stefan Metzmacher <metze@samba.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 6/6] leaking_addresses: Always print a trailing newline
+Message-ID: <YVXLm5dC3nRKZpF3@cisco>
+References: <20210929220218.691419-1-keescook@chromium.org>
+ <20210929220218.691419-7-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210929220218.691419-7-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 05:00:56PM +0200, Sebastien Laveze wrote:
-> On Tue, 2021-09-28 at 06:31 -0700, Richard Cochran wrote:
-> > On Tue, Sep 28, 2021 at 01:50:23PM +0200, Sebastien Laveze wrote:
-> > > Yes that would do it. Only drawback is that ALL rx and tx timestamps
-> > > are converted to the N domains instead of a few as needed.
-> > 
-> > No, the kernel would provide only those that are selected by the
-> > program via the socket option API.
+On Wed, Sep 29, 2021 at 03:02:18PM -0700, Kees Cook wrote:
+> For files that lack trailing newlines and match a leaking address (e.g.
+> wchan[1]), the leaking_addresses.pl report would run together with the
+> next line, making things look corrupted.
 > 
-> But _all_ timestamps (rx and tx) are converted when a domain is
-> selected.
+> Unconditionally remove the newline on input, and write it back out on
+> output.
+> 
+> [1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
+> 
+> Cc: "Tobin C. Harding" <me@tobin.cc>
+> Cc: Tycho Andersen <tycho@tycho.pizza>
 
-So what?  It is only a mult/shift.  Cheaper than syscall by far.
+Acked-by: Tycho Andersen <tycho@tycho.pizza>
 
-> If we consider gPTP,
-> -using the ioctl, you only need to convert the sync receive timestamps.
-> PDelay (rx, tx, fup), sync (tx and fup) and signalling don't need to be
-> converted. So that's for a default sync period of 125 ms, 8 ioctl /
-> second / domain.
+Thanks!
 
-Well, today that is true, for your very specific use case.  But we
-don't invent kernel interfaces for one-off projects.
-
-> -doing the conversion in the kernel will necessarly be done for every
-> timestamp handled by the socket. In addition, the vclock device lookup
-> is not free as well and done for _each_ conversion.
-
-Sounds like something that can be optimized in the kernel implementation.
-
-> From a high-level view, I understand that you would have N
-> instance/process of linuxptp to support N domains ?
-
-Yes.
-
-> CMLDS performed by
-> one of them and then some signalling to the other instances ?
-
-Yes, something like that.  One process measures peer delay, and the
-others read the result via management messages (could also be pushed
-via ptp4l's management notification method).
- 
-> What we miss currently in the kernel for a better multi-domain usage
-> and would like to find a solution:
-> -allow PHC adjustment with virtual clocks. Otherwise scheduled traffic
-> cannot be used... (I've read your comments on this topic, we are
-> experimenting things on MCUs and we need to assess on measurements)
-
-Yeah, so you cannot have it both ways, I'm afraid.  Either you adjust
-the HW clock or not.  If you don't, it becomes impractical to program
-the event registers for output signals.  (Time stamps on input signals
-are not an issue, though)
-
-> -timer support for virtual clocks (nanosleep likely, as yous suggested
-> IIRC).
-
-Right, and this is (probably) difficult to sell on lkml.  Look at the
-hrtimer implementation to see what I mean.
-
-I could imagine adding one additional hrtimer base under user space
-control that isn't clock_monotonic or _realtime or _tai, but not N new
-bases.
-
-I think the best option for user space wanting timers in multiple
-domains is to periodically do 
-
-   gettime(monotonic); gettime(vclock); gettime(monotonic);
-
-figure the conversion, and schedule using clock_monotonic.
-
-
-HTH,
-Richard
-
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  scripts/leaking_addresses.pl | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
+> index b2d8b8aa2d99..8f636a23bc3f 100755
+> --- a/scripts/leaking_addresses.pl
+> +++ b/scripts/leaking_addresses.pl
+> @@ -455,8 +455,9 @@ sub parse_file
+>  
+>  	open my $fh, "<", $file or return;
+>  	while ( <$fh> ) {
+> +		chomp;
+>  		if (may_leak_address($_)) {
+> -			print $file . ': ' . $_;
+> +			printf("$file: $_\n");
+>  		}
+>  	}
+>  	close $fh;
+> -- 
+> 2.30.2
+> 
