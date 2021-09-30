@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DF841D7E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D9041D7E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239842AbhI3Kii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:38:38 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:33360 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241052AbhI3Kih (ORCPT
+        id S1349969AbhI3KjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:39:21 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:46954 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349928AbhI3KjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:38:37 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18UAae5tB001743, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18UAae5tB001743
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Sep 2021 18:36:40 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 30 Sep 2021 18:36:40 +0800
-Received: from localhost.localdomain (172.21.132.99) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 30 Sep 2021 18:36:39 +0800
-From:   <hildawu@realtek.com>
-To:     <marcel@holtmann.org>
-CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kai.heng.feng@canonical.com>, <apusaka@chromium.org>,
-        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
-        <kidman@realtek.com>
-Subject: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
-Date:   Thu, 30 Sep 2021 18:36:34 +0800
-Message-ID: <20210930103634.1710-1-hildawu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 30 Sep 2021 06:39:20 -0400
+Received: by mail-oi1-f169.google.com with SMTP id s69so6619895oie.13;
+        Thu, 30 Sep 2021 03:37:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=791k1dCYnBwj6qh9NyFd6tnYYhaFD9tuqv9gadUQ6dQ=;
+        b=keAo38l35U+Sl/ieQvcKxHju+dNVkpr6ZgNsiFonZgmdyNCqdDq81/NDxnVDzDAru8
+         pYgQEJ4i0JMv+JQk8uUDDfV5xANp2PcwP2RUXdZDdguBzoxiuNSdWJSxKlmT2UhdMbs5
+         EuzGVmZhR7Mnxvqd7oSRMPME28zaU6TLCUFYytphlsbUjsqJBpoyfed8uB5HWbM2NdGr
+         7RU6XgJx2kw8ZngRBFPmuURDrdylMdW2n/SbJZy9GsgZseVwmo6DeB4QaPK/ETXuWYy7
+         xzniA9sb+yeW6nAd5XGZZ++PxvX/fvhrjM9bIOOfEblMn8okVvj766AcDKmySUCdhn2Z
+         zZHw==
+X-Gm-Message-State: AOAM531G8Q0ZlvEoH9yBNztYqFmRGCna4H26BbprisnD2xWTp7qFpcba
+        2QRRQ0vrZh3uYG6qQ1WyC5k4CaWgiQmeQsowHnY=
+X-Google-Smtp-Source: ABdhPJyMeqiDR56PoBiJKZzrWrCADhqOYOWxKRwfmWJHwa57BMk+C85nXGqnvTtW11Vklj1lLQAAiXpkRzH6TIE7jBc=
+X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr2079960oib.69.1632998258221;
+ Thu, 30 Sep 2021 03:37:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.99]
-X-ClientProxiedBy: RTEXH36504.realtek.com.tw (172.21.6.27) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/30/2021 01:34:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMjkgpFWkyCAxMToyNzowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+References: <20210929170804.GA778424@bhelgaas> <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
+ <YVWL3PyYRanGTlVG@kuha.fi.intel.com> <CAHp75Vc9hxqy=vrVfuS_cPLCVxZ=KgxZUaD=-rU9W3KH=tAX9Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vc9hxqy=vrVfuS_cPLCVxZ=KgxZUaD=-rU9W3KH=tAX9Q@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 30 Sep 2021 12:37:27 +0200
+Message-ID: <CAJZ5v0gAfWaUXjMrSf7Ei-P=0u7kzHVKQNFY0aSxs6KFd5T6ow@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device properties
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hilda Wu <hildawu@realtek.com>
+On Thu, Sep 30, 2021 at 12:20 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 1:06 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> > On Thu, Sep 30, 2021 at 10:33:27AM +0800, Zhangfei Gao wrote:
+>
+> ...
+>
+> > If the device is really never removed, then we could also constify the
+> > node and the properties in it. Then the patch would look like this:
+>
+> I'm not sure the user can't force removal of the device (via PCI
+> rescan, for example,, or via unbind/bind cycle).
 
-Some un-support wakeup platforms keep USB power and suspend signal
-is coming late, this makes Realtek some chip keep its firmware,
-and make it never load new firmware.
+The sysfs unbind doesn't remove the device, though, AFAICS.  It just
+unbinds the driver from it, if any.
 
-So use vendor specific HCI command to ask them drop its firmware after
-system shutdown or resume.
+> I guess this way should be really taken carefully.
 
-Signed-off-by: Hilda Wu <hildawu@realtek.com>
----
- drivers/bluetooth/btrtl.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 1f8afa0244d8..60ddba8962ff 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -594,8 +594,10 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
- 	hci_rev = le16_to_cpu(resp->hci_rev);
- 	lmp_subver = le16_to_cpu(resp->lmp_subver);
- 
--	if (resp->hci_ver == 0x8 && le16_to_cpu(resp->hci_rev) == 0x826c &&
--	    resp->lmp_ver == 0x8 && le16_to_cpu(resp->lmp_subver) == 0xa99e)
-+	btrtl_dev->ic_info = btrtl_match_ic(lmp_subver, hci_rev, hci_ver,
-+					    hdev->bus);
-+
-+	if (!btrtl_dev->ic_info)
- 		btrtl_dev->drop_fw = true;
- 
- 	if (btrtl_dev->drop_fw) {
-@@ -634,13 +636,13 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
- 		hci_ver = resp->hci_ver;
- 		hci_rev = le16_to_cpu(resp->hci_rev);
- 		lmp_subver = le16_to_cpu(resp->lmp_subver);
-+
-+		btrtl_dev->ic_info = btrtl_match_ic(lmp_subver, hci_rev, hci_ver,
-+						    hdev->bus);
- 	}
- out_free:
- 	kfree_skb(skb);
- 
--	btrtl_dev->ic_info = btrtl_match_ic(lmp_subver, hci_rev, hci_ver,
--					    hdev->bus);
--
- 	if (!btrtl_dev->ic_info) {
- 		rtl_dev_info(hdev, "unknown IC info, lmp subver %04x, hci rev %04x, hci ver %04x",
- 			    lmp_subver, hci_rev, hci_ver);
--- 
-2.17.1
-
+But I agree.
