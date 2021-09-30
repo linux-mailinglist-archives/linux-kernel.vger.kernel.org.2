@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5692D41D916
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04BF41D918
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350615AbhI3LvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350609AbhI3LvF (ORCPT
+        id S1350610AbhI3LxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:53:16 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35080
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350526AbhI3LxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:51:05 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F30C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:49:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e1600628f023c6c6559e3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1600:628f:23c:6c65:59e3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 30 Sep 2021 07:53:11 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9BCB1EC026F;
-        Thu, 30 Sep 2021 13:49:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633002561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zem8paSl3IEvGjH/9/Yo51pLAsOn7wi/jHVT4rCQ9Vs=;
-        b=ZBIGHE2DxneHCUOEePSEe/hMa9iA15d/gfYgdDgS4pYAIXLAcc06ZbdnWjXwLlohQTgcaY
-        YssbZ5RtNiKTqVk2uZzoCN8XEaa6ffpjtLV1N8Jnfe1TWGDW4AKK+P+0Z9lMwsDTjFCWDT
-        OwgwR0HIws2WBvOaY8k3UjDtufGGJRs=
-Date:   Thu, 30 Sep 2021 13:49:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Mike Travis <mike.travis@hpe.com>
-Subject: Re: [PATCH V2 04/41] x86/entry: Introduce __entry_text for entry
- code written in C
-Message-ID: <YVWkQgQD+j9fT6Ge@zn.tnic>
-References: <20210926150838.197719-1-jiangshanlai@gmail.com>
- <20210926150838.197719-5-jiangshanlai@gmail.com>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8D4A9402CF
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633002688;
+        bh=c93db0R9/mEQ2t9/8HFE8jep51S83CFD2tq3hjVTTR0=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=rTdja7Oj9YwK84+Y8jBOXtpTW6HbE4DwcGmom0oKv2zSzF3HmE5X0qcQMfOgd8w+K
+         06laiR9ZYvxZJMTeIPVDgzAavyjzJKejHNgr4Bs/UsCNpBNwuazg7THE+v0ttVrtAc
+         NXi6ZH8xvB7er0LUlZoHi+iNSxNk88nbzQxq+nTx8VuHXTuw8lfUjf/2uQcISYHd4k
+         +rUJuggI48abY9JO/OTa8aIfTO2jENyduiZ9SU0+YuCcQqD2+JftdFeIiJTxPNI2CA
+         kdMWKqVWlOhvHAoNzPIGmLVV0Ekbi/s28OzGxBINFfPXVHCtCUZw4gLfNlYd8R77ZZ
+         NTJavHk2YuzOw==
+Received: by mail-lf1-f69.google.com with SMTP id o4-20020a056512230400b003fc39bb96c7so5388118lfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:51:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=c93db0R9/mEQ2t9/8HFE8jep51S83CFD2tq3hjVTTR0=;
+        b=70ue+pLbcQCy4saT4mKyil68YDQxJ16woiNiPOe5rFFt4tOHyEHe+ruTh8RVWBYPri
+         DjCOp6ncampY9uB4VXYlIVU1RVuLrFdEKrDtR5dfMoTqHMRI43Q8lLNzIiwxAwyho/1P
+         SwNW8tJRLVwkDBkHRFy274diZQJsJzvjU97VAyUKnfozErV8hdTVNRcowBQgqC5TEkBd
+         aWgEnA17VN02L2Ofze9J7dH+yUpZuyhBnOGnetBppQJ20JDDBzWgtTlEu3PafG/Tdgq6
+         Or6DSYb8XkO5PfcCW9p+8elnTTzoxwFnhAzKOgVFDZKo2IJt85OND+x2TvnJG+EY7iLm
+         VuVA==
+X-Gm-Message-State: AOAM530L3ycF8DL01qAx6v2H1doBBBsh2tj1dueTkTqd0adMC1kuko0a
+        PBjatqCdpu3czOOmVsy8MczTpT4oP1ulruWhkCzB4GHYCZ12TDs7xKbiyCCuYJxeWRBer+0w8Zn
+        FX9Hk52XRrUvYOht4BZ+ht7ntr/qJWuMbK73pZBV+zw==
+X-Received: by 2002:ac2:484e:: with SMTP id 14mr5584588lfy.140.1633002687542;
+        Thu, 30 Sep 2021 04:51:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzs6sdvKFybL6ByKYj+yLvLqJsrPx1jmtaMBZgl/1ZCHRbnmCmECCOE9LEYm5UiMVpfWHFRrw==
+X-Received: by 2002:ac2:484e:: with SMTP id 14mr5584571lfy.140.1633002687367;
+        Thu, 30 Sep 2021 04:51:27 -0700 (PDT)
+Received: from localhost.localdomain ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id q30sm346400lfb.108.2021.09.30.04.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 04:51:27 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        "moderated list:BROADCOM STB DPFE DRIVER" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "maintainer:BROADCOM STB DPFE DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH] memory: Allow building Broadcom STB DPFE as module
+Date:   Thu, 30 Sep 2021 13:50:50 +0200
+Message-Id: <163300264748.179315.16980536721607111405.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210924031459.8911-1-f.fainelli@gmail.com>
+References: <20210924031459.8911-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210926150838.197719-5-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 11:08:01PM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Thu, 23 Sep 2021 20:14:59 -0700, Florian Fainelli wrote:
+> Allow building the Broadcom STB DPFE driver as a module, it is already a
+> platform driver proper with all of the resource releasing device
+> managed.
 > 
-> Some entry code will be implemented in C files.  We need __entry_text
-
-Who's "we"?
-
-> to set them in .entry.text section.  __entry_text disables instruments
-
-s/instruments/instrumentation/
-
-> like noinstr, but it doesn't disable stack protector since not all
-> compiler supported by kernel supporting function level granular
-> attribute to disable stack protector.  It will be disabled by C file
-> level.
 > 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/include/asm/idtentry.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-> index 1345088e9902..6779def97591 100644
-> --- a/arch/x86/include/asm/idtentry.h
-> +++ b/arch/x86/include/asm/idtentry.h
-> @@ -11,6 +11,9 @@
->  
->  #include <asm/irq_stack.h>
->  
-> +/* Entry code written in C. */
-> +#define __entry_text __noinstr_section(".entry.text")
 
-I'm assuming that __noinstr_section() is defined somewhere, maybe in
-patch 3, which I don't have in my mbox.
+Applied, thanks!
 
-Yah, the 0th message says:
+[1/1] memory: Allow building Broadcom STB DPFE as module
+      commit: 13f995ceb4e0d669e293aedaaaea07e7b8a5792a
 
-"  compiler_types.h: Add __noinstr_section() for noinstr"
-
-Aha, I see why: you haven't CCed me on that one so I don't have it:
-
-https://lkml.kernel.org/r/20210926150838.197719-4-jiangshanlai@gmail.com
-
-I have all the remaining 40 but not that one.
-
-On your next submission, please make sure you CC x86@kernel.org so that
-all x86 people get the whole patchset.
-
-Thx.
-
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
