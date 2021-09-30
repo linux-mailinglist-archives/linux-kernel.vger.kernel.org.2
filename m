@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF7841E1AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98BB41E1C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346146AbhI3SxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
+        id S245359AbhI3Syb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346039AbhI3Swx (ORCPT
+        with ESMTP id S239130AbhI3Sya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:52:53 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B41C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:51:10 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id u18so29600649lfd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:51:10 -0700 (PDT)
+        Thu, 30 Sep 2021 14:54:30 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5055CC06176A;
+        Thu, 30 Sep 2021 11:52:47 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i19so26049183lfu.0;
+        Thu, 30 Sep 2021 11:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IO2yScWcP1V3nkSCAyqfJDaTb8wvqyBUDTytiX1OoYI=;
-        b=soIWJ7+oT5oJYc/VTgT4oO8XQJsb/jD0w3MRT9k9qq1A9c1ZaQS3s4W/9o8W3j6V8p
-         5pbIutFIOS6cJasSJhN7HM1fbbbS1EZuQNrp1sWV1O/EYelYQ3FYHKZUI1TkQ780sqnT
-         u19dcZmAqeTRNMvKdNEa27nspq3S570gqBYkXrfvyQ/U+lKWVVR3vThrLKqp6vrKxPF5
-         sLLrcLijrtzLw8qWLTxQ4Fy5SGVDtd2BvWqR/VpkNAGF/kZa9Vf+G36OzHJyJyKeTh6c
-         36B8YtmmujuiiddyndiXgPesk2OsxgcSUoo/L4wl9kEpFWvicCQIK4PMFaypYyCPYhNS
-         XKDw==
+        bh=zsZzgfbUxGvjY/35BurfncfGOk+t4Oowod0eAnc2ywY=;
+        b=D7wBGA4MHOGlZToVTsDa3JbYniANqoTYX/L6Nf4gW7M0qzAFuTAAmQT4b0mgmasKe1
+         B13/UIE0PYaJ53o6dCSwAeSoc7wpvW2mHhhGhij/ZeDEjjVSsYmD1kYBGvvlFczFo0WV
+         jfET0P/eh9p6p6HZrKVCSeWXoPpzIrxV+YesYe9n/bhkGIrpkhcCJdM/aG0V1EGp0USs
+         B9y71wxNnfgalkU/Y0ExhC7ttpwhxmEJDtBZbhK5oiXRRjTM9OUmsEqwSmDcVr5dRnzk
+         uLFeE0+VikbsX+VUIz64f9vqBcOi72dUJws2t/P8+53sAK9ZmczIZcjCmCbYoPPOKg1t
+         nxcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IO2yScWcP1V3nkSCAyqfJDaTb8wvqyBUDTytiX1OoYI=;
-        b=p9NF/Az8tszAZ8BUi27uSlcoyVhh2XCXATGQWCovvsWTMF2utxX7RX6/cDfPRdjuJW
-         H27E0+FxXvXxkzHv+PkNrbIDvHnGsNG6RzeBqiuHcdN3lzVE5dycqr/Yj6JPohLFqBHi
-         v2G/ugkqIbXfUpq/kXMxv0k0LomI/2Rb/4tZ9ar0L21TwvibTJ4WGPAsXd5HqD6lIUhg
-         a48p8YtcBmENMSJfLoMwtFrKmUHmBBav0ATA63Acb5MHWYPldCp+L9ne6ewiarY9VX0M
-         qRqHVyZaCFodSQIbuye9gvSDh8gPrEXE0ONTv3cfxlbHxD0lt7JFvS/r03gPL3aVkXfz
-         B2Uw==
-X-Gm-Message-State: AOAM531QDm9lrPihx/kCnt822v3zLSeB1lxX4u7b9xMr7vN/cW6/uTnm
-        bWFlRtqzkStEZtiqRPIA7WzgC3jX8iwRFewFn+UkOg==
-X-Google-Smtp-Source: ABdhPJwliirpZ6GgdbLM//GKHu/jI+FUv6Eo6sSVuFPqLNLIXYKUMrEJTAvhFCRFN+Qnuok9jzqx8j5kXlYAdUyYD+s=
-X-Received: by 2002:a2e:9b98:: with SMTP id z24mr7204666lji.339.1633027868339;
- Thu, 30 Sep 2021 11:51:08 -0700 (PDT)
+        bh=zsZzgfbUxGvjY/35BurfncfGOk+t4Oowod0eAnc2ywY=;
+        b=UyVaXWYuLnxXVSgQfi9G7gCUZ4KT5dHtThAJv0H1z/EHhXHPVUBGEdpArQRy0l6ZQV
+         +/cmErZb1ctI75AK5ADBFj422LfOM0XqWytVsQnAaACoWmj+nKRvBV4uic0MKbtYsoqa
+         kAMetLxJfF2YCUpZ+Chn3c0PQI+7Oz4X1xEufaRLL46fSyOFm9JUGUUdHdfzzUKHMKjY
+         04Q6NlYysAIWr+e+Zdh/cKFhZv5yxGK20jySfcTnLsNIUL5PW+47ebXVxcQH5vsnRTXY
+         GrN+GqJAfUS126wkSq3lFLik8/y93Gp/gJVQ9diZEgKLJTFDEeEW8WKWZKkSgGgOEgJC
+         2WqQ==
+X-Gm-Message-State: AOAM530nT3nvCA8SDsCqLTP4FJgfWt+2/1k2TwoUlwkW712neuGgkvJn
+        /SoiUUBrUxa7NSz2jfPw0i8xkl0cY3e/MUxTYkk=
+X-Google-Smtp-Source: ABdhPJyuLNTMt0ZfVRJivxJBhQSBqt1uAJ+pmxKpumn8GqdqEowJcyZIyMRooTQjTfPV8wn3f2cuHNFaz00vrHt0a6Y=
+X-Received: by 2002:a2e:a26b:: with SMTP id k11mr7698881ljm.185.1633027964954;
+ Thu, 30 Sep 2021 11:52:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com> <20210930180531.1190642-6-samitolvanen@google.com>
-In-Reply-To: <20210930180531.1190642-6-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 30 Sep 2021 11:50:57 -0700
-Message-ID: <CAKwvOdnJ6EPPd5UbhZhdggPRzCXmdrnxg_tO=Bq_+Gcgarvw1g@mail.gmail.com>
-Subject: Re: [PATCH v4 05/15] tracepoint: Exclude tp_stub_func from CFI checking
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+References: <20210930155633.2745201-1-frieder@fris.de> <20210930155633.2745201-9-frieder@fris.de>
+In-Reply-To: <20210930155633.2745201-9-frieder@fris.de>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Thu, 30 Sep 2021 20:52:33 +0200
+Message-ID: <CAEyMn7YbYAUvxEgKDB4x4AGomhBeuBDj71b2LuCs1A2emToU0w@mail.gmail.com>
+Subject: Re: [PATCH 8/8] arm64: dts: imx8mm-kontron: Leave reg_vdd_arm always
+ powered on
+To:     Frieder Schrempf <frieder@fris.de>
+Cc:     devicetree@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, stable@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+Hi Frieder,
+
+Am Do., 30. Sept. 2021 um 17:57 Uhr schrieb Frieder Schrempf <frieder@fris.de>:
 >
-> If allocate_probes fails, func_remove replaces the old function
-> with a pointer to tp_stub_func, which is called using a mismatching
-> function pointer that will always trip indirect call checks with
-> CONFIG_CFI_CLANG. Use DEFINE_CFI_IMMEDATE_RETURN_STUB to define
-> tp_stub_func to allow it to pass CFI checking.
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 >
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> When the cpufreq driver is enabled, the buck2 regulator is kept powered on
+> by the dependency between the CPU nodes with 'cpu-supply' set. Without the
+> cpufreq driver the kernel will power off the regulator as it doesn't see
+> any users. This is obviously not what we want, therefore keep the regulator
+> powered on in any case.
+>
+> Reported-by: Heiko Thiery <heiko.thiery@gmail.com>
+> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
+
 > ---
->  kernel/tracepoint.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 64ea283f2f86..58acc7d86c3f 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-
-looking at 4+5/15 together, I wonder if this TU should explicitly
-include linux/cfi.h?
-
-> @@ -99,10 +99,7 @@ struct tp_probes {
->  };
->
->  /* Called in removal of a func but failed to allocate a new tp_funcs */
-> -static void tp_stub_func(void)
-> -{
-> -       return;
-> -}
-> +static DEFINE_CFI_IMMEDIATE_RETURN_STUB(tp_stub_func);
->
->  static inline void *allocate_probes(int count)
->  {
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> index 213014f59b46..c3418d263eb4 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> @@ -105,6 +105,7 @@ reg_vdd_arm: BUCK2 {
+>                                 regulator-min-microvolt = <850000>;
+>                                 regulator-max-microvolt = <950000>;
+>                                 regulator-boot-on;
+> +                               regulator-always-on;
+>                                 regulator-ramp-delay = <3125>;
+>                                 nxp,dvs-run-voltage = <950000>;
+>                                 nxp,dvs-standby-voltage = <850000>;
 > --
-> 2.33.0.800.g4c38ced690-goog
+> 2.33.0
 >
-
-
--- 
-Thanks,
-~Nick Desaulniers
