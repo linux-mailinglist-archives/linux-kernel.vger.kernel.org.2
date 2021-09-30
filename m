@@ -2,261 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393D941DE0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7841DE15
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346857AbhI3PyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:54:22 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57390 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1346812AbhI3PyP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:54:15 -0400
-X-UUID: 643e8f12c9d14420a2770704ac3fb788-20210930
-X-UUID: 643e8f12c9d14420a2770704ac3fb788-20210930
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 10548615; Thu, 30 Sep 2021 23:52:28 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Thu, 30 Sep 2021 23:52:27 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Sep 2021 23:52:25 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
-Subject: [PATCH v10, 5/5] drm/mediatek: add support for mediatek SOC MT8192
-Date:   Thu, 30 Sep 2021 23:52:22 +0800
-Message-ID: <20210930155222.5861-6-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210930155222.5861-1-yongqiang.niu@mediatek.com>
-References: <20210930155222.5861-1-yongqiang.niu@mediatek.com>
+        id S1346811AbhI3Pzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346582AbhI3Pzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:55:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1F661411;
+        Thu, 30 Sep 2021 15:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633017242;
+        bh=4FLgrYfiAV1mkDxGMwPnsUgIYDlrsX1nBmoYjQHKOrs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=LQ/9JqDQ6td04d9li5F/dooPp/dOE3SlVNgF7u9Si5Kjew50vR+hVWBfsIIzJ+014
+         N8v+vCGq5AXzoCrCt+vTQHnjT6aXmqePpBODEjc3u2H1yZyKPneMl6p+EB3ZEKnRWC
+         t7KR/gFlY+F11CcGQOEVWeiDpHjkDxX27wH4n4ITAcmyYSd/M0WjR38k7hAfepJB76
+         iu3JWBvAMASHhgc8rAkbZ2Y9JGoNfsoaS9ng6IJsQGmJMTFzKDeQO5O5nHTC1SRTE+
+         FeVov8TjM9GUqeg+iWrn8GbDlAo46roW84eAQr+B+Zms1vXcwM1DlF1mHu7jNb+lnM
+         wHHzoZnoflP5Q==
+Date:   Thu, 30 Sep 2021 10:54:00 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/4] [PCI/ASPM:] Remove struct
+ pcie_link_state.clkpm_default
+Message-ID: <20210930155400.GA886716@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929004400.25717-2-refactormyself@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support for mediatek SOC MT8192
+On Wed, Sep 29, 2021 at 02:43:57AM +0200, Saheed O. Bolarinwa wrote:
+> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
+> 
+> The clkpm_default member of the struct pcie_link_state stores the
+> value of the default clkpm state as it is in the BIOS.
+> 
+> This patch:
+> - Removes clkpm_default from struct pcie_link_state
+> - Creates pcie_get_clkpm_state() which return the clkpm state
+>   obtained the BIOS
+> - Replaces references to clkpm_default with call to
+>   pcie_get_clkpm_state()
+> 
+> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
+> ---
+>  drivers/pci/pcie/aspm.c | 37 +++++++++++++++++++++++++++----------
+>  1 file changed, 27 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 013a47f587ce..c23da9a4e2fb 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -63,7 +63,6 @@ struct pcie_link_state {
+>  	/* Clock PM state */
+>  	u32 clkpm_capable:1;		/* Clock PM capable? */
+>  	u32 clkpm_enabled:1;		/* Current Clock PM state */
+> -	u32 clkpm_default:1;		/* Default Clock PM state by BIOS */
+>  	u32 clkpm_disable:1;		/* Clock PM disabled */
+>  
+>  	/* Exit latencies */
+> @@ -123,6 +122,30 @@ static int policy_to_aspm_state(struct pcie_link_state *link)
+>  	return 0;
+>  }
+>  
+> +static int pcie_get_clkpm_state(struct pci_dev *pdev)
+> +{
+> +	int enabled = 1;
+> +	u32 reg32;
+> +	u16 reg16;
+> +	struct pci_dev *child;
+> +	struct pci_bus *linkbus = pdev->subordinate;
+> +
+> +	/* All functions should have the same clkpm state, take the worst */
+> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
+> +		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
+> +		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
+> +			enabled = 0;
+> +			break;
+> +		}
+> +
+> +		pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
+> +		if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
+> +			enabled = 0;
+> +	}
+> +
+> +	return enabled;
+> +}
+> +
+>  static int policy_to_clkpm_state(struct pcie_link_state *link)
+>  {
+>  	switch (aspm_policy) {
+> @@ -134,7 +157,7 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
+>  		/* Enable Clock PM */
+>  		return 1;
+>  	case POLICY_DEFAULT:
+> -		return link->clkpm_default;
+> +		return pcie_get_clkpm_state(link->pdev);
+>  	}
+>  	return 0;
+>  }
+> @@ -168,9 +191,8 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
+>  
+>  static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
+>  {
+> -	int capable = 1, enabled = 1;
+> +	int capable = 1;
+>  	u32 reg32;
+> -	u16 reg16;
+>  	struct pci_dev *child;
+>  	struct pci_bus *linkbus = link->pdev->subordinate;
+>  
+> @@ -179,15 +201,10 @@ static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
+>  		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
+>  		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
+>  			capable = 0;
+> -			enabled = 0;
+>  			break;
+>  		}
+> -		pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
+> -		if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
+> -			enabled = 0;
+>  	}
+> -	link->clkpm_enabled = enabled;
+> -	link->clkpm_default = enabled;
+> +	link->clkpm_enabled = pcie_get_clkpm_state(link->pdev);
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_ccorr.c |  6 ++++
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c   | 20 +++++++++++
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c  |  6 ++++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c    | 42 +++++++++++++++++++++++
- 4 files changed, 74 insertions(+)
+I love the idea of removing clkpm_default, but I need a little more
+convincing.  Before this patch, this code computes clkpm_default from
+PCI_EXP_LNKCAP_CLKPM and PCI_EXP_LNKCTL_CLKREQ_EN of all the functions
+of the device.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-index 141cb36b9c07..3a53ebc4e172 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-@@ -205,9 +205,15 @@ static const struct mtk_disp_ccorr_data mt8183_ccorr_driver_data = {
- 	.matrix_bits = 10,
- };
- 
-+static const struct mtk_disp_ccorr_data mt8192_ccorr_driver_data = {
-+	.matrix_bits = 11,
-+};
-+
- static const struct of_device_id mtk_disp_ccorr_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = &mt8183_ccorr_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = &mt8192_ccorr_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ccorr_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 5326989d5206..2146299e5f52 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -456,6 +456,22 @@ static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8192_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8192_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
-@@ -465,6 +481,10 @@ static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	  .data = &mt8183_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = &mt8183_ovl_2l_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = &mt8192_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = &mt8192_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 75d7f45579e2..d41a3970b944 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -353,6 +353,10 @@ static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
- 	.fifo_size = 5 * SZ_1K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8192_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
-@@ -360,6 +364,8 @@ static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	  .data = &mt8173_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = &mt8183_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = &mt8192_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index aec39724ebeb..fa86485b4b9a 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -158,6 +158,25 @@ static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_POSTMASK0,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L2,
-+	DDP_COMPONENT_RDMA4,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -202,6 +221,13 @@ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-+	.main_path = mt8192_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8192_mtk_ddp_main),
-+	.ext_path = mt8192_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8192_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -407,6 +433,10 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = (void *)MTK_DISP_OVL_2L },
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8167-disp-rdma",
-@@ -415,12 +445,16 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
- 	{ .compatible = "mediatek,mt8167-disp-ccorr",
- 	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = (void *)MTK_DISP_CCORR },
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8167-disp-color",
-@@ -433,6 +467,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8183-disp-aal",
- 	  .data = (void *)MTK_DISP_AAL},
-+	{ .compatible = "mediatek,mt8192-disp-aal",
-+	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8167-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
-@@ -469,6 +505,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8183-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8192-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8167-disp-pwm",
-@@ -477,6 +515,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_PWM },
- 	{ .compatible = "mediatek,mt8173-disp-od",
- 	  .data = (void *)MTK_DISP_OD },
-+	{ .compatible = "mediatek,mt8192-disp-postmask",
-+	  .data = (void *)MTK_DISP_POSTMASK },
- 	{ }
- };
- 
-@@ -493,6 +533,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt8173_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8183-mmsys",
- 	  .data = &mt8183_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8192-mmsys",
-+	  .data = &mt8192_mmsys_driver_data},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mtk_drm_of_ids);
--- 
-2.25.1
+PCI_EXP_LNKCAP_CLKPM is a read-only value, so we can re-read that any
+time.  But PCI_EXP_LNKCTL_CLKREQ_EN is writable, so if we want to know
+the value that firmware put there, we need to read and save it before
+we modify it.
 
+Why is it safe to remove this init-time read of
+PCI_EXP_LNKCTL_CLKREQ_EN and instead re-read it any time we need the
+"default" settings from firmware?
+
+>  	link->clkpm_capable = capable;
+>  	link->clkpm_disable = blacklist ? 1 : 0;
+>  }
+> -- 
+> 2.20.1
+> 
