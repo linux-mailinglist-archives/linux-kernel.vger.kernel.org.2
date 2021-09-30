@@ -2,168 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A0C41DD7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28DE41DD77
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343838AbhI3Pcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:32:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53791 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233612AbhI3Pca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:32:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="205363104"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="205363104"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:30:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="655932750"
-Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 30 Sep 2021 08:30:16 -0700
-Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mVy0l-0000As-LB; Thu, 30 Sep 2021 15:30:15 +0000
-Date:   Thu, 30 Sep 2021 23:29:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/fpu] BUILD SUCCESS
- 724fc0248d450224b19ef5b5ee41e392348f6704
-Message-ID: <6155d7f7.tOgshdyakXhMRNUt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1343554AbhI3PcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244780AbhI3PcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:32:00 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF05C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:30:18 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so7796215otb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=zJkkp22/IAI2R8aDFw4G310ZlYY7OpVYcJ/n8BDtGkQ=;
+        b=yQqRbZ7xozCrtDE2O5hkFMhfXkgp1cPeh+mBKtqmqQCG4/dCmvY6OK+JWdiTFpuAmc
+         I2+EL7Y650RTlRStK8lVS7cSleUFGFzZYnbxzfGlvkUX+KksaH3Noe1ID+iIscg6ccg3
+         gd+Riy5j65DVpSTyo3ssn8VUSSHyxQuLQdxYIopZe7/p6IdvaQMV++WfluKfOmQNxRlS
+         4qY8za8Gvf0nxJfc1M23uZQ1SpxYK/mg7Dyk/+AehHRrnqP8oelfuyjy8ooL6EjKCHIc
+         hWKueB4dcKS+icrMi04gzpUlRYyfBWK/eEYyVscT/wuOYhCsn8nhCezp+D51C40E/6yY
+         5VaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=zJkkp22/IAI2R8aDFw4G310ZlYY7OpVYcJ/n8BDtGkQ=;
+        b=6RPgDXEcxf8uiGNNgp4omsjLSOyNxdbthrtQkhohxbVhp0mjKDbiRzfi1q0HVHyCRZ
+         U/Sav90f+qkDNSjEzTUVGPIAwvdhcY0uAb9KHdtwMwFSxxYPhdw+cQA1ocJ9t5PSbfpo
+         FPF6i030pbXUNvNYvxRBB75ysllr+V4SyD3XCpyWX2XWhBeY5c76WrwMSW9+MKSl5x7+
+         syoyAeevMAS3zBNqoWK69A6C50iZ+/s3ISEFOrXU3bnL50xks7OWfmBfGZ5fVWyFp+dO
+         cpmudOWuDb2XU1pP93/nwfO4rz0P8Q2J+XS/Z/DzRVojRdjvBSQFuagluJ81bPuF+7gR
+         t22w==
+X-Gm-Message-State: AOAM532/ysiEbPMvcj3KnDzh1bKI8+U/+PLTdbQLwcqw1jczvDZp3MdQ
+        7Qj2HfLkOFeOuEnH6FQEtn/fvXG1e4GByZEHoC21cA==
+X-Google-Smtp-Source: ABdhPJw4duoEzfaZH9gxczHD7C1DIZIGYVGg5tbc/IyPmMKn0Vhn8x2i7oAgmd7uAXON1ZmsThevvtfiBiKjKpEOP2I=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a9d:a61:: with SMTP id 88mr3394474otg.152.1633015817520;
+ Thu, 30 Sep 2021 08:30:17 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 30 Sep 2021 11:30:16 -0400
+From:   Guillaume Ranquet <granquet@baylibre.com>
+Date:   Thu, 30 Sep 2021 11:30:16 -0400
+Message-ID: <CABnWg9th7ZFqa48jKcjqs4u+27t663H-zD7yn3oFRMEsGzbMGg@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] drm/mediatek: add mt8195 hdmi TX support
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
-branch HEAD: 724fc0248d450224b19ef5b5ee41e392348f6704  x86/fpu/signal: Fix missed conversion to correct boolean retval in save_xstate_epilog()
+Hi Chun-Kuang.
 
-elapsed time: 1279m
+Thank you for your input.
+I have tried to find commonalities between the two drivers but I didn't
+find enough shared code to warrant that architecture.
+I'll have another look, especially now that I'm more familiar with the
+driver.
 
-configs tested: 108
-configs skipped: 3
+Regarding 2, I have removed as much functionalities as I could from the
+original vendor tree (like hdcp, hdr, cec...) to keep only HDMI audio and
+video TX.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There might be some more things to remove, but I'm no expert in the domain
+and I'm working without access to mediatek datasheets and documentation.
 
-gcc tested configs:
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-i386                 randconfig-c001-20210929
-arm                      pxa255-idp_defconfig
-arm                         lpc32xx_defconfig
-arm                         socfpga_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-powerpc                     asp8347_defconfig
-arm                      integrator_defconfig
-arm                         lpc18xx_defconfig
-powerpc                       ebony_defconfig
-mips                            ar7_defconfig
-mips                        bcm47xx_defconfig
-mips                     loongson2k_defconfig
-arc                                 defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     ksi8560_defconfig
-parisc                           allyesconfig
-arm                         shannon_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-powerpc                      pmac32_defconfig
-mips                         cobalt_defconfig
-x86_64               randconfig-c001-20210929
-arm                  randconfig-c002-20210929
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a002-20210929
-x86_64               randconfig-a005-20210929
-x86_64               randconfig-a001-20210929
-x86_64               randconfig-a006-20210929
-x86_64               randconfig-a003-20210929
-x86_64               randconfig-a004-20210929
-i386                 randconfig-a001-20210929
-i386                 randconfig-a005-20210929
-i386                 randconfig-a002-20210929
-i386                 randconfig-a006-20210929
-i386                 randconfig-a004-20210929
-i386                 randconfig-a003-20210929
-arc                  randconfig-r043-20210929
-riscv                            allyesconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Though, at this stage I could split the patch in two with video first and
+then audio.
 
-clang tested configs:
-powerpc              randconfig-c003-20210929
-mips                 randconfig-c004-20210929
-arm                  randconfig-c002-20210929
-x86_64               randconfig-c007-20210929
-riscv                randconfig-c006-20210929
-s390                 randconfig-c005-20210929
-i386                 randconfig-c001-20210929
-x86_64               randconfig-a014-20210929
-x86_64               randconfig-a011-20210929
-x86_64               randconfig-a013-20210929
-x86_64               randconfig-a015-20210929
-x86_64               randconfig-a012-20210929
-x86_64               randconfig-a016-20210929
-i386                 randconfig-a014-20210929
-i386                 randconfig-a013-20210929
-i386                 randconfig-a016-20210929
-i386                 randconfig-a011-20210929
-i386                 randconfig-a015-20210929
-i386                 randconfig-a012-20210929
-hexagon              randconfig-r045-20210929
-riscv                randconfig-r042-20210929
-hexagon              randconfig-r041-20210929
-s390                 randconfig-r044-20210929
+I will try to work something out for a V2.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thx,
+Guillaume.
+
+Quoting Chun-Kuang Hu (2021-09-30 15:36:42)
+> Hi, Guillaume:
+>
+> This is a big patch, and I'm not familiar with this driver, so the
+> review process would be long. So I tell you about how I review this
+> patch, and if you could process according to my way, the process would
+> be more short.
+>
+> 1. Find the common part of all hdmi driver.
+> Even though mt8195 hdmi has many difference with other mediatek soc
+> hdmi driver, I would like to find the common part and have just one
+> copy of the common part. I expect there would three file finally:
+>
+> mtk_hdmi.c               (the common part)
+> mtk_hdmi_mt8173.c (each soc special part)
+> mtk_hdmi_mt8195.c (each soc special part)
+>
+> But this would be difficult in this stage, so you could temporarily
+> have these three file:
+>
+> mtk_hdmi_common.c (the common part)
+> mtk_hdmi.c                 (each soc special part)
+> mtk_hdmi_mt8195.c   (each soc special part)
+>
+> When review is almost done, then change the file name as I wish.
+>
+> 2. The first patch has only basic function, separate advance function
+> to another patch.
+> When comparing mt8195 hdmi driver with other hdmi driver, if mt8195
+> hdmi driver has some function that other hdmi does not have, I would
+> think that function is advance function and should be separate to
+> another patch.
+>
+> If you follow this way, I think the review process would be short.
+> Because this patch is big, I would just review partial part each time.
+>
+> Regards,
+> Chun-Kuang.
+>
+>
+> Guillaume Ranquet <granquet@baylibre.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8829=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:47=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> >
+> > Add basic hdmi TX support for the mediatek mt8195 SoCs
+> >
+> > Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+> > ---
+> >  drivers/gpu/drm/mediatek/Kconfig              |   10 +
+> >  drivers/gpu/drm/mediatek/Makefile             |    4 +-
+> >  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c    | 2293 +++++++++++++++++
+> >  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h    |  128 +
+> >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.c    |  530 ++++
+> >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.h    |   20 +
+> >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_regs.h   |  329 +++
+> >  7 files changed, 3313 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
+> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
+> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.c
+> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.h
+> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_regs.h
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediate=
+k/Kconfig
+> > index 2976d21e9a34a..517d065f0511b 100644
+> > --- a/drivers/gpu/drm/mediatek/Kconfig
+> > +++ b/drivers/gpu/drm/mediatek/Kconfig
+> > @@ -28,3 +28,13 @@ config DRM_MEDIATEK_HDMI
+> >         select PHY_MTK_HDMI
+> >         help
+> >           DRM/KMS HDMI driver for Mediatek SoCs
+> > +
+> > +config DRM_MEDIATEK_HDMI_MT8195_SUSPEND_LOW_POWER
+> > +       tristate "DRM HDMI SUSPEND LOW POWER Support for Mediatek mt819=
+5 SoCs"
+> > +       depends on DRM_MEDIATEK_HDMI
+> > +       help
+> > +         DRM/KMS HDMI SUSPEND_LOW_POWER for Mediatek SoCs.
+> > +         Choose this option if you want to disable/enable
+> > +         clock and power domain when platform enter suspend,
+> > +         and this config depends on DRM_MEDIATEK_HDMI.
+> > +
+> > diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediat=
+ek/Makefile
+> > index 29098d7c8307c..736f0816083d0 100644
+> > --- a/drivers/gpu/drm/mediatek/Makefile
+> > +++ b/drivers/gpu/drm/mediatek/Makefile
+> > @@ -18,6 +18,8 @@ obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek-drm.o
+> >
+> >  mediatek-drm-hdmi-objs :=3D mtk_cec.o \
+> >                           mtk_hdmi.o \
+> > -                         mtk_hdmi_ddc.o
+> > +                         mtk_hdmi_ddc.o \
+> > +                         mtk_mt8195_hdmi.o \
+> > +                         mtk_mt8195_hdmi_ddc.o \
+> >
+> >  obj-$(CONFIG_DRM_MEDIATEK_HDMI) +=3D mediatek-drm-hdmi.o
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c b/drivers/gpu/d=
+rm/mediatek/mtk_mt8195_hdmi.c
+> > new file mode 100644
+> > index 0000000000000..46c7c8af524ac
+> > --- /dev/null
+> >
