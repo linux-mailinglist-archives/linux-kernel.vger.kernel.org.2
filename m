@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED60241D5A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2D441D599
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348571AbhI3Irw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348126AbhI3Irv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:47:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817E8C06176A;
-        Thu, 30 Sep 2021 01:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8d/h8nbryP0oox/DlztyppXYQ0VJiTBHMbHxYT4g2MA=; b=BsQNPW9QuCs+taahSJyEvp3Rn5
-        Xb1xz8lAshcXFfFgb1EIrAvRKPwLrP7U/84MCzl60R9Rbi9wWd0eAefJiXxbDGve0K4XPGkRTzoHY
-        2v0iJ1ZAGnkLb7uhiqDsOfE5jl4YVXWGMmMKRXSPR1iluINri5uET20DdA+KydQq01euzTjmuJord
-        IAkDUm/o6MN+82D5XPfqz6mWcdZb/iXx8tf5scl1SY68IcCFzzMZjZYWwk3XxG/zbmacZmVF1oBNG
-        T/lwVlLQoF4oAJR10a03+B3+Vb8VFeYA6KGMJPaYC/rHO7huAdkuJ+sEqg5QjhG21S62pE62A1MCZ
-        phMzpMXw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVrby-00CeuG-9b; Thu, 30 Sep 2021 08:40:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15836300252;
-        Thu, 30 Sep 2021 10:40:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E0C6620831B8A; Thu, 30 Sep 2021 10:40:11 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 10:40:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Anand K Mistry <amistry@google.com>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        "Tobin C. Harding" <me@tobin.cc>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Stefan Metzmacher <metze@samba.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 0/6] wchan: Fix ORC support and leaky fallback
-Message-ID: <YVV36z4UZaL/vOBI@hirez.programming.kicks-ass.net>
-References: <20210929220218.691419-1-keescook@chromium.org>
- <20210930010157.mtn7pjyxkxokzmyh@treble>
+        id S1348741AbhI3Iof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348518AbhI3Ioe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:44:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 040AA61439;
+        Thu, 30 Sep 2021 08:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632991372;
+        bh=YAnA2FtNx+qKH+DUhXFTr035RylLWdDdVr26z3gny3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XNN48DDrtgswcaru3LHGl7NIqrLp1HEB8JubJ12b7gm+02FO64euY3Zcf/N2xrsKi
+         h8SSwH3omgH/zN8rTqniJGQR4YlBnqLvUGoB0Fhe3aKUyd7SsTQSyQM/xkshI1M7F1
+         gLQC0+1k304iTXeIZh/JbxZSTuQ6ip+8lpgsd5AuGuELW/LHcI/1ScXmQXsADUVKEx
+         YfWiwKzTvHVRBNQbYyoKI1IpHwZZhcGtdZ3b2CdTndusVE1vvJnj/YiPERRTx3nB/k
+         gN47SY1pjtHs0weXfAe6o0y/9DRGIcDT/FZmNk9Hnynp0FNdoNDQkz9EgyWyH0sJ9N
+         i2XobeaZh7JdA==
+Date:   Thu, 30 Sep 2021 09:42:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Chen Lin <chen45464546@163.com>
+Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
+        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Chen Lin <chen.lin5@zte.com.cn>
+Subject: Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
+Message-ID: <20210930084247.GC23389@willie-the-truck>
+References: <1632922186-3116-1-git-send-email-chen45464546@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930010157.mtn7pjyxkxokzmyh@treble>
+In-Reply-To: <1632922186-3116-1-git-send-email-chen45464546@163.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 06:01:57PM -0700, Josh Poimboeuf wrote:
+On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
+> From: Chen Lin <chen.lin5@zte.com.cn>
+> 
+> we should dump the real instructions before BUG in kernel mode, and
+> compare this to the instructions from objdump.
+> 
+> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
+> ---
+>  arch/arm64/kernel/traps.c |    7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> index b03e383..621a9dd 100644
+> --- a/arch/arm64/kernel/traps.c
+> +++ b/arch/arm64/kernel/traps.c
+> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
+>  	if (call_undef_hook(regs) == 0)
+>  		return;
+>  
+> -	BUG_ON(!user_mode(regs));
+> +	if (!user_mode(regs)) {
+> +		pr_emerg("Undef instruction in kernel, dump instr:");
+> +		dump_kernel_instr(KERN_EMERG, regs);
+> +		BUG();
+> +	}
 
-> - Should we use a similar sched wrapper for /proc/$pid/stack to make its
->   raciness go away?
+Hmm, I'm not completely convinced about this as the instruction in the
+i-cache could be completely different. I think the PC value (for addr2line)
+is a lot more useful, and we should be printing that already.
 
-Alternatively, can we make /stack go away? AFAICT the semantics of that
-are far worse in that it wants the actual kernel stack of a task,
-blocked or not, which is a total pain in the arse (not to mention a
-giant infoleak and side-channel).
+Maybe you can elaborate on a situation where this information was helpful?
 
-> - At the risk of triggering a much larger patch set, I suspect
->   get_wchan() can be made generic ;-)  It's just a glorified wrapper
->   around stack_trace_save_tsk().
+Thanks,
 
-Done that for you :-)
+Will
