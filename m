@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0228541E04B
+	by mail.lfdr.de (Postfix) with ESMTP id B6E6541E04D
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352778AbhI3RlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352722AbhI3RlK (ORCPT
+        id S1352805AbhI3Rn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:43:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352744AbhI3RnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:41:10 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4109C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:39:27 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id b26so25273355edt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wBFXHARFQ6BmCFJJOsLjYh6MCL2g45Z1Rh5ubIbYOmI=;
-        b=V97LYSYIBz7qx56yMPIZqCCA22l4dW7pVidzju2hYTNnI3GhkxlLFTx3AL6I3Pk+dt
-         IVsI1mG5mgJ5hkVv+qllmTjeCuWU/PK6yMiPLp52Y4Akg/UHBEDm/7Bbi+AaAF9gwlIt
-         t34p8QTgY2PPL8O4sNJuLp3nw+92rgzsbk6gZS/J+QeAl6u2T+QdADs7DYHT8Ocdk8Os
-         XcXpz0RGMvNbswAzbD6anG9IwXM3u3SxL8A6YmpctGUPLFuT9kILdYrhn/+Fx7V2uS2a
-         +t6UNkq9sFE99cDLgeVgVMMksTk2yKxzqtA1CPYP1c7nU5xfBti4iB6XJrV3ae+/wmw5
-         dYFw==
+        Thu, 30 Sep 2021 13:43:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633023702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vq6gTi9Bep6mtPf9nDMlF9035dfiR/XYgA5X2QHKj40=;
+        b=XGWl/Z0/Pbvir8vh7hMERMD2b72b1NWqp4Fq6WMoH4FbtYsdGWgZH9zgaqfBauq9yNvtst
+        yDRncaiig5ap+yVgD6cupKHV95Kpkfc9TxpSQPIkOqUdPHARodDWy5G8toSrDjfgiuXHfG
+        1gJISoWGotv8RlpuWKwvllRKwKkDiWg=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-PBRwz0iDO9WBlAnE-evyvg-1; Thu, 30 Sep 2021 13:41:41 -0400
+X-MC-Unique: PBRwz0iDO9WBlAnE-evyvg-1
+Received: by mail-ot1-f72.google.com with SMTP id m12-20020a0568301e6c00b005469f1a7d70so4761772otr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:41:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wBFXHARFQ6BmCFJJOsLjYh6MCL2g45Z1Rh5ubIbYOmI=;
-        b=6GsXh5cpTSvDoRNFZNpVeBSmJpVUccVAyqrxipzxO2JW03NzmpAUJ1CufDuQnbbiSU
-         HgkWF59juy/+Wi6IA3H+wqZGJfExWtdajUbVFKLA8aRxRRaGJvMhAyPVShWsyHEnsAjz
-         SiPHo+i6DBk8j8PiAnPsqLF8LzM8Iwxxvd53gTU18oMbKBSVfbQCPyvjCIz3+6naRoiy
-         DN3FJgafjNeiprs1MxxcTLan+3NyLyb7Iubfskr8toQ1R1gbrqw4D/peDQnAionyRLmT
-         fse4XIcB3HBhVgMavE8gM27DK8jdDT5PPFzRpZ/MtCjtKSpdBXxz9LLFXuJk8Pu9n7t3
-         C67A==
-X-Gm-Message-State: AOAM533QNgUtyDgBGLMDDycqy2a5UXptMChA/qu7tgLYN4EbtOcyI0TK
-        gsrWo3iYsTWKsANzoOixLVdAwmkkFNmPY8Rgo7U=
-X-Google-Smtp-Source: ABdhPJzG7awZ4BvsrrS64zuGfGd3yEJCDW2Wup/jcoQSvyxqmsIrjCSF48wYWFfCZsLcUvTmnrbW0XTrL5Ddvhd/BBI=
-X-Received: by 2002:a50:8d85:: with SMTP id r5mr8583604edh.312.1633023566307;
- Thu, 30 Sep 2021 10:39:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vq6gTi9Bep6mtPf9nDMlF9035dfiR/XYgA5X2QHKj40=;
+        b=ULy/4VjSreYfCDq8Jc25aN2fmkrpYutlO9TgkQ1QwXJD43N0NO8blxngWa9wCUhLlO
+         DzR13Qstn56fTuAhR+XJV4QKZ7A0yu0o6lRsXwQA96zgDFoI6ipf5G00uho5bNSyU3Nl
+         i1kbRdxzOOfCi2kJBVklABttGPPhmERFAFpFwIlsPI55DlN27/Xv1qSi7BHNZBwAeERh
+         AS98rsTtCnbkinacDt1PyZQzwuo8zf/8ecX2PQZK1hpo5RzZLVad7Wcr12HLY6179kSF
+         01d+Z92HompnTzJKoARDhDAP2qoW2rb3RPs4NxLKjphgIcLc9/kIOv+kSAHxNFUh4aTJ
+         5ofA==
+X-Gm-Message-State: AOAM532Uf1R+49WtK9PbS5zLW1nQ6Xh2ONLNWYu//eEBUo+EHTydv0Zq
+        3BlOra2lT3sN13hiTstms0Ti8uo802rcfYIZUkgzr/nBKgjNdiXtrf3StzcFzyR8ov+q2439Yur
+        IrN+882UGFKLqW0On47Jg6GqD
+X-Received: by 2002:aca:b142:: with SMTP id a63mr373419oif.115.1633023700395;
+        Thu, 30 Sep 2021 10:41:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaXC4q6QrGV266RqllNNcjg/6qBIcDvhoxMmAAPlV8rD4YdbwYCIVH9myRfNWtSOphc/Tgog==
+X-Received: by 2002:aca:b142:: with SMTP id a63mr373408oif.115.1633023700157;
+        Thu, 30 Sep 2021 10:41:40 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id u77sm653168oie.46.2021.09.30.10.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 10:41:39 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:41:37 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, sfr@canb.auug.org.au,
+        mbenes@suse.cz
+Subject: Re: [PATCH] objtool: Teach get_alt_entry() about more relocation
+ types
+Message-ID: <20210930174137.atf6tuzgd2iivx3c@treble>
+References: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com> <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com> <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org> <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
- <67906bf5-4de9-8433-3d70-cc8fc5cc2347@linux.alibaba.com> <CAPhsuW4_-ju9QgB7J4imrhQvH6ZqoOkVtVOVX11Yk_ZRakwQ+A@mail.gmail.com>
- <3d264ed9-f8fd-60d4-7125-f9f745ebeb52@google.com> <YVXXq0ssvW6P525J@casper.infradead.org>
- <f889db88-7b7d-ddb0-a7ed-3eda85d3eb96@google.com>
-In-Reply-To: <f889db88-7b7d-ddb0-a7ed-3eda85d3eb96@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 30 Sep 2021 10:39:14 -0700
-Message-ID: <CAHbLzkq7=FsXtp4YcjeruJwbYyhsRGCq+eC8uwC-Tg06JBTUUA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page cache
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Song Liu <song@kernel.org>,
-        Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:49 AM Hugh Dickins <hughd@google.com> wrote:
->
-> On Thu, 30 Sep 2021, Matthew Wilcox wrote:
-> > On Wed, Sep 29, 2021 at 10:24:44PM -0700, Hugh Dickins wrote:
-> > >
-> > > Aside from the above page->index mischeck in find_lock_entries(),
-> > > I now think this bug needs nothing more than simply removing the
-> > > VM_BUG_ON_PAGE(PageTail(page), page) from truncate_inode_page().
-> >
-> > I don't think that's right.  This bug was also observed when calling
-> > truncate(), so there's clearly a situation where two concurrent calls
-> > to truncate_pagecache() leaves a THP in the cache.
->
-> I assume you're thinking of one of the fuzzer blkdev ones:
-> https://lore.kernel.org/linux-mm/CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com/
-> or
-> https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
->
-> I haven't started on those ones yet: yes, I imagine one or both of those
-> will need a further fix (S_ISREG() check somewhere if we're lucky; but
-> could well be nastier); but for the bug in this thread, I expect
+On Thu, Sep 30, 2021 at 12:43:10PM +0200, Peter Zijlstra wrote:
+> 
+> Occasionally objtool encounters symbol (as opposed to section)
+> relocations in .altinstructions. Typically they are the alternatives
+> written by elf_add_alternative() as encountered on a noinstr
+> validation run on vmlinux after having already ran objtool on the
+> individual .o files.
+> 
+> Basically this is the counterpart of commit 44f6a7c0755d ("objtool:
+> Fix seg fault with Clang non-section symbols"), because when these new
+> assemblers (binutils now also does this) strip the section symbols,
+> elf_add_reloc_to_insn() is forced to emit symbol based relocations.
+> 
+> As such, teach get_alt_entry() about different relocation types.
+> 
+> Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  tools/objtool/special.c |   32 +++++++++++++++++++++++++-------
+>  1 file changed, 25 insertions(+), 7 deletions(-)
+> 
+> --- a/tools/objtool/special.c
+> +++ b/tools/objtool/special.c
+> @@ -58,6 +58,24 @@ void __weak arch_handle_alternative(unsi
+>  {
+>  }
+>  
+> +static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
 
-Makes sense to me. We should be able to check S_ISREG() in khugepaged,
-if it is not a regular file, just bail out. Sounds not that nasty to
-me AFAIU.
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-> removing the VM_BUG_ON_PAGE(PageTail) to be enough.
->
-> If you're thinking of something else, please send a link if you can - thanks.
->
-> Hugh
->
+Though I'd prefer U change it 2 a function name which doesn't look like
+a Prince song title.
+
+-- 
+Josh
+
