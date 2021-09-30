@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A597441DEE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B0741DEE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350395AbhI3QYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350253AbhI3QYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:24:33 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAEDC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:50 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso7974526otb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=6JOJ3EzXibHBz+PFm5P3PVsToORWoURbVfdbR5q2uJQ=;
-        b=D7QDulUKa1aB6PdkqySm1m5bEmJyKIDF38dyHFaMrv0zr0itz25rcJJo2k3VufY7F3
-         zD0eOdwWRwB0Mf6RaIhhhO1eTqTgDD2gcENM17zHGKHPwQ+G60V5MDYbIOPhc02V50P1
-         JzNlYsX1Pl4FPChvo069Tw1Sgf3DpjsB5/FTM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=6JOJ3EzXibHBz+PFm5P3PVsToORWoURbVfdbR5q2uJQ=;
-        b=4lCY8N0WS9MYNFg3/Y35K8NpJAaxDc73qoyb539TUvh3anrVUj4UTfu7fHh1BgD/AK
-         ZFNPkUFqxRPcxiza5on08cFKhmKYbsVL7FRabq9Iwflftfq+tFffYe3w6GvzueY/ogY2
-         Cqlmy8JBb5+R1X1cxy09MZxIpQ8WuCkmeev1A4rYNEmHCkDQU+Bh3anhg5HZ2ykze6fO
-         3gaFbZDu7vd8MNLU5v+cbNpQldI/xnSzRC0CxKIECJbZ8oarg8MSp5KA1z0IcrFv3/FN
-         CQpk/VwM1kNnJu+m4JpUtP6dO2BUAbLIcRZLJ9hj5gJhve7QP9JaXCXAweUw7m8sf4Dy
-         lliA==
-X-Gm-Message-State: AOAM5301CMMwPYh9huk3Ela6IPYGEYR1NMV3RKtIhbskuyCvuKcZbgrm
-        wiFKXmfF0VuHkWdh+JQ5DXya6BFYU72h3Y95d4Ojzg==
-X-Google-Smtp-Source: ABdhPJx7ptDIuvylE+BRjgNIoijnMA94qMRA1bTHSAL3U36GQnJkKvkB5p/hKcN9wlfOnqgQBbuoFd5GfTFUmIm3spk=
-X-Received: by 2002:a05:6830:708:: with SMTP id y8mr5951403ots.77.1633018969821;
- Thu, 30 Sep 2021 09:22:49 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 30 Sep 2021 09:22:49 -0700
+        id S1350358AbhI3QZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349659AbhI3QZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:25:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0D3C61139;
+        Thu, 30 Sep 2021 16:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633019028;
+        bh=SFAuczdPhuuWJXLs0XfQ/hIiVtLdDPdd1uYoA5KobTw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t630z/tBR0JsvcDkaupuV6XlaWMEW+/eHqaJUiVwvD83oi7YkijX9RN+M1o+yJ5bG
+         ziAJANnhmGQaXAlrigMwECfvl+E9hk/uV6sqO8EagLzYN60qIWNFQ93rdFJ2lds7Hj
+         IssDWkkngoQgSVTzeAD3bej+vrLPM07TcDfCAQXipkOodUXqcr291Kb1ey0tMx/wJP
+         f4ezOH2JT6+OFB/UnDhnrjrSQgVQYC+a8hsRKvcJfA84QvvxjTR2TNYM4no4CBPYgw
+         xDjFVdXShUZSH8x1Wgs2bLHhMOZCPy/rcg1bBSPq+H+FOo4ZLPokMw28p6//9WZfMN
+         C447b766TxUdQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
+Date:   Thu, 30 Sep 2021 09:23:03 -0700
+Message-Id: <20210930162302.2344542-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.591.gddb1055343
 MIME-Version: 1.0
-In-Reply-To: <1633015924-881-2-git-send-email-deesin@codeaurora.org>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org> <1633015924-881-2-git-send-email-deesin@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 30 Sep 2021 09:22:49 -0700
-Message-ID: <CAE-0n51KgP1Jc4=eue3xT3=YfwYjdWk7+MOwNrw_FYZ_iX76mA@mail.gmail.com>
-Subject: Re: [PATCH V1 1/3] rpmsg: core: Add signal API support
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        mathieu.poirier@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-09-30 08:32:01)
-> Some transports like Glink support the state notifications between
-> clients using signals similar to serial protocol signals.
-> Local glink client drivers can send and receive signals to glink
-> clients running on remote processors.
->
-> Add apis to support sending and receiving of signals by rpmsg clients.
+Clang warns:
 
-s/apis/APIs/
+drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:1017:10: error: expression which evaluates to zero treated as a null pointer constant of type 'struct pipe_ctx *' [-Werror,-Wnon-literal-null-conversion]
+                return false;
+                       ^~~~~
+1 error generated.
 
->
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-[...]
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index 9151836..5cae50c 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -327,6 +327,24 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
->  }
->  EXPORT_SYMBOL(rpmsg_trysend_offchannel);
->
-> +/**
-> + * rpmsg_set_flow_control() - sets/clears searial flow control signals
+Use NULL instead of false since the function is returning a pointer
+rather than a boolean.
 
-s/searial/serial/
+Fixes: ff7e396f822f ("drm/amd/display: add cyan_skillfish display support")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1470
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> + * @ept:       the rpmsg endpoint
-> + * @enable:    enable or disable serial flow control
-> + *
-> + * Returns 0 on success and an appropriate error value on failure.
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
+index aec276e1db65..8523a048e6f6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
+@@ -1014,7 +1014,7 @@ static struct pipe_ctx *dcn201_acquire_idle_pipe_for_layer(
+ 		ASSERT(0);
+ 
+ 	if (!idle_pipe)
+-		return false;
++		return NULL;
+ 
+ 	idle_pipe->stream = head_pipe->stream;
+ 	idle_pipe->stream_res.tg = head_pipe->stream_res.tg;
 
-Use 'Return:' instead of Returns.
+base-commit: b47b99e30cca8906753c83205e8c6179045dd725
+-- 
+2.33.0.591.gddb1055343
 
-> + */
-> +int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable)
-> +{
-> +       if (WARN_ON(!ept))
-> +               return -EINVAL;
-> +       if (!ept->ops->set_flow_control)
-> +               return -ENXIO;
-> +
-> +       return ept->ops->set_flow_control(ept, enable);
-> +}
-> +EXPORT_SYMBOL(rpmsg_set_flow_control);
-> +
->  /*
->   * match a rpmsg channel with a channel info struct.
->   * this is used to make sure we're not creating rpmsg devices for channels
