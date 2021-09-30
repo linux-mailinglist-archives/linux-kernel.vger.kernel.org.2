@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796F341E05E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9116241E060
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352859AbhI3RwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S1352879AbhI3RzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352854AbhI3RwR (ORCPT
+        with ESMTP id S1352811AbhI3RzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:52:17 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8BBC061770;
-        Thu, 30 Sep 2021 10:50:33 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b15so28500814lfe.7;
-        Thu, 30 Sep 2021 10:50:33 -0700 (PDT)
+        Thu, 30 Sep 2021 13:55:20 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED10C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:53:37 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n2so4573334plk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:53:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+JDjAgU8bFcCk8yPUu11mn0T3Xk2GAlmfZNXipC8Lmo=;
-        b=BcLNUXFG9WHALB535wMqdB0A1rvUc6Ym3l6cHuLOP9qxUsmK/YExZ1OUhfNkc4Vcd6
-         ftCMTd3RTke73TDteUclXgPPwjsxXbG5N3YR56FGv9xGoccT3Qsd/cldozoXsJ962BJp
-         ep5FV+JwAh/vql+orWrR4XRjCc/UNaPZm5qsgXCvXnPETPIFSonsI4dwwX4mBpj3mzkn
-         JTFAja4r/VBwW+2gSPtTvxCpoOiKCDKMDFJv28gI28FUDVt9upO4/iANDOvTlY2v8Pol
-         /4GJRhrOgldEp3KiHIdZWcODUATh7kq70xiGXuTi0S6QO0B9GIh5k/9RZMO5P++rfjj6
-         3lbA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J6VIPDiBHcPnVlaHOu28w6KMKmQgitpe9uIbK84dAaQ=;
+        b=PDptof/eTySr76xQi6B/6Uyh3LTGJReNLguHgH+tmgMGtzvk8KnfDqrrtJcxjHSMwr
+         QJ6Bg2VuVk70d3B/C6IL2mp4K9YRHci8VLvlzJeSko+B5vwYBpLWs9e0TX5qHbFc36kr
+         K9+EUxdJtfkxJyuPbaAwjCod5bYZiEBVs4oBI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+JDjAgU8bFcCk8yPUu11mn0T3Xk2GAlmfZNXipC8Lmo=;
-        b=u4/ZoPAd5Qb+eOhVmTPtYZawrnYejy18X+dGTM6mTvdxAiP94AMov9gr7oimG0KLPj
-         yCvs9M7Q27PbvJd373zws0RwlOWm5GafuB89d/n42faIkmWTJc1YOuz2vZMcoLRLKCjk
-         ONfIyADAtLCtgB4AtbnUYOnLIi5TQZuLCTxOTIU3TmL7uzd8aZ73Od3yntbCOx2cFPM4
-         yZFLkSKy0iW1ZdTl2LkcMyvldQnAWHrJj4dGurD67nCVt73eir8IJXQ4Wp25dqr0UBsL
-         Rl/k00N85DyYe4TxERCHpSeaimwy6GL5dkr/sFz2BxJFoSFDX6TmYzObYCT7mDqCjgfM
-         /SYw==
-X-Gm-Message-State: AOAM533Jo9QlYjgVhdOlGb1UUy4U1L4pxNVpPsuKBBe1McCi2nt7Dcn5
-        7WDydxJ1aiKGq6X+rsVwJWs=
-X-Google-Smtp-Source: ABdhPJz4Ga693I91NXRp0LZZrwh/IFFbkUIE4pp0WVDA7T9qC6OrD08aq9cS+nj4qzZkK0BeCjUBzA==
-X-Received: by 2002:ac2:46d8:: with SMTP id p24mr489777lfo.227.1633024231719;
-        Thu, 30 Sep 2021 10:50:31 -0700 (PDT)
-Received: from localhost.localdomain ([217.117.245.149])
-        by smtp.gmail.com with ESMTPSA id m5sm443567lfg.121.2021.09.30.10.50.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J6VIPDiBHcPnVlaHOu28w6KMKmQgitpe9uIbK84dAaQ=;
+        b=SajQX/3FfA4zni0Y/7kcGFSffdLLpOYM0Yzq8Loxbdof97pFybEmGuy5dQxvZfixPc
+         yWmYFClrUEM8Mud6OmI+r3KuTCeRd2DYGYM0LGCcNqPZa0OJvyFzB1jliyf3hkTtQ/ws
+         8ZYbZRlO/ide/Sz/PVDaBZ0D5HusPMlXiYGPGuVGeYDHmCICYzSR/IzUBRXv7B8vdEMr
+         erxEkqlsC95TubPkd/OIwQUsxzo3FXjz6MAcvn1+waG53bQEmtlYjN2NSdiIMZ394F4F
+         V+0f2Hahpt56NDOUv7dEbB/iX0gVJUFHrg/Now+kuX3mWJ3oSM/aqbV6EIiom2B9WToq
+         Xjfg==
+X-Gm-Message-State: AOAM533dIWLddHUHVZEFxrZ8pw405GiVndiZpuzWTwE/83wav3yOT4WK
+        qljsM39kGYZk7ud+6pIiSs355g==
+X-Google-Smtp-Source: ABdhPJwZdhveQPGbtdaFQHFIyqhRm+zaWg1TcdnLx+j93ohHMtpl/eCyuMVRVTSPcrq/nvakaNAUlw==
+X-Received: by 2002:a17:90a:ead1:: with SMTP id ev17mr14731713pjb.158.1633024417242;
+        Thu, 30 Sep 2021 10:53:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a7sm2982557pfn.150.2021.09.30.10.53.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 10:50:31 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, buytenh@marvell.com,
-        afleming@freescale.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v4 2/2] phy: mdio: fix memory leak
-Date:   Thu, 30 Sep 2021 20:50:28 +0300
-Message-Id: <eceae1429fbf8fa5c73dd2a0d39d525aa905074d.1633024062.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com>
-References: <f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com>
+        Thu, 30 Sep 2021 10:53:36 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:53:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Alcock <nick.alcock@oracle.com>
+Cc:     jeyu@kernel.org, masahiroy@kernel.org,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, eugene.loh@oracle.com, kris.van.hees@oracle.com
+Subject: Re: [PATCH v5] kallsyms: new /proc/kallmodsyms with builtin modules
+Message-ID: <202109301051.DDD8B5F27@keescook>
+References: <20210929215154.300692-1-nick.alcock@oracle.com>
+ <202109291629.81106C83D@keescook>
+ <875yui0ymc.fsf@esperi.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875yui0ymc.fsf@esperi.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in MDIO bus interface, the problem was in
-wrong state logic.
+On Thu, Sep 30, 2021 at 06:19:55PM +0100, Nick Alcock wrote:
+> On 30 Sep 2021, Kees Cook said:
+> > On Wed, Sep 29, 2021 at 10:51:47PM +0100, Nick Alcock wrote:
+> >> It would be useful if there were a mapping between kernel symbol and module
+> >> name that only changed when the kernel source code is changed.  This mapping
+> >> should not change simply because a module becomes built into the kernel.
+> >> 
+> >> It might also be useful if there were reliable symbol size information to
+> >> determine whether an address is within a symbol or outside it, especially
+> >> given that there could be huge gaps between symbols.
+> >> [...]
+> > [...]
+> > It would be useful, sure, but is there something that does, in fact,
+> > need this, or would like this if it were available? Since this provides
+> > a userspace API, what would be consuming that API? For example, when
+> > Syscall User Dispatch was added, it was clear it was for Wine[1].
+> 
+> We have a long-term consumer in DTrace (e.g.
+> <https://github.com/oracle/dtrace-utils/blob/dev/libdtrace/dt_module.c#L1323>).
+> (But since we control this consumer we are quite happy to change the
+> format of kallmodsyms, integrate it with kallsyms so that kallsyms just
+> provides the same information if the file format break were acceptable,
+> or whatever you think most sensible. We just want this information
+> somehow. :) e.g. the code there doesn't yet handle the
+> symbol-in-multiple-modules case: I'll have to add that.)
 
-MDIOBUS_ALLOCATED indicates 2 states:
-	1. Bus is only allocated
-	2. Bus allocated and __mdiobus_register() fails, but
-	   device_register() was called
+Ah-ha, excellent. That works for me. :) (If there is a v5, maybe add a
+note about DTrace to help show the specific need.)
 
-In case of device_register() has been called we should call put_device()
-to correctly free the memory allocated for this device, but mdiobus_free()
-calls just kfree(dev) in case of MDIOBUS_ALLOCATED state
+Thanks!
 
-To avoid this behaviour we need to set bus->state to MDIOBUS_UNREGISTERED
-_before_ calling device_register(), because put_device() should be
-called even in case of device_register() failure.
+-Kees
 
-Link: https://lore.kernel.org/netdev/YVMRWNDZDUOvQjHL@shell.armlinux.org.uk/
-Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
-Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
-
-Changes in v4:
-	Fixed typo in comment, thanks to Wong Vee Khee
-
-Changes in v3:
-	s/==/=/
-	Added Dan's Reviewed-by tag
-
-Changes in v2:
-	Removed new state, since MDIOBUS_UNREGISTERED can be used. Also, moved
-	bus->state initialization _before_ device_register() call, because
-	Yanfei's patch is reverted in [v2 1/2]
-
----
- drivers/net/phy/mdio_bus.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 53f034fc2ef7..fca8e335d750 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -534,6 +534,13 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	bus->dev.groups = NULL;
- 	dev_set_name(&bus->dev, "%s", bus->id);
- 
-+	/* We need to set state to MDIOBUS_UNREGISTERED to correctly release
-+	 * the device in mdiobus_free()
-+	 *
-+	 * State will be updated later in this function in case of success
-+	 */
-+	bus->state = MDIOBUS_UNREGISTERED;
-+
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
 -- 
-2.33.0
-
+Kees Cook
