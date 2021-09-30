@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B362041D2A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FC141D2AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348064AbhI3FXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:23:23 -0400
-Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:34030 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1348034AbhI3FXR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:23:17 -0400
-Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 14469182890C6;
-        Thu, 30 Sep 2021 05:21:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 9CE4B24023E;
-        Thu, 30 Sep 2021 05:21:29 +0000 (UTC)
-Message-ID: <553c081e8e4e8c3eb146f4ddf1ca24f9a007afa2.camel@perches.com>
-Subject: Re: [PATCH net] MAINTAINERS: Remove Bin Luo as his email bounces
-From:   Joe Perches <joe@perches.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        HuazhongTan <tanhuazhong@huawei.com>,
-        YangShen <shenyang39@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-netdev <netdev@vger.kernel.org>
-Date:   Wed, 29 Sep 2021 22:21:28 -0700
-In-Reply-To: <045a32ccf394de66b7899c8b732f44dc5f4a1154.1632978665.git.leonro@nvidia.com>
-References: <045a32ccf394de66b7899c8b732f44dc5f4a1154.1632978665.git.leonro@nvidia.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S1348050AbhI3FZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:25:50 -0400
+Received: from verein.lst.de ([213.95.11.211]:58178 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347973AbhI3FZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:25:49 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 896FC67373; Thu, 30 Sep 2021 07:24:02 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 07:24:02 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Wang, Zhi A" <zhi.a.wang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Nikula, Jani" <jani.nikula@intel.com>
+Subject: Re: refactor the i915 GVT support
+Message-ID: <20210930052402.GA21841@lst.de>
+References: <20210817052203.GX13928@zhen-hp.sh.intel.com> <20210819082929.GB13928@zhen-hp.sh.intel.com> <20210820141724.GA29034@lst.de> <YSAI8pKAvvW/8S2O@bombadil.infradead.org> <20210826061219.GD9942@zhen-hp.sh.intel.com> <55c11f22-99e5-6109-3be3-a04b06b3336e@intel.com> <YVMgGKk1K4gO8ls6@bombadil.infradead.org> <af40291a-de36-b39f-9ded-aaf4ddba641f@intel.com> <20210928150507.GM964074@nvidia.com> <24c7bbec-b425-52fb-d3f9-539a0a391dfa@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 9CE4B24023E
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 7naax7cn6i1n8yydr98c5ryz7f5r3wbg
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+z/T8rXjLgsomIod0rDoll6UM5B6ZtHao=
-X-HE-Tag: 1632979289-163108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24c7bbec-b425-52fb-d3f9-539a0a391dfa@intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-30 at 08:12 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Sep 29, 2021 at 06:27:16PM +0000, Wang, Zhi A wrote:
+> Thanks for the idea. I am not sure i915 guys would take this idea since 
+> that it's only for GVT-g, i915 doesn't use this at all. We need to take 
+> a snapshot of both PCI configuration space and MMIO registers before 
+> i915 driver starts to touch the HW.
 > 
-> The emails sent to luobin9@huawei.com bounce with error:
->  "Recipient address rejected: Failed recipient validation check."
+> One idea is we capture the registers in intel_gvt.c during the early 
+> initialization and do everything else when i915.ko is fully loaded. But 
+> how about dependence between i915.ko and kvmgt.ko? We cannot do 
+> request_module("kvmgt") in i915.ko.
 > 
-> So let's remove his entry and change the status of hinic driver till
-> someone in Huawei will step-in to maintain it again.
+> Maybe Christoph can give more input on this and how we can deal with 
+> this? Before we figure out an solution, we have to pick that patch out 
+> since it blocks our pull request schedule.
+> 
+> Also I was thinking if moving gvt into kvmgt.ko is the right direction. 
+> It seems the module loading system in kernel is not designed for "module 
+> A loading module B, which needs symbols from module A, in the 
+> initialization path of module A".
 
-It's probably better to at least cc the other huawei folks
-that have also submitted patches for this driver recently.
-
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  MAINTAINERS | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b585e6092a74..1e39189b4004 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8609,9 +8609,8 @@ F:	Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml
->  F:	drivers/iio/humidity/hts221*
-> 
->  HUAWEI ETHERNET DRIVER
-> -M:	Bin Luo <luobin9@huawei.com>
->  L:	netdev@vger.kernel.org
-> -S:	Supported
-> +S:	Orphan
->  F:	Documentation/networking/device_drivers/ethernet/huawei/hinic.rst
->  F:	drivers/net/ethernet/huawei/hinic/
->  
-> 
-
-
+I have a few idea on how to sort this "deadlock" out.  But I'm completely
+swamped until the end of next week, so I won't get to anything before
+that.
