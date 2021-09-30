@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62AD41DAA7
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7DA41DAA6
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350228AbhI3NJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:09:13 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:39699 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351443AbhI3NIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:08:35 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HKtmq1XsCz9sTd;
-        Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Jbg1_Awq21kG; Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKtmq0L5wz9sTF;
-        Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E5E6A8B773;
-        Thu, 30 Sep 2021 15:06:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QX1D9MHFEGv7; Thu, 30 Sep 2021 15:06:50 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D83748B763;
-        Thu, 30 Sep 2021 15:06:49 +0200 (CEST)
-Subject: Re: [PATCH v2 1/7] arm64: add CPU field to struct thread_info
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20210930125813.197418-1-ardb@kernel.org>
- <20210930125813.197418-2-ardb@kernel.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6b003f58-48df-7ac4-4dbf-81b2c5bca5d9@csgroup.eu>
-Date:   Thu, 30 Sep 2021 15:06:43 +0200
+        id S1350292AbhI3NJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:09:10 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33686 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351464AbhI3NIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:08:38 -0400
+Received: from [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1] (unknown [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 86ABE1F44D13;
+        Thu, 30 Sep 2021 14:06:54 +0100 (BST)
+Subject: Re: [PATCH] Revert "spi: modify set_cs_timing parameter"
+To:     Mark Brown <broonie@kernel.org>
+Cc:     kernel@collabora.com, linux-spi@vger.kernel.org,
+        enric.balletbo@collabora.com, dafna3@gmail.com,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>
+References: <20210930120700.2564-1-dafna.hirschfeld@collabora.com>
+ <20210930122513.GX4199@sirena.org.uk>
+ <28f8af42-4535-ef9f-e521-712d37e2cb72@collabora.com>
+ <20210930124630.GY4199@sirena.org.uk>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <bce800ff-9b3e-500b-6a42-9a60d3a0c590@collabora.com>
+Date:   Thu, 30 Sep 2021 15:06:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210930125813.197418-2-ardb@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210930124630.GY4199@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le 30/09/2021 à 14:58, Ard Biesheuvel a écrit :
-> The CPU field will be moved back into thread_info even when
-> THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
-> struct thread_info.
+On 30.09.21 14:46, Mark Brown wrote:
+> On Thu, Sep 30, 2021 at 02:36:01PM +0200, Dafna Hirschfeld wrote:
+>> hi, thanks for the fast feedback
+>>
+>> On 30.09.21 14:25, Mark Brown wrote:
+>>> On Thu, Sep 30, 2021 at 02:07:00PM +0200, Dafna Hirschfeld wrote:
+>>>> This reverts commit 04e6bb0d6bb127bac929fb35edd2dd01613c9520.
 > 
-> Note that arm64 always has CONFIG_SMP=y so there is no point in guarding
-> the CPU field with an #ifdef.
+>>> Which is not what the commit message nor the paste of the full hash
+>>> claimed :/
 > 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> ---
->   arch/arm64/include/asm/thread_info.h | 1 +
->   arch/arm64/kernel/asm-offsets.c      | 1 +
->   2 files changed, 2 insertions(+)
+>> What is the paste of the full hash?
 > 
-> diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-> index 6623c99f0984..c02bc8c183c3 100644
-> --- a/arch/arm64/include/asm/thread_info.h
-> +++ b/arch/arm64/include/asm/thread_info.h
-> @@ -42,6 +42,7 @@ struct thread_info {
->   	void			*scs_base;
->   	void			*scs_sp;
->   #endif
-> +	u32			cpu;
->   };
->   
->   #define thread_saved_pc(tsk)	\
-> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> index 551427ae8cc5..cee9f3e9f906 100644
-> --- a/arch/arm64/kernel/asm-offsets.c
-> +++ b/arch/arm64/kernel/asm-offsets.c
-> @@ -29,6 +29,7 @@ int main(void)
->     DEFINE(TSK_ACTIVE_MM,		offsetof(struct task_struct, active_mm));
->     DEFINE(TSK_CPU,		offsetof(struct task_struct, cpu));
->     BLANK();
-> +  DEFINE(TSK_TI_CPU,		offsetof(struct task_struct, thread_info.cpu));
+> The above.
+> 
+>> Since the second commit is only a warning fixes I thought it is cumbersome to
+>> send two separate reverting patches. Should I?
+> 
+> No, you should write a proper commit log with (like I said) a normal
+> subject line - basically, follow the process in submitting-patches.rst.
+> 
+>>> Do we have any analysis as to why?  Do these devices use timing
+>>> parameters in some way for example, or do the values written out to the
+>>> device change in some way?
+> 
+>>> You've provided no analysis here so it's hard to tell if this is just
+>>> some random change that happens to change code generation slighly or if
+>>> there's some actual reason why this might fix something.  I'll note that
+>>> as far as I can see there are no users of this API upstream so I'm
+>>> guessing that you've got some out of tree consumer driver which uses the
+>>> API, it's possible that there was some error in updating that driver to
+>>> the new interface which is causing the issue.
+> 
+>> Actually the original commit not only change that callback 'set_cs_timing' but it also
+>> calls 'mtk_spi_set_hw_cs_timing' directly from the function "mtk_spi_prepare_message".
+>> So this actually influences all devices bound to this driver (in upstream)
+>> I did some printing and it does change values that are written to registers.
+> 
+> OK, so that's something that should have been in the commit log,
+> preferrably in a more detailed form that identifies what the change is.
+> However changing the values written out is clearly not the intent of the
+> patch and it is a substantially better API so can we not just fix things
+> so that the old values are written out?  Why are we jumping straight to
+> a revert here?
 
-Why adding that now ? For powerpc you do the switch in 5.
+It could be that the values written to the register in the new version of "mtk_spi_set_hw_cs_timing" are the same
+as with the previous version. I didn't check that. The difference is that before that patch
+the function was not called so it was a dead code. Now it is called and causes erros.
+Without the datasheet it is hard to know how to fix it. I responded to that patch two days ago explaining
+that but Mason Zhang didn't respond yet.
 
->     DEFINE(TSK_TI_FLAGS,		offsetof(struct task_struct, thread_info.flags));
->     DEFINE(TSK_TI_PREEMPT,	offsetof(struct task_struct, thread_info.preempt_count));
->   #ifdef CONFIG_ARM64_SW_TTBR0_PAN
+Thanks,
+Dafna
+
 > 
