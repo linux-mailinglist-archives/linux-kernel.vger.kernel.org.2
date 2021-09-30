@@ -2,120 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F0F41DCF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102A841DCFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239315AbhI3PHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:07:50 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36650 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235547AbhI3PHr (ORCPT
+        id S244670AbhI3PKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:10:36 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:40656 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239919AbhI3PKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:07:47 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UDUKPh006556;
-        Thu, 30 Sep 2021 17:05:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=sspGCg/P+hrJnTfsc1SrMwVnAR/3nxeD+gtuxpS5IiQ=;
- b=3N+iS++7Dx0oCCzhKcR+yKwrvwy+vQfuqhzBPj6pF11pCgtAcRPiDW9j3sYI6DnO+HDr
- X1nBnNqcM1hKNDqq/G8cCXSX5BPZTDraKSt955VkoK+Ot83dR74RyUmeAgBneitrqQdh
- Dt/oCso4n2EWHzziukyocysFbHvMhQCJcfFd5N30ihikO2dozrDoZXww3gHdQ8oJ4ybF
- V9psSspNagjdDkZGKs7Ib3ZYI5JuROUDQ4CYW5fGlyvxOaDAyd1IKBR7aaI1ZbuJpmez
- 03HL/QyWBfgAGjaFkYGO7Y5vSkQuSlPqVF4dgdN5g4ROVh0ZGaob/vKm7qkNZ+ULus+Q 6w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bde69rh62-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 17:05:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3F0A410002A;
-        Thu, 30 Sep 2021 17:05:53 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2D0232A4D71;
-        Thu, 30 Sep 2021 17:05:53 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
- 2021 17:05:52 +0200
-Subject: Re: [PATCH 1/1] ARM: dts: stm32: fix AV96 board SAI2B pin muxing on
- stm32mp15
-To:     Marek Vasut <marex@denx.de>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210927114553.21843-1-olivier.moysan@foss.st.com>
- <beb6e7c8-f3c8-fc4e-6017-fea5690b9f33@denx.de>
- <e8d40be8-045c-096a-f079-d9f6364254e9@foss.st.com>
- <cfbb8475-ad1e-9075-cd82-92a8b315efc9@denx.de>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <9b278eb2-7ca9-0e4b-ecb1-5949ce3c5c10@foss.st.com>
-Date:   Thu, 30 Sep 2021 17:05:50 +0200
+        Thu, 30 Sep 2021 11:10:24 -0400
+Received: by mail-ed1-f49.google.com with SMTP id g8so23567170edt.7;
+        Thu, 30 Sep 2021 08:08:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=afuuRoWEct2MfL+JBgtz3aEAzNrXRi3zezmIOBkaE24=;
+        b=cjkHe6Z9RmQhXpASuDZVgqkAhu5NNqeN2F9KqpQIbdKFEW9uF/dAycbLqvzd3EhjcH
+         n+EHwCpPXMJuwopjuP5hvostD4oODPap0CFDubgmIw+3xu3rKCv6wk7YkjKHyLPSmNXB
+         umekLb3wjbOGqLHlRFBBdyS9cHD0cLFvgsPbXM3EEFbRNW1l/WMkxUB5NlviSORz0EV3
+         sTY+I6ZwD/mAgskbL/xXBQTywGJWT7g5bn1e8FU49ueBPF4NtTu60L9eH9HMswS652FR
+         ibBL3cD8X1z2EJsLyVcKot77EtGUDvoRLEkgp19yHrz/j9OOQRSDNPIoR6bvW9SH0UdS
+         pkGg==
+X-Gm-Message-State: AOAM530FmcQECKLjJO2JBtMpNpLYQLB5ucGvXQrnft50SE2CGExuFIoC
+        SV5pB0p5DCmVqE9eM2LtTLw=
+X-Google-Smtp-Source: ABdhPJzW5nYkwTBSU2KYkXIp9u2zCRW4OTzrnUusNVdJl5Z261PeSkrf26+tyN6r+fm0cRL41Z0nvw==
+X-Received: by 2002:a17:906:f6cf:: with SMTP id jo15mr7441915ejb.244.1633014360379;
+        Thu, 30 Sep 2021 08:06:00 -0700 (PDT)
+Received: from [10.9.0.26] ([46.166.133.199])
+        by smtp.gmail.com with ESMTPSA id v22sm992164eds.20.2021.09.30.08.05.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 08:05:59 -0700 (PDT)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+To:     Petr Mladek <pmladek@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will.deacon@arm.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+ <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1> <YVWAPXSzFNbHz6+U@alley>
+From:   Alexander Popov <alex.popov@linux.com>
+Message-ID: <a09c1d4d-1d5b-9092-ae3a-61bc22689dd2@linux.com>
+Date:   Thu, 30 Sep 2021 18:05:54 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <cfbb8475-ad1e-9075-cd82-92a8b315efc9@denx.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YVWAPXSzFNbHz6+U@alley>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_05,2021-09-30_01,2020-04-07_01
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 12:26 PM, Marek Vasut wrote:
-> On 9/30/21 10:47 AM, Alexandre TORGUE wrote:
->> Hi Marek
->>
->> On 9/29/21 1:18 PM, Marek Vasut wrote:
->>> On 9/27/21 1:45 PM, Olivier Moysan wrote:
->>>> Fix SAI2B pin muxing for AV96 board on STM32MP15.
->>>> The label "sai2a-4" is defined twice. Change redundant label to 
->>>> "sai2b-4".
->>>>
->>>> Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 
->>>> pins on stm32mp15")
->>>>
->>>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
->>>> ---
->>>>   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi 
->>>> b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
->>>> index 5b60ecbd718f..b9cc9e0dd4fc 100644
->>>> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
->>>> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
->>>> @@ -1235,7 +1235,7 @@
->>>>           };
->>>>       };
->>>> -    sai2b_pins_c: sai2a-4 {
->>>> +    sai2b_pins_c: sai2b-4 {
->>>>           pins1 {
->>>>               pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
->>>>               bias-disable;
->>>
->>> This mp1 pinmuxing is a total mess, sigh.
->>
->> What is the issue here ?
+On 30.09.2021 12:15, Petr Mladek wrote:
+> On Wed 2021-09-29 12:49:24, Paul E. McKenney wrote:
+>> On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:
+>>> On 29.09.2021 21:58, Alexander Popov wrote:
+>>>> Currently, the Linux kernel provides two types of reaction to kernel
+>>>> warnings:
+>>>>  1. Do nothing (by default),
+>>>>  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
+>>>>     so panic_on_warn is usually disabled on production systems.
 > 
-> The same-old discussion about where to place the pinmux nodes, whether 
-> we should have these clusters of pre-defined options in ...pinctrl.dtsi, 
-> or whether we should do more nxp-like per-board configuration.
+> Honestly, I am not sure if panic_on_warn() or the new pkill_on_warn()
+> work as expected. I wonder who uses it in practice and what is
+> the experience.
+> 
+> The problem is that many developers do not know about this behavior.
+> They use WARN() when they are lazy to write more useful message or when
+> they want to see all the provided details: task, registry, backtrace.
+> 
+> Also it is inconsistent with pr_warn() behavior. Why a single line
+> warning would be innocent and full info WARN() cause panic/pkill?
+> 
+> What about pr_err(), pr_crit(), pr_alert(), pr_emerg()? They inform
+> about even more serious problems. Why a warning should cause panic/pkill
+> while an alert message is just printed?
 
-ok it's a bit more precise. Honestly I don't understand why the current 
-topology is an issue here. Maybe pinctrl SAI nodes names are not well 
-chosen or are not enough explicit. Concerning our topology and the NXP 
-ones both exists and both have advantages and drawbacks. For ST boards 
-(DK/EV) we want to keep all configs in the same place.
+That's a good question.
 
-As I prefer to not re open this topic again and again, feel free to add 
-your pin config in your dts board file, I'll accept it.
+I guess various kernel continuous integration (CI) systems have panic_on_warn
+enabled.
+
+[Adding Dmitry Vyukov to this discussion]
+
+If we look at the syzbot dashboard [1] with the results of Linux kernel fuzzing,
+we see the issues that appear as various kernel crashes and warnings.
+We don't see anything from pr_err(), pr_crit(), pr_alert(), pr_emerg(). Maybe
+these situations are not considered as kernel bugs that require fixing.
+
+Anyway, from a security point of view, a kernel warning output is interesting
+for attackers as an infoleak. The messages printed by pr_err(), pr_crit(),
+pr_alert(), pr_emerg() provide less information.
+
+[1]: https://syzkaller.appspot.com/upstream
+
+> It somehow reminds me the saga with %pK. We were not able to teach
+> developers to use it correctly for years and ended with hashed
+> pointers.
+> 
+> Well, this might be different. Developers might learn this the hard
+> way from bug reports. But there will be bug reports only when
+> anyone really enables this behavior. They will enable it only
+> when it works the right way most of the time.
+> 
+> 
+>>>> From a safety point of view, the Linux kernel misses a middle way of
+>>>> handling kernel warnings:
+>>>>  - The kernel should stop the activity that provokes a warning,
+>>>>  - But the kernel should avoid complete denial of service.
+>>>>
+>>>> From a security point of view, kernel warning messages provide a lot of
+>>>> useful information for attackers. Many GNU/Linux distributions allow
+>>>> unprivileged users to read the kernel log, so attackers use kernel
+>>>> warning infoleak in vulnerability exploits. See the examples:
+>>>>   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+>>>>   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
+>>>>
+>>>> Let's introduce the pkill_on_warn boot parameter.
+>>>> If this parameter is set, the kernel kills all threads in a process
+>>>> that provoked a kernel warning. This behavior is reasonable from a safety
+>>>> point of view described above. It is also useful for kernel security
+>>>> hardening because the system kills an exploit process that hits a
+>>>> kernel warning.
+>>>>
+>>>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
+>>>
+>>> This patch was tested using CONFIG_LKDTM.
+>>> The kernel kills a process that performs this:
+>>>   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
+>>>
+>>> If you are fine with this approach, I will prepare a patch adding the
+>>> pkill_on_warn sysctl.
+>>
+>> I suspect that you need a list of kthreads for which you are better
+>> off just invoking panic().  RCU's various kthreads, for but one set
+>> of examples.
+> 
+> I wonder if kernel could survive killing of any kthread. I have never
+> seen a code that would check whether a kthread was killed and
+> restart it.
+
+The do_group_exit() function calls do_exit() from kernel/exit.c, which is also
+called during a kernel oops. This function cares about a lot of special cases
+depending on the current task_struct. Is it fine?
+
+Best regards,
+Alexander
