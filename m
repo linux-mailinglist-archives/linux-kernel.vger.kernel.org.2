@@ -2,250 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0353641DEF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AAB41DEFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350624AbhI3Q1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:27:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56200 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350242AbhI3Q1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:27:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633019136; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=YXMSKvMn+9jeuk6GoqyHMrg9yPQg5Hn2Mw2Nz9iMl9M=; b=IyYg3hY0pqOBiWxzHhkQwOO9TiY2xzYEgCqO5Qw+7QzG+Kdi3NqMSJ9is7aDFz/SSGIO6mNS
- YPrreifoxH03Bwiy5n7ggkn7wVUDravmafpUH8VGMIsxMvDBx7Kn1tldsz7p2RSGpG1k7JDA
- fzK2NkkxiNZF/0opo6GkM1tP65o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6155e4f747d64efb6daf45ee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 16:25:27
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3B27EC43460; Thu, 30 Sep 2021 16:25:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04A14C4338F;
-        Thu, 30 Sep 2021 16:25:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 04A14C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V1 1/1] soc: qcom: smp2p: add feature negotiation and ssr ack feature support
-Date:   Thu, 30 Sep 2021 21:55:10 +0530
-Message-Id: <1633019111-9318-1-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1350893AbhI3Q22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:28:28 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:45612 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350828AbhI3Q21 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:28:27 -0400
+Received: by mail-ua1-f49.google.com with SMTP id 64so4644356uab.12;
+        Thu, 30 Sep 2021 09:26:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JiF0/ZgjKWbd99LN0jFcf3oajDZ2ssdc3I0XUDxzEhU=;
+        b=5wBSQiAfAi8nlZ4+HZXYjDS5ca3XisOSNQqyjHlmPl+WuD98ULpkHVSHEYsjk8GR3P
+         YNChRoTCT24rMQ+CclzV6joyfX3o8eqpvbufXmsrqcjxNxvQCVQdiNbv9d/SXaR25iwv
+         7V6Q0ajfSSwKzCsPE78376f4BLYJHtRXD91UiP/4HTr9si0uQk8yEXGmxzNZO9YnivXV
+         uP8u8DnNeBb3LygoeJ6MZyyQzYY0wLF2+jOaMMQgdj5ZFL0lH08gv7mSCLjuEAQwUbY7
+         wzY+aYxYgBmmlbvwdXhxU68hzyY5YjJKoM66vO73XWxIdcyY3A3R8m1sT4Bk9qISbq2O
+         1Rkg==
+X-Gm-Message-State: AOAM533ubi3RHAzaGp0c7dclA6w6IqGQP+OQygq9rhg/6n/bhkzn7bj5
+        lnDV8FvYlu9MwLAtQHZiZW+IAlOsiftgJD/xMiM=
+X-Google-Smtp-Source: ABdhPJxXKENqdoBP7B9ZGTIy/mSCP2ayP3D8cOsCZjbfOGW3dAAimFFBEtD7kMLVg//tPmAC5MEnBkgUBT1EBe51f7Y=
+X-Received: by 2002:ab0:58c1:: with SMTP id r1mr6402945uac.89.1633019203566;
+ Thu, 30 Sep 2021 09:26:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
+ <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com> <YVWwBz8jrznqXah4@google.com>
+ <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com> <YVW7xoHaLdGHBoEQ@google.com>
+ <CAMuHMdU_dbQYHF=8uOZ3e_v4+Li0bHfQABdLVSpJJPG4XkwhZw@mail.gmail.com> <YVXkGiwAV3kGiBd3@google.com>
+In-Reply-To: <YVXkGiwAV3kGiBd3@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Sep 2021 18:26:31 +0200
+Message-ID: <CAMuHMdXTp_cv4Ry0XBzCkv+-Gh3RY-HPZ8uDiNkxqK227+cozw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds feature negotiation and ssr ack feature between
-local and remote host. Local host can negotiate on common features
-supported with remote host.
+Hi Lee,
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/smp2p.c | 128 ++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 103 insertions(+), 25 deletions(-)
+On Thu, Sep 30, 2021 at 6:21 PM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+> > On Thu, Sep 30, 2021 at 3:29 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > > > On 30/09/2021 14:39, Lee Jones wrote:
+> > > > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > > > >> On 30/09/2021 11:23, Lee Jones wrote:
+> > > > >>> [0] Full disclosure: part of my role at Linaro is to keep the Android
+> > > > >>> kernel running as close to Mainline as possible and encourage/push the
+> > > > >>> upstream-first mantra, hence my involvement with this and other sets.
+> > > > >>> I assure you all intentions are good and honourable.  If you haven't
+> > > > >>> already seen it, please see Todd's most recent update on the goals and
+> > > > >>> status of GKI:
+> > > > >>>
+> > > > >>>   Article: https://tinyurl.com/saaen3sp
+> > > > >>>   Video:   https://youtu.be/O_lCFGinFPM
+> > > > >>>
+> > > > >>
+> > > > >> Side topic, why this patchset is in your scope or Will's/Google's scope?
+> > > > >> Just drop it from Android main kernel, it will not be your problem. I
+> > > > >> mean, really, you don't need this patchset in your tree at all. The only
+> > > > >> platform which needs it, the only platform which will loose something
+> > > > >> will be one specific vendor. Therefore this will be an incentive for
+> > > > >> them to join both discussions and upstream development. :)
+> > > > >
+> > > > > How would they fix this besides upstreaming support for unreleased
+> > > > > work-in-progress H/W?
+> > > > >
+> > > > > Haven't I explained this several times already? :)
+> > > >
+> > > > Either that way or the same as Will's doing but that's not my question.
+> > > > I understand you flush the queue of your GKI patches to be closer to
+> > > > upstream. Reduce the backlog/burden. you can achieve your goal by simply
+> > > > dropping such patch and making it not your problem. :)
+> > >
+> > > git reset --hard mainline/master   # job done - tea break  :)
+> > >
+> > > Seriously though, we wish to encourage the use of GKI so all vendors
+> > > can enjoy the benefits of more easily updateable/secure code-bases.
+> > >
+> > > I can't see how pushing back on seamlessly benign changes would
+> > > benefit them or anyone else.
+> >
+> > I like your wording ;-)
+> >
+> > Indeed, seamlessly benign changes, which are (1) not tested, and (2)
+> > some believed by the platform maintainer to break the platform.
+> > What can possibly go wrong? ;-)
+>
+> William has already shown a willingness to test the series.
 
-diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-index 38585a7..c1a60016 100644
---- a/drivers/soc/qcom/smp2p.c
-+++ b/drivers/soc/qcom/smp2p.c
-@@ -41,8 +41,11 @@
- #define SMP2P_MAX_ENTRY_NAME 16
- 
- #define SMP2P_FEATURE_SSR_ACK 0x1
-+#define SMP2P_FLAGS_RESTART_DONE_BIT 0
-+#define SMP2P_FLAGS_RESTART_ACK_BIT 1
- 
- #define SMP2P_MAGIC 0x504d5324
-+#define SMP2P_FEATURES	SMP2P_FEATURE_SSR_ACK
- 
- /**
-  * struct smp2p_smem_item - in memory communication structure
-@@ -136,6 +139,10 @@ struct qcom_smp2p {
- 
- 	unsigned valid_entries;
- 
-+	bool ssr_ack_enabled;
-+	bool ssr_ack;
-+	bool open;
-+
- 	unsigned local_pid;
- 	unsigned remote_pid;
- 
-@@ -163,22 +170,59 @@ static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
- 	}
- }
- 
--/**
-- * qcom_smp2p_intr() - interrupt handler for incoming notifications
-- * @irq:	unused
-- * @data:	smp2p driver context
-- *
-- * Handle notifications from the remote side to handle newly allocated entries
-- * or any changes to the state bits of existing entries.
-- */
--static irqreturn_t qcom_smp2p_intr(int irq, void *data)
-+static bool qcom_smp2p_check_ssr(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *in = smp2p->in;
-+	bool restart;
-+
-+	if (!smp2p->ssr_ack_enabled)
-+		return false;
-+
-+	restart = in->flags & BIT(SMP2P_FLAGS_RESTART_DONE_BIT);
-+	if (restart == smp2p->ssr_ack)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void qcom_smp2p_do_ssr_ack(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *out = smp2p->out;
-+	u32 ack;
-+	u32 val;
-+
-+	ack = !smp2p->ssr_ack;
-+	smp2p->ssr_ack = ack;
-+	ack = ack << SMP2P_FLAGS_RESTART_ACK_BIT;
-+
-+	val = out->flags & ~BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
-+	val |= ack;
-+	out->flags = val;
-+
-+	qcom_smp2p_kick(smp2p);
-+}
-+
-+static void qcom_smp2p_negotiate(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *out = smp2p->out;
-+	struct smp2p_smem_item *in = smp2p->in;
-+	u32 features;
-+
-+	if (in->version == out->version) {
-+		features = in->features & out->features;
-+		out->features = features;
-+
-+		if (features & SMP2P_FEATURE_SSR_ACK)
-+			smp2p->ssr_ack_enabled = true;
-+
-+		smp2p->open = true;
-+	}
-+}
-+
-+static void qcom_smp2p_notify_in(struct qcom_smp2p *smp2p)
- {
- 	struct smp2p_smem_item *in;
- 	struct smp2p_entry *entry;
--	struct qcom_smp2p *smp2p = data;
--	unsigned smem_id = smp2p->smem_items[SMP2P_INBOUND];
--	unsigned pid = smp2p->remote_pid;
--	size_t size;
- 	int irq_pin;
- 	u32 status;
- 	char buf[SMP2P_MAX_ENTRY_NAME];
-@@ -187,18 +231,6 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
- 
- 	in = smp2p->in;
- 
--	/* Acquire smem item, if not already found */
--	if (!in) {
--		in = qcom_smem_get(pid, smem_id, &size);
--		if (IS_ERR(in)) {
--			dev_err(smp2p->dev,
--				"Unable to acquire remote smp2p item\n");
--			return IRQ_HANDLED;
--		}
--
--		smp2p->in = in;
--	}
--
- 	/* Match newly created entries */
- 	for (i = smp2p->valid_entries; i < in->valid_entries; i++) {
- 		list_for_each_entry(entry, &smp2p->inbound, node) {
-@@ -237,7 +269,52 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
- 			}
- 		}
- 	}
-+}
-+
-+/**
-+ * qcom_smp2p_intr() - interrupt handler for incoming notifications
-+ * @irq:	unused
-+ * @data:	smp2p driver context
-+ *
-+ * Handle notifications from the remote side to handle newly allocated entries
-+ * or any changes to the state bits of existing entries.
-+ */
-+static irqreturn_t qcom_smp2p_intr(int irq, void *data)
-+{
-+	struct smp2p_smem_item *in;
-+	struct qcom_smp2p *smp2p = data;
-+	unsigned int smem_id = smp2p->smem_items[SMP2P_INBOUND];
-+	unsigned int pid = smp2p->remote_pid;
-+	size_t size;
-+
-+	in = smp2p->in;
-+
-+	/* Acquire smem item, if not already found */
-+	if (!in) {
-+		in = qcom_smem_get(pid, smem_id, &size);
-+		if (IS_ERR(in)) {
-+			dev_err(smp2p->dev,
-+				"Unable to acquire remote smp2p item\n");
-+			goto out;
-+		}
-+
-+		smp2p->in = in;
-+	}
-+
-+	if (!smp2p->open)
-+		qcom_smp2p_negotiate(smp2p);
-+
-+	if (smp2p->open) {
-+		bool do_restart;
-+
-+		do_restart = qcom_smp2p_check_ssr(smp2p);
-+		qcom_smp2p_notify_in(smp2p);
-+
-+		if (do_restart)
-+			qcom_smp2p_do_ssr_ack(smp2p);
-+	}
- 
-+out:
- 	return IRQ_HANDLED;
- }
- 
-@@ -393,6 +470,7 @@ static int qcom_smp2p_alloc_outbound_item(struct qcom_smp2p *smp2p)
- 	out->remote_pid = smp2p->remote_pid;
- 	out->total_entries = SMP2P_MAX_ENTRY;
- 	out->valid_entries = 0;
-+	out->features = SMP2P_FEATURES;
- 
- 	/*
- 	 * Make sure the rest of the header is written before we validate the
+I'm looking forward to the results!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
