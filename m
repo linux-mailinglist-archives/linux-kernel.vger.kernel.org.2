@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9873241DEC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B567141DEA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349838AbhI3QVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
+        id S1349550AbhI3QSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349802AbhI3QVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:21:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 88F8C613D1;
-        Thu, 30 Sep 2021 16:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633018807;
-        bh=Y642sI6KysBX5Rz4PcKYJERDb51nS+v8kKGKLm0a4GM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cVtbYR946cwDdXD6dytAA6jfiHLOQwCQ6DmWklqybgskstU6u1dJy0hH6k0hiIl3Z
-         Li90YwEZD5VjITzeKYrUWXOhAy+iPyPQB2s03e8WhhiHPF+AmwBSIHied6EL1tWy6o
-         M/Dxb76X9tiZCXuoytXesBeruSbZPwyyd/jKXsORz6MzJy9Oj0fW3/tqnM7NYYaP7F
-         CmY2+rl8gp8HkDCA2JXqCyA8HAewy2+gbLGW/mJMu1UXhyMeBFDuK2hqPRP4M4cI9g
-         mBiQcdwOMil+tKEsFS7K0xj4djO8eGZZNpFNPd0KjUh064Sj4igrvO6s9sQ2rGhDzq
-         xX74E1x9x3pDw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7C6D160A9F;
-        Thu, 30 Sep 2021 16:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163301880750.556.15888903601273023133.git-patchwork-notify@kernel.org>
-Date:   Thu, 30 Sep 2021 16:20:07 +0000
-References: <20210930135545.173698-1-th.yasumatsu@gmail.com>
-In-Reply-To: <20210930135545.173698-1-th.yasumatsu@gmail.com>
-To:     Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        id S1349301AbhI3QSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:18:09 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D01B613A9;
+        Thu, 30 Sep 2021 16:16:23 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:20:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Iain Hunter <drhunter95@gmail.com>, lothar.felten@gmail.com,
+        iain@hunterembedded.co.uk, Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zeng Tao <prime.zeng@hisilicon.com>, linux-iio@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] workaround regression in ina2xx introduced by
+ cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
+Message-ID: <20210930172018.5b4e6660@jic23-huawei>
+In-Reply-To: <20210930171844.0c67b0ff@jic23-huawei>
+References: <20210926171711.194901-1-drhunter95@gmail.com>
+        <87o88favd9.ffs@tglx>
+        <20210930171844.0c67b0ff@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 30 Sep 2021 17:18:44 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Thu, 30 Sep 2021 22:55:45 +0900 you wrote:
-> In prealloc_elems_and_freelist(), the multiplication to calculate the
-> size passed to bpf_map_area_alloc() could lead to an integer overflow.
-> As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-> as reported by KASAN:
+> On Sun, 26 Sep 2021 23:18:42 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> [...]
-> [   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-> [   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-> [   16.970038]
-> [   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-> [   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> [   16.972026] Call Trace:
-> [   16.972306]  dump_stack_lvl+0x34/0x44
-> [   16.972687]  print_address_description.constprop.0+0x21/0x140
-> [   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.974257]  kasan_report.cold+0x7f/0x11b
-> [   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-> [   16.975190]  pcpu_freelist_populate+0xd9/0x100
-> [   16.975669]  stack_map_alloc+0x209/0x2a0
-> [   16.976106]  __sys_bpf+0xd83/0x2ce0
-> [...]
+> > On Sun, Sep 26 2021 at 18:16, Iain Hunter wrote:  
+> > > --- a/drivers/iio/adc/ina2xx-adc.c
+> > > +++ b/drivers/iio/adc/ina2xx-adc.c
+> > > @@ -817,10 +817,10 @@ static int ina2xx_capture_thread(void *data)
+> > >  		 */
+> > >  		do {
+> > >  			timespec64_add_ns(&next, 1000 * sampling_us);
+> > > -			delta = timespec64_sub(next, now);
+> > > -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+> > > -		} while (delay_us <= 0);
+> > > +		} while (timespec64_compare(&next, &now) < 0);
+> > >  
+> > > +		delta = timespec64_sub(next, now);
+> > > +		delay_us = div_s64(timespec64_to_ns(&delta), 1000);    
+> > 
+> > This whole timespec dance does not make any sense and can be completely
+> > avoided by using just scalar nanoseconds. Untested patch below.
+> > 
+> > Thanks,
+> > 
+> >         tglx  
 > 
-> [...]
+> Thanks Thomas.
+> 
+> Iain could you test this approach?
 
-Here is the summary with links:
-  - [v2] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-    https://git.kernel.org/bpf/bpf/c/30e29a9a2bc6
+Ah. Just seen v4, so I guess you did.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
 
+J
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> > ---
+> > --- a/drivers/iio/adc/ina2xx-adc.c
+> > +++ b/drivers/iio/adc/ina2xx-adc.c
+> > @@ -775,7 +775,7 @@ static int ina2xx_capture_thread(void *d
+> >  	struct ina2xx_chip_info *chip = iio_priv(indio_dev);
+> >  	int sampling_us = SAMPLING_PERIOD(chip);
+> >  	int ret;
+> > -	struct timespec64 next, now, delta;
+> > +	ktime_t next, now, delta;
+> >  	s64 delay_us;
+> >  
+> >  	/*
+> > @@ -785,7 +785,7 @@ static int ina2xx_capture_thread(void *d
+> >  	if (!chip->allow_async_readout)
+> >  		sampling_us -= 200;
+> >  
+> > -	ktime_get_ts64(&next);
+> > +	next = ktime_get();
+> >  
+> >  	do {
+> >  		while (!chip->allow_async_readout) {
+> > @@ -798,7 +798,7 @@ static int ina2xx_capture_thread(void *d
+> >  			 * reset the reference timestamp.
+> >  			 */
+> >  			if (ret == 0)
+> > -				ktime_get_ts64(&next);
+> > +				next = ktime_get();
+> >  			else
+> >  				break;
+> >  		}
+> > @@ -807,7 +807,7 @@ static int ina2xx_capture_thread(void *d
+> >  		if (ret < 0)
+> >  			return ret;
+> >  
+> > -		ktime_get_ts64(&now);
+> > +		now = ktime_get();
+> >  
+> >  		/*
+> >  		 * Advance the timestamp for the next poll by one sampling
+> > @@ -816,11 +816,10 @@ static int ina2xx_capture_thread(void *d
+> >  		 * multiple times, i.e. samples are dropped.
+> >  		 */
+> >  		do {
+> > -			timespec64_add_ns(&next, 1000 * sampling_us);
+> > -			delta = timespec64_sub(next, now);
+> > -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
+> > -		} while (delay_us <= 0);
+> > +			next = ktime_add_us(next, sampling_us);
+> > +		} while (next <= now);
+> >  
+> > +		delay_us = ktime_to_us(ktime_sub(next, now));
+> >  		usleep_range(delay_us, (delay_us * 3) >> 1);
+> >  
+> >  	} while (!kthread_should_stop());
+> > 
+> >   
+> 
 
