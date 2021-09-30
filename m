@@ -2,144 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FAB41D97C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BC441D97F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350738AbhI3MQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:16:51 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:42746
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350731AbhI3MQu (ORCPT
+        id S1349378AbhI3MSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:18:07 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:46923 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349223AbhI3MSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:16:50 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8DCE740606
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633004106;
-        bh=sHtMVee23aJJuvqmywuH7ESFy0k6t0bV8U/1nrqOJLI=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=FWai4uKiuGxJC4cb1J6/ajTQqZcPLqVwwVCRavKljZtgJ11ostDezYX94sOvYjjVe
-         4dFU+vWo6dpzzOmAmcIL4fBg548243WELrXKfuxpGRcW0i+2Hz9oeoM9g/pbv95VUg
-         c6fV2jyWsibzj77z6e833xZAeeGc5Yx4f6YCsKW/HfTpYqDwBJZJLunMkqNiCYMUSn
-         3n8ei0FkUj2W/+SoFc5dRp2/q3kjM+ZoGwwxd+LlGgz0LwTkWIE0ust28kcSKfQJqA
-         KaBZ5PSuorb6JHZxRjXWn1D+tT+grK2zoe2i/8g1Ca45v7T8ALEaLt2EwIKP7SJk/p
-         u2VdqGJzFRsLw==
-Received: by mail-lf1-f69.google.com with SMTP id bp11-20020a056512158b00b003fc7d722819so5441980lfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:15:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sHtMVee23aJJuvqmywuH7ESFy0k6t0bV8U/1nrqOJLI=;
-        b=kNwzLDKk4UvGC7GLPnAlLS2c5mOPV19FEe/gFBGLMnTvQ1vMZpDdpQpFpv5kHylZ4o
-         HZKzX9RdD+7U66GIxjHKyc0K+/e2ivVH5qYf+PdAxCwiU6sJkPD9LzbX6rHyqpl3grYH
-         QnZgydTM+8ZZbitrvz7akxZSH1a0z5+OT4pNvxmfNa2OKYbMTDy0BP2n/KYvspVrtZXr
-         5ZRU/B2IPAWKNd6RuARf6qD6zdOWcvorm80GX2bq/0yMLXFMl76ea/Sv7d+5U7aCdigr
-         K0hRphJAkLVTJgrGEyCaE1c6+Pa/puM0HFto8lshlTEbU/4DNnBTTzshUrJJJdoUlK5X
-         XWfw==
-X-Gm-Message-State: AOAM532rO2twg1ZVbh9LzX6+YRFZfBtc9T20ZGodUfwsODfPZQ9TF81C
-        LFOPMpG1SiIFg21fNhRbzxAyLVPHtZU5yAMrp4sTNMpi+al4ORcMA/evMY+gAk99ISjquZdoVwG
-        YDLV3wCM6A3g5MFezLtNOMqQmsC1BlxVeyqFiHe7BHA==
-X-Received: by 2002:a2e:5450:: with SMTP id y16mr5761507ljd.21.1633004105784;
-        Thu, 30 Sep 2021 05:15:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+cux4wyOirwFRf+O2xj4igckX9azoZlF3oZnFaYbiBaTtiQzVamjgULYK4cmnunDnkNNRxg==
-X-Received: by 2002:a2e:5450:: with SMTP id y16mr5761488ljd.21.1633004105601;
-        Thu, 30 Sep 2021 05:15:05 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id t11sm350942lfr.281.2021.09.30.05.15.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 05:15:04 -0700 (PDT)
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-To:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <YVWCK5QO331rfhJJ@google.com>
- <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
- <YVWkxnc8wTdBgRsv@google.com>
- <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8729f109-93c1-24dc-f7d9-9c83d7ac24dc@canonical.com>
-Date:   Thu, 30 Sep 2021 14:15:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
+        Thu, 30 Sep 2021 08:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1633004183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/NqxYuSK5poj82wwlDFvGZG2lRpG9jB2q+2T7aAqVlo=;
+        b=QI0AadEEFjtavmayZJOqoqlmZyOw5PKNo9G86tQZzhjoIZOtCi74f53j67IGJpuMAEK6ti
+        2XsjoFKujz969g5T66jt2CK9tklYLbEnfICSDKZ2szNPOZSoMqERvhrO1A5BxY3LbDpLix
+        SQY9c/Cvjlk6HaYLhNK4UTNnKeiTdNg=
+Received: from EUR03-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur03lp2051.outbound.protection.outlook.com [104.47.10.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-2-4_WgSp7WOJitte5f-y4AzA-2;
+ Thu, 30 Sep 2021 14:16:22 +0200
+X-MC-Unique: 4_WgSp7WOJitte5f-y4AzA-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ifElNPL8ivCsdVMzAXc5ocymM357vWVNWj+2KoAVTKem4Z8uo3uOk3lsqXh/PFnGfrzAKvzXjYgKhzUTydzPihZi02FmMjcqp2jZ+8fEzfaPqJ9O4CQpaZNAzMjsYEFzkKXnnxWR24xNx6uZLP4Mm1tjVgJY1bBkeaT2vOedcaHAT5Eej3UDk+Yzh37ZDKjbFGo+jxHvrqUKR2TEKK3UzPMrk8QTbnHtRdcYEpxx76Fj4WoLJAfF6RYFRFbIMxKcOs/Yk7lb4WWBjpySkDJ1GxIa8GvaPx95nH4ZRDN+8c/+45scCf7PUjZgkS8sNYfr5MrLzVcUrZRfMzoSlwxv8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=/NqxYuSK5poj82wwlDFvGZG2lRpG9jB2q+2T7aAqVlo=;
+ b=FtPtM23utb3A1B3gG1FuTQdA4iP0x4YwzZyve2vTyJM+HS41jAA0UifkrFtFtFmzo7WhU1wZEMNZD7rL9mhCQfwTOwleSMURjUzzu7cfjiqK758XhEImBet6fDahTXmGWjch1fm6aoBExGjzzR3rhrXLiKV6PMZXbkn+0sUW/U3zB2TzODepRTpOPOcE5eyd6X+8Ndn7B+R6dSEjY4FodgqIpCHwbIjzifgKMp3RCUO54AS6nm/8b7RcvgkmuIfIlAN5qwx8M3inOzuiqh+NAhORg62WzrrCCSXA77s9fHi461TsiZc3+p9rRjZhJ6Q8oufPYCXrqC3B9IBDUO7N3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Thu, 30 Sep
+ 2021 12:16:17 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
+ 12:16:17 +0000
+Subject: [PATCH v2 1/9] xen/x86: prevent PVH type from getting clobbered
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <9a26d4ff-80a1-e0c1-f528-31a8568d41f7@suse.com>
+Message-ID: <d301677b-6f22-5ae6-bd36-458e1f323d0b@suse.com>
+Date:   Thu, 30 Sep 2021 14:16:15 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <9a26d4ff-80a1-e0c1-f528-31a8568d41f7@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS8P189CA0028.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:31f::13) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by AS8P189CA0028.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:31f::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 12:16:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1da47a57-0b3c-46b1-7b3f-08d9840c1ae2
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6382FC63FF3E95DA554899F9B3AA9@VE1PR04MB6382.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7QR4Zmvtm49JMRlNKmeBq+9giJSpxwDZ4rvpDcKPgLI15B8zOsI2fXW7DG91NqTRQffiXwx4+vcLPIzOqrYjQW/+v31FN1Ixus8ndNgGXXDnduTwH3ra21Hgx++pN0KprC8gWBUTXkmzqjVNDh5Hcx7IYk3qsQuVQJLvaAsRczyW7VNrGtferUuIBUFsGbKMW9MZyEuv+MbfoB5UEa2/7G5E5HM7nJ2NH5fvsWH7AXeUc63XkTeUGs2LfrRFHEgTQ0o+90kC9xGb9wOiRL6+S0kjpQuRVOIp5D4djv2m2zvEruK2pdhanKzVDch3kzMZBqgLfY8MNLoSRum2j8LgfeKicFJhAC8YXjUU6xjRHg+tDzOQUApZgNH8UnY/uzJvPB+E5d6qXhh28JmEvhBIyeufhH0hnSwcI9gfWEsoRnFwUYW/vSv6b6dwcD79J2im1oJEBd6QD2izhtOpFsoIVdS2vWvBdczza2AhI26M9Gm7rYR3NM/Nf6NImZJZL4WXRrm+ldkvpBs8IRpG5VsR/WdIZ1oGT5cqh6Jnhtpb+f1d5nW65hUGkYIhCAL6X807cXDQ31RIk86WwxWi6QFTwiRYSTh3q9Qs5AcXi9vuq8nBwgR++KKTiEjp7X5vs6AhjihDgJTTAVVzZ/rVRVRa/eofqbJQm8ibKjWEPdgO9mShuHjMDPKdeY6Ml5NiOKmgtg+mXBZAvvyw3dpMGlvMzj8MACf9Ru+TFxumVTXxuoA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(86362001)(31696002)(186003)(8676002)(31686004)(26005)(66476007)(4326008)(508600001)(316002)(956004)(54906003)(6486002)(5660300002)(16576012)(8936002)(2616005)(36756003)(66556008)(110136005)(2906002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VS9aNDQ1SENwbGU5YjVqdkY0VUtORitRNUZ5bUx6NTl2WUZhb3NNcXhoamg5?=
+ =?utf-8?B?b25mMjdIdTU4dzZaN3JBUGZHK3hibHphRUl0OHJJVjZwalZlMXFmQWNxYW1t?=
+ =?utf-8?B?eVVOK2YxTDhsdFdWSTV5dDZoS1I3TkZNVzN3aitPVGtBTVcvQTN1b2F4bk9C?=
+ =?utf-8?B?bjJRVWNsdWhJY3ZCN0VxRGs5bzlvRlV3RElNcUFRYnY5MnB0WlZVSldLM2Z5?=
+ =?utf-8?B?TWFESVg0aWhFdGNYT2NhZzVnUlVoN0xFYWlLdGhzUmFiKzA1L0VURGJEdWlT?=
+ =?utf-8?B?dkphNmtPWWRZTDcrV21ab0ZTWGQ0enlPckx3RUFSQzhibUYzL1Fhd3E1TERI?=
+ =?utf-8?B?MzlzZHg5UkJpaHV3bWs5Vk9zcVBScFJIdEVyS3hTOWZtYkltTVkvVDFhV3pn?=
+ =?utf-8?B?L2NTai94QzlDZlpLUWxSZFVnM1VwcElKYWx6MDJuYlBqcmtsclNicmdoNFVm?=
+ =?utf-8?B?WTFoTkRxOFpLWXBxeEZ3QTdkQ1ZUekppckhMZGNuTmczd2xrcXh6Um5iZVFT?=
+ =?utf-8?B?UnFOaVlmcnc5ZVYySm1scnY4aHBMTktReXNLeFBhTmpXZStvQlQ2MFBXRGFW?=
+ =?utf-8?B?dWh1V1F5L2JLKzFWVStyZ1NtYW8vdUkrWjF6OHhVQ1ltc1FvM2pBUlA3dzRN?=
+ =?utf-8?B?MnBHcUtsdEhJZUJHUUk2bnltNVFhcHQvY2t0RVljRWFQZ1pkL0paSFBYQ1RJ?=
+ =?utf-8?B?b2pTSFNBMFNiaGhyMlp6VUtlalBZRElnU3BlMFJ5Z2tOTWRVMitlOWlNbWlH?=
+ =?utf-8?B?b1ZoYkVDUlVDTFZ1YTlIMlBEWEFiZDNDV0lROHViYmNsSDB5RUNqeTZwMURL?=
+ =?utf-8?B?M3VzYWNsaDBRVjIwTmZ2K2JIcnZnejdZNHVZZFlITEFVdVRNZWZuUWsyNXYy?=
+ =?utf-8?B?YXlPNUxYamswc2x0UkVITzhQbzVLbCtpdnhoME1iWVdpSzJKeXB2aFdESDRj?=
+ =?utf-8?B?N1ptcnZ2dGNHOUhNT0ZiYU9XYklqbUZhV3NFakY1aWR6KzZRVGw2YXhZVkZE?=
+ =?utf-8?B?bmpYWWYyV1BRQUFHUktaVlJVK3JCenFSekZoSDhvekpsbWdINDRLNnpGS0ty?=
+ =?utf-8?B?eG9TNDdVb3RLRlQrQTlOVlpyeWhZb0hSMks3STVIZlo4UjdrMklNY0o0NytB?=
+ =?utf-8?B?UEFnNUxVSGNEckpzM3c3YmU3UlV5VGZlVzhaenl6dGJMRnpKTWZ1TlEyTVRG?=
+ =?utf-8?B?eEQ4YWR0UmFmZUttVVQ0aEV3Qy9MbEFxVzVZUEdYa1UzTTliVjVKWnlnVHQ1?=
+ =?utf-8?B?RExYWjV4YXlOMUdaUm5VOGxhRGxWa2JlNjNxajhBdWpyaWo5RjFvMEVCVDla?=
+ =?utf-8?B?M0YxRld2YmlXUGpkelZaVEIzWTZLS1dqUm83RDMvQXlDU3VmdFVJbHhmOVJ4?=
+ =?utf-8?B?UlowQXlXUGtmeXZzYmF5Tnd6cVdWaElJQW9kbGREN0ovbEdPMk95aTM3Vlk3?=
+ =?utf-8?B?R2ExMlJRdm1XcFY5OTRpQklnbWF3WnBlei9nS1F1TWQ1TlNBdkdqdnp4RXdE?=
+ =?utf-8?B?TUdtMFNRZnZnSG1KVCtoYWxCVm5DUEl3K3VDRXZhb0JuVjNxaDk1TWVuL2Vm?=
+ =?utf-8?B?YUQweU5TRHJ1OFhzd2JrbENQZ1ZiT3dOYUlwUUk2RWczcUhnRlB6ZHdyY1ox?=
+ =?utf-8?B?VjhiNzRMMk5HOEJkQjhwRDlRRFJJWHBCKzFiRU9lazBlTmpCOGNwNGNycmE1?=
+ =?utf-8?B?ZjA0N281TEpZL3ViRUVVeElBOC83R3paeDJYZmNLZ2dXRFE0VEtlRnRGWlBT?=
+ =?utf-8?Q?ZL6VEO5J2BXu6nic87ZIgc8FtkGFhamJSH3xaIt?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1da47a57-0b3c-46b1-7b3f-08d9840c1ae2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:16:17.6349
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t5NwW851KivOKa8DdKBD43rjsoLPincopUC+WfLp12/qLeT+T3xABojJXm3sgBVrIHWQMupYp99ajz8Bao9zkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6382
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 14:10, Tomasz Figa wrote:
-> 2021年9月30日(木) 20:51 Lee Jones <lee.jones@linaro.org>:
->>
->> On Thu, 30 Sep 2021, Tomasz Figa wrote:
->>
->>
->> Is that the same as exporting symbols to framework APIs?
->>
->> Since this is already a method GKI uses to allow external modules to
->> interact with the core kernel/frameworks.  However, it's not possible
->> to upstream these without an upstream user for each one.
-> 
-> Not necessary the core frameworks, could also be changing the ways the
-> existing drivers register to allow additional drivers to extend the
-> functionality rather than completely overwrite them. 
+Like xen_start_flags, xen_domain_type gets set before .bss gets cleared.
+Hence this variable also needs to be prevented from getting put in .bss,
+which is possible because XEN_NATIVE is an enumerator evaluating to
+zero. Any use prior to init_hvm_pv_info() setting the variable again
+would lead to wrong decisions; one such case is xenboot_console_setup()
+when called as a result of "earlyprintk=xen".
 
-Yes, the first user could be within the kernel after modifying some of
-the drivers.
+Use __ro_after_init as more applicable than either __section(".data") or
+__read_mostly.
 
-> It's really hard
-> to tell what the right way would be without knowing the exact things
-> they find missing in the upstream drivers. As for upstream users, this
-> is exactly the point - upstream is a bidirectional effort, one takes
-> from it and should contribute things back.
-> 
-> Generally, the subsystems being mentioned here are so basic (clock,
-> pinctrl, rtc), that I really can't imagine what kind of rocket science
-> one might want to hide for competitive reasons... If it's for an
-> entire SoC, I wonder why Intel and AMD don't have similar concerns and
-> contribute support for their newest hardware far before the release.
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-Lee used the argument of not-disclosing-edge-hw but I also don't see
-much of it in the case of few drivers needed to be overridden. Just
-bunch of registers for the same stuff we have sine 8 years. Rather the
-vendor does not want to commit effort towards upstreaming these...
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -52,9 +52,6 @@ DEFINE_PER_CPU(struct vcpu_info, xen_vcp
+ DEFINE_PER_CPU(uint32_t, xen_vcpu_id);
+ EXPORT_PER_CPU_SYMBOL(xen_vcpu_id);
+ 
+-enum xen_domain_type xen_domain_type = XEN_NATIVE;
+-EXPORT_SYMBOL_GPL(xen_domain_type);
+-
+ unsigned long *machine_to_phys_mapping = (void *)MACH2PHYS_VIRT_START;
+ EXPORT_SYMBOL(machine_to_phys_mapping);
+ unsigned long  machine_to_phys_nr;
+@@ -69,9 +66,11 @@ __read_mostly int xen_have_vector_callba
+ EXPORT_SYMBOL_GPL(xen_have_vector_callback);
+ 
+ /*
+- * NB: needs to live in .data because it's used by xen_prepare_pvh which runs
+- * before clearing the bss.
++ * NB: These need to live in .data or alike because they're used by
++ * xen_prepare_pvh() which runs before clearing the bss.
+  */
++enum xen_domain_type __ro_after_init xen_domain_type = XEN_NATIVE;
++EXPORT_SYMBOL_GPL(xen_domain_type);
+ uint32_t xen_start_flags __section(".data") = 0;
+ EXPORT_SYMBOL(xen_start_flags);
+ 
 
-
-Best regards,
-Krzysztof
