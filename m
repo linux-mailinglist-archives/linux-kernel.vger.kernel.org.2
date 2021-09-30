@@ -2,145 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3F241D092
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5E341D098
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347332AbhI3AdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
+        id S1347341AbhI3Agt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233113AbhI3AdN (ORCPT
+        with ESMTP id S1346731AbhI3Agq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:33:13 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BA8C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:31:31 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id i62so5416185ioa.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:31:31 -0700 (PDT)
+        Wed, 29 Sep 2021 20:36:46 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CD9C06176A
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:35:04 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 75so4489214pga.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9NjcevKVQnuN/WpP0xQVPji3i7t1zFWrbtswcvHVvUQ=;
-        b=nvWQPojwziT2LIh5zLMcmo+Uw9XqNGKaC3uepwbdLT72Iy0/Dyq9f6d4anFJKpExsL
-         5HOoWfk7iecZUgYP9wKEvnh2NAoYXmWt5RUeRUIna4dKRIWk9ndIem9ab+DTyW3vN4Ac
-         OAALCn0Ad0uOLhLPVwU4bFOoCCh6zZW5wUn6+4Gax8kAP6k7vBxZwEjMgjMgpBTwqNzx
-         ZVwtNGm6RQ5yrUJX+92arH0BZQNSFjJFEutJrYW+QSrXtY+R7LjqSOX7ovQqyKmfGVhv
-         QjhgcQHJ1ng2EwRxJf2Cwq4Dy2o08Wx8oz2LIh0UiLOaXyhMJ+8H2REFQ/Sr/eg+JWKD
-         dYcw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjzHh64lVsb/lZGdokH420d5kapcdEZWn0niE1pG8Io=;
+        b=k1XDa5kzkzk6WIXCCYBemIAgg6QjM1qe2Ui1PfxwfpS1hL01KcmHWNUmA9Y3frCCmR
+         NAP/jd/im30Mx1iOJLlSOxbMtvGzQ+PETFqONxiUBNtsLqcBn+rTSzRPA+OannOxTvVa
+         C4psKIMyqurDUZqwaX/P9QtnpNfHMZW7aeJ34=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9NjcevKVQnuN/WpP0xQVPji3i7t1zFWrbtswcvHVvUQ=;
-        b=y2jQbI/s1w+L8cKd14kN4hQjHM563QKooaAhGdi9l1VqYq/apL39GiKutpuKA8upJg
-         duYhwbtHT1zXVSr46/Ahe2R+uxg0ww2N+MAzQ4Q15eQ5MYEfTSM4QElmBVBxlccq7Viu
-         HcD8apz/8YUg8CFqznPYM0srQga2eaqAE0z42upE+smXuWB329fee066/v2QJjOLmrCq
-         yJxK/76GpnZzfTvmojQACrvPTD+3xvNMxmYSV+NJy8VHDLeEwN+J04O9TOnhrGK/Xk1I
-         ogFjrbSkzsmAxiXl8+9tc7JjoxRy08RAk7Z4bFhNoEpE6bbpH7Oz7ZoAraC3nkmqpMog
-         kK5w==
-X-Gm-Message-State: AOAM531sMFR+mMZKghqRrLOIT7dj/ArNLNWxHdvNHwmln7tguWvEiNuw
-        dRMGAfP6syD97nwGxV4EeSl3SZhys7cDpg5z6bZHLOkbaqv/Lg==
-X-Google-Smtp-Source: ABdhPJx8XeRn22WRZ1l1qajtaT5Xp/jZn4t2MjPRxGhCIwcSOkEMaxOENqBivBKM2TuPHtc1pt67IWhU7YvLPQT6BXU=
-X-Received: by 2002:a5e:8d16:: with SMTP id m22mr1936850ioj.62.1632961890953;
- Wed, 29 Sep 2021 17:31:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjzHh64lVsb/lZGdokH420d5kapcdEZWn0niE1pG8Io=;
+        b=ozQcKCy8XA3FPnh8T84masCK+lYVe31GmQr7qiIox2mb9RHC1IEphWsKG4XLrH8Q+b
+         NsovPoj3b9c+35P0qQaoOhow2KnRfMwTLT4wosY2NfCppuzAwdXMHMpZOs+e3Bm0acIM
+         dGYz3EIrGP5j8jWRNzrGXKgNqaAPvJM38hDv74203E/EplTFLyj9ZrRHOlu/Z4tYjr9O
+         vx0hhKhdCrk78FBr2N1C6zENKeCsFj4OC81kDrkx51aJAoNhuIccCmQWYFzyoAS6aGBd
+         3myqw64fMwQE3wALmlBJlGw7O+foO+EdLTicUeqHhjoF3y+a3Iak91pa0QMYdKNSi9Sb
+         BeBg==
+X-Gm-Message-State: AOAM53161UO7NbVilPd05WC1PsRwlrX2f/WSC4au3nBQ0WYyvYKJGdri
+        PeHwUgCc657rO4nYEzW18zCgPq9HNIfu9g==
+X-Google-Smtp-Source: ABdhPJw3ZSIgIDMmJg6t+5AaTTtXbKrEjjhWgpdZoKFVE6hNtQuYfLk7v5kBS8v05bBsyTofrz+gGg==
+X-Received: by 2002:aa7:82d0:0:b0:413:5e93:2f7a with SMTP id f16-20020aa782d0000000b004135e932f7amr1328435pfn.16.1632962104083;
+        Wed, 29 Sep 2021 17:35:04 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:b6b6:ed63:b801:ded7])
+        by smtp.gmail.com with ESMTPSA id 23sm711648pgk.89.2021.09.29.17.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 17:35:03 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     dianders@chromium.org, swboyd@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v2 1/3] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
+Date:   Wed, 29 Sep 2021 17:34:56 -0700
+Message-Id: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 MIME-Version: 1.0
-References: <20210929232534.1433720-1-dlatypov@google.com> <CABVgOSn7KpVj_+3YYrO1DkNxHkO3VJcUYjXuD+RSNHV_aZC6_Q@mail.gmail.com>
-In-Reply-To: <CABVgOSn7KpVj_+3YYrO1DkNxHkO3VJcUYjXuD+RSNHV_aZC6_Q@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 29 Sep 2021 17:31:19 -0700
-Message-ID: <CAGS_qxpodcw=BzjGU5jxMvkT4P3_dsO7VFv4yf0sw0tHcStoUA@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: show list of valid --arch options when invalid
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 5:23 PM David Gow <davidgow@google.com> wrote:
->
-> On Thu, Sep 30, 2021 at 7:26 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > Consider this attempt to run KUnit in QEMU:
-> > $ ./tools/testing/kunit/kunit.py run --arch=x86
-> >
-> > Before you'd get this error message:
-> > kunit_kernel.ConfigError: x86 is not a valid arch
-> >
-> > After:
-> > kunit_kernel.ConfigError: x86 is not a valid arch, options are ['alpha', 'arm', 'arm64', 'i386', 'powerpc', 'riscv', 's390', 'sparc', 'x86_64']
-> >
-> > This should make it a bit easier for people to notice when they make
-> > typos, etc. Currently, one would have to dive into the python code to
-> > figure out what the valid set is.
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> This is really nice, particularly given that we've had to reproduce
-> that list in lots of talks, documentation, etc. and it could get
-> out-of-date.
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> [FYI: this didn't seem to apply cleanly to kselftest/kunit head, but
-> it was a pretty minor issue with kunit_tool_test.py.]
+Factor out ti-sn65dsi86 edp bridge as a separate dts fragment.
+This helps us introduce the second source edp bridge later.
 
-Oh, this is on top of
-https://lore.kernel.org/linux-kselftest/20210928221111.1162779-1-dlatypov@google.com/
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
 
-I guess this line there
-- tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-+ kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
- tripped things up a bit.
+Changes in v2:
+- Move edp_brij_i2c completely out of sc7180-trogdor.dtsi to the
+  bridge dts fragment, so that we can cleanly assign different
+  edp bridge in every board rev.
 
->
-> Thanks,
-> -- David
->
-> >  tools/testing/kunit/kunit_kernel.py    | 5 +++--
-> >  tools/testing/kunit/kunit_tool_test.py | 4 ++++
-> >  2 files changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > index 1870e75ff153..a6b3cee3f0d0 100644
-> > --- a/tools/testing/kunit/kunit_kernel.py
-> > +++ b/tools/testing/kunit/kunit_kernel.py
-> > @@ -198,8 +198,9 @@ def get_source_tree_ops(arch: str, cross_compile: Optional[str]) -> LinuxSourceT
-> >                 return LinuxSourceTreeOperationsUml(cross_compile=cross_compile)
-> >         elif os.path.isfile(config_path):
-> >                 return get_source_tree_ops_from_qemu_config(config_path, cross_compile)[1]
-> > -       else:
-> > -               raise ConfigError(arch + ' is not a valid arch')
-> > +
-> > +       options = [f[:-3] for f in os.listdir(QEMU_CONFIGS_DIR) if f.endswith('.py')]
-> > +       raise ConfigError(arch + ' is not a valid arch, options are ' + str(sorted(options)))
-> >
-> >  def get_source_tree_ops_from_qemu_config(config_path: str,
-> >                                          cross_compile: Optional[str]) -> Tuple[
-> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > index cad37a98e599..2ae72f04cbe0 100755
-> > --- a/tools/testing/kunit/kunit_tool_test.py
-> > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > @@ -289,6 +289,10 @@ class LinuxSourceTreeTest(unittest.TestCase):
-> >                                 pass
-> >                         kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-> >
-> > +       def test_invalid_arch(self):
-> > +               with self.assertRaisesRegex(kunit_kernel.ConfigError, 'not a valid arch, options are.*x86_64'):
-> > +                       kunit_kernel.LinuxSourceTree('', arch='invalid')
-> > +
-> >         # TODO: add more test cases.
-> >
-> >
-> >
-> > base-commit: 865a0a8025ee0b54d1cc74834c57197d184a441e
-> > --
-> > 2.33.0.685.g46640cef36-goog
-> >
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  1 +
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  1 +
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  1 +
+ .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  1 +
+ .../dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi | 90 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 86 ------------------
+ 6 files changed, 94 insertions(+), 86 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+index a758e4d22612..1d13fba3bd2f 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+@@ -11,6 +11,7 @@
+ ap_h1_spi: &spi0 {};
+ 
+ #include "sc7180-trogdor.dtsi"
++#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+ 
+ /* Deleted nodes from trogdor.dtsi */
+ 
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+index 00535aaa43c9..27b26a782af9 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+@@ -11,6 +11,7 @@
+ ap_h1_spi: &spi0 {};
+ 
+ #include "sc7180-trogdor.dtsi"
++#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+ 
+ &ap_sar_sensor {
+ 	semtech,cs0-ground;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+index a246dbd74cc1..e7c7cad14989 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+@@ -11,6 +11,7 @@
+ ap_h1_spi: &spi0 {};
+ 
+ #include "sc7180-trogdor.dtsi"
++#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+ 
+ / {
+ 	thermal-zones {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+index 2b522f9e0d8f..457c25499863 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
+@@ -13,6 +13,7 @@
+ ap_h1_spi: &spi0 {};
+ 
+ #include "sc7180-trogdor.dtsi"
++#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+ 
+ / {
+ 	model = "Google Trogdor (rev1+)";
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+new file mode 100644
+index 000000000000..97d5e45abd1d
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Google Trogdor dts fragment for the boards with TI sn65dsi86 edp bridge
++ *
++ * Copyright 2021 Google LLC.
++ */
++
++&dsi0_out {
++	remote-endpoint = <&sn65dsi86_in>;
++	data-lanes = <0 1 2 3>;
++};
++
++edp_brij_i2c: &i2c2 {
++	status = "okay";
++	clock-frequency = <400000>;
++
++	sn65dsi86_bridge: bridge@2d {
++		compatible = "ti,sn65dsi86";
++		reg = <0x2d>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		interrupt-parent = <&tlmm>;
++		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
++
++		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
++
++		vpll-supply = <&pp1800_edp_vpll>;
++		vccio-supply = <&pp1800_brij_vccio>;
++		vcca-supply = <&pp1200_brij>;
++		vcc-supply = <&pp1200_brij>;
++
++		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
++		clock-names = "refclk";
++
++		no-hpd;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				sn65dsi86_in: endpoint {
++					remote-endpoint = <&dsi0_out>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++				sn65dsi86_out: endpoint {
++					data-lanes = <0 1>;
++					remote-endpoint = <&panel_in_edp>;
++				};
++			};
++		};
++
++		aux-bus {
++			panel: panel {
++				/* Compatible will be filled in per-board */
++				power-supply = <&pp3300_dx_edp>;
++				backlight = <&backlight>;
++				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
++
++				port {
++					panel_in_edp: endpoint {
++						remote-endpoint = <&sn65dsi86_out>;
++					};
++				};
++			};
++		};
++	};
++};
++
++&tlmm {
++	edp_brij_irq: edp-brij-irq {
++		pinmux {
++			pins = "gpio11";
++			function = "gpio";
++		};
++
++		pinconf {
++			pins = "gpio11";
++			drive-strength = <2>;
++			bias-pull-down;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 0f2b3c00e434..702139e89a80 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -602,15 +602,6 @@ &camcc {
+ &dsi0 {
+ 	status = "okay";
+ 	vdda-supply = <&vdda_mipi_dsi0_1p2>;
+-
+-	ports {
+-		port@1 {
+-			endpoint {
+-				remote-endpoint = <&sn65dsi86_in>;
+-				data-lanes = <0 1 2 3>;
+-			};
+-		};
+-	};
+ };
+ 
+ &dsi_phy {
+@@ -618,70 +609,6 @@ &dsi_phy {
+ 	vdds-supply = <&vdda_mipi_dsi0_pll>;
+ };
+ 
+-edp_brij_i2c: &i2c2 {
+-	status = "okay";
+-	clock-frequency = <400000>;
+-
+-	sn65dsi86_bridge: bridge@2d {
+-		compatible = "ti,sn65dsi86";
+-		reg = <0x2d>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&edp_brij_en>, <&edp_brij_irq>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-
+-		interrupt-parent = <&tlmm>;
+-		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+-
+-		enable-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
+-
+-		vpll-supply = <&pp1800_edp_vpll>;
+-		vccio-supply = <&pp1800_brij_vccio>;
+-		vcca-supply = <&pp1200_brij>;
+-		vcc-supply = <&pp1200_brij>;
+-
+-		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+-		clock-names = "refclk";
+-
+-		no-hpd;
+-
+-		ports {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-
+-			port@0 {
+-				reg = <0>;
+-				sn65dsi86_in: endpoint {
+-					remote-endpoint = <&dsi0_out>;
+-				};
+-			};
+-
+-			port@1 {
+-				reg = <1>;
+-				sn65dsi86_out: endpoint {
+-					data-lanes = <0 1>;
+-					remote-endpoint = <&panel_in_edp>;
+-				};
+-			};
+-		};
+-
+-		aux-bus {
+-			panel: panel {
+-				/* Compatible will be filled in per-board */
+-				power-supply = <&pp3300_dx_edp>;
+-				backlight = <&backlight>;
+-				hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
+-
+-				port {
+-					panel_in_edp: endpoint {
+-						remote-endpoint = <&sn65dsi86_out>;
+-					};
+-				};
+-			};
+-		};
+-	};
+-};
+-
+ ap_sar_sensor_i2c: &i2c5 {
+ 	clock-frequency = <400000>;
+ 
+@@ -1245,19 +1172,6 @@ pinconf {
+ 		};
+ 	};
+ 
+-	edp_brij_irq: edp-brij-irq {
+-		pinmux {
+-			pins = "gpio11";
+-			function = "gpio";
+-		};
+-
+-		pinconf {
+-			pins = "gpio11";
+-			drive-strength = <2>;
+-			bias-pull-down;
+-		};
+-	};
+-
+ 	en_pp3300_codec: en-pp3300-codec {
+ 		pinmux {
+ 			pins = "gpio83";
+-- 
+2.33.0.685.g46640cef36-goog
+
