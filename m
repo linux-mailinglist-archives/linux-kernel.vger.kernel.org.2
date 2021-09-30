@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DD841D56C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECB041D572
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349147AbhI3Icn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349139AbhI3Icn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:32:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A55BF615E5;
-        Thu, 30 Sep 2021 08:30:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632990660;
-        bh=vH2ZLBcLG3OGYHCzwdrV5+lanmT9yLOFiAXAjvEt90Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fuZHOHCj8fYF/uT23eYD0lRfs7cbRe1XIMAX8H1J4LOxv3k+iS5CObktZ0AVWst10
-         uJohsuGI5g4jnfLyhtGyGKdmrl2J0Wxp8rRE1VXpqZPlorJAtLWcb1Gf4783FrEwP6
-         r9zRHRCd+gWfeYw+pT/YdpPQkQpFXfQttCH3tctIgcD86ms3Zrj2GnhnmB+PcXnVlg
-         RAthUb8+12LxwARZje4PyFMMscPvVO/I52HO6JEfhfcaitC2WgTdq0p8hluVgDeb6v
-         RUdkX3GaMc6svJMSevRWiBHdzv6MgSkqh1hYjykH26n8G7t/JvUKwzFzBxAENBBe8a
-         /jhWet4gM+6lg==
-Date:   Thu, 30 Sep 2021 09:30:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 14/16] arm64: Add a capability for FEAT_ECV
-Message-ID: <20210930083054.GA23389@willie-the-truck>
-References: <20210922211941.2756270-1-maz@kernel.org>
- <20210922211941.2756270-15-maz@kernel.org>
- <20210929160329.GE22029@willie-the-truck>
- <87h7e2tsov.wl-maz@kernel.org>
+        id S1348621AbhI3Idm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348402AbhI3Idl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:33:41 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634C7C06161C;
+        Thu, 30 Sep 2021 01:31:59 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id C49121F449E9
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mediatek@lists.infradead.org, eizan@chromium.org,
+        kernel@collabora.com, drinkcat@chromium.org,
+        jitao.shi@mediatek.com, chunkuang.hu@kernel.org,
+        hsinyi@chromium.org, matthias.bgg@gmail.com,
+        Crystal Guo <crystal.guo@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Fabien Parent <fparent@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v4 0/7] Add support to the mmsys driver to be a reset controller
+Date:   Thu, 30 Sep 2021 10:31:43 +0200
+Message-Id: <20210930083150.3317003-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7e2tsov.wl-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:42:56AM +0100, Marc Zyngier wrote:
-> On Wed, 29 Sep 2021 17:03:30 +0100,
-> Will Deacon <will@kernel.org> wrote:
-> > 
-> > On Wed, Sep 22, 2021 at 10:19:39PM +0100, Marc Zyngier wrote:
-> > > Add a new capability to detect the Enhanced Counter Virtualization
-> > > feature (FEAT_ECV).
-> > > 
-> > > Reviewed-by: Oliver Upton <oupton@google.com>
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > ---
-> > >  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
-> > >  arch/arm64/tools/cpucaps       |  1 +
-> > >  2 files changed, 11 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > index f8a3067d10c6..26b11ce8fff6 100644
-> > > --- a/arch/arm64/kernel/cpufeature.c
-> > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > @@ -1926,6 +1926,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
-> > >  		.sign = FTR_UNSIGNED,
-> > >  		.min_field_value = 1,
-> > >  	},
-> > > +	{
-> > > +		.desc = "Enhanced Counter Virtualization",
-> > > +		.capability = ARM64_HAS_ECV,
-> > > +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> > > +		.matches = has_cpuid_feature,
-> > > +		.sys_reg = SYS_ID_AA64MMFR0_EL1,
-> > > +		.field_pos = ID_AA64MMFR0_ECV_SHIFT,
-> > > +		.sign = FTR_UNSIGNED,
-> > > +		.min_field_value = 1,
-> > > +	},
-> > 
-> > Could we add a HWCAP for this and change the field to FTR_VISIBLE, please? I
-> > know most users of the counter are indirected via the vDSO, but there are
-> > some users out there using the counter directly and it would save them
-> > having to probe via SIGILL if there was a hwcap available.
-> 
-> Fair enough, I'll add that.
+Dear all,
 
-Thanks!
+The following patchset is a reimplementation of the patch sent by Jitao
+Shi [1] some time ago. As suggested by Chun-Kuang Hu, this time the
+reset is done using the reset API, where the mmsys driver is the reset
+controller and the mtk_dsi driver is the reset consumer.
 
-> The problem of the vdso remains though, and is by far the most common
-> user of the feature. Any idea on how to handle it? Patching the vdso
-> is ugly, and I'd rather avoid it.
-> 
-> I briefly looked at using ifunc, but it is likely that the indirection
-> would add an extra cost. Are we OK with that?
+Note that the first patch is kind of unrelated change, it's just a
+cleanup but is needed if you want to apply all the following patches
+cleanly.
 
-The vDSO is still miles faster than a system call, so I'd be inclined to
-leave it as-is for the time being. I suspect that use-cases which can't
-stomach the cost of the ISB can't stomach the cost of the vDSO at all.
+This patchset is important in order to have the DSI panel working on some
+kukui MT8183 Chromebooks (i.e Lenovo IdeaPad Duet). Without it, you just
+get a black screen.
 
-Will
+Best regards,
+  Enric
+
+[1] https://lore.kernel.org/linux-arm-kernel/20210420132614.150242-4-jitao.shi@mediatek.com/
+
+
+Changes in v4:
+- Remove unnused variable as pointed by Hsin-Yi
+
+Changes in v3:
+- Based on top of the patch that converts mmsys to schema
+- Fix typo in the commit description
+
+Changes in v2:
+- Fix build test ERROR Reported-by: kernel test robot <lkp@intel.com>
+- Added a new patch to describe the dsi reset optional property.
+
+Enric Balletbo i Serra (7):
+  arm64: dts: mediatek: Move reset controller constants into common
+    location
+  dt-bindings: mediatek: Add #reset-cells to mmsys system controller
+  dt-bindings: display: mediatek: add dsi reset optional property
+  arm64: dts: mt8173: Add the mmsys reset bit to reset the dsi0
+  arm64: dts: mt8183: Add the mmsys reset bit to reset the dsi0
+  soc: mediatek: mmsys: Add reset controller support
+  drm/mediatek: mtk_dsi: Reset the dsi0 hardware
+
+ .../bindings/arm/mediatek/mediatek,mmsys.yaml |  4 ++
+ .../display/mediatek/mediatek,dsi.txt         |  6 ++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  2 +
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  5 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |  5 +-
+ drivers/soc/mediatek/mtk-mmsys.c              | 68 +++++++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.h              |  2 +
+ drivers/watchdog/mtk_wdt.c                    |  6 +-
+ .../mt2712-resets.h                           |  0
+ include/dt-bindings/reset/mt8173-resets.h     |  2 +
+ .../mt8183-resets.h                           |  3 +
+ .../mt8192-resets.h                           |  0
+ 12 files changed, 97 insertions(+), 6 deletions(-)
+ rename include/dt-bindings/{reset-controller => reset}/mt2712-resets.h (100%)
+ rename include/dt-bindings/{reset-controller => reset}/mt8183-resets.h (98%)
+ rename include/dt-bindings/{reset-controller => reset}/mt8192-resets.h (100%)
+
+-- 
+2.30.2
+
