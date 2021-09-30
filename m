@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F293E41DE20
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A25141DE26
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347032AbhI3P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346577AbhI3P42 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:56:28 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C0AC06176A;
-        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i4so27713049lfv.4;
-        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
-        b=PXKNBxqcRYxhwIV2v2X64yZJayzFfGuPEaFJcRpO4WCNqMpCZwI1df/zPBhLNhmRG9
-         7YWtoaofqurtGMdx0tYBEI6UfndHKtDaw4PBX49q9qi3J9QTKWYVNSDazJnLhCwGhWpW
-         sQyH53wtu7PQHWXKpw0IKJFLkzoLewsXUWMxyWUFA0GoZc/geWBr365BCc9DFKmEuqTx
-         QD1UXjg8vOB88FTGI55O4xvrqxi80eDmibsD2swnwubvtT8jN+7r24raClw1eWxICIMn
-         Xqc+xF7xzZT7TnBUA1RA5nmOrLjD64wC+WGfBcYeYx3rm7565L5ZdR6xyKgYS9WfGChU
-         NdlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
-        b=XbBmZKylOYkv9SoXviPKr9BWXkZnTMEhN/fJ51HYr7LvZ50SCBNVHrOfV5SWpjYM2r
-         Y2qiC9CZ/lZsMRA6GQqL2/yNfuvwmt01k+raQ/914z/0iuApGZgUMbKUALfvCbUniGRI
-         gSalxO6Z+kngZPgLhCAU9cS1ehUiZTvEswwuJASnjNdOIUR0Z+riW4QpL82Pr+TXguTS
-         2fDK3wKyn6cI/dVyVPlz5oC6323Y0CaVOJqjzh8gwILnBViU/sGrMjSLtCdVqkbFx6bt
-         8hDoqhoj9aXS9t5aF9sa3JGdoOav5Q8f/6EcjMIWu/mSG6lZ8XF7xAHIVtuMFICV5S9y
-         uQUg==
-X-Gm-Message-State: AOAM530xbUXEPedn3z2RSBSh4SRFgiu7yX3y79mfdsl/iauHJLStOASh
-        TzYK5mmp8+9+DBjHeQ/cTbqVveEdVpYvTtbgkUjRp9WQ
-X-Google-Smtp-Source: ABdhPJyOHnVmMylaeGdsSDUQCs/a7NstziQ8gAm3Iq6Rldf9w/4qe7wGWECjl3a+7RS3TZsUTx6/zgFOVy33MH5VI2M=
-X-Received: by 2002:a05:6512:32c5:: with SMTP id f5mr7091563lfg.234.1633017283958;
- Thu, 30 Sep 2021 08:54:43 -0700 (PDT)
+        id S1347212AbhI3P5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:57:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58861 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347152AbhI3P5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:57:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="223329889"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="223329889"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:55:48 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="457485570"
+Received: from kjepstei-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.212.192.243])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:55:47 -0700
+Date:   Thu, 30 Sep 2021 08:55:47 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] Move IS_CONFIG_NONZERO() to kconfig.h
+Message-ID: <20210930155547.rtz6pdae42gqvm6p@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20210929183357.1490204-1-lucas.demarchi@intel.com>
+ <20210929183357.1490204-4-lucas.demarchi@intel.com>
+ <CAK7LNAQ765CBjg83Kpt8XdOjqPw8Xuv--_bcTvd3udZ=tsgMdA@mail.gmail.com>
 MIME-Version: 1.0
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <163279868982.18792.10448745714922373194@noble.neil.brown.name>
-In-Reply-To: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 30 Sep 2021 10:54:32 -0500
-Message-ID: <CAH2r5msHO9HTQGeO6MoR2_U76B9kLeoFS=FRbMuiNsh=YeFdWg@mail.gmail.com>
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-To:     NeilBrown <neilb@suse.de>
-Cc:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Trond Myklebust <trond.myklebust@primarydata.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-mm <linux-mm@kvack.org>, Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQ765CBjg83Kpt8XdOjqPw8Xuv--_bcTvd3udZ=tsgMdA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 10:12 PM NeilBrown <neilb@suse.de> wrote:
+On Thu, Sep 30, 2021 at 11:01:36PM +0900, Masahiro Yamada wrote:
+>On Thu, Sep 30, 2021 at 3:34 AM Lucas De Marchi
+><lucas.demarchi@intel.com> wrote:
+>>
+>> The check for config value doesn't really belong to i915_utils.h - we
+>> are trying to eliminate that utils helper and share them when possible
+>> with other drivers and subsystems.
+>>
+>> Rationale for having such macro is in commit
+>> babaab2f4738 ("drm/i915: Encapsulate kconfig constant values inside boolean predicates")
+>> whereas later it is improved to not break the build if used with
+>> undefined configs. The caveat is detailed in the documentation: unlike
+>> IS_ENABLED(): it's not preprocessor-only logic so can't be used for
+>> things like `#if IS_CONFIG_NONZERO(...)`
+>>
+>> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 >
-> On Sat, 25 Sep 2021, David Howells wrote:
-> > Whilst trying to make this work, I found that NFS's support for swapfiles
-> > seems to have been non-functional since Aug 2019 (I think), so the first
-> > patch fixes that.  Question is: do we actually *want* to keep this
-> > functionality, given that it seems that no one's tested it with an upstream
-> > kernel in the last couple of years?
 >
-> SUSE definitely want to keep this functionality.  We have customers
-> using it.
-> I agree it would be good if it was being tested somewhere....
+>Hypothetical "it would be nice to have ..." is really unneeded.
 >
+>       if (context && CONFIG_DRM_I915_FENCE_TIMEOUT > 0)
+>                     return
+>msecs_to_jiffies_timeout(CONFIG_DRM_I915_FENCE_TIMEOUT);
+>
+>
+>is enough, and much cleaner.
+>
+>
+>
+>This warning is shown only when a constant is used
+>together with '&&'.
+>
+>Most of IS_ACTIVE can go away.
+>
+>Given that, there are not many places where the IS_ACTIVE macro
+>is useful, even in the i915 driver.
+>
+>For a few sources of the warnings,
+>replacing it with  != 0 or > 0 is just fine.
 
-I am trying to work through the testing of swap over SMB3 mounts
-since there are use cases where you need to expand the swap
-space to remote storage and so this requirement comes up.  The main difficulty
-I run into is forgetting to mount with the mount options (to store mode bits)
-(so swap file has the right permissions) and debugging some of the
-xfstests relating to swap can be a little confusing.
+humn... maybe. Let me do a conversion in that direction and see what is
+the outcome.
 
--- 
-Thanks,
+My original intention was to make IS_ENABLED() even uglier to cover the
+int case, but after some tries it seems impossible to do on preprocessor
+context, so I thought maybe it would be ok as a separate one.
 
-Steve
+>
+>Of course, such an ugly macro is not worth being moved to <linux/kconfig.h>
+
+if we don't handle the undefined case and only worry about encapsulating
+it inside a boolean predicate, the macro would be very simple. Would
+that be worth having in kconfig.h maybe?
+
+
+thanks
+Lucas De Marchi
