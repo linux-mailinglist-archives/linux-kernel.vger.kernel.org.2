@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A255C41DC9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9F741DCA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351225AbhI3Opa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:45:30 -0400
-Received: from www.zeus03.de ([194.117.254.33]:55074 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351213AbhI3OpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:45:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=zC0Alauy1GO2I9lyHxa0EfxWQbz8
-        B2+rwQmkFWLZr+w=; b=pVciIik0p6VGP3udU6MCYIxqkKUY8GygzNDt3dr10lV1
-        x766ShUFEUcOvUJT65QToDAgeM8MTBAN3nLWv1gKhosWZiBdpwhLI31NzKU6ardB
-        2v2fqIabltyNPKTFY3nKtuwAJL8h5q1XgxJhMgOC2zsX3STrgNcsJ+6LS1ULl/Y=
-Received: (qmail 2114006 invoked from network); 30 Sep 2021 16:43:37 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Sep 2021 16:43:37 +0200
-X-UD-Smtp-Session: l3s3148p1@9OrLeDfNOoYgARa4RV6LAWawlO8I9jL3
-Date:   Thu, 30 Sep 2021 16:43:37 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 5/6] memory: renesas-rpc-if: Drop usage of
- RPCIF_DIRMAP_SIZE macro
-Message-ID: <YVXNGTfOdMgkqxPT@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <YVXBwx7rxJLRhlTI@shikoro>
- <CA+V-a8sZ0qudhbV7Fart-puNQO-ZHhDEG3OdRH=w_dbTHy2A7g@mail.gmail.com>
+        id S1351324AbhI3Oti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351296AbhI3Oth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:49:37 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0955C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:47:54 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d8so5892929qtd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YC0+VwHZzPhl2SPrhh657f3U1hNtJ/JCUlCIJ6KQy3I=;
+        b=ndkH5/wAJI5PynIxh8c+p/oo88o+89k9dDxUk0xgxTZH1LvmZlzhjwAYV5yYXxu8Tc
+         wF0b1+mqCRPb2q/JGI46tYxrDNiGY50UHsbAp5ybEiNhAuSCVrmbCFYYSTF+YVA8Lb2i
+         RNC/uWCyRsbHh0WfFsp84BG+2eUZ0pgHc0H8uL178Bhd1gBDUAbbajQcamvMX3huzkUD
+         aP3v1hLmRwUuPgKE94SsoEjkOam5Mg8f9HC89RAr5ESag+i9r4c94bS7FXpNtvDim4as
+         8ms8GAC7MnYNcuMW2hEhBxMcUSv7rCxsoOFh2C5HKiwIQWURyNdZOC0/nLAg+p3J0aKU
+         8iBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YC0+VwHZzPhl2SPrhh657f3U1hNtJ/JCUlCIJ6KQy3I=;
+        b=NRct5iWKCkN5/aSSMfbUw65nxe0gkiTGvq147nj9lZGu/S4pqTyPO4KFFEBbMxaBsS
+         zc8taaMPIVf43PGtBqo+zf28HdJZ2Sug1wsVyaSy8mzOKJxrmpWI+l21GaaQOcv5MX2O
+         rTzwFaRSsxRkNjMTOC+AUfAqNf29+X0+2o63jKLoylPJGsBW5uyZdRvOFs6sq2zkvyeH
+         4dF/2+zxzaWFfp/cQlLtPtxXkdFVIwwXrzi9Ww29deEEi+3nssppGcoLvK/TkA6ENx/G
+         1tRdrH+gFoLHDyQ+U17UuvCmV2siQd2ydM3FDqmIG/PLzcbwVtYhIc/55GWnFlKdF9eE
+         kuQQ==
+X-Gm-Message-State: AOAM532sV0pySyqmcJBjFB+IeDi4SO8+tPJmw0bRr91OXXGKptEwD7tj
+        mVVBCADEMF+gkhKGU/RhKKFAuQ==
+X-Google-Smtp-Source: ABdhPJxpuImR9KBUcfzATGTbSy0hBfBvmQhVEZSB9uz66LdCIDV/x85f7S999tzTSOGxHvl1SPYIMQ==
+X-Received: by 2002:ac8:6703:: with SMTP id e3mr6746279qtp.307.1633013274161;
+        Thu, 30 Sep 2021 07:47:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id f10sm1691905qtm.15.2021.09.30.07.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:47:53 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVxLk-000HbX-9P; Thu, 30 Sep 2021 11:47:52 -0300
+Date:   Thu, 30 Sep 2021 11:47:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210930144752.GA67618@ziepe.ca>
+References: <20210929063551.47590fbb.alex.williamson@redhat.com>
+ <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
+ <20210929075019.48d07deb.alex.williamson@redhat.com>
+ <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+ <20210929091712.6390141c.alex.williamson@redhat.com>
+ <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
+ <20210929161433.GA1808627@ziepe.ca>
+ <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
+ <20210929232109.GC3544071@ziepe.ca>
+ <d8324d96-c897-b914-16c6-ad0bbb9b13a5@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+vXGT369GaKLNZZk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+V-a8sZ0qudhbV7Fart-puNQO-ZHhDEG3OdRH=w_dbTHy2A7g@mail.gmail.com>
+In-Reply-To: <d8324d96-c897-b914-16c6-ad0bbb9b13a5@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 12:34:19PM +0300, Max Gurtovoy wrote:
 
---+vXGT369GaKLNZZk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > When we add the migration extension this cannot change, so after
+> > open_device() the device should be operational.
+> 
+> if it's waiting for incoming migration blob, it is not running.
 
+It cannot be waiting for a migration blob after open_device, that is
+not backwards compatible.
 
-> Both the fixes would apply to the first patch itself i.e. when
-> resource_size was added in ca7d8b980b67 and later in 59e27d7c94aa
-> resource_size was moved online below (this would cause kernel panic
-> res is NULL). Do you agree?
+Just prior to open device the vfio pci layer will generate a FLR to
+the function so we expect that post open_device has a fresh from reset
+fully running device state.
 
-Yes. I do wonder a little if we need the Fixes tag for ca7d8b980b67
-because we fix 59e27d7c94aa which already fixes ca7d8b980b67, so there
-is a chain. But maybe redundancy doesn't hurt here. I don't mind.
+> > The reported state in the migration region should accurately reflect
+> > what the device is currently doing. If the device is operational then
+> > it must report running, not stopped.
+> 
+> STOP in migration meaning.
 
+As Alex and I have said several times STOP means the internal state is
+not allowed to change.
 
---+vXGT369GaKLNZZk
-Content-Type: application/pgp-signature; name="signature.asc"
+> > driver will see RESUMING toggle off so it will trigger a
+> > de-serialization
+> 
+> You mean stop serialization ?
 
------BEGIN PGP SIGNATURE-----
+No, I mean it will take all the migration data that has been uploaded
+through the migration region and de-serialize it into active device
+state.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFVzRgACgkQFA3kzBSg
-Kba5Ag/+Nh2/+1ZBUs5G25GPrGF4qipbPyFFYvcGBkQ5Mx+GsiS9Z6jPdM3kjylF
-+suiOYdPxy4HsRrZuu43cSb3SCK9Liem2sE1hvd3HmWk6jEhctIpKWzVBXEYahHS
-g+BqPhcwQVEYlZCC6k46ByedC+E9IgSR6/of2J+3lVqVnH3iZhQjC5lAyan70za3
-9Zo8mTCxqhaugRFrVl9tROKrQ6Kh1tYwQ7cRWvUbXS5Cx813m19TPXs+ieXFQTIq
-KR3j3xAbkLSNjr+Y6Nlz6/4gcbF+FL9Y2u2/ey7Vku1ER6gwjpREkx0vVa9Dhi6K
-HOoRCI1bP/4T7IuTJ4Nsz2Wlram+VfwqaEv5PLmzquWnOmWY8IqXhiC2JtR5FqoM
-zbZbqVvAdrGLI8Ca+ogT4BDxB06JlZkgOW3454Nfw5xNNW1mc05Yoy45uTLvN5sf
-LHrkLQ5HH3yxbbSl5bTAeUz2SWj8rHoCG4a/THVwY9sdd/iBV+mQlsGWd4XV++ES
-zydPwjo37x04T/95dRpOOMqXeB5Ob5j0V2Dki1+hCTsHLmS2Gy1wrjhPKGR4C9RI
-JC8s9wmC9dFgbcmNZGqdWyVA/0L9h7u2XdZR+nQb7ZTuHlbNoa44gElHaCOS4i4U
-opohmx5AwY2ItrBcROWpTF7GMGRO+eyRn1I2kFLrCvJKJmA4wXE=
-=nHUc
------END PGP SIGNATURE-----
+> > driver will see SAVING toggled on so it will serialize the new state
+> > (either the pre-copy state or the post-copy state dpending on the
+> > running bit)
+> 
+> lets leave the bits and how you implement the state numbering aside.
 
---+vXGT369GaKLNZZk--
+You've missed the point. This isn't a FSM. It is a series of three
+control bits that we have assigned logical meaning their combinatoins.
+
+The algorithm I gave is a control centric algorithm not a state
+centric algorithm and matches the direction Alex thought this was
+being designed for.
+ 
+> If you finish resuming you can move to a new state (that we should add) =>
+> RESUMED.
+
+It is not a state machine. Once you stop prentending this is
+implementing a FSM Alex's position makes perfect sense.
+
+Jason
