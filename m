@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7491741D133
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B091441D149
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347743AbhI3B6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 21:58:02 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24155 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347699AbhI3B55 (ORCPT
+        id S1347746AbhI3CGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:06:50 -0400
+Received: from out28-4.mail.aliyun.com ([115.124.28.4]:57764 "EHLO
+        out28-4.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347294AbhI3CGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:57:57 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HKbsT4wSYz1DHPC;
-        Thu, 30 Sep 2021 09:54:53 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 09:56:06 +0800
-Received: from [10.174.176.245] (10.174.176.245) by
- kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 09:56:04 +0800
-Subject: Re: [PATCH net 2/2] auth_gss: Fix deadlock that blocks
- rpcsec_gss_exit_net when use-gss-proxy==1
-To:     "bfields@fieldses.org" <bfields@fieldses.org>
-CC:     Trond Myklebust <trondmy@hammerspace.com>,
-        "neilb@suse.com" <neilb@suse.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "tyhicks@canonical.com" <tyhicks@canonical.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "timo@rothenpieler.org" <timo@rothenpieler.org>,
-        "jiang.wang@bytedance.com" <jiang.wang@bytedance.com>,
-        "kuniyu@amazon.co.jp" <kuniyu@amazon.co.jp>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Rao.Shoaib@oracle.com" <Rao.Shoaib@oracle.com>,
-        "wenbin.zeng@gmail.com" <wenbin.zeng@gmail.com>,
-        "kolga@netapp.com" <kolga@netapp.com>
-References: <20210928031440.2222303-1-wanghai38@huawei.com>
- <20210928031440.2222303-3-wanghai38@huawei.com>
- <a845b544c6592e58feeaff3be9271a717f53b383.camel@hammerspace.com>
- <20210928134952.GA25415@fieldses.org>
- <77051a059fa19a7ae2390fbda7f8ab6f09514dfc.camel@hammerspace.com>
- <20210928141718.GC25415@fieldses.org>
- <cc92411f242290b85aa232e7220027b875942f30.camel@hammerspace.com>
- <20210928145747.GD25415@fieldses.org>
- <8b0e774bdb534c69b0612103acbe61c628fde9b1.camel@hammerspace.com>
- <20210928154300.GE25415@fieldses.org> <20210929211211.GC20707@fieldses.org>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <ba12c503-401d-9b22-be83-7645c619d9d1@huawei.com>
-Date:   Thu, 30 Sep 2021 09:56:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 29 Sep 2021 22:06:49 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07507384|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00546256-0.000187962-0.994349;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=weidonghui@allwinnertech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.LSQfo5n_1632967501;
+Received: from INTERNET-137.allwinnertech.com(mailfrom:weidonghui@allwinnertech.com fp:SMTPD_---.LSQfo5n_1632967501)
+          by smtp.aliyun-inc.com(10.147.41.187);
+          Thu, 30 Sep 2021 10:05:05 +0800
+From:   unknown <weidonghui@allwinnertech.com>
+To:     bp@suse.de, akpm@linux-foundation.org
+Cc:     maz@misterjones.org, will@kernel.org, rabin@rab.in,
+        linux-kernel@vger.kernel.org,
+        weidonghui <weidonghui@allwinnertech.com>
+Subject: [PATCH v3] scripts/decodecode: fix faulting instruction no print when opps.file is DOS format
+Date:   Thu, 30 Sep 2021 10:04:39 +0800
+Message-Id: <20210930020439.3605-1-weidonghui@allwinnertech.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210929211211.GC20707@fieldses.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: weidonghui <weidonghui@allwinnertech.com>
 
-ÔÚ 2021/9/30 5:12, bfields@fieldses.org Ð´µÀ:
-> On Tue, Sep 28, 2021 at 11:43:00AM -0400, bfields@fieldses.org wrote:
->> On Tue, Sep 28, 2021 at 03:36:58PM +0000, Trond Myklebust wrote:
->>> What is the use case here? Starting the gssd daemon or knfsd in
->>> separate chrooted environments? We already know that they have to be
->>> started in the same net namespace, which pretty much ensures it has to
->>> be the same container.
->> Somehow I forgot that knfsd startup is happening in some real process's
->> context too (not just a kthread).
->>
->> OK, great, I agree, that sounds like it should work.
-> Wang Hai, do you want to try that, or should I?
->
-> --b.
-> .
-Thank you, of course with great pleasure. I tried the solution
-suggested by Myklebust yesterday, but I can't seem to get this
-done very well. It would be a great pleasure for me if you could
-help to finish it. I can help test it after you finish it.
+If opps.file is in DOS format, faulting instruction cannot be printed:
+/ # ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+/ # ./scripts/decodecode < oops.file
+[ 0.734345] Code: d0002881 912f9c21 94067e68 d2800001 (b900003f)
+aarch64-linux-gnu-strip: '/tmp/tmp.5Y9eybnnSi.o': No such file
+aarch64-linux-gnu-objdump: '/tmp/tmp.5Y9eybnnSi.o': No such file
+All code
+========
+   0:   d0002881        adrp    x1, 0x512000
+   4:   912f9c21        add     x1, x1, #0xbe7
+   8:   94067e68        bl      0x19f9a8
+   c:   d2800001        mov     x1, #0x0                        // #0
+  10:   b900003f        str     wzr, [x1]
 
---
-Wang Hai
+Code starting with the faulting instruction
+===========================================
 
->
+Background: The compilation environment is Ubuntu,
+and the test environment is Windows.
+Most logs are generated in the Windows environment.
+In this way, CR (carriage return) will inevitably appear,
+which will affect the use of decodecode in the Ubuntu environment.
+The repaired effect is as follows:
+/ # ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+/ # ./scripts/decodecode < oops.file
+[ 0.734345] Code: d0002881 912f9c21 94067e68 d2800001 (b900003f)
+All code
+========
+   0:   d0002881        adrp    x1, 0x512000
+   4:   912f9c21        add     x1, x1, #0xbe7
+   8:   94067e68        bl      0x19f9a8
+   c:   d2800001        mov     x1, #0x0                        // #0
+  10:*  b900003f        str     wzr, [x1]               <-- trapping instruction
+
+Code starting with the faulting instruction
+===========================================
+   0:   b900003f        str     wzr, [x1]
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marc Zyngier <maz@misterjones.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Rabin Vincent <rabin@rab.in>
+Cc: lkml <linux-kernel@vger.kernel.org>
+Signed-off-by: weidonghui <weidonghui@allwinnertech.com>
+---
+ scripts/decodecode | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/decodecode b/scripts/decodecode
+index 31d884e35f2f..77a3b518aacc 100755
+--- a/scripts/decodecode
++++ b/scripts/decodecode
+@@ -126,7 +126,7 @@ if [ $marker -ne 0 ]; then
+ fi
+ echo Code starting with the faulting instruction  > $T.aa
+ echo =========================================== >> $T.aa
+-code=`echo $code | sed -e 's/ [<(]/ /;s/[>)] / /;s/ /,0x/g; s/[>)]$//'`
++code=`echo $code | sed -e 's/\x0d//;s/ [<(]/ /;s/[>)] / /;s/ /,0x/g; s/[>)]$//'`
+ echo -n "	.$type 0x" > $T.s
+ echo $code >> $T.s
+ disas $T 0
+-- 
+2.22.0.windows.1
+
