@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4D241DD30
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4196641DD4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245234AbhI3PTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:19:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:11227 "EHLO mga09.intel.com"
+        id S1343662AbhI3PXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:23:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245339AbhI3PTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:19:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225250609"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="225250609"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:17:41 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="487364233"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:17:41 -0700
-Date:   Thu, 30 Sep 2021 08:21:21 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Campin, Mike" <mike.campin@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        id S245746AbhI3PXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:23:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C511619F5;
+        Thu, 30 Sep 2021 15:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633015331;
+        bh=vTC9XpMIezOW60s/XoQhUiiW+kLVovvfcyRZzf38HDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l7cMZFNbhRQu7cWh4/WipIQAlIGjMGCheF/r6sFhE9SFaJJEfb2b1w7Lps4IMFJh9
+         sj+qpR5lK46YjOXFeZje9llX1xx9/n6cIUKm1auP86AevxxbdgkuXFWmiEQH7r/v/B
+         RHyykNSDllod/OwwT4gDNSNtRhwjzkWWRGtz5JDc=
+Date:   Thu, 30 Sep 2021 17:22:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20210930082121.444299be@jacob-builder>
-In-Reply-To: <CO1PR11MB5153C703BC0E0112CE7F65B2F3AA9@CO1PR11MB5153.namprd11.prod.outlook.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210929123437.721991dc@jacob-builder>
-        <20210929193953.GX964074@nvidia.com>
-        <20210929155720.794b6e65@jacob-builder>
-        <20210929234301.GC964074@nvidia.com>
-        <CO1PR11MB5153C703BC0E0112CE7F65B2F3AA9@CO1PR11MB5153.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
+ un-authorized devices
+Message-ID: <YVXWIVZupeAzT6bO@kroah.com>
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065807-mutt-send-email-mst@kernel.org>
+ <YVXBNJ431YIWwZdQ@kroah.com>
+ <20210930103537-mutt-send-email-mst@kernel.org>
+ <YVXOc3IbcHsVXUxr@kroah.com>
+ <20210930105852-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930105852-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On Thu, 30 Sep 2021 14:22:34 +0000, "Campin, Mike" <mike.campin@intel.com>
-wrote:
-
-> I need support for mixed user PASID, kernel PASID and non-PASID use cases
-> in the driver.
-> 
-This specific RFC is for kernel PASID only. User PASID native use is
-supported under SVA lib kernel API and /dev/uacce UAPI or driver specific
-char dev. Guest PASID is being developed under the new /dev/iommu framework.
-Non-PASID kernel use should be under DMA API unchanged from the driver's
-POV. In fact, this proposal will map non-PASID and PASID DMA identically.
-
-Thanks,
-
-Jacob
-
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@nvidia.com> 
-> Sent: Wednesday, September 29, 2021 4:43 PM
-> To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: iommu@lists.linux-foundation.org; LKML
-> <linux-kernel@vger.kernel.org>; Joerg Roedel <joro@8bytes.org>; Christoph
-> Hellwig <hch@infradead.org>; Tian, Kevin <kevin.tian@intel.com>; Luck,
-> Tony <tony.luck@intel.com>; Jiang, Dave <dave.jiang@intel.com>; Raj,
-> Ashok <ashok.raj@intel.com>; Kumar, Sanjay K <sanjay.k.kumar@intel.com>;
-> Campin, Mike <mike.campin@intel.com>; Thomas Gleixner
-> <tglx@linutronix.de> Subject: Re: [RFC 0/7] Support in-kernel DMA with
-> PASID and SVA
-> 
-> On Wed, Sep 29, 2021 at 03:57:20PM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Wed, 29 Sep 2021 16:39:53 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > On Wed, Sep 29, 2021 at 12:37:19PM -0700, Jacob Pan wrote:
-> > >    
-> > > > For #2, it seems we can store the kernel PASID in struct device. 
-> > > > This will preserve the DMA API interface while making it PASID
-> > > > capable. Essentially, each PASID capable device would have two
-> > > > special global
-> > > > PASIDs: 
-> > > > 	- PASID 0 for DMA request w/o PASID, aka RID2PASID
-> > > > 	- PASID 1 (randomly selected) for in-kernel DMA request w/
-> > > > PASID  
+On Thu, Sep 30, 2021 at 11:00:07AM -0400, Michael S. Tsirkin wrote:
+> On Thu, Sep 30, 2021 at 04:49:23PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 30, 2021 at 10:38:42AM -0400, Michael S. Tsirkin wrote:
+> > > On Thu, Sep 30, 2021 at 03:52:52PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Thu, Sep 30, 2021 at 06:59:36AM -0400, Michael S. Tsirkin wrote:
+> > > > > On Wed, Sep 29, 2021 at 06:05:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > > > > > While the common case for device-authorization is to skip probe of
+> > > > > > unauthorized devices, some buses may still want to emit a message on
+> > > > > > probe failure (Thunderbolt), or base probe failures on the
+> > > > > > authorization status of a related device like a parent (USB). So add
+> > > > > > an option (has_probe_authorization) in struct bus_type for the bus
+> > > > > > driver to own probe authorization policy.
+> > > > > > 
+> > > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > > > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > > 
+> > > > > 
+> > > > > 
+> > > > > So what e.g. the PCI patch
+> > > > > https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
+> > > > > actually proposes is a list of
+> > > > > allowed drivers, not devices. Doing it at the device level
+> > > > > has disadvantages, for example some devices might have a legacy
+> > > > > unsafe driver, or an out of tree driver. It also does not
+> > > > > address drivers that poke at hardware during init.
+> > > > 
+> > > > Doing it at a device level is the only sane way to do this.
+> > > > 
+> > > > A user needs to say "this device is allowed to be controlled by this
+> > > > driver".  This is the trust model that USB has had for over a decade and
+> > > > what thunderbolt also has.
+> > > > 
+> > > > > Accordingly, I think the right thing to do is to skip
+> > > > > driver init for disallowed drivers, not skip probe
+> > > > > for specific devices.
+> > > > 
+> > > > What do you mean by "driver init"?  module_init()?
+> > > > 
+> > > > No driver should be touching hardware in their module init call.  They
+> > > > should only be touching it in the probe callback as that is the only
+> > > > time they are ever allowed to talk to hardware.  Specifically the device
+> > > > that has been handed to them.
+> > > > 
+> > > > If there are in-kernel PCI drivers that do not do this, they need to be
+> > > > fixed today.
+> > > > 
+> > > > We don't care about out-of-tree drivers for obvious reasons that we have
+> > > > no control over them.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
 > > > 
-> > > This seems reasonable, I had the same thought. Basically just have 
-> > > the driver issue some trivial call:
-> > >   pci_enable_pasid_dma(pdev, &pasid)  
-> > That would work, but I guess it needs to be an iommu_ call instead of
-> > pci_?  
+> > > Well talk to Andi about it pls :)
+> > > https://lore.kernel.org/r/ad1e41d1-3f4e-8982-16ea-18a3b2c04019%40linux.intel.com
+> > 
+> > As Alan said, the minute you allow any driver to get into your kernel,
+> > it can do anything it wants to.
+> > 
+> > So just don't allow drivers to be added to your kernel if you care about
+> > these things.  The system owner has that mechanism today.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> Which ever makes sense..  The API should take in a struct pci_device and
-> return a PCI PASID - at least as a wrapper around a more generic immu api.
-> 
-> > I think your suggestion is more precise, in case the driver does not 
-> > want to do DMA w/ PASID, we can do less IOTLB flush (PASID 0 only).  
-> 
-> Since it is odd, and it may create overhead, I would do it only when
-> asked to do it
-> 
-> > > Having multiple RID's pointing at the same IO page table is 
-> > > something we expect iommufd to require so the whole thing should 
-> > > ideally fall out naturally.  
-> 
-> > That would be the equivalent of attaching multiple devices to the same 
-> > IOMMU domain. right?  
-> 
-> Effectively..
-> 
-> Jason
+> The "it" that I referred to is the claim that no driver should be
+> touching hardware in their module init call. Andi seems to think
+> such drivers are worth working around with a special remap API.
 
-
-Thanks,
-
-Jacob
+Andi is wrong.
