@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CE341DC1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7739241DC22
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351834AbhI3OQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
+        id S1351847AbhI3OT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240149AbhI3OQ1 (ORCPT
+        with ESMTP id S240149AbhI3OT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:16:27 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFE4C06176A;
-        Thu, 30 Sep 2021 07:14:45 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id u32so13481712ybd.9;
-        Thu, 30 Sep 2021 07:14:45 -0700 (PDT)
+        Thu, 30 Sep 2021 10:19:26 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC50AC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:17:43 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id ba1so22857260edb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ZlbycwSf8KOr9C6VK23OEuQLUHZlOjmRvD/2nI+bi60=;
-        b=qRw2oV9iT78NoUU/Q9Q3Lnvh5rS5ozP/5a1m+D4kjfwoecvjLBUUFkLUYkOwQSDHb8
-         ka+qyVuNq/ZvtFYz9cDlqySWoAPpnE4s3sSLM2V138w9/5IkxMMmfF+LLX7h4cC4jCit
-         NRGkC9xzlxxq958GPMfid91BbrWEVwFvfkqf3u/VG93EyyZaa90+Gv7TTIHn0QpgwhfN
-         1uLqgdZONUrFwfHyAP00QWLmU41n/WFRUhOitn2YsrKnnNKsBsr4rx/6zx87xyDTF6Uc
-         PfK4hiFkkpNJudR0I7dI8F4fX+28JUrH8hAKTaiAr2gq0YuBhNL6MoypSfbIQpXZuzEB
-         BCOw==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=Qs8ocYYWIoKCUwNvO6ccY6ArZAl7WcN4rLzhCGCErNs=;
+        b=NDK7BxfZQG92fJR1PY3ARzwBJg2lnYIV2v23oDGJpOMeNr5tY1OcQuYt+hDtUYKads
+         Uo7c0X3aZXmRRDEhDpY4QZmPHyOk4Vp65W3fzxClEroY2DYlJ4XUQjqMIKFK52vfvC3r
+         iqvYi/S/LJjTLSpwDqah2kxShsWtmI+Tb3xVuTxu2D/QPs0/3AqnpnI/wbdP8pdFX08o
+         DGt+fTwxPIWikeOAlSOsD4jrPUCcijSRmcwd+mtgOBMvvEW5CRGCQHAD+QTxCuYzmR4z
+         I0rbqNosrEC1MTMmwfZ6bzWhdQ0JGocnnQr9gOGMwuzIJssSFNVVPn6cp4AD9zq2S5Ks
+         Jf3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ZlbycwSf8KOr9C6VK23OEuQLUHZlOjmRvD/2nI+bi60=;
-        b=LKrH8ROjV9aUR9XSF1XOBJ+Gs9WiHCNB49J/O+76PXDCTG/a89hldnU3v2qX0SAtfo
-         ep5o6v2rP/nNSFPuSQyeJ7NHgX+dMTPwsBcxtRjRTfkjNxF7rmROFsbdgPsscupsr8S4
-         a1eirxR0JYWjjug9y/+Ha1rtLWhzptZ8kfjLqaYgHweAzXNxUY0qsp1c0Y6mWUQ4om0v
-         MjSBr86JdGUHUSZZyBfrN8FJG0KDUBrxADtQovIFZ/RP1b647yUzMxkWYe7PtYOFvPzf
-         2ImOBdRE2imqfHHaFBquCU+rvVGCJtHWYRN4KQwiy0CH70+Uu18HpJqTT/++BE/DBiAE
-         thrQ==
-X-Gm-Message-State: AOAM533r2r5v/YO6YOr9rlG1sW3J4qtftLwEA1ktb1CkOIcTv5Ai1t4s
-        m+J15KONdslwp8YDe76Zc1QkkQx/o5pD8sGCeWY=
-X-Google-Smtp-Source: ABdhPJwDD9Ku5kP4Ry+rJnrmuQRjtBKCt6klOYFciW0L2yTusRSqoya/lMiX4S851JiUivmDNoRAfnptDMxmsEOJv20=
-X-Received: by 2002:a25:1c02:: with SMTP id c2mr7377845ybc.218.1633011284452;
- Thu, 30 Sep 2021 07:14:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=Qs8ocYYWIoKCUwNvO6ccY6ArZAl7WcN4rLzhCGCErNs=;
+        b=GLcjZyQeIpBQHi/8aENQ39aEa27zy1Z400NBOrKRP80e4e17wHDO5YyIhf76e84KnH
+         KhOn18tmqgiQWmQ2U2ZY7BMWP3vGyYOfsDOihi0dmSsU9A/7KaVSHABaF9TmVV5BzyXM
+         noYeCFj+djItRFvaObux6+Ij7SknXcB11UPCFiaqOu383hm39siYFb3W5cfVBk532pVp
+         Lvdr24tKM6fX8tkjR9/zZmnLMYnLNtSK/XdEwUBHwVbYzf5I9uPJfR/gYG5BpG/Tk6n2
+         h4I4K9ZwGLUajks/E9kIk4CVSj6SegmeC2kWj1BxFKH9llJi4Qch0TZKNO45ywcQ9pWK
+         dfKQ==
+X-Gm-Message-State: AOAM530GHv7W5D58lUz0v/6cDXdRblQIHPoeNFCCO2dFNy4+zy1s81mJ
+        e7NtrBXFsVugwAyxNK7RyPIicfGkyZgh6x+Q
+X-Google-Smtp-Source: ABdhPJzKztxn3aPGBZFDU/ZZGBgHWlkEtVRdG5CYj5erUk732ieUZ7p4U+5bFyzuPShRgw92S6EPTQ==
+X-Received: by 2002:a50:c04e:: with SMTP id u14mr2860973edd.235.1633011379453;
+        Thu, 30 Sep 2021 07:16:19 -0700 (PDT)
+Received: from kkobus.whirley.local (94-214-33-179.cable.dynamic.v4.ziggo.nl. [94.214.33.179])
+        by smtp.gmail.com with ESMTPSA id cf16sm1536708edb.51.2021.09.30.07.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:16:18 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 16:16:16 +0200
+From:   Dawid Esterhuizen <desterhuizen@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] staging: rtl8712: Statements should start on a tabstop
+Message-ID: <YVXGsMZDGmdGjErJ@kkobus.whirley.local>
 MIME-Version: 1.0
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-6-prabhakar.mahadev-lad.rj@bp.renesas.com> <YVXBwx7rxJLRhlTI@shikoro>
-In-Reply-To: <YVXBwx7rxJLRhlTI@shikoro>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 30 Sep 2021 15:14:18 +0100
-Message-ID: <CA+V-a8sZ0qudhbV7Fart-puNQO-ZHhDEG3OdRH=w_dbTHy2A7g@mail.gmail.com>
-Subject: Re: [PATCH 5/6] memory: renesas-rpc-if: Drop usage of
- RPCIF_DIRMAP_SIZE macro
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+This path fixes four checkpatch.pl warnings:
 
-Thank you for the review.
+Statements should start on a tabstop
 
-On Thu, Sep 30, 2021 at 2:55 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
->
-> On Tue, Sep 28, 2021 at 03:07:20PM +0100, Lad Prabhakar wrote:
-> > RPCIF_DIRMAP_SIZE may differ on various SoC's. Instead of using
-> > RPCIF_DIRMAP_SIZE macro use resource size to get dirmap size
-> > which is already part of struct rpcif.
-> >
-> > Also make sure we return error in case devm_ioremap_resource()
-> > fails for dirmap.
-> >
-> > Fixes: ca7d8b980b67 ("memory: add Renesas RPC-IF driver")
-> > Fixes: 59e27d7c94aa ("memory: renesas-rpc-if: fix possible NULL pointer dereference of resource")
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> In general, all fine. I just think this should be split into two
-> patches:
->
-Sure will split this into two.
+Signed-off-by: Dawid Esterhuizen <desterhuizen@gmail.com>
+---
+Changes since v2:
+	- Fixed the patch comments to comply to standard
 
-> > @@ -147,8 +147,6 @@
-> >  #define RPCIF_PHYINT         0x0088  /* R/W */
-> >  #define RPCIF_PHYINT_WPVAL   BIT(1)
-> >
-> > -#define RPCIF_DIRMAP_SIZE    0x4000000
-> > -
-> >  static const struct regmap_range rpcif_volatile_ranges[] = {
-> >       regmap_reg_range(RPCIF_SMRDR0, RPCIF_SMRDR1),
-> >       regmap_reg_range(RPCIF_SMWDR0, RPCIF_SMWDR1),
-> > @@ -547,8 +545,8 @@ EXPORT_SYMBOL(rpcif_manual_xfer);
-> >
-> >  ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf)
-> >  {
-> > -     loff_t from = offs & (RPCIF_DIRMAP_SIZE - 1);
-> > -     size_t size = RPCIF_DIRMAP_SIZE - from;
-> > +     loff_t from = offs & (rpc->size - 1);
-> > +     size_t size = rpc->size - from;
-> >
-> >       if (len > size)
-> >               len = size;
->
-> This is the second patch to split which fixes ca7d8b980b67.
->
-Will split this change into a second patch but wont add a fixes tag see below..
+Changes since v1:
+	- Removed the volatile comments as they served no purpose
+	- Fixed the styling with corrected spacing as per checkpatch.pl
+        for easier reading
 
->
-> > @@ -244,7 +242,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
-> >       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-> >       rpc->dirmap = devm_ioremap_resource(&pdev->dev, res);
-> >       if (IS_ERR(rpc->dirmap))
-> > -             rpc->dirmap = NULL;
-> > +             return PTR_ERR(rpc->dirmap);
-> >       rpc->size = resource_size(res);
-> >
-> >       rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
->
-> This is the first patch to split which fixes 59e27d7c94aa.
->
-> Makes sense?
->
-Both the fixes would apply to the first patch itself i.e. when
-resource_size was added in ca7d8b980b67 and later in 59e27d7c94aa
-resource_size was moved online below (this would cause kernel panic
-res is NULL). Do you agree?
+ drivers/staging/rtl8712/rtl871x_xmit.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> If you agree, you can add my tag already to the new patches:
->
-> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-Sure will add your RB tag.
+diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
+index 2e6afc7bb0a1..cdcbc87a3cad 100644
+--- a/drivers/staging/rtl8712/rtl871x_xmit.h
++++ b/drivers/staging/rtl8712/rtl871x_xmit.h
+@@ -182,11 +182,11 @@ struct sta_xmit_priv {
+ };
+ 
+ struct	hw_txqueue {
+-	/*volatile*/ sint	head;
+-	/*volatile*/ sint	tail;
+-	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
+-	/*volatile*/ sint      free_cmdsz;
+-	/*volatile*/ sint	 txsz[8];
++	sint	head;
++	sint	tail;
++	sint	free_sz;	/* in units of 64 bytes */
++	sint	free_cmdsz;
++	sint	txsz[8];
+ 	uint	ff_hwaddr;
+ 	uint	cmd_hwaddr;
+ 	sint	ac_tag;
+-- 
+2.33.0
 
-Cheers,
-Prabhakar
