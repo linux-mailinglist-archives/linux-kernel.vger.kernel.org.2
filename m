@@ -2,89 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98D641D890
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D9B41D88D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350390AbhI3LVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S1350383AbhI3LVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350387AbhI3LVq (ORCPT
+        with ESMTP id S1350339AbhI3LVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:21:46 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E6CC06176C;
-        Thu, 30 Sep 2021 04:20:04 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id s75so5867202pgs.5;
-        Thu, 30 Sep 2021 04:20:04 -0700 (PDT)
+        Thu, 30 Sep 2021 07:21:39 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BA5C06176A;
+        Thu, 30 Sep 2021 04:19:56 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id y26so23773025lfa.11;
+        Thu, 30 Sep 2021 04:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0CgQJ7TRp+plPGkNDrMGOcj0htBXUR9OYy7BWH9GhPM=;
-        b=gjG9GFoMwgCB/asQWkGLcPiv7I7dd8FvYTIqmZZE6cyIPkk5afFfHRenu7G20tflHN
-         j4rJiMqHpXWudCF9n8xc9MrvMN+yoju9bNOHA02HLySurdI0tHwGeFJIV1EKeuI7jPHm
-         ROimCE1tT4CBilKK5G6/L/XJV7KEyT5CaGj6Br9dykSiI9WlUXDvxNQPFNqH8kcL2QpA
-         5SbfMWJjVZKr0PMX6SFsJl7EWqCgvIhm6VPNAZREAwC+LLXvzSIcZb198EAHwGklYHHv
-         H8bRbdSZjrG8MwfGQ+f3LV7wHT6psG1FKJwPgZJCF6LfC5NWdjgz44qR93mCdzms0BQO
-         f7Jg==
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=CuBe7VTii+ARJV5/n/7vopDodxCqVzGoRsKXxt3uaw4=;
+        b=JAcRjj/iUrMxuV1LGjqfn9OGQIFIFvABmlDHzLB9Fnk+IxuJlcnF/uyWjuS7nOT31g
+         Ig62W6rHb7jNdnnxa8MIkxrQ78YdxSyQ2b+3BxaVX9/1FQ12vqBgN6k+tIFjXBPDuUc0
+         ZrkBqPGOa0BZ46Wcz1n4hPO4I0JtNG4IA2HGQ75DKTclBVwgan/pXpWy3sLSQSkVid91
+         S+noo9Pms40YVwK48q6S0bn6ZfZYURP0jggNvxdX83mhUGd6g05H+MDnn5lkP5+hVcGw
+         3Srq8j64v4cvUVhIEt40eMP6MvcZIAx9HQxvGLjabd9OVU0UK0M5KI/kXmFEH1fBq2Rt
+         Q8mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0CgQJ7TRp+plPGkNDrMGOcj0htBXUR9OYy7BWH9GhPM=;
-        b=TMpwwh28EWxELw2bx0usMFa937hHRzLJ6k2MZH7/FkrPXgGo6G+DpqPdAlEcDwWLH3
-         /kqZq+hBEwA5XHjcODy1Ub6igSf+248g7o7YGlDwgxeLAPire0LzLZa+ZXvran9Xrp9I
-         RQ9wu1h1EYsvLMtE0YNfdtvfa8zdoELTXGSplsn7prXn8G1LYGERAW+0Dlr8EgSlIbbT
-         VV2IuHB2j/KLKO/jh8RiCDIh9zfgIIjL3AttITdGuFh1easOYE9VUdmszAc4th/fMKty
-         sg8TPCitkpR0GmUzOuFQkpcze3w29EaAzaoJ+Zb8fAZTPUJkU0P6z5f6CgvCB5rnpUPv
-         vRIA==
-X-Gm-Message-State: AOAM532jzd7rVtWqGxioBQ1DALyFAiVzRssXq8xirF5yINscjkbwQKq5
-        kbEJHNQQyibUcYqO8L/gAXqQF+40ztC3POGNIfDyvtwn
-X-Google-Smtp-Source: ABdhPJzFEi4IP6RI5YrTNhB/vj9MyeeE4W3MgV7dmTNmrzPxPxolhwys7nBdKNUL3IA6eQsQdLYNcyrOCALuW2HLVT8=
-X-Received: by 2002:a63:d351:: with SMTP id u17mr4453357pgi.174.1633000803750;
- Thu, 30 Sep 2021 04:20:03 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=CuBe7VTii+ARJV5/n/7vopDodxCqVzGoRsKXxt3uaw4=;
+        b=iu4n7rHG/1/UsdVXAmqONjhFMwFvBbAsSo0Hqd6NoM0V32J2mLR34pTjsIDw9TR0Dq
+         h01x6qiqmVRUBK5n1AGL0o0ShFEJ1HnN/fB4NZYuBQd/bNlqke+kYy9YMFc73150eK5Y
+         n+FlO1iJf3yPTzF2bYVgEGae6tBc4uTPiZCNaEiMS/aDBoQXiIOEN1llEwjbsVDMy/8J
+         0nIVxmHywk7o1yI5HXJLcVzG9d9+noqZedNVsJjvHYPwmvYj14zNcozZQ7d6hrPvxFC0
+         fQs+0w3quYszxTF1bzu5336qGs9IgA18eix1GiiPxWuKet0aXUpj/L4/h/86iMOgQXqA
+         VsDw==
+X-Gm-Message-State: AOAM533WLCi7L74OpdlzVXXhNERCQjPsIBKCWb5+dgpadoPJH+nFZqqJ
+        D66Iqmh7HSlqPkJu9xREIVw=
+X-Google-Smtp-Source: ABdhPJx0nRBwAJ+86I/QjB/tl0HbB3qHY2gL2tdDV5jhToumrsymicQo8P+FIzD0waz19xvFuXd0MA==
+X-Received: by 2002:a2e:8617:: with SMTP id a23mr5443721lji.199.1633000794938;
+        Thu, 30 Sep 2021 04:19:54 -0700 (PDT)
+Received: from [172.16.185.20] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id s22sm310824ljg.15.2021.09.30.04.19.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 04:19:54 -0700 (PDT)
+Message-ID: <b7d29bf2-f7b6-1d53-2d59-9c1bb5ee4d84@gmail.com>
+Date:   Thu, 30 Sep 2021 14:19:53 +0300
 MIME-Version: 1.0
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Yehezkel Bernat <yehezkelshb@gmail.com>
-Date:   Thu, 30 Sep 2021 14:19:47 +0300
-Message-ID: <CA+CmpXtXn5wjxwow5va5u9qHcQDLkd4Sh2dcqB545SXaxV1GkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
- USB/Thunderbolt to core
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Content-Language: en-US
+To:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>, Tero Kristo <kristo@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Drew Fustini <pdp7pdp7@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Yongqin Liu <yongqin.liu@linaro.org>
+References: <20210930080100.56820-1-tony@atomide.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH] soc: ti: omap-prm: Fix external abort for am335x pruss
+In-Reply-To: <20210930080100.56820-1-tony@atomide.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 4:05 AM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
-> no functional
-> changes other than value 2 being not visible to the user.
->
+Thanks Tony!
 
-Are we sure we don't break any user-facing tool with it? Tools might use this to
-"remember" how the device was authorized this time.
+This was _much_ appreciated :)
+
+On 9/30/21 11:01, Tony Lindgren wrote:
+> Starting with v5.15-rc1, we may now see some am335x beaglebone black
+> device produce the following error on pruss probe:
+> 
+> Unhandled fault: external abort on non-linefetch (0x1008) at 0xe0326000
+> 
+> This has started with the enabling of pruss for am335x in the dts files.
+> 
+> Turns out the is caused by the PRM reset handling not waiting for the
+> reset bit to clear. To fix the issue, let's always wait for the reset
+> bit to clear, even if there is a separate reset status register.
+> 
+> We attempted to fix a similar issue for dra7 iva with a udelay() in
+> commit effe89e40037 ("soc: ti: omap-prm: Fix occasional abort on reset
+> deassert for dra7 iva"). There is no longer a need for the udelay()
+> for dra7 iva reset either with the check added for reset bit clearing.
+> 
+> Cc: Drew Fustini <pdp7pdp7@gmail.com>
+> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+> Cc: "H. Nikolaus Schaller" <hns@goldelico.com>
+> Cc: Robert Nelson <robertcnelson@gmail.com>
+> Cc: Yongqin Liu <yongqin.liu@linaro.org>
+> Reported-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> Fixes: effe89e40037 ("soc: ti: omap-prm: Fix occasional abort on reset deassert for dra7 iva")
+
+Tested-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>   drivers/soc/ti/omap_prm.c | 27 +++++++++++++++------------
+>   1 file changed, 15 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
+> --- a/drivers/soc/ti/omap_prm.c
+> +++ b/drivers/soc/ti/omap_prm.c
+> @@ -825,25 +825,28 @@ static int omap_reset_deassert(struct reset_controller_dev *rcdev,
+>   	writel_relaxed(v, reset->prm->base + reset->prm->data->rstctrl);
+>   	spin_unlock_irqrestore(&reset->lock, flags);
+>   
+> -	if (!has_rstst)
+> -		goto exit;
+> +	/* wait for the reset bit to clear */
+> +	ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
+> +						reset->prm->data->rstctrl,
+> +						v, !(v & BIT(id)), 1,
+> +						OMAP_RESET_MAX_WAIT);
+> +	if (ret)
+> +		pr_err("%s: timedout waiting for %s:%lu\n", __func__,
+> +		       reset->prm->data->name, id);
+
+If I was writing this I might drop the __func__. AFAIR dyndbg allows 
+enabling the functipn names to be printed by +f. This is just a 'nit' 
+though - I am happy if this fix gets in no matter how this print 
+eventually looks like. I just thought I mention this as the __func__ 
+catched my eye.
+
+>   
+>   	/* wait for the status to be set */
+> -	ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
+> +	if (has_rstst) {
+> +		ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
+>   						 reset->prm->data->rstst,
+>   						 v, v & BIT(st_bit), 1,
+>   						 OMAP_RESET_MAX_WAIT);
+> -	if (ret)
+> -		pr_err("%s: timedout waiting for %s:%lu\n", __func__,
+> -		       reset->prm->data->name, id);
+> +		if (ret)
+> +			pr_err("%s: timedout waiting for %s:%lu\n", __func__,
+> +			       reset->prm->data->name, id);
+
+Same here (although that would be unrelated change as the print exists 
+prior this patch).
+
+I tested this patch on v5.15-rc3 using my BBB Rev C - it seems to fix 
+the boot issue on my board! Thanks a bunch!
+
+
+Best Regards
+	--Matti Vaittinen
+
+
