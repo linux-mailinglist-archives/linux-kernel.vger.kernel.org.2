@@ -2,127 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1CD41D3C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CCB41D3E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348447AbhI3HAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:00:23 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:41812 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbhI3HAW (ORCPT
+        id S1348498AbhI3HHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:07:42 -0400
+Received: from mx316.baidu.com ([180.101.52.236]:48528 "EHLO
+        njjs-sys-mailin05.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233661AbhI3HHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:00:22 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id 6EDA744A024E;
-        Thu, 30 Sep 2021 08:58:38 +0200 (CEST)
-MIME-Version: 1.0
-Date:   Thu, 30 Sep 2021 08:58:38 +0200
-From:   Robin van der Gracht <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 15/19] auxdisplay: ht16k33: Extract
- ht16k33_brightness_set()
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210914143835.511051-16-geert@linux-m68k.org>
-References: <20210914143835.511051-1-geert@linux-m68k.org>
- <20210914143835.511051-16-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <39669058fbcac7d5612066e4f8146956@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+        Thu, 30 Sep 2021 03:07:41 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 03:07:40 EDT
+Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by njjs-sys-mailin05.njjs.baidu.com (Postfix) with ESMTP id 32270CF80045;
+        Thu, 30 Sep 2021 14:59:14 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id 14E46D9932;
+        Thu, 30 Sep 2021 14:59:14 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     linux-kernel@vger.kernel.org, lirongqing@baidu.com,
+        mingo@redhat.com, peterz@infradead.org
+Subject: [PATCH] sched/fair: Drop the redundant setting of recent_used_cpu
+Date:   Thu, 30 Sep 2021 14:59:14 +0800
+Message-Id: <1632985154-12890-1-git-send-email-lirongqing@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Robin van der Gracht <robin@protonic.nl>
+recent_used_cpu has been set to prev before check
 
-On 2021-09-14 16:38, Geert Uytterhoeven wrote:
-> Extract brightness handling into a helper function, so it can be called
-> from multiple places.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> v6:
->   - No changes,
-> 
-> v5:
->   - No changes,
-> 
-> v4:
->   - No changes,
-> 
-> v3:
->   - Use "err" instead of "error" to be consistent with existing driver
->     naming style,
-> 
-> v2:
->   - No changes.
-> ---
->  drivers/auxdisplay/ht16k33.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-> index c7a3a0e1fbb5d03e..928ac9722c142855 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -113,6 +113,22 @@ static int ht16k33_display_off(struct ht16k33_priv 
-> *priv)
->  	return i2c_smbus_write_byte(priv->client, REG_DISPLAY_SETUP);
->  }
-> 
-> +static int ht16k33_brightness_set(struct ht16k33_priv *priv,
-> +				  unsigned int brightness)
-> +{
-> +	int err;
-> +
-> +	if (brightness == 0)
-> +		return ht16k33_display_off(priv);
-> +
-> +	err = ht16k33_display_on(priv);
-> +	if (err)
-> +		return err;
-> +
-> +	return i2c_smbus_write_byte(priv->client,
-> +				    REG_BRIGHTNESS | (brightness - 1));
-> +}
-> +
->  static void ht16k33_fb_queue(struct ht16k33_priv *priv)
->  {
->  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-> @@ -197,13 +213,10 @@ static int ht16k33_bl_update_status(struct 
-> backlight_device *bl)
-> 
->  	if (bl->props.power != FB_BLANK_UNBLANK ||
->  	    bl->props.fb_blank != FB_BLANK_UNBLANK ||
-> -	    bl->props.state & BL_CORE_FBBLANK || brightness == 0) {
-> -		return ht16k33_display_off(priv);
-> -	}
-> +	    bl->props.state & BL_CORE_FBBLANK)
-> +		brightness = 0;
-> 
-> -	ht16k33_display_on(priv);
-> -	return i2c_smbus_write_byte(priv->client,
-> -				    REG_BRIGHTNESS | (brightness - 1));
-> +	return ht16k33_brightness_set(priv, brightness);
->  }
-> 
->  static int ht16k33_bl_check_fb(struct backlight_device *bl, struct fb_info 
-> *fi)
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+---
+ kernel/sched/fair.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
-Met vriendelijke groet,
-Robin van der Gracht
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 7b9fe8c..ec42eaa 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6437,14 +6437,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	    cpus_share_cache(recent_used_cpu, target) &&
+ 	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+ 	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
+-	    asym_fits_capacity(task_util, recent_used_cpu)) {
+-		/*
+-		 * Replace recent_used_cpu with prev as it is a potential
+-		 * candidate for the next wake:
+-		 */
+-		p->recent_used_cpu = prev;
++	    asym_fits_capacity(task_util, recent_used_cpu))
+ 		return recent_used_cpu;
+-	}
+ 
+ 	/*
+ 	 * For asymmetric CPU capacity systems, our domain of interest is
 -- 
-Protonic Holland
-Factorij 36
-1689AL Zwaag
-+31 (0)229 212928
-https://www.protonic.nl
+1.7.1
+
