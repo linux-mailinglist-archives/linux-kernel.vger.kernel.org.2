@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CC141DFCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8136E41DFD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349768AbhI3RLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S1350717AbhI3RP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344773AbhI3RLn (ORCPT
+        with ESMTP id S1349211AbhI3RP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:11:43 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B34C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:10:01 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 24so8236374oix.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:10:01 -0700 (PDT)
+        Thu, 30 Sep 2021 13:15:56 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC7BC06176A;
+        Thu, 30 Sep 2021 10:14:13 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id g15so3209227vke.5;
+        Thu, 30 Sep 2021 10:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yQogwYZrvFu5Jfwlkrcfq3WvY8WdwXPWkmnjzSEdhJA=;
-        b=BnTi5yVXAfDjmWTBRPXF8NGo1YE+5AZtAQsVeFujbgn52DpBNG/u8BQCEA6yTZObMG
-         wehpKbgoGdQ9/QTuH+G5l39mHnrCNXaZC3HRFNjQuNBadU1z9yvSWHC06Gx7uhyZHMFc
-         mib9yjTtb6lr7ZhK1la1hOWvhyIRII+nMOl9PVfm9aUTXNvmW0hANEbfugTvEBEmSatI
-         xaTq4+hIWVdNRE4a/lKOUOeV8VynnBZxyRIZFtxa6m7GTlSsM8qRTDLXcILWujx6ipOb
-         JRUqVVydfpl1D/YwKGad+pUGCOBKPdk/EgzL3PB30/ZwSzU2g7QUYKe9HVgDJt3wcLmo
-         BDHw==
+        bh=SGWIbMmsx7WG4yhXW+uZPfLvkXpXxKk0c7o0MXap4F8=;
+        b=Bm5cSAasty4inLGEN4knXf8rUTAiyHDdGHF/QG4Lcw8xYnyxb3W7e2syGWnuItvXtv
+         3O3zY+he3CHb1a87VnrpjfmKNjW08w6CHd8M3S1JIZi9UNA+CR/azL8fSeOnWAoxnLDl
+         evoxoRhoBcTeAj+uINAjhg0G4bqB9prrNF2xW67gH8H1QCYZQngrc12Gtc1ro8dyyA+j
+         JOdFUVI57VHWMCVWRsIzqQlYFv1IMPZj2aG1A00dkXfy8/aMNx4HcOZX1OtWM4nNu60G
+         8acGjJ4Ma2El98oIRmfG45ar4tYIkrTp0VJgC8AI42ytzMN1gtL3vfV7t6M/KW5fO5XL
+         j9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yQogwYZrvFu5Jfwlkrcfq3WvY8WdwXPWkmnjzSEdhJA=;
-        b=s7zMmeZIyW9m9A7euH768pQhp1Aq5FmG8zY+2uJgY31qjoC0luUpDgHIUuzmonOTmC
-         8AI8QjLIyA0pcnLO9a91koooyuB52qOBRWjuDtDzyQ71Dk84U+nY2xap9OWgtzJwqtOm
-         FLs6Y4up621Vj0X2s7gmjqrxg8c5vDspE9KU7byENoPKAlKCXt2mXO8CBZz78uacelqE
-         LDd160sy9rKWH6EZ9g+4xCVFRuSoiAW85LoQRYoThPMWC1UT1YeISUMnMo5JVHeVPQzj
-         gN//QS60eBMngdnDdI6Ocnf4ooc7LawbvJWlEXoVPKobjIT4+Ru7lLyPb7H+7dN9b/cE
-         SnwQ==
-X-Gm-Message-State: AOAM531TeDWTKdbeNBBFfr44lIvj3XQz8QBaMMm12B7jZk99lhom3Gb/
-        +Tgx7XMkfOOk1fSaa8BwwufabD7jK99C2oZf2E4=
-X-Google-Smtp-Source: ABdhPJyRKPsrHxUPVPxsmZJBSYdQhA0oY4DyYGw0Ib3s43wNku5L4chLBN6tFR9C67rUuP9Cv4X16bsCZ1CgRYrsJxc=
-X-Received: by 2002:aca:706:: with SMTP id 6mr283505oih.5.1633021800478; Thu,
- 30 Sep 2021 10:10:00 -0700 (PDT)
+        bh=SGWIbMmsx7WG4yhXW+uZPfLvkXpXxKk0c7o0MXap4F8=;
+        b=pd55lYdzTNIyzt99pmwAF2QitEEZeayXv2fPMeqlaCyg5pvlbHVA6Xjp5Bsau+cMVb
+         Uz4JS11ybFk3lirN5ccVUl2Xm4+ulirRQarx2ARO0kCtBAGF3mlYKDYqts8j83J+uit4
+         9SzWXd/WLZG1DBd9htZo++UMRXSuCWPUA3eBZmTc3xM74KuYThz76UaM/pfr89Zpg5D5
+         bO71IJkYJz9Kclk6QL2IO7CE7FpXey5tV7ynJIg63mbLJwnEuN2ZejVSIIDC1JmnRjLU
+         0EbWGvk6YmNoKgZMgdz11NBmQvWdAwUyv7KGlkoR5mTodPPR47SCvB6eY3kXFBpRPv5L
+         kaaA==
+X-Gm-Message-State: AOAM532MQ50g6lD9eZEImMw3ZGp4r4cM3Jsee8BkUkAQCW1zVQjqQ8fp
+        0sZwEUmsLMSrO1QWZTgRfkYeJ9g+ihmRMochmdQ=
+X-Google-Smtp-Source: ABdhPJy+fCOr4VeoHOBqxv9MkR25S/ByZRSnQvCyAgbv8mf1AbQXnluYiREOJNXTrKRFzv3OJBCTE6hElAKIYg+I9GA=
+X-Received: by 2002:a1f:5f4d:: with SMTP id t74mr4213433vkb.5.1633022052464;
+ Thu, 30 Sep 2021 10:14:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930162302.2344542-1-nathan@kernel.org>
-In-Reply-To: <20210930162302.2344542-1-nathan@kernel.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 30 Sep 2021 13:09:49 -0400
-Message-ID: <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+References: <20210930165741.9662-1-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210930165741.9662-1-ilya.lipnitskiy@gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 30 Sep 2021 19:14:00 +0200
+Message-ID: <CAMhs-H_Tkp0FV4ruR95O2CzXrjj5nTw17aW4my-4xzeyqW8zLA@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Revert "add support for buggy MT7621S core detection"
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Ungerer <gerg@kernel.org>,
+        Strontium <strntydog@gmail.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Felix Fietkau <nbd@nbd.name>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Thu, Sep 30, 2021 at 6:58 PM Ilya Lipnitskiy
+<ilya.lipnitskiy@gmail.com> wrote:
 >
-> Clang warns:
+> This reverts commit 6decd1aad15f56b169217789630a0098b496de0e. CPULAUNCH
+> register is not set properly by some bootloaders, causing a regression
+> until a bootloader change is made, which is hard if not impossible on
+> some embedded devices. Revert the change until a more robust core
+> detection mechanism that works on MT7621S routers such as Netgear R6220
+> as well as platforms like Digi EX15 can be made.
 >
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:1017:10: error: expression which evaluates to zero treated as a null pointer constant of type 'struct pipe_ctx *' [-Werror,-Wnon-literal-null-conversion]
->                 return false;
->                        ^~~~~
-> 1 error generated.
->
-> Use NULL instead of false since the function is returning a pointer
-> rather than a boolean.
->
-> Fixes: ff7e396f822f ("drm/amd/display: add cyan_skillfish display support")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1470
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Link: https://lore.kernel.org/lkml/4d9e3b39-7caa-d372-5d7b-42dcec36fec7@kernel.org
+> Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/include/asm/mips-cps.h | 23 +----------------------
+>  1 file changed, 1 insertion(+), 22 deletions(-)
+
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+
+Thanks,
+     Sergio Paracuellos
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-> index aec276e1db65..8523a048e6f6 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
-> @@ -1014,7 +1014,7 @@ static struct pipe_ctx *dcn201_acquire_idle_pipe_for_layer(
->                 ASSERT(0);
+> diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
+> index 35fb8ee6dd33..fd43d876892e 100644
+> --- a/arch/mips/include/asm/mips-cps.h
+> +++ b/arch/mips/include/asm/mips-cps.h
+> @@ -10,8 +10,6 @@
+>  #include <linux/io.h>
+>  #include <linux/types.h>
 >
->         if (!idle_pipe)
-> -               return false;
-> +               return NULL;
+> -#include <asm/mips-boards/launch.h>
+> -
+>  extern unsigned long __cps_access_bad_size(void)
+>         __compiletime_error("Bad size for CPS accessor");
 >
->         idle_pipe->stream = head_pipe->stream;
->         idle_pipe->stream_res.tg = head_pipe->stream_res.tg;
+> @@ -167,30 +165,11 @@ static inline uint64_t mips_cps_cluster_config(unsigned int cluster)
+>   */
+>  static inline unsigned int mips_cps_numcores(unsigned int cluster)
+>  {
+> -       unsigned int ncores;
+> -
+>         if (!mips_cm_present())
+>                 return 0;
 >
-> base-commit: b47b99e30cca8906753c83205e8c6179045dd725
+>         /* Add one before masking to handle 0xff indicating no cores */
+> -       ncores = (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+> -
+> -       if (IS_ENABLED(CONFIG_SOC_MT7621)) {
+> -               struct cpulaunch *launch;
+> -
+> -               /*
+> -                * Ralink MT7621S SoC is single core, but the GCR_CONFIG method
+> -                * always reports 2 cores. Check the second core's LAUNCH_FREADY
+> -                * flag to detect if the second core is missing. This method
+> -                * only works before the core has been started.
+> -                */
+> -               launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
+> -               launch += 2; /* MT7621 has 2 VPEs per core */
+> -               if (!(launch->flags & LAUNCH_FREADY))
+> -                       ncores = 1;
+> -       }
+> -
+> -       return ncores;
+> +       return (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+>  }
+>
+>  /**
 > --
-> 2.33.0.591.gddb1055343
+> 2.33.0
 >
