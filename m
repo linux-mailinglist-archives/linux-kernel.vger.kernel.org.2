@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967C841DB0E
+	by mail.lfdr.de (Postfix) with ESMTP id DF12341DB0F
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351452AbhI3Nag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:30:36 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35888 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351412AbhI3NaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:30:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3499437C086;
-        Thu, 30 Sep 2021 09:28:40 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id EZN6yp12FozF; Thu, 30 Sep 2021 09:28:39 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C6E1C37C085;
-        Thu, 30 Sep 2021 09:28:39 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C6E1C37C085
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633008519;
-        bh=P2J1OfBgBODYqiVp9Fk+5wLLLt/MgES+lhZs6+l7620=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=fc+xe9aAPKF4JDOwSBRlGC3VM10Z1WI2UVRVJE0s/bcQCOczbZd5f4MJgwWNj0G5Y
-         INboUXd9M4hUDLR0MuEpfBXOHvsbxih7kPz3jSY+O5cvISEoG7ZBMjUSj/BxSYQAsu
-         j7UOEK4ozB9y+BTVEuOIzqIOE2zoruEtZAqIJwRUTI+ZoIBiUVd+tZp94XII/rzcTq
-         swnEIO00zDufAWTvKpHqeBBp+j1LshQ9QiGhe1ODyQcurBuHzvGOYFa1HRbtgLKwwB
-         pV7SSCYLIEuwrKqXgEOZZzWNYgMgW6Rf0daUrjAnVeQ2/ZEaO0Ymbkl8rWuRMeuPNa
-         e83jM/ZRA6FeA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 8dgSr6wP-cnh; Thu, 30 Sep 2021 09:28:39 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id B377237BF24;
-        Thu, 30 Sep 2021 09:28:39 -0400 (EDT)
-Date:   Thu, 30 Sep 2021 09:28:39 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <164706701.45822.1633008519556.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+        id S1351404AbhI3NbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:31:04 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46581 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349444AbhI3NbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:31:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="288841024"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="288841024"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 06:29:14 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="521211747"
+Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 06:29:13 -0700
+Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+To:     Ryan Lee <RyanS.Lee@maximintegrated.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+ <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+ <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
+ <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <0d866050-9fbf-4f76-ab9e-0bb83a933924@linux.intel.com>
+Date:   Thu, 30 Sep 2021 08:29:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
-Thread-Index: viZtDEW1KcIpECawIzUvMKrWKcwLGw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 29, 2021, at 8:28 AM, Florian Weimer fweimer@redhat.com wrote:
 
-> * Mathieu Desnoyers:
-> 
->> + * will ensure that the STORE to B happens after the LOAD of A. Normally a
->> + * control dependency relies on a conditional branch having a data dependency
->> + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
->> + * provides a LOAD->STORE order.
->> + *
->> + * Due to optimizing compilers, extra care is needed; as per the example above
->> + * the LOAD must be 'volatile' qualified in order to ensure the compiler
->> + * actually emits the load, such that the data-dependency to the conditional
->> + * branch can be formed.
->> + *
->> + * Secondly, the compiler must be prohibited from lifting anything out of the
->> + * selection statement, as this would obviously also break the ordering.
->> + *
->> + * Thirdly, architectures that allow the LOAD->STORE reorder must ensure
->> + * the compiler actually emits the conditional branch instruction.
-> 
-> If you need a specific instruction emitted, you need a compiler
-> intrinsic or inline assembly.
-> 
-> So something like this:
-> 
-> #define control_dep(x)                          \
->  ({                                            \
->    __typeof(x) x__ = (x);                      \
->    __asm__("test $0, %0\n\t"                   \
->            "jnz 1f\n\t"                        \
->            "1:"                                \
->            :: "r"(x__) : "cc");                \
->  })
-> 
-> with an appropriate instruction sequence for each architecture.
-> 
-> I don't think it's possible to piggy-back this on something else.
+> I do not see #3063 issue on my side. No initialization failure or time-out has occurred.
 
-The previous patch set from Peter Zijlstra proposed using asm goto to achieve this,
-but it was turned down in part because it prevented the compiler from choosing the
-most appropriate instruction for the conditional branch:
+It's rather random, we've only seen the error in long daily tests.
 
-https://lore.kernel.org/lkml/YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net/
+> Now I'm trying to solve the issue with max98373_io_init() function as suggested instead of adding
+> regmap_cache_dirty() in the suspend function.
+> max98373_io_init() was not called from max98373_update_status() when audio resume because
+> max98373->hw_init was 1 and Status was SDW_SLAVE_ATTACHED.
+> max98373_update_status() do not get SDW_SLAVE_UNATTACHED.
+> I confirmed that the issue could be resolved if SDW_SLAVE_UNATTACHED event arrives at
+> max98373_update_status() before SDW_SLAVE_ATTACHED is triggered.
+> Actually sdw_handle_slave_status() get SDW_SLAVE_UNATTACHED but this function exits at
+> https://github.com/thesofproject/linux/blob/topic/sof-dev/drivers/soundwire/bus.c#L1765
+> before reaching to https://github.com/thesofproject/linux/blob/topic/sof-dev/drivers/soundwire/bus.c#L1825
+> I'm not sure how to solve this issue because this code is commonly
+used for other Soundwire drivers as well.
+>
 
-Thanks,
+There may be a confusion here.
 
-Mathieu
+The SoundWire spec says the device will show up as Device #0. That means
+the status[0] = ATTACHED.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+The driver reads the devID registers and programs the device number N.
+The device will then report as device #N in PING frames. The controller
+hardware will detect that device and call the function to update the
+status a second time.
+
+> I share the debug messages for the resume event as your reference.
+> [  127.490644] [DEBUG3] intel_resume_runtime
+> [  127.490655] [DEBUG3] intel_resume_runtime SDW_INTEL_CLK_STOP_BUS_RESET
+> [  127.490658] [DEBUG3] intel_init
+> [  127.490660] [DEBUG3] intel_link_power_up
+> [  127.490977] [DEBUG3] intel_resume_runtime SDW_UNATTACH_REQUEST_MASTER_RESET ..
+> [  127.490980] [DEBUG4] sdw_clear_slave_status request: 1
+> [  127.490983] [DEBUG4] sdw_modify_slave_status, ID:7, status: 0
+> [  127.490986] [DEBUG4] sdw_modify_slave_status, ID:3, status: 0
+> [  127.490994] [DEBUG3] intel_shim_wake wake_enable:0
+> [  127.491060] [DEBUG3] intel_shim_wake wake_enable:0
+> [  127.491191] [DEBUG] max98373_resume, first_hw_init: 1, unattach_request: 1
+> [  127.491194] [DEBUG] max98373_resume, INF MODE: 0
+> [  127.491953] [DEBUG4] sdw_handle_slave_status IN
+> [  127.491956] [DEBUG4] sdw_handle_slave_status, status[1] : 0, slave->status: 0, id:7	// UNATTACHED
+> [  127.491958] [DEBUG4] sdw_handle_slave_status, status[2] : 0, slave->status: 0, id:3
+> [  127.491960] [DEBUG4] sdw_handle_slave_status IN2 status[0] = 1
+> [  127.492808] [DEBUG4] sdw_handle_slave_status IN
+> [  127.492810] [DEBUG4] sdw_handle_slave_status, status[1] : 1, slave->status: 0, id:7	// ATTACHED
+> [  127.492812] [DEBUG4] sdw_handle_slave_status, status[2] : 1, slave->status: 0, id:3
+> [  127.492814] [DEBUG4] sdw_handle_slave_status IN2 status[0] = 0
+> [  127.492816] [DEBUG4] sdw_handle_slave_status IN3
+> [  127.492818] [DEBUG4] sdw_handle_slave_status status[1] = SDW_SLAVE_ATTACHED, slave->status : 0, slave:7, prev_status:0
+> [  127.492820] [DEBUG4] sdw_modify_slave_status, ID:7, status: 1
+> [  127.493008] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:7
+> [  127.493010] [DEBUG4] sdw_update_slave_status update_status(1) OUT
+> [  127.493012] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slave :7
+> [  127.493015] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->first_hw_init: 1, status: 1
+> [  127.493017] [DEBUG4] sdw_handle_slave_status status[2] = SDW_SLAVE_ATTACHED, slave->status : 0, slave:3, prev_status:0
+> [  127.493019] [DEBUG4] sdw_modify_slave_status, ID:3, status: 1
+> [  127.493199] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:3
+> [  127.493201] [DEBUG4] sdw_update_slave_status update_status(1) OUT
+> [  127.493204] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slave :3
+> [  127.493207] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->first_hw_init: 1, status: 1
+
+I don't really see anything in this sequence that differs from my
+explanations?
+
+The update_status() is only called when the device has a non-zero device
+number.
+
+There may be a real problem with update_status() not being called but I
+just don't see it so far.
+
+One way to improve the traces would be to use dev_dbg, that way we'd
+have a trace of which device is being handled. There are two devices
+managed by the same driver, a trace with pr_dbg doesn't tell us much.
