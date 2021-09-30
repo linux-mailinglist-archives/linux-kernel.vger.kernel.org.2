@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37E241DDC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FF641DDCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345651AbhI3PnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345545AbhI3PnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:43:15 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113EFC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:41:32 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i25so27072098lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vkiMt/G7bFXAXpJDQxe1pxlr8eHxyYeyKBiifpqcCv8=;
-        b=cgIhgC2Dc4NbQWA+Np0faZRjXOIfA5Q6JS57HlBiEUSQSUzjg4MSeF5mSEA9WS0CGt
-         QmPmhU1bRPjJ2fFdWpZ7Za+A+gMd7/S4KXUjERWkNLNvaFZv0jFlFkYfBNtsi1PjY+Fl
-         bF3Tf/931BXCeVPfJNiYweKFHD76VytKHwKHubp1EE7fznmMpsb02OvqAFfSbohtFdHv
-         wUi3B6dEfrHtvwHrKrQ+U4cRGTC4qUgbVSJWcabR86XIbSo6RJchJVnXr+GrVCwDLhbH
-         Quzu5MAw6J5Fct26H4B0MUfbbS9p3k/KGUMnFU+iMrX3iuhR8QykVx51mEy/vYXEuT63
-         9IrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vkiMt/G7bFXAXpJDQxe1pxlr8eHxyYeyKBiifpqcCv8=;
-        b=SDBKuE9YxrlzPli7YpmgMh7Qz+AJPyOm0+cO4UZ+XZEPNwB3CDAAhqsiVUNo5mZE58
-         cGUPCuKe7BCgXorPmLxK9JdagKVQaTjuxbJJznfEcjpG3YBmd3/2hhlVR8xIlu27Brlh
-         V1zGKVI4rld3hVplvFVM7Jty/lEED69y6Kq4qOrKkRpAjJfndD4zRJOxEGT8LDHS9ALo
-         5MH5vV2QFc0AskL9urefA5KFsp0H74YdgcYPzwIgUFijHDNzpvaC1cmEm44zPF/VZWe0
-         4tW6zi/OMSFwd51pEu1YYIh5cUwdu2cMHZ6UHhf7orbjFEXO0qsXSXnz9q1MXIS+o9It
-         +rrw==
-X-Gm-Message-State: AOAM530FnoOzBcWhnxB6846ukDoFrNq5lYbKa4O8HqzR3axTFkxg6uZW
-        e/jHIELEbpazIjNsPsDZn/EOCOA1f1bbzgfX2YkMRg==
-X-Google-Smtp-Source: ABdhPJzbQx3xPiacL41rCJErivYDM0vWUswmTjCsb5uUGMEo7NJ89zBn/DGOalij/ndQl9CH3MaHruCT6FaEoOS8rOg=
-X-Received: by 2002:a2e:4e11:: with SMTP id c17mr6415015ljb.19.1633016487609;
- Thu, 30 Sep 2021 08:41:27 -0700 (PDT)
+        id S1345719AbhI3Pnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345133AbhI3Pns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:43:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6903E61361;
+        Thu, 30 Sep 2021 15:42:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633016525;
+        bh=Ld6gmKgj4ZkpFLxu/49x5Bat/dDZqy1PdYTRqKMcEmA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jlXDpf2+6u93jQCh2igjEF8goUz2IeBzFfBCaMWtFFxkZjzaF6vMhu5iyclcS2D9v
+         HgWr48obLMbc1RwdspGfSjMZwkf1KYlYnCjo/JsLTD3Bi5Cm++W0LfBVdB8ro8mCU9
+         kSM4wFHPbJnX7jdweMj71nqIa7JClCr0nmAoNJBAlqwfpKpG6uEBhUA3hieCETQpQ+
+         Nb2qg3A+Lh9vp3M5KF4NBR6SvhMRuP3mpfj7ca7qXSqiEM0BJTOZgixsB/pWrJV8KL
+         7pEmG1CMnW/2Yy1Axg8lY3ZaSUmjZ7pL+4wslkhFveEPYTCenBKtBrwgVFOEAYcumK
+         rRe9dhWEx714w==
+Received: by pali.im (Postfix)
+        id E29DEE79; Thu, 30 Sep 2021 17:42:02 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 17:42:02 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+Message-ID: <20210930154202.cvw3it3edv7pmqtb@pali>
+References: <CAHp75VdR4VC+Ojy9NjAtewAaPAgowq-3rffrr3uAdOeiN8gN-A@mail.gmail.com>
+ <CA+ASDXNGR2=sQ+w1LkMiY_UCfaYgQ5tcu2pbBn46R2asv83sSQ@mail.gmail.com>
+ <YS/rn8b0O3FPBbtm@google.com>
+ <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
+ <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+ <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
+ <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+ <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
+ <20210923202231.t2zjoejpxrbbe5hc@pali>
+ <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
 MIME-Version: 1.0
-References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
- <20210924080632.28410-3-zhiyong.tao@mediatek.com> <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
-In-Reply-To: <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 30 Sep 2021 17:41:16 +0200
-Message-ID: <CACRpkdbWR_kmvMuHMTOjxLDqN6rq7zhrWcZxfi2L3Atau=TLSw@mail.gmail.com>
-Subject: Re: [PATCH v14 2/5] dt-bindings: pinctrl: mt8195: change pull up/down description
-To:     Rob Herring <robh@kernel.org>
-Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thursday 30 September 2021 17:38:43 Jonas Dreßler wrote:
+> On 9/23/21 10:22 PM, Pali Rohár wrote:
+> > On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
+> > > On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+> > > > On 9/22/21 2:50 PM, Jonas Dreßler wrote:
+> > > 
+> > > ...
+> > > 
+> > > > - Just calling mwifiex_write_reg() once and then blocking until the card
+> > > > wakes up using my delay-loop doesn't fix the issue, it's actually
+> > > > writing multiple times that fixes the issue
+> > > > 
+> > > > These observations sound a lot like writes (and even reads) are actually
+> > > > being dropped, don't they?
+> > > 
+> > > It sounds like you're writing into a not ready (fully powered on) device.
+> > 
+> > This reminds me a discussion with Bjorn about CRS response returned
+> > after firmware crash / reset when device is not ready yet:
+> > https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
+> > 
+> > Could not be this similar issue? You could check it via reading
+> > PCI_VENDOR_ID register from config space. And if it is not valid value
+> > then card is not really ready yet.
+> > 
+> > > To check this, try to put a busy loop for reading and check the value
+> > > till it gets 0.
+> > > 
+> > > Something like
+> > > 
+> > >    unsigned int count = 1000;
+> > > 
+> > >    do {
+> > >      if (mwifiex_read_reg(...) == 0)
+> > >        break;
+> > >    } while (--count);
+> > > 
+> > > 
+> > > -- 
+> > > With Best Regards,
+> > > Andy Shevchenko
+> 
+> I've tried both reading PCI_VENDOR_ID and the firmware status using a busy
+> loop now, but sadly none of them worked. It looks like the card always
+> replies with the correct values even though it sometimes won't wake up after
+> that.
+> 
+> I do have one new observation though, although I've no clue what could be
+> happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we can
+> "predict" the wakeup failure because exactly one (usually around the 20th)
+> of those 1000 reads will fail.
 
-how do you want me to act with this patch set, as it is already
-merged and I was pretty happy since it is a v14 and feeling
-it was getting a bit over-reviewed....
+What does "fail" means here?
 
-Are the binding problems solvable in incremental patches
-or do you think I should pull out the patch series?
-
-Yours,
-Linus Walleij
+> Maybe the firmware actually tries to wake up,
+> encounters an error somewhere in its wakeup routines and then goes down a
+> special failure code path. That code path keeps the cards CPU so busy that
+> at some point a PCI_VENDOR_ID request times out?
+> 
+> Or well, maybe the card actually wakes up fine, but we don't receive the
+> interrupt on our end, so many possibilities...
