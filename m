@@ -2,146 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1AC41D5FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C587B41D606
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349270AbhI3JIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:08:40 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:45284 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1349261AbhI3JIj (ORCPT
+        id S1349246AbhI3JKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349229AbhI3JKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:08:39 -0400
-X-UUID: 86d067fa69884b40bdb6980cead5ada0-20210930
-X-UUID: 86d067fa69884b40bdb6980cead5ada0-20210930
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 66695291; Thu, 30 Sep 2021 17:06:55 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 30 Sep 2021 17:06:53 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 30 Sep
- 2021 17:06:53 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Sep 2021 17:06:53 +0800
-Message-ID: <badc86471db3647b46673aa60b710262200eda51.camel@mediatek.com>
-Subject: Re: [PATCH v2] scs: Release kasan vmalloc poison in scs_free process
-From:   Yee Lee <yee.lee@mediatek.com>
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <nicholas.Tang@mediatek.com>,
-        <Kuan-Ying.lee@mediatek.com>, <chinwen.chang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 30 Sep 2021 17:06:53 +0800
-In-Reply-To: <20210930083535.GB23389@willie-the-truck>
-References: <20210930081619.30091-1-yee.lee@mediatek.com>
-         <20210930083535.GB23389@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 30 Sep 2021 05:10:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F9AC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 02:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ox9OWuN7RHJxdHwhF2ob+nn/R5+J/c/5xPc3KgejRW8=; b=v+o1rl+/yLJ3CXs9WeDwgKV6uE
+        GFjDcxFj/x9Q+FQy1Zc4ZXtIbmb1vFhZc4mn9YBRq5P/qt7Cw19fQDGFn2uZZ5B/5BaPgMmcAtdnK
+        roiH0FSqWUSp1TXg1djk+M7NTuSiMenMTB3P+G36a8c5GoLnJims1tlBlbDwbz4I0AByWWj4q1bPW
+        D2IwbTdT6+IkfzQLhHiimNKebXaO2d04zcvUMtAG1bUFjDUlfSGPNbi/sbGTNBYHJ8pNmUrxkJwiM
+        VIU3dJ6WaqbmcKl+0sVkQrnMT50GlYKh00j9iYO0bCJbK7jrcCCEbYSePOavYI9661+pkrJnQ8KdW
+        bsfVf4ww==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVs2B-00CgFI-Ic; Thu, 30 Sep 2021 09:07:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 272C3300252;
+        Thu, 30 Sep 2021 11:07:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EAC9320317205; Thu, 30 Sep 2021 11:07:18 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 11:07:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
+ PREEMPT_RT
+Message-ID: <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
+References: <20210927211919.310855-1-bigeasy@linutronix.de>
+ <20210927211919.310855-5-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927211919.310855-5-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Got it. Thank you.
+On Mon, Sep 27, 2021 at 11:19:18PM +0200, Sebastian Andrzej Siewior wrote:
+> The irq_work callback is invoked in hard IRQ context. By default all
+> callbacks are scheduled for invocation right away (given supported by
+> the architecture) except for the ones marked IRQ_WORK_LAZY which are
+> delayed until the next timer-tick.
+> 
+> While looking over the callbacks, some of them may acquire locks
+> (spinlock_t, rwlock_t) which are transformed into sleeping locks on
+> PREEMPT_RT and must not be acquired in hard IRQ context.
+> Changing the locks into locks which could be acquired in this context
+> will lead to other problems such as increased latencies if everything
+> in the chain has IRQ-off locks. This will not solve all the issues as
+> one callback has been noticed which invoked kref_put() and its callback
+> invokes kfree() and this can not be invoked in hardirq context.
+> 
+> Some callbacks are required to be invoked in hardirq context even on
+> PREEMPT_RT to work properly. This includes for instance the NO_HZ
+> callback which needs to be able to observe the idle context.
+> 
+> The callbacks which require to be run in hardirq have already been
+> marked. Use this information to split the callbacks onto the two lists
+> on PREEMPT_RT:
+> - lazy_list
+>   Work items which are not marked with IRQ_WORK_HARD_IRQ will be added
+>   to this list. Callbacks on this list will be invoked from timer
+>   softirq handler. The handler here may acquire sleeping locks such as
+>   spinlock_t and invoke kfree().
+> 
+> - raised_list
+>   Work items which are marked with IRQ_WORK_HARD_IRQ will be added to
+>   this list. They will be invoked in hardirq context and must not
+>   acquire any sleeping locks.
+> 
+> [bigeasy: melt tglx's irq_work_tick_soft() which splits irq_work_tick() into a
+>           hard and soft variant. Collected fixes over time from Steven
+> 	  Rostedt and Mike Galbraith. ]
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Yee
+IIRC we have existing problems in -RT due to this irq_work softirq muck.
 
-On Thu, 2021-09-30 at 09:35 +0100, Will Deacon wrote:
-> On Thu, Sep 30, 2021 at 04:16:13PM +0800, yee.lee@mediatek.com wrote:
-> > From: Yee Lee <yee.lee@mediatek.com>
-> > 
-> > Since scs allocation is moved to vmalloc region, the
-> > shadow stack is protected by kasan_posion_vmalloc.
-> > However, the vfree_atomic operation needs to access
-> > its context for scs_free process and causes kasan error
-> > as the dump info below.
-> > 
-> > This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
-> > which aligns to the prior flow as using kmem_cache.
-> > The vmalloc region will go back posioned in the following
-> > vumap() operations.
-> > 
-> >  ==================================================================
-> >  BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
-> >  Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
-> > 
-> >  CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-
-> > g92477dd1faa6-dirty #1
-> >  Hardware name: linux,dummy-virt (DT)
-> >  Call trace:
-> >   dump_backtrace+0x0/0x43c
-> >   show_stack+0x1c/0x2c
-> >   dump_stack_lvl+0x68/0x84
-> >   print_address_description+0x80/0x394
-> >   kasan_report+0x180/0x1dc
-> >   __asan_report_store8_noabort+0x48/0x58
-> >   llist_add_batch+0x60/0xd4
-> >   vfree_atomic+0x60/0xe0
-> >   scs_free+0x1dc/0x1fc
-> >   scs_release+0xa4/0xd4
-> >   free_task+0x30/0xe4
-> >   __put_task_struct+0x1ec/0x2e0
-> >   delayed_put_task_struct+0x5c/0xa0
-> >   rcu_do_batch+0x62c/0x8a0
-> >   rcu_core+0x60c/0xc14
-> >   rcu_core_si+0x14/0x24
-> >   __do_softirq+0x19c/0x68c
-> >   irq_exit+0x118/0x2dc
-> >   handle_domain_irq+0xcc/0x134
-> >   gic_handle_irq+0x7c/0x1bc
-> >   call_on_irq_stack+0x40/0x70
-> >   do_interrupt_handler+0x78/0x9c
-> >   el1_interrupt+0x34/0x60
-> >   el1h_64_irq_handler+0x1c/0x2c
-> >   el1h_64_irq+0x78/0x7c
-> >   _raw_spin_unlock_irqrestore+0x40/0xcc
-> >   sched_fork+0x4f0/0xb00
-> >   copy_process+0xacc/0x3648
-> >   kernel_clone+0x168/0x534
-> >   kernel_thread+0x13c/0x1b0
-> >   kthreadd+0x2bc/0x400
-> >   ret_from_fork+0x10/0x20
-> > 
-> >  Memory state around the buggy address:
-> >   ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >   ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >  >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >                     ^
-> >   ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >   ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >  ==================================================================
-> 
-> Thanks, I'll take this via the arm64 tree as we're the only use of
-> SCS.
-> 
-> One thing for future:
-> 
-> > Suggested-by: Kuan-Ying Lee <kuan-ying.lee@mediatek.com>
-> > Reviewd-by: Will Deacon <will@kernel.org>
-> 
-> I gave an "Acked-by" and a "Tested-by" at [1], so those are the tags
-> you
-> should be using. Please don't convert them into a "Reviewed-by".
-> 
-> > Reviewd-by: Sami Tolvanen <samitolvanen@google.com>
-> 
-> This should be "Reviewed-by" (you have a typo).
-> 
-> Anyway, I'll fix these locally, no need to resend this time.
-> 
-> Will
-> 
-> [1] 
-> https://urldefense.com/v3/__https://lore.kernel.org/r/20210929115447.GA21631@willie-the-truck__;!!CTRNKA9wMg0ARbw!yjJi1VvoIbI7CZQJplT_jdN087Pkk6pzXAZ12_FpegZzaUEQutkzBjX85rub_NI$
->  
+I think the problem was something Jolsa found a while ago, where perf
+defers to an irq_work (from NMI context) and that irq_work wants to
+deliver signals, which it can't on -RT, so the whole thing gets punted
+to softirq. With the end-result that if you self-profile RT tasks,
+things come apart or something.
+
+There might have been others as well, I don't know. But generally I
+think we want *less* softirq, not more.
+
 
