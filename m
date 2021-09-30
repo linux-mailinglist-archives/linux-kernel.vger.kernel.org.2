@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70BC41D14F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96CD41D160
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhI3CQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:16:15 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:51706 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232383AbhI3CQL (ORCPT
+        id S1347725AbhI3CZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhI3CZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:16:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uq4fOIK_1632968067;
-Received: from 30.240.97.26(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uq4fOIK_1632968067)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 30 Sep 2021 10:14:28 +0800
-Message-ID: <af7b28df-8021-bf2c-79b3-beb58f9dc97b@linux.alibaba.com>
-Date:   Thu, 30 Sep 2021 10:14:26 +0800
+        Wed, 29 Sep 2021 22:25:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8445C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:24:13 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id x8so2898528plv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CEWI0423/PRfxjLty8QeTE6Lf5eYEtIkwg1J70TQIqI=;
+        b=KWC6PSy6aud4u1T3CDn/D2q0KFfxs9CUhRPNalJiNa9CLUXyKUNdcv7DiaijbLTeMt
+         6Wtp2YdEdBE8Cg/SrzkALYkwCHhQkSH5UAPKQiccHwnfD2kNAsUSIs5LRur80sSohASp
+         K4PMxrFfiBBgWcE6rpLwM0M+oto+N1ypSP3QM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CEWI0423/PRfxjLty8QeTE6Lf5eYEtIkwg1J70TQIqI=;
+        b=2JYOKIIr0zSQBPIuBQyIge5Ejn3jsBczx6hOctZVNpfrjd8ZE4Dejol7xCoLBOH7dN
+         +bzvxtv1BRsRL4Hdyor/M0HFp/6ORrMdrsuQRAWm5+N0fDD/rj9p85vmfF57A18CZo8T
+         40wyje1NC9RwDN33Ig6DZWMd+/5K4/v4r8hNFxLpPn9I8qKYmEuiBRp1g1gRY/9anTFz
+         k/1FxGvDUwzw2Eg1nlsBrPTwhqk7cK9x2heJymnTCrut1PxUJZ8Q3Ev54e0OAJcI8niN
+         AwOkTJTr1AqIdI5IyfdEojmLkaAhmYA+UnHMNs4VSRehQqw6AkZp05gKy3cWyD7DnHXr
+         wvrQ==
+X-Gm-Message-State: AOAM530K1/SCrnDHs3LumIU1a6Gs1S+ItTqE6IVPCNRZFOTTPtMhIw5A
+        oJuYVmhPLidNa3DC6Pfjm9RITNR8lR7TCQ==
+X-Google-Smtp-Source: ABdhPJxZuuF5BohMrsCQ4IUczmedd5yjTGBIWNFK4FkdiqXcfDDvkepCgF82myoA+Z+iK1tKatAGyA==
+X-Received: by 2002:a17:903:1207:b0:138:e2f9:6c98 with SMTP id l7-20020a170903120700b00138e2f96c98mr1755552plh.11.1632968652883;
+        Wed, 29 Sep 2021 19:24:12 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:479:c131:ee9:f257])
+        by smtp.gmail.com with ESMTPSA id 126sm898070pgi.86.2021.09.29.19.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 19:24:12 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 0/5] platform/chrome: Make cros_ec_pd_command() reusable
+Date:   Wed, 29 Sep 2021 19:23:46 -0700
+Message-Id: <20210930022403.3358070-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>, Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
- <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
- <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
- <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
- <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org>
- <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
- <YVT+KWFA8hfSKU+m@casper.infradead.org>
- <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a short series to relocate and rename cros_ec_pd_command() to
+cros_ec_proto.c. This function is useful for sending host command
+messages, so the 1st 4 patches move it a more central location, and
+modify the arguments to allow other users to use it.
 
+The final patch updates cros-ec-typec to use the new function and get
+rid of its own copy.
 
-On 9/30/21 8:41 AM, Song Liu wrote:
-> On Wed, Sep 29, 2021 at 5:02 PM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Wed, Sep 29, 2021 at 04:41:48PM -0700, Song Liu wrote:
->>> The issue is NOT caused by concurrent khugepaged:collapse_file() and
->>> truncate_pagecache(inode, 0). With some printks, we can see a clear
->>> time gap (>2 second )  between collapse_file() finishes, and
->>> truncate_pagecache() (which crashes soon). Therefore, my earlier
->>> suggestion that adds deny_write_access() to collapse_file() does NOT
->>> work.
->>>
->>> The crash is actually caused by concurrent truncate_pagecache(inode, 0).
->>> If I change the number of write thread in stress_madvise_dso.c to one,
->>> (IOW, one thread_read and one thread_write), I cannot reproduce the
->>> crash anymore.
->>>
->>> I think this means we cannot fix this issue in collapse_file(), because it
->>> finishes long before the crash.
->>
->> Ah!  So are we missing one or more of these locks:
->>
->>          inode_lock(inode);
->>          filemap_invalidate_lock(mapping);
->>
->> in the open path?
-> 
-> The following fixes the crash in my test. But I am not sure whether this is the
-> best fix.
-> 
-> Rongwei, could you please run more tests on it?
-Yes, I'd like to.
-> 
-> Thanks,
-> Song
-> 
-> 
-> diff --git i/fs/open.c w/fs/open.c
-> index daa324606a41f..d13c4668b2e53 100644
-> --- i/fs/open.c
-> +++ w/fs/open.c
-> @@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f,
->                   * of THPs into the page cache will fail.
->                   */
->                  smp_mb();
-> -               if (filemap_nr_thps(inode->i_mapping))
-> +               if (filemap_nr_thps(inode->i_mapping)) {
-> +                       filemap_invalidate_lock(inode->i_mapping);
-Learned something, Thanks!
+Prashant Malani (5):
+  platform/chrome: cros_usbpd_notify: Rename cros_ec_pd_command()
+  platform/chrome: cros_usbpd_notify: Move ec_command()
+  platform/chrome: cros_ec_proto: Make data pointers void
+  platform/chrome: cros_ec_proto: Add version for ec_command
+  platform/chrome: cros_ec_typec: Use cros_ec_command()
 
-But, the race between collapse_file and truncate_pagecache, I am not 
-sure whether it exists or not. If exists, whether this patch only can 
-fix truncate_pagecache concurrent?
+ drivers/platform/chrome/cros_ec_proto.c     | 48 ++++++++++++++
+ drivers/platform/chrome/cros_ec_typec.c     | 69 ++++++---------------
+ drivers/platform/chrome/cros_usbpd_notify.c | 50 +--------------
+ include/linux/platform_data/cros_ec_proto.h |  3 +
+ 4 files changed, 72 insertions(+), 98 deletions(-)
 
-Anyway, I will run more tests on it at first.
+-- 
+2.33.0.685.g46640cef36-goog
 
-Thanks!
->                          truncate_pagecache(inode, 0);
-> +                       filemap_invalidate_unlock(inode->i_mapping);
-> +               }
->          }
-> 
->          return 0;
-> 
