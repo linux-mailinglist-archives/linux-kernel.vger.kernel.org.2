@@ -2,62 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8744141E36C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7FF41E370
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346666AbhI3VgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346099AbhI3VgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:36:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7394761A08;
-        Thu, 30 Sep 2021 21:34:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633037679;
-        bh=6qiqqtaFUmsbEzR9gXZw02ewjS63+mSJ0Lh4Gl3qjMU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VcSYwFNVnb8nqDUbw7ZQ5qcCDoQ/bjmeIm0/uV7ziyUAIGHopFRVOUONTWEVuXYHZ
-         hN+9P+Yb5UVmVkNZr9vk1Q9hGj86gbSXLt5Vt9kTlD903dGQWrzjoh/sRhIRTKQGd3
-         9gYS0Nbm3Axv8O+TD3C9LroUsZIhNmNMuCZ6ct0dfa7sHy24KCX9OXFQkQoML6ZaVI
-         A3jsZ2hD267/T2gFTfOpLYI13bs3+fMvjsLwJWmtHaz9NL5sI7HKrapOnrXvqeWBda
-         Q8MXGl+0rssJBU0XWNAvoDrII0Nr7jFdSpr0KMBlh+THC8RiG6454YpWM4IFPDJr0a
-         zHQw8J+Rpqh/g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6D68760A7E;
-        Thu, 30 Sep 2021 21:34:39 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v5.15-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210930075421.13146-1-brgl@bgdev.pl>
-References: <20210930075421.13146-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210930075421.13146-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc4
-X-PR-Tracked-Commit-Id: 040d985e27dc39353d50d0f75a6be3330f4fece2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 115f6134a050bb098414f38555a5ab780ebbfef0
-Message-Id: <163303767944.5240.5538848633086183181.pr-tracker-bot@kernel.org>
-Date:   Thu, 30 Sep 2021 21:34:39 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        id S1350002AbhI3VhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350014AbhI3VhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:37:09 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813D0C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:35:26 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 24so9145526oix.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=e0NcfULf3wNNjVF33uwiRx+dy6Dmhwkfi1qdAZs9US4=;
+        b=DBjew3S0URka73F8hSVwAUYD20OGHDuGURaoBEn3oYxUADnCPbuh2AkHxd1rWzWBWb
+         CT67tzsTYkVTDq03fcfZAEdnq8OfBHkIzO8dVmgq8aXWXDO+dr0qKnWkYc/iInzciKrI
+         qf94lP+haQyQtcD/9YWmnGQz59MfjETnwL1VthNXS7D8tVXddyVGX8bxyasjYcZfATcC
+         fjasSaMS8S72GOuG5glNpDe3++79AAN+UBKQaI0He99CT4idFjPqVbxMMzrgwELHkBnn
+         ZxYBAVOCh0HJ+fgW1izeqqzlpAADFgXWh8RmiAIqS/5JHVLemV7NcIt5PHsXQfJ1dG6J
+         ebBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=e0NcfULf3wNNjVF33uwiRx+dy6Dmhwkfi1qdAZs9US4=;
+        b=6II6MnKUGtgmW1RGs/3E/p1AUBy2hYgb1QV3lrhfjEfz9Hs2xfkF3F17/jItiNBMDN
+         cP4h7WBmeyqkRuv/qAQROj3h0posiK0Gt6pNZAS9ilWbfeCGC9V6vEh4n9ZC2g3HLFhZ
+         n1pjwijFoXKVlllJWXBhfJUIJqcfjHqgpJZZzyFwaIVRtpO28givhz/RT1jFxX17pJYC
+         +r6SaRGVMZoiHJb4B7Smb/ijWRB9wtUjG53KL7FVk0AJuGoW9aI7DpYpScX9/+4Z8BQT
+         gHLVNPKbw97fo6DYXpeQ7TP3/7HVjJizXqs2ObmZlpSpjVAfo/Z+iphmp4/fBgxuyaeX
+         oy2Q==
+X-Gm-Message-State: AOAM533F5FEG/ct3XhGY3APrfwrDqsPqV4R/S0WqU3/uF/FnBZt9+n3M
+        zEUFzteWc0hoEXs2TXMQauUgmg==
+X-Google-Smtp-Source: ABdhPJz6lc6vrB1jwZXEZfb6aq4lDeyCWpNlrFW0PbVZaw3Sux9WhXMMhsglFjUCTTV3T9ZfmG/FKQ==
+X-Received: by 2002:a05:6808:107:: with SMTP id b7mr1237518oie.146.1633037725892;
+        Thu, 30 Sep 2021 14:35:25 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id w17sm775133otu.54.2021.09.30.14.35.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 14:35:25 -0700 (PDT)
+Subject: Re: [PATCH v6 1/3] pwm: Introduce single-PWM of_xlate function
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Doug Anderson <dianders@google.com>
+References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <aa563e12-4c3c-1854-ce91-efa7676d1676@kali.org>
+Date:   Thu, 30 Sep 2021 16:35:23 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210930030557.1426-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 30 Sep 2021 09:54:21 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc4
+On 9/29/21 10:05 PM, Bjorn Andersson wrote:
+> The existing pxa driver and the upcoming addition of PWM support in the
+> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> thereby a need for a of_xlate function with the period as its single
+> argument.
+>
+> Introduce a common helper function in the core that can be used as
+> of_xlate by such drivers and migrate the pxa driver to use this.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> Changes since v4:
+> - None
+>
+>  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
+>  drivers/pwm/pwm-pxa.c | 16 +---------------
+>  include/linux/pwm.h   |  2 ++
+>  3 files changed, 29 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index 4527f09a5c50..2c6b155002a2 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
+>  }
+>  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
+>  
+> +struct pwm_device *
+> +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
+> +{
+> +	struct pwm_device *pwm;
+> +
+> +	if (pc->of_pwm_n_cells < 1)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	/* validate that one cell is specified, optionally with flags */
+> +	if (args->args_count != 1 && args->args_count != 2)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pwm = pwm_request_from_chip(pc, 0, NULL);
+> +	if (IS_ERR(pwm))
+> +		return pwm;
+> +
+> +	pwm->args.period = args->args[0];
+> +	pwm->args.polarity = PWM_POLARITY_NORMAL;
+> +
+> +	if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
+> +		pwm->args.polarity = PWM_POLARITY_INVERSED;
+> +
+> +	return pwm;
+> +}
+> +EXPORT_SYMBOL_GPL(of_pwm_single_xlate);
+> +
+>  static void of_pwmchip_add(struct pwm_chip *chip)
+>  {
+>  	if (!chip->dev || !chip->dev->of_node)
+> diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+> index a9efdcf839ae..238ec88c130b 100644
+> --- a/drivers/pwm/pwm-pxa.c
+> +++ b/drivers/pwm/pwm-pxa.c
+> @@ -148,20 +148,6 @@ static const struct platform_device_id *pxa_pwm_get_id_dt(struct device *dev)
+>  	return id ? id->data : NULL;
+>  }
+>  
+> -static struct pwm_device *
+> -pxa_pwm_of_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
+> -{
+> -	struct pwm_device *pwm;
+> -
+> -	pwm = pwm_request_from_chip(pc, 0, NULL);
+> -	if (IS_ERR(pwm))
+> -		return pwm;
+> -
+> -	pwm->args.period = args->args[0];
+> -
+> -	return pwm;
+> -}
+> -
+>  static int pwm_probe(struct platform_device *pdev)
+>  {
+>  	const struct platform_device_id *id = platform_get_device_id(pdev);
+> @@ -187,7 +173,7 @@ static int pwm_probe(struct platform_device *pdev)
+>  	pc->chip.npwm = (id->driver_data & HAS_SECONDARY_PWM) ? 2 : 1;
+>  
+>  	if (IS_ENABLED(CONFIG_OF)) {
+> -		pc->chip.of_xlate = pxa_pwm_of_xlate;
+> +		pc->chip.of_xlate = of_pwm_single_xlate;
+>  		pc->chip.of_pwm_n_cells = 1;
+>  	}
+>  
+> diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> index 725c9b784e60..dd51d4931fdc 100644
+> --- a/include/linux/pwm.h
+> +++ b/include/linux/pwm.h
+> @@ -414,6 +414,8 @@ struct pwm_device *pwm_request_from_chip(struct pwm_chip *chip,
+>  
+>  struct pwm_device *of_pwm_xlate_with_flags(struct pwm_chip *pc,
+>  		const struct of_phandle_args *args);
+> +struct pwm_device *of_pwm_single_xlate(struct pwm_chip *pc,
+> +				       const struct of_phandle_args *args);
+>  
+>  struct pwm_device *pwm_get(struct device *dev, const char *con_id);
+>  struct pwm_device *of_pwm_get(struct device *dev, struct device_node *np,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/115f6134a050bb098414f38555a5ab780ebbfef0
 
-Thank you!
+I've tested these v6 all 3 patches on the Lenovo Yoga C630
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Tested-by: Steev Klimaszewski <steev@kali.org>
+
