@@ -2,199 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E335641DC2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2762141DC2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348740AbhI3OYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:24:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41168 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348066AbhI3OYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:24:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="247737537"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="247737537"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 07:22:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="479960681"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Sep 2021 07:22:37 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 30 Sep 2021 07:22:36 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Thu, 30 Sep 2021 07:22:36 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.42) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Thu, 30 Sep 2021 07:22:36 -0700
+        id S1351896AbhI3OY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:24:27 -0400
+Received: from mail-eopbgr140043.outbound.protection.outlook.com ([40.107.14.43]:4738
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348645AbhI3OYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:24:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YDkUzbEbTwfSBrSAZ0uYAMcxVyW9ZeQmS1Y+Qbh5HpxjFdCN5HrDDK5RfQoss5qNZyXZw2zrmKR+bS/BhZM1F7Bh2vdqnoHpi4eb6e0hOp0UBXDpfC3LiYOPRWmr2zGgq4d1Fr9pBKj8zDbRtBKk87OJKN7tiSfTYG+sECuoRLLy6O+Oi9CKMMNMvlyT/Te/vRdRlFM0RIeQJE1aj47cBbKBplcO/wirfKChGEDX8yai4suliBAv5jYexicGzEXohK38vczmNjFfGEkMMfkLw7CIU574zy8JkMTkOR6MPWyTmnE4cu4AvbwWFTzv2vjdAdHqkakohuAzhtB7wYDQ/A==
+ b=LHU9XHfmHezJk/O3Ke5BqmyGrMsQtgGfhWX9DWrEBZLldOGluwRUEUUxEkE/ml4nezdalz+UvDTsg9zIUnDGjquff5+CgrQLHFCZ6zwnXDbKGjzVje8K6vDBOfNABRphr5/j1y7UgVk8NavaB/j126yVDzLEfPvaCxOgbPyZogBew8pu+dgpv1NnsvVUb3XoX6LB4Ki/OqA/jEis6/CsOw2l3KT0sYMxhKtXkuS/Q6cjh9gVqKHxZKGykMbYD+XvBJK8w/i7wkGhQWpYLgtp5xIDCPVvLGH7fBCrhHPKqSJKbkC6+Vh+FTwlKxS0dgEMD+XqJbb6cfU9f6HzQ504oA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=EGtknXKWs4wm0DFSxrg1qn8+9oPqtIQB5G2ZpPze/Ro=;
- b=m2YB9LXyxIiHcgQshOV3CXA/fGDag3id7aYW2fjXuPXv9bh/imqL6HSI0kXnUD7JSoxBm41UltVElwelazGiGO0ViM4fwo643iZoC9NZuedTi2KzDti5hKD7jzkonymGnwAsYF2Un03NfHw1MrmBQWxwanYcmBw1YilPgIEaATBxj846+im4REGLwjI13eocPSg/jzpK+lkDoNNdE7PXO3c6EF54Zaj9zclIMqCJDuOXiTK6eXw6ADmx81a5vtiq0UTQVR1hp61pyTJMotEygJCF850yHrMoez6akk6JrChvbRKoCqDMTtrnSLzPzwgVw+jQK14isj5ujNpxHI348w==
+ bh=WLfV6IDzRExPmwxmyJBEgcwZbbN/eD91Ds0aLXShQA4=;
+ b=SF1F+r8xDhawxfXrNRiOfJ5vjqc1vLtb+mexZTElJ5xB68Q+A/gk9vFMJ3bBX2GxwK3nwb9B5mX0KCRu5FEPI9/uHyX21Gj5T4Ayt28GsWryZ9AmvGz0zVRpLTsDhG8Tnrmo8LDhET+GFSrFZS09rOvxo9e3+EtFnA1sHdnLc3A6gb0d5FVeCOzuQ4+U2aJwMxAKK4o5bp49/TPIU5TqKQOniN7ZpJK5SNiYxGsm9sQ+MR7IsR9w42w8IJEVqHJZCaAAGHsyWs3SU5eTkoVYH3ZovKZDlMuY94AZx5vd6GLspeB75a+yhaFyC2roE40wrh1ySVAMhwxK8aCt5ovz6A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGtknXKWs4wm0DFSxrg1qn8+9oPqtIQB5G2ZpPze/Ro=;
- b=iOJPUxAvHTxsORm/0u3H8BrLjqRvo0aGTym8vgNEfyFzoMPiH1Vj84rdX8ful6lPtvKolaOduVgoWlK39c9VQnDX4bcB3xChXHWAO1d3qO0OVWbT/O9zWEJbBnzIDScayI4y3Duk4mxwvikuDpfcbhjXtFSaLIJKHsFVrBJ63+Q=
-Received: from CO1PR11MB5153.namprd11.prod.outlook.com (2603:10b6:303:95::13)
- by CO1PR11MB5137.namprd11.prod.outlook.com (2603:10b6:303:95::18) with
+ bh=WLfV6IDzRExPmwxmyJBEgcwZbbN/eD91Ds0aLXShQA4=;
+ b=QmUzNml4YseABvig3fqEzZBkIIEjxD1YFqQfTJdCM0TcBcYxCIkY/bxFVz7KmyV2eYuDN/64e2mpq1Cq1WjcDLNY3rAy2NEa2m77FvymNAI0IVD/xzQFtkZyIdGA+Y3wC0XZMg7kuQARXKXI+qaDdFIanBV/aiaCHO0fsYn5/Qc=
+Authentication-Results: puri.sm; dkim=none (message not signed)
+ header.d=none;puri.sm; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com (2603:10a6:800:57::8)
+ by VI1PR04MB6784.eurprd04.prod.outlook.com (2603:10a6:803:13e::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Thu, 30 Sep
- 2021 14:22:34 +0000
-Received: from CO1PR11MB5153.namprd11.prod.outlook.com
- ([fe80::a5c2:7128:bc50:48e]) by CO1PR11MB5153.namprd11.prod.outlook.com
- ([fe80::a5c2:7128:bc50:48e%7]) with mapi id 15.20.4566.015; Thu, 30 Sep 2021
- 14:22:34 +0000
-From:   "Campin, Mike" <mike.campin@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: RE: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Thread-Topic: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Thread-Index: AQHXr3CNIZf6JLtKZEGHiZHWrUBtB6u7c/OAgAAAuICAADcqAIAADMSAgADzYNA=
-Date:   Thu, 30 Sep 2021 14:22:34 +0000
-Message-ID: <CO1PR11MB5153C703BC0E0112CE7F65B2F3AA9@CO1PR11MB5153.namprd11.prod.outlook.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210929123437.721991dc@jacob-builder> <20210929193953.GX964074@nvidia.com>
- <20210929155720.794b6e65@jacob-builder> <20210929234301.GC964074@nvidia.com>
-In-Reply-To: <20210929234301.GC964074@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0d09a029-5e1f-4c73-bd2b-08d9841dbf03
-x-ms-traffictypediagnostic: CO1PR11MB5137:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO1PR11MB5137C78B0E99E5BE6CF34367F3AA9@CO1PR11MB5137.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Mjo/cI0R9udDkXZCKiHQeuaSknpVkKW9aDUC3VBkwdmh5RPV7hfAWvZiIDSmy2Y6RjslLULrNoOFCX97hXNCYlRZHP+u+ebksHWSoqS/1p42joQBksdEJoQDrx8YoEmY0G2KVKHT52OC/O8MBSHX288RY5F5RjJzErR2g0EAfAYBRG83efPok0k6v2eVAwMTpfJIv3Uwe+k0TRAuRc/k31z6PDQKQ7Yyc0cRZ8oc67DRPoxl5PSM2L/dqrdmDGQYKb/Iar4t2jGyViCpVkBPvqwkkxSNN8edMmO4hBliG7LAbMo6qeuogpUhfZI8ux4KkzeGQv1AgZFEt6rgrFxesn9issh6ZQC+CA0A6VcsCGx/LE/btpFMqM8qhUJ9A4ohYEaORWcB2DoQjceK+MCef+XvUl8oC7fXsf32ptULN+/aTjqc+sthb72Avp5QglHZ1SZ7lzJ+PecQrwqSfQZ2WwQQoCWANbWMywQfxoiyMmj2NVN32mAba814PgVPRuvSlKwQwQAIE/yUulsygxsDxRizmX8T2R86sUrQIL8ECOj2DX3DZjRJ/rghRdrILASuW2kq0C1IeUQXznbz6n8eghxhBNzKa65FWnjaSzKycVMw/RnxQJCZih7KgtiJpFxiXDm3HKW1eXZyYcknS4q/sEZUvuHRZT9ZmQIdilOwRIqAvzFQfuZFDjpElGEuzUghMK28t1C+26mxy6XuO11wBw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5153.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(316002)(2906002)(83380400001)(52536014)(4326008)(86362001)(53546011)(6506007)(66946007)(71200400001)(38100700002)(508600001)(122000001)(8676002)(8936002)(38070700005)(33656002)(55016002)(5660300002)(26005)(66446008)(64756008)(7696005)(9686003)(66556008)(186003)(54906003)(110136005)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?r1MXJ5neITbkwNm9IQUa4VCy9PTfegirfwiuaS60mT52zoyKDqr+qajWeHY0?=
- =?us-ascii?Q?dOeF1OENCCRwix64qdCf71Ly8ELFZajln9Q5KX9FjKe0Txonsl6fyouZiCZa?=
- =?us-ascii?Q?aSpgfPMnPwaxBhFhaG8PfG1917wz4+dC0qQbDNQq2PdlovCUK3aVIXwMPUi5?=
- =?us-ascii?Q?j/wysm3mZTX+pYz8XlSTc9hpe8n4mhoe3hkj4J3TQudcvZrOz2KQCDPOo3jv?=
- =?us-ascii?Q?1F9IWCZreMDe6RDIFjo9vaYJ60uH+2mNUBS+70mPMTQo93ttAqzqrYQd95rZ?=
- =?us-ascii?Q?rFbZTwu89zuSu8gvHq6TBnMvmdRhTfPg4xH8orjiJjMhBbYJ1nWlfaTk3FWe?=
- =?us-ascii?Q?rsO0MGKGQiDnQ7VZQ1ldhuP2NUOD5thUlxcgKfWqqL4/J13/u3NTHGwvDXJq?=
- =?us-ascii?Q?irXCH1mnc8f+9AsLmzJk3UrKbNMObusm1gk4q8JTT3dOiMJZKZuOze3t+dsf?=
- =?us-ascii?Q?f+x37GjJaAmDWDdtFszOJIAa50jfXiD96SCM8VmqHa4A/I3MleJdzyZBQLJP?=
- =?us-ascii?Q?gs9wcZYIQihqdXbdZwi/cnjT9CPt+dFFK1AdIDQ448a0y9Wmmfe4qRqo05bF?=
- =?us-ascii?Q?zWEq/Dt3B1abfpq2BN0zAWw+784nu0v8uQF9JxgWrlEEG+BLIA5mTfEQrG+T?=
- =?us-ascii?Q?M24BR5xPF4Lz6qkUDphOhQVxT5K6CXl5uCFQTrxOEAqDprHiAhfn0O+mLJLf?=
- =?us-ascii?Q?Ci3qgKYi3NBGq/qeLlOAmoEJPJauEPAsx0eASrV6ndtaeXdcEHEUcDhlIsqz?=
- =?us-ascii?Q?sM+1EJ9IgE/5TWPjMVXTY3+hJl98hvEZgEhDl41bCk6xsfWC3olZE+wFJVFb?=
- =?us-ascii?Q?sjf1oM0ac9RHbu0CG6so9B+85ZmlwzpUvTVo0vUZhxtOTmJLwNZZknepiKES?=
- =?us-ascii?Q?42ntECdjTTyaTMgSTd3edMjlzpXKCb8PzR/TvqYXS7+pw+XkXQczQ3mnJ+3A?=
- =?us-ascii?Q?ld1neNcQO6exZGza1t8o0yt7zZ+ngXaDPgVSAScIj677Qzienu1VujcaYNXL?=
- =?us-ascii?Q?AQkcvyu4x7WPnbo4g3Grjv9YAjG2De5oxAYGAZ2vQPts+Teflw1VzCyhzoYK?=
- =?us-ascii?Q?bG5LMKeHmdyTeOssPc4KxtryGylfEl8JhM+rSFSf0EjPGJJV8/DFfIUqOQ2x?=
- =?us-ascii?Q?vslW56dcfcltKHG/n1F3EIAdf/MZoxbmfaQFGufmkgL4hZJtXrgY4tyqYfYW?=
- =?us-ascii?Q?4tl4bzrg/kuxBLLZLXG+YTF+0ftLeaEAJrp/OclKs+/LuUpYvYHYCz/OR0lj?=
- =?us-ascii?Q?f5NuaA/m4ZaL27UwVp1aQhF0NQBCUWN+0OIkYDyzwkpoOPqf7Q3BPa+Gn+gl?=
- =?us-ascii?Q?ws034tJ9MFWuVLaQsiHPNTun?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2021 14:22:40 +0000
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb]) by VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb%10]) with mapi id 15.20.4544.022; Thu, 30 Sep
+ 2021 14:22:40 +0000
+Date:   Thu, 30 Sep 2021 17:22:36 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     a.fatoum@pengutronix.de, adrian.hunter@intel.com,
+        aisheng.dong@nxp.com, catalin.marinas@arm.com,
+        cw00.choi@samsung.com, devicetree@vger.kernel.org,
+        djakov@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
+        kyungmin.park@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
+        myungjoo.ham@samsung.com, robh@kernel.org, s.hauer@pengutronix.de,
+        shawnguo@kernel.org, ulf.hansson@linaro.org, will.deacon@arm.com
+Subject: Re: [RFC 00/19] Add interconnect and devfreq support for i.MX8MQ
+Message-ID: <YVXILIGHwUSoybxq@ryzen>
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
+ <20210924102026.2679952-1-martin.kepplinger@puri.sm>
+ <YVRRomS8ut6NjYlV@ryzen>
+ <a01be64e31fbeb910b237ce8b8031fe20f245c7e.camel@puri.sm>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a01be64e31fbeb910b237ce8b8031fe20f245c7e.camel@puri.sm>
+X-ClientProxiedBy: VI1PR0302CA0017.eurprd03.prod.outlook.com
+ (2603:10a6:800:e9::27) To VI1PR0401MB2559.eurprd04.prod.outlook.com
+ (2603:10a6:800:57::8)
 MIME-Version: 1.0
+Received: from ryzen (86.121.85.242) by VI1PR0302CA0017.eurprd03.prod.outlook.com (2603:10a6:800:e9::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 14:22:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2d920f20-c55d-4f55-da4a-08d9841dc23e
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6784:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6784A1F33D7D2228E12E39B8F6AA9@VI1PR04MB6784.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: N+SqsDo72tRdH3BcB4OXHL5QECtRZOHwtgSnwpE3IE/TPq76iF73qj+WfjQvzWFmHoD1ddFp+MRERjDLRdE0qmxD3urIRQzEyYOL+FqmSpqwxvxNCs32qiTOhe1V8gSp21J4plKauR9lauw6LqMYR5rjF/RF+EolsMC1qoa3RuOpQjNGxUtekTcq9wfdPlBuUMnIuM8ukIVouSHOoUjBNvpP/eeQ636Oj/Dj2OClsmvB8q5Ht53NEQp9YH5J/nnE6N9jqdSlDSBLqBWC8rpCf3ISDnZNUe0Xg7XCpw7G8D9h74cMItmjAIZ25agYTxLMqLWXKR+I88HwxHiF8MYdR+zdcBCN26bAUa9cMLMxHJG3cSOY4qUWoFc/tcISMLhL/aOQxM1sa91M3m2bj5+0lx3ggDVg1jlZ4/B3X/kueV78ZBoOxK/xFVnia9DNaXlIU3MfqrjZNBngezcZCtXovEwZEBpZgHa/Iuqk0mt6nwLtpIIxYnSvZVVB29NPXtcoLUpFwPCnWT5moB7I8sSOgSCjNfOjQqUTUChhQMan73bw4Z6IUCcz/PaNtEcPY8zpCKifulM/K2rCYK7mTGH9yV3FIkBOk/KV493i2paHpPhIqWtVakVLuf2EE1J6/ryO2WRdheL0KwmRhLHJRPJOVj2YChd37lm4tam12XIiLALEO1dT8RZ/HgVijxcGClTOyx7aYyEzRo1DqmePb5IEhBmdHRn9Y71AeW2IAupJAF1/9N558nNitaxvxnmP9b9XYWwp6JHttInXCmAOGS/XEA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2559.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(9576002)(4326008)(66476007)(66556008)(26005)(7416002)(38100700002)(38350700002)(2906002)(8676002)(83380400001)(52116002)(8936002)(6496006)(86362001)(66946007)(5660300002)(55016002)(508600001)(33716001)(316002)(45080400002)(44832011)(53546011)(9686003)(966005)(956004)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?foqRo3O+Vs6vmA2CVN68o12PjIQ7Ytun+aQXbDA8VvXF1QA3stnYsMJ1BK?=
+ =?iso-8859-1?Q?Fm9xaIM+uevPtbwTraYS7Nb3/jKEpZnTvEER5gNNK7IDN+kQBfSi6p8HUV?=
+ =?iso-8859-1?Q?yD7fEKw4bANGUk82A3yRc13YmvGccP+rpAS5nc6xbaYs+9qjtVdhHih1WH?=
+ =?iso-8859-1?Q?+okMKyUhLIXZ92MWWAJSeEKkYSK3LKc+LSV0CBMgRHrAOKzIyxMNyuqs7E?=
+ =?iso-8859-1?Q?RYcvEw50+BmjMHnjszo8CgZFegvjiaLM8i0lkOvEuxjb5ss9U+LKM0WN+y?=
+ =?iso-8859-1?Q?HuNib3jwSB6K+/lHGmE9vj71RR5q/VevyT1ucSR5E9XI+lrWdtAOuTatH1?=
+ =?iso-8859-1?Q?wiy0q8HFrjX/m/eKHap5CK/+DCSGfkcv3kZIXI7w67HwWvQFjuzme+UKzS?=
+ =?iso-8859-1?Q?UxwkRT/TmHnUAfAYPPgnkqMc9tdNCkZqANMbbtGVBTNkQODXC8Lm2dnfs/?=
+ =?iso-8859-1?Q?IPjvNecfNmsdzl5lNmYiwDtyM4HjSOVhm/rRU1jedseeZl8oquZg7jW3JZ?=
+ =?iso-8859-1?Q?JTgVsBFhRCFKniVeOsc01iA+XdrDlGNIyrEy2NjeA4EFrLPd0ovRFvuWuz?=
+ =?iso-8859-1?Q?06WmyscaFh6/pXznaTBaEEbPN254IkvpSJ44lS0INEWN1zZxdxnQrLuRid?=
+ =?iso-8859-1?Q?3zNTqsu+Y504+uuljJJOK5saFH19V9kO0Fdpu7ttRyFjHn5hOvHjfuSoB0?=
+ =?iso-8859-1?Q?iZYQWvCBj1mDLAmXo0pOc2BeVsKwGBhNxMCkjbYKjp9sUyov6d2Vf3D3Mq?=
+ =?iso-8859-1?Q?5q6+C2kgwhiWI45OpQAuW8FKOoqWeqfU4KOXp6qEC2iOhGKEC9WfywUFv7?=
+ =?iso-8859-1?Q?EaP73akuRyJNAlxrEw8IJgs6Ic8IcT4HBB9fSrkc92hl1/9jMkx+oJrxes?=
+ =?iso-8859-1?Q?1XBlCk6fgLPs7ZMOywHUi+Gb4Ko94ZxFrza8hEZcUp7EXqn1RccvwVxUpG?=
+ =?iso-8859-1?Q?RqhAH6JmdX/GJYozBMN1ld6dhZVgZ+WeRkkljbPaqW1y8Y0mtTBQZw1Aka?=
+ =?iso-8859-1?Q?XL37kvJPIRBGBUs1DLmyZ7PlxZgCl1Z08ObVrHsQaYZHuDolBHEDg8wgDj?=
+ =?iso-8859-1?Q?62jYjHIiQ9l6S/E4mvAJI89k3K8qgsju0+Am26ZTU0vV2Ra4PyJziWmOJh?=
+ =?iso-8859-1?Q?GBK6Y8EYoxMib3daNtDATE4el2iUboqa/qNRsxB/fD/9ScZ5esYYMzqFHo?=
+ =?iso-8859-1?Q?mJcdUp9qP/O7WqSehrG1aIcXC9SDym0iwn3AjvA6HJRnmeVUtun2s2DPqg?=
+ =?iso-8859-1?Q?x5YkD92eMkrnw3gtXiiP1Iorugmti6BLdVNVy0yctekXre/xgXOqtstUAH?=
+ =?iso-8859-1?Q?5z9uJw+35VR9U5xA6RCyMc8/EIqbXNW13TzmZz5FuA+uCs9dDukvv1svZj?=
+ =?iso-8859-1?Q?+Qon45VvIx?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d920f20-c55d-4f55-da4a-08d9841dc23e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2559.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5153.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d09a029-5e1f-4c73-bd2b-08d9841dbf03
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 14:22:34.0867
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 14:22:39.9941
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bxxJwDBpFw/eUaGmuifgJbfQMRavdgHnExT4QQbWNHBgbhCeHkK4zrPCDh/9eKz41LMI7QynU2a0y0c77pESUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5137
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ptkX2E/PuUTxXouM6ArX+wDuB1y1FcKmWrNsFQ4FHi2mhAV3WaQjNwIKPYL93nEU1r1Y+q/T19jg40ojQgpfGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6784
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I need support for mixed user PASID, kernel PASID and non-PASID use cases i=
-n the driver.
+On 21-09-30 10:03:46, Martin Kepplinger wrote:
+> Am Mittwoch, dem 29.09.2021 um 14:44 +0300 schrieb Abel Vesa:
+> > On 21-09-24 12:20:26, Martin Kepplinger wrote:
+> > > hi Abel,
+> > > 
+> > > thank you for the update (this is actually v2 of this RFC right?)!
+> > > 
+> > > all in all this runs fine on the imx8mq (Librem 5 and devkit) I
+> > > use. For all
+> > > the pl301 nodes I'm not yet sure what I can actually test / switch
+> > > frequencies.
+> > > 
+> > 
+> > You can start by looking into each of the following:
+> > 
+> >  $ ls -1d /sys/devices/platform/soc@0/*/devfreq/*/trans_stat
+> > 
+> > and look if the transitions happen when a specific driver that is a
+> > icc user suspends.
+> > 
+> > You can also look at:
+> > 
+> >  /sys/kernel/debug/interconnect/interconnect_summary 
+> > 
+> > and:
+> > 
+> >  /sys/kernel/debug/interconnect/interconnect_graph
+> > 
+> > > But I still have one problem: lcdif/mxfb already has the
+> > > interconnect dram
+> > > DT property and I use the following call to request bandwidth:
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.puri.sm%2Fmartin.kepplinger%2Flinux-next%2F-%2Fcommit%2Fd690e4c021293f938eb2253607f92f5a64f15688&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C7fab8aca3a5f43d56f5608d983e8da67%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C637685858400552603%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=%2FzyEQdOLU8jQuUpqJ74GTWyfrDvavz%2BxZAgv1tcIu9Y%3D&amp;reserved=0
+> > > (mainlining this is on our todo list).
+> > > 
+> > > With your patchset, I get:
+> > > 
+> > > [    0.792960] genirq: Flags mismatch irq 30. 00000004 (mxsfb-drm)
+> > > vs. 00000004 (mxsfb-drm)
+> > > [    0.801143] mxsfb 30320000.lcd-controller: Failed to install IRQ
+> > > handler
+> > > [    0.808058] mxsfb: probe of 30320000.lcd-controller failed with
+> > > error -16
+> > > 
+> > > so the main devfreq user (mxsfb) is not there :) why?
+> > > 
+> > 
+> > OK, I admit, this patchset doesn't provide support for all the icc
+> > consumer drivers.
+> > But that should come at a later stage. I only provided example like
+> > fec and usdhc, to show
+> > how it all fits together.
+> > 
+> > > and when I remove the interconnect property from the lcdif DT node,
+> > > mxsfb
+> > > probes again, but of course it doesn't lower dram freq as needed.
+> > > 
+> > > Do I do the icc calls wrong in mxsfb despite it working without
+> > > your
+> > > patchset, or may there be something wrong on your side that breaks
+> > > the mxsfb IRQ?
+> > > 
+> > 
+> > Do you have the following changes into your tree?
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > b/arch/arm64/boot/dts/freescale/imx8mq.dtsi               
+> > index 00dd8e39a595..c43a84622af5
+> > 100644                                                               
+> >            
+> > ---
+> > a/arch/arm64/boot/dts/freescale/imx8mq.dtsi                          
+> >                                         
+> > +++
+> > b/arch/arm64/boot/dts/freescale/imx8mq.dtsi                          
+> >                                         
+> > @@ -524,7 +524,7 @@ lcdif: lcd-controller@30320000
+> > {                                                             
+> >                                                   <&clk
+> > IMX8MQ_VIDEO_PLL1>,                                      
+> >                                                   <&clk
+> > IMX8MQ_VIDEO_PLL1_OUT>;                                  
+> >                                 assigned-clock-rates = <0>, <0>, <0>,
+> > <594000000>;                               
+> > -                               interconnects = <&noc
+> > IMX8MQ_ICM_LCDIF &noc IMX8MQ_ICS_DRAM>;                    
+> > +                               interconnects = <&icc
+> > IMX8MQ_ICM_LCDIF &icc IMX8MQ_ICS_DRAM>;                    
+> >                                 interconnect-names =
+> > "dram";                                                     
+> >                                 status =
+> > "disabled";                                                          
+> >    
+> >                                                                      
+> >                                             
+> > @@ -1117,7 +1117,7 @@ mipi_csi1: csi@30a70000
+> > {                                                                  
+> >                                          <&src
+> > IMX8MQ_RESET_MIPI_CSI1_PHY_REF_RESET>,                            
+> >                                          <&src
+> > IMX8MQ_RESET_MIPI_CSI1_ESC_RESET>;                                
+> >                                 fsl,mipi-phy-gpr = <&iomuxc_gpr
+> > 0x88>;                                           
+> > -                               interconnects = <&noc IMX8MQ_ICM_CSI1
+> > &noc IMX8MQ_ICS_DRAM>;                     
+> > +                               interconnects = <&icc IMX8MQ_ICM_CSI1
+> > &icc IMX8MQ_ICS_DRAM>;                     
+> >                                 interconnect-names =
+> > "dram";                                                     
+> >                                 status =
+> > "disabled";                                                          
+> >    
+> >                                                                      
+> >                                             
+> > @@ -1169,7 +1169,7 @@ mipi_csi2: csi@30b60000
+> > {                                                                  
+> >                                          <&src
+> > IMX8MQ_RESET_MIPI_CSI2_PHY_REF_RESET>,                            
+> >                                          <&src
+> > IMX8MQ_RESET_MIPI_CSI2_ESC_RESET>;                                
+> >                                 fsl,mipi-phy-gpr = <&iomuxc_gpr
+> > 0xa4>;                                           
+> > -                               interconnects = <&noc IMX8MQ_ICM_CSI2
+> > &noc IMX8MQ_ICS_DRAM>;                     
+> > +                               interconnects = <&icc IMX8MQ_ICM_CSI2
+> > &icc IMX8MQ_ICS_DRAM>;                     
+> >                                 interconnect-names =
+> > "dram";                                                     
+> >                                 status =
+> > "disabled";                                                          
+> >    
+> > 
+> > I forgot to update these in the current version of the patchset. Will
+> > do in the next version.
+> > 
+> > Also, would help a lot if you could give me a link to a tree you're
+> > testing with.
+> > That way I can look exactly at what's going on.
+> > 
+> > 
+> 
+> 
+> thanks Abel, with the above fix of existing interconnects properties my
+> system runs as expected and here's the output of
+> 
+> for each in `ls -1d /sys/devices/platform/soc@0/*/devfreq/*`; do echo
+> $each; cat $each/trans_stat; done
+> 
+> for mxsfb requesting (max) bandwith (display on):
+> 
+> /sys/devices/platform/soc@0/32700000.noc/devfreq/32700000.noc
+>      From  :   To
+>            : 133333333 400000000 800000000   time(ms)
+>   133333333:         0         1         0       624
+>   400000000:         0         0         1        28
+> * 800000000:         1         0         0     30624
+> Total transition : 3
+> /sys/devices/platform/soc@0/3d400000.memory-
+> controller/devfreq/3d400000.memory-controller
+>      From  :   To
+>            :  25000000 100000000 800000000   time(ms)
+>    25000000:         0         0         1       620
+>   100000000:         0         0         0         0
+> * 800000000:         1         0         0     30652
+> Total transition : 2
+> /sys/devices/platform/soc@0/soc@0:pl301@0/devfreq/soc@0:pl301@0
+>      From  :   To
+>            :  25000000 133333333 333333333   time(ms)
+>    25000000:         0         0         1       616
+>   133333333:         0         0         0         0
+> * 333333333:         1         0         0     30668
+> Total transition : 2
+> /sys/devices/platform/soc@0/soc@0:pl301@1/devfreq/soc@0:pl301@1
+>      From  :   To
+>            :  25000000 266666666   time(ms)
+> *  25000000:         0         0     31284
+>   266666666:         0         0         0
+> Total transition : 0
+> /sys/devices/platform/soc@0/soc@0:pl301@2/devfreq/soc@0:pl301@2
+>      From  :   To
+>            :  25000000 800000000   time(ms)
+> *  25000000:         0         0     31288
+>   800000000:         1         0         0
+> Total transition : 1
+> /sys/devices/platform/soc@0/soc@0:pl301@3/devfreq/soc@0:pl301@3
+>      From  :   To
+>            :  25000000 800000000   time(ms)
+> *  25000000:         0         0     31292
+>   800000000:         1         0         0
+> Total transition : 1
+> /sys/devices/platform/soc@0/soc@0:pl301@4/devfreq/soc@0:pl301@4
+>      From  :   To
+>            :  25000000 333333333   time(ms)
+>    25000000:         0         1       648
+> * 333333333:         0         0     30652
+> Total transition : 1
+> /sys/devices/platform/soc@0/soc@0:pl301@5/devfreq/soc@0:pl301@5
+>      From  :   To
+>            :  25000000 500000000   time(ms)
+> *  25000000:         0         0     31304
+>   500000000:         1         0         0
+> Total transition : 1
+> /sys/devices/platform/soc@0/soc@0:pl301@6/devfreq/soc@0:pl301@6
+>      From  :   To
+>            :  25000000 500000000   time(ms)
+> *  25000000:         0         0     31308
+>   500000000:         0         0         0
+> Total transition : 0
+> /sys/devices/platform/soc@0/soc@0:pl301@7/devfreq/soc@0:pl301@7
+>      From  :   To
+>            :  25000000 128000000 500000000   time(ms)
+> *  25000000:         0         0         0     31312
+>   128000000:         0         0         0         0
+>   500000000:         1         0         0         0
+> Total transition : 1
+> /sys/devices/platform/soc@0/soc@0:pl301@8/devfreq/soc@0:pl301@8
+>      From  :   To
+>            :  25000000 133333333   time(ms)
+> *  25000000:         0         0     31316
+>   133333333:         0         0         0
+> Total transition : 0
+> /sys/devices/platform/soc@0/soc@0:pl301@9/devfreq/soc@0:pl301@9
+>      From  :   To
+>            :  25000000 133333333 266666666   time(ms)
+>    25000000:         0         0         5      1052
+>   133333333:         0         0         0         0
+> * 266666666:         5         0         0     30268
+> Total transition : 10
+> 
+> 
+> but with display off (mxsfb not requesting anything), I get the same
+> fast freqs for noc and memory-controller. They should use the lowest
+> freqs. Only pl301@4 switches to 25mhz in that case. That's odd.
+> 
 
------Original Message-----
-From: Jason Gunthorpe <jgg@nvidia.com>=20
-Sent: Wednesday, September 29, 2021 4:43 PM
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: iommu@lists.linux-foundation.org; LKML <linux-kernel@vger.kernel.org>; =
-Joerg Roedel <joro@8bytes.org>; Christoph Hellwig <hch@infradead.org>; Tian=
-, Kevin <kevin.tian@intel.com>; Luck, Tony <tony.luck@intel.com>; Jiang, Da=
-ve <dave.jiang@intel.com>; Raj, Ashok <ashok.raj@intel.com>; Kumar, Sanjay =
-K <sanjay.k.kumar@intel.com>; Campin, Mike <mike.campin@intel.com>; Thomas =
-Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+Well, have a look at: 
 
-On Wed, Sep 29, 2021 at 03:57:20PM -0700, Jacob Pan wrote:
-> Hi Jason,
->=20
-> On Wed, 29 Sep 2021 16:39:53 -0300, Jason Gunthorpe <jgg@nvidia.com> wrot=
-e:
->=20
-> > On Wed, Sep 29, 2021 at 12:37:19PM -0700, Jacob Pan wrote:
-> > =20
-> > > For #2, it seems we can store the kernel PASID in struct device.=20
-> > > This will preserve the DMA API interface while making it PASID capabl=
-e.
-> > > Essentially, each PASID capable device would have two special=20
-> > > global
-> > > PASIDs:=20
-> > > 	- PASID 0 for DMA request w/o PASID, aka RID2PASID
-> > > 	- PASID 1 (randomly selected) for in-kernel DMA request w/ PASID
-> >=20
-> > This seems reasonable, I had the same thought. Basically just have=20
-> > the driver issue some trivial call:
-> >   pci_enable_pasid_dma(pdev, &pasid)
-> That would work, but I guess it needs to be an iommu_ call instead of pci=
-_?
+/sys/devices/platform/soc@0/soc@0:pl301@9/devfreq/soc@0:pl301@9
 
-Which ever makes sense..  The API should take in a struct pci_device and re=
-turn a PCI PASID - at least as a wrapper around a more generic immu api.
+even in the output you gave here, you can see that there are 5
+transisions between 25MHz and 266MHz. BTW, that is the USDHC pl301.
 
-> I think your suggestion is more precise, in case the driver does not=20
-> want to do DMA w/ PASID, we can do less IOTLB flush (PASID 0 only).
+I'm assuming you're booting with rootfs from usdhc not through nfs,
+right? Anyway, the noc and dram clocks rate only drop when there is
+no user enabling its own icc path to the dram.
 
-Since it is odd, and it may create overhead, I would do it only when asked =
-to do it
+Keep in mind that the benefit of this approach is not only to drop the
+dram clock rate, but also to drop the rates of all the bus clocks on
+whenever possible. 
 
-> > Having multiple RID's pointing at the same IO page table is=20
-> > something we expect iommufd to require so the whole thing should=20
-> > ideally fall out naturally.
+Yes, the perfect scenario would be, from power consumption point of view at least,
+have dram clock rate as low as possible and as long as possible, which
+implicitly means there is no one requesting the higher rate.
 
-> That would be the equivalent of attaching multiple devices to the same=20
-> IOMMU domain. right?
+If you want to observe the transitions number change for the dram
+devfreq node as well, you can run a simple sync from userspace and that will 
+trigger a "high rate" request for the usdhc. Note, this will only happen
+if there are no other users asking for the higher rate.
 
-Effectively..
-
-Jason
+> said (still) out-of-tree mxsfb request is
+> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.puri.sm%2Fmartin.kepplinger%2Flinux-next%2F-%2Fcommit%2Fee7b1453295932da1e292b734afa7a03651ad9ba&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C7fab8aca3a5f43d56f5608d983e8da67%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C637685858400552603%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=tY9IN8nAgYrPRD0BRLW%2FZbWEps9DTVIQi8G5jY5aw3Q%3D&amp;reserved=0
+> 
+> and the exact tree I'm running for the above is
+> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fsource.puri.sm%2Fmartin.kepplinger%2Flinux-next%2F-%2Fcommits%2F5.15-rc3%2Flibrem5__integration_byzantium_test_new_devfreq_interconnect&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C7fab8aca3a5f43d56f5608d983e8da67%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C637685858400552603%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=Kpo7sVLdgzwMv8MPX7X%2FNUxoLcvWjFVIuerlh7Cr2D4%3D&amp;reserved=0
+> 
+> thanks,
+> 
+>                               martin
+> 
