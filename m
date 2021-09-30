@@ -2,284 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4E841E500
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FB541E503
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349685AbhI3XdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:33:10 -0400
-Received: from mail-bn7nam10on2129.outbound.protection.outlook.com ([40.107.92.129]:17496
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230167AbhI3XdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:33:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9cPRBllLlrWJ8ovdCmVyPuKNhBvaRCaBno0IyfAv+9wRP1eTwK6+EqyZDu9xeRWJ4OXD9iDa56Q/W6GQdeYHb6a83AA9xtGrsDR6/ZaVKcCqcBStcCbhRKMbO6dOnR1E7hbNN0rWRQJBuX6NesHEm3YBtwiA4bx1CVp+N1NGJkwUYHpgkxvKw2ibmdbBbW7vBuTjpANEGvVttGCye0ZIzhWmMnnMHnqaXplDqg97Z3azgrZxCZ2jH/GUuKYGeVVC7ElUNGio+g+EHYqNzChTRSHNZqlY6tU70Rl66uFKVwQ9z+4NPH/c/hotAVOmFlFcUygLrfHz0DLcH7JhSYmeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LYkf/P4CdAweGGME5i4UNLbiUuei2CpYY8mJ9137Ykk=;
- b=m+x2vHstNWFSv7cDAlcAnzaFRVICs8qn8Iz0IahGydwApNyySpufj0ji13iGjPg/HPYX3O14d3917wfefY1JT/RH+OCfRpy9mWFZs2rcUm2C9AzXt4Omgx8dT2tcglG35j+H0C4Ljpg6JIDxwxlSHykHDX7oD/AQl1Kf0fZckUxjYFZGJ7RIoUBGtnwHdlQSAMHA5bA2JH+mFnBKdiP34Mtl6f3FSNYlFsTPqh0RddFSbz95tE9RgEoZWzHXiWHEyHVres+2D1PqJeWaHWJMcRXGF3tShYfWflfPJdzQSqYsQhfxoJjHSu0QGXOCBFyxmRAa+DSNhnYC0pWO8kW7wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LYkf/P4CdAweGGME5i4UNLbiUuei2CpYY8mJ9137Ykk=;
- b=aNhmcLyautbvC8Gzv4flVh0XOwusZP3AGi8hPWWe5ELWxKGLRE45t0U7yB7sWeinmqc5DCEodRk10M13g9kNxUGb5sdR3rwgkzNiviujNEVFAjf2sa+pZ4lh7fQXDXxk4dYBqGhYbNcFEkEX3sjaSwppmhTBetrMNCPRR3G5nBQ=
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5)
- by SJ0PR11MB5663.namprd11.prod.outlook.com (2603:10b6:a03:3bc::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
- 2021 23:31:23 +0000
-Received: from SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178]) by SJ0PR11MB5661.namprd11.prod.outlook.com
- ([fe80::31bb:4f91:1eb5:7178%8]) with mapi id 15.20.4566.017; Thu, 30 Sep 2021
- 23:31:23 +0000
-From:   Ryan Lee <RyanS.Lee@maximintegrated.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
- entering sleep
-Thread-Index: AQHXsZF45/jZbOMADUKIjx+r35kUIKu3/BEAgAAPiFCAAAR+AIAAC+UAgAAIKhCAACX/gIAD0nCQgAEkjoA=
-Date:   Thu, 30 Sep 2021 23:31:23 +0000
-Message-ID: <SJ0PR11MB5661A19958E5E41125FDD695E7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
- <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
- <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <20210927160622.GE4199@sirena.org.uk>
- <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
- <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
- <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
- <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-In-Reply-To: <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
-Accept-Language: en-US, ko-KR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5154ecc7-fd6c-4fff-8410-08d9846a6a49
-x-ms-traffictypediagnostic: SJ0PR11MB5663:
-x-microsoft-antispam-prvs: <SJ0PR11MB5663E551AF8CDD201F237A0DE7AA9@SJ0PR11MB5663.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OmMEqMLR4v1NhSh71UfptqOnooQEBkj0LaeGTQghqT4qh2MDc35w1Z8cgl+nyDS72fwj/vPs09F6X1DQf6kWTU08ezYWxUpjmYzNLlZjVcO3HQKlrzSqtWNMga3QfzZ46HK+cXsTKjrkctP4f/yGoehwt7tmLIfcug7sA72U6SGM5AWqmN/mGBypxcPq0+mbxNUS5GYLNPB4gnxV/ju3+UXRZKqbr/28Sd278PpVc3n094GBHyEDjvRS6RhidbKUwA6LGIkXxo6mkNuLe3GRAUZnqAagizCKuQs0g5PvvDnTHqe5yoOJzTDX7y3rWL+VlosgeZ7IDpSq5He2eo8MHFjiEy4/pF84zZzaamOtt4/eTNEAQz+Dsa4D3TWmqCLRGNYkidFyDkD+3lYHb5G8TXtkBEjGWhKuhV5psrfzualCm1cTB+tHoK903jFsYIvqkstl5HhUOLWHwOXwKPkvgV6Yvo74ujh/8lNsciGopz79h7TJaXAn0NP1U1D7kq/CXcE28z9OkcErqBYXKmElm4lbDS5fkud5nVrUhfHEBh2gZyGh25/WZgHuWOeEKLN3Uj23UZx+znyQkHPuBP6nbADU3Xk2Uk+HEjlaYYccgjOw7MuTRJycRILCkvw/B2LQwRH1ajrTDm/8IRxPooNHUyaKJgcfgSHJk+S19oJBy2vqF50RzC4bI1R2xi0uQkZOWxkLu+NEvzO6uZuV6HVN+xawkS3LQSFxn+u1xTIIRrgh0zGufLqAi7uEHVku0zTJByKgWpT1XifxqxHp/tRclHVK9cb9nHotSd2ZcZ9/M/H21iF9pgPeuCO+HXEQgyuHXq8GqW/RRFWR1DWbv2ewB6L4yfzetqswr8I8K/1xWdE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5661.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(2906002)(83380400001)(7696005)(71200400001)(6506007)(38100700002)(186003)(45080400002)(38070700005)(55016002)(966005)(5660300002)(122000001)(508600001)(9686003)(4326008)(54906003)(8676002)(110136005)(33656002)(316002)(86362001)(76116006)(7416002)(52536014)(66946007)(2940100002)(66556008)(66446008)(64756008)(8936002)(66476007)(14143004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m5fSLobYQiulgynhAAccrJnWmWNlgtJ+ChKqGfSXPPG9/dEpbNELofUwMBee?=
- =?us-ascii?Q?UjMWznDsnzrlYeMuQYV9651/KpfK3chAFkHV+niIbehsVm/D9uWz4QAVhcXe?=
- =?us-ascii?Q?yLPxH60z/4SSvdyul7pO7TXZyTDmhk6wkN9pD6mWEi6m16cO+kmkzjSA1jfb?=
- =?us-ascii?Q?vJPmnvIPCQ7JUMgerIb4EITiaxrKvwiIMS8mHt2+VTSS7GGIoCpymrHgxi9i?=
- =?us-ascii?Q?ffzUFT82JCO/H3L0hVCgZVYodqQkrTAEv2P0rcyBfH8KtNTU/NEAuSV2AOuy?=
- =?us-ascii?Q?jvCj6U4qtOzC95oM/SXjmKHKkq8jfb6QnkjvhqnNhlm1TGxKnJuyEFqy1m/U?=
- =?us-ascii?Q?3/WZK2AY33c6n9SpqQ9reALTbPZzfztkhK1w+BM0t4Zz6FmXVPvYM/GCvz7V?=
- =?us-ascii?Q?pXjOvBDkiKsVy288lsFg7oIrqp6dZMD9Q68ApkbG0SZ7ShU3IB9E5fzU6JZP?=
- =?us-ascii?Q?elokN+fDIA7LLGPozgdVlc93AlLnUMpeULKyd/+e37iZxXgj7/7ddAm3DFHr?=
- =?us-ascii?Q?lIwOpZ2xZ4fK2uaMnOiKYy43/bmThGSnQIJr96k6CvNa9Zh2VOaE15/ta0DH?=
- =?us-ascii?Q?XBEgHJsdJng5UKqY7K10yip9pVksmnwnL8jFg9llkgAZAcoV+us9flYatrvk?=
- =?us-ascii?Q?BfD22SI+5bQzofZYplOaXt7blTO9koEmjmI0FPZfnlKl2a+s+knwKWuuegp0?=
- =?us-ascii?Q?6Zo2/Y8HixZsi9sd2w+6IR8VmYCitblUGUDzFhiz+HujSP4mvUrqm72+hFiJ?=
- =?us-ascii?Q?jKjGM0GoQmzvd0qlUPz7e2FIXeKCaALTgCNPR61N2WLtvMZm034SbmLvOC1h?=
- =?us-ascii?Q?Ix3Sv/HzEhBy7Dj1QylVbHseVMqaqn74VtuHrj4U58istGf42qhC9kckVW6c?=
- =?us-ascii?Q?FIFGkEGjbOOz+AVpK7HueP6GjlqiQ+IGrFl5bD0PWK4O07zwvAxGOgV9CRe2?=
- =?us-ascii?Q?vjO9yj8YuN/tBt5tQGj0TY3gJYcrMA5N9bcH8leXehTX7djPXY2zz11hB6C0?=
- =?us-ascii?Q?xA4mPYXCG+rhlcKpC0iM2dlU80eULSKRtgw8uIBbukJstfw0Q+jiVlbTemDB?=
- =?us-ascii?Q?OEa94h2dMYgKJ+1hA3rSwZmjbU5ZnqfWvTGHKYTsyPOFt63oCciyrVJTlCMV?=
- =?us-ascii?Q?oAzDrGK+/NLmUcBY67pG5F3CCCkP7N5jqXIRGiEiEHJwbeQY4S0R5q+knY7B?=
- =?us-ascii?Q?68KDkWwHxWdTzYVex8VuuLksXuTaItWAeyIq2GdRTMVTH/5O/vLISKEGoD9u?=
- =?us-ascii?Q?7ruDwk9CB1S7ejIEgMGRhEIDv3/Uu4iGa+BzLd1vF3+04HpMBT+blBFnHTUZ?=
- =?us-ascii?Q?MU1/v0n3pVE88p4tLQGOfLUO?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1350111AbhI3Xdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:33:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42092 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347868AbhI3Xdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:33:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9gmdjG51P4sUtdlckZMNf2bN5+zN0n8cVhZkk4LzqwE=; b=pC5GRS0XWArGvEi55mbqERtVOh
+        N39cL3bi9yU69ML2hwVJ6lOe3tLcxU7O827WLtiuL720YgiSe9kDsdVok9lzuD2BvtKu/R58bCI/Q
+        MYdjTqAQIQ2WB73gZnYaDK+3pG5Qm/xwNDy25zsvvgUUv3CtLNCW0CYzJDdNpoYvb3HU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mW5Wa-0091JE-Nn; Fri, 01 Oct 2021 01:31:36 +0200
+Date:   Fri, 1 Oct 2021 01:31:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Wong Vee Khee <veekhee@gmail.com>
+Subject: Re: [PATCH net v1 1/1] net: stmmac: fix EEE init issue when paired
+ with EEE capable PHYs
+Message-ID: <YVZI2GWxUNZdL2SX@lunn.ch>
+References: <20210930064436.1502516-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5661.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5154ecc7-fd6c-4fff-8410-08d9846a6a49
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 23:31:23.2595
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6vpK/W1I5A+6LP9ytuQTZFCDZ134TQePjn8uU9fY2LJL7fsajRWUmec+dhOTnbKzItRqhhtXaGxYM7MhBP83yk4dZRKUbIqQEhIzF7YK02I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5663
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930064436.1502516-1-vee.khee.wong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >> Instead of changing the suspend sequence, can we please try to
-> > modify
-> > >> the
-> > >> max98373_io_init() routine to unconditionally flag the cache as
-> > >> dirty, maybe this points to a problem with the management of the
-> > >> max98373->first_hw_init flag.
-> > >
-> > > max98373_io_init() is not called because ' sdw_slave_status'
-> remains
-> > '
-> > > SDW_SLAVE_ATTACHED' and 'max98373->hw_init' is already true.
-> > > Removing 'if (max98373->hw_init || status !=3D
-> > SDW_SLAVE_ATTACHED)'
-> > > condition in max98373_update_status() function instead of adding
-> > > regcache_mark_dirty() into max98373_suspend() can be an
-> > alternative way.
-> > > I think it is all about where regcache_mark_dirty() is called from.
-> > > The difference is that max98373_io_init() really do the software
-> > reset
-> > > and do amp initialization again which could be an overhead.
-> >
-> > that description is aligned with my analysis that there's something
-> > very wrong happening here, it's not just a simple miss in the regmap
-> > handling but a major conceptual bug or misunderstanding in the way
-> > reset is handled.
-> >
-> > First, there's the spec: on a reset initiated by the host or if the
-> > device loses sync for ANY reason, its status cannot remain
-> ATTACHED.
-> > There's got to be a 16-frame period at least where the device has to
-> > monitor the sync pattern and cannot drive anything on the bus.
-> >
-> > Then there's the hardware behavior on resume: on resume by default
-> the
-> > Intel host will toggle the data pin for at least 4096 frames, which by
-> > spec means severe reset.
-> >
-> > And last, there's the software init: we also force the status as
-> > UNATTACHED in drivers/soundwire/intel.c:
-> >
-> >         /*
-> >          * make sure all Slaves are tagged as UNATTACHED and provide
-> >          * reason for reinitialization
-> >          */
-> >         sdw_clear_slave_status(bus,
-> > SDW_UNATTACH_REQUEST_MASTER_RESET);
-> >
-> > But we've also seen the opposite effect of an amplifier reporting
-> > attached but losing sync immediately after the end of enumeration
-> and
-> > never coming back on the bus, see issue
-> > https://nam02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%
-> >
-> 2Fgithub.com%2Fthesofproject%2Flinux%2Fissues%2F3063&amp;data
-> >
-> =3D04%7C01%7Cryans.lee%40maximintegrated.com%7Cb9f84a1267ec4
-> >
-> f50b7a008d981edcc46%7Cfbd909dfea694788a554f24b7854ad03%7C0
-> > %7C0%7C637683680607026027%7CUnknown%7CTWFpbGZsb3d8eyJ
-> >
-> WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
-> > %3D%7C1000&amp;sdata=3DrARkwTSB3DN%2BCYxGaehOhtCGEj1eLBl
-> 6
-> > Mk7QhynQSY8%3D&amp;reserved=3D0
-> >
-> > In other words, we need to check what really happens on resume
-> and why
-> > the amplifier keeps reporting its status as ATTACHED despite the spec
-> > requirements and software init, or loses this status after
-> > enumeration....Something really does not add-up, again it's not just a
-> > regmap management issue.
-> >
-> >
-> >
-> I do not see #3063 issue on my side. No initialization failure or time-
-> out has occurred.
->=20
-> Now I'm trying to solve the issue with max98373_io_init() function as
-> suggested instead of adding
-> regmap_cache_dirty() in the suspend function.
-> max98373_io_init() was not called from max98373_update_status()
-> when audio resume because
-> max98373->hw_init was 1 and Status was SDW_SLAVE_ATTACHED.
-> max98373_update_status() do not get SDW_SLAVE_UNATTACHED.
-> I confirmed that the issue could be resolved if
-> SDW_SLAVE_UNATTACHED event arrives at
-> max98373_update_status() before SDW_SLAVE_ATTACHED is
-> triggered.
-> Actually sdw_handle_slave_status() get SDW_SLAVE_UNATTACHED
-> but this function exits at
-> https://github.com/thesofproject/linux/blob/topic/sof-
-> dev/drivers/soundwire/bus.c#L1765
-> before reaching to
-> https://github.com/thesofproject/linux/blob/topic/sof-
-> dev/drivers/soundwire/bus.c#L1825
-> I'm not sure how to solve this issue because this code is commonly
-> used for other Soundwire drivers as well.
->=20
-> I share the debug messages for the resume event as your reference.
-> [  127.490644] [DEBUG3] intel_resume_runtime [  127.490655]
-> [DEBUG3] intel_resume_runtime SDW_INTEL_CLK_STOP_BUS_RESET
-> [  127.490658] [DEBUG3] intel_init [  127.490660] [DEBUG3]
-> intel_link_power_up [  127.490977] [DEBUG3] intel_resume_runtime
-> SDW_UNATTACH_REQUEST_MASTER_RESET ..
-> [  127.490980] [DEBUG4] sdw_clear_slave_status request: 1
-> [  127.490983] [DEBUG4] sdw_modify_slave_status, ID:7, status: 0
-> [  127.490986] [DEBUG4] sdw_modify_slave_status, ID:3, status: 0
-> [  127.490994] [DEBUG3] intel_shim_wake wake_enable:0
-> [  127.491060] [DEBUG3] intel_shim_wake wake_enable:0
-> [  127.491191] [DEBUG] max98373_resume, first_hw_init: 1,
-> unattach_request: 1 [  127.491194] [DEBUG] max98373_resume, INF
-> MODE: 0 [  127.491953] [DEBUG4] sdw_handle_slave_status IN
-> [  127.491956] [DEBUG4] sdw_handle_slave_status, status[1] : 0,
-> slave->status: 0, id:7	// UNATTACHED
-> [  127.491958] [DEBUG4] sdw_handle_slave_status, status[2] : 0,
-> slave->status: 0, id:3 [  127.491960] [DEBUG4]
-> sdw_handle_slave_status IN2 status[0] =3D 1 [  127.492808] [DEBUG4]
-> sdw_handle_slave_status IN
-> [  127.492810] [DEBUG4] sdw_handle_slave_status, status[1] : 1,
-> slave->status: 0, id:7	// ATTACHED
-> [  127.492812] [DEBUG4] sdw_handle_slave_status, status[2] : 1,
-> slave->status: 0, id:3 [  127.492814] [DEBUG4]
-> sdw_handle_slave_status IN2 status[0] =3D 0 [  127.492816] [DEBUG4]
-> sdw_handle_slave_status IN3 [  127.492818] [DEBUG4]
-> sdw_handle_slave_status status[1] =3D SDW_SLAVE_ATTACHED, slave-
-> >status : 0, slave:7, prev_status:0 [  127.492820] [DEBUG4]
-> sdw_modify_slave_status, ID:7, status: 1 [  127.493008] [DEBUG4]
-> sdw_update_slave_status update_status(1) IN slave:7 [  127.493010]
-> [DEBUG4] sdw_update_slave_status update_status(1) OUT
-> [  127.493012] [DEBUG] max98373_update_status IN hw_init:1, status:
-> 1, slave :7 [  127.493015] [DEBUG] max98373_update_status IN2
-> hw_init:1, max98373->first_hw_init: 1, status: 1 [  127.493017]
-> [DEBUG4] sdw_handle_slave_status status[2] =3D
-> SDW_SLAVE_ATTACHED, slave->status : 0, slave:3, prev_status:0
-> [  127.493019] [DEBUG4] sdw_modify_slave_status, ID:3, status: 1
-> [  127.493199] [DEBUG4] sdw_update_slave_status update_status(1)
-> IN slave:3 [  127.493201] [DEBUG4] sdw_update_slave_status
-> update_status(1) OUT [  127.493204] [DEBUG]
-> max98373_update_status IN hw_init:1, status: 1, slave :3
-> [  127.493207] [DEBUG] max98373_update_status IN2 hw_init:1,
-> max98373->first_hw_init: 1, status: 1
+On Thu, Sep 30, 2021 at 02:44:36PM +0800, Wong Vee Khee wrote:
+> When STMMAC is paired with Energy-Efficient Ethernet(EEE) capable PHY,
+> and the PHY is advertising EEE by default, we need to enable EEE on the
+> xPCS side too, instead of having user to manually trigger the enabling
+> config via ethtool.
+> 
+> Fixed this by adding xpcs_config_eee() call in stmmac_eee_init().
+> 
+> Fixes: 7617af3d1a5e ("net: pcs: Introducing support for DWC xpcs Energy Efficient Ethernet")
+> Cc: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 553c4403258a..981ccf47dcea 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -486,6 +486,10 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
+>  		timer_setup(&priv->eee_ctrl_timer, stmmac_eee_ctrl_timer, 0);
+>  		stmmac_set_eee_timer(priv, priv->hw, STMMAC_DEFAULT_LIT_LS,
+>  				     eee_tw_timer);
+> +		if (priv->hw->xpcs)
+> +			xpcs_config_eee(priv->hw->xpcs,
+> +					priv->plat->mult_fact_100ns,
+> +					true);
+>  	}
 
-Thanks for the comments.
-I tried to find the reason why the amp was not detached from the bus proper=
-ly and
-found information about CLOCK_STOP_NOW bit in 0x0044 SCP_Ctrl register.
-It seems like 0x2(ClockStopNow) needs to be configured before the host CLOC=
-K STOP.
-I was able to get a good result if I add this command in the amp driver sus=
-pend function.
-The amp driver receives the detachment event and register restoration was d=
-one properly
-after the audio resume.
-I can modify the amp driver for this change but it looks like this needs to=
- be done
-from the host side. May I have a comment on this? Thanks.
+
+       /* Check if it needs to be deactivated */
+        if (!priv->eee_active) {
+                if (priv->eee_enabled) {
+                        netdev_dbg(priv->dev, "disable EEE\n");
+                        stmmac_lpi_entry_timer_config(priv, 0);
+                        del_timer_sync(&priv->eee_ctrl_timer);
+                        stmmac_set_eee_timer(priv, priv->hw, 0, eee_tw_timer);
+                }
+                mutex_unlock(&priv->lock);
+                return false;
+        }
+
+Don't you want to turn it of in here?
+
+      Andrew
