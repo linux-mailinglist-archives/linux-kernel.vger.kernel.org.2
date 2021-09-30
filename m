@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACCE41D22F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F3E41D219
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347824AbhI3EVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 00:21:11 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:59909 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhI3EVI (ORCPT
+        id S231637AbhI3EKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 00:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhI3EKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 00:21:08 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HKg4C5nsLz4xbV; Thu, 30 Sep 2021 14:19:23 +1000 (AEST)
+        Thu, 30 Sep 2021 00:10:38 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5FAC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 21:08:56 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id z24so19524052lfu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 21:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632975563;
-        bh=oJ/ULXJCpB8pZh9T0MC+PCyhdj4ADzZWfm4oxAJ5hbY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LM/WDccNAofElIUqx6ZSzy4soq7R3iooZrZoPHFK9etndOX/erqv/SW6o9FymLCNI
-         tTpH+gwM3y2hOXEZgck6bohGnynQmN84E9dCHZcEehqsNUyTDuVdDj4GCqMVfwdhER
-         nJ+komzTd8XM+LZLEYtqysl90/1pUYmdKaXIjvcc=
-Date:   Thu, 30 Sep 2021 13:12:00 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 08/20] vfio/pci: Add VFIO_DEVICE_BIND_IOMMUFD
-Message-ID: <YVUrAC7j0zYecxzY@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-9-yi.l.liu@intel.com>
- <YVQBFgOa4fQRpwqN@yekko>
- <BN9PR11MB54331D06D97B4FC975D8D23B8CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t3FALQ9F/29nwpH8yMUnQ6iSaUPA8tnjZM1xJdoGkuk=;
+        b=gK60KkPoCIhYjuIuwMim1u3NwuU9HylcGXNclr7e0uqmbx+CoAzIWT0pe1fLPVl0L3
+         w5u9kwiH+H0vxWtAD+y15k4oAAWs1MrP04iGYomqEUqp6veYnSMmKS28XG4FGb7Dma+Y
+         66q/zAAp90Erg5XJHSwCUOOCnywwpudyr4S5bSoxF+msczjUqEZMuFE7fjiq/HVqvTYR
+         9eE/gC5d3bQedL9VhZYb7hmsDTOxfi1cAygzz9bOJm0VmqS6vJ9mUkO2npkLdDloFTO2
+         589WHGrGqJg7Vxr96r3XdjQKYkS1ABMxBEdKh7C8C+nhzNVnR4aO11DpWf3uD4lbKo/x
+         OYJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t3FALQ9F/29nwpH8yMUnQ6iSaUPA8tnjZM1xJdoGkuk=;
+        b=ANqwqUp75DrBhanAkbbehxjDGQ7Y5irFq4iv2iFHx7wkGKSgWOJOGWl2c5SI8e6jO4
+         bfv+Q6M6Bhgf1G1pxeGrNr6xG5jCJudKx+MivPuiUhpmXA9Nvjl7rE9pA4CLz2gvz5xi
+         mmmRmS2yKriOyI8pFvyMSX2FmnKAXD9qRCPipuUwnYUpDEG1JCEuoR+E6p2DHGi9VTP7
+         OdFwYBrKpf7z78pvM05tALDWDjNc6nDHtAh4uJb6wo8nsaL/QKcuBnVoAGkPr6K8EmqV
+         MdE/fq/fwLTPZwxFKop/MXHEfOmtCfDgsB3ynS6QA7Y7zjpsz0yRA2guqX3Q0uAph5gL
+         IjyA==
+X-Gm-Message-State: AOAM531y/YFgeMgBQOWPMiBCaRFcdFpUYOWKUwU8fnXzyszEWUevlANN
+        CVsJTk8JjlFr8kPG+LL8aN8NDGGwRHIKN3liOS22ow==
+X-Google-Smtp-Source: ABdhPJyav0ctqOfrQN5qVG918Z+tPvChnwnLpYKr3rd9LFJlbCyzYrotLyv/ym5LkvisvocbMG+fF0MLyYyJoozE6zQ=
+X-Received: by 2002:a2e:7504:: with SMTP id q4mr3777457ljc.422.1632974934566;
+ Wed, 29 Sep 2021 21:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="r8hKFivqxBOeSqL3"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB54331D06D97B4FC975D8D23B8CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-11-pasha.tatashin@soleen.com> <20210929124513.GD21631@willie-the-truck>
+In-Reply-To: <20210929124513.GD21631@willie-the-truck>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 30 Sep 2021 00:08:17 -0400
+Message-ID: <CA+CK2bDBr_upP87hg-8EiUz3ucZ93tAaYaZrfN3JhqszF=PvvQ@mail.gmail.com>
+Subject: Re: [PATCH v17 10/15] arm64: kexec: use ld script for relocation function
+To:     Will Deacon <will@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sorry, missed two comments:
 
---r8hKFivqxBOeSqL3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >       /* Flush the reloc_code in preparation for its execution. */
+> >       dcache_clean_inval_poc((unsigned long)reloc_code,
+> > -                            (unsigned long)reloc_code +
+> > -                            arm64_relocate_new_kernel_size);
+> > +                            (unsigned long)reloc_code +  reloc_size);
+>
+> Extra whitespace.
 
-On Wed, Sep 29, 2021 at 06:41:00AM +0000, Tian, Kevin wrote:
-> > From: David Gibson <david@gibson.dropbear.id.au>
-> > Sent: Wednesday, September 29, 2021 2:01 PM
-> >=20
-> > On Sun, Sep 19, 2021 at 02:38:36PM +0800, Liu Yi L wrote:
-> > > This patch adds VFIO_DEVICE_BIND_IOMMUFD for userspace to bind the
-> > vfio
-> > > device to an iommufd. No VFIO_DEVICE_UNBIND_IOMMUFD interface is
-> > provided
-> > > because it's implicitly done when the device fd is closed.
-> > >
-> > > In concept a vfio device can be bound to multiple iommufds, each host=
-ing
-> > > a subset of I/O address spaces attached by this device.
-> >=20
-> > I really feel like this many<->many mapping between devices is going
-> > to be super-confusing, and therefore make it really hard to be
-> > confident we have all the rules right for proper isolation.
->=20
-> Based on new discussion on group ownership part (patch06), I feel this
-> many<->many relationship will disappear. The context fd (either container
-> or iommufd) will uniquely mark the ownership on a physical device and
-> its group. With this design it's impractical to have one device bound
-> to multiple iommufds. Actually I don't think this is a compelling usage
-> in reality. The previous rationale was that no need to impose such restri=
-ction
-> if no special reason... and now we have a reason. =F0=9F=98=8A
->=20
-> Jason, are you OK with this simplification?
->=20
-> >=20
-> > That's why I was suggesting a concept like endpoints, to break this
-> > into two many<->one relationships.  I'm ok if that isn't visible in
-> > the user API, but I think this is going to be really hard to keep
-> > track of if it isn't explicit somewhere in the internals.
-> >=20
->=20
-> I think this endpoint concept is represented by ioas_device_info in
-> patch14:
->=20
-> +/*
-> + * An ioas_device_info object is created per each successful attaching
-> + * request. A list of objects are maintained per ioas when the address
-> + * space is shared by multiple devices.
-> + */
-> +struct ioas_device_info {
-> +	struct iommufd_device *idev;
-> +	struct list_head next;
->  };
->=20
-> currently it's 1:1 mapping before this object and iommufd_device,=20
-> because no pasid support yet.
+Yeap, extra whitespace after '+', will fix it :)
 
-Ok, I haven't read that far in the series yet.
+>
+> >       icache_inval_pou((uintptr_t)reloc_code,
+> > -                      (uintptr_t)reloc_code +
+> > -                      arm64_relocate_new_kernel_size);
+> > +                      (uintptr_t)reloc_code + reloc_size);
+> >       kexec_list_flush(kimage);
+> >       kexec_image_info(kimage);
+> >
+> > diff --git a/arch/arm64/kernel/relocate_kernel.S b/arch/arm64/kernel/relocate_kernel.S
+> > index b4fb97312a80..9d2400855ee4 100644
+> > --- a/arch/arm64/kernel/relocate_kernel.S
+> > +++ b/arch/arm64/kernel/relocate_kernel.S
+> > @@ -15,6 +15,7 @@
+> >  #include <asm/sysreg.h>
+> >  #include <asm/virt.h>
+> >
+> > +.pushsection    ".kexec_relocate.text", "ax"
+>
+> Just use .section if you're putting the entire file in there?
 
-> We can rename it to struct ioas_endpoint if it makes you feel
-> better.
-
-Meh.  The concept is much more important than the name.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---r8hKFivqxBOeSqL3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFVKwAACgkQbDjKyiDZ
-s5IyZBAApEbrAkg3NeEqYJu3KTfMnPffqvQpnQ5gbCPc4rEn+DpHudPJpwNt9uu9
-/du7hPrwQqWDI+XCk4f3EWNUCbDZ6pOCT6f5OSCrqOl43qGLyxsSTZWzUh4eBf5I
-BJ/YVp1mPfjrzSd0P1znf+/pjTgUIHBrBLbBTqkzrYrrFYTtvU8sV1gokdARiPnr
-vnMp96v76nOhNZgVUwL5k+XWUHuSzNTTMttrg964N5IpNkwIOGvT+XO0rioshBjk
-JWQMl9vxDKH0+6FGY1Vbc9MdGcO0IbeT+xT7ZTeD/YV3VeML+FL8Z8gaygnD/3J2
-pSfDyc2Tm2jK0d96O5OpOchZDhL5A3+khZNMC14fGRUPIpx/itTIeU3vcuutGFCO
-jbWItM8fARo2HvFFSXsa6Ir7GY+Ri8M+l02XT8MrWzGVCygmYUQjNisNLj4dxptV
-DfxFFsQIN+V8U2rHpKJ3tBOXK4kwSQdDzfnvoHzs+iXgTL4ze/rcE6jVVLFpaDs+
-1HmugwuFvDl93FyRfDVaKkj1ckA2Ddpbqyxqut7YHP6QnzH30le/OM0GTIaCGO9E
-arJjVmp6cYqlkWc/a6Ues4xstYoW90oxq+XVwO8vzlZHbCTQg6fIkUiBdS29PsPj
-3C9MCj4m8zKKjeucsGVvHBigj0CE9UD8dBr0KanSSrz9SIckKC8=
-=SsHa
------END PGP SIGNATURE-----
-
---r8hKFivqxBOeSqL3--
+Good point, I will change it to .section.
