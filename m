@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E0141DBDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E6E41DBD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351700AbhI3OEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:04:40 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:22792 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351585AbhI3OE0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:04:26 -0400
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 18UE2IWg018776
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:02:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 18UE2IWg018776
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633010539;
-        bh=VuabDIbpmxk72sKuiRHg+TdNhDteCOPteADF+KS7huU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LaLEN9K3YWFe+G5xyw5VNkDs+JH6l+gbJ0YYW67ry2nMgMKObqPqZj3X3wA/bqBvL
-         QT9QIZq1/BxU0lzAooFf3CtkWphG50xI8HVWMNpVXcv+xlxz+UnWLC0t8Z6FAUkPMf
-         HJKLJRburriMu29+/XxlYM10uTSqQMfw3y1EA17LCXwxkRqdNvUOEeFowBIJDe+JrG
-         Dyvs594T44BDdAaWptJJreXJOxeZf4OE9jnIrs9r9kcBsqqFAhBmCAVaokfxq2MoTi
-         cj9Tg0aeSYudnZ4gViFn6SI/LgU/zEJOoK4NbwWETDzFv9ilsspgUqjMGUAjBhZwCw
-         8lNDPWE3p3sVw==
-X-Nifty-SrcIP: [209.85.167.45]
-Received: by mail-lf1-f45.google.com with SMTP id e15so25799868lfr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:02:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533yVDMvG2RSmhwDS2cChpEIXRufhkNJc743W1CAwxaKta29EGMn
-        8wn4nghJDjulgX8RMwPzvQBS8/D/kEOn0yMfA40=
-X-Google-Smtp-Source: ABdhPJw+mGEsdDSY8gXRmEoAlTAeLprEfe0NdJWhOeaN21T4sF+dG+g3cSQdq97CjBYXTI3CvNR84NzGFaMk5Dl16ps=
-X-Received: by 2002:ac2:4d57:: with SMTP id 23mr6154739lfp.493.1633010533423;
- Thu, 30 Sep 2021 07:02:13 -0700 (PDT)
+        id S1351707AbhI3OEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351814AbhI3OEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:04:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36ADB61440;
+        Thu, 30 Sep 2021 14:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633010540;
+        bh=0LHNHemELtyiGJYnwXmqlHpJyubLyRp92TIqcnNtJSg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CV831w0f3j7NNWnLxQEgi9ajfFekM7LDl7Wu2gjMJe6YSOELc5Ts+4lQfPITrK0eu
+         bLB+UqVaN9X52kls0wke9eHpE4RdtipoTB++yVDunhpENU1hPajE0t/ZJ2VMM5Tyho
+         TFwECotNHFsefuvgeaUM8mc0o6jfihHVICvnUHtvSQ36Afr7V2aTGIk/lodhUDoOgV
+         ra55nLsBPpwNBc4VmeByhlB8JkTRhrr6NfWw5/hXYsRLWXjTnVgUYwqZVuIZ8QiHiJ
+         fTv3ri3oN8UmItmyjMUh+ZESIIxIfzZED6EUb8WSO+DVnP7Cq/4KkPoJxoCMMbLQAo
+         6qN7qcQvV6G3Q==
+Subject: Re: [PATCHv3 2/3] EDAC/synopsys: add support for version 3 of the
+ Synopsys EDAC DDR
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     michal.simek@xilinx.com, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org
+References: <20210928160423.271187-1-dinguyen@kernel.org>
+ <20210928160423.271187-2-dinguyen@kernel.org> <YVWianHwt7P1LPY9@zn.tnic>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <203f5399-a8e0-70be-8b8b-782e6870143e@kernel.org>
+Date:   Thu, 30 Sep 2021 09:02:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210929183357.1490204-1-lucas.demarchi@intel.com> <20210929183357.1490204-4-lucas.demarchi@intel.com>
-In-Reply-To: <20210929183357.1490204-4-lucas.demarchi@intel.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 30 Sep 2021 23:01:36 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ765CBjg83Kpt8XdOjqPw8Xuv--_bcTvd3udZ=tsgMdA@mail.gmail.com>
-Message-ID: <CAK7LNAQ765CBjg83Kpt8XdOjqPw8Xuv--_bcTvd3udZ=tsgMdA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] Move IS_CONFIG_NONZERO() to kconfig.h
-To:     Lucas De Marchi <lucas.demarchi@intel.com>
-Cc:     intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVWianHwt7P1LPY9@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 3:34 AM Lucas De Marchi
-<lucas.demarchi@intel.com> wrote:
->
-> The check for config value doesn't really belong to i915_utils.h - we
-> are trying to eliminate that utils helper and share them when possible
-> with other drivers and subsystems.
->
-> Rationale for having such macro is in commit
-> babaab2f4738 ("drm/i915: Encapsulate kconfig constant values inside boolean predicates")
-> whereas later it is improved to not break the build if used with
-> undefined configs. The caveat is detailed in the documentation: unlike
-> IS_ENABLED(): it's not preprocessor-only logic so can't be used for
-> things like `#if IS_CONFIG_NONZERO(...)`
->
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 
 
-Hypothetical "it would be nice to have ..." is really unneeded.
+On 9/30/21 6:41 AM, Borislav Petkov wrote:
+> On Tue, Sep 28, 2021 at 11:04:22AM -0500, Dinh Nguyen wrote:
+>> @@ -899,6 +930,10 @@ static const struct of_device_id synps_edac_match[] = {
+>>   		.compatible = "xlnx,zynqmp-ddrc-2.40a",
+>>   		.data = (void *)&zynqmp_edac_def
+>>   	},
+>> +	{
+>> +		.compatible = "snps,ddrc-3.80a",
+> 
+> WARNING: DT compatible string "snps,ddrc-3.80a" appears un-documented -- check ./Documentation/devicetree/bindings/
+> #169: FILE: drivers/edac/synopsys_edac.c:934:
+> +               .compatible = "snps,ddrc-3.80a",
+> 
 
-       if (context && CONFIG_DRM_I915_FENCE_TIMEOUT > 0)
-                     return
-msecs_to_jiffies_timeout(CONFIG_DRM_I915_FENCE_TIMEOUT);
+I'll send a follow-up patch to document this.
 
-
-is enough, and much cleaner.
-
-
-
-This warning is shown only when a constant is used
-together with '&&'.
-
-Most of IS_ACTIVE can go away.
-
-Given that, there are not many places where the IS_ACTIVE macro
-is useful, even in the i915 driver.
-
-For a few sources of the warnings,
-replacing it with  != 0 or > 0 is just fine.
-
-Of course, such an ugly macro is not worth being moved to <linux/kconfig.h>
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Dinh
