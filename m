@@ -2,84 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102A841DCFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A18141DD00
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244670AbhI3PKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:10:36 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:40656 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239919AbhI3PKY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:10:24 -0400
-Received: by mail-ed1-f49.google.com with SMTP id g8so23567170edt.7;
-        Thu, 30 Sep 2021 08:08:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=afuuRoWEct2MfL+JBgtz3aEAzNrXRi3zezmIOBkaE24=;
-        b=cjkHe6Z9RmQhXpASuDZVgqkAhu5NNqeN2F9KqpQIbdKFEW9uF/dAycbLqvzd3EhjcH
-         n+EHwCpPXMJuwopjuP5hvostD4oODPap0CFDubgmIw+3xu3rKCv6wk7YkjKHyLPSmNXB
-         umekLb3wjbOGqLHlRFBBdyS9cHD0cLFvgsPbXM3EEFbRNW1l/WMkxUB5NlviSORz0EV3
-         sTY+I6ZwD/mAgskbL/xXBQTywGJWT7g5bn1e8FU49ueBPF4NtTu60L9eH9HMswS652FR
-         ibBL3cD8X1z2EJsLyVcKot77EtGUDvoRLEkgp19yHrz/j9OOQRSDNPIoR6bvW9SH0UdS
-         pkGg==
-X-Gm-Message-State: AOAM530FmcQECKLjJO2JBtMpNpLYQLB5ucGvXQrnft50SE2CGExuFIoC
-        SV5pB0p5DCmVqE9eM2LtTLw=
-X-Google-Smtp-Source: ABdhPJzW5nYkwTBSU2KYkXIp9u2zCRW4OTzrnUusNVdJl5Z261PeSkrf26+tyN6r+fm0cRL41Z0nvw==
-X-Received: by 2002:a17:906:f6cf:: with SMTP id jo15mr7441915ejb.244.1633014360379;
-        Thu, 30 Sep 2021 08:06:00 -0700 (PDT)
-Received: from [10.9.0.26] ([46.166.133.199])
-        by smtp.gmail.com with ESMTPSA id v22sm992164eds.20.2021.09.30.08.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 08:05:59 -0700 (PDT)
-Reply-To: alex.popov@linux.com
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-To:     Petr Mladek <pmladek@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S244917AbhI3PKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:10:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:55586 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244732AbhI3PKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:10:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E1C8101E;
+        Thu, 30 Sep 2021 08:08:55 -0700 (PDT)
+Received: from [10.57.21.81] (unknown [10.57.21.81])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5D833F70D;
+        Thu, 30 Sep 2021 08:08:53 -0700 (PDT)
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     Leo Yan <leo.yan@linaro.org>, Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will.deacon@arm.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, notify@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210929185823.499268-1-alex.popov@linux.com>
- <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
- <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1> <YVWAPXSzFNbHz6+U@alley>
-From:   Alexander Popov <alex.popov@linux.com>
-Message-ID: <a09c1d4d-1d5b-9092-ae3a-61bc22689dd2@linux.com>
-Date:   Thu, 30 Sep 2021 18:05:54 +0300
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, german.gomez@arm.com
+References: <20210916001748.1525291-1-namhyung@kernel.org>
+ <20210916135418.GA383600@leoy-ThinkPad-X240s>
+ <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
+ <20210923142305.GA603008@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
+Date:   Thu, 30 Sep 2021 16:08:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YVWAPXSzFNbHz6+U@alley>
+In-Reply-To: <20210923142305.GA603008@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,98 +45,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.09.2021 12:15, Petr Mladek wrote:
-> On Wed 2021-09-29 12:49:24, Paul E. McKenney wrote:
->> On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:
->>> On 29.09.2021 21:58, Alexander Popov wrote:
->>>> Currently, the Linux kernel provides two types of reaction to kernel
->>>> warnings:
->>>>  1. Do nothing (by default),
->>>>  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
->>>>     so panic_on_warn is usually disabled on production systems.
-> 
-> Honestly, I am not sure if panic_on_warn() or the new pkill_on_warn()
-> work as expected. I wonder who uses it in practice and what is
-> the experience.
-> 
-> The problem is that many developers do not know about this behavior.
-> They use WARN() when they are lazy to write more useful message or when
-> they want to see all the provided details: task, registry, backtrace.
-> 
-> Also it is inconsistent with pr_warn() behavior. Why a single line
-> warning would be innocent and full info WARN() cause panic/pkill?
-> 
-> What about pr_err(), pr_crit(), pr_alert(), pr_emerg()? They inform
-> about even more serious problems. Why a warning should cause panic/pkill
-> while an alert message is just printed?
 
-That's a good question.
 
-I guess various kernel continuous integration (CI) systems have panic_on_warn
-enabled.
-
-[Adding Dmitry Vyukov to this discussion]
-
-If we look at the syzbot dashboard [1] with the results of Linux kernel fuzzing,
-we see the issues that appear as various kernel crashes and warnings.
-We don't see anything from pr_err(), pr_crit(), pr_alert(), pr_emerg(). Maybe
-these situations are not considered as kernel bugs that require fixing.
-
-Anyway, from a security point of view, a kernel warning output is interesting
-for attackers as an infoleak. The messages printed by pr_err(), pr_crit(),
-pr_alert(), pr_emerg() provide less information.
-
-[1]: https://syzkaller.appspot.com/upstream
-
-> It somehow reminds me the saga with %pK. We were not able to teach
-> developers to use it correctly for years and ended with hashed
-> pointers.
+On 23/09/2021 15:23, Leo Yan wrote:
+> Hi Namhyung,
 > 
-> Well, this might be different. Developers might learn this the hard
-> way from bug reports. But there will be bug reports only when
-> anyone really enables this behavior. They will enable it only
-> when it works the right way most of the time.
+> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
 > 
+> [...]
 > 
->>>> From a safety point of view, the Linux kernel misses a middle way of
->>>> handling kernel warnings:
->>>>  - The kernel should stop the activity that provokes a warning,
->>>>  - But the kernel should avoid complete denial of service.
->>>>
->>>> From a security point of view, kernel warning messages provide a lot of
->>>> useful information for attackers. Many GNU/Linux distributions allow
->>>> unprivileged users to read the kernel log, so attackers use kernel
->>>> warning infoleak in vulnerability exploits. See the examples:
->>>>   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
->>>>   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
->>>>
->>>> Let's introduce the pkill_on_warn boot parameter.
->>>> If this parameter is set, the kernel kills all threads in a process
->>>> that provoked a kernel warning. This behavior is reasonable from a safety
->>>> point of view described above. It is also useful for kernel security
->>>> hardening because the system kills an exploit process that hits a
->>>> kernel warning.
->>>>
->>>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
->>>
->>> This patch was tested using CONFIG_LKDTM.
->>> The kernel kills a process that performs this:
->>>   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
->>>
->>> If you are fine with this approach, I will prepare a patch adding the
->>> pkill_on_warn sysctl.
+>>> Before we had discussion for enabling PID/TID for SPE samples; in the patch
+>>> set [1], patches 07, 08 set sample's pid/tid based on the Arm SPE context
+>>> packets.  To enable hardware tracing context ID, you also needs to enable
+>>> kernel config CONFIG_PID_IN_CONTEXTIDR.
 >>
->> I suspect that you need a list of kthreads for which you are better
->> off just invoking panic().  RCU's various kthreads, for but one set
->> of examples.
+>> Thanks for sharing this.
+>>
+>> Yeah I also look at the context info but having a dependency on a kconfig
+>> looks limiting its functionality.  Also the kconfig says it has some overhead
+>> in the critical path (even if perf is not running, right?) - but not sure how
+>> much it can add.
 > 
-> I wonder if kernel could survive killing of any kthread. I have never
-> seen a code that would check whether a kthread was killed and
-> restart it.
+> Yes, after enabled config PID_IN_CONTEXTIDR, the kernel will always
+> write PID into the system register CONTEXTIDR during process context
+> switching.  Please see the flow:
+> 
+>   __switch_to() (arch/arm64/kernel/process.c)
+>     `-> contextidr_thread_switch(next)
+> 
+>> config PID_IN_CONTEXTIDR
+>>     bool "Write the current PID to the CONTEXTIDR register"
+>>     help
+>>       Enabling this option causes the kernel to write the current PID to
+>>       the CONTEXTIDR register, at the expense of some additional
+>>       instructions during context switch. Say Y here only if you are
+>>       planning to use hardware trace tools with this kernel.
+>>
+>>>
+>>> At that time, there have a concern is the hardware context ID might
+>>> introduce confusion for non-root namespace.
+>>
+>> Sounds like a problem.
+>>
+>>>
+>>> We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
+>>> pid/tid, the Intel PT implementation uses two things to set sample's
+>>> pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
+>>> the branch instruction is the symbol "__switch_to".  Since the trace
+>>> event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
+>>> pid/tid after the branch instruction for "__switch_to".  Arm SPE is
+>>> 'statistical', thus it cannot promise the trace data must contain the
+>>> branch instruction for "__switch_to", please see details [2].
+>>
+>> I can see the need in the Intel PT as it needs to trace all (branch)
+>> instructions, but is it really needed for ARM SPE too?
+>> Maybe I am missing something, but it seems enough to have a
+>> coarse-grained context switch for sampling events..
+> 
+> The issue is that the coarse-grained context switch if introduces any
+> inaccuracy in the reported result.  If we can run some workloads and
+> prove the coarse-grained context switch doesn't cause significant bias,
+> it will be great and can give us the confidence for this approach.
 
-The do_group_exit() function calls do_exit() from kernel/exit.c, which is also
-called during a kernel oops. This function cares about a lot of special cases
-depending on the current task_struct. Is it fine?
+It sounds like it's worth testing. Do you think the inaccuracy would only
+apply to code in the kernel around the time of the switch? Or do you think
+it could affect userspace as well? It seems to me that the switch event
+would have a timestamp that would precede _all_ userspace code, but I'm not
+100% sure on that. I suppose it's easy to test.
 
-Best regards,
-Alexander
+German Gomez actually starting looking into the switch events for SPE at the
+same time, so I've CCd him and maybe he can do some testing of the patch.
+
+Thanks
+James
+
+> 
+> Even enabling PERF_RECORD_SWITCH_CPU_WIDE event, I think it's good to
+> give priority for hardware PID tracing in Arm SPE trace data, if detects
+> the hardware PID tracing is enabled, then we can rollback to use
+> context packets from hardware trace data to set sample's PID.
+> 
+> How about you think for this?
+> 
+> Thanks,
+> Leo
+> 
