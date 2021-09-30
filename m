@@ -2,118 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE87B41DAE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C31E41DAED
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351090AbhI3NXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351105AbhI3NXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:23:16 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEF2C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:21:33 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id f78-20020a1c1f51000000b0030cdb3d6079so4316480wmf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0EnoGcQxVcjVLjhlbUWYyjl1NXgdf4STxEMEBfnyuEE=;
-        b=RfTVTSp1Jll5QOCFPLIM78aADWMp5XJ+7MXbtAhSEJgHyf5spRRcODCjtBNQ1Zr29M
-         3zZ0ofUeQgp4EmzaiUh9syLWblSChCksVV8XwwiVndwfk9CSH9jlVDatSVNRtfSkLV0K
-         UUnMG/NHEM8gFVZWGcFMqUgEVGDEhc2uWRGCLnWvDTRkfyXc2jv+7H5qafKQ8fZl3Aum
-         1Nnr8yVXQDR+vs8nayhUqdLXMCaj7KCNtU5EJNuhDJL0tkmteDGs407BQjMP6qfWasle
-         4POTMeon+KJwy6tnw3miMqaA96nRffXtdAm+Ky0rqO/NNPSR0QKAem7NDkk6Kx3WDKv9
-         1VCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0EnoGcQxVcjVLjhlbUWYyjl1NXgdf4STxEMEBfnyuEE=;
-        b=CM/NhNDx0HS2SQFj3IXCXPNeXp08mxiyw+9oOgzEIE7tubFjAnKRfRuRYJKhFAdS+d
-         qLgQjZSGtqlPOBoH0JMuraJyAJAEXiVGxurUJGDjuOF49chJ7cjwRdQ/y5YmmxgpfjIp
-         EhGJC5s3BVqOMvsE+GdcmAGdg1pTHbAoiDSCRg8YkeyE12RRpX130AFUpcvtH3FA9zC6
-         sQLFopS3k/JipYBg+dAJyLFfe0xhW60yqYAL2u4XOsn/SfNKgUcRuRhKwM7zQiN+4W1/
-         fSSTo6fOdYYRx7U+m7VQDEnDa+IezbtZ3Ve8KSNJX4lNvwAlS5/LisjLfeKpBGADdOBg
-         k6BA==
-X-Gm-Message-State: AOAM533Zduk/xQuDqioSqvwZoLZaI9Xo+muhkjA0th7wZLUbBRn4ZcjG
-        8/9V8D3/1b8yUvVnFn3dHUSiRw==
-X-Google-Smtp-Source: ABdhPJyyEtgq7rfkTi/7o2F3OJOwqDVQ7uW6EcRjxsPnSK+R3odzh0Zz0IG2MLTOeNWuUz6OYd2YEg==
-X-Received: by 2002:a1c:f713:: with SMTP id v19mr5199573wmh.188.1633008092422;
-        Thu, 30 Sep 2021 06:21:32 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id s13sm4847931wmc.47.2021.09.30.06.21.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 06:21:32 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 14:21:30 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 10/12] mfd: dt-bindings: samsung,s5m8767: document buck
- and LDO supplies
-Message-ID: <YVW52vAdxbA8LqhM@google.com>
-References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
- <20210928084949.27939-11-krzysztof.kozlowski@canonical.com>
- <YVWx+08egbGPiYYt@google.com>
- <e5ab2ba9-e4ae-30db-8e54-8af42d7f3bf1@canonical.com>
+        id S1351162AbhI3NYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:24:06 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:44729 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348651AbhI3NYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:24:05 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HKv6g3gh2z9sTd;
+        Thu, 30 Sep 2021 15:22:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5pJF2Y4Fg1sI; Thu, 30 Sep 2021 15:22:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKv6g2TRfz9sTF;
+        Thu, 30 Sep 2021 15:22:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 33DE78B773;
+        Thu, 30 Sep 2021 15:22:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 83kkFvX7Whf9; Thu, 30 Sep 2021 15:22:19 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F22568B763;
+        Thu, 30 Sep 2021 15:22:17 +0200 (CEST)
+Subject: Re: [PATCH v2 5/7] sched: move CPU field back into thread_info if
+ THREAD_INFO_IN_TASK=y
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210930125813.197418-1-ardb@kernel.org>
+ <20210930125813.197418-6-ardb@kernel.org>
+ <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
+ <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ff33f8b0-dadd-ce94-8e34-d78822119fa6@csgroup.eu>
+Date:   Thu, 30 Sep 2021 15:22:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e5ab2ba9-e4ae-30db-8e54-8af42d7f3bf1@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
 
-> On 30/09/2021 14:47, Lee Jones wrote:
-> > On Tue, 28 Sep 2021, Krzysztof Kozlowski wrote:
-> > 
-> >> Document the properties with regulator supplies for bucks and LDOs.  At
-> >> least one board uses it (Exynos5250 Arndale).
-> >>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >> ---
-> >>  .../bindings/mfd/samsung,s5m8767.yaml         | 38 +++++++++++++++++++
-> >>  1 file changed, 38 insertions(+)
-> > 
-> > These all need Rob's Ack.
-> 
-> Correct.
-> 
-> > 
-> > But can you start with reworking the subject line please.
-> > 
-> > It should be:
-> > 
-> >   "dt-bindings: mfd: <component>: <Subject starting with an uppercase char>"
-> 
-> Sure, just have in mind that Mark wants them the other way around for
-> regulator. :)
 
-a) I'm suggesting you use the standard formatting
-b) This is not a regulator patch :)
+Le 30/09/2021 à 15:12, Ard Biesheuvel a écrit :
+> On Thu, 30 Sept 2021 at 15:09, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 30/09/2021 à 14:58, Ard Biesheuvel a écrit :
+>>> THREAD_INFO_IN_TASK moved the CPU field out of thread_info, but this
+>>> causes some issues on architectures that define raw_smp_processor_id()
+>>> in terms of this field, due to the fact that #include'ing linux/sched.h
+>>> to get at struct task_struct is problematic in terms of circular
+>>> dependencies.
+>>>
+>>> Given that thread_info and task_struct are the same data structure
+>>> anyway when THREAD_INFO_IN_TASK=y, let's move it back so that having
+>>> access to the type definition of struct thread_info is sufficient to
+>>> reference the CPU number of the current task.
+>>>
+>>> Note that this requires THREAD_INFO_IN_TASK's definition of the
+>>> task_thread_info() helper to be updated, as task_cpu() takes a
+>>> pointer-to-const, whereas task_thread_info() (which is used to generate
+>>> lvalues as well), needs a non-const pointer. So make it a macro instead.
+>>>
+>>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>>> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+>>> Acked-by: Mark Rutland <mark.rutland@arm.com>
+>>> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+>>> ---
+>>>    arch/arm64/kernel/asm-offsets.c   |  1 -
+>>>    arch/arm64/kernel/head.S          |  2 +-
+>>>    arch/powerpc/kernel/asm-offsets.c |  2 +-
+>>>    arch/powerpc/kernel/smp.c         |  2 +-
+>>>    include/linux/sched.h             | 13 +------------
+>>>    kernel/sched/sched.h              |  4 ----
+>>>    6 files changed, 4 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+>>> index cee9f3e9f906..0bfc048221af 100644
+>>> --- a/arch/arm64/kernel/asm-offsets.c
+>>> +++ b/arch/arm64/kernel/asm-offsets.c
+>>> @@ -27,7 +27,6 @@
+>>>    int main(void)
+>>>    {
+>>>      DEFINE(TSK_ACTIVE_MM,             offsetof(struct task_struct, active_mm));
+>>> -  DEFINE(TSK_CPU,            offsetof(struct task_struct, cpu));
+>>>      BLANK();
+>>>      DEFINE(TSK_TI_CPU,                offsetof(struct task_struct, thread_info.cpu));
+>>>      DEFINE(TSK_TI_FLAGS,              offsetof(struct task_struct, thread_info.flags));
+>>> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+>>> index 17962452e31d..6a98f1a38c29 100644
+>>> --- a/arch/arm64/kernel/head.S
+>>> +++ b/arch/arm64/kernel/head.S
+>>> @@ -412,7 +412,7 @@ SYM_FUNC_END(__create_page_tables)
+>>>        scs_load \tsk
+>>>
+>>>        adr_l   \tmp1, __per_cpu_offset
+>>> -     ldr     w\tmp2, [\tsk, #TSK_CPU]
+>>> +     ldr     w\tmp2, [\tsk, #TSK_TI_CPU]
+>>
+>> Why do you need to change the name ?
+>>
+>> For powerpc64, you leave TASK_CPU.
+>>
+> 
+> Because arm64 has a clear idiom here, where TSK_TI_ is used for
+> thread_info fields accessed via a task_struct pointer. Also, it only
+> occurs once in the code.
+> 
+> Power does not seem to have this idiom, and TASK_CPU is used in many
+> more places, so I don't think it makes sense to change its name.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+In the old days it was called TI_CPU, was changed by commit f7354ccac844 
+("powerpc/32: Remove CURRENT_THREAD_INFO and rename TI_CPU") after 
+commit ed1cd6deb013 ("powerpc: Activate CONFIG_THREAD_INFO_IN_TASK")
+
+I don't have a strong opinion about it but we have:
+
+$ git grep thread_info arch/powerpc/kernel/asm-offsets.c
+arch/powerpc/kernel/asm-offsets.c:#include <asm/thread_info.h>
+arch/powerpc/kernel/asm-offsets.c:      OFFSET(TI_livepatch_sp, 
+thread_info, livepatch_sp);
+arch/powerpc/kernel/asm-offsets.c:      OFFSET(TI_LOCAL_FLAGS, 
+thread_info, local_flags);
+arch/powerpc/kernel/asm-offsets.c: 
+offsetof(struct task_struct, thread_info));
+
+
+> 
+> 
+>>>        ldr     \tmp1, [\tmp1, \tmp2, lsl #3]
+>>>        set_this_cpu_offset \tmp1
+>>>        .endm
+>>> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+>>> index e563d3222d69..e37e4546034e 100644
+>>> --- a/arch/powerpc/kernel/asm-offsets.c
+>>> +++ b/arch/powerpc/kernel/asm-offsets.c
+>>> @@ -93,7 +93,7 @@ int main(void)
+>>>    #endif /* CONFIG_PPC64 */
+>>>        OFFSET(TASK_STACK, task_struct, stack);
+>>>    #ifdef CONFIG_SMP
+>>> -     OFFSET(TASK_CPU, task_struct, cpu);
+>>> +     OFFSET(TASK_CPU, task_struct, thread_info.cpu);
+>>>    #endif
+>>>
+>>>    #ifdef CONFIG_LIVEPATCH
+>>
+>> ...
