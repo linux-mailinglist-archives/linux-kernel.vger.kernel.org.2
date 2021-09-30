@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D25441D559
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8816341D582
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349113AbhI3IX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:23:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37732 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349083AbhI3IX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:23:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        id S1349154AbhI3IeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:34:09 -0400
+Received: from mail.flinny.org ([145.239.104.49]:58311 "EHLO mail.flinny.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349240AbhI3IeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:34:01 -0400
+X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 04:34:00 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.flinny.org (Postfix) with ESMTP id 8D27C210BD;
+        Thu, 30 Sep 2021 08:23:09 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at flinny.org
+Received: from mail.flinny.org ([127.0.0.1])
+        by localhost (mail.flinny.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vG642tgy5d62; Thu, 30 Sep 2021 08:23:08 +0000 (UTC)
+Received: from rampage.fritz.box (overkill.flinny.org [62.3.65.209])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F0DDF1FE3A;
-        Thu, 30 Sep 2021 08:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632990134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2lV+mK2M7/NdUSiHiSSKoGAAQWF1PWc4g6uu1e2Vpk=;
-        b=NmHM2p/H9RmlpIS4pPmVitWptYM1NJYJWjHCPiSwLS4Yz1/xD6urgKJZxoeEAj2cCpCC7q
-        z0Ion9ov98vnSS0L2D3jl3NkgfBtCsude8gecww9rIKbnzE4TVFVIc4qAT3n3f6AEDZvA3
-        oA+nDgCJAgLg4jDXJFAy8jTChajF2Vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632990134;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2lV+mK2M7/NdUSiHiSSKoGAAQWF1PWc4g6uu1e2Vpk=;
-        b=lyV0YFiFjWMtwdsfSTlf+dynVDBJWSLoYopHvFyN6PNbxYVQ22fEYyRUc9GHQrKRJ1GLjL
-        e8gkjrK3Q0Xqx3DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1063140D0;
-        Thu, 30 Sep 2021 08:22:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AolJMrZzVWEtLAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 30 Sep 2021 08:22:14 +0000
-Message-ID: <a6919b32-e789-7ed9-bab7-8235638e9c12@suse.cz>
-Date:   Thu, 30 Sep 2021 10:22:14 +0200
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.flinny.org (Postfix) with ESMTPSA id 03DD92105D;
+        Thu, 30 Sep 2021 08:23:06 +0000 (UTC)
+From:   Nicholas Flintham <nick@flinny.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-bluetooth@vger.kernel.org,
+        Nicholas Flintham <nick@flinny.org>
+Subject: [PATCH] Bluetooth: btusb: Add support for TP-Link UB500 Adapter
+Date:   Thu, 30 Sep 2021 09:22:39 +0100
+Message-Id: <20210930082239.3699395-1-nick@flinny.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] mm: remove useless lines in enable_cpucache()
-Content-Language: en-US
-To:     Shi Lei <shi_lei@massclouds.com>, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210930034845.2539-1-shi_lei@massclouds.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210930034845.2539-1-shi_lei@massclouds.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 05:48, Shi Lei wrote:
-> These lines are useless, so remove them.
+Add support for TP-Link UB500 Adapter (RTL8761B)
 
-I would clarify that they are useless after commit 10befea91b61 ("mm:
-memcg/slab: use a single set of kmem_caches for all allocations")
+* /sys/kernel/debug/usb/devices
+T:  Bus=01 Lev=02 Prnt=05 Port=01 Cnt=01 Dev#= 78 Spd=12   MxCh= 0
+D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2357 ProdID=0604 Rev= 2.00
+S:  Manufacturer=
+S:  Product=TP-Link UB500 Adapter
+S:  SerialNumber=E848B8C82000
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
 
+Signed-off-by: Nicholas Flintham <nick@flinny.org>
+---
+ drivers/bluetooth/btusb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-> Signed-off-by: Shi Lei <shi_lei@massclouds.com>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  mm/slab.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 4d826394ffcb..01775fe0e002 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -3900,8 +3900,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
->  	if (err)
->  		goto end;
->  
-> -	if (limit && shared && batchcount)
-> -		goto skip_setup;
->  	/*
->  	 * The head array serves three purposes:
->  	 * - create a LIFO ordering, i.e. return objects that are cache-warm
-> @@ -3944,7 +3942,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
->  		limit = 32;
->  #endif
->  	batchcount = (limit + 1) / 2;
-> -skip_setup:
->  	err = do_tune_cpucache(cachep, limit, batchcount, shared, gfp);
->  end:
->  	if (err)
-> 
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 60d2fce59a71..79d0db542da3 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -433,6 +433,10 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x0bda, 0xb009), .driver_info = BTUSB_REALTEK },
+ 	{ USB_DEVICE(0x2ff8, 0xb011), .driver_info = BTUSB_REALTEK },
+ 
++	/* Additional Realtek 8761B Bluetooth devices */
++	{ USB_DEVICE(0x2357, 0x0604), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++
+ 	/* Additional Realtek 8761BU Bluetooth devices */
+ 	{ USB_DEVICE(0x0b05, 0x190e), .driver_info = BTUSB_REALTEK |
+ 	  					     BTUSB_WIDEBAND_SPEECH },
+-- 
+2.32.0
 
