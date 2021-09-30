@@ -2,342 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2AD41D99B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53F841D983
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350805AbhI3MTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:19:17 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:9189 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1350827AbhI3MTJ (ORCPT
+        id S1350748AbhI3MSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:18:39 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:38967 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349389AbhI3MSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:19:09 -0400
-X-IronPort-AV: E=Sophos;i="5.85,336,1624287600"; 
-   d="scan'208";a="95535904"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 30 Sep 2021 21:17:26 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 06ACB437E78F;
-        Thu, 30 Sep 2021 21:17:23 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [RFC PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to get/set drive-strength and output-impedance
-Date:   Thu, 30 Sep 2021 13:16:30 +0100
-Message-Id: <20210930121630.17449-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Thu, 30 Sep 2021 08:18:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1633004212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZNbam7aHstMlEKiiTfzq0joC0jNz1ZNdGuw3sodQCjU=;
+        b=lljORLsE7SYxXCzpMIugjP2GJsQGwymLM4DdyY9IgVZmygPXI9NgTADJmf0PqyVoVRUDOH
+        VAXG2EXiHuSKPdAAkELwLt9Scm9Jx4aSLTuqua7FfIYY4dWOesIOf6M6Q5X5xvuTB8BDyK
+        QEYp6cHZ7fmCQ/lOaE5wkKFydiNO48Q=
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-am5eur02lp2057.outbound.protection.outlook.com [104.47.4.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-2-plxmdjIENIahOSP6ObybZg-1;
+ Thu, 30 Sep 2021 14:16:51 +0200
+X-MC-Unique: plxmdjIENIahOSP6ObybZg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JQ/I+dp1Z9WJ3fIl4h6Spmx2nJRf676c6UcosbNQ8td/WaVXqVnBMhQmZ7QAn5hveqLhuTVthVxfq4IFBAD6URoXWF9+6Cz9gBvHvvJvcGe0rSbxNsssYkdHGbD7cWLCrUHqA9Q9v+BbzyXPXahz57z1GoEiyTKWS+ONmUiqpALMnYelEyXWo8YUPiih9p7jMBsIcGkmC+xBbgrXD0fvCv5MSI93m4XxVY7t42kNSc2I+N8+cxnxyxIdHduNMc43QN4dlJhra2zIc8V5uZpWgGyjXH4nGjjjIp387m6NoV+d79/N42qFl8qtjaYg7GUesiwm/dJLDmTjMf7SQi1nLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ZNbam7aHstMlEKiiTfzq0joC0jNz1ZNdGuw3sodQCjU=;
+ b=h3sA93cXpNudaLmvVd7hSEJgjwY8ozwrW2DXZsokppqb/aHK5yVHYtSaRvSi1iudNixFGknvYbZlf9btki3zdMqxb4avRLooyvvrh9X3fZlxHGrx1Q4iViTGi4FUxclzs+VS5DlvWW7E6LWkoU1rVOPftS1junoOIttcPYhom62v0idUGFNFLTTKtUFigyXi1ulu4gJ6p7K1Z60kNn7b1LgrwRaM82uQUamGNVm4fTvEJQr8W66VGDoN2yEs1HYbFjuhUmCzOv+DmOGGs6EjOZuD4C538WK0M+pQMUdL+86Kzvd8HIbEC7USH7riWgH+4I/mUys3pLG/PKpOoJNfHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VE1PR04MB6479.eurprd04.prod.outlook.com (2603:10a6:803:11c::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Thu, 30 Sep
+ 2021 12:16:49 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
+ 12:16:49 +0000
+Subject: [PATCH v2 2/9] xen/x86: allow PVH Dom0 without XEN_PV=y
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <9a26d4ff-80a1-e0c1-f528-31a8568d41f7@suse.com>
+Message-ID: <983bb72f-53df-b6af-14bd-5e088bd06a08@suse.com>
+Date:   Thu, 30 Sep 2021 14:16:47 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <9a26d4ff-80a1-e0c1-f528-31a8568d41f7@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS8P189CA0001.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:31f::10) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by AS8P189CA0001.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:31f::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Thu, 30 Sep 2021 12:16:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8c708c28-f89e-4fab-6d84-08d9840c2dc1
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6479:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB64798659F13EA82CE2087A54B3AA9@VE1PR04MB6479.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a+j/3DJ6jGTOR2Y+9eiOGVDBHEbBm0BcTTqXZOWS7N46qGTXwC3++5VoDOMo9kGUbckiOKATOkbvhbVfjgAyz/WgftlpOMHRBIQiIhAvAxNrYJyH76V/GatH1I9Wolx461Ed4oIEE4oYpL19WOxLeEl3yej/HQEvE2/twbzHTLCVk3nxkyXN+OumzxGCXMTwhPQWpl4Oc0NWxYDsHHc7jdomWReqUct2+GfQU1hOpHCv5KpU+jxOIRJpPcSxonfdxkt1O69ibGZBgJbaDHREfGsFy84mGm6jifWAr1o2RRghyPWDCF4S/HLgIXFIgC0hGT4oay9Biv3ZRsWnj18QD/9KqhDr28hlRYAJ4m1HGfgc/FnM/qNJay+GckAV1mjLOx6IeYGm0VKTHnZYmEe+PQzo03I6vmRNAY0/l3IfC91+OAtvZkT8tvncXzvHU2qUekRITi9LxvrLqgQ1mKdpvXzQleLm0MMbSfarK0VvWm3/nl0yhM7TdFwW/vWmccFDgYobkZ4bhPZDNCsSrf+HLng/rnyhs4SMBhrwaI7hvn47iPEAmRWMp2KwSkdr2XSOMibjpDqBcoxYngaJFrH+zgx9msrDYtIdv52IeG9qNs0ompnLbhexbhGnsWk7iAZr2HXogOPGbtS4xgUgjoPUVvmkOiirIyZIRyq/9aQ0VruSgKIdoSfiJLj/KPa3eLSeeY/pO124NzMTSmUuCuJEUnKcTZw06WDhSkMJmOxWVz5+b6SPWR47jbWRjMwhzCv3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(2906002)(86362001)(26005)(16576012)(508600001)(316002)(956004)(186003)(6486002)(8936002)(31686004)(54906003)(4326008)(83380400001)(110136005)(38100700002)(2616005)(66946007)(31696002)(66476007)(66556008)(5660300002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QitHQmZUSHgzSyswM0kySzAvcHJGWXZEOFFnSjlHWUlRM1F2ZFhRcnZ0SGhv?=
+ =?utf-8?B?ajF5NU9rZllxemZxRUlnUVZJOTlUeEZQeDBhQVZPUjFVWHBRK3N2UzJ1ODdi?=
+ =?utf-8?B?bk9IL28wOG1xa0dCVHorOWxzZ1JYUDBPamdkSUUzQW55ZmlYUzRtTkc4dHZ4?=
+ =?utf-8?B?MUlCbElBUCtMSkdVcFlTN0oxNHhuVC9ON29MNnFvYVNJT2tPWUxyeWRRZHBu?=
+ =?utf-8?B?ZFBoRW5zSTNRRlF1RXQ4OVlLaVhONWw5V3J3cjNxT1NWYnQyd0pMK3RjRWI4?=
+ =?utf-8?B?RHgxRWF3cWJQc2ZtdlNPYlhLMElQbTRVSHc4cDF4ZGtETWMrR0FEdFZuM1Iw?=
+ =?utf-8?B?YnVpV0toU1hHK1lHb3U4TjN2YkFEdmc3dzljNVE0RXZ6MjI3TGxkbGZqbzhW?=
+ =?utf-8?B?WldFMUZlVVl3dEkxN0tVb0FUK25CTUM2SDhaQkpheW1NaVNzOThBQVhGbG9j?=
+ =?utf-8?B?K0hJVHh3b04xaVNTVDhSZFVOL2NLZklsZmJWSmtiemtJZ1VjajdIMnA1dUxE?=
+ =?utf-8?B?cHdlTHo0cnVZLzgrYlZoczRmMDdLdHE4c3pyd0xmWjdtSUxzZUR3WDRvSzBj?=
+ =?utf-8?B?OG5taS9pdEoxVkVVUEg1Z09iRjRJU0Y1SUJFdDVqejk2c1M1eGhtdUNnYmpy?=
+ =?utf-8?B?U3FEbDZudThlNm9nRVpFeXBPcWN5RWhSNWFHaDV4UWhQRi9ZRG1RN0tLcWt6?=
+ =?utf-8?B?Tk5EN09IeWNDZHpBV0lTRWZwc2M2VWdtMmpjUmVVVmhhbkl6UlRNSUx0S0pT?=
+ =?utf-8?B?NDlOalF2b2xmeStFYzZicEwyREhuckZMRXpWaGxjRnJ1Q2dDelh3aEl4UVBk?=
+ =?utf-8?B?alZUazdXOWVEdGZZVVZ0SzMzN0hLdHVNaVAzWEVPQ09rdGdHTVRnd1BJZGgw?=
+ =?utf-8?B?Q2xnMEtKcGdBb3dLZmNaSzYwWmFIK1kvQUQzUGJZaVQ5RzVTZ3JlNytNbUJx?=
+ =?utf-8?B?VzgrS1hUS2NJL2MwTDFXYjh4cFBlL2UwTjI3NVhsaTRHbkROY3VHSndjSFNC?=
+ =?utf-8?B?VXJnWWpUMFNGbE1YVWord1hNbFNGSHkzeHNiRWdvWTEwZGxkNWhqaThuY29P?=
+ =?utf-8?B?eG03M29yRTF6d2NoMEJ4MVpGYzNCcVlKbHk5YitqaEsvMTlFNmZ6QUM5RDg3?=
+ =?utf-8?B?VVVYZ01ubVpTYzdFSUgzb1Y5QkR4NUljcSsvVnFKVjhXbVJ4K293cGk1TVFn?=
+ =?utf-8?B?SjY2eWZXemNWK0xkR1ZFcXhPUmpVY2llWll1QmtHb2VHZ3lCZEE1K3VxSVZI?=
+ =?utf-8?B?K0djUVdtckJFelBqZ0JwZ204UkRETEg3ZzcxSjNwMWNXeGFvZk5lUnNlM0Iv?=
+ =?utf-8?B?WElkdDRzcG9oYTM0Rk1tU3BLaytINjZtNW5nNDFuVElBb3VXZmlSeHlxRnpY?=
+ =?utf-8?B?NDhOOURWeVAvZUdGbEtaZ1U0dTRDVGo0VzZIVGFQcndvdmdHM3oxSlZiRE00?=
+ =?utf-8?B?aThqdFZoK0hXNmptUFBsZldwVk5YaXJtWGVLM2JDSWlxbG9GcTBzTGxTdmtF?=
+ =?utf-8?B?NXp0ZitsalhHWjNtK2FqK3c5T3d6T0JnYVlocXVPL2Zpa2VtL1ROMHRqaW96?=
+ =?utf-8?B?MG05TDE3UkI1ejRxL0s0ZzRyQWU4SnliSTJXZzJKc0k4am82NTdGdWR1eXd1?=
+ =?utf-8?B?ejZySUhuUkxWSERmbzdISFlCdktmNTVLNytCL3ZKMWNkODU4VXV3NTFsL0tB?=
+ =?utf-8?B?dzg3VTBXZ2JBWU5NaUhHc3dCT2tlajZJVmFaS3NwWTBzUG05STNRLzhyZU1G?=
+ =?utf-8?Q?3bmiWeQ3X0KzGF568NFvPQWm3ttFWK2eK9K2G+U?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c708c28-f89e-4fab-6d84-08d9840c2dc1
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:16:49.2990
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eGcjr+3Rb8WDBmwm6nxsxx31sut4GUTuoMIelbKcNtMkFdd66TxVxTELLD1QJnhECL/7kJMFzTQobPpwoFF76g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to get/set drive-strength and output-impedance of the pins.
+Decouple XEN_DOM0 from XEN_PV, converting some existing uses of XEN_DOM0
+to a new XEN_PV_DOM0. (I'm not convinced all are really / should really
+be PV-specific, but for starters I've tried to be conservative.)
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 181 +++++++++++++++++++-----
- 1 file changed, 148 insertions(+), 33 deletions(-)
+For PVH Dom0 the hypervisor populates MADT with only x2APIC entries, so
+without x2APIC support enabled in the kernel things aren't going to work
+very well. (As opposed, DomU-s would only ever see LAPIC entries in MADT
+as of now.) Note that this then requires PVH Dom0 to be 64-bit, as
+X86_X2APIC depends on X86_64.
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 20b2af889ca9..d75b31ca33ab 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -47,6 +47,7 @@
- #define PIN_CFG_FILONOFF		BIT(9)
- #define PIN_CFG_FILNUM			BIT(10)
- #define PIN_CFG_FILCLKSEL		BIT(11)
-+#define PIN_CFG_GROUP_B			BIT(12)
+In the course of this xen_running_on_version_or_later() needs to be
+available more broadly. Move it from a PV-specific to a generic file,
+considering that what it does isn't really PV-specific at all anyway.
+
+Note that xen/interface/version.h cannot be included on its own; in
+enlighten.c, which uses SCHEDOP_* anyway, include xen/interface/sched.h
+first to resolve the apparently sole missing type (xen_ulong_t).
+
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -10,6 +10,8 @@
  
- #define RZG2L_MPXED_PIN_FUNCS		(PIN_CFG_IOLH | \
- 					 PIN_CFG_SR | \
-@@ -86,6 +87,7 @@
- #define PMC(n)			(0x0200 + 0x10 + (n))
- #define PFC(n)			(0x0400 + 0x40 + (n) * 4)
- #define PIN(n)			(0x0800 + 0x10 + (n))
-+#define IOLH(n)			(0x1010 + (n) * 8 - 0x10)
- #define IEN(n)			(0x1800 + (n) * 8)
- #define PWPR			(0x3014)
- #define SD_CH(n)		(0x3000 + (n) * 4)
-@@ -101,6 +103,7 @@
- #define PVDD_MASK		0x01
- #define PFC_MASK		0x07
- #define IEN_MASK		0x01
-+#define IOLH_MASK		0x03
+ #include <xen/xen.h>
+ #include <xen/features.h>
++#include <xen/interface/sched.h>
++#include <xen/interface/version.h>
+ #include <xen/page.h>
  
- #define PM_INPUT		0x1
- #define PM_OUTPUT		0x2
-@@ -424,6 +427,23 @@ static int rzg2l_dt_node_to_map(struct pinctrl_dev *pctldev,
- 	return ret;
+ #include <asm/xen/hypercall.h>
+@@ -257,6 +259,21 @@ int xen_vcpu_setup(int cpu)
+ 	return ((per_cpu(xen_vcpu, cpu) == NULL) ? -ENODEV : 0);
  }
  
-+static int rzg2l_validate_gpio_pin(struct rzg2l_pinctrl *pctrl,
-+				   u32 cfg, u32 port, u8 bit)
++/* Check if running on Xen version (major, minor) or later */
++bool xen_running_on_version_or_later(unsigned int major, unsigned int minor)
 +{
-+	u8 pincount = RZG2L_GPIO_PORT_GET_PINCNT(cfg);
-+	u32 port_index = RZG2L_GPIO_PORT_GET_INDEX(cfg);
-+	u32 data;
++	unsigned int version;
 +
-+	if (bit >= pincount || port >= pctrl->data->n_port_pins)
-+		return -EINVAL;
++	if (!xen_domain())
++		return false;
 +
-+	data = pctrl->data->port_pin_configs[port];
-+	if (port_index != RZG2L_GPIO_PORT_GET_INDEX(data))
-+		return -EINVAL;
-+
-+	return 0;
++	version = HYPERVISOR_xen_version(XENVER_version, NULL);
++	if ((((version >> 16) == major) && ((version & 0xffff) >= minor)) ||
++		((version >> 16) > major))
++		return true;
++	return false;
 +}
 +
- static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 				     unsigned int _pin,
- 				     unsigned long *config)
-@@ -432,6 +452,7 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 	enum pin_config_param param = pinconf_to_config_param(*config);
- 	const struct pinctrl_pin_desc *pin = &pctrl->desc.pins[_pin];
- 	unsigned int *pin_data = pin->drv_data;
-+	bool groupb_pin = false;
- 	unsigned int arg = 0;
- 	unsigned long flags;
- 	void __iomem *addr;
-@@ -446,6 +467,14 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 		port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
- 		cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
- 		bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-+		groupb_pin = cfg & PIN_CFG_GROUP_B;
-+	} else {
-+		cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
-+		port = RZG2L_PIN_ID_TO_PORT(_pin);
-+		bit = RZG2L_PIN_ID_TO_PIN(_pin);
-+
-+		if (rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit))
-+			return -EINVAL;
- 	}
+ void xen_reboot(int reason)
+ {
+ 	struct sched_shutdown r = { .reason = reason };
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -142,22 +142,6 @@ static void __init xen_pv_guest_late_ini
+ #endif
+ }
  
- 	switch (param) {
-@@ -484,6 +513,38 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 		break;
- 	}
+-/* Check if running on Xen version (major, minor) or later */
+-bool
+-xen_running_on_version_or_later(unsigned int major, unsigned int minor)
+-{
+-	unsigned int version;
+-
+-	if (!xen_domain())
+-		return false;
+-
+-	version = HYPERVISOR_xen_version(XENVER_version, NULL);
+-	if ((((version >> 16) == major) && ((version & 0xffff) >= minor)) ||
+-		((version >> 16) > major))
+-		return true;
+-	return false;
+-}
+-
+ static __read_mostly unsigned int cpuid_leaf5_ecx_val;
+ static __read_mostly unsigned int cpuid_leaf5_edx_val;
  
-+	case PIN_CONFIG_OUTPUT_IMPEDANCE:
-+	case PIN_CONFIG_DRIVE_STRENGTH: {
-+		unsigned int mA[4] = { 2, 4, 8, 12 };
-+		unsigned int oi[4] = { 100, 66, 50, 33 };
-+
-+		if (param == PIN_CONFIG_DRIVE_STRENGTH) {
-+			if (!(cfg & PIN_CFG_IOLH) || groupb_pin)
-+				return -EINVAL;
-+		} else {
-+			if (!(cfg & PIN_CFG_IOLH) || !groupb_pin)
-+				return -EINVAL;
-+		}
-+
-+		spin_lock_irqsave(&pctrl->lock, flags);
-+
-+		/* handle _L/_H for 32-bit register read/write */
-+		addr = pctrl->base + IOLH(port);
-+		if (bit >= 4) {
-+			bit -= 4;
-+			addr += 4;
-+		}
-+
-+		reg = readl(addr) & (IOLH_MASK << (bit * 8));
-+		reg = reg >> (bit * 8);
-+		if (param == PIN_CONFIG_DRIVE_STRENGTH)
-+			arg = mA[reg];
-+		else
-+			arg = oi[reg];
-+		spin_unlock_irqrestore(&pctrl->lock, flags);
-+		break;
-+	}
-+
- 	default:
- 		return -ENOTSUPP;
- 	}
-@@ -502,6 +563,7 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 	const struct pinctrl_pin_desc *pin = &pctrl->desc.pins[_pin];
- 	unsigned int *pin_data = pin->drv_data;
- 	enum pin_config_param param;
-+	bool groupb_pin = false;
- 	unsigned long flags;
- 	void __iomem *addr;
- 	u32 port = 0, reg;
-@@ -516,6 +578,14 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 		port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
- 		cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
- 		bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
-+		groupb_pin = cfg & PIN_CFG_GROUP_B;
-+	} else {
-+		cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
-+		port = RZG2L_PIN_ID_TO_PORT(_pin);
-+		bit = RZG2L_PIN_ID_TO_PIN(_pin);
-+
-+		if (rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit))
-+			return -EINVAL;
- 	}
+--- a/arch/x86/include/asm/xen/pci.h
++++ b/arch/x86/include/asm/xen/pci.h
+@@ -14,16 +14,19 @@ static inline int pci_xen_hvm_init(void)
+ 	return -1;
+ }
+ #endif
+-#if defined(CONFIG_XEN_DOM0)
++#ifdef CONFIG_XEN_PV_DOM0
+ int __init pci_xen_initial_domain(void);
+-int xen_find_device_domain_owner(struct pci_dev *dev);
+-int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+-int xen_unregister_device_domain_owner(struct pci_dev *dev);
+ #else
+ static inline int __init pci_xen_initial_domain(void)
+ {
+ 	return -1;
+ }
++#endif
++#ifdef CONFIG_XEN_DOM0
++int xen_find_device_domain_owner(struct pci_dev *dev);
++int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
++int xen_unregister_device_domain_owner(struct pci_dev *dev);
++#else
+ static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+ {
+ 	return -1;
+--- a/arch/x86/pci/xen.c
++++ b/arch/x86/pci/xen.c
+@@ -113,7 +113,7 @@ static int acpi_register_gsi_xen_hvm(str
+ 				 false /* no mapping of GSI to PIRQ */);
+ }
  
- 	for (i = 0; i < num_configs; i++) {
-@@ -564,6 +634,51 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 			spin_unlock_irqrestore(&pctrl->lock, flags);
- 			break;
- 		}
+-#ifdef CONFIG_XEN_DOM0
++#ifdef CONFIG_XEN_PV_DOM0
+ static int xen_register_gsi(u32 gsi, int triggering, int polarity)
+ {
+ 	int rc, irq;
+@@ -261,7 +261,7 @@ error:
+ 	return irq;
+ }
+ 
+-#ifdef CONFIG_XEN_DOM0
++#ifdef CONFIG_XEN_PV_DOM0
+ static bool __read_mostly pci_seg_supported = true;
+ 
+ static int xen_initdom_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
+@@ -375,10 +375,10 @@ static void xen_initdom_restore_msi_irqs
+ 		WARN(ret && ret != -ENOSYS, "restore_msi -> %d\n", ret);
+ 	}
+ }
+-#else /* CONFIG_XEN_DOM0 */
++#else /* CONFIG_XEN_PV_DOM0 */
+ #define xen_initdom_setup_msi_irqs	NULL
+ #define xen_initdom_restore_msi_irqs	NULL
+-#endif /* !CONFIG_XEN_DOM0 */
++#endif /* !CONFIG_XEN_PV_DOM0 */
+ 
+ static void xen_teardown_msi_irqs(struct pci_dev *dev)
+ {
+@@ -555,7 +555,7 @@ int __init pci_xen_hvm_init(void)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_XEN_DOM0
++#ifdef CONFIG_XEN_PV_DOM0
+ int __init pci_xen_initial_domain(void)
+ {
+ 	int irq;
+@@ -583,6 +583,9 @@ int __init pci_xen_initial_domain(void)
+ 	}
+ 	return 0;
+ }
++#endif
 +
-+		case PIN_CONFIG_OUTPUT_IMPEDANCE:
-+		case PIN_CONFIG_DRIVE_STRENGTH: {
-+			unsigned int arg = pinconf_to_config_argument(_configs[i]);
-+			unsigned int mA[4] = { 2, 4, 8, 12 };
-+			unsigned int oi[4] = { 100, 66, 50, 33 };
++#ifdef CONFIG_XEN_DOM0
+ 
+ struct xen_device_domain_owner {
+ 	domid_t domain;
+@@ -656,4 +659,4 @@ int xen_unregister_device_domain_owner(s
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
+-#endif
++#endif /* CONFIG_XEN_DOM0 */
+--- a/arch/x86/xen/Kconfig
++++ b/arch/x86/xen/Kconfig
+@@ -43,13 +43,9 @@ config XEN_PV_SMP
+ 	def_bool y
+ 	depends on XEN_PV && SMP
+ 
+-config XEN_DOM0
+-	bool "Xen PV Dom0 support"
+-	default y
+-	depends on XEN_PV && PCI_XEN && SWIOTLB_XEN
+-	depends on X86_IO_APIC && ACPI && PCI
+-	help
+-	  Support running as a Xen PV Dom0 guest.
++config XEN_PV_DOM0
++	def_bool y
++	depends on XEN_PV && XEN_DOM0
+ 
+ config XEN_PVHVM
+ 	def_bool y
+@@ -86,3 +82,12 @@ config XEN_PVH
+ 	def_bool n
+ 	help
+ 	  Support for running as a Xen PVH guest.
 +
-+			if (param == PIN_CONFIG_DRIVE_STRENGTH) {
-+				if (!(cfg & PIN_CFG_IOLH) || groupb_pin)
-+					return -EINVAL;
-+
-+				for (i = 0; i < ARRAY_SIZE(mA); i++) {
-+					if (arg == mA[i])
-+						break;
-+				}
-+
-+				if (i >= ARRAY_SIZE(mA))
-+					return -EINVAL;
-+			} else {
-+				if (!(cfg & PIN_CFG_IOLH) || !groupb_pin)
-+					return -EINVAL;
-+
-+				for (i = 0; i < ARRAY_SIZE(oi); i++) {
-+					if (arg == oi[i])
-+						break;
-+				}
-+				if (i >= ARRAY_SIZE(oi))
-+					return -EINVAL;
-+			}
-+
-+			spin_lock_irqsave(&pctrl->lock, flags);
-+
-+			/* handle _L/_H for 32-bit register read/write */
-+			addr = pctrl->base + IOLH(port);
-+			if (bit >= 4) {
-+				bit -= 4;
-+				addr += 4;
-+			}
-+
-+			reg = readl(addr) & ~(IOLH_MASK << (bit * 8));
-+			writel(reg | (i << (bit * 8)), addr);
-+			spin_unlock_irqrestore(&pctrl->lock, flags);
-+			break;
-+		}
-+
- 		default:
- 			return -EOPNOTSUPP;
- 		}
-@@ -893,70 +1008,70 @@ static  struct rzg2l_dedicated_configs rzg2l_dedicated_pins[] = {
- 	 (PIN_CFG_SR | PIN_CFG_IOLH | PIN_CFG_IEN)) },
- 	{ "TDO", RZG2L_SINGLE_PIN_PACK(0x3, 0,
- 	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN)) },
--	{ "AUDIO_CLK1", RZG2L_SINGLE_PIN_PACK(0x4, 0, PIN_CFG_IEN) },
--	{ "AUDIO_CLK2", RZG2L_SINGLE_PIN_PACK(0x4, 1, PIN_CFG_IEN) },
-+	{ "AUDIO_CLK1", RZG2L_SINGLE_PIN_PACK(0x4, 0, PIN_CFG_IEN | PIN_CFG_GROUP_B) },
-+	{ "AUDIO_CLK2", RZG2L_SINGLE_PIN_PACK(0x4, 1, PIN_CFG_IEN | PIN_CFG_GROUP_B) },
- 	{ "SD0_CLK", RZG2L_SINGLE_PIN_PACK(0x6, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_CMD", RZG2L_SINGLE_PIN_PACK(0x6, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_RST#", RZG2L_SINGLE_PIN_PACK(0x6, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA0", RZG2L_SINGLE_PIN_PACK(0x7, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA1", RZG2L_SINGLE_PIN_PACK(0x7, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA2", RZG2L_SINGLE_PIN_PACK(0x7, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA3", RZG2L_SINGLE_PIN_PACK(0x7, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA4", RZG2L_SINGLE_PIN_PACK(0x7, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA5", RZG2L_SINGLE_PIN_PACK(0x7, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA6", RZG2L_SINGLE_PIN_PACK(0x7, 6,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD0_DATA7", RZG2L_SINGLE_PIN_PACK(0x7, 7,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD0 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_CLK", RZG2L_SINGLE_PIN_PACK(0x8, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD1))},
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_CMD", RZG2L_SINGLE_PIN_PACK(0x8, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_DATA0", RZG2L_SINGLE_PIN_PACK(0x9, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_DATA1", RZG2L_SINGLE_PIN_PACK(0x9, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_DATA2", RZG2L_SINGLE_PIN_PACK(0x9, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "SD1_DATA3", RZG2L_SINGLE_PIN_PACK(0x9, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IEN | PIN_CFG_IOLH_SD1 | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_SPCLK", RZG2L_SINGLE_PIN_PACK(0xa, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_IO0", RZG2L_SINGLE_PIN_PACK(0xa, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_IO1", RZG2L_SINGLE_PIN_PACK(0xa, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_IO2", RZG2L_SINGLE_PIN_PACK(0xa, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_IO3", RZG2L_SINGLE_PIN_PACK(0xa, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI0_SSL", RZG2L_SINGLE_PIN_PACK(0xa, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_SPCLK", RZG2L_SINGLE_PIN_PACK(0xb, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_IO0", RZG2L_SINGLE_PIN_PACK(0xb, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_IO1", RZG2L_SINGLE_PIN_PACK(0xb, 2,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_IO2", RZG2L_SINGLE_PIN_PACK(0xb, 3,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_IO3", RZG2L_SINGLE_PIN_PACK(0xb, 4,
--	 (PIN_CFG_IOLH | PIN_CFG_SR  | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR  | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI1_SSL", RZG2L_SINGLE_PIN_PACK(0xb, 5,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI_RESET#", RZG2L_SINGLE_PIN_PACK(0xc, 0,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI_WP#", RZG2L_SINGLE_PIN_PACK(0xc, 1,
--	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
-+	 (PIN_CFG_IOLH | PIN_CFG_SR | PIN_CFG_IOLH_QSPI | PIN_CFG_GROUP_B)) },
- 	{ "QSPI_INT#", RZG2L_SINGLE_PIN_PACK(0xc, 2, (PIN_CFG_SR | PIN_CFG_IOLH_QSPI)) },
- 	{ "WDTOVF_PERROUT#", RZG2L_SINGLE_PIN_PACK(0xd, 0, (PIN_CFG_IOLH | PIN_CFG_SR)) },
- 	{ "RIIC0_SDA", RZG2L_SINGLE_PIN_PACK(0xe, 0, PIN_CFG_IEN) },
--- 
-2.17.1
++config XEN_DOM0
++	bool "Xen Dom0 support"
++	default XEN_PV
++	depends on (XEN_PV && SWIOTLB_XEN) || (XEN_PVH && X86_64)
++	depends on X86_IO_APIC && ACPI && PCI
++	select X86_X2APIC if XEN_PVH && X86_64
++	help
++	  Support running as a Xen Dom0 guest.
+--- a/arch/x86/xen/Makefile
++++ b/arch/x86/xen/Makefile
+@@ -45,7 +45,7 @@ obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= spinl
+ 
+ obj-$(CONFIG_XEN_DEBUG_FS)	+= debugfs.o
+ 
+-obj-$(CONFIG_XEN_DOM0)		+= vga.o
++obj-$(CONFIG_XEN_PV_DOM0)	+= vga.o
+ 
+ obj-$(CONFIG_SWIOTLB_XEN)	+= pci-swiotlb-xen.o
+ 
+--- a/arch/x86/xen/xen-ops.h
++++ b/arch/x86/xen/xen-ops.h
+@@ -109,7 +109,7 @@ static inline void xen_uninit_lock_cpu(i
+ 
+ struct dom0_vga_console_info;
+ 
+-#ifdef CONFIG_XEN_DOM0
++#ifdef CONFIG_XEN_PV_DOM0
+ void __init xen_init_vga(const struct dom0_vga_console_info *, size_t size);
+ #else
+ static inline void __init xen_init_vga(const struct dom0_vga_console_info *info,
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -241,7 +241,7 @@ config XEN_PRIVCMD
+ 
+ config XEN_ACPI_PROCESSOR
+ 	tristate "Xen ACPI processor"
+-	depends on XEN && XEN_DOM0 && X86 && ACPI_PROCESSOR && CPU_FREQ
++	depends on XEN && XEN_PV_DOM0 && X86 && ACPI_PROCESSOR && CPU_FREQ
+ 	default m
+ 	help
+ 	  This ACPI processor uploads Power Management information to the Xen
+@@ -259,7 +259,7 @@ config XEN_ACPI_PROCESSOR
+ 
+ config XEN_MCE_LOG
+ 	bool "Xen platform mcelog"
+-	depends on XEN_DOM0 && X86_MCE
++	depends on XEN_PV_DOM0 && X86_MCE
+ 	help
+ 	  Allow kernel fetching MCE error from Xen platform and
+ 	  converting it into Linux mcelog format for mcelog tools
 
