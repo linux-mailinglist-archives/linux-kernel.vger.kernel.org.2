@@ -2,138 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6CB41D976
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FAB41D97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349265AbhI3MQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348201AbhI3MQI (ORCPT
+        id S1350738AbhI3MQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:16:51 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:42746
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350731AbhI3MQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:16:08 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094BAC06176A;
-        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id r1so12607426ybo.10;
-        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
-        b=D3yALrGFWCHoJefkI8XjZMKrwZ18ui6XDMw4t95SVu6n4b+QlQDXUbKuYqj+3ZUR77
-         4OraB2xwKiXlxZZNnGmNOHTq5acSirqEeu5hMoj3h8R24v2FpumBTvNIfEGIUIDjTWke
-         dkjas9WJSrST1VbmPCOntur+clVa23wWWI2RAVuGhzrik9BskkbnlF3cScob9/OZa++q
-         zXE7q1BSlOymhD3sKQLngpY0g741BFHsJFuU/FMsebpo+A1PiQtm3o24bcLml9xVln5K
-         mrZ0oBecfxxCxRSmjBC9vfAJ90S8NFMZroKhANmw42yTzYnnMAF+9h8wraYhzlLDGKFA
-         usSQ==
+        Thu, 30 Sep 2021 08:16:50 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8DCE740606
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633004106;
+        bh=sHtMVee23aJJuvqmywuH7ESFy0k6t0bV8U/1nrqOJLI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=FWai4uKiuGxJC4cb1J6/ajTQqZcPLqVwwVCRavKljZtgJ11ostDezYX94sOvYjjVe
+         4dFU+vWo6dpzzOmAmcIL4fBg548243WELrXKfuxpGRcW0i+2Hz9oeoM9g/pbv95VUg
+         c6fV2jyWsibzj77z6e833xZAeeGc5Yx4f6YCsKW/HfTpYqDwBJZJLunMkqNiCYMUSn
+         3n8ei0FkUj2W/+SoFc5dRp2/q3kjM+ZoGwwxd+LlGgz0LwTkWIE0ust28kcSKfQJqA
+         KaBZ5PSuorb6JHZxRjXWn1D+tT+grK2zoe2i/8g1Ca45v7T8ALEaLt2EwIKP7SJk/p
+         u2VdqGJzFRsLw==
+Received: by mail-lf1-f69.google.com with SMTP id bp11-20020a056512158b00b003fc7d722819so5441980lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:15:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
-        b=6pQCy3Mz9Ed8lQbEZNRY59215zyoScAKpxk9w8IJMOBESr0+Yd9RF/WUL1zHUZKCXj
-         pxOpEuAKHVpgKU01ihekITnqDM9MHtfws9wy3tHeRP2XaHlNPPhns9h8RfxY4M4FYwYT
-         iLFQ660BxVWNWq5zsA2sU+qoPE+U0PhEExLEt8Vn+6OzyhHWBaR9etB1hPZDtq+VGuBt
-         QVzWgJXjonnhOJgJspECOmhc92aN9vNxHcFBidgPKSmiIXEI7uGEzEWHTNjgvJuOcCww
-         ibvGBJbnlmR8AdfMhgU9rtemxQ6+uuZxUpTEVg9kOzEDkDiEfyG0jZQsR7iEOzpcsPS5
-         fJCQ==
-X-Gm-Message-State: AOAM530A6wYG0clXk9FoWtIDr7zgtbxN+GCbZk+C8fQREasNAO2Yl8Os
-        22ejaHgj0QmgWuUhvRF0+qKZ9qHP1V6Tw0CLJ8o=
-X-Google-Smtp-Source: ABdhPJx8FtzrbD51HUmiENPFGgET25pOeR5F1yAAzL7J7koVSiUqSLdK0Jmqh5ZoQDDR0cyJLgayWISpxy8Dt9tMI4E=
-X-Received: by 2002:a25:515:: with SMTP id 21mr6157057ybf.279.1633004065280;
- Thu, 30 Sep 2021 05:14:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sHtMVee23aJJuvqmywuH7ESFy0k6t0bV8U/1nrqOJLI=;
+        b=kNwzLDKk4UvGC7GLPnAlLS2c5mOPV19FEe/gFBGLMnTvQ1vMZpDdpQpFpv5kHylZ4o
+         HZKzX9RdD+7U66GIxjHKyc0K+/e2ivVH5qYf+PdAxCwiU6sJkPD9LzbX6rHyqpl3grYH
+         QnZgydTM+8ZZbitrvz7akxZSH1a0z5+OT4pNvxmfNa2OKYbMTDy0BP2n/KYvspVrtZXr
+         5ZRU/B2IPAWKNd6RuARf6qD6zdOWcvorm80GX2bq/0yMLXFMl76ea/Sv7d+5U7aCdigr
+         K0hRphJAkLVTJgrGEyCaE1c6+Pa/puM0HFto8lshlTEbU/4DNnBTTzshUrJJJdoUlK5X
+         XWfw==
+X-Gm-Message-State: AOAM532rO2twg1ZVbh9LzX6+YRFZfBtc9T20ZGodUfwsODfPZQ9TF81C
+        LFOPMpG1SiIFg21fNhRbzxAyLVPHtZU5yAMrp4sTNMpi+al4ORcMA/evMY+gAk99ISjquZdoVwG
+        YDLV3wCM6A3g5MFezLtNOMqQmsC1BlxVeyqFiHe7BHA==
+X-Received: by 2002:a2e:5450:: with SMTP id y16mr5761507ljd.21.1633004105784;
+        Thu, 30 Sep 2021 05:15:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+cux4wyOirwFRf+O2xj4igckX9azoZlF3oZnFaYbiBaTtiQzVamjgULYK4cmnunDnkNNRxg==
+X-Received: by 2002:a2e:5450:: with SMTP id y16mr5761488ljd.21.1633004105601;
+        Thu, 30 Sep 2021 05:15:05 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id t11sm350942lfr.281.2021.09.30.05.15.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 05:15:04 -0700 (PDT)
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+To:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <YVWCK5QO331rfhJJ@google.com>
+ <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
+ <YVWkxnc8wTdBgRsv@google.com>
+ <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <8729f109-93c1-24dc-f7d9-9c83d7ac24dc@canonical.com>
+Date:   Thu, 30 Sep 2021 14:15:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210925053106.1031798-1-th.yasumatsu@gmail.com> <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
-In-Reply-To: <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
-From:   Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
-Date:   Thu, 30 Sep 2021 21:14:14 +0900
-Message-ID: <CA+_JbcvO-1NZ1aumJoVfJyRgnGv49U1pMqMvQS7h3j1FUfMO1g@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:29:43PM +0200, Daniel Borkmann wrote:
-> On 9/25/21 7:31 AM, Tatsuhiko Yasumatsu wrote:
-> > In prealloc_elems_and_freelist(), the multiplication to calculate the
-> > size passed to bpf_map_area_alloc() could lead to an integer overflow.
-> > As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-> > as reported by KASAN:
-> >
-> > [...]
-> > [   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-> > [   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-> > [   16.970038]
-> > [   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-> > [   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> > [   16.972026] Call Trace:
-> > [   16.972306]  dump_stack_lvl+0x34/0x44
-> > [   16.972687]  print_address_description.constprop.0+0x21/0x140
-> > [   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.974257]  kasan_report.cold+0x7f/0x11b
-> > [   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-> > [   16.975190]  pcpu_freelist_populate+0xd9/0x100
-> > [   16.975669]  stack_map_alloc+0x209/0x2a0
-> > [   16.976106]  __sys_bpf+0xd83/0x2ce0
-> > [...]
-> >
-> > The possibility of this overflow was originally discussed in [0], but
-> > was overlooked.
-> >
-> > Fix the integer overflow by casting one operand to u64.
-> >
-> > [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
-> >
-> > Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-> > Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-> > ---
-> >   kernel/bpf/stackmap.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> > index 09a3fd97d329..8941dc83a769 100644
-> > --- a/kernel/bpf/stackmap.c
-> > +++ b/kernel/bpf/stackmap.c
-> > @@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
-> >     u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
->
-> Thanks a lot for the fix, Tatsuhiko! Could we just change the above elem_size to u64 instead?
+On 30/09/2021 14:10, Tomasz Figa wrote:
+> 2021年9月30日(木) 20:51 Lee Jones <lee.jones@linaro.org>:
+>>
+>> On Thu, 30 Sep 2021, Tomasz Figa wrote:
+>>
+>>
+>> Is that the same as exporting symbols to framework APIs?
+>>
+>> Since this is already a method GKI uses to allow external modules to
+>> interact with the core kernel/frameworks.  However, it's not possible
+>> to upstream these without an upstream user for each one.
+> 
+> Not necessary the core frameworks, could also be changing the ways the
+> existing drivers register to allow additional drivers to extend the
+> functionality rather than completely overwrite them. 
 
-Thank you for your review, Daniel!
-Yes, I think it's possible to just change elem_size to u64.
+Yes, the first user could be within the kernel after modifying some of
+the drivers.
 
-We just have to be careful to cast one operand (smap->map.value_size)
-to u64, so that the integer overflow won't happen in 32-bit
-architectures.
-This is necessary because in 32-bit architectures, the result of
-sizeof() is a 32-bit integer.
+> It's really hard
+> to tell what the right way would be without knowing the exact things
+> they find missing in the upstream drivers. As for upstream users, this
+> is exactly the point - upstream is a bidirectional effort, one takes
+> from it and should contribute things back.
+> 
+> Generally, the subsystems being mentioned here are so basic (clock,
+> pinctrl, rtc), that I really can't imagine what kind of rocket science
+> one might want to hide for competitive reasons... If it's for an
+> entire SoC, I wonder why Intel and AMD don't have similar concerns and
+> contribute support for their newest hardware far before the release.
 
-I will update the patch.
+Lee used the argument of not-disclosing-edge-hw but I also don't see
+much of it in the case of few drivers needed to be overridden. Just
+bunch of registers for the same stuff we have sine 8 years. Rather the
+vendor does not want to commit effort towards upstreaming these...
 
->
-> >     int err;
-> > -   smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
-> > +   smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
-> >                                      smap->map.numa_node);
-> >     if (!smap->elems)
-> >             return -ENOMEM;
-> >
->
-> Best,
-> Daniel
 
 Best regards,
-Tatsuhiko Yasumatsu
+Krzysztof
