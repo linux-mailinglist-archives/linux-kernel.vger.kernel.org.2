@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8127541E06F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440E541E075
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352933AbhI3SAm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 14:00:42 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47060 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352882AbhI3SAl (ORCPT
+        id S1352956AbhI3SBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352908AbhI3SBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:00:41 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 12109CED17;
-        Thu, 30 Sep 2021 19:58:55 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: add quirk disabling query LE tx power
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210930141256.19943-1-redecorating@protonmail.com>
-Date:   Thu, 30 Sep 2021 19:58:54 +0200
-Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        regressions@lists.linux.dev, sonnysasaka@chromium.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
- <20210930063106.19881-1-redecorating@protonmail.com>
- <20210930141256.19943-1-redecorating@protonmail.com>
-To:     Orlando Chamberlain <redecorating@protonmail.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Thu, 30 Sep 2021 14:01:48 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94F9C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id e24so8331290oig.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fw8pwH1OA13DiwW71Gp8zTFcOzlqtHtiksx8vBnSuZo=;
+        b=m5+pnYPhp5Mbbl/i9v8Rayru7Xk0LHfsYZ/3ARwECIFS8Pg8nv5paLDPvYkwyh4Ca0
+         arVdov2yDLqKrEtQAVe7Byn4CiqcTi2C0JwPArKj6xt/qkc65HNDbv4HSUHo1BqhTjPc
+         dJdaY85okFWxMiOoGC5V6/loSkBmKHz8mYi/LACtdatdLYOB1mU5NHnLYXDlYmUbE7wJ
+         PLbg0ZkPm+Ysz8O0c2kUx+pvWoWDVe3+WSgEKpw9nHMvoH2AmvHIn8NUt8C1uZf+4KTq
+         hxPOTJ0Z0JDOrTp9TBwHkHbKXbwNaxX6R2HQgMghcbkMssONuWMb+Q58XNPQfoEcXHMA
+         njIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fw8pwH1OA13DiwW71Gp8zTFcOzlqtHtiksx8vBnSuZo=;
+        b=Nv8ydDZNXZQWD8qvW7jOQWxmM167idlga2hr/cTYRItyuIL9KkxhsMA/FGJPddacz7
+         64SUE33YOxlujxEH/YXU4e+WgFxKV3sm6ug2QomoHzLVfytTeYugBppzrSSJanZjzbPR
+         upCO6kpDyoNGLDmQQjhtcNWzXVuuiV1Yys5EH9xG007454d/tyowh7sViU6yOtRAVc4V
+         qJzmz1QxU06MFIfGkoj8O/AsiNRMC3FSU/AucfOioIwMduGh3KSsKZeMqsYf8Fr2RV39
+         qs9rMkHx0nHwpySBkDJISpa0UosZheCOQjNweVTKTH0CHCNUYgGx3oyOjJUOFIXpc0Uv
+         LD6Q==
+X-Gm-Message-State: AOAM531WOfoWrLpAujHobNuP5JSGNe8KI06o7JBrE0fq878G12lIZX63
+        E/RlfbrfqqZ/qq7d80gVm+hnRR3p+9W2vqsSSkrf2F2O
+X-Google-Smtp-Source: ABdhPJwXt1IhVLGQOfviPEsWczuXrnB2viox7TeVfyjdkXam/lIb60V/M9UNSLtcAmDLi1dT0ZBzUFXTJQRA5PgV35o=
+X-Received: by 2002:a05:6808:1141:: with SMTP id u1mr440287oiu.123.1633024805243;
+ Thu, 30 Sep 2021 11:00:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210930162302.2344542-1-nathan@kernel.org> <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
+ <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
+In-Reply-To: <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 30 Sep 2021 13:59:54 -0400
+Message-ID: <CADnq5_N=x-PFvU2oYtLLSHcos1G_K=2qhSE0+1LS=zuBNov0JQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        "Koenig, Christian" <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Orlando,
+On Thu, Sep 30, 2021 at 1:23 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 10:10 AM Alex Deucher <alexdeucher@gmail.com> wrote:
+> >
+> > Applied.  Thanks!
+> >
+> > Alex
+> >
+> > On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> > >
+> > > Clang warns:
+>
+> Any chance AMDGPU folks can look into adding clang to the CI roster?
 
-> Querying LE tx power on startup broke Bluetooth on some Broadcom chips
-> in Apple computers (at least MacBookPro16,1 and iMac20,1). Added a quirk
-> disabling this query for affected devices, based off their common chip
-> id 150. Affected devices will not be able to query LE tx power, however
-> they were not doing this before.
-> 
-> Fixes: 7c395ea521e6m ("Bluetooth: Query LE tx power on startup")
-> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
-> ---
-> drivers/bluetooth/btbcm.c   | 4 ++++
-> include/net/bluetooth/hci.h | 8 ++++++++
-> net/bluetooth/hci_core.c    | 3 ++-
-> 3 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-> index e4182acee488..4ecc50d93107 100644
-> --- a/drivers/bluetooth/btbcm.c
-> +++ b/drivers/bluetooth/btbcm.c
-> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
-> 		return PTR_ERR(skb);
-> 
-> 	bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
-> +
-> +	if (skb->data[1] == 150)
-> +		set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
-> +
-> 	kfree_skb(skb);
-> 
-> 	/* Read Controller Features */
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index b80415011dcd..5e0dd0c39ade 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -246,6 +246,14 @@ enum {
-> 	 * HCI after resume.
-> 	 */
-> 	HCI_QUIRK_NO_SUSPEND_NOTIFIER,
-> +
-> +	/*
-> +	 * When this quirk is set, LE tx power is not queried on startup.
-> +	 *
-> +	 * This quirk can be set before hci_register_dev is called or
-> +	 * during the hdev->setup vendor callback.
-> +	 */
-> +	HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER,
-> };
-> 
-> /* HCI device flags */
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 8a47a3017d61..16e39739c662 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -742,7 +742,8 @@ static int hci_init3_req(struct hci_request *req, unsigned long opt)
-> 			hci_req_add(req, HCI_OP_LE_READ_ADV_TX_POWER, 0, NULL);
-> 		}
-> 
-> -		if (hdev->commands[38] & 0x80) {
-> +		if (hdev->commands[38] & 0x80 &&
-> +			!test_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks)) {
-> 			/* Read LE Min/Max Tx Power*/
-> 			hci_req_add(req, HCI_OP_LE_READ_TRANSMIT_POWER,
-> 				    0, NULL);
+We can look into it.  We may already be doing it for some groups.
 
-so I really need the btmon traces from the device init (so unload and reload the module) and we need to see what commands are supported and what commands are failing.
+Alex
 
-Since you say this is on a MacBook, I assume this is an UART based Broadcom chip. Sometimes Broadcom has been really flaky with their actually implemented commands. However in some cases firmware updates do fix this. So any chance you can boot OS X and check that the latest firmware is loaded.
-
-Regards
-
-Marcel
-
+> --
+> Thanks,
+> ~Nick Desaulniers
