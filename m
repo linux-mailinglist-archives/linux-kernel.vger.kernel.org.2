@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421F141D588
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2833141D58A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348616AbhI3IgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:36:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:50450 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348460AbhI3IgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:36:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D4A5D6E;
-        Thu, 30 Sep 2021 01:34:17 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C83BF3F70D;
-        Thu, 30 Sep 2021 01:34:16 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Drop the redundant setting of recent_used_cpu
-To:     Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org
-References: <1632985154-12890-1-git-send-email-lirongqing@baidu.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <c4e8cbef-4708-cd4d-306f-6eab5bb32b95@arm.com>
-Date:   Thu, 30 Sep 2021 10:34:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348652AbhI3IgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348460AbhI3IgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:36:23 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C88C06161C;
+        Thu, 30 Sep 2021 01:34:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d26so8681354wrb.6;
+        Thu, 30 Sep 2021 01:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=1MGjEXt+mHWPJ7e7eWTU+rgmp7Dl3F/DDFe0m5/KLbs=;
+        b=KF5fbPUefyfAyzwK2ggDY8z6NLn5wN6Ha9Q/AoFuO3EE1oewP+7x6qilUA8Xysexm4
+         z6c1VlKvMkej1CfwYRZn2KcLff5GHvkUI+rEr3h9S/t73/qbULV61Nq1jAFtroKXgJR5
+         rzD1J6puPj2D0T7ZYSW1c2zJEWzuYz0Ip+ZxrWRM+AJ2ZKa9TWzeTtBuRmeHVANIR7S/
+         wBge8k3Z5P1tVQvqTV5+QzRJWTYB0IyIFjwAm5X/WhrG9LqLMYt5rxgvaJGscKS6tNdw
+         btPytnIeW3uHBTczGOVgdU7VF5U9JmlL3/IDAdDCY8QzXEYDDgWtQvF4QsQ9giK60BbD
+         jNPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=1MGjEXt+mHWPJ7e7eWTU+rgmp7Dl3F/DDFe0m5/KLbs=;
+        b=PVfV9sE3EU0UbxZvd/eLHls8pGx9eYsh6rHdwSW2lnTvD87AFdIuBOhpQVyiciqOP9
+         6b6GcFJTy/qeP5Ov1FBIVWNOMs6krUGR5QCivMK3OR1Mk8PzKsNxvoC7bDx0LumgpBdk
+         9vgr9T31ZtD03pI1PQ4e6DHaamYyY/KryW0wcVifPrO3HHWg5mtFnk/x9mSn/THpIhoq
+         iMAPvGm+lfqFX8i8CIdHH5Q3f2S22to0L/pgmNfbEqNmmZLuLF+o20a4j350/tdiYVGq
+         RkpSURE9ZEsfok8qVJoir4Y8/Za79+G7IKJVfRnPZ6W/A2tEvYjA036QcBJwSCBGKgx/
+         mC2A==
+X-Gm-Message-State: AOAM5315DNzna0HSy/VjHDDqmNQqnvVYotxAmvghIpZoY3fpVPNPb0Eq
+        xInkjBHttsxa070UuJRfg74d/C2fdPkFKw==
+X-Google-Smtp-Source: ABdhPJzw8ajD+3XQP+d7eR9pL2NH0i9kr09quDmXsk+D2n48gPg2+l9t3mHI791+Vx0Kd2G6WTkn1g==
+X-Received: by 2002:a5d:6da9:: with SMTP id u9mr4669675wrs.155.1632990879526;
+        Thu, 30 Sep 2021 01:34:39 -0700 (PDT)
+Received: from p200300e94717cf3f837b83e464a227b5.dip0.t-ipconnect.de (p200300e94717cf3f837b83e464a227b5.dip0.t-ipconnect.de. [2003:e9:4717:cf3f:837b:83e4:64a2:27b5])
+        by smtp.googlemail.com with ESMTPSA id k11sm2274178wrn.84.2021.09.30.01.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 01:34:39 -0700 (PDT)
+Message-ID: <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 30 Sep 2021 10:34:38 +0200
+In-Reply-To: <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
+References: <20210917172727.26834-1-huobean@gmail.com>
+         <20210917172727.26834-3-huobean@gmail.com>
+         <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+         <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+         <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+         <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+         <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+         <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
+         <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
+         <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+         <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
+         <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
+         <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <1632985154-12890-1-git-send-email-lirongqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 08:59, Li RongQing wrote:
-> recent_used_cpu has been set to prev before check
-> 
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> ---
->  kernel/sched/fair.c |    8 +-------
->  1 files changed, 1 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 7b9fe8c..ec42eaa 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6437,14 +6437,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  	    cpus_share_cache(recent_used_cpu, target) &&
->  	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
->  	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
-> -	    asym_fits_capacity(task_util, recent_used_cpu)) {
-> -		/*
-> -		 * Replace recent_used_cpu with prev as it is a potential
-> -		 * candidate for the next wake:
-> -		 */
-> -		p->recent_used_cpu = prev;
-> +	    asym_fits_capacity(task_util, recent_used_cpu))
->  		return recent_used_cpu;
-> -	}
->  
->  	/*
->  	 * For asymmetric CPU capacity systems, our domain of interest is
-> 
+Hi Adrian,
 
-Looks like this has been already fixed in:
 
-https://lore.kernel.org/r/20210928103544.27489-1-vincent.guittot@linaro.org
+Thanks.
+I want to give a short conclusion  for our discussion:
+
+Based on your information, these sounds disable of HW timer timeout
+interrupt will make eMMC host controller malfunction, in another word,
+the disable of timeout interrupt will make the eMMC host cannot
+correctly provide the completion interrupt. And unless only when the
+SOC vendor signals that their SOC supports that the host side SW can
+disable this HW timeout interrupt, as TI does.
+
+I studied the SDHCI Spec, and tried to see if there is this kind of
+support statement, but not been found yet. I will check with other SOC
+vendors.
+
+I have one more question, if you know, please give me your information.
+
+I did testing on HW timer bahevior in case CQE is on.  Currently, we
+always set the HW timer with the maximum timeout value if CQE is on.
+Based on my testing, the HW timer will never timeout when we enable
+CQE. I changed the HW timer value to be lower, it is the same result.
+Do you know that the HW timer will be inactivated in case CQE is
+on?  but its timeout interrupt is still enabled.
+
+Kind regards,
+Bean
+
