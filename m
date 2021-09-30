@@ -2,75 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E1241D2F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0051041D2FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348186AbhI3GBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348054AbhI3GBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:01:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A6261265;
-        Thu, 30 Sep 2021 06:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632981606;
-        bh=+9Cimias7j0INGICFeEb++U9FTUPDMbOhsM3g32/A/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FJ9v3kPBgadWq9TqyDSkBB+ZjCCPeEb68cegwt58vk1kS1yM5e1cWDPYnwdpXz2Cv
-         hAKlC9vcnNclW3U+9HxmV1aUWWR+JTuIuDnK9Rxanfkl55bGXaFDXvyYWTPXlXtKts
-         dpVzVAdvmFM3U1qB5YQ8EQXj7BsZyEXZ8RjlCM9o=
-Date:   Thu, 30 Sep 2021 08:00:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dawid Esterhuizen <desterhuizen@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: Statements should start on a tabstop
-Message-ID: <YVVSYVpUPekkUsLy@kroah.com>
-References: <YVTN5i8qwjlGwOPp@kkobus.whirley.local>
+        id S1348203AbhI3GDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:03:54 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48835 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348194AbhI3GDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:03:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uq5snVM_1632981729;
+Received: from 30.21.164.99(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uq5snVM_1632981729)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 30 Sep 2021 14:02:09 +0800
+Subject: Re: [PATCH] tty: tty_buffer: Fix the softlockup issue in
+ flush_to_ldisc
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Guanghui Feng <guanghuifeng@linux.alibaba.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+References: <1632971498-57869-1-git-send-email-guanghuifeng@linux.alibaba.com>
+ <YVVNSS/+RInLPpx/@kroah.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <63fe76af-0918-2b04-3f71-8572700d6ec1@linux.alibaba.com>
+Date:   Thu, 30 Sep 2021 14:02:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVTN5i8qwjlGwOPp@kkobus.whirley.local>
+In-Reply-To: <YVVNSS/+RInLPpx/@kroah.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:34:46PM +0200, Dawid Esterhuizen wrote:
-> This path fixes four checkpatch.pl warnings:
+Hi Greg,
+
+On 2021/9/30 13:38, Greg KH wrote:
+> On Thu, Sep 30, 2021 at 11:11:38AM +0800, Guanghui Feng wrote:
+>> When I run ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
+>> which look like this one:
+>>
+>>    watchdog: BUG: soft lockup - CPU#41 stuck for 67s! [kworker/u192:2:106867]
+>>    CPU: 41 PID: 106867 Comm: kworker/u192:2 Kdump: loaded Tainted: G           OE     5.10.23 #1
+>>    Hardware name: H3C R4960 G3/BC82AMDDA, BIOS 1.70 01/07/2021
+>>    Workqueue: events_unbound flush_to_ldisc
+>>    pstate: 00c00009 (nzcv daif +PAN +UAO -TCO BTYPE=--)
+>>    pc : slip_unesc+0x80/0x214 [slip]
+>>    lr : slip_receive_buf+0x84/0x100 [slip]
+>>    sp : ffff80005274bce0
+>>    x29: ffff80005274bce0 x28: 0000000000000000
+>>    x27: ffff00525626fcc8 x26: ffff800011921078
+>>    x25: 0000000000000000 x24: 0000000000000004
+>>    x23: ffff00402b4059c0 x22: ffff00402b405940
+>>    x21: ffff205d87b81e21 x20: ffff205d87b81b9b
+>>    x19: 0000000000000000 x18: 0000000000000000
+>>    x17: 0000000000000000 x16: 0000000000000000
+>>    x15: 0000000000000000 x14: 5f5f5f5f5f5f5f5f
+>>    x13: 5f5f5f5f5f5f5f5f x12: 5f5f5f5f5f5f5f5f
+>>    x11: 5f5f5f5f5f5f5f5f x10: 5f5f5f5f5f5f5f5f
+>>    x9 : ffff8000097d7628 x8 : ffff205d87b85e20
+>>    x7 : 0000000000000000 x6 : 0000000000000001
+>>    x5 : ffff8000097dc008 x4 : ffff8000097d75a4
+>>    x3 : ffff205d87b81e1f x2 : 0000000000000005
+>>    x1 : 000000000000005f x0 : ffff00402b405940
+>>    Call trace:
+>>     slip_unesc+0x80/0x214 [slip]
+>>     tty_ldisc_receive_buf+0x64/0x80
+>>     tty_port_default_receive_buf+0x50/0x90
+>>     flush_to_ldisc+0xbc/0x110
+>>     process_one_work+0x1d4/0x4b0
+>>     worker_thread+0x180/0x430
+>>     kthread+0x11c/0x120
+>>    Kernel panic - not syncing: softlockup: hung tasks
+>>    CPU: 41 PID: 106867 Comm: kworker/u192:2 Kdump: loaded Tainted: G           OEL    5.10.23 #1
+>>    Hardware name: H3C R4960 G3/BC82AMDDA, BIOS 1.70 01/07/2021
+>>    Workqueue: events_unbound flush_to_ldisc
+>>    Call trace:
+>>     dump_backtrace+0x0/0x1ec
+>>     show_stack+0x24/0x30
+>>     dump_stack+0xd0/0x128
+>>     panic+0x15c/0x374
+>>     watchdog_timer_fn+0x2b8/0x304
+>>     __run_hrtimer+0x88/0x2c0
+>>     __hrtimer_run_queues+0xa4/0x120
+>>     hrtimer_interrupt+0xfc/0x270
+>>     arch_timer_handler_phys+0x40/0x50
+>>     handle_percpu_devid_irq+0x94/0x220
+>>     __handle_domain_irq+0x88/0xf0
+>>     gic_handle_irq+0x84/0xfc
+>>     el1_irq+0xc8/0x180
+>>     slip_unesc+0x80/0x214 [slip]
+>>     tty_ldisc_receive_buf+0x64/0x80
+>>     tty_port_default_receive_buf+0x50/0x90
+>>     flush_to_ldisc+0xbc/0x110
+>>     process_one_work+0x1d4/0x4b0
+>>     worker_thread+0x180/0x430
+>>     kthread+0x11c/0x120
+>>    SMP: stopping secondary CPUs
+>>
+>> In the testcase pty04, there are multple processes and we only pay close attention to the
+>> first three actually. The first process call the write syscall to send data to the pty master
+>> with all one's strength(tty_write->file_tty_write->do_tty_write->n_tty_write call chain).
+>> The second process call the read syscall to receive data by the pty slave(with PF_PACKET socket).
+>> The third process will wait a moment in which the first two processes will do there work and then
+>> it call ioctl to hangup the pty pair which will cease the first two process read/write to the pty.
+>> Before hangup the pty, the first process send data to the pty buffhead with high speed. At the same
+>> time if the workqueue is waken up, the workqueue will do the flush_to_ldisc to pop data from pty
+>> master's buffhead to line discipline in a loop until there is no more data left without any on one's
+>> own schedule which will result in doing work in flush_to_ldisc for a long time. As kernel configured
+>> without CONFIG_PREEMPT, there maybe occurs softlockup in the flush_to_ldisc. So I add cond_resched
+>> in the flush_to_ldisc while loop to avoid it.
 > 
-> Statements should start on a tabstop
+> Please properly wrap your changelog text at 72 columns.
 > 
-> Signed-off-by: Dawid Esterhuizen <desterhuizen@gmail.com>
-> ---
->  drivers/staging/rtl8712/rtl871x_xmit.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
-> index 2e6afc7bb0a1..bc1287cc853e 100644
-> --- a/drivers/staging/rtl8712/rtl871x_xmit.h
-> +++ b/drivers/staging/rtl8712/rtl871x_xmit.h
-> @@ -182,11 +182,11 @@ struct sta_xmit_priv {
->  };
->  
->  struct	hw_txqueue {
-> -	/*volatile*/ sint	head;
-> -	/*volatile*/ sint	tail;
-> -	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
-> -	/*volatile*/ sint      free_cmdsz;
-> -	/*volatile*/ sint	 txsz[8];
-> +  /*volatile*/ sint head;
-> +  /*volatile*/ sint tail;
-> +  /*volatile*/ sint free_sz;	/*in units of 64 bytes*/
-> +  /*volatile*/ sint free_cmdsz;
-> +  /*volatile*/ sint txsz[8];
+>>
+>> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+>> ---
+>>   drivers/tty/tty_buffer.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+>> index bd2d915..77b92f9 100644
+>> --- a/drivers/tty/tty_buffer.c
+>> +++ b/drivers/tty/tty_buffer.c
+>> @@ -534,6 +534,7 @@ static void flush_to_ldisc(struct work_struct *work)
+>>   		if (!count)
+>>   			break;
+>>   		head->read += count;
+>> +		cond_resched();
+> 
+> This is almost never the correct solution for fixing a problem in the
+> kernel anymore.
+> 
+> And if it is, it needs to be documented really really well.  I think you
+> just slowed down the overall throughput of a tty device by adding this
+> call, so are you sure you didn't break something?
+> 
+> And why are you not running with a preempt kernel here?  What prevents
+> that from being enabled to solve issues like this?
 
-I think you now have added a new checkpatch warning, right?
+For server scenario, we usually select CONFIG_PREEMPT_VOLUNTARY instead 
+of selecting CONFIG_PREEMPT. So for this stress test case, lots of data 
+need to receive in the loop in the flush_to_ldisc(), which will block 
+other threads to be scheduled for a long time on this CPU if no 
+scheduling check.
 
-This is not the correct indentation anymore, why not work to see if you
-can remove the volatile comment instead?
+For the throughput concern, I think we can change to below code to avoid 
+impacting the throughput, which means only need rescheduling if 
+necessary, and also fix the softlockup issue.
 
-thanks,
++ if (need_resched())
++	cond_resched();
 
-greg k-h
+> 
+> Also, having only one CPU burning through a network workload like this
+> seems correct to me, why would you want the CPU to stop handling the
+> data being sent to it like this?  You have at least 40 other ones to do
+> other things here :)
+> 
+> thanks,
+> 
+> greg k-h
+> 
