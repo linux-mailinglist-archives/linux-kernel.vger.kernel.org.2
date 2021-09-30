@@ -2,121 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0AF41D768
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E661F41D76E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349838AbhI3KO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S1349844AbhI3KQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349811AbhI3KOy (ORCPT
+        with ESMTP id S1349814AbhI3KQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:14:54 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564B2C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:13:11 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g7so19954239edv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:13:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=di22f+1qtT1rJlDsDU5gv52bfkIzi99/0/f5YELZTOw=;
-        b=ppyHc1xu2ZjQ/kTBT2c/n07AkMuYUtXvdy0s7QXVTxECAFMjweuXUCK7xVE+xwaX0C
-         6o8ZrsH3/9Aynnbf9fMbiY9C8vrkZKxMS2dYyF99LaMNbMDmo+1MshkoCVBu64oPE6ga
-         zFJAQfJwiWTcCZsmLrqej5kKbY2vHfu7puIu4/K01CNJFBuzzGgBrIqsTKFJtWl1D8WY
-         Zs33o3bUzbg+B6tae1aWxdGoSxVf8Jp54BcOj5rIAhOIm93rKhQ0OmZemre71DGprt/y
-         YIumJdsINVkRuayzKbrt7Bx5i0AKwik6J4Ki1n3eaMHv8bBS9zWjaa6znfhzuZJX3poI
-         GbLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=di22f+1qtT1rJlDsDU5gv52bfkIzi99/0/f5YELZTOw=;
-        b=2JidXOeysvWe/xRk8DMfs+jTBKJjTBizBhochvpB9G7fSxvS2sFRhftKhCNJTlmvtH
-         aCx8sf7jyCARA1eRrWyg1HfUEDE1KkM4aCCIXxd8zAux3Ts3COs+CX4nUJ/aBhnwnAWh
-         aMVkgrJUx5r4LAdwqU3yMlCasoJIMAHRg+LMsFimBIAtggumqROq5rJgyM4zHEum9GSV
-         QBcQ6dvbw477Abuzz4k+tQneG2zgX1st975QuN8jkc+9sEjHXqq8UIoO1EhQFjl9Dac2
-         gsualX0cejdblAxAnazRE0IQcEf/cRwCXZItRYGRF3h9f76mZRe3+JunBJJYuBIVJ0R9
-         5+zA==
-X-Gm-Message-State: AOAM532ZjE/gBEKVTBxfn2G77vh6kpbMFRly0H+l+OGzq8ixJtTuk5Qp
-        UmgC0ZqGTFs4P1BMsjSntho6Rw==
-X-Google-Smtp-Source: ABdhPJzUmXdUqIGI8syP1K7qbkNoLgpokgx7oGftLZ5Q5kO7Xtw6c5x1cXA4qfoDB4xaMGW2mjnWyg==
-X-Received: by 2002:a17:906:4d99:: with SMTP id s25mr5632392eju.175.1632996789937;
-        Thu, 30 Sep 2021 03:13:09 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id j14sm1265961edl.21.2021.09.30.03.13.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 03:13:09 -0700 (PDT)
-Subject: Re: [PATCH v4 10/11] microblaze: Use is_kernel_text() helper
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>, arnd@arndb.de,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, rostedt@goodmis.org,
-        mingo@redhat.com, davem@davemloft.net, ast@kernel.org,
-        ryabinin.a.a@gmail.com, akpm@linux-foundation.org
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20210930071143.63410-1-wangkefeng.wang@huawei.com>
- <20210930071143.63410-11-wangkefeng.wang@huawei.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <2a23c06c-62e5-d4f8-4c7c-4e5c055a9e69@monstr.eu>
-Date:   Thu, 30 Sep 2021 12:13:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 30 Sep 2021 06:16:50 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B50C06176A;
+        Thu, 30 Sep 2021 03:15:07 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id D77342DE; Thu, 30 Sep 2021 12:15:04 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 12:14:47 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tags need some work in the iommu tree
+Message-ID: <YVWOF20Sjwd8ILmt@8bytes.org>
+References: <20210930083201.16636e24@canb.auug.org.au>
+ <CAD=HUj5XF9eNj+1oZZq6CcHfe-ii+M3z97BNPkSY9qW2BHaJbQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210930071143.63410-11-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=HUj5XF9eNj+1oZZq6CcHfe-ii+M3z97BNPkSY9qW2BHaJbQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/30/21 9:11 AM, Kefeng Wang wrote:
-> Use is_kernel_text() helper to simplify code.
+On Thu, Sep 30, 2021 at 09:36:32AM +0900, David Stevens wrote:
+> On Thu, Sep 30, 2021 at 7:32 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > In commits
+> >
+> >   06e620345d54 ("iommu/dma: Fix arch_sync_dma for map")
+> >   08ae5d4a1ae9 ("iommu/dma: Fix sync_sg with swiotlb")
 > 
-> Cc: Michal Simek <monstr@monstr.eu>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  arch/microblaze/mm/pgtable.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/microblaze/mm/pgtable.c b/arch/microblaze/mm/pgtable.c
-> index c1833b159d3b..9f73265aad4e 100644
-> --- a/arch/microblaze/mm/pgtable.c
-> +++ b/arch/microblaze/mm/pgtable.c
-> @@ -34,6 +34,7 @@
->  #include <linux/mm_types.h>
->  #include <linux/pgtable.h>
->  #include <linux/memblock.h>
-> +#include <linux/kallsyms.h>
->  
->  #include <asm/pgalloc.h>
->  #include <linux/io.h>
-> @@ -171,7 +172,7 @@ void __init mapin_ram(void)
->  	for (s = 0; s < lowmem_size; s += PAGE_SIZE) {
->  		f = _PAGE_PRESENT | _PAGE_ACCESSED |
->  				_PAGE_SHARED | _PAGE_HWEXEC;
-> -		if ((char *) v < _stext || (char *) v >= _etext)
-> +		if (!is_kernel_text(v))
->  			f |= _PAGE_WRENABLE;
->  		else
->  			/* On the MicroBlaze, no user access
-> 
+> It looks like the Fixes messages got rewritten along with the tags in
+> the subject lines.
 
-Acked-by: Michal Simek <michal.simek@xilinx.com>
+Yeah, I edited the commit message so that the subject lines match the
+IOMMU tree format. Apparently I changed the fixes tags by accident too,
+will fix this up.
 
-Thanks,
-Michal
+Regards,
 
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+	Joerg
