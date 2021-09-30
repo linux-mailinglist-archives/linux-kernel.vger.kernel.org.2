@@ -2,238 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF0041D655
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F7841D659
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349379AbhI3JaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:30:19 -0400
-Received: from mail-co1nam11on2046.outbound.protection.outlook.com ([40.107.220.46]:26656
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S1349407AbhI3Jaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:30:30 -0400
+Received: from mail-am6eur05on2044.outbound.protection.outlook.com ([40.107.22.44]:50486
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235943AbhI3JaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:30:18 -0400
+        id S1349386AbhI3Ja1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:30:27 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cMLVclE4UklgwemhUufpJNHRCFR2anDoIdStdYFVfm3z1a6/nzHlMrK/61PWNqbVhdYs9LiHONfqYx4cE9NKFr7KjWDLUj5DMf6+jwo035X5+/Fs5gIuMVb9axTszlspwoixnMTI89wUyEQhm6wgl41sfX9OMS60vulOrs+GQpIKow9M/OdF0BJ4cJzBte4FvclOrXHeu+HqhQ1WscFwP6nWtvraakMgd8uapBCzqKRdxkIDIdpCOJsQ+5yKh4uOh7iwOFAmZJe2+6szi+mxn8fAyC5CQGGj/ZUpGhJ6aqzJIh3iS8ZQousDvZEfZDtiujIlwZqIiT3gGW4DmmrjVw==
+ b=HQgKNwI71nLGqIGMdDLFwcjYTvpsYyg72FNu3n+E/WkT8SpLRzQOpLHyKytX8E5wji4g/Bqryc7o99ZdbA1d9qM8duuEHRwg8mvxHDpX9gr5r/KsyTVjfeclwmkUO8VJh4vq4u6FgGUAUHYCUQsSe9T/P3iIGj9szRnoJ4S3EKZD7mVwRyC63FHZLjjTyItXVC1JZYZHVo10o1GH4KPa8Li5+A8dDgmSvfhY+MEkO3TVFhu3eLpVsLoKm5okASNFRZQMJZsX1qRoPeXZbLMF0B53wZwLSb8Zv2Ym2yw7ZX20JqBeehNPYcdDZadSpOlIaUJLn2JeqeRot4ELTOJmHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=1N7GA6Pz6eUuOGdJmHjuipwmowhhYzpCWRRdnJ8rw1k=;
- b=gSABPnz4ph6yILXxqbLhvtcHNhYkYuCQFnN4GH2z61/CFRfJuvObLJXMz1bsegpe1DG1L6KYJN/uAbg8whKg2HPEthOLrz9IjwrvPGukGRQKC84ijxwEnKNHLay3dsnDuAFPWb6PNPpYG2v86XMdwnbp9HvKboxCTir21F3wCXQ7LQMOKWOGyEAToM/58fDWQv2NUZtn/YugwsM5t5SMxdZBchBDydpcY6iS1VQCnESi4lMNA0u8DkTK5UsULZB79M+2I8iZD0S7R2eLK4CO8hXtVbAvomNvefJdKU/qGMsmx4w1pbG8Bphh5tnCdAGV2Gc7SmjSzGoHtHdVFsGrXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+ bh=1+ZpohUEUovF11WZqnw3Q+2NRAGp1aWSHNhUI3aEyrs=;
+ b=SHNUAkMzDAvxHAgg+s/eOUpot7gZhjaIbLjeAZ1qTY4tIOdIe/n10GOQbnrEP/wYEvIzptzixZdX+aukfZcjNcBNtkz6xn07yUpZRCW4+NR5oM3pWSL8m471Lo1lSjpUnO+Bixljx85KRB+Sz+KU6BKttVmVUdZgPGAiGQpV8l6P+tODNgHLGXi65Qs63R0w14ldeNYAEiUYF6HLZMStYH8b6XTw08FDG0RlrqmspGKsF6Zhujy+HkeTCbA1Cf+W1eJMgmVmw1cVg5gwoN7k44d6LE2tqtn2zzzxzrrqTaAmOcEiTJVn3WP3MuehJKCrgPmTveypeJ9ymyhVNqlHsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1N7GA6Pz6eUuOGdJmHjuipwmowhhYzpCWRRdnJ8rw1k=;
- b=dHTlbPclQBxCotLeN9xvKC1CvPJ1ES9EXr5urLo9ksDiAY4mh9soj9/0gVkvT0neIdqg6yw/gwx6Zp6aNVdz4j0CGuCbhg8tmRSriHH0SD6hyuMf1AC5g3QGSka6i18PbaOJ5GxxjCbftl/qA7xS8or6oBTrjHZpiGJ9AC1NCic=
-Received: from BN6PR1201CA0014.namprd12.prod.outlook.com
- (2603:10b6:405:4c::24) by SN6PR02MB5215.namprd02.prod.outlook.com
- (2603:10b6:805:67::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.22; Thu, 30 Sep
- 2021 09:28:32 +0000
-Received: from BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
- (2603:10b6:405:4c:cafe::31) by BN6PR1201CA0014.outlook.office365.com
- (2603:10b6:405:4c::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend
- Transport; Thu, 30 Sep 2021 09:28:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT037.mail.protection.outlook.com (10.13.2.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 09:28:31 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 30 Sep 2021 02:28:30 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 30 Sep 2021 02:28:29 -0700
-Envelope-to: linux-edac@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- rric@kernel.org,
- james.morse@arm.com,
- tony.luck@intel.com,
- mchehab@kernel.org,
- bp@alien8.de,
- dinguyen@kernel.org
-Received: from [10.254.241.49] (port=35944)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1mVsMf-000BQE-J7; Thu, 30 Sep 2021 02:28:29 -0700
-Subject: Re: [PATCHv3 2/3] EDAC/synopsys: add support for version 3 of the
- Synopsys EDAC DDR
-To:     Dinh Nguyen <dinguyen@kernel.org>, <michal.simek@xilinx.com>
-CC:     <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>,
-        <james.morse@arm.com>, <rric@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>
-References: <20210928160423.271187-1-dinguyen@kernel.org>
- <20210928160423.271187-2-dinguyen@kernel.org>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <99ddd699-5fa4-068b-4648-fe6d34a36b5d@xilinx.com>
-Date:   Thu, 30 Sep 2021 11:28:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210928160423.271187-2-dinguyen@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+ bh=1+ZpohUEUovF11WZqnw3Q+2NRAGp1aWSHNhUI3aEyrs=;
+ b=g6z6wmQXZHQt2iWBZJBZmIkbm+ozQnFajQFBFG0wGFUgzSqSlzrvFVcjOaMN/I7TAAwZrbw/isBCGbj+iP2MIOZ87CsrUMGvndOPDb7B/6KCj4je2c/b92Nc4Jgn+Vvubxcvg5SB9G8V8AJ/MGthHikr3xPtupXU+hKgzyBCOz4=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB9PR10MB4682.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:261::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Thu, 30 Sep
+ 2021 09:28:38 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144%7]) with mapi id 15.20.4544.022; Thu, 30 Sep 2021
+ 09:28:38 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+CC:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+Thread-Topic: [PATCH] drivers: mfd: da9063: Add restart notifier
+ implementation
+Thread-Index: AQHXrqpI0LoFC+MHc0+B+6k9QHIUIauzTVswgAAUm4CAB616wIABMx0AgAAYygA=
+Date:   Thu, 30 Sep 2021 09:28:37 +0000
+Message-ID: <DB9PR10MB4652444644C8ECF3C729A8C680AA9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
+ <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
+ <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CAEn-LTqVd8z=kpCtWjiPbKuw24NuHLTQxWzw7g34fEJgDYrp8w@mail.gmail.com>
+In-Reply-To: <CAEn-LTqVd8z=kpCtWjiPbKuw24NuHLTQxWzw7g34fEJgDYrp8w@mail.gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 75382082-b4b8-4a5a-cd9c-08d983f4ab58
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5215:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB521559E2D8712E5906F823F2C6AA9@SN6PR02MB5215.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2guwZXss0q+5+80E2rDtolz4BDq4RG+OSyt5gf4vG9zZU1UdJdoBMSB5y/KWB61Mf2hXKHrrtp3wyWzmMx7rCFgxbYr7KwC1Ipuwmc+hxS0v3gfKmbr/ZJQTKO3LwX26xwJLvyT7KDAiJ2OSoRU304RLg3OTARLFcugUq0VWODi9HiSBhpDokCbxK/yif5iGwGSfXMswWNablyq9n8Idz0kKjeVzhTgJaQbAckl/blxeSWfIbRwc9id/ivfe6IKoPu67wm6joiUgTzyXfY+6zX0XhhmhAj76DGzPBR/zUjb5VmYm09/Cs++z8dXl56uJWvOyuJQuhk85RriMN8JnNvrqVwg21qy822qATuZpLctPWqbMJqqpnozic8R+VaNi0pSFBlcy5CouF1zj+X2GBP+lFp3ORxNdYEkgjzT6T+qcoJPU+fGGy/iGLYoNmM9o4G8qeKqFt2Kvw8uKOpljFkkrk3Ojx2kCJ5vopejYI7XQl3Up0cPm6R59Pp88FynPOrfsv8J76I57a1zrFzFSTNjtUpgrBz6odSiKv9FNxL3kzLvctu0JSf+KpnE1EIgo8BljoKrfm1j0Sp6LP4JxZaxAVKT7mOSldzKzygJYCsZB8u5F8H5sc377sk3gLbfzabwOocnYphl/9rw1KMjB3b0oWYfGOZvVxTrCgxgobGSbgGD2OsFUx96QwRLWK/1tBolskEAyJyB9X6sq0yMd82HbvCVfYtvEIXHa2L5xToFFvqNCYtRspBQ4ad4jmJue
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(8936002)(8676002)(426003)(4326008)(336012)(70206006)(9786002)(5660300002)(36756003)(70586007)(83380400001)(2616005)(36860700001)(53546011)(82310400003)(316002)(44832011)(47076005)(54906003)(110136005)(31686004)(2906002)(7636003)(508600001)(31696002)(356005)(36906005)(26005)(186003)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 09:28:31.8219
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 45a24128-961d-41a6-ed0a-08d983f4af01
+x-ms-traffictypediagnostic: DB9PR10MB4682:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB9PR10MB46825060170E29A9B42BE6DFA7AA9@DB9PR10MB4682.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ebZsIpg28+aFJQQ3ZgTNMtftjzi82U7NP7VGXnDyKhfDvQ9QsEEjprL4Yj/frYTUSY0uiHEkL04CNddCH4C9J2gukD/y9rbN+lgmkJw+oJa5TqCVvqVaN/KeltDNrgGa59DAj+3Fil+LqTGRthCs3HTzmqMI2bFXNSb16gGzNCJF92GiDbkZjSotuc8oAKRtugQnTDuLC4Pij0L5nVOSdjimvupQ7/s9MELl4w4zNmwezTKMxyUyRLPq0wjhKxBHGaxEkT1Ne6Ep0/80cUjOnAKUPq0/af8m0VlIoUtUJbXovwv5AgSGrS0GhI+5hwdfWb2yVg7FNYqPrt2X9qKxYP+eyP+4AOsIx303NV+PYAMSQDeV4cfZ31mUhInY36/iNbC1xJrwDlMp4r1djLrYE5KXb/rit4VLg2UChwGi1HcYvqYhMGIz7Kat7lb9bDSOXmnj3/po3ek1+HoQBsPWLko0qNvdJnIVcxypC4/mJdpy04u2lGZYmLrEC60O927JJasqpPS02hPCL0xn+GyAYZBH/wEgMiyKJW/nTfMf0ZTO7lRG+9wUG5beZr7rU8XLL2+Y04hqM1hs+7njugojdTRs3o4f3LiJKJTDFU8zvOd7PB3zzRFwwji1E0tArlO9CzutyF4pd2aPWi2N79DMStPYvbSvSVJA+2fKwRZa7+DyGBVL2oD2Kce4+U1q3tpIii9n8MURtskyiDQh8I8aVg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(5660300002)(66476007)(316002)(64756008)(86362001)(38070700005)(66446008)(76116006)(66556008)(66946007)(6506007)(2906002)(53546011)(54906003)(8676002)(52536014)(71200400001)(7696005)(26005)(110136005)(38100700002)(4326008)(508600001)(8936002)(55016002)(122000001)(33656002)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MXowYkQ1MDEwMkF3MnZRSmtLc3FFYXJSTUdiK2JoQ1g5WjZRbDhsWkJmU1No?=
+ =?utf-8?B?dDNPVnF6VmVFUnc3VWJ5VGFIVTFFYy92ck0wS3oxOHgvMTdud2plNlFxT0VP?=
+ =?utf-8?B?N3VyZTZSakdENklkRGZBU3FwWWs0TnRCSUdRenRMQUlEWFNzODhhbVErUC9x?=
+ =?utf-8?B?OUEwK3NDVnk2cTFBVzcvV05ZTkY2WWF5anZ6R01adDdNSytEY1FqaW1ndkxG?=
+ =?utf-8?B?VGQ5azkxZG40b2JGd2tySE14bTBGZWJURTdsZldiQTdXZWxJN1craEFVdGhN?=
+ =?utf-8?B?bmcxKzF3RnUrVktEZXRwTVF0Z2RITTYyR09QcCtKUUNGckZKOTl0VTFNajly?=
+ =?utf-8?B?SitEL1gyK0tjQjdUbG5sWFI0ZndTRHdZUURHM1RKcHFzeVRoem5mRUdHK1ZR?=
+ =?utf-8?B?N2JyYmJ5SFRrNGV2aEQxdlhSc2k1eW8yNG03alBnVHJHRUM2d2J2NDhteTVo?=
+ =?utf-8?B?UHIyQzdwbzd5bngwQUlTRU5QYlNrMFJIVmxLcmk1KzA5L0xDMG9HdFJUeG43?=
+ =?utf-8?B?MHlxWXRmMU9HMHVyVklKZGx3aWF1MUkySEdSNEhITXBIY2FMTjZ4M2k3TkJL?=
+ =?utf-8?B?SFlmWnAvSmE0dUNSOUdxcDg5andjQWEzT1hKYTRHc0ltNCtubWpNQTNZNFlt?=
+ =?utf-8?B?V091d0E3YUJCa1EySWNuU1JGNHFZQXEyWW10dkpqZEdNcmI3T1EyeTJtUkE0?=
+ =?utf-8?B?OUdEc2REYjh5TG9IelhNT09VS1loN2lhb1FQSlRWNCtDSW9hSkVCZUVjOEtW?=
+ =?utf-8?B?U1pTckV1OGN6b3Uwak1ieCtOUmszVEhRaEE2ZFdTWDBGYkNKSEV4aS9HbUhU?=
+ =?utf-8?B?eE9DVUJ5MnNuSHJRQ3hkMjVmcnVvc1JseWViZWRCZHZVREpXQVRhQjRjRlhF?=
+ =?utf-8?B?bmM3bXJyZEdsa1lCaFY0dmpYTFNZSk9FejN6ZDl5QUJaWHZVRUkzTGdmNVV4?=
+ =?utf-8?B?MTBJZXRYVlFSQnNscnMvenZtOUdSVHJkdXhOaWdBL3VHcW9SMTVxNkp0MmR3?=
+ =?utf-8?B?NGduMXZrQVhxMm5jemE3VzlOQlp0RHZhTTNNbW04bHRwT2VFelZUSjlTRFFY?=
+ =?utf-8?B?RE9mWUhPM21MUFgxcUZ5bGlZdklBUHhyRE9hM2FNQ09kOTJzMmdib08rcDZn?=
+ =?utf-8?B?TWpaeXNlSlRhaFFISzdTanU0VjNjUGJXWGZNdWp6OU1tOEp4OHlJSlF6M1Ji?=
+ =?utf-8?B?b3NHVjUxd1UvbDdHYWExZ2dsb0xrbStzQTNLdzREVTJxaTNsbi9TeHk5QS9E?=
+ =?utf-8?B?bXZHT01kMmc3enRSK2FoYzQ0MmFYOGlDZDJSb0VyVDFqRGpTUnBIL2h6K2JX?=
+ =?utf-8?B?ck5TSXQyemFpb0VRY1B6SWNTOHFBU0V6ditCYkRSS3M1c2JtcVYwb2dIMThj?=
+ =?utf-8?B?aHplS2hxTUdWTE1WTjJWaUlBbUd4czhMMlFRQWJydHk5QjFWZjZFc3pIV0xw?=
+ =?utf-8?B?WVVEUTAwSXJJN1liN29XUS95NW0rREtxakxHYm1DYlZiNHVoWjhEcG5lNlZx?=
+ =?utf-8?B?b2s5L3NXZ2JWQzBubFREMUtTVzNBT01MMk1sTFZyUjNtNXg0dU1yb0xTNTVh?=
+ =?utf-8?B?cDkwNTNWblVUb3pqNUlHZnZBNUhkUGZ2V09BWEtqM0RvM0tGcHNpQVRKT012?=
+ =?utf-8?B?eExuSjhrSzF4anRDa0hrQ0RXUERvdUFzUXhkcTNkdTl4UXF4bHFCb25uTy9Z?=
+ =?utf-8?B?TzBFOHhKNE5FamZOQzNPQmFFaDBXdDBvczZscmNpcDBhZmlyZDBuZWpXeEtJ?=
+ =?utf-8?Q?iOM46Ajvm7VBIARQT0ThLT6EfRcgWsJ5rdRgQrI?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45a24128-961d-41a6-ed0a-08d983f4af01
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 09:28:37.9878
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75382082-b4b8-4a5a-cd9c-08d983f4ab58
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5215
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kckx6DGqgW8qX66QP7xxSZC1FrYI7ExzLtLp2cyWmJ8uR/pGQMmkKdjq1OK8cKAl9og2WoZqBSXpDIZf2aQCy0WHg8fvoGhyi+o7RDmV1OI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB4682
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/28/21 6:04 PM, Dinh Nguyen wrote:
-> Adds support for version 3.80a of the Synopsys DDR controller with EDAC. This
-> version of the controller has the following differences:
-> 
-> - UE/CE are auto cleared
-> - Interrupts are supported by default
-> 
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
-> v3: Address comments from Michal Simek
->     use bit macro
->     removed extra "cleared" word from comment section about v3.0
-> v2: remove "This patch" from commit message
-> ---
->  drivers/edac/synopsys_edac.c | 49 ++++++++++++++++++++++++++++++------
->  1 file changed, 42 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-> index bf237fccb444..66ee37ea0acc 100644
-> --- a/drivers/edac/synopsys_edac.c
-> +++ b/drivers/edac/synopsys_edac.c
-> @@ -101,6 +101,7 @@
->  /* DDR ECC Quirks */
->  #define DDR_ECC_INTR_SUPPORT		BIT(0)
->  #define DDR_ECC_DATA_POISON_SUPPORT	BIT(1)
-> +#define DDR_ECC_INTR_SELF_CLEAR		BIT(2)
->  
->  /* ZynqMP Enhanced DDR memory controller registers that are relevant to ECC */
->  /* ECC Configuration Registers */
-> @@ -171,6 +172,10 @@
->  #define DDR_QOS_IRQ_EN_OFST		0x20208
->  #define DDR_QOS_IRQ_DB_OFST		0x2020C
->  
-> +/* DDR QOS Interrupt register definitions */
-> +#define DDR_UE_MASK			BIT(9)
-> +#define DDR_CE_MASK			BIT(8)
-> +
->  /* ECC Corrected Error Register Mask and Shifts*/
->  #define ECC_CEADDR0_RW_MASK		0x3FFFF
->  #define ECC_CEADDR0_RNK_MASK		BIT(24)
-> @@ -533,10 +538,16 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
->  	priv = mci->pvt_info;
->  	p_data = priv->p_data;
->  
-> -	regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
-> -	regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
-> -	if (!(regval & ECC_CE_UE_INTR_MASK))
-> -		return IRQ_NONE;
-> +	/*
-> +	 * v3.0 of the controller has the ce/ue bits cleared automatically,
-> +	 * so this condition does not apply.
-> +	 */
-> +	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)) {
-> +		regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
-> +		regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
-> +		if (!(regval & ECC_CE_UE_INTR_MASK))
-> +			return IRQ_NONE;
-> +	}
->  
->  	status = p_data->get_error_info(priv);
->  	if (status)
-> @@ -548,7 +559,9 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
->  
->  	edac_dbg(3, "Total error count CE %d UE %d\n",
->  		 priv->ce_cnt, priv->ue_cnt);
-> -	writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
-> +	/* v3.0 of the controller does not have this register */
-> +	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR))
-> +		writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -834,8 +847,13 @@ static void mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
->  static void enable_intr(struct synps_edac_priv *priv)
->  {
->  	/* Enable UE/CE Interrupts */
-> -	writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
-> -			priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
-> +	if (priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)
-> +		writel(DDR_UE_MASK | DDR_CE_MASK,
-> +		       priv->baseaddr + ECC_CLR_OFST);
-> +	else
-> +		writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
-> +		       priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
-> +
->  }
->  
->  static void disable_intr(struct synps_edac_priv *priv)
-> @@ -890,6 +908,19 @@ static const struct synps_platform_data zynqmp_edac_def = {
->  			  ),
->  };
->  
-> +static const struct synps_platform_data synopsys_edac_def = {
-> +	.get_error_info	= zynqmp_get_error_info,
-> +	.get_mtype	= zynqmp_get_mtype,
-> +	.get_dtype	= zynqmp_get_dtype,
-> +	.get_ecc_state	= zynqmp_get_ecc_state,
-> +	.quirks         = (DDR_ECC_INTR_SUPPORT | DDR_ECC_INTR_SELF_CLEAR
-> +#ifdef CONFIG_EDAC_DEBUG
-> +			  | DDR_ECC_DATA_POISON_SUPPORT
-> +#endif
-> +			  ),
-> +};
-> +
-> +
->  static const struct of_device_id synps_edac_match[] = {
->  	{
->  		.compatible = "xlnx,zynq-ddrc-a05",
-> @@ -899,6 +930,10 @@ static const struct of_device_id synps_edac_match[] = {
->  		.compatible = "xlnx,zynqmp-ddrc-2.40a",
->  		.data = (void *)&zynqmp_edac_def
->  	},
-> +	{
-> +		.compatible = "snps,ddrc-3.80a",
-> +		.data = (void *)&synopsys_edac_def
-> +	},
->  	{
->  		/* end of table */
->  	}
-> 
-Reviewed-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
-
+T24gMzAgU2VwdGVtYmVyIDIwMjEgMDg6NTEsIERhdmlkIEFiZHVyYWNobWFub3Ygd3JvdGU6DQoN
+Cj4gPiBSZWdhcmRsZXNzIG9mIHRoaXMgdGhvdWdoLCB0aGUgY29uc2Vuc3VzIHJpZ2h0IG5vdyB3
+b3VsZCBiZSB0byB1c2UgdGhlIFJUQyBhcw0KPiBhDQo+ID4gd2FrZSBldmVudCB0byByZXN0YXJ0
+IHRoZSBwbGF0Zm9ybS4gQW4gYWxhcm0gY2FuIGJlIHNldCBmb3IgYSBjb3VwbGUgb2Ygc2Vjb25k
+cw0KPiA+IGludG8gdGhlIGZ1dHVyZSAob3IgbG9uZ2VyIGlmIHJlcXVpcmVkKSBhbmQgdGhhdCB3
+b3VsZCBwcm92aWRlIHRoZSBldmVudA0KPiA+IHJlcXVpcmVkIHRvIGNvbWUgdXAgZnJvbSBwb3dl
+cmRvd24vc2h1dGRvd24sIGluIHRoZSBhYnNlbmNlIG9mDQo+IEFVVE9CT09UIGJlaW5nDQo+ID4g
+c2V0IGluIE9UUC4gSSBiZWxpZXZlIHRoaXMgd291bGQgYmUgdGhlIHNhZmVzdCByb3V0ZSB0byB0
+YWtlIGluIHRoaXMgY2FzZS4gWW91DQo+ID4gY2FuIHRoZW4ganVzdCB1c2UgdGhlIFNIVVRET1dO
+IGJpdCBvbiBDT05UUk9MX0YgdG8gdGFrZSBkb3duIHRoZSBib2FyZC4NCj4gDQo+IFRvZGF5IEkg
+d2FzIGxvb2tpbmcgaW50byBPcGVuQlNEIERBOTA2MyBkcml2ZXJzIGFuZCB0aGV5IG1pZ2h0IGJl
+DQo+IGRvaW5nIHdoYXQgeW91IGRlc2NyaWJlZCBmb3IgdGhlIHJlc2V0Lg0KPiANCj4gZGV2L2Zk
+dC9kYXBtaWMuYw0KPiANCj4gWy4uXQ0KPiAyNDEgdm9pZA0KPiAyNDIgZGFwbWljX3Jlc2V0KHZv
+aWQpDQo+IDI0MyB7DQo+IDI0NCAgICAgc3RydWN0IGRhcG1pY19zb2Z0YyAqc2MgPSBkYXBtaWNf
+Y2QuY2RfZGV2c1swXTsNCj4gMjQ1ICAgICB1aW50OF90IHJlZzsNCj4gMjQ2DQo+IDI0NyAgICAg
+LyogRW5hYmxlIHRpY2sgYWxhcm0gd2FrZXVwIHdpdGggYSBvbmUgc2Vjb25kIGludGVydmFsLiAq
+Lw0KPiAyNDggICAgIHJlZyA9IGRhcG1pY19yZWdfcmVhZChzYywgQUxBUk1fTU8pOw0KPiAyNDkg
+ICAgIHJlZyAmPSB+QUxBUk1fTU9fVElDS19UWVBFOw0KPiAyNTAgICAgIHJlZyB8PSBBTEFSTV9N
+T19USUNLX1dBS0U7DQo+IDI1MSAgICAgZGFwbWljX3JlZ193cml0ZShzYywgQUxBUk1fTU8sIHJl
+Zyk7DQo+IDI1Mg0KPiAyNTMgICAgIC8qIEVuYWJsZSB0aWNrIGZ1bmN0aW9uLiAqLw0KPiAyNTQg
+ICAgIHJlZyA9IGRhcG1pY19yZWdfcmVhZChzYywgQUxBUk1fWSk7DQo+IDI1NSAgICAgcmVnIHw9
+IEFMQVJNX1lfVElDS19PTjsNCj4gMjU2ICAgICBkYXBtaWNfcmVnX3dyaXRlKHNjLCBBTEFSTV9Z
+LCByZWcpOw0KPiAyNTcNCj4gMjU4ICAgICAvKiBDbGVhciBldmVudHMgc3VjaCB0aGF0IHdlIHdh
+a2UgdXAgYWdhaW4uICovDQo+IDI1OSAgICAgZGFwbWljX3JlZ193cml0ZShzYywgRVZFTlRfQSwg
+ZGFwbWljX3JlZ19yZWFkKHNjLCBFVkVOVF9BKSk7DQo+IDI2MCAgICAgZGFwbWljX3JlZ193cml0
+ZShzYywgQ09OVFJPTF9GLCBDT05UUk9MX0ZfU0hVVERPV04pOw0KPiAyNjEgfQ0KPiBbLi5dDQoN
+ClRoaXMgaXMgdXNpbmcgdGhlIHRpY2sgYWxhcm0gd2hpY2ggaXMgcmVwZWF0aW5nLiBUaGF0IGlz
+IG9uZSBvcHRpb24gb3INCmFsdGVybmF0aXZlbHkgdGhlcmUncyBhIG9uZS1zaG90IGFsYXJtIG9w
+dGlvbiB3aGljaCBjYW4gYmUgdXNlZCB3aGljaCBtaWdodCBiZQ0KcHJlZmVyYWJsZSBhcyB5b3Ug
+d29uJ3Qgc2VlIGNvbnRpbnVlcyBldmVudHMgZnJvbSB0aGUgUlRDIHdoZW4gdGhlIHN5c3RlbSBi
+b290cw0KdXAgYWdhaW4uDQo=
