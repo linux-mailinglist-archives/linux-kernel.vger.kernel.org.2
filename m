@@ -2,301 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D1D41D28D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E851241D291
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 06:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348019AbhI3E7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 00:59:04 -0400
-Received: from mail-eopbgr130055.outbound.protection.outlook.com ([40.107.13.55]:25926
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        id S1348026AbhI3E7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 00:59:33 -0400
+Received: from mail-dm6nam11on2040.outbound.protection.outlook.com ([40.107.223.40]:65504
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231286AbhI3E7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 00:59:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NRw1j3ERvooeG0UCuv/UqZGm6kIInQkq+pCDBldhueg=;
- b=NT5SwQ+fCaMpVhAZtNY/FAzpgMMhsX3oyjFKRdlO8vAHIyjQhQu2lksKY4OW0W9M/UX02ENy5s78FdLg5k7sFe8vtLWigTPNrLUA4tDaKBJu8QGo0jZ8ERDWwBojJ+gVC56UQVApNj7SK9ohu3qKrUlDNjEgfmm5piXdkBuR0hI=
-Received: from AM5PR0101CA0023.eurprd01.prod.exchangelabs.com
- (2603:10a6:206:16::36) by VE1PR08MB5566.eurprd08.prod.outlook.com
- (2603:10a6:800:1a9::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Thu, 30 Sep
- 2021 04:56:59 +0000
-Received: from AM5EUR03FT005.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:206:16:cafe::ec) by AM5PR0101CA0023.outlook.office365.com
- (2603:10a6:206:16::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend
- Transport; Thu, 30 Sep 2021 04:56:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.33.187.114)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.33.187.114 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.33.187.114; helo=64aa7808-outbound-2.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-2.mta.getcheckrecipient.com (63.33.187.114)
- by AM5EUR03FT005.mail.protection.outlook.com (10.152.16.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 04:56:59 +0000
-Received: ("Tessian outbound 1fd2edb24cb2:v103"); Thu, 30 Sep 2021 04:56:57 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: b270f002fc72ad22
-X-CR-MTA-TID: 64aa7808
-Received: from 0b87cee5886f.3
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 659A67F0-4AE1-4CF1-9703-1F827243564D.1;
-        Thu, 30 Sep 2021 04:56:47 +0000
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 0b87cee5886f.3
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Thu, 30 Sep 2021 04:56:47 +0000
+        id S230413AbhI3E7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 00:59:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dococ41s35gaEMZ0Sqtm9sZruKvbXdlHB3MyPGdOCYMG81DlpOrROedvrA94QfAC+1vF2Pzg2K844+X4W1Jz6fhSkYZ7usDXKxKmRmVnLnDlQPm/5gFgFaEc7LKTizd2XVDbEOJrFn7r/OC9Lebjp0k+g4auLY0iOvLJBAMP6livgZmMThYtFkOpxxKvuV2SLTYuPYSA0/cHWGeXIEIJ9rn7NPbkZFJd648cB22LL5cjD7x0Iq2Kp6IN+QNT+nFo0ZCpRlUHEQ28OqYxNQKVb6lwtqYE8eA1RoZVBzc//hYrOIuNA32/t+3ArTY3Lpbv+IY/6ShPxZj00h24NcpKeQ==
+ b=igos/tC54CqudHvXn980kVwKbZwKq5K+RoogtG8Fxwwt7C1hqcvHDAo/aAzBdNu54XCvEMhj2ejhBtdv0INqQ4iwvDJvE9smI1LHlE5xNAK/lyV+K2uxE2dWqxX1sw+13oqy4DnUYxkNDLrVpW4IXfDMGmv5flZzqIVnZ1saVUBLbBo/+pH3HD1C9Hz40Y2gDd+LpvyCePuqt9tvLG7b18OrLp5iGPhX7XSMHrV2Xwj107k052CtAzLqEw2VmjjvoZF05fr7PGjWvm62mbICynu8ofsNWhNz2GfDz0J6Ee9hUgF32uNreSDDjGjnT0TCouIOZUpCvhfZGoLP6+pJrQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=NRw1j3ERvooeG0UCuv/UqZGm6kIInQkq+pCDBldhueg=;
- b=Y3dZQQOO60g6XEys0kBTmW07jo4jED0yA4S2T36MgSunRVNALLbKkUd6sxlsbsI60J4+AN2FvKLs42cQzAYKNjKxLQjXANAv6RQ1qJfaUTXnVVDGwJ6RP3WNd+CUXYBTawXmIjqt67SjIHUSL8lAbHwecIjRbgT1TfhshxGrksqnL1qxqb4Kbn0MsB6DCYjpVC31ujuG8R/mZpl+2PmeGw7P5oaddQh2JlSdEz9JAMYHD51hvo+OgxxAHmndmButQ1P/uDA1Srrr1vqYqVehQk8sv2fgJ4EvFmKQD/44WzmI7xxdP/butHpmHOd7Gz8GNK7BWlhpLFchDg3/vc7dYQ==
+ bh=O8hgmQdOWfIbikNPK4C5DdhYL5vMyjRbyGFzp0kKHdc=;
+ b=iNJ8kfVn+ABC1iDOBWVHAY/l79Fw/x5Y+znaTuIrGugkF4zA8FxdMUOrHQTL8kOA+Eh/Q5iO2XMQRzLUSONSuCOCqoeyDnrOlI9pAxEVYNkdfH93HjUCz63+BMP5I4mE9byv1xWkRNpz6OsZZtOcW2yV6lJ+qM6jzwF8MmmJUvtKdn+KxP4hdWXsrYb2WCx7DQ+XGlMZytlHBWDOk257OZYfdA7mbv0DxSjjGvdiUgNmZ/TRa4ECCWCOtOMXjVQkHlRukFenwE1ky+vXg3Pe5kydg331htCrKry4wStJkxVo7R3lcVsE+Rrm1uHu30uWUZZU8nJAthByRFyz/sw5xw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NRw1j3ERvooeG0UCuv/UqZGm6kIInQkq+pCDBldhueg=;
- b=NT5SwQ+fCaMpVhAZtNY/FAzpgMMhsX3oyjFKRdlO8vAHIyjQhQu2lksKY4OW0W9M/UX02ENy5s78FdLg5k7sFe8vtLWigTPNrLUA4tDaKBJu8QGo0jZ8ERDWwBojJ+gVC56UQVApNj7SK9ohu3qKrUlDNjEgfmm5piXdkBuR0hI=
-Authentication-Results-Original: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=arm.com;
-Received: from DB6PR08MB2645.eurprd08.prod.outlook.com (2603:10a6:6:24::25) by
- DB9PR08MB6713.eurprd08.prod.outlook.com (2603:10a6:10:2aa::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4544.13; Thu, 30 Sep 2021 04:56:43 +0000
-Received: from DB6PR08MB2645.eurprd08.prod.outlook.com
- ([fe80::2cb2:fad6:c5f7:4501]) by DB6PR08MB2645.eurprd08.prod.outlook.com
- ([fe80::2cb2:fad6:c5f7:4501%6]) with mapi id 15.20.4544.021; Thu, 30 Sep 2021
- 04:56:43 +0000
-Subject: Re: [PATCH RFC v1 01/11] uapi/virtio-iommu: Add page request grp-id
- and flags information
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20210423095147.27922-1-vivek.gautam@arm.com>
- <20210423095147.27922-2-vivek.gautam@arm.com> <YUoBHA6NZaz8wlkA@myrica>
-From:   Vivek Kumar Gautam <vivek.gautam@arm.com>
-Message-ID: <3b490967-58b5-7c4a-2275-250e26d24aeb@arm.com>
-Date:   Thu, 30 Sep 2021 10:26:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YUoBHA6NZaz8wlkA@myrica>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ bh=O8hgmQdOWfIbikNPK4C5DdhYL5vMyjRbyGFzp0kKHdc=;
+ b=WhTq0T8VAxsqk7/tcnYd++aGaBCIQRmUAtxM8BKAjy/k6KVsE4nZd9GHB8bWCLhc6MA8BPRWmaSKDPemdC105/DpT/vL0kDkG9KXZhFw3elf+9sXwQMriYYd0xcXI2UkR3/HgvZzjRNVoPU5J66Bpc5K6eyGdJZwh+WfZ1Ez4AkSvMZmMlCKRLJFjf1ftKJWgEHhbepGS+mhWD6YDQEHAQqRpljrtzqKm1pm75UnxQBtOVBtIpvtmb2fBRf5rhgr0HlbBBiWeUDo/tCG4H+lFw4lRPU95woA2Mdg2lg5FYBpk9jy/zwdRnrKA+nlFueMfRxLpuvXMTZwDj0/rs1X6w==
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
+ by MWHPR12MB1469.namprd12.prod.outlook.com (2603:10b6:301:10::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
+ 2021 04:57:40 +0000
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3db1:105d:2524:524]) by MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3db1:105d:2524:524%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
+ 04:57:40 +0000
+From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+CC:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 01/20] lib/scatterlist: add flag for indicating P2PDMA
+ segments in an SGL
+Thread-Topic: [PATCH v3 01/20] lib/scatterlist: add flag for indicating P2PDMA
+ segments in an SGL
+Thread-Index: AQHXq1RaC0AUk7ABDUmYF9Nk+3cp+Ku8GLqA
+Date:   Thu, 30 Sep 2021 04:57:39 +0000
+Message-ID: <7c168a79-67c5-15d2-e95a-97ce0d4b5e6c@nvidia.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-2-logang@deltatee.com>
+In-Reply-To: <20210916234100.122368-2-logang@deltatee.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BM1PR01CA0155.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:68::25) To DB6PR08MB2645.eurprd08.prod.outlook.com
- (2603:10a6:6:24::25)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+authentication-results: deltatee.com; dkim=none (message not signed)
+ header.d=none;deltatee.com; dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d97a4090-df2a-48a8-e9fc-08d983ced47c
+x-ms-traffictypediagnostic: MWHPR12MB1469:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR12MB1469509A75EF39962A6E1DBCA3AA9@MWHPR12MB1469.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vyZLaZ5Q3GmK6HTTTu2BuLhBESHVydBWc1nqr8uvS46s/xipW7CbSzGD2sDQkSUEdxIENOOdrn5efFvO9a7ew9E+wCsK2ix4svPBHsePNmLNppK88Yzckxwzxddz1QLv4gFYCNej79OtJ/F3KCxnnhxrbPIu67Kbfw6BSTBRuQfqmR28BJVB/J9B8WA+l/T9fq4FVlJaCh36qBsTJx+V7Eb7kGlXVn8L8RrZYP768EE3qqSgtNhNWniHV7Zr0SLEane6M15J5R97zOLbWX/tebeiOcydwGLB+XaZB5QcyNDXUsh7dxb8GmJAwzV+xjUW0nCr2gIH+3LNjnxN/HuEMMdP9XyhLPDbSvyfWTDNPVbu2E4WZV4BnCDb2mByxa6dz1bf7e4vRDiTqY/CjzYQ+D4FephHjfGQKZSa6ZymyMI9UGFK5yye9CfrDmLOSLnKOq3nsdFiWnERfewfRg4ovymoR9Jbl3WdPKf1cPRXwMmE3SH8Bj0bmhPxRPfduPCsSoop2iu197Bu1maQ6OtIH7d2lhgMeCeoLwhkxNE0hqk+UijLr5EJZbesiLLzFLeobYcJXf5DC6AqpFBX7Ohg6pGqgIU5SzhdU+a/M5BWNdIqKu585BT1mOtwL1/97z1fwfzerybJZDKGMRs8xM7Zk0g4pT+hXbYq8OBqYcvSZjD0SbNudQT1SplJfx/n03CCWPLAhykXEvRzEzM5ix33IekJaXQwHW231QaxF2OwKXIiVnFTR6ysWYYJhuDRmR+mLCo2iCT57Kx12jKkQNjqOw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(4326008)(38070700005)(2616005)(31686004)(4744005)(186003)(6486002)(122000001)(86362001)(36756003)(7416002)(26005)(71200400001)(38100700002)(316002)(508600001)(2906002)(8936002)(5660300002)(54906003)(110136005)(31696002)(6512007)(8676002)(66556008)(64756008)(66476007)(66946007)(76116006)(66446008)(91956017)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OXlMTkhaL04ySFhpVGd4UU5nZjNveEpjMGQvVDQ5MCt1VGRUeXJkVUJpUm8r?=
+ =?utf-8?B?SjlKMmZ1TmRtMDN3M3E2VU95MXFNSUNJdDZvVTJ5NmhCMTluWTljNGwxZFdx?=
+ =?utf-8?B?Z3dFVlhlTE51ZjVlcFh1R0VyeE40SjhnOWF4ZFVSbzZEV1kvK0ErOXBMdXFN?=
+ =?utf-8?B?N1U5bFZ0ZTA0K3ZDMmtjUkdVcXAvaHBVWmZFUG1QSzYraThtZnF6bkQyU1pt?=
+ =?utf-8?B?MTBod2xSTUZ3cm0zbXp4bmd1Q2JpZDE0VGl2RENwRDV0YW5GQTZ6LzNIM1VI?=
+ =?utf-8?B?S2YyczFKNUlTZHlTYVlySTE5WVJpTW1ZcHBRWlBRcmUwZ1AwSzNyQ2R2Q2h2?=
+ =?utf-8?B?aTVvRk16dEs2cU55cURpYVhhMVordTViRkExVGhGNkpmWlNONG01cW5ySWFE?=
+ =?utf-8?B?UXZabDhCbXE5RzRFYmpFb21XUzYrS2ZGSXBqWWFUeTF2b1U5VUZhSEk1VlNT?=
+ =?utf-8?B?YzBlR2pMYlBpVGFoaVZaa0hhYzdKUlFwcVdSNktjUjBPczVvVlIzcS80Sy95?=
+ =?utf-8?B?MnZmWGIyZ25nOEhsbXdVUmg4Y041enlGUEowVFhlNGVBYVFmL0ZscWUzWW9z?=
+ =?utf-8?B?UjVrRG9ORk9sZFFNdVRCVDVXZEU0OWNoMzVCZzlSMWE1MmQ4enpUVEF5ZDg5?=
+ =?utf-8?B?MHdLNmVRYlZGVlZJdjBBaGZKRUgzMmlTSTFOVVlGWFNxQmtOVXoxRnJvcjBN?=
+ =?utf-8?B?SmowbE04ekkwZjhlWWJ2aWF6WHVTeGZndlBVVExKRW9lZlJBSmtjeXRGeCtM?=
+ =?utf-8?B?bklwcW80L0xZRElpaXJBWXBjdTlkMDV4S0tLa05KT0xyTjNLeWg1V2doYjRn?=
+ =?utf-8?B?VFpPVy9qTlN2SkU3SEF3MGxLcW1jdm0yc2RaYlAyZm5XR0grb0QyT1BsMXds?=
+ =?utf-8?B?bElBNytCNFVVYXRtMGZZN0tVbDVFMUJIb1V4UXViaDVjZ0R0TkZwTlFqUzNP?=
+ =?utf-8?B?bUM4eUZIaUs2ZUdPck9TKys0UUViTi9pSFJmMGs3S0RGZ3A1WGo2cGU3eGRD?=
+ =?utf-8?B?OFk0eDNIQXkyWFI3WXh3SUNqOHN0elJqYWQyMjJiZVczUU1rTVJsekl6OHZy?=
+ =?utf-8?B?ZlNpUUU3Nk5zU1lhQzY4OWl6dUhjRzUvQXVGSmF2aVU0eEtyamxNbGtydmxr?=
+ =?utf-8?B?RkJOQTNPb0d6NFFONFlLWHFkekVXMDZ6VVdtVVlhTmtGSzk0VCs0RTl6a0s5?=
+ =?utf-8?B?WjVGNE1tZy8wemM2WXV0QjZzbitrdG5sSkdEdzYvQnZWbEJUZ2ZzYzRJT053?=
+ =?utf-8?B?UXBvajduckx2ZXJ6N0FQb1RvK2x3dWtXaTRVdm10ZFBWTDVKcUtpVXZrd1FV?=
+ =?utf-8?B?aVpUaWVNQ2Uwb2VZNjVUSlpNSlZJMVBPdzBFYm1CdUpWSmNuUDI5RnU5OUZu?=
+ =?utf-8?B?bmFVdmt6M091Y0taQXFQa1B2N0pWVXYwQUtCVGFjK1VhRitZYVdjOW1WdDhl?=
+ =?utf-8?B?c2NEMEFMZmx5RVR4bkkvak96c01SMUFVNEtsVjBYV3VOSmp6THFEaHRQSlg0?=
+ =?utf-8?B?bkVBU1NKVGxIaStvSmJsSEl0dGdFRm1LV2NvRVp6NURnMEx6RWRqQmFOMnJx?=
+ =?utf-8?B?N2JxUlVQNkNXcVh4SngxTGdISk9SYlV1amt6aEdaalFPcWFjcGhMcnJmVTFT?=
+ =?utf-8?B?VlJKd1AwUUxCS2VZZXpjZ0lEdE5rVVBhNDR2WWV5RVU0RnJaYlRvS2xQVE54?=
+ =?utf-8?B?Z2NIMVAwK2RxVThvUXZOS05uZEhLUkcwL1JPNExJNTY5V2FqK25mRFk2Wnlj?=
+ =?utf-8?Q?2LWDXlcpeX6UxkPtS0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AC2EA3CE3A26AA4490D69D7C686AD838@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Received: from [10.162.16.71] (217.140.105.56) by BM1PR01CA0155.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:68::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Thu, 30 Sep 2021 04:56:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 76d2c92f-2888-45ff-fef9-08d983cebc2c
-X-MS-TrafficTypeDiagnostic: DB9PR08MB6713:|VE1PR08MB5566:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR08MB55660B7CA8AC727056F9C17289AA9@VE1PR08MB5566.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: zlXLqQUvHW93KDy8cguEACuygQNipzBzXUCOg/UOd/cbAksUKcrxgqDvkLFU2Hxx+umuISe7GjKVkApBlZHgwAO4g109VllQGtN2x6pa3kAPHBrR0URxQxsqvri10eTrRQzWV2fXaHk4GMLk47O/S48SC+ZzF6XsWFMZ2MNrz6T/oEOqNoAPaROIjjPywBzE7Im3ipf6/zK33huefwbkAr6PJmI72cVb11ZCKT5gVKswPhz+vA7oq0ACygFmgpPEs9DkONWqCBaBtAAYVQ9kCk9WX31sJTz9tECWnNuIcCv2//lsTpUUURl+ZqjY4DIGyKQXmz4eRNNDDXaSBPf0ujaV6vH/1p/ajHfnqCjdg3AGSk7PTwc5DHB1j+FayZHxr5gtByFZ6OdrmpxSx6194ceFjgTuPf/WwcdUKI1fygLbT4zeb5RuJnppZzcYAN6j3lHyiocBMEH+HDcUQ50veGzSOv7/x6rnSgtAvnGEUUm+qEjWPV9L7v4bIaD+i5d3t0F8to66T3eg6fb4ahqfUYAvt6gCbPOz8/2OmtJm8jECvHgwtr6AFfWdzQoUaCH/4tQgHYhNWbL0nDznjhW66kml7cB+ASrvM2Q5hDN3vN4R7EJUif/nZd6n/Cc7dAhvaiM2xTWbBC3rVgnbAQ2QOIWzAF/ymEJkzv0TOl2w8B97WPvXSkAhyc9SC/U2k0OLuYuogLLErrRBWi4Hhi9Gqjdtik9xyrPqPXmYCip7b6e9qkKm6jTYlpcrnel6K0kfSdaHcnlIInHvuKN0OG3d7A==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR08MB2645.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(66556008)(86362001)(2616005)(66476007)(6486002)(8936002)(66946007)(7416002)(36756003)(38100700002)(38350700002)(16576012)(316002)(2906002)(4326008)(8676002)(26005)(6916009)(508600001)(31686004)(52116002)(956004)(83380400001)(186003)(31696002)(6666004)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR08MB6713
-Original-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT005.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: d9d180e4-8b68-4f7d-7882-08d983ceb282
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9M/hrD2P//aItr8Gdxvy9HfgHAqS7AmZGm0Tcm6G7mNEFJHr8bt88Zt9ojnQ5/BP3EKueElRShQ0wxHO2XrUNjwGnaLMKGephU+2NVWI34Tym/79P4Ap+IJefI7q4S6laC2RfRs59lEFOkJbQQ2IA9/LluiQ32XdKQ4SLpR1sr0LroJwhDX1yerA857W/ueo7Op96wjJy9NcqJxcfAqYxnNc9zlqNqfQvr6yPuB/h+Y/6v7U3++4aHj43XUMMrCOvBJHdNbWL7ZugKB7AJO0bd3V6ar6pTzlNcRpLCipsAQGl60MfKpJu4jZzWs2TAnreHccXqL/lDnwoqwKMV/F3rWHV3OZwUGxfBOjpWq4y6VSM57Tuh5LIo+42VxIGbAJXFPViOaHFYgs/258ifIjc2v7BzoH7yqn1YumGetPSKDq2HJiNCt1AwjsQ80gbst94+IYBkui5SV4Vvx9pNWbwgzp3XrQS1qayj93X+Ah8KbuW5FG8x93ug4/HDmu7Ryp+u8MGPKYs94LnZvofpuBn3DmtkPNCIjPB3Nf8GbO90eAx4GnDK4dKc7kJoHMMjHJDp8sq9fryPoXmpHF2lMEH+8feRjj46I0rNzQFrx6gyFM7y96ykRjxANybBIri+mqYseyG9Z3Q9sm2waiUShvoHdn/ZmUfVzaZFxwMGITqYmhy84mfLIpd/yfP95Ly01QD1fa4es/6Rtr/2UnZugt9+thhEuVsThiIXeHbojsBgY=
-X-Forefront-Antispam-Report: CIP:63.33.187.114;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-2.mta.getcheckrecipient.com;PTR:ec2-63-33-187-114.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(8936002)(508600001)(6486002)(5660300002)(2906002)(336012)(82310400003)(16576012)(316002)(8676002)(107886003)(70586007)(2616005)(956004)(70206006)(6862004)(4326008)(36860700001)(53546011)(36756003)(31686004)(47076005)(81166007)(86362001)(186003)(356005)(83380400001)(26005)(6666004)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 04:56:59.2443
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d97a4090-df2a-48a8-e9fc-08d983ced47c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 04:57:39.9324
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76d2c92f-2888-45ff-fef9-08d983cebc2c
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.33.187.114];Helo=[64aa7808-outbound-2.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT005.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR08MB5566
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PXEU6uN5x9Jmx3oSrHhpDhSuJcUyqjYNckmAO3IO+jVTYXITI4Xqg8Vcn0kbPTSPX3iMrsRQAFanVHbDgfS3rw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1469
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean,
-
-
-On 9/21/21 9:28 PM, Jean-Philippe Brucker wrote:
-> Hi Vivek,
-> 
-> Thanks a lot for your work on this
-
-Thanks a lot for taking a look at it. I hope that most of the changes in 
-this series and the nested page table series [1] are independent of the 
-presently on-going /dev/iommu proposal, and can be separately reviewed.
-
-Please find my comments inline below.
-
-> 
-> On Fri, Apr 23, 2021 at 03:21:37PM +0530, Vivek Gautam wrote:
->> Add fault information for group-id and necessary flags for page
->> request faults that can be handled by page fault handler in
->> virtio-iommu driver.
->>
->> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
->> Cc: Joerg Roedel <joro@8bytes.org>
->> Cc: Will Deacon <will.deacon@arm.com>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
->> Cc: Eric Auger <eric.auger@redhat.com>
->> Cc: Alex Williamson <alex.williamson@redhat.com>
->> Cc: Kevin Tian <kevin.tian@intel.com>
->> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Cc: Liu Yi L <yi.l.liu@intel.com>
->> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
->> ---
->>   include/uapi/linux/virtio_iommu.h | 13 +++++++++++++
->>   1 file changed, 13 insertions(+)
->>
->> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
->> index f8bf927a0689..accc3318ce46 100644
->> --- a/include/uapi/linux/virtio_iommu.h
->> +++ b/include/uapi/linux/virtio_iommu.h
->> @@ -307,14 +307,27 @@ struct virtio_iommu_req_invalidate {
->>   #define VIRTIO_IOMMU_FAULT_F_DMA_UNRECOV	1
->>   #define VIRTIO_IOMMU_FAULT_F_PAGE_REQ		2
->>   
->> +#define VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID		(1 << 0)
->> +#define VIRTIO_IOMMU_FAULT_PRQ_F_LAST_PAGE		(1 << 1)
->> +#define VIRTIO_IOMMU_FAULT_PRQ_F_PRIV_DATA		(1 << 2)
->> +#define VIRTIO_IOMMU_FAULT_PRQ_F_NEEDS_PASID		(1 << 3)
-> 
-> I don't think this one is necessary here. The NEEDS_PASID flags added by
-> commit 970471914c67 ("iommu: Allow page responses without PASID") mainly
-> helps Linux keep track of things internally. It does tell the fault
-> handler whether to reply with PASID or not, but we don't need that here.
-> The virtio-iommu driver knows whether a PASID is required by looking at
-> the "PRG Response PASID Required" bit in the PCIe capability. For non-PCIe
-> faults (e.g. SMMU stall), I'm guessing we'll need a PROBE property to
-> declare that the endpoint supports recoverable faults anyway, so "PASID
-> required in response" can go through there as well.
-
-Sure, I will remove this flag, and rather read the PCIe cap to find out 
-if PASID is required or not. After this series, I will follow up with 
-the non-PCIe fault handling.
-
-> 
->> +
->> +#define VIRTIO_IOMMU_FAULT_UNREC_F_PASID_VALID		(1 << 0)
->> +#define VIRTIO_IOMMU_FAULT_UNREC_F_ADDR_VALID		(1 << 1)
->> +#define VIRTIO_IOMMU_FAULT_UNREC_F_FETCH_ADDR_VALID	(1 << 2)
->> +
->>   struct virtio_iommu_fault {
->>   	__u8					reason;
->>   	__u8					reserved[3];
->>   	__le16					flt_type;
->>   	__u8					reserved2[2];
->> +	/* flags is actually permission flags */
-> 
-> It's also used for declaring validity of fields.
-> VIRTIO_IOMMU_FAULT_F_ADDRESS already tells whether the address field is
-> valid, so all the other flags introduced by this patch can go in here.
-
-Sure, will remove pr_evt_flags field, and move all the flags to 'flags'.
-
-> 
->>   	__le32					flags;
->> +	/* flags for PASID and Page request handling info */
->> +	__le32					pr_evt_flags;
->>   	__le32					endpoint;
->>   	__le32					pasid;
->> +	__le32					grpid;
-> 
-> I'm not sure why we made it 32-bit in Linux UAPI, it's a little wasteful.
-> PCIe PRGI is 9-bits and SMMU STAG is 16-bits. Since the scope of the grpid
-> is the endpoint, 16-bit means 64k in-flight faults per endpoint, which
-> seems more than enough.
-
-Right, I will update this to 16-bits field. It won't be okay to update 
-the iommu uAPI now, right?
-
-> 
-> New fields must be appended at the end of the struct, because old drivers
-> will expect to find the 'endpoint' field at this offset. You could remove
-> 'reserved3' while adding 'grpid', to keep the struct layout.
-
-Sure, will update this.
-
-> 
->>   	__u8					reserved3[4];
->>   	__le64					address;
->>   	__u8					reserved4[8];
-> 
-> 
-> So the base structure, currently in the spec, looks like this:
-> 
-> 	struct virtio_iommu_fault {
-> 		u8   reason;
-> 		u8   reserved[3];
-> 		le32 flags;
-> 		le32 endpoint;
-> 		le32 reserved1;
-> 		le64 address;
-> 	};
-> 
-> 	#define VIRTIO_IOMMU_FAULT_F_READ	(1 << 0)
-> 	#define VIRTIO_IOMMU_FAULT_F_WRITE	(1 << 1)
-> 	#define VIRTIO_IOMMU_FAULT_F_ADDRESS	(1 << 8)
-> 
-> The extended struct could be:
-> 
-> 	struct virtio_iommu_fault {
-> 		u8   reason;
-> 		u8   reserved[3];
-> 		le32 flags;
-> 		le32 endpoint;
-> 		le32 pasid;
-> 		le64 address;
-> 		/* Page request group ID */
-> 		le16 group_id;
-> 		u8   reserved1[6];
-> 		/* For VT-d private data */
-> 		le64 private_data[2];
-> 	};
-> 
-> 	#define VIRTIO_IOMMU_FAULT_F_READ	(1 << 0)
-> 	#define VIRTIO_IOMMU_FAULT_F_WRITE	(1 << 1)
-> 	#define VIRTIO_IOMMU_FAULT_F_EXEC	(1 << 2)
-> 	#define VIRTIO_IOMMU_FAULT_F_PRIVILEGED	(1 << 3)
-> 	/* Last fault in group */
-> 	#define VIRTIO_IOMMU_FAULT_F_LAST	(1 << 4)
-> 	/* Fault is a recoverable page request and requires a response */
-> 	#define VIRTIO_IOMMU_FAULT_F_PAGE_REQ	(1 << 5)
-> 
-> 	/* address field is valid */
-> 	#define VIRTIO_IOMMU_FAULT_F_ADDRESS	(1 << 8)
-> 	/* pasid field is valid */
-> 	#define VIRTIO_IOMMU_FAULT_F_PASID	(1 << 9)
-> 	/* group_id field is valid */
-> 	#define VIRTIO_IOMMU_FAULT_F_GROUP_ID	(1 << 10)
-> 	/* private data field is valid */
-> 	#define VIRTIO_IOMMU_FAULT_F_PRIV_DATA	(1 << 11)
-
-Thanks Jean for summarizing it here. I will update the patch.
-
-Best regards
-Vivek
+PiArLyoqDQo+ICsgKiBzZ191bm1hcmtfcGNpX3AycGRtYSAtIFVubWFyayB0aGUgc2NhdHRlcmxp
+c3QgZW50cnkgZm9yIFBDSSBwMnBkbWENCj4gKyAqIEBzZzogICAgICAgICAgICAgICAgIFNHIGVu
+dHJ5U2NhdHRlcmxpc3QNCj4gKyAqDQo+ICsgKiBEZXNjcmlwdGlvbjoNCj4gKyAqICAgQ2xlYXJz
+IHRoZSBQQ0kgUDJQRE1BIG1hcmsNCj4gKyAqKi8NCm5pdDotIFByb2JhYmx5IHdhbnQgdG8gYWRk
+ICcuJyBhYm92ZS4NCj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBzZ19kbWFfdW5tYXJrX3BjaV9wMnBk
+bWEoc3RydWN0IHNjYXR0ZXJsaXN0ICpzZykNCj4gK3sNCj4gKyAgICAgICBzZy0+cGFnZV9saW5r
+ICY9IH5TR19ETUFfUENJX1AyUERNQTsNCj4gK30NCj4gKw0KPiAgIC8qKg0KPiAgICAqIHNnX3Bo
+eXMgLSBSZXR1cm4gcGh5c2ljYWwgYWRkcmVzcyBvZiBhbiBzZyBlbnRyeQ0KPiAgICAqIEBzZzog
+ICAgICAgICAgICAgU0cgZW50cnkNCj4gLS0NCj4gMi4zMC4yDQo+IA0KDQplaXRoZXIgd2F5cyB3
+aXRoIG9yIHdpdGhvdXQgc3BsaXQsIGxvb2tzIGdvb2QuDQoNClJldmlld2VkLWJ5OiBDaGFpdGFu
+eWEgS3Vsa2FybmkgPGtjaEBudmlkaWEuY29tPg0KDQo=
