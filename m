@@ -2,168 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B482541DF1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F5041DF24
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352008AbhI3QfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
+        id S1352038AbhI3QiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351235AbhI3QfF (ORCPT
+        with ESMTP id S1349182AbhI3QiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:35:05 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3593C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:33:22 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso8019235otb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:33:22 -0700 (PDT)
+        Thu, 30 Sep 2021 12:38:12 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9D3C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:36:29 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id u22so8058192oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=6il0YsB1u07XrEjL6UToDW7bxsUfzL4X0YSwrMv6RAU=;
-        b=GWoUgKIUmlJAesMzEQ0g1Oq55aq7DEJwAR60nRriwRZ0XmAq48kcPlWynnKbtGgbuX
-         QCo+TnQ57X7OVvjsVxJFou+tqEbQqorxw4p6e4AujvKCwG79ISOmZHcThSw/3Cu7Lx19
-         cN61ye+NjqH64Dap2tfl8Eo2E4rTKiLxD2Kho=
+        bh=YLNQN4UIBLgIxsaAyY5e+qsF4GYVsk+RnVC8CY1VgXQ=;
+        b=SChrTpZeJO36IrVgRGFu+4OzzLK9x7NS9ZHKnu/V1SaFcj1Dl0qZF36kIKgQEVAiYi
+         KQRwek+8y64lPlVn0aNNEu7uhc7n1qtmrM02mNkoLQ3v+DrbAvW6+8eta9yRJ9cDiaD2
+         1l2kLzWZDg4VOUyGKj2SDAnX1jVOB9B7GDrEg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=6il0YsB1u07XrEjL6UToDW7bxsUfzL4X0YSwrMv6RAU=;
-        b=xgNHpjnO64xoaPl1cNLxVptLHlRT6dtmq5DuwnWupLdIovGrE5KlqGEP+tOfbD+mZu
-         ES9Pb87tZbh5W22UwnuF2g4WJCa7Wvx4ourooAE1Tj+yqcNrln7cMIz4PuzYWDj3uj2z
-         VtsJyxOP2/kwPkT7tid6NKhp5W0LIGBOLi9LNp7dFYwbYVXbUQVUBxtzVveQPATeBdYS
-         DzwY7uHwuFvIr8b+7QunrNHz3hVU4RiOvV7XZadWN+m2xbDALq4mTU2rc1vdca+IwuSX
-         37HtztNW0dCx1uuwj6/8hiOi6U3XdeshoJfNhsYcGhStRKpuD775IvekCNgQkiLMCJRd
-         B1gQ==
-X-Gm-Message-State: AOAM533VFbwSD0nygegVyQoP0dA+ny0qvmpXhLeHrRxO6NdNy86sjOUS
-        LAkPOmNtYXr2AbziNgb5mty3/eeqYriAJ/8f5Aj+1H21Bd4=
-X-Google-Smtp-Source: ABdhPJyfg8wA4FLIK4t09eCr4cNEB5fDhR5+3AC+oZNHy7BEHMCMDs0mE7qsVwPd3+24uG/XdamDu1281AsdtPxuJC8=
-X-Received: by 2002:a05:6830:708:: with SMTP id y8mr5996176ots.77.1633019602013;
- Thu, 30 Sep 2021 09:33:22 -0700 (PDT)
+        bh=YLNQN4UIBLgIxsaAyY5e+qsF4GYVsk+RnVC8CY1VgXQ=;
+        b=yB2h/GxCdA8lrTFVJddbZ0TrzZkBVMUa/Tc/smo8JG8CxIb20ry5qpf1Q0WAfc497h
+         /nThuN+QRrh7i6pF2hE+1UVD7kr5/26v4mpB1RMJO4i18qlC15KvrQNTB+BLcbNa+ewq
+         IUDfgCjI3CXuR2GDPnO7Gecl3PF3OayKxmjPrxSkAtOYPGg1owCsL95DsBbrJTHYu+hN
+         7kNrzePyBonUE2ehBY+wN/VOZOg3cZq2AErLgBUDEwog4EqmvdRx1fIL8PVn2KCPD6i9
+         r7/Mzy83KqaPERNsr9LiKs8xGNqDaw6DvsBlzIBUQ3lbiN5s8dF8Gii381nyHvNuVA5V
+         ofVg==
+X-Gm-Message-State: AOAM532hGJ26ptSQViID78d2mTKUq1nW5SeeIYCCvHWECUILs3P6F2nD
+        7LD5Ua8NtG4SVvt/htetGS3dHG2KEQw5FD0Iyt0d4w==
+X-Google-Smtp-Source: ABdhPJzFbOWJdP3wcC29hCKejMnkAXwgEkkcl9dc+T9uX90YcE8WEepACBJwwr7v4YMHhg2tLm2yOLCiPljroNZyX2U=
+X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr162552oiw.164.1633019788653;
+ Thu, 30 Sep 2021 09:36:28 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 30 Sep 2021 09:33:21 -0700
+ HTTPREST; Thu, 30 Sep 2021 09:36:28 -0700
 MIME-Version: 1.0
-In-Reply-To: <1633015924-881-4-git-send-email-deesin@codeaurora.org>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org> <1633015924-881-4-git-send-email-deesin@codeaurora.org>
+In-Reply-To: <1633015924-881-5-git-send-email-deesin@codeaurora.org>
+References: <1633015924-881-1-git-send-email-deesin@codeaurora.org> <1633015924-881-5-git-send-email-deesin@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Thu, 30 Sep 2021 09:33:21 -0700
-Message-ID: <CAE-0n52Wn6_70-3Y6a+Yk5zkoA_hiA5w51rTeCVX-DN37Gc=ig@mail.gmail.com>
-Subject: Re: [PATCH V1 2/3] rpmsg: glink: Add support to handle signals command
+Date:   Thu, 30 Sep 2021 09:36:28 -0700
+Message-ID: <CAE-0n538vv-P-MWXNL=MixHy9sfH20XYk=i_AJXWwGKS2_bFxw@mail.gmail.com>
+Subject: Re: [PATCH V1 3/3] rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
 To:     Deepak Kumar Singh <deesin@codeaurora.org>,
         bjorn.andersson@linaro.org, clew@codeaurora.org,
         mathieu.poirier@linaro.org
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
+        linux-remoteproc@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-09-30 08:32:03)
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index 05533c7..384fcd2 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -976,6 +984,68 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
+Quoting Deepak Kumar Singh (2021-09-30 08:32:04)
+> Add TICOMGET and TIOCMSET ioctl support for rpmsg char device nodes
+> to get/set the low level transport signals.
+>
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+
+Is Chris the author? Because if so then there should be a From: Chris
+line before the commit text starts.
+
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 2bebc9b..60a889b 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/rpmsg.h>
+>  #include <linux/skbuff.h>
+>  #include <linux/slab.h>
+> +#include <linux/termios.h>
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/rpmsg.h>
+>
+> @@ -76,6 +77,9 @@ struct rpmsg_eptdev {
+>         spinlock_t queue_lock;
+>         struct sk_buff_head queue;
+>         wait_queue_head_t readq;
+> +
+> +       u32 rsigs;
+> +       bool sig_pending;
+>  };
+>
+>  static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+> @@ -120,6 +124,18 @@ static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
 >         return 0;
 >  }
 >
-> +/**
-> + * qcom_glink_set_flow_control() - convert a signal cmd to wire format and
-> + *                                transmit
-> + * @ept:       Rpmsg endpoint for channel.
-> + * @enable:    True/False - enable or disable flow control
-> + *
-> + * Return: 0 on success or standard Linux error code.
-> + */
-> +static int qcom_glink_set_flow_control(struct rpmsg_endpoint *ept, bool enable)
+> +static int rpmsg_sigs_cb(struct rpmsg_device *rpdev, void *priv, u32 sigs)
 > +{
-> +       struct glink_channel *channel = to_glink_channel(ept);
-> +       struct qcom_glink *glink = channel->glink;
-> +       struct glink_msg msg;
-> +       u32 sigs = 0;
-
-Drop assignment.
-
+> +       struct rpmsg_eptdev *eptdev = priv;
 > +
-> +       /**
-> +        * convert signals from TIOCM to NATIVE
-> +        * sigs = TIOCM_DTR|TIOCM_RTS
-> +        */
-> +       if (enable)
-> +               sigs |= (NATIVE_DTR_SIG | NATIVE_CTS_SIG);
-
-sigs = NATIVE_DTR_SIG | NATIVE_CTS_SIG;
-
-> +       else
-> +               sigs |= (~(NATIVE_DTR_SIG | NATIVE_CTS_SIG));
-
-sigs = ~(NATIVE_DTR_SIG | NATIVE_CTS_SIG);
-
+> +       eptdev->rsigs = sigs;
+> +       eptdev->sig_pending = true;
 > +
-> +       msg.cmd = cpu_to_le16(RPM_CMD_SIGNALS);
-> +       msg.param1 = cpu_to_le16(channel->lcid);
-> +       msg.param2 = cpu_to_le32(sigs);
-> +
-> +       return qcom_glink_tx(glink, &msg, sizeof(msg), NULL, 0, true);
-> +}
-> +
-> +static int qcom_glink_handle_signals(struct qcom_glink *glink,
-> +                                    unsigned int rcid, unsigned int sigs)
-> +{
-> +       struct glink_channel *channel;
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(&glink->idr_lock, flags);
+> +       /* wake up any blocking processes, waiting for signal notification */
 
-irqsave can be skipped because this is only called from an irq handler.
+Comment would be better if it indicated what function these waiters are
+in instead of saying what wake_up_interruptible() does. Also, what is
+interruptible for?
 
-> +       channel = idr_find(&glink->rcids, rcid);
-> +       spin_unlock_irqrestore(&glink->idr_lock, flags);
-> +       if (!channel) {
-> +               dev_err(glink->dev, "signal for non-existing channel\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* convert signals from NATIVE to TIOCM */
-> +       if (sigs & NATIVE_DTR_SIG)
-> +               sigs |= TIOCM_DSR;
-> +       if (sigs & NATIVE_CTS_SIG)
-> +               sigs |= TIOCM_CTS;
-> +       if (sigs & NATIVE_CD_SIG)
-> +               sigs |= TIOCM_CD;
-> +       if (sigs & NATIVE_RI_SIG)
-> +               sigs |= TIOCM_RI;
-> +       sigs &= 0x0fff;
+> +       wake_up_interruptible(&eptdev->readq);
 
-Is this to only keep TIOCM_* bits? Maybe make this an ORed together mask
-of those bits so we know what 0xfff means.
+Nitpick: Add newline here.
 
-> +
-> +       if (channel->ept.sig_cb)
-> +               channel->ept.sig_cb(channel->ept.rpdev, channel->ept.priv, sigs);
-> +
 > +       return 0;
 > +}
 > +
->  static irqreturn_t qcom_glink_native_intr(int irq, void *data)
+>  static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
 >  {
->         struct qcom_glink *glink = data;
-> @@ -1037,6 +1107,10 @@ static irqreturn_t qcom_glink_native_intr(int irq, void *data)
->                         qcom_glink_handle_intent_req_ack(glink, param1, param2);
->                         qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
->                         break;
-> +               case RPM_CMD_SIGNALS:
-> +                       qcom_glink_handle_signals(glink, param1, param2);
+>         struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
+> @@ -276,10 +297,32 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
+>                                unsigned long arg)
+>  {
+>         struct rpmsg_eptdev *eptdev = fp->private_data;
+> +       bool set;
+> +       u32 val;
+> +       int ret;
+>
+>         if (cmd != RPMSG_DESTROY_EPT_IOCTL)
+>                 return -EINVAL;
 
-Should the return value be handled and if there isn't a channel then
-treat it as a spurious irq?
+This should be deleted?
 
-> +                       qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
+>
+> +       switch (cmd) {
+> +       case TIOCMGET:
+> +               eptdev->sig_pending = false;
+> +               ret = put_user(eptdev->rsigs, (int __user *)arg);
+> +               break;
+> +       case TIOCMSET:
+> +               ret = get_user(val, (int __user *)arg);
+> +               if (ret)
 > +                       break;
->                 default:
->                         dev_err(glink->dev, "unhandled rx cmd: %d\n", cmd);
->                         ret = -EINVAL;
+> +               set = (val & TIOCM_DTR) ? true : false;
+> +               ret = rpmsg_set_flow_control(eptdev->ept, set);
+> +               break;
+> +       case RPMSG_DESTROY_EPT_IOCTL:
+> +               ret = rpmsg_eptdev_destroy(&eptdev->dev, NULL);
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +       }
+> +
+>         return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
+
+This should be replaced with return ret?
