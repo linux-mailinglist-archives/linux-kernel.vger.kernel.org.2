@@ -2,329 +2,765 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB14641E278
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2010041E27E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347753AbhI3Ty2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32846 "EHLO mail.kernel.org"
+        id S1346879AbhI3T7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:59:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38195 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347693AbhI3Ty1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:54:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0404C61528;
-        Thu, 30 Sep 2021 19:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633031564;
-        bh=GA+Bt6Ll0ftBs+symFc3pp2Z1viCG3DDQvC1yjRiCTA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VLnLNvif/vR0p4GvtIFsPMM34IR+7yyTuWFiZo4efNpepL1FC2twcQcb/+KOcHGCD
-         foV5fouiOkzrnM6T2tD2Nh0w6yJ83e3tHJs7/7tkgaBPhYFCL3N0ukPUVidWmz8SZV
-         Rtg2W/n3xN5upMHkwewpLHJSdDJcJk6U1LR/4TbM4mq4s9L9KzDunZ6lLJSEjhgT09
-         2MqL3nu7oIgxhayO/v+EeN5DOOXWm1jP8Qzg02G1cZ53lDTCxo7v7So+idRfYifQGe
-         sfnUfHYzozvgEpw0ch6ddvII8WVXoaTHMPlGuXzrRYDz1VtcJpTYjKYRd4B1+G/PD0
-         /Gq5ZxEzmBsLg==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, bvanassche@acm.org
-Cc:     Bart Van Assche <bvanassche@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 2/2] scsi: ufs: Stop clearing unit attentions
-Date:   Thu, 30 Sep 2021 12:52:37 -0700
-Message-Id: <20210930195237.1521436-2-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-In-Reply-To: <20210930195237.1521436-1-jaegeuk@kernel.org>
-References: <20210930195237.1521436-1-jaegeuk@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229745AbhI3T66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:58:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225316640"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="225316640"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:57:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="487455357"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga008.jf.intel.com with ESMTP; 30 Sep 2021 12:57:15 -0700
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf tests attr: Support Topdown metrics events
+Date:   Thu, 30 Sep 2021 12:52:46 -0700
+Message-Id: <1633031566-176517-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@google.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Commit aa53f580e67b ("scsi: ufs: Minor adjustments to error handling")
-introduced a ufshcd_clear_ua_wluns() call in
-ufshcd_err_handling_unprepare(). As explained in detail by Adrian Hunter,
-this can trigger a deadlock. Avoid that deadlock by removing the code that
-clears the unit attention. This is safe because the only software that
-relies on clearing unit attentions is the Android Trusty software and
-because support for handling unit attentions has been added in the Trusty software.
+The Topdown metrics events were added as perf stat default events since
+commit 42641d6f4d15 ("perf stat: Add Topdown metrics events as default
+events"). However, the perf attr tests were not updated accordingly.
 
-See also https://lore.kernel.org/linux-scsi/20210930124224.114031-2-adrian.hunter@intel.com/
+The perf attr test fails on the platform which supports Topdown metrics.
+perf test 17
+17: Setup struct perf_event_attr                        :FAILED!
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: aa53f580e67b ("scsi: ufs: Minor adjustments to error handling")
-Signed-off-by: Bart Van Assche <bvanassche@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Add Topdown metrics events into perf attr test cases. Make them optional
+since they are only available on newer platforms.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 42641d6f4d15 ("perf stat: Add Topdown metrics events as default events")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- drivers/scsi/ufs/ufshcd.c | 176 +-------------------------------------
- drivers/scsi/ufs/ufshcd.h |   3 -
- 2 files changed, 1 insertion(+), 178 deletions(-)
+ tools/perf/tests/attr/test-stat-default    |  97 +++++++++++++++++++
+ tools/perf/tests/attr/test-stat-detailed-1 | 113 ++++++++++++++++++++--
+ tools/perf/tests/attr/test-stat-detailed-2 | 137 +++++++++++++++++++++++----
+ tools/perf/tests/attr/test-stat-detailed-3 | 145 ++++++++++++++++++++++++-----
+ 4 files changed, 440 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 1f21d371e231..4add5e990de9 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -224,7 +224,6 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
- static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
- static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
- static void ufshcd_hba_exit(struct ufs_hba *hba);
--static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
- static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
- static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
- static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
-@@ -4109,8 +4108,6 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
- 	if (ret)
- 		dev_err(hba->dev, "%s: link recovery failed, err %d",
- 			__func__, ret);
--	else
--		ufshcd_clear_ua_wluns(hba);
+diff --git a/tools/perf/tests/attr/test-stat-default b/tools/perf/tests/attr/test-stat-default
+index d9e99b3..d8ea6a8 100644
+--- a/tools/perf/tests/attr/test-stat-default
++++ b/tools/perf/tests/attr/test-stat-default
+@@ -68,3 +68,100 @@ fd=10
+ type=0
+ config=5
+ optional=1
++
++# PERF_TYPE_RAW / slots (0x400)
++[event11:base-stat]
++fd=11
++group_fd=-1
++type=4
++config=1024
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-retiring (0x8000)
++[event12:base-stat]
++fd=12
++group_fd=11
++type=4
++config=32768
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
++[event13:base-stat]
++fd=13
++group_fd=11
++type=4
++config=33024
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
++[event14:base-stat]
++fd=14
++group_fd=11
++type=4
++config=33280
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-be-bound (0x8300)
++[event15:base-stat]
++fd=15
++group_fd=11
++type=4
++config=33536
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
++[event16:base-stat]
++fd=16
++group_fd=11
++type=4
++config=33792
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
++[event17:base-stat]
++fd=17
++group_fd=11
++type=4
++config=34048
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
++[event18:base-stat]
++fd=18
++group_fd=11
++type=4
++config=34304
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
++[event19:base-stat]
++fd=19
++group_fd=11
++type=4
++config=34560
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
+diff --git a/tools/perf/tests/attr/test-stat-detailed-1 b/tools/perf/tests/attr/test-stat-detailed-1
+index 8b04a05..b656ab9 100644
+--- a/tools/perf/tests/attr/test-stat-detailed-1
++++ b/tools/perf/tests/attr/test-stat-detailed-1
+@@ -70,12 +70,109 @@ type=0
+ config=5
+ optional=1
  
- 	return ret;
- }
-@@ -5974,7 +5971,6 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
- 	ufshcd_release(hba);
- 	if (ufshcd_is_clkscaling_supported(hba))
- 		ufshcd_clk_scaling_suspend(hba, false);
--	ufshcd_clear_ua_wluns(hba);
- 	ufshcd_rpm_put(hba);
- }
++# PERF_TYPE_RAW / slots (0x400)
++[event11:base-stat]
++fd=11
++group_fd=-1
++type=4
++config=1024
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-retiring (0x8000)
++[event12:base-stat]
++fd=12
++group_fd=11
++type=4
++config=32768
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
++[event13:base-stat]
++fd=13
++group_fd=11
++type=4
++config=33024
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
++[event14:base-stat]
++fd=14
++group_fd=11
++type=4
++config=33280
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-be-bound (0x8300)
++[event15:base-stat]
++fd=15
++group_fd=11
++type=4
++config=33536
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
++[event16:base-stat]
++fd=16
++group_fd=11
++type=4
++config=33792
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
++[event17:base-stat]
++fd=17
++group_fd=11
++type=4
++config=34048
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
++[event18:base-stat]
++fd=18
++group_fd=11
++type=4
++config=34304
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
++[event19:base-stat]
++fd=19
++group_fd=11
++type=4
++config=34560
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
+ # PERF_TYPE_HW_CACHE /
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event11:base-stat]
+-fd=11
++[event20:base-stat]
++fd=20
+ type=3
+ config=0
+ optional=1
+@@ -84,8 +181,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event12:base-stat]
+-fd=12
++[event21:base-stat]
++fd=21
+ type=3
+ config=65536
+ optional=1
+@@ -94,8 +191,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event13:base-stat]
+-fd=13
++[event22:base-stat]
++fd=22
+ type=3
+ config=2
+ optional=1
+@@ -104,8 +201,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event14:base-stat]
+-fd=14
++[event23:base-stat]
++fd=23
+ type=3
+ config=65538
+ optional=1
+diff --git a/tools/perf/tests/attr/test-stat-detailed-2 b/tools/perf/tests/attr/test-stat-detailed-2
+index 4fca9f1..9762509 100644
+--- a/tools/perf/tests/attr/test-stat-detailed-2
++++ b/tools/perf/tests/attr/test-stat-detailed-2
+@@ -70,12 +70,109 @@ type=0
+ config=5
+ optional=1
  
-@@ -7907,8 +7903,6 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
- 	if (ret)
- 		goto out;
++# PERF_TYPE_RAW / slots (0x400)
++[event11:base-stat]
++fd=11
++group_fd=-1
++type=4
++config=1024
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-retiring (0x8000)
++[event12:base-stat]
++fd=12
++group_fd=11
++type=4
++config=32768
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
++[event13:base-stat]
++fd=13
++group_fd=11
++type=4
++config=33024
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
++[event14:base-stat]
++fd=14
++group_fd=11
++type=4
++config=33280
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-be-bound (0x8300)
++[event15:base-stat]
++fd=15
++group_fd=11
++type=4
++config=33536
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
++[event16:base-stat]
++fd=16
++group_fd=11
++type=4
++config=33792
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
++[event17:base-stat]
++fd=17
++group_fd=11
++type=4
++config=34048
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
++[event18:base-stat]
++fd=18
++group_fd=11
++type=4
++config=34304
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
++[event19:base-stat]
++fd=19
++group_fd=11
++type=4
++config=34560
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
+ # PERF_TYPE_HW_CACHE /
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event11:base-stat]
+-fd=11
++[event20:base-stat]
++fd=20
+ type=3
+ config=0
+ optional=1
+@@ -84,8 +181,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event12:base-stat]
+-fd=12
++[event21:base-stat]
++fd=21
+ type=3
+ config=65536
+ optional=1
+@@ -94,8 +191,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event13:base-stat]
+-fd=13
++[event22:base-stat]
++fd=22
+ type=3
+ config=2
+ optional=1
+@@ -104,8 +201,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event14:base-stat]
+-fd=14
++[event23:base-stat]
++fd=23
+ type=3
+ config=65538
+ optional=1
+@@ -114,8 +211,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event15:base-stat]
+-fd=15
++[event24:base-stat]
++fd=24
+ type=3
+ config=1
+ optional=1
+@@ -124,8 +221,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event16:base-stat]
+-fd=16
++[event25:base-stat]
++fd=25
+ type=3
+ config=65537
+ optional=1
+@@ -134,8 +231,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event17:base-stat]
+-fd=17
++[event26:base-stat]
++fd=26
+ type=3
+ config=3
+ optional=1
+@@ -144,8 +241,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event18:base-stat]
+-fd=18
++[event27:base-stat]
++fd=27
+ type=3
+ config=65539
+ optional=1
+@@ -154,8 +251,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event19:base-stat]
+-fd=19
++[event28:base-stat]
++fd=28
+ type=3
+ config=4
+ optional=1
+@@ -164,8 +261,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event20:base-stat]
+-fd=20
++[event29:base-stat]
++fd=29
+ type=3
+ config=65540
+ optional=1
+diff --git a/tools/perf/tests/attr/test-stat-detailed-3 b/tools/perf/tests/attr/test-stat-detailed-3
+index 4bb58e1..d555042 100644
+--- a/tools/perf/tests/attr/test-stat-detailed-3
++++ b/tools/perf/tests/attr/test-stat-detailed-3
+@@ -70,12 +70,109 @@ type=0
+ config=5
+ optional=1
  
--	ufshcd_clear_ua_wluns(hba);
--
- 	/* Initialize devfreq after UFS device is detected */
- 	if (ufshcd_is_clkscaling_supported(hba)) {
- 		memcpy(&hba->clk_scaling.saved_pwr_info.info,
-@@ -7934,116 +7928,6 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
- 	return ret;
- }
- 
--static void ufshcd_request_sense_done(struct request *rq, blk_status_t error)
--{
--	if (error != BLK_STS_OK)
--		pr_err("%s: REQUEST SENSE failed (%d)\n", __func__, error);
--	kfree(rq->end_io_data);
--	blk_put_request(rq);
--}
--
--static int
--ufshcd_request_sense_async(struct ufs_hba *hba, struct scsi_device *sdev)
--{
--	/*
--	 * Some UFS devices clear unit attention condition only if the sense
--	 * size used (UFS_SENSE_SIZE in this case) is non-zero.
--	 */
--	static const u8 cmd[6] = {REQUEST_SENSE, 0, 0, 0, UFS_SENSE_SIZE, 0};
--	struct scsi_request *rq;
--	struct request *req;
--	char *buffer;
--	int ret;
--
--	buffer = kzalloc(UFS_SENSE_SIZE, GFP_KERNEL);
--	if (!buffer)
--		return -ENOMEM;
--
--	req = blk_get_request(sdev->request_queue, REQ_OP_DRV_IN,
--			      /*flags=*/BLK_MQ_REQ_PM);
--	if (IS_ERR(req)) {
--		ret = PTR_ERR(req);
--		goto out_free;
--	}
--
--	ret = blk_rq_map_kern(sdev->request_queue, req,
--			      buffer, UFS_SENSE_SIZE, GFP_NOIO);
--	if (ret)
--		goto out_put;
--
--	rq = scsi_req(req);
--	rq->cmd_len = ARRAY_SIZE(cmd);
--	memcpy(rq->cmd, cmd, rq->cmd_len);
--	rq->retries = 3;
--	req->timeout = 1 * HZ;
--	req->rq_flags |= RQF_PM | RQF_QUIET;
--	req->end_io_data = buffer;
--
--	blk_execute_rq_nowait(/*bd_disk=*/NULL, req, /*at_head=*/true,
--			      ufshcd_request_sense_done);
--	return 0;
--
--out_put:
--	blk_put_request(req);
--out_free:
--	kfree(buffer);
--	return ret;
--}
--
--static int ufshcd_clear_ua_wlun(struct ufs_hba *hba, u8 wlun)
--{
--	struct scsi_device *sdp;
--	unsigned long flags;
--	int ret = 0;
--
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	if (wlun == UFS_UPIU_UFS_DEVICE_WLUN)
--		sdp = hba->sdev_ufs_device;
--	else if (wlun == UFS_UPIU_RPMB_WLUN)
--		sdp = hba->sdev_rpmb;
--	else
--		BUG();
--	if (sdp) {
--		ret = scsi_device_get(sdp);
--		if (!ret && !scsi_device_online(sdp)) {
--			ret = -ENODEV;
--			scsi_device_put(sdp);
--		}
--	} else {
--		ret = -ENODEV;
--	}
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
--	if (ret)
--		goto out_err;
--
--	ret = ufshcd_request_sense_async(hba, sdp);
--	scsi_device_put(sdp);
--out_err:
--	if (ret)
--		dev_err(hba->dev, "%s: UAC clear LU=%x ret = %d\n",
--				__func__, wlun, ret);
--	return ret;
--}
--
--static int ufshcd_clear_ua_wluns(struct ufs_hba *hba)
--{
--	int ret = 0;
--
--	if (!hba->wlun_dev_clr_ua)
--		goto out;
--
--	ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
--	if (!ret)
--		ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN);
--	if (!ret)
--		hba->wlun_dev_clr_ua = false;
--out:
--	if (ret)
--		dev_err(hba->dev, "%s: Failed to clear UAC WLUNS ret = %d\n",
--				__func__, ret);
--	return ret;
--}
--
- /**
-  * ufshcd_probe_hba - probe hba to detect device and initialize it
-  * @hba: per-adapter instance
-@@ -8094,8 +7978,6 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool init_dev_params)
- 	/* UFS device is also active now */
- 	ufshcd_set_ufs_dev_active(hba);
- 	ufshcd_force_reset_auto_bkops(hba);
--	hba->wlun_dev_clr_ua = true;
--	hba->wlun_rpmb_clr_ua = true;
- 
- 	/* Gear up to HS gear if supported */
- 	if (hba->max_pwr_info.is_valid) {
-@@ -8655,8 +8537,6 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
- 	 * handling context.
- 	 */
- 	hba->host->eh_noresume = 1;
--	if (hba->wlun_dev_clr_ua)
--		ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
- 
- 	cmd[4] = pwr_mode << 4;
- 
-@@ -9819,49 +9699,6 @@ static struct scsi_driver ufs_dev_wlun_template = {
- 	},
- };
- 
--static int ufshcd_rpmb_probe(struct device *dev)
--{
--	return is_rpmb_wlun(to_scsi_device(dev)) ? 0 : -ENODEV;
--}
--
--static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
--{
--	int ret = 0;
--
--	if (!hba->wlun_rpmb_clr_ua)
--		return 0;
--	ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN);
--	if (!ret)
--		hba->wlun_rpmb_clr_ua = 0;
--	return ret;
--}
--
--#ifdef CONFIG_PM
--static int ufshcd_rpmb_resume(struct device *dev)
--{
--	struct ufs_hba *hba = wlun_dev_to_hba(dev);
--
--	if (hba->sdev_rpmb)
--		ufshcd_clear_rpmb_uac(hba);
--	return 0;
--}
--#endif
--
--static const struct dev_pm_ops ufs_rpmb_pm_ops = {
--	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(NULL, ufshcd_rpmb_resume)
--};
--
--/* ufs_rpmb_wlun_template - Describes UFS RPMB WLUN. Used only to send UAC. */
--static struct scsi_driver ufs_rpmb_wlun_template = {
--	.gendrv = {
--		.name = "ufs_rpmb_wlun",
--		.owner = THIS_MODULE,
--		.probe = ufshcd_rpmb_probe,
--		.pm = &ufs_rpmb_pm_ops,
--	},
--};
--
- static int __init ufshcd_core_init(void)
- {
- 	int ret;
-@@ -9870,24 +9707,13 @@ static int __init ufshcd_core_init(void)
- 
- 	ret = scsi_register_driver(&ufs_dev_wlun_template.gendrv);
- 	if (ret)
--		goto debugfs_exit;
--
--	ret = scsi_register_driver(&ufs_rpmb_wlun_template.gendrv);
--	if (ret)
--		goto unregister;
--
--	return ret;
--unregister:
--	scsi_unregister_driver(&ufs_dev_wlun_template.gendrv);
--debugfs_exit:
--	ufs_debugfs_exit();
-+		ufs_debugfs_exit();
- 	return ret;
- }
- 
- static void __exit ufshcd_core_exit(void)
- {
- 	ufs_debugfs_exit();
--	scsi_unregister_driver(&ufs_rpmb_wlun_template.gendrv);
- 	scsi_unregister_driver(&ufs_dev_wlun_template.gendrv);
- }
- 
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 52ea6f350b18..b414491a8240 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -865,9 +865,6 @@ struct ufs_hba {
- 	struct ufs_vreg_info vreg_info;
- 	struct list_head clk_list_head;
- 
--	bool wlun_dev_clr_ua;
--	bool wlun_rpmb_clr_ua;
--
- 	/* Number of requests aborts */
- 	int req_abort_count;
- 
++# PERF_TYPE_RAW / slots (0x400)
++[event11:base-stat]
++fd=11
++group_fd=-1
++type=4
++config=1024
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-retiring (0x8000)
++[event12:base-stat]
++fd=12
++group_fd=11
++type=4
++config=32768
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
++[event13:base-stat]
++fd=13
++group_fd=11
++type=4
++config=33024
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
++[event14:base-stat]
++fd=14
++group_fd=11
++type=4
++config=33280
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-be-bound (0x8300)
++[event15:base-stat]
++fd=15
++group_fd=11
++type=4
++config=33536
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
++[event16:base-stat]
++fd=16
++group_fd=11
++type=4
++config=33792
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
++[event17:base-stat]
++fd=17
++group_fd=11
++type=4
++config=34048
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
++[event18:base-stat]
++fd=18
++group_fd=11
++type=4
++config=34304
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
++# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
++[event19:base-stat]
++fd=19
++group_fd=11
++type=4
++config=34560
++disabled=0
++enable_on_exec=0
++read_format=15
++optional=1
++
+ # PERF_TYPE_HW_CACHE /
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event11:base-stat]
+-fd=11
++[event20:base-stat]
++fd=20
+ type=3
+ config=0
+ optional=1
+@@ -84,8 +181,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event12:base-stat]
+-fd=12
++[event21:base-stat]
++fd=21
+ type=3
+ config=65536
+ optional=1
+@@ -94,8 +191,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event13:base-stat]
+-fd=13
++[event22:base-stat]
++fd=22
+ type=3
+ config=2
+ optional=1
+@@ -104,8 +201,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event14:base-stat]
+-fd=14
++[event23:base-stat]
++fd=23
+ type=3
+ config=65538
+ optional=1
+@@ -114,8 +211,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event15:base-stat]
+-fd=15
++[event24:base-stat]
++fd=24
+ type=3
+ config=1
+ optional=1
+@@ -124,8 +221,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event16:base-stat]
+-fd=16
++[event25:base-stat]
++fd=25
+ type=3
+ config=65537
+ optional=1
+@@ -134,8 +231,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event17:base-stat]
+-fd=17
++[event26:base-stat]
++fd=26
+ type=3
+ config=3
+ optional=1
+@@ -144,8 +241,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event18:base-stat]
+-fd=18
++[event27:base-stat]
++fd=27
+ type=3
+ config=65539
+ optional=1
+@@ -154,8 +251,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event19:base-stat]
+-fd=19
++[event28:base-stat]
++fd=28
+ type=3
+ config=4
+ optional=1
+@@ -164,8 +261,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event20:base-stat]
+-fd=20
++[event29:base-stat]
++fd=29
+ type=3
+ config=65540
+ optional=1
+@@ -174,8 +271,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_PREFETCH        <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+-[event21:base-stat]
+-fd=21
++[event30:base-stat]
++fd=30
+ type=3
+ config=512
+ optional=1
+@@ -184,8 +281,8 @@ optional=1
+ #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+ # (PERF_COUNT_HW_CACHE_OP_PREFETCH        <<  8) |
+ # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+-[event22:base-stat]
+-fd=22
++[event31:base-stat]
++fd=31
+ type=3
+ config=66048
+ optional=1
 -- 
-2.33.0.800.g4c38ced690-goog
+2.7.4
 
