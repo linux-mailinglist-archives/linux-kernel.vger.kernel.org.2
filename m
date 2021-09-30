@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916B041DD74
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAE541DC98
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245617AbhI3Pah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:30:37 -0400
-Received: from m12-15.163.com ([220.181.12.15]:37222 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245604AbhI3Paf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:30:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=11Z+EQIuOgiThyZL/z
-        m7yTs1InxlpsewWg/rDKPl+z4=; b=U3s6Mu4l1mkNi8cedq7VdCsxggNXdTCghQ
-        4dJ2iDW8B8hEJjDplXWcD42h25em/GkrMzIBWykxmnomAWozDrAdWway+u3Y4qju
-        jRN56ALM+eiuqsT1975ZgS3ll7oIz3oPqqqcNMAdQHhUCkI7rP49FQC9bz7kp/y8
-        GZofnFMWI=
-Received: from localhost.localdomain (unknown [171.221.149.2])
-        by smtp11 (Coremail) with SMTP id D8CowAD3+22wzFVh1aIpBA--.36381S2;
-        Thu, 30 Sep 2021 22:42:03 +0800 (CST)
-From:   Chen Lin <chen45464546@163.com>
-To:     will@kernel.org
-Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
-        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, chen.lin5@zte.com.cn,
-        Chen Lin <chen45464546@163.com>
-Subject: Re:Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
-Date:   Thu, 30 Sep 2021 22:41:30 +0800
-Message-Id: <1633012890-3118-1-git-send-email-chen45464546@163.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <20210930084247.GC23389@willie-the-truck>
-References: <20210930084247.GC23389@willie-the-truck>
-X-CM-TRANSID: D8CowAD3+22wzFVh1aIpBA--.36381S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw48Zr4xtry3ur4xCr45Wrg_yoW5Jry8pF
-        43C3W5tF4DWayDu34UJw48CFyaka1fJr47GFnrJa4Sy3s0qF92qFn7tryaka4qvrW0kw42
-        vryjqF1q9asrAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uov38UUUUU=
-X-Originating-IP: [171.221.149.2]
-X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/1tbiQgMenlaEAqVahwAAsp
+        id S1351200AbhI3Oou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:44:50 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:60717 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1350272AbhI3Oot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:44:49 -0400
+Received: (qmail 465943 invoked by uid 1000); 30 Sep 2021 10:43:05 -0400
+Date:   Thu, 30 Sep 2021 10:43:05 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
+ un-authorized devices
+Message-ID: <20210930144305.GA464826@rowland.harvard.edu>
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065807-mutt-send-email-mst@kernel.org>
+ <YVXBNJ431YIWwZdQ@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVXBNJ431YIWwZdQ@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At 2021-09-30 15:42:47, "Will Deacon" <will@kernel.org> wrote:
+On Thu, Sep 30, 2021 at 03:52:52PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Sep 30, 2021 at 06:59:36AM -0400, Michael S. Tsirkin wrote:
+> > On Wed, Sep 29, 2021 at 06:05:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > > While the common case for device-authorization is to skip probe of
+> > > unauthorized devices, some buses may still want to emit a message on
+> > > probe failure (Thunderbolt), or base probe failures on the
+> > > authorization status of a related device like a parent (USB). So add
+> > > an option (has_probe_authorization) in struct bus_type for the bus
+> > > driver to own probe authorization policy.
+> > > 
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > 
+> > 
+> > 
+> > So what e.g. the PCI patch
+> > https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
+> > actually proposes is a list of
+> > allowed drivers, not devices. Doing it at the device level
+> > has disadvantages, for example some devices might have a legacy
+> > unsafe driver, or an out of tree driver. It also does not
+> > address drivers that poke at hardware during init.
+> 
+> Doing it at a device level is the only sane way to do this.
+> 
+> A user needs to say "this device is allowed to be controlled by this
+> driver".  This is the trust model that USB has had for over a decade and
+> what thunderbolt also has.
+> 
+> > Accordingly, I think the right thing to do is to skip
+> > driver init for disallowed drivers, not skip probe
+> > for specific devices.
+> 
+> What do you mean by "driver init"?  module_init()?
+> 
+> No driver should be touching hardware in their module init call.  They
+> should only be touching it in the probe callback as that is the only
+> time they are ever allowed to talk to hardware.  Specifically the device
+> that has been handed to them.
+> 
+> If there are in-kernel PCI drivers that do not do this, they need to be
+> fixed today.
+> 
+> We don't care about out-of-tree drivers for obvious reasons that we have
+> no control over them.
 
->On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
->> From: Chen Lin <chen.lin5@zte.com.cn>
->> 
->> we should dump the real instructions before BUG in kernel mode, and
->> compare this to the instructions from objdump.
->> 
->> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
->> ---
->>  arch/arm64/kernel/traps.c |    7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->> 
->> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
->> index b03e383..621a9dd 100644
->> --- a/arch/arm64/kernel/traps.c
->> +++ b/arch/arm64/kernel/traps.c
->> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
->>  	if (call_undef_hook(regs) == 0)
->>  		return;
->>  
->> -	BUG_ON(!user_mode(regs));
->> +	if (!user_mode(regs)) {
->> +		pr_emerg("Undef instruction in kernel, dump instr:");
->> +		dump_kernel_instr(KERN_EMERG, regs);
->> +		BUG();
->> +	}
->
->Hmm, I'm not completely convinced about this as the instruction in the
->i-cache could be completely different. I think the PC value (for addr2line)
->is a lot more useful, and we should be printing that already.
->
->Maybe you can elaborate on a situation where this information was helpful?
->
->Thanks,
->
->Will
+I don't see any point in talking about "untrusted drivers".  If a 
+driver isn't trusted then it doesn't belong in your kernel.  Period.  
+When you load a driver into your kernel, you are implicitly trusting 
+it (aside from limitations imposed by security modules).  The code 
+it contains, the module_init code in particular, runs with full 
+superuser permissions.
 
-Undef instruction occurs in some cases
+What use is there in loading a driver but telling the kernel "I don't 
+trust this driver, so don't allow it to probe any devices"?  Why not 
+just blacklist it so that it never gets modprobed in the first place?
 
-1. CPU do not have the permission to execute the instruction or the current CPU
- version does not support the instruction. For example, execute 
- 'mrs x0, tcr_el3' under el1.
-
-2. The instruction is a normal instruction, but it is changed during board 
-running in some abnormal situation. eg: DDR bit flip, the normal instruction 
-will become an undefined one. By printing the instruction, we can see the 
-accurate instruction code and compare it with the instruction code from objdump
-to determine that it is a DDR issue.
-
-3. It is rare that the instructions seen through the CPU are inconsistent with 
-the instructions in the actual DDR.You can also compare the printed instructions
-with the instructions in memory(may through kdump) to determine that it is the
-CPU cache or some other issue.
-
-However, now the instruction code causing the sync 'undef instr exception' cannot be
-seen. The second and third type problem above cannot be determined.
-
-Before the commit 8a60419d36762a1 "arm64: force_signal_inject: WARN if called 
-from kernel context", the instructions can be printed when the CPU encounters an
-undef instruction in kernel mode. 
-
+Alan Stern
