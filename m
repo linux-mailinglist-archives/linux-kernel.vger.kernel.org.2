@@ -2,180 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B8D41D188
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99D641D18D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347883AbhI3Cke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:40:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:59232 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347849AbhI3Ckd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:40:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212341575"
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="212341575"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 19:38:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,334,1624345200"; 
-   d="scan'208";a="555319477"
-Received: from pgupadra-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.0.91])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 19:38:49 -0700
-Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
- USB/Thunderbolt to core
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930014229.GA447956@rowland.harvard.edu>
- <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <f9b7cf97-0a14-1c80-12ab-23213ec2f4f2@linux.intel.com>
-Date:   Wed, 29 Sep 2021 19:38:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1347905AbhI3CnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:43:21 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:60830 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347886AbhI3CnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 22:43:20 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18U2fJ811012331, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18U2fJ811012331
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Sep 2021 10:41:19 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 30 Sep 2021 10:41:19 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 30 Sep 2021 10:41:18 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
+ RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
+ 15.01.2106.013; Thu, 30 Sep 2021 10:41:18 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@google.com" <hsinyi@google.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
+Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
+Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAZuNgA==
+Date:   Thu, 30 Sep 2021 02:41:18 +0000
+Message-ID: <7dc4198f05784b6686973500150faca7@realtek.com>
+References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+         <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
+ <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+In-Reply-To: <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMjkg5LiL5Y2IIDExOjI3OjAw?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/29/21 6:55 PM, Dan Williams wrote:
->> Also, you ignored the usb_[de]authorize_interface() functions and
->> their friends.
-> Ugh, yes.
-
-I did not change it because I am not sure about the interface vs device
-dependency.
-
-I think following change should work.
-
-diff --git a/drivers/usb/core/driver.c b/drivers/usb/core/driver.c
-index f57b5a7a90ca..84969732d09c 100644
---- a/drivers/usb/core/driver.c
-+++ b/drivers/usb/core/driver.c
-@@ -334,7 +334,7 @@ static int usb_probe_interface(struct device *dev)
-  	if (udev->dev.authorized == false) {
-  		dev_err(&intf->dev, "Device is not authorized for usage\n");
-  		return error;
--	} else if (intf->authorized == 0) {
-+	} else if (intf->dev.authorized == 0) {
-  		dev_err(&intf->dev, "Interface %d is not authorized for usage\n",
-  				intf->altsetting->desc.bInterfaceNumber);
-  		return error;
-@@ -546,7 +546,7 @@ int usb_driver_claim_interface(struct usb_driver *driver,
-  		return -EBUSY;
-
-  	/* reject claim if interface is not authorized */
--	if (!iface->authorized)
-+	if (!iface->dev.authorized)
-  		return -ENODEV;
-
-  	dev->driver = &driver->drvwrap.driver;
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 47548ce1cfb1..ab3c8d1e4db9 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1791,9 +1791,9 @@ void usb_deauthorize_interface(struct usb_interface *intf)
-
-  	device_lock(dev->parent);
-
--	if (intf->authorized) {
-+	if (intf->dev.authorized) {
-  		device_lock(dev);
--		intf->authorized = 0;
-+		intf->dev.authorized = 0;
-  		device_unlock(dev);
-
-  		usb_forced_unbind_intf(intf);
-@@ -1811,9 +1811,9 @@ void usb_authorize_interface(struct usb_interface *intf)
-  {
-  	struct device *dev = &intf->dev;
-
--	if (!intf->authorized) {
-+	if (!intf->dev.authorized) {
-  		device_lock(dev);
--		intf->authorized = 1; /* authorize interface */
-+		intf->dev.authorized = 1; /* authorize interface */
-  		device_unlock(dev);
-  	}
-  }
-@@ -2069,7 +2069,6 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
-  		intfc = cp->intf_cache[i];
-  		intf->altsetting = intfc->altsetting;
-  		intf->num_altsetting = intfc->num_altsetting;
--		intf->authorized = !!HCD_INTF_AUTHORIZED(hcd);
-  		kref_get(&intfc->ref);
-
-  		alt = usb_altnum_to_altsetting(intf, 0);
-@@ -2101,6 +2100,7 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
-  		INIT_WORK(&intf->reset_ws, __usb_queue_reset_device);
-  		intf->minor = -1;
-  		device_initialize(&intf->dev);
-+		intf->dev.authorized = !!HCD_INTF_AUTHORIZED(hcd);
-  		pm_runtime_no_callbacks(&intf->dev);
-  		dev_set_name(&intf->dev, "%d-%s:%d.%d", dev->bus->busnum,
-  				dev->devpath, configuration, ifnum);
-diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-index 3d63e345d0a0..666eeb80ff29 100644
---- a/drivers/usb/core/sysfs.c
-+++ b/drivers/usb/core/sysfs.c
-@@ -1160,9 +1160,7 @@ static DEVICE_ATTR_RO(supports_autosuspend);
-  static ssize_t interface_authorized_show(struct device *dev,
-  		struct device_attribute *attr, char *buf)
-  {
--	struct usb_interface *intf = to_usb_interface(dev);
--
--	return sprintf(buf, "%u\n", intf->authorized);
-+	return sprintf(buf, "%u\n", dev->authorized);
-  }
-
-  /*
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 796df4068e94..1e41453c63cb 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -195,8 +195,6 @@ usb_find_last_int_out_endpoint(struct usb_host_interface *alt,
-   *	has been deferred.
-   * @needs_binding: flag set when the driver should be re-probed or unbound
-   *	following a reset or suspend operation it doesn't support.
-- * @authorized: This allows to (de)authorize individual interfaces instead
-- *	a whole device in contrast to the device authorization.
-   * @dev: driver model's view of this device
-   * @usb_dev: if an interface is bound to the USB major, this will point
-   *	to the sysfs representation for that device.
-@@ -252,7 +250,6 @@ struct usb_interface {
-  	unsigned needs_altsetting0:1;	/* switch to altsetting 0 is pending */
-  	unsigned needs_binding:1;	/* needs delayed unbind/rebind */
-  	unsigned resetting_device:1;	/* true: bandwidth alloc after reset */
--	unsigned authorized:1;		/* used for interface authorization */
-
-  	struct device dev;		/* interface specific device info */
-  	struct device *usb_dev;
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+SmFzb24tY2ggQ2hlbiA8amFzb24tY2guY2hlbkBtZWRpYXRlay5jb20+DQo+IFNlbnQ6IFdlZG5l
+c2RheSwgU2VwdGVtYmVyIDI5LCAyMDIxIDU6NTMgUE0NClsuLi5dDQo+IEhpIEhheWVzLA0KPiAN
+Cj4gU29tZXRpbWVzIFJ4IHN1Ym1pdHMgcmFwaWRseSBhbmQgdGhlIFVTQiBrZXJuZWwgZHJpdmVy
+IG9mIG9wZW5zb3VyY2UNCj4gY2Fubm90IHJlY2VpdmUgYW55IGRpc2Nvbm5lY3QgZXZlbnQgZHVl
+IHRvIENQVSBoZWF2eSBsb2FkaW5nLCB3aGljaA0KPiBmaW5hbGx5IGNhdXNlcyBhIHN5c3RlbSBj
+cmFzaC4NCj4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIHRvIG1vZGlmeSB0aGUgcjgxNTIg
+ZHJpdmVyIHRvIHByZXZlbnQgdGhpcw0KPiBzaXR1YXRpb24gaGFwcGVuZWQ/DQoNCkRvIHlvdSBt
+aW5kIHRvIHRyeSB0aGUgZm9sbG93aW5nIHBhdGNoPw0KSXQgYXZvaWRzIHRvIHJlLXN1Ym1pdCBS
+WCBpbW1lZGlhdGVseS4NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3VzYi9yODE1Mi5jIGIv
+ZHJpdmVycy9uZXQvdXNiL3I4MTUyLmMNCmluZGV4IDYwYmE5YjczNDA1NS4uYmZlMDBhZjgyODNm
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9uZXQvdXNiL3I4MTUyLmMNCisrKyBiL2RyaXZlcnMvbmV0
+L3VzYi9yODE1Mi5jDQpAQCAtNzY3LDYgKzc2Nyw3IEBAIGVudW0gcnRsODE1Ml9mbGFncyB7DQog
+CVBIWV9SRVNFVCwNCiAJU0NIRURVTEVfVEFTS0xFVCwNCiAJR1JFRU5fRVRIRVJORVQsDQorCVND
+SEVEVUxFX05BUEksDQogfTsNCiANCiAjZGVmaW5lIERFVklDRV9JRF9USElOS1BBRF9USFVOREVS
+Qk9MVDNfRE9DS19HRU4yCTB4MzA4Mg0KQEAgLTE3NzAsNiArMTc3MSwxNCBAQCBzdGF0aWMgdm9p
+ZCByZWFkX2J1bGtfY2FsbGJhY2soc3RydWN0IHVyYiAqdXJiKQ0KIAkJcnRsX3NldF91bnBsdWco
+dHApOw0KIAkJbmV0aWZfZGV2aWNlX2RldGFjaCh0cC0+bmV0ZGV2KTsNCiAJCXJldHVybjsNCisJ
+Y2FzZSAtRVBST1RPOg0KKwkJdXJiLT5hY3R1YWxfbGVuZ3RoID0gMDsNCisJCXNwaW5fbG9ja19p
+cnFzYXZlKCZ0cC0+cnhfbG9jaywgZmxhZ3MpOw0KKwkJbGlzdF9hZGRfdGFpbCgmYWdnLT5saXN0
+LCAmdHAtPnJ4X2RvbmUpOw0KKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmdHAtPnJ4X2xvY2ss
+IGZsYWdzKTsNCisJCXNldF9iaXQoU0NIRURVTEVfTkFQSSwgJnRwLT5mbGFncyk7DQorCQlzY2hl
+ZHVsZV9kZWxheWVkX3dvcmsoJnRwLT5zY2hlZHVsZSwgMSk7DQorCQlyZXR1cm47DQogCWNhc2Ug
+LUVOT0VOVDoNCiAJCXJldHVybjsJLyogdGhlIHVyYiBpcyBpbiB1bmxpbmsgc3RhdGUgKi8NCiAJ
+Y2FzZSAtRVRJTUU6DQpAQCAtMjQyNSw2ICsyNDM0LDcgQEAgc3RhdGljIGludCByeF9ib3R0b20o
+c3RydWN0IHI4MTUyICp0cCwgaW50IGJ1ZGdldCkNCiAJaWYgKGxpc3RfZW1wdHkoJnRwLT5yeF9k
+b25lKSkNCiAJCWdvdG8gb3V0MTsNCiANCisJY2xlYXJfYml0KFNDSEVEVUxFX05BUEksICZ0cC0+
+ZmxhZ3MpOw0KIAlJTklUX0xJU1RfSEVBRCgmcnhfcXVldWUpOw0KIAlzcGluX2xvY2tfaXJxc2F2
+ZSgmdHAtPnJ4X2xvY2ssIGZsYWdzKTsNCiAJbGlzdF9zcGxpY2VfaW5pdCgmdHAtPnJ4X2RvbmUs
+ICZyeF9xdWV1ZSk7DQpAQCAtMjQ0MSw3ICsyNDUxLDcgQEAgc3RhdGljIGludCByeF9ib3R0b20o
+c3RydWN0IHI4MTUyICp0cCwgaW50IGJ1ZGdldCkNCiANCiAJCWFnZyA9IGxpc3RfZW50cnkoY3Vy
+c29yLCBzdHJ1Y3QgcnhfYWdnLCBsaXN0KTsNCiAJCXVyYiA9IGFnZy0+dXJiOw0KLQkJaWYgKHVy
+Yi0+YWN0dWFsX2xlbmd0aCA8IEVUSF9aTEVOKQ0KKwkJaWYgKHVyYi0+c3RhdHVzICE9IDAgfHwg
+dXJiLT5hY3R1YWxfbGVuZ3RoIDwgRVRIX1pMRU4pDQogCQkJZ290byBzdWJtaXQ7DQogDQogCQlh
+Z2dfZnJlZSA9IHJ0bF9nZXRfZnJlZV9yeCh0cCwgR0ZQX0FUT01JQyk7DQpAQCAtNjY0Myw2ICs2
+NjUzLDEwIEBAIHN0YXRpYyB2b2lkIHJ0bF93b3JrX2Z1bmNfdChzdHJ1Y3Qgd29ya19zdHJ1Y3Qg
+KndvcmspDQogCSAgICBuZXRpZl9jYXJyaWVyX29rKHRwLT5uZXRkZXYpKQ0KIAkJdGFza2xldF9z
+Y2hlZHVsZSgmdHAtPnR4X3RsKTsNCiANCisJaWYgKHRlc3RfYW5kX2NsZWFyX2JpdChTQ0hFRFVM
+RV9OQVBJLCAmdHAtPmZsYWdzKSAmJg0KKwkgICAgIWxpc3RfZW1wdHkoJnRwLT5yeF9kb25lKSkN
+CisJCW5hcGlfc2NoZWR1bGUoJnRwLT5uYXBpKTsNCisNCiAJbXV0ZXhfdW5sb2NrKCZ0cC0+Y29u
+dHJvbCk7DQogDQogb3V0MToNCg0KDQpCZXN0IFJlZ2FyZHMsDQpIYXllcw0KDQo=
