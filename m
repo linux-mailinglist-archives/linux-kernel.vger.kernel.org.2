@@ -2,178 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AEE41D942
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A4A41D945
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350718AbhI3L6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:58:49 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3902 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350691AbhI3L6n (ORCPT
+        id S1350664AbhI3L64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:58:56 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62516 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350708AbhI3L6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:58:43 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HKs8X2nRYz685Yr;
-        Thu, 30 Sep 2021 19:53:48 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 13:56:59 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
-        <mchehab+huawei@kernel.org>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 7/7] ima: Add support for appraisal with digest lists
-Date:   Thu, 30 Sep 2021 13:55:33 +0200
-Message-ID: <20210930115533.878169-8-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210930115533.878169-1-roberto.sassu@huawei.com>
-References: <20210930115533.878169-1-roberto.sassu@huawei.com>
+        Thu, 30 Sep 2021 07:58:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633003028; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MgsTdvHC32CVeXQvpvDOvg9iOpH6jzoyvVH+Vm7ZG44=;
+ b=Up9dbFO2J4O4b/ms8lqep/vq2TmgKug6fiTkvZXRmeOfNXnT3LDeasgXjl+nsEkWOX2unODW
+ SVDaDv3XC6RAwVt8sJQZVozO+GSu5K5EH2w8gqQcNJkPCCy+tu4naIRnVrcs3+DUkasFtiqf
+ A1hQMFE9F2mjufFMVtj0UCZQCpc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6155a60ca5a9bab6e879f251 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 11:57:00
+ GMT
+Sender: mkrishn=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 06212C4360D; Thu, 30 Sep 2021 11:57:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkrishn)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44068C4338F;
+        Thu, 30 Sep 2021 11:56:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 30 Sep 2021 17:26:59 +0530
+From:   mkrishn@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        sbillaka@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, bjorn.andersson@linaro.org,
+        khsieh@codeaurora.org, rajeevny@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v1 2/4] arm64: dts: qcom: sc7280: add display dt nodes
+In-Reply-To: <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
+References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
+ <1629282424-4070-2-git-send-email-mkrishn@codeaurora.org>
+ <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
+Message-ID: <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
+X-Sender: mkrishn@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new appraisal method based on the lookup of the file and
-metadata digest in the DIGLIM hash table, enabled with the use_diglim
-directive.
+On 2021-08-19 01:27, Stephen Boyd wrote:
+> Quoting Krishna Manikandan (2021-08-18 03:27:02)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 53a21d0..fd7ff1c 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -5,6 +5,7 @@
+>>   * Copyright (c) 2020-2021, The Linux Foundation. All rights 
+>> reserved.
+>>   */
+>> 
+>> +#include <dt-bindings/clock/qcom,dispcc-sc7280.h>
+>>  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+>>  #include <dt-bindings/clock/qcom,rpmh.h>
+>>  #include <dt-bindings/interconnect/qcom,sc7280.h>
+>> @@ -1424,6 +1425,90 @@
+>>                         #power-domain-cells = <1>;
+>>                 };
+>> 
+>> +               mdss: mdss@ae00000 {
+> 
+> subsystem@ae00000
+> 
+>> +                       compatible = "qcom,sc7280-mdss";
+>> +                       reg = <0 0x0ae00000 0 0x1000>;
+>> +                       reg-names = "mdss";
+>> +
+>> +                       power-domains = <&dispcc 
+>> DISP_CC_MDSS_CORE_GDSC>;
+>> +
+>> +                       clocks = <&gcc GCC_DISP_AHB_CLK>,
+>> +                                <&dispcc DISP_CC_MDSS_AHB_CLK>,
+>> +                               <&dispcc DISP_CC_MDSS_MDP_CLK>;
+>> +                       clock-names = "iface", "ahb", "core";
+>> +
+>> +                       assigned-clocks = <&dispcc 
+>> DISP_CC_MDSS_MDP_CLK>;
+>> +                       assigned-clock-rates = <300000000>;
+>> +
+>> +                       interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       interrupt-controller;
+>> +                       #interrupt-cells = <1>;
+>> +
+>> +                       interconnects = <&mmss_noc MASTER_MDP0 0 
+>> &mc_virt SLAVE_EBI1 0>;
+>> +                       interconnect-names = "mdp0-mem";
+>> +
+>> +                       iommus = <&apps_smmu 0x900 0x402>;
+>> +
+>> +                       #address-cells = <2>;
+>> +                       #size-cells = <2>;
+>> +                       ranges;
+>> +
+>> +                       status = "disabled";
+>> +
+>> +                       mdp: mdp@ae01000 {
+> 
+> display-controller@ae01000
 
-First pass to ima_appraise_measurement() the actions performed on the
-digest lists containing the found digests.
+Stephen,
+    In the current driver code, there is a substring comparison for "mdp" 
+in device node name as part of probe sequence. If "mdp" is not present 
+in the node name, it will
+    return an error resulting in probe failure. Can we continue using mdp 
+as nodename instead of display controller?
 
-Then, consider the metadata verification as successful if EVM returned the
-status INTEGRITY_NOLABEL (no security.evm), if the metadata digest was
-found in the DIGLIM hash table and at least one digest list containing it
-was succefully appraised with a signature.
+Thanks,
+Krishna
 
-Finally, consider the file content verification as successful if there is
-no security.ima or appended signature, if the file or metadata digest
-(calculated with the actual file digest) were found in the DIGLIM hash
-table and at least one digest list containing it has a valid signature.
 
-Furthermore, mark the file as immutable if the COMPACT_MOD_IMMUTABLE
-modifier was set in the header of the digest lists containing the found
-digests.
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/integrity/ima/ima.h          |  4 ++-
- security/integrity/ima/ima_appraise.c | 37 +++++++++++++++++++++++----
- security/integrity/ima/ima_main.c     |  6 ++++-
- 3 files changed, 40 insertions(+), 7 deletions(-)
-
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 550805b79984..631e9e4c343b 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -319,7 +319,9 @@ int ima_appraise_measurement(enum ima_hooks func,
- 			     struct integrity_iint_cache *iint,
- 			     struct file *file, const unsigned char *filename,
- 			     struct evm_ima_xattr_data *xattr_value,
--			     int xattr_len, const struct modsig *modsig);
-+			     int xattr_len, const struct modsig *modsig,
-+			     u16 file_modifiers, u8 file_actions,
-+			     u16 metadata_modifiers, u8 metadata_actions);
- int ima_must_appraise(struct user_namespace *mnt_userns, struct inode *inode,
- 		      int mask, enum ima_hooks func);
- void ima_update_xattr(struct integrity_iint_cache *iint, struct file *file);
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index e1b9a5bc4252..a0885272411e 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -377,7 +377,9 @@ int ima_appraise_measurement(enum ima_hooks func,
- 			     struct integrity_iint_cache *iint,
- 			     struct file *file, const unsigned char *filename,
- 			     struct evm_ima_xattr_data *xattr_value,
--			     int xattr_len, const struct modsig *modsig)
-+			     int xattr_len, const struct modsig *modsig,
-+			     u16 file_modifiers, u8 file_actions,
-+			     u16 metadata_modifiers, u8 metadata_actions)
- {
- 	static const char op[] = "appraise_data";
- 	const char *cause = "unknown";
-@@ -387,12 +389,26 @@ int ima_appraise_measurement(enum ima_hooks func,
- 	int rc = xattr_len;
- 	bool try_modsig = iint->flags & IMA_MODSIG_ALLOWED && modsig;
- 
--	/* If not appraising a modsig, we need an xattr. */
--	if (!(inode->i_opflags & IOP_XATTR) && !try_modsig)
-+	/* We are interested only in appraisal-related flags. */
-+	file_actions &= COMPACT_ACTION_IMA_APPRAISED_DIGSIG;
-+	metadata_actions &= COMPACT_ACTION_IMA_APPRAISED_DIGSIG;
-+
-+	/* Disable DIGLIM method for appraisal if not enabled in the policy. */
-+	if (!(iint->flags & IMA_USE_DIGLIM_APPRAISE)) {
-+		file_actions = 0;
-+		metadata_actions = 0;
-+	}
-+
-+	/* If not appraising a modsig or using DIGLIM, we need an xattr. */
-+	if (!(inode->i_opflags & IOP_XATTR) && !try_modsig &&
-+	    !file_actions && !metadata_actions)
- 		return INTEGRITY_UNKNOWN;
- 
--	/* If reading the xattr failed and there's no modsig, error out. */
--	if (rc <= 0 && !try_modsig) {
-+	/*
-+	 * If reading the xattr failed, there's no modsig and the DIGLIM
-+	 * appraisal method is not available, error out.
-+	 */
-+	if (rc <= 0 && !try_modsig && !file_actions && !metadata_actions) {
- 		if (rc && rc != -ENODATA)
- 			goto out;
- 
-@@ -420,6 +436,10 @@ int ima_appraise_measurement(enum ima_hooks func,
- 			break;
- 		fallthrough;
- 	case INTEGRITY_NOLABEL:		/* No security.evm xattr. */
-+		if (metadata_actions) {
-+			status = INTEGRITY_PASS_IMMUTABLE;
-+			break;
-+		}
- 		cause = "missing-HMAC";
- 		goto out;
- 	case INTEGRITY_FAIL_IMMUTABLE:
-@@ -455,6 +475,13 @@ int ima_appraise_measurement(enum ima_hooks func,
- 	     rc == -ENOKEY))
- 		rc = modsig_verify(func, modsig, &status, &cause);
- 
-+	if (!xattr_value && !try_modsig && (file_actions || metadata_actions)) {
-+		status = INTEGRITY_PASS;
-+
-+		if ((file_modifiers & (1 << COMPACT_MOD_IMMUTABLE)) ||
-+		    (metadata_modifiers & (1 << COMPACT_MOD_IMMUTABLE)))
-+			set_bit(IMA_DIGSIG, &iint->atomic_flags);
-+	}
- out:
- 	/*
- 	 * File signatures on some filesystems can not be properly verified.
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 7add0e70f67a..7a9a2392d49c 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -416,7 +416,11 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 			inode_lock(inode);
- 			rc = ima_appraise_measurement(func, iint, file,
- 						      pathname, xattr_value,
--						      xattr_len, modsig);
-+						      xattr_len, modsig,
-+						      file_modifiers,
-+						      file_actions,
-+						      metadata_modifiers,
-+						      metadata_actions);
- 			inode_unlock(inode);
- 		}
- 		if (!rc)
--- 
-2.32.0
-
+> 
+>> +                               compatible = "qcom,sc7280-dpu";
+>> +                               reg = <0 0x0ae01000 0 0x8f030>,
+>> +                                       <0 0x0aeb0000 0 0x2008>;
+>> +                               reg-names = "mdp", "vbif";
+>> +
+>> +                               clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
+>> +                                       <&gcc GCC_DISP_SF_AXI_CLK>,
+>> +                                       <&dispcc 
+>> DISP_CC_MDSS_AHB_CLK>,
+>> +                                       <&dispcc 
+>> DISP_CC_MDSS_MDP_LUT_CLK>,
+>> +                                       <&dispcc 
+>> DISP_CC_MDSS_MDP_CLK>,
+>> +                                       <&dispcc 
+>> DISP_CC_MDSS_VSYNC_CLK>;
+>> +                               clock-names = "bus", "nrt_bus", 
+>> "iface", "lut", "core",
+>> +                                             "vsync";
+> 
+> One line per string please.
+> 
+>> +                               assigned-clocks = <&dispcc 
+>> DISP_CC_MDSS_MDP_CLK>,
+>> +                                               <&dispcc 
+>> DISP_CC_MDSS_VSYNC_CLK>,
+>> +                                               <&dispcc 
+>> DISP_CC_MDSS_AHB_CLK>;
+>> +                               assigned-clock-rates = <300000000>,
+>> +                                                       <19200000>,
+>> +                                                       <19200000>;
+>> +                               operating-points-v2 = 
+>> <&mdp_opp_table>;
+>> +                               power-domains = <&rpmhpd SC7280_CX>;
+>> +
+>> +                               interrupt-parent = <&mdss>;
+>> +                               interrupts = <0>;
+>> +
+>> +                               status = "disabled";
+>> +
+>> +                               mdp_opp_table: mdp-opp-table {
+> 
+> mdp_opp_table: opp-table {
+> 
+>> +                                       compatible = 
+>> "operating-points-v2";
+>> +
+>> +                                       opp-200000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <200000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_low_svs>;
+>> +                                       };
+>> +
+>> +                                       opp-300000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <300000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_svs>;
+>> +                                       };
+>> +
+>> +                                       opp-380000000 {
+>> +                                               opp-hz = /bits/ 64 
+>> <380000000>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_svs_l1>;
+>> +                                       };
+>> +
+>> +                                       opp-506666667 {
+>> +                                               opp-hz = /bits/ 64 
+>> <506666667>;
+>> +                                               required-opps = 
+>> <&rpmhpd_opp_nom>;
+>> +                                       };
+>> +                               };
+>> +                       };
+>> +               };
+>> +
