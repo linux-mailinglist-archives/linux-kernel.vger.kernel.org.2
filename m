@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8523441E139
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8295341E13E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhI3SfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
+        id S245339AbhI3Sff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhI3SfK (ORCPT
+        with ESMTP id S229577AbhI3Sfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:35:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CBCC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DIZyZIMPtrZviYPUhA7kumW9iGvFHoustq8r9Fe4NwA=; b=ANGhMQtO5SO4GSrl/cTqqzLmBl
-        0Nkd1VPrcFhNusU0EhzJ4symEhOwmuzxUBya+LLmbzKEYIMb9uBg/XiH/HPo9EfHZXzgmrDsjjO0q
-        SaU2/4M1hJn/zey1tKkMQ5Uy5JcxJENFj5bxtF9DKdE0+d0n99nPSbDeyFITfHBgVMALtF6XAf7qt
-        ZGsmM2bbxienMEeIxHfKLiaUBYOB0x5fZ23Lu4kn8f8ldNlmGC9yIvJbIq1RCbmiJA2KeKbrKJUSZ
-        FvQKPT6mSuWQquEX+o80kolB7XoqRZkkkf25LNjwQPb6KHK49m2pLGwOx3ncifpSoiY+zIU4WGJrx
-        HOM1P7xw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mW0rt-0070Cr-3g; Thu, 30 Sep 2021 18:33:17 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 643E6981431; Thu, 30 Sep 2021 20:33:16 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 20:33:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [RFC 1/6] sched: Add nice value change notifier
-Message-ID: <20210930183316.GC4323@worktop.programming.kicks-ass.net>
-References: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
- <20210930171552.501553-2-tvrtko.ursulin@linux.intel.com>
+        Thu, 30 Sep 2021 14:35:33 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195CC06176A;
+        Thu, 30 Sep 2021 11:33:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e160042ff9e72dd33ffc9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1600:42ff:9e72:dd33:ffc9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D7001EC0531;
+        Thu, 30 Sep 2021 20:33:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633026829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=mKafYKu2L6ScClp7GA/OUijqYHN57nrEQkXpftg3Ak0=;
+        b=r3v0g/iKj0jUiBnH0rcU3VsWsLBnYdTVDy1wgC5crwocRr5xGWgmo9UMkVJMj0/N/MvCfK
+        WtV3el2mda980dgWzStndneIDNVbzNr1WsulU7qp9TNBiYIHoeNaEHeDqdHptPYSv+IqgV
+        cgNEXah3g1hq/NTzRJjTVgwn9VQ0Sgo=
+Date:   Thu, 30 Sep 2021 20:33:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, davem@davemloft.net,
+        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        brijesh.singh@amd.com, jroedel@suse.de, Tianyu.Lan@microsoft.com,
+        pgonda@google.com, akpm@linux-foundation.org, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, saravanand@fb.com,
+        aneesh.kumar@linux.ibm.com, rientjes@google.com, tj@kernel.org,
+        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
+Subject: Re: [PATCH V6 5/8] x86/hyperv: Add Write/Read MSR registers via ghcb
+ page
+Message-ID: <YVYDCHavgLb6WFiM@zn.tnic>
+References: <20210930130545.1210298-1-ltykernel@gmail.com>
+ <20210930130545.1210298-6-ltykernel@gmail.com>
+ <0f33ca85-f1c6-bab3-5bdb-233c09f86621@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210930171552.501553-2-tvrtko.ursulin@linux.intel.com>
+In-Reply-To: <0f33ca85-f1c6-bab3-5bdb-233c09f86621@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 06:15:47PM +0100, Tvrtko Ursulin wrote:
->  void set_user_nice(struct task_struct *p, long nice)
->  {
->  	bool queued, running;
-> -	int old_prio;
-> +	int old_prio, ret;
->  	struct rq_flags rf;
->  	struct rq *rq;
->  
-> @@ -6913,6 +6945,9 @@ void set_user_nice(struct task_struct *p, long nice)
->  	 */
->  	p->sched_class->prio_changed(rq, p, old_prio);
->  
-> +	ret = atomic_notifier_call_chain(&user_nice_notifier_list, nice, p);
-> +	WARN_ON_ONCE(ret != NOTIFY_DONE);
-> +
->  out_unlock:
->  	task_rq_unlock(rq, p, &rf);
->  }
+On Thu, Sep 30, 2021 at 01:27:20PM -0500, Tom Lendacky wrote:
+> > +	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1)
+> 
+> Really, any non-zero value indicates an error, so this should be:
+> 
+> 	if (ghcb->save.sw_exit_info_1 & 0xffffffff)
 
-No, we're not going to call out to exported, and potentially unbounded,
-functions under scheduler locks.
+That's ok but that should be a separate patch - first patch splits the
+function and second changes the functionality.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
