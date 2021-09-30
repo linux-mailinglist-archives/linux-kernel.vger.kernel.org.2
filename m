@@ -2,176 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E1941D3D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49DD41D3DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348468AbhI3HEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:04:15 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:49236 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233661AbhI3HEN (ORCPT
+        id S1348474AbhI3HGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:06:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53518 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233661AbhI3HGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:04:13 -0400
-X-UUID: 1d828ada830240c9b246b5eb904222c2-20210930
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nVDOOA+MnaA31W246VDBrAkdIZusmE7EQ3Thm1dMlMI=;
-        b=u5pKLtviErt4FoFRwFvFF9qZA3g43ElwDeUPR/Ap4iBVv1BbO6ZnbIOB6mt3jRVTWpJ501H7iv3Fg+9kLBKwQPBwxOxm94MQGziQ4LL6FZZsNHtZz7fiHgl5oSv1yjcuP2sL89x6gCrP7MUbB5IVxTp6V/lsQ7E4SaCe4b566rQ=;
-X-UUID: 1d828ada830240c9b246b5eb904222c2-20210930
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 337720132; Thu, 30 Sep 2021 15:02:27 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Thu, 30 Sep 2021 15:02:26 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Thu, 30 Sep 2021 15:02:24 +0800
-Message-ID: <2d11f5fa62151db0d490ea03e2f8399d784ea522.camel@mediatek.com>
-Subject: Re: [v4] PCI: Avoid unsync of LTR mechanism configuration
-From:   mingchuang qiao <mingchuang.qiao@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <kerun.zhu@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <lambert.wang@mediatek.com>, <rjw@rjwysocki.net>,
-        <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
-        <alex.williamson@redhat.com>, <linux-mediatek@lists.infradead.org>,
-        <utkarsh.h.patel@intel.com>, <haijun.liu@mediatek.com>,
-        <mingchuang.qiao@mediatek.com>, <bhelgaas@google.com>,
-        <mika.westerberg@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 30 Sep 2021 15:02:24 +0800
-In-Reply-To: <3a48bce6723c5588170dc0c399e7a266cb3b1817.camel@mediatek.com>
-References: <20210218165006.GA983767@bjorn-Precision-5520>
-         <3a48bce6723c5588170dc0c399e7a266cb3b1817.camel@mediatek.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.1-2 
+        Thu, 30 Sep 2021 03:06:14 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U5T7BR008286;
+        Thu, 30 Sep 2021 03:04:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=MhmHp9wX5+qeFhbd7KU4HBwtVVghFYxBAcJ6s8OhlqE=;
+ b=o/rDkQ5pBKGbfyKg1NCsl31o21/D5qkB4AFIU4wvXDO6ktnqncRbiKCH2hvpS4785MUu
+ Sz2CHE/t90GIzERQrEL3PGhFUUWgSBJmVLooM9/wBkJZjVB83EG67fjAREZY5jIS8DdH
+ Cdc3Z3tlSEQaNirkyq4MCa8Qp95sEKcfUQTeXdS1IKrWy4awggD0RYBJynvPW3BR4rMh
+ Z1yj/nqWaEadtxeutQ53ksg7O+0mqmPjd3hDNRx3isUCYhrpQqxfxLHfeKhEht9mUtBN
+ HMePezwrYv+aK+y6kIFx+IMdtk+KQF4WoCzVePywSS8bXfzfuAvxNtT360RhOKHtnyNg JA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd74khxqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 03:04:26 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18U70Smb026624;
+        Thu, 30 Sep 2021 03:04:25 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd74khxpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 03:04:25 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18U73FfY025331;
+        Thu, 30 Sep 2021 07:04:23 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3b9uda84u7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 07:04:22 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18U6xEmL57737556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 06:59:14 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C827211C052;
+        Thu, 30 Sep 2021 07:04:18 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7DAFD11C064;
+        Thu, 30 Sep 2021 07:04:14 +0000 (GMT)
+Received: from Madhavan.com (unknown [9.43.101.207])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 30 Sep 2021 07:04:14 +0000 (GMT)
+From:   Madhavan Srinivasan <maddy@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     michael@ellerman.id.au, eranian@google.com, mark.rutland@arm.com,
+        namhyung@kernel.org, kjain@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, jolsa@redhat.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Madhavan Srinivasan <maddy@linux.ibm.com>
+Subject: [PATCH 1/2] tools/perf: Add reverse_fn to handle branch_stack endian issue
+Date:   Thu, 30 Sep 2021 12:34:09 +0530
+Message-Id: <20210930070410.52703-1-maddy@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tiH2QL5t5-j2QWGdjmbUtD4wiUa-szxl
+X-Proofpoint-GUID: pPq64JZ1pIJvFW4L_gnnUoh8wydgmPAs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-30_02,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 spamscore=0
+ phishscore=0 mlxlogscore=569 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2109300042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmpvcm4sDQoNCkEgZnJpZW5kbHkgcGluZy4NClRoYW5rcy4NCg0KT24gTW9uLCAyMDIxLTA5
-LTA2IGF0IDEzOjM2ICswODAwLCBtaW5nY2h1YW5nIHFpYW8gd3JvdGU6DQo+IEhpIEJqb3JuLA0K
-PiANCj4gT24gVGh1LCAyMDIxLTAyLTE4IGF0IDEwOjUwIC0wNjAwLCBCam9ybiBIZWxnYWFzIHdy
-b3RlOg0KPiA+IE9uIFRodSwgRmViIDA0LCAyMDIxIGF0IDA1OjUxOjI1UE0gKzA4MDAsIG1pbmdj
-aHVhbmcucWlhb0BtZWRpYXRlay4NCj4gPiBjbw0KPiA+IG0gd3JvdGU6DQo+ID4gPiBGcm9tOiBN
-aW5nY2h1YW5nIFFpYW8gPG1pbmdjaHVhbmcucWlhb0BtZWRpYXRlay5jb20+DQo+ID4gPiANCj4g
-PiA+IEluIGJ1cyBzY2FuIGZsb3csIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBE
-RVZDVEwyDQo+ID4gPiByZWdpc3RlciBpcw0KPiA+ID4gY29uZmlndXJlZCBpbiBwY2lfY29uZmln
-dXJlX2x0cigpLiBJZiBkZXZpY2UgYW5kIGJyaWRnZSBib3RoDQo+ID4gPiBzdXBwb3J0IExUUg0K
-PiA+ID4gbWVjaGFuaXNtLCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgZGV2aWNl
-IGFuZCBicmlkZ2UNCj4gPiA+IHdpbGwNCj4gPiA+IGJlDQo+ID4gPiBlbmFibGVkIGluIERFVkNU
-TDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcw0KPiA+ID4g
-MS4NCj4gPiA+IA0KPiA+ID4gSWYgUENJZSBsaW5rIGdvZXMgZG93biB3aGVuIGRldmljZSByZXNl
-dHMsIHRoZSAiTFRSIE1lY2hhbmlzbQ0KPiA+ID4gRW5hYmxlIiBiaXQNCj4gPiA+IG9mIGJyaWRn
-ZSB3aWxsIGNoYW5nZSB0byAwIGFjY29yZGluZyB0byBQQ0llIHI1LjAsIHNlYyA3LjUuMy4xNi4N
-Cj4gPiA+IEhvd2V2ZXIsDQo+ID4gPiB0aGUgcGNpX2Rldi0+bHRyX3BhdGggdmFsdWUgb2YgYnJp
-ZGdlIGlzIHN0aWxsIDEuDQo+ID4gPiANCj4gPiA+IEZvciBmb2xsb3dpbmcgY29uZGl0aW9ucywg
-Y2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSAiTFRSIE1lY2hhbmlzbQ0KPiA+ID4gRW5hYmxlIiBiaXQN
-Cj4gPiA+IG9mIGJyaWRnZSB0byBtYWtlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG1hdGNo
-IGx0cl9wYXRoDQo+ID4gPiB2YWx1ZS4NCj4gPiA+ICAgIC1iZWZvcmUgY29uZmlndXJpbmcgZGV2
-aWNlJ3MgTFRSIGZvciBob3QtcmVtb3ZlL2hvdC1hZGQNCj4gPiA+ICAgIC1iZWZvcmUgcmVzdG9y
-aW5nIGRldmljZSdzIERFVkNUTDIgcmVnaXN0ZXIgd2hlbiByZXN0b3JlDQo+ID4gPiBkZXZpY2UN
-Cj4gPiA+IHN0YXRlDQo+ID4gDQo+ID4gVGhlcmUncyBkZWZpbml0ZWx5IGEgYnVnIGhlcmUuICBU
-aGUgY29tbWl0IGxvZyBzaG91bGQgc2F5IGEgbGl0dGxlDQo+ID4gbW9yZSBhYm91dCB3aGF0IGl0
-IGlzLiAgSSAqdGhpbmsqIGlmIExUUiBpcyBlbmFibGVkIGFuZCB3ZSBzdXNwZW5kDQo+ID4gKHB1
-dHRpbmcgdGhlIGRldmljZSBpbiBEM2NvbGQpIGFuZCByZXN1bWUsIExUUiBwcm9iYWJseSBkb2Vz
-bid0DQo+ID4gd29yaw0KPiA+IGFmdGVyIHJlc3VtZSBiZWNhdXNlIExUUiBpcyBkaXNhYmxlZCBp
-biB0aGUgdXBzdHJlYW0gYnJpZGdlLCB3aGljaA0KPiA+IHdvdWxkIGJlIGFuIG9idmlvdXMgYnVn
-Lg0KPiA+IA0KPiA+IEFsc28sIGlmIGEgZGV2aWNlIHdpdGggTFRSIGVuYWJsZWQgaXMgaG90LXJl
-bW92ZWQsIGFuZCB3ZSBob3QtYWRkIGENCj4gPiBkZXZpY2UsIEkgdGhpbmsgTFRSIHdpbGwgbm90
-IHdvcmsgb24gdGhlIG5ldyBkZXZpY2UuICBQb3NzaWJseSBhbHNvDQo+ID4gYQ0KPiA+IGJ1Zywg
-YWx0aG91Z2ggSSdtIG5vdCBjb252aW5jZWQgd2Uga25vdyBob3cgdG8gY29uZmlndXJlIExUUiBv
-biB0aGUNCj4gPiBuZXcgZGV2aWNlIGFueXdheS4NCj4gPiANCj4gPiBTbyBJJ2QgKmxpa2UqIHRv
-IG1lcmdlIHRoZSBidWcgZml4IGZvciB2NS4xMiwgYnV0IEkgdGhpbmsgSSdsbCB3YWl0DQo+ID4g
-YmVjYXVzZSBvZiB0aGUgaXNzdWUgYmVsb3cuDQo+ID4gDQo+IA0KPiBBIGZyaWVuZGx5IHBpbmcu
-DQo+IEFueSBmdXJ0aGVyIHByb2Nlc3Mgc2hhbGwgSSBtYWtlIHRvIGdldCB0aGlzIHBhdGNoIG1l
-cmdlZD8NCj4gDQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBNaW5nY2h1YW5nIFFpYW8gPG1pbmdjaHVh
-bmcucWlhb0BtZWRpYXRlay5jb20+DQo+ID4gPiAtLS0NCj4gPiA+IGNoYW5nZXMgb2YgdjQNCj4g
-PiA+ICAtZml4IHR5cG8gb2YgY29tbWl0IG1lc3NhZ2UNCj4gPiA+ICAtcmVuYW1lOiBwY2lfcmVj
-b25maWd1cmVfYnJpZGdlX2x0cigpLQ0KPiA+ID4gPiBwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0
-cigpDQo+ID4gPiANCj4gPiA+IGNoYW5nZXMgb2YgdjMNCj4gPiA+ICAtY2FsbCBwY2lfcmVjb25m
-aWd1cmVfYnJpZGdlX2x0cigpIGluIHByb2JlLmMNCj4gPiA+IGNoYW5nZXMgb2YgdjINCj4gPiA+
-ICAtbW9kaWZ5IHBhdGNoIGRlc2NyaXB0aW9uDQo+ID4gPiAgLXJlY29uZmlndXJlIGJyaWRnZSdz
-IExUUiBiZWZvcmUgcmVzdG9yaW5nIGRldmljZSBERVZDVEwyDQo+ID4gPiByZWdpc3Rlcg0KPiA+
-ID4gLS0tDQo+ID4gPiAgZHJpdmVycy9wY2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysr
-KysrKysrKysNCj4gPiA+ICBkcml2ZXJzL3BjaS9wY2kuaCAgIHwgIDEgKw0KPiA+ID4gIGRyaXZl
-cnMvcGNpL3Byb2JlLmMgfCAxMyArKysrKysrKysrLS0tDQo+ID4gPiAgMyBmaWxlcyBjaGFuZ2Vk
-LCAzNiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9wY2kvcGNpLmMgYi9kcml2ZXJzL3BjaS9wY2kuYw0KPiA+ID4gaW5kZXgg
-YjlmZWNjMjVkMjEzLi42YmY2NWQyOTUzMzEgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3Bj
-aS9wY2kuYw0KPiA+ID4gKysrIGIvZHJpdmVycy9wY2kvcGNpLmMNCj4gPiA+IEBAIC0xNDM3LDYg
-KzE0MzcsMjQgQEAgc3RhdGljIGludCBwY2lfc2F2ZV9wY2llX3N0YXRlKHN0cnVjdA0KPiA+ID4g
-cGNpX2RldiAqZGV2KQ0KPiA+ID4gIAlyZXR1cm4gMDsNCj4gPiA+ICB9DQo+ID4gPiAgDQo+ID4g
-PiArdm9pZCBwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0K
-PiA+ID4gK3sNCj4gPiA+ICsjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQo+ID4gPiArCXN0cnVjdCBw
-Y2lfZGV2ICpicmlkZ2U7DQo+ID4gPiArCXUzMiBjdGw7DQo+ID4gPiArDQo+ID4gPiArCWJyaWRn
-ZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KTsNCj4gPiA+ICsJaWYgKGJyaWRnZSAmJiBicmlk
-Z2UtPmx0cl9wYXRoKSB7DQo+ID4gPiArCQlwY2llX2NhcGFiaWxpdHlfcmVhZF9kd29yZChicmlk
-Z2UsDQo+ID4gPiBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KPiA+ID4gKwkJaWYgKCEoY3RsICYg
-UENJX0VYUF9ERVZDVEwyX0xUUl9FTikpIHsNCj4gPiA+ICsJCQlwY2lfZGJnKGJyaWRnZSwgInJl
-LWVuYWJsaW5nIExUUlxuIik7DQo+ID4gPiArCQkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGJy
-aWRnZSwNCj4gPiA+IFBDSV9FWFBfREVWQ1RMMiwNCj4gPiA+ICsJCQkJCQkgUENJX0VYUF9ERVZD
-VEwyDQo+ID4gPiBfTA0KPiA+ID4gVFJfRU4pOw0KPiA+IA0KPiA+IFRoaXMgcGF0dGVybiBvZiB1
-cGRhdGluZyB0aGUgdXBzdHJlYW0gYnJpZGdlIG9uIGJlaGFsZiBvZiAiZGV2IiBpcw0KPiA+IHBy
-b2JsZW1hdGljIGJlY2F1c2UgaXQncyByYWN5Og0KPiA+IA0KPiA+ICAgQ1BVIDEgICAgICAgICAg
-ICAgICAgICAgICBDUFUgMg0KPiA+ICAgLS0tLS0tLS0tLS0tLS0tLS0tLSAgICAgICAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0NCj4gPiAgIGN0bCA9IHJlYWQgREVWQ1RMMiAgICAgICAgY3RsID0gcmVh
-ZChERVZDVEwyKQ0KPiA+ICAgY3RsIHw9IERFVkNUTDJfTFRSX0VOICAgICBjdGwgfD0gREVWQ1RM
-Ml9BUkkNCj4gPiAgIHdyaXRlKERFVkNUTDIsIGN0bCkNCj4gPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgd3JpdGUoREVWQ1RMMiwgY3RsKQ0KPiA+IA0KPiA+IE5vdyB0aGUgYnJpZGdlIGhh
-cyBBUkkgc2V0LCBidXQgbm90IExUUl9FTi4NCj4gPiANCj4gPiBXZSBoYXZlIHRoZSBzYW1lIHBy
-b2JsZW0gaW4gdGhlIHBjaV9lbmFibGVfZGV2aWNlKCkgcGF0aC4gIFRoZSBtb3N0DQo+ID4gcmVj
-ZW50IHRyeSBhdCBmaXhpbmcgaXQgaXMgWzFdLg0KPiA+IA0KPiA+IFsxXSBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9saW51eC1wY2kvMjAyMDEyMTgxNzQwMTEuMzQwNTE0LTItcy5taXINCj4gPiBv
-cw0KPiA+IGhuaWNoZW5rb0B5YWRyby5jb20vDQo+ID4gDQo+ID4gPiArCQl9DQo+ID4gPiArCX0N
-Cj4gPiA+ICsjZW5kaWYNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiAgc3RhdGljIHZvaWQgcGNp
-X3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ID4gIHsNCj4gPiA+
-ICAJaW50IGkgPSAwOw0KPiA+ID4gQEAgLTE0NDcsNiArMTQ2NSwxMyBAQCBzdGF0aWMgdm9pZCBw
-Y2lfcmVzdG9yZV9wY2llX3N0YXRlKHN0cnVjdA0KPiA+ID4gcGNpX2RldiAqZGV2KQ0KPiA+ID4g
-IAlpZiAoIXNhdmVfc3RhdGUpDQo+ID4gPiAgCQlyZXR1cm47DQo+ID4gPiAgDQo+ID4gPiArCS8q
-DQo+ID4gPiArCSAqIERvd25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdo
-ZW4gbGluaw0KPiA+ID4gZ29lcyBkb3duLg0KPiA+ID4gKwkgKiBDaGVjayBhbmQgcmUtY29uZmln
-dXJlIHRoZSBiaXQgaGVyZSBiZWZvcmUgcmVzdG9yaW5nDQo+ID4gPiBkZXZpY2UuDQo+ID4gPiAr
-CSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2Lg0KPiA+ID4gKwkgKi8NCj4gPiA+ICsJcGNpX2Jy
-aWRnZV9yZWNvbmZpZ3VyZV9sdHIoZGV2KTsNCj4gPiA+ICsNCj4gPiA+ICAJY2FwID0gKHUxNiAq
-KSZzYXZlX3N0YXRlLT5jYXAuZGF0YVswXTsNCj4gPiA+ICAJcGNpZV9jYXBhYmlsaXR5X3dyaXRl
-X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTCwNCj4gPiA+IGNhcFtpKytdKTsNCj4gPiA+ICAJcGNp
-ZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2LCBQQ0lfRVhQX0xOS0NUTCwNCj4gPiA+IGNhcFtp
-KytdKTsNCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuaCBiL2RyaXZlcnMvcGNp
-L3BjaS5oDQo+ID4gPiBpbmRleCA1YzU5MzY1MDkyZmEuLmIzYTVlNTI4N2NiNyAxMDA2NDQNCj4g
-PiA+IC0tLSBhL2RyaXZlcnMvcGNpL3BjaS5oDQo+ID4gPiArKysgYi9kcml2ZXJzL3BjaS9wY2ku
-aA0KPiA+ID4gQEAgLTExMSw2ICsxMTEsNyBAQCB2b2lkIHBjaV9mcmVlX2NhcF9zYXZlX2J1ZmZl
-cnMoc3RydWN0IHBjaV9kZXYNCj4gPiA+ICpkZXYpOw0KPiA+ID4gIGJvb2wgcGNpX2JyaWRnZV9k
-M19wb3NzaWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCj4gPiA+ICB2b2lkIHBjaV9icmlkZ2Vf
-ZDNfdXBkYXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KPiA+ID4gIHZvaWQgcGNpX2JyaWRnZV93
-YWl0X2Zvcl9zZWNvbmRhcnlfYnVzKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KPiA+ID4gK3ZvaWQg
-cGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldik7DQo+ID4gPiAg
-DQo+ID4gPiAgc3RhdGljIGlubGluZSB2b2lkIHBjaV93YWtldXBfZXZlbnQoc3RydWN0IHBjaV9k
-ZXYgKmRldikNCj4gPiA+ICB7DQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcHJvYmUu
-YyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMNCj4gPiA+IGluZGV4IDk1M2YxNWFiYzg1MC4uYWRlMDU1
-ZTlmYjU4IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+ID4gKysr
-IGIvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+ID4gQEAgLTIxMzIsOSArMjEzMiwxNiBAQCBzdGF0
-aWMgdm9pZCBwY2lfY29uZmlndXJlX2x0cihzdHJ1Y3QNCj4gPiA+IHBjaV9kZXYNCj4gPiA+ICpk
-ZXYpDQo+ID4gPiAgCSAqIENvbXBsZXggYW5kIGFsbCBpbnRlcm1lZGlhdGUgU3dpdGNoZXMgaW5k
-aWNhdGUNCj4gPiA+IHN1cHBvcnQNCj4gPiA+IGZvciBMVFIuDQo+ID4gPiAgCSAqIFBDSWUgcjQu
-MCwgc2VjIDYuMTguDQo+ID4gPiAgCSAqLw0KPiA+ID4gLQlpZiAocGNpX3BjaWVfdHlwZShkZXYp
-ID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQgfHwNCj4gPiA+IC0JICAgICgoYnJpZGdlID0gcGNp
-X3Vwc3RyZWFtX2JyaWRnZShkZXYpKSAmJg0KPiA+ID4gLQkgICAgICBicmlkZ2UtPmx0cl9wYXRo
-KSkgew0KPiA+ID4gKwlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09U
-X1BPUlQpIHsNCj4gPiA+ICsJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChkZXYsIFBDSV9FWFBf
-REVWQ1RMMiwNCj4gPiA+ICsJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKQ0KPiA+ID4gOw0K
-PiA+ID4gKwkJZGV2LT5sdHJfcGF0aCA9IDE7DQo+ID4gPiArCQlyZXR1cm47DQo+ID4gPiArCX0N
-Cj4gPiA+ICsNCj4gPiA+ICsJYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KPiA+
-ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCj4gPiA+ICsJCXBjaV9icmlk
-Z2VfcmVjb25maWd1cmVfbHRyKGRldik7DQo+ID4gPiAgCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dv
-cmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gPiAgCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xU
-Ul9FTikNCj4gPiA+IDsNCj4gPiA+ICAJCWRldi0+bHRyX3BhdGggPSAxOw0KPiA+ID4gLS0gDQo+
-ID4gPiAyLjE4LjANCj4gPiANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KPiA+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4
-LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVr
+branch_stack struct has bit field definition which
+produces different bit ordering for big/little endian.
+Because of this, when branch_stack sample is collected
+in a BE system and viewed/reported in a LE system, bit
+fields of the branch stack are not presented properly.
+To address this issue, a evsel__reverse64_branch_stack_flags()
+is defined and introduced in evsel__parse_sample.
+
+Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+---
+ tools/perf/util/evsel.c | 64 +++++++++++++++++++++++++++++++++++++++--
+ tools/perf/util/evsel.h |  5 ++++
+ 2 files changed, 67 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index dbfeceb2546c..007be66b69a2 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2221,6 +2221,46 @@ void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
+ 	data->weight = *array;
+ }
+ 
++u64 evsel__reverse64_branch_stack_flags(u64 value)
++{
++	u64 new_val = 0;
++
++	/*
++	 * branch_stack flag (u64)
++	 * union {
++	 * 	u64 values;
++	 * 	struct {
++	 * 		mispred:1	//target mispredicted
++	 * 		predicted:1	//target predicted
++	 * 		in_tx:1		//in transaction
++	 * 		abort:1		//transaction abort
++	 * 		cycles:16	//cycle count to last branch
++	 * 		type:4		//branch type
++	 * 		reserved:40
++	 * 	}
++	 * }
++	 */
++	if (bigendian()) {
++		new_val = reverse_64(value, 0, 1);
++		new_val |= reverse_64(value, 1, 1);
++		new_val |= reverse_64(value, 2, 1);
++		new_val |= reverse_64(value, 3, 1);
++		new_val |= reverse_64(value, 4, 16);
++		new_val |= reverse_64(value, 20, 4);
++		new_val |= reverse_64(value, 24, 40);
++	} else {
++		new_val = reverse_64(value, 63, 1);
++		new_val |= reverse_64(value, 62, 1);
++		new_val |= reverse_64(value, 61, 1);
++		new_val |= reverse_64(value, 60, 1);
++		new_val |= reverse_64(value, 44, 16);
++		new_val |= reverse_64(value, 40, 4);
++		new_val |= reverse_64(value, 0, 40);
++	}
++
++	return new_val;
++}
++
+ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 			struct perf_sample *data)
+ {
+@@ -2408,6 +2448,8 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 	if (type & PERF_SAMPLE_BRANCH_STACK) {
+ 		const u64 max_branch_nr = UINT64_MAX /
+ 					  sizeof(struct branch_entry);
++		struct branch_entry *e;
++		unsigned int i;
+ 
+ 		OVERFLOW_CHECK_u64(array);
+ 		data->branch_stack = (struct branch_stack *)array++;
+@@ -2416,10 +2458,28 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 			return -EFAULT;
+ 
+ 		sz = data->branch_stack->nr * sizeof(struct branch_entry);
+-		if (evsel__has_branch_hw_idx(evsel))
++		if (evsel__has_branch_hw_idx(evsel)) {
+ 			sz += sizeof(u64);
+-		else
++			e = &data->branch_stack->entries[0];
++		} else {
+ 			data->no_hw_idx = true;
++			e = (struct branch_entry *)&data->branch_stack->hw_idx;
++		}
++
++		if (swapped) {
++			/*
++			 * struct branch_flag does not have endian specific
++			 * bit field definition. And bswap will not resolve the
++			 * issue, since these are bit fields.
++			 *
++			 * evsel__reverse64_branch_stack_flags() uses a reverse64
++			 * macro to reverse the bit position based on the host
++			 * endians.
++			 */
++			for (i = 0; i < data->branch_stack->nr; i++, e++)
++				e->flags.value = evsel__reverse64_branch_stack_flags(e->flags.value);
++		}
++
+ 		OVERFLOW_CHECK(array, sz, max_size);
+ 		array = (void *)array + sz;
+ 	}
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 1f7edfa8568a..1127c23710cf 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -482,4 +482,9 @@ struct evsel *evsel__leader(struct evsel *evsel);
+ bool evsel__has_leader(struct evsel *evsel, struct evsel *leader);
+ bool evsel__is_leader(struct evsel *evsel);
+ void evsel__set_leader(struct evsel *evsel, struct evsel *leader);
++
++#define reverse_64(src, pos, size)	\
++	((((src) >> (pos)) & ((1ull << (size)) - 1)) << (63 - ((pos) + (size) - 1)))
++
++u64 evsel__reverse64_branch_stack_flags(u64 value);
+ #endif /* __PERF_EVSEL_H */
+-- 
+2.31.1
 
