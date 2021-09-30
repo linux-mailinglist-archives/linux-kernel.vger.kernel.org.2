@@ -2,163 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0711641DC87
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74AA41DC8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351002AbhI3Omj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:42:39 -0400
-Received: from www.zeus03.de ([194.117.254.33]:53722 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349423AbhI3Omi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:42:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=ZvuuUAw5AdmQ+JTYkJ6m1x8aRVdo
-        Y2ZDvcWvQg7OFPw=; b=uy0cT/9XbZgr0mYdfwfFkaC9jCiiEzQsvUhaHfevC06L
-        JpB2Ce5HRlksLwL8oLsDeYjWXKlLUfpyDj5f2u/tolIJtB+TIfO0lozqlyb8V3DE
-        Ce8xg/YNqvUPDS47XRfLRmATWnphnARtcPWaqPAjl3WSEB2WtU97rUrU9Ek/QQw=
-Received: (qmail 2113065 invoked from network); 30 Sep 2021 16:40:51 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Sep 2021 16:40:51 +0200
-X-UD-Smtp-Session: l3s3148p1@v/frbjfNNoYgARa4RV6LAWawlO8I9jL3
-Date:   Thu, 30 Sep 2021 16:40:51 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YVXMc1A4D/y4kjim@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1351062AbhI3OnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:43:00 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:34655 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349769AbhI3Om7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:42:59 -0400
+Received: by mail-wr1-f53.google.com with SMTP id t8so10535661wri.1;
+        Thu, 30 Sep 2021 07:41:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qlV2IW6KgwSMkQiI/3nalledS1TzOJSnAsynrV1hvmI=;
+        b=KwWesWBcLF3Ao3oUBSagd1ExtrAdhcu2b+z1qu591O+PcUi1MCjqxIdu/ZDRSJPeEU
+         s40rHYCh8/x50xuisAnr5FEmvxjqn82CQ+4Aex7NUfmNpIp0TikVFm+1HsfnrLZ0taJk
+         b4m9UKxVmFHZPFJLu0kLMt0OuuEq/WtWaLdKKkMw7jP6dTvfc5RhdRsizCHdqz9ivs9z
+         bS5s+m44BdpWhJzwujvkJucZuvPKoFPdMCKJe38RsRCl54/Isdv7KE0UiWEoB9ufd9Xr
+         //M2gTCuUQwtbp7T90CwQaMVxcwynHSxpPx9mxDhxpaUbVnrFxI+n0F3ThI6+VPoRw8E
+         TEPg==
+X-Gm-Message-State: AOAM5311RD6+ZhN6zDIeDd70SOG0QYjs4518LksIKV0ocfSYnMnt54Hd
+        ygbVj3uaOoMNkCNVPxJG6NY=
+X-Google-Smtp-Source: ABdhPJx3RvTS+7z6fNKyJlCKUV3HdqEwws93IzNsqEtqImu8jolUAHMDRkGFp/DD2fiEWjcc3NMKfw==
+X-Received: by 2002:a5d:64a7:: with SMTP id m7mr6752049wrp.171.1633012875349;
+        Thu, 30 Sep 2021 07:41:15 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id n26sm4999946wmi.43.2021.09.30.07.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:41:14 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 16:41:13 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, stefanha@redhat.com, oren@nvidia.com,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/1] driver core: use NUMA_NO_NODE during
+ device_initialize
+Message-ID: <YVXMifT1hdIci1cp@rocinante>
+References: <20210930142556.9999-1-mgurtovoy@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="myXSi1SOqxroiqCO"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210930142556.9999-1-mgurtovoy@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Max,
 
---myXSi1SOqxroiqCO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Don't use (-1) constant for setting initial device node. Instead, use
+> the generic NUMA_NO_NODE definition to indicate that "no node id
+> specified".
+> 
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index e65dd803a453..2b4b46f6c676 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2838,7 +2838,7 @@ void device_initialize(struct device *dev)
+>  	spin_lock_init(&dev->devres_lock);
+>  	INIT_LIST_HEAD(&dev->devres_head);
+>  	device_pm_init(dev);
+> -	set_dev_node(dev, -1);
+> +	set_dev_node(dev, NUMA_NO_NODE);
 
-Hi,
+We might have one of these to fix in the PCI tree, as per:
 
->  #define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* undocumented */
->  #define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* undocumented */
->  #define RPCIF_CMNCR_IO0FV(val)	(((val) & 0x3) << 8)
-> -#define RPCIF_CMNCR_IOFV_HIZ	(RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
-> -				 RPCIF_CMNCR_IO3FV(3))
-> +#define RPCIF_CMNCR_IOFV_HIZ(val) (RPCIF_CMNCR_IO0FV(val) | RPCIF_CMNCR_IO2FV(val) | \
-> +				 RPCIF_CMNCR_IO3FV(val))
+  https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/pci/pci-sysfs.c#L84
 
-Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
-datasheets? I am asking because I have a patch pending to remove writing
-to undocumented locations. So, I was aboout to remove the IO3FV and
-IO2FV macros.
+Would this be of interest to you for a potential v2?
 
-> +#define RPCIF_PHYADJ1		0x0070	/* R/W */
-> +#define RPCIF_PHYADJ2		0x0074	/* R/W */
-
-Those are named 'PHYADD' and 'PHYWR' in the Gen3 documentation. They are
-only available on a few of the Gen3 SoCs. I think the Gen3 namings make
-more sense because then it becomes easily understandable that the
-registers are used to write something to the PHY.
-
-> +#define RPCIF_PHYCNT_CKSEL(v)	(((v) & 0x3) << 16)
-
-We should add a comment here that these bits are only valid for G2L...
-
->  #define RPCIF_PHYCNT_STRTIM(v)	(((v) & 0x7) << 15)
-
-and these only for Gen3.
-
-
-> +static void rpcif_timing_adjust_sdr(struct rpcif *rpc)
-> +{
-> +	u32 data;
-> +
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0xA5390000);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000000);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000022);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
-> +	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000024);
-
-Can't we have defines for these magic values? At least in my latest Gen3
-documentation, these values are explained.
-
-> +
-> +	regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
-> +	regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
-
-regmap_update_bits?
-
-> +	if (rpc->type == RPCIF_RCAR_GEN3) {
-> +		regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
-> +			     RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
-> +	} else {
-> +		regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
-> +		dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
-> +		dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
-> +		regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
-
-regmap_update_bits?
-
-Rest looks good.
-
-Thanks and happy hacking!
-
-   Wolfram
-
-
---myXSi1SOqxroiqCO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFVzG8ACgkQFA3kzBSg
-KbbQRRAAsUhxjWffPi0zOAX/Kwx59slKArNPjW/bbcIaFpQJZHOaAtZN5f7ShJj9
-heQOq0GZ59dy5mC9n8jWKRfLmIiy+kT7wyGIGHNZGjhIfGD/w6cJdATO13s62J91
-76lxaruXnCIViD8oIqfJ9zayEVPesKwZ/wxaTuHZDQMzs6iOz0nW39a82pnvhXIr
-aTiWOY3HuAbS59JNaY94+mbo+wSqZzosEI1hhinQCMPjITE8L1oe0rluhSQTV38P
-5P9WQv8fd03duVvr5ERN7j/Dvhos6/nP/er99//xAcLe2cf2D2VruI6CduNN7Ilb
-CBiPBubGkpRrNOTMFJOSpeaCrxZ+swulBjd59ZX6C/aIc6NK1kDjfON2unzC1iTd
-eS25kDiUM2dgM5hALSh8yRyivVnSERjsg7wFVUmACJv8rf71pO257zOjA7Cktfa/
-V9RByghEW+2beoOdDU1nu05jHraSQDBL7BsrDZSh/YS9LTbMBxo3EDDVfk1/vrWI
-EKcTpDXqGCJdSf00OnDfXOB3cLQJJ1hhbA8u6/OvPtjnxG7+8mdLf7JXbEqwQoQ0
-KfkKoIGxNCPH/Fb0s3YllskM0pG/gOqTs/ANfZBOR6GRwl9YETpxVqTEkKMXQJVu
-LXP83RWNa2fCA6Bcb88B9EkqmXimkuaHuHPUX4z+O6hWg9yzQiU=
-=FvhF
------END PGP SIGNATURE-----
-
---myXSi1SOqxroiqCO--
+	Krzysztof
