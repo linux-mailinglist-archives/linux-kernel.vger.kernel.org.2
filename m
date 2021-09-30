@@ -2,104 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6710841E030
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68C841E02D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352692AbhI3R3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:29:12 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:51993 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352673AbhI3R3G (ORCPT
+        id S1352686AbhI3R3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352670AbhI3R3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Sep 2021 13:29:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id i11-20020a056602134b00b005be82e3028bso6425201iov.18
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:27:24 -0700 (PDT)
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D1DC06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:27:23 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso8251384otu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z0so+JpsMJmiwyWtbeW90mFJLYHMDOO/l6yFYEdQKko=;
+        b=iW4lCl11Mi4Ci5B0nPgW66wXSJ3oFJsldUJwON53VvaTEvskQ0xywG9m6GzDqKnYJK
+         vVXIeGN2yD6fEVa2qXKf2aAJ8C4Z2OLMo4JL7/RslUIES1SMNA3RZtRRLSywxhG/UW/q
+         3iZED9J0w4UB54aRlDTkQRFq30s5gjOWZopxSTvJm2SIiHwQnFWdcZPGHqATy2vquJ3w
+         kH78TZJEGZJH9ylkyvpSFPmvf9RnchizGC5DaxbUXHbPgHGYpaG7vmA8Z/p04i4hZeuP
+         kbzwdi4u5y6ZScxYAJFChGhHd821q9H6MgWjyYUgC9Q8x84hXAyCE3O5NcReag4g3rYe
+         HJ/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=gv72izE33dTTEKceIEpVEdBmjtFaKZ1ur9yqMhFllDo=;
-        b=nb9pLAUTvnYYZ/QtG00BfhdUwC2NsCNBqBInLNeoQUZ5ot6U+SYPKZ2kb/jdxrFYnD
-         HLaDWBH57VbxnxO7SJj+IYG4JND/CZa4c8X+NMZnEQn9KlLfkxNBzi28mXQWqmfoNJyK
-         UVfwdn3tbQVT4SjIFC1bsggTMBpU1begfa4ZiYghOHMGhtvE5GhN696qiu6LWtLCTZaq
-         cg3MjOQ3p+gj+Fc5ax8CaVwMcFW/qaZrGj5JzQ+BDVe3G+W/hX//LyFQKk/ESyev7X7q
-         SAePOUlCZmKsGempuY/7SUQtoKZqQMBfu+26iFc10wRuClTy3E/oW9ny749xm3W7x7xO
-         JZnA==
-X-Gm-Message-State: AOAM533t+Q0z6WmjznzKc73AAXaAgbkJ9VmglhlA/Kvg2LvP3i7Y+e3L
-        9S0MtydJ/qxCJZyDIqduiONwkaO+vSG2kCleB9jMqrUpBazP
-X-Google-Smtp-Source: ABdhPJzTKeu9j9ZBqZUXdfdt6ko9tQU8sPwwXxTOCH4fM2w78ltzGfeqSxRairbfrC4tMUNhURM6tX2167mf6NKJp4vqqvuJJMgv
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z0so+JpsMJmiwyWtbeW90mFJLYHMDOO/l6yFYEdQKko=;
+        b=5CWsboH4iEj0Cr1OaJbJWbwJ3VTp7+ZDRjrKwZmWtBRGtClkoOGJRkTHZwyGRg9o5O
+         nw+4Zp/AvdszPNu4Zg2FcNj/EZHREz0nAhG1lUNxbctAcdifoYAkAJMceFZq0bvcwX4Z
+         bM1TjgGaKY4OneW+/vd3GhxZR331QTrQGLXA0WjOsF2SeVMkZ8FagNhuouHpbPslFahg
+         pfffR9yrlKZHLI7gfkOXO5FNLj+2nYDj7HD0KcIoqKPWbrnsw9ClYhVmFqnT4wvOY6Wo
+         gaiPWV0naospglYvdtKiLty7WY5AIsggC8pdzA7FGopD+5AXEghxElfUxeEm55ZaBZD2
+         ynUA==
+X-Gm-Message-State: AOAM533tHkBnur6htrZ7PGVJzvCptNKoW/U3B37LeGgelpVC0jLUz/00
+        7oe1vkpRaH4BieD99QQ0dPbfcQ==
+X-Google-Smtp-Source: ABdhPJwSU3M+Xbhrp3j+ZjQM+GRN/gcA3Mg0AQ+a0cVqJja6qTMcgUzhFJH7Voq5lUYa0AWdtNng9g==
+X-Received: by 2002:a05:6830:1da6:: with SMTP id z6mr6450386oti.234.1633022842874;
+        Thu, 30 Sep 2021 10:27:22 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p2sm700562ooe.34.2021.09.30.10.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 10:27:22 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:29:11 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     clew@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: add feature negotiation and ssr
+ ack feature support
+Message-ID: <YVXz54+pZfC+hGFI@ripper>
+References: <1633019111-9318-1-git-send-email-deesin@codeaurora.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9256:: with SMTP id e22mr4718594iol.152.1633022843884;
- Thu, 30 Sep 2021 10:27:23 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 10:27:23 -0700
-In-Reply-To: <0000000000008ce91e05bf9f62bc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008519a705cd39c2f2@google.com>
-Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
-From:   syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, dvyukov@google.com,
-        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633019111-9318-1-git-send-email-deesin@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu 30 Sep 09:25 PDT 2021, Deepak Kumar Singh wrote:
 
-HEAD commit:    02d5e016800d Merge tag 'sound-5.15-rc4' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=160132c0b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=154bd5be532a63aa778b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1400bf0f300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144eaf17300000
+> This patch adds feature negotiation and ssr ack feature between
+> local and remote host. Local host can negotiate on common features
+> supported with remote host.
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
+This states that you're negotiating features, but doesn't capture the
+actual ssr ack; why it's there and how it works.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 2648 at net/netfilter/core.c:468 __nf_unregister_net_hook+0x4b1/0x600 net/netfilter/core.c:468
-Modules linked in:
-CPU: 0 PID: 2648 Comm: kworker/u4:6 Not tainted 5.15.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:__nf_unregister_net_hook+0x4b1/0x600 net/netfilter/core.c:468
-Code: 00 00 00 e8 41 e9 16 fa 41 83 fc 05 74 5e e8 f6 e1 16 fa 44 89 e6 bf 05 00 00 00 e8 29 e9 16 fa e9 f5 fd ff ff e8 df e1 16 fa <0f> 0b 48 c7 c7 80 dd 17 8d e8 c1 a8 d7 01 e9 b1 fe ff ff 48 89 f7
-RSP: 0018:ffffc9000b10f658 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888070c20b98 RCX: 0000000000000000
-RDX: ffff888024aa9c80 RSI: ffffffff875f1991 RDI: 0000000000000003
-RBP: 0000000000000005 R08: 0000000000000000 R09: ffffc9000b10f597
-R10: ffffffff875f159f R11: 000000000000000e R12: 0000000000000001
-R13: ffff88801d2b43d8 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2f45ae09b0 CR3: 000000000b68e000 CR4: 0000000000350ef0
-Call Trace:
- nf_unregister_net_hook+0xd5/0x110 net/netfilter/core.c:502
- nft_netdev_unregister_hooks net/netfilter/nf_tables_api.c:230 [inline]
- nf_tables_unregister_hook.part.0+0x1ab/0x200 net/netfilter/nf_tables_api.c:273
- nf_tables_unregister_hook include/net/netfilter/nf_tables.h:1090 [inline]
- __nft_release_basechain+0x138/0x640 net/netfilter/nf_tables_api.c:9524
- nft_netdev_event net/netfilter/nft_chain_filter.c:351 [inline]
- nf_tables_netdev_event+0x521/0x8a0 net/netfilter/nft_chain_filter.c:382
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
- call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
- call_netdevice_notifiers net/core/dev.c:2022 [inline]
- unregister_netdevice_many+0x951/0x1790 net/core/dev.c:11043
- ieee80211_remove_interfaces+0x394/0x820 net/mac80211/iface.c:2140
- ieee80211_unregister_hw+0x47/0x1f0 net/mac80211/main.c:1391
- mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3457 [inline]
- hwsim_exit_net+0x50e/0xca0 drivers/net/wireless/mac80211_hwsim.c:4217
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
- cleanup_net+0x4ea/0xb00 net/core/net_namespace.c:591
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
 
+Author of the patch should be Chris, please commit with --author
+"Chris.."
+
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/soc/qcom/smp2p.c | 128 ++++++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 103 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+> index 38585a7..c1a60016 100644
+> --- a/drivers/soc/qcom/smp2p.c
+> +++ b/drivers/soc/qcom/smp2p.c
+> @@ -41,8 +41,11 @@
+>  #define SMP2P_MAX_ENTRY_NAME 16
+>  
+>  #define SMP2P_FEATURE_SSR_ACK 0x1
+> +#define SMP2P_FLAGS_RESTART_DONE_BIT 0
+> +#define SMP2P_FLAGS_RESTART_ACK_BIT 1
+>  
+>  #define SMP2P_MAGIC 0x504d5324
+> +#define SMP2P_FEATURES	SMP2P_FEATURE_SSR_ACK
+
+Rename this SMP2P_ALL_FEATURES?
+
+>  
+>  /**
+>   * struct smp2p_smem_item - in memory communication structure
+> @@ -136,6 +139,10 @@ struct qcom_smp2p {
+>  
+>  	unsigned valid_entries;
+>  
+> +	bool ssr_ack_enabled;
+> +	bool ssr_ack;
+> +	bool open;
+
+How about renaming this "negotiation_done"?
+
+> +
+>  	unsigned local_pid;
+>  	unsigned remote_pid;
+>  
+> @@ -163,22 +170,59 @@ static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
+>  	}
+>  }
+>  
+> -/**
+> - * qcom_smp2p_intr() - interrupt handler for incoming notifications
+> - * @irq:	unused
+> - * @data:	smp2p driver context
+> - *
+> - * Handle notifications from the remote side to handle newly allocated entries
+> - * or any changes to the state bits of existing entries.
+> - */
+> -static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+> +static bool qcom_smp2p_check_ssr(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *in = smp2p->in;
+> +	bool restart;
+> +
+> +	if (!smp2p->ssr_ack_enabled)
+> +		return false;
+> +
+> +	restart = in->flags & BIT(SMP2P_FLAGS_RESTART_DONE_BIT);
+
+	return restart != smp2p->ssr_ack;
+
+> +	if (restart == smp2p->ssr_ack)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void qcom_smp2p_do_ssr_ack(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *out = smp2p->out;
+> +	u32 ack;
+> +	u32 val;
+> +
+> +	ack = !smp2p->ssr_ack;
+> +	smp2p->ssr_ack = ack;
+> +	ack = ack << SMP2P_FLAGS_RESTART_ACK_BIT;
+> +
+> +	val = out->flags & ~BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
+> +	val |= ack;
+> +	out->flags = val;
+
+I think this would be cleaner as:
+
+	smp2p->ssr_ack = !smp2p->ssr_ack;
+
+	val = out->flags & ~BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
+	if (smp2p->ssr_ack)
+		val |= BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
+	out->flags = val;
+
+> +
+> +	qcom_smp2p_kick(smp2p);
+> +}
+> +
+> +static void qcom_smp2p_negotiate(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *out = smp2p->out;
+> +	struct smp2p_smem_item *in = smp2p->in;
+> +	u32 features;
+> +
+> +	if (in->version == out->version) {
+> +		features = in->features & out->features;
+> +		out->features = features;
+
+		out->features &= in->features;
+> +
+> +		if (features & SMP2P_FEATURE_SSR_ACK)
+
+		if (out->features & SMP2P_FEATURE_SSR_ACK)
+
+> +			smp2p->ssr_ack_enabled = true;
+> +
+> +		smp2p->open = true;
+> +	}
+> +}
+> +
+> +static void qcom_smp2p_notify_in(struct qcom_smp2p *smp2p)
+>  {
+>  	struct smp2p_smem_item *in;
+>  	struct smp2p_entry *entry;
+> -	struct qcom_smp2p *smp2p = data;
+> -	unsigned smem_id = smp2p->smem_items[SMP2P_INBOUND];
+> -	unsigned pid = smp2p->remote_pid;
+> -	size_t size;
+>  	int irq_pin;
+>  	u32 status;
+>  	char buf[SMP2P_MAX_ENTRY_NAME];
+> @@ -187,18 +231,6 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+>  
+>  	in = smp2p->in;
+>  
+> -	/* Acquire smem item, if not already found */
+> -	if (!in) {
+> -		in = qcom_smem_get(pid, smem_id, &size);
+> -		if (IS_ERR(in)) {
+> -			dev_err(smp2p->dev,
+> -				"Unable to acquire remote smp2p item\n");
+> -			return IRQ_HANDLED;
+> -		}
+> -
+> -		smp2p->in = in;
+> -	}
+> -
+>  	/* Match newly created entries */
+>  	for (i = smp2p->valid_entries; i < in->valid_entries; i++) {
+>  		list_for_each_entry(entry, &smp2p->inbound, node) {
+> @@ -237,7 +269,52 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+>  			}
+>  		}
+>  	}
+> +}
+> +
+> +/**
+> + * qcom_smp2p_intr() - interrupt handler for incoming notifications
+> + * @irq:	unused
+> + * @data:	smp2p driver context
+> + *
+> + * Handle notifications from the remote side to handle newly allocated entries
+> + * or any changes to the state bits of existing entries.
+> + */
+> +static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+> +{
+> +	struct smp2p_smem_item *in;
+> +	struct qcom_smp2p *smp2p = data;
+> +	unsigned int smem_id = smp2p->smem_items[SMP2P_INBOUND];
+> +	unsigned int pid = smp2p->remote_pid;
+> +	size_t size;
+> +
+> +	in = smp2p->in;
+> +
+> +	/* Acquire smem item, if not already found */
+> +	if (!in) {
+> +		in = qcom_smem_get(pid, smem_id, &size);
+> +		if (IS_ERR(in)) {
+> +			dev_err(smp2p->dev,
+> +				"Unable to acquire remote smp2p item\n");
+> +			goto out;
+> +		}
+> +
+> +		smp2p->in = in;
+> +	}
+> +
+> +	if (!smp2p->open)
+> +		qcom_smp2p_negotiate(smp2p);
+> +
+> +	if (smp2p->open) {
+> +		bool do_restart;
+
+How about "ack_restart" or "need_ack"?
+
+While valid, can you please move the declaration to the top of the
+function, to follow the style.
+
+Regards,
+Bjorn
+
+> +
+> +		do_restart = qcom_smp2p_check_ssr(smp2p);
+> +		qcom_smp2p_notify_in(smp2p);
+> +
+> +		if (do_restart)
+> +			qcom_smp2p_do_ssr_ack(smp2p);
+> +	}
+>  
+> +out:
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -393,6 +470,7 @@ static int qcom_smp2p_alloc_outbound_item(struct qcom_smp2p *smp2p)
+>  	out->remote_pid = smp2p->remote_pid;
+>  	out->total_entries = SMP2P_MAX_ENTRY;
+>  	out->valid_entries = 0;
+> +	out->features = SMP2P_FEATURES;
+>  
+>  	/*
+>  	 * Make sure the rest of the header is written before we validate the
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
