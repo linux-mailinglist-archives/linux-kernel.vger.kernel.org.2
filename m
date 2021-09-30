@@ -2,121 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092E541DAAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848F141DAAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351290AbhI3NJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:09:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351392AbhI3NJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:09:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E307D61A0A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633007268;
-        bh=06oFCZzSWkWUUGuICzxy3RhOwyzZLkgV3lmtKojWf04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iWSVreCVGfRCuRTs2aywl5AFnFk0PYu9kCa6vHbVLgfKIwIj2Y3KduMGcVcGyYWIB
-         DfSYzwbS9mRNhRaWQ6/0eOZr5Fec9qNufYYtxLxhDj64yeI9gSF3f3U0H/kazpMl65
-         27ToqD0ahKrwzfEspYL7oQjozAN/ByB1UzEcdspsw4AJJDDY9VHa+1KQh3d9lREiMh
-         nv/M6ul2Nh5L56kRLsEa4NA04doVPNQM6wwGmgNUJAYO2evGTfW+HJdixWzRpHX5p0
-         xX/wqrGk5KnGj1P0QZw9eDp1WAZrCIk5UvHDuVLDxWq3XNAq6fIJbesx7UWqMTbLp9
-         +/swGMKm7wjoQ==
-Received: by mail-ot1-f42.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso7155289ota.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:07:48 -0700 (PDT)
-X-Gm-Message-State: AOAM532ZXSQY11BtU087cDYi2j0e9y2teGXUtqPd7tRdhHiCd/mQzfwm
-        AfgBOjIy2Bd5kv7iZWH23A7qW0zmb0TYHyJPfJI=
-X-Google-Smtp-Source: ABdhPJxXAREFqwNV8sCerKfq16aoBz3pHomNrAPAcTAR77pD/z46aFPauW1+7DcQyexzsJx+gKKsjHhILeImYpM3+DQ=
-X-Received: by 2002:a9d:63c7:: with SMTP id e7mr5216017otl.30.1633007268209;
- Thu, 30 Sep 2021 06:07:48 -0700 (PDT)
+        id S1350165AbhI3NJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:09:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41664 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351311AbhI3NJa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:09:30 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6B654203BB;
+        Thu, 30 Sep 2021 13:07:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633007266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i1SW8NPZGg1GriXI8CfQXVexUlt3KJF4BcMKC51Kwak=;
+        b=LPlYtfdJpzZoWGEb9OpP3I+Ro64B6sDmaWTwNzu+WURecbGDciVR+wilIgJJT0FcNfWA0b
+        QkqhidCcc22ktXKB6zBhOlcDjxvHZJaLkGBvb0gyZp/XHrLod0MDWsz/Pjenue+MJHQSlC
+        6USfxJ0g+eShB767YAxj/m6iTzNMHzI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEA2613AF5;
+        Thu, 30 Sep 2021 13:07:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DesOM6G2VWG1VAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 30 Sep 2021 13:07:45 +0000
+Subject: Re: [PATCH v2 09/10] xen-blkfront: add error handling support for
+ add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        colyli@suse.de, kent.overstreet@gmail.com, kbusch@kernel.org,
+        sagi@grimberg.me, vishal.l.verma@intel.com,
+        dan.j.williams@intel.com, dave.jiang@intel.com,
+        ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
+        boris.ostrovsky@oracle.com, sstabellini@kernel.org,
+        minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org
+Cc:     xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210927220039.1064193-1-mcgrof@kernel.org>
+ <20210927220039.1064193-10-mcgrof@kernel.org>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <50f5fcbe-fb34-1cb8-1965-dd3bfd7e1f12@suse.com>
+Date:   Thu, 30 Sep 2021 15:07:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210930125813.197418-1-ardb@kernel.org> <20210930125813.197418-2-ardb@kernel.org>
- <6b003f58-48df-7ac4-4dbf-81b2c5bca5d9@csgroup.eu>
-In-Reply-To: <6b003f58-48df-7ac4-4dbf-81b2c5bca5d9@csgroup.eu>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 30 Sep 2021 15:07:37 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXECGp=5QRQS8HQNfE6RyA=eQfRiciDdjXp_ucpk8OxkDQ@mail.gmail.com>
-Message-ID: <CAMj1kXECGp=5QRQS8HQNfE6RyA=eQfRiciDdjXp_ucpk8OxkDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] arm64: add CPU field to struct thread_info
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210927220039.1064193-10-mcgrof@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sept 2021 at 15:06, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 30/09/2021 =C3=A0 14:58, Ard Biesheuvel a =C3=A9crit :
-> > The CPU field will be moved back into thread_info even when
-> > THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
-> > struct thread_info.
-> >
-> > Note that arm64 always has CONFIG_SMP=3Dy so there is no point in guard=
-ing
-> > the CPU field with an #ifdef.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > ---
-> >   arch/arm64/include/asm/thread_info.h | 1 +
-> >   arch/arm64/kernel/asm-offsets.c      | 1 +
-> >   2 files changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/=
-asm/thread_info.h
-> > index 6623c99f0984..c02bc8c183c3 100644
-> > --- a/arch/arm64/include/asm/thread_info.h
-> > +++ b/arch/arm64/include/asm/thread_info.h
-> > @@ -42,6 +42,7 @@ struct thread_info {
-> >       void                    *scs_base;
-> >       void                    *scs_sp;
-> >   #endif
-> > +     u32                     cpu;
-> >   };
-> >
-> >   #define thread_saved_pc(tsk)        \
-> > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-of=
-fsets.c
-> > index 551427ae8cc5..cee9f3e9f906 100644
-> > --- a/arch/arm64/kernel/asm-offsets.c
-> > +++ b/arch/arm64/kernel/asm-offsets.c
-> > @@ -29,6 +29,7 @@ int main(void)
-> >     DEFINE(TSK_ACTIVE_MM,             offsetof(struct task_struct, acti=
-ve_mm));
-> >     DEFINE(TSK_CPU,           offsetof(struct task_struct, cpu));
-> >     BLANK();
-> > +  DEFINE(TSK_TI_CPU,         offsetof(struct task_struct, thread_info.=
-cpu));
->
-> Why adding that now ? For powerpc you do the switch in 5.
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C
+Content-Type: multipart/mixed; boundary="ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk, colyli@suse.de,
+ kent.overstreet@gmail.com, kbusch@kernel.org, sagi@grimberg.me,
+ vishal.l.verma@intel.com, dan.j.williams@intel.com, dave.jiang@intel.com,
+ ira.weiny@intel.com, konrad.wilk@oracle.com, roger.pau@citrix.com,
+ boris.ostrovsky@oracle.com, sstabellini@kernel.org, minchan@kernel.org,
+ ngupta@vflare.org, senozhatsky@chromium.org
+Cc: xen-devel@lists.xenproject.org, nvdimm@lists.linux.dev,
+ linux-nvme@lists.infradead.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <50f5fcbe-fb34-1cb8-1965-dd3bfd7e1f12@suse.com>
+Subject: Re: [PATCH v2 09/10] xen-blkfront: add error handling support for
+ add_disk()
+References: <20210927220039.1064193-1-mcgrof@kernel.org>
+ <20210927220039.1064193-10-mcgrof@kernel.org>
+In-Reply-To: <20210927220039.1064193-10-mcgrof@kernel.org>
+
+--ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa
+Content-Type: multipart/mixed;
+ boundary="------------657B867CC90834C60D5C497D"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------657B867CC90834C60D5C497D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 28.09.21 00:00, Luis Chamberlain wrote:
+> We never checked for errors on device_add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new error
+> handling. The function xlvbd_alloc_gendisk() typically does the
+> unwinding on error on allocating the disk and creating the tag,
+> but since all that error handling was stuffed inside
+> xlvbd_alloc_gendisk() we must repeat the tag free'ing as well.
+>=20
+> We set the info->rq to NULL to ensure blkif_free() doesn't crash
+> on blk_mq_stop_hw_queues() on device_add_disk() error as the queue
+> will be long gone by then.
+>=20
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
 
-Why not?
+Juergen
 
 
-> >     DEFINE(TSK_TI_FLAGS,              offsetof(struct task_struct, thre=
-ad_info.flags));
-> >     DEFINE(TSK_TI_PREEMPT,    offsetof(struct task_struct, thread_info.=
-preempt_count));
-> >   #ifdef CONFIG_ARM64_SW_TTBR0_PAN
-> >
+--------------657B867CC90834C60D5C497D
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------657B867CC90834C60D5C497D--
+
+--ZhXoHV0IZVGJD3tZd4HDqm50wpYE06BGa--
+
+--O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFVtqAFAwAAAAAACgkQsN6d1ii/Ey9/
+Ggf9Fzrs35IrfdUjKBrgggetJDMgl6I0Cc/n6Jtov78ZI8feS38DFu/MBlJr7yJi7nDb927EgLkY
+Y12gOa0cyy+IViB/FsDGnzneZefxCV8ddwXHxUCK087pTn/rAExcemxNE6AQuP4c+Sg8SCgYbLuq
+VMaH5zOY5g4WAv7oC5wxvUNRJDun8GXGkc3nrpqjmmK1jlQ3eYGUIuHk4I7aD4Ms75pVOywkbpOg
+C9JTmp+fz8MknREAfAwX9343sfEr0+yceuLOx508VcF7asOTuQe78cbszDRUqWjUKvBniise0zdL
+XkmSEsvS4U6iJZ0ZvU8D1pH443giDVPA6cWx9XIbQg==
+=r4+e
+-----END PGP SIGNATURE-----
+
+--O5jaGfuKPjp2dmoP5IHIhPbF1qqBfXK7C--
