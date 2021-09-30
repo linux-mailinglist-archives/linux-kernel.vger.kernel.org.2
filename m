@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BF841D57F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82CD41D585
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349188AbhI3Id5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S1348545AbhI3IfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349240AbhI3Idt (ORCPT
+        with ESMTP id S1348460AbhI3IfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:33:49 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4ABC06177A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:32:05 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 8CAA71F449FE
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mediatek@lists.infradead.org, eizan@chromium.org,
-        kernel@collabora.com, drinkcat@chromium.org,
-        jitao.shi@mediatek.com, chunkuang.hu@kernel.org,
-        hsinyi@chromium.org, matthias.bgg@gmail.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 7/7] drm/mediatek: mtk_dsi: Reset the dsi0 hardware
-Date:   Thu, 30 Sep 2021 10:31:50 +0200
-Message-Id: <20210930103105.v4.7.Idbb4727ddf00ba2fe796b630906baff10d994d89@changeid>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210930083150.3317003-1-enric.balletbo@collabora.com>
-References: <20210930083150.3317003-1-enric.balletbo@collabora.com>
+        Thu, 30 Sep 2021 04:35:02 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B211C06161C;
+        Thu, 30 Sep 2021 01:33:20 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id s17so18855190edd.8;
+        Thu, 30 Sep 2021 01:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tr+Z4RYSqEf4hgq+xhRPM2Lcu56pvmxdACh96P6z2Rc=;
+        b=XCnuCIPZRjYRzpEkVbRu0dKawZaFY2TM5U5tYd4mHYtQcN3glLOxdEdnnagGPOzQ5K
+         tZYvbAj0/L2N59km0Lf/76n2Vb22Rk3kjP9AoeJ5XIO2Y1ou7Q7vTAwCwA9c7ptoy5/j
+         /Eyts7/Uh18Dq2WrSxgYpoDWuORkTpmNvpDn5BFCfqE3Asv9+xepZcKOfmC8Mmk2XRPq
+         H7/lUig+EdVS7i8h+bB+tC8ZMBVR4Fm4v5Od6nEejfkVtJwVNqz6rWHzflfM8BhCtjA4
+         PrcCL0VzTrv4e5NZpHuMZ6J0d83OPHe2y1qm5zD3G8h2vp/vxiDzeIDZFYaeYQLdRieq
+         JmgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tr+Z4RYSqEf4hgq+xhRPM2Lcu56pvmxdACh96P6z2Rc=;
+        b=GPQsFP6FyEOgb+Lbaosq1uT/cOL1X1Jww0NN9QOIZxi6EX7PUQFaeaeMU8V+xc75An
+         im5yvEhjannZnGaI/xvc/AxafSaWuKpYpQHVPu+Wvo1Up+fZo+C/MiXSI2zjWoFblb9w
+         zLQyzMidJihLxeMY6Qr8QkE2aacLrn4tT6da6+K28eome35LWFQ4SLnOUD3aqv4Udzwx
+         Zg1GTWj9Ofwh57TUrgoiC2qWJwh5hmR2BXXpkEAsFce7ugbGuTOyQzkuul5s22FhQBPj
+         nSxEFtPyJSRDCtVJr2YRAg86JgapBYAcQkUasyzpPFWzoDUm31vqUY60cHIJF5tvf/HI
+         LMjQ==
+X-Gm-Message-State: AOAM5306LMcHHiXzvCYdYeMK20nwuM4c9Lv9NQHzoCRfk/1CWXZnfOne
+        0HLCwydEYWZ7KrT8CW4eZ4FWc6/vqz7rT5PDiEI=
+X-Google-Smtp-Source: ABdhPJwuTlcdX9RmcWvbnH+oJ5uLIjOpQLf68VXmPfOheqpGTb0wtk8YyMmnR4dul8GHzmt6wTmI474EiyTY+UMj3nk=
+X-Received: by 2002:a17:906:1707:: with SMTP id c7mr4917931eje.377.1632990798353;
+ Thu, 30 Sep 2021 01:33:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930075807.333-1-luojiaxing@huawei.com>
+In-Reply-To: <20210930075807.333-1-luojiaxing@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 30 Sep 2021 11:32:41 +0300
+Message-ID: <CAHp75VdagWQ4L64GCQ=PZe8SAFA+0PpLQjnEEeMTWaYq3Tjb4w@mail.gmail.com>
+Subject: Re: [PATCH v1] MAINTAINERS: Change maintainer for gpio-hisi driver
+To:     Luo Jiaxing <luojiaxing@huawei.com>, liuqi115@huawei.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reset dsi0 HW to default when power on. This prevents to have different
-settingis between the bootloader and the kernel.
+On Thu, Sep 30, 2021 at 10:59 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
+>
+> Qi Liu take over the maintenance of HISILICON GPIO driver next, change
+> the maintainer information.
 
-As not all Mediatek boards have the reset consumer configured in their
-board description, also is not needed on all of them, the reset is optional,
-so the change is compatible with all boards.
+It's nice, but you forgot to Cc to them.
+W/o their ACK it's no go.
 
-Cc: Jitao Shi <jitao.shi@mediatek.com>
-Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
----
-
-(no changes since v3)
-
-Changes in v3:
-- Fix typo in the commit description
-
- drivers/gpu/drm/mediatek/mtk_dsi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 93b40c245f00..5d90d2eb0019 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -11,6 +11,7 @@
- #include <linux/of_platform.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/reset.h>
- 
- #include <video/mipi_display.h>
- #include <video/videomode.h>
-@@ -980,8 +981,10 @@ static int mtk_dsi_bind(struct device *dev, struct device *master, void *data)
- 	struct mtk_dsi *dsi = dev_get_drvdata(dev);
- 
- 	ret = mtk_dsi_encoder_init(drm, dsi);
-+	if (ret)
-+		return ret;
- 
--	return ret;
-+	return device_reset_optional(dev);
- }
- 
- static void mtk_dsi_unbind(struct device *dev, struct device *master,
 -- 
-2.30.2
-
+With Best Regards,
+Andy Shevchenko
