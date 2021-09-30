@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A38D41E271
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7344D41E274
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347353AbhI3Tvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347577AbhI3Tvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:51:46 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727D0C06176A;
-        Thu, 30 Sep 2021 12:49:58 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id q2so2035794wrc.4;
-        Thu, 30 Sep 2021 12:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pjxwTHZS4LImNPuiEDq8eN889k4cwPptRNYXuQDkBTY=;
-        b=POFjq4PNVnMB+ghqugBSYt7WTv6oal3IwnJoiMg28UetK2WK9cy7KXe3PRMXHMgY4o
-         peg7m8WFgBC4Oi9e0mhVaCcsJXYlczuDdST5OF/iztGGXm6LbTWWQ2jIx01NYPcEA7ZB
-         IitFAQbYziDqlI7cHuEaRon0CvHtRoBsyPJqgkkqpmU6UfCXKOBwWJ1NPgknmIs/a3zE
-         wJib0yfwL5hPoI4mRxVXePWNg5sL8J6GeTt2lrx9zqPEKIL5xr0RHhfxWVkdqb4dRnsH
-         8VlYv7aL/nsGNXysonvuGIh0NqXnDwWde3NJutkyeeCgiHY1SenIuKW/DjAngvFUijH0
-         F25g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pjxwTHZS4LImNPuiEDq8eN889k4cwPptRNYXuQDkBTY=;
-        b=ir6sbW+eb8GZmJNAjVCYLuPXh/jAhKAeRPIWnUS6ypSrYZEViaIPvq5ffohQX06iBv
-         2H2mxr/Ja9wuuqpIpLoORbICdzx0p/mWqeGG+VnTxp9iIE97N5B/3/uXczpAslNX67Yz
-         35LcIPYXvHP9ZFikWu0CZPewtYr3g1gNeZrsXb264V2PfRAqvZZVWY7rwJMAl0/02aCq
-         U9zW8ZegJbiKgMzDx4mXoZOptK8UAu52grV+hnDOawUlWiqqxa3j1umFOWzxkPke9t4z
-         dSdUW9O/s1WFDlpi73ly72c63oxJMtk9oWCSEjWH6OsNL3oAFpXNS8cdOz6/5vn80ACX
-         m5aQ==
-X-Gm-Message-State: AOAM531L1td9yNdrSfbsyqyhpfHDL18OUH7yQcRg6hSMdUC7b22N8OzH
-        mdkepysQcBw9XMnZiX8NVq0g7hBIREk=
-X-Google-Smtp-Source: ABdhPJwOi77wbzT/7bmPyGfyV4/xyTaep1joFMvcIhWVX6PYTpFC71gRXLwn00cLdDLKDh9yyUBRWw==
-X-Received: by 2002:a5d:4e8e:: with SMTP id e14mr8187959wru.280.1633031396526;
-        Thu, 30 Sep 2021 12:49:56 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.49.194])
-        by smtp.googlemail.com with ESMTPSA id j4sm3894816wrt.67.2021.09.30.12.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 12:49:55 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bcma: drop unneeded initialization value
-Date:   Thu, 30 Sep 2021 21:49:20 +0200
-Message-Id: <20210930194920.15847-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1347577AbhI3TwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:52:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34250 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345816AbhI3TwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:52:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="286294774"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="286294774"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:50:16 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="480065078"
+Received: from rnmathur-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.105.173])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:50:15 -0700
+Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
+ USB/Thunderbolt to core
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Yehezkel Bernat <yehezkelshb@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CA+CmpXtXn5wjxwow5va5u9qHcQDLkd4Sh2dcqB545SXaxV1GkQ@mail.gmail.com>
+ <CAPcyv4iNp41mZcpzGCPR9Xty83j+abk_SOxvsx1xaQ8wALRv0Q@mail.gmail.com>
+ <CA+CmpXvGCAny-WHGioJQHF9ZZ5pCaR-E_rw5oeE82xC30naVXg@mail.gmail.com>
+ <CAPcyv4ixqiMw1KTB8rbzzrtaErV4PT3R3XqshHhAXv6Ohjzs1Q@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <c701ca61-4e7d-1060-102f-8f92dd6e6802@linux.intel.com>
+Date:   Thu, 30 Sep 2021 12:50:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CAPcyv4ixqiMw1KTB8rbzzrtaErV4PT3R3XqshHhAXv6Ohjzs1Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not initialise statics to 0
-ERROR found by checkpatch.pl
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- drivers/bcma/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
-index c6d6ba0d00b1..8e7ca3e4c8c4 100644
---- a/drivers/bcma/main.c
-+++ b/drivers/bcma/main.c
-@@ -20,7 +20,7 @@ MODULE_DESCRIPTION("Broadcom's specific AMBA driver");
- MODULE_LICENSE("GPL");
- 
- /* contains the number the next bus should get. */
--static unsigned int bcma_bus_next_num = 0;
-+static unsigned int bcma_bus_next_num;
- 
- /* bcma_buses_mutex locks the bcma_bus_next_num */
- static DEFINE_MUTEX(bcma_buses_mutex);
+On 9/30/21 12:04 PM, Dan Williams wrote:
+>>> That's why it was highlighted in the changelog. Hopefully a
+>>> Thunderbolt developer can confirm if it is a non-issue.
+>>> Documentation/ABI/testing/sysfs-bus-thunderbolt does not seem to
+>>> answer this question about whether authorized_show and
+>>> authorized_store need to be symmetric.
+>> Apparently, Bolt does read it [1] and cares about it [2].
+> Ah, thank you!
+> 
+> Yeah, looks like the conversion to bool was indeed too hopeful.
+> 
+
+IIUC, the end result of value "2" in authorized sysfs is to just
+"authorize" or "de-authorize". In that case, can the user space
+driver adapt to this int->bool change? Just want to know the
+possibility.
+
 -- 
-2.25.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
