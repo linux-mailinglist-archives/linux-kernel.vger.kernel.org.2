@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D611741D5AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1002641D5B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348785AbhI3IvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348233AbhI3IvV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:51:21 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9324C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:49:38 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so7725593wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W9cgTk6h0wqbwfayatXQtxHz8mob4jZCCoq7sCyhp1s=;
-        b=eDUuL0ja//PuyQ4fz3l1hxyHwsDpNJ5f3l6+0Y2z6OfrW7O1uddJSWX4e7FGcFAMa1
-         9LYUj8wO2yxSk/JUNdXvJq7aO5QrczADrIhrCk9uRBbQ4qb4YCaYdI/OVVhhAhSc5G8s
-         f38pfWZD4da7JbtDolq6vbv3GKZ8vfXXVer4xPD4lYLWQ17RIz8v2SSckshCMfFywrWM
-         UiwZcc3qwiw681dRJuv/gMZBn7y8RLyJtR85zXh0uCuxlNfSC+P54nKcc5Y5Owgqqw+o
-         iI8GiFwU1oejKRoluZVITVWv/sZQoKnvBqERIZpoi/u+vWuFOaaQQIMW5dUWY+SfYO6U
-         lExA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W9cgTk6h0wqbwfayatXQtxHz8mob4jZCCoq7sCyhp1s=;
-        b=OonP8b6nxD5w9GXNoxsZungW/FKKTmKUT8l0Yn/Ll3m0V925gMU5qCEHrNI6TgzHNS
-         2V+GdmMbJkadVEc48u3o/Olh/hMUDT6b8Hy93ewxpcBF7IARseZMQI/0kkWIhU/MohjZ
-         Fjm4T+aY5/ibJ2B1ps4Dzil2rmyqBJTJfJJlejAGOhFC9HcOX3+3miqJy81V2CEttu4z
-         KABfcQQ4O1FkmZDxr415AbQ8N58Keii5TxjWO+DBB4n/lEpSZyVJGUkkVnmpvp3XVroF
-         9H2Ddnk7R4TFFQ7+TSiXEKgvqe5kvehxrn9d7RYLlw7b3AIYIYX3WAWRb7n3uUsaX07/
-         1mCQ==
-X-Gm-Message-State: AOAM532ZAjnCo/HPvjxKSB1VAA3No7fvKoc45KEsDrWeLUwUoRx/Jsyt
-        ZHvgTw7aru9DGZGxZQhki8/2yw==
-X-Google-Smtp-Source: ABdhPJx7UmI5t0e1WRrw+EyEdQREOHgR4PKY+8e7EznFDej38q+RoHIFqgsrXw9rDiLo5EFXAV7sIg==
-X-Received: by 2002:a7b:c948:: with SMTP id i8mr14365780wml.193.1632991777323;
-        Thu, 30 Sep 2021 01:49:37 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id n66sm2295448wmn.2.2021.09.30.01.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 01:49:36 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 09:49:16 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Vivek Kumar Gautam <vivek.gautam@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH RFC v1 01/11] uapi/virtio-iommu: Add page request grp-id
- and flags information
-Message-ID: <YVV6DD7zmy1MKva0@myrica>
-References: <20210423095147.27922-1-vivek.gautam@arm.com>
- <20210423095147.27922-2-vivek.gautam@arm.com>
- <YUoBHA6NZaz8wlkA@myrica>
- <3b490967-58b5-7c4a-2275-250e26d24aeb@arm.com>
+        id S1348841AbhI3Iva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:51:30 -0400
+Received: from muru.com ([72.249.23.125]:39120 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348818AbhI3Iv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:51:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id ED3A38050;
+        Thu, 30 Sep 2021 08:50:15 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 11:49:45 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
+        Ladislav Michl <ladis@linux-mips.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Select TIMER_OF
+Message-ID: <YVV6KZ7TYhvABjIz@atomide.com>
+References: <20210828175747.3777891-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3b490967-58b5-7c4a-2275-250e26d24aeb@arm.com>
+In-Reply-To: <20210828175747.3777891-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:26:35AM +0530, Vivek Kumar Gautam wrote:
-> > I'm not sure why we made it 32-bit in Linux UAPI, it's a little wasteful.
-> > PCIe PRGI is 9-bits and SMMU STAG is 16-bits. Since the scope of the grpid
-> > is the endpoint, 16-bit means 64k in-flight faults per endpoint, which
-> > seems more than enough.
+* Kees Cook <keescook@chromium.org> [210828 17:58]:
+> When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
+> due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
+> CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
 > 
-> Right, I will update this to 16-bits field. It won't be okay to update the
-> iommu uAPI now, right?
+> arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Keerthy <j-keerthy@ti.com>
+> Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+> Cc: Ladislav Michl <ladis@linux-mips.org>
+> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+> Cc: linux-omap@vger.kernel.org
+> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Since there is no UAPI transport for the fault request/response at the
-moment, it should be possible to update it.
+Sorry for the delay, I just noticed I never replied earlier:
 
-Thanks,
-Jean
+Acked-by: Tony Lindgren <tony@atomide.com>
+
+> ---
+>  drivers/clocksource/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 0f5e3983951a..08f8cb944a2a 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -24,6 +24,7 @@ config I8253_LOCK
+>  
+>  config OMAP_DM_TIMER
+>  	bool
+> +	select TIMER_OF
+>  
+>  config CLKBLD_I8253
+>  	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
+> -- 
+> 2.30.2
+> 
