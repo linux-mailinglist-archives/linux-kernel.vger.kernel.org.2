@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A23D41DEDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0254041DEDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350233AbhI3QYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S1350336AbhI3QYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349691AbhI3QYG (ORCPT
+        with ESMTP id S1346682AbhI3QYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:24:06 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A37C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:24 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id j15so7520295ila.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mkiQmIwLuFMRcDD9Yeq1X9DcESJBsP3wYBYEi8uC+4k=;
-        b=Ca6rOa24h1INBKG+hc0h+ZaX4+6n7C/dHIFg3nINR2DPSIJyTbY58t5FBd0hgg38S8
-         i2uLx6NUeVvyf2txdx92dJ3p4CLxfLMD051AhXEoQnx+fbW+mTMSK+Hdy6Pb9CRdmO6c
-         70IUn49vHNygI3jyehX64U/Je/IqwZ5q1CB0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mkiQmIwLuFMRcDD9Yeq1X9DcESJBsP3wYBYEi8uC+4k=;
-        b=3f3SX6MY8HVnEyD64DmxHy1Vf2m9QU0fHj7cF/bj+Txbt70t2j7UrOD6rpocjYkbFo
-         0GX+muohEDNSYLzoGNj/6ieUdEM+SyFtmXBi8hbngpzSL6WDY6d85P6b01xF/7QAtlEx
-         ZjmGS+Bxnz7zpJtegWhnZTCa8ZgDuBfIx0k23iVeWe1WpFmXonsXQHJ+nEv5ypOLKWx5
-         bOLikSk3y75wXQ+qaLnSqgL+ytg8nXEMWOaQDLASeBsACVjaShAi+1dpQIC/T1gd9sUz
-         RDwx3CmVNTQRa6KhRUZvNbEJV2Kachr10MGAR5zk0MdMUBo8U9mt4cMFa2HX3306r5x5
-         cEEw==
-X-Gm-Message-State: AOAM533sDHOV/tGrT0kQiPQLqG/Pm/4+snFhqSg/UpuKJH1i7v//6eLA
-        ki6B6nk5pMMcx+ngn1P5R5e3RykHZTVYdQ==
-X-Google-Smtp-Source: ABdhPJw7giQqhX9/FckTnP7xVTuy9j+63nKUwHCt6g6QdGIIZYSPiogRSGBLafRYYvEMKGYYVEgh/A==
-X-Received: by 2002:a05:6e02:1a22:: with SMTP id g2mr4749374ile.135.1633018943397;
-        Thu, 30 Sep 2021 09:22:23 -0700 (PDT)
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
-        by smtp.gmail.com with ESMTPSA id l3sm1989453ilq.48.2021.09.30.09.22.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 09:22:21 -0700 (PDT)
-Received: by mail-io1-f50.google.com with SMTP id e144so8318218iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:21 -0700 (PDT)
-X-Received: by 2002:a6b:f915:: with SMTP id j21mr4613178iog.98.1633018940941;
- Thu, 30 Sep 2021 09:22:20 -0700 (PDT)
+        Thu, 30 Sep 2021 12:24:32 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385CDC06176A;
+        Thu, 30 Sep 2021 09:22:50 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4HKz6w59dBzQjhm;
+        Thu, 30 Sep 2021 18:22:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <YS/rn8b0O3FPBbtm@google.com>
+ <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
+ <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+ <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
+ <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+ <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
+ <20210923202231.t2zjoejpxrbbe5hc@pali>
+ <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
+ <20210930154202.cvw3it3edv7pmqtb@pali>
+ <6ba104fa-a659-c192-4dc0-291ca3413f99@v0yd.nl>
+ <20210930161905.5a552go73c2o4e7l@pali>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+Message-ID: <4e4f3b6a-25c6-289f-2de0-660aeee2b695@v0yd.nl>
+Date:   Thu, 30 Sep 2021 18:22:42 +0200
 MIME-Version: 1.0
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
-In-Reply-To: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 30 Sep 2021 09:22:09 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XP+mJCEG+=meCXDb06bmfPwze2SP9FaMuKZkSh25JCSg@mail.gmail.com>
-Message-ID: <CAD=FV=XP+mJCEG+=meCXDb06bmfPwze2SP9FaMuKZkSh25JCSg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] arm64: dts: sc7180: Factor out ti-sn65dsi86 support
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210930161905.5a552go73c2o4e7l@pali>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5DCBD22F
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/30/21 6:19 PM, Pali Rohár wrote:
+> On Thursday 30 September 2021 18:14:04 Jonas Dreßler wrote:
+>> On 9/30/21 5:42 PM, Pali Rohár wrote:
+>>> On Thursday 30 September 2021 17:38:43 Jonas Dreßler wrote:
+>>>> On 9/23/21 10:22 PM, Pali Rohár wrote:
+>>>>> On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
+>>>>>> On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>>>>>> On 9/22/21 2:50 PM, Jonas Dreßler wrote:
+>>>>>>
+>>>>>> ...
+>>>>>>
+>>>>>>> - Just calling mwifiex_write_reg() once and then blocking until the card
+>>>>>>> wakes up using my delay-loop doesn't fix the issue, it's actually
+>>>>>>> writing multiple times that fixes the issue
+>>>>>>>
+>>>>>>> These observations sound a lot like writes (and even reads) are actually
+>>>>>>> being dropped, don't they?
+>>>>>>
+>>>>>> It sounds like you're writing into a not ready (fully powered on) device.
+>>>>>
+>>>>> This reminds me a discussion with Bjorn about CRS response returned
+>>>>> after firmware crash / reset when device is not ready yet:
+>>>>> https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
+>>>>>
+>>>>> Could not be this similar issue? You could check it via reading
+>>>>> PCI_VENDOR_ID register from config space. And if it is not valid value
+>>>>> then card is not really ready yet.
+>>>>>
+>>>>>> To check this, try to put a busy loop for reading and check the value
+>>>>>> till it gets 0.
+>>>>>>
+>>>>>> Something like
+>>>>>>
+>>>>>>      unsigned int count = 1000;
+>>>>>>
+>>>>>>      do {
+>>>>>>        if (mwifiex_read_reg(...) == 0)
+>>>>>>          break;
+>>>>>>      } while (--count);
+>>>>>>
+>>>>>>
+>>>>>> -- 
+>>>>>> With Best Regards,
+>>>>>> Andy Shevchenko
+>>>>
+>>>> I've tried both reading PCI_VENDOR_ID and the firmware status using a busy
+>>>> loop now, but sadly none of them worked. It looks like the card always
+>>>> replies with the correct values even though it sometimes won't wake up after
+>>>> that.
+>>>>
+>>>> I do have one new observation though, although I've no clue what could be
+>>>> happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we can
+>>>> "predict" the wakeup failure because exactly one (usually around the 20th)
+>>>> of those 1000 reads will fail.
+>>>
+>>> What does "fail" means here?
+>>
+>> ioread32() returns all ones, that's interpreted as failure by
+>> mwifiex_read_reg().
+> 
+> Ok. And can you check if PCI Bridge above this card has enabled CRSSVE
+> bit (CRSVisible in RootCtl+RootCap in lspci output)? To determinate if
+> Bridge could convert CRS response to all-ones as failed transaction.
+> 
 
-On Wed, Sep 29, 2021 at 5:35 PM Philip Chen <philipchen@chromium.org> wrote:
->
-> Factor out ti-sn65dsi86 edp bridge as a separate dts fragment.
-> This helps us introduce the second source edp bridge later.
->
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
->
-> Changes in v2:
-> - Move edp_brij_i2c completely out of sc7180-trogdor.dtsi to the
->   bridge dts fragment, so that we can cleanly assign different
->   edp bridge in every board rev.
->
->  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  1 +
->  .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  1 +
->  .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  1 +
->  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  1 +
->  .../dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi | 90 +++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 86 ------------------
->  6 files changed, 94 insertions(+), 86 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-ti-sn65dsi86.dtsi
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> index a758e4d22612..1d13fba3bd2f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> @@ -11,6 +11,7 @@
->  ap_h1_spi: &spi0 {};
->
->  #include "sc7180-trogdor.dtsi"
-> +#include "sc7180-trogdor-ti-sn65dsi86.dtsi"
+Seems like that bit is disabled:
+ > RootCap: CRSVisible-
+ > RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna+ CRSVisible-
 
-It looks like you're missing homestar, aren't you? I'd expect that
-after applying your change that:
 
-git grep -A1 include.*sc7180-trogdor.dtsi
-
-...should show your new include right after all includes of
-sc7180-trogdor.dtsi, but I don't see it for homestar.
-
-Other than that this looks good to me. Feel free to add my Reviewed-by.
+>>>
+>>>> Maybe the firmware actually tries to wake up,
+>>>> encounters an error somewhere in its wakeup routines and then goes down a
+>>>> special failure code path. That code path keeps the cards CPU so busy that
+>>>> at some point a PCI_VENDOR_ID request times out?
+>>>>
+>>>> Or well, maybe the card actually wakes up fine, but we don't receive the
+>>>> interrupt on our end, so many possibilities...
