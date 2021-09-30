@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786DC41DAC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46C741DACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350508AbhI3NRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:17:34 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:50313 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350073AbhI3NRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:17:32 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HKtz92ckbz9sTd;
-        Thu, 30 Sep 2021 15:15:49 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id r-nx1qNhbRJp; Thu, 30 Sep 2021 15:15:49 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKtz83yGVz9sTF;
-        Thu, 30 Sep 2021 15:15:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 701A98B773;
-        Thu, 30 Sep 2021 15:15:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id n4fciGlgmtXr; Thu, 30 Sep 2021 15:15:48 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 65DED8B763;
-        Thu, 30 Sep 2021 15:15:47 +0200 (CEST)
-Subject: Re: [PATCH v2 1/7] arm64: add CPU field to struct thread_info
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20210930125813.197418-1-ardb@kernel.org>
- <20210930125813.197418-2-ardb@kernel.org>
- <6b003f58-48df-7ac4-4dbf-81b2c5bca5d9@csgroup.eu>
- <CAMj1kXECGp=5QRQS8HQNfE6RyA=eQfRiciDdjXp_ucpk8OxkDQ@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f634b2fe-3d89-709b-a56e-7da08af3988e@csgroup.eu>
-Date:   Thu, 30 Sep 2021 15:15:47 +0200
+        id S1350841AbhI3NSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:18:46 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:39348
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350632AbhI3NSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:18:44 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4C71940264
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633007821;
+        bh=RCNF115QrSenyhS4+VUmTb+/09HgZQVEEH62W5zhJ9o=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NPBdil4tQLTdbn/InaRcY28R5pI15hbMigaqlVuDNvUHKLUI4t/k6TQ84trvRfQS2
+         f23JmlvnVzvCcIduDKPldzYvsS/b21/um2jRTsF3CZymQ5CPiK9ZVGDIoZBEAk+xhW
+         Fjbh+U19j8uXrSGlu8e0ugo337FaRr9czHMconAkylmLZLB4jVHcvvjJ08G7eJvXnx
+         Kn1GifhLbxK/7I3+slh9wtQtBoj/CJjphNSpDgFXLE0LzHy1hmyIsVlkQypv74mpqv
+         pHc2VdIR7O1X1zOuVXj7R+M2g4bHnW11VAXJlGR2k1Q1sNoMo0uKWUroM3Hom7gZzf
+         5/oEBpi2r1eSA==
+Received: by mail-lf1-f70.google.com with SMTP id h27-20020a0565123c9b00b003fca9e11144so5548942lfv.19
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:17:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RCNF115QrSenyhS4+VUmTb+/09HgZQVEEH62W5zhJ9o=;
+        b=zIcXgRCbLl/evkM/8U5hDS3jmlLuaC+XvRNhvGiO8SDlVe4fX3FX22VJziaQq3IeEt
+         /T6YiL3ev8lbKkB0OJ2YcRjnbWmfPwbntddsvIMROWyhc4etoJeJ6beaLW9iXpYgv4rb
+         6lyTJdl26Wzg/LSrNRrKNrBf6GW1jmrehKF0YB4NZ0MbxN+Mu67rvk72fltGflh0peR0
+         PCq+IjxR+wlv6VJcsYT+y+C4OzG5Cqia5cYSjdogDfjFl03YFibsqTruXrVuhBwJnxCT
+         QN45FkNzGOKku7mmKffnzvOMRkS4a8qNO3jVNXEYGs+ojMOBxy6qyue4q3ueG/rdwhkX
+         iccw==
+X-Gm-Message-State: AOAM5311XG9tp1ROgWVSlErBNFDglH9sVyEaREPHJkijcrb2JJSXoE6c
+        VjNv3E0AAvbPP+08SmedtFwvH9ssgPovK9Y01dCWwhKvAM+ygXgkmx0bk6KkOpQ2GMO+7BRvaP1
+        /IyURjkb5qL3hlLhRsUTMGKdl+fKKHS6Znt4oWGyKZA==
+X-Received: by 2002:a2e:a596:: with SMTP id m22mr6316943ljp.262.1633007820686;
+        Thu, 30 Sep 2021 06:17:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy09YmqEMO9K/DkFa/bZTei75H3U3dhuXPBwEhVk4C2y92R9e/R2akQYKqXZiF/L9tEarb/qQ==
+X-Received: by 2002:a2e:a596:: with SMTP id m22mr6316925ljp.262.1633007820526;
+        Thu, 30 Sep 2021 06:17:00 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id f26sm341405ljj.82.2021.09.30.06.16.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 06:17:00 -0700 (PDT)
+Subject: Re: [PATCH 10/12] mfd: dt-bindings: samsung,s5m8767: document buck
+ and LDO supplies
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
+ <20210928084949.27939-11-krzysztof.kozlowski@canonical.com>
+ <YVWx+08egbGPiYYt@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <e5ab2ba9-e4ae-30db-8e54-8af42d7f3bf1@canonical.com>
+Date:   Thu, 30 Sep 2021 15:16:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXECGp=5QRQS8HQNfE6RyA=eQfRiciDdjXp_ucpk8OxkDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVWx+08egbGPiYYt@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 30/09/2021 à 15:07, Ard Biesheuvel a écrit :
-> On Thu, 30 Sept 2021 at 15:06, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 30/09/2021 à 14:58, Ard Biesheuvel a écrit :
->>> The CPU field will be moved back into thread_info even when
->>> THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
->>> struct thread_info.
->>>
->>> Note that arm64 always has CONFIG_SMP=y so there is no point in guarding
->>> the CPU field with an #ifdef.
->>>
->>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->>> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->>> Acked-by: Mark Rutland <mark.rutland@arm.com>
->>> ---
->>>    arch/arm64/include/asm/thread_info.h | 1 +
->>>    arch/arm64/kernel/asm-offsets.c      | 1 +
->>>    2 files changed, 2 insertions(+)
->>>
->>> diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
->>> index 6623c99f0984..c02bc8c183c3 100644
->>> --- a/arch/arm64/include/asm/thread_info.h
->>> +++ b/arch/arm64/include/asm/thread_info.h
->>> @@ -42,6 +42,7 @@ struct thread_info {
->>>        void                    *scs_base;
->>>        void                    *scs_sp;
->>>    #endif
->>> +     u32                     cpu;
->>>    };
->>>
->>>    #define thread_saved_pc(tsk)        \
->>> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
->>> index 551427ae8cc5..cee9f3e9f906 100644
->>> --- a/arch/arm64/kernel/asm-offsets.c
->>> +++ b/arch/arm64/kernel/asm-offsets.c
->>> @@ -29,6 +29,7 @@ int main(void)
->>>      DEFINE(TSK_ACTIVE_MM,             offsetof(struct task_struct, active_mm));
->>>      DEFINE(TSK_CPU,           offsetof(struct task_struct, cpu));
->>>      BLANK();
->>> +  DEFINE(TSK_TI_CPU,         offsetof(struct task_struct, thread_info.cpu));
->>
->> Why adding that now ? For powerpc you do the switch in 5.
->>
+On 30/09/2021 14:47, Lee Jones wrote:
+> On Tue, 28 Sep 2021, Krzysztof Kozlowski wrote:
 > 
+>> Document the properties with regulator supplies for bucks and LDOs.  At
+>> least one board uses it (Exynos5250 Arndale).
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>  .../bindings/mfd/samsung,s5m8767.yaml         | 38 +++++++++++++++++++
+>>  1 file changed, 38 insertions(+)
 > 
-> Why not?
+> These all need Rob's Ack.
 
-Maybe to remain consistent between archs ?
+Correct.
 
 > 
+> But can you start with reworking the subject line please.
 > 
->>>      DEFINE(TSK_TI_FLAGS,              offsetof(struct task_struct, thread_info.flags));
->>>      DEFINE(TSK_TI_PREEMPT,    offsetof(struct task_struct, thread_info.preempt_count));
->>>    #ifdef CONFIG_ARM64_SW_TTBR0_PAN
->>>
+> It should be:
+> 
+>   "dt-bindings: mfd: <component>: <Subject starting with an uppercase char>"
+
+Sure, just have in mind that Mark wants them the other way around for
+regulator. :)
+
+Best regards,
+Krzysztof
