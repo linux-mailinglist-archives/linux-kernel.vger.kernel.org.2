@@ -2,72 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E895D41D544
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259E141D548
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349016AbhI3IMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:12:30 -0400
-Received: from muru.com ([72.249.23.125]:39070 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348840AbhI3IM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:12:28 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 091DF8050;
-        Thu, 30 Sep 2021 08:11:15 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 11:10:44 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Robert Nelson <robertcnelson@gmail.com>
-Cc:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-Message-ID: <YVVxBFsFUx0ZMoE1@atomide.com>
-References: <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
- <YUmOGFUFONR/ynfW@atomide.com>
- <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
- <7C582E1F-13F6-4432-AE99-FF9B7EE9B06D@goldelico.com>
- <9c80c7af-daf5-c521-fe59-1f0c222a23e1@fi.rohmeurope.com>
- <CAOCHtYhC7f43wz+G-mxwutzoJDm8rhZWxf4Jd9+VHAbxPfPjTw@mail.gmail.com>
+        id S1349029AbhI3INt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:13:49 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58544 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348924AbhI3INq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:13:46 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 884551F44946
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     Benson Leung <bleung@chromium.org>,
+        Colin King <colin.king@canonical.com>,
+        Guenter Roeck <groeck@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] platform/chrome: cros_ec: Fix spelling mistake "responsed" -> "response"
+Date:   Thu, 30 Sep 2021 10:11:56 +0200
+Message-Id: <163298950474.3274399.2608436689330613144.b4-ty@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210925171743.173219-1-colin.king@canonical.com>
+References: <20210925171743.173219-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOCHtYhC7f43wz+G-mxwutzoJDm8rhZWxf4Jd9+VHAbxPfPjTw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Robert Nelson <robertcnelson@gmail.com> [210924 18:41]:
-> On Wed, Sep 22, 2021 at 4:28 AM Vaittinen, Matti
-> <Matti.Vaittinen@fi.rohmeurope.com> wrote:
-> > Maybe a stupid question - how to find out the exact revision?
-> 
-> Run:
-> 
-> hexdump -e '8/1 "%c"' /sys/bus/i2c/devices/0-0050/eeprom -n 28 | cut -b 5-28
-> 
-> Then lookup:
-> 
-> https://github.com/beagleboard/image-builder/blob/master/readme.md
+On Sat, 25 Sep 2021 18:17:43 +0100, Colin King wrote:
+> There are spelling mistakes in dev_warn messages. Fix them.
 
-So do I need some kernel module for this with the mainline kernel
-loaded? I don't have eeprom listed under 0-0050.
+Applied, thanks!
 
-I also see eeprom only for am335x-pocketbeagle.dts and
-am57xx-beagle-x15-common.dtsi so maybe it should be justd added?
+[1/1] platform/chrome: cros_ec: Fix spelling mistake "responsed" -> "response"
+      commit: eb057514ccca92d44f37be057152c7d2791cdae0
 
-I guess this could be checked with i2cget command too meanwhile.
-
-Regards,
-
-Tony
+Best regards,
+-- 
+Enric Balletbo i Serra <enric.balletbo@collabora.com>
