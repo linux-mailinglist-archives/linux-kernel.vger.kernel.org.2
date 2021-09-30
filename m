@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F6741DDE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AEE41DDED
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346085AbhI3Pr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
+        id S1346269AbhI3Psm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345865AbhI3Prz (ORCPT
+        with ESMTP id S1345801AbhI3Psl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:47:55 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED72C06176E
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id r16so6058827qtw.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:46:12 -0700 (PDT)
+        Thu, 30 Sep 2021 11:48:41 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B06BC06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:46:58 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id z24so27220500lfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:46:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
-        b=iR/rfVgiWHq5rw4NLK5OT9v5lYhcLGBGwNqvqBTHa8uM0K3LSI6Qds40sZdhqy343D
-         nKF1AalapkTkhy/ypRBVypdug7o8/xaqtmHaWv9UPFEGjb1UhHpm/4rTjAiBbtASwfKx
-         3JH/kVbQPqPEjk5/0bNv7k1/Y2BIonRHJ0vWOSQM3zvPY70Uxrv2rSgTrqGgUv6GDu7E
-         chrKKhinXiSRYk/xsds2GtV3wz6HxpGI4jq2FDoKpBIlG6t+6bi34LoQK0m5uh10NjJQ
-         5mDPrpUbvxQNLMegc4nJJFYKUu1kf5g3ZYgnxHtFO6ahoMuizo6fqj2+osS40oUSZmZK
-         mhMw==
+         :cc;
+        bh=d2+hq+nxbbXAkaT4qaeWpisMiqGB49qBmA8xSYn2QSI=;
+        b=ts/avt3kzHzoGq7Ak5AV5Wxe9QuECdMvB1s1HFzD4+ry82idewTaLUO+lCQuPa4DyT
+         +gW4lWvWT46H7IaGSWgIxkI+ddVuNPHD7B4ZwzvfDM6vf/mfP9X4OI6AQuOiSypfGtZB
+         h3JFyOa4UBoWcHjaFYDexjo/9CzkqZyngQqJG5pdHE1mbP39PuOkPs0T7cpyNxEjM5Kz
+         UNFPvziWlKLKCBEVCTO6UtQGZazE4HPSsfNBQMMIEQoAQH8hu+mCqFP3HcABwh4l4y5v
+         WNZ9l1NNn4dCJYMrhtFz6JNdL92AvTTZeVcJ9g+V4XP+NEnb+VXo5HzLlIdET+Ht+L3K
+         Cszw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8d6xo5L9QevHc/0Sduv9NQkae1fLgboqRLN/cOlHL94=;
-        b=shU5y1KxCXIbNXGUMfPvCTpCzXsfnmn2jlsDC6M+M2JmZLTgoFRFbDD7hkG5cUkJJn
-         oLc60hi7QTVy4JrqnQ3G73QxZq7zdBW3gupTraBje4vRLjmQGamtF7jeX6FdsAfpMGKX
-         LREb7zS7uGxvXQI8MiIjtEQIt0Wsnk/NZwsquQf+Oq5cKzsz4aSlAzj8WI86D+KbxAfW
-         F6tcfS8kNSTY5ZSjhRXFI/Aq4LxEuRVvqJg7GKaz/uvP+OeWpsCgPnyNlvPa4twEplaZ
-         xK3iMHXlEkod5ILsZKaHKxYlUTk2K1qbf6/vj1wooDrBUz7nNGpIJ07FWlCJ66x9gTky
-         40nQ==
-X-Gm-Message-State: AOAM5338V3q0/bc7oa05RRd2y7u/ngfNwpmbaJQW73GB1UDpBAwj0buf
-        O5weH43ZGKU6L8eaaNx0cGbClK21+WyhTGR734nBSe615SQ=
-X-Google-Smtp-Source: ABdhPJwZ3uxL8AigS1SCTssbBbBxtSyTYvRLlSFXF7X1iRF0BIcI7ZsH6TQi0ZjmX4wm1iehH5EIvAVb3aaD1X5z2aM=
-X-Received: by 2002:ac8:5ed1:: with SMTP id s17mr7389237qtx.196.1633016771378;
- Thu, 30 Sep 2021 08:46:11 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=d2+hq+nxbbXAkaT4qaeWpisMiqGB49qBmA8xSYn2QSI=;
+        b=Q6na9r48f5F2LSCrV/lROoTx4PF1JZnJhTAsvYTY3hKjfOT41AXvB8B9yTb20+b1jU
+         LLa0iAvEcSGDGEkJiV0w5ivM4/+8WAyRkSEtVQaqDKJcZwxXrC2wWst11Cx71SOLZKM4
+         UK4ifhgex1fl8FrxNt+5xEV1kViFNIqXbpUfvyWjRmfLBrKX0v2AMLnrjc6MNSiPPWGf
+         ugQSjGIzc7EMil3FzE9F50fQyP95b1OJjqyPVG3sn8FZlky61j3J/aLfggnwfLtnmcsx
+         pwrFxRTqhw8qUTH6Xj2xSN5GzevqXkR3gCtSH/dGyvLpvg5vVui43Ivrn/h4vEvuG3SU
+         p2bA==
+X-Gm-Message-State: AOAM5303kP1ZBa5PBjj2Ura7HF5gr0va4wjXEFS8b/QAeEHKjCkuquuf
+        Y4oq/YPPHdkG+TGUW2jmIorlSKLNbelwLAI8Ysxvdg==
+X-Google-Smtp-Source: ABdhPJzaDE9QWa7bdhAIHJ94Li3ZZgNfj3d7w6jgx+N0Ze2Whd0t5L9GUlAJne4LsPtEXT2xZD6rwTNo5z3vCOmzq18=
+X-Received: by 2002:a05:651c:4d2:: with SMTP id e18mr6742952lji.432.1633016816515;
+ Thu, 30 Sep 2021 08:46:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930071143.63410-1-wangkefeng.wang@huawei.com> <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210930071143.63410-8-wangkefeng.wang@huawei.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 30 Sep 2021 17:45:35 +0200
-Message-ID: <CAG_fn=XD+nVgVRgj7KFsPWSuia+gZzpA3KAdqucjKodOvxSF6w@mail.gmail.com>
-Subject: Re: [PATCH v4 07/11] mm: kasan: Use is_kernel() helper
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, bpf@vger.kernel.org,
-        linux-alpha@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
+References: <20210929163847.2807812-1-maz@kernel.org> <20210929163847.2807812-11-maz@kernel.org>
+ <CACRpkdaXbrmvoQQNRdyv6rJ+dHYAKMN+J_sc-3_c1d6D2dsfbQ@mail.gmail.com> <87fstmtrv2.wl-maz@kernel.org>
+In-Reply-To: <87fstmtrv2.wl-maz@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 30 Sep 2021 17:46:45 +0200
+Message-ID: <CACRpkdb1JCoTLMH5hExcruJA=XT+KRX=LMvF=rRqzhJUup3-LA@mail.gmail.com>
+Subject: Re: [PATCH v5 10/14] arm64: apple: Add pinctrl nodes
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:09 AM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
-ote:
->
-> Directly use is_kernel() helper in kernel_or_module_addr().
->
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Thu, Sep 30, 2021 at 10:00 AM Marc Zyngier <maz@kernel.org> wrote:
 
-> ---
->  mm/kasan/report.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > In other discussions it turns out that the driver is abusing these gpio-ranges
+> > to find out how many pins are in each pinctrl instance. This is not the
+> > idea with gpio-ranges, these can be multiple and map different sets,
+> > so we need something like
+> >
+> > apple,npins = <212>;
+> > (+ bindings)
+> >
+> > or so...
 >
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 3239fd8f8747..1c955e1c98d5 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -226,7 +226,7 @@ static void describe_object(struct kmem_cache *cache,=
- void *object,
+> Is it the driver that needs updating? Or the binding?
+
+Both, I guess.
+
+> I don't really
+> care about the former, but the latter is more disruptive as it has
+> impacts over both u-boot and at least OpenBSD.
 >
->  static inline bool kernel_or_module_addr(const void *addr)
->  {
-> -       if (addr >=3D (void *)_stext && addr < (void *)_end)
-> +       if (is_kernel((unsigned long)addr))
->                 return true;
->         if (is_module_address((unsigned long)addr))
->                 return true;
-> --
-> 2.26.2
->
+> How is that solved on other pinctrl blocks? I can't see anyone having
+> a similar a similar property.
 
+The Apple pincontroller is unique in having four instances using the
+same compatible string (I raised this as an issue too).
 
---=20
-Alexander Potapenko
-Software Engineer
+Most SoCs has one instance of a pin controller, with one compatible
+string and then we also know how many pins it has.
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+The maintainer seeme unhappy about my suggestion to name
+the four pin controllers after function and insist to use the same
+compatible for all four, which means they instead need to be
+parametrized, which means this parameter has to be added
+because ranges should not be used in this way.
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+I guess the code can survive using the ranges as a fallback at
+the cost of some more complex code.
+
+Yours,
+Linus Walleij
