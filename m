@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D9041D7E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4B641D7E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349969AbhI3KjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:39:21 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:46954 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349928AbhI3KjU (ORCPT
+        id S1350029AbhI3Kjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:39:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49346 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349928AbhI3Kjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:39:20 -0400
-Received: by mail-oi1-f169.google.com with SMTP id s69so6619895oie.13;
-        Thu, 30 Sep 2021 03:37:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=791k1dCYnBwj6qh9NyFd6tnYYhaFD9tuqv9gadUQ6dQ=;
-        b=keAo38l35U+Sl/ieQvcKxHju+dNVkpr6ZgNsiFonZgmdyNCqdDq81/NDxnVDzDAru8
-         pYgQEJ4i0JMv+JQk8uUDDfV5xANp2PcwP2RUXdZDdguBzoxiuNSdWJSxKlmT2UhdMbs5
-         EuzGVmZhR7Mnxvqd7oSRMPME28zaU6TLCUFYytphlsbUjsqJBpoyfed8uB5HWbM2NdGr
-         7RU6XgJx2kw8ZngRBFPmuURDrdylMdW2n/SbJZy9GsgZseVwmo6DeB4QaPK/ETXuWYy7
-         xzniA9sb+yeW6nAd5XGZZ++PxvX/fvhrjM9bIOOfEblMn8okVvj766AcDKmySUCdhn2Z
-         zZHw==
-X-Gm-Message-State: AOAM531G8Q0ZlvEoH9yBNztYqFmRGCna4H26BbprisnD2xWTp7qFpcba
-        2QRRQ0vrZh3uYG6qQ1WyC5k4CaWgiQmeQsowHnY=
-X-Google-Smtp-Source: ABdhPJyMeqiDR56PoBiJKZzrWrCADhqOYOWxKRwfmWJHwa57BMk+C85nXGqnvTtW11Vklj1lLQAAiXpkRzH6TIE7jBc=
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr2079960oib.69.1632998258221;
- Thu, 30 Sep 2021 03:37:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929170804.GA778424@bhelgaas> <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
- <YVWL3PyYRanGTlVG@kuha.fi.intel.com> <CAHp75Vc9hxqy=vrVfuS_cPLCVxZ=KgxZUaD=-rU9W3KH=tAX9Q@mail.gmail.com>
-In-Reply-To: <CAHp75Vc9hxqy=vrVfuS_cPLCVxZ=KgxZUaD=-rU9W3KH=tAX9Q@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 30 Sep 2021 12:37:27 +0200
-Message-ID: <CAJZ5v0gAfWaUXjMrSf7Ei-P=0u7kzHVKQNFY0aSxs6KFd5T6ow@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device properties
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
+        Thu, 30 Sep 2021 06:39:47 -0400
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632998283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gXKSd/eksGYlMXTl37jwPIp0QpmS4EnfQLz9qLhbL+U=;
+        b=dZsaYk14rnWbCheFjm1+76wdyt/mIC1xLKu7Ir8lYv2GEWuYHjdnJHkBihfkAvgYGVv6QN
+        X18KDfTlmlbwoKZSdlWru0djfrBi7o9/2ZeHTbe4b0Nq9uGz4n8WdptxtRXLrVozd+vrs0
+        +/Z73pr5RlgFacCx9nsDbnSgOgL+H8OqTGDSDpP4XqqyqdAIzoFOJW/bqdCvCZP6HPmyWi
+        qJ8kjtfnYj93vUxBK5pind1qJcOJsoLEDtsw6mRqads1uS36IYTjXl0FfS+XcSLGepMDX6
+        wiQSuwSus6W7EUCYRwNRyAUAp17FZix4sOYqtj85v9Zbul5fAgesN0J8B2VEhA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632998283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gXKSd/eksGYlMXTl37jwPIp0QpmS4EnfQLz9qLhbL+U=;
+        b=Jo5akA/m700YnlHuygrlIKeSG5iI2vbZRNNbjYACd75zuZiXisT/Gkfnt6+ZyRgLYS+8IF
+        F3MvWQI5ANOT+2AQ==
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@infradead.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH] irq_poll: Use raise_softirq_irqoff() in cpu_dead notifier
+Date:   Thu, 30 Sep 2021 12:37:54 +0200
+Message-Id: <20210930103754.2128949-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 12:20 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Sep 30, 2021 at 1:06 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> > On Thu, Sep 30, 2021 at 10:33:27AM +0800, Zhangfei Gao wrote:
->
-> ...
->
-> > If the device is really never removed, then we could also constify the
-> > node and the properties in it. Then the patch would look like this:
->
-> I'm not sure the user can't force removal of the device (via PCI
-> rescan, for example,, or via unbind/bind cycle).
+__raise_softirq_irqoff() adds a bit to the pending sofirq mask and this
+is it. The softirq won't be handled in a deterministic way but randomly
+when an interrupt fires and handles softirq in its irq_exit() routine or
+if something randomly checks and handles pending softirqs in the call
+chain before the CPU goes idle.
 
-The sysfs unbind doesn't remove the device, though, AFAICS.  It just
-unbinds the driver from it, if any.
+Add a local_bh_disable/enable() around the IRQ-off section which will
+handle pending softirqs.
 
-> I guess this way should be really taken carefully.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ lib/irq_poll.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-But I agree.
+diff --git a/lib/irq_poll.c b/lib/irq_poll.c
+index 2f17b488d58e1..2b9f797642f60 100644
+--- a/lib/irq_poll.c
++++ b/lib/irq_poll.c
+@@ -191,11 +191,13 @@ static int irq_poll_cpu_dead(unsigned int cpu)
+ 	 * If a CPU goes away, splice its entries to the current CPU
+ 	 * and trigger a run of the softirq
+ 	 */
++	local_bh_disable();
+ 	local_irq_disable();
+ 	list_splice_init(&per_cpu(blk_cpu_iopoll, cpu),
+ 			 this_cpu_ptr(&blk_cpu_iopoll));
+ 	__raise_softirq_irqoff(IRQ_POLL_SOFTIRQ);
+ 	local_irq_enable();
++	local_bh_enable();
+=20
+ 	return 0;
+ }
+--=20
+2.33.0
+
