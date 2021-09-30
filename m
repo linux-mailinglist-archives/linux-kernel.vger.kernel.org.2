@@ -2,70 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D8F41E50C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB54E41E511
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350409AbhI3Xi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:38:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhI3Xi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:38:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D1BF61139;
-        Thu, 30 Sep 2021 23:37:15 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 19:37:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
- on x86
-Message-ID: <20210930193708.3b2caf23@oasis.local.home>
-In-Reply-To: <20211001082733.236bee605f506b2b62c055ef@kernel.org>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
-        <20210929112408.35b0ffe06b372533455d890d@kernel.org>
-        <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-        <874ka17t8s.ffs@tglx>
-        <20210930172206.1a34279b@oasis.local.home>
-        <87wnmx64mn.ffs@tglx>
-        <20211001082733.236bee605f506b2b62c055ef@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1350449AbhI3Xnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348832AbhI3Xnt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:43:49 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA05C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:42:06 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w206so9425342oiw.4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gi00dUKbEnLBBRPaXgkT5o8maxEnkVJlIu1XQkEnZC0=;
+        b=KbzcW1uCfgaHX1R4cGCWYPX7UdNQyYMdI2TaNa0i7HP9MHoSkC/vqAaGCgbin6mB6T
+         se+E7M7c8NwmnlvSAHX5Ie1kV2dQUGPSOdeqqEWF3Lwk2UCXrVLeLlgFqq84wDU9ZO/z
+         y5JKi+oFRhFbmcrebDHwOlzmSssggAwIKOW79O97lnO4uguXxhrzpEcb4eFn8kFc3SBB
+         WMQvnY7IFk8eR6WWepatQtY23RGz9Az/Xqjs9nqtdJONqku7bY6wav7l+I/4l/ILJI+W
+         aMPQGheTvyHDLJc6QYsimS5BjEn4+6tQhaUZjCY5c7157mhO7h89Kblg9SE+vbVy4BwF
+         IkJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gi00dUKbEnLBBRPaXgkT5o8maxEnkVJlIu1XQkEnZC0=;
+        b=N+pVfFf93LJit+h8a6quM0XqG6CRREy7rye8p3IUNfhXx36hlNkx+2DX9O13HeM9eg
+         /7ZyMhnJIWJ3OaEwfl1rFYC/jdD40gx35pMJcz7Xyw2Pr0F+R64NwshYsKqHwTP62ukh
+         4SILoUWprvkHqA9Cw8b3y5oF1x1mF22ZVqs7sSQd4Vus+XlXq9L2HWsyf7G45wFXuupc
+         TQh6gWzE7QPAsEx2yCUAl1zRYqRP3aNyQ0ZrHMCbvVEQhvHEOsMdcb/i0y8jH3xOOzT0
+         k3QEf4aw/R0C27W/60TjPmPW0yVM1PCmC/zhet7Fg+wfrPGJLDh/2HQ9XJEjqfsojl8b
+         SUow==
+X-Gm-Message-State: AOAM532Za8UwZUzmmqHit9A4BtBrdW2ZWiPnT82+GkqOVxmn99ISGZkq
+        KDI7GB9lCu67mfoJapbQoa2jO/FVicsQG4IzdH4SbQ==
+X-Google-Smtp-Source: ABdhPJwKPjQgHWUMf0Og0OYmzz1BYvLtSYzI/LiSuuHHPOcmotdMisrFNn74dwe+jncaX/uBBZp37kj5RhHAGMWQhf4=
+X-Received: by 2002:a05:6808:60f:: with SMTP id y15mr1599090oih.15.1633045325230;
+ Thu, 30 Sep 2021 16:42:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-33-brijesh.singh@amd.com>
+In-Reply-To: <20210820155918.7518-33-brijesh.singh@amd.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Thu, 30 Sep 2021 16:41:54 -0700
+Message-ID: <CAA03e5G-UX761uBAFLS3e1NuYZOh2v8b=UkrX+rZUviegyWVGQ@mail.gmail.com>
+Subject: Re: [PATCH Part2 v5 32/45] KVM: x86: Define RMP page fault error bits
+ for #NPF
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 08:27:33 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Fri, Aug 20, 2021 at 9:00 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+> When SEV-SNP is enabled globally, the hardware places restrictions on all
+> memory accesses based on the RMP entry, whether the hypervisor or a VM,
+> performs the accesses. When hardware encounters an RMP access violation
+> during a guest access, it will cause a #VMEXIT(NPF).
+>
+> See APM2 section 16.36.10 for more details.
 
-> Let me explain how the patches are usually merged.
-> 
-> - kernel/kprobes.c related patches go through the tip tree.
-> - kernel/trace/* patches go through the tracing tree.
+nit: Section # should be 15.36.10 (rather than 16.36.10). Also, is it
+better to put section headings, rather than numbers in the commit logs
+and comments? Someone mentioned to me that the section numbering in
+APM and SDM can move around over time, but the section titles tend to
+be more stable. I'm not sure how true this is, so feel free to
+disregard this comment.
 
-And arch/*/kprobe* usually goes through tip as well.
-
-> 
-> So traditionally(?) I think this series go through the tip tree,
-> but since the biggest user of kprobes is tracing and the kprobes fix
-> now involves tree-wide fixes as you can see in this series, I think
-> it is a good timing to move kprobes to tracing tree.
-
-I'll pick it up and take the burden off of Thomas.
-
-Just to confirm, this is for the next merge window, right?
-
--- Steve
+>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 109e80167f11..a6e764458f3e 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -239,8 +239,12 @@ enum x86_intercept_stage;
+>  #define PFERR_FETCH_BIT 4
+>  #define PFERR_PK_BIT 5
+>  #define PFERR_SGX_BIT 15
+> +#define PFERR_GUEST_RMP_BIT 31
+>  #define PFERR_GUEST_FINAL_BIT 32
+>  #define PFERR_GUEST_PAGE_BIT 33
+> +#define PFERR_GUEST_ENC_BIT 34
+> +#define PFERR_GUEST_SIZEM_BIT 35
+> +#define PFERR_GUEST_VMPL_BIT 36
+>
+>  #define PFERR_PRESENT_MASK (1U << PFERR_PRESENT_BIT)
+>  #define PFERR_WRITE_MASK (1U << PFERR_WRITE_BIT)
+> @@ -251,6 +255,10 @@ enum x86_intercept_stage;
+>  #define PFERR_SGX_MASK (1U << PFERR_SGX_BIT)
+>  #define PFERR_GUEST_FINAL_MASK (1ULL << PFERR_GUEST_FINAL_BIT)
+>  #define PFERR_GUEST_PAGE_MASK (1ULL << PFERR_GUEST_PAGE_BIT)
+> +#define PFERR_GUEST_RMP_MASK (1ULL << PFERR_GUEST_RMP_BIT)
+> +#define PFERR_GUEST_ENC_MASK (1ULL << PFERR_GUEST_ENC_BIT)
+> +#define PFERR_GUEST_SIZEM_MASK (1ULL << PFERR_GUEST_SIZEM_BIT)
+> +#define PFERR_GUEST_VMPL_MASK (1ULL << PFERR_GUEST_VMPL_BIT)
+>
+>  #define PFERR_NESTED_GUEST_PAGE (PFERR_GUEST_PAGE_MASK |       \
+>                                  PFERR_WRITE_MASK |             \
+> --
+> 2.17.1
+>
