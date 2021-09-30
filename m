@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74AA41DC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5020D41DC8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351062AbhI3OnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:43:00 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:34655 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349769AbhI3Om7 (ORCPT
+        id S1351172AbhI3On0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:43:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36158 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351935AbhI3OnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:42:59 -0400
-Received: by mail-wr1-f53.google.com with SMTP id t8so10535661wri.1;
-        Thu, 30 Sep 2021 07:41:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qlV2IW6KgwSMkQiI/3nalledS1TzOJSnAsynrV1hvmI=;
-        b=KwWesWBcLF3Ao3oUBSagd1ExtrAdhcu2b+z1qu591O+PcUi1MCjqxIdu/ZDRSJPeEU
-         s40rHYCh8/x50xuisAnr5FEmvxjqn82CQ+4Aex7NUfmNpIp0TikVFm+1HsfnrLZ0taJk
-         b4m9UKxVmFHZPFJLu0kLMt0OuuEq/WtWaLdKKkMw7jP6dTvfc5RhdRsizCHdqz9ivs9z
-         bS5s+m44BdpWhJzwujvkJucZuvPKoFPdMCKJe38RsRCl54/Isdv7KE0UiWEoB9ufd9Xr
-         //M2gTCuUQwtbp7T90CwQaMVxcwynHSxpPx9mxDhxpaUbVnrFxI+n0F3ThI6+VPoRw8E
-         TEPg==
-X-Gm-Message-State: AOAM5311RD6+ZhN6zDIeDd70SOG0QYjs4518LksIKV0ocfSYnMnt54Hd
-        ygbVj3uaOoMNkCNVPxJG6NY=
-X-Google-Smtp-Source: ABdhPJx3RvTS+7z6fNKyJlCKUV3HdqEwws93IzNsqEtqImu8jolUAHMDRkGFp/DD2fiEWjcc3NMKfw==
-X-Received: by 2002:a5d:64a7:: with SMTP id m7mr6752049wrp.171.1633012875349;
-        Thu, 30 Sep 2021 07:41:15 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id n26sm4999946wmi.43.2021.09.30.07.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:41:14 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 16:41:13 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, stefanha@redhat.com, oren@nvidia.com,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/1] driver core: use NUMA_NO_NODE during
- device_initialize
-Message-ID: <YVXMifT1hdIci1cp@rocinante>
-References: <20210930142556.9999-1-mgurtovoy@nvidia.com>
+        Thu, 30 Sep 2021 10:43:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633012899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M683Nfwi+Qwa+QeYmYLqVJwdqSP0cOrdel4JB8DY0Zg=;
+        b=WLAnqD3YHRgeTEwm/X7liWBxW7GmQMB/kYJchnwVLNzN3k4HYY+dwV80mKd4s3EXuBhyqL
+        agEVDCC6yFFBh0uMXRq1Rf0vLIQHLyW/AB54ZAe+n1p7Hh9dTG/hogbatV8o6vhTbnj4Rd
+        c8dKsUCoHuBy7nTLSYGBwYkphXqCAPs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-adjHt0RpPLWLEb7zehUeKg-1; Thu, 30 Sep 2021 10:41:37 -0400
+X-MC-Unique: adjHt0RpPLWLEb7zehUeKg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F1585721F;
+        Thu, 30 Sep 2021 14:41:35 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75BF25F4E1;
+        Thu, 30 Sep 2021 14:41:18 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v1 0/3] memory-hotplug.rst: document the "auto-movable" online policy
+Date:   Thu, 30 Sep 2021 16:41:14 +0200
+Message-Id: <20210930144117.23641-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210930142556.9999-1-mgurtovoy@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
+As promised, now that the memory-hotplug.rst overhaul is upstream, proper
+documentation for the "auto-movable" online policy, documenting all new
+toggles and options. Along, two fixes for the original overhaul.
 
-> Don't use (-1) constant for setting initial device node. Instead, use
-> the generic NUMA_NO_NODE definition to indicate that "no node id
-> specified".
-> 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> ---
->  drivers/base/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index e65dd803a453..2b4b46f6c676 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2838,7 +2838,7 @@ void device_initialize(struct device *dev)
->  	spin_lock_init(&dev->devres_lock);
->  	INIT_LIST_HEAD(&dev->devres_head);
->  	device_pm_init(dev);
-> -	set_dev_node(dev, -1);
-> +	set_dev_node(dev, NUMA_NO_NODE);
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-mm@kvack.org
 
-We might have one of these to fix in the PCI tree, as per:
+David Hildenbrand (3):
+  memory-hotplug.rst: fix two instances of "movablecore" that should be
+    "movable_node"
+  memory-hotplug.rst: fix wrong /sys/module/memory_hotplug/parameters/
+    path
+  memory-hotplug.rst: document the "auto-movable" online policy
 
-  https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/pci/pci-sysfs.c#L84
+ .../admin-guide/mm/memory-hotplug.rst         | 130 +++++++++++++++---
+ 1 file changed, 109 insertions(+), 21 deletions(-)
 
-Would this be of interest to you for a potential v2?
+-- 
+2.31.1
 
-	Krzysztof
