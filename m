@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777F741DAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691B041DAC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350434AbhI3NRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:17:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40988 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350073AbhI3NRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:17:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=6PZ49cSEBhLem0jcEWWbaHG2DFFufyxYvXcOVSWTwNQ=; b=2TM7VCntIA9nq6dLq8rKJqwp6J
-        YiJcyL1+ITpJL8GVCi2yTqCwmShQVOyTOpleGPYfeStm12QjEVV7OcEzN6d/SL1Zuh5/GmDA/pfTG
-        nEI4tarqOQWErLTFNqPgX9chKwCCZTvA5xelZWGD2isjcDsTluWj0cOG7YA9FvuIZQ1I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mVvtx-008x3A-PZ; Thu, 30 Sep 2021 15:15:05 +0200
-Date:   Thu, 30 Sep 2021 15:15:05 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YVW4WX9oq9o318Im@lunn.ch>
-References: <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
- <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch>
- <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch>
- <20210831231804.zozyenear45ljemd@skbuf>
- <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
+        id S1350626AbhI3NRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:17:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48672 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350528AbhI3NRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:17:47 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UD0POk030761;
+        Thu, 30 Sep 2021 09:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=75uF3Ld1MXK2bY0HiwRxp8CJcuKYf1vmsNYGBKdn6Yg=;
+ b=K1T123IIAAe1RhG3k0jKYCblTzJSuM2Wx2UduSfqeDZNdtFoYl4eS8jJt/vdGRY+JwNZ
+ JGzp3s/KS7nvLjknnHDwm7XWyiFOB3LKSfvPfo1IW8GR7Kx/3Hs8UEKAxRC8PFErPb10
+ OP8Q87mdogyjD4lhWW3HrUOkqZM7sk5+TZXYGokJQ2IHisT5sQ1DsvMeqrrfFmX8gczh
+ Jw/BFSMbMOGJqHU1xhxwYnSsjBKR/aH7hLE3JtrfuWX1oEe8WgKzqeJKZCCrK1sxrqH2
+ i1dN5USaz49NKpN4RKAjxFTgBClCJZrgT0nulcViE6q/9dzYkJdGNPk/uMJI7Zw5QjRw /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bddr8gffh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 09:15:58 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18UD1Yku003513;
+        Thu, 30 Sep 2021 09:15:58 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bddr8gff2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 09:15:58 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18UDC7e0002240;
+        Thu, 30 Sep 2021 13:15:56 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3b9udah49k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 13:15:56 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18UDAiNS55902594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 13:10:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01327A405C;
+        Thu, 30 Sep 2021 13:15:53 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6C68A4054;
+        Thu, 30 Sep 2021 13:15:50 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.207.39])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 30 Sep 2021 13:15:50 +0000 (GMT)
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+To:     peterz@infradead.org, acme@kernel.org, jolsa@kernel.org
+Cc:     linux-kernel@vger.kernel.org, songliubraving@fb.com,
+        maddy@linux.vnet.ibm.com, kjain@linux.ibm.com, mingo@redhat.com,
+        eranian@google.com
+Subject: [PATCH] perf/core: Avoid calling perf_mux_hrtimer_restart multiple times when scheduling event groups
+Date:   Thu, 30 Sep 2021 18:45:47 +0530
+Message-Id: <20210930131547.1923-1-atrajeev@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Q2nH4y5_cjiu0Uo-PGC6X-2bi5cyinO8
+X-Proofpoint-ORIG-GUID: WlCF_sWSNQ3C_B3SZMF-ZHeGVkt0B8Fd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-30_04,2021-09-30_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 clxscore=1015 malwarescore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109300083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:33:16PM -0700, Saravana Kannan wrote:
-> On Tue, Aug 31, 2021 at 4:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> >
-> > On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
-> > > Rev B is interesting because switch0 and switch1 got genphy, while
-> > > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
-> > > interrupt properties, so don't loop back to their parent device.
-> >
-> > This is interesting and not what I really expected to happen. It goes to
-> > show that we really need more time to understand all the subtleties of
-> > device dependencies before jumping on patching stuff.
-> >
-> > In case the DSA tree contains more than one switch, different things
-> > will happen in dsa_register_switch().
-> > The tree itself is only initialized when the last switch calls
-> > dsa_register_switch(). All the other switches just mark themselves as
-> > present and exit probing early. See this piece of code in dsa_tree_setup:
-> >
-> >         complete = dsa_tree_setup_routing_table(dst);
-> >         if (!complete)
-> >                 return 0;
-> 
-> Hi Vladimir,
-> 
-> Can you point me to an example dts file that has a DSA tree with more
-> than one switch and also point me to the switches that form the tree?
-> 
-> I'm working on a RFC series that tries to improve some stuff and
-> having an example DTS to look at would help.
+Perf uses multiplexing if there are more events to be scheduled than the
+available counters. With multiplexing, event groups will be rotated at
+specified interval of time which is set using "hrtimer". During event
+scheduling, if any of the event group fails to schedule, multiplexing
+gets enabled by setting "rotate_necessary" for that event context and
+starting the hrtimer by calling "perf_mux_hrtimer_restart".
 
-Some of the Zodiac boards have multiple switches. They are all Marvell
-switches, using the mv88e6xxx driver.
+Patch adds an optimisation to avoid calling "perf_mux_hrtimer_restart"
+multiple times if already rotate_necessary is set for that context.
+Even though "perf_mux_hrtimer_restart" will just return if hrtimer is
+already active, this could avoid the overhead of calling this function
+multiple times if there are many event groups. Patch adds the check to
+avoid calling perf_mux_hrtimer_restart() for each event group on
+every schedule.
 
-arch/arm/boot/dts/vf610-zii-dev-rev-b.dts
-arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
-arch/arm/boot/dts/vf610-zii-scu4-aib.dts
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+---
+ kernel/events/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-	Andrew
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0c000cb01eeb..26eae79bd723 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3731,8 +3731,10 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 		}
+ 
+ 		*can_add_hw = 0;
+-		ctx->rotate_necessary = 1;
+-		perf_mux_hrtimer_restart(cpuctx);
++		if (!ctx->rotate_necessary) {
++			ctx->rotate_necessary = 1;
++			perf_mux_hrtimer_restart(cpuctx);
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.30.1 (Apple Git-130)
+
