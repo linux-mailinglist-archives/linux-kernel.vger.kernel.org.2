@@ -2,82 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAD741D206
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C9B41D20B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348009AbhI3D6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 23:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348004AbhI3D6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 23:58:15 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ECEC06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:56:34 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so5648600otj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=pbICwdgUqYk+MY3CjajdFyZDTldPCutWBH9nPk1NU9M=;
-        b=dYYg+xr2qgVzVQpnw1vKySEYeTZUMyLCO3IjCFtkwCbD9pKzqZBm0wXSYwHIqbVnZB
-         j6j/az0gTXbKp/PPg7uz9Ed09jHYplqn0gK7ylwDo/7ULm7qTckwzVEwAQxTaMQ02IEW
-         qPujZVK/wt6fs6hmVDo6J410aSqfL7yzXjTro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=pbICwdgUqYk+MY3CjajdFyZDTldPCutWBH9nPk1NU9M=;
-        b=203+o2kb0QImjo6A+IBKULpgL+X4BgDCN0E/a+2gKUH/gHCSODTCE6Pb8UhZ5XRUDG
-         gqAjpZjIhnMrD4iZLVdOreV6y+m+bRUP4C+406S47KogRHSYP4De/OoRMNdC5vBZmAf6
-         oimBkmSHpDpWmDcB2I7GG2lsjC2EEnzyq5c0wkoncI0957d43zSGeKiQ9dz/Js4ToNmo
-         ePZZlRK5DhKg3XkviiEXOS/XMih+YGMyYMo5M8VdL2uP5AL64Cl/9uzAbRhDEhvyhxZ9
-         HDCIWWeWxTbhBblVmbCajdGu+2QB7cRPXVsXGrGV9kQXUD4LdprGT+tJFC7Abbe2GYsB
-         GW1A==
-X-Gm-Message-State: AOAM531RjWEVO1eHgPqtcBYPsvew20QNzGMmPdvcHT6d90eT89vzWJMI
-        ueSRxQnmqVdtQYyf6aLIhiasIV0ZliI31a1JnLsxfPUBMmI=
-X-Google-Smtp-Source: ABdhPJyg5d3ErOcJIXToSHSHSONJcSYacRkFBefewskavVwKz804P1gLqh9+QSY2AHtW62MgsT4klS34ZxzhA+GxzKA=
-X-Received: by 2002:a05:6830:358:: with SMTP id h24mr3010200ote.159.1632974193021;
- Wed, 29 Sep 2021 20:56:33 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 29 Sep 2021 20:56:32 -0700
+        id S1348020AbhI3D7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 23:59:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59644 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347963AbhI3D7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 23:59:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632974277; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Lk3z6zTSdTFGpMOmC+/3+SLOaVyJ9DMt6rB0tK9eu9w=;
+ b=Q58s/HOGfasX+7VbqJYbMM6GOEK4aMZJf0cl/7e2KDgqnFwzhFAkE9RwVWWE7JOz4PipEwim
+ oL1O6BIuHReByh50lQwPh2JBWbobb1w8B9yVQW3jH4uuWJt5uomOSLWs530ojN+0J0ZkzYvt
+ wlx+dgWk2MFBh/w9qKYHbL1/vPw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 615535b4fc6e34f8cd02e1a0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 03:57:40
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2AE76C4361C; Thu, 30 Sep 2021 03:57:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 288F8C4338F;
+        Thu, 30 Sep 2021 03:57:38 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
- <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 29 Sep 2021 20:56:32 -0700
-Message-ID: <CAE-0n51sDbBfS82K7pY_yvWEQYdBVheqtzZcNVm16AZxaFMTng@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: drm/bridge: ps8640: Add aux-bus child
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org,
-        Balletbo i Serra <enric.balletbo@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 30 Sep 2021 11:57:38 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
+In-Reply-To: <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
+References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
+ <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
+ <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
+ <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
+Message-ID: <27e9265371e96d0bcc06139ce5f0e026@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-09-29 17:34:57)
-> dp-aux-bus.yaml says we can list an eDP panel as a child of
-> an eDP controller node to represent the fact that the panel
-> is connected to the controller's DP AUX bus.
->
-> Let's add it to the ps8640 bindings.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+On 2021-09-30 02:15, Bart Van Assche wrote:
+> On 9/28/21 8:31 PM, Can Guo wrote:
+>> On 2021-09-18 01:27, Bart Van Assche wrote:
+>>> On 9/16/21 6:51 PM, Can Guo wrote:
+>>>> Assume a scenario where task A and B call ufshcd_devfreq_scale()
+>>>> simultaneously. After task B calls downgrade_write() [1], but before 
+>>>> it
+>>>> calls down_read() [3], if task A calls down_write() [2], when task B 
+>>>> calls
+>>>> down_read() [3], it will lead to dead lock.
+>>> 
+>>> Something is wrong with the above description. The downgrade_write() 
+>>> call is
+>>> not followed by down_read() but by up_read(). Additionally, I don't 
+>>> see how
+>>> concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock.
+>> 
+>> As mentioned in the commit msg, the down_read() [3] is from 
+>> ufshcd_wb_ctrl().
+>> 
+>> Task A -
+>> down_write [2]
+>> ufshcd_clock_scaling_prepare
+>> ufshcd_devfreq_scale
+>> ufshcd_clkscale_enable_store
+>> 
+>> Task B -
+>> down_read [3]
+>> ufshcd_exec_dev_cmd
+>> ufshcd_query_flag
+>> ufshcd_wb_ctrl
+>> downgrade_write [1]
+>> ufshcd_devfreq_scale
+>> ufshcd_devfreq_target
+>> devfreq_set_target
+>> update_devfreq
+>> devfreq_performance_handler
+>> governor_store
+>> 
+>> 
+>>> If one thread calls downgrade_write() and another thread calls 
+>>> down_write()
+>>> immediately, that down_write() call will block until the other thread 
+>>> has called up_read()
+>>> without triggering a deadlock.
+>> 
+>> Since the down_write() caller is blocked, the down_read() caller, 
+>> which comes after
+>> down_write(), is blocked too, no? downgrade_write() keeps lock owner 
+>> as it is, but
+>> it does not change the fact that readers and writers can be blocked by 
+>> each other.
+> 
+> Please use the upstream function names when posting upstream patches.
+> I think that
+> ufshcd_wb_ctrl() has been renamed into ufshcd_wb_toggle().
+> 
+> So the deadlock is caused by nested locking - one task holding a
+> reader lock, another
+> task calling down_write() and next the first task grabbing the reader
+> lock recursively?
+> I prefer one of the following two solutions above the patch that has
+> been posted since
+> I expect that both alternatives will result in easier to maintain UFS 
+> code:
+> - Fix the down_read() implementation. Making down_read() wait in case
+> of nested locking
+>   seems wrong to me.
+> - Modify the UFS driver such that it does not lock
+> hba->clk_scaling_lock recursively.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+My current change is the 2nd solution - drop the hba->clk_scaling_lock
+before calls ufshcd_wb_toggle() to avoid recursive lock.
+
+Thanks,
+
+Can Guo.
+
+> 
+> Thanks,
+> 
+> Bart.
