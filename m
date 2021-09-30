@@ -2,124 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8F841D338
+	by mail.lfdr.de (Postfix) with ESMTP id E441241D339
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348296AbhI3GWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348285AbhI3GW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:22:29 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20642C06176D
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:20:47 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso5951313otu.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:20:47 -0700 (PDT)
+        id S1348286AbhI3GXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:23:23 -0400
+Received: from mail-bn8nam11on2121.outbound.protection.outlook.com ([40.107.236.121]:32353
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348252AbhI3GXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:23:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZXgF6s0juqPkAbpXo6IDrgz52g6kYZJPtk22VhneBeJwjlRoa3L6dA1BlGV9No1jlHRghiHd3gIibc86zYzmpeMvSw9fJWKCSYlNTzdziHnzCetyOQrnnhxS4h+aop5glr+gMNeSP3J7A1jau6nAkvgsRCro9P+SOybeLDRXVfDjZjsbdZEU+vEoU+Y3fr5m+k4VQlFn2oLAil0yMGaQ2FB6ldiq5mMLp3SoeQCsHuo/iCi8d+EQmaYDInmuytaZhQXoj6l5eUTnMB5YgKk+W1mtL0ob0poCZKfXDXqxMKGydkWTvPkKTJPADm0MoWbOMpaLihD6PZAyYyMeyRGsOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=9c/jC9KE0y786MHqIFG1CNTrtAk/F3zV9Zm0aGrgyg8=;
+ b=UvbVg48/2sSe/5MeLMsB782HqH+UOUZUE0RmDYOKju6Qrnz6owzGmuAvXaCI3vW0K2zNp85Asmohn1o4k1dMIpFQkrfJclIzNbYCdeN3glvujWWDAzfeR57dJQO1M9oxWwgQGakqMerLL4W/Sp7qfG/9BzYL122Jni51rpQtK5g9R+VSjht0UaqP+VD4Ng5zWm4cjdASWMJkOkOyB3+m8uSaNNImtDnZlAmQOcMtiJPSywchBYdW/NA/7oIPZ8ZsUwbkDS9cIBw3KGPP7SPSpyBrajy0GSF0fcZoNVsHd6jmWx0394m0IRmJgpxLYyryIwnozrAuzQo5y38evy51eA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=i2cDjHFp2D2fj9lJTnJF4bsUIHxqYSPf+C49ab40XcM=;
-        b=lIZkjVfAqaVUd1GtL2O+rDAuSxwrbA5nzwiQnZYjWDjr1lrbm+RiwmjHgNZOnmdLpE
-         1QB6chWzbzuG7Xm8PAz4/zmqyJvk+IyXdhU0ZPYJXXsA7w2ZP13659TNWPX7NP+PA7MC
-         Fq6DEccpMQUNmhXIzZBX8YwrqF6KMgn9t78lI61Wd9TaVwARAaC4zW8rWYSF12gzryVX
-         Duivm9aUhQ98d+6GvUdTpNha40siqwI1F1+sEU0cKabA2xAXWlVY0573K/2Xa+S3fHLB
-         mKbnVJjj6JhX+X1k8EK3kCRE5igF4d81ox6JV6FBfflPiV6IvWmdnJUsJUUqr2eIe1u5
-         bD7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=i2cDjHFp2D2fj9lJTnJF4bsUIHxqYSPf+C49ab40XcM=;
-        b=cYlVdNZSrhP0KqedpnbVB6yaiTqnmKYBYC+0Q3D+1GLxHyM09OvUTCiGM9rpp+wl7L
-         2b1R+/0iI+8gdWjp57dDt58zciwL2+tJp+RDKH1GvKheO+nNHzGvxKOQ/SghtBya1cdS
-         qYOB9Aa7i8AskNqO99MSOrN0ycAIe2H2XSKMI7Ro3yQDt95yRatYFy/NfhxHUx5Z+3Nr
-         simb663AwNBslDZMEk3Lorprz/pEpsYsmuSfZuER5OmPY36DqT34GZSGlfN+teFRAJ0b
-         IDOX4shJLYrtBpse4QfqSbx/yGOBlV6tonc9N1ivKrQJU0nUnsDm9GCBGb8y9sxGN/4w
-         +YPA==
-X-Gm-Message-State: AOAM530ScpAIOttD7wj/KgjXUNu2XvZ3KiqLLyWV51tfEnhz+Ypkokdx
-        9pwkUcLtwvYtB6H3Ar0e4Owj6g==
-X-Google-Smtp-Source: ABdhPJxNI0XzDYJEcld97bpEE3r3fX0uX6RXWm8xF6ug6VChx9utYQKThX8aQ9xukWdbbu6fQJxRGg==
-X-Received: by 2002:a9d:2c22:: with SMTP id f31mr3636211otb.303.1632982846503;
-        Wed, 29 Sep 2021 23:20:46 -0700 (PDT)
-Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id x4sm421228otq.25.2021.09.29.23.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 23:20:46 -0700 (PDT)
-From:   Shunsuke Mie <mie@igel.co.jp>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Shunsuke Mie <mie@igel.co.jp>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
-        etom@igel.co.jp
-Subject: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
-Date:   Thu, 30 Sep 2021 15:20:14 +0900
-Message-Id: <20210930062014.38200-2-mie@igel.co.jp>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210930062014.38200-1-mie@igel.co.jp>
-References: <20210930062014.38200-1-mie@igel.co.jp>
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9c/jC9KE0y786MHqIFG1CNTrtAk/F3zV9Zm0aGrgyg8=;
+ b=VpCYlzMEzGyP/d3NEplBHJaVWWS3n05qXp68eXyPc2YGFfjwwNtY133DN30q0r+eC3rUQwr/aytwpwPyhLk9Mk11RR6sgNuQ5a3Evm0HgcC+K5mRFlR1WlFQqiLgJwlMeOFy+1zEQxkn/fGYjKisGqzFCY5qr1wOO1FQJmX45Pg=
+Received: from SJ0PR11MB5661.namprd11.prod.outlook.com (2603:10b6:a03:3b9::5)
+ by SJ0PR11MB5663.namprd11.prod.outlook.com (2603:10b6:a03:3bc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
+ 2021 06:21:36 +0000
+Received: from SJ0PR11MB5661.namprd11.prod.outlook.com
+ ([fe80::31bb:4f91:1eb5:7178]) by SJ0PR11MB5661.namprd11.prod.outlook.com
+ ([fe80::31bb:4f91:1eb5:7178%7]) with mapi id 15.20.4544.022; Thu, 30 Sep 2021
+ 06:21:36 +0000
+From:   Ryan Lee <RyanS.Lee@maximintegrated.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
+ entering sleep
+Thread-Index: AQHXsZF45/jZbOMADUKIjx+r35kUIKu3/BEAgAAPiFCAAAR+AIAAC+UAgAAIKhCAACX/gIAD0nCQ
+Date:   Thu, 30 Sep 2021 06:21:36 +0000
+Message-ID: <SJ0PR11MB5661A2F6089A9AEF4143C11CE7AA9@SJ0PR11MB5661.namprd11.prod.outlook.com>
+References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
+ <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
+ <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <20210927160622.GE4199@sirena.org.uk>
+ <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
+ <SJ0PR11MB5661814BCC6B79EDE1B0967AE7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
+ <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
+In-Reply-To: <c5031731-dd58-ff7a-857e-b9e1b748d3b2@linux.intel.com>
+Accept-Language: en-US, ko-KR
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7895e20b-ca0d-43c0-12a3-08d983da8e7a
+x-ms-traffictypediagnostic: SJ0PR11MB5663:
+x-microsoft-antispam-prvs: <SJ0PR11MB5663BB76B912F4DB41419049E7AA9@SJ0PR11MB5663.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EfVRfAxqWMMnpuLPh0WD9qxNLmgSaWRDdrz9qJZQyOSxZ64syXo7DqIYr6kfn5DEhkXFx27Xdgej+Qh45/bpcYQxTI5wTKg+Qi+54VQudOf4jtSUljc+M2EoyDipaK1JTnoUuuwQp9DBp+f7iogRnD0Xm3ZzLFu0os7vA27KEw8l9nMWCijYoK3ww0YGus7nZh/DPqlLVg3MqAhMP+Dn0r31jindtu2Bm77W+/lehzRypAZKVxEMmRVMMHI9S+p4b9IerZGNOOssGMPP/4GayI0PxyxG81NCojsrKwNor2t/JrX0Ui1gL/VvAnB4twgf8T+JZ8bv7Bjpvv8U6XREbqzn4ueAc65jnZ1k902rBaOcJmO5rD5NzdhEVKu1hiKkY1AB2S/7BPxqN65qEwHd5iSFkd4G0giiFJkDQ5Ztx+OjTmQ5rZAltCbAggcoQfy0ThkLpNKGebEXiF+YsYa4fDJKHI0BDZrmkigf0esZoZ1TPo1ZAWaEDJrf4/JRbYrUT5Stf8LNe541lFE09ec/YA37wjp+bSCXFCpSX+nhUCPhrteBIPk8HnCvwYA4qORAc8HGw0n8lBEAuUzBPlOByAM5vSQqUQaixwbdLQfET1tQEawqE643+fiz5/qL+hXtDGbEN6yic1UKiF+YqHZx8S5CP0RRpPnfohhDp3MTpud5h1zvugWAIQeh0rwTh+yokdkzpqnxlREaFsu08i2MODS+Z22zr9d0acOzrZIqNukNZuaHBCkOXq4ePZZOym0C6ajHi+kJIgMe7yjlRGHaXiaeiC5q8nBt1Lrye7aUQgA1y7SOzCWnUgt+e5huHwgnrs68dAnELLcCWkB2HLSjwr6I3NjqDR2Q6diBhZ7ztb8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5661.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(186003)(66476007)(38070700005)(4326008)(8936002)(66556008)(66946007)(7416002)(2906002)(64756008)(66446008)(7696005)(33656002)(38100700002)(76116006)(5660300002)(55016002)(122000001)(52536014)(26005)(9686003)(86362001)(71200400001)(8676002)(83380400001)(110136005)(966005)(54906003)(508600001)(45080400002)(316002)(14143004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nkM5g1ZQbQJiF7i2EZImPrae6IV6b1duQ7erCip5q+OD36oTw2ZDbNrFg6cm?=
+ =?us-ascii?Q?+IMSkytDlIaQWoTG8waQI+MJ0jYRaoXYksd2V5rrEdMT0w6FioqmYTUQ9N1Q?=
+ =?us-ascii?Q?+l0llOdL0BuDnmVasjqw/SIY7hNIcWwlTwB8giTb0A8PimwriyovFAhRzzes?=
+ =?us-ascii?Q?cvtJUwLfBvy8tg9Lutowyj/Ov+/uQsBqoRQrTPJ7t68M+pMWLSZ9NKgGlFju?=
+ =?us-ascii?Q?KzO3EjEYkvf3vFYhHX8eJwFIocKxlN/dkscm2cOoMktGUw3Gun++Plv9a1Kv?=
+ =?us-ascii?Q?6nLLFmVwyfJSQITnfXK6sxTDg3XgRySwCzz8OYbNjHrXU6cPl5nCXsqk1pMG?=
+ =?us-ascii?Q?Xz5mwffGQovIvLCQMstgrDhcEZD6UvmrRl6xPb1Pzy1iRKeUwuvl+pLufmK8?=
+ =?us-ascii?Q?tKcR3x2bwJCE6xlqdM/48pDoPosBWmTvzTUcLEkH/kBWGZFMmfV4B0gCwStU?=
+ =?us-ascii?Q?K6bkoctY61DjwYZwAdzchKFoehfqnBHBlz/cK66k5oFaVFjbM+N83etP27QT?=
+ =?us-ascii?Q?P82kXXKFg/IaX2aAmh+R2YzK0J3ROsDVUa4rUbNNj72FzBNASbhr6iOh75wC?=
+ =?us-ascii?Q?0wxxXmd2LPi6HaixTixEiR8wuHuAG+EGKSyUVyZZ+g1eZEtjvNgWW/+sTpWO?=
+ =?us-ascii?Q?ctlrIoqj3zkc2uvK+lYA6gTniuHMBLQTfjvCUOYbUEVz8pEIeBUB26B2icPr?=
+ =?us-ascii?Q?XHvZl8chZq/Qhwn0x60hFHKHtPpOZcJN+3vqIRdpQaO7HpMgjhOTTy/0VZF9?=
+ =?us-ascii?Q?tGsHCd7DIpYPiFVamIL96SPNwpfaxBXr+E9SrTR0jznVfMIDYLluJh9BYzzm?=
+ =?us-ascii?Q?FKMY9QyMqKB1mf3ZectaUNSvegpDCF6lzeMeSDcRq4bQbm42hEEyJgOZ5e3m?=
+ =?us-ascii?Q?TjQ6BuIwuWUzF9Gmol3qQUWpADnHq2WzO6QSYBYLWZhbFgTlCwK79Fqw/Dv8?=
+ =?us-ascii?Q?CBZdFgNSwgMz1aVDbQqtQJ2VMQaTWz+cw/W8npcX26hG4BbKDMsAliVn5AqQ?=
+ =?us-ascii?Q?3RmlOco8LrNsE/PukNJOiqPyu27gKLi/RhDN0NVc4llKjJnqKQaMumV9zxnn?=
+ =?us-ascii?Q?Xi32Qqofr0xodYa9Jinl7W0Jj9Il2niTFlgogxjNC4ocbx8phVTQtN/i4OJF?=
+ =?us-ascii?Q?vDKx+wgp9mAF3eqKZ8drOczc+2uoU4yWZLw+Z26TBcFLC7cAYf9X9tfxJHIK?=
+ =?us-ascii?Q?31WxV+P0tyDWFA7BxBdwNUxNigGX3GF+iGA632rld+cDe0hcS8J5EYtR3KKR?=
+ =?us-ascii?Q?8efWh6iOY8XhoQF5t88quheg3Qy7RjyQkBJZtGOPRYYTnQgK3QcXXbk4Lcaq?=
+ =?us-ascii?Q?1EW6Lv8EXvhMJ8IkRnCVm7c6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5661.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7895e20b-ca0d-43c0-12a3-08d983da8e7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 06:21:36.4496
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EK5rU2FoyFIfTtdclQMd5nnUkjvUjpqa4uPYGCNd2vgflHdfY69Mz8lmfQrt82S/Fxj55O9AAsf39iZkk/5u13kTT3nmJ3uhXhOv98YulDM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5663
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement a new provider method for dma-buf base memory registration.
+> >> Instead of changing the suspend sequence, can we please try to
+> modify
+> >> the
+> >> max98373_io_init() routine to unconditionally flag the cache as
+> >> dirty, maybe this points to a problem with the management of the
+> >> max98373->first_hw_init flag.
+> >
+> > max98373_io_init() is not called because ' sdw_slave_status' remains
+> '
+> > SDW_SLAVE_ATTACHED' and 'max98373->hw_init' is already true.
+> > Removing 'if (max98373->hw_init || status !=3D
+> SDW_SLAVE_ATTACHED)'
+> > condition in max98373_update_status() function instead of adding
+> > regcache_mark_dirty() into max98373_suspend() can be an
+> alternative way.
+> > I think it is all about where regcache_mark_dirty() is called from.
+> > The difference is that max98373_io_init() really do the software
+> reset
+> > and do amp initialization again which could be an overhead.
+>=20
+> that description is aligned with my analysis that there's something very
+> wrong happening here, it's not just a simple miss in the regmap
+> handling but a major conceptual bug or misunderstanding in the way
+> reset is handled.
+>=20
+> First, there's the spec: on a reset initiated by the host or if the devic=
+e
+> loses sync for ANY reason, its status cannot remain ATTACHED.
+> There's got to be a 16-frame period at least where the device has to
+> monitor the sync pattern and cannot drive anything on the bus.
+>=20
+> Then there's the hardware behavior on resume: on resume by default
+> the Intel host will toggle the data pin for at least 4096 frames, which
+> by spec means severe reset.
+>=20
+> And last, there's the software init: we also force the status as
+> UNATTACHED in drivers/soundwire/intel.c:
+>=20
+>         /*
+>          * make sure all Slaves are tagged as UNATTACHED and provide
+>          * reason for reinitialization
+>          */
+>         sdw_clear_slave_status(bus,
+> SDW_UNATTACH_REQUEST_MASTER_RESET);
+>=20
+> But we've also seen the opposite effect of an amplifier reporting
+> attached but losing sync immediately after the end of enumeration and
+> never coming back on the bus, see issue
+> https://nam02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%
+> 2Fgithub.com%2Fthesofproject%2Flinux%2Fissues%2F3063&amp;data
+> =3D04%7C01%7Cryans.lee%40maximintegrated.com%7Cb9f84a1267ec4
+> f50b7a008d981edcc46%7Cfbd909dfea694788a554f24b7854ad03%7C0
+> %7C0%7C637683680607026027%7CUnknown%7CTWFpbGZsb3d8eyJ
+> WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
+> %3D%7C1000&amp;sdata=3DrARkwTSB3DN%2BCYxGaehOhtCGEj1eLBl6
+> Mk7QhynQSY8%3D&amp;reserved=3D0
+>=20
+> In other words, we need to check what really happens on resume and
+> why the amplifier keeps reporting its status as ATTACHED despite the
+> spec requirements and software init, or loses this status after
+> enumeration....Something really does not add-up, again it's not just a
+> regmap management issue.
+>=20
+>=20
+>=20
+I do not see #3063 issue on my side. No initialization failure or time-out =
+has occurred.
 
-Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
----
- providers/rxe/rxe.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Now I'm trying to solve the issue with max98373_io_init() function as sugge=
+sted instead of adding
+regmap_cache_dirty() in the suspend function.
+max98373_io_init() was not called from max98373_update_status() when audio =
+resume because
+max98373->hw_init was 1 and Status was SDW_SLAVE_ATTACHED.
+max98373_update_status() do not get SDW_SLAVE_UNATTACHED.
+I confirmed that the issue could be resolved if SDW_SLAVE_UNATTACHED event =
+arrives at
+max98373_update_status() before SDW_SLAVE_ATTACHED is triggered.
+Actually sdw_handle_slave_status() get SDW_SLAVE_UNATTACHED but this functi=
+on exits at
+https://github.com/thesofproject/linux/blob/topic/sof-dev/drivers/soundwire=
+/bus.c#L1765
+before reaching to https://github.com/thesofproject/linux/blob/topic/sof-de=
+v/drivers/soundwire/bus.c#L1825
+I'm not sure how to solve this issue because this code is commonly used for=
+ other Soundwire drivers as well.
 
-diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-index 3c3ea8bb..84e00e60 100644
---- a/providers/rxe/rxe.c
-+++ b/providers/rxe/rxe.c
-@@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
- 	return &vmr->ibv_mr;
- }
- 
-+static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
-+					size_t length, uint64_t iova, int fd,
-+					int access)
-+{
-+	struct verbs_mr *vmr;
-+	int ret;
-+
-+	vmr = malloc(sizeof(*vmr));
-+	if (!vmr)
-+		return NULL;
-+
-+	ret = ibv_cmd_reg_dmabuf_mr(pd, offset, length, iova, fd, access, vmr);
-+	if (ret) {
-+		free(vmr);
-+		return NULL;
-+	}
-+
-+	return &vmr->ibv_mr;
-+}
-+
- static int rxe_dereg_mr(struct verbs_mr *vmr)
- {
- 	int ret;
-@@ -1706,6 +1726,7 @@ static const struct verbs_context_ops rxe_ctx_ops = {
- 	.alloc_pd = rxe_alloc_pd,
- 	.dealloc_pd = rxe_dealloc_pd,
- 	.reg_mr = rxe_reg_mr,
-+	.reg_dmabuf_mr = rxe_reg_dmabuf_mr,
- 	.dereg_mr = rxe_dereg_mr,
- 	.alloc_mw = rxe_alloc_mw,
- 	.dealloc_mw = rxe_dealloc_mw,
--- 
-2.17.1
-
+I share the debug messages for the resume event as your reference.
+[  127.490644] [DEBUG3] intel_resume_runtime
+[  127.490655] [DEBUG3] intel_resume_runtime SDW_INTEL_CLK_STOP_BUS_RESET
+[  127.490658] [DEBUG3] intel_init
+[  127.490660] [DEBUG3] intel_link_power_up
+[  127.490977] [DEBUG3] intel_resume_runtime SDW_UNATTACH_REQUEST_MASTER_RE=
+SET ..
+[  127.490980] [DEBUG4] sdw_clear_slave_status request: 1
+[  127.490983] [DEBUG4] sdw_modify_slave_status, ID:7, status: 0
+[  127.490986] [DEBUG4] sdw_modify_slave_status, ID:3, status: 0
+[  127.490994] [DEBUG3] intel_shim_wake wake_enable:0
+[  127.491060] [DEBUG3] intel_shim_wake wake_enable:0
+[  127.491191] [DEBUG] max98373_resume, first_hw_init: 1, unattach_request:=
+ 1
+[  127.491194] [DEBUG] max98373_resume, INF MODE: 0
+[  127.491953] [DEBUG4] sdw_handle_slave_status IN
+[  127.491956] [DEBUG4] sdw_handle_slave_status, status[1] : 0, slave->stat=
+us: 0, id:7	// UNATTACHED
+[  127.491958] [DEBUG4] sdw_handle_slave_status, status[2] : 0, slave->stat=
+us: 0, id:3
+[  127.491960] [DEBUG4] sdw_handle_slave_status IN2 status[0] =3D 1
+[  127.492808] [DEBUG4] sdw_handle_slave_status IN
+[  127.492810] [DEBUG4] sdw_handle_slave_status, status[1] : 1, slave->stat=
+us: 0, id:7	// ATTACHED
+[  127.492812] [DEBUG4] sdw_handle_slave_status, status[2] : 1, slave->stat=
+us: 0, id:3
+[  127.492814] [DEBUG4] sdw_handle_slave_status IN2 status[0] =3D 0
+[  127.492816] [DEBUG4] sdw_handle_slave_status IN3
+[  127.492818] [DEBUG4] sdw_handle_slave_status status[1] =3D SDW_SLAVE_ATT=
+ACHED, slave->status : 0, slave:7, prev_status:0
+[  127.492820] [DEBUG4] sdw_modify_slave_status, ID:7, status: 1
+[  127.493008] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:7
+[  127.493010] [DEBUG4] sdw_update_slave_status update_status(1) OUT
+[  127.493012] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slav=
+e :7
+[  127.493015] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->firs=
+t_hw_init: 1, status: 1
+[  127.493017] [DEBUG4] sdw_handle_slave_status status[2] =3D SDW_SLAVE_ATT=
+ACHED, slave->status : 0, slave:3, prev_status:0
+[  127.493019] [DEBUG4] sdw_modify_slave_status, ID:3, status: 1
+[  127.493199] [DEBUG4] sdw_update_slave_status update_status(1) IN slave:3
+[  127.493201] [DEBUG4] sdw_update_slave_status update_status(1) OUT
+[  127.493204] [DEBUG] max98373_update_status IN hw_init:1, status: 1, slav=
+e :3
+[  127.493207] [DEBUG] max98373_update_status IN2 hw_init:1, max98373->firs=
+t_hw_init: 1, status: 1
