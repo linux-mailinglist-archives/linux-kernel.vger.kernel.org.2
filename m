@@ -2,103 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CABE41D06D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF8641D070
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346836AbhI3AFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhI3AF3 (ORCPT
+        id S1346857AbhI3AG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:06:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53304 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231238AbhI3AG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:05:29 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE826C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:03:47 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id l6so2693737plh.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TEMf5o/tB/+G1JYjvjKHnHWKGeU4L35T+mKJz6tMWp8=;
-        b=XUvIe1coOSyowS2I6/uzAHiwh4zk58qHCPd2Rhw8gqMWjDjElvPUG1+QHUPPgX0sEH
-         25WrVxZH3PjExMxVK/7q0HGEo2SOmBZ719OQT0+F6rXYf2W9mTrzaaGrBKcxiR1+4DmH
-         jFjpTC/tlPnL1eYXuTpyEo+Dec43mfoO0ef+8aGKPaXWLQxfM3qMu3QAKWrRhug7Op87
-         /qsH8oJv1TU5jKBW6SHaoa/Vws7FmRguUsQtnsP+w9pMk372KzyKhbsdXyO7KIWp6nI/
-         kVJeneaN53Mus1J5fpwgNkcLRoyREFys+PHtwrme/OnFwD/KLW4vpz/lE05Qw49eGAVE
-         in/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TEMf5o/tB/+G1JYjvjKHnHWKGeU4L35T+mKJz6tMWp8=;
-        b=CCK7WwotdtfONLgbej9r4TE3xLYHc7l/Dgo13nn5OfWi5+XJnGnC3LpMT5kDB3rxbi
-         3SlbbjU1ojkVy2DWPzVpyQJ6OSPhW6k4xIu/YDqTDDFaP9915C97tjxql10p6Z5IDwTW
-         2kmrRujPo7IBEiweuNGbsVsnL+Aarf7AJYT0/Wn4dDhR7OFvv6z42OFVgBlyWJ/LpawY
-         PietL1Ihmz1xde9uDTM0J1DOuGr409DF94IDiUd0DQzdYkQ1eYCjDGepGWHRzyC5nSkg
-         cMSaQEDtqJEuvpV8f0rQEUKJRj72f0exKfO4v5YJDR/tByDFj49OjoNIPgdFEgDcOvob
-         EUDA==
-X-Gm-Message-State: AOAM533si7bOca7viX03EJTAVQScipW8bc5pTtIOZGBmp1spI3TJjCih
-        b90IgJN9gGnv+VbAkWz4fh8=
-X-Google-Smtp-Source: ABdhPJyjaSeBJQXFtGH7LN1ia2DVknh63E1R2bHRJW6Ocd7OYlnSE3DR1bBPZpxUI/WXA5sFGtXX3A==
-X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr9473666pji.91.1632960227378;
-        Wed, 29 Sep 2021 17:03:47 -0700 (PDT)
-Received: from WRT-WX9.. ([158.247.226.116])
-        by smtp.gmail.com with ESMTPSA id k9sm788212pfa.88.2021.09.29.17.03.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 17:03:47 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-Subject: [PATCH] trace: in_irq() cleanup
-Date:   Thu, 30 Sep 2021 08:03:42 +0800
-Message-Id: <20210930000342.6016-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 29 Sep 2021 20:06:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632960313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FKM4FZ1+Sj46EyvkXnp0WenJowC0Gqd7KS8Hczjzp7Y=;
+        b=M9/R4eHrNLsDg+p7uotburaWLCjyFgq75WPFkOPow/yLjk13AyxtpdL4fqZYL6X5A1jSTM
+        PMiDW070ITnmJqjbVFwawA6uVP0aEJKv/co6/8fT4tkbWFZjCqYTtRDCzBgHZInBJAzabG
+        39ZjgFYLlocPfT8TW3O2UmdOv4G3DFk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21--4yjIENIP-yx6NUtRe2ZPw-1; Wed, 29 Sep 2021 20:05:12 -0400
+X-MC-Unique: -4yjIENIP-yx6NUtRe2ZPw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE7BD801E72;
+        Thu, 30 Sep 2021 00:05:10 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 72A786A8E7;
+        Thu, 30 Sep 2021 00:05:06 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 08:05:02 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH V3 5/7] genirq/affinity: move group_cpus_evenly() into
+ lib/
+Message-ID: <YVT/Lki9OaRa8OCR@T590>
+References: <20210928005558.243352-1-ming.lei@redhat.com>
+ <20210928005558.243352-6-ming.lei@redhat.com>
+ <74bcc75e-0b68-1d6b-b7f6-4681ec754257@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74bcc75e-0b68-1d6b-b7f6-4681ec754257@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the obsolete and ambiguos macro in_irq() with new
-macro in_hardirq().
+On Wed, Sep 29, 2021 at 03:40:44PM +0100, John Garry wrote:
+> 
+> > +/**
+> > + * group_cpus_evenly - Group all CPUs evenly per NUMA/CPU locality
+> > + * @numgrps: number of groups
+> > + *
+> > + * Return: cpumask array if successful, NULL otherwise. And each element
+> > + * includes CPUs assigned to this group
+> > + *
+> > + * Try to put close CPUs from viewpoint of CPU and NUMA locality into
+> > + * same group, and run two-stage grouping:
+> > + *	1) allocate present CPUs on these groups evenly first
+> > + *	2) allocate other possible CPUs on these groups evenly
+> > + *
+> > + * We guarantee in the resulted grouping that all CPUs are covered, and
+> > + * no same CPU is assigned to different groups
+> 
+> nit: I'd have "no same CPU is assigned to multiple groups"
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
----
- kernel/trace/trace.h                 | 2 +-
- kernel/trace/trace_functions_graph.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+OK
 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7c0f8e160fb..aeec5aa0549d 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -881,7 +881,7 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- 		 * is set, and called by an interrupt handler, we still
- 		 * want to trace it.
- 		 */
--		if (in_irq())
-+		if (in_hardirq())
- 			trace_recursion_set(TRACE_IRQ_BIT);
- 		else
- 			trace_recursion_clear(TRACE_IRQ_BIT);
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 0de6837722da..b08d3923de98 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -120,7 +120,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- 	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
- 		return 0;
- 
--	return in_irq();
-+	return in_hardirq();
- }
- 
- int trace_graph_entry(struct ftrace_graph_ent *trace)
--- 
-2.32.0
+> 
+> > + */
+> > +struct cpumask *group_cpus_evenly(unsigned int numgrps)
+> 
+> nit: The name group_cpus_evenly() would imply an action on some cpus, when
+> it's just calculating some masks - I think "masks" should be at least
+> included in the name
+
+Naming is always the hard part in reviewing, I think cpu is more
+readable, maybe group_all_cpus_evenly()?
+
+> 
+> > +{
+> > +	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+> > +	cpumask_var_t *node_to_cpumask;
+> > +	cpumask_var_t nmsk, npresmsk;
+> > +	int ret = -ENOMEM;
+> > +	struct cpumask *masks = NULL;
+> > +
+> > +	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
+> > +		return NULL;
+> > +
+> > +	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
+> > +		goto fail_nmsk;
+> > +
+> > +	node_to_cpumask = alloc_node_to_cpumask();
+> > +	if (!node_to_cpumask)
+> > +		goto fail_npresmsk;
+> > +
+> > +	masks = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
+> > +	if (!masks)
+> > +		goto fail_node_to_cpumask;
+> > +
+> > +	/* Stabilize the cpumasks */
+> > +	cpus_read_lock();
+> > +	build_node_to_cpumask(node_to_cpumask);
+> > +
+> > +	/* grouping present CPUs first */
+> > +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> > +				  cpu_present_mask, nmsk, masks);
+> > +	if (ret < 0)
+> > +		goto fail_build_affinity;
+> > +	nr_present = ret;
+> > +
+> > +	/*
+> > +	 * Allocate non present CPUs starting from the next group to be
+> > +	 * handled. If the grouping of present CPUs already exhausted the
+> > +	 * group space, assign the non present CPUs to the already
+> > +	 * allocated out groups.
+> > +	 */
+> > +	if (nr_present >= numgrps)
+> > +		curgrp = 0;
+> > +	else
+> > +		curgrp = nr_present;
+> > +	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
+> > +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> > +				  npresmsk, nmsk, masks);
+> > +	if (ret >= 0)
+> > +		nr_others = ret;
+> > +
+> > + fail_build_affinity:
+> 
+> nit: Strange that success path goes through "fail" labels. Current code is
+> this way, so feel free to ignore.
+
+I'd rather not change current behavior in this patches.
+
+> 
+> > +	cpus_read_unlock();
+> > +
+> > +	if (ret >= 0)
+> > +		WARN_ON(nr_present + nr_others < numgrps);
+> > +
+> > + fail_node_to_cpumask:
+> > +	free_node_to_cpumask(node_to_cpumask);
+> > +
+> > + fail_npresmsk:
+> > +	free_cpumask_var(npresmsk);
+> > +
+> > + fail_nmsk:
+> > +	free_cpumask_var(nmsk);
+> > +	if (ret < 0) {
+> > +		kfree(masks);
+> > +		return NULL;
+> > +	}
+> > +	return masks;
+> > +}
+> > +EXPORT_SYMBOL_GPL(group_cpus_evenly);
+> 
+> Are there any users which are available as modules? As I see, the only users
+> are blk-mq-cpumap.c and irq/affinity.c, which I guess aren't available as
+> modules.
+
+Yeah, so far only two built-in users, I think it is fine to start with
+not exporting the symbols, will change to this way in next version.
+
+
+Thanks, 
+Ming
 
