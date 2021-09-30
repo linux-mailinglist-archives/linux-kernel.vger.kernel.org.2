@@ -2,235 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23DA41E159
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0913A41E15B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344566AbhI3Smc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S1344652AbhI3SrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344431AbhI3Sm2 (ORCPT
+        with ESMTP id S229731AbhI3SrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:42:28 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FA6C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:40:45 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id g41so28975118lfv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/WNsW9cvRSrycN8v1M50/aQKwA+TESWFq+m9DKzD9M=;
-        b=YCay/cSODiK5x8RlHaeoFtpseelnfGpcENOwmWzNaCPnJyDgpB4+jcUysEUz7IvASP
-         FuaHOWfOiAEKNf9rGVT2vab9aZWcLmkNthheEST7W3xo4kKLyoqf/BN+3DcpTNR+cJMn
-         4Yog7aaOjKGEVkPtapVaPpVt67j/nVzfTmYcBJ/DQzsAUmly88nGzNgejdnxlkt3bbKE
-         t++y55Yjx64Yimv2sPnKSnGxPO20ndFxF/dlFKudw8Dx3I3DEeu8eb3SoUHgqzoGI+ds
-         D/rztX4LGy+uG6yoGm3U/DBDahXIuADG/G3hqZe9J/EGldeCK/h6pFUnRAnf9/4ySrSz
-         C5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/WNsW9cvRSrycN8v1M50/aQKwA+TESWFq+m9DKzD9M=;
-        b=IAJLRpY0qox2mSisXeo5LyyM6u7ZRmhatcMT8zKB7bWk0PjweERqJK9fbeowdr0G52
-         seYpNejRaVcDkdb3hm217vF0tjj5pcLH5o0XvcByMTTWQC8oLsbC0T9EE7NvjxOMB5Ow
-         auGANOVQWP1Ath75QwrszTIFrcK80Jy0A81Pf0SRKcrrpLqkPGWbHGVkPqQkP3AZHZaD
-         jf3CmYCYoJ3DZm1htFyezroV1qZGHFQmF0jfXdKF9e2JWwSg+EOEHJBCUttt8YItJBzb
-         PFBt4d+rkLXs4TojfNm9wZ1ChwPSzfwMGKNNyIhya9zTJFC0LnEN+5VBybf8msvKIb6R
-         KtSw==
-X-Gm-Message-State: AOAM532IHfEn265vXqYbIxRVe82mXdO7XNfLJqGMPdl4WM1A1rDgkX2w
-        BTp0/Y9+0B1/xSmCq59iIth/7C/g1/WTJ+Fz9eMEmg==
-X-Google-Smtp-Source: ABdhPJwAFsZ9+bvYX7bxP3/EuiWzFoIzYzHFJ8OV2XFbVFB2yoOXggzzwCRYpf6DSPiytfR/wX5JBTUZXkQ9urYlDP8=
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr759454lfu.444.1633027243526;
- Thu, 30 Sep 2021 11:40:43 -0700 (PDT)
+        Thu, 30 Sep 2021 14:47:24 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18594C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=L8XmYJY9cxUHM/LBimhrEUxExZJMF5wge+V9GPP/pr8=; b=N/karnnYCL/HKThK9hRKkZT+L0
+        EJjMDC1A/yKqV56NBcpOb1s5uwGWMpa3MOu32sTH+Mwq3z9ftRhFVK2rD7rc+LEChPt9AUK9bTGSc
+        PsN8vmJH//I0cQf4/zSl9beKrffOoXr3z7cfFvbchH72kEoD6KVOMxK+eWO7P+//Fcm5o+/+iAzZj
+        UeXLvHO5x4Ry4P+E5kfu/R9bXQNR3BRyyFkDw8BIlOiIahDxWO+96/8Jmqentx4TxBdgj0yp9zEQ1
+        3mofbb0pMpVXs3ZXBf1ytphQoUn4SV+SYcH+A590e/AuqhqcuHXvWy03wcUdf+V3ibXGVFn6IQ3o8
+        su+chTUw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mW13r-00Fg8P-46; Thu, 30 Sep 2021 18:45:39 +0000
+Subject: Re: [PATCH v2] HSI: cmt_speech: unmark comments as kernel-doc
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Aditya Srivastava <yashsri421@gmail.com>
+References: <20210928183536.30645-1-rdunlap@infradead.org>
+ <20210928185727.GA10433@duo.ucw.cz>
+ <85f5c28b-3b70-8e31-47a0-7317ebdc216f@infradead.org>
+ <20210930170138.xlspkxshgr4od7t6@earth.universe>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5465ad4d-8999-ad3d-8858-c2e1b8b463f8@infradead.org>
+Date:   Thu, 30 Sep 2021 11:45:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com> <20210930180531.1190642-2-samitolvanen@google.com>
-In-Reply-To: <20210930180531.1190642-2-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 30 Sep 2021 11:40:32 -0700
-Message-ID: <CAKwvOdm1QZxZYzyc0RR0ry530Hqezca-_Xv0t1e0oa7rN21rjg@mail.gmail.com>
-Subject: Re: [PATCH v4 01/15] objtool: Add CONFIG_CFI_CLANG support
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210930170138.xlspkxshgr4od7t6@earth.universe>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05 AM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> With CONFIG_CFI_CLANG, the compiler replaces function references with
-> references to the CFI jump table, which confuses objtool. This change,
-> based on Josh's initial patch [1], goes through the list of relocations
-> and replaces jump table symbols with the actual function symbols.
->
-> [1] https://lore.kernel.org/r/d743f4b36e120c06506567a9f87a062ae03da47f.1611263462.git.jpoimboe@redhat.com/
->
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  tools/objtool/arch/x86/decode.c      | 17 ++++++++++
->  tools/objtool/elf.c                  | 51 ++++++++++++++++++++++++++++
->  tools/objtool/include/objtool/arch.h |  3 ++
->  tools/objtool/include/objtool/elf.h  |  2 +-
->  4 files changed, 72 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-> index 3172983bf808..9b043220b0af 100644
-> --- a/tools/objtool/arch/x86/decode.c
-> +++ b/tools/objtool/arch/x86/decode.c
-> @@ -63,6 +63,23 @@ bool arch_callee_saved_reg(unsigned char reg)
->         }
->  }
->
-> +unsigned long arch_cfi_section_reloc_offset(struct reloc *reloc)
-> +{
-> +       if (!reloc->addend)
-> +               return 0;
-> +
-> +       if (reloc->type == R_X86_64_PC32 || reloc->type == R_X86_64_PLT32)
-> +               return reloc->addend + 4;
-> +
-> +       return reloc->addend;
-> +}
-> +
-> +unsigned long arch_cfi_jump_reloc_offset(unsigned long offset)
-> +{
-> +       /* offset to the relocation in a jmp instruction */
+On 9/30/21 10:01 AM, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Tue, Sep 28, 2021 at 12:52:03PM -0700, Randy Dunlap wrote:
+>> On 9/28/21 11:57 AM, Pavel Machek wrote:
+>>> Hi!
+>>>
+>>>> Fix build warnings from the kernel test robot:
+>>>>
+>>>> drivers/hsi/clients/cmt_speech.c:831: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>>>>       * Block until pending data transfers have completed.
+>>>>
+>>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Cc: Sebastian Reichel <sre@kernel.org>
+>>>> Cc: Aditya Srivastava <yashsri421@gmail.com>
+>>>> Acked-by: Pavel Machek <pavel@ucw.cz>
+>>>
+>>> If noone applies it, you may want to send it to akpm, he's  often
+>>> helpful in pushing similar patches.
+>>
+>> Yes, good idea. Thanks.
+> 
+> Looks like I missed v1. The patch LGTM and I can apply it to the hsi tree.
+> If you already sent it to akpm, that's also fine. Not much is happening in
+> HSI nowadays and it probably will be the only patch for the next cycle.
 
-Thanks for the added comment. ;)
+You go ahead with it, please.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> +       return offset + 1;
-> +}
-> +
->  unsigned long arch_dest_reloc_offset(int addend)
->  {
->         return addend + 4;
-> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-> index 8676c7598728..05a5f51aad2c 100644
-> --- a/tools/objtool/elf.c
-> +++ b/tools/objtool/elf.c
-> @@ -18,6 +18,7 @@
->  #include <errno.h>
->  #include <objtool/builtin.h>
->
-> +#include <objtool/arch.h>
->  #include <objtool/elf.h>
->  #include <objtool/warn.h>
->
-> @@ -291,6 +292,10 @@ static int read_sections(struct elf *elf)
->                 if (sec->sh.sh_flags & SHF_EXECINSTR)
->                         elf->text_size += sec->len;
->
-> +               /* Detect -fsanitize=cfi jump table sections */
-> +               if (!strncmp(sec->name, ".text..L.cfi.jumptable", 22))
-> +                       sec->cfi_jt = true;
-> +
->                 list_add_tail(&sec->list, &elf->sections);
->                 elf_hash_add(section, &sec->hash, sec->idx);
->                 elf_hash_add(section_name, &sec->name_hash, str_hash(sec->name));
-> @@ -576,6 +581,49 @@ static int read_rela_reloc(struct section *sec, int i, struct reloc *reloc, unsi
->         return 0;
->  }
->
-> +/*
-> + * CONFIG_CFI_CLANG replaces function relocations to refer to an intermediate
-> + * jump table. Undo the conversion so objtool can make sense of things.
-> + */
-> +static int fix_cfi_relocs(const struct elf *elf)
-> +{
-> +       struct section *sec;
-> +       struct reloc *reloc;
-> +
-> +       list_for_each_entry(sec, &elf->sections, list) {
-> +               list_for_each_entry(reloc, &sec->reloc_list, list) {
-> +                       struct reloc *cfi_reloc;
-> +                       unsigned long offset;
-> +
-> +                       if (!reloc->sym->sec->cfi_jt)
-> +                               continue;
-> +
-> +                       if (reloc->sym->type == STT_SECTION)
-> +                               offset = arch_cfi_section_reloc_offset(reloc);
-> +                       else
-> +                               offset = reloc->sym->offset;
-> +
-> +                       /*
-> +                        * The jump table immediately jumps to the actual function,
-> +                        * so look up the relocation there.
-> +                        */
-> +                       offset = arch_cfi_jump_reloc_offset(offset);
-> +                       cfi_reloc = find_reloc_by_dest(elf, reloc->sym->sec, offset);
-> +
-> +                       if (!cfi_reloc || !cfi_reloc->sym) {
-> +                               WARN("can't find a CFI jump table relocation at %s+0x%lx",
-> +                                       reloc->sym->sec->name, offset);
-> +                               return -1;
-> +                       }
-> +
-> +                       reloc->sym = cfi_reloc->sym;
-> +                       reloc->addend = 0;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int read_relocs(struct elf *elf)
->  {
->         struct section *sec;
-> @@ -639,6 +687,9 @@ static int read_relocs(struct elf *elf)
->                 tot_reloc += nr_reloc;
->         }
->
-> +       if (fix_cfi_relocs(elf))
-> +               return -1;
-> +
->         if (stats) {
->                 printf("max_reloc: %lu\n", max_reloc);
->                 printf("tot_reloc: %lu\n", tot_reloc);
-> diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
-> index 589ff58426ab..93bde8aaf2e3 100644
-> --- a/tools/objtool/include/objtool/arch.h
-> +++ b/tools/objtool/include/objtool/arch.h
-> @@ -81,6 +81,9 @@ unsigned long arch_jump_destination(struct instruction *insn);
->
->  unsigned long arch_dest_reloc_offset(int addend);
->
-> +unsigned long arch_cfi_section_reloc_offset(struct reloc *reloc);
-> +unsigned long arch_cfi_jump_reloc_offset(unsigned long offset);
-> +
->  const char *arch_nop_insn(int len);
->  const char *arch_ret_insn(int len);
->
-> diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-> index c3857fadee7a..e8d838217c77 100644
-> --- a/tools/objtool/include/objtool/elf.h
-> +++ b/tools/objtool/include/objtool/elf.h
-> @@ -39,7 +39,7 @@ struct section {
->         char *name;
->         int idx;
->         unsigned int len;
-> -       bool changed, text, rodata, noinstr;
-> +       bool changed, text, rodata, noinstr, cfi_jt;
->  };
->
->  struct symbol {
-> --
-> 2.33.0.800.g4c38ced690-goog
->
-
-
+thanks.
 -- 
-Thanks,
-~Nick Desaulniers
+~Randy
