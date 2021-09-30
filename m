@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F4941D2EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E5141D2ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348160AbhI3F4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:56:36 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57065 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348054AbhI3F4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:56:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="221904008"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="221904008"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:54:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="708871804"
-Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Sep 2021 22:54:48 -0700
-Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mVp1r-0003vo-HC; Thu, 30 Sep 2021 05:54:47 +0000
-Date:   Thu, 30 Sep 2021 13:54:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/misc] BUILD SUCCESS
- 64c76a84337a5678009155fafe98c5cd8ec673f0
-Message-ID: <61555106.+b257RLbdAs3PbJi%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1348175AbhI3F5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348054AbhI3F5l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:57:41 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9261C06161C;
+        Wed, 29 Sep 2021 22:55:58 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g41so20484241lfv.1;
+        Wed, 29 Sep 2021 22:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=2qGpbnt6Ea9Mn6yWgyyxhjvadWbpeqRJ4xkhEjZ9SsE=;
+        b=YY8UpddAA8/LckCgQq+XM4SWrWfV0p/x8ju7e7m1AbQUnsMIT4b4d1xtaNskFasAVp
+         bnhuy3o53ab2V35seCuM+AdSDngA4//ULKuf7yOanPf4sgYgs+lsmbrf7OgFusBg7xqv
+         uFviLHXHlQ2rxnt5oTl8fD1HQpm+6ZbOAxnD7ru8a9FIB6VdtB50H8XTnF08dZuXSXEv
+         +GRP3Epkk45e9Mr+r81uZxv7nv3zVGLBjTRFZJ8On0Lv6B31lWQP67M6Hf2IE1Nv9cDI
+         kEupKbrYVDko9JDMN9TnVxDabeErG6bWxREfczrHgH26rTx3Sgkhpm/QECV5AOS/1fr0
+         dsGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2qGpbnt6Ea9Mn6yWgyyxhjvadWbpeqRJ4xkhEjZ9SsE=;
+        b=4VGQwv2VU4LPOpSaCyYnWAACRDGpsoMyh3nSsx3mzHtZwugE8iS+Ddk3RQRqYQ4qGu
+         +Y4eg+GQ2yb7I6aqZX1YT4CUZ5LZOjPQ4wSupYS0R8Vg1lOVwe7YOTvmrhVTLPEfF9j2
+         6LJ4BwzqO8C+XPWAYvFA/8yAweXQ3mj/nWdM//RbShG1hb2DfJQdB3KuJpwRbOI9g2VO
+         spviggpEzIWqpaWlj9+rBow6QC5bkmj40Sja6/5LmT7tnZ0htXVWBL4uxneM2DbAk1w+
+         +6buD2dJu+Hwn6JBBIt6WIWrsOql4esXUU40YGcTGmrPjL9qC3QSUDxnDHcvkiPVgjmB
+         1H1w==
+X-Gm-Message-State: AOAM530EjMAkPWWbhoucJoIsYxmLrIZETy96F5+XQv5s8yBHTTFeAz5D
+        4vR6/t27kLad/BOWayEMXj0=
+X-Google-Smtp-Source: ABdhPJzDryf+Tr4zoSfjX/tu6EcZklDOfBSc7qqJQ+JooouBdRyXaqCE+m08QTK8cqJ+mu4MRP1GWA==
+X-Received: by 2002:a05:6512:ac2:: with SMTP id n2mr4335806lfu.625.1632981357138;
+        Wed, 29 Sep 2021 22:55:57 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.149])
+        by smtp.gmail.com with ESMTPSA id c14sm52519lfc.49.2021.09.29.22.55.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 22:55:56 -0700 (PDT)
+Message-ID: <84cf4561-506b-511c-04b7-f12e411506a6@gmail.com>
+Date:   Thu, 30 Sep 2021 08:55:53 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 2/2] phy: mdio: fix memory leak
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, buytenh@marvell.com, afleming@freescale.com,
+        dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+References: <2324212c8d0a713eba0aae3c25635b3ca5c5243f.1632861239.git.paskripkin@gmail.com>
+ <55e9785e2ae2eae03c4af850a07e3297c5a0b784.1632861239.git.paskripkin@gmail.com>
+ <20210929164840.76afdec8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20210929164840.76afdec8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
-branch HEAD: 64c76a84337a5678009155fafe98c5cd8ec673f0  x86/Kconfig: Fix an unused variable error in dell-smm-hwmon
+On 9/30/21 02:48, Jakub Kicinski wrote:
+> On Tue, 28 Sep 2021 23:40:15 +0300 Pavel Skripkin wrote:
+>> +	/* We need to set state to MDIOBUS_UNREGISTERED to correctly realese
+>> +	 * the device in mdiobus_free()
+>> +	 *
+>> +	 * State will be updated later in this function in case of success
+>> +	 */
+>> +	bus->state == MDIOBUS_UNREGISTERED;
+> 
+> IDK how syzbot has tested it but clearly we should blindly
+> depend on that.
+> 
+> s/==/=/
+> 
+> Compiler would have told you this.
+> 
+whooops... sorry about that. syzbot has tested v1. v2 is same, but 
+without new state (so, the logic in v1 and v2 is the same).
 
-elapsed time: 700m
+I guess, it's copy-paste error on my side :). Will send v3 this evening
 
-configs tested: 115
-configs skipped: 70
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210929
-arm                            qcom_defconfig
-powerpc                   lite5200b_defconfig
-arm                             rpc_defconfig
-sparc64                          alldefconfig
-sh                            shmin_defconfig
-xtensa                              defconfig
-powerpc                         ps3_defconfig
-sh                                  defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                       imx_v6_v7_defconfig
-sh                   secureedge5410_defconfig
-arm                          iop32x_defconfig
-arm                         socfpga_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-powerpc                     asp8347_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-arc                                 defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     ksi8560_defconfig
-parisc                           allyesconfig
-arm                       mainstone_defconfig
-mips                           ip27_defconfig
-powerpc                      walnut_defconfig
-sh                        sh7757lcr_defconfig
-arm                         shannon_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-powerpc                      pmac32_defconfig
-mips                         cobalt_defconfig
-x86_64               randconfig-c001-20210929
-arm                  randconfig-c002-20210929
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20210929
-i386                 randconfig-a005-20210929
-i386                 randconfig-a002-20210929
-i386                 randconfig-a006-20210929
-i386                 randconfig-a004-20210929
-i386                 randconfig-a003-20210929
-x86_64               randconfig-a002-20210929
-x86_64               randconfig-a005-20210929
-x86_64               randconfig-a001-20210929
-x86_64               randconfig-a006-20210929
-x86_64               randconfig-a003-20210929
-x86_64               randconfig-a004-20210929
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-powerpc              randconfig-c003-20210929
-mips                 randconfig-c004-20210929
-arm                  randconfig-c002-20210929
-x86_64               randconfig-c007-20210929
-riscv                randconfig-c006-20210929
-s390                 randconfig-c005-20210929
-i386                 randconfig-c001-20210929
-x86_64               randconfig-a014-20210929
-x86_64               randconfig-a011-20210929
-x86_64               randconfig-a013-20210929
-x86_64               randconfig-a015-20210929
-x86_64               randconfig-a012-20210929
-x86_64               randconfig-a016-20210929
-i386                 randconfig-a014-20210929
-i386                 randconfig-a013-20210929
-i386                 randconfig-a016-20210929
-i386                 randconfig-a011-20210929
-i386                 randconfig-a015-20210929
-i386                 randconfig-a012-20210929
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-hexagon              randconfig-r045-20210929
-riscv                randconfig-r042-20210929
-hexagon              randconfig-r041-20210929
-s390                 randconfig-r044-20210929
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+With regards,
+Pavel Skripkin
