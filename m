@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1F141E304
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C2441E30B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348741AbhI3VJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:09:03 -0400
-Received: from mout-p-101.mailbox.org ([80.241.56.151]:57772 "EHLO
-        mout-p-101.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348668AbhI3VJB (ORCPT
+        id S1348761AbhI3VMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:12:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55648 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348668AbhI3VMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:09:01 -0400
-X-Greylist: delayed 10990 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 17:09:00 EDT
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [80.241.60.233])
+        Thu, 30 Sep 2021 17:12:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HL5R820jFzQk38;
-        Thu, 30 Sep 2021 23:07:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Subject: Re: [PATCH v2 2/2] mwifiex: Try waking the firmware until we get an
- interrupt
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
-References: <20210914114813.15404-1-verdre@v0yd.nl>
- <20210914114813.15404-3-verdre@v0yd.nl> <YUsRT1rmtITJiJRh@smile.fi.intel.com>
- <d9b1c8ea-99e2-7c3e-ec8e-61362e8ccfa7@v0yd.nl>
- <YVYk/1+ftFUOoitF@smile.fi.intel.com>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-Message-ID: <98c1b772-ae6b-e435-030e-399f613061ba@v0yd.nl>
-Date:   Thu, 30 Sep 2021 23:07:09 +0200
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 23B4B225F5;
+        Thu, 30 Sep 2021 21:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633036259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hF1+AiAkOiwxS7GYNWFY7mrQc9otq7zFJhOd9XeK0UI=;
+        b=sIdcON51m/C0XKXzQk94plviKDHXpAnnHT2MTXjurEoYOi3l+ppLUiESWHP63ASv+Drjhv
+        GZDnNsiRgqttory5uKonjDBv2FEJTtxtvF0CeXxoJDeGq4cjgT7Kt2B3PIYKKwTixYWill
+        6OaecVNdNO/PCqC1rANe2oxeWcK3P7k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633036259;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hF1+AiAkOiwxS7GYNWFY7mrQc9otq7zFJhOd9XeK0UI=;
+        b=txE+MXYPMA8AKS3I5AOUXdzpLNFIZVkV8Yl9tZVtKfYJYsNd5lPsGBiORDVTGxhL+GM/I1
+        PseKpwG+r+56bJCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2F7713B63;
+        Thu, 30 Sep 2021 21:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6nSdNuInVmFPQwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 30 Sep 2021 21:10:58 +0000
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     Dave Chinner <david@fromorbit.com>, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
+ <20210930044202.GP2361455@dread.disaster.area>
+ <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz> <YVYGcLbu/aDKXkag@nuc10>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
+Date:   Thu, 30 Sep 2021 23:10:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YVYk/1+ftFUOoitF@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YVYGcLbu/aDKXkag@nuc10>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D745326E
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 10:58 PM, Andy Shevchenko wrote:
-> On Thu, Sep 30, 2021 at 08:04:00PM +0200, Jonas Dreßler wrote:
->> On 9/22/21 1:19 PM, Andy Shevchenko wrote:
->>> On Tue, Sep 14, 2021 at 01:48:13PM +0200, Jonas Dreßler wrote:
-> 
-> ...
-> 
->>>> +	do {
->>>> +		if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
->>>> +			mwifiex_dbg(adapter, ERROR,
->>>> +				    "Writing fw_status register failed\n");
->>>> +			return -EIO;
->>>> +		}
->>>> +
->>>> +		n_tries++;
->>>> +
->>>> +		if (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL)
->>>> +			usleep_range(400, 700);
->>>> +		else
->>>> +			msleep(10);
->>>> +	} while (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL + N_WAKEUP_TRIES_LONG_INTERVAL &&
->>>> +		 READ_ONCE(adapter->int_status) == 0);
->>>
->>> Can't you use read_poll_timeout() twice instead of this custom approach?
+On 9/30/21 8:48 PM, Rustam Kovhaev wrote:
+> On Thu, Sep 30, 2021 at 10:13:40AM +0200, Vlastimil Babka wrote:
 >>
->> I've tried this now, but read_poll_timeout() is not ideal for our use-case.
->> What we'd need would be read->sleep->poll->repeat instead of
->> read->poll->sleep->repeat. With read_poll_timeout() we always end up doing
->> one more (unnecessary) write.
+>> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
+>> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
+>> two together last 5 years anyway.
 > 
-> First of all, there is a parameter to get sleep beforehand.
+> +1 for adding Kconfig option, it seems like some things are not meant to
+> be together.
 
-Sleeping beforehand will sleep before doing the first write, so that's 
-just wasted time.
+But if we patch SLOB, we won't need it.
 
-> Second, what is the problem with having one write more or less?
-> Your current code doesn't guarantee this either. It only decreases
-> probability of such scenario. Am I wrong?
+>> Maybe we could also just add the 4 bytes to all SLOB objects, declare
+>> kfree() is always fine and be done with it. Yes, it will make SLOB footprint
+>> somewhat less tiny, but even whan we added kmalloc power of two alignment
+>> guarantees, the impact on SLOB was negligible.
 > 
-> 
+> I'll send a patch to add a 4-byte header for kmem_cache_alloc()
+> allocations.
 
-Indeed my approach just decreases the probability and we sometimes end 
-up writing twice to wakeup the card, but it would kinda bug me if we'd 
-always do one write too much.
+Thanks. Please report in the changelog slab usage from /proc/meminfo
+before and after patch (at least a snapshot after a full boot).
 
-Anyway, if you still prefer the read_poll_timeout() solution I'd be 
-alright with that of course.
+>>> Thoughts?
+>>>
+>>> Cheers,
+>>>
+>>> Dave.
+>>>
+>>
+
