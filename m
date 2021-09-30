@@ -2,140 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ABA41D8ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF02841D8FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350518AbhI3LjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:39:24 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:54573 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350447AbhI3LjW (ORCPT
+        id S1350550AbhI3LmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:42:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57090 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350490AbhI3LmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:39:22 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 3CC412B00428;
-        Thu, 30 Sep 2021 07:37:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 30 Sep 2021 07:37:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=F
-        TKJqnUNdam3eXYcxKVwRSUv7R/MUB8dw+EeZb2yffI=; b=lZrejGtO9mHZIlKQR
-        8OC8F82Zjqs37lcpH1jGd9ppXkzv5qH9en10GS3OWsYPEytqOmoa3+b1IEDQ1xRq
-        /SsUwEYZ4g6rVlchuybxJK2dXv80WZA9ethatvW9yo1RBpaFbA82CIhKYbRHpHTV
-        AXOvxD/polWDrTn7cDHM0i4qEhbsOU7NPfsQtmR9wKnIlMP7Ym5O95+kyrRsWjc8
-        o6Y8+h0rfW4C9WHChuVMciBxQAgwsTb9PEFRcmtGYmFJ/Gg2GovD4osiLHie0OIR
-        pRb6cUTnpk3dqnHVyxP5kVhCP32pcwVf9FhXwLRcixvNusvomdsCwuCHE9DmPaDo
-        VRo5Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=FTKJqnUNdam3eXYcxKVwRSUv7R/MUB8dw+EeZb2yf
-        fI=; b=Cp3BiCJd9Si8nSF+L96RumPEjY5qCVwvtwq9CdPm9WRds+9qtTI0ERMGZ
-        j1Culz447InBI6CP05DY3qoF+nElBjiUtP6tSo0YR5sqPbPzICcRasc9KQLkLQuk
-        XRxnV+N6rjjnFTq+oXQFzgAjGNrqAsoOTOMb3ttJedKFv29o65Nl8pKH59Hlh8bQ
-        yDSyXAhSwTLTVjUvkZQPtUhsoQgsGfpbyljfsrBCGWRfKKJTz1BAJqoAW5UGW8/S
-        DawHkwxq1B1Dnuj/kgAeCpPkej0Zpz3XahFJI31AOKL8ZWfqGIJhrsvV6zuEncPq
-        GtuYSEp9tsTmXGcVYksTtgkAOONKQ==
-X-ME-Sender: <xms:gqFVYeWpq4we2qYbs17TlY2CXJLq4qISoSzBnNAhj0pFehaSkHudTQ>
-    <xme:gqFVYakwzZznoCRiHCDpykZwBEo8OF3TAUedUCAw02l_k5ZkWoy5ZAjcH_is6kRHC
-    8JGlDClJLNr0uDV7A>
-X-ME-Received: <xmr:gqFVYSbmQX52drvwkxfnuI-Z2VSyWQdcLx_OIhP6vfNb5pqBADVtzWLJ_BWPU_9Kv0OedUdyLrbQ2phZTx-OSpgN7eeyh6SzIBWLNe2qFYu1cDFFN3Bu-JbPBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:gqFVYVWOwFqu1wlzzxWfBkncu9fJlmRlw91zm2PCpwbzNtpVIpMW7Q>
-    <xmx:gqFVYYm8fMw4_WQz9zCnx8EnI-dRw5ABRhk6HO1LhXrUTQ4zrMHxaw>
-    <xmx:gqFVYaf4sT9c4yl6PXsufCPQ9K-VMjJWqsmJzUuFGOTtNTURDVOh7A>
-    <xmx:gqFVYT9l8kaFitT5Sm2I2qjMAAaGbZMRwyrVJKDjPWNVBpl66L15p9wURJQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Sep 2021 07:37:37 -0400 (EDT)
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210929044254.38301-1-samuel@sholland.org>
- <CGME20210929044301epcas1p4d69083b46ca38d610981db6f01cfe9e4@epcas1p4.samsung.com>
- <20210929044254.38301-3-samuel@sholland.org>
- <114afa7e-6218-6b1f-f87e-84690f10029c@samsung.com>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 02/10] PM / devfreq: Do not require devices to have OPPs
-Message-ID: <d0a2c36b-4019-2f52-13f0-be76db5a48ec@sholland.org>
-Date:   Thu, 30 Sep 2021 06:37:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <114afa7e-6218-6b1f-f87e-84690f10029c@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 30 Sep 2021 07:42:19 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E9B5F21D91;
+        Thu, 30 Sep 2021 11:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633002035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bw/BZPrppPZ0tpkoU0dPMVMi9G/hLMWqA9GjNFb/BHM=;
+        b=NHIdLWq1UwEqqCNx/gQWqOo3X7FZZCP0db2FY4ok+CP/MDAXltJiEvY3g5a1rqaj1ujzRU
+        v5k7QeK+xo2kZ/QviopmC4zECezZZyrBR6Xzg6dbQJ6+0n4Z1Hc/bhsKacXFESlxbwgey3
+        lR4XhbXdb2+r/KlEOHiVEW+eSmPqvjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633002035;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bw/BZPrppPZ0tpkoU0dPMVMi9G/hLMWqA9GjNFb/BHM=;
+        b=way9GvNv59CgFgaXbF4o2Lh7B5m5tNEujJriBXcxktkBXigWR2O07RpLyrmBc6rr4uIR+8
+        E7vjM2HHkK+S1fAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 24177A3B81;
+        Thu, 30 Sep 2021 11:40:35 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 13:40:35 +0200
+Message-ID: <s5hy27ejnpo.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     John Keeping <john@metanate.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer destruction
+In-Reply-To: <20210930112753.40e1efa6.john@metanate.com>
+References: <20210929113620.2194847-1-john@metanate.com>
+        <s5hzgrvl9j0.wl-tiwai@suse.de>
+        <20210929161758.49ce947f.john@metanate.com>
+        <s5hv92jl7t2.wl-tiwai@suse.de>
+        <20210929175632.50b78be8.john@metanate.com>
+        <s5hfstmlgkj.wl-tiwai@suse.de>
+        <s5hczoqlfgn.wl-tiwai@suse.de>
+        <20210930112753.40e1efa6.john@metanate.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 11:19 PM, Chanwoo Choi wrote:
-> Hi Samuel,
+On Thu, 30 Sep 2021 12:27:53 +0200,
+John Keeping wrote:
 > 
+> On Thu, 30 Sep 2021 08:55:52 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
 > 
-> On 9/29/21 1:42 PM, Samuel Holland wrote:
->> Since commit ea572f816032 ("PM / devfreq: Change return type of
->> devfreq_set_freq_table()"), all devfreq devices are required to have a
->> valid freq_table. If freq_table is not provided by the driver, it will
->> be filled in by set_freq_table() from the OPPs; if that fails,
->> devfreq_add_device() will return an error.
->>
->> However, since commit ab8f58ad72c4 ("PM / devfreq: Set min/max_freq when
->> adding the devfreq device"), devfreq devices are _also_ required to have
->> an OPP table, even if they provide freq_table. devfreq_add_device()
->> requires dev_pm_opp_find_freq_ceil() and dev_pm_opp_find_freq_floor() to
->> return successfully, specifically to initialize scaling_min/max_freq.
->>
->> Not all drivers need an OPP table. For example, a driver where all
->> frequencies are determined dynamically could work by filling out only
->> freq_table. But with the current code it must call dev_pm_opp_add() on
->> every freq_table entry to probe successfully.
+> > On Thu, 30 Sep 2021 08:31:56 +0200,
+> > Takashi Iwai wrote:
+> > > 
+> > > On Wed, 29 Sep 2021 18:56:32 +0200,
+> > > John Keeping wrote:
+> > > > 
+> > > > On Wed, 29 Sep 2021 17:28:57 +0200
+> > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > 
+> > > > > On Wed, 29 Sep 2021 17:17:58 +0200,
+> > > > > John Keeping wrote:
+> > > > > > 
+> > > > > > On Wed, 29 Sep 2021 16:51:47 +0200
+> > > > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > >   
+> > > > > > > On Wed, 29 Sep 2021 13:36:20 +0200,
+> > > > > > > John Keeping wrote:  
+> > > > > > > > 
+> > > > > > > > If the sequencer device outlives the rawmidi device, then
+> > > > > > > > snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
+> > > > > > > > freed the snd_rawmidi structure.
+> > > > > > > > 
+> > > > > > > > This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
+> > > > > > > > 
+> > > > > > > > Keep a reference to the rawmidi device until the sequencer has been
+> > > > > > > > destroyed in order to avoid this.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: John Keeping <john@metanate.com>    
+> > > > > > > 
+> > > > > > > Thanks for the patch.  I wonder, though, how this could be triggered.
+> > > > > > > Is this the case where the connected sequencer device is being used
+> > > > > > > while the sound card gets released?  Or is it something else?  
+> > > > > > 
+> > > > > > I'm not sure if it's possible to trigger via the ALSA API; I haven't
+> > > > > > found a route that can trigger it, but that doesn't mean there isn't
+> > > > > > one :-)
+> > > > > > 
+> > > > > > Mostly this is useful to make CONFIG_DEBUG_KOBJECT_RELEASE cleaner.  
+> > > > > 
+> > > > > Hm, then could you check whether the patch below papers over it
+> > > > > instead?
+> > > > 
+> > > > No, this patch doesn't solve it.  The issue is that the effect of the
+> > > > final device_put() is delayed from the time it is called and there is no
+> > > > way to guarantee the ordering without ensuring the sequencer has been
+> > > > destroyed before the final reference to the rawmidi device is put.
+> > > > 
+> > > > Both of the functions involved are called from the core
+> > > > device::release() hook.
+> > > > 
+> > > > I'm using the patch below to easily check that the sequencer has been
+> > > > freed before the rawmidi data.  This can easily be triggered by
+> > > > unplugging a USB MIDI device (it's not 100% since the kobject release
+> > > > delays are random).
+> > > 
+> > > Hm, it's strange.  I suppose you're *not* using the MIDI device,
+> > > right?
+> > > 
+> > > The release path for the USB-audio driver is:
+> > >   usb_audio_disconnect() ->
+> > >     snd_card_free_when_closed() ->
+> > >       release_card_device() (via put_device(&card->card_dev)) ->
+> > >         snd_card_do_free()
+> > > 
+> > > And here in snd_card_do_free(), the snd_device free-callback chains
+> > > are called at the beginning (snd_device_free_all()).
+> > > As it's executed in a reverse loop, snd_rawmidi_dev_seq_free() shall
+> > > be called before snd_rawmidi_dev_free().  Since the final put_device()
+> > > for the rawmidi device is called in the latter function, the device
+> > > release must not happen before snd_rawmidi_dev_seq_free()...
+> > 
+> > Correction: now I finally understood what I misunderstood.
+> > Although the snd_device call chain mentioned above itself is correct,
+> > the snd_rawmidi_dev_seq_free() function isn't called directly from the
+> > snd_device chain, but it's rater the own private_free of
+> > snd_seq_device object.  That is, the call of snd_seq_device
+> > private_free is done in a wrong place; it should be called in the
+> > snd_device call chain instead of the device release.
+> > 
+> > A fix patch is something like below.  Could you check whether this
+> > fixes the problem?
 > 
-> As you commented, if device has no opp table, it should call dev_pm_opp_add().
-> The devfreq have to use OPP for controlling the frequency/regulator.
-> 
-> Actually, I want that all devfreq driver uses the OPP as default way.
+> Yes, this fixes it!
 
-The current code/documentation implies that an OPP table is intended to
-be optional. For example:
+Great, I'll submit a proper patch.
 
- * struct devfreq - Device devfreq structure
-...
- * @opp_table:  Reference to OPP table of dev.parent, if one exists.
+Thanks!
 
-So this should be updated if an OPP table is no longer optional.
 
-> Are there any reason why don't use the OPP table?
-
-dev_pm_opp_add() takes a voltage, and assumes the existence of some
-voltage regulator, but there is none involved here. The only way to have
-an OPP table without regulators is to use a static table in the
-devicetree. But that also doesn't make much sense, because the OPPs
-aren't actually customizable; they are integer dividers from a fixed
-base clock. And adding a fixed OPP table to each board would be a lot of
-work to replace a trivial loop in the driver. So it seems to be the
-wrong abstraction.
-
-Using an OPP table adds extra complexity (memory allocations, error
-cases), just to duplicate the list of frequencies that already has to
-exist in freq_table. And the driver works fine without any of that.
-
-Regards,
-Samuel
+Takashi
