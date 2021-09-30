@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FF041D10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF4E41D10B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347669AbhI3BoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 21:44:14 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:36479 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233941AbhI3BoM (ORCPT
+        id S1347628AbhI3BqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 21:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhI3BqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:44:12 -0400
-Received: (qmail 448410 invoked by uid 1000); 29 Sep 2021 21:42:29 -0400
-Date:   Wed, 29 Sep 2021 21:42:29 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
- USB/Thunderbolt to core
-Message-ID: <20210930014229.GA447956@rowland.harvard.edu>
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Wed, 29 Sep 2021 21:46:21 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DC7C06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 18:44:39 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id s20so5582057ioa.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 18:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ag+4yNg3t4lDobvnoXDI3lx/G6JRcztPX349EfTrvys=;
+        b=XA15C3MS+Ru70z9K5PsYOaBwzptA+i62Y+vQntpRsUlukIjSnmeJDdPy2atqjE4DQR
+         upfKCZTzoypEmAcTBoDbVGcEycJBD/EsN9lwpZmGmbVzEshIauR/Th4Sg6ZyVkxKuGZx
+         oOq8Vk6++/nCq19t1N0DSSwrCudU9Ekp9hio0+CM4o9vwyxXn2HufWdP0VBIhzTJJja/
+         HjfYjviablg2wJeVWudVV0StGkDHDeAq7qRuWywrOcOcgaAEViNTpRhJTx7bj85adxQo
+         Flq1RK8Idpuec8A5BjLGPihMJ1cq2L31ryzrAtm+4gvFYUJsmSSshaOW4A778StHdkWL
+         1toQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ag+4yNg3t4lDobvnoXDI3lx/G6JRcztPX349EfTrvys=;
+        b=vAS102Ops7QbNNr83Wqgqvezw5ytW3s1tU84OJ2qAA1UZuXV10wSGfPyjX9g2b7Idp
+         PYZfq5msZr2Jmd7E1ky/JlBcstNcUVKCO/vMECXL5MWIH4cqeCx3+s7ysTmOp/7eabfK
+         Y5OvalFIZZHwjdsnOV10JwuxVlhu4q1ex+P6vA8sBh19i9XeSRNBuL7RKflmQPEATzVt
+         ZN4SJIz3YWVFMxIKho8EKmf27qHB/g+yxWnp6tIvn9mxrtAGU/sJAGGT15FhJ69MWnOh
+         KFDWTw1O53dGogjpAlRLSU86SmIxX2y1JJ0jtr1Dpz+HKLrqtxKUdZ1mW/GfwrtDTDty
+         DlcQ==
+X-Gm-Message-State: AOAM531r64wly6o0iJh2tHz+VrPlvpMN8frFVi+p+boDIZoyPO7LSotB
+        YnJ0NPN1//2m/svQlO8/flU=
+X-Google-Smtp-Source: ABdhPJw9+lHlgC4C0Iib/UIs9kg4hYI1KRlIi8BBpwfD2Erth25p4XAh09jmFmHvTdGWPRLhCLs9Aw==
+X-Received: by 2002:a5d:9145:: with SMTP id y5mr2010979ioq.200.1632966279194;
+        Wed, 29 Sep 2021 18:44:39 -0700 (PDT)
+Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id h23sm1155414ila.32.2021.09.29.18.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 18:44:38 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 0/4] drm: maintenance patches for 5.15-rcX
+Date:   Wed, 29 Sep 2021 19:44:23 -0600
+Message-Id: <20210930014427.14239-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 06:05:06PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> Currently bus drivers like "USB" or "Thunderbolt" implement a custom
-> version of device authorization to selectively authorize the driver
-> probes. Since there is a common requirement, move the "authorized"
-> attribute support to the driver core in order to allow it to be used
-> by other subsystems / buses.
-> 
-> Similar requirements have been discussed in the PCI [1] community for
-> PCI bus drivers as well.
-> 
-> No functional changes are intended. It just converts authorized
-> attribute from int to bool and moves it to the driver core. There
-> should be no user-visible change in the location or semantics of
-> attributes for USB devices.
-> 
-> Regarding thunderbolt driver, although it declares sw->authorized as
-> "int" and allows 0,1,2 as valid values for sw->authorized attribute,
-> but within the driver, in all authorized attribute related checks,
-> it is treated as bool value. So when converting the authorized
-> attribute from int to bool value, there should be no functional
-> changes other than value 2 being not visible to the user.
-> 
-> [1]: https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
-> 
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+hi drm folks,
 
-Since you're moving the authorized flag from the USB core to the
-driver core, the corresponding sysfs attribute functions should be
-moved as well.
+Heres a small set of assorted patches which are IMO suitable for rcX;
+one doc fix, 2 patches folding multiple DBGs together, and a format
+string modification.
 
-Also, you ignored the usb_[de]authorize_interface() functions and 
-their friends.
+Jim Cromie (4):
+  drm: fix doc grammar error
+  amdgpu_ucode: reduce number of pr_debug calls
+  nouveau: fold multiple DRM_DEBUG_DRIVERs together
+  i915/gvt: remove spaces in pr_debug "gvt: core:" etc prefixes
 
-Alan Stern
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c | 293 ++++++++++++----------
+ drivers/gpu/drm/i915/gvt/debug.h          |  18 +-
+ drivers/gpu/drm/nouveau/nouveau_drm.c     |  36 ++-
+ include/drm/drm_drv.h                     |   2 +-
+ 4 files changed, 191 insertions(+), 158 deletions(-)
+
+-- 
+2.31.1
+
