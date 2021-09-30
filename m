@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6C41DD62
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2126241DD69
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343619AbhI3P0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:26:55 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:52420 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231637AbhI3P0y (ORCPT
+        id S245310AbhI3P1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245004AbhI3P13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:26:54 -0400
-X-UUID: 9d8a817538964c64b921d86f966a1009-20210930
-X-UUID: 9d8a817538964c64b921d86f966a1009-20210930
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 836598912; Thu, 30 Sep 2021 23:25:08 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 30 Sep 2021 23:25:07 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 30 Sep
- 2021 23:25:06 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Sep 2021 23:25:05 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCHi v6, 1/1] drm/mediatek: add dither 6 setting
-Date:   Thu, 30 Sep 2021 23:25:06 +0800
-Message-ID: <20210930152506.12086-2-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210930152506.12086-1-yongqiang.niu@mediatek.com>
-References: <20210930152506.12086-1-yongqiang.niu@mediatek.com>
+        Thu, 30 Sep 2021 11:27:29 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1142C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:25:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s11so6589975pgr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iIxgYNDztL7Z5NZD7Jrw2Q8W9/sF09Rvn/hN4H8sJ6s=;
+        b=H9ByBCwUFoisbggQfboACP31KYAVClsy6c2zsT8A18/94EX+AnluzG1qujii4U0mXT
+         3l96j2LXb6DMlHQlhr/CLemSNhGGqawiFsMbdelCPbB2zN028oULxdodOhY85xhryQtb
+         k+DZww7m+rKmc3v7sZs7XWqntRlSwLBw4TfVkkOlsJT5/RhGPdUOzrP6c2PZlrsEGs5D
+         MvUBojQkUYkfrK5jEUOzFV8tUfb/ViVq+LQZ9DSIcsGrwmgKlFZreeu8G2wd7kuW1vnq
+         kSp18ebDWzKdvr1UPRjO2MEykMiEfFsfiDuep2Z859xwM7cOMrAwL3NsmQNsK4RPHXLN
+         Zbpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iIxgYNDztL7Z5NZD7Jrw2Q8W9/sF09Rvn/hN4H8sJ6s=;
+        b=TIJlLroOXrUOm+x8GcC01whAqemkcNX/e+nzqQsMlm6rOawB+28HBBS3IBvk8R8Dgd
+         qQNeAemxxMIf4ibobLNbQSH6yHlsrslkntkcYE3qAdY0wdM2l1+PBgyp57z8ZACPj8BZ
+         6Muqw9lrHFAM0TuDBMYgvygWsuD88n74OqkT+6MzVwlHGlrRxilHuhD/fR/z6R6eUBps
+         2h+dzq1haGPpTO+bDuuH1bv5MkCR4MyjbLoC3o/Mm3otnYmXo2c1GAsZ0YEPCr9UlSkN
+         1dGaC0Kh3nu7G6ivwZBOKZeIsa9FLGbYZygI2Z2BMVLneEbIHxP38CfIfHQq62JtVOVt
+         WlPg==
+X-Gm-Message-State: AOAM531pAOmvBiDSgnFbq4F2wIaXZb93VJPo8+uounacZZDsJEp1qWaM
+        sWCk0E1ONyN6HUNCaajoqbATOC8GRgQ2HgB4fU474w==
+X-Google-Smtp-Source: ABdhPJxC9LlLHCc9VsuLNd2ENfEgS7lqcNO31wz+nFKZyLdakX6Gg7y18epJgAQ/l5pu2ntO4OPx+josqq5a+ijdZqA=
+X-Received: by 2002:aa7:9d84:0:b0:447:c2f4:4a39 with SMTP id
+ f4-20020aa79d84000000b00447c2f44a39mr4974478pfq.86.1633015546058; Thu, 30 Sep
+ 2021 08:25:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930014229.GA447956@rowland.harvard.edu> <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
+ <20210930145932.GB464826@rowland.harvard.edu>
+In-Reply-To: <20210930145932.GB464826@rowland.harvard.edu>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 30 Sep 2021 08:25:35 -0700
+Message-ID: <CAPcyv4gZp3dx9JDKiRSkuCF1=5w-g5gVd1SrcA_WfLtYjo4BQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
+ USB/Thunderbolt to core
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dither 6 setting is missed in a6b7c98afdca
-bit 1 is lfsr_en( "Enables LFSR-type dithering"), need enable
-bit 2 is rdither_en(Enables running order dithering), need disable
+On Thu, Sep 30, 2021 at 8:00 AM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Wed, Sep 29, 2021 at 06:55:12PM -0700, Dan Williams wrote:
+> > On Wed, Sep 29, 2021 at 6:43 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> > >
+> > > On Wed, Sep 29, 2021 at 06:05:06PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > > > Currently bus drivers like "USB" or "Thunderbolt" implement a custom
+> > > > version of device authorization to selectively authorize the driver
+> > > > probes. Since there is a common requirement, move the "authorized"
+> > > > attribute support to the driver core in order to allow it to be used
+> > > > by other subsystems / buses.
+> > > >
+> > > > Similar requirements have been discussed in the PCI [1] community for
+> > > > PCI bus drivers as well.
+> > > >
+> > > > No functional changes are intended. It just converts authorized
+> > > > attribute from int to bool and moves it to the driver core. There
+> > > > should be no user-visible change in the location or semantics of
+> > > > attributes for USB devices.
+> > > >
+> > > > Regarding thunderbolt driver, although it declares sw->authorized as
+> > > > "int" and allows 0,1,2 as valid values for sw->authorized attribute,
+> > > > but within the driver, in all authorized attribute related checks,
+> > > > it is treated as bool value. So when converting the authorized
+> > > > attribute from int to bool value, there should be no functional
+> > > > changes other than value 2 being not visible to the user.
+> > > >
+> > > > [1]: https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
+> > > >
+> > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > >
+> > > Since you're moving the authorized flag from the USB core to the
+> > > driver core, the corresponding sysfs attribute functions should be
+> > > moved as well.
+> >
+> > Unlike when 'removable' moved from USB to the driver core there isn't
+> > a common definition for how the 'authorized' sysfs-attribute behaves
+> > across buses. The only common piece is where this flag is stored in
+> > the data structure, i.e. the 'authorized' sysfs interface is
+> > purposefully left bus specific.
+>
+> How about implementing "library" versions of show_authorized() and
+> store_authorized() that the bus-specific attribute routines can call?
+> These library routines would handle parsing the input values, storing
+> the new flag, and displaying the stored flag value.  That way at
+> least the common parts of these APIs would be centralized in the
+> driver core, and any additional functionality could easily be added
+> by the bus-specific attribute routine.
+>
 
-Fixes: a6b7c98afdca(drm/mediatek: add mtk_dither_set_common())
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Change-Id: I30258dd4129d17fb7d94b1714d78bc133e88338e
----
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 99cbf44463e4..33e8789fde8a 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -26,6 +26,8 @@
- #define DISP_OD_CFG				0x0020
- #define DISP_OD_SIZE				0x0030
- #define DISP_DITHER_5				0x0114
-+#define DISP_DITHER_6				0x0118
-+#define LFSR_EN						BIT(1)
- #define DISP_DITHER_7				0x011c
- #define DISP_DITHER_15				0x013c
- #define DISP_DITHER_16				0x0140
-@@ -135,6 +137,7 @@ void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
- 
- 	if (bpc >= MTK_MIN_BPC) {
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
-+		mtk_ddp_write_mask(cmdq_pkt, LFSR_EN, cmdq_reg, regs, DISP_DITHER_6, LFSR_EN);
- 		mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
- 		mtk_ddp_write(cmdq_pkt,
- 			      DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
--- 
-2.25.1
-
+While show_authorized() seems like it could be standardized, have a
+look at what the different store_authorized() implementations do.
+Thunderbolt wants "switch approval" vs "switch challenge" and USB has
+a bunch of bus-specific work to do when the authorization state
+changes. I don't see much room for a library to help there as more
+buses add authorization support. That said I do think it would be
+useful to have a common implementation available for generic probe
+authorization to toggle the flag if the bus does not have any
+authorization work to do, but that seems a follow-on once this core is
+accepted.
