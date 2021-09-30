@@ -2,134 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3AC41E4C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED29541E4CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348954AbhI3X0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345470AbhI3X0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:26:48 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B3AC06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:25:05 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so7910351pjv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eh34nKlBtcXIhSkXFiXgZHHEXy1pUVrM2m/QPvjGZhs=;
-        b=Hs3DNk4Z5KQlgSeNyHreuKuvEU3//1qlQHAU6a7/5w5PaGkR53udvoJVoOdC9VYM+4
-         oclqUS4GaVHxlcKo64+K6oVPlWjJLs2LIrFdjEdhbknM3o0FBpyNLGRmyykcmR2LSMoz
-         9dsuPdW3grv3wXZx7jpKUG0rnO+B3L23iItAo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eh34nKlBtcXIhSkXFiXgZHHEXy1pUVrM2m/QPvjGZhs=;
-        b=Y1/iAO85OHQzz72ACd3XjvXhrc886y76lVf9uvlwIozdJL8LHqi+zHrSeK2dxLsBgZ
-         mc8Re8qsihQzQs/paG6OTXAUSp5pJYkyDadab8mXIaRfB66VJGTJedQhDu8bhkJ9lgBf
-         3SkbU+HEmgLpumr2r5iLs8s0GftMIL0hSA1HIU4WCSEthtad0QeqT9smQ9a03K/lD98I
-         K/WfBbQkujo46codPF0KaUXz+Y8jNTShxpx58b/z+OeV2wPG0xYXhqbrGsPPQC2LFpJE
-         V0amGQt0GUTRB9IM++hCP8F1PbIxDB84bHa3hTdmGj1fKzNoCaUCdz7bbRIYswi8ZY4j
-         E1Fw==
-X-Gm-Message-State: AOAM531ia8/UhjLy8p8ga6YYYKPTMJCa+mnK+ICtuVM3G+eoPtH0rLy5
-        1tmSCTUUXlHN1wVn5/nKBTpnuw==
-X-Google-Smtp-Source: ABdhPJylqjkv4pN89l4jFNBRqBmfAjaekWIwj3On6XS7U+IYWAgJXHbj5PZrkmGMBxnVbJZPind/Dg==
-X-Received: by 2002:a17:902:b205:b0:13d:b0a1:da90 with SMTP id t5-20020a170902b20500b0013db0a1da90mr6640971plr.26.1633044304955;
-        Thu, 30 Sep 2021 16:25:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 23sm4600716pfw.97.2021.09.30.16.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 16:25:03 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 16:25:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
- anonymous memory
-Message-ID: <202109301621.3E03AE14F@keescook>
-References: <20210902231813.3597709-1-surenb@google.com>
- <20210902231813.3597709-2-surenb@google.com>
- <YTZIGhbSTghbUay+@casper.infradead.org>
- <CAJuCfpEYOC+6FPmVzzV2od3H8vqWVCsb1hiu5CiDS0-hSg6cfQ@mail.gmail.com>
- <CAJuCfpH8LtKG+1LpVb8JM73dL11yaqR7io8+HDHLGNUVZYVTQw@mail.gmail.com>
+        id S1350336AbhI3X2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:28:33 -0400
+Received: from mail-co1nam11on2066.outbound.protection.outlook.com ([40.107.220.66]:60033
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1349300AbhI3X2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:28:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O590OjkCkigi71lH430IlAJJikXxrGoZgPrT+HFMPZLUZn8M9XL1ZqrnTa3qa8NVOtWoUUx+GIkuunoRldogl4rz5UUihtgP5SEH2eyKuAmyzPDJygyaBuocSzMWBcokxP2Vu6OnRpipcDdVeCpCRX9c+NfhW1IrDETEV3dVSS9//ceSrF7avWCZqkdIRBep7EQf+lyWUHjLHLncV6Ip0qNHPD8Dq1vdgvIzR2fuZ4ZO3H7wKhBtVukbF1OdfxkW5YX6cjeKlqjK8ZZC4AplKvB5PijGIGiPQVJsWKL2pG2n3XFZojXZKw/dzzSw43jKfxSMLBchN9zEf/GJtHaiMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C0Yu5rnU5d8AcmHIYO7BcG/8WZfT60JwfaOajcAeg3A=;
+ b=BEAduZ/rkTWaOmdUPMRKWq0UBxrNLBuCyXkCg+FzqrSvsDkV3ZPJIY4PwIVVLRAeyMW+oqgjiq/aC04b62dPVgboAzlrM7fPv93wwTNIH6FPvEAdt+Ubr0oVa0TYh5EsBjenvr0ZEyNA0YqF/i4ttmSHgkNYFfT0XxUshWyO9LStqrACVzCC7zr9Tic7+TWMXZDc4YvklBMy2pdqwmetaVdlXdmPktRM5AZZ31PEQwQW6EzTDWWgkI2uHGJC5EAX8dyYF1GAKC4fIMBVfQNLo43oJNY0xiNIrcdt2p6HTIz4BHSv0xuJrhb6rH+QEPWDXaxVW5143T/qCJ5FCTw2rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C0Yu5rnU5d8AcmHIYO7BcG/8WZfT60JwfaOajcAeg3A=;
+ b=dwj3x0qJ6Ye4SyDPeAqL1573fWC/psU8/RZBV5B9wwIWPQOggRztHP9ulYHHBwPZVNVSe4bu9S6jBuf0bSOes8saCpVwW07DZ51uuwufscteUKZvO73ryG9j9jyqD3fuZTery3JMMX2Iuwh05JjnG3H14jtgpdNLR0vBP67Aqd/JrDuFZDKKPa/anHUyh2e6SaGNvEVhau36bx/eAre0G28R+9sxjUsTE63ZPB/oORs4JvFmcNYLvt7MNA/uYYcJEmoVq+v449BeLNJeSeEnUENtD25L1sI/KiSaJUPGkC+eCyFkUXtFmQArGXAQdhcr2GJu0Pm/ge2ystzntf2NAQ==
+Received: from MWHPR19CA0002.namprd19.prod.outlook.com (2603:10b6:300:d4::12)
+ by CH2PR12MB4859.namprd12.prod.outlook.com (2603:10b6:610:62::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.21; Thu, 30 Sep
+ 2021 23:26:31 +0000
+Received: from CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:d4:cafe::70) by MWHPR19CA0002.outlook.office365.com
+ (2603:10b6:300:d4::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend
+ Transport; Thu, 30 Sep 2021 23:26:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ CO1NAM11FT026.mail.protection.outlook.com (10.13.175.67) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 23:26:30 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
+ 2021 23:26:30 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
+ 2021 23:26:29 +0000
+Received: from dipenp.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Thu, 30 Sep 2021 23:26:29 +0000
+From:   Dipen Patel <dipenp@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
+        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <robh+dt@kernel.org>
+CC:     Dipen Patel <dipenp@nvidia.com>
+Subject: [RFC v2 00/11] Intro to Hardware timestamping engine
+Date:   Thu, 30 Sep 2021 16:26:06 -0700
+Message-ID: <20210930232617.6396-1-dipenp@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpH8LtKG+1LpVb8JM73dL11yaqR7io8+HDHLGNUVZYVTQw@mail.gmail.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 307232c6-fbd2-495b-5adb-08d98469bbec
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4859:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB4859C09F95A22623031F07DCAEAA9@CH2PR12MB4859.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BDLv+XatWDz2YfP7jD2M3op+XvPGM6+WxKAYETceL9HgtUR+CVTtV1OkXdmXpMJHWE7RF0PSmz7OU8Dxp028LQ8SyGuV9YXyKC74cXoIXHW2nAfqLAkLC8KvJeNlBbCc2HUHuz3/3i/9ohU1Y+tdkAqXhEymCbscLTa20Qes/jSXVcqdeQ1erEhZdR04FdhK7fUj2aW4ixJ+BIkkMCNfgWDum3k1TTJFwfLUb3yNus6RhSse4Zqrn2o7nNZcQFsnAeF8WblNdIzyFocvA6XUoVU7H+pfOGC+iy3u+HUukVXBF0I1nbemDhZ4Ve3QUctFL6exyh8WEfub55HZ759b0Gn+cgZTLgNgyoi6FkL5oZd7MoaeBbhRuGvpGPkjvtzAwq8kKEyyQoEBAAt3LBXD1ytY/RhJ5jc6zoQiQvx8SBiHetgH+QWMlewYuWY5/++l0XXltPp+yQWzPNypZ2J/oJHSe9sPihM6a+lB+QoRtFAo2Hwn2oTYpwrBQlV2qnbfy0gutI50026A0qfV+/5UqDRBJywUAcDLUvbc63TAKS6s9yJEtsWAFKHXdpYbuJbgShKSR/ishSahVUi58/hrlK/PYcuJGhK7EVZj6HZgYOCEnhsIy5+zIFc+CEt6iF3GEHDhZrZhBYfg40V2QAgPekhDtqDSj+iEJzuKEy2PIb68KxenNiXnRoeB4FN0eHDGAU1Rg2YHtdL1CnxQy+pEv21CI7WJoZfbJQf+oOtxonlMB1R/zUSd6YsgYsMCk4rNURCajYk+fc3v/Uh2/aN04AuWgjbkkgQqbjwvpD4zDeqgsRe89Sh0auoFP6ddgq39vFQd87Y2gfFLfqJA/9XGUsE+2mFBXuYAFOWWerBz8vQ=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(7636003)(2616005)(508600001)(186003)(426003)(47076005)(70586007)(70206006)(6666004)(36756003)(966005)(1076003)(36860700001)(86362001)(83380400001)(336012)(26005)(5660300002)(107886003)(7416002)(316002)(4326008)(7696005)(8936002)(82310400003)(2906002)(110136005)(921005)(8676002)(356005)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 23:26:30.7888
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 307232c6-fbd2-495b-5adb-08d98469bbec
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:56:12AM -0700, Suren Baghdasaryan wrote:
-> I thought more about these alternative suggestions for userspace to
-> record allocations but that would introduce considerable complexity
-> into userspace. Userspace would have to collect and consolidate this
-> data by some daemon, all users would have to query it for the data
-> (IPC or something similar), in case this daemon crashes the data would
-> need to be somehow recovered. So, in short, it's possible but makes
-> things much more complex compared to proposed in-kernel
-> implementation.
+This patch series introduces new subsystem called hardware timestamping
+engine (HTE). It offers functionality such as timestamping through hardware
+means in realtime. The HTE subsystem centralizes HTE provider and consumers
+where providers can register themselves and the consumers can request
+interested entity which could be lines, GPIO, signals or buses. The
+HTE subsystem provides timestamp in nano seconds, having said that the provider
+need to convert the timestamp if its not in that unit. There was upstream
+discussion about the HTE at
+https://lore.kernel.org/lkml/4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com/
 
-Agreed: this is something for the kernel to manage.
+To summarize upstream discussion:
+- It was heavily favoured by Linus and Kent to extend GPIOLIB and supporting
+GPIO drivers to add HTE functionality and I agreed to experiment with it.
+This patch series implements and extends GPIOLIB, GPIOLIB-CDEV and GPIO tegra
+driver.
+- Discussed possibility to add HTE provider as irqchip instead which
+was argued against as HTE devices are not necessarily event emitting
+devices. This RFC version 2 however tries to emulate threaded irq style
+implementation.
+- Discussed other possibility if HTE device can be added as posix clock
+type like PTP clocks. That was also argues against since HTE devices
+are not necessarily tightly coupled with hardware clock.
 
-> OTOH, the only downside of the current implementation is the
-> additional memory required to store anon vma names. I checked the
-> memory consumption on the latest Android with these patches and
-> because we share vma names during fork, the actual memory required to
-> store vma names is no more than 600kB. Even on older phones like Pixel
-> 3 with 4GB RAM, this is less than 0.015% of total memory. IMHO, this
-> is an acceptable price to pay.
+Typical HTE provider does following:
+- Register itself with HTE subsystem
+- Provide request, release, enable, disable timestamp and
+get_clk_src_info callbacks to HTE subsystem.
+- Provide optional xlate callback to the subsystem which can translate
+consumer provided logical ids into actual ids of the entity, where entity here
+is the provider dependent and could be GPIO, in chip lines or signals, buses
+etc...This converted id will be used between HTE subsystem and the provider for
+below bullet point.
+- Push timestamps to the subsystem. This happens when HTE provider has
+timestamp data available and willing to push it to HTE subsystem.
+- Unregister itself on exit.
 
-I think that's entirely fine. We don't end up with any GUP games, and
-everything is refcounted.
+Typical HTE consumer does following:
+- Request interested entity it wishes to timestamp in realtime to the
+subsystem.
+- The subsystem does necessary communications with the provider to
+complete the request, which includes translating logical id of the entity to
+provider dependent physical/actual id and enabling hardware timestamping on
+requested id.
+- The request includes callbacks, it will be used to push timestamps.
+Optionally, the consumer can provided threaded callback, if specified, the HTE
+subsystem will create kernel thread responsible executing the threaded callback.
+- Release entity and its resources.
 
-I think a v10 with the various nits fixed would be a good next step
-here. What do you think Matthew?
+HTE and GPIOLIB:
+- For the HTE provider which can timestamp GPIO lines.
+- For the GPIO consumers, either in kernel or userspace, The GPIOLIB and its
+CDEV framework are extended as frontend to the HTE by introducing new APIs.
+- Tegra194 AON GPIO controller has HTE support known as GTE
+(Generic Timestamping Engine). The tegra gpio driver is modified to accommodate
+HTE functionality.
 
+Changes in V2:
+- Removed buffer management and related APIs from the HTE core.
+- Removed timestamp retrieve APIs from the HTE core.
+- Modified request API with two callbacks, second callback is invoked in thread
+context and is optional, while first callback is mandatory and used to push
+timestamp data to consumers.
+- Replaced hte with hardware-timestamping in DT bindings as hte appeared too
+short according to review comments.
+
+Dipen Patel (11):
+  Documentation: Add HTE subsystem guide
+  drivers: Add hardware timestamp engine (HTE)
+  hte: Add tegra194 HTE kernel provider
+  dt-bindings: Add HTE bindings
+  hte: Add Tegra194 IRQ HTE test driver
+  gpiolib: Add HTE support
+  gpio: tegra186: Add HTE in gpio-tegra186 driver
+  gpiolib: cdev: Add hardware timestamp clock type
+  tools: gpio: Add new hardware clock type
+  hte: Add tegra GPIO HTE test driver
+  MAINTAINERS: Added HTE Subsystem
+
+ .../bindings/gpio/nvidia,tegra186-gpio.txt    |   7 +
+ .../hte/hardware-timestamps-common.yaml       |  29 +
+ .../devicetree/bindings/hte/hte-consumer.yaml |  48 +
+ .../bindings/hte/nvidia,tegra194-hte.yaml     |  79 ++
+ Documentation/hte/hte.rst                     |  83 ++
+ Documentation/hte/index.rst                   |  22 +
+ Documentation/hte/tegra194-hte.rst            |  56 ++
+ Documentation/index.rst                       |   1 +
+ MAINTAINERS                                   |   8 +
+ drivers/Kconfig                               |   2 +
+ drivers/Makefile                              |   1 +
+ drivers/gpio/gpio-tegra186.c                  |  89 ++
+ drivers/gpio/gpiolib-cdev.c                   | 161 +++-
+ drivers/gpio/gpiolib.c                        |  73 ++
+ drivers/gpio/gpiolib.h                        |  12 +
+ drivers/hte/Kconfig                           |  50 +
+ drivers/hte/Makefile                          |   5 +
+ drivers/hte/hte-tegra194-gpio-test.c          | 252 +++++
+ drivers/hte/hte-tegra194-irq-test.c           | 169 ++++
+ drivers/hte/hte-tegra194.c                    | 554 +++++++++++
+ drivers/hte/hte.c                             | 907 ++++++++++++++++++
+ include/linux/gpio/consumer.h                 |  19 +-
+ include/linux/gpio/driver.h                   |  14 +
+ include/linux/hte.h                           | 248 +++++
+ include/uapi/linux/gpio.h                     |   1 +
+ tools/gpio/gpio-event-mon.c                   |   6 +-
+ 26 files changed, 2884 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hte/hardware-timestamps-common.yaml
+ create mode 100644 Documentation/devicetree/bindings/hte/hte-consumer.yaml
+ create mode 100644 Documentation/devicetree/bindings/hte/nvidia,tegra194-hte.yaml
+ create mode 100644 Documentation/hte/hte.rst
+ create mode 100644 Documentation/hte/index.rst
+ create mode 100644 Documentation/hte/tegra194-hte.rst
+ create mode 100644 drivers/hte/Kconfig
+ create mode 100644 drivers/hte/Makefile
+ create mode 100644 drivers/hte/hte-tegra194-gpio-test.c
+ create mode 100644 drivers/hte/hte-tegra194-irq-test.c
+ create mode 100644 drivers/hte/hte-tegra194.c
+ create mode 100644 drivers/hte/hte.c
+ create mode 100644 include/linux/hte.h
+
+
+base-commit: 2d02a18f75fc81177a4e30f3aaaed9af06cc3adc
 -- 
-Kees Cook
+2.17.1
+
