@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD8A41D5C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3512941D5CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348943AbhI3IzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53302 "EHLO mail.kernel.org"
+        id S1349007AbhI3Izq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:55:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:50682 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348052AbhI3IzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:55:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED8F26137A;
-        Thu, 30 Sep 2021 08:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632992016;
-        bh=ipv+Kb1lDn3reuFyXjezzOrNiWEsOoZgP7hBJo18ULA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pdZkh/0sTVGhG4O8RK8rDOeLE6CF2bFroexLs+UMiDl8j3ZYnORz9xaCI+hWyphyh
-         Vahk20qaPmTV66veFgiGFkTzfDzjQi/QY7u6H/xnmFZq8kAjtrgtfFgczQ5RVBrKLU
-         iGwD97nEomfeq5FATr7mWRUog/o99d+iGRLDv0J27V1APsNQgBxMF7DhzxTFoIKS0U
-         Su6xEZGRfZarPKZHiWwv5KtZcII0aARwjWsqzvPX04mWJQyLJSVASt1wExPfa+Y58s
-         33Xa8Zzctik1HUBGKSKEzgSudjlDxQnLc2fgEXmUSbtA1jzvAW8TTe+crXhDnE2OL4
-         YldMLDaNq9o5Q==
-From:   Will Deacon <will@kernel.org>
-To:     yee.lee@mediatek.com, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>, Kuan-Ying.lee@mediatek.com,
-        nicholas.Tang@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, chinwen.chang@mediatek.com
-Subject: Re: [PATCH v2] scs: Release kasan vmalloc poison in scs_free process
-Date:   Thu, 30 Sep 2021 09:53:31 +0100
-Message-Id: <163299104851.1259041.949139290018170136.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210930081619.30091-1-yee.lee@mediatek.com>
-References: <20210930081619.30091-1-yee.lee@mediatek.com>
+        id S1348952AbhI3Izp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:55:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 803C8D6E;
+        Thu, 30 Sep 2021 01:54:02 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.49.184])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E53843F793;
+        Thu, 30 Sep 2021 01:54:00 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-pci@vger.kernel.org
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 0/4] PCI: dwc: pci-dra7xx: miscellaneous improvements
+Date:   Thu, 30 Sep 2021 09:53:53 +0100
+Message-Id: <163299201477.31815.18190082659502039608.b4-ty@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210531085934.2662457-1-luca@lucaceresoli.net>
+References: <20210531085934.2662457-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,26 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 16:16:13 +0800, yee.lee@mediatek.com wrote:
-> From: Yee Lee <yee.lee@mediatek.com>
+On Mon, 31 May 2021 10:59:30 +0200, Luca Ceresoli wrote:
+> This is an series of mixed improvements to the DRA7 PCI controller driver:
+> allow building as a loadabel module, allow to get and enable a clock and a
+> small cleanup.
 > 
-> Since scs allocation is moved to vmalloc region, the
-> shadow stack is protected by kasan_posion_vmalloc.
-> However, the vfree_atomic operation needs to access
-> its context for scs_free process and causes kasan error
-> as the dump info below.
+> Luca
+> 
+> Luca Ceresoli (4):
+>   PCI: dwc: Export more symbols to allow modular drivers
+>   PCI: dra7xx: Make it a kernel module
+>   PCI: dra7xx: Remove unused include
+>   PCI: dra7xx: Get an optional clock
 > 
 > [...]
 
-Applied to arm64 (for-next/scs), thanks!
+Applied to pci/dwc, thanks!
 
-[1/1] scs: Release kasan vmalloc poison in scs_free process
-      https://git.kernel.org/arm64/c/528a4ab45300
+[1/4] PCI: dwc: Export more symbols to allow modular drivers
+      https://git.kernel.org/lpieralisi/pci/c/3a7fb86758
+[2/4] PCI: dra7xx: Make it a kernel module
+      https://git.kernel.org/lpieralisi/pci/c/3b868d150e
+[3/4] PCI: dra7xx: Remove unused include
+      https://git.kernel.org/lpieralisi/pci/c/b9a6943dc8
+[4/4] PCI: dra7xx: Get an optional clock
+      https://git.kernel.org/lpieralisi/pci/c/5af9405397
 
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Thanks,
+Lorenzo
