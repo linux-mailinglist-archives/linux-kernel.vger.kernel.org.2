@@ -2,177 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BC941D8CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184B941D8CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350477AbhI3Lc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:32:26 -0400
-Received: from mga01.intel.com ([192.55.52.88]:25944 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350452AbhI3LcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:32:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="247701809"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="247701809"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 04:30:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="564038617"
-Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Sep 2021 04:30:39 -0700
-Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mVuGs-0004Ba-TE; Thu, 30 Sep 2021 11:30:38 +0000
-Date:   Thu, 30 Sep 2021 19:29:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- 7fae4c24a2b84a66c7be399727aca11e7a888462
-Message-ID: <61559fab.jCS59ugJhHpLmznE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1350492AbhI3Lc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:32:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51055 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350447AbhI3Lcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 07:32:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633001472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IBPiwjv88gBtXhEZKobvenYgzbrXuu/F7fjJxKqNYJ0=;
+        b=UvQQW7VoFjonICjoPDaFpzfRL2aLYlSBpLPaxmb1P3eITHIOvpOrBta4F0CDULXYhqYxik
+        Mnuvs6JU47R4eAV7I38yRx5Nm0MumPErVGDuqGDba7ZxC/ss47B7CvVDTHiheCGRla7hW3
+        Q6pcZspSkDk/IP8jj5+Tx0pTKYrEJy4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-ipkYATPkPvGje-CQoPUkIQ-1; Thu, 30 Sep 2021 07:31:11 -0400
+X-MC-Unique: ipkYATPkPvGje-CQoPUkIQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 004EE1084684;
+        Thu, 30 Sep 2021 11:31:10 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.253])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A4C760C82;
+        Thu, 30 Sep 2021 11:31:06 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+In-Reply-To: <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <87r1d64dl4.fsf@redhat.com> <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Thu, 30 Sep 2021 13:31:04 +0200
+Message-ID: <87ilyi47wn.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: 7fae4c24a2b84a66c7be399727aca11e7a888462  x86: Increase exception stack sizes
+On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-elapsed time: 1060m
+> On Thu, 30 Sep 2021 11:28:23 +0200
+> Cornelia Huck <cohuck@redhat.com> wrote:
+>
+>> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+>> 
+>> > This patch fixes a regression introduced by commit 82e89ea077b9
+>> > ("virtio-blk: Add validation for block size in config space") and
+>> > enables similar checks in verify() on big endian platforms.
+>> >
+>> > The problem with checking multi-byte config fields in the verify
+>> > callback, on big endian platforms, and with a possibly transitional
+>> > device is the following. The verify() callback is called between
+>> > config->get_features() and virtio_finalize_features(). That we have a
+>> > device that offered F_VERSION_1 then we have the following options
+>> > either the device is transitional, and then it has to present the legacy
+>> > interface, i.e. a big endian config space until F_VERSION_1 is
+>> > negotiated, or we have a non-transitional device, which makes
+>> > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+>> > thus presents a little endian config space. Because at this point we
+>> > can't know if the device is transitional or non-transitional, we can't
+>> > know do we need to byte swap or not.
+>> >
+>> > The virtio spec explicitly states that the driver MAY read config
+>> > between reading and writing the features so saying that first accessing
+>> > the config before feature negotiation is done is not an option. The
+>> > specification ain't clear about setting the features multiple times
+>> > before FEATURES_OK, so I guess that should be fine.
+>> >
+>> > I don't consider this patch super clean, but frankly I don't think we
+>> > have a ton of options. Another option that may or man not be cleaner,
+>> > but is also IMHO much uglier is to figure out whether the device is
+>> > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+>> > according tho what we have figured out, hoping that the characteristics
+>> > of the device didn't change.
+>> >
+>> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+>> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+>> > Reported-by: markver@us.ibm.com
+>> > ---
+>> >  drivers/virtio/virtio.c | 4 ++++
+>> >  1 file changed, 4 insertions(+)
+>> >
+>> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> > index 0a5b54034d4b..9dc3cfa17b1c 100644
+>> > --- a/drivers/virtio/virtio.c
+>> > +++ b/drivers/virtio/virtio.c
+>> > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
+>> >  		if (device_features & (1ULL << i))
+>> >  			__virtio_set_bit(dev, i);
+>> >  
+>> > +	/* Write back features before validate to know endianness */
+>> > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>> > +		dev->config->finalize_features(dev);  
+>> 
+>> This really looks like a mess :(
+>> 
+>> We end up calling ->finalize_features twice: once before ->validate, and
+>> once after, that time with the complete song and dance. The first time,
+>> we operate on one feature set; after validation, we operate on another,
+>> and there might be interdependencies between the two (like a that a bit
+>> is cleared because of another bit, which would not happen if validate
+>> had a chance to clear that bit before).
+>
+> Basically the second set is a subset of the first set.
 
-configs tested: 117
-configs skipped: 81
+I don't think that's clear.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>
+>> 
+>> I'm not sure whether that is even a problem in the spec: while the
+>> driver may read the config before finally accepting features
+>
+> I'm not sure I'm following you. Let me please qoute the specification:
+> """
+> 4. Read device feature bits, and write the subset of feature bits
+> understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it. 
+> 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step. 
+> """
+> https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-930001
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210929
-arm                      pxa255-idp_defconfig
-arm                         lpc32xx_defconfig
-arm                            qcom_defconfig
-powerpc                   lite5200b_defconfig
-arm                             rpc_defconfig
-sparc64                          alldefconfig
-sh                            shmin_defconfig
-xtensa                              defconfig
-powerpc                         ps3_defconfig
-sh                                  defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                       imx_v6_v7_defconfig
-sh                   secureedge5410_defconfig
-arm                          iop32x_defconfig
-arm                         socfpga_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-powerpc                     asp8347_defconfig
-arm                      integrator_defconfig
-mips                     loongson2k_defconfig
-arc                                 defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     ksi8560_defconfig
-parisc                           allyesconfig
-arm                       mainstone_defconfig
-mips                           ip27_defconfig
-powerpc                      walnut_defconfig
-sh                        sh7757lcr_defconfig
-arm                         shannon_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           h5000_defconfig
-powerpc                        cell_defconfig
-powerpc                      pmac32_defconfig
-mips                         cobalt_defconfig
-x86_64               randconfig-c001-20210929
-arm                  randconfig-c002-20210929
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20210929
-i386                 randconfig-a005-20210929
-i386                 randconfig-a002-20210929
-i386                 randconfig-a006-20210929
-i386                 randconfig-a004-20210929
-i386                 randconfig-a003-20210929
-x86_64               randconfig-a002-20210929
-x86_64               randconfig-a005-20210929
-x86_64               randconfig-a001-20210929
-x86_64               randconfig-a006-20210929
-x86_64               randconfig-a003-20210929
-x86_64               randconfig-a004-20210929
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Yes, exactly, it MAY read before accepting features. How does the device
+know whether the config space is little-endian or not?
 
-clang tested configs:
-powerpc              randconfig-c003-20210929
-mips                 randconfig-c004-20210929
-arm                  randconfig-c002-20210929
-x86_64               randconfig-c007-20210929
-riscv                randconfig-c006-20210929
-s390                 randconfig-c005-20210929
-i386                 randconfig-c001-20210929
-x86_64               randconfig-a014-20210929
-x86_64               randconfig-a011-20210929
-x86_64               randconfig-a013-20210929
-x86_64               randconfig-a015-20210929
-x86_64               randconfig-a012-20210929
-x86_64               randconfig-a016-20210929
-i386                 randconfig-a014-20210929
-i386                 randconfig-a013-20210929
-i386                 randconfig-a016-20210929
-i386                 randconfig-a011-20210929
-i386                 randconfig-a015-20210929
-i386                 randconfig-a012-20210929
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-hexagon              randconfig-r045-20210929
-riscv                randconfig-r042-20210929
-hexagon              randconfig-r041-20210929
-s390                 randconfig-r044-20210929
+>
+>> , it does
+>> not really make sense to do so before a feature bit as basic as
+>> VERSION_1 which determines the endianness has been negotiated. 
+>
+> Are you suggesting that ->verify() should be after
+> virtio_finalize_features()?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+No, that would defeat the entire purpose of verify. After
+virtio_finalize_features(), we are done with feature negotiation.
+
+> Wouldn't
+> that mean that verify() can't reject feature bits? But that is the whole
+> point of commit 82e89ea077b9 ("virtio-blk: Add validation for block size
+> in config space"). Do you think that the commit in question is
+> conceptually flawed? My understanding of the verify is, that it is supposed
+> to fence features and feature bits we can't support, e.g. because of
+> config space things, but I may be wrong.
+
+No, that commit is not really flawed on its own, I think the whole
+procedure may be problematic.
+
+>
+> The trouble is, feature bits are not negotiated one by one, but basically all
+> at once. I suppose, I did the next best thing to first negotiating
+> VERSION_1.
+
+We probably need to special-case VERSION_1 to move at least forward;
+i.e. proceed as if we accepted it when reading the config space.
+
+The problem is that we do not know what the device assumes when we read
+the config space prior to setting FEATURES_OK. It may assume
+little-endian if it offered VERSION_1, or it may not. The spec does not
+really say what happens before feature negotiation has finished.
+
+>
+>
+>> For
+>> VERSION_1, we can probably go ahead and just assume that we will accept
+>> it if offered, but what about other (future) bits?
+>
+> I don't quite understand.
+
+There might be other bits in the future that change how the config space
+works. We cannot assume that any of those bits will be accepted if
+offered; i.e. we need a special hack for VERSION_1.
+
+>
+> Anyway, how do you think we should solve this problem?
+
+This is a mess. For starters, we need to think about if we should do
+something in the spec, and if yes, what.. Then, we can probably think
+about how to implement that properly.
+
+As we have an error right now that is basically a regression, we
+probably need a band-aid to keep going. Not sure if your patch is the
+right approach, maybe we really need to special-case VERSION_1 (the
+"assume we accepted it" hack mentioned above.) This will likely fix the
+reported problem (I assume that is s390x on QEMU); do we know about
+other VMMs? Any other big-endian architectures?
+
+Anyone have any better suggestions?
+
