@@ -2,215 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2360141E1D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB98D41E1D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343580AbhI3S4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        id S1343746AbhI3S6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245702AbhI3S4R (ORCPT
+        with ESMTP id S236957AbhI3S6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:56:17 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AA9C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:34 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id g41so29114235lfv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:34 -0700 (PDT)
+        Thu, 30 Sep 2021 14:58:07 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD314C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:56:24 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id m132so15462622ybf.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5IZ/hLvOUSgpP0wYol2FuuiQb+HBe9aBEaCiGK4+fa4=;
-        b=RS7k61yWDY7k3lLrpz1Swp2qdYm4uhh+IQmQn4jDiN9TysKG0ay3jy/ufrUGOKrfw9
-         df0z/Wvx3KX2Ip2iU2QuWrEJOIHyyGZdotfqboUxby/doCtTLRAYGi/NyIXVL3JY8Yuy
-         aYMJ7Bs++uYAqCpShvMpqWVXTEL6Bcu5WNE/c=
+        bh=kvnWJDkfYff63dedYnGJTZjKEKtttIPMWbyKWd7jcys=;
+        b=MszGudlzOc7y2MG5Azj1ge3Zo3H/LqnWaymyDtHDYs/NteFQibW/dGtvn9pUd/GVmz
+         dXUSVvumzvTjZUnyRrk7AfBsc1+y7CD7RPdT7eJYe7EZ+pqt+g32fvP/vdEt8S6U4W5I
+         JAx/jsNK74i/jP2lFaJFwh+YlQEcOEGR+Opiqs5pd32JCMWAYLBHKoW6Eti0j3vvQims
+         OJBrZ7kdlHUALRmeGKU5vDZW+FCjkSkvraAmOeaP5Ep89KwGxX1QnW9y3lMRNf6Yg/iB
+         r89sVxo6dhS5lweD4Z77UKiVnKYPID+Xuen3WRgMapVd0WDWAyazW8zmJacKqS6AjA5U
+         2XZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5IZ/hLvOUSgpP0wYol2FuuiQb+HBe9aBEaCiGK4+fa4=;
-        b=weR/fPscmMhgXViVAQTkRsXTVx88qSKV4IsPRH5gnyKN4Mz1Xi2ZqEwWpIBuGid1XI
-         8gboq1ChB8zGKrRkdFEw40zHpE+ealM+gIm+tagZFbcikGNZhGAx1j3nXfhFh0Awmtj6
-         MTnuwRL6BA5gwFiiCyKZNaUEG/XIZovcUTIAcjPirKmsfrPm3vYL9Cbh+xMkYN2lL1ry
-         +Bno0IqscAHxH011hz1u2DX3NXNbyx8NS3CC/fTCK3OBq+EYwlPpr+OZL+STQbV2Ut+p
-         GVyRzO5UzIKATi7lBb2okaS2e1lyZfmUwtFpmIWX9QdvxGzsBGGawYQWSRex1nuoa/Uc
-         /O5Q==
-X-Gm-Message-State: AOAM5313l8hKkpGdNVzjCgpBt56CA22aMfVnYLcpTNUyvfMAP08WD+ch
-        WfLqZdz1b9ZK+MZaSLhnsxw0JlxojqqfXK51VPw=
-X-Google-Smtp-Source: ABdhPJwaTjPJxF+TmKMHQL1OIHYERuvd3lQPnw+S0+eK0pA3RgoGslTtmkVzlZlBYO/0gNyGcTTMsQ==
-X-Received: by 2002:a05:6512:3042:: with SMTP id b2mr743133lfb.83.1633028071895;
-        Thu, 30 Sep 2021 11:54:31 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id d13sm460062lfe.21.2021.09.30.11.54.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 11:54:30 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id e15so29394216lfr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:29 -0700 (PDT)
-X-Received: by 2002:a19:ef01:: with SMTP id n1mr849824lfh.150.1633028069266;
- Thu, 30 Sep 2021 11:54:29 -0700 (PDT)
+        bh=kvnWJDkfYff63dedYnGJTZjKEKtttIPMWbyKWd7jcys=;
+        b=m3T1KJlCj10t6RFSdfH0CR1rGg4jDpzkdYoLqR33QLewb73ZeYMFUTx4a6aIvcCaC+
+         zCHXvHUqYpS2QE732dlpz63lQZp5gPvdBLPm5UswEazG3MBBRcehHAPuNoONf7n+RzXe
+         FSBD95mfTtZDM4lH+ncZUi/DpDv/4fVAW5EuC9a3j3c56Sf5zQE8sqMstiwnPNi6sZ1G
+         gKienyMM49Duc2F0M4UoD0+Q8bNZLIo71ZFgRKuEAeeNW+AgY7niTBwYBojYoOAIwbuT
+         tdM0t1fWeOgnpDzhzpRIjVjz8Ea0fblBJ29RxyBcprxYgxPabCerQZ6MgI+d1atQrvlb
+         pTPw==
+X-Gm-Message-State: AOAM5314B5chAOGKuUI0C/MnbZW1+Va0UWNm5Ne/RRYm5++RIcD3X9I2
+        ZXX2EtfiCByFf5wE77UnF4K7y830ZdDDCDIet257Gw==
+X-Google-Smtp-Source: ABdhPJy+eGHpLg+c8I2mOWSFvSs59/DdAVBUZvUKl74ku4b0DHYfhCqnG0lf7kkHt1XYSYoQfSszIPerFRm3qKyoAxA=
+X-Received: by 2002:a05:6902:124f:: with SMTP id t15mr1118645ybu.161.1633028183843;
+ Thu, 30 Sep 2021 11:56:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929225850.3889950-1-ndesaulniers@google.com>
- <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com> <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-In-Reply-To: <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Sep 2021 11:54:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
-Message-ID: <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
-Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
+References: <20210902231813.3597709-1-surenb@google.com> <20210902231813.3597709-2-surenb@google.com>
+ <YTZIGhbSTghbUay+@casper.infradead.org> <CAJuCfpEYOC+6FPmVzzV2od3H8vqWVCsb1hiu5CiDS0-hSg6cfQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpEYOC+6FPmVzzV2od3H8vqWVCsb1hiu5CiDS0-hSg6cfQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 30 Sep 2021 11:56:12 -0700
+Message-ID: <CAJuCfpH8LtKG+1LpVb8JM73dL11yaqR7io8+HDHLGNUVZYVTQw@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
         Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 5:19 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
-> ...
-> arch/x86/mm/amdtopology.c:110:7: remark: 'test_bit' not inlined into
-> 'amd_numa_init' because too costly to inline (cost=115, threshold=45)
-> [-Rpass-missed=inline]
->                 if (node_isset(nodeid, numa_nodes_parsed)) {
-
-Yeah, I think that we should just do the __always_inline thing.
-
-I'd rather have the stupid debug code overhead in the caller - that
-may end up knowing that the pointer actually is so that the debug code
-goes away - than have "test_bit()" uninlined because there's so much
-crazy debug code in it.
-
-I also happen to believe that we have too much crazy "instrumentation" crap.
-
-Why is that test_bit() word read so magical that it merits a
-"instrument_atomic_read()"?
-
-But I absolutely detest how KCSAN and some other tooling seems to get
-a free pass on doing stupid things, just because they generated bad
-warnings so then they can freely generate these much more fundamental
-problems because the result is a f*cking mess.
-
-> Though for the defconfig case...somehow the cost is more than with the
-> sanitizers...
-
-Maybe the solution is that if you have some of the crazy sanitizers,
-we just say "the end result is not worth even checking". And stop
-checking all the section mismatches, and all the stack size things.
-
-Because it looks like this is more of a real issue:
-
-> arch/x86/mm/amdtopology.c:157:7: remark: '__nodes_weight' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=930,
-> threshold=45) [-Rpass-missed=inline]
->         if (!nodes_weight(numa_nodes_parsed))
->              ^
-
-Hmm. That's just a "bitmap_weight()", and that function in turn is
-__always_inline.
-
-And the *reason* it is __always_inline is that it really wants to act
-as a macro, and look at the second argument and do special things if
-it is a small constant value.
-
-And it looks like clang messes things up by simply not doing enough
-simplification before inlining decisions, so it all looks very
-complicated to clang, even though when you actually generate code, you
-have one (of two) very simple code sequences.
-
-> > Wouldn't it be better to make
-> > them always-inline?
+On Wed, Sep 8, 2021 at 9:05 PM Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> Perhaps, see what that might look like:
-> https://github.com/ClangBuiltLinux/linux/issues/1302#issuecomment-807260475
-> Does that look better?
-
-I suspect that in this case, because of clang deficiencies, that
-__always_inline actually is the right thing to do at least on
-__nodes_weight.
-
-Looking at your comment lower down
-
-  https://github.com/ClangBuiltLinux/linux/issues/1302#issuecomment-807757878
-
-I really think this is a clang bug, and that you need to do certain
-simplifications both before _and_ after inlining.
-
-Before, because of the inlining cost decisions particularly wrt
-constant arguments.
-
-After, because successful inlining changes things completely.
-
-Marking __nodes_weight() be __always_inline just works around clang
-being broken in this regard.
-
-It is _possible_ that it might help to make bitmap_weight() be a macro
-instead of an inline function, but it's a kind of sad state of affairs
-if that is required.
-
-And it might well fail - if you don't do the constant propagation
-before making inlining decisions, you'll _still_ end up thinking that
-bitmap_weight() is very costly because you don't do that
-__builtin_constant_p() lowering.
-
-And then you end up using the (much more expensive) generic function
-instead of the cheap "look, for single words this is a trivial" thing.
-
-> Part of me feels like modpost not warning on those is permitting a
-> "memory leak," in so far as code that's only called from .init callers
-> is never reclaimed. Or leaving behind gadgets...
-
-I think we can just treat modpost as a "good heuristic".  If it
-catches all the normal cases, it's fine - but it must not have false
-positives.
-
-That's basically true of all warnings. False positive warnings make a
-warning worthless. That's just *basic*.
-
-So the gcc thing is a "ok, we know compilers mess this up if they do
-partial inlining with constant propagation, so we will suppress what
-is quite likely a false positive for that case".
-
-That clang patch, in comparison? That's just a hack enumerating random
-cases. TRhere is no logic to it, and there is absolutely zero
-maintainability. It will cause us to forever just add other random
-cases to the list, making the whole tooling entirely pointless.
-
-See the difference?
-
-Maybe clang should just adopt the gcc naming convention, so that we
-can just use the gcc heuristic.
-
-> > clear case of "this inlining failed". This ad-hoc list has cases of
-> > things that are clearly wrong in general ("test_bit()" must not use
-> > initdata), and that "ok, the function just doesn't have the right
-> > section marker.
+> On Mon, Sep 6, 2021 at 9:57 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Sep 02, 2021 at 04:18:12PM -0700, Suren Baghdasaryan wrote:
+> > > On Android we heavily use a set of tools that use an extended version of
+> > > the logic covered in Documentation/vm/pagemap.txt to walk all pages mapped
+> > > in userspace and slice their usage by process, shared (COW) vs.  unique
+> > > mappings, backing, etc.  This can account for real physical memory usage
+> > > even in cases like fork without exec (which Android uses heavily to share
+> > > as many private COW pages as possible between processes), Kernel SamePage
+> > > Merging, and clean zero pages.  It produces a measurement of the pages
+> > > that only exist in that process (USS, for unique), and a measurement of
+> > > the physical memory usage of that process with the cost of shared pages
+> > > being evenly split between processes that share them (PSS).
+> > >
+> > > If all anonymous memory is indistinguishable then figuring out the real
+> > > physical memory usage (PSS) of each heap requires either a pagemap walking
+> > > tool that can understand the heap debugging of every layer, or for every
+> > > layer's heap debugging tools to implement the pagemap walking logic, in
+> > > which case it is hard to get a consistent view of memory across the whole
+> > > system.
+> > >
+> > > Tracking the information in userspace leads to all sorts of problems.
+> > > It either needs to be stored inside the process, which means every
+> > > process has to have an API to export its current heap information upon
+> > > request, or it has to be stored externally in a filesystem that
+> > > somebody needs to clean up on crashes.  It needs to be readable while
+> > > the process is still running, so it has to have some sort of
+> > > synchronization with every layer of userspace.  Efficiently tracking
+> > > the ranges requires reimplementing something like the kernel vma
+> > > trees, and linking to it from every layer of userspace.  It requires
+> > > more memory, more syscalls, more runtime cost, and more complexity to
+> > > separately track regions that the kernel is already tracking.
+> >
+> > I understand that the information is currently incoherent, but why is
+> > this the right way to make it coherent?  It would seem more useful to
+> > use something like one of the tracing mechanisms (eg ftrace, LTTng,
+> > whatever the current hotness is in userspace tracing) for the malloc
+> > library to log all the useful information, instead of injecting a subset
+> > of it into the kernel for userspace to read out again.
 >
-> Sorry, what do you mean "test_bit() must not use initdata?" Because it
-> can lead to problems like this? Or...?
+> Sorry, for the delay with the response. I'm travelling and my internet
+> access is very patchy.
+>
+> Just to clarify, your suggestion is to require userspace to log any
+> allocation using ftrace or a similar mechanism and then for the system
+> to parse these logs to calculate the memory usage for each process?
+> I didn't think much in this direction but I guess logging each
+> allocation in the system and periodically collecting that data would
+> be quite expensive both from memory usage and performance POV. I'll
+> need to think a bit more but these are to me the obvious downsides of
+> this approach.
 
-No, I mean that it is completely unacceptable to add some crazy rule
-like "you can access this init-data  from any context, as long as you
-use test_bit to do so".
-
-That's basically what your rule does. And it's a FUNDAMENTALLY invalid
-rule. It's simply not true.  The rule is invalid, it's just that clang
-has made such a mess of it that in one particular case it happens to
-be true.
-
-The gcc "rule" is much more reasonable: it's *not* saying "it's ok to
-access this init-data from test_bit". The gcc rule says "we know gcc
-messes up our heuristics when out-of-lining with constprop, so we just
-won't warn because false positives are bad, bad, bad.
-
-One rule is fundamentally garbage and wrong. The other rule is a
-generic "we know this situation cannot be tested for". Very different.
-
-                  Linus
+Sorry for the delay again. Now that I'm back there should not be any
+more of them.
+I thought more about these alternative suggestions for userspace to
+record allocations but that would introduce considerable complexity
+into userspace. Userspace would have to collect and consolidate this
+data by some daemon, all users would have to query it for the data
+(IPC or something similar), in case this daemon crashes the data would
+need to be somehow recovered. So, in short, it's possible but makes
+things much more complex compared to proposed in-kernel
+implementation.
+OTOH, the only downside of the current implementation is the
+additional memory required to store anon vma names. I checked the
+memory consumption on the latest Android with these patches and
+because we share vma names during fork, the actual memory required to
+store vma names is no more than 600kB. Even on older phones like Pixel
+3 with 4GB RAM, this is less than 0.015% of total memory. IMHO, this
+is an acceptable price to pay.
