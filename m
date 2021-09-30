@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E6541E04D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A5841E056
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352805AbhI3Rn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:43:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50126 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352744AbhI3RnZ (ORCPT
+        id S1352835AbhI3RtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352829AbhI3RtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:43:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633023702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vq6gTi9Bep6mtPf9nDMlF9035dfiR/XYgA5X2QHKj40=;
-        b=XGWl/Z0/Pbvir8vh7hMERMD2b72b1NWqp4Fq6WMoH4FbtYsdGWgZH9zgaqfBauq9yNvtst
-        yDRncaiig5ap+yVgD6cupKHV95Kpkfc9TxpSQPIkOqUdPHARodDWy5G8toSrDjfgiuXHfG
-        1gJISoWGotv8RlpuWKwvllRKwKkDiWg=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-PBRwz0iDO9WBlAnE-evyvg-1; Thu, 30 Sep 2021 13:41:41 -0400
-X-MC-Unique: PBRwz0iDO9WBlAnE-evyvg-1
-Received: by mail-ot1-f72.google.com with SMTP id m12-20020a0568301e6c00b005469f1a7d70so4761772otr.15
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:41:41 -0700 (PDT)
+        Thu, 30 Sep 2021 13:49:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9739C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so913645pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+IS0gEgo7hipR9gibsQw5KtPLx6dQXKFRc1+dywoXVA=;
+        b=m0rDM0cnK0yrtL29pL81MAGf7w2Yed+jc4KUJF0fL6YCvGOj2OOT/73pX0N1cuLGzf
+         ECJdJfF5q+Tu3Vs0H54vg8YCX4POSPt/jTDx97+sRolpUheG7qnd3LACShH3YDUGL+oL
+         edpJws/IQ1QQ+9i+FXscZHebVHzxRo9Z53ybE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Vq6gTi9Bep6mtPf9nDMlF9035dfiR/XYgA5X2QHKj40=;
-        b=ULy/4VjSreYfCDq8Jc25aN2fmkrpYutlO9TgkQ1QwXJD43N0NO8blxngWa9wCUhLlO
-         DzR13Qstn56fTuAhR+XJV4QKZ7A0yu0o6lRsXwQA96zgDFoI6ipf5G00uho5bNSyU3Nl
-         i1kbRdxzOOfCi2kJBVklABttGPPhmERFAFpFwIlsPI55DlN27/Xv1qSi7BHNZBwAeERh
-         AS98rsTtCnbkinacDt1PyZQzwuo8zf/8ecX2PQZK1hpo5RzZLVad7Wcr12HLY6179kSF
-         01d+Z92HompnTzJKoARDhDAP2qoW2rb3RPs4NxLKjphgIcLc9/kIOv+kSAHxNFUh4aTJ
-         5ofA==
-X-Gm-Message-State: AOAM532Uf1R+49WtK9PbS5zLW1nQ6Xh2ONLNWYu//eEBUo+EHTydv0Zq
-        3BlOra2lT3sN13hiTstms0Ti8uo802rcfYIZUkgzr/nBKgjNdiXtrf3StzcFzyR8ov+q2439Yur
-        IrN+882UGFKLqW0On47Jg6GqD
-X-Received: by 2002:aca:b142:: with SMTP id a63mr373419oif.115.1633023700395;
-        Thu, 30 Sep 2021 10:41:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaXC4q6QrGV266RqllNNcjg/6qBIcDvhoxMmAAPlV8rD4YdbwYCIVH9myRfNWtSOphc/Tgog==
-X-Received: by 2002:aca:b142:: with SMTP id a63mr373408oif.115.1633023700157;
-        Thu, 30 Sep 2021 10:41:40 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id u77sm653168oie.46.2021.09.30.10.41.39
+        bh=+IS0gEgo7hipR9gibsQw5KtPLx6dQXKFRc1+dywoXVA=;
+        b=8F4eRkeCMz7lSRla/KXuxVeiVxxujhUf0PSxhThFkMc81YCCgAhZ5AQ9nfX9ivTSIW
+         e7jWj2W/M3CgKmpZXxQugJ2nZFhLYAgFbiSVkWv9A757KkTTGCif9F224xcECV+xNzTB
+         9RJv/rE/tJ1GtWtfZa9EBvwkkeYfPkqCoy4kq+LA+fj36Gz0M0ZjrcLUwXKD9Oqlt5s+
+         tnYJUERbBxYLcxGnJnasT9GzrtJW4pK5PUjl8KfY7FLXHg9jGCTveWbtK0JCbqvuCyP1
+         3EiRpTXPtMz8rBCrCW1M05llA8oPjiKmojWdgWCfrht2ydC74W3hDaQk+yhh+9EWThYi
+         YNrA==
+X-Gm-Message-State: AOAM533n/FsmYMJEME0F8H5TfULuGiYUeUhjpvuTG7TlUn8oHTDmbFSF
+        y8K3bT3UciNKYSYlkWLEWDsscA==
+X-Google-Smtp-Source: ABdhPJwKcuP6DGDrVJJap2YBfnw9gJ29cZ6T8aj/WEWFIltD4Sz9lDFqVeOwFghXxQzDWleVwS3vJg==
+X-Received: by 2002:a17:902:e74d:b0:13e:77cd:a300 with SMTP id p13-20020a170902e74d00b0013e77cda300mr2394421plf.80.1633024041447;
+        Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x19sm3606048pfn.105.2021.09.30.10.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 10:41:39 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 10:41:37 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, sfr@canb.auug.org.au,
-        mbenes@suse.cz
-Subject: Re: [PATCH] objtool: Teach get_alt_entry() about more relocation
- types
-Message-ID: <20210930174137.atf6tuzgd2iivx3c@treble>
-References: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
+        Thu, 30 Sep 2021 10:47:20 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:47:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
+Message-ID: <202109301045.15DDDA0B@keescook>
+References: <20210914121036.3975026-1-ardb@kernel.org>
+ <20210914121036.3975026-5-ardb@kernel.org>
+ <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
+ <87ee99lii7.fsf@mpe.ellerman.id.au>
+ <87pmst1rn9.fsf@mpe.ellerman.id.au>
+ <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
+ <878rzf0zmb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
+In-Reply-To: <878rzf0zmb.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 12:43:10PM +0200, Peter Zijlstra wrote:
+On Thu, Sep 30, 2021 at 08:46:04AM +1000, Michael Ellerman wrote:
+> Ard Biesheuvel <ardb@kernel.org> writes:
+> > On Tue, 28 Sept 2021 at 02:16, Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >>
+> >> Michael Ellerman <mpe@ellerman.id.au> writes:
+> >> > Ard Biesheuvel <ardb@kernel.org> writes:
+> >> >> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >> >>>
+> >> >>> The CPU field will be moved back into thread_info even when
+> >> >>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
+> >> >>> of struct thread_info.
+> >> >>>
+> >> >>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> >> >>
+> >> >> Michael,
+> >> >>
+> >> >> Do you have any objections or issues with this patch or the subsequent
+> >> >> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
+> >> >> that he was happy with it.
+> >> >
+> >> > No objections, it looks good to me, thanks for cleaning up that horror :)
+> >> >
+> >> > It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
+> >> > git tree with the dependencies I'd be happy to run some tests over it.
+> >>
+> >> Actually I realised I can just drop the last patch.
+> >>
+> >> So that looks fine, passes my standard quick build & boot on qemu tests,
+> >> and builds with/without stack protector enabled.
+> >>
+> >
+> > Thanks.
+> >
+> > Do you have any opinion on how this series should be merged? Kees Cook
+> > is willing to take them via his cross-arch tree, or you could carry
+> > them if you prefer. Taking it via multiple trees at the same time is
+> > going to be tricky, or take two cycles, with I'd prefer to avoid.
 > 
-> Occasionally objtool encounters symbol (as opposed to section)
-> relocations in .altinstructions. Typically they are the alternatives
-> written by elf_add_alternative() as encountered on a noinstr
-> validation run on vmlinux after having already ran objtool on the
-> individual .o files.
+> I don't really mind. If Kees is happy to take it then that's OK by me.
 > 
-> Basically this is the counterpart of commit 44f6a7c0755d ("objtool:
-> Fix seg fault with Clang non-section symbols"), because when these new
-> assemblers (binutils now also does this) strip the section symbols,
-> elf_add_reloc_to_insn() is forced to emit symbol based relocations.
-> 
-> As such, teach get_alt_entry() about different relocation types.
-> 
-> Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Reported-by: Borislav Petkov <bp@alien8.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  tools/objtool/special.c |   32 +++++++++++++++++++++++++-------
->  1 file changed, 25 insertions(+), 7 deletions(-)
-> 
-> --- a/tools/objtool/special.c
-> +++ b/tools/objtool/special.c
-> @@ -58,6 +58,24 @@ void __weak arch_handle_alternative(unsi
->  {
->  }
->  
-> +static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
+> If Kees put the series in a topic branch based off rc2 then I could
+> merge that, and avoid any conflicts.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+I've created:
 
-Though I'd prefer U change it 2 a function name which doesn't look like
-a Prince song title.
+git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/thread_info/cpu
+
+it includes a --no-ff merge commit, which I'm not sure is desirable? Let
+me know if I should adjust this, or if Linus will yell about this if I
+send him a PR containing a merge commit? I'm not sure what's right here.
+
+Thanks!
 
 -- 
-Josh
-
+Kees Cook
