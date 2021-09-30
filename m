@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFB541E1CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2360141E1D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245540AbhI3Syz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:54:55 -0400
-Received: from mail-oo1-f52.google.com ([209.85.161.52]:34506 "EHLO
-        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhI3Syx (ORCPT
+        id S1343580AbhI3S4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245702AbhI3S4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:54:53 -0400
-Received: by mail-oo1-f52.google.com with SMTP id k11-20020a4abd8b000000b002b5c622a4ddso2158707oop.1;
-        Thu, 30 Sep 2021 11:53:10 -0700 (PDT)
+        Thu, 30 Sep 2021 14:56:17 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AA9C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:34 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g41so29114235lfv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5IZ/hLvOUSgpP0wYol2FuuiQb+HBe9aBEaCiGK4+fa4=;
+        b=RS7k61yWDY7k3lLrpz1Swp2qdYm4uhh+IQmQn4jDiN9TysKG0ay3jy/ufrUGOKrfw9
+         df0z/Wvx3KX2Ip2iU2QuWrEJOIHyyGZdotfqboUxby/doCtTLRAYGi/NyIXVL3JY8Yuy
+         aYMJ7Bs++uYAqCpShvMpqWVXTEL6Bcu5WNE/c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AWz5foWcr+bWR6CSFDKJoUEhYPxpGczQBoONhahdcus=;
-        b=6zI9O/BfzTHbkcmFk6j3uN5Yaq53uE0Z9r2yZMNJvSSqQIan/jE8vZOG+xg13DreMs
-         hv6O0UiVv6459N+21foxCzQbUg83Q5NJygstIZMZvSbWmFtp6M4U8xomc3mg4MBrHzQC
-         x4o9xdr8Xmv6r3UMcCFT6+igaqmsc1uNkuT5pU31l/gKG1SFoL/ynefVCuftE5np9ihw
-         dQmEN9OJBEHnGiSbr3ycnlsJRRWRhVEeDIUNuIouN93Eu9ZUyegHiLv6KbikUhS44yMu
-         J0Oz1XDaI1oV0jNYOoKwQtmpTDLZR5XV5ZJo2Y0uUkD4sijIRolfPIIzCeYCp3z6ZUNC
-         8/MQ==
-X-Gm-Message-State: AOAM532e9r7QhmXW42AmXja79zo9+trtQV4OY49HQvFF2UrKzCf2UWwW
-        9RKo614sURhPGRNr+Pwbsf0em5cypRRWdKA8FWry/6jgKkI=
-X-Google-Smtp-Source: ABdhPJw8+m2xqrDVqABBbHFhPc+Vi/u0KcQlXUvSeYYp71RAa69bRuSXSureyv6cjZyWA10UqXHMSc2jbi7XhFK/J08=
-X-Received: by 2002:a05:6820:17a:: with SMTP id k26mr6219832ood.37.1633027990202;
- Thu, 30 Sep 2021 11:53:10 -0700 (PDT)
+        bh=5IZ/hLvOUSgpP0wYol2FuuiQb+HBe9aBEaCiGK4+fa4=;
+        b=weR/fPscmMhgXViVAQTkRsXTVx88qSKV4IsPRH5gnyKN4Mz1Xi2ZqEwWpIBuGid1XI
+         8gboq1ChB8zGKrRkdFEw40zHpE+ealM+gIm+tagZFbcikGNZhGAx1j3nXfhFh0Awmtj6
+         MTnuwRL6BA5gwFiiCyKZNaUEG/XIZovcUTIAcjPirKmsfrPm3vYL9Cbh+xMkYN2lL1ry
+         +Bno0IqscAHxH011hz1u2DX3NXNbyx8NS3CC/fTCK3OBq+EYwlPpr+OZL+STQbV2Ut+p
+         GVyRzO5UzIKATi7lBb2okaS2e1lyZfmUwtFpmIWX9QdvxGzsBGGawYQWSRex1nuoa/Uc
+         /O5Q==
+X-Gm-Message-State: AOAM5313l8hKkpGdNVzjCgpBt56CA22aMfVnYLcpTNUyvfMAP08WD+ch
+        WfLqZdz1b9ZK+MZaSLhnsxw0JlxojqqfXK51VPw=
+X-Google-Smtp-Source: ABdhPJwaTjPJxF+TmKMHQL1OIHYERuvd3lQPnw+S0+eK0pA3RgoGslTtmkVzlZlBYO/0gNyGcTTMsQ==
+X-Received: by 2002:a05:6512:3042:: with SMTP id b2mr743133lfb.83.1633028071895;
+        Thu, 30 Sep 2021 11:54:31 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id d13sm460062lfe.21.2021.09.30.11.54.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 11:54:30 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id e15so29394216lfr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:54:29 -0700 (PDT)
+X-Received: by 2002:a19:ef01:: with SMTP id n1mr849824lfh.150.1633028069266;
+ Thu, 30 Sep 2021 11:54:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927121338.938994-1-arnd@kernel.org> <CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 30 Sep 2021 20:52:59 +0200
-Message-ID: <CAJZ5v0jDKK6ecsubVDv_=EUF3goiiDW28tvbKF9cesMphgKaug@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+References: <20210929225850.3889950-1-ndesaulniers@google.com>
+ <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com> <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
+In-Reply-To: <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 30 Sep 2021 11:54:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
+Message-ID: <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
+Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
@@ -53,56 +73,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 8:47 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Mon, Sep 27, 2021 at 2:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are some very old macros for doing an open-coded offsetof() and
-> > cast between pointer and integer in ACPI headers. clang-14 now complains
-> > about these:
-> >
-> > drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
-> >          ACPI_FADT_OFFSET(pm_timer_block),
-> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSET'
-> >  #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi_table_fadt, f)
-> >                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
-> >  #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> >                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
-> >  #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8, (a)) - ACPI_CAST_PTR (u8, (b))))
-> >                                                                               ^ ~~~~~~~~~~~~~~~~~~~~~~~
-> > Convert them to the modern equivalents.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  include/acpi/actypes.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
-> > index 92c71dfce0d5..285bc7b73de3 100644
-> > --- a/include/acpi/actypes.h
-> > +++ b/include/acpi/actypes.h
-> > @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
-> >  /* Pointer/Integer type conversions */
-> >
-> >  #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_size) (i))
-> > -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
-> > -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
-> > +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
-> > +#define ACPI_OFFSET(d, f)               offsetof(d, f)
-> >  #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
-> >  #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
-> >
-> > --
->
-> Queued up as 5.16 material, converted into an upstream ACPICA pull
-> request and submitted, thanks!
+On Wed, Sep 29, 2021 at 5:19 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+> ...
+> arch/x86/mm/amdtopology.c:110:7: remark: 'test_bit' not inlined into
+> 'amd_numa_init' because too costly to inline (cost=115, threshold=45)
+> [-Rpass-missed=inline]
+>                 if (node_isset(nodeid, numa_nodes_parsed)) {
 
-And reverted from there, because it introduced build issues.
+Yeah, I think that we should just do the __always_inline thing.
 
-Can we use alternative definitions that don't depend on uintptr_t and
-offsetof()?
+I'd rather have the stupid debug code overhead in the caller - that
+may end up knowing that the pointer actually is so that the debug code
+goes away - than have "test_bit()" uninlined because there's so much
+crazy debug code in it.
+
+I also happen to believe that we have too much crazy "instrumentation" crap.
+
+Why is that test_bit() word read so magical that it merits a
+"instrument_atomic_read()"?
+
+But I absolutely detest how KCSAN and some other tooling seems to get
+a free pass on doing stupid things, just because they generated bad
+warnings so then they can freely generate these much more fundamental
+problems because the result is a f*cking mess.
+
+> Though for the defconfig case...somehow the cost is more than with the
+> sanitizers...
+
+Maybe the solution is that if you have some of the crazy sanitizers,
+we just say "the end result is not worth even checking". And stop
+checking all the section mismatches, and all the stack size things.
+
+Because it looks like this is more of a real issue:
+
+> arch/x86/mm/amdtopology.c:157:7: remark: '__nodes_weight' not inlined
+> into 'amd_numa_init' because too costly to inline (cost=930,
+> threshold=45) [-Rpass-missed=inline]
+>         if (!nodes_weight(numa_nodes_parsed))
+>              ^
+
+Hmm. That's just a "bitmap_weight()", and that function in turn is
+__always_inline.
+
+And the *reason* it is __always_inline is that it really wants to act
+as a macro, and look at the second argument and do special things if
+it is a small constant value.
+
+And it looks like clang messes things up by simply not doing enough
+simplification before inlining decisions, so it all looks very
+complicated to clang, even though when you actually generate code, you
+have one (of two) very simple code sequences.
+
+> > Wouldn't it be better to make
+> > them always-inline?
+>
+> Perhaps, see what that might look like:
+> https://github.com/ClangBuiltLinux/linux/issues/1302#issuecomment-807260475
+> Does that look better?
+
+I suspect that in this case, because of clang deficiencies, that
+__always_inline actually is the right thing to do at least on
+__nodes_weight.
+
+Looking at your comment lower down
+
+  https://github.com/ClangBuiltLinux/linux/issues/1302#issuecomment-807757878
+
+I really think this is a clang bug, and that you need to do certain
+simplifications both before _and_ after inlining.
+
+Before, because of the inlining cost decisions particularly wrt
+constant arguments.
+
+After, because successful inlining changes things completely.
+
+Marking __nodes_weight() be __always_inline just works around clang
+being broken in this regard.
+
+It is _possible_ that it might help to make bitmap_weight() be a macro
+instead of an inline function, but it's a kind of sad state of affairs
+if that is required.
+
+And it might well fail - if you don't do the constant propagation
+before making inlining decisions, you'll _still_ end up thinking that
+bitmap_weight() is very costly because you don't do that
+__builtin_constant_p() lowering.
+
+And then you end up using the (much more expensive) generic function
+instead of the cheap "look, for single words this is a trivial" thing.
+
+> Part of me feels like modpost not warning on those is permitting a
+> "memory leak," in so far as code that's only called from .init callers
+> is never reclaimed. Or leaving behind gadgets...
+
+I think we can just treat modpost as a "good heuristic".  If it
+catches all the normal cases, it's fine - but it must not have false
+positives.
+
+That's basically true of all warnings. False positive warnings make a
+warning worthless. That's just *basic*.
+
+So the gcc thing is a "ok, we know compilers mess this up if they do
+partial inlining with constant propagation, so we will suppress what
+is quite likely a false positive for that case".
+
+That clang patch, in comparison? That's just a hack enumerating random
+cases. TRhere is no logic to it, and there is absolutely zero
+maintainability. It will cause us to forever just add other random
+cases to the list, making the whole tooling entirely pointless.
+
+See the difference?
+
+Maybe clang should just adopt the gcc naming convention, so that we
+can just use the gcc heuristic.
+
+> > clear case of "this inlining failed". This ad-hoc list has cases of
+> > things that are clearly wrong in general ("test_bit()" must not use
+> > initdata), and that "ok, the function just doesn't have the right
+> > section marker.
+>
+> Sorry, what do you mean "test_bit() must not use initdata?" Because it
+> can lead to problems like this? Or...?
+
+No, I mean that it is completely unacceptable to add some crazy rule
+like "you can access this init-data  from any context, as long as you
+use test_bit to do so".
+
+That's basically what your rule does. And it's a FUNDAMENTALLY invalid
+rule. It's simply not true.  The rule is invalid, it's just that clang
+has made such a mess of it that in one particular case it happens to
+be true.
+
+The gcc "rule" is much more reasonable: it's *not* saying "it's ok to
+access this init-data from test_bit". The gcc rule says "we know gcc
+messes up our heuristics when out-of-lining with constprop, so we just
+won't warn because false positives are bad, bad, bad.
+
+One rule is fundamentally garbage and wrong. The other rule is a
+generic "we know this situation cannot be tested for". Very different.
+
+                  Linus
