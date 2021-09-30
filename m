@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C9B41D20B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FCB41D20F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348020AbhI3D7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 23:59:40 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59644 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347963AbhI3D7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 23:59:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632974277; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Lk3z6zTSdTFGpMOmC+/3+SLOaVyJ9DMt6rB0tK9eu9w=;
- b=Q58s/HOGfasX+7VbqJYbMM6GOEK4aMZJf0cl/7e2KDgqnFwzhFAkE9RwVWWE7JOz4PipEwim
- oL1O6BIuHReByh50lQwPh2JBWbobb1w8B9yVQW3jH4uuWJt5uomOSLWs530ojN+0J0ZkzYvt
- wlx+dgWk2MFBh/w9qKYHbL1/vPw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 615535b4fc6e34f8cd02e1a0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 03:57:40
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2AE76C4361C; Thu, 30 Sep 2021 03:57:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 288F8C4338F;
-        Thu, 30 Sep 2021 03:57:38 +0000 (UTC)
+        id S231810AbhI3EAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 00:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhI3EAT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 00:00:19 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A5BC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:58:37 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x27so19444594lfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2l4dHoIfwgMb6BM7hfC3l0nv3vJcUx4BywuU/NezsIY=;
+        b=ltE2JyZnf7KRkKOD6Fs0aNM4qMvhNqQXPfQZF3LT8qCz8/sWBX3WyT/o2vlb3POO5M
+         pi4Yky+3YRwOUp+6ZKAu55hK/zR7npfVTZ/ROt4/Jh4nNYzfxPu0DH8GbK8BVVZ1k7CW
+         QnA7KofIg5u1wSnz0EB3mPeXuZRqbjlXYtUwRsOaZIa9MsaQ433nUJ9UVHn93Rdjr+Yw
+         XErBP7m7X0hRA3TVv6rO1ZQNHFCmP5frfJ7JMZWwRJX+/y/BvOr3iPMTMJydzlSDKXsS
+         lNI8xVNMlPYedEmwF3DKbIxIJX28iRuugh6a8Y4Yfd+agrjqihwCzJAzXgkpSDQ+kbf/
+         ubNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2l4dHoIfwgMb6BM7hfC3l0nv3vJcUx4BywuU/NezsIY=;
+        b=TNaypwfHtObAu28mlwczPDzURH7WGxdhaIV1PfUTJfJTaERx0FW9JblLQWhd4qClFp
+         3G1f+d+cLxnsasPgytGKUVnSGRelQfnrAZt/mcCYW45FV5KjUT95NvvyJ4ukK4lYTOcg
+         1un1gVmdB6VGrC/xGPzNAwsP/ZESMnOXhZXh9lp0BXMg31iBPJnF+J8WVTJTyNN3GNJ3
+         WNleAx4h/5VpU+Hs25eMxNNmU+WhvC2s6SvCGgaCE/Co6KuJS3o9PBE5ZBfhi8/1fTH+
+         S9GMOA2jmqwShZ8r3ev/tNofEQ7RSwmErs+Sc69a/YPU+nxbJtQUDR6cFrjKmltYN1IV
+         Dlmw==
+X-Gm-Message-State: AOAM531aErXrGvRWo063B/b7+uy136QrkBdR6fB4vN2mCRm1ESdAYf1g
+        UYCFIGI+b32D5CmOwSLkCe+WdUDAEnx09GNmdcRFrQ==
+X-Google-Smtp-Source: ABdhPJxUiHZwl2ZEwrVsetpg+NGKuleqfbfAMMzrZj9iiEDLuwxZi2tNP61nwlB8/4wh0CbxcZVkvn20edtBs8IoT1k=
+X-Received: by 2002:a05:6512:2206:: with SMTP id h6mr3450790lfu.475.1632974316261;
+ Wed, 29 Sep 2021 20:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 30 Sep 2021 11:57:38 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: Fix a possible dead lock in clock scaling
-In-Reply-To: <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
-References: <1631843521-2863-1-git-send-email-cang@codeaurora.org>
- <cc9cb9e7-68bd-3bfa-9310-5fbf99a86544@acm.org>
- <fbc4d03a07f03fe4fbe697813111471f@codeaurora.org>
- <644dcd92-25ae-e951-d9f3-607306a02370@acm.org>
-Message-ID: <27e9265371e96d0bcc06139ce5f0e026@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-11-pasha.tatashin@soleen.com> <20210929124513.GD21631@willie-the-truck>
+In-Reply-To: <20210929124513.GD21631@willie-the-truck>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 29 Sep 2021 23:57:59 -0400
+Message-ID: <CA+CK2bBY-9JAtb1Rs4OJ2mmCtqMEsJ0rJs4a5EXnmj8AejvFYQ@mail.gmail.com>
+Subject: Re: [PATCH v17 10/15] arm64: kexec: use ld script for relocation function
+To:     Will Deacon <will@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-30 02:15, Bart Van Assche wrote:
-> On 9/28/21 8:31 PM, Can Guo wrote:
->> On 2021-09-18 01:27, Bart Van Assche wrote:
->>> On 9/16/21 6:51 PM, Can Guo wrote:
->>>> Assume a scenario where task A and B call ufshcd_devfreq_scale()
->>>> simultaneously. After task B calls downgrade_write() [1], but before 
->>>> it
->>>> calls down_read() [3], if task A calls down_write() [2], when task B 
->>>> calls
->>>> down_read() [3], it will lead to dead lock.
->>> 
->>> Something is wrong with the above description. The downgrade_write() 
->>> call is
->>> not followed by down_read() but by up_read(). Additionally, I don't 
->>> see how
->>> concurrent calls of ufshcd_devfreq_scale() could lead to a deadlock.
->> 
->> As mentioned in the commit msg, the down_read() [3] is from 
->> ufshcd_wb_ctrl().
->> 
->> Task A -
->> down_write [2]
->> ufshcd_clock_scaling_prepare
->> ufshcd_devfreq_scale
->> ufshcd_clkscale_enable_store
->> 
->> Task B -
->> down_read [3]
->> ufshcd_exec_dev_cmd
->> ufshcd_query_flag
->> ufshcd_wb_ctrl
->> downgrade_write [1]
->> ufshcd_devfreq_scale
->> ufshcd_devfreq_target
->> devfreq_set_target
->> update_devfreq
->> devfreq_performance_handler
->> governor_store
->> 
->> 
->>> If one thread calls downgrade_write() and another thread calls 
->>> down_write()
->>> immediately, that down_write() call will block until the other thread 
->>> has called up_read()
->>> without triggering a deadlock.
->> 
->> Since the down_write() caller is blocked, the down_read() caller, 
->> which comes after
->> down_write(), is blocked too, no? downgrade_write() keeps lock owner 
->> as it is, but
->> it does not change the fact that readers and writers can be blocked by 
->> each other.
-> 
-> Please use the upstream function names when posting upstream patches.
-> I think that
-> ufshcd_wb_ctrl() has been renamed into ufshcd_wb_toggle().
-> 
-> So the deadlock is caused by nested locking - one task holding a
-> reader lock, another
-> task calling down_write() and next the first task grabbing the reader
-> lock recursively?
-> I prefer one of the following two solutions above the patch that has
-> been posted since
-> I expect that both alternatives will result in easier to maintain UFS 
-> code:
-> - Fix the down_read() implementation. Making down_read() wait in case
-> of nested locking
->   seems wrong to me.
-> - Modify the UFS driver such that it does not lock
-> hba->clk_scaling_lock recursively.
+On Wed, Sep 29, 2021 at 8:45 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Thu, Sep 16, 2021 at 07:13:20PM -0400, Pasha Tatashin wrote:
+> > Currently, relocation code declares start and end variables
+> > which are used to compute its size.
+> >
+> > The better way to do this is to use ld script incited, and put relocation
+> > function in its own section.
+>
+> "incited"? I don't understand ...
 
-My current change is the 2nd solution - drop the hba->clk_scaling_lock
-before calls ufshcd_wb_toggle() to avoid recursive lock.
+I will correct it:
+s/incited//
+
+
+> > +#ifdef CONFIG_KEXEC_CORE
+> > +/* kexec relocation code should fit into one KEXEC_CONTROL_PAGE_SIZE */
+> > +ASSERT(__relocate_new_kernel_end - (__relocate_new_kernel_start & ~(SZ_4K - 1))
+> > +     <= SZ_4K, "kexec relocation code is too big or misaligned")
+> > +ASSERT(KEXEC_CONTROL_PAGE_SIZE >= SZ_4K, "KEXEC_CONTROL_PAGE_SIZE is brokern")
+>
+> Typo: "brokern",
+
+Will correct it.
 
 Thanks,
-
-Can Guo.
-
-> 
-> Thanks,
-> 
-> Bart.
+Pasha
