@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C656441D6B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC69341D6A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349601AbhI3JrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349538AbhI3Jqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:46:46 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA59AC06176A;
-        Thu, 30 Sep 2021 02:45:03 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id k23so3816077pji.0;
-        Thu, 30 Sep 2021 02:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=J1OzCcqk/8oU1iiQtZiff+c0LD7WXN2Dr+N/5kW8Y/w=;
-        b=leZsCulADGgfpy7H8GtxuB/53eNKGUUzTPwgdmZxb86Er0xlqHcy7OJFiceyTKou8V
-         w07WBDlvvLAhgFGowk7Ijpkwc2cdMBsJaCcAHCTMVQ8IYG1Y2FpcKysorjkVUVgIJHHG
-         evDL8I4XLwNq4UgDwQGVihqoZEwgoJiUzl/7xbq8A70/bngMOMbGAyh95Wt6L/qdW6zD
-         GYeMQebRiiQ2rcdQGO1QcVcsNul5j7617OllI48+0MSZEscHfjBKVSqPNMFULLHWahz5
-         OAAUk9P+eq633U7YoB/8skhznT7QvrGlQ1WeSi8DK2zdFeV9Wv4WXXvIpKGqMT2MLwW8
-         YV6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=J1OzCcqk/8oU1iiQtZiff+c0LD7WXN2Dr+N/5kW8Y/w=;
-        b=ipqvvj745tAeNNUtdZsuJUYMDZDEqdPK8V4CXMyBfkG2bTUBH79iY/F2l2RUV0n3wP
-         adx1UZ1wkd5+BQ8sqiYTERtIdtt30M6+M5s4ylX3ZHI8Jy7qK6k9LoOwv2oL4xv43i2D
-         rTpUJbUgI1k/uKtkxehM1YLlsPgTSLvR5lhxQDrbHWWVip6kA6qeKdfehoYxF0z5n0Px
-         Ue6QvA4q8skjW+/xz9Jizdxhd7AieVA6qtEb0Uso5Ollv2lhr6Dm6DkaDxk+BE4x7+CH
-         wnUSmFBCZv9tDVbK1LzYpQL+1RukEDbrlS6FGXmLfpF6Kv53MhhntKbaLEJgidMEQBgK
-         yB2A==
-X-Gm-Message-State: AOAM532EiMMxoUA2mQRTmJGOivMhi1H26EpTcBTihwNWBB5tPBa0EAbP
-        z5Gy83jaq1CMYZslpZuZVUk=
-X-Google-Smtp-Source: ABdhPJyQOefdPYXaTArfv5rEHWjm93zwDc0WGVgjU8eSeG6uBKdLDvsCELVteGXLTRNqx4Tmue6LgQ==
-X-Received: by 2002:a17:90a:6286:: with SMTP id d6mr5407637pjj.199.1632995103404;
-        Thu, 30 Sep 2021 02:45:03 -0700 (PDT)
-Received: from baohua-VirtualBox.localdomain (203-173-222-16.dialup.ihug.co.nz. [203.173.222.16])
-        by smtp.gmail.com with ESMTPSA id ha24sm4460430pjb.32.2021.09.30.02.44.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 02:45:02 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     alex.kogan@oracle.com
-Cc:     arnd@arndb.de, bp@alien8.de, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com, guohanjun@huawei.com, hpa@zytor.com,
-        jglauber@marvell.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, longman@redhat.com, mingo@redhat.com,
-        peterz@infradead.org, steven.sistare@oracle.com,
-        tglx@linutronix.de, will.deacon@arm.com, x86@kernel.org
-Subject: Re: [PATCH v15 0/6] Add NUMA-awareness to qspinlock
-Date:   Thu, 30 Sep 2021 17:44:47 +0800
-Message-Id: <20210930094447.9719-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210514200743.3026725-1-alex.kogan@oracle.com>
-References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+        id S1349560AbhI3Jqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349464AbhI3Jqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:46:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C3E615E2;
+        Thu, 30 Sep 2021 09:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632995101;
+        bh=6uyUfnKfZKksnyKfEttmmzOHPPjEBQZsOjCQp7fyIO4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DtCbzDSToSyq5ei+OpNZqPMVRsGIMcwUTxlPHpGXjJCZUsylJsx0oQsDiFgJL6Z3L
+         j2VSzGq87EXEGR7qHc1zTXUBKo+Z8dCnM2y67faMqkirhp5Rd0aEmkjDZK1mYhNcjL
+         Iyl5AwHZwBwOuZBM2jf/CakNbKTK4e4PpJrdR1QGCW5IsZMe/fXuszlLMZts6+cHm9
+         0nahN/Bh7a82fXlfqAST3NfjmaUsnhMAZD41r32gwWQrOMpNp2lnvAfb1yU4IiseD4
+         95JDg04R7UrD9H/miRE2e5SSJIh709R5GWREqkJUFRp7Aab8TIlD+VWxDGyZyyCCs+
+         CicLWfui4uMNQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mVscd-002AT1-IQ; Thu, 30 Sep 2021 11:44:59 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "H. Peter Anvin" <hpa@zytor.com>, Amit Kucheria <amitk@kernel.org>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, Carlos Bilbao <bilbao@vt.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Rix <trix@redhat.com>, Tony Luck <tony.luck@intel.com>,
+        Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pm@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v2 0/7] ABI: add additional sysfs docs and update some other ABI files
+Date:   Thu, 30 Sep 2021 11:44:47 +0200
+Message-Id: <cover.1632994837.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We have done some performance evaluation with the locktorture module
-> as well as with several benchmarks from the will-it-scale repo.
-> The following locktorture results are from an Oracle X5-4 server
-> (four Intel Xeon E7-8895 v3 @ 2.60GHz sockets with 18 hyperthreaded
-> cores each). Each number represents an average (over 25 runs) of the
-> total number of ops (x10^7) reported at the end of each run. The 
-> standard deviation is also reported in (), and in general is about 3%
-> from the average. The 'stock' kernel is v5.12.0,
+Hi Greg,
 
-I assume x5-4 server has the crossbar topology and its numa diameter is
-1hop, and all tests were done on this kind of symmetrical topology. Am
-I right? 
+This series contain:
 
-    ┌─┐                 ┌─┐
-    │ ├─────────────────┤ │
-    └─┤1               1└┬┘
-      │  1           1   │
-      │    1       1     │
-      │      1   1       │
-      │        1         │
-      │      1   1       │
-      │     1      1     │
-      │   1         1    │
-     ┌┼┐1             1  ├─┐
-     │┼┼─────────────────┤ │
-     └─┘                 └─┘
+patch 1: Convert sys/class/thermal to Documentation/ABI;
+patch 2: Convert sys/class/hwmon to Documentation/ABI;
+patch 3: add a new sysfs element on hwmon that weren't documented yet;
+patch 4: Convert MCE sysfs documentation into Documentation/ABI;
+patch 5: Add 3 missing elements to MCE sysfs documentation;
+patches 6 and 7: fix wildcards at sysfs-class-extcon and sysfs-devices-system-cpu.
 
+Those help to reduce the gap of undocumented ABI detected by:
 
-what if the hardware is using the ring topology and other topologies with
-2-hops or even 3-hops such as:
+	./scripts/get_abi.pl undefined
 
-     ┌─┐                 ┌─┐
-     │ ├─────────────────┤ │
-     └─┤                 └┬┘
-       │                  │
-       │                  │
-       │                  │
-       │                  │
-       │                  │
-       │                  │
-       │                  │
-      ┌┤                  ├─┐
-      │┼┬─────────────────┤ │
-      └─┘                 └─┘
+On an ARM and on an AMD x86_64 server.
+
+Mauro Carvalho Chehab (7):
+  ABI: sysfs-class-thermal: create a file with thermal_zone ABI
+  ABI: sysfs-class-hwmon: add ABI documentation for it
+  ABI: sysfs-class-hwmon: add a description for tempY_crit_alarm
+  ABI: sysfs-mce: add a new ABI file
+  ABI: sysfs-mce: add 3 missing files
+  ABI: sysfs-class-extcon: use uppercase X for wildcards
+  ABI: u: use cpuX instead of cpu#
+
+ Documentation/ABI/testing/sysfs-class-extcon  |  12 +-
+ Documentation/ABI/testing/sysfs-class-hwmon   | 932 ++++++++++++++++++
+ Documentation/ABI/testing/sysfs-class-thermal | 259 +++++
+ .../ABI/testing/sysfs-devices-system-cpu      |  52 +-
+ Documentation/ABI/testing/sysfs-mce           | 129 +++
+ .../driver-api/thermal/sysfs-api.rst          | 225 +----
+ Documentation/hwmon/sysfs-interface.rst       | 596 +----------
+ Documentation/x86/x86_64/machinecheck.rst     |  56 +-
+ MAINTAINERS                                   |   5 +
+ 9 files changed, 1404 insertions(+), 862 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-hwmon
+ create mode 100644 Documentation/ABI/testing/sysfs-class-thermal
+ create mode 100644 Documentation/ABI/testing/sysfs-mce
+
+-- 
+2.31.1
 
 
-or:
-
-
-    ┌───┐       ┌───┐      ┌────┐      ┌─────┐
-    │   │       │   │      │    │      │     │
-    │   │       │   │      │    │      │     │
-    ├───┼───────┼───┼──────┼────┼──────┼─────┤
-    │   │       │   │      │    │      │     │
-    └───┘       └───┘      └────┘      └─────┘
-
-do we need to consider the distances of numa nodes in the secondary
-queue? does it still make sense to treat everyone else equal in
-secondary queue?
-
-Thanks
-barry
