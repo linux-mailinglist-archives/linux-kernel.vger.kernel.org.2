@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D5F41D47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18F041D47F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348717AbhI3H1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348599AbhI3H1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:27:36 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B577AC06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:25:54 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 379371F44975
-Subject: Re: [PATCH 0/5] platform/chrome: Make cros_ec_pd_command() reusable
-To:     Prashant Malani <pmalani@chromium.org>,
+        id S1348726AbhI3H1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:27:53 -0400
+Received: from muru.com ([72.249.23.125]:38994 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348693AbhI3H1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:27:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 9BD358050;
+        Thu, 30 Sep 2021 07:26:38 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 10:26:07 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-References: <20210930022403.3358070-1-pmalani@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <ef9908f7-c42d-7d70-074c-8bb36ae3a88c@collabora.com>
-Date:   Thu, 30 Sep 2021 09:25:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Subject: Re: [PATCH 1/4] serial: core: Add wakeup() and start_pending_tx()
+ for power management
+Message-ID: <YVVmj9kJg9Mb5OR+@atomide.com>
+References: <20210930062906.58937-1-tony@atomide.com>
+ <20210930062906.58937-2-tony@atomide.com>
+ <CAHp75Ve4RTSdbQYA_u8vs=U75KsNdrm9EqFASAGf4rFKSqVWvQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210930022403.3358070-1-pmalani@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve4RTSdbQYA_u8vs=U75KsNdrm9EqFASAGf4rFKSqVWvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
-
-
-On 30/9/21 4:23, Prashant Malani wrote:
-> This is a short series to relocate and rename cros_ec_pd_command() to
-> cros_ec_proto.c. This function is useful for sending host command
-> messages, so the 1st 4 patches move it a more central location, and
-> modify the arguments to allow other users to use it.
+* Andy Shevchenko <andy.shevchenko@gmail.com> [210930 07:11]:
+> On Thu, Sep 30, 2021 at 9:30 AM Tony Lindgren <tony@atomide.com> wrote:
+> >
+> > If the serial driver implements PM runtime with autosuspend, the port may
+> > be powered down on TX. To wake up the port, let's add new wakeup() call
+> > for serial drivers to implement as needed. We can call wakeup() from
+> > __uart_start() and flow control related functions before attempting to
+> > write to the serial port registers.
+> >
+> > Let's keep track of the serial port with a new runtime_suspended flag
+> > that the device driver runtime PM suspend and resume can manage with
+> > atomic_set(). This is because only the device driver knows what the
+> > device runtime PM state as in Documentation/power/runtime_pm.rst
+> > under "9. Autosuspend, or automatically-delayed suspend" for locking.
+> >
+> > To allow the serial port drivers to send out pending tx on runtime PM
+> > resume, let's add start_pending_tx() as suggested by Johan Hovold
+> > <johan@kernel.org>.
 > 
-
-Nice patchset! let's hope we can remove at some point all the custom
-implementations in the different cros_ec drivers of the cros_ec_command
-function. Give some days to run some tests.
-
-Thanks,
-  Enric
-
-> The final patch updates cros-ec-typec to use the new function and get
-> rid of its own copy.
+> ...
 > 
-> Prashant Malani (5):
->   platform/chrome: cros_usbpd_notify: Rename cros_ec_pd_command()
->   platform/chrome: cros_usbpd_notify: Move ec_command()
->   platform/chrome: cros_ec_proto: Make data pointers void
->   platform/chrome: cros_ec_proto: Add version for ec_command
->   platform/chrome: cros_ec_typec: Use cros_ec_command()
+> > +  wakeup(port)
+> > +       Wake up port if it has been runtime PM suspended.
+> > +
+> > +       Locking: port->lock taken.
+> > +
+> > +       Interrupts: locally disabled.
 > 
->  drivers/platform/chrome/cros_ec_proto.c     | 48 ++++++++++++++
->  drivers/platform/chrome/cros_ec_typec.c     | 69 ++++++---------------
->  drivers/platform/chrome/cros_usbpd_notify.c | 50 +--------------
->  include/linux/platform_data/cros_ec_proto.h |  3 +
->  4 files changed, 72 insertions(+), 98 deletions(-)
+> > +       This call must not sleep
 > 
+> If it's suspended via ACPI methods, it can't be resumed here, right?
+
+It should work for that too assuming the runtime PM resume function is
+implemented.
+
+> Only what we can do is to schedule a resume, but it means we may not
+> access registers immediately after and we have to be sure that the
+> device is resumed.
+
+Yeah the only thing we do in the 8250_port wakeup() is schedule a
+resume if needed. Then the 8250 port device driver can call
+start_pending_tx() at the end of it's runtime PM resume function.
+
+> Dead end?
+
+I don't think so :) In serial_core we bail out on uart_port_wakeup()
+errors before register access. But maybe I missed some more moles to
+whack there :)
+
+Regards,
+
+Tony
