@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EA241D9CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BBC41D9D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350828AbhI3Mbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:31:34 -0400
-Received: from mga09.intel.com ([134.134.136.24]:60998 "EHLO mga09.intel.com"
+        id S1350193AbhI3Mb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350264AbhI3Mbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:31:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225214996"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="225214996"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 05:29:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="520360373"
-Received: from dingu.tm.intel.com (HELO dingu2.tm.intel.com) ([10.237.54.29])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Sep 2021 05:29:48 -0700
-From:   Antti Kervinen <antti.kervinen@intel.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Jonathan.Cameron@huawei.com, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, antti.kervinen@intel.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        song.bao.hua@hisilicon.com, tiantao6@hisilicon.com,
-        tklauser@distanz.ch, yury.norov@gmail.com
-Subject: Re: [PATCH] cpumask: Omit terminating null byte in cpumap_print_{list,bitmask}_to_buf
-Date:   Thu, 30 Sep 2021 15:29:47 +0300
-Message-Id: <20210930122947.2730542-1-antti.kervinen@intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <YVWU3f5elbnRctae@kroah.com>
-References: <YVWU3f5elbnRctae@kroah.com>
+        id S1350837AbhI3Mbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 08:31:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 48557619E9;
+        Thu, 30 Sep 2021 12:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633005008;
+        bh=CcTc775U0Nnl+OC4Icy8y2oARW0X9UK7n7gImHsHo7Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=t2MXS/32kQUQa7M4cL/OtdYJd9vUUjpagPsgpASJdpvXcfUPWB5rAFHeFsAAnFrqX
+         AxybwM8MxoN8XUFnTb1YFpv5Ro5drRl+374GyT/Uop7Ge62GW13gC3knxB9YlvEEZp
+         nEuJNlVoBj784FM5SKSwZHBcGdQEkxxgguT4Bl9ywbttP3XSV8bmP1ljX5tyF68RJi
+         KJ1GVMAQAO/7in158TH9lec7YsYL5ni7tQ04CiuRrNtaJ8pSP1yt67c0Q19vYtpVsm
+         3P+w1UaeZclUC05jXfH6rLX30kCJDjU+aMTIue+zu7IBsNXpJzBHDolQiR/N75uoTg
+         UI0u0n8jZJYlQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F43D60AA5;
+        Thu, 30 Sep 2021 12:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][next] octeontx2-af: Remove redundant initialization of
+ variable pin
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163300500825.24074.17246457961363839532.git-patchwork-notify@kernel.org>
+Date:   Thu, 30 Sep 2021 12:30:08 +0000
+References: <20210929132753.216068-1-colin.king@canonical.com>
+In-Reply-To: <20210929132753.216068-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-> Why not test the patch there (and in linux-next) and let us know if
-> it resolves the issue you see or not.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Yes, I conform that the patch fixes this issue in my userspace. Too
-bad that I was obviously late with my code review notes.
+On Wed, 29 Sep 2021 14:27:53 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable pin is being initialized with a value that is never
+> read, it is being updated later on in only one case of a switch
+> statement.  The assignment is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> [...]
 
-Thanks!
+Here is the summary with links:
+  - [next] octeontx2-af: Remove redundant initialization of variable pin
+    https://git.kernel.org/netdev/net-next/c/75f81afb27c3
 
-Antti
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
