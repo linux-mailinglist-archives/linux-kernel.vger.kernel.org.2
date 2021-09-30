@@ -2,173 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCA041D1B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914B941D194
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347948AbhI3DEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 23:04:30 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:53435 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347939AbhI3DE3 (ORCPT
+        id S1347892AbhI3Cqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347849AbhI3Cqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 23:04:29 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HKdMn56h9z4xbL; Thu, 30 Sep 2021 13:02:45 +1000 (AEST)
+        Wed, 29 Sep 2021 22:46:44 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FBCC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:45:02 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so18876866lfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1632970965;
-        bh=2chqBsylnpGWmu4/Ed3eGkp8ajdFLitawmHgzQaDmXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A4cfx1VeFIsTqJ1k4Q6E8pZP0Hfou7CmoniTfjOaeN1WkMvgKiG8Vw28t86iAyGSh
-         N7PAncCR5TeJOCgm6Q07ayfhhXlfSLz4baebq0BiVDlF5nS2SLDRyOO6qFAIj8SIJX
-         tGP84lGIl13L4sz2ILlRGWUZErmjSbvgGaN6oY6w=
-Date:   Thu, 30 Sep 2021 12:43:46 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Liu Yi L <yi.l.liu@intel.com>, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
-Message-ID: <YVUkYu59TJn5tcFg@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-3-yi.l.liu@intel.com>
- <YVPKu/F3IpPMtGCh@yekko>
- <20210929130521.738c56ed.alex.williamson@redhat.com>
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rbhsc9J7XsMrioXJqfrxY/zmGhcXPZ+JV/XkI67QIjQ=;
+        b=IwaYxISK5oSeVmHWe75HUpypgzEmLhpIY5wMJH92Lj4/2lNQSxa95Oq7sCfF3Bq/l8
+         QcBh4WdW2wMf2WHlaUvQx9amF8G6tBphTKNN7prwZo2IdiKrt2mAyqIXD4RtJ2KW8XVx
+         q52Wnl7mt+ZZxHZ/4LjUzlxhsi/kvhB0OL4YAqfdCn53/UnKxQY502s1PhvHQuJtCQHu
+         gm77meiCKmO3Nh8bPkl56cgcwf74w4Q4RHqu6p65vmCZn157xUz3PyVYX5FTe3GMLqeH
+         63I9qj5KbiefBz1k1e1A+g8bAP/iwvx9Mm8Us5EmGX5JOYIxotojnP2FE/By/q37x1kN
+         HyvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rbhsc9J7XsMrioXJqfrxY/zmGhcXPZ+JV/XkI67QIjQ=;
+        b=3NXMahPSo69yqjD6iZNn1a9TpqvxIS0eKWs9oiewBn7AW5Y5V3sfElwZAcMWk4ILYh
+         j79lN7508SBQcEZV6ZaJhoo0jOow58otfW9azUxsc+IFs+d5xCXLyhMVgjLiqDF7rDGI
+         Cf7AaZTGAtjAhpKpX6jk+KJiHUK82gzlIJ6PxUn0kxQPghGIVGJL2/s1r2lzSO4kQyQf
+         PvLghQfa2iGRbpfHq8GDKlF3lUhE3GzjA6WEQ25rZY3Qy/uzliIiX/A7mqKzO/1UcU9B
+         JM6Wn91yUgmc6TW++YFXnQ35iChVNS5yLItoGAtCbs0v7kwU1dtlto0hzLWIKX1M4y6Z
+         rS8A==
+X-Gm-Message-State: AOAM530WHZfefN5c6vwZT86btCvc1cPPOFi3KQ2YoMWPNQh1iA4rUSFM
+        F+auCSNnyhiIQEMByHHLPMjzSLHxUyE1Nm3VMlgMRg==
+X-Google-Smtp-Source: ABdhPJyQJRVQGyEYu5wfNE6U6Pt+vKWE6vtHQppYUn0Bj+uAdeYrnCq4LIUiSjO0TXF1W62OsGwC3pRNI5s3rOVYJ40=
+X-Received: by 2002:a05:6512:b08:: with SMTP id w8mr3159158lfu.505.1632969900574;
+ Wed, 29 Sep 2021 19:45:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BWB8IX6FMezkTNqc"
-Content-Disposition: inline
-In-Reply-To: <20210929130521.738c56ed.alex.williamson@redhat.com>
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-6-pasha.tatashin@soleen.com> <20210929121336.GB21631@willie-the-truck>
+In-Reply-To: <20210929121336.GB21631@willie-the-truck>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 29 Sep 2021 22:44:23 -0400
+Message-ID: <CA+CK2bCcawYWO+EjLbSciLQaM3g4eUWQN0uokNs1zN+An9KYSA@mail.gmail.com>
+Subject: Re: [PATCH v17 05/15] arm64: kexec: skip relocation code for inplace kexec
+To:     Will Deacon <will@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Will,
 
---BWB8IX6FMezkTNqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > +             cpu_install_idmap();
+> > +             restart = (void *)__pa_symbol(function_nocfi(__cpu_soft_restart));
+> > +             restart(is_hyp_nvhe(), kimage->start, kimage->arch.dtb_mem,
+> > +                     0, 0);
+>
+> Why can't you call:
+>
+>         cpu_soft_restart(kimage->start, kimage->arch.dtb_mem, 0, 0);
+>
+> here instead of open-coding it?
 
-On Wed, Sep 29, 2021 at 01:05:21PM -0600, Alex Williamson wrote:
-> On Wed, 29 Sep 2021 12:08:59 +1000
-> David Gibson <david@gibson.dropbear.id.au> wrote:
->=20
-> > On Sun, Sep 19, 2021 at 02:38:30PM +0800, Liu Yi L wrote:
-> > > This patch introduces a new interface (/dev/vfio/devices/$DEVICE) for
-> > > userspace to directly open a vfio device w/o relying on container/gro=
-up
-> > > (/dev/vfio/$GROUP). Anything related to group is now hidden behind
-> > > iommufd (more specifically in iommu core by this RFC) in a device-cen=
-tric
-> > > manner.
-> > >=20
-> > > In case a device is exposed in both legacy and new interfaces (see ne=
-xt
-> > > patch for how to decide it), this patch also ensures that when the de=
-vice
-> > > is already opened via one interface then the other one must be blocke=
-d.
-> > >=20
-> > > Signed-off-by: Liu Yi L <yi.l.liu@intel.com> =20
-> > [snip]
-> >=20
-> > > +static bool vfio_device_in_container(struct vfio_device *device)
-> > > +{
-> > > +	return !!(device->group && device->group->container); =20
-> >=20
-> > You don't need !! here.  && is already a logical operation, so returns
-> > a valid bool.
-> >=20
-> > > +}
-> > > +
-> > >  static int vfio_device_fops_release(struct inode *inode, struct file=
- *filep)
-> > >  {
-> > >  	struct vfio_device *device =3D filep->private_data;
-> > > @@ -1560,7 +1691,16 @@ static int vfio_device_fops_release(struct ino=
-de *inode, struct file *filep)
-> > > =20
-> > >  	module_put(device->dev->driver->owner);
-> > > =20
-> > > -	vfio_group_try_dissolve_container(device->group);
-> > > +	if (vfio_device_in_container(device)) {
-> > > +		vfio_group_try_dissolve_container(device->group);
-> > > +	} else {
-> > > +		atomic_dec(&device->opened);
-> > > +		if (device->group) {
-> > > +			mutex_lock(&device->group->opened_lock);
-> > > +			device->group->opened--;
-> > > +			mutex_unlock(&device->group->opened_lock);
-> > > +		}
-> > > +	}
-> > > =20
-> > >  	vfio_device_put(device);
-> > > =20
-> > > @@ -1613,6 +1753,7 @@ static int vfio_device_fops_mmap(struct file *f=
-ilep, struct vm_area_struct *vma)
-> > > =20
-> > >  static const struct file_operations vfio_device_fops =3D {
-> > >  	.owner		=3D THIS_MODULE,
-> > > +	.open		=3D vfio_device_fops_open,
-> > >  	.release	=3D vfio_device_fops_release,
-> > >  	.read		=3D vfio_device_fops_read,
-> > >  	.write		=3D vfio_device_fops_write,
-> > > @@ -2295,6 +2436,52 @@ static struct miscdevice vfio_dev =3D {
-> > >  	.mode =3D S_IRUGO | S_IWUGO,
-> > >  };
-> > > =20
-> > > +static char *vfio_device_devnode(struct device *dev, umode_t *mode)
-> > > +{
-> > > +	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev)); =20
-> >=20
-> > Others have pointed out some problems with the use of dev_name()
-> > here.  I'll add that I think you'll make things much easier if instead
-> > of using one huge "devices" subdir, you use a separate subdir for each
-> > vfio sub-driver (so, one for PCI, one for each type of mdev, one for
-> > platform, etc.).  That should make avoiding name conflicts a lot simple=
-r.
->=20
-> It seems like this is unnecessary if we use the vfioX naming approach.
-> Conflicts are trivial to ignore if we don't involve dev_name() and
-> looking for the correct major:minor chardev in the correct subdirectory
-> seems like a hassle for userspace.  Thanks,
+This is part of a cleanup to remove cpu_soft_restart() wrapper and the
+header file that contains it. The wrapper is simple enough and has
+only one call site. It makes more sense to do what is needed directly
+from machine_kexec().
 
-Right.. it does sound like a hassle, but AFAICT that's *more*
-necessary with /dev/vfio/vfioXX than with /dev/vfio/pci/DDDD:BB:SS.F,
-since you have to look up a meaningful name in sysfs to find the right
-devnode.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---BWB8IX6FMezkTNqc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFVJGAACgkQbDjKyiDZ
-s5KzhhAApuv/xOzLxLHMyjuwLZM9hndWaHiOABTekrzAPageCyg8VIoWQld0IJZ7
-m7jhClwoV3hwiJlg6HmyiRv7RAR6tMDJ3mVmaVXbHtWnRutl+4ZFBVdtuVlN3kYZ
-WPVbqDupUviFlyO2+1i42HczlsUi2AFRiz7iEnJ8VBmkk00iYQNww0yRl8aB/vwl
-E7c9G0HujmDtL+ob2jleWp2ynLDHCIU6VffkKUnp4irpyjPcWZ0pmnAVFiblP9I+
-WdTEYw+HX+N3RWPKs7h+azughTZNJL+W6WGQkorEOvBmIYLgrt0Llf6UxXglw98d
-QbtvusTEpn59yGnPuJQoSg8c3wPGuK81MFZQXY34GJwyNNf6j69UZMk82/TmUwav
-u7DbHq82cG3Dn1jAlwRJnT4PSGBKU9dYmwh9J9sxCoPyS9nJqCk9tCj2aj5+WQqC
-vJ9VP/p4QXwMnlPnXsKEBgDSyzC2WrNiwZ6tIy2TtsPMVaTQQts/3lKrABR5bGiN
-2kjHuVbRpMxch0cXDo01Ft+wEhDLDl5zv6P5hhcdSgixX0GGh2M0YHZu/cxy4eS2
-rbvrS5/NhtAGprFhdQDWFN5u+m1xE8tytmVCpY/23FBn6jU0nagNvEqx1fSqX4GY
-UZQM5BL9nAbEY3hH9h1Y2ioJKMgdKT/XqK10coN5jku6rByU2Rs=
-=o0Zb
------END PGP SIGNATURE-----
-
---BWB8IX6FMezkTNqc--
+Pasha
