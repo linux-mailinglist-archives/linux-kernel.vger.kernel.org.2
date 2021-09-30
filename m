@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1002641D5B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D8841D5B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348841AbhI3Iva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:51:30 -0400
-Received: from muru.com ([72.249.23.125]:39120 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348818AbhI3Iv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:51:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id ED3A38050;
-        Thu, 30 Sep 2021 08:50:15 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 11:49:45 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.co.uk>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] clocksource/drivers/timer-ti-dm: Select TIMER_OF
-Message-ID: <YVV6KZ7TYhvABjIz@atomide.com>
-References: <20210828175747.3777891-1-keescook@chromium.org>
+        id S1348901AbhI3Iw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:52:29 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48898 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1348052AbhI3Iw0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:52:26 -0400
+X-UUID: 120975a9fa3c4183b67d298a3bf2d88c-20210930
+X-UUID: 120975a9fa3c4183b67d298a3bf2d88c-20210930
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <powen.kao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2053204664; Thu, 30 Sep 2021 16:50:40 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 30 Sep 2021 16:50:39 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 30 Sep 2021 16:50:38 +0800
+Message-ID: <a0c747584bf4190d1456f285d83670e807f31553.camel@mediatek.com>
+Subject: Re: [PATCH 0/2] Fix UFS task management command timeout
+From:   Po-Wen Kao <powen.kao@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+CC:     "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>,
+        "jonathan.hsu@mediatek.com" <jonathan.hsu@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "wsd_upstream@mediatek.com" <wsd_upstream@mediatek.com>,
+        "ed.tsai@mediatek.com" <ed.tsai@mediatek.com>
+Date:   Thu, 30 Sep 2021 16:50:38 +0800
+In-Reply-To: <DM6PR04MB657502D8172084475F280CF5FCA99@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210929070047.4223-1-powen.kao@mediatek.com>
+         <DM6PR04MB657502D8172084475F280CF5FCA99@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828175747.3777891-1-keescook@chromium.org>
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Kees Cook <keescook@chromium.org> [210828 17:58]:
-> When building OMAP_DM_TIMER without TIMER_OF, there are orphan sections
-> due to the use of TIMER_OF_DELCARE() without CONFIG_TIMER_OF. Select
-> CONFIG_TIMER_OF when enaling OMAP_DM_TIMER:
-> 
-> arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ti-dm-systimer.o' being placed in section `__timer_of_table'
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/202108282255.tkdt4ani-lkp@intel.com/
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Keerthy <j-keerthy@ti.com>
-> Cc: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-> Cc: Ladislav Michl <ladis@linux-mips.org>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: linux-omap@vger.kernel.org
-> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hi Avri,
 
-Sorry for the delay, I just noticed I never replied earlier:
+Thanks for reminding. It's exactly the same issue.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Best,
+Po-Wen Kao
 
-> ---
->  drivers/clocksource/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+On Wed, 2021-09-29 at 07:39 +0000, Avri Altman wrote:
+> > On UTP_TASK_REQ_COMPL interrupt, ufshcd_tmc_handler() iterates
+> > through
+> > busy requests in tags->rqs and complete request if corresponding
+> > doorbell flag is reset.
+> > However, ufshcd_issue_tm_cmd() allocates requests from tags-
+> > >static_rqs
+> > and trigger doorbell directly without dispatching request through
+> > block
+> > layer, thus requests can never be found in tags->rqs and completed
+> > properly. Any TM command issued by ufshcd_issue_tm_cmd() inevitably
+> > timeout and further leads to recovery flow failure when LU Reset or
+> > Abort Task is issued.
+> > 
+> > In this patch, blk_mq_tagset_busy_iter() call in
+> > ufshcd_tmc_handler()
+> > is replaced with new interface, blk_mq_drv_tagset_busy_iter(), to
+> > allow completion of request allocted by driver. The new interface
+> > is
+> > introduced for driver to iterate through requests in static_rqs.
 > 
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index 0f5e3983951a..08f8cb944a2a 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -24,6 +24,7 @@ config I8253_LOCK
->  
->  config OMAP_DM_TIMER
->  	bool
-> +	select TIMER_OF
->  
->  config CLKBLD_I8253
->  	def_bool y if CLKSRC_I8253 || CLKEVT_I8253 || I8253_LOCK
-> -- 
-> 2.30.2
+> Is this the same issue that was addressed here - 
+> https://urldefense.com/v3/__https://www.spinics.net/lists/linux-scsi/msg164520.html__;!!CTRNKA9wMg0ARbw!yDkg-AVkMBFsnDBV42HMDgnE51HaEBarK2Tw8z8Di4aC1_7BrRkjIO13nz5rFUk-FA$
+> A$  ?
 > 
+> Thanks,
+> Avri
+> 
+> > 
+> > Po-Wen Kao (2):
+> >   blk-mq: new busy request iterator for driver
+> >   scsi: ufs: fix TM request timeout
+> > 
+> >  block/blk-mq-tag.c        | 36 ++++++++++++++++++++++++++++++-----
+> > -
+> >  drivers/scsi/ufs/ufshcd.c |  2 +-
+> >  include/linux/blk-mq.h    |  4 ++++
+> >  3 files changed, 35 insertions(+), 7 deletions(-)
+> > 
+> > --
+> > 2.18.0
+> 
+> 
+
