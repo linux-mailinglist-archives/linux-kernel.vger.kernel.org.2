@@ -2,176 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF8641D070
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D4A41D073
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346857AbhI3AG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:06:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53304 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231238AbhI3AG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:06:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632960313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FKM4FZ1+Sj46EyvkXnp0WenJowC0Gqd7KS8Hczjzp7Y=;
-        b=M9/R4eHrNLsDg+p7uotburaWLCjyFgq75WPFkOPow/yLjk13AyxtpdL4fqZYL6X5A1jSTM
-        PMiDW070ITnmJqjbVFwawA6uVP0aEJKv/co6/8fT4tkbWFZjCqYTtRDCzBgHZInBJAzabG
-        39ZjgFYLlocPfT8TW3O2UmdOv4G3DFk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21--4yjIENIP-yx6NUtRe2ZPw-1; Wed, 29 Sep 2021 20:05:12 -0400
-X-MC-Unique: -4yjIENIP-yx6NUtRe2ZPw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE7BD801E72;
-        Thu, 30 Sep 2021 00:05:10 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 72A786A8E7;
-        Thu, 30 Sep 2021 00:05:06 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 08:05:02 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH V3 5/7] genirq/affinity: move group_cpus_evenly() into
- lib/
-Message-ID: <YVT/Lki9OaRa8OCR@T590>
-References: <20210928005558.243352-1-ming.lei@redhat.com>
- <20210928005558.243352-6-ming.lei@redhat.com>
- <74bcc75e-0b68-1d6b-b7f6-4681ec754257@huawei.com>
+        id S1346809AbhI3AJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233873AbhI3AJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 20:09:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F561611C0;
+        Thu, 30 Sep 2021 00:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632960438;
+        bh=qUQiW9EvGbciV6pPB+J4tZ9pRgoJph2I7kInJhXrQ10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fpAp8C0itnmO4U0UutnjRb8wCHdDP84Vadbo6IDf721Peojnyra0QkqgUiOBn5nFW
+         Ju1hpMnDTOJBRc2rqq1aZd1c5cmiOelphzePf4i00/jer+kSGuS0jvkmGyS62EUhhj
+         nXsjO7U/nNYGtiAZ1YP6sawnABjfrkKq+kJKUJUkJmdfbSih6jXDUXi2wL3id6m5g0
+         bBzdpdUzUFu0VENquxrbS1kKFoMJVgjsgKDFNR4SvAc34q6XaIqOwGtvzx0D79nfyp
+         9ea7+e7H5GbVwEk9ZhIKK3oCY/YueckgbwAFh6WauRyKlwrQxopOROr+2fOgiUJd6z
+         ZYAinJAt26hjA==
+Date:   Wed, 29 Sep 2021 19:11:23 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kspp-gustavo tree
+Message-ID: <20210930001123.GA358774@embeddedor>
+References: <20210930095932.03434a3b@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <74bcc75e-0b68-1d6b-b7f6-4681ec754257@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210930095932.03434a3b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:40:44PM +0100, John Garry wrote:
+On Thu, Sep 30, 2021 at 09:59:32AM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> > +/**
-> > + * group_cpus_evenly - Group all CPUs evenly per NUMA/CPU locality
-> > + * @numgrps: number of groups
-> > + *
-> > + * Return: cpumask array if successful, NULL otherwise. And each element
-> > + * includes CPUs assigned to this group
-> > + *
-> > + * Try to put close CPUs from viewpoint of CPU and NUMA locality into
-> > + * same group, and run two-stage grouping:
-> > + *	1) allocate present CPUs on these groups evenly first
-> > + *	2) allocate other possible CPUs on these groups evenly
-> > + *
-> > + * We guarantee in the resulted grouping that all CPUs are covered, and
-> > + * no same CPU is assigned to different groups
+> After merging the kspp-gustavo tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> nit: I'd have "no same CPU is assigned to multiple groups"
+> In file included from include/linux/bpf_verifier.h:9,
+>                  from kernel/bpf/verifier.c:12:
 
-OK
+[..]
 
+>       |                 ^~~~~~~~~~~~~
+> include/linux/filter.h:366:4: error: cast between incompatible function types from 'int (* const)(struct bpf_map *, u32,  u64)' {aka 'int (* const)(struct bpf_map *, unsigned int,  long long unsigned int)'} to 'u64 (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)'} [-Werror=cast-function-type]
+>   366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+>       |    ^
+> kernel/bpf/verifier.c:12977:17: note: in expansion of macro 'BPF_CAST_CALL'
+> 12977 |     insn->imm = BPF_CAST_CALL(ops->map_redirect) -
+>       |                 ^~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+
+All these are already fixed in bpf-next.
+
+> Caused by commit
 > 
-> > + */
-> > +struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>   ffea83dd8823 ("Makefile: Enable -Wcast-function-type")
 > 
-> nit: The name group_cpus_evenly() would imply an action on some cpus, when
-> it's just calculating some masks - I think "masks" should be at least
-> included in the name
+> I have reverted that commit for today.
 
-Naming is always the hard part in reviewing, I think cpu is more
-readable, maybe group_all_cpus_evenly()?
+I've just removed that commit from my -next tree, while I
+take a look at the ftrace warnings.
 
-> 
-> > +{
-> > +	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
-> > +	cpumask_var_t *node_to_cpumask;
-> > +	cpumask_var_t nmsk, npresmsk;
-> > +	int ret = -ENOMEM;
-> > +	struct cpumask *masks = NULL;
-> > +
-> > +	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
-> > +		return NULL;
-> > +
-> > +	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
-> > +		goto fail_nmsk;
-> > +
-> > +	node_to_cpumask = alloc_node_to_cpumask();
-> > +	if (!node_to_cpumask)
-> > +		goto fail_npresmsk;
-> > +
-> > +	masks = kcalloc(numgrps, sizeof(*masks), GFP_KERNEL);
-> > +	if (!masks)
-> > +		goto fail_node_to_cpumask;
-> > +
-> > +	/* Stabilize the cpumasks */
-> > +	cpus_read_lock();
-> > +	build_node_to_cpumask(node_to_cpumask);
-> > +
-> > +	/* grouping present CPUs first */
-> > +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
-> > +				  cpu_present_mask, nmsk, masks);
-> > +	if (ret < 0)
-> > +		goto fail_build_affinity;
-> > +	nr_present = ret;
-> > +
-> > +	/*
-> > +	 * Allocate non present CPUs starting from the next group to be
-> > +	 * handled. If the grouping of present CPUs already exhausted the
-> > +	 * group space, assign the non present CPUs to the already
-> > +	 * allocated out groups.
-> > +	 */
-> > +	if (nr_present >= numgrps)
-> > +		curgrp = 0;
-> > +	else
-> > +		curgrp = nr_present;
-> > +	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
-> > +	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
-> > +				  npresmsk, nmsk, masks);
-> > +	if (ret >= 0)
-> > +		nr_others = ret;
-> > +
-> > + fail_build_affinity:
-> 
-> nit: Strange that success path goes through "fail" labels. Current code is
-> this way, so feel free to ignore.
+Thanks!
+--
+Gustavo
 
-I'd rather not change current behavior in this patches.
-
-> 
-> > +	cpus_read_unlock();
-> > +
-> > +	if (ret >= 0)
-> > +		WARN_ON(nr_present + nr_others < numgrps);
-> > +
-> > + fail_node_to_cpumask:
-> > +	free_node_to_cpumask(node_to_cpumask);
-> > +
-> > + fail_npresmsk:
-> > +	free_cpumask_var(npresmsk);
-> > +
-> > + fail_nmsk:
-> > +	free_cpumask_var(nmsk);
-> > +	if (ret < 0) {
-> > +		kfree(masks);
-> > +		return NULL;
-> > +	}
-> > +	return masks;
-> > +}
-> > +EXPORT_SYMBOL_GPL(group_cpus_evenly);
-> 
-> Are there any users which are available as modules? As I see, the only users
-> are blk-mq-cpumap.c and irq/affinity.c, which I guess aren't available as
-> modules.
-
-Yeah, so far only two built-in users, I think it is fine to start with
-not exporting the symbols, will change to this way in next version.
-
-
-Thanks, 
-Ming
 
