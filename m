@@ -2,63 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D7741DAA5
+	by mail.lfdr.de (Postfix) with ESMTP id B62AD41DAA7
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351330AbhI3NJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:09:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32824 "EHLO mail.kernel.org"
+        id S1350228AbhI3NJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:09:13 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:39699 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351400AbhI3NI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:08:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45CAC6126A;
-        Thu, 30 Sep 2021 13:06:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633007203;
-        bh=2E12lxsILybA6TcVpH3Clkx1XYrdgQW3E8uFB2oiPBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lgdiosn93AauLXFMrr9Usc2pvpe/W79Bk/F24VYCqaajlvOZW38VnA1SHe8Q5ZSSR
-         +k3SeIa2jPtwhRk/pPRUWlUZAStkuID2g1hXF+eOCILkYNcrT6F8tgExarm1azlP59
-         IWMXzzwDbwBujNxfnprNQQlud94H2E+Bmzn6p3LmfTJuG7yY0eIt98OHAl85+m5PCg
-         luTsXtXHX+um80MmKnbFnREoX1fuqEi2ClAZZ80vQbX5NZHKPJtFHxjEqzojsCMrAZ
-         y67L2Yqv8blaQ8m0lyqaSvs1+3vuj0jv3FxirIFYE4mOx2dQSqgynxx5qXjAKnP1Fh
-         5VbBl+zV7oh/A==
-Date:   Thu, 30 Sep 2021 15:06:40 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     ebiederm@xmission.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, containers@lists.linux-foundation.org,
-        Yu Zhao <yuzhao@google.com>
-Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
-Message-ID: <20210930130640.wudkpmn3cmah2cjz@example.org>
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
- <87ee9pa6xw.fsf@disp2133>
- <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
- <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
- <878rzw77i3.fsf@disp2133>
- <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
- <20210929173611.fo5traia77o63gpw@example.org>
- <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+        id S1351443AbhI3NIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:08:35 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HKtmq1XsCz9sTd;
+        Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Jbg1_Awq21kG; Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HKtmq0L5wz9sTF;
+        Thu, 30 Sep 2021 15:06:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E5E6A8B773;
+        Thu, 30 Sep 2021 15:06:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id QX1D9MHFEGv7; Thu, 30 Sep 2021 15:06:50 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D83748B763;
+        Thu, 30 Sep 2021 15:06:49 +0200 (CEST)
+Subject: Re: [PATCH v2 1/7] arm64: add CPU field to struct thread_info
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210930125813.197418-1-ardb@kernel.org>
+ <20210930125813.197418-2-ardb@kernel.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <6b003f58-48df-7ac4-4dbf-81b2c5bca5d9@csgroup.eu>
+Date:   Thu, 30 Sep 2021 15:06:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+In-Reply-To: <20210930125813.197418-2-ardb@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:39:06PM +0000, Jordan Glover wrote:
-> > I'm still investigating, but I would like to rule out one option.
-> >
-> > Could you check out the patch?
+
+
+Le 30/09/2021 à 14:58, Ard Biesheuvel a écrit :
+> The CPU field will be moved back into thread_info even when
+> THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
+> struct thread_info.
 > 
+> Note that arm64 always has CONFIG_SMP=y so there is no point in guarding
+> the CPU field with an #ifdef.
 > 
-> Thx, I added it to my kernel and will report in few days.
-> Does this patch try to fix the issue or make it easier to track?
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> ---
+>   arch/arm64/include/asm/thread_info.h | 1 +
+>   arch/arm64/kernel/asm-offsets.c      | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
+> index 6623c99f0984..c02bc8c183c3 100644
+> --- a/arch/arm64/include/asm/thread_info.h
+> +++ b/arch/arm64/include/asm/thread_info.h
+> @@ -42,6 +42,7 @@ struct thread_info {
+>   	void			*scs_base;
+>   	void			*scs_sp;
+>   #endif
+> +	u32			cpu;
+>   };
+>   
+>   #define thread_saved_pc(tsk)	\
+> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> index 551427ae8cc5..cee9f3e9f906 100644
+> --- a/arch/arm64/kernel/asm-offsets.c
+> +++ b/arch/arm64/kernel/asm-offsets.c
+> @@ -29,6 +29,7 @@ int main(void)
+>     DEFINE(TSK_ACTIVE_MM,		offsetof(struct task_struct, active_mm));
+>     DEFINE(TSK_CPU,		offsetof(struct task_struct, cpu));
+>     BLANK();
+> +  DEFINE(TSK_TI_CPU,		offsetof(struct task_struct, thread_info.cpu));
 
-I suspect the error is caused by a race between allow_ucounts() and
-put_ucounts(). I think this patch could solve the problem.
+Why adding that now ? For powerpc you do the switch in 5.
 
--- 
-Rgrds, legion
-
+>     DEFINE(TSK_TI_FLAGS,		offsetof(struct task_struct, thread_info.flags));
+>     DEFINE(TSK_TI_PREEMPT,	offsetof(struct task_struct, thread_info.preempt_count));
+>   #ifdef CONFIG_ARM64_SW_TTBR0_PAN
+> 
