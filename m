@@ -2,188 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC3941E11A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5144541E0FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351621AbhI3S05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:26:57 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:37390 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351605AbhI3S0y (ORCPT
+        id S1349599AbhI3SWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350389AbhI3SWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:26:54 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UIM5La019382;
-        Thu, 30 Sep 2021 18:24:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=pArKLB+wvS4oqVbshc9W/gzD+DMFG/zXSUIPYSujZyY=;
- b=IcMYGVyRrgv0wujuaSq45Xdm9F5HsAcQevDGPp9BYPv+dfPm6sx9DPNwO3+3teIlmFkM
- CWanh5WUpVudB8orrONTZK0y+TpEF30H828GhMHTe1i03lAxJ7jwDA/9PJYM6bzQ5miR
- 72X5/yEDTAaPyxfCVWNPWYwVDP+oj7YUcjeWPw1/TRnVyR6x7baxoscr5EhX6L2A4DWS
- YdCrqQB2Hju2LUUVq/9usSZmPRz0E8jbUiFGnoFaD53Khgb+H0KUlzRmjpC/QNVeqCMq
- U1YK95SdBMM9wr3EZioLL9FaLh4XPzs3RkZXcSj+RkUyV7Q3HSbaGvDbvgVC1y//36Ys sw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bde3caf6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 18:24:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18UIEXOI099655;
-        Thu, 30 Sep 2021 18:24:58 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by userp3030.oracle.com with ESMTP id 3bc3bn1mjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 18:24:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXzZogbg7xpCfwQ3UplV7Fmzd8kJvdbH1B5l19e2PpIV2IvqqONYDffs2ul27pZ48GNe7EEWIfJEjm4I96426nE7a1hd6xCKV/fYRTZq7U3wygTu+XEYumgarFDCpCNR3iPBws3aimBvHO0qKpagiBmLlDUVfeJ74DanRKaCgqeCOI/8qOWvnrdCS0Lqx2KNbCzLkI3mLQgjbGDVmxmpx3RlU15Povd/otY81q7VfaB7qspYLEkphiuidQavIQQV3vilRETGu95lMeIrRaeu8PEO7sDQ5IIt4fUsLv8zYOUyt2lrr+K57W4HO1CilRmeUSXjY5Yi47Rtyvn2jer57A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=pArKLB+wvS4oqVbshc9W/gzD+DMFG/zXSUIPYSujZyY=;
- b=Ndz2NPDewyCSX3j18aF/J3eXcymeYMDtHrO7LUsA534wlCIKnV6zsXjKmp+rILa3UvWKwCYo2eVDhhLaFivkwwAy790PzT9MV5ddDXQpgEfjO8eMXP+oGz3yjIgFM5e6VXDnTI4OB6/9K2dWu6dJCR13O998w5QHfQXZIjIQKPo+8FzIrYkeCXQEBjb1LKoXeUwXJViQ/NZ1iVLumnDCRfK+UGxP/9fSaKq4Lsz1Yjz+TEBCkfPt67jTyrYQ9iWR7dchf3mLRlpvrACyblRw314iJal5wjrYZ4R+pdTnkB0t+7I5ZHNmwRSZylLkCKZeUD6Iv2BFGnFtQQjVpgJk3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 30 Sep 2021 14:22:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D99C06176A;
+        Thu, 30 Sep 2021 11:20:34 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id k17so5741964pff.8;
+        Thu, 30 Sep 2021 11:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pArKLB+wvS4oqVbshc9W/gzD+DMFG/zXSUIPYSujZyY=;
- b=qVJpV/y46V+PFEsZbsQIclYhGwed4cqJVPUsFL2pQcClPGpEATSY+/HqFKxUIhLYkiBkfwiHnZ7jJNZ/PGkTkYveO12yhG7Gao4yyOwtPW2ZNW29R5y+qm0ca/VPzYPjTYxJ3gMapAGW1SumlcMD9dhV9HU9CgU2j5Sip69k7m8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4722.namprd10.prod.outlook.com (2603:10b6:303:9e::12)
- by CO1PR10MB4465.namprd10.prod.outlook.com (2603:10b6:303:6d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16; Thu, 30 Sep
- 2021 18:24:55 +0000
-Received: from CO1PR10MB4722.namprd10.prod.outlook.com
- ([fe80::f502:c6da:c9bb:222c]) by CO1PR10MB4722.namprd10.prod.outlook.com
- ([fe80::f502:c6da:c9bb:222c%3]) with mapi id 15.20.4566.017; Thu, 30 Sep 2021
- 18:24:55 +0000
-Subject: Re: [smartpqi updates PATCH V2 10/11] smartpqi: add 3252-8i pci id
-To:     Don Brace <don.brace@microchip.com>, hch@infradead.org,
-        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        linux-scsi@vger.kernel.org
-Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
-        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
-        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
-        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
-        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
-        jeff@canonical.com, POSWALD@suse.com, mwilck@suse.com,
-        pmenzel@molgen.mpg.de, linux-kernel@vger.kernel.org
-References: <20210928235442.201875-1-don.brace@microchip.com>
- <20210928235442.201875-11-don.brace@microchip.com>
-From:   john.p.donnelly@oracle.com
-Message-ID: <2789e6d5-6787-4ce2-7170-1ffb3b6f2551@oracle.com>
-Date:   Thu, 30 Sep 2021 13:24:49 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <20210928235442.201875-11-don.brace@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR13CA0021.namprd13.prod.outlook.com
- (2603:10b6:806:130::26) To CO1PR10MB4722.namprd10.prod.outlook.com
- (2603:10b6:303:9e::12)
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gjZZ/ucXOWL7CIsLTW5U/ybZd+F2uJjp6RNFoIb1zYc=;
+        b=IM4363ZIbg2YekiDwC2QFrRe/u/VVnOy6LGDPj2DxxC80vB/bOfCcCbiFuMFIWZ1VD
+         egrxrxplwBr3BfS2iZtDxAXuQI+ZVZMTXW9vaKbwndqAUU6h59HYajlupBrbOFqhZyv1
+         XN/caWJJGDoFsb/w/6/FvfWwMUXpFD7LwuNaMz9x5mZbnvQTjx8Uoy3BBTDmV/9AHsIq
+         kppWrjC0Kx1w7witsYITJB69FqKzc6P19HJYyJkeTrX5Mx4Q0p6N6M212gjo0FqDyJgb
+         giE9hSAnnqreGeV5AA+P1XmKRdceNwGXRpezVtyavpscF1IzHumjkfH9YJGkkjhTDwSk
+         JI2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gjZZ/ucXOWL7CIsLTW5U/ybZd+F2uJjp6RNFoIb1zYc=;
+        b=Fi+1BPs0ooaLPl3NeWSyL5sPxfThLbobYCVQ6wxV9/1W94vGfjFIoEsIVeegw7PLCh
+         KSW7u6nAqGcAvtQX2HMOErpWQvBYUbxJhpyQ8vH4fal6EWkELMA088C+yAdDW3YS+z4t
+         w/+6hJJ1ToB7Q++MxeInLX4QyBGAbziMkZoN0ydgF+DYL0lkCzXRJEWfz7wcVSZ3WIvw
+         pYqwkzErywK507GOkCLvwUOsIMSQjsrnQpjaazi66xdMg2w1JU2nOHiGIf9caeWZ+SFS
+         KXXAqgn5HiU3uxDdUcMn/AFAwUAEIusw50SV7pqQZnknIxURYWrPHhMOyHWCMAQoJtd7
+         cOiA==
+X-Gm-Message-State: AOAM530yvoVSuuuT/g9RX0XyakAVVCFDeN65AhgZ6vOIJ74QSx8gHgRV
+        e61GwN47FHJFpfI8mqyT/Cg=
+X-Google-Smtp-Source: ABdhPJyUCr7ygKUx86DaLgetw9p4qlMD/xpSRDWXB7zvz7jE7HLv8Cc6vDLV6GdHS5ZUTKVwxpoHVg==
+X-Received: by 2002:a63:191a:: with SMTP id z26mr6084310pgl.373.1633026034126;
+        Thu, 30 Sep 2021 11:20:34 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id q18sm3629863pfh.170.2021.09.30.11.20.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 11:20:32 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/a6xx: Track current ctx by seqno
+Date:   Thu, 30 Sep 2021 11:25:02 -0700
+Message-Id: <20210930182506.1236811-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: from jpd-mac.local (138.3.201.39) by SA0PR13CA0021.namprd13.prod.outlook.com (2603:10b6:806:130::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.10 via Frontend Transport; Thu, 30 Sep 2021 18:24:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 71ea8c97-5435-4cc1-1fbd-08d9843f9a2a
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4465:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB44653A9809F1065080BB64A8C7AA9@CO1PR10MB4465.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0ZDiw24EdWShrw61XhRvdb65M8n8LXaKS7RR3nohhXZHpKnanpeFhEsC2gWA4IupAK56JPXq/p7YZMRyxJjbN5zPj/UcfOZi+hZXMzuEqxw7sLV2qe29J+VdXbME7Dhkh0UZNOJ3sdZM1rvvU39hXrW4elCw1achOC6wrIWXhfNsxh03Ulxd4ftSZ+FXC+/9vp8ql2aZZxnJtSLVmQw3aOr61Qm3A9XCuiZQT1Aj2885296jGivPNt+nweGE9kk6mM5rmsCySXo+2XvWMix1BQy7d3+78SodDkZpJZFDOA+7Clxw4rv5QUh9QpAfzlbSrnF/hXfqR/bO8mI1+ry6pHJuts5zVVCHBhk5aXedoLwuN58RI8dcvnrRQGkjbl5obwB7lzntuUyRjZlLQwiBebZiKCYx9dsIqZLMIddw/Z7rJnxRt0Kj2XYiVC3lNcmlV5tlX/ATTtsSqRXdx/seYH6bAXb6Fhdy0U18AWbTirLbYJPM/biug0UnMWEf+AQrYXSryLevynubKJEKob8jk4hhsHWZYDXHO+OtrmnrBdHc4DFzNepb5UhapJB+FmG8fHucpa68AKPz64i50hNQKuVD53iwjryCl26I3JcexYgSCEZZL6DJufajZz53Os3S7xdl1ft+pmPDbjXpEBT9H4qdK3CYKugp8hMXZbr7kTz3WN8r+ToX1NMHKtySr44CSwnygrARP3XTA1WbTL2W7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4722.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(36756003)(5660300002)(31686004)(8936002)(8676002)(316002)(4326008)(186003)(6666004)(31696002)(508600001)(66946007)(9686003)(38100700002)(7416002)(956004)(2616005)(86362001)(53546011)(6486002)(6506007)(66476007)(66556008)(6512007)(2906002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUtxL2IwcmVTbE1LWE5lMnBZbnhaY1VtaThhUXd5ZUpUR2JKVEJuSFQvbmxG?=
- =?utf-8?B?RCtjRU5mUDN5N3k4WlJFL29YWHhNL3pmcDZHUTNFbEE1MDFPeVhBb1NlSXl2?=
- =?utf-8?B?SDhSQklkOFBpWjdBMGNvZm1wcWF1ZUlHTEdjNlhZQVRoblJPYXlodXQxSHNQ?=
- =?utf-8?B?a2JBSW4vOWpISTU3ZndrVnZiU00yZFhBaWF1MlV1Ti8xSFpDRk9YV1c5OFk4?=
- =?utf-8?B?eWVBdFhEY0xVYmhsai9XVUtVc0FrazBjd1VvbmtGdkY3SnNjVjJSU285SmJR?=
- =?utf-8?B?cU90Wndvb2ZtMmVGK0VQSHlLcG5LRHZwRXdlcDVHZ2lMK3ExWWlFQnJEOGk2?=
- =?utf-8?B?d3lEYmR0alJxNVM0Wmx5VXBoT3QvMjlqbU5iMTZZTFZTMnFGSDNrTVd3SjNZ?=
- =?utf-8?B?bDhPTUlocERLVHhpdll2TEpNMU1ETFgvSkthOEFZMXZHanpQVDdVNmNjMnZ3?=
- =?utf-8?B?MmgrNVhjWWdFVFNuazh2UzVyUVY1ZFBONGdsZHRsWjZ5MjhQWitoenNwbnJO?=
- =?utf-8?B?NTZvQjIxRnZSTGhJM2xnZG1jUmlrWDRzZkVaMGhycklkZmFMbWl3YXY3VG84?=
- =?utf-8?B?KytWdTYzM2RncmV2VmZMWi9CY3F5V1JtQUlvZFhHVUlRUWNSU2huR2RPYk1G?=
- =?utf-8?B?WUVHT0FOZ0VadFFob0lPcW83aENRM1lzU0kyL1ByRzdHWTVzZWdWak9DNWkz?=
- =?utf-8?B?NkRNZmhoZEF5NXV2Y0VoaExpa2NmcXNYUE9aSHR6WGRWc2xLenNiMEwvbllI?=
- =?utf-8?B?ZEk2Wi83TG54RXRTcDFjUUthYWlsY0c3SC9KR1g5WnNNclV1bnVFZXpsU0Fy?=
- =?utf-8?B?RE5aRm9XclcvTDVPWC9rTnpidVgzZktuSHVyOVY1SHhwN1krV2FIRGRkZUpP?=
- =?utf-8?B?bVFsdXN2QTVhcCt1cjd2OGRHdnlFYzBzbFgzVkYyZnBCN3B1d2pSQjM2MkZP?=
- =?utf-8?B?b2t3K3FGcFJseHVxR2twQ3JDa1lzaEgveVpsUk5KdGp5V2pWb1hGYVFTT1Ft?=
- =?utf-8?B?UVJzTU9WWkZEbkxlOU5IV2E2RjZhaHU3R0VTeXJLTE1JSC9hSWNLaVQ5eGZj?=
- =?utf-8?B?TVJ4bm53TTlLTXJiMVN2T1Q0TVRaR3dvZFpOaS9RN1FGUTlQN00xK3ltYWRG?=
- =?utf-8?B?UUp5V3FrbmY2YzM3Q1RyeUdaZmFIejAyYXg1NEJpQmNvaEJYRU9Vc090UURs?=
- =?utf-8?B?MG41dVRXcG54aUdXZFBsRjlRODJUZVQ1Y24xRkY0ZzhtMmVOMmRRZno1MUtU?=
- =?utf-8?B?bWxhemI4S1dhUHgwSy9lM3RiMU1BdEFQOWNDZnVnYm9ZVG9ET1A5ZUFaZFFU?=
- =?utf-8?B?cHUxemVCZTNGUU1XQVZ0dXZnQ2FNdXRWejVRbXdRSU5QdDZWQkpzcldCclBs?=
- =?utf-8?B?K29TU3dJYXhKZHdENnl4aU5xMjhKY2tQQzdicFJTaTRTa21FcHd1amNoRWhF?=
- =?utf-8?B?VDRWRStaYnlxYWowNGxjQXNSMXU5ZU1ON3VZU2pLU1k0RXY1YWRtNGRZVG9V?=
- =?utf-8?B?Zkd6NmRqWUZXK0JyVFR4bm9kMThvZ1ZDKzhtV2N1VjAvbWUvMGtWalhaMURl?=
- =?utf-8?B?ampheW4zV2o1aVVaM3Z0T3VkdGU2UWFPRDcwMDh3SEpoY3dFUU8zaWNXNW5Q?=
- =?utf-8?B?elp6S3NnUm9zTHZ5bXl1Z3BoNnVqZ1pCZ1o3eVZ2ZzFmRHNwQUMvYXJKUGh0?=
- =?utf-8?B?OEl6UlRpRTE3cmpZcUVKUG1iaXF3UEVBOG5GbTlmMlFld1duZU94Nzk2VUlT?=
- =?utf-8?Q?0K84HeXlm/vgBJ30J666tlC6ZUbEWgXrUNqSW43?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71ea8c97-5435-4cc1-1fbd-08d9843f9a2a
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4722.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 18:24:55.4988
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZQADPfOX8otsHxK1pCC4EK+C5H3D4rXT8s+Sy5T+c7l1BH1SyEv/cW5HHYeSkw5sE6G6OIbSYRsm1IdM8T5e6uHfai0vqNmfdDg5Od3rDBk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4465
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10123 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300112
-X-Proofpoint-GUID: VVJWlmISGetU5swOMi1irRUaOASpApZO
-X-Proofpoint-ORIG-GUID: VVJWlmISGetU5swOMi1irRUaOASpApZO
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 6:54 PM, Don Brace wrote:
-> From: Mike McGowen <Mike.McGowen@microchip.com>
-> 
-> Added PCI ID information for the
-> Adaptec SmartRAID 3252-8i controller:
->      9005 / 028F / 9005 / 14A2
-> 
-> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
-> Reviewed-by: Scott Teel <scott.teel@microchip.com>
-> Signed-off-by: Mike McGowen <Mike.McGowen@microchip.com>
-> Signed-off-by: Don Brace <don.brace@microchip.com>
+From: Rob Clark <robdclark@chromium.org>
 
-Acked-by: John Donnelly <john.p.donnelly@oracle.com>
+In theory a context can be destroyed and a new one allocated at the same
+address, making the pointer comparision to detect when we don't need to
+update the current pagetables invalid.  Instead assign a sequence number
+to each context on creation, and use this for the check.
 
+Fixes: 84c31ee16f90 ("drm/msm/a6xx: Add support for per-instance pagetables")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  6 +++---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h | 11 ++++++++++-
+ drivers/gpu/drm/msm/msm_drv.c         |  3 +++
+ drivers/gpu/drm/msm/msm_drv.h         |  1 +
+ 4 files changed, 17 insertions(+), 4 deletions(-)
 
-> ---
->   drivers/scsi/smartpqi/smartpqi_init.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-> index 8be116992cb0..ffa217874352 100644
-> --- a/drivers/scsi/smartpqi/smartpqi_init.c
-> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
-> @@ -9287,6 +9287,10 @@ static const struct pci_device_id pqi_pci_id_table[] = {
->   		PCI_DEVICE_SUB(PCI_VENDOR_ID_ADAPTEC2, 0x028f,
->   			       PCI_VENDOR_ID_ADAPTEC2, 0x14a1)
->   	},
-> +	{
-> +		PCI_DEVICE_SUB(PCI_VENDOR_ID_ADAPTEC2, 0x028f,
-> +			       PCI_VENDOR_ID_ADAPTEC2, 0x14a2)
-> +	},
->   	{
->   		PCI_DEVICE_SUB(PCI_VENDOR_ID_ADAPTEC2, 0x028f,
->   			       PCI_VENDOR_ID_ADAPTEC2, 0x14b0)
-> 
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 5e1ae3df42ba..e0a8b2fd1ff0 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -106,7 +106,7 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+ 	u32 asid;
+ 	u64 memptr = rbmemptr(ring, ttbr0);
+ 
+-	if (ctx == a6xx_gpu->cur_ctx)
++	if (ctx->seqno == a6xx_gpu->cur_ctx_seqno)
+ 		return;
+ 
+ 	if (msm_iommu_pagetable_params(ctx->aspace->mmu, &ttbr, &asid))
+@@ -139,7 +139,7 @@ static void a6xx_set_pagetable(struct a6xx_gpu *a6xx_gpu,
+ 	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
+ 	OUT_RING(ring, 0x31);
+ 
+-	a6xx_gpu->cur_ctx = ctx;
++	a6xx_gpu->cur_ctx_seqno = ctx->seqno;
+ }
+ 
+ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+@@ -1081,7 +1081,7 @@ static int hw_init(struct msm_gpu *gpu)
+ 	/* Always come up on rb 0 */
+ 	a6xx_gpu->cur_ring = gpu->rb[0];
+ 
+-	a6xx_gpu->cur_ctx = NULL;
++	a6xx_gpu->cur_ctx_seqno = 0;
+ 
+ 	/* Enable the SQE_to start the CP engine */
+ 	gpu_write(gpu, REG_A6XX_CP_SQE_CNTL, 1);
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+index 0bc2d062f54a..8e5527c881b1 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+@@ -19,7 +19,16 @@ struct a6xx_gpu {
+ 	uint64_t sqe_iova;
+ 
+ 	struct msm_ringbuffer *cur_ring;
+-	struct msm_file_private *cur_ctx;
++
++	/**
++	 * cur_ctx_seqno:
++	 *
++	 * The ctx->seqno value of the context with current pgtables
++	 * installed.  Tracked by seqno rather than pointer value to
++	 * avoid dangling pointers, and cases where a ctx can be freed
++	 * and a new one created with the same address.
++	 */
++	int cur_ctx_seqno;
+ 
+ 	struct a6xx_gmu gmu;
+ 
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 624078b3adf2..30c1efc3d8a0 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -711,6 +711,7 @@ static void load_gpu(struct drm_device *dev)
+ 
+ static int context_init(struct drm_device *dev, struct drm_file *file)
+ {
++	static atomic_t ident = ATOMIC_INIT(0);
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct msm_file_private *ctx;
+ 
+@@ -727,6 +728,8 @@ static int context_init(struct drm_device *dev, struct drm_file *file)
+ 	ctx->aspace = msm_gpu_create_private_address_space(priv->gpu, current);
+ 	file->driver_priv = ctx;
+ 
++	ctx->seqno = atomic_inc_return(&ident);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index de062450add4..8633d0059a3e 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -59,6 +59,7 @@ struct msm_file_private {
+ 	int queueid;
+ 	struct msm_gem_address_space *aspace;
+ 	struct kref ref;
++	int seqno;
+ };
+ 
+ enum msm_mdp_plane_property {
+-- 
+2.31.1
 
