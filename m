@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809DF41D06C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F278841D065
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346536AbhI3AFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35196 "EHLO
+        id S1346866AbhI3AEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhI3AFO (ORCPT
+        with ESMTP id S1346490AbhI3AEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:05:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B00C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gzbQERF6x+EIArRP2/cV+6lI/UWsckEqZ6f0LRsHXHE=; b=Ey0f+HiKfvoPWo/hz+noSNujur
-        6gQgigq8p2t2KAHbZv1BxL0OSABG9G3Ktig6espCV3/GHaJYX9PLlythflNNGjNLRUC0CaVyfjBBa
-        upFVYit1P3V6n35QOVJsXviB3CHJSPB402F3EEXwjgNYJTn+Qei0lT0pMo/5ll+ub141nSpThBFg8
-        1TJr2e8SnFD3DbfK3B/pBi0WXOSZDqXMPfwIGfsh7cxDedXgXThhixbTQQeTUSV+63r7HQSNXZkk8
-        T6nAGyd21JAIunBmt5LEYo0LzpQoTXGJdyXUgaTp1K+bu7bGQOuXT4ApbNKksvrrL1fNHHltzwmU8
-        9DYjtniw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mVjVB-00CM5V-Bf; Thu, 30 Sep 2021 00:01:11 +0000
-Date:   Thu, 30 Sep 2021 01:00:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Message-ID: <YVT+KWFA8hfSKU+m@casper.infradead.org>
-References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
- <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
- <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
- <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
- <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org>
- <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+        Wed, 29 Sep 2021 20:04:23 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9709CC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:02:41 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso5053273otb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 17:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=sz4qPh2dIGtWybWIz2+FjL1xXs0xQ2gcPE6MG4pSh9s=;
+        b=G5lm0rNGleMtnm89OwP5wrX1UP7DVgf1ffpI+keySiETKAx+04oGYa2qSV9N45Dae5
+         4oSFDuhP7WYfWr4MFksVnueKfrzQ5VwNgoqGiHqwEFI9DEoNAs7RrciO/LQx4rFXBuY4
+         WL/6osoaLWCDuTBcByfs5EdFt7hXSfiLPRyBM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=sz4qPh2dIGtWybWIz2+FjL1xXs0xQ2gcPE6MG4pSh9s=;
+        b=tOjgaa/PWQILyajRhHWkyQX4vzSh70GKo+p95zlXKa0vUb1GHR3aNv6usDCve7rycJ
+         mXuf9/smN4wFEINmumK7FeWqrJKE7qsx9TjoJqDGD4euoW7p+uEs0VK69AIbfmFOr7lU
+         1E7OTsk1qFUKJpWD5vfAsGMXYX9n9JbSXHpTXBMyewXT3zi6ZSUIQ8jNjFOcnOQyjJUN
+         yhyVrlZzCgZWquOxkTru1tyz3HACyLNYyuYcx8hqd10l0eys6XkuiuU8tPkxC1Z7ZJ+g
+         J3CAHPwPlyc9RQX5Viqr1FiGvkEzz3XuemtcPZ+rpXDJRh2+N9m4dizNGIAxqsAA2VCD
+         oMOQ==
+X-Gm-Message-State: AOAM530pBVkFamWzsAZ04TipnVH/VuybYBOq8Ms6msnMuYSepORZ2dIF
+        RmvIVsTpqjVjiVjcwFD/CHGPi6Bn7/R4hDsXVesqEA==
+X-Google-Smtp-Source: ABdhPJxnw99W4CrkwEhmaBpAMawQdJMBR5h0AmtsSMqnz3MManm3XK032vWPW2BVu2aphVCq7lnE3qq6RcZ6fDGC+FU=
+X-Received: by 2002:a9d:6a0f:: with SMTP id g15mr2543966otn.126.1632960161028;
+ Wed, 29 Sep 2021 17:02:41 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 29 Sep 2021 17:02:40 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+In-Reply-To: <1632932224-25102-1-git-send-email-khsieh@codeaurora.org>
+References: <1632932224-25102-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 29 Sep 2021 17:02:40 -0700
+Message-ID: <CAE-0n52iO3rSE59OBOgJ1sZMckweoBxN5ih9fY2dg_ht9cctfw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dp: only signal audio when disconnected
+ detected at dp_pm_resume
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:41:48PM -0700, Song Liu wrote:
-> The issue is NOT caused by concurrent khugepaged:collapse_file() and
-> truncate_pagecache(inode, 0). With some printks, we can see a clear
-> time gap (>2 second )  between collapse_file() finishes, and
-> truncate_pagecache() (which crashes soon). Therefore, my earlier
-> suggestion that adds deny_write_access() to collapse_file() does NOT
-> work.
-> 
-> The crash is actually caused by concurrent truncate_pagecache(inode, 0).
-> If I change the number of write thread in stress_madvise_dso.c to one,
-> (IOW, one thread_read and one thread_write), I cannot reproduce the
-> crash anymore.
-> 
-> I think this means we cannot fix this issue in collapse_file(), because it
-> finishes long before the crash.
+Quoting Kuogee Hsieh (2021-09-29 09:17:04)
+> Currently there is audio not working problem after system resume from suspend
+> if hdmi monitor stay plugged in at DUT. However this problem does not happen
+> at normal operation but at a particular test case. The root cause is DP driver
+> signal audio with connected state at resume which trigger audio trying to setup
+> audio data path through DP main link but failed due to display port is not setup
+> and enabled by upper layer framework yet. This patch only have DP driver signal
+> audio only when DP is in disconnected state so that audio option shows correct
+> state after system resume. DP driver will not signal audio with connected state
+> until display enabled executed by upper layer framework where display port is
+> setup completed and main link is running.
+>
+> Changes in V2:
+> -- add details commit text
+>
+> Fixes: 078867ce04ed ("drm/msm/dp: signal audio plugged change at dp_pm_resume")
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-Ah!  So are we missing one or more of these locks:
-
-	inode_lock(inode);
-	filemap_invalidate_lock(mapping);
-
-in the open path?
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
