@@ -2,204 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E8041D852
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB6E41D856
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350287AbhI3LFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:05:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28822 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350208AbhI3LFq (ORCPT
+        id S1350296AbhI3LGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:06:12 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:49239 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350289AbhI3LGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:05:46 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UApclI026909;
-        Thu, 30 Sep 2021 07:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=zOyS3aCpHcNvgs6h2yG/HaeSlaePlW3ZCZQYIDRaWQQ=;
- b=iNSoFSa3mjC7KyuqvXaudDy9g2lSylHXa/y6GrxgFBag8R71/HCMXS4yMHXaVYNm+RXz
- HwrCQwlTNv1jYfNxGCoB7b26VjI71LMOkgpYLPx5KZ0dVawn3bhKzZANRBivTDVHHOt3
- iGJPj02SgcYUqQmKcnQ+k/rcJfQGPVJHCw9GQBFAc828qtcECJCnE9U2rZNYTCLTaNqZ
- UDd43x39/mwHatQoZQgi8MCERmSlnzV9UEMxaom448ZkbQRWZ9tpsSO83YDB35d7G6e2
- tiNWb0hGsbqrDG7TrIMYCiUAAeRmZwIzf26VhUT8G1eKz23oCYWJhAnOincq+tgD8tVE 1g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd9gtbpr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 07:04:01 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18UAUEFx005878;
-        Thu, 30 Sep 2021 07:04:00 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd9gtbpqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 07:04:00 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18UB3RZd004686;
-        Thu, 30 Sep 2021 11:03:58 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 3bc11f4u8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 11:03:58 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18UB3sGi34210290
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 11:03:54 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E312A4070;
-        Thu, 30 Sep 2021 11:03:54 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DCB2A405F;
-        Thu, 30 Sep 2021 11:03:53 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.90.153])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 30 Sep 2021 11:03:53 +0000 (GMT)
-Date:   Thu, 30 Sep 2021 13:03:50 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20210930130350.0cdc7c65.pasic@linux.ibm.com>
-In-Reply-To: <87r1d64dl4.fsf@redhat.com>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
-        <87r1d64dl4.fsf@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Q9NbuGk8dVzQQ-mKpFc7e9TzyK3qM7Fw
-X-Proofpoint-GUID: TC7kYsbK9cx6S90GIMOAIIgQGIUETl4F
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 30 Sep 2021 07:06:11 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MvJjz-1mn9b81Zwn-00rFfp; Thu, 30 Sep 2021 13:04:27 +0200
+Received: by mail-wr1-f44.google.com with SMTP id k7so9268714wrd.13;
+        Thu, 30 Sep 2021 04:04:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530aYBLVOIXWKKOTE9wlGtbpSbj3h9sTMvBwWXC7TEsEVNCnAB/c
+        oR4UzdzAI6UWnfl+/JiTC8GGASCIXrVCMLf3GfE=
+X-Google-Smtp-Source: ABdhPJy1xEUoEv0MPNfkxd+7bEPQ5aTe3WHfilrEA8zzOCj4njTUOJuS5/AGkDQ6Sh+U+gR+2Oy24/rBGxxYFzE6N7A=
+X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr5464868wra.428.1632999866916;
+ Thu, 30 Sep 2021 04:04:26 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_03,2021-09-30_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 mlxscore=0
- phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300065
+References: <20210930081025.366039-1-drhunter95@gmail.com>
+In-Reply-To: <20210930081025.366039-1-drhunter95@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 30 Sep 2021 13:04:10 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3LPLbJRDEsYgSL9x=rrk1=AmBWxFBNd0H591NKrLnMZA@mail.gmail.com>
+Message-ID: <CAK8P3a3LPLbJRDEsYgSL9x=rrk1=AmBWxFBNd0H591NKrLnMZA@mail.gmail.com>
+Subject: Re: [PATCH v4] workaround regression in ina2xx introduced by
+ cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
+To:     Iain Hunter <drhunter95@gmail.com>
+Cc:     lothar.felten@gmail.com, iain@hunterembedded.co.uk,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zeng Tao <prime.zeng@hisilicon.com>, linux-iio@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gPwyXOUSqhD2JyrnR9xytDHMiVW4DELITPtkFiJXSAOqYSc/EkL
+ WMDVysnbyrwLFPacdn2twqA+KcXKEEhthTyM3L1ILSAMZxEvuIo63MtgOUP4nwmyFa4Ehud
+ xJhFFYVHx8wwarXPk9mig2WdH9hxrGLcgvXNaSGH/TnA9vu/LgFd7aR7no3/x4zMrXXqPmt
+ wjxxy2V89tEtg71YhCCZA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5cYFcAwxonU=:G1ly75JYKNmg3iArcyZ2vK
+ 8a9nmP8I3bp4Hc9ok/4KNn/IYTq2dpffMogwdPKR4sbBA66+H+dj71QqicK9sUK0bhka2lX+/
+ nDmNtteoVtIqmTP4G/RIv9ep4WZ2NjVMN9O/1W4Imk91hnOZSXZNN3s+aIjEyWet9SOUbLQ+R
+ lcEhgU9jsJJicAjVwWgCASMzgps7s/m6SrjlASCn7tlnV6j47Pf1uA2KkWJ4Rl+6hkdjGczVI
+ wvZ1l0ePAJYRChDMYt35Rbl4Q/iVwQmP0Z3YmYy/ABS/52o/F7rQNEv3ihXWkcdZWaCz4swTq
+ KkvIEBJGFGCBA4pIJH5hUjOirSb2+OPku7vT3z2YUEku7WUZj9L26Cug9bZA0ImU8FxstAoKE
+ XmfetWQiiCeOwTmwv3LlMx7RJtHTpcyTMwmqcHvdNhO0/qEO7tRRuIj+bbmMMb62G+FSNEM5j
+ wzxiCax5WHZQpX5qy4P9UVleTwo77YKClNC4rQ+dBivuy3zwZiR3/M6i3r3HblYLeC4qD2dIR
+ wmfUmlr5rX2rUZQo2un6fvJD3TSrrvssuKa2ox3/vXYjwi0IGBBjQhHOPTlgjalyhIaLp/FeE
+ UJwXmJdx84uWrWBNuo+IVIiBc+Mx9UF9rOTojEKPXdGHjZBNEaXBdmpYPdc4zZC9fJP+Yuum3
+ Z5U/LzsO9IrLGD8p7HeypRTQJko2bFuCFLHs5vQXv8Ym7cuyjaGuTy017CMoOBSfcpRR2AXCJ
+ P+gtaAQisfMq9g1Sr1/69o23ouewr4oSiBnbBg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 11:28:23 +0200
-Cornelia Huck <cohuck@redhat.com> wrote:
+On Thu, Sep 30, 2021 at 10:10 AM Iain Hunter <drhunter95@gmail.com> wrote:
+>
+> From: Iain Hunter <iain@hunterembedded.co.uk>
+>
+> That change adds an error check to avoid saturation during multiplication
+> to calculate nano seconds in timespec64_to_ns().
+> In ina2xx_capture_thread() a timespec64 structure is used to calculate
+> the delta time until the next sample time. This delta can be negative if
+> the next sample time was in the past. In the -1 case timespec64_to_ns()
+> now clamps the -1 second value to KTIME_MAX. This essentially puts ina2xx
+> thread to sleep forever.
+> Proposed patch is to:
+> 1 change from timespec64_XXX() to standard raw ktime_XXX() APIs to remove
+> non-standard timespec64 calls.
+> 2 split the functionality in the loop into two parts:
+> - do while loop only does the test to see if the next sample time is in the
+> future or in the past and so will be skipped and the sample time
+> incremented until it is in the future. This test is done with a simple
+> signed comparison as we are only interested in the sign being positive or
+> negative.
+> - after do while loop we know that next is later than now and so delay is
+> positive and ksub_sub() can be used to get the delay which is positive.
+>
+> Signed-off-by: Iain Hunter <iain@hunterembedded.co.uk>
+>
+> Fixes: cb47755725da("time: Prevent undef$
 
-> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
-> 
-> > This patch fixes a regression introduced by commit 82e89ea077b9
-> > ("virtio-blk: Add validation for block size in config space") and
-> > enables similar checks in verify() on big endian platforms.
-> >
-> > The problem with checking multi-byte config fields in the verify
-> > callback, on big endian platforms, and with a possibly transitional
-> > device is the following. The verify() callback is called between
-> > config->get_features() and virtio_finalize_features(). That we have a
-> > device that offered F_VERSION_1 then we have the following options
-> > either the device is transitional, and then it has to present the legacy
-> > interface, i.e. a big endian config space until F_VERSION_1 is
-> > negotiated, or we have a non-transitional device, which makes
-> > F_VERSION_1 mandatory, and only implements the non-legacy interface and
-> > thus presents a little endian config space. Because at this point we
-> > can't know if the device is transitional or non-transitional, we can't
-> > know do we need to byte swap or not.
-> >
-> > The virtio spec explicitly states that the driver MAY read config
-> > between reading and writing the features so saying that first accessing
-> > the config before feature negotiation is done is not an option. The
-> > specification ain't clear about setting the features multiple times
-> > before FEATURES_OK, so I guess that should be fine.
-> >
-> > I don't consider this patch super clean, but frankly I don't think we
-> > have a ton of options. Another option that may or man not be cleaner,
-> > but is also IMHO much uglier is to figure out whether the device is
-> > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
-> > according tho what we have figured out, hoping that the characteristics
-> > of the device didn't change.
-> >
-> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> > Reported-by: markver@us.ibm.com
-> > ---
-> >  drivers/virtio/virtio.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > index 0a5b54034d4b..9dc3cfa17b1c 100644
-> > --- a/drivers/virtio/virtio.c
-> > +++ b/drivers/virtio/virtio.c
-> > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
-> >  		if (device_features & (1ULL << i))
-> >  			__virtio_set_bit(dev, i);
-> >  
-> > +	/* Write back features before validate to know endianness */
-> > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
-> > +		dev->config->finalize_features(dev);  
-> 
-> This really looks like a mess :(
-> 
-> We end up calling ->finalize_features twice: once before ->validate, and
-> once after, that time with the complete song and dance. The first time,
-> we operate on one feature set; after validation, we operate on another,
-> and there might be interdependencies between the two (like a that a bit
-> is cleared because of another bit, which would not happen if validate
-> had a chance to clear that bit before).
+The changelog text could be improved to more closely follow the
+style described in Documentation/process/submitting-patches.rst,
+but the important information is here and the changes look good
+to me.
 
-Basically the second set is a subset of the first set.
-
-> 
-> I'm not sure whether that is even a problem in the spec: while the
-> driver may read the config before finally accepting features
-
-I'm not sure I'm following you. Let me please qoute the specification:
-"""
-4. Read device feature bits, and write the subset of feature bits
-understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it. 
-5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step. 
-"""
-https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-930001
-
-> , it does
-> not really make sense to do so before a feature bit as basic as
-> VERSION_1 which determines the endianness has been negotiated. 
-
-Are you suggesting that ->verify() should be after
-virtio_finalize_features()? Wouldn't
-that mean that verify() can't reject feature bits? But that is the whole
-point of commit 82e89ea077b9 ("virtio-blk: Add validation for block size
-in config space"). Do you think that the commit in question is
-conceptually flawed? My understanding of the verify is, that it is supposed
-to fence features and feature bits we can't support, e.g. because of
-config space things, but I may be wrong.
-
-The trouble is, feature bits are not negotiated one by one, but basically all
-at once. I suppose, I did the next best thing to first negotiating VERSION_1.
-
-
-> For
-> VERSION_1, we can probably go ahead and just assume that we will accept
-> it if offered, but what about other (future) bits?
-
-I don't quite understand.
-
-Anyway, how do you think we should solve this problem?
-
-Regards,
-Halil
-
-> 
-> > +
-> >  	if (drv->validate) {
-> >  		err = drv->validate(dev);
-> >  		if (err)  
-> 
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
