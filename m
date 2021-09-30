@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D4141D5D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DE641D5E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349095AbhI3JBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:01:40 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16390 "EHLO mga14.intel.com"
+        id S1349201AbhI3JCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:02:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:50766 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348225AbhI3JBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:01:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="224796284"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="224796284"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:59:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="707851818"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Sep 2021 01:59:47 -0700
-Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
- cannot meet the timeout value required by the device
-To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210917172727.26834-1-huobean@gmail.com>
- <20210917172727.26834-3-huobean@gmail.com>
- <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
- <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
- <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
- <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
- <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
- <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
- <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
- <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
- <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
- <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
- <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
- <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <6d57e6bd-24ba-f07e-678c-691f202549d5@intel.com>
-Date:   Thu, 30 Sep 2021 11:59:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1348335AbhI3JCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:02:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AF56D6E;
+        Thu, 30 Sep 2021 02:00:51 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 084F13F793;
+        Thu, 30 Sep 2021 02:00:47 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
+In-Reply-To: <87pmt163al.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-4-valentin.schneider@arm.com> <874kae6n3g.ffs@tglx> <87pmt163al.ffs@tglx>
+Date:   Thu, 30 Sep 2021 10:00:39 +0100
+Message-ID: <87h7e21lqg.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 11:34, Bean Huo wrote:
-> Hi Adrian,
-> 
-> 
-> Thanks.
-> I want to give a short conclusion  for our discussion:
-> 
-> Based on your information, these sounds disable of HW timer timeout
-> interrupt will make eMMC host controller malfunction, in another word,
-> the disable of timeout interrupt will make the eMMC host cannot
-> correctly provide the completion interrupt. And unless only when the
-> SOC vendor signals that their SOC supports that the host side SW can
-> disable this HW timeout interrupt, as TI does.
-> 
-> I studied the SDHCI Spec, and tried to see if there is this kind of
-> support statement, but not been found yet. I will check with other SOC
-> vendors.
-> 
-> I have one more question, if you know, please give me your information.
-> 
-> I did testing on HW timer bahevior in case CQE is on.  Currently, we
-> always set the HW timer with the maximum timeout value if CQE is on.
-> Based on my testing, the HW timer will never timeout when we enable
-> CQE. I changed the HW timer value to be lower, it is the same result.
-> Do you know that the HW timer will be inactivated in case CQE is
-> on?  but its timeout interrupt is still enabled.
+Hi,
 
-No I don't know how different CQE handle timeouts.
+On 21/09/21 23:12, Thomas Gleixner wrote:
+> Valentin reported warnings about suspicious RCU usage on RT kernels. Those
+> happen when offloading of RCU callbacks is enabled:
+>
+>   WARNING: suspicious RCU usage
+>   5.13.0-rt1 #20 Not tainted
+>   -----------------------------
+>   kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+>
+>   rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+>   rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+>   rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+>
+> The reason is that rcu_rdp_is_offloaded() is invoked without one of the
+> required protections on RT enabled kernels because local_bh_disable() does
+> not disable preemption on RT.
+>
+> Valentin proposed to add a local lock to the code in question, but that's
+> suboptimal in several aspects:
+>
+>   1) local locks add extra code to !RT kernels for no value.
+>
+>   2) All possible callsites have to audited and amended when affected
+>      possible at an outer function level due to lock nesting issues.
+>
+>   3) As the local lock has to be taken at the outer functions it's required
+>      to release and reacquire them in the inner code sections which might
+>      voluntary schedule, e.g. rcu_do_batch().
+>
+> Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
+> rcu_rdp_is_offloaded() in the variable declaration section right at the top
+> of the functions. But the actual usage of the result is either within a
+> section which provides the required protections or after such a section.
+>
+> So the obvious solution is to move the invocation into the code sections
+> which provide the proper protections, which solves the problem for RT and
+> does not have any impact on !RT kernels.
+>
 
-> 
-> Kind regards,
-> Bean
-> 
+Thanks for taking a look at this!
 
+My reasoning for adding protection in the outer functions was to prevent
+impaired unlocks of rcu_nocb_{un}lock_irqsave(), as that too depends on the
+offload state. Cf. Frederic's writeup:
+
+  http://lore.kernel.org/r/20210727230814.GC283787@lothringen
+
+Anywho, I see Frederic has sent a fancy new series, let me go stare at it.
