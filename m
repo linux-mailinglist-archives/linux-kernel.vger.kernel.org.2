@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D29E41DC21
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3635641DC26
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351860AbhI3OTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:19:22 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:45840 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351847AbhI3OTU (ORCPT
+        id S1351885AbhI3OXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:23:25 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:43132 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351840AbhI3OXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:19:20 -0400
-Received: by mail-wm1-f47.google.com with SMTP id b192-20020a1c1bc9000000b0030cfaf18864so4464712wmb.4;
-        Thu, 30 Sep 2021 07:17:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GOE2ZXv6/ohdVEYBDOXN3bsh02Jm0EECQwgT7jaeZq8=;
-        b=mv7yDykKHq5NjtBZI9rol85LK+cJ4dvSbF+K9yzm36lhcW2fCuKuTmmlnTjCMxOy3/
-         VnHqxZZDXiuI3+hZw02u9No5vRBINOx+mxguuG3H0x9tyZsQMBy+NuDRRA7eBvN/3VG1
-         +iiL/1ZT6lRE+jlJPLXXPlrq7/MjDAlf1884DzrNk7EJDpSzX4ynkUhyAKBQK66NvkTo
-         vDL6G2J9jHC0qIEBDwH6Aod80kpGq1dMJEkPQZtYGujK5rYOQ9jc7nU/pPmwtN+3iU47
-         VquywVywCN6xicc1yc4eJ5J/DfJebhPO+f4x5hMpTHsgFS8BUA67rk7gaTBDJkNFo4KS
-         iXgQ==
-X-Gm-Message-State: AOAM531bZUvVYiIx8sO3WrvOtzbDXQ181PHZGIuYWnQ/enk+Cl5lGub7
-        WbKhLd+00XSAKAG5xTy/Cgs=
-X-Google-Smtp-Source: ABdhPJxlBkzKS/yqhsfa80B9ui+ui+TkEaLfkkBFrpGRpvpX5Z2TTYWXbY3MDyhndwBhylit9aLy3Q==
-X-Received: by 2002:a7b:c102:: with SMTP id w2mr1457552wmi.112.1633011457263;
-        Thu, 30 Sep 2021 07:17:37 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 61sm3046467wrl.94.2021.09.30.07.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:17:36 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 14:17:34 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Olaf Hering <olaf@aepfle.de>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
-        kys@microsoft.com, sthemmin@microsoft.com,
-        anbelski@linux.microsoft.com
-Subject: Re: [PATCH v3 08/19] drivers/hv: map and unmap guest memory
-Message-ID: <20210930141734.gx2th6sz6dbnyr6m@liuwe-devbox-debian-v2>
-References: <1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1632853875-20261-9-git-send-email-nunodasneves@linux.microsoft.com>
- <20210928232702.700ef605.olaf@aepfle.de>
+        Thu, 30 Sep 2021 10:23:24 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U4txao008227;
+        Thu, 30 Sep 2021 09:21:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=9T7IUXssVAtD3OmN01m5KXu7rIz2dffdsLsJeMQpJUg=;
+ b=Qdbg6XlmTsV2iMxFU9PV3LQl2ZjZpB485GsrR7/luMWUBVJsfJTooljw8kQ0ruN7Ec15
+ Ar3CF0joOa5Tkn25tRDTGnaIowxY0265xDzZBXqyn9FhOlwHqPsunaEM5Dttd34U5shE
+ dUyzOYVo4OUC+VQ03/7xuzDpfZyi7Sx4oOwsrql8qKXmJ5EU5F3CyaAJvijCujbd2vXW
+ RzA3ZZo8IH7VudvSmRzcPjz85CnXy9a0Xttl05QQngv/Qy+CVCqXC04D8wcHffrR3/yG
+ S6Fl8ojVnzB1vxj+lRlCj6iFh0GLSaAFdykjrlXMMBn3lKrsdptQDf3deQiR6mLek8AW zQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3bcxjx92xu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Sep 2021 09:21:30 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 30 Sep
+ 2021 15:21:28 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Thu, 30 Sep 2021 15:21:28 +0100
+Received: from simont-vb.lan?044ad.cirrus.com (unknown [198.90.238.180])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1FD59B13;
+        Thu, 30 Sep 2021 14:21:28 +0000 (UTC)
+From:   Simon Trimmer <simont@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>
+Subject: [PATCH] ASoC: soc-component: Remove conditional definition of debugfs data members
+Date:   Thu, 30 Sep 2021 15:21:16 +0100
+Message-ID: <20210930142116.528878-1-simont@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928232702.700ef605.olaf@aepfle.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: o0TTWUg_feZu5rcDiKtsMydRci6C9M4Q
+X-Proofpoint-ORIG-GUID: o0TTWUg_feZu5rcDiKtsMydRci6C9M4Q
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 11:27:02PM +0200, Olaf Hering wrote:
-> Am Tue, 28 Sep 2021 11:31:04 -0700
-> schrieb Nuno Das Neves <nunodasneves@linux.microsoft.com>:
-> 
-> > +++ b/include/asm-generic/hyperv-tlfs.h
-> > -#define HV_HYP_PAGE_SHIFT      12
-> > +#define HV_HYP_PAGE_SHIFT		12
-> 
-> I think in case this change is really required, it should be in a separate patch.
+This simplification allows the use of the standard kernel pattern of
+static inline dummy functions for debugfs code. Most systems will only
+have a small number of snd_soc_components so the memory impact is
+minimal.
 
-I don't think this hunk should be in this patch. It is just changing
-whitespaces.
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Suggested-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc-component.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Wei.
-
-> 
-> 
-> Olaf
-
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index e09a2d108e8c..3a35d149e92f 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -227,10 +227,8 @@ struct snd_soc_component {
+ 	struct snd_compr_stream  *mark_compr_open;
+ 	void *mark_pm;
+ 
+-#ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_root;
+ 	const char *debugfs_prefix;
+-#endif
+ };
+ 
+ #define for_each_component_dais(component, dai)\
+-- 
+2.33.0
 
