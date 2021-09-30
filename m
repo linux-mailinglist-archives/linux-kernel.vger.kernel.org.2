@@ -2,231 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFAB41E123
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E0E41E126
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353510AbhI3S3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:29:12 -0400
-Received: from mail-dm3nam07on2064.outbound.protection.outlook.com ([40.107.95.64]:21856
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348666AbhI3S3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:29:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cTAxhD6vP94zgUWaHOUdHmtyVoj+D33RdOxSCrrk0/p1tVchozPdhCLykoiKXQW3dbbLy/AoP0FHXxBxDDKeJnyuP4SMdiklxsTkpANaTppwmqvMGd9HcZsZJ4IKwZ5ItJRCU3e5XwTW/v82JRjVxrjDC0ijEWbkCbL6JMWkohp4DNpWIYJhO8Hp6n6MZPKUPRPql+YgkaBEPunsja6obOseNx2k+0GRmv96VdRH9A8zgpi8n+3SGWSQy8ujByHdB7ymxAbr6OWcY5+DUSRgejlXvD6yNeqW5HwGWxsg8/NLBGpKtsbfxSlU4/EJDofSeBqbzgseUKkjJPMTD1DeyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=mGpMci9yuS8MlLlFkTUsNZ0KeVBjeXGEnshLqGB6mHA=;
- b=Oywg5qPWENm46luNvaNWA6XbjnOoOfNeRztq4IT7fy3bdbZZa5UyoVrt12ljr5J1r1v1E8X7C4pDm6uM04P74kBr6BDoTMWEu0DEcoiFjvg+ODSrmtDgohVNYofxl8lM9qq9btRc37XbhKi1hrfmUgAWujiZHpCKbPw26jrCma75jA/AbW862CoV6wOIRj1mQ5Xed8Hm7ekWFNgd+Hodug1qs8SjCR6hNwknOTjqiqM7Pzoau/FzHrEhMZSBOWwhzhWn/mD5aAYqyWGrjuUUdRnFDq1sE5EItAVHX8HNa5/TzjxxAbK7xzV/3nG0p66EYlqxWieLiWbJ1FnIUBh1kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mGpMci9yuS8MlLlFkTUsNZ0KeVBjeXGEnshLqGB6mHA=;
- b=1TEjbW5YKXYet0PGnepGClupf8SGc97CzcBk79VK6hRveDA6/c/H/xtE3syj7wO0BRxygNtAaE0/S8Biy29nDgNMZ4ErxxVNBdo+/0oGfm4IWJvZSFYZBtvZJNdDs+rtW+a0SN493jcq1SrbMU3isc06f8zA3FRguqGgAbk6658=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5104.namprd12.prod.outlook.com (2603:10b6:5:393::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Thu, 30 Sep
- 2021 18:27:24 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d560:d21:cd59:9418%7]) with mapi id 15.20.4544.022; Thu, 30 Sep 2021
- 18:27:24 +0000
-Subject: Re: [PATCH V6 5/8] x86/hyperv: Add Write/Read MSR registers via ghcb
- page
-To:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        kirill.shutemov@linux.intel.com, saravanand@fb.com,
-        aneesh.kumar@linux.ibm.com, rientjes@google.com, tj@kernel.org,
-        michael.h.kelley@microsoft.com
-Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-References: <20210930130545.1210298-1-ltykernel@gmail.com>
- <20210930130545.1210298-6-ltykernel@gmail.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <0f33ca85-f1c6-bab3-5bdb-233c09f86621@amd.com>
-Date:   Thu, 30 Sep 2021 13:27:20 -0500
+        id S229652AbhI3S3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:29:40 -0400
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:42614 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhI3S3h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:29:37 -0400
+Received: by mail-ed1-f44.google.com with SMTP id bd28so25526714edb.9;
+        Thu, 30 Sep 2021 11:27:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=kXiXFZ9ry/i2aqEPHzEKtrxgwY/jrLKAjIEmqjjgomU=;
+        b=7z5F9cV97IUm38G4CvY9RdKvKN21qOnviYplEnZvjn4CkAxDYV6MPmvYnq+dw/UB2m
+         L9+sLy0h1jIaHb8P9C5fnm5uDgppIewwZOmH2g8AZLMEGZl6VL7S9Nkz0CiGwgngEw0A
+         djOBSWbWR33wLQ9Hj/kzOHjZi06GDD1ng4MdP0EeTWKDTjsD6KrHA/9shkkvA6xoyNoF
+         Bh9QlmRQwZetdJocZaunWWyY2NkGWAeQQFFcxV3m/Xgp9z0+bIoz1I2ClaboP+LDWweB
+         EJo6RIivo8OWLRNsNYs35hpVe14QxyqIIqGoZ3djyCcS3uD10Ehelsgd90Ig2xpU2TFG
+         LbjQ==
+X-Gm-Message-State: AOAM533Uz0KUuNNFDjoI3SJdTzxUU5znaNoYIrD93wqP0O62tWXqLpqi
+        rqA93joqkArUoGAHxwYRTCg=
+X-Google-Smtp-Source: ABdhPJxj9CMxn1KKITdh+ZI6jqK3Mxh13R5dPHWbok7gCHp0kQp4Dn7qOlUIxuEm9oWnhfLUfVVvVA==
+X-Received: by 2002:a17:906:c4a:: with SMTP id t10mr771534ejf.371.1633026470564;
+        Thu, 30 Sep 2021 11:27:50 -0700 (PDT)
+Received: from [10.9.0.26] ([46.166.133.199])
+        by smtp.gmail.com with ESMTPSA id ca4sm1838189ejb.1.2021.09.30.11.27.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 11:27:50 -0700 (PDT)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will.deacon@arm.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+ <20210929163143.aa8b70ac9d5cf0b628823370@linux-foundation.org>
+From:   Alexander Popov <alex.popov@linux.com>
+Message-ID: <de96ffec-bbd8-2724-9285-0867cd9a08a0@linux.com>
+Date:   Thu, 30 Sep 2021 21:27:43 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210930130545.1210298-6-ltykernel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210929163143.aa8b70ac9d5cf0b628823370@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0103.namprd05.prod.outlook.com
- (2603:10b6:803:42::20) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
-MIME-Version: 1.0
-Received: from [10.236.30.241] (165.204.77.1) by SN4PR0501CA0103.namprd05.prod.outlook.com (2603:10b6:803:42::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.9 via Frontend Transport; Thu, 30 Sep 2021 18:27:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b5c057e4-aecc-427f-a335-08d9843ff288
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5104:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB51045B51F3469577570E3656ECAA9@DM4PR12MB5104.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VI73LsV92htIWJJqgYvgpe+0ax/qZga4qm7VxJQ14WH1t0EO2BfYSd+e63oXInwRQUXuG9+gqaz/WgdENTsN35+4W9S56gATELrwzFYtdFDg5/9hMLC7VhHi0tG5NBIu4/pxR+I34YYFj/m0/L9zbM8TvVPmjdOERjV+fO6mkd4M86M5IFRha0ZCxqWwrqtNEqFSB5utkTp64xzxHFp5tn+hcDafujS+6/+k0bfiuiyjLi8QZiE3ZtRy44A/juxP1i77LeFCb6fcnidyQzWKj8EkW2MDn4QpnaL1oqpOe1K7zw3s7VzLWLTS0PAEc0XyqnCzznXGJCZjYXuIz1nMdoYd33nO9e9dIQi4whFgNnP3Uc14peqMf6H9TEIs5A6LoROCJVbUhHkjkR1zdae28mDDXA/VEgA1hCbVqj1ckp6kZZEhafkT5R5AvdAFBtbQ4IcFxb3u2XwesFYdssZHU3GVhVpAV5MM0zMbFlVWoDY5T7Y0NZD8ptpAorfgloftwPDg1dlnltxYyuYJEIaEMNRSe/cPO/+1S5cGSX4xAV3Vphnr35WApqkI1VKeKlx2nNE1ekVd/RfyXKpWvMtUO/7jj5JlcBLwM178N2nKMNrRRyrcdMQ++AH4lYMLLYEKBcM3VC4cn4/4cBPOaC5liIQzYdvPVE2scPh/zR76/d+T7WtwOZUjyQ3wLBbEqrvNGBcAoKnxaXUIX9XevfDIUKYZgSlGX2k9mXV7IbMvdt0jbSrCVWso7U8JkgkXeygmHEHs/rbinbB1OEsoctdkMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(38100700002)(921005)(36756003)(31696002)(4326008)(508600001)(53546011)(26005)(186003)(45080400002)(6486002)(956004)(8936002)(7406005)(86362001)(2616005)(8676002)(31686004)(66476007)(66946007)(7416002)(16576012)(66556008)(2906002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MEh1T0hDTTZua0ZNN1VGRU5BdDl2YXpKY25ZbFIxTldIc0xCWUtMOHIwZC9t?=
- =?utf-8?B?WkpIdGpzUEpnSG5XdkNqOUJKbnNLaWRtQ0toYXRpR2RhcDdCNy9TZjlBTHB1?=
- =?utf-8?B?b3ptQWpFeWpia2JpWmxwaHJ5QWxoTEpyeS9qUVZqS2xhUU5uQ2N3dWlSZEhq?=
- =?utf-8?B?Y1dLNlU2ZHJXcmpFWTRvalVQb2ZaYXFaZDd1UnZRRUtMUzNpdHhlMjdFQ0M5?=
- =?utf-8?B?a1FiTG9GMnprSHJXVnpVeEpVVGhDRlhhNFVZeVF4UmdsVjZ2U3FFcmJmdk1U?=
- =?utf-8?B?V2RoWEwyWEV2aDBUWjk3d3pWNkEvazFqclpGS3BkL3JPMmc3MG9BOWZPMXU3?=
- =?utf-8?B?bklpMUExbTVaZm5Eek9OR3FZRmhGOWk2cE1SdytrdDBabWJJYU5TeUM0NHE5?=
- =?utf-8?B?MkFEb1lQckUxUFU5Qm9LRkw0TkJ0SHVDRU1heVR4b2p4dCsvM3FjRnZ2UFRN?=
- =?utf-8?B?cWRWN0dGaWV2OUk4TGhMUnpLRkVUK1BQeVdxYzlxSkl4dnJvV2FLY082TkFx?=
- =?utf-8?B?c0NHUUxLZzlUVEFCRlNkOWhDVXBGQnhUSS8zbEIyOWx2WDZrTjlmaFhVeCtm?=
- =?utf-8?B?WEpESHNBWS9tQkd0N2xrSVBoVk9EZldpV2tveEcxWTAxMGVBOHMwS2xMZk5n?=
- =?utf-8?B?UHArQkw1S0I3Nm5YSTZ2bzNiQytqdHpOeDR2Vm9FZVBZV2NCWkI0TU9kYThv?=
- =?utf-8?B?eUt5a3RsWEI5RVc1bHNUZTZXVi80WXY0STR2V1g4VVFSZEJqbTF3UlpteDZx?=
- =?utf-8?B?Z3dVaWNVZkl0NTRybFZUYTI1MkRVbVg4YkNyMGc5ZHdrVkdiR0RwajFZL0ZO?=
- =?utf-8?B?eTlRQ3V4KzYvVlYrVVlYUUhKdiswNmhGOTlndkNidkZFUE50dDFWVEE5bEtu?=
- =?utf-8?B?dEZobjMvdHFtMFFQSzBjSDlyZ3JMaFY3QkZldWVDd3RaOWpqbVBzdXdyODRs?=
- =?utf-8?B?c2YrM1RTR3VQN3Rhb0Z5Y2NvZ1pCZ1Y4T2w1MmtGVzkrQXUxOVV0b0luMUFi?=
- =?utf-8?B?MDhxb2Q1SUszVC9zSEx0dWprVE1qTlVoU3ZpcmZyWHF5R2lGWDZKaG82UXVQ?=
- =?utf-8?B?cjJ6VC9PMkIrRDNwS3MyWkl1Um1uaFI5ZXBhNDByVG9WbDhCSWVkcldHak4w?=
- =?utf-8?B?ZUZXME5FQ0dMSzJkZWdzWEU0bDNvOWIyQndYZVFlU2hiQ1V1Y0dTRm5jWlVo?=
- =?utf-8?B?RVZ5bFFWS1k4d1gzdkI5cURpT1g0ak9QV3g1bzNMbW5OaHA5RXlSMWRpeGoy?=
- =?utf-8?B?U1pvcWZkNnpDRWYrb1ZMMCtGTzV6RklCcUdEU25JK0VRZW41UFhKQi82a0Mw?=
- =?utf-8?B?T0dldHh5dHBxcFNsWkdseE9NWkMvM2YxVEY4NmlQM2swU1dnSWlZY25HakxZ?=
- =?utf-8?B?SUlTRXhhS2ZzSGR2ZVFmb3pSUVh2UXJRbERZWWlxYVh0ZS9COXVYQmJqdUJT?=
- =?utf-8?B?VEw0SFdmUEQ0cW45eHVEcllUbjdyRFVrdXc1d2lQNDlVSm9EM091SkZyTnhr?=
- =?utf-8?B?aG51U0hUU0M5aXM5eTh2eUF3YWVBbWZvSUFuMWphOFdqQkZMQjc3aGhHUUU3?=
- =?utf-8?B?VVl2ZDlNYkVaek02K0dSVzVNR0ZxWXY0UkpVUnBKNW5xK2w1UndLVGpGWUZq?=
- =?utf-8?B?ZUIvV2FQWDYxQ0tmRUI0MlVEVVcwL0Z4SGxjM2pnZ1R6Y2ltMmgxWXhMRXFi?=
- =?utf-8?B?ZVdEeVMxQktjczBxc1Qzc010RjROeS9LRlp5MHkxa3FFbk9PdkJTRjVLdzVX?=
- =?utf-8?Q?WCdjN5ae0n7681WhG+f1qdN9ZecmkIDOC1wQhOn?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5c057e4-aecc-427f-a335-08d9843ff288
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 18:27:24.0296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +xoHsz+4rnjDZcSz77W+BHlbyHiXC+cBF4bu/y0+3Zj9m6Ozw0S0DHS4GmXRngpZF1aeZy9Bkh0daOvJJq+RmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 8:05 AM, Tianyu Lan wrote:
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On 30.09.2021 02:31, Andrew Morton wrote:
+> On Wed, 29 Sep 2021 22:01:33 +0300 Alexander Popov <alex.popov@linux.com> wrote:
 > 
+>> On 29.09.2021 21:58, Alexander Popov wrote:
+>>> Currently, the Linux kernel provides two types of reaction to kernel
+>>> warnings:
+>>>  1. Do nothing (by default),
+>>>  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
+>>>     so panic_on_warn is usually disabled on production systems.
+>>>
+>>> From a safety point of view, the Linux kernel misses a middle way of
+>>> handling kernel warnings:
+>>>  - The kernel should stop the activity that provokes a warning,
+>>>  - But the kernel should avoid complete denial of service.
+>>>
+>>> From a security point of view, kernel warning messages provide a lot of
+>>> useful information for attackers. Many GNU/Linux distributions allow
+>>> unprivileged users to read the kernel log, so attackers use kernel
+>>> warning infoleak in vulnerability exploits. See the examples:
+>>>   https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+>>>   https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
+>>>
+>>> Let's introduce the pkill_on_warn boot parameter.
+>>> If this parameter is set, the kernel kills all threads in a process
+>>> that provoked a kernel warning. This behavior is reasonable from a safety
+>>> point of view described above. It is also useful for kernel security
+>>> hardening because the system kills an exploit process that hits a
+>>> kernel warning.
+>>>
+>>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
+>>
+>> This patch was tested using CONFIG_LKDTM.
+>> The kernel kills a process that performs this:
+>>   echo WARNING > /sys/kernel/debug/provoke-crash/DIRECT
+>>
+>> If you are fine with this approach, I will prepare a patch adding the
+>> pkill_on_warn sysctl.
+> 
+> Why do we need a boot parameter?  Isn't a sysctl all we need for this
+> feature? 
 
-...
+I would say we need both sysctl and boot parameter for pkill_on_warn.
+That would be consistent with panic_on_warn, ftrace_dump_on_oops and
+oops/panic_on_oops.
 
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 9f90f460a28c..dd7f37de640b 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -94,10 +94,9 @@ static void vc_finish_insn(struct es_em_ctxt *ctxt)
->   	ctxt->regs->ip += ctxt->insn.length;
->   }
->   
-> -static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> -					  struct es_em_ctxt *ctxt,
-> -					  u64 exit_code, u64 exit_info_1,
-> -					  u64 exit_info_2)
-> +enum es_result sev_es_ghcb_hv_call_simple(struct ghcb *ghcb,
-> +				   u64 exit_code, u64 exit_info_1,
-> +				   u64 exit_info_2)
->   {
->   	enum es_result ret;
->   
-> @@ -109,29 +108,45 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->   	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
->   	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
->   
-> -	sev_es_wr_ghcb_msr(__pa(ghcb));
->   	VMGEXIT();
->   
-> -	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1) {
-> -		u64 info = ghcb->save.sw_exit_info_2;
-> -		unsigned long v;
-> -
-> -		info = ghcb->save.sw_exit_info_2;
-> -		v = info & SVM_EVTINJ_VEC_MASK;
-> -
-> -		/* Check if exception information from hypervisor is sane. */
-> -		if ((info & SVM_EVTINJ_VALID) &&
-> -		    ((v == X86_TRAP_GP) || (v == X86_TRAP_UD)) &&
-> -		    ((info & SVM_EVTINJ_TYPE_MASK) == SVM_EVTINJ_TYPE_EXEPT)) {
-> -			ctxt->fi.vector = v;
-> -			if (info & SVM_EVTINJ_VALID_ERR)
-> -				ctxt->fi.error_code = info >> 32;
-> -			ret = ES_EXCEPTION;
-> -		} else {
-> -			ret = ES_VMM_ERROR;
-> -		}
-> -	} else {
-> +	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1)
+> Also, 
+> 
+> 	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
+> 		do_group_exit(SIGKILL);
+> 
+> - why do we care about system_state?  An explanatory code comment
+>   seems appropriate.
+> 
+> - do we really want to do this in states > SYSTEM_RUNNING?  If so, why?
 
-Really, any non-zero value indicates an error, so this should be:
+A kernel warning may occur at any moment.
+I don't have a deep understanding of possible side effects on early boot stages.
+So I decided that at least it's safer to avoid interfering before SYSTEM_RUNNING.
 
-	if (ghcb->save.sw_exit_info_1 & 0xffffffff)
+Best regards,
+Alexander
 
-> +		ret = ES_VMM_ERROR;
-> +	else
->   		ret = ES_OK;
-> +
-> +	return ret;
-> +}
-> +
-> +static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +				   struct es_em_ctxt *ctxt,
-> +				   u64 exit_code, u64 exit_info_1,
-> +				   u64 exit_info_2)
-> +{
-> +	unsigned long v;
-> +	enum es_result ret;
-> +	u64 info;
-> +
-> +	sev_es_wr_ghcb_msr(__pa(ghcb));
-> +
-> +	ret = sev_es_ghcb_hv_call_simple(ghcb, exit_code, exit_info_1,
-> +					 exit_info_2);
-> +	if (ret == ES_OK)
-> +		return ret;
-> +
-
-And then here, the explicit check for 1 should be performed and if not 1, 
-then return ES_VMM_ERROR. If it is 1, then check the event injection values.
-
-Thanks,
-Tom
-
-> +	info = ghcb->save.sw_exit_info_2;
-> +	v = info & SVM_EVTINJ_VEC_MASK;
-> +
-> +	/* Check if exception information from hypervisor is sane. */
-> +	if ((info & SVM_EVTINJ_VALID) &&
-> +	    ((v == X86_TRAP_GP) || (v == X86_TRAP_UD)) &&
-> +	    ((info & SVM_EVTINJ_TYPE_MASK) == SVM_EVTINJ_TYPE_EXEPT)) {
-> +		ctxt->fi.vector = v;
-> +		if (info & SVM_EVTINJ_VALID_ERR)
-> +			ctxt->fi.error_code = info >> 32;
-> +		ret = ES_EXCEPTION;
-> +	} else {
-> +		ret = ES_VMM_ERROR;
->   	}
->   
->   	return ret;
