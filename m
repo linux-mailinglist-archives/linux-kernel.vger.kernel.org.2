@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DDB41D84B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252BC41D84F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350285AbhI3LD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350262AbhI3LD0 (ORCPT
+        id S1350273AbhI3LF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:05:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350208AbhI3LF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:03:26 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D6EC06176A;
-        Thu, 30 Sep 2021 04:01:44 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id h20so6309886ilj.13;
-        Thu, 30 Sep 2021 04:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sI1mIG42y3NEuIaeyCkeJUiQ2a25iQMmIeBT19wOWsg=;
-        b=ib51AfAqKfbbJA4QpJkaIteofQSgCDOZnD/g5j7+mriwhrwp/QYE7TvAqg4eg42aQA
-         T6EPqGn5KaiNfpFaXbErMsPTQp68C7ow/ZnJeC/dvRxDSaOUKkdDyRwiQ4XIm+T6qdgj
-         CtoEtTHPnTiiVjiHj8egzHaOxUfEpTT4+hZpyf+AuX3Vseh++/3hFCxLyLtENavfhN9X
-         68SowWtjYWi0rtXW9rzabJk1Ozj3vrH3shjsOiD5SsxNIgZFMgjnrFEUmV1GFeYOZwxb
-         iLdknJloQarqcJsHti8OgFnj+PbqSHCwgUxkG7kvPZfaUHQ58tVAbJxzVKX8U/4kbcG0
-         lgMA==
+        Thu, 30 Sep 2021 07:05:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632999825;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=keN+btlYVBJGWOu91I+oCLYZrcd1MoxAA4HpYxaefz4=;
+        b=e5OQUoFF3Gewm8xnWcmIBTnP0b42ewR0GpgKsoedMKsC5l1SJAHZPOkg1xvH2lu7yukuxg
+        sxNfDPKbYx/IpCu8I9j+3QoHp+N2Z8R5VyWhYr7hJUTnyTVWNekqYZPya8t7TM6HmvYp96
+        0Whzcp/pW5ddItPbPtNxPAYh4vQ9t0k=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-BogjSOmnOwuXOw9h0jCzRA-1; Thu, 30 Sep 2021 07:03:44 -0400
+X-MC-Unique: BogjSOmnOwuXOw9h0jCzRA-1
+Received: by mail-ed1-f71.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so5850171edy.14
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:03:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sI1mIG42y3NEuIaeyCkeJUiQ2a25iQMmIeBT19wOWsg=;
-        b=QJpzokY9RhHBry9vHUbf426pmnFUjk+yMIwqp1Dqs3jQd7zsUMic5Ibhyn3apWtrG6
-         jExzerSQ6kX1QOCujwNxMHhNkZSmZmoH6WLdoOy2diCrBCuGB3OI/0kX782G5lXrqRJK
-         8Fp6eo0Bi8wc8zsZMTMmTcjO5X0+Dd0TzTcEt3TYhE6nx6vF7SK/17YRkfXZM111V2Vx
-         43ulZLreFxuacPeRQV+hWZGqJwQZw2pcKh5+FFyPt5V4mluNOyhjHxFXeVVEFZyWDMlY
-         TrUIFJmY/GBEGOb7+JXjpHNNkY6ob7JxHSkynS/qCcTVc5YsnFSHB47yuRu6REkD6sjZ
-         S/MA==
-X-Gm-Message-State: AOAM530l3vVwi69rxbLglVRX6EJSJltZj9iI/dDoq0UcQLUBU1QE5KQb
-        w/ljdISrQzu7Mmolgo1jYYeoWMSTlHo2gYLHJdM=
-X-Google-Smtp-Source: ABdhPJx8SB0hw0YFekIWEw0c9alVbTYaJVFxN/13kenxvRFCv+EjuctA31TmOZgr9g9sCT6WhP5upHhwgpdq+i8QI4c=
-X-Received: by 2002:a05:6e02:b4d:: with SMTP id f13mr3585904ilu.183.1632999703831;
- Thu, 30 Sep 2021 04:01:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
-In-Reply-To: <YVWCK5QO331rfhJJ@google.com>
-From:   Tomasz Figa <tomasz.figa@gmail.com>
-Date:   Thu, 30 Sep 2021 20:01:32 +0900
-Message-ID: <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=keN+btlYVBJGWOu91I+oCLYZrcd1MoxAA4HpYxaefz4=;
+        b=zC+d0iYtw8VHPvesqu6kYTNI0afbXuqHGlLBMp50U/FfFLpOZzENxjvPobM7nJCCjV
+         iROu3vTCRV/Uh5DbDvWUcsLroT5dSaG2SVFoUS/BM9s1Jjzhx7aDpXOa4RNwnEWhNrLT
+         9XwhUQ5ieOhaCnGeqepwen+WtAaR+4q4Zp4VhI6HzZaKqWJ9VYFFHZ1wrXKNagD5AK5A
+         EUk2uyCiehKxSE/G2mxZ4MGX3b2VHXZvvOXItJpvnpsZrQPwdSYaFaWuAwMC7h6XgpKe
+         8NyPWYqP59Vuw7BgyAnAnt7TFJXoLtpn4tfFioQxZt7GjkNS1npGxRle71YTnyxKB/KL
+         m2iA==
+X-Gm-Message-State: AOAM533/fliVMEnpBKYy6jZX0PbG8MX5G76VF1MaOe6IUluS0wxHVBFT
+        Gy+BZFrISg9xMwIFAGpEV1iE92eUhe7RHERgzbVHIOvKpKNGS6mHIbOCGel011zGZ3NDFeqtA1i
+        jhO2l9AlR35Fto5HXWIn0a9mg
+X-Received: by 2002:a17:906:2e8d:: with SMTP id o13mr5757127eji.513.1632999822754;
+        Thu, 30 Sep 2021 04:03:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8LNAIxQqSSpjIHptID8EWuyzXRl8baUIAwt3FwCua7Hi/w5dhATxEGvg5mbk5gBCu14U0Ww==
+X-Received: by 2002:a17:906:2e8d:: with SMTP id o13mr5757108eji.513.1632999822544;
+        Thu, 30 Sep 2021 04:03:42 -0700 (PDT)
+Received: from redhat.com ([2.55.134.220])
+        by smtp.gmail.com with ESMTPSA id v8sm1291353ejy.79.2021.09.30.04.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 04:03:42 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 07:03:36 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+Message-ID: <20210930065953-mutt-send-email-mst@kernel.org>
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 18:23 Lee Jones <lee.jones@li=
-naro.org>:
->
-> I've taken the liberty of cherry-picking some of the points you have
-> reiteratted a few times.  Hopefully I can help to address them
-> adequently.
->
-> On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > Reminder: these are essential drivers and all Exynos platforms must hav=
-e
-> > them as built-in (at least till someone really tests this on multiple
-> > setups).
->
-> > Therefore I don't agree with calling it a "problem" that we select
-> > *necessary* drivers for supported platforms. It's by design - supported
-> > platforms should receive them without ability to remove.
->
-> > The selected drivers are essential for supported platforms.
->
-> SoC specific drivers are only essential/necessary/required in
-> images designed to execute solely on a platform that requires them.
-> For a kernel image which is designed to be generic i.e. one that has
-> the ability to boot on vast array of platforms, the drivers simply
-> have to be *available*.
->
-> Forcing all H/W drivers that are only *potentially* utilised on *some*
-> platforms as core binary built-ins doesn't make any technical sense.
-> The two most important issues this causes are image size and a lack of
-> configurability/flexibility relating to real-world application i.e.
-> the one issue we already agreed upon; H/W or features that are too
-> new (pre-release).
->
-> Bloating a generic kernel with potentially hundreds of unnecessary
-> drivers that will never be executed in the vast majority of instances
-> doesn't achieve anything.  If we have a kernel image that has the
-> ability to boot on 10's of architectures which have 10's of platforms
-> each, that's a whole host of unused/wasted executable space.
->
-> In order for vendors to work more closely with upstream, they need the
-> ability to over-ride a *few* drivers to supplement them with some
-> functionality which they believe provides them with a competitive edge
-> (I think you called this "value-add" before) prior to the release of a
-> device.  This is a requirement that cannot be worked around.
+On Wed, Sep 29, 2021 at 06:05:09PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Confidential guest platforms like TDX have a requirement to allow
+> only trusted devices. By default the confidential-guest core will
+> arrange for all devices to default to unauthorized (via
+> dev_default_authorization) in device_initialize(). Since virtio
+> driver is already hardened against the attack from the un-trusted host,
+> override the confidential computing default unauthorized state
+> 
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-[Chiming in as a clock driver sub-maintainer and someone who spent a
-non-insignificant part of his life on SoC driver bring-up - not as a
-Google employee.]
+Architecturally this all looks backwards. IIUC nothing about virtio
+makes it authorized or trusted. The driver is hardened,
+true, but this should be set at the driver not the device level.
+And in particular, not all virtio drivers are hardened -
+I think at this point blk and scsi drivers have been hardened - so
+treating them all the same looks wrong.
 
-I'd argue that the proper way for them to achieve it would be to
-extend the upstream frameworks and/or existing drivers with
-appropriate APIs to allow their downstream modules to plug into what's
-already available upstream.
+> ---
+>  drivers/virtio/virtio.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 588e02fb91d3..377b0ccdc503 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -5,6 +5,8 @@
+>  #include <linux/module.h>
+>  #include <linux/idr.h>
+>  #include <linux/of.h>
+> +#include <linux/cc_platform.h>
+> +#include <linux/device.h>
+>  #include <uapi/linux/virtio_ids.h>
+>  
+>  /* Unique numbering for virtio devices. */
+> @@ -390,6 +392,13 @@ int register_virtio_device(struct virtio_device *dev)
+>  	dev->config_enabled = false;
+>  	dev->config_change_pending = false;
+>  
+> +	/*
+> +	 * For Confidential guest (like TDX), virtio devices are
+> +	 * trusted. So set authorized status as true.
+> +	 */
+> +	if (cc_platform_has(CC_ATTR_GUEST_DEVICE_FILTER))
+> +		dev->dev.authorized = true;
+> +
+>  	/* We always start by resetting the device, in case a previous
+>  	 * driver messed it up.  This also tests that code path a little. */
+>  	dev->config->reset(dev);
+> -- 
+> 2.25.1
 
-Best regards,
-Tomasz
