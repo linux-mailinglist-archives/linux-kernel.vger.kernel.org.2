@@ -2,143 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8141D14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447E941D1B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347671AbhI3CKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:10:35 -0400
-Received: from mail-vi1eur05on2076.outbound.protection.outlook.com ([40.107.21.76]:48865
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1347626AbhI3CKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:10:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YJtOOv03mV699xB3WnA/6itLlCkYNqKjIZh6FPpOmrUKFtcAsRaOB9sQ96fowAVRuLbFUV9xqmXfIYU1POAHQKiAyCWicD3Kh413fqywEZT0dRlgjtqfjcQr3tEPSJYwD1cj/EAIM+5zpV5gXpM7xOj2RvK1uh1pcDlGG6zevLrXogOezeyNG2Bm6H+OMqhcQG4A4OQFz4FAUVw7xsQBvpL+/TE6w5ML9a3DV69eWMUoeToxIFfLdKthWqC6MSvf22EA7iU2ChsvuIo5L5cU25N/a2IyoY1Xs3JFgqhuZm97LDivzvGxC9dv3UVhm82MFHZIU9fa9plkmBE7QETqJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=69ToK+pWXJSZfHbEiqG9XMfDb5yOnruEoX67gaMMDww=;
- b=N7WdDr4waS8Emiv0T0lX/yL+ANvtPpc8E0PVOI0wUjFwnPSwcxyptAicna8fCoJCP+Gbt5uMaRPt8TifPjTI4fTFaBWvlK6ce8aFwaxwZmed9GVjOLhrQgcqQ8HvEe5lgzmtZ4Al9/5EL98KmrxHUxcWtCG8eNcr//cs4s5MMc9AIgzmtgCdnG58BXiYy6M/DSzzlmsFPNWYqEkSkQrRTLy/+o74WZZCNrR5fgO6EqKnbKHgDwn3Kn09PoUHTSZpVyZfjVrfndiEoMNgI5vaJ3+0X4UFAB1HYkae1bigzckADJM2j5q6tek6Mm7T81PGKMf2yWTk2sq4AXr0cpcCKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=69ToK+pWXJSZfHbEiqG9XMfDb5yOnruEoX67gaMMDww=;
- b=JsMcBFZMAAmcOV/DJBDnf0gT8L/UiWCxgWndhC7rl13DcEUeaZCNM1HG+zYRg+NZPvbqEVMcxRqzj3WTalfUawRkdoTyrY39shu5vWvKPKGOH1o1pSRuVyGsxfLtIIiHb/BjphIlyIlIAO7a5jPQlubkrDWx+huzsDdFgQL6+Lc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU2PR04MB9020.eurprd04.prod.outlook.com (2603:10a6:10:2e3::9)
- by DU2PR04MB8822.eurprd04.prod.outlook.com (2603:10a6:10:2e1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Thu, 30 Sep
- 2021 02:08:50 +0000
-Received: from DU2PR04MB9020.eurprd04.prod.outlook.com
- ([fe80::b928:9230:aa10:639a]) by DU2PR04MB9020.eurprd04.prod.outlook.com
- ([fe80::b928:9230:aa10:639a%9]) with mapi id 15.20.4566.015; Thu, 30 Sep 2021
- 02:08:50 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     rppt@kernel.org, akpm@linux-foundation.org, david@redhat.com,
-        geert+renesas@glider.be
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2] memblock: check memory total_size
-Date:   Thu, 30 Sep 2021 10:44:37 +0800
-Message-Id: <20210930024437.32598-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.30.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0160.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::16) To DU2PR04MB9020.eurprd04.prod.outlook.com
- (2603:10a6:10:2e3::9)
+        id S1346666AbhI3DEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 23:04:31 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:40727 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347930AbhI3DE3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 23:04:29 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HKdMn5D01z4xVP; Thu, 30 Sep 2021 13:02:45 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1632970965;
+        bh=bVSYF7uJlZF85jEcbVvfB45l/qUznn+q8FvDHqhizO0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cnh0oOWxARQj4pXBGaJspCnYZDi/18iEwECYzATMMFrV0rie8dj0kAKHE/rojFdlt
+         W6n99DYr6n44OH89RrDLmVenjwb8Lc2SIRK+Y/XtQRVahr5LhQpGQvWgvHA7c3eojn
+         o5dCH4z4NayPEdPTkPZ3TFrt6RGrjXspxXuJFtFw=
+Date:   Thu, 30 Sep 2021 12:48:16 +1000
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
+Message-ID: <YVUlcJJBcgQrDTY4@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-4-yi.l.liu@intel.com>
+ <20210921160108.GO327412@nvidia.com>
+ <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922010014.GE327412@nvidia.com>
+ <YVPTdqWw6or3mK/h@yekko>
+ <20210929122230.GO964074@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR01CA0160.apcprd01.prod.exchangelabs.com (2603:1096:4:28::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Thu, 30 Sep 2021 02:08:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 024cce6b-83c1-403a-25d8-08d983b73e50
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8822:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DU2PR04MB88223FE47D0E51DA8934EE29C9AA9@DU2PR04MB8822.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:185;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AGlvI5JuGVAR1REj/z4kaO3XRB7DGXEoDyDtzdYGs0oC1Czzf9+ZGqcC2nrK9Ix46XJRoGgN23rtri285oxssddGqD0PEDvn93hohU+IzLWhxNa7hbSpn2sfFol6Mg715LrjtFyhDiF3p5wk6GFUSiey98/TvyCuR0jPO9gFoAu1tCbWxP/Mwq2psqTh9cPainj+2n00Atwk+6acZcVNd017lINDYwuESPY1hgnLwnNACkqOBlSYxclsofTvaTXQpVGfbg2xWvJicDH4wSTug+RDq2K+VgO2XuaR6TZTjwfWG9sOJw8Vm1QRrKdVDFtkv9XvxxmueSDqKVoVJfFEAhX37zV6McttTop7F4wL12pZP+C6qbU8rpUTfwEuYeAqO7FVekuAdi06t4eI1wQQeNn/UuLk05mPF1VLjw2fiwNHtSBOuK3X//1p3dqfuKbVoP6eKSXenRlb2anDjX+udIeJNzf57iW1X6N8dPc/Ko5QdTNaotRWXY120zwjYWadgGgyoZc+Tkvx5eKHIeU0XBcN64a3EFl6uMktHNKAA83my9aWxo+OAxC9LI18SrNhOZwHoBL94/L3QmGieuM99KZhBfVuR4nnNFRfK80XJXMsqynuFhnjC+I8kd84O8okCsh8oKqpSvA3L4TU25/hm3NdLrnjgVRQmfDstB/tvXRePJz8/5Tl2vsczrDLABe4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB9020.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(316002)(52116002)(4326008)(38100700002)(38350700002)(2906002)(6506007)(66946007)(66556008)(83380400001)(66476007)(86362001)(8676002)(26005)(6512007)(1076003)(508600001)(956004)(2616005)(8936002)(6666004)(6486002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FFbSNyQ4YDttnV3xEXuoo8nQTdX8TF4fCxjCzLRMO1dR3qZSptaPtT7du0zl?=
- =?us-ascii?Q?W4VcZYf7/hn2KEzCHKyGb3++aT6/jqbWhYwrnA1eKvVOpqO2y+r/3mMFlghT?=
- =?us-ascii?Q?gq2eig6MI/1FZCTKL51SnzZGgILwsLGBSyZx2nCgI6QRYg32JACGTrOUmdpr?=
- =?us-ascii?Q?8mZXpJrs1xL+l9MW/tGOCDeHMgkY1Zf+j5D0IUDLcOVCbwqK2aFPB8p/Psmr?=
- =?us-ascii?Q?z1Ig3Ulct1LPj2zhcdG35/ySfZDK+7deCccoQm4b7ww09dM6yvFtq4/8+GD5?=
- =?us-ascii?Q?NUFJt4tGN4n4Eqv7l3yh/2nHPgXeEWF1vh9wJY4tvgAfNLL7rQslw46wklni?=
- =?us-ascii?Q?JsQUGX988N6mgcnb2vJ1aCHvQ8qDhjJ05pyYEaKU3OcdXvrWqXlm5ivc8txn?=
- =?us-ascii?Q?3KiZJ1P3WI/G7/nAMrsJPevITR1Qv4f+bmesRui0+6+DQXhgSu9U7uemX3Wj?=
- =?us-ascii?Q?z4k9TxXnvG7rKgr4EGugkNFvuhlz4SYOw10Adhgp+3blNyz6Laugn19z/FJ4?=
- =?us-ascii?Q?sDpVXq0e9+LSrGzsyqEqNPSoUNP7kXbK8/+RgJY8yE3jGGOh34mskGRqL7Mi?=
- =?us-ascii?Q?bDvBRorcWxOF2YSKn8G2COxDxu8WjE1nckbgGL0pW8sILe5WxrtTmroRgQqT?=
- =?us-ascii?Q?3e3v1CHlJB67ypMGdwlt1kcAEuNYo+VR/IzttjbboT8algAXf6gubRJQ07f7?=
- =?us-ascii?Q?GabFIA57CGbJjq2a9oZA3IV61Y3HnE6y0pMJHQ+Xvp2D0decVCHTISt6weHD?=
- =?us-ascii?Q?bDuYxXtc3WT4eeVbVkRpBVMT5vsnCQTOErSZCL+yRGRJmOqVWjdWBfrI0AWJ?=
- =?us-ascii?Q?yuOVuleEnkyhjaZtyiHm7iesvObSrhX1woocueffgTN/pdw8m+MYHIS7XWJK?=
- =?us-ascii?Q?YxezbSpwqaWzVPXj+iruBqOWWitLouNcekQ600C9bxZlRK7/b7wBaYb6Mqlj?=
- =?us-ascii?Q?r1l3XPrlv5pWQ7jEDW3pRQo1WoPihz376g45OqC3dSRQsw4MLZvZkccY7csd?=
- =?us-ascii?Q?smTkx5BSDDOjJwjX6PmzwcLK6FjQrRsNbX/Y7U7C2U456siMNV3mNtTSzfCg?=
- =?us-ascii?Q?MrYinroRy/NMVtgolfr170sjbmrs3jQMuw1kIB4gbGUARohnAYN9AwcPWUDW?=
- =?us-ascii?Q?uZXxsBsSCWDpYtMPcL9H4eixPjycgeVcJZlc+TYM5zABlAucADfTpjvvCfaT?=
- =?us-ascii?Q?RJgrN8emlcJdK399Q9Ncrr3U5xn00lPEPTWykzMnikoB7zk59vZzAeU8USIz?=
- =?us-ascii?Q?qpFfxcsnadecqDSYX6m1MGEdi2yu1O1PcH7ru/zFd6xcReb0RCORRvV8hSX6?=
- =?us-ascii?Q?syQmjYsOhuGJWbvR46MxxbC/?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 024cce6b-83c1-403a-25d8-08d983b73e50
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB9020.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 02:08:50.1650
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P+XRUiv/nZJT/8aO4ZFSK+8wn8ktIWYYSXmhzY/7QlP6+q4fIn0qWy7uEmgSV5v4Nreoyn4V+aouDz44PzQn2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8822
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h1nhRvd2ptQmOAKV"
+Content-Disposition: inline
+In-Reply-To: <20210929122230.GO964074@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
 
-mem=[X][G|M] is broken on ARM64 platform, there are cases that
-even type.cnt is 1, but total_size is not 0 because regions are merged
-into 1. So only check 'cnt' is not enough, total_size should be used,
-othersize bootargs 'mem=[X][G|B]' not work anymore.
+--h1nhRvd2ptQmOAKV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: e888fa7bb882 ("memblock: Check memory add/cap ordering")
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
+On Wed, Sep 29, 2021 at 09:22:30AM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 29, 2021 at 12:46:14PM +1000, david@gibson.dropbear.id.au wro=
+te:
+> > On Tue, Sep 21, 2021 at 10:00:14PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
+> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > Sent: Wednesday, September 22, 2021 12:01 AM
+> > > > >=20
+> > > > > >  One open about how to organize the device nodes under
+> > > > > /dev/vfio/devices/.
+> > > > > > This RFC adopts a simple policy by keeping a flat layout with m=
+ixed
+> > > > > devname
+> > > > > > from all kinds of devices. The prerequisite of this model is th=
+at devnames
+> > > > > > from different bus types are unique formats:
+> > > > >=20
+> > > > > This isn't reliable, the devname should just be vfio0, vfio1, etc
+> > > > >=20
+> > > > > The userspace can learn the correct major/minor by inspecting the
+> > > > > sysfs.
+> > > > >=20
+> > > > > This whole concept should disappear into the prior patch that add=
+s the
+> > > > > struct device in the first place, and I think most of the code he=
+re
+> > > > > can be deleted once the struct device is used properly.
+> > > > >=20
+> > > >=20
+> > > > Can you help elaborate above flow? This is one area where we need
+> > > > more guidance.
+> > > >=20
+> > > > When Qemu accepts an option "-device vfio-pci,host=3DDDDD:BB:DD.F",
+> > > > how does Qemu identify which vifo0/1/... is associated with the spe=
+cified=20
+> > > > DDDD:BB:DD.F?=20
+> > >=20
+> > > When done properly in the kernel the file:
+> > >=20
+> > > /sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
+> > >=20
+> > > Will contain the major:minor of the VFIO device.
+> > >=20
+> > > Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
+> > > that the major:minor matches.
+> > >=20
+> > > in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments pass=
+ed
+> > > to qemu.
+> >=20
+> > I thought part of the appeal of the device centric model was less
+> > grovelling around in sysfs for information.  Using type/address
+> > directly in /dev seems simpler than having to dig around matching
+> > things here.
+>=20
+> I would say more regular grovelling. Starting from a sysfs device
+> directory and querying the VFIO cdev associated with it is much more
+> normal than what happens today, which also includes passing sysfs
+> information into an ioctl :\
 
-V2:
- Update commit log
- Only check total_size, no need check cnt
+Hm.. ok.  Clearly I'm unfamiliar with the things that do that.  Other
+than current VFIO, the only model I've really seen is where you just
+point your program at a device node.
 
- mm/memblock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Note that this doesn't have to be done in kernel: you could have the
+> > kernel just call them /dev/vfio/devices/vfio0, ... but add udev rules
+> > that create symlinks from say /dev/vfio/pci/DDDD:BB:SS.F - >
+> > ../devices/vfioXX based on the sysfs information.
+>=20
+> This is the right approach if people want to do this, but I'm not sure
+> it is worth it given backwards compat requires the sysfs path as
+> input.
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 184dcd2e5d99..103b052c016e 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1687,7 +1687,7 @@ void __init memblock_cap_memory_range(phys_addr_t base, phys_addr_t size)
- 	if (!size)
- 		return;
- 
--	if (memblock.memory.cnt <= 1) {
-+	if (!memblock_memory->total_size) {
- 		pr_warn("%s: No memory registered yet\n", __func__);
- 		return;
- 	}
--- 
-2.30.0
+You mean for userspace that needs to be able to go back to the old
+VFIO interface as well?  It seems silly to force this sysfs mucking
+about on new programs that depend on the new interface.
 
+> We may as well stick with sysfs as the command line interface
+> for userspace tools.
+
+> And I certainly don't want to see userspace tools trying to reverse a
+> sysfs path into a /dev/ symlink name when they can directly and
+> reliably learn the correct cdev from the sysfspath.
+
+Um.. sure.. but they can get the correct cdev from the sysfspath no
+matter how we name the cdevs.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--h1nhRvd2ptQmOAKV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFVJXAACgkQbDjKyiDZ
+s5IQsQ//a9V6hdhkrwfjVg6eLiQNWabABagPIW1pwpFfrQKDiYkmXjBOg5EV0sXq
+nld3ED5fjbeTz1XIGFLihE2soGMjfi1+h9bIWl+Yq1idN6Gxkd1Gq3JDqbfg6C4R
+SnR1SmqsRvan+Br2Et/2jrdx3qEKEsdvCod33q443cKjNkmDtzrUHJiVE25SRyO/
+Z2N2E4N8l+c1nbABzadlLJtKRmO84ptwgnCCnaeg0dg9EBatl00CxNVhM9HuHkOG
+q277x6vv5rEBhrW+MbjQNVt0wcKG1lCtWfdOrFl0QkBeI0fjSFCSQcxwnE7r8ehN
+/oyBmSaHuuAj5EVUPmJKh7PBf2zlpmhJUe9jOrrsUC7GXW3ykTvCG477Vpr7Pq21
+zPcLDzrfrs1J1SW8o8Yc01lW3lsECwqzUW0dO83pblaz0AQimYFmbm+X7FXiHPOu
+/cXcoCBpTvBAyXt2I1eThH8HZY4gQoxmL0FWF87ifCKyFWvsZkmSaafEBE2nzkah
+c1wutGjFbhxdFZlZbu/R702kC/S4QYoPXgXno9bJkmnZE1xhesbiVBEeeMDu9xak
+eCiYkC4yZ3tR/qxsoHpzaa5SS95jbmU9kjNL3QAnasRdMCbRjWXmOApy7h4Avb67
+idR+fs+Yk2p9P4kmQUVPeQwF2JW2hvDzh22naJeS9RtLxhlTwtc=
+=rIzq
+-----END PGP SIGNATURE-----
+
+--h1nhRvd2ptQmOAKV--
