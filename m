@@ -2,124 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8562441D05B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D939441D05C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347465AbhI3ACU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 20:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347875AbhI3ACO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 20:02:14 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE53BC0613E8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:59:55 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id v19-20020a17090a459300b0019c6f43c66fso2324459pjg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 16:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Dcjau/hIXBnPM9Af06JmbVmh73kSQdc3IIMbzh+4PDE=;
-        b=aME0s4J8CEldFAgU7YcsJ53qLez9XxJx5csADRA2Wm3oBwhYaTKUbkROEMXnxGI2ZH
-         ao2J4zn23rmQ5TE8+c0BfNwXwyFP4zLFgvQQ2ZQex7/+CxNkcnhVIr5I/MWYDkDkL3Io
-         0CicPtbz6PnAAoMhgkno83oc7oUAG6AmHUCNUk6iJe/J9QryUV52agm2AD7ZdfbtzW6v
-         dIlD6h5iniiOYH3CnDYr+HmWay2p8xYrV7oOrsv5AvfUHqdNbLk403OVPIIwf/ZU3g+W
-         YdTyoSL2divy1l3fwdFrA6s+yiJQ478ZNiZ8c4GMdiX/DyPPMjVKSIXmXl5Hp04vHgvf
-         KX+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Dcjau/hIXBnPM9Af06JmbVmh73kSQdc3IIMbzh+4PDE=;
-        b=NERuikQkWLHSwbQI2eOWXzJCMHMPhR+v79VRiKYxXO1+12q5v/hsHEUaGmtMdSOWFm
-         zwA1p9F49OT9THlTuVZhGFu5pw2ociRdkL8QjDcLFbjvGyFO+EhorCPrs5eMSSPJ/knQ
-         Qfc2t7C8/dph387fAMAXk8SS1i7GvMZUQwc71mw1OfRDXfEk3vgOjDfHOcWqR4nGDx47
-         woxtS9/CzlzOJa7cPlEaZFBaCu/k08cTgAkvi2KW4xTl5rW8/Kg/O8+8C+j3SosBLJ+2
-         wPLnRo4IjPHUhJeNMBx1DYHLlHtuD9UeVxc9CxMAuWmlfu4A2umlBg3NHWJWBElF3trM
-         7eXg==
-X-Gm-Message-State: AOAM531pYu3nsM1nkeGGMXRtwTYDW4PXko0YVHN4BbyCnNiPLwD1AumZ
-        qOucYIHighXEEOCc1tmt+zyATz0ju75EVA==
-X-Google-Smtp-Source: ABdhPJyvyjFzFG3ZXnlMMSITd+woVBpURrVOWNAkowKcRxQMC8tTkBdvkJR6jzAzqXMVk47tx5hbeJxN+m7o8Q==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:4f8a:fdf0:d4ae:6a30])
- (user=shakeelb job=sendgmr) by 2002:a17:90a:a88b:: with SMTP id
- h11mr2876287pjq.44.1632959995173; Wed, 29 Sep 2021 16:59:55 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 16:59:36 -0700
-Message-Id: <20210929235936.2859271-1-shakeelb@google.com>
+        id S1347448AbhI3ACk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 20:02:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346417AbhI3ACi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Sep 2021 20:02:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4451161528;
+        Thu, 30 Sep 2021 00:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632960057;
+        bh=0MMynBqiekCN+c61iP/+B0vlhMcM9QSp+cw6iOEJzsU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FQHRQuj0v4JVG5KfJx0k8emzR/XMZcXl+cx6BZzPOI9lvgU4BVzjdCwXBdytMPE0I
+         kcmf7X1To3uCA+8k9JpgFxxtKgatpjALCDL98NPbK8F4RZwwrRC62izuyavLqegCu2
+         GCXC4uAUGIWSvjz8VGE7jY0cE0VNXVitA8hOPIGgYZuFA6h23ZQyyMCLfmM4PiaAKV
+         ftK+reQpUUHpv7zX9Tc9UwjQYkV4AKb1E8T11/ZfHglnSETHuRULsJ79kRFGCD5d5R
+         SOePrJXz6d8WuGkuslXrYFvIe6y2m2OoOLO/YJWQ5oACh0EkXIL3paatw9tR2HgwL5
+         L7pVyRz28UqvQ==
+Date:   Thu, 30 Sep 2021 09:00:54 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] x86/insn: Use get_unaligned() instead of memcpy()
+Message-Id: <20210930090054.dc54a2ce50dda8f196084c75@kernel.org>
+In-Reply-To: <YVSsIkj9Z29TyUjE@zn.tnic>
+References: <163265189226.178609.9712455554034472888.tglx@xen13>
+        <163265189517.178609.6605494600326137493.tglx@xen13>
+        <CAHk-=wj=C2W1VmW1RHU8ErvSjVF2Y=r9uWrnMCiz-U_aa8Dorw@mail.gmail.com>
+        <YVC4zz1vCskBMb6I@zn.tnic>
+        <CAHk-=whJvs+-kCMynbt9YRVfcyM5TL8wwNhdOX9iygC5y--CHw@mail.gmail.com>
+        <YVNXWJEeGOqxXIjf@zn.tnic>
+        <CAHk-=whSHDmcAbe=1AhRC8D8WcT6DpCP59kgjZc-wa8TfhxMiw@mail.gmail.com>
+        <YVN94ojuLApdN1IT@zn.tnic>
+        <CAHk-=wjyNDcrS1nEskxdes38wAajF+4B+cFwh4HCPhPEDvFL9w@mail.gmail.com>
+        <YVSsIkj9Z29TyUjE@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH] cgroup: rstat: optimize flush through speculative test
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently cgroup_rstat_updated() has a speculative already-on-list test
-to check if the given cgroup is already part of the rstat update tree.
-This helps in reducing the contention on the rstat cpu lock. This patch
-adds the similar speculative not-on-list test on the rstat flush
-codepath.
+On Wed, 29 Sep 2021 20:10:42 +0200
+Borislav Petkov <bp@alien8.de> wrote:
 
-Recently the commit aa48e47e3906 ("memcg: infrastructure to flush memcg
-stats") added periodic rstat flush. On a large system which is not much
-busy, most of the per-cpu rstat tree would be empty. So, the speculative
-not-on-list test helps in eliminating unnecessary work and potentially
-reducing contention on the rstat cpu lock. Please note this might
-introduce temporary inaccuracy but with the frequent and periodic flush
-this would not be an issue.
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Use get_unaligned() instead of memcpy() to access potentially unaligned
+> memory, which, when accessed through a pointer, leads to undefined
+> behavior. get_unaligned() describes much better what is happening there
+> anyway even if memcpy() does the job.
+> 
+> No functional changes.
 
-To evaluate the impact of this patch, an 8 GiB tmpfs file is created on
-a system with swap-on-zram and the file was pushed to swap through
-memory.force_empty interface. On reading the whole file, the memcg stat
-flush in the refault code path is triggered. With this patch, we
-observed 38% reduction in the read time of 8 GiB file.
+Thank you very much to fix this! This looks good to me.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- kernel/cgroup/rstat.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index b264ab5652ba..748494fbc786 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -35,7 +35,7 @@ void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
- 	 * instead of NULL, we can tell whether @cgrp is on the list by
- 	 * testing the next pointer for NULL.
- 	 */
--	if (cgroup_rstat_cpu(cgrp, cpu)->updated_next)
-+	if (data_race(cgroup_rstat_cpu(cgrp, cpu)->updated_next))
- 		return;
- 
- 	raw_spin_lock_irqsave(cpu_lock, flags);
-@@ -157,6 +157,13 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
- 						       cpu);
- 		struct cgroup *pos = NULL;
- 
-+		/*
-+		 * Speculative not-on-list test. This may lead to temporary
-+		 * inaccuracies which is fine.
-+		 */
-+		if (!data_race(cgroup_rstat_cpu(cgrp, cpu)->updated_next))
-+			goto next;
-+
- 		raw_spin_lock(cpu_lock);
- 		while ((pos = cgroup_rstat_cpu_pop_updated(pos, cgrp, cpu))) {
- 			struct cgroup_subsys_state *css;
-@@ -170,7 +177,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
- 			rcu_read_unlock();
- 		}
- 		raw_spin_unlock(cpu_lock);
--
-+next:
- 		/* if @may_sleep, play nice and yield if necessary */
- 		if (may_sleep && (need_resched() ||
- 				  spin_needbreak(&cgroup_rstat_lock))) {
+
+> 
+> Fixes: 5ba1071f7554 ("x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses")
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/lib/insn.c                   |  5 +++--
+>  tools/arch/x86/lib/insn.c             |  5 +++--
+>  tools/include/asm-generic/unaligned.h | 23 +++++++++++++++++++++++
+>  3 files changed, 29 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/include/asm-generic/unaligned.h
+> 
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index c565def611e2..55e371cc69fd 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -13,6 +13,7 @@
+>  #endif
+>  #include <asm/inat.h> /*__ignore_sync_check__ */
+>  #include <asm/insn.h> /* __ignore_sync_check__ */
+> +#include <asm/unaligned.h> /* __ignore_sync_check__ */
+>  
+>  #include <linux/errno.h>
+>  #include <linux/kconfig.h>
+> @@ -37,10 +38,10 @@
+>  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+>  
+>  #define __get_next(t, insn)	\
+> -	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> +	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+>  
+>  #define __peek_nbyte_next(t, insn, n)	\
+> -	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> +	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
+>  
+>  #define get_next(t, insn)	\
+>  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index 797699462cd8..8fd63a067308 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -13,6 +13,7 @@
+>  #endif
+>  #include "../include/asm/inat.h" /* __ignore_sync_check__ */
+>  #include "../include/asm/insn.h" /* __ignore_sync_check__ */
+> +#include "../include/asm-generic/unaligned.h" /* __ignore_sync_check__ */
+>  
+>  #include <linux/errno.h>
+>  #include <linux/kconfig.h>
+> @@ -37,10 +38,10 @@
+>  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+>  
+>  #define __get_next(t, insn)	\
+> -	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+> +	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+>  
+>  #define __peek_nbyte_next(t, insn, n)	\
+> -	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+> +	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
+>  
+>  #define get_next(t, insn)	\
+>  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
+> new file mode 100644
+> index 000000000000..47387c607035
+> --- /dev/null
+> +++ b/tools/include/asm-generic/unaligned.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * Copied from the kernel sources to tools/perf/:
+> + */
+> +
+> +#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
+> +#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
+> +
+> +#define __get_unaligned_t(type, ptr) ({						\
+> +	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
+> +	__pptr->x;								\
+> +})
+> +
+> +#define __put_unaligned_t(type, val, ptr) do {					\
+> +	struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);		\
+> +	__pptr->x = (val);							\
+> +} while (0)
+> +
+> +#define get_unaligned(ptr)	__get_unaligned_t(typeof(*(ptr)), (ptr))
+> +#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
+> +
+> +#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
+> +
+> -- 
+> 2.29.2
+> 
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+
 -- 
-2.33.0.685.g46640cef36-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
