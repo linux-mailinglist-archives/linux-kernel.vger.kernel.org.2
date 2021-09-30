@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE8841D347
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B62041D34A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348317AbhI3Gat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:30:49 -0400
-Received: from mga06.intel.com ([134.134.136.31]:31838 "EHLO mga06.intel.com"
+        id S1348301AbhI3Ga7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:30:59 -0400
+Received: from muru.com ([72.249.23.125]:38848 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348307AbhI3Gar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:30:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="286132428"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="286132428"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 23:29:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="520226146"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.76])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2021 23:29:01 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf tools: Suppress 'rm dlfilter' build message
-Date:   Thu, 30 Sep 2021 09:28:49 +0300
-Message-Id: <20210930062849.110416-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1348252AbhI3Ga6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:30:58 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 8EF1080CF;
+        Thu, 30 Sep 2021 06:29:43 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv2 0/4] Get rid of pm_runtime_irq_safe() for 8250_omap
+Date:   Thu, 30 Sep 2021 09:29:02 +0300
+Message-Id: <20210930062906.58937-1-tony@atomide.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following build message:
+Hi,
 
-	rm dlfilters/dlfilter-test-api-v0.o
+Here are v2 patches to get rid of pm_runtime_irq_safe() for the 8250_omap
+driver. Based on comments from Andy and Johan, I improved a bunch of
+things as listed below.
 
-is unwanted.
+For removing the pm_runtime_irq_safe() usage, serial TX is the last
+remaining issue. We deal with TX by waking up the port and returning 0
+bytes written from write_room() and write() if the port is not available
+because of PM runtime autoidle.
 
-The object fle is being treated as an intermediate file and being
-automatically removed. Mark the object file as .SECONDARY to prevent
-removal and hence the message.
+This series also removes the dependency to Andy's pending generic serial
+layer PM runtime patches, and hopefully makes that work a bit easier :)
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/Makefile.perf | 2 ++
- 1 file changed, 2 insertions(+)
+Regards,
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index e04313c4d840..ab8cb17d9ec5 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -787,6 +787,8 @@ $(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
- 	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
- 	$(QUIET_CC)$(CC) -c -Iinclude $(EXTRA_CFLAGS) -o $@ -fpic $<
- 
-+.SECONDARY: $(DLFILTERS:.so=.o)
-+
- $(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
- 	$(QUIET_LINK)$(CC) $(EXTRA_CFLAGS) -shared -o $@ $<
- 
+Tony
+
+
+Changes since v1:
+
+- Separated out line discipline patches, n_tty -EAGAIN change I still
+  need to retest
+
+- Changed prep_tx() to more generic wakeup() as also flow control needs it
+
+- Changed over to using wakeup() with device driver runtime PM instead
+  of write_room()
+
+- Added runtime_suspended flag for drivers and generic serial layer PM
+  to use
+
+Tony Lindgren (4):
+  serial: core: Add wakeup() and start_pending_tx() for power management
+  serial: 8250: Implement wakeup for TX and use it for 8250_omap
+  serial: 8250_omap: Require a valid wakeirq for deeper idle states
+  serial: 8250_omap: Drop the use of pm_runtime_irq_safe()
+
+ Documentation/driver-api/serial/driver.rst |  9 ++++
+ drivers/tty/serial/8250/8250_omap.c        | 42 +++++++++++-----
+ drivers/tty/serial/8250/8250_port.c        | 35 +++++++++++++-
+ drivers/tty/serial/serial_core.c           | 56 +++++++++++++++++++++-
+ include/linux/serial_core.h                |  3 ++
+ 5 files changed, 131 insertions(+), 14 deletions(-)
+
 -- 
-2.25.1
-
+2.33.0
