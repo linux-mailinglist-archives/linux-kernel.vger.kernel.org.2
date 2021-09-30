@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C057041E37C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D1B41E37E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236840AbhI3VvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
+        id S244794AbhI3Vw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhI3VvQ (ORCPT
+        with ESMTP id S229787AbhI3Vw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:51:16 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F3CC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:49:33 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id l8so27679545edw.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:49:33 -0700 (PDT)
+        Thu, 30 Sep 2021 17:52:57 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7B5C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so9202532otu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FEOblmC0YUCEiWaIMk7PSN1i7kz3y2CTmP64nyEY6xY=;
-        b=UmuryMZoRAKJ59bKvenZZV8El+IqNmrMKDsWe8MMB9yQVbNNgL88EtSJdjAIejm9oO
-         kbZLkx0Vl9iz2zX2HfwHdt7Aym/qI3bkHAl47BI3na90LyXPYLgSKiCnWfk32Dto8hwn
-         tlWDXHKG+Q2cc/I2KATh47GJBWsp/XxlHsR//1U2WPkmQ0OrUraQvsR/RH8M0mFGOvHH
-         Dd++xJdH+UmFuEzyuaqiVgNQ8vKxRuMClZxlsfc7ZNNi2611CxKWKT5Xg/Rd3mPkGwwU
-         7C3D1VZSE51gM9ovSxmuji4D2bWPABK093UM93vUb+aEHV7BhdHPbI/mJ1oa90N/x7W7
-         pTMA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FYmJqhBP9Gy5I1JVDj0HW7OppwoO5pAX8Rg1hw6n6CA=;
+        b=YeNEvEBk8SLRom8LultWOuQewDBu1X4/91nIAKjtOyEauCf/W3CvI0biMBm3yZ27iw
+         ySMu43hW+BXzYnWZ5aSE7qE5Qd+SIVPqsmhDER1eBFE0yULqvsoEWJ6vOEbbfuSUV+ZY
+         VMAiymy275ZtEGn9hUErbiuHm4ePNE2F+NeCfBMsKfeIt+Fx0ojXMnqXp8d6eC7Eoou9
+         JVvZ15i8ZvFEHl9v5pPZv2GF6tOahSLL/Vo1A87pCTUvjzvDiBSXduZHYl9ARaCDpBm0
+         XkiIE60aSDDz/U9FX+W6Fvwww79dreIf6hjA281+T1sBKeN2au95I1U8m0IFiIvMbBbe
+         9cTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FEOblmC0YUCEiWaIMk7PSN1i7kz3y2CTmP64nyEY6xY=;
-        b=7SOLm4qEQgKrCREZnQQHej6hglWA9wdRfokf8xs1P+gh0sgKtUwBtGnOmIuUzbwS1f
-         XhFDnp2DhE+uk1wC3FJ1CjGm3R+JcnZbme7bGsexjKdxT0cK6YKsnp0BXnfjpUMqgwGM
-         nC4PdsRhlDxuxSpF8z0A0NdRfip6bIth5IwZ0eofUr5CemLNDMH2sQDvc83L+hN+GESw
-         wqESHBKCjO4tNBzTgm5wCb/FjCAb77kiv6L5DhHsov2Ddrb1egmth/3cxsYpGpJQSwdu
-         fSGUn/RNZhBjdddJXCqwH+XprUTiNa63VkTUb7fcVx4wm5JNkHk1/nKQk4UACGLowQ58
-         0tCA==
-X-Gm-Message-State: AOAM533Ajb1NXnmoY5wB66nqBxBALZ5QGyUJRkOAZKllFlKXcO5tsdMy
-        cN7MK3bPzYtFD0fwHlrXZGtQkwN3xRc=
-X-Google-Smtp-Source: ABdhPJxEAUFLydNFx3P6tcdpsrekpJIwuSj1IYXnvIlRWEsyYFpSx2DC+9KuyUFAUad0bIuxOCEA5A==
-X-Received: by 2002:a17:906:3693:: with SMTP id a19mr1902627ejc.237.1633038571983;
-        Thu, 30 Sep 2021 14:49:31 -0700 (PDT)
-Received: from tom-desktop (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
-        by smtp.gmail.com with ESMTPSA id p15sm2149853edy.67.2021.09.30.14.49.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FYmJqhBP9Gy5I1JVDj0HW7OppwoO5pAX8Rg1hw6n6CA=;
+        b=v7GZKJ1KPkW0SJvJsJ1C9zIaKRFsRlaD5van42D5TRl2tAAGkkqWT7Ctepclp0p0II
+         m/hflySESwAFsFFe+DO0DP4Qf5WFR5ghdyCuzOhTZ7afKSJLiMY/PD6of+CIRaBbsq1K
+         tt2yoe6LiWx9Vl4PhRH2/eFp7mIoJyKFE5YNsGD8UC3FD4rqFyUUV3Ifmf6Xa6aGUQhL
+         fa4sZ1zRs7F65g0xvGNWia/jhxwFWipGSL4+MhpI1FQmnRTXmVbkKS/wEQxIXx6fdpaT
+         4G56+9+JjJ1VcqX4pkox6+oWN3Glq2EaF21IUQYfoq4Guoa8baG/IzYcIlkTGK6Aa9Ls
+         thbw==
+X-Gm-Message-State: AOAM533R6r5W0dzDj16YA8FJLbnSvEZ/2KcuW7+pL/+ZMj5Z05y5NNyc
+        w8UBRe2FpUyUzyniPocUGjXnWA==
+X-Google-Smtp-Source: ABdhPJwNJ5kqZrlgIyGNRUEqn1VIxbpJK1XB/LsvhT2fRtitc9fd94G6D8uZQPNl3VcNYORLiYbsjw==
+X-Received: by 2002:a05:6830:2706:: with SMTP id j6mr7359200otu.380.1633038673122;
+        Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h1sm846908otm.45.2021.09.30.14.51.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 14:49:31 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 23:49:29 +0200
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] staging: vt6655: fix camelcase in bShortSlotTime
-Message-ID: <20210930214929.GB45822@tom-desktop>
-References: <20210926162527.21462-1-tomm.merciai@gmail.com>
- <20210926162527.21462-2-tomm.merciai@gmail.com>
- <YVHilhCk3cgGhXrZ@kroah.com>
- <20210927213515.GA6953@tom-desktop>
- <YVKdVCaVwmPG7DVx@kroah.com>
+        Thu, 30 Sep 2021 14:51:12 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>
+Subject: [PATCH] arm64: defconfig: Disable firmware sysfs fallback
+Date:   Thu, 30 Sep 2021 14:53:00 -0700
+Message-Id: <20210930215300.60290-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVKdVCaVwmPG7DVx@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 06:43:00AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Sep 27, 2021 at 11:35:15PM +0200, Tommaso Merciai wrote:
-> > On Mon, Sep 27, 2021 at 05:26:14PM +0200, Greg Kroah-Hartman wrote:
-> > > On Sun, Sep 26, 2021 at 06:25:18PM +0200, Tommaso Merciai wrote:
-> > > > Replace camel case variable bShortSlotTime with snake case
-> > > > variable b_short_slot_time.
-> > > 
-> > > That is a very odd variable name.  Why did you pick that one?
-> > > 
-> > > What deos it mean?
-> > > 
-> > > You do understand where the original naming format came from here, and
-> > > what it was trying to represent, right?  If not, please go read up on
-> > > it:
-> > > 	https://en.wikipedia.org/wiki/Hungarian_notation
-> > > 
-> > > That style is not used in Linux, and so, when converting from it, do not
-> > > attempt to keep the same style present here, that is kind of pointless,
-> > > don't you agree?
-> > 
-> >   You are definitely right. What do you think about "short_slot_time"?
-> 
-> "time" implies that this will hold a value of time, right?
-> 
-> What exactly does this variable do?  That might help in naming it
-> better.
+Part of the enablement of SDMA on the IMX platforms, '7f4e4afa140c
+("arm64: defconfig: Enable SDMA on i.mx8mq/8mm")' also enabled
+CONFIG_FW_LOADER_USER_HELPER_FALLBACK, to allow "firmware loaded by
+udev".
 
-  Is a boolean variable, if true short slot time mode is enabled, false 
-  not right?
-  A good solution could be: "short_slot_mode"? What do you think about?
+Unfortunately having the fallback enabled does, due to the 60 second
+timeout, essentially requiring userspace to provide a firmware loader.
+But systemd dropped the support for this interface back in 2014 and
+because arm64 is the only architecture that has this enabled, there
+doesn't seem to be any standard solution available.
 
-  thanks,
-  tommaso
+Examples of this problem can be found in e.g. the ath10k driver, which
+with a standard distro can take about 10 minutes before wlan0 appears.
 
-> 
-> thanks,
-> 
-> greg k-h
+The alternative to this patch would be to change these drivers to use
+firmware_request_direct(), to avoid the sysfs fallback. But that would
+prevent other systems, such as Android, to rely on a userspace firmware
+loader to pick the firmware from a non-standard place, with just a
+custom defconfig.
+
+This patch therefor attempts to align the arm64 defconfig will all other
+architectures in the upstream kernel.
+
+Cc: Robin Gong <yibin.gong@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/configs/defconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index da988a54bfb9..f9e0b3fdaf0b 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -243,7 +243,6 @@ CONFIG_PCI_EPF_TEST=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+-CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+ CONFIG_HISILICON_LPC=y
+ CONFIG_SIMPLE_PM_BUS=y
+ CONFIG_FSL_MC_BUS=y
+-- 
+2.29.2
+
