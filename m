@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A9A41D378
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2130941D381
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348147AbhI3GgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:36:21 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3892 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236162AbhI3GgT (ORCPT
+        id S1348245AbhI3Gi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:38:28 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:41594 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348034AbhI3Gi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:36:19 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HKk1C0VPPz67vpZ;
-        Thu, 30 Sep 2021 14:31:59 +0800 (CST)
-Received: from lhreml712-chm.china.huawei.com (10.201.108.63) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 30 Sep 2021 08:34:34 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml712-chm.china.huawei.com (10.201.108.63) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 07:34:33 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Thu, 30 Sep 2021 07:34:33 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "He, Shaopeng" <shaopeng.he@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: RE: [PATCH v3 0/6] vfio/hisilicon: add acc live migration driver
-Thread-Topic: [PATCH v3 0/6] vfio/hisilicon: add acc live migration driver
-Thread-Index: AQHXqhcv8rGxctog9kC36bxSe2rONqu6Z2mAgABdanD///ilAIAAErXQgADy6QCAAGw8QA==
-Date:   Thu, 30 Sep 2021 06:34:33 +0000
-Message-ID: <61274f6497424f039397677fb5d003d0@huawei.com>
-References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
- <BN9PR11MB5433DDA5FD4FC6C5EED62C278CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
- <2e0c062947b044179603ab45989808ff@huawei.com>
- <BN9PR11MB54338A0821C061FEE018F43E8CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
- <a128301751974352a648bcc0f50bc464@huawei.com>
- <BN9PR11MB543384431856FEF80C1AA4C58CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB543384431856FEF80C1AA4C58CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.83.34]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 30 Sep 2021 02:38:26 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 244CC44A024E;
+        Thu, 30 Sep 2021 08:36:42 +0200 (CEST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Date:   Thu, 30 Sep 2021 08:36:42 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 14/19] auxdisplay: ht16k33: Move delayed work
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210914143835.511051-15-geert@linux-m68k.org>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
+ <20210914143835.511051-15-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <b30da88512b1bd91a94c033d148f4284@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGlhbiwgS2V2aW4gW21h
-aWx0bzprZXZpbi50aWFuQGludGVsLmNvbV0NCj4gU2VudDogMzAgU2VwdGVtYmVyIDIwMjEgMDE6
-NDINCj4gVG86IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkgPHNoYW1lZXJhbGkua29sb3RodW0u
-dGhvZGlAaHVhd2VpLmNvbT47DQo+IGt2bUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGFs
-ZXgud2lsbGlhbXNvbkByZWRoYXQuY29tOyBqZ2dAbnZpZGlhLmNvbTsgbWd1cnRvdm95QG52aWRp
-YS5jb207DQo+IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsgbGl1bG9uZ2ZhbmcgPGxp
-dWxvbmdmYW5nQGh1YXdlaS5jb20+Ow0KPiBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGlj
-b24uY29tPjsgSm9uYXRoYW4gQ2FtZXJvbg0KPiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29t
-PjsgV2FuZ3pob3UgKEIpDQo+IDx3YW5nemhvdTFAaGlzaWxpY29uLmNvbT47IEhlLCBTaGFvcGVu
-ZyA8c2hhb3BlbmcuaGVAaW50ZWwuY29tPjsgWmhhbywNCj4gWWFuIFkgPHlhbi55LnpoYW9AaW50
-ZWwuY29tPg0KPiBTdWJqZWN0OiBSRTogW1BBVENIIHYzIDAvNl0gdmZpby9oaXNpbGljb246IGFk
-ZCBhY2MgbGl2ZSBtaWdyYXRpb24gZHJpdmVyDQo+IA0KPiA+IEZyb206IFNoYW1lZXJhbGkgS29s
-b3RodW0gVGhvZGkNCj4gPiA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPg0K
-PiA+DQo+ID4gPiBGcm9tOiBUaWFuLCBLZXZpbiBbbWFpbHRvOmtldmluLnRpYW5AaW50ZWwuY29t
-XQ0KPiA+ID4gU2VudDogMjkgU2VwdGVtYmVyIDIwMjEgMTA6MDYNCj4gPiA+DQo+ID4gPiA+IEZy
-b206IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkNCj4gPiA+ID4gPHNoYW1lZXJhbGkua29sb3Ro
-dW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gPiA+ID4NCj4gPiA+ID4gSGkgS2V2aW4sDQo+ID4gPiA+
-DQo+ID4gPiA+ID4gRnJvbTogVGlhbiwgS2V2aW4gW21haWx0bzprZXZpbi50aWFuQGludGVsLmNv
-bV0NCj4gPiA+ID4gPiBTZW50OiAyOSBTZXB0ZW1iZXIgMjAyMSAwNDo1OA0KPiA+ID4gPiA+DQo+
-ID4gPiA+ID4gSGksIFNoYW1lZXIsDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEZyb206IFNoYW1l
-ZXIgS29sb3RodW0gPHNoYW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gPiA+
-ID4gPiA+IFNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDE1LCAyMDIxIDU6NTEgUE0NCj4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiBIaSwNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBUaGFua3Mg
-dG8gdGhlIGludHJvZHVjdGlvbiBvZiB2ZmlvX3BjaV9jb3JlIHN1YnN5c3RlbSBmcmFtZXdvcmtb
-MF0sDQo+ID4gPiA+ID4gPiBub3cgaXQgaXMgcG9zc2libGUgdG8gcHJvdmlkZSB2ZW5kb3Igc3Bl
-Y2lmaWMgZnVuY3Rpb25hbGl0eSB0bw0KPiA+ID4gPiA+ID4gdmZpbyBwY2kgZGV2aWNlcy4gVGhp
-cyBzZXJpZXMgYXR0ZW1wdHMgdG8gYWRkIHZmaW8gbGl2ZSBtaWdyYXRpb24NCj4gPiA+ID4gPiA+
-IHN1cHBvcnQgZm9yIEhpU2lsaWNvbiBBQ0MgVkYgZGV2aWNlcyBiYXNlZCBvbiB0aGUgbmV3IGZy
-YW1ld29yay4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBIaVNpbGljb24gQUNDIFZGIGRldmlj
-ZSBNTUlPIHNwYWNlIGluY2x1ZGVzIGJvdGggdGhlIGZ1bmN0aW9uYWwNCj4gPiA+ID4gPiA+IHJl
-Z2lzdGVyIHNwYWNlIGFuZCBtaWdyYXRpb24gY29udHJvbCByZWdpc3RlciBzcGFjZS4gQXMgZGlz
-Y3Vzc2VkDQo+ID4gPiA+ID4gPiBpbiBSRkN2MVsxXSwgdGhpcyBtYXkgY3JlYXRlIHNlY3VyaXR5
-IGlzc3VlcyBhcyB0aGVzZSByZWdpb25zIGdldA0KPiA+ID4gPiA+ID4gc2hhcmVkIGJldHdlZW4g
-dGhlIEd1ZXN0IGRyaXZlciBhbmQgdGhlIG1pZ3JhdGlvbiBkcml2ZXIuDQo+ID4gPiA+ID4gPiBC
-YXNlZCBvbiB0aGUgZmVlZGJhY2ssIHdlIHRyaWVkIHRvIGFkZHJlc3MgdGhvc2UgY29uY2VybnMg
-aW4NCj4gPiA+ID4gPiA+IHRoaXMgdmVyc2lvbi4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFRoaXMg
-c2VyaWVzIGRvZXNuJ3QgbWVudGlvbiBhbnl0aGluZyByZWxhdGVkIHRvIGRpcnR5IHBhZ2UgdHJh
-Y2tpbmcuDQo+ID4gPiA+ID4gQXJlIHlvdSByZWx5IG9uIEtlcWlhbidzIHNlcmllcyBmb3IgdXRp
-bGl6aW5nIGhhcmR3YXJlIGlvbW11IGRpcnR5DQo+ID4gPiA+ID4gYml0IChlLmcuIFNNTVUgSFRU
-VSk/DQo+ID4gPiA+DQo+ID4gPiA+IFllcywgdGhpcyBkb2Vzbid0IGhhdmUgZGlydHkgcGFnZSB0
-cmFja2luZyBhbmQgdGhlIHBsYW4gaXMgdG8gbWFrZSB1c2Ugb2YNCj4gPiA+ID4gS2VxaWFuJ3Mg
-U01NVSBIVFRVIHdvcmsgdG8gaW1wcm92ZSBwZXJmb3JtYW5jZS4gV2UgaGF2ZSBkb25lDQo+IGJh
-c2ljDQo+ID4gPiA+IHNhbml0eSB0ZXN0aW5nIHdpdGggdGhvc2UgcGF0Y2hlcy4NCj4gPiA+ID4N
-Cj4gPiA+DQo+ID4gPiBEbyB5b3UgcGxhbiB0byBzdXBwb3J0IG1pZ3JhdGlvbiB3L28gSFRUVSBh
-cyB0aGUgZmFsbGJhY2sgb3B0aW9uPw0KPiA+ID4gR2VuZXJhbGx5IG9uZSB3b3VsZCBleHBlY3Qg
-dGhlIGJhc2ljIGZ1bmN0aW9uYWxpdHkgcmVhZHkgYmVmb3JlIHRhbGtpbmcNCj4gPiA+IGFib3V0
-IG9wdGltaXphdGlvbi4NCj4gPg0KPiA+IFllcywgdGhlIHBsYW4gaXMgdG8gZ2V0IHRoZSBiYXNp
-YyBsaXZlIG1pZ3JhdGlvbiB3b3JraW5nIGFuZCB0aGVuIHdlIGNhbg0KPiA+IG9wdGltaXplDQo+
-ID4gaXQgd2l0aCBTTU1VIEhUVFUgd2hlbiBpdCBpcyBhdmFpbGFibGUuDQo+IA0KPiBUaGUgaW50
-ZXJlc3RpbmcgdGhpbmcgaXMgdGhhdCB3L28gSFRUVSB2ZmlvIHdpbGwganVzdCByZXBvcnQgZXZl
-cnkgcGlubmVkDQo+IHBhZ2UgYXMgZGlydHksIGkuZS4gdGhlIGVudGlyZSBndWVzdCBtZW1vcnkg
-aXMgZGlydHkuIFRoaXMgY29tcGxldGVseSBraWxscw0KPiB0aGUgYmVuZWZpdCBvZiBwcmVjb3B5
-IHBoYXNlIHNpbmNlIFFlbXUgc3RpbGwgbmVlZHMgdG8gdHJhbnNmZXIgdGhlIGVudGlyZQ0KPiBn
-dWVzdCBtZW1vcnkgaW4gdGhlIHN0b3AtY29weSBwaGFzZS4gVGhpcyBpcyBub3QgYSAnd29ya2lu
-ZycgbW9kZWwgZm9yDQo+IGxpdmUgbWlncmF0aW9uLg0KPiANCj4gU28gaXQgbmVlZHMgdG8gYmUg
-Y2xlYXIgd2hldGhlciBIVFRVIGlzIHJlYWxseSBhbiBvcHRpbWl6YXRpb24gb3INCj4gYSBoYXJk
-IGZ1bmN0aW9uYWwtcmVxdWlyZW1lbnQgZm9yIG1pZ3JhdGluZyBzdWNoIGRldmljZS4gSWYgdGhl
-IGxhdHRlcg0KPiB0aGUgbWlncmF0aW9uIHJlZ2lvbiBpbmZvIGlzIG5vdCBhIG5pY2UtdG8taGF2
-ZSB0aGluZy4NCg0KWWVzLCBhZ3JlZSB0aGF0IHdlIGhhdmUgdG8gdHJhbnNmZXIgdGhlIGVudGly
-ZSBHdWVzdCBtZW1vcnkgaW4gdGhpcyBjYXNlLg0KQnV0IGRvbid0IHRoaW5rIHRoYXQgaXMgYSBr
-aWxsZXIgaGVyZSBhcyB3ZSB3b3VsZCBzdGlsbCBsaWtlIHRvIGhhdmUgdGhlIA0KYmFzaWMgbGl2
-ZSBtaWdyYXRpb24gZW5hYmxlZCBvbiB0aGVzZSBwbGF0Zm9ybXMgYW5kIGNhbiBiZSB1c2VkDQp3
-aGVyZSB0aGUgY29uc3RyYWludHMgb2YgbWVtb3J5IHRyYW5zZmVyIGlzIGFjY2VwdGFibGUuDQog
-DQo+IGJ0dyB0aGUgZmFsbGJhY2sgb3B0aW9uIHRoYXQgSSByYWlzZWQgZWFybGllciBpcyBtb3Jl
-IGxpa2Ugc29tZSBzb2Z0d2FyZQ0KPiBtaXRpZ2F0aW9uIGZvciBjb2xsZWN0aW5nIGRpcnR5IHBh
-Z2VzLCBlLmcuIGFuYWx5emluZyB0aGUgcmluZyBkZXNjcmlwdG9ycw0KPiB0byBidWlsZCBzb2Z0
-d2FyZS10cmFja2VkIGRpcnR5IGluZm8gYnkgbWVkaWF0aW5nIHRoZSBjbWQgcG9ydGFsDQo+ICh3
-aGljaCByZXF1aXJlcyBkeW5hbWljYWxseSB1bm1hcHBpbmcgY21kIHBvcnRhbCBmcm9tIHRoZSBm
-YXN0LXBhdGgNCj4gdG8gZW5hYmxlIG1lZGlhdGlvbikuIFdlIGFyZSBsb29raW5nIGludG8gdGhp
-cyBvcHRpb24gZm9yIHNvbWUgcGxhdGZvcm0NCj4gd2hpY2ggbGFja3Mgb2YgSU9NTVUgZGlydHkg
-Yml0IHN1cHBvcnQuDQoNCkludGVyZXN0aW5nLiBJcyB0aGVyZSBhbnl0aGluZyBhdmFpbGFibGUg
-cHVibGljbHkgc28gdGhhdCB3ZSBjYW4gdGFrZSBhIGxvb2s/DQoNClRoYW5rcywNClNoYW1lZXIN
-Cg==
+Acked-by: Robin van der Gracht <robin@protonic.nl>
+
+On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+> Move delayed_work from ht16k33_fbdev to ht16k33_priv, as it is not
+> specific to dot-matrix displays, but common to all display types.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v6:
+>   - No changes,
+> 
+> v5:
+>   - No changes,
+> 
+> v4:
+>   - No changes,
+> 
+> v3:
+>   - No changes,
+> 
+> v2:
+>   - No changes.
+> ---
+>  drivers/auxdisplay/ht16k33.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index 75d326a823543898..c7a3a0e1fbb5d03e 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -65,11 +65,11 @@ struct ht16k33_fbdev {
+>  	uint32_t refresh_rate;
+>  	uint8_t *buffer;
+>  	uint8_t *cache;
+> -	struct delayed_work work;
+>  };
+> 
+>  struct ht16k33_priv {
+>  	struct i2c_client *client;
+> +	struct delayed_work work;
+>  	struct ht16k33_keypad keypad;
+>  	struct ht16k33_fbdev fbdev;
+>  };
+> @@ -117,7 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+>  {
+>  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> 
+> -	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
+> +	schedule_delayed_work(&priv->work, HZ / fbdev->refresh_rate);
+>  }
+> 
+>  /*
+> @@ -125,10 +125,9 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+>   */
+>  static void ht16k33_fb_update(struct work_struct *work)
+>  {
+> -	struct ht16k33_fbdev *fbdev =
+> -		container_of(work, struct ht16k33_fbdev, work.work);
+> -	struct ht16k33_priv *priv =
+> -		container_of(fbdev, struct ht16k33_priv, fbdev);
+> +	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
+> +						 work.work);
+> +	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> 
+>  	uint8_t *p1, *p2;
+>  	int len, pos = 0, first = -1;
+> @@ -462,7 +461,7 @@ static int ht16k33_probe(struct i2c_client *client)
+>  	}
+>  	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+> 
+> -	INIT_DELAYED_WORK(&fbdev->work, ht16k33_fb_update);
+> +	INIT_DELAYED_WORK(&priv->work, ht16k33_fb_update);
+>  	fbdev->info->fbops = &ht16k33_fb_ops;
+>  	fbdev->info->screen_base = (char __iomem *) fbdev->buffer;
+>  	fbdev->info->screen_size = HT16K33_FB_SIZE;
+> @@ -502,7 +501,7 @@ static int ht16k33_remove(struct i2c_client *client)
+>  	struct ht16k33_priv *priv = i2c_get_clientdata(client);
+>  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+> 
+> -	cancel_delayed_work_sync(&fbdev->work);
+> +	cancel_delayed_work_sync(&priv->work);
+>  	unregister_framebuffer(fbdev->info);
+>  	framebuffer_release(fbdev->info);
+>  	free_page((unsigned long) fbdev->buffer);
