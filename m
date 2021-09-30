@@ -2,161 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C53A41DED3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A58B41DED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350152AbhI3QXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        id S1350180AbhI3QXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350135AbhI3QXd (ORCPT
+        with ESMTP id S1350157AbhI3QXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:23:33 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC701C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:21:50 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b192-20020a1c1bc9000000b0030cfaf18864so4759461wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:21:50 -0700 (PDT)
+        Thu, 30 Sep 2021 12:23:44 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046FEC06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:02 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id b6so7567668ilv.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=s2jn0lHPoLf1efAId8/3xsFPAH4SRq6lPWCxoD2a7Hg=;
-        b=nT6xrtibbxoYL66l6K6RhKbR7Qo67poQMUKio8scg8uJ92UJAusGxziakAJVB97fiE
-         8Hp6S8h+HsyZWMl4yrRys7CmumNWur062havALobVkIJuUJbdPIG6e7gr5SjXX7hLIhi
-         BL/5315OxdwWCL0aiYgANIjPuuyTQEMph2yLVzvZRk6CYpwW4pnl2twc0Aq63SUfu01/
-         N4khHhOANTTB2CHSfwB4ln/QLyYp6PXdH1NeEUBRdc0VHns5BMHbAuyHGnd82RwKmO4a
-         /MChGL9V+jXiVOloXH9wmxVlnsZulxbsDft+CQHlI3U2ZYN0bg4GjWimRYK0xznPcSYQ
-         OyEg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=epvV5OFxtWVaDKtxvaeP7rQzmrodzb860ily1GpnXVI=;
+        b=QjTmiIvRctqbY2MexuHHlGMtimOLqNFtG4VIVF01zB/LjbMtvnAm2N5o8Du2mWQS/S
+         LhnA34O0uAoeBoW3Y3lAYNPM/fK+25pYdG4Mjb/CThFOo7nXZmO4ky/MaLF1qFtBMbTJ
+         eND4RpLjQbASu+FzknZQQZc6A0pK8xBd0+iKo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=s2jn0lHPoLf1efAId8/3xsFPAH4SRq6lPWCxoD2a7Hg=;
-        b=vXjwES/DT8uXBNMI8LJDQD0NeQG/YIlD3qpWIWMcg8rTujJRxaY0jKcnmiz3nlWlwu
-         8OslF9Y2OaRN09mjwO/KOPQ47HWpMbUEksmX8CB4JdJEwP1qkOyZpciyFCpPv0PIyOT1
-         2Oix+605cB1tv278WAj+hD7nM62ySoiC4On2gQ5lzELi9dw2qq76yc7lF4CJULpjmNtF
-         XtNQlKBM58mq96b7/lPDzBaEFjf07ZxkDaS8Tv+HIhik1iUYGLKTeoroYAYDUdnu6CCH
-         w7RWf7RHQPVfMg+1DrV173hOq+M4HHc3CvWr1xsIC3aPUHCkbk7PxApGNDz3gfXnlqj+
-         dOkQ==
-X-Gm-Message-State: AOAM530aygUw4h6HjSJ1LYHfcKqeW8xoT5qSRhebeZwbqfSvNa1ob1IL
-        3xmp/+Qxs1omf2uuRBJVWltNXA==
-X-Google-Smtp-Source: ABdhPJxHo0kOUudQzwQSczt5IszTLeG7ot0KKPieImTMoPm6UwTfFAbyfy8S/9gWifGjvL7Mlbh+cg==
-X-Received: by 2002:a1c:1d89:: with SMTP id d131mr154415wmd.10.1633018909320;
-        Thu, 30 Sep 2021 09:21:49 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id x10sm1781527wmk.42.2021.09.30.09.21.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 09:21:48 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 17:21:46 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <YVXkGiwAV3kGiBd3@google.com>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <YVWCK5QO331rfhJJ@google.com>
- <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com>
- <YVWwBz8jrznqXah4@google.com>
- <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com>
- <YVW7xoHaLdGHBoEQ@google.com>
- <CAMuHMdU_dbQYHF=8uOZ3e_v4+Li0bHfQABdLVSpJJPG4XkwhZw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=epvV5OFxtWVaDKtxvaeP7rQzmrodzb860ily1GpnXVI=;
+        b=tRLxqp0jiWBPU5GSgbDIO3YGefRsDy6fRz3p/ucjpDo5RzPlz0i/O+GnC65uDl1sb5
+         pVYcdI2HbOHlq3nnBBnUz4UuSUTRyrPoP5qFOfFA+48u7qcAQG+rmah59PnR7hyg3boo
+         WrbfHFY14iSU3YKbsCody+MtcYQHbnFKFONKxV7KFMmhfRCgcQcVLYsxXfolbgCxHXuw
+         wnJf9FXmNry/XKwbD/3gEFdGiIHlxHdMvWS/1m2ph09k4AXIP1u7t7DO15Xursiptofq
+         zzvFmif4L6kZ84c2kkVwJtMR6kvNU3+an2Jmv8SGzmCa8Ol1xINzMXpKCLasoSZ9w5vI
+         xo3w==
+X-Gm-Message-State: AOAM5313hYfv8oscEZCjCyOf+zO3WvgdwRGULsT6dMB7HtgH3990vJyc
+        tdG7NIGr+2HC7r8iVrVgcwPR5ASyqdGfEw==
+X-Google-Smtp-Source: ABdhPJxgV0elfPL1EZOibraiEZfBSwAtBdgrE2gPBsoFxPAKxj7zrEf9s/Hj/Ci9EnmQS/AKUm6SvA==
+X-Received: by 2002:a92:d84f:: with SMTP id h15mr4811947ilq.42.1633018921324;
+        Thu, 30 Sep 2021 09:22:01 -0700 (PDT)
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
+        by smtp.gmail.com with ESMTPSA id v17sm2047262ilo.1.2021.09.30.09.22.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 09:22:00 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id b10so8309144ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:22:00 -0700 (PDT)
+X-Received: by 2002:a05:6638:268c:: with SMTP id o12mr5760073jat.54.1633018920055;
+ Thu, 30 Sep 2021 09:22:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdU_dbQYHF=8uOZ3e_v4+Li0bHfQABdLVSpJJPG4XkwhZw@mail.gmail.com>
+References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+ <20210929173343.v2.3.I630340a51130f4582dbe14e42f673b74e0531a2b@changeid> <CAE-0n53EBvKv-RdMwiiOsUkb+LOKAKwrpP7cDavx4meA2vbvcA@mail.gmail.com>
+In-Reply-To: <CAE-0n53EBvKv-RdMwiiOsUkb+LOKAKwrpP7cDavx4meA2vbvcA@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 30 Sep 2021 09:21:48 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XoOhSNP2EXurkA=G9iG2BnH9VzkvSEiNJ8W71s8N9bgg@mail.gmail.com>
+Message-ID: <CAD=FV=XoOhSNP2EXurkA=G9iG2BnH9VzkvSEiNJ8W71s8N9bgg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: sc7180: Support Parade ps8640 edp bridge
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+Hi,
 
-> Hi Lee,
-> 
-> On Thu, Sep 30, 2021 at 3:29 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > > On 30/09/2021 14:39, Lee Jones wrote:
-> > > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > > >> On 30/09/2021 11:23, Lee Jones wrote:
-> > > >>> [0] Full disclosure: part of my role at Linaro is to keep the Android
-> > > >>> kernel running as close to Mainline as possible and encourage/push the
-> > > >>> upstream-first mantra, hence my involvement with this and other sets.
-> > > >>> I assure you all intentions are good and honourable.  If you haven't
-> > > >>> already seen it, please see Todd's most recent update on the goals and
-> > > >>> status of GKI:
-> > > >>>
-> > > >>>   Article: https://tinyurl.com/saaen3sp
-> > > >>>   Video:   https://youtu.be/O_lCFGinFPM
-> > > >>>
-> > > >>
-> > > >> Side topic, why this patchset is in your scope or Will's/Google's scope?
-> > > >> Just drop it from Android main kernel, it will not be your problem. I
-> > > >> mean, really, you don't need this patchset in your tree at all. The only
-> > > >> platform which needs it, the only platform which will loose something
-> > > >> will be one specific vendor. Therefore this will be an incentive for
-> > > >> them to join both discussions and upstream development. :)
-> > > >
-> > > > How would they fix this besides upstreaming support for unreleased
-> > > > work-in-progress H/W?
-> > > >
-> > > > Haven't I explained this several times already? :)
-> > >
-> > > Either that way or the same as Will's doing but that's not my question.
-> > > I understand you flush the queue of your GKI patches to be closer to
-> > > upstream. Reduce the backlog/burden. you can achieve your goal by simply
-> > > dropping such patch and making it not your problem. :)
-> >
-> > git reset --hard mainline/master   # job done - tea break  :)
-> >
-> > Seriously though, we wish to encourage the use of GKI so all vendors
-> > can enjoy the benefits of more easily updateable/secure code-bases.
-> >
-> > I can't see how pushing back on seamlessly benign changes would
-> > benefit them or anyone else.
-> 
-> I like your wording ;-)
-> 
-> Indeed, seamlessly benign changes, which are (1) not tested, and (2)
-> some believed by the platform maintainer to break the platform.
-> What can possibly go wrong? ;-)
+On Wed, Sep 29, 2021 at 9:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> > +       pp3300_brij_ps8640: pp3300-brij-ps8640 {
+> > +               compatible = "regulator-fixed";
+> > +               status = "okay";
+> > +               regulator-name = "pp3300_brij_ps8640";
+> > +
+> > +               regulator-min-microvolt = <3300000>;
+> > +               regulator-max-microvolt = <3300000>;
+> > +
+> > +               gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
+>
+> Doesn't this need
+>
+>                 enable-active-high;
 
-William has already shown a willingness to test the series.
+Looks like it. Without that it looks like it assumes active low.
 
-There is already a downstream proof-of-concept of this working.
 
-I am hopeful. :)
+> > +
+> > +               pinctrl-names = "default";
+> > +               pinctrl-0 = <&en_pp3300_edp_brij_ps8640>;
+> > +
+> > +               vin-supply = <&pp3300_a>;
+> > +       };
+> > +};
+> > +
+> > +&dsi0_out {
+> > +       remote-endpoint = <&ps8640_in>;
+>
+> Should this also have data-lanes to be "complete"?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+That's still back in the main trogdor.dtsi, isn't it?
+
+
+> > +edp_brij_i2c: &i2c2 {
+> > +       status = "okay";
+> > +       clock-frequency = <400000>;
+> > +
+> > +       ps8640_bridge: edp-bridge@8 {
+>
+> Just bridge@8 to match ti bridge? Also, is the label used? If not
+> please drop it.
+
+I agree with Stephen about it being "bridge@8". Personally I don't
+mind labels like this even if they're not used since they don't hurt
+and it creates less churn to add them now, but I won't fight hard to
+keep them.
+
+
+> > +               aux_bus: aux-bus {
+>
+> Is this label used either?
+
+Yeah, I'd get rid of this one since there you didn't add it in the
+sn65dsi86 dtsi file and it seems exceedingly unlikely we'd need it for
+any reason.
+
+-Doug
