@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C444341D7DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC4341D7DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350072AbhI3Kg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:36:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:52078 "EHLO foss.arm.com"
+        id S1350074AbhI3Kg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:36:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:52086 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350045AbhI3KgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:36:20 -0400
+        id S1350067AbhI3KgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:36:24 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ACE6106F;
-        Thu, 30 Sep 2021 03:34:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03A81106F;
+        Thu, 30 Sep 2021 03:34:42 -0700 (PDT)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.73.203])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1E4F73F793;
-        Thu, 30 Sep 2021 03:34:34 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C96073F793;
+        Thu, 30 Sep 2021 03:34:38 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
         catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
         steven.price@arm.com, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC V3 06/13] arm64/mm: Add CONFIG_ARM64_PA_BITS_52_[LPA|LPA2]
-Date:   Thu, 30 Sep 2021 16:05:09 +0530
-Message-Id: <1632998116-11552-7-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC V3 07/13] arm64/mm: Add FEAT_LPA2 specific encoding
+Date:   Thu, 30 Sep 2021 16:05:10 +0530
+Message-Id: <1632998116-11552-8-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
 References: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
@@ -32,147 +32,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Going forward, CONFIG_ARM64_PA_BITS_52 could be enabled on a system via two
-different architecture features i.e FEAT_LPA for CONFIG_ARM64_64K_PAGES and
-FEAT_LPA2 for CONFIG_ARM64_[4K|16K]_PAGES. But CONFIG_ARM64_PA_BITS_52 is
-exclussively available on 64K page size config currently, which needs to be
-freed up for other page size configs to use when FEAT_LPA2 gets enabled.
-
-To achieve CONFIG_ARM64_PA_BITS_52 and CONFIG_ARM64_64K_PAGES decoupling,
-and also to reduce #ifdefs while navigating various page size configs, this
-adds two internal config options CONFIG_ARM64_PA_BITS_52_[LPA|LPA2]. While
-here it also converts existing 64K page size based FEAT_LPA implementations
-to use CONFIG_ARM64_PA_BITS_52_LPA. TTBR representation remains same for
-both FEAT_LPA and FEAT_LPA2. No functional change for 64K page size config.
+FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
+page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
+ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
+would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
+and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
+the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
+to accept a temporary variable and changes impacted call sites.
 
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/Kconfig                     |  7 +++++++
- arch/arm64/include/asm/assembler.h     | 12 ++++++------
- arch/arm64/include/asm/pgtable-hwdef.h |  7 ++++---
- arch/arm64/include/asm/pgtable.h       |  6 +++---
- arch/arm64/mm/pgd.c                    |  2 +-
- 5 files changed, 21 insertions(+), 13 deletions(-)
+ arch/arm64/include/asm/assembler.h     | 14 +++++++++++---
+ arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
+ arch/arm64/include/asm/pgtable.h       |  4 ++++
+ 3 files changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5c7ae4c..f58ef62 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -931,6 +931,12 @@ config ARM64_VA_BITS
- 	default 48 if ARM64_VA_BITS_48
- 	default 52 if ARM64_VA_BITS_52
- 
-+config ARM64_PA_BITS_52_LPA
-+	bool
-+
-+config ARM64_PA_BITS_52_LPA2
-+	bool
-+
- choice
- 	prompt "Physical address space size"
- 	default ARM64_PA_BITS_48
-@@ -945,6 +951,7 @@ config ARM64_PA_BITS_52
- 	bool "52-bit (ARMv8.2)"
- 	depends on ARM64_64K_PAGES
- 	depends on ARM64_PAN || !ARM64_SW_TTBR0_PAN
-+	select ARM64_PA_BITS_52_LPA if ARM64_64K_PAGES
- 	help
- 	  Enable support for a 52-bit physical address space, introduced as
- 	  part of the ARMv8.2-LPA extension.
 diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index e5b5d3a..3fbe04a 100644
+index 3fbe04a..c1543067 100644
 --- a/arch/arm64/include/asm/assembler.h
 +++ b/arch/arm64/include/asm/assembler.h
-@@ -621,26 +621,26 @@ alternative_endif
- 	.endm
- 
- 	.macro	phys_to_pte, pte, phys
--#ifdef CONFIG_ARM64_PA_BITS_52
-+#ifdef CONFIG_ARM64_PA_BITS_52_LPA
- 	/*
- 	 * We assume \phys is 64K aligned and this is guaranteed by only
- 	 * supporting this configuration with 64K pages.
+@@ -628,6 +628,10 @@ alternative_endif
  	 */
  	orr	\pte, \phys, \phys, lsr #36
  	and	\pte, \pte, #PTE_ADDR_MASK
--#else
-+#else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
++#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
++	orr	\pte, \phys, \phys, lsr #42
++	and	\pte, \pte, #PTE_ADDR_MASK | GENMASK(PAGE_SHIFT - 1, 10)
++	and	\pte, \pte, #~GENMASK(PAGE_SHIFT - 1, 10)
+ #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
  	mov	\pte, \phys
--#endif
-+#endif /* CONFIG_ARM64_PA_BITS_52_LPA */
- 	.endm
+ #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
+@@ -635,9 +639,13 @@ alternative_endif
  
  	.macro	pte_to_phys, phys, pte
--#ifdef CONFIG_ARM64_PA_BITS_52
-+#ifdef CONFIG_ARM64_PA_BITS_52_LPA
- 	ubfiz	\phys, \pte, #(48 - 16 - 12), #16
- 	bfxil	\phys, \pte, #16, #32
- 	lsl	\phys, \phys, #16
--#else
-+#else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+ #ifdef CONFIG_ARM64_PA_BITS_52_LPA
+-	ubfiz	\phys, \pte, #(48 - 16 - 12), #16
+-	bfxil	\phys, \pte, #16, #32
+-	lsl	\phys, \phys, #16
++	ubfiz	\phys, \pte, #(48 - PAGE_SHIFT - 12), #16
++	bfxil	\phys, \pte, #PAGE_SHIFT, #(48 - PAGE_SHIFT)
++	lsl	\phys, \phys, #PAGE_SHIFT
++#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
++	ubfiz	\phys, \pte, #(52 - PAGE_SHIFT - 10), #10
++	bfxil	\phys, \pte, #PAGE_SHIFT, #(50 - PAGE_SHIFT)
++	lsl	\phys, \phys, #PAGE_SHIFT
+ #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
  	and	\phys, \pte, #PTE_ADDR_MASK
--#endif
-+#endif /* CONFIG_ARM64_PA_BITS_52_LPA */
- 	.endm
- 
- /*
+ #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
 diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-index 1eb5574..f375bcf 100644
+index f375bcf..c815a85 100644
 --- a/arch/arm64/include/asm/pgtable-hwdef.h
 +++ b/arch/arm64/include/asm/pgtable-hwdef.h
-@@ -155,13 +155,14 @@
- #define PTE_PXN			(_AT(pteval_t, 1) << 53)	/* Privileged XN */
- #define PTE_UXN			(_AT(pteval_t, 1) << 54)	/* User XN */
- 
-+#ifdef CONFIG_ARM64_PA_BITS_52_LPA
+@@ -159,6 +159,10 @@
  #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
--#ifdef CONFIG_ARM64_PA_BITS_52
  #define PTE_ADDR_HIGH		(_AT(pteval_t, 0xf) << 12)
  #define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
--#else
-+#else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
-+#define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
++#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
++#define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (50 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
++#define PTE_ADDR_HIGH		(_AT(pteval_t, 0x3) << 8)
++#define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
+ #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
+ #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
  #define PTE_ADDR_MASK		PTE_ADDR_LOW
--#endif
-+#endif /* CONFIG_ARM64_PA_BITS_52_LPA */
- 
- /*
-  * AttrIndx[2:0] encoding (mapping attributes defined in the MAIR* registers).
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index dfa76af..09b081e 100644
+index 09b081e..9038d05 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -66,14 +66,14 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-  * Macros to convert between a physical address and its placement in a
-  * page table entry, taking care of 52-bit addresses.
-  */
--#ifdef CONFIG_ARM64_PA_BITS_52
-+#ifdef CONFIG_ARM64_PA_BITS_52_LPA
+@@ -70,6 +70,10 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
  #define __pte_to_phys(pte)	\
  	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
  #define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
--#else
-+#else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
++#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
++#define __pte_to_phys(pte)	\
++	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 42))
++#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 42)) & PTE_ADDR_MASK)
+ #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
  #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
  #define __phys_to_pte_val(phys)	(phys)
--#endif
-+#endif /* CONFIG_ARM64_PA_BITS_52_LPA */
- 
- #define pte_pfn(pte)		(__pte_to_phys(pte) >> PAGE_SHIFT)
- #define pfn_pte(pfn,prot)	\
-diff --git a/arch/arm64/mm/pgd.c b/arch/arm64/mm/pgd.c
-index 4a64089..090dfbe 100644
---- a/arch/arm64/mm/pgd.c
-+++ b/arch/arm64/mm/pgd.c
-@@ -40,7 +40,7 @@ void __init pgtable_cache_init(void)
- 	if (PGD_SIZE == PAGE_SIZE)
- 		return;
- 
--#ifdef CONFIG_ARM64_PA_BITS_52
-+#ifdef CONFIG_ARM64_PA_BITS_52_LPA
- 	/*
- 	 * With 52-bit physical addresses, the architecture requires the
- 	 * top-level table to be aligned to at least 64 bytes.
 -- 
 2.7.4
 
