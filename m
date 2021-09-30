@@ -2,97 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED59241D864
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B0C41D869
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350342AbhI3LHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S1350396AbhI3LIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350311AbhI3LHK (ORCPT
+        with ESMTP id S1350375AbhI3LIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:07:10 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B94C06176E;
-        Thu, 30 Sep 2021 04:05:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id b26so20760736edt.0;
-        Thu, 30 Sep 2021 04:05:27 -0700 (PDT)
+        Thu, 30 Sep 2021 07:08:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01916C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:06:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j5so18788565lfg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3Mqq1EJ2H9lT3Ci5TT8crEf2RCsTlu4B8737O9t40fk=;
-        b=ctXoSjBkvSIYNULZaa1/V0zomtPR9Dg6hGyso+EDovmgaYUAbYEJved1OfeTZDjx6r
-         jsoMIVFfzEgEXtg4ZDNQzkyDlcbUG2cXX28Oor5BNgfMVRzhkznGLlwUKyxC41i0rUlz
-         0qxCqfQm9eeFVI+qQbpRezTR8Zzw7pGb9cpBicROrwpunIC0ncneATZnp28rqnrvYiwA
-         DuLwhPNGZLnTczsAJbUljTCACCW6ADDdxDo9hhnSoHEZLZbp9S36tQaQeppsrDhKPzgI
-         u5iWrGW/oUQ8smSzPXPqamjbW8X8kmCFGoAnobN42fYwMX9AmjY8zJrUluzhcbpqtc93
-         fgjw==
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Hx1z0Pj0GS4/tUfd4pnSP67CAPCyRWqRNmIUPcowuII=;
+        b=OJ4uZsJwV182DcalBRZYBoqbUwKgzPLb3AvWlbx0nO9e5rIolS8SlVDutUiTeD1C/X
+         fS9bjA78G2HNmjq0+vZdZESEkSMR9lug5mBNuCKRaKwGV0LqTAkGHRiuHnsThS43TvD8
+         YoGUTl8edDquVLUToIqvF/573jxlP0yNvPrSL0BfP3V66/fQsx2JEQxR25WNl7F7ldPd
+         0cp/7NM8U+yV0emLsUOlUBtiIe0Nr9qNmHAKUEyaVrYGz5lbYwvv4uX+TDQbCFxxCsAv
+         /SPxyUEMSJwrPDXmuaWCxw5j2rqEIGkfU6w1wEnnbp1PlE0+J5TBJpa4Q4TkXJ1i8P4r
+         s83w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3Mqq1EJ2H9lT3Ci5TT8crEf2RCsTlu4B8737O9t40fk=;
-        b=H+IPqSzsuSCZxX9n7qZ+JeF6ar35jIuxcTvsmsobGXv32KBCqDqLDyHDWh0Z8ENnpK
-         Eg95f7pR6twMyRvmCMBvMyqAYdiQvWfrdgD8M7anmMHxX6DYe/ov5socHffPtQvddZAQ
-         0+L9i/PBIl+ZBoPFXyuHzcZ7w6BtBlWhoLVZ0WJojhoQsaU1pmn8sWri0ynYsgA9YU3Z
-         AFe1ewTKYsd1XDlhTi75pTd7K7IN3oNnbqG3DrONAa/VFSlqe9hCkBe4+Qg6/dVM5O1d
-         3kyNyyN2knAGBYa1PuVjv6L4ya0VzLhHfZk9YcGEdAVtnykNA2DpaTJS3I6hwdS+pcS7
-         GgYg==
-X-Gm-Message-State: AOAM5314jNkfb4vrlNAVxBHoFOb1hVkN7sGo1SUI1ivfjJIQ7fcGWvXY
-        f5cM451S4qa0c7vOWu8wzSM=
-X-Google-Smtp-Source: ABdhPJwn+zUQkIe2nFFlWlA6BpEh0kKo3gLy3lRh6spCZ8VNO5YuDcImrQXlufA2biBRs2ZX2uzc7w==
-X-Received: by 2002:a50:fa93:: with SMTP id w19mr6405648edr.365.1632999926386;
-        Thu, 30 Sep 2021 04:05:26 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id i2sm1305158edv.7.2021.09.30.04.05.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 04:05:26 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amitk@kernel.org, p.zabel@pengutronix.de, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: dts: fix resets in tsadc node for rk356x.dtsi
-Date:   Thu, 30 Sep 2021 13:05:17 +0200
-Message-Id: <20210930110517.14323-4-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210930110517.14323-1-jbx6244@gmail.com>
-References: <20210930110517.14323-1-jbx6244@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hx1z0Pj0GS4/tUfd4pnSP67CAPCyRWqRNmIUPcowuII=;
+        b=EWPu3XCJM75Gs4MMW6mS+l70cmvOTHi5Zrr1zGbJEK+GDpSn/zR7st8/Tc307t94pK
+         Oii1cjHYnZPXmOWQUrENkjQsWjXS9MjiJv96Gtzc21WKNqIm0op5MlU6EfyhHfvxhfn6
+         FB3nYlG6GZDpyMUeDYW7rrKxP/2nCmHLvkXMRF/d3DLsEYqL/lyJQOPrBElGNtrnwyKB
+         uLpd0FBZxXkMWkXdYQAjYbg/lExMu8e66LvTw0/iXpc/sNzx2QX96INXvMcLBfNiaTBS
+         I6+ofvehnK+uPJkhs1Q5D4/wEmXrewczD4gTQq5ejxDZ4o2yUTPQBEim0TcsjXMpB0uA
+         Wmwg==
+X-Gm-Message-State: AOAM533RcJzGLqHNHQ8oOhbF7Qa92KV9T3XUKlJ0y7JL6gPPBtOBkRZf
+        Zgj3XLjvdrZmUm/peOH63nGCGdv70HLujY1wLKu6GA==
+X-Google-Smtp-Source: ABdhPJxKPRxrbe5NsZ+oT2GuKcakf16+GbMKbAstyqKx6i7dnCgOjsjnMxJC7/+s61S9e60hDcCFzI+NqatuX6dwj8Y=
+X-Received: by 2002:ac2:4d99:: with SMTP id g25mr5255275lfe.175.1632999991335;
+ Thu, 30 Sep 2021 04:06:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
+ <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
+ <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com> <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+In-Reply-To: <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Thu, 30 Sep 2021 20:06:17 +0900
+Message-ID: <CANXvt5oZp=Ap3fEm4nsiP2WfG_c_8o57mN4+PHrQAGHcp-EH2A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the rockchip_thermal.c driver we now get the resets with
-a devm_reset_control_array_get() function, so remove
-the reset-names property as it is no longer needed.
-Although no longer required in rockchip-thermal.yaml
-sort tsadc-apb as first item.
+2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 16:23 Zhu Yanjun <zyjzyj2000@=
+gmail.com>:
+>
+> On Thu, Sep 30, 2021 at 2:58 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> >
+> > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyjzyj2=
+000@gmail.com>:
+> > >
+> > > On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > > >
+> > > > Implement a new provider method for dma-buf base memory registratio=
+n.
+> > > >
+> > > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > > > ---
+> > > >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
+> > > >  1 file changed, 21 insertions(+)
+> > > >
+> > > > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> > > > index 3c3ea8bb..84e00e60 100644
+> > > > --- a/providers/rxe/rxe.c
+> > > > +++ b/providers/rxe/rxe.c
+> > > > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd=
+ *pd, void *addr, size_t length,
+> > > >         return &vmr->ibv_mr;
+> > > >  }
+> > > >
+> > > > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_=
+t offset,
+> > > > +                                       size_t length, uint64_t iov=
+a, int fd,
+> > > > +                                       int access)
+> > > > +{
+> > > > +       struct verbs_mr *vmr;
+> > > > +       int ret;
+> > > > +
+> > > > +       vmr =3D malloc(sizeof(*vmr));
+> > > > +       if (!vmr)
+> > > > +               return NULL;
+> > > > +
+> > >
+> > > Do we need to set vmr to zero like the following?
+> > >
+> > > memset(vmr, 0, sizeof(*vmr));
+> > >
+> > > Zhu Yanjun
+> > Thank you for your quick response.
+> >
+> > I think it is better to clear the vmr. Actually the mlx5 driver allocat=
+es
+> > the vmr using calloc().
+> >
+> > In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the malloc
+> > and not clear the vmr. I think It has to be fixed too. Should I make
+> > another patch to fix this problem?
+>
+> Yes. Please.
+>
+> Zhu Yanjun
+>
+> >
+> > Thanks a lot.
+> > Shunsuke
+> >
+> > ~
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I looked into the vmr more, but there was no need to clear it. Moreover,
+some implementations also use malloc without memory clear.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index e42fbac61..d013348bc 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -838,9 +838,8 @@
- 		assigned-clock-rates = <17000000>, <700000>;
- 		clocks = <&cru CLK_TSADC>, <&cru PCLK_TSADC>;
- 		clock-names = "tsadc", "apb_pclk";
--		resets = <&cru SRST_TSADC>, <&cru SRST_P_TSADC>,
-+		resets = <&cru SRST_P_TSADC>, <&cru SRST_TSADC>,
- 			 <&cru SRST_TSADCPHY>;
--		reset-names = "tsadc", "tsadc-apb", "tsadc-phy";
- 		rockchip,grf = <&grf>;
- 		rockchip,hw-tshut-temp = <95000>;
- 		pinctrl-names = "init", "default", "sleep";
--- 
-2.20.1
-
+Thanks,
+Shunsuke
