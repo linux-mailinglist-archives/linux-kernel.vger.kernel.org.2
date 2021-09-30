@@ -2,169 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3909441DFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CC141DFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350395AbhI3RId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349021AbhI3RIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:08:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01C07617E6;
-        Thu, 30 Sep 2021 17:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633021609;
-        bh=qB28pyd3G9W1jKU1sJvEmXSTCB/fM9hWT/YO9coO46Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lD57I7buZC1D+E/nzOsGe0U6OnyD8kIUuCz9uhE3hVGiL5ivBjtmL2P/Nn7oFn8+A
-         VXrPZctdXHc0YQ1Tf3KPhhEsTj9EZhra5W8tNNXYZcYUC65XFTIFCR2Uz23fbx3wew
-         vW0IUupDXZrundBUHGdNgTD4y+nj69kh1XiadvJ+RF7V0qlKXy9p1qY5F/Boswqb9T
-         8TkWRFWlsqmJiH2FIGnVy30ojkH9FuZuK1q6/1GF9lRs0m2rDrskD8+arwKi/Tm9JS
-         IcZoholK/+5AHdWXzh16Ff5a7TEYZolj28BmojKYyw0oV3eB6hCkulag+JZD8mHy9X
-         9dBgrdTdFLtMA==
-Received: by pali.im (Postfix)
-        id A4204E79; Thu, 30 Sep 2021 19:06:46 +0200 (CEST)
-Date:   Thu, 30 Sep 2021 19:06:46 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v7 08/24] wfx: add bus_sdio.c
-Message-ID: <20210930170646.cffsuytdpa72izbh@pali>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20210920161136.2398632-9-Jerome.Pouiller@silabs.com>
- <CAPDyKFp2_41mScO=-Ev+kvYD5xjShQdLugU_2FTTmvzgCxmEWA@mail.gmail.com>
- <19731906.ZuIkq4dnIL@pc-42>
+        id S1349768AbhI3RLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344773AbhI3RLn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:11:43 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B34C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:10:01 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 24so8236374oix.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yQogwYZrvFu5Jfwlkrcfq3WvY8WdwXPWkmnjzSEdhJA=;
+        b=BnTi5yVXAfDjmWTBRPXF8NGo1YE+5AZtAQsVeFujbgn52DpBNG/u8BQCEA6yTZObMG
+         wehpKbgoGdQ9/QTuH+G5l39mHnrCNXaZC3HRFNjQuNBadU1z9yvSWHC06Gx7uhyZHMFc
+         mib9yjTtb6lr7ZhK1la1hOWvhyIRII+nMOl9PVfm9aUTXNvmW0hANEbfugTvEBEmSatI
+         xaTq4+hIWVdNRE4a/lKOUOeV8VynnBZxyRIZFtxa6m7GTlSsM8qRTDLXcILWujx6ipOb
+         JRUqVVydfpl1D/YwKGad+pUGCOBKPdk/EgzL3PB30/ZwSzU2g7QUYKe9HVgDJt3wcLmo
+         BDHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yQogwYZrvFu5Jfwlkrcfq3WvY8WdwXPWkmnjzSEdhJA=;
+        b=s7zMmeZIyW9m9A7euH768pQhp1Aq5FmG8zY+2uJgY31qjoC0luUpDgHIUuzmonOTmC
+         8AI8QjLIyA0pcnLO9a91koooyuB52qOBRWjuDtDzyQ71Dk84U+nY2xap9OWgtzJwqtOm
+         FLs6Y4up621Vj0X2s7gmjqrxg8c5vDspE9KU7byENoPKAlKCXt2mXO8CBZz78uacelqE
+         LDd160sy9rKWH6EZ9g+4xCVFRuSoiAW85LoQRYoThPMWC1UT1YeISUMnMo5JVHeVPQzj
+         gN//QS60eBMngdnDdI6Ocnf4ooc7LawbvJWlEXoVPKobjIT4+Ru7lLyPb7H+7dN9b/cE
+         SnwQ==
+X-Gm-Message-State: AOAM531TeDWTKdbeNBBFfr44lIvj3XQz8QBaMMm12B7jZk99lhom3Gb/
+        +Tgx7XMkfOOk1fSaa8BwwufabD7jK99C2oZf2E4=
+X-Google-Smtp-Source: ABdhPJyRKPsrHxUPVPxsmZJBSYdQhA0oY4DyYGw0Ib3s43wNku5L4chLBN6tFR9C67rUuP9Cv4X16bsCZ1CgRYrsJxc=
+X-Received: by 2002:aca:706:: with SMTP id 6mr283505oih.5.1633021800478; Thu,
+ 30 Sep 2021 10:10:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <19731906.ZuIkq4dnIL@pc-42>
-User-Agent: NeoMutt/20180716
+References: <20210930162302.2344542-1-nathan@kernel.org>
+In-Reply-To: <20210930162302.2344542-1-nathan@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 30 Sep 2021 13:09:49 -0400
+Message-ID: <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 30 September 2021 18:51:09 Jérôme Pouiller wrote:
-> Hello Ulf,
-> 
-> On Thursday 30 September 2021 12:07:55 CEST Ulf Hansson wrote:
-> > On Mon, 20 Sept 2021 at 18:12, Jerome Pouiller
-> > <Jerome.Pouiller@silabs.com> wrote:
-> > >
-> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > >
-> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > > ---
-> > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 261 +++++++++++++++++++++
-> > >  1 file changed, 261 insertions(+)
-> > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > >
-> > > diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > 
-> > [...]
-> > 
-> > > +
-> > > +static int wfx_sdio_probe(struct sdio_func *func,
-> > > +                         const struct sdio_device_id *id)
-> > > +{
-> > > +       struct device_node *np = func->dev.of_node;
-> > > +       struct wfx_sdio_priv *bus;
-> > > +       int ret;
-> > > +
-> > > +       if (func->num != 1) {
-> > > +               dev_err(&func->dev, "SDIO function number is %d while it should always be 1 (unsupported chip?)\n",
-> > > +                       func->num);
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       bus = devm_kzalloc(&func->dev, sizeof(*bus), GFP_KERNEL);
-> > > +       if (!bus)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       if (!np || !of_match_node(wfx_sdio_of_match, np)) {
-> > > +               dev_warn(&func->dev, "no compatible device found in DT\n");
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       bus->func = func;
-> > > +       bus->of_irq = irq_of_parse_and_map(np, 0);
-> > > +       sdio_set_drvdata(func, bus);
-> > > +       func->card->quirks |= MMC_QUIRK_LENIENT_FN0 |
-> > > +                             MMC_QUIRK_BLKSZ_FOR_BYTE_MODE |
-> > > +                             MMC_QUIRK_BROKEN_BYTE_MODE_512;
-> > 
-> > I would rather see that you add an SDIO_FIXUP for the SDIO card, to
-> > the sdio_fixup_methods[], in drivers/mmc/core/quirks.h, instead of
-> > this.
-> 
-> In the current patch, these quirks are applied only if the device appears
-> in the device tree (see the condition above). If I implement them in
-> drivers/mmc/core/quirks.h they will be applied as soon as the device is
-> detected. Is it what we want?
-> 
-> Note: we already have had a discussion about the strange VID/PID declared
-> by this device:
->   https://www.spinics.net/lists/netdev/msg692577.html
+Applied.  Thanks!
 
-Yes, vendor id 0x0000 is invalid per SDIO spec. So based on this vendor
-id, it is not possible to write any quirk in mmc/sdio generic code.
+Alex
 
-Ulf, but maybe it could be possible to write quirk based on OF
-compatible string?
-
-Jérôme, could you please notify your hw departement that this sdio card
-does not comply with SDIO spec due to incorrect vendor id stored in hw,
-so they could fix this issue in next product, by proper allocation of
-vendor id number from USB-IF (*)? I know that for existing products it
-is not possible to fix, but it can be fixed in next generation of
-products based on used SDIO IP.
-
-(*) - USB-IF really allocates SDIO vendor ids, see:
-https://lore.kernel.org/linux-mmc/20210607140216.64iuprp3siggslrk@pali/
-
-> 
-> [...]
-> > > +
-> > > +static const struct sdio_device_id wfx_sdio_ids[] = {
-> > > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200) },
-> > > +       { },
-> > > +};
-> > > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
-> > > +
-> > > +struct sdio_driver wfx_sdio_driver = {
-> > > +       .name = "wfx-sdio",
-> > > +       .id_table = wfx_sdio_ids,
-> > > +       .probe = wfx_sdio_probe,
-> > > +       .remove = wfx_sdio_remove,
-> > > +       .drv = {
-> > > +               .owner = THIS_MODULE,
-> > > +               .of_match_table = wfx_sdio_of_match,
-> > 
-> > Is there no power management? Or do you intend to add that on top?
-> 
-> It seems we already have had this discussion:
-> 
->   https://lore.kernel.org/netdev/CAPDyKFqJf=vUqpQg3suDCadKrFTkQWFTY_qp=+yDK=_Lu9gJGg@mail.gmail.com/#r
-> 
-> In this thread, Kalle said:
-> > Many mac80211 drivers do so that the device is powered off during
-> > interface down (ifconfig wlan0 down), and as mac80211 does interface
-> > down automatically during suspend, suspend then works without extra
-> > handlers.
-> 
-> 
-> -- 
-> Jérôme Pouiller
-> 
-> 
+On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Clang warns:
+>
+> drivers/gpu/drm/amd/amdgpu/../display/dc/dcn201/dcn201_resource.c:1017:10: error: expression which evaluates to zero treated as a null pointer constant of type 'struct pipe_ctx *' [-Werror,-Wnon-literal-null-conversion]
+>                 return false;
+>                        ^~~~~
+> 1 error generated.
+>
+> Use NULL instead of false since the function is returning a pointer
+> rather than a boolean.
+>
+> Fixes: ff7e396f822f ("drm/amd/display: add cyan_skillfish display support")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1470
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
+> index aec276e1db65..8523a048e6f6 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_resource.c
+> @@ -1014,7 +1014,7 @@ static struct pipe_ctx *dcn201_acquire_idle_pipe_for_layer(
+>                 ASSERT(0);
+>
+>         if (!idle_pipe)
+> -               return false;
+> +               return NULL;
+>
+>         idle_pipe->stream = head_pipe->stream;
+>         idle_pipe->stream_res.tg = head_pipe->stream_res.tg;
+>
+> base-commit: b47b99e30cca8906753c83205e8c6179045dd725
+> --
+> 2.33.0.591.gddb1055343
+>
