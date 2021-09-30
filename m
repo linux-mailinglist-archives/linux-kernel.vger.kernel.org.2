@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA98141DDD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73E741DDDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345855AbhI3PpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:45:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13607 "EHLO mga09.intel.com"
+        id S1345978AbhI3Ppb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:45:31 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:37122 "EHLO mengyan1223.wang"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344638AbhI3Po7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:44:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225255777"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="225255777"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:43:16 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="709134016"
-Received: from kjepstei-mobl.amr.corp.intel.com (HELO ldmartin-desk2) ([10.212.192.243])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:43:15 -0700
-Date:   Thu, 30 Sep 2021 08:43:15 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v2 2/3] drm/i915/utils: do not depend on config being
- defined
-Message-ID: <20210930154315.xb43gowfhmxucsm4@ldmartin-desk2>
-X-Patchwork-Hint: comment
-References: <20210929183357.1490204-1-lucas.demarchi@intel.com>
- <20210929183357.1490204-3-lucas.demarchi@intel.com>
- <2dd723c8-6aed-857c-23f3-d0381fcb52c2@arm.com>
+        id S1344638AbhI3Pp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:45:29 -0400
+Received: from localhost.localdomain (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id 17F2F659C3;
+        Thu, 30 Sep 2021 11:43:42 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1633016626;
+        bh=FMs1Fhsw2K98QlB0rPqFFGEgdRlNdvHCn8NhtpKTEws=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=yravmq85GEczVyiyS3kw3UN/+Os3oI44etkXNZCUyWBj1JxkGv8jPUO1MWKB6VW/e
+         ba6Ld7lEMYQgXkoI63CEYMwmU06pRyRo+O32o3MrnBska6Dk71DgncIDjgtimFlUiG
+         5ybkPVFjcJbvUi4LK3RuW9ykdPQLWmCeiFC2KlO5plwKpAZK0XpCUPHmXD5ke9XMFz
+         EShRwWetuxhyWCyuGaoBtpUFoz+QrLAkp9WxhiU9LBm1Q3E4Upx75r2kIl8ojMQ3Vy
+         CgZhLCA5S/iN5hi9r7x2L2qpozMnViR+tqMmheuWgdw8uQw0SlXNU9MtkEatYWUAB0
+         B9rBoeWMRiZ2Q==
+Message-ID: <f6fc1fa8bf4decf97d76900a64fe0bc2bf25576d.camel@mengyan1223.wang>
+Subject: Re: [PATCH V4 19/22] LoongArch: Add VDSO and VSYSCALL support
+From:   Xi Ruoyao <xry111@mengyan1223.wang>
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Date:   Thu, 30 Sep 2021 23:43:41 +0800
+In-Reply-To: <20210927064300.624279-20-chenhuacai@loongson.cn>
+References: <20210927064300.624279-1-chenhuacai@loongson.cn>
+         <20210927064300.624279-20-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <2dd723c8-6aed-857c-23f3-d0381fcb52c2@arm.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:00:06AM +0100, Steven Price wrote:
->On 29/09/2021 19:33, Lucas De Marchi wrote:
->> Like the IS_ENABLED() counterpart, we can make IS_CONFIG_NONZERO() to
->> return the right thing when the config is not defined rather than a
->> build error, with the limitation that it can't be used on preprocessor
->> context.
->>
->> The trick here is that macro names can't start with a number or dash, so
->> we stringify the argument and check that the first char is a number != 0
->> (or starting with a dash to cover negative numbers). Except for -O0
->> builds the strings are all eliminated.
->>
->> Taking CONFIG_DRM_I915_REQUEST_TIMEOUT in
->> drivers/gpu/drm/i915/gem/i915_gem_context.c as example, we have the
->> following output of the preprocessor:
->>
->> old:
->>  if (((20000) != 0) &&
->> new:
->>  if (( ("20000"[0] > '0' && "20000"[0] < '9') || "20000"[0] == '-' ) &&
->>
->> New one looks worse, but is also eliminated from the object:
->>
->> $ size drivers/gpu/drm/i915/gem/i915_gem_context.o.*
->>    text    data     bss     dec     hex filename
->>   52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.new
->>   52021    1070     232   53323    d04b drivers/gpu/drm/i915/gem/i915_gem_context.o.old
->>
->> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
->> ---
->>  drivers/gpu/drm/i915/i915_utils.h | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
->> index 02bbfa4d68d3..436ce612c46a 100644
->> --- a/drivers/gpu/drm/i915/i915_utils.h
->> +++ b/drivers/gpu/drm/i915/i915_utils.h
->> @@ -28,6 +28,7 @@
->>  #include <linux/list.h>
->>  #include <linux/overflow.h>
->>  #include <linux/sched.h>
->> +#include <linux/stringify.h>
->>  #include <linux/types.h>
->>  #include <linux/workqueue.h>
->>
->> @@ -469,6 +470,9 @@ static inline bool timer_expired(const struct timer_list *t)
->>   *
->>   * Returns 0 if @config is 0, 1 if set to any value.
->>   */
->> -#define IS_CONFIG_NONZERO(config) ((config) != 0)
->> +#define IS_CONFIG_NONZERO(config) (						\
->> +	(__stringify_1(config)[0] > '0' && __stringify_1(config)[0] < '9') ||	\
->
->Shouldn't this be "<= '9'". Otherwise numbers starting with a 9 are not
->"non zero".
+On Mon, 2021-09-27 at 14:42 +0800, Huacai Chen wrote:
+> diff --git a/arch/loongarch/vdso/gen_vdso_offsets.sh
+> b/arch/loongarch/vdso/gen_vdso_offsets.sh
+> new file mode 100755
+> index 000000000000..7da255fea213
+> --- /dev/null
+> +++ b/arch/loongarch/vdso/gen_vdso_offsets.sh
+> @@ -0,0 +1,14 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +#
+> +# Derived from RISC-V and ARM64:
+> +# Author: Will Deacon <will.deacon@arm.com>
+> +#
+> +# Match symbols in the DSO that look like VDSO_*; produce a header
+> file
+> +# of constant offsets into the shared object.
+> +#
+> +
+> +LC_ALL=C
 
-yes! thanks for catching it. However from the other discussion it seems
-we can either
+I'm wondering whether this line is really useful... There is no "export"
+here so the variable won't be passed to the environment of the sed
+command below.
 
-a) just remove the macro, or
-b) use the simpler version that doesn't cover undefined values
-
-I will investigate those options.
-
-Lucas De Marchi
+> +sed -n -e 's/^00*/0/' -e \
+> +'s/^\([0-9a-fA-F]*\) . VDSO_\([a-zA-Z0-9_]*\)$/\#define
+> vdso_offset_\2\t0x\1/p'
