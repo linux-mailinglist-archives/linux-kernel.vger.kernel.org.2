@@ -2,154 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7917141DA36
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890F441DA3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351109AbhI3Mts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351063AbhI3Mtl (ORCPT
+        id S1351113AbhI3Mvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:51:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43032 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350997AbhI3Mvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:49:41 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30181C06176E
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:47:59 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id d26so9849959wrb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jQcb/IRMulWTMVpLN7/tTW0JOEcywHbsCrqDEOi1tes=;
-        b=YciORU29ZLiM3+rVUPyXHQ/8jB28s1o/9oUDvkyfz5GDf+e9xhFV7JeHUgmjYxXHSL
-         fZL7VzoVijF/ZysR1BzWIU9+EsUSVjhDNhBbs8K75x2G+e/Ua+OzUhje3IJkab4RJF/b
-         2Wj6+P/HBT7whH6TTLSEDgC+28U2SxY8yrUdAohzBjOol2v4ap4D5QRNhb4cXINdH6jb
-         ZbGbPo/eatNtfPE1nbbZ9Hfw2GJuSEPeuC/Vis5sLjRvVocs5D2KBxG6Ek6rFDD9iAyk
-         eF8BBC+g66Vt5hSQs0mGUGSfSbqoFTtqBXQ4bDutWP9w9td99kj+qE594JunsF0UuI3P
-         njRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jQcb/IRMulWTMVpLN7/tTW0JOEcywHbsCrqDEOi1tes=;
-        b=mqP+mmqpDpzrhSDEerlhbpQE7UjSI3hi1gqpvwehVo6GvVR3tJ+KqEpnANw98fQvOa
-         LMrL1qnbCWsSxJJj3XQ3x4vPp2FnDeAFQNbFkHp/n3KLJOWri4qCOEbckSDQlgdF8J6A
-         tXA5yHRKtI/MbT9VJi3eCtXGlyfuUB7evvJ5gyppzYu7vf+R6FsqVzRq0jTRqLOtMVBq
-         T7KmfdYWU7xY0bHU3n58WCFe0/6n2HBrKLb8k8h/uvE9GpjBK61Wt7sjdv5gRfnAbbeV
-         /iyMTO5g55vWPlKCi7RyOLawZH7QdsJfh8rQZufBldaH2keATKWVyPHQEyVMwuTU0IEN
-         WEGg==
-X-Gm-Message-State: AOAM531cfEFEbcSKLFKv51ibKGd+1Amm531W/RA1YcJ/roPZZeTj0ouI
-        J1pfwrTiBqZiFYAgT0Q+89RkoA==
-X-Google-Smtp-Source: ABdhPJwnejh6dcPEIzPH5qBtw9qE77SEtnm6HLAZlJZXDYk4sIFKXEk4qno2ugj5odIXtRGh9o+kAA==
-X-Received: by 2002:a5d:6b46:: with SMTP id x6mr5972981wrw.192.1633006077728;
-        Thu, 30 Sep 2021 05:47:57 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id t16sm5222171wmi.33.2021.09.30.05.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 05:47:57 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 13:47:55 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 10/12] mfd: dt-bindings: samsung,s5m8767: document buck
- and LDO supplies
-Message-ID: <YVWx+08egbGPiYYt@google.com>
-References: <20210928084949.27939-1-krzysztof.kozlowski@canonical.com>
- <20210928084949.27939-11-krzysztof.kozlowski@canonical.com>
+        Thu, 30 Sep 2021 08:51:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633006207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GL+i3XbXI56oQyuB6S2B9CHfMMTgl5hMmQ3V5SEVJeY=;
+        b=ilfEIlzPQ4D+mcARmgQzKEoNenVcvnu5wYiSoch63z9b4MjNsKzpECrPJJBPHPpcRtA2XN
+        3F3Df2w02nyC6loyRpNBiU+WLuOhG1NJgPPX7PUsBeBVdn/qfhjp/TJ6e2DuPU/IaZw65p
+        iDhDcluXc1/OSJkWD+5JUvxDCzQWLSw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-dDb09p5ON36r0bQfFcmMxQ-1; Thu, 30 Sep 2021 08:49:17 -0400
+X-MC-Unique: dDb09p5ON36r0bQfFcmMxQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6E5469723;
+        Thu, 30 Sep 2021 12:49:15 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-72.pek2.redhat.com [10.72.12.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 73C415F4E1;
+        Thu, 30 Sep 2021 12:49:06 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 20:49:02 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        Coiby Xu <coxu@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] kexec, KEYS: make the code in bzImage64_verify_sig
+ public
+Message-ID: <YVWyPu3pDvnEfATe@dhcp-128-65.nay.redhat.com>
+References: <20210927005004.36367-1-coiby.xu@gmail.com>
+ <20210927005004.36367-2-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210928084949.27939-11-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210927005004.36367-2-coiby.xu@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021, Krzysztof Kozlowski wrote:
-
-> Document the properties with regulator supplies for bucks and LDOs.  At
-> least one board uses it (Exynos5250 Arndale).
+Hi Coiby,
+On 09/27/21 at 08:50am, Coiby Xu wrote:
+> From: Coiby Xu <coxu@redhat.com>
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> The code in bzImage64_verify_sig could make use of system keyrings including
+> .buitin_trusted_keys, .secondary_trusted_keys and .platform keyring to verify
+> signed kernel image as PE file. Move it to a public function.
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 > ---
->  .../bindings/mfd/samsung,s5m8767.yaml         | 38 +++++++++++++++++++
->  1 file changed, 38 insertions(+)
-
-These all need Rob's Ack.
-
-But can you start with reworking the subject line please.
-
-It should be:
-
-  "dt-bindings: mfd: <component>: <Subject starting with an uppercase char>"
-
-> diff --git a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-> index 35018346f68b..e97a94cab4e8 100644
-> --- a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
-> @@ -96,6 +96,44 @@ properties:
->      description: |
->        GPIO specifiers for three host gpio's used for dvs.
+>  arch/x86/kernel/kexec-bzimage64.c | 13 +------------
+>  include/linux/kexec.h             |  3 +++
+>  kernel/kexec_file.c               | 15 +++++++++++++++
+>  3 files changed, 19 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+> index 170d0fd68b1f..4136dd3be5a9 100644
+> --- a/arch/x86/kernel/kexec-bzimage64.c
+> +++ b/arch/x86/kernel/kexec-bzimage64.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/mm.h>
+>  #include <linux/efi.h>
+> -#include <linux/verification.h>
 >  
-> +  vinb1-supply:
-> +    description: Power supply for buck1
-> +  vinb2-supply:
-> +    description: Power supply for buck1
-> +  vinb3-supply:
-> +    description: Power supply for buck1
-> +  vinb4-supply:
-> +    description: Power supply for buck1
-> +  vinb5-supply:
-> +    description: Power supply for buck1
-> +  vinb6-supply:
-> +    description: Power supply for buck1
-> +  vinb7-supply:
-> +    description: Power supply for buck1
-> +  vinb8-supply:
-> +    description: Power supply for buck1
-> +  vinb9-supply:
-> +    description: Power supply for buck1
-> +
-> +  vinl1-supply:
-> +    description: Power supply for LDO3, LDO10, LDO26, LDO27
-> +  vinl2-supply:
-> +    description: Power supply for LDO13, LDO16, LDO25, LDO28
-> +  vinl3-supply:
-> +    description: Power supply for LDO11, LDO14
-> +  vinl4-supply:
-> +    description: Power supply for LDO4, LDO9
-> +  vinl5-supply:
-> +    description: Power supply for LDO12, LDO17, LDO19, LDO23
-> +  vinl6-supply:
-> +    description: Power supply for LDO18, LDO20, LDO21, LDO24
-> +  vinl7-supply:
-> +    description: Power supply for LDO5, LDO22
-> +  vinl8-supply:
-> +    description: Power supply for LDO1, LDO6, LDO7, LDO8, LDO15
-> +  vinl9-supply:
-> +    description: Power supply for LDO2
-> +
->    wakeup-source: true
+>  #include <asm/bootparam.h>
+>  #include <asm/setup.h>
+> @@ -531,17 +530,7 @@ static int bzImage64_cleanup(void *loader_data)
+>  #ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
+>  static int bzImage64_verify_sig(const char *kernel, unsigned long kernel_len)
+>  {
+> -	int ret;
+> -
+> -	ret = verify_pefile_signature(kernel, kernel_len,
+> -				      VERIFY_USE_SECONDARY_KEYRING,
+> -				      VERIFYING_KEXEC_PE_SIGNATURE);
+> -	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+> -		ret = verify_pefile_signature(kernel, kernel_len,
+> -					      VERIFY_USE_PLATFORM_KEYRING,
+> -					      VERIFYING_KEXEC_PE_SIGNATURE);
+> -	}
+> -	return ret;
+> +	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
+>  }
+>  #endif
 >  
->  required:
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 0c994ae37729..d45f32336dbe 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -19,6 +19,7 @@
+>  #include <asm/io.h>
+>  
+>  #include <uapi/linux/kexec.h>
+> +#include <linux/verification.h>
+>  
+>  #ifdef CONFIG_KEXEC_CORE
+>  #include <linux/list.h>
+> @@ -199,6 +200,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
+>  #ifdef CONFIG_KEXEC_SIG
+>  int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>  				 unsigned long buf_len);
+> +int arch_kexec_kernel_verify_pe_sig(const char *kernel,
+> +				    unsigned long kernel_len);
+>  #endif
+>  int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
+>  
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index 33400ff051a8..85ed6984ad8f 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -106,6 +106,21 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>  {
+>  	return kexec_image_verify_sig_default(image, buf, buf_len);
+>  }
+> +
+> +int arch_kexec_kernel_verify_pe_sig(const char *kernel, unsigned long kernel_len)
+> +{
+> +	int ret;
+> +
+> +	ret = verify_pefile_signature(kernel, kernel_len,
+> +				      VERIFY_USE_SECONDARY_KEYRING,
+> +				      VERIFYING_KEXEC_PE_SIGNATURE);
+> +	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+> +		ret = verify_pefile_signature(kernel, kernel_len,
+> +					      VERIFY_USE_PLATFORM_KEYRING,
+> +					      VERIFYING_KEXEC_PE_SIGNATURE);
+> +	}
+> +	return ret;
+> +}
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Since the function is moved as generic code, the kconfig option
+CONFIG_KEXEC_BZIMAGE_VERIFY_SIG can be removed.
+
+Instead a CONFIG_KEXEC_PEFILE_VERIFY_SIG can be added so that it does
+not need to be compiled for only platform which support UEFI pefile
+signature verification.  And the related arch kexec_file kconfig can
+just select it.
+
+Coiby, can you try above?
+
+>  #endif
+>  
+>  /*
+> -- 
+> 2.33.0
+> 
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
+> 
+
+Thanks
+Dave
+
