@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC0041D8AA
+	by mail.lfdr.de (Postfix) with ESMTP id B88AE41D8AB
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350451AbhI3L1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
+        id S1350472AbhI3L1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350431AbhI3L1M (ORCPT
+        with ESMTP id S1350444AbhI3L1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:27:12 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84493C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:29 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b20so24022277lfv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:29 -0700 (PDT)
+        Thu, 30 Sep 2021 07:27:15 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DC4C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:32 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u18so23835109lfd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ke+BZ+t9vF4CFbEDSnpC2W+EYJHQEFl6kKpmD6g3eV4=;
-        b=oyKPw1V9o9B7Wi1y655+90c7jwR37EqU3ZowZR3HqqKiu5GuCjyIx8VArNgqFZ1SQj
-         DXQLvA08h4KAOJp66yetZPTyJmgByquxJkKHb/+4CsVhx8hws1w7klbIN8HFEgIZmVjE
-         Wx+B2ECH9XBVpj2odxok8g1842irYIik4LsfT+ABocLh1T8Fk2PO+8ytakEtisN8bssG
-         OB59Tgl07rr8yzbHxkloCbnVTrd+2TkQLNEXbz6g3gPQuUd1gXca3CLO2ZFC/gdGsu7/
-         rW3vNF+b26ggrUz6o/P0gf9d5XWVCHYOWc+tKqx+utl8do32t1VtrL2aoplkkuYXijgS
-         8V+g==
+        bh=yuWajK2Vii41SiDlh9TTWWF0mw4w25Q0O4RAtrkwQRE=;
+        b=tFDH3e22bxO1f/FW2NFzaUcXTUhaogzBYzqVOQueZE9qXFWpZLs6dUg5VihT5BeeIC
+         X/8HCmmgjGub64eLEQ5+ZARJyMSbSZC2Xnm4Mq458PK7jNkIdqOiNao9PY7x7dSFte1a
+         8VcZ/33yci0z0aBUq5zryWBCGaUmefCgCBB/JLNGdvtR/7hlFIhcMSoUm8vQyT2gkVjZ
+         /OInZhBmO2vZhOiHnVzSh76Y3898705zSEQe5wS/q1s12bFjVqS8UoWblw/RvKKfPe2d
+         Bd/NTjGbEB4SzyWZoRmC4vEm3C5ELdEozRiSO2naa/iC2J3XylmE2xtPSR7btOwwqpw3
+         IPhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ke+BZ+t9vF4CFbEDSnpC2W+EYJHQEFl6kKpmD6g3eV4=;
-        b=42MM54NzrB/otfqXVrtzxQ+F8Msn5V7pU8GUYN65Y94oDbfmgC+GHsl/o/LR/UbmiH
-         YOGW9ubUwgobo++zQ3wpHrqOfofVEkPpmYt+p1zSXeiDKiKORx6RAxSuQsHwqanVUmE+
-         fEMlHrh94yolBkl+Yg9irKCXXUNDgG7pJ5v6/BTw1CIXe7bwAQv5ceVOwQoY7ilTC5Pr
-         3a31CYvZQSnCwcOmBdk/K5FNCr1+DEqKx9xAsR1pBFrUjc5xLm3dU6kvv2HLQp6TQQ2a
-         TEmhwaG7gA81mOTIkgscicKHgBgxvT7Cxbxn9fWEmWIEwjXIf0ewP2vJ+riRDLv4zLdk
-         wYNA==
-X-Gm-Message-State: AOAM533UcIwbbjdP8jNSt6wAC8FP4THNt0HKo+YtCgk3uw1RKpUCR2t6
-        oteWrOMKIjv6BA1IiMv8puYEmp+AH4nCF+Vwgqm3PohRtH8=
-X-Google-Smtp-Source: ABdhPJxPxKxrGrD/Gw8CRTBdOkQyaLCrwNtl/ZXD361kWQl5ZgdQbzfUJ0tW5GADs8knmpWWQeEwUNwRT/VMoI9aVAM=
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr5427673lfb.71.1633001127934;
- Thu, 30 Sep 2021 04:25:27 -0700 (PDT)
+        bh=yuWajK2Vii41SiDlh9TTWWF0mw4w25Q0O4RAtrkwQRE=;
+        b=KeZjeQi5YUegmAxhZT3v6pz27D9Zb5Cbcir8tvH6QmYzkLTaAahxe0XYnXf8FMFEkV
+         Y675rTlytZWDmkLd023rTUt55N+1xV4cGA3pt+sHXmHESUVwoTg1pEHKT7kIdk7KKU9/
+         dSgTl6J3qOLgEnCyteUlJV+fse1wLjLE6/gfX28jAazcn9s8av78tLGLHsJColWszWHq
+         Zxo1jZReUSn2AlXR/vCtpAX0lvhzjI9HJxgmhpsXs/Dg42LMK2FTtMH2wQ0d3lArbdIY
+         QqeWslBOV0BKsfZdvc0RmhjR24bd0aG1QpnQKzBpEsKtn8U+kU5Ge92mn7WK1pVr9Bqh
+         o6QA==
+X-Gm-Message-State: AOAM533nx9IKoSO0dqWL3/U6e0dbB5OArJrx+xzEMQjvoD5i7bwbSMPA
+        /KHq6DeJGbo2N9WAz38g7Nkdq4KoMcNqKmsW+F64emLLx3w=
+X-Google-Smtp-Source: ABdhPJyPFP3Fvxf55MEWXbcgZbyXPCmbmefXEfcokkOYmtHBZ6fdxo0S9lTY6Wvb5Xoeb3x/hORezmvGdDeSzBYzXfQ=
+X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr5594997ljn.463.1633001131038;
+ Thu, 30 Sep 2021 04:25:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929111757.52625-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210929111757.52625-1-andriy.shevchenko@linux.intel.com>
+References: <20210929111757.52625-1-andriy.shevchenko@linux.intel.com> <20210929111757.52625-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210929111757.52625-2-andriy.shevchenko@linux.intel.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 30 Sep 2021 13:24:51 +0200
-Message-ID: <CAPDyKFrRC4Q4v+rZVVEaj3zdYdMGoO=WnLAocHnaJWk96zxmtg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mmc: slot-gpio: Refactor mmc_gpio_alloc()
+Date:   Thu, 30 Sep 2021 13:24:54 +0200
+Message-ID: <CAPDyKFr+Y-fjKvjOg_W=+hHPABTHdApZ8=WWwXn6gQy0tn6+bQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: slot-gpio: Update default label when no
+ con_id provided
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
@@ -62,8 +63,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Wed, 29 Sept 2021 at 13:17, Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 >
-> Refactor mmc_gpio_alloc() to drop unneeded indentation level
-> and double condition. This increases readability of the code.
+> Currently default label of GPIO is assigned to the device name,
+> when no con_id provided. Instead, let's update it to reflect
+> what it's about (use already prepared template).
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
@@ -74,55 +76,35 @@ Uffe
 
 
 > ---
->  drivers/mmc/core/slot-gpio.c | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
+>  drivers/mmc/core/slot-gpio.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
 > diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
-> index 05e907451df9..e365d328f43c 100644
+> index e365d328f43c..dd2a4b6ab6ad 100644
 > --- a/drivers/mmc/core/slot-gpio.c
 > +++ b/drivers/mmc/core/slot-gpio.c
-> @@ -39,24 +39,24 @@ static irqreturn_t mmc_gpio_cd_irqt(int irq, void *dev_id)
+> @@ -178,6 +178,10 @@ int mmc_gpiod_request_cd(struct mmc_host *host, const char *con_id,
+>         if (IS_ERR(desc))
+>                 return PTR_ERR(desc);
 >
->  int mmc_gpio_alloc(struct mmc_host *host)
->  {
-> -       struct mmc_gpio *ctx = devm_kzalloc(host->parent,
-> -                                           sizeof(*ctx), GFP_KERNEL);
-> -
-> -       if (ctx) {
-> -               ctx->cd_debounce_delay_ms = 200;
-> -               ctx->cd_label = devm_kasprintf(host->parent, GFP_KERNEL,
-> -                               "%s cd", dev_name(host->parent));
-> -               if (!ctx->cd_label)
-> -                       return -ENOMEM;
-> -               ctx->ro_label = devm_kasprintf(host->parent, GFP_KERNEL,
-> -                               "%s ro", dev_name(host->parent));
-> -               if (!ctx->ro_label)
-> -                       return -ENOMEM;
-> -               host->slot.handler_priv = ctx;
-> -               host->slot.cd_irq = -EINVAL;
-> -       }
-> +       const char *devname = dev_name(host->parent);
-> +       struct mmc_gpio *ctx;
+> +       /* Update default label if no con_id provided */
+> +       if (!con_id)
+> +               gpiod_set_consumer_name(desc, ctx->cd_label);
 > +
-> +       ctx = devm_kzalloc(host->parent, sizeof(*ctx), GFP_KERNEL);
-> +       if (!ctx)
-> +               return -ENOMEM;
+>         if (debounce) {
+>                 ret = gpiod_set_debounce(desc, debounce);
+>                 if (ret < 0)
+> @@ -226,6 +230,10 @@ int mmc_gpiod_request_ro(struct mmc_host *host, const char *con_id,
+>         if (IS_ERR(desc))
+>                 return PTR_ERR(desc);
+>
+> +       /* Update default label if no con_id provided */
+> +       if (!con_id)
+> +               gpiod_set_consumer_name(desc, ctx->ro_label);
 > +
-> +       ctx->cd_debounce_delay_ms = 200;
-> +       ctx->cd_label = devm_kasprintf(host->parent, GFP_KERNEL, "%s cd", devname);
-> +       if (!ctx->cd_label)
-> +               return -ENOMEM;
-> +       ctx->ro_label = devm_kasprintf(host->parent, GFP_KERNEL, "%s ro", devname);
-> +       if (!ctx->ro_label)
-> +               return -ENOMEM;
-> +       host->slot.handler_priv = ctx;
-> +       host->slot.cd_irq = -EINVAL;
->
-> -       return ctx ? 0 : -ENOMEM;
-> +       return 0;
->  }
->
->  int mmc_gpio_get_ro(struct mmc_host *host)
+>         if (debounce) {
+>                 ret = gpiod_set_debounce(desc, debounce);
+>                 if (ret < 0)
 > --
 > 2.33.0
 >
