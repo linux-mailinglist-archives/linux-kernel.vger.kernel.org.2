@@ -2,287 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD5641E353
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2066D41E356
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349841AbhI3VZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
+        id S245358AbhI3V0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349844AbhI3VZH (ORCPT
+        with ESMTP id S239542AbhI3V0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:25:07 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BECC06176F
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:23:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so10472019yba.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:23:24 -0700 (PDT)
+        Thu, 30 Sep 2021 17:26:43 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8481C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:25:00 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso2476869wma.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=UjO0qfZl4lNdUd4h5vIafSHB+z3WAy5EBdv+I+4Y+ZY=;
-        b=NwuarFTQoOfHoDeTi+T72vz5pPPePDKc9XoOvHlF3UtqrcWcq/q4zZpM9lyS9Dlvzs
-         TDWAzKLsIqRyzDiC80gjehJ1c3jkH0Rp/76tPNGNrRsROUR6aItI+jWag7kVz2hf8lXM
-         89gjvFOzpkmUhKvmIGNiD2lX1alvv/LXDEXmnfI6zmACXz8tr6d5xocMf6/fg+7IZUI6
-         YJynVNW1ymb1mMfmCCim0mtKOP13wyRX1K+fJGasZWuTRBl86+XRyoqzjbaxOw6/W4ZA
-         LpsFDih4sVtkpTTF7XcBvYGehyRz6yQI2ZdZw9TzhNXiofpVcpK/m/7kKXKkDHk0je3N
-         MYQQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FttxoUmTGZqK8PzCdxay9BYvxmAzHNrF7lkmGzarzCY=;
+        b=njxNcCgjyJQUMrrZRbJiu4qjthHCE/FIowDL5hOf20zwioPiL+Kay3WRwdFuOy5sRM
+         cVnM/19xvaZMY2Mt3iYhMU8yKx4hQN4HcqdOkp2NUI32lBjUbKrgeX2C1w5yhmwnQ6Yr
+         NIucB+Yw82guAGarydkwH+87yVfZtlTJGvQjHfL/MHubD2WSN2gRA+aBOyVTzLGgQBSl
+         POrGXq9WV1KTJkdPmR1iM0ihNSE3qlWvmah2N9sCzzJKv8eQx9cSxj4kbUNAZwhXhWh8
+         fzzhl5C/wI3xpDCKi7mPo6N2rJKTch0nkTgl38Rh565G1a7e6rh1OTs08lK+iDfYIxn2
+         zK8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UjO0qfZl4lNdUd4h5vIafSHB+z3WAy5EBdv+I+4Y+ZY=;
-        b=Nh4HW6Wg1qvcAI8iS83w3HSx+vN2BuY+E0vm+ZlR72hZSRoC+YN+UiRQc+M4xxuVVk
-         fo41xBHwMQ+hOratXBP5BbyMAIhetL+MFEaP/YcmtrXBfqYb+r38Gd37UiIf4USbKzJg
-         LtIkxNevYOJv2D7xwR+7O5fEp6aCw5red6rChT7/u+6R8EjCPw0/qDonY/wjOp2Rul1e
-         RWuciZKLSbkJi8Ev8XHnXYPn/aj9ClHsx+Ca/5Kp7kvbASMptqW0ffAtV5pL572i55A3
-         38nOPBWctPN1tTo4SF6+mBVRrsDYM7ZBgwYxxam6wvZLlmCnt3Gw7pOkVjla2nbUUyBr
-         86Zw==
-X-Gm-Message-State: AOAM532CAyVhgKWnoYvHvaBowmEaTImZiWlEqiamsWKUNef7FeoBDEs7
-        YjXXwlWLuXPD3hQOcu51cq2KWKEchY4Z62jsID50
-X-Google-Smtp-Source: ABdhPJwUW2K57dvjts7mcKwjlfEPksJiGD50c7w8aBNiDKCiLJOXQKw/OsBEXOhZjEve/HLM7Ff5UwDrF+MYno8HeNIG
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:fa06:3b29:d3c:37e6])
- (user=axelrasmussen job=sendgmr) by 2002:a25:47d6:: with SMTP id
- u205mr766836yba.193.1633037003842; Thu, 30 Sep 2021 14:23:23 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 14:23:09 -0700
-In-Reply-To: <20210930212309.4001967-1-axelrasmussen@google.com>
-Message-Id: <20210930212309.4001967-4-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210930212309.4001967-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v2 3/3] userfaultfd/selftests: fix calculation of expected ioctls
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FttxoUmTGZqK8PzCdxay9BYvxmAzHNrF7lkmGzarzCY=;
+        b=YiA5oTo1n1fKklL+Mcz9JxNx7S2UiGv3pNcvXrzKhK9/IuIXxiGVFGz+w7haGddjY1
+         de3FdERTTZDOdFnL8mt06xjoeXWZMWuxQr03cZRKPJ71btZ28imKdhe4pIbVDNuAir+D
+         QKTQqw0jPO+G8mRpJF1dd7UtqkF3PCzDSDnZikyekP2AJpdYC8Zb7mAsOjXf9WJ2XEKW
+         8KypjBQWfTs4aLxESExl6J3kf1yH0E8xxv/a45Z1uKiSwYzajB7HzawMZzVxzyrj57bW
+         JJMyk+aRJCbNGnjVjwGUDE56EmCSQu5FPDUzLOGlPpXUHA2OYLKEPfqG8s8pwkHnDxXZ
+         PRpg==
+X-Gm-Message-State: AOAM531Gh/M1Svx2/Un1rI2nZu+vxtkijSUUb4zTDs/r//bdQWG9kZzp
+        ah1dd1IkC637jZN0pxczL+s=
+X-Google-Smtp-Source: ABdhPJxjifCgfgKQ8tqrkbM+P7BJCC84Al1vDEVZT1tXPJAEeGUp9hlyxqR+ZGc4QWiKwxxmTtg90A==
+X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr1206072wmq.128.1633037099136;
+        Thu, 30 Sep 2021 14:24:59 -0700 (PDT)
+Received: from localhost.localdomain ([197.49.49.194])
+        by smtp.googlemail.com with ESMTPSA id f19sm4055478wmf.11.2021.09.30.14.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 14:24:58 -0700 (PDT)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: 9p: cache.h: cleanup some format warning
+Date:   Thu, 30 Sep 2021 23:24:54 +0200
+Message-Id: <20210930212455.30047-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today, we assert that the ioctls the kernel reports as supported for a
-registration match a precomputed list. We decide which ioctls are
-supported by examining the memory type. Then, in several locations we
-"fix up" this list by adding or removing things this initial decision
-got wrong.
+Warnings found by checkpatch.pl
 
-What ioctls the kernel reports is actually a function of several things:
-- The memory type
-- Kernel feature support (e.g., no writeprotect on aarch64)
-- The registration type (e.g., CONTINUE only supported for MINOR mode)
-
-So, we can't fully compute this at the start, in set_test_type. It
-varies per test, depending on what registration mode(s) those tests use.
-
-Instead, introduce a new function which computes the correct list. This
-centralizes the add/remove of ioctls depending on these function inputs
-in one place, so we don't have to repeat ourselves in various tests.
-
-Not only is the resulting code a bit shorter, but it fixes a real bug in
-the existing code: previously, we would incorrectly require the
-writeprotect ioctl to be present on aarch64, where it isn't actually
-supported.
-
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 ---
- tools/testing/selftests/vm/userfaultfd.c | 77 ++++++++++++------------
- 1 file changed, 38 insertions(+), 39 deletions(-)
+ fs/9p/cache.h | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 00d1b7555865..2348b6371ec8 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -308,37 +308,24 @@ static void shmem_alias_mapping(__u64 *start, size_t len, unsigned long offset)
+diff --git a/fs/9p/cache.h b/fs/9p/cache.h
+index 00f107af443e..14fd222352f3 100644
+--- a/fs/9p/cache.h
++++ b/fs/9p/cache.h
+@@ -34,7 +34,7 @@ extern int __v9fs_readpage_from_fscache(struct inode *inode,
+ extern int __v9fs_readpages_from_fscache(struct inode *inode,
+ 					 struct address_space *mapping,
+ 					 struct list_head *pages,
+-					 unsigned *nr_pages);
++					 unsigned int *nr_pages);
+ extern void __v9fs_readpage_to_fscache(struct inode *inode, struct page *page);
+ extern void __v9fs_fscache_wait_on_page_write(struct inode *inode,
+ 					      struct page *page);
+@@ -59,7 +59,7 @@ static inline int v9fs_readpage_from_fscache(struct inode *inode,
+ static inline int v9fs_readpages_from_fscache(struct inode *inode,
+ 					      struct address_space *mapping,
+ 					      struct list_head *pages,
+-					      unsigned *nr_pages)
++					      unsigned int *nr_pages)
+ {
+ 	return __v9fs_readpages_from_fscache(inode, mapping, pages,
+ 					     nr_pages);
+@@ -75,6 +75,7 @@ static inline void v9fs_readpage_to_fscache(struct inode *inode,
+ static inline void v9fs_uncache_page(struct inode *inode, struct page *page)
+ {
+ 	struct v9fs_inode *v9inode = V9FS_I(inode);
++
+ 	fscache_uncache_page(v9inode->fscache, page);
+ 	BUG_ON(PageFsCache(page));
  }
- 
- struct uffd_test_ops {
--	unsigned long expected_ioctls;
- 	void (*allocate_area)(void **alloc_area);
- 	void (*release_pages)(char *rel_area);
- 	void (*alias_mapping)(__u64 *start, size_t len, unsigned long offset);
- };
- 
--#define SHMEM_EXPECTED_IOCTLS		((1 << _UFFDIO_WAKE) | \
--					 (1 << _UFFDIO_COPY) | \
--					 (1 << _UFFDIO_ZEROPAGE))
--
--#define ANON_EXPECTED_IOCTLS		((1 << _UFFDIO_WAKE) | \
--					 (1 << _UFFDIO_COPY) | \
--					 (1 << _UFFDIO_ZEROPAGE) | \
--					 (1 << _UFFDIO_WRITEPROTECT))
--
- static struct uffd_test_ops anon_uffd_test_ops = {
--	.expected_ioctls = ANON_EXPECTED_IOCTLS,
- 	.allocate_area	= anon_allocate_area,
- 	.release_pages	= anon_release_pages,
- 	.alias_mapping = noop_alias_mapping,
- };
- 
- static struct uffd_test_ops shmem_uffd_test_ops = {
--	.expected_ioctls = SHMEM_EXPECTED_IOCTLS,
- 	.allocate_area	= shmem_allocate_area,
- 	.release_pages	= shmem_release_pages,
- 	.alias_mapping = shmem_alias_mapping,
- };
- 
- static struct uffd_test_ops hugetlb_uffd_test_ops = {
--	.expected_ioctls = UFFD_API_RANGE_IOCTLS_BASIC & ~(1 << _UFFDIO_CONTINUE),
- 	.allocate_area	= hugetlb_allocate_area,
- 	.release_pages	= hugetlb_release_pages,
- 	.alias_mapping = hugetlb_alias_mapping,
-@@ -356,6 +343,33 @@ static inline uint64_t uffd_minor_feature(void)
- 		return 0;
+@@ -115,7 +116,7 @@ static inline int v9fs_readpage_from_fscache(struct inode *inode,
+ static inline int v9fs_readpages_from_fscache(struct inode *inode,
+ 					      struct address_space *mapping,
+ 					      struct list_head *pages,
+-					      unsigned *nr_pages)
++					      unsigned int *nr_pages)
+ {
+ 	return -ENOBUFS;
  }
+@@ -129,9 +130,7 @@ static inline void v9fs_uncache_page(struct inode *inode, struct page *page)
  
-+static uint64_t get_expected_ioctls(uint64_t mode)
-+{
-+	uint64_t ioctls = UFFD_API_RANGE_IOCTLS;
-+
-+	if (test_type == TEST_HUGETLB)
-+		ioctls &= ~(1 << _UFFDIO_ZEROPAGE);
-+
-+	if (!((mode & UFFDIO_REGISTER_MODE_WP) && test_uffdio_wp))
-+		ioctls &= ~(1 << _UFFDIO_WRITEPROTECT);
-+
-+	if (!((mode & UFFDIO_REGISTER_MODE_MINOR) && test_uffdio_minor))
-+		ioctls &= ~(1 << _UFFDIO_CONTINUE);
-+
-+	return ioctls;
-+}
-+
-+static void assert_expected_ioctls_present(uint64_t mode, uint64_t ioctls)
-+{
-+	uint64_t expected = get_expected_ioctls(mode);
-+	uint64_t actual = ioctls & expected;
-+
-+	if (actual != expected) {
-+		err("missing ioctl(s): expected %"PRIx64" actual: %"PRIx64,
-+		    expected, actual);
-+	}
-+}
-+
- static void userfaultfd_open(uint64_t *features)
- {
- 	struct uffdio_api uffdio_api;
-@@ -1000,11 +1014,9 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
- {
- 	struct uffdio_zeropage uffdio_zeropage;
- 	int ret;
--	unsigned long has_zeropage;
-+	bool has_zeropage = get_expected_ioctls(0) & (1 << _UFFDIO_ZEROPAGE);
- 	__s64 res;
+ static inline void v9fs_fscache_wait_on_page_write(struct inode *inode,
+ 						   struct page *page)
+-{
+-	return;
+-}
++{}
  
--	has_zeropage = uffd_test_ops->expected_ioctls & (1 << _UFFDIO_ZEROPAGE);
--
- 	if (offset >= nr_pages * page_size)
- 		err("unexpected offset %lu", offset);
- 	uffdio_zeropage.range.start = (unsigned long) area_dst + offset;
-@@ -1044,7 +1056,6 @@ static int uffdio_zeropage(int ufd, unsigned long offset)
- static int userfaultfd_zeropage_test(void)
- {
- 	struct uffdio_register uffdio_register;
--	unsigned long expected_ioctls;
- 
- 	printf("testing UFFDIO_ZEROPAGE: ");
- 	fflush(stdout);
-@@ -1059,9 +1070,8 @@ static int userfaultfd_zeropage_test(void)
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
- 		err("register failure");
- 
--	expected_ioctls = uffd_test_ops->expected_ioctls;
--	if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls)
--		err("unexpected missing ioctl for anon memory");
-+	assert_expected_ioctls_present(
-+		uffdio_register.mode, uffdio_register.ioctls);
- 
- 	if (uffdio_zeropage(uffd, 0))
- 		if (my_bcmp(area_dst, zeropage, page_size))
-@@ -1074,7 +1084,6 @@ static int userfaultfd_zeropage_test(void)
- static int userfaultfd_events_test(void)
- {
- 	struct uffdio_register uffdio_register;
--	unsigned long expected_ioctls;
- 	pthread_t uffd_mon;
- 	int err, features;
- 	pid_t pid;
-@@ -1098,9 +1107,8 @@ static int userfaultfd_events_test(void)
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
- 		err("register failure");
- 
--	expected_ioctls = uffd_test_ops->expected_ioctls;
--	if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls)
--		err("unexpected missing ioctl for anon memory");
-+	assert_expected_ioctls_present(
-+		uffdio_register.mode, uffdio_register.ioctls);
- 
- 	if (pthread_create(&uffd_mon, &attr, uffd_poll_thread, &stats))
- 		err("uffd_poll_thread create");
-@@ -1128,7 +1136,6 @@ static int userfaultfd_events_test(void)
- static int userfaultfd_sig_test(void)
- {
- 	struct uffdio_register uffdio_register;
--	unsigned long expected_ioctls;
- 	unsigned long userfaults;
- 	pthread_t uffd_mon;
- 	int err, features;
-@@ -1152,9 +1159,8 @@ static int userfaultfd_sig_test(void)
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
- 		err("register failure");
- 
--	expected_ioctls = uffd_test_ops->expected_ioctls;
--	if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls)
--		err("unexpected missing ioctl for anon memory");
-+	assert_expected_ioctls_present(
-+		uffdio_register.mode, uffdio_register.ioctls);
- 
- 	if (faulting_process(1))
- 		err("faulting process failed");
-@@ -1189,7 +1195,6 @@ static int userfaultfd_sig_test(void)
- static int userfaultfd_minor_test(void)
- {
- 	struct uffdio_register uffdio_register;
--	unsigned long expected_ioctls;
- 	unsigned long p;
- 	pthread_t uffd_mon;
- 	uint8_t expected_byte;
-@@ -1211,10 +1216,8 @@ static int userfaultfd_minor_test(void)
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
- 		err("register failure");
- 
--	expected_ioctls = uffd_test_ops->expected_ioctls;
--	expected_ioctls |= 1 << _UFFDIO_CONTINUE;
--	if ((uffdio_register.ioctls & expected_ioctls) != expected_ioctls)
--		err("unexpected missing ioctl(s)");
-+	assert_expected_ioctls_present(
-+		uffdio_register.mode, uffdio_register.ioctls);
- 
- 	/*
- 	 * After registering with UFFD, populate the non-UFFD-registered side of
-@@ -1411,8 +1414,6 @@ static int userfaultfd_stress(void)
- 	pthread_attr_setstacksize(&attr, 16*1024*1024);
- 
- 	while (bounces--) {
--		unsigned long expected_ioctls;
--
- 		printf("bounces: %d, mode:", bounces);
- 		if (bounces & BOUNCE_RANDOM)
- 			printf(" rnd");
-@@ -1440,10 +1441,8 @@ static int userfaultfd_stress(void)
- 			uffdio_register.mode |= UFFDIO_REGISTER_MODE_WP;
- 		if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register))
- 			err("register failure");
--		expected_ioctls = uffd_test_ops->expected_ioctls;
--		if ((uffdio_register.ioctls & expected_ioctls) !=
--		    expected_ioctls)
--			err("unexpected missing ioctl for anon memory");
-+		assert_expected_ioctls_present(
-+			uffdio_register.mode, uffdio_register.ioctls);
- 
- 		if (area_dst_alias) {
- 			uffdio_register.range.start = (unsigned long)
+ #endif /* CONFIG_9P_FSCACHE */
+ #endif /* _9P_CACHE_H */
 -- 
-2.33.0.800.g4c38ced690-goog
+2.25.1
 
