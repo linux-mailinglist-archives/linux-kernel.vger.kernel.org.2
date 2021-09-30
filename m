@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014D741E0E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A901C41E101
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353386AbhI3STk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:19:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353361AbhI3STg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D872619F6;
-        Thu, 30 Sep 2021 18:17:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633025873;
-        bh=4RQ1qh5PQ7XM7RwFtMMOsRZbOrpcEDqV2LixdSXaqaQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NcMcIOIVUYpLNdjieMCxW9vTCZQkAPA1RTJIT+vAMSCii54OoZLqYFL1QDtG400Da
-         s1rb2RbSVw3N8vQgqrk/0btNwqIT/wGpQFKpotYEeOFivMbN57aHGYp59s/ZtUZ0B2
-         sEskWcLRzTHv8tV4HNUM78y9tmMYtnd2aFLP3bAwS3A2EOnpe85/Dk9m0LW1/mE9xx
-         HTdCrrVQMghy4IKs6ixn+TxCODgibDVhBc/li+66lPTKhmxrY6BAdDussWa3ADpa6O
-         kRbyhUNjbH15m6SuxTOL5moe0FCYOKWEsRiGk+e/r962eb4Ts6SqpIcfm8E+9yzsHw
-         dCTbPDWB35JZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0E6EA5C0433; Thu, 30 Sep 2021 11:17:53 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:17:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        id S1351192AbhI3SWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350998AbhI3SWT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:22:19 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0FFC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:20:36 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so128737pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rRzmSQnYKN75Gg93YuIv+rBGX5i47OpZAXZvIJOPAT0=;
+        b=lEQ8DLBf3vFDxlv1guB97pybHM/E5OgqqY7s5GW48JHxOcQmMFcVANRfaTHTtWIF9Y
+         9kRwW6x+vjlSmmTqC0Stb7CrJ/tg3DjlMrf5MAtA7cjscqC+AIUITJ17K3S1fLhd9/Xb
+         H6Q003Tl/g15SHWxlAxw0KfC0GrYBfK6GsZ94=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rRzmSQnYKN75Gg93YuIv+rBGX5i47OpZAXZvIJOPAT0=;
+        b=SeyNojFWkiz+9wj4H4Oa3ZiIcQTmoq0BJMN51LxOwe8zriMoywDJkFf/V58SIabZ4X
+         MSZtmfd8lQt9HuI9BPGiWyu8DNF5EU8nhxv9KqBjtWfuM2zB0f1k0LTveVaWLCeG7iME
+         6r6aKv6XQ4OWLqSXCrCLFmNO1v3eMHZgsJJWnylcD/Ek0n3uyXi1O7BbDgV0xyUkR3Qn
+         mP3IlrgLUauFu0RaLdkr5pcdz4G3RxQtOXF2d/jaPXn5pTWvUEP0XpRZvY+soa4aEOfa
+         uz+mQlfewOx1xC6NymRPTSDPCV7AASp9sDJsFUFQHjM41vRPjJGLbyzeAri04/r21Z/+
+         EXOQ==
+X-Gm-Message-State: AOAM532mYgcifjzwtzkd5ALB2wOn1ysD634aHwPbMCncucqcCdDQ6UJG
+        AsRZdoXGLG9HDMWkBQPNe48YoA==
+X-Google-Smtp-Source: ABdhPJyimYmtoacGEdurWEUSpaz+kvhw5xhIwlnWJodE7rV8ATefMii0ooqe8fOMpyVb9+6sAe5Wrw==
+X-Received: by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP id s2-20020a17090302c2b02901019c88d928mr5409323plk.62.1633026036390;
+        Thu, 30 Sep 2021 11:20:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l10sm3720957pff.119.2021.09.30.11.20.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 11:20:35 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:20:34 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Anvin <hpa@zytor.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, mpe@ellerman.id.au
-Subject: Re: [PATCH] tools/memory-model: Provide extra ordering for
- unlock+lock pair on the same CPU
-Message-ID: <20210930181753.GH880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210930130823.2103688-1-boqun.feng@gmail.com>
- <20210930152033.GD464826@rowland.harvard.edu>
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will.deacon@arm.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+Message-ID: <202109301120.B7B8F3F8A@keescook>
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <323d0784-249d-7fef-6c60-e8426d35b083@intel.com>
+ <202109291229.C64A1D9D@keescook>
+ <cf6ada34-9854-b7ad-f671-52186da5abd0@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930152033.GD464826@rowland.harvard.edu>
+In-Reply-To: <cf6ada34-9854-b7ad-f671-52186da5abd0@linux.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:20:33AM -0400, Alan Stern wrote:
-> On Thu, Sep 30, 2021 at 09:08:23PM +0800, Boqun Feng wrote:
-> > A recent discussion[1] shows that we are in favor of strengthening the
-> > ordering of unlock + lock on the same CPU: a unlock and a po-after lock
-> > should provide the so-called RCtso ordering, that is a memory access S
-> > po-before the unlock should be ordered against a memory access R
-> > po-after the lock, unless S is a store and R is a load.
-> > 
-> > The strengthening meets programmers' expection that "sequence of two
-> > locked regions to be ordered wrt each other" (from Linus), and can
-> > reduce the mental burden when using locks. Therefore add it in LKMM.
-> > 
-> > [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
-> > 
-> > Co-developed-by: Alan Stern <stern@rowland.harvard.edu>
-> > Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> > Alan,
-> > 
-> > I added the "Co-developed-by" and "Signed-off-by" tags since most of the
-> > work is done by you. Feel free to let me know if you want to change
-> > anything.
+On Thu, Sep 30, 2021 at 04:55:37PM +0300, Alexander Popov wrote:
+> The kernel can hit warning and omit calling __warn() that prints the message.
+> But pkill_on_warn action should be taken each time.
 > 
-> It looks good to me.  However, do we really want to add these litmus
-> tests to the kernel source, or would it be better to keep them with
-> the thousands of other tests in Paul's archives?
+> As I can understand now, include/asm-generic/bug.h defines three warning
+> implementations:
+>  1. CONFIG_BUG=y and the arch provides __WARN_FLAGS. In that case pkill_on_warn
+> should be checked in report_bug() that you mention.
+>  2. CONFIG_BUG=y and the arch doesn't have __WARN_FLAGS. In that case
+> pkill_on_warn should be checked in warn_slowpath_fmt().
+>  3. CONFIG_BUG is not set. In that case pkill_on_warn should not be considered.
+> 
+> Please, correct me if needed.
 
-Either way works for me.  But if they are referred to from within the
-kernel, it is best to have them in the kernel source.  Which might be seen
-as a reason to minimize referring to litmus tests from the kernel.  ;-)
+That looks correct to me, yes.
 
-							Thanx, Paul
+-- 
+Kees Cook
