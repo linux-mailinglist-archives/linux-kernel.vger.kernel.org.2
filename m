@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E1141DF12
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAAC41DF13
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351377AbhI3QcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:32:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35977 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351345AbhI3QcK (ORCPT
+        id S1351367AbhI3Qc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351165AbhI3QcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:32:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633019426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u7/zMdrPeVyZNLTntHruwDpYub+H9qwtzzzSUntktcA=;
-        b=Y3+XlroLA5TtOUcqWUR5haHikw0SJVLqBzWXn5InZ2zgRSGgjZ2tTrBMRs4HcGyGb0AWFM
-        ofLQ+LtiGFkzEOtJgCm/NvDetOHnxxp46whs0VsIoXWO1hKgY8AKWIpvGN0R2qIFzkRu11
-        x/yu/UMVRMAiC+d7an5WpDsYSHJaU28=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-z2r_DDwdMRWSxVzVoPhJUw-1; Thu, 30 Sep 2021 12:30:22 -0400
-X-MC-Unique: z2r_DDwdMRWSxVzVoPhJUw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FA3A18125C0;
-        Thu, 30 Sep 2021 16:30:19 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A3A2B1017E3E;
-        Thu, 30 Sep 2021 16:30:18 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 17:30:17 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
-Message-ID: <YVXmGTo5Uzp44QQq@stefanha-x1.localdomain>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
+        Thu, 30 Sep 2021 12:32:24 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B0C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:41 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e7so6849640pgk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ciyh0EVHcl3WRsnW2ZREWfVT9JlEKA9hfP6r96v0iyo=;
+        b=KLa5TC+QH0mRltEWVuTIoKEr3I5WlJ5ps07gPtG+fFyGEdV1U/dfQymhN/OCTfFMB9
+         Y7+88FcoTDrTJg23LJDHozJMKKBrw1K+Cf1qDSuKJe+iDC2e4yju2MKv7h+5KATiNn51
+         0z+EpCXkz4hgoHRq2xu2wdBaorGBdI+Cw8KN08f2UQfJlPBfTclLpIjTHLKaIMhCUz1F
+         B+TvY7+bfat4KzRY/LvcdNCxOYpJD0qZUuZI0K4VtD+g1iLDQrTqBm2oSCndAtEeQStQ
+         AFKlCWAbvVu1NDaQ251VibzsX3vBLQtFql8481C2fo8BdtOorsLXcCp6Ce7kavuT+nro
+         WpXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ciyh0EVHcl3WRsnW2ZREWfVT9JlEKA9hfP6r96v0iyo=;
+        b=iqXNsLXOo2VEQyvTr/Oinqca5cwbi4Q9np94OFDVqjMEPk/RooyG1DBwCkm3BIYXpm
+         fXWLj+3yFo9XHht5u9Otu47qBTX1GUNzNkxQlxoYJfxjuJG1c+vaCS+LtwW9MkCRcDJh
+         RmgbZUQUzt2ofZEvR9Bz2vegHyQQMOqwHqpcVYbBIKvCAdE40yzfmYzbMfMTkj2qtgIe
+         5h4oTl9OwHYbdrdK7Db92e2j8cEbq728pEM7HJyfKLXlivrJyAiJ9mNVetSaWq/fl9Sn
+         O2b0roD/KwJ8EMY0QLQp2ihHvwq10OMX3j1tyXcGtUPpZpD9TxQrNDPvpvRACIv2aCBL
+         orNw==
+X-Gm-Message-State: AOAM531CwWvG00A08e+EZODMCp3/Act39iab+7VqugzbBvUKPO/2GmWX
+        Y2QKHj5zFZUx9UxCblpUKt1GPw==
+X-Google-Smtp-Source: ABdhPJwypV3JkcUF52yFwFeC0CYHKTJzN0cIsYLiSO0D2ExL+no2wARl/7UePGspmFaRIyeVnclmmw==
+X-Received: by 2002:a62:1d4d:0:b0:443:eac2:8a1b with SMTP id d74-20020a621d4d000000b00443eac28a1bmr5281219pfd.2.1633019440914;
+        Thu, 30 Sep 2021 09:30:40 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 127sm3663367pfw.10.2021.09.30.09.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 09:30:39 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:30:37 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: Re: [PATCH 1/5] perf cs-etm: Print size using consistent format
+Message-ID: <20210930163037.GA3047827@p14s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210923162434.GA2189675@p14s>
+ <67a54101-a514-6077-96ba-8809226181eb@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IzEoHzzIxT1o87/+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <67a54101-a514-6077-96ba-8809226181eb@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 01:09:16PM +0100, German Gomez wrote:
+> Hi Mathieu,
+> 
+> Thanks for your feedback. I will keep these points in mind for future
+> submissions.
+> 
+> On 23/09/2021 17:24, Mathieu Poirier wrote:
+> > Hi German,
+> > 
+> > On Thu, Sep 16, 2021 at 04:46:31PM +0100, German Gomez wrote:
+> > > [...]
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > 
+> > A couple of things to improve for your next interactions with the Linux community:
+> > 
+> > 1) Using a cover letter, even for small changes, is always a good idea.
+> > 2) RB tags should be picked up publicly rather than done internally and added to
+> > a patchset.
+> > 3) Keep patches semantically grouped.  Here patches 04 and 05 have nothing to do
+> > with 01, 02 and 03.
+> Did you perhaps mean separating 01 and 02 from the rest? I grouped 03 to 05
+> because
+> they were related to snapshot mode.
 
---IzEoHzzIxT1o87/+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes - you are correct.  It should have been 01 and 02 in one set and the rest in
+another set.
 
-On Tue, Sep 28, 2021 at 09:31:34PM -0700, Andy Lutomirski wrote:
-> On Mon, Sep 13, 2021, at 1:01 PM, Sohil Mehta wrote:
-> > User Interrupts Introduction
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >
-> > User Interrupts (Uintr) is a hardware technology that enables delivering
-> > interrupts directly to user space.
-> >
-> > Today, virtually all communication across privilege boundaries happens =
-by going
-> > through the kernel. These include signals, pipes, remote procedure call=
-s and
-> > hardware interrupt based notifications. User interrupts provide the fou=
-ndation
-> > for more efficient (low latency and low CPU utilization) versions of th=
-ese
-> > common operations by avoiding transitions through the kernel.
-> >
->=20
-> ...
->=20
-> I spent some time reviewing the docs (ISE) and contemplating how this all=
- fits together, and I have a high level question:
->=20
-> Can someone give an example of a realistic workload that would benefit fr=
-om SENDUIPI and precisely how it would use SENDUIPI?  Or an example of a re=
-alistic workload that would benefit from hypothetical device-initiated user=
- interrupts and how it would use them?  I'm having trouble imagining someth=
-ing that wouldn't work as well or better by simply polling, at least on DMA=
--coherent architectures like x86.
-
-I was wondering the same thing. One thing came to mind:
-
-An application that wants to be *interrupted* from what it's doing
-rather than waiting until the next polling point. For example,
-applications that are CPU-intensive and have green threads. I can't name
-a real application like this though :P.
-
-Stefan
-
---IzEoHzzIxT1o87/+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmFV5hkACgkQnKSrs4Gr
-c8gkYAf8DF5mZAyvdq7MYNw7V3LLjLXQA/PJX65e9s/VzX1DOImgxepjEQfAkQUT
-/IncDgMu0mkE0+jU/ZwEngFzI77d5uDzt/xV8cVHjqfE7vCy8SASNg4HFijkl7aF
-aS+vZ2XK89S28S8ocQ/d7GPE80E+IEuxjInzASwimHFCmFtW8U+ka4CmIxbsw6e1
-1ahYfTSnKrwSR2qSzW7cwU4WZFibG0TR0Lgz/oBm9dQuqu7IArWmSTNRKAQPJtqU
-Q+TtjQh/s1Gvvzq8gvdBB6/2mWVE4fUfwatayUBb3HdcUt+5/J32kT/vjeY9HSZL
-PkwYaTLC72ly4H9nhy2lYDD7XbfgFQ==
-=O0C0
------END PGP SIGNATURE-----
-
---IzEoHzzIxT1o87/+--
-
+> 
+> Thanks,
+> German
+> 
+> > 
+> > Moreover Arnaldo queues changes to the perf tools but I don't see him CC'ed to
+> > this patchset.  As such he will not see your work.  Ask James about how to
+> > proceed when submitting patches to the perf tools.
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> > >   		     cs_etm_decoder__get_name(etmq->decoder), buffer->size);
+> > >   	do {
+> > > -- 
+> > > 2.17.1
+> > > 
