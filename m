@@ -2,226 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DB441D5EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A874841D5EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 11:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349233AbhI3JDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 05:03:19 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:48817 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348335AbhI3JDQ (ORCPT
+        id S1349173AbhI3JD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237229AbhI3JD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:03:16 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mw9oq-1mmQpD2nfY-00s3oH; Thu, 30 Sep 2021 11:01:31 +0200
-Received: by mail-wr1-f53.google.com with SMTP id w29so8803322wra.8;
-        Thu, 30 Sep 2021 02:01:31 -0700 (PDT)
-X-Gm-Message-State: AOAM531iAiDf7iXw/4+ULXT+sxSp9GGZ92rgLA+pqE26jmFg56hj5ykv
-        CoFsr3dmdlPjF2O1IFcOB/aNAHvoCo4oFPabOHo=
-X-Google-Smtp-Source: ABdhPJwWKjQ90At9Bd49JUadsSeK5bLQR/gdefHEd1fOpPYQ4q9piPUpP57abtSqimsk+s5XO5tOXqlmr6GKDTSD2Qg=
-X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr4872968wra.428.1632992490983;
- Thu, 30 Sep 2021 02:01:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
-In-Reply-To: <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 30 Sep 2021 11:01:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
-Message-ID: <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
+        Thu, 30 Sep 2021 05:03:56 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03321C06176A;
+        Thu, 30 Sep 2021 02:02:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso1302924wma.1;
+        Thu, 30 Sep 2021 02:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=c2OSJ6Tm3I/BxFfLkZIog1e1qFWXewkgksb+5KT2Xvc=;
+        b=A4Gt/a1nQ9nrrJesOtMirBZKp0LHciM8gh2s1VZp1gyDU0caOgCUa64rJUjRdgZIxT
+         pQ2wA6EsNkmU5XHcTtAxnfafA8IZNfcX+L7binT1C+bAiic3UxQeDC/BuT/QH++AdbLN
+         LOziOPqx+uDKw8R+rFP7fOrfvGPz0m/rJUB3kQ/r8/BTeu4Rw9vwDwR9kOJjQUFCPNA6
+         UXnG+Xv9LDtela8wI8W6ti5hy47yJ2pnteh7E0xcV1dM0TXvB97HedqspRsGdXZVfKqA
+         QwSt3tIki5yA7kbzbWK6EUp3O41KteIO3eOy6AXxvikUtHR4OUWHLYLnOeN/vmnVf6mc
+         Uxig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=c2OSJ6Tm3I/BxFfLkZIog1e1qFWXewkgksb+5KT2Xvc=;
+        b=Mr3GLIpVEvxjQbeFOgbM77VWVSbzU/T1NL5HMuSrMI9QKG6rHpAki1YBowLbAyR3uy
+         1oKRIZoY3MjU+ZnbqIwIpxtkHpGz9EOb7vs5ajEzPM0vdSWavIyXrooo49kxeMJoEugN
+         MGFe5Q1b5g5PoNoyZhe5AeBCjerkcyEUVHXU9WGt6VBos5alJNQCXBs647jgf1yt5diT
+         FBAy1uhy4Zg/QWtSkC2PpMjyNThLtw9kjmY+wgfaDNvDBkxYl6EDZZGrLuy+S3SN+MF+
+         MQ3KGZvCzVD6TiODeNQTqnSYTS42U5jNQ4dk8IcsL8dugVoOTEJSmwo5u5ucg34l4dt6
+         mXhA==
+X-Gm-Message-State: AOAM531huAbKfNT6PPsaA/2bDUZKY+loudZH5W37lMHYvSYHcOJuH+g1
+        Av0D1CBVz7nARPFnj/OLe8E=
+X-Google-Smtp-Source: ABdhPJw0ezSMQ5DejodJ+DOIdh1ODEy5YoRsLzPnaBMAuXsMdFJM6y1b7oLJS9XtV5uwJE6iExuVHA==
+X-Received: by 2002:a1c:ac86:: with SMTP id v128mr4161574wme.3.1632992532241;
+        Thu, 30 Sep 2021 02:02:12 -0700 (PDT)
+Received: from p200300e94717cf3f837b83e464a227b5.dip0.t-ipconnect.de (p200300e94717cf3f837b83e464a227b5.dip0.t-ipconnect.de. [2003:e9:4717:cf3f:837b:83e4:64a2:27b5])
+        by smtp.googlemail.com with ESMTPSA id d129sm4271268wmd.23.2021.09.30.02.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 02:02:11 -0700 (PDT)
+Message-ID: <c697fa8a72125bee811c6b78813d976afe132c5f.camel@gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 30 Sep 2021 11:02:11 +0200
+In-Reply-To: <6d57e6bd-24ba-f07e-678c-691f202549d5@intel.com>
+References: <20210917172727.26834-1-huobean@gmail.com>
+         <20210917172727.26834-3-huobean@gmail.com>
+         <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+         <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+         <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+         <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+         <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+         <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
+         <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
+         <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+         <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
+         <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
+         <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
+         <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
+         <6d57e6bd-24ba-f07e-678c-691f202549d5@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:mtxwc1xwxUaleFuDPnJU0y8zzXMba4CJ2T8I1XFMSaTWSlafiU9
- 5pYdr2Z6IamVOxRUqTN0cW+JWQYKVxv68XfrCBlUgO40AEVHnMAgE2y1SfgUipcF3YJA3ms
- HlSfOPulPraUSnOWf4b0CqfL0oOmqlHQeo/NQ7OVwk0QGSnHgjcAcRBnVIg7MK5x3XUCIAG
- utqrZmiWDKFhWM9i0fysw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+JSCoqpf8Ak=:87zpoadebqS8UvBdJNLWct
- GJY2hT/y4wqjd0O4njVVts1uK6Ys3fIJFVqthqHGqDGQAnH73o/P4apV911oMeKzJNc5rPF3x
- 1Heiw5yWcGNFz6zCHSCZvx3UU5SiKBiI/aQr+KKCJhFqqBDlnj6UvSwOWFfUWUZj3kbilxOvV
- +xZmNp3RNv0+tSzyHGudHi7xxWofr4eYwVckjc/8gQGl6eK9N007mM/IjeooWuB7Sy9VAssGq
- oYNP2t7XV3H5RTYhBcVVLrZj8OWQcu0rYyaBY9MIhqDKgex2Ctp/KT+yhLgDVlBRGfstdMyz3
- OXYefSmCu0TyqEJWH+w2s/o2TuX5TyhvzpbEw+R12D8pDrJEc8Szs8YdpdNas+wCI/ZOdc71W
- Vv/eTu0yH30Mr7K8tA3Y4NUNHOPQB9iEWLk/0aUBHqsheIDNydxzns+DZWl6js92E8QOj1cFV
- joVIbjf06UzcafWrLKTWEMqgBS2l7BdtoiKV6bf2SXOJKHeYuGnVe2H5WW7Y1G7gI7PkvJQ6S
- 2ib6di8nAOLAh5X7mW4MitV8E08pouVRBg7dzaQLsLDBTUenXMKi6LAu/+epdg0fX6b2FWWjO
- 0yG3yOIpkLR6Ik1ykI67HngYCkMpSaM3HS8WCPjyJ+0Urcq1mBzc+mMiHRc39Z7MuZjdPaW08
- hQTRXr0hLm7j8Yv6Auh7lxFmwje7diqHbWUB+MOZjzHh2NgnqIodAr4vPKHKES9oWmzHqCEG1
- dEwaBSRvYuR+qR5wkJ8yBBbse2EJDUQRogc4Yn51MfwuEFEpKzGfvsRS/ZrUvgRr9X6sLGted
- PfX9bBeTU29C2p4mu9qJ5G8ZUevK4QNpd1TbML/C1qzNqkY4aJgz9MXQH08RJA69d1PTpzvVe
- 3O+uoovHoTm/cCBsGNbg==
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 8:15 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> On 29/09/2021 21:48, Will McVicker wrote:
-> > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
-> >> What is more, it seems you entirely ignored Geert's comments. I pointed
-> >> attention to it last time and you just said you will send v2 instead of
-> >> joining discussion.
-> >>
-> >> It's a NAK for this reason - ignoring what Geert brought: you just broke
-> >> distro configs for Exynos.
-> >
-> > First off I did want to chime into the discussion from the previous
-> > patchset, but I felt that Lee and Saravana addressed all your concerns
-> > regarding the intent and feasibility. You also made it clear what the
-> > next steps were that I needed to take.
->
-> One of the steps was problem with distros using everything as modules.
-> They should not receive these drivers as modules.
-> Reminder: these are essential drivers and all Exynos platforms must have
-> them as built-in (at least till someone really tests this on multiple
-> setups).
+On Thu, 2021-09-30 at 11:59 +0300, Adrian Hunter wrote:
+> On 30/09/2021 11:34, Bean Huo wrote:
+> > Hi Adrian,
+> > 
+> > 
+> > Thanks.
+> > I want to give a short conclusion  for our discussion:
+> > 
+> > Based on your information, these sounds disable of HW timer timeout
+> > interrupt will make eMMC host controller malfunction, in another
+> > word,
+> > the disable of timeout interrupt will make the eMMC host cannot
+> > correctly provide the completion interrupt. And unless only when
+> > the
+> > SOC vendor signals that their SOC supports that the host side SW
+> > can
+> > disable this HW timeout interrupt, as TI does.
+> > 
+> > I studied the SDHCI Spec, and tried to see if there is this kind of
+> > support statement, but not been found yet. I will check with other
+> > SOC
+> > vendors.
+> > 
+> > I have one more question, if you know, please give me your
+> > information.
+> > 
+> > I did testing on HW timer bahevior in case CQE is on.  Currently,
+> > we
+> > always set the HW timer with the maximum timeout value if CQE is
+> > on.
+> > Based on my testing, the HW timer will never timeout when we enable
+> > CQE. I changed the HW timer value to be lower, it is the same
+> > result.
+> > Do you know that the HW timer will be inactivated in case CQE is
+> > on?  but its timeout interrupt is still enabled.
+> 
+> No I don't know how different CQE handle timeouts.
 
-Agreed. I absolutely love the work of the GKI developers to turn more
-drivers into loadable modules, but the "correctness-first" principle is
-not up for negotiation. If you are uncomfortable with the code or the
-amount of testing because you think it breaks something, you should
-reject the patches. Moving core platform functionality is fundamentally
-hard and it can go wrong in all possible ways where it used to work
-by accident because the init order was fixed.
+Thanks anyway.
 
-> >> Please also explain why Exynos is so special that we deviate from the
-> >> policy for all SoC that critical SoC-related drivers have to be enabled
-> >> (built-in or as module).
-> >
-> > I am not actually changing ANY default build configurations here and
-> > I'm not removing any existing configuration.
->
-> You are changing not default, but selectability which is part of the
-> enforced configuration to make platforms working. The distros do not
-> always choose defaults but rather all as modules. Kernel configuration
-> is huge and complex, so by mistake they could now even disable
-> potentially essential driver. There is no need to disable for example
-> essential clock driver on a supported Exynos platform.
+Bean
 
-I'm not overly worried about the defaults. If the drivers work as loadable
-modules, I'm happy with them being loadable modules in distros.
-If they don't work this way, then the patches are broken and should
-not get merged.
+> 
+> > Kind regards,
+> > Bean
+> > 
 
-I don't even mind having essential drivers that can be turned off,
-since we already have a ton of those (e.g. serial ports on most platforms).
-It's up to distros to know which drivers to enable, though having
-either reasonable defaults or fail-safe Kconfig dependencies (e.g.
-making it impossible to turn off but allowing modules) is clearly
-best.
-
-> > I tried to make it pretty
-> > clear in my original patch series commit messages that none of my
-> > changes modify the default behavior. The .config is the same with and
-> > without my patches. All of these drivers remain enabled as built-in.
-> > So if there is a distro that requires all of these drivers to be
-> > built-in, then they can continue as is without noticing any
-> > difference. IOW, all of these changes are/should be backwards
-> > compatible.
->
-> I was not referring to default neither to backwards compatibility.
-> Please explain why Exynos is special that it does not require essential
-> drivers to be selected as built-in. For example why aren't same changes
-> done for Renesas?
->
-> Is that now a new global approach that all SoC drivers should be allowed
-> to be disabled for ARCH_XXX?
-
-I wouldn't enforce it either way across platforms. I would prefer drivers
-to be loadable modules where possible (and tested), rather than
-selected by the platform Kconfig. If you want to ensure the exynos
-drivers are impossible to turn into a nonworking state, that's up to you.
-
-> > You said that upstream supports a generic
-> > kernel, but I argue that the upstream "generic" arm64 kernel can't be
-> > considered generic if it builds in SoC specific drivers that can be
-> > modules.
->
-> Good point, but since having them as modules was not tested, I consider
-> it as theoretical topic.
-
-I actually disagree strongly with labelling the kernel as "non-generic"
-just because it requires platform specific support to be built-in rather than
-a loadable module. This has never been possible on any platform
-I'm aware of, and likely never will, except for minor variations of
-an existing platform.
-
-Look at x86 as an example: there are less than a dozen SoC platforms
-supported and they are incredibly similar hardware-wise, but the kernel
-is anything but "generic" in the sense that was mentioned above.
-Most of the platform specific drivers in arch/x86/platform and the
-corresponding bits in drivers/{irqchip,clocksource,iommu} are always
-built-in, and a lot more is hardwired in architecture code as PCI
-quirks or conditional on cpuid or dmi firmware checks.
-
-> >> Even if there was, I think it is good to have dependencies like
-> >> ARCH_EXYNOS, as they let us partition the (19000, as Arnd said recently)
-> >> Kconfig symbols into better manageable groups.  Without these, we cannot
-> >> do better than "depends on ARM || ARM64 || COMPILE_TEST".
-> >
-> > My patch series still keeps the dependencies on ARCH_EXYNOS. I am
-> > totally fine with "depends on ARCH_EXYNOS" and totally fine with
-> > "default ARCH_EXYNOS". The problem we have is that ARCH_EXYNOS
-> > forcefully selects SoC specific drivers to be built-in because it just
-> > adds more and more SoC-specific drivers to a generic kernel.
->
-> The selected drivers are essential for supported platforms. We don't
-> even know what are these unsupported, downstream platforms you want
-> customize kernel for. They cannot be audited, cannot be compared.
->
-> Therefore I don't agree with calling it a "problem" that we select
-> *necessary* drivers for supported platforms. It's by design - supported
-> platforms should receive them without ability to remove.
->
-> If you want to change it, let me paste from previous discussion:
->
-> Affecting upstream platforms just because vendor/downstream does not
-> want to mainline some code is unacceptable. Please upstream your drivers
-> and DTS.
-
-Agreed. I understand that it would be convenient for SoC vendors to
-never have to upstream their platform code again, and that Android
-would benefit from this in the short run.
-
-From my upstream perspective, this is absolutely a non-goal. If it becomes
-easier as a side-effect of making the kernel more modular, that's fine.
-The actual goal should be to get more people to contribute upstream so
-devices run code that has been reviewed and integrated into new kernels.
-
-> > I know you are asking for me to only push changes that have proven to
-> > work.
->
-> Yep, tested.
-
-I'm generally fine with "obviously correct" ones as well, but it's up to
-you to categorize them ;-)
-
-         Arnd
