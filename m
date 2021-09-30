@@ -2,65 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DD241D2E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F4941D2EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348152AbhI3FxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
+        id S1348160AbhI3F4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:56:36 -0400
+Received: from mga11.intel.com ([192.55.52.93]:57065 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348054AbhI3FxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:53:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302E26124A;
-        Thu, 30 Sep 2021 05:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632981100;
-        bh=dtYD0MdeZk6JzANytCUH9SpBxEtTLeR2QdaLgmvaS8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=POi33AfD6ee3waLXg68x1FG6tl39tU0OqBC756yAXk2mkScdeW/Nn2HRSme7jLR5+
-         74WPa5B+Uap2xKv72qXx0b5VCZuA+3VAht5LAzhbkMyuC9cQxiRgy7NriVy/TCXiy4
-         W8MmOyfiEaf7joJp2MVrYsl5tfZKnYKEyTKvX7dc=
-Date:   Thu, 30 Sep 2021 07:51:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Changhui Zhong <czhong@redhat.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: Re: [PATCH 1/2] driver core: tell caller if the device/kboject is
- really released
-Message-ID: <YVVQZ/yVpFJ7Abg5@kroah.com>
-References: <20210930052028.934747-1-ming.lei@redhat.com>
- <20210930052028.934747-2-ming.lei@redhat.com>
+        id S1348054AbhI3F4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:56:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="221904008"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="221904008"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:54:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="708871804"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Sep 2021 22:54:48 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVp1r-0003vo-HC; Thu, 30 Sep 2021 05:54:47 +0000
+Date:   Thu, 30 Sep 2021 13:54:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/misc] BUILD SUCCESS
+ 64c76a84337a5678009155fafe98c5cd8ec673f0
+Message-ID: <61555106.+b257RLbdAs3PbJi%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930052028.934747-2-ming.lei@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:20:27PM +0800, Ming Lei wrote:
-> Return if the device/kobject is really released to caller.
-> 
-> One use case is scsi_device_put() and the scsi device's release handler
-> runs async work to clean up things. We have to piggyback the module_put()
-> into the async work for avoiding to touch unmapped module page.
-> 
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  drivers/base/core.c     | 5 +++--
->  include/linux/device.h  | 2 +-
->  include/linux/kobject.h | 2 +-
->  lib/kobject.c           | 5 +++--
->  4 files changed, 8 insertions(+), 6 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
+branch HEAD: 64c76a84337a5678009155fafe98c5cd8ec673f0  x86/Kconfig: Fix an unused variable error in dell-smm-hwmon
 
-I really don't like this as you should not ever care if you are
-releasing the last reference on an object or not.
+elapsed time: 700m
 
-Why are you needing this?
+configs tested: 115
+configs skipped: 70
 
-And if you really do need this, you MUST document how this works in the
-apis you are changing here, so I can't take this as is sorry.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-greg k-h
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210929
+arm                            qcom_defconfig
+powerpc                   lite5200b_defconfig
+arm                             rpc_defconfig
+sparc64                          alldefconfig
+sh                            shmin_defconfig
+xtensa                              defconfig
+powerpc                         ps3_defconfig
+sh                                  defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       imx_v6_v7_defconfig
+sh                   secureedge5410_defconfig
+arm                          iop32x_defconfig
+arm                         socfpga_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+powerpc                     asp8347_defconfig
+arm                      integrator_defconfig
+mips                     loongson2k_defconfig
+arc                                 defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     ksi8560_defconfig
+parisc                           allyesconfig
+arm                       mainstone_defconfig
+mips                           ip27_defconfig
+powerpc                      walnut_defconfig
+sh                        sh7757lcr_defconfig
+arm                         shannon_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           h5000_defconfig
+powerpc                        cell_defconfig
+powerpc                      pmac32_defconfig
+mips                         cobalt_defconfig
+x86_64               randconfig-c001-20210929
+arm                  randconfig-c002-20210929
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                 randconfig-a001-20210929
+i386                 randconfig-a005-20210929
+i386                 randconfig-a002-20210929
+i386                 randconfig-a006-20210929
+i386                 randconfig-a004-20210929
+i386                 randconfig-a003-20210929
+x86_64               randconfig-a002-20210929
+x86_64               randconfig-a005-20210929
+x86_64               randconfig-a001-20210929
+x86_64               randconfig-a006-20210929
+x86_64               randconfig-a003-20210929
+x86_64               randconfig-a004-20210929
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+powerpc              randconfig-c003-20210929
+mips                 randconfig-c004-20210929
+arm                  randconfig-c002-20210929
+x86_64               randconfig-c007-20210929
+riscv                randconfig-c006-20210929
+s390                 randconfig-c005-20210929
+i386                 randconfig-c001-20210929
+x86_64               randconfig-a014-20210929
+x86_64               randconfig-a011-20210929
+x86_64               randconfig-a013-20210929
+x86_64               randconfig-a015-20210929
+x86_64               randconfig-a012-20210929
+x86_64               randconfig-a016-20210929
+i386                 randconfig-a014-20210929
+i386                 randconfig-a013-20210929
+i386                 randconfig-a016-20210929
+i386                 randconfig-a011-20210929
+i386                 randconfig-a015-20210929
+i386                 randconfig-a012-20210929
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+hexagon              randconfig-r045-20210929
+riscv                randconfig-r042-20210929
+hexagon              randconfig-r041-20210929
+s390                 randconfig-r044-20210929
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
