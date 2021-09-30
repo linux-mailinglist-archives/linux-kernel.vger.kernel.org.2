@@ -2,66 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41E641D2BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1C641D2BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348098AbhI3Fdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348096AbhI3Fdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A87776135D;
-        Thu, 30 Sep 2021 05:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632979914;
-        bh=qgF3mXPiviYN07VlLPuhXZ5G1voewEGfUYirB3xXEdY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mUWZmSsSN9ChHM1UQxmmJpclnue/Q+lXBO3mBJN35tunWT+kSoAZMwswzGdFAfQP+
-         T7G/LFmrthA+QiTHXe1ydVF5aMWOc9mPapddaXMGoOZgo/yQ0aDCzMTKS9p/auFXDk
-         IaUs1Wf6L0k0VvG7ju27gAji8qwraRPHSJSM561g=
-Date:   Thu, 30 Sep 2021 07:31:50 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        levinale@google.com, bleung@google.com, rajatxjain@gmail.com,
-        jsbarnes@google.com, pmalani@google.com
-Subject: Re: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub,
- as removable
-Message-ID: <YVVLxi/on9x6nfCZ@kroah.com>
-References: <20210929224823.556943-1-rajatja@google.com>
- <20210929224823.556943-2-rajatja@google.com>
+        id S1348103AbhI3Ffg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348041AbhI3Fff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:35:35 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF4BC06176A
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 22:33:53 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id h2so10475779ybi.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 22:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N+NKKdRK9RfodRzKXI8O8ct2lSBYNHsM7sxE9hBdFgs=;
+        b=JfRa6bsas3v+fIYF4C41qARornl22a530WFV/QpLTef0wGba+wr/ErL85dJ4Eg/biV
+         cWf/DLt+lIfU+4J8RVGZ7yoeeKdVW6RTgQmjd38B07nP11nqE6eYB4N4LABgygtw79M4
+         i7Njifo1MrZeppr8aG7Gu1BT5r1gdD3DRmTFdq3ei8Yntq+TbScnsGbvEWFS1adXCrAG
+         pWhBpaScmjzrr7KsDAbQ3brzdtAyIR6APcXDIoizwQpI2NjYMLWM2xJ6rSWXZeEon7i5
+         O0ZzKvp95fhdLXK9FF5q9AvaiUiRaUVKgskBYsb0FrNsOTjdYFGmhOibv/6oeX8gVAWD
+         bmHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N+NKKdRK9RfodRzKXI8O8ct2lSBYNHsM7sxE9hBdFgs=;
+        b=cXq8D1BYlA4ewkwCk8IJW7vS1OceIVrFSUn1YLHA5VV4GYmrVrCmvbP8rGUL2BlPco
+         OVTb1cDJrLi7saO0tGQv0WtIzKOI3QCcU0qCN2ea1gSRSyslmD0TR2aAVjRleiNjmcbs
+         QpE2M4H5GC/pt0wFyNj52dPGHF9YaimDw7X/XIzJP/iXlp0nFXuFWxQfeebDTDwtX6Uy
+         1sXCEFe0ChPuxKC6zGrld5THioNtngv6zjkJjcXrrgNVG88aksmDTj+JhAXevAPvMzRz
+         ZjxyC6EVoy0ez2wxW2XVXQOhZ1v3X7aJEy0DqzEnsT5BTQqDpEzqWyyfJUvgg25FEYqm
+         o//g==
+X-Gm-Message-State: AOAM532B7+ibGla7GutrmOA+ct5Vvdpu42fXL86mpqUIGE9JSHbaHhte
+        C1FKkFzf9b7qr67tyMM2GIi6foWQsUOSS834ABd8YQ==
+X-Google-Smtp-Source: ABdhPJwQhot8JmlxGg0ZAE8LuycN8IkkPQ2598Nm1DbCQ1RVLb3/Grm/uxdPC06spevHQcO4XCptOiGMkXn2NNUweWQ=
+X-Received: by 2002:a25:4684:: with SMTP id t126mr4148820yba.476.1632980032697;
+ Wed, 29 Sep 2021 22:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929224823.556943-2-rajatja@google.com>
+References: <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
+In-Reply-To: <20210831231804.zozyenear45ljemd@skbuf>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 29 Sep 2021 22:33:16 -0700
+Message-ID: <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:48:23PM -0700, Rajat Jain wrote:
-> If a usb device sits below a removable hub, mark the device also as
-> removable. This helps with devices inserted on a standard removable hub or
-> also thunderbold docks, to be shown as removable.
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
->  drivers/usb/core/hub.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+On Tue, Aug 31, 2021 at 4:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
+> > Rev B is interesting because switch0 and switch1 got genphy, while
+> > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
+> > interrupt properties, so don't loop back to their parent device.
+>
+> This is interesting and not what I really expected to happen. It goes to
+> show that we really need more time to understand all the subtleties of
+> device dependencies before jumping on patching stuff.
+>
+> In case the DSA tree contains more than one switch, different things
+> will happen in dsa_register_switch().
+> The tree itself is only initialized when the last switch calls
+> dsa_register_switch(). All the other switches just mark themselves as
+> present and exit probing early. See this piece of code in dsa_tree_setup:
+>
+>         complete = dsa_tree_setup_routing_table(dst);
+>         if (!complete)
+>                 return 0;
 
-Combined with the previous patch, you are now marking all devices that
-happen to be attached to a root hub that is on a thunderbolt controller
-as removable.  So all USB devices inside of a docking station are now
-removable?
+Hi Vladimir,
 
-What type of devices did you test this series out with?  And again, what
-problem are you trying to solve?
+Can you point me to an example dts file that has a DSA tree with more
+than one switch and also point me to the switches that form the tree?
 
-thanks,
+I'm working on a RFC series that tries to improve some stuff and
+having an example DTS to look at would help.
 
-greg k-h
+Thanks,
+Saravana
+
+>
+> So it should be a general property of cross-chip DSA trees that all
+> switches except the last one will have the specific PHY driver probed
+> properly, and not the genphy.
+>
+> Because all (N - 1) switches of a tree exit early in dsa_register_switch,
+> they have successfully probed by the time the last switch brings up the
+> tree, and brings up the PHYs on behalf of every other switch.
+>
+> The last switch can connect to the PHY on behalf of the other switches
+> past their probe ending, and those PHYs should not defer probing because
+> their supplier is now probed. It is only that the last switch cannot
+> connect to the PHYs of its own ports.
+>
+> So if this does not work (you say that there are 2 switches that use
+> genphy) I suspect there are also other bugs involved.
