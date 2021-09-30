@@ -2,163 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CAA41D8A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FF141D8BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350424AbhI3L1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:27:02 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:36374 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350389AbhI3L1B (ORCPT
+        id S1350460AbhI3L1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:27:55 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60440 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350488AbhI3L1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:27:01 -0400
-Received: by mail-vs1-f45.google.com with SMTP id h30so6827497vsq.3;
-        Thu, 30 Sep 2021 04:25:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E4u4EeOna6gGNv61tDuQLud+cv6R+yD4WKIZiYqhxYg=;
-        b=zn8BNuAI0rLInOaw/ZpK4o1yqL6gKx2eTIvX+mEP1POejojkK7mnyPpUZBgd3kksNb
-         /0iC/5xOMt+taNQxtlAVP+sTsfkLEAT8jj/iRXyMVuVgJ4IoqIs9RXLxzivn4VCKGhLp
-         ZpC1m/RFtI4Uuqk96wCEXBkbYHs3z0g4GLJI+IqBkdtx5A7jGwqmBJjVSVtwSRBlbyhC
-         nwqI6uWzaLPEkBhjgBV841pVhiKHHBoBVZ+a3x2rRFqVO3voF/yRRlBcJQKCCsTydb+q
-         IJBj0IvWuROW0MiaDVRnXbR519zsDlOaWZJ17icrwvuE6ZS6ey5bRFu2bUlxJeXzoE3X
-         9tJg==
-X-Gm-Message-State: AOAM531+GGYarzWxhtSVX3skBlbCqiTuc6gBlmmCj5HDkUv3FyP8J0Ti
-        krZH8T03fxMNBuhQGK9d7QK59aMcRtjBTjJpxTM=
-X-Google-Smtp-Source: ABdhPJwtYPhT4dVxPEB3GWtrVuwFV+A5f63KMP1Llp8OL6G+fNBMIp1rXsoQDwNXodcMK35TqjyhIHusevl27khUwZg=
-X-Received: by 2002:a05:6102:21d4:: with SMTP id r20mr2796665vsg.50.1633001117937;
- Thu, 30 Sep 2021 04:25:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
- <CAMuHMdVkF--Oq_EBRq-8Wn=E5DyOVzgSNYwo8ujf18zRCJSL9Q@mail.gmail.com> <YVWX1fFB1L1K3Mnn@google.com>
-In-Reply-To: <YVWX1fFB1L1K3Mnn@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 30 Sep 2021 13:25:06 +0200
-Message-ID: <CAMuHMdUkP6Jg5sXAXEw7twGqPs8rKftiyh+wYomFVdRHyhUrgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Thu, 30 Sep 2021 07:27:54 -0400
+Received: from [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1] (unknown [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E54671F44AE1;
+        Thu, 30 Sep 2021 12:26:09 +0100 (BST)
+Subject: Re: [PATCH v2 11/29] iommu/mediatek: Always pm_runtime_get while tlb
+ flush
+To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com
+References: <20210813065324.29220-1-yong.wu@mediatek.com>
+ <20210813065324.29220-12-yong.wu@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <11fe281d-4873-245b-f506-452900f33d3b@collabora.com>
+Date:   Thu, 30 Sep 2021 13:26:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210813065324.29220-12-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
 
-On Thu, Sep 30, 2021 at 12:56 PM Lee Jones <lee.jones@linaro.org> wrote:
-> On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
-> > On Thu, Sep 30, 2021 at 11:23 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > I've taken the liberty of cherry-picking some of the points you have
-> > > reiteratted a few times.  Hopefully I can help to address them
-> > > adequently.
-> > >
-> > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
-> > > > Reminder: these are essential drivers and all Exynos platforms must have
-> > > > them as built-in (at least till someone really tests this on multiple
-> > > > setups).
-> > >
-> > > > Therefore I don't agree with calling it a "problem" that we select
-> > > > *necessary* drivers for supported platforms. It's by design - supported
-> > > > platforms should receive them without ability to remove.
-> > >
-> > > > The selected drivers are essential for supported platforms.
-> > >
-> > > SoC specific drivers are only essential/necessary/required in
-> > > images designed to execute solely on a platform that requires them.
-> >
-> > Why?
->
-> Because without them the image wouldn't functional on any level.
->
-> But you're right, there is still no requirement for it to be built-in.
->
-> > > For a kernel image which is designed to be generic i.e. one that has
-> > > the ability to boot on vast array of platforms, the drivers simply
-> > > have to be *available*.
-> >
-> > If the drivers are really essential/necessary/required, this precludes
-> > running the generic kernel image on the platform that requires them,
-> > making the kernel not sufficiently generic.
->
-> If they are not at all present, then yes.  However that is not what is
-> being suggested.  The essential functionality will be provided.  Just
-> not built-in.
 
-I really meant "essential/necessary/required to be built-in".
+On 13.08.21 08:53, Yong Wu wrote:
+> Prepare for 2 HWs that sharing pgtable in different power-domains.
+> 
+> The previous SoC don't have PM. Only mt8192 has power-domain,
+> and it is display's power-domain which nearly always is enabled.
 
-> > > Forcing all H/W drivers that are only *potentially* utilised on *some*
-> > > platforms as core binary built-ins doesn't make any technical sense.
-> > > The two most important issues this causes are image size and a lack of
-> > > configurability/flexibility relating to real-world application i.e.
-> > > the one issue we already agreed upon; H/W or features that are too
-> > > new (pre-release).
-> >
-> > True, if "potentially".  If not potentially, they must be included.
->
-> I'm not sure what you're trying to say here.  Would you mind elaborating?
+hi, I see that in mt1873.dtsi, many devices that uses the iommu have the
+'power-domains' property.
 
-It was a comment to your "*potentially* utilised on *some* platforms".
-It is clear they are not used on the other ("not *some*") platforms, but your
-sentence was unclear whether they are always or only sometimes used on
-"*some*" platforms.
-"always" => "not potentially"
-"sometimes" => "potentially".
+> 
+> When there are 2 M4U HWs, it may has problem.
+> In this function, we get the pm_status via the m4u dev, but it don't
+> reflect the real power-domain status of the HW since there may be other
+> HW also use that power-domain.
+> 
+> Currently we could not get the real power-domain status, thus always
+> pm_runtime_get here.
+> 
+> Prepare for mt8195, thus, no need fix tags here.
+> 
+> This patch may drop the performance, we expect the user could
+> pm_runtime_get_sync before dma_alloc_attrs which need tlb ops.
+> 
 
-I hope this makes it more clear.
+Could you explain this sentence a bit? should the user call pm_runtime_get_sync
+before calling dma_alloc_attrs?
 
-> > > Bloating a generic kernel with potentially hundreds of unnecessary
-> > > drivers that will never be executed in the vast majority of instances
-> > > doesn't achieve anything.  If we have a kernel image that has the
-> > > ability to boot on 10's of architectures which have 10's of platforms
-> > > each, that's a whole host of unused/wasted executable space.
-> >
-> > The key here is if the driver is required or not to use the platform,
-> > and why it is required.  If the requirement comes from some deficiency
-> > in the kernel code or config system, it should be fixed, if possible.
-> > And the fix should be tested.
-> > If it cannot be fixed, the driver should be included, else it would
-> > preclude running the generic kernel on the affected platform.
->
-> Sorry, I'm not following.
+Thanks,
+Dafna
 
-It all depends on why the driver is "required to be built-in".
-Depending on the reason behind that requirement, the driver can be
-changed from built-in to modular without ill effects on functionality.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>   drivers/iommu/mtk_iommu.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index add23a36a5e2..abc721a1da21 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -238,8 +238,11 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   
+>   	for_each_m4u(data, head) {
+>   		if (has_pm) {
+> -			if (pm_runtime_get_if_in_use(data->dev) <= 0)
+> +			ret = pm_runtime_resume_and_get(data->dev);
+> +			if (ret < 0) {
+> +				dev_err(data->dev, "tlb flush: pm get fail %d.\n", ret);
+>   				continue;
+> +			}
+>   		}
+>   
+>   		spin_lock_irqsave(&data->tlb_lock, flags);
+> 
