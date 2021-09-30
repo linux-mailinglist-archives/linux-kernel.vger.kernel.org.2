@@ -2,112 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E6241E085
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC0141E08B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353013AbhI3SEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:04:00 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:40490 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352908AbhI3SD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:03:56 -0400
-Received: from zn.tnic (p200300ec2f0e16001aa756a0ef3ae707.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1600:1aa7:56a0:ef3a:e707])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D03E1EC04F3;
-        Thu, 30 Sep 2021 20:02:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633024931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gg6GBClwXHFeNqO89BOVkISWLtUh+pX3g0xDqXc+XKE=;
-        b=pP3gJ2jscGAV8t0o+eADqT80uEfCsRv3YABU1QJ5ED1kkfTade5r8859DePCPWQAI8Ed+6
-        E+W45AYkCFGq50yUT+02Ndq80nZTrJ3mCBhwE0wjQcWa94b8/Q05Ik9/FjweaIfNGSxtCE
-        KRk+8OjCA2mRsSfnqULioeqqvLmhM1k=
-Date:   Thu, 30 Sep 2021 20:02:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        pgonda@google.com, akpm@linux-foundation.org, rppt@kernel.org,
-        kirill.shutemov@linux.intel.com, saravanand@fb.com,
-        aneesh.kumar@linux.ibm.com, rientjes@google.com, tj@kernel.org,
-        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
-        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
-Subject: Re: [PATCH V6 3/8] x86/hyperv: Add new hvcall guest address host
- visibility  support
-Message-ID: <YVX7n4YM8ZirwTQu@zn.tnic>
-References: <20210930130545.1210298-1-ltykernel@gmail.com>
- <20210930130545.1210298-4-ltykernel@gmail.com>
+        id S1353018AbhI3SEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352947AbhI3SET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:04:19 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587F0C06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:02:36 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id i19so25531815lfu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dUhjkiUkO5I2gtWdIxEyHz4heTocnFLTG0gdIYBH7Fs=;
+        b=KIDcqn81Sg2UQ1zgtYLS8/gOtvnCl5foO15Oov8fENG2j/KJhIMpX7gpi8/3NsjI+S
+         urLk6nrb8vsm+4RC5gacoMznmqvjwK4eflApBMOpXV6InvV+mjjEfUZN4g1SbpIk1KJS
+         64e4OOWuzUb1VVTJPXy9Ev+paKLrpNG7qWCr+lJk0YBXINY8+BnEX5xIu+kjgtlI6HCT
+         iuV9h569AeNUhY4rA7lfd839Zv8hvYNXnd2eDTaiNyBm91DGfMFVvriT/fJEnVOGxOxX
+         9gU97UrmSeik8lCVLC6wieTSc0SWN4t3/kf3/kQaiMBjzWZUa5RyXSivb8xwX8Zg5klk
+         VKHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dUhjkiUkO5I2gtWdIxEyHz4heTocnFLTG0gdIYBH7Fs=;
+        b=JpVkbBEY61tdz6l07OzZDVY9wfyF3kJBCxwjNNO0vwsg6tmKcCkshaxYc44QX9p6fF
+         Hi66aSa1Fl5PBz9aC/vsmwioD71MN7pjjKbn0pSq2V1dCQ5XLzDVijEHGPnLJm9/rZXn
+         QWxjk1ZnYxvnLAIsI7HjOd734RDroJyU7A4e4SeOrxy5OgKSnAYIUVbZbK3CYnvjq1BY
+         lGffNM26vcl6dEOGAxgaYV4UMpDfRMDC68qZZaxFGR/o77ooMrixMGyEgIaC+rgoleno
+         Ec5ZvWUg9FaMN5ngmf5vJS2lqnZIvqpdudd3FkDr3C9NX3t4wfE/20GuuvtCVAD3PzDa
+         aOeQ==
+X-Gm-Message-State: AOAM533O++0AFC3jyiSMVxwU5hsMp0hvg6wO+4FvVZUAw+z07Ebf3ChE
+        usnFDvy3TUXsr05pw/J63rzM2u3ISc/NhuzsB6jpzw==
+X-Google-Smtp-Source: ABdhPJwFzeI5sjPMfTasnMbbhqM/NDtim2bc2OhsLak9gYNJ3UgL2h5e5BJWFK7ZtTnHct/UqSlCzvBcjYmWDbD3SFk=
+X-Received: by 2002:a05:6512:12d6:: with SMTP id p22mr629668lfg.42.1633024954260;
+ Thu, 30 Sep 2021 11:02:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210930130545.1210298-4-ltykernel@gmail.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
+ <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com> <YVWwBz8jrznqXah4@google.com>
+ <8d260548-176e-d76b-6f05-d4d02ddd4f67@canonical.com> <YVW7xoHaLdGHBoEQ@google.com>
+ <CAMuHMdU_dbQYHF=8uOZ3e_v4+Li0bHfQABdLVSpJJPG4XkwhZw@mail.gmail.com>
+ <YVXkGiwAV3kGiBd3@google.com> <CAMuHMdXTp_cv4Ry0XBzCkv+-Gh3RY-HPZ8uDiNkxqK227+cozw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXTp_cv4Ry0XBzCkv+-Gh3RY-HPZ8uDiNkxqK227+cozw@mail.gmail.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Thu, 30 Sep 2021 11:02:18 -0700
+Message-ID: <CABYd82b9wmzZHAQwBqn-6uJupEV=r6Zx7fiaz+o4Xxt8RQppUA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:05:39AM -0400, Tianyu Lan wrote:
-> @@ -1980,15 +1982,11 @@ int set_memory_global(unsigned long addr, int numpages)
->  				    __pgprot(_PAGE_GLOBAL), 0);
->  }
->  
-> -static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
-> +static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+On Thu, Sep 30, 2021 at 9:26 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Lee,
+>
+> On Thu, Sep 30, 2021 at 6:21 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+> > > On Thu, Sep 30, 2021 at 3:29 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > > > > On 30/09/2021 14:39, Lee Jones wrote:
+> > > > > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > > > > >> On 30/09/2021 11:23, Lee Jones wrote:
+> > > > > >>> [0] Full disclosure: part of my role at Linaro is to keep the Android
+> > > > > >>> kernel running as close to Mainline as possible and encourage/push the
+> > > > > >>> upstream-first mantra, hence my involvement with this and other sets.
+> > > > > >>> I assure you all intentions are good and honourable.  If you haven't
+> > > > > >>> already seen it, please see Todd's most recent update on the goals and
+> > > > > >>> status of GKI:
+> > > > > >>>
+> > > > > >>>   Article: https://tinyurl.com/saaen3sp
+> > > > > >>>   Video:   https://youtu.be/O_lCFGinFPM
+> > > > > >>>
+> > > > > >>
+> > > > > >> Side topic, why this patchset is in your scope or Will's/Google's scope?
+> > > > > >> Just drop it from Android main kernel, it will not be your problem. I
+> > > > > >> mean, really, you don't need this patchset in your tree at all. The only
+> > > > > >> platform which needs it, the only platform which will loose something
+> > > > > >> will be one specific vendor. Therefore this will be an incentive for
+> > > > > >> them to join both discussions and upstream development. :)
+> > > > > >
+> > > > > > How would they fix this besides upstreaming support for unreleased
+> > > > > > work-in-progress H/W?
+> > > > > >
+> > > > > > Haven't I explained this several times already? :)
+> > > > >
+> > > > > Either that way or the same as Will's doing but that's not my question.
+> > > > > I understand you flush the queue of your GKI patches to be closer to
+> > > > > upstream. Reduce the backlog/burden. you can achieve your goal by simply
+> > > > > dropping such patch and making it not your problem. :)
+> > > >
+> > > > git reset --hard mainline/master   # job done - tea break  :)
+> > > >
+> > > > Seriously though, we wish to encourage the use of GKI so all vendors
+> > > > can enjoy the benefits of more easily updateable/secure code-bases.
+> > > >
+> > > > I can't see how pushing back on seamlessly benign changes would
+> > > > benefit them or anyone else.
+> > >
+> > > I like your wording ;-)
+> > >
+> > > Indeed, seamlessly benign changes, which are (1) not tested, and (2)
+> > > some believed by the platform maintainer to break the platform.
+> > > What can possibly go wrong? ;-)
+> >
+> > William has already shown a willingness to test the series.
+>
+> I'm looking forward to the results!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
-What exactly is that "pgtable" at the end of the name supposed to mean?
+Hi Krzysztof and Geert,
 
-So if you want to have different indirections here, I'd suggest you do
-this:
+Thanks for all the responses! There are a few things I want to respond
+to. Since this thread is 32 responses deep, I'm copying and pasting
+the parts I'm responding to. I hope that isn't an issue.
 
-set_memory_encrypted/decrypted() is the external API. It calls
+>You are changing not default, but selectability which is part of the
+>enforced configuration to make platforms working. The distros do not
+>always choose defaults but rather all as modules.
 
-_set_memory_enc_dec() which does your hv_* checks. Note the single
-underscore "_" prefix.
+I'm guessing you are referring to distros using the "allmodconfig". I
+agree that this would affect their platforms in the sense that they
+would get a module vs built-in, but obviously that is the choice they
+are making by using "allmodconfig". I also agree that my changes
+should not break any distros. I definitely don't want you or anyone
+else to accept these without them being tested and verified.
 
-Then, the workhorse remains __set_memory_enc_dec().
+>I don't understand the point (2) here. Anyone can use upstream kernel
+>for supported and unsupported platforms. How upstream benefits from a
+>change affecting supported platforms made for unsupported, downstream
+>platforms.
 
-Ok?
+We believe that if we make it easier for SoC vendors to directly use
+the upstream kernel during bring-up and during the development stages
+of their project, then that will decrease the friction of working with
+upstream (less downstream changes) and increase the upstream
+contributions. As mentioned in the LPC talk by Todd, the Android
+kernel team is constantly pushing to reduce the number of out-of-tree
+changes we carry so that we can ultimately use the upstream kernel
+directly.
 
-Also, we're reworking the mem_encrypt_active() accessors:
+>You also mentioned downstream devices but without actually ever defining
+>them. Please be more specific. What SoC, what hardware?
 
-https://lkml.kernel.org/r/20210928191009.32551-1-bp@alien8.de
+Saravana provided 2 platforms in his response. The first one is
+hikey960 devboard and the second one is the Pixel 5 which uses the
+Qualcomm sm7250 chipset. In particular the Pixel 5 is running a fully
+modular kernel. It has 320+ modules including interrupt controllers,
+timers, pinctrl and clocks.
 
-so some synchronization when juggling patchsets will be needed. JFYI
-anyway.
+To address your question regarding if Exynos is special? No, Exynos
+isn't special. There is a long road ahead of us to get to where we'd
+ultimately like to be and ARCH_EXYNOS happens to be along the way.
+Currently, we are working through the arm64 ARCH_XXX configs that are
+supported by Android to make sure that all drivers included by any
+ARCH_XXX are modularized if they can be which benefits all parties.
+From my understanding upstream does support modularizing drivers and
+we can help with that. I believe this also kind of addresses Geert's
+comments regarding what a generic kernel is. We look at it as a kernel
+that only includes the absolutely necessary SoC drivers as built-in.
+Obviously we can't go back and change older hardware like Cortex A9 to
+support this, but we can do our best to support future SoCs.
 
-Also 2, building your set triggers this, dunno if I'm missing some
-patches on my local branch for that.
+Lastly, you mentioned a couple of times that we should just disable
+ARCH_EXYNOS and move on. At the moment we are not able to do that
+because some SoC specific drivers actually do need to be built-in to
+the kernel (tainting it's generic-ness unfortunately) and are
+protected by these ARCH_XXX configs. One example that you or Geert
+pointed out is the early console serial driver which Greg did try to
+decouple from ARCH_EXYNOS but was turned down. There are likely other
+reasons as well that I don't know of off hand.
 
-In file included from ./arch/x86/include/asm/mshyperv.h:240,
-                 from ./include/clocksource/hyperv_timer.h:18,
-                 from ./arch/x86/include/asm/vdso/gettimeofday.h:21,
-                 from ./include/vdso/datapage.h:137,
-                 from ./arch/x86/include/asm/vgtod.h:12,
-                 from arch/x86/entry/vdso/vma.c:20:
-./include/asm-generic/mshyperv.h: In function ‘vmbus_signal_eom’:
-./include/asm-generic/mshyperv.h:153:3: error: implicit declaration of function ‘hv_set_register’; did you mean ‘kset_register’? [-Werror=implicit-function-declaration]
-  153 |   hv_set_register(HV_REGISTER_EOM, 0);
-      |   ^~~~~~~~~~~~~~~
-      |   kset_register
-In file included from ./arch/x86/include/asm/mshyperv.h:240,
-                 from arch/x86/mm/pat/set_memory.c:34:
-./include/asm-generic/mshyperv.h: In function ‘vmbus_signal_eom’:
-...
+I hope Lee and I answered all your questions. Ultimately, I think we
+all understand what is being debated here and it sounds like we all
+agree that we are okay with modules as long as (1) they are proven to
+work as both built-in and as modules and (2) can't be disabled if they
+are required by the platform, but can be built-in or modular. Let me
+know if I misunderstood that.
 
--- 
-Regards/Gruss,
-    Boris.
+Regarding the testing, I will look around for a devboard that I can
+test my clock driver changes on since those are the most contested
+ones. I obviously am not going to be able to find all the HW variants
+you mentioned, but I will try to find an ARM64 Exynos7 or Exynos5433
+devboard since my patchset only modifies the clocks for these SoCs
+which seem to be the most contested. Once I provide some testing
+results, I'm hoping someone upstream can help verify that on the other
+affected hardware. Of course this will take some time though.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In the meantime, I will try to push some of these easier patches that
+don't need extensive testing, but are required before modularizing the
+drivers.
+
+Thanks,
+Will
