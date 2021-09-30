@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEC741D5C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D4141D5D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349043AbhI3IyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:54:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:23342 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348239AbhI3IyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:54:12 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HKn2L3gQRzRfhp;
-        Thu, 30 Sep 2021 16:48:10 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 16:52:28 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 30 Sep
- 2021 16:52:28 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
-        <saravanak@google.com>
-Subject: [PATCH] driver core: Fix possible memory leak in device_link_add()
-Date:   Thu, 30 Sep 2021 16:57:14 +0800
-Message-ID: <20210930085714.2057460-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1349095AbhI3JBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 05:01:40 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16390 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348225AbhI3JBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:01:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="224796284"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="224796284"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:59:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="707851818"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Sep 2021 01:59:47 -0700
+Subject: Re: [PATCH v1 2/2] mmc: sdhci: Use the SW timer when the HW timer
+ cannot meet the timeout value required by the device
+To:     Bean Huo <huobean@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210917172727.26834-1-huobean@gmail.com>
+ <20210917172727.26834-3-huobean@gmail.com>
+ <fc14d8e1-9438-d4b0-80f4-ccf9055ab7d3@intel.com>
+ <beda2d5ecc3c15e9bf9aa18383c22c2a90d31dab.camel@gmail.com>
+ <93292ef4-8548-d2ba-d803-d3b40b7e6c1d@intel.com>
+ <40e525300cd656dd17ffc89e1fcbc9a47ea90caf.camel@gmail.com>
+ <79056ca7-bfe3-1b25-b6fd-de8a9388b75f@intel.com>
+ <5a5db6c2eed2273a8903b5052312f039dd629401.camel@gmail.com>
+ <5072935e-d855-7029-1ac0-0883978f66e5@intel.com>
+ <37497369a4cf5f729e7b3e31727a7d64be5482db.camel@gmail.com>
+ <32b753ff-6702-fa51-2df2-32ff1d955a23@intel.com>
+ <296607ef57f3fb632107997f4edca99a5722beab.camel@gmail.com>
+ <b7fd4a22-65f6-d1c4-675c-5930452a1fea@intel.com>
+ <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <6d57e6bd-24ba-f07e-678c-691f202549d5@intel.com>
+Date:   Thu, 30 Sep 2021 11:59:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <3078b365b5ddfad198a5c8a097f2e7edb9730e2c.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got memory leak as follows:
+On 30/09/2021 11:34, Bean Huo wrote:
+> Hi Adrian,
+> 
+> 
+> Thanks.
+> I want to give a short conclusion  for our discussion:
+> 
+> Based on your information, these sounds disable of HW timer timeout
+> interrupt will make eMMC host controller malfunction, in another word,
+> the disable of timeout interrupt will make the eMMC host cannot
+> correctly provide the completion interrupt. And unless only when the
+> SOC vendor signals that their SOC supports that the host side SW can
+> disable this HW timeout interrupt, as TI does.
+> 
+> I studied the SDHCI Spec, and tried to see if there is this kind of
+> support statement, but not been found yet. I will check with other SOC
+> vendors.
+> 
+> I have one more question, if you know, please give me your information.
+> 
+> I did testing on HW timer bahevior in case CQE is on.  Currently, we
+> always set the HW timer with the maximum timeout value if CQE is on.
+> Based on my testing, the HW timer will never timeout when we enable
+> CQE. I changed the HW timer value to be lower, it is the same result.
+> Do you know that the HW timer will be inactivated in case CQE is
+> on?  but its timeout interrupt is still enabled.
 
-unreferenced object 0xffff88801f0b2200 (size 64):
-  comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
-  hex dump (first 32 bytes):
-    72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
-    74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
-  backtrace:
-    [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
-    [<0000000050da42d9>] kvasprintf+0xb5/0x150
-    [<000000004bbbed13>] kvasprintf_const+0x60/0x190
-    [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
-    [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
-    [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
-    [<000000009db9faed>] _regulator_get+0x297/0x680
-    [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
-    [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
-    [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
-    [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
-    [<0000000070fb977b>] really_probe+0x299/0xc30
-    [<0000000088e226ce>] __driver_probe_device+0x357/0x500
-    [<00000000c21dda32>] driver_probe_device+0x4e/0x140
-    [<000000004e650441>] __device_attach_driver+0x257/0x340
-    [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
+No I don't know how different CQE handle timeouts.
 
-When device_register() returns an error, the name allocated in dev_set_name()
-will be leaked, the put_device() should be used instead of kfree() to give up
-the device reference, then the name will be freed in kobject_cleanup() and the
-references of consumer and supplier will be decreased in device_link_release_fn().
-
-Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/base/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index e65dd803a453..4a123e58711f 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -809,9 +809,7 @@ struct device_link *device_link_add(struct device *consumer,
- 		     dev_bus_name(supplier), dev_name(supplier),
- 		     dev_bus_name(consumer), dev_name(consumer));
- 	if (device_register(&link->link_dev)) {
--		put_device(consumer);
--		put_device(supplier);
--		kfree(link);
-+		put_device(&link->link_dev);
- 		link = NULL;
- 		goto out;
- 	}
--- 
-2.25.1
+> 
+> Kind regards,
+> Bean
+> 
 
