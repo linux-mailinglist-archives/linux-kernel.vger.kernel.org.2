@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3AF41D81F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4432D41D827
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350180AbhI3Kz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350129AbhI3KzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:55:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4036A6187A;
-        Thu, 30 Sep 2021 10:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632999222;
-        bh=Vp+UOmjo2TAmos1MjthOIfOMHBv+7U04bMTdFcbYhHo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=opOV9QNmIYkzLfJCVy2HEE20PLjIPp4qY32wypfQjSz3pljfWz965Sohz6o3uXht1
-         1nxFni3apPDtVDpptkXitiHOn//qJsID+We7uqh84mBilEFapzgI4c1uEJER4NYcSU
-         Np16+fwSfmZ2AF1CtJJr19juCj26PkVURrKkEOArtb3flrTTM3V9K1V9WLOCZHTEqe
-         8tlQn/tq1HPuxdbuQ2reM+2BIp++InQE38DgK/D2VRztd/mW3poQUO3NE9ahYSQp9Q
-         5BJSK37ary1nX7f/ntzvQJNmIHAJGVeaG09oKSxpN9bY8ty1vtavee7leHre0yErkQ
-         w0a0UwU+nJCkA==
-Date:   Thu, 30 Sep 2021 12:53:40 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-        linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210930105340.GA232241@lothringen>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
- <87h7e21lqg.mognet@arm.com>
+        id S1350194AbhI3K5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:57:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49444 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350123AbhI3K5u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:57:50 -0400
+Date:   Thu, 30 Sep 2021 12:56:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632999366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BO79hiGNy3ejhyXEBBMc8ntGofuutpY57wCe1cCdsao=;
+        b=aRVrXY608v1lm5NmXBWtys3GI0cqnjpqM6yWA9ORZmodACl6ZBshHLrQCOEBXouM1ROzJ5
+        mi7dazTMs868ycP5IWzgybbnJn3ba/7cuypxs/bPW25FyC8wY58L2L1PL8yIr+QFPcEXJK
+        JtAnKYJ0p21tySMn4tqiJKf7ndAmIshBwXYOtTWFPKyZnTyEG0tsuu8KhDr3Ryl2KhHHE9
+        0ibJXrffS2tsDluDWFPXchxrk3sTzC6SUKg8nV5VLd3sIqPR8fUY3WDO/lvCBheiE3/mJJ
+        +iGQ+RqQ44PNkrlSPErxPr4KRDn8doVt+cDkp6z2VHFlGT/DO0VE6PRt8w2M0A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632999366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BO79hiGNy3ejhyXEBBMc8ntGofuutpY57wCe1cCdsao=;
+        b=YVuxTtJ68IpBCIvH/+TNUgTVZypiYXKDGJxT07dwWeNCCFgZy9uV9u1t457wBIq5tqngzh
+        dN+JotErBVkENlCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Manoj N. Kumar" <manoj@linux.ibm.com>,
+        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+        Uma Krishnan <ukrishn@linux.ibm.com>,
+        Brian King <brking@us.ibm.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        megaraidlinux.pdl@broadcom.com,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com
+Subject: [RFC] Is lib/irq_poll still considered useful?
+Message-ID: <20210930105605.ofyayf3uwk75u25s@linutronix.de>
+References: <20210930103754.2128949-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87h7e21lqg.mognet@arm.com>
+In-Reply-To: <20210930103754.2128949-1-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:00:39AM +0100, Valentin Schneider wrote:
-> Hi,
-> 
-> On 21/09/21 23:12, Thomas Gleixner wrote:
-> > Valentin reported warnings about suspicious RCU usage on RT kernels. Those
-> > happen when offloading of RCU callbacks is enabled:
-> >
-> >   WARNING: suspicious RCU usage
-> >   5.13.0-rt1 #20 Not tainted
-> >   -----------------------------
-> >   kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
-> >
-> >   rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
-> >   rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
-> >   rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
-> >
-> > The reason is that rcu_rdp_is_offloaded() is invoked without one of the
-> > required protections on RT enabled kernels because local_bh_disable() does
-> > not disable preemption on RT.
-> >
-> > Valentin proposed to add a local lock to the code in question, but that's
-> > suboptimal in several aspects:
-> >
-> >   1) local locks add extra code to !RT kernels for no value.
-> >
-> >   2) All possible callsites have to audited and amended when affected
-> >      possible at an outer function level due to lock nesting issues.
-> >
-> >   3) As the local lock has to be taken at the outer functions it's required
-> >      to release and reacquire them in the inner code sections which might
-> >      voluntary schedule, e.g. rcu_do_batch().
-> >
-> > Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
-> > rcu_rdp_is_offloaded() in the variable declaration section right at the top
-> > of the functions. But the actual usage of the result is either within a
-> > section which provides the required protections or after such a section.
-> >
-> > So the obvious solution is to move the invocation into the code sections
-> > which provide the proper protections, which solves the problem for RT and
-> > does not have any impact on !RT kernels.
-> >
-> 
-> Thanks for taking a look at this!
-> 
-> My reasoning for adding protection in the outer functions was to prevent
-> impaired unlocks of rcu_nocb_{un}lock_irqsave(), as that too depends on the
-> offload state. Cf. Frederic's writeup:
-> 
->   http://lore.kernel.org/r/20210727230814.GC283787@lothringen
+I was looking at irq_poll and for missing scheduling points.
+It raised the question why are there 7 driver still using irq_poll and
+not moved on to something else like threaded interrupts or kworker.
 
-I was wrong about that BTW!
-Because rcu_nocb_lock() always require IRQs to be disabled, which of course disables
-preemption, so the offloaded state can't change between
-rcu_nocb_lock[_irqsave]() and rcu_nocb_unlock[_irqrestore]() but anyway there
-were many other issues to fix :-)
+There is:
+- Infiband can complete direct, irq_poll and kworker.
+- be2iscsi only irq_poll.
+- cxlflash only irq_poll. Not sure how IRQs are acked.
+- ipr direct or irq_poll, can be configured. Now sure how IRQs are acked.
+- lpfc kworker and/or irq_poll. Not sure all invocations are from
+  interrupts like context [0].
+- megaraid irq_poll. Not sure all invocations are from interrupts like
+  context [0].
+- mpt3sas irq_poll or io_uring io poll. Not sure all invocations are
+  from interrupts like context [0].
 
+[0] If irq_poll_sched() is not used from an interrupt (as in interrupt
+service routine, timer handler, tasklet (not encouraging just noticed))
+but from task context (as in kworker for instance) then irq-poll handler
+will not be invoked right away. Instead it will be delayed to random
+point in time until an interrupt fires or something down the stack
+performs a pending softirq check.
+Waking ksoftirqd itself isn't helping much since it will set a
+NEED_RESCHED bit in the task_struct which local_irq_restore() isn't
+testing for. So the scheduling event is delayed until spin_unlock() for
+instance.
 
-> 
-> Anywho, I see Frederic has sent a fancy new series, let me go stare at it.
+Is there a reason for the remaining user of irq_poll to keep using it?
+
+Sebastian
