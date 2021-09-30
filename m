@@ -2,125 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC3641DD3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E37641DD42
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245544AbhI3PUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245339AbhI3PUT (ORCPT
+        id S245683AbhI3PWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:22:18 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57475 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S245411AbhI3PWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:20:19 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FFFC06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id r2so6562408pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z/xgE/Y55JRJKfdAPlV0ukAj6bmYdIAVihPBePNuMEA=;
-        b=Z2IgmXvUaFEXY7MoioDiKe6ZZXF3Bz9nLqLBxBra5B6yYSfjaV6O3KO7hSmCQCYZwn
-         AJym7zohhwCmLwm3Ggn4jIJhrIwFaKsw7T0/Byaoj/Q4zb48yyrzljuLX9WGvrE8k0xl
-         YrDcPGeqFNU/vPgzQWAb2nzuj9yniB4QbcaIc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z/xgE/Y55JRJKfdAPlV0ukAj6bmYdIAVihPBePNuMEA=;
-        b=SmeKBl57MCcovR/CNYbLSS83NRDIfJ8fiSXBDYrt1e9/QaqiZ2Ruo87Ar3AXRgv2Yx
-         V3YgN07/eT89AbLp9xGQjEWQoduF76bHSOYYbrgH6kI+GVTkmwgm8xAT20kIvHdo5aNv
-         OzhU8S1KmeakUuR9K8LJVfE+/LpUsZVEIPLD3OHXOEDWZHWdr+sbfsklYdRYZIIryQPp
-         hDllt/qcWp1BABC9GbnPmdSfZLsj4VTuPKbLZUg3XrtdpNrNRHjcsY8nTMnVRdALHyV/
-         6JgeLcwKgyTqpbVKYn7N8e4lW5I4pMRs18NcRh02CzYYQRnBoo8MFi6BpO5mP/gqzeSx
-         s0aA==
-X-Gm-Message-State: AOAM533ZQe9NSdB0gFJWtJXabQW6Wksrwxasa9Z1TqUlKaVnFSSRd3IG
-        mAuGfhv0blo3PBCIdUdJ0QdNgw==
-X-Google-Smtp-Source: ABdhPJx9xd/CgJ2K56cg1nMviMwyZqmS6824yDtPEv7b6XWoioc9YvVjIpGU29bL2HCgdp9tPKZPhw==
-X-Received: by 2002:a63:1a64:: with SMTP id a36mr5432550pgm.225.1633015116124;
-        Thu, 30 Sep 2021 08:18:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c22sm3022703pja.10.2021.09.30.08.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 08:18:35 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 08:18:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Anand K Mistry <amistry@google.com>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        "Tobin C. Harding" <me@tobin.cc>,
-        Tycho Andersen <tycho@tycho.pizza>,
+        Thu, 30 Sep 2021 11:22:17 -0400
+Received: (qmail 472306 invoked by uid 1000); 30 Sep 2021 11:20:33 -0400
+Date:   Thu, 30 Sep 2021 11:20:33 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney " <paulmck@kernel.org>,
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Stefan Metzmacher <metze@samba.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 0/6] wchan: Fix ORC support and leaky fallback
-Message-ID: <202109300817.36A8D1D0A@keescook>
-References: <20210929220218.691419-1-keescook@chromium.org>
- <20210930010157.mtn7pjyxkxokzmyh@treble>
- <YVV36z4UZaL/vOBI@hirez.programming.kicks-ass.net>
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [PATCH] tools/memory-model: Provide extra ordering for
+ unlock+lock pair on the same CPU
+Message-ID: <20210930152033.GD464826@rowland.harvard.edu>
+References: <20210930130823.2103688-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVV36z4UZaL/vOBI@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210930130823.2103688-1-boqun.feng@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:40:11AM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 29, 2021 at 06:01:57PM -0700, Josh Poimboeuf wrote:
+On Thu, Sep 30, 2021 at 09:08:23PM +0800, Boqun Feng wrote:
+> A recent discussion[1] shows that we are in favor of strengthening the
+> ordering of unlock + lock on the same CPU: a unlock and a po-after lock
+> should provide the so-called RCtso ordering, that is a memory access S
+> po-before the unlock should be ordered against a memory access R
+> po-after the lock, unless S is a store and R is a load.
 > 
-> > - Should we use a similar sched wrapper for /proc/$pid/stack to make its
-> >   raciness go away?
+> The strengthening meets programmers' expection that "sequence of two
+> locked regions to be ordered wrt each other" (from Linus), and can
+> reduce the mental burden when using locks. Therefore add it in LKMM.
 > 
-> Alternatively, can we make /stack go away? AFAICT the semantics of that
-> are far worse in that it wants the actual kernel stack of a task,
-> blocked or not, which is a total pain in the arse (not to mention a
-> giant infoleak and side-channel).
+> [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
 > 
-> > - At the risk of triggering a much larger patch set, I suspect
-> >   get_wchan() can be made generic ;-)  It's just a glorified wrapper
-> >   around stack_trace_save_tsk().
+> Co-developed-by: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+> Alan,
 > 
-> Done that for you :-)
+> I added the "Co-developed-by" and "Signed-off-by" tags since most of the
+> work is done by you. Feel free to let me know if you want to change
+> anything.
 
-Thanks! I wasn't sure the renaming was worth the churn, but the other
-cleanups make it much nicer. :)
+It looks good to me.  However, do we really want to add these litmus
+tests to the kernel source, or would it be better to keep them with
+the thousands of other tests in Paul's archives?
 
-Do you want me to re-collect the resulting series, or do you have a tree
-already for -tip for this?
+Alan
 
--Kees
-
--- 
-Kees Cook
+> Regards,
+> Boqun
