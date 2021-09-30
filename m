@@ -2,192 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7FF41E370
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C057041E37C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350002AbhI3VhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
+        id S236840AbhI3VvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350014AbhI3VhJ (ORCPT
+        with ESMTP id S229787AbhI3VvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:37:09 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813D0C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:35:26 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 24so9145526oix.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:35:26 -0700 (PDT)
+        Thu, 30 Sep 2021 17:51:16 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F3CC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:49:33 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id l8so27679545edw.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:49:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=e0NcfULf3wNNjVF33uwiRx+dy6Dmhwkfi1qdAZs9US4=;
-        b=DBjew3S0URka73F8hSVwAUYD20OGHDuGURaoBEn3oYxUADnCPbuh2AkHxd1rWzWBWb
-         CT67tzsTYkVTDq03fcfZAEdnq8OfBHkIzO8dVmgq8aXWXDO+dr0qKnWkYc/iInzciKrI
-         qf94lP+haQyQtcD/9YWmnGQz59MfjETnwL1VthNXS7D8tVXddyVGX8bxyasjYcZfATcC
-         fjasSaMS8S72GOuG5glNpDe3++79AAN+UBKQaI0He99CT4idFjPqVbxMMzrgwELHkBnn
-         ZxYBAVOCh0HJ+fgW1izeqqzlpAADFgXWh8RmiAIqS/5JHVLemV7NcIt5PHsXQfJ1dG6J
-         ebBg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FEOblmC0YUCEiWaIMk7PSN1i7kz3y2CTmP64nyEY6xY=;
+        b=UmuryMZoRAKJ59bKvenZZV8El+IqNmrMKDsWe8MMB9yQVbNNgL88EtSJdjAIejm9oO
+         kbZLkx0Vl9iz2zX2HfwHdt7Aym/qI3bkHAl47BI3na90LyXPYLgSKiCnWfk32Dto8hwn
+         tlWDXHKG+Q2cc/I2KATh47GJBWsp/XxlHsR//1U2WPkmQ0OrUraQvsR/RH8M0mFGOvHH
+         Dd++xJdH+UmFuEzyuaqiVgNQ8vKxRuMClZxlsfc7ZNNi2611CxKWKT5Xg/Rd3mPkGwwU
+         7C3D1VZSE51gM9ovSxmuji4D2bWPABK093UM93vUb+aEHV7BhdHPbI/mJ1oa90N/x7W7
+         pTMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=e0NcfULf3wNNjVF33uwiRx+dy6Dmhwkfi1qdAZs9US4=;
-        b=6II6MnKUGtgmW1RGs/3E/p1AUBy2hYgb1QV3lrhfjEfz9Hs2xfkF3F17/jItiNBMDN
-         cP4h7WBmeyqkRuv/qAQROj3h0posiK0Gt6pNZAS9ilWbfeCGC9V6vEh4n9ZC2g3HLFhZ
-         n1pjwijFoXKVlllJWXBhfJUIJqcfjHqgpJZZzyFwaIVRtpO28givhz/RT1jFxX17pJYC
-         +r6SaRGVMZoiHJb4B7Smb/ijWRB9wtUjG53KL7FVk0AJuGoW9aI7DpYpScX9/+4Z8BQT
-         gHLVNPKbw97fo6DYXpeQ7TP3/7HVjJizXqs2ObmZlpSpjVAfo/Z+iphmp4/fBgxuyaeX
-         oy2Q==
-X-Gm-Message-State: AOAM533F5FEG/ct3XhGY3APrfwrDqsPqV4R/S0WqU3/uF/FnBZt9+n3M
-        zEUFzteWc0hoEXs2TXMQauUgmg==
-X-Google-Smtp-Source: ABdhPJz6lc6vrB1jwZXEZfb6aq4lDeyCWpNlrFW0PbVZaw3Sux9WhXMMhsglFjUCTTV3T9ZfmG/FKQ==
-X-Received: by 2002:a05:6808:107:: with SMTP id b7mr1237518oie.146.1633037725892;
-        Thu, 30 Sep 2021 14:35:25 -0700 (PDT)
-Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id w17sm775133otu.54.2021.09.30.14.35.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 14:35:25 -0700 (PDT)
-Subject: Re: [PATCH v6 1/3] pwm: Introduce single-PWM of_xlate function
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@google.com>
-References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <aa563e12-4c3c-1854-ce91-efa7676d1676@kali.org>
-Date:   Thu, 30 Sep 2021 16:35:23 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FEOblmC0YUCEiWaIMk7PSN1i7kz3y2CTmP64nyEY6xY=;
+        b=7SOLm4qEQgKrCREZnQQHej6hglWA9wdRfokf8xs1P+gh0sgKtUwBtGnOmIuUzbwS1f
+         XhFDnp2DhE+uk1wC3FJ1CjGm3R+JcnZbme7bGsexjKdxT0cK6YKsnp0BXnfjpUMqgwGM
+         nC4PdsRhlDxuxSpF8z0A0NdRfip6bIth5IwZ0eofUr5CemLNDMH2sQDvc83L+hN+GESw
+         wqESHBKCjO4tNBzTgm5wCb/FjCAb77kiv6L5DhHsov2Ddrb1egmth/3cxsYpGpJQSwdu
+         fSGUn/RNZhBjdddJXCqwH+XprUTiNa63VkTUb7fcVx4wm5JNkHk1/nKQk4UACGLowQ58
+         0tCA==
+X-Gm-Message-State: AOAM533Ajb1NXnmoY5wB66nqBxBALZ5QGyUJRkOAZKllFlKXcO5tsdMy
+        cN7MK3bPzYtFD0fwHlrXZGtQkwN3xRc=
+X-Google-Smtp-Source: ABdhPJxEAUFLydNFx3P6tcdpsrekpJIwuSj1IYXnvIlRWEsyYFpSx2DC+9KuyUFAUad0bIuxOCEA5A==
+X-Received: by 2002:a17:906:3693:: with SMTP id a19mr1902627ejc.237.1633038571983;
+        Thu, 30 Sep 2021 14:49:31 -0700 (PDT)
+Received: from tom-desktop (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
+        by smtp.gmail.com with ESMTPSA id p15sm2149853edy.67.2021.09.30.14.49.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 14:49:31 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 23:49:29 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] staging: vt6655: fix camelcase in bShortSlotTime
+Message-ID: <20210930214929.GB45822@tom-desktop>
+References: <20210926162527.21462-1-tomm.merciai@gmail.com>
+ <20210926162527.21462-2-tomm.merciai@gmail.com>
+ <YVHilhCk3cgGhXrZ@kroah.com>
+ <20210927213515.GA6953@tom-desktop>
+ <YVKdVCaVwmPG7DVx@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210930030557.1426-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVKdVCaVwmPG7DVx@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 06:43:00AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Sep 27, 2021 at 11:35:15PM +0200, Tommaso Merciai wrote:
+> > On Mon, Sep 27, 2021 at 05:26:14PM +0200, Greg Kroah-Hartman wrote:
+> > > On Sun, Sep 26, 2021 at 06:25:18PM +0200, Tommaso Merciai wrote:
+> > > > Replace camel case variable bShortSlotTime with snake case
+> > > > variable b_short_slot_time.
+> > > 
+> > > That is a very odd variable name.  Why did you pick that one?
+> > > 
+> > > What deos it mean?
+> > > 
+> > > You do understand where the original naming format came from here, and
+> > > what it was trying to represent, right?  If not, please go read up on
+> > > it:
+> > > 	https://en.wikipedia.org/wiki/Hungarian_notation
+> > > 
+> > > That style is not used in Linux, and so, when converting from it, do not
+> > > attempt to keep the same style present here, that is kind of pointless,
+> > > don't you agree?
+> > 
+> >   You are definitely right. What do you think about "short_slot_time"?
+> 
+> "time" implies that this will hold a value of time, right?
+> 
+> What exactly does this variable do?  That might help in naming it
+> better.
 
-On 9/29/21 10:05 PM, Bjorn Andersson wrote:
-> The existing pxa driver and the upcoming addition of PWM support in the
-> TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> thereby a need for a of_xlate function with the period as its single
-> argument.
->
-> Introduce a common helper function in the core that can be used as
-> of_xlate by such drivers and migrate the pxa driver to use this.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> Changes since v4:
-> - None
->
->  drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
->  drivers/pwm/pwm-pxa.c | 16 +---------------
->  include/linux/pwm.h   |  2 ++
->  3 files changed, 29 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> index 4527f09a5c50..2c6b155002a2 100644
-> --- a/drivers/pwm/core.c
-> +++ b/drivers/pwm/core.c
-> @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const struct of_phandle_args *args)
->  }
->  EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
->  
-> +struct pwm_device *
-> +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
-> +{
-> +	struct pwm_device *pwm;
-> +
-> +	if (pc->of_pwm_n_cells < 1)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	/* validate that one cell is specified, optionally with flags */
-> +	if (args->args_count != 1 && args->args_count != 2)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	pwm = pwm_request_from_chip(pc, 0, NULL);
-> +	if (IS_ERR(pwm))
-> +		return pwm;
-> +
-> +	pwm->args.period = args->args[0];
-> +	pwm->args.polarity = PWM_POLARITY_NORMAL;
-> +
-> +	if (args->args_count == 2 && args->args[2] & PWM_POLARITY_INVERTED)
-> +		pwm->args.polarity = PWM_POLARITY_INVERSED;
-> +
-> +	return pwm;
-> +}
-> +EXPORT_SYMBOL_GPL(of_pwm_single_xlate);
-> +
->  static void of_pwmchip_add(struct pwm_chip *chip)
->  {
->  	if (!chip->dev || !chip->dev->of_node)
-> diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-> index a9efdcf839ae..238ec88c130b 100644
-> --- a/drivers/pwm/pwm-pxa.c
-> +++ b/drivers/pwm/pwm-pxa.c
-> @@ -148,20 +148,6 @@ static const struct platform_device_id *pxa_pwm_get_id_dt(struct device *dev)
->  	return id ? id->data : NULL;
->  }
->  
-> -static struct pwm_device *
-> -pxa_pwm_of_xlate(struct pwm_chip *pc, const struct of_phandle_args *args)
-> -{
-> -	struct pwm_device *pwm;
-> -
-> -	pwm = pwm_request_from_chip(pc, 0, NULL);
-> -	if (IS_ERR(pwm))
-> -		return pwm;
-> -
-> -	pwm->args.period = args->args[0];
-> -
-> -	return pwm;
-> -}
-> -
->  static int pwm_probe(struct platform_device *pdev)
->  {
->  	const struct platform_device_id *id = platform_get_device_id(pdev);
-> @@ -187,7 +173,7 @@ static int pwm_probe(struct platform_device *pdev)
->  	pc->chip.npwm = (id->driver_data & HAS_SECONDARY_PWM) ? 2 : 1;
->  
->  	if (IS_ENABLED(CONFIG_OF)) {
-> -		pc->chip.of_xlate = pxa_pwm_of_xlate;
-> +		pc->chip.of_xlate = of_pwm_single_xlate;
->  		pc->chip.of_pwm_n_cells = 1;
->  	}
->  
-> diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> index 725c9b784e60..dd51d4931fdc 100644
-> --- a/include/linux/pwm.h
-> +++ b/include/linux/pwm.h
-> @@ -414,6 +414,8 @@ struct pwm_device *pwm_request_from_chip(struct pwm_chip *chip,
->  
->  struct pwm_device *of_pwm_xlate_with_flags(struct pwm_chip *pc,
->  		const struct of_phandle_args *args);
-> +struct pwm_device *of_pwm_single_xlate(struct pwm_chip *pc,
-> +				       const struct of_phandle_args *args);
->  
->  struct pwm_device *pwm_get(struct device *dev, const char *con_id);
->  struct pwm_device *of_pwm_get(struct device *dev, struct device_node *np,
+  Is a boolean variable, if true short slot time mode is enabled, false 
+  not right?
+  A good solution could be: "short_slot_mode"? What do you think about?
 
+  thanks,
+  tommaso
 
-I've tested these v6 all 3 patches on the Lenovo Yoga C630
-
-Tested-by: Steev Klimaszewski <steev@kali.org>
-
+> 
+> thanks,
+> 
+> greg k-h
