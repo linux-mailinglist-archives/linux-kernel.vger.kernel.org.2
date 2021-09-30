@@ -2,151 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EA741E039
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1D741E03A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352733AbhI3Rd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352673AbhI3RdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:33:24 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25927C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:31:42 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id v10so14970147ybq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dbyWtskCAZy+xt/GX/rEgH8dPX77Pl0JHzECutvB7o8=;
-        b=AOfO0Xhr5RbIHSrEG7VDe+G/eQDtr/9yws9yHRrlM4INTiD6bVk7zpxrJIj/11NLkI
-         TIQ6kRv/FruFzkkLOHs/dUDB0vBP6Bz4CdY4KqkoPXWOu4ZpAnGAiNT1Q2DCWTYfCTdw
-         +4idllKUY8B1pBmX1Bbps144pNNEeW76nSwzMwjmCoOCg5LvCJPEseLCwrCg44RzvFJN
-         Z2Rk95vOiKlQv80e0EfbhzQpsAk9HoH8s3Ccy87CD95vUacfVMvqwtVyr31MIN65zPd2
-         nHthyi2Xb0uLapKRmAdVvZbTMJ4GForrM0vxVj5y/e3kS+4k/mi6yeoq3W4tF4LQKMza
-         Ne7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dbyWtskCAZy+xt/GX/rEgH8dPX77Pl0JHzECutvB7o8=;
-        b=YqIhHkZYpTFMlnLMDa/+ck31yzweviIIdx8sp0IJyGn7FKM1NttsN6t3pc1h+eMNUF
-         c0zI0vzpY0Fn4j252CnyWgw+2yT7ecOpFjKvoorKwP0MySv8oN2mMCkE/9rJ5b1vkL53
-         GPbrOmOJex4+VL4orG/zl5cLiLk/zu6askLD/F/xlqS4qOlKgDvnC3C/rNPhRb9GX7ud
-         5ArCroA8q5pBBoaWILYZHt9XZkYFvQHX4NAA/fV0FOG67ap6Vms2SnTVjIMLsiWfbgL9
-         5Qu8rxcw+aMcPVU8oQcCtJj1a6Jig6FZPcqt41OECMevzm4jFeueyEQX3Ic668ZF38T3
-         9Cbg==
-X-Gm-Message-State: AOAM532Pk0IKDwuOJBQP3LDSZ28OVP+yZbq3St7JwcEq/ZbPWho43ji4
-        KK7DOfyglHnVbSPfL0REam6TBMs1yHMHgJPSq7cuVA==
-X-Google-Smtp-Source: ABdhPJyV3/tD2PJOZ+6zaxIskMQ+tAjgdePucKrZFQgdWa6LnhBqYPlRwMYUesbtPLbMK6lEurqAoxRJi8dLI25P64Y=
-X-Received: by 2002:a25:2b07:: with SMTP id r7mr496920ybr.296.1633023101172;
- Thu, 30 Sep 2021 10:31:41 -0700 (PDT)
+        id S1352736AbhI3ReG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352732AbhI3Rdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5DAD613D1;
+        Thu, 30 Sep 2021 17:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633023132;
+        bh=RamI4y2DEDbVycOyQwMn9nbwuJrPQmgsrgklzEyEVlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kybyUF4qOB+1FVwjRr5vLvom+HThY3jueIzDsL1bj6Up0kyZR/N0/qGR+hcLjkKVx
+         tKTAh7iGOT8hFnvM3BVcJzs4bhyAk0bTLdLHzuXpsAgJZPUz5X0jg3xNwjNN6ct4rJ
+         tkxkPdWu2sMqIdIHINFXxa4xaNUZCVYWIqwLKR6e8PATHosFBwKoUr8tsTX3A/7f8Y
+         fow4+PI9DPrHOhQT40Jv63uIUM2OVZSKn4pxboB9GWYPnERHwxfDnO9R3huSoaw4FO
+         2DlxLHKY2CnCa1aDs2asiHT3iX0zNMwHdBwixgqBdCPMmuZlwCvnOVZO0kiF0h323U
+         kpbbXid/jhHFA==
+Date:   Thu, 30 Sep 2021 10:32:07 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, sfr@canb.auug.org.au, mbenes@suse.cz,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] objtool: Teach get_alt_entry() about more relocation
+ types
+Message-ID: <YVX0lxyRxZuN1idm@archlinux-ax161>
+References: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
- <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
- <20210930134343.ztq3hgianm34dvqb@skbuf> <YVXDAQc6RMvDjjFu@lunn.ch>
-In-Reply-To: <YVXDAQc6RMvDjjFu@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 30 Sep 2021 10:31:05 -0700
-Message-ID: <CAGETcx8emDg1rojU=_rrQJ3ezpx=wTukFdbBV-uXiu1EQ87=wQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 7:00 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Andrew is testing with arch/arm/boot/dts/vf610-zii-dev-rev-b.dts.
-> >
-> > Graphically it looks like this:
->
-> Nice ASCII art :-)
+On Thu, Sep 30, 2021 at 12:43:10PM +0200, Peter Zijlstra wrote:
+> 
+> Occasionally objtool encounters symbol (as opposed to section)
+> relocations in .altinstructions. Typically they are the alternatives
+> written by elf_add_alternative() as encountered on a noinstr
+> validation run on vmlinux after having already ran objtool on the
+> individual .o files.
+> 
+> Basically this is the counterpart of commit 44f6a7c0755d ("objtool:
+> Fix seg fault with Clang non-section symbols"), because when these new
+> assemblers (binutils now also does this) strip the section symbols,
+> elf_add_reloc_to_insn() is forced to emit symbol based relocations.
+> 
+> As such, teach get_alt_entry() about different relocation types.
+> 
+> Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Thanks for the awesome diagram Vladimir!
+This resolves the instance of the warning that I see with clang-12:
 
->
-> This shows the flow of Ethernet frames thought the switch
-> cluster. What is missing, and causing fw_devlink problems is the MDIO
-> bus master for the PHYs, and the interrupt control where PHY
-> interrupts are stored, and the linking from the PHY to the interrupt
-> controller. Physically all these parts are inside the Ethernet switch
-> package. But Linux models them as separate blocks. This is because in
-> the general case, they are all discrete blocks. You have a MAC chip,
-> and a PHY chip, and the PHY interrupt output it connected to a SoC
-> GPIO.
->
-> >
-> >  +-----------------------------+
-> >  |          VF610 SoC          |
-> >  |          +--------+         |
-> >  |          |  fec1  |         |
-> >  +----------+--------+---------+
-> >                 | DSA master
-> >                 |
-> >                 | ethernet = <&fec1>;
-> >  +--------+----------+---------------------------+
-> >  |        |  port@6  |                           |
-> >  |        +----------+                           |
-> >  |        | CPU port |     dsa,member = <0 0>;   |
-> >  |        +----------+      -> tree 0, switch 0  |
-> >  |        |   cpu    |                           |
-> >  |        +----------+                           |
-> >  |                                               |
-> >  |            switch0                            |
-> >  |                                               |
-> >  +-----------+-----------+-----------+-----------+
->
-> Inside the block above, is the interrupt controller and the MDIO bus
-> master.
->
->
-> >  |   port@0  |   port@1  |   port@2  |   port@5  |
-> >  +-----------+-----------+-----------+-----------+
-> >  |switch0phy0|switch0phy1|switch0phy2|   no PHY  |
-> >  +-----------+-----------+-----------+-----------+
->
-> The control path for these PHYs is over the MDIO bus. They are probed
-> via the control path bus. These PHYs also have an interrupt output,
-> which is wired to the interrupt controller above.
->
->
-> >  | user port | user port | user port | DSA port  |
-> >  +-----------+-----------+-----------+-----------+
-> >  |    lan0   |    lan1   |    lan2   |    dsa    |
-> >  +-----------+-----------+-----------+-----------+
->
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Thanks for the dts paths and the additional details Andrew.
-
-I think this gives me enough info for now to make sure whatever I'm
-coding isn't completely stupid. I'm trying to make the generic PHY
-driver less greedy (taking it a bit further than what Vladimir was
-attempting) and also delay the use of generic PHY driver as late as
-possible (so that we give as much time as possible for the specific
-driver to be registered/loaded before we give up and use generic PHY
-driver). This would also need some changes to the DSA code and hence
-these questions.
-
-Btw, do we have non-DSA networking devices where fw_devlink=on
-delaying PHY probes is causing an issue?
-
--Saravana
+> ---
+>  tools/objtool/special.c |   32 +++++++++++++++++++++++++-------
+>  1 file changed, 25 insertions(+), 7 deletions(-)
+> 
+> --- a/tools/objtool/special.c
+> +++ b/tools/objtool/special.c
+> @@ -58,6 +58,24 @@ void __weak arch_handle_alternative(unsi
+>  {
+>  }
+>  
+> +static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
+> +{
+> +	switch (reloc->sym->type) {
+> +	case STT_FUNC:
+> +		*sec = reloc->sym->sec;
+> +		*off = reloc->sym->offset + reloc->addend;
+> +		return true;
+> +
+> +	case STT_SECTION:
+> +		*sec = reloc->sym->sec;
+> +		*off = reloc->addend;
+> +		return true;
+> +
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+>  static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+>  			 struct section *sec, int idx,
+>  			 struct special_alt *alt)
+> @@ -91,15 +109,12 @@ static int get_alt_entry(struct elf *elf
+>  		WARN_FUNC("can't find orig reloc", sec, offset + entry->orig);
+>  		return -1;
+>  	}
+> -	if (orig_reloc->sym->type != STT_SECTION) {
+> -		WARN_FUNC("don't know how to handle non-section reloc symbol %s",
+> +	if (!reloc2sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off)) {
+> +		WARN_FUNC("don't know how to handle reloc symbol type: %s",
+>  			   sec, offset + entry->orig, orig_reloc->sym->name);
+>  		return -1;
+>  	}
+>  
+> -	alt->orig_sec = orig_reloc->sym->sec;
+> -	alt->orig_off = orig_reloc->addend;
+> -
+>  	if (!entry->group || alt->new_len) {
+>  		new_reloc = find_reloc_by_dest(elf, sec, offset + entry->new);
+>  		if (!new_reloc) {
+> @@ -116,8 +131,11 @@ static int get_alt_entry(struct elf *elf
+>  		if (arch_is_retpoline(new_reloc->sym))
+>  			return 1;
+>  
+> -		alt->new_sec = new_reloc->sym->sec;
+> -		alt->new_off = (unsigned int)new_reloc->addend;
+> +		if (!reloc2sec_off(new_reloc, &alt->new_sec, &alt->new_off)) {
+> +			WARN_FUNC("don't know how to handle reloc symbol type: %s",
+> +				  sec, offset + entry->new, new_reloc->sym->name);
+> +			return -1;
+> +		}
+>  
+>  		/* _ASM_EXTABLE_EX hack */
+>  		if (alt->new_off >= 0x7ffffff0)
+> 
