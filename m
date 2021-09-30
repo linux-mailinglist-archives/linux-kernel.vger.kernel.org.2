@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3562D41E2AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 22:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBD941E2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 22:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348000AbhI3U2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 16:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347824AbhI3U2J (ORCPT
+        id S1348103AbhI3Ugz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 16:36:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348030AbhI3Ugy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 16:28:09 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E480BC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:26:25 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id x7so25736458edd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=YixZUZGFq1aURBfnaIuzc/UBuvYmdobfih6fbMzDmEw=;
-        b=UCQ26Ut2SPL9N9nEIsJzz+Kz2hJAXvOdsa9IQq3nXf5lJWFxE9k6icSlXoQtZNuGzZ
-         KO8miw8X0DOgkG/4LNJAgaFHLCxiDXq1zzsSH4VDcIFXyY+njqVM6yvll9cV3EzKe7GV
-         n7DBpNdYAcCR/yUmBBH2v+h+d3j5A42D1PQsupMiyPCwG/1dq6UKmHr7s/iJM0WCM/9g
-         bujYSsJvNMgEpozhzxyei0toUWyHGX5URK4yMrLqj3C2FPN4kb5lpY4cLWYG0Q94XpQ4
-         5/GgxhhuFWAxisPR06AyHYt+aNrYZxrcUPd5eaA9FY63cbelrX9aOj9Yr6dkWODi0K8T
-         trKg==
+        Thu, 30 Sep 2021 16:36:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633034111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ddey/K9wpIxOBXbjiNaGsj4E/caV13pJbiNDITnKjiA=;
+        b=e4OAA5JjI6EP9NHCMtB+fHluoRFxi/DOJnQTht1kdWyMN6m+y+VGK2T4COUJ2etKj7gPtM
+        /XAGSRbaEJ5LN9UVhvTaZjIYmN4D88ydrvhlpg5o84sK3BxIph/pfwxmYsVhms5aQAnt+u
+        U0CpcDnhuypMr1ge2cS+z3WGs+sOvFc=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-xQa_G_MWMaaRSKuyUWWRMA-1; Thu, 30 Sep 2021 16:35:09 -0400
+X-MC-Unique: xQa_G_MWMaaRSKuyUWWRMA-1
+Received: by mail-ot1-f71.google.com with SMTP id m12-20020a0568301e6c00b005469f1a7d70so5112285otr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:35:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=YixZUZGFq1aURBfnaIuzc/UBuvYmdobfih6fbMzDmEw=;
-        b=PJy5ouQTOmuByS9sP26gXhw5xcHX7lhu9JDiu7qhoQIZRjdV16TqngihHtCEYju32R
-         KIgWdtPFIery6Yi4Th7eK8Ley0gknOGJBarQI55PNqenjiRZ5bTdNt5iTuLd7o2cpdmI
-         pZh4RutwhG1F1e6q4sFhO+XV7A3ZWJbLpAjm4KfBSwkZwVB97NwoOpMUDz16PIjY2ERC
-         mJyaoKPUS2BSqoEbdljKqzrMyrTiT10j4x4zXr8LbllS2Q68jpxP2zxzD5XUF7DGFEMD
-         S+DQCbJUzoJslqZP9P2aMKAGZEFx4atYwCLAz3q3VzCRWAS0Z36yiMWl710doiQSNGt2
-         fkDw==
-X-Gm-Message-State: AOAM530qq76AXd4OFPw9TkjEh3f4hJJV6/iz7PB3DgMB413LLQAG2Wyl
-        w+B6oh9kiVonIpxbQ9e82pZDudd8tvczmnJHCAg=
-X-Google-Smtp-Source: ABdhPJyZ5BPeLy2eySmYQB525cGn1lf0cGLJTgQ7oJN+FlT4ld+rupQGXd59Wvd+jGmk4eFpitccem0Wpoj3LsMlwuA=
-X-Received: by 2002:a17:906:5282:: with SMTP id c2mr1547142ejm.162.1633033584494;
- Thu, 30 Sep 2021 13:26:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ddey/K9wpIxOBXbjiNaGsj4E/caV13pJbiNDITnKjiA=;
+        b=41sSZUICLDmEWhCtzO0I9gtddKqIah8U6QweRsnlNoO0KV8RehZhlA4Zs2UNnE6EC7
+         qv9KLsUVw66ig2UDm9JewGZd+axGk4+4c6sTAD52MyjfIBxdZkv9mSRU+uzfoKUctNJF
+         dz5NFj7So5Joaar8jvKC8oPfrQQ7iMJAHsV9w9LQ0A+Nyi0TR4npBDm7DSIo6RE4RqjJ
+         +yVNLLUugZAfa+R4irSoKD41LMD4LpCniD7wPgRNPp/u2hnpgaKkfBW2a6ukcSRxlkRy
+         pzl9AmyZXRd9UErPaOCnN/xwWt4YIkadgbrVh/DowsvHiOpO0eRgvZ9B47qYk1MI33P+
+         4i8w==
+X-Gm-Message-State: AOAM5329b62d/awtIyx07biJJakzW3czpArYanNPNdQNx7E/4ZR00UjZ
+        3CI79EIh0jJTv5SJSnwAlEES6Uq6G91cYsrIhFvftOtjo/NQBiFNjQsUG6dYZogFDWtXD3VkIkK
+        A+VHM0Ey+cwBQkQbgAFPBWxzE
+X-Received: by 2002:a9d:eac:: with SMTP id 41mr6915150otj.38.1633034108767;
+        Thu, 30 Sep 2021 13:35:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHDY1UmnahWM3r/K2pa4cUoccqfVEBvB3ig9Y7Mb2SIBYYFlvI2J1A9NKArgCzNIpdaObCPg==
+X-Received: by 2002:a9d:eac:: with SMTP id 41mr6915131otj.38.1633034108556;
+        Thu, 30 Sep 2021 13:35:08 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a23sm769273otp.44.2021.09.30.13.35.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 13:35:07 -0700 (PDT)
+From:   trix@redhat.com
+To:     Felix.Kuehling@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/amdkfd: match the signatures of the real and stub kgd2kfd_probe()
+Date:   Thu, 30 Sep 2021 13:34:58 -0700
+Message-Id: <20210930203458.441556-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Received: by 2002:a17:906:2b0c:0:0:0:0 with HTTP; Thu, 30 Sep 2021 13:26:23
- -0700 (PDT)
-Reply-To: rabopaul57@gmail.com
-From:   Rabo Paul <aigaddafi11@gmail.com>
-Date:   Thu, 30 Sep 2021 18:26:23 -0200
-Message-ID: <CANMgZfeTO8W0sZe9itiJxxKntHKEBMCxjNVw=0qkQjrOk3cxXA@mail.gmail.com>
-Subject: More Authentic Information
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
+
+When CONFIG_HSA_AMD=n this there is this error
+amdgpu_amdkfd.c:75:56: error: incompatible type for
+  argument 2 of ‘kgd2kfd_probe’
+   75 |  adev->kfd.dev = kgd2kfd_probe((struct kgd_dev *)adev, vf);
+
+amdgpu_amdkfd.h:349:17: note: declared here
+  349 | struct kfd_dev *kgd2kfd_probe(struct kgd_dev *kgd,
+  struct pci_dev *pdev,
+
+The signature of the stub kgd2kfd_probe() does not match the real one.
+So change the stub to match.
+
+Fixes: 920f37e6a3fc ("drm/amdkfd: clean up parameters in kgd2kfd_probe")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h
+index 38d883dffc20..69de31754907 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h
+@@ -346,8 +346,7 @@ static inline void kgd2kfd_exit(void)
+ }
+ 
+ static inline
+-struct kfd_dev *kgd2kfd_probe(struct kgd_dev *kgd, struct pci_dev *pdev,
+-					unsigned int asic_type, bool vf)
++struct kfd_dev *kgd2kfd_probe(struct kgd_dev *kgd, bool vf)
+ {
+ 	return NULL;
+ }
 -- 
+2.26.3
 
-
-Dear Friend!!!
-
-I know that this message will come to you as a surprise.
-
-I am the Auditing and Accounting section manager in (GROUPE BANQUE
-POPULAIRE) Casablanca Morocco. I Hope that you will not expose or betray
-this trust and confidence that I am about to repose on you for the mutual
-benefit of our both families.I need your assistance in transferring the sum
-of ($3.7M) three million, seven hundred thousand united dollars into your
-account within 7 to 10 banking days. If you agree to handle this
-project with me.
-Contact my private email (rabopaul57@gmail.com) And your information is needed
-Below.
-
-
-
-Your Full Name...................
-
-Your Age and Sex....................
-
-Your Private Telephone...............
-
-Your Occupation...............
-
-Your Country................
-
-
-
-I am expecting your urgent respond.
-
-Rabo Paul.
