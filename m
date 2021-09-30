@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D8841D5B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD8A41D5C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348901AbhI3Iw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:52:29 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:48898 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1348052AbhI3Iw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:52:26 -0400
-X-UUID: 120975a9fa3c4183b67d298a3bf2d88c-20210930
-X-UUID: 120975a9fa3c4183b67d298a3bf2d88c-20210930
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <powen.kao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2053204664; Thu, 30 Sep 2021 16:50:40 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 30 Sep 2021 16:50:39 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 30 Sep 2021 16:50:38 +0800
-Message-ID: <a0c747584bf4190d1456f285d83670e807f31553.camel@mediatek.com>
-Subject: Re: [PATCH 0/2] Fix UFS task management command timeout
-From:   Po-Wen Kao <powen.kao@mediatek.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "alice.chao@mediatek.com" <alice.chao@mediatek.com>,
-        "jonathan.hsu@mediatek.com" <jonathan.hsu@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
-        "wsd_upstream@mediatek.com" <wsd_upstream@mediatek.com>,
-        "ed.tsai@mediatek.com" <ed.tsai@mediatek.com>
-Date:   Thu, 30 Sep 2021 16:50:38 +0800
-In-Reply-To: <DM6PR04MB657502D8172084475F280CF5FCA99@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210929070047.4223-1-powen.kao@mediatek.com>
-         <DM6PR04MB657502D8172084475F280CF5FCA99@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S1348943AbhI3IzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348052AbhI3IzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED8F26137A;
+        Thu, 30 Sep 2021 08:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632992016;
+        bh=ipv+Kb1lDn3reuFyXjezzOrNiWEsOoZgP7hBJo18ULA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pdZkh/0sTVGhG4O8RK8rDOeLE6CF2bFroexLs+UMiDl8j3ZYnORz9xaCI+hWyphyh
+         Vahk20qaPmTV66veFgiGFkTzfDzjQi/QY7u6H/xnmFZq8kAjtrgtfFgczQ5RVBrKLU
+         iGwD97nEomfeq5FATr7mWRUog/o99d+iGRLDv0J27V1APsNQgBxMF7DhzxTFoIKS0U
+         Su6xEZGRfZarPKZHiWwv5KtZcII0aARwjWsqzvPX04mWJQyLJSVASt1wExPfa+Y58s
+         33Xa8Zzctik1HUBGKSKEzgSudjlDxQnLc2fgEXmUSbtA1jzvAW8TTe+crXhDnE2OL4
+         YldMLDaNq9o5Q==
+From:   Will Deacon <will@kernel.org>
+To:     yee.lee@mediatek.com, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>, Kuan-Ying.lee@mediatek.com,
+        nicholas.Tang@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, chinwen.chang@mediatek.com
+Subject: Re: [PATCH v2] scs: Release kasan vmalloc poison in scs_free process
+Date:   Thu, 30 Sep 2021 09:53:31 +0100
+Message-Id: <163299104851.1259041.949139290018170136.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210930081619.30091-1-yee.lee@mediatek.com>
+References: <20210930081619.30091-1-yee.lee@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
+On Thu, 30 Sep 2021 16:16:13 +0800, yee.lee@mediatek.com wrote:
+> From: Yee Lee <yee.lee@mediatek.com>
+> 
+> Since scs allocation is moved to vmalloc region, the
+> shadow stack is protected by kasan_posion_vmalloc.
+> However, the vfree_atomic operation needs to access
+> its context for scs_free process and causes kasan error
+> as the dump info below.
+> 
+> [...]
 
-Thanks for reminding. It's exactly the same issue.
+Applied to arm64 (for-next/scs), thanks!
 
-Best,
-Po-Wen Kao
+[1/1] scs: Release kasan vmalloc poison in scs_free process
+      https://git.kernel.org/arm64/c/528a4ab45300
 
-On Wed, 2021-09-29 at 07:39 +0000, Avri Altman wrote:
-> > On UTP_TASK_REQ_COMPL interrupt, ufshcd_tmc_handler() iterates
-> > through
-> > busy requests in tags->rqs and complete request if corresponding
-> > doorbell flag is reset.
-> > However, ufshcd_issue_tm_cmd() allocates requests from tags-
-> > >static_rqs
-> > and trigger doorbell directly without dispatching request through
-> > block
-> > layer, thus requests can never be found in tags->rqs and completed
-> > properly. Any TM command issued by ufshcd_issue_tm_cmd() inevitably
-> > timeout and further leads to recovery flow failure when LU Reset or
-> > Abort Task is issued.
-> > 
-> > In this patch, blk_mq_tagset_busy_iter() call in
-> > ufshcd_tmc_handler()
-> > is replaced with new interface, blk_mq_drv_tagset_busy_iter(), to
-> > allow completion of request allocted by driver. The new interface
-> > is
-> > introduced for driver to iterate through requests in static_rqs.
-> 
-> Is this the same issue that was addressed here - 
-> https://urldefense.com/v3/__https://www.spinics.net/lists/linux-scsi/msg164520.html__;!!CTRNKA9wMg0ARbw!yDkg-AVkMBFsnDBV42HMDgnE51HaEBarK2Tw8z8Di4aC1_7BrRkjIO13nz5rFUk-FA$
-> A$  ?
-> 
-> Thanks,
-> Avri
-> 
-> > 
-> > Po-Wen Kao (2):
-> >   blk-mq: new busy request iterator for driver
-> >   scsi: ufs: fix TM request timeout
-> > 
-> >  block/blk-mq-tag.c        | 36 ++++++++++++++++++++++++++++++-----
-> > -
-> >  drivers/scsi/ufs/ufshcd.c |  2 +-
-> >  include/linux/blk-mq.h    |  4 ++++
-> >  3 files changed, 35 insertions(+), 7 deletions(-)
-> > 
-> > --
-> > 2.18.0
-> 
-> 
+Cheers,
+-- 
+Will
 
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
