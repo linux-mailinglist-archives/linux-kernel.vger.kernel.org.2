@@ -2,167 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D93041D9EE
+	by mail.lfdr.de (Postfix) with ESMTP id B687D41D9F0
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350914AbhI3Mhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:37:46 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:27410 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350647AbhI3Mhk (ORCPT
+        id S1350926AbhI3Mhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350920AbhI3Mht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:37:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1633005357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=csvwBDBtFGc48jg4jEJIdJUsqEpEZpnnkIuWC7zw3YQ=;
-        b=bqvNY1Rp3+97atd0vJfMyGRPQbRJVrhbbEJspkM+hBJK/l9rNiqm327UbdbUsu26poYojI
-        6eE0EeYH/9K1ilvbI0v2ZnLSS/iTudsMNpVMv8Rp8yXGfLtepBukGQW8+mgYRu5tMNTOC/
-        /bvsBvfjtfgdlUfeEjMMtSLDdQSdIJo=
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02lp2055.outbound.protection.outlook.com [104.47.6.55]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-23-4iLhtgzoOE-IdxjPXrGF9g-2; Thu, 30 Sep 2021 14:35:56 +0200
-X-MC-Unique: 4iLhtgzoOE-IdxjPXrGF9g-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FEdWrKHzXgjyp7ZEHrbXCFH6f7gIoRdJxTJRaM5qejyIyVP5t8YLM941Ss03r005KvIpTh+w66LzNQo8+4TcfIxapaGDiFInA7duYaZxTud6TPt7AqSsaq8Lx/oBw2SY7/MSWiL3oqcEZHxY+MfIr1S3u8ziwIK4FxZwW7f/YhW4TicFf3V8h4RTZc8NnV89jE2+hKmcBsAC8d+pMXBi1ftcmD8889QrL77QN2WuW2iuo5fpZeT47XZ49P/XJKNjk24ptdlvh1LHsLyQ+FIcqls0cj0zvGazmq6HzY+gfv/ZyF7HQxcOMBB6yG3Zhwm9HrxotvovuDubrOz2VW0MXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=csvwBDBtFGc48jg4jEJIdJUsqEpEZpnnkIuWC7zw3YQ=;
- b=ZcvCV2pd5y9a99dHbgErSusWKYtrYYe1JVKdU+Fl6+9kfK/90vRoQVjEmE6q1n2811b5sAPf69SBxeBlVuYse7isclAJs956GlPonBVpu54oWs6/qOrGvzTspb3RTCrjLZUv29l2h3nNwrbGNmTQOsSRfxJtJ0kqmjKITl89pXZYdUhlG7TOB+wYPP4H9Xls4J8neNjCMOXvFPoxMmaxejYfnGmcadQxbUVmLXk9bWpYZ9CQig7KuNXy1POLCoqXJCWVuqZRm3XfZ9FAaKaki0fxxfrXcLzvJd40xyQPblcoonPQsQaNbg/468i4jNb7P3RrLy/nRP7E/sXv6GAdmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VE1PR04MB6383.eurprd04.prod.outlook.com (2603:10a6:803:11b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Thu, 30 Sep
- 2021 12:35:54 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4566.014; Thu, 30 Sep 2021
- 12:35:54 +0000
-Subject: [PATCH 3/6] xen/x86: adjust xen_set_fixmap()
-From:   Jan Beulich <jbeulich@suse.com>
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
-Message-ID: <11fcaea2-ec17-3edd-ecdf-4cdd2d472bd0@suse.com>
-Date:   Thu, 30 Sep 2021 14:35:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
-Content-Type: text/plain; charset=utf-8
+        Thu, 30 Sep 2021 08:37:49 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BB2C06176D;
+        Thu, 30 Sep 2021 05:36:06 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1] (unknown [IPv6:2a02:810a:880:f54:fd5c:7cb1:aaa8:78b1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 423711F44C22;
+        Thu, 30 Sep 2021 13:36:04 +0100 (BST)
+Subject: Re: [PATCH] Revert "spi: modify set_cs_timing parameter"
+To:     Mark Brown <broonie@kernel.org>
+Cc:     kernel@collabora.com, linux-spi@vger.kernel.org,
+        enric.balletbo@collabora.com, dafna3@gmail.com,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>
+References: <20210930120700.2564-1-dafna.hirschfeld@collabora.com>
+ <20210930122513.GX4199@sirena.org.uk>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <28f8af42-4535-ef9f-e521-712d37e2cb72@collabora.com>
+Date:   Thu, 30 Sep 2021 14:36:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210930122513.GX4199@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM6PR01CA0058.eurprd01.prod.exchangelabs.com
- (2603:10a6:20b:e0::35) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
-MIME-Version: 1.0
-Received: from [10.156.60.236] (37.24.206.209) by AM6PR01CA0058.eurprd01.prod.exchangelabs.com (2603:10a6:20b:e0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16 via Frontend Transport; Thu, 30 Sep 2021 12:35:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 733cb1a5-c54a-41c4-369a-08d9840ed853
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6383:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB6383C21A54C6482E4DE9AB88B3AA9@VE1PR04MB6383.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: myEIyzqFlWR0QrxdEpAZVC+kMgoa8VyQRPVsJvIIB/9mrT6ZOoOJ53sMJyck12R5nMTjIuRneA7fU3mZOtVPxF/IpUAJzxRcF4QrYKkWHyaCjM+GdrxkpwYjGkemq5LTUIFLuO9mq0vXkqk0Z1NgbPukI7GjnCaGoo4EZ7lTYPidPJzS4brADk8XIix+EYobpcg4xqbWE8DjJumuPHc2CNSUjThGyr95nBBwU1BwA7GkIOLycVw3De2qFb4AKl71yLsdAm+XFe89/K7vwFR/0zM1jKmWgOdbfxToPxb2a3Zk1zkqD9so+/Jp/cXyQYiIUXeSCywNWVfjWiznDpjAZNVQ7lHxNy4VBRQCwTnfnxUC9CZHtoqHf286Tb3SG7ZQEXQ8wVETXsrjNlOEkXeD0XN4RVGDyDhUzNijQinc09b1tkut+wv7i1yJcPysW9PX4K+rCy23Tjh+HJL8lizfMDAhtndXUi+Y0deQ5niOT87aK6fGOdnZKl3YR/L/t+NVdl7VrzJFlJt1+kHRD2EVW6XfxDB7F36dw0spF24JV/wHhGkJrlNJGtd9/CyoR5piWigIndnre1js/4hdlvGRBW4fKjSOpElHtaoEdOr71/3MgOaHy9LA7sqh4N/XCVOuqigSYFG4wGHK4yOzO5Csb6De8VJGJqf0Slog9wcfHLPertff7YBdUA02Sv+udubbmCI+UVR8TVPre9slX5rNfg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(2616005)(186003)(956004)(508600001)(31686004)(66946007)(83380400001)(8936002)(86362001)(2906002)(31696002)(16576012)(316002)(38100700002)(110136005)(8676002)(36756003)(6486002)(66556008)(66476007)(54906003)(26005)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UFB3UlR3YkVQSU5ic1M5TlFsT3BjMURKYjNCZEtTdjFDaDhMbjk1WFB4ZFIx?=
- =?utf-8?B?Q1FVNFNDVVRLQVdzNCtJRmduckJMcS9PSm9tUHBqNy9JMm5RZCsxQUFZM0ht?=
- =?utf-8?B?UkpHcUtUNGhtbi9uZHFteVpsTUovRHRqczZ2UzNuQ1pENlRwVms4TWZCaGtq?=
- =?utf-8?B?emxWOHQwZ1k0cHNmaHlqZ3F3cmRkdW5pUGs5MFd2NExlL01mbVdHNllxRmlE?=
- =?utf-8?B?ZjZsTzhtbUZyTGMzdzdOaFMyZ1ppWHV0N0c5d3ZXOWlSOGNWVjJGNjd0VWI1?=
- =?utf-8?B?OGU4b2hQOXhIbTNTZ211R3U5bTJ3OGo1NjhJdHJjY0QvQ1FaUHJlYlZkTkxW?=
- =?utf-8?B?cUVFMWhOVTl1MHVLaDQzaG51SGV0ck12akxSZDBtRGZrbHZER0RIWkFpdkhl?=
- =?utf-8?B?SEg1bDNzcnFRSU9uR3BKUzYyNy9YMTB1TE1vUmNWR2piTHJOblN3WnhZdEhI?=
- =?utf-8?B?b2c5eWkvRENQNEkxWllaanFUdkxjaktvcVgxY0oxSXdWVFF5M3BXa1V1eGhI?=
- =?utf-8?B?NUJIRXZtQkdMN1dXYnRzMXNmeG9ZQW5ua3ZsMThHd2tVMmlBb1YwOUNDTFNr?=
- =?utf-8?B?Tk1JQi93alF6VkIxL3RtTmtncWdwWVkvV1R1VWdmeGY1YzkzRDVheDE0c3M0?=
- =?utf-8?B?YnFaL0NBU2pNL0xwSTI2dXpFRktnNlo4L1AwNkh3c3lpVjFwUmFLVTB0MS81?=
- =?utf-8?B?ZG4ySTY3V3Y5djF3a0VkZzFUTWcvR2h4Ui85ajhWU2lPY1NLRlNOYVJ3K0wx?=
- =?utf-8?B?V21lSlptZk9mNmlLMTNTbXE3aHI2eVMzVkpyUWt2emxybXByNWdVTDRXSmpv?=
- =?utf-8?B?UlB6b1FKais1WkJNTlBKeml1RW1heW8xeWtxSWxrZHh6S1RGaHEyRTQ3Wm1F?=
- =?utf-8?B?dkxxc0dzV0xqZ0ZGTnBCWXlHWTRTWkJKUzhwNmgwcVAydDZWNldZL2FSclhG?=
- =?utf-8?B?VHhBRnZvSFdmQXk0MWNuMHozNEtQVUtFYWg5Vk9JSzBGSTNOWlA4TmpXMmRC?=
- =?utf-8?B?M1V5eStWS2VtL1Awa1QxQi80UTVCWE8yQlBPR2tCVEg1cG84cnl2WFhzUyt6?=
- =?utf-8?B?ODRaZG1ZdGd1aWxQSjIrUnFhYXViN29QRU5mMGZCWDM0UE9HZUwxeXRBemM1?=
- =?utf-8?B?ZnRFZ2JmREgyVlBRd0dwb2lDVWpIYjhZdVFaL1JDczJUZEsxUlNZL043WGtT?=
- =?utf-8?B?SmMrNS9YRDBSN1lYR3VvbWw1OUVGdXpwcXZuMERpRjRrNVBUN3ZKSlhZbzk4?=
- =?utf-8?B?RTdjeUR5cDhadWdsV3gySzR1VnlyTlR4RGpHVTlsZXNCQjFocFlrTStyVkNx?=
- =?utf-8?B?WEplR1FBYTVFc2hIUlhZS1hkU0I5ZGJLN09jMzFTbE9WQmE4VVRqQml2c1l1?=
- =?utf-8?B?Vmxid0UyVDAvN1NrbElQT2N1Nlk3dXlQdVdjMFFiS0dUeGx4LzY3a1l5U1VL?=
- =?utf-8?B?UkYyNWNxNjNKcXlyaEdWYXpnamRDTHNYc1lQY2N0T2o0aCtmUmwybVFDTUhl?=
- =?utf-8?B?OFZ3a0ZMZnFBTXJSK1NBWG44VFRHSnZMTEppaHhBczN4ek16eHQvdnZycWJZ?=
- =?utf-8?B?MzZKQ1NaMDBYSUprVmtvUGZ3b2M2VUcvNm5QdlhWeXIvSVprblc1QVp1SjYr?=
- =?utf-8?B?WjF0ZEJ3TnhLTnlaNWlndlNVNEZLa1ovdVYxN1VXVjB1MXcrdFlKbU9OQmJ2?=
- =?utf-8?B?NFRFNmg3ODlSdXkwUkp1d3planBYRUcvTXFPS0paaUQ1QW5OZzBxWWlscExm?=
- =?utf-8?Q?rX8YE4XHd/jpxBwtdja4KUYuj5kV+O7aAPytAvi?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 733cb1a5-c54a-41c4-369a-08d9840ed853
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 12:35:54.4645
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SgL0mzeJ4pJiRZIPT79Ewr88HsQdIU/G/WhWCllKZd+ErP5iAy3MdUnMGElgEPiueK0J3e7on0LHxLRtAnkq2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6383
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using __native_set_fixmap() here means guaranteed trap-and-emulate
-instances the hypervisor has to deal with. Since the virtual address
-covered by the to be adjusted page table entry is easy to determine (and
-actually already gets obtained in a special case), simply use an
-available, easy to invoke hypercall instead.
+hi, thanks for the fast feedback
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
+On 30.09.21 14:25, Mark Brown wrote:
+> On Thu, Sep 30, 2021 at 02:07:00PM +0200, Dafna Hirschfeld wrote:
+>> This reverts commit 04e6bb0d6bb127bac929fb35edd2dd01613c9520.
+> 
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
+> 
+>> This revert the commit 'spi: modify set_cs_timing parameter'
+>> and its following commit
+>> 'spi: mediatek: fix build warnning in set cs timing'.
+> 
+> Which is not what the commit message nor the paste of the full hash
+> claimed :/
 
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -2010,6 +2010,7 @@ static unsigned char dummy_mapping[PAGE_
- static void xen_set_fixmap(unsigned idx, phys_addr_t phys, pgprot_t prot)
- {
- 	pte_t pte;
-+	unsigned long vaddr;
- 
- 	phys >>= PAGE_SHIFT;
- 
-@@ -2050,15 +2051,15 @@ static void xen_set_fixmap(unsigned idx,
- 		break;
- 	}
- 
--	__native_set_fixmap(idx, pte);
-+	vaddr = __fix_to_virt(idx);
-+	if (HYPERVISOR_update_va_mapping(vaddr, pte, UVMF_INVLPG))
-+		BUG();
- 
- #ifdef CONFIG_X86_VSYSCALL_EMULATION
- 	/* Replicate changes to map the vsyscall page into the user
- 	   pagetable vsyscall mapping. */
--	if (idx == VSYSCALL_PAGE) {
--		unsigned long vaddr = __fix_to_virt(idx);
-+	if (idx == VSYSCALL_PAGE)
- 		set_pte_vaddr_pud(level3_user_vsyscall, vaddr, pte);
--	}
- #endif
- }
- 
+What is the paste of the full hash?
+Since the second commit is only a warning fixes I thought it is cumbersome to
+send two separate reverting patches. Should I?
 
+> 
+>> Those commits cause regression on mt8173 elm device. The EC either is not
+>> able to register or it sends numerous amount of errors:
+> 
+>> cros-ec-i2c-tunnel 1100a000.spi:ec@0:i2c-tunnel0: Error transferring EC i2c message -71
+>> cros-ec-spi spi0.0: EC failed to respond in time.
+> 
+> Do we have any analysis as to why?  Do these devices use timing
+> parameters in some way for example, or do the values written out to the
+> device change in some way?
+> 
+> You've provided no analysis here so it's hard to tell if this is just
+> some random change that happens to change code generation slighly or if
+> there's some actual reason why this might fix something.  I'll note that
+> as far as I can see there are no users of this API upstream so I'm
+> guessing that you've got some out of tree consumer driver which uses the
+> API, it's possible that there was some error in updating that driver to
+> the new interface which is causing the issue.
+
+Actually the original commit not only change that callback 'set_cs_timing' but it also
+calls 'mtk_spi_set_hw_cs_timing' directly from the function "mtk_spi_prepare_message".
+So this actually influences all devices bound to this driver (in upstream)
+I did some printing and it does change values that are written to registers.
+
+Thanks,
+Dafna
+
+
+> 
