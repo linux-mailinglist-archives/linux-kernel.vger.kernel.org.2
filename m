@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2066D41E356
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D4141E361
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245358AbhI3V0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
+        id S245156AbhI3VcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbhI3V0n (ORCPT
+        with ESMTP id S237050AbhI3VcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:26:43 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8481C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:25:00 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso2476869wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:25:00 -0700 (PDT)
+        Thu, 30 Sep 2021 17:32:23 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF5C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:40 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id ba1so27281080edb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:30:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FttxoUmTGZqK8PzCdxay9BYvxmAzHNrF7lkmGzarzCY=;
-        b=njxNcCgjyJQUMrrZRbJiu4qjthHCE/FIowDL5hOf20zwioPiL+Kay3WRwdFuOy5sRM
-         cVnM/19xvaZMY2Mt3iYhMU8yKx4hQN4HcqdOkp2NUI32lBjUbKrgeX2C1w5yhmwnQ6Yr
-         NIucB+Yw82guAGarydkwH+87yVfZtlTJGvQjHfL/MHubD2WSN2gRA+aBOyVTzLGgQBSl
-         POrGXq9WV1KTJkdPmR1iM0ihNSE3qlWvmah2N9sCzzJKv8eQx9cSxj4kbUNAZwhXhWh8
-         fzzhl5C/wI3xpDCKi7mPo6N2rJKTch0nkTgl38Rh565G1a7e6rh1OTs08lK+iDfYIxn2
-         zK8Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z38Pff8rNHkpmHHsiE/EcUCBdc5ews9xWggX89bh2PM=;
+        b=jBAvtPK6du6rAgKGQHZ8yVhlGXtowsq1cPeEiyZLMNjDSNjApE6daz9tsuvoJam2RR
+         V5kqHkXN4gxDevQpociV+DaBSPpayl9qtBwZx3M51jbBSHiUM9/i0d9MzaeVBIN/DaES
+         xh/MaYZ/8tVeYIqhgeSWJdhOpE2vX9Yd74wZ4I+H99fYsedRii1WmATbxokDAzGUsV60
+         lw2NRN/VvGjRYuAM/ZFTp58iBWzehRpFr5YjLax05QN7U44row8IqCk3NpHeYb4RTyMk
+         f1lbjNFKxldJ8wpolsk4cKIHqCAOMVcyYZrbv5NrDP8sRbkZNr+/Ko69qhApcZj7IS/y
+         YAuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FttxoUmTGZqK8PzCdxay9BYvxmAzHNrF7lkmGzarzCY=;
-        b=YiA5oTo1n1fKklL+Mcz9JxNx7S2UiGv3pNcvXrzKhK9/IuIXxiGVFGz+w7haGddjY1
-         de3FdERTTZDOdFnL8mt06xjoeXWZMWuxQr03cZRKPJ71btZ28imKdhe4pIbVDNuAir+D
-         QKTQqw0jPO+G8mRpJF1dd7UtqkF3PCzDSDnZikyekP2AJpdYC8Zb7mAsOjXf9WJ2XEKW
-         8KypjBQWfTs4aLxESExl6J3kf1yH0E8xxv/a45Z1uKiSwYzajB7HzawMZzVxzyrj57bW
-         JJMyk+aRJCbNGnjVjwGUDE56EmCSQu5FPDUzLOGlPpXUHA2OYLKEPfqG8s8pwkHnDxXZ
-         PRpg==
-X-Gm-Message-State: AOAM531Gh/M1Svx2/Un1rI2nZu+vxtkijSUUb4zTDs/r//bdQWG9kZzp
-        ah1dd1IkC637jZN0pxczL+s=
-X-Google-Smtp-Source: ABdhPJxjifCgfgKQ8tqrkbM+P7BJCC84Al1vDEVZT1tXPJAEeGUp9hlyxqR+ZGc4QWiKwxxmTtg90A==
-X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr1206072wmq.128.1633037099136;
-        Thu, 30 Sep 2021 14:24:59 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.49.194])
-        by smtp.googlemail.com with ESMTPSA id f19sm4055478wmf.11.2021.09.30.14.24.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z38Pff8rNHkpmHHsiE/EcUCBdc5ews9xWggX89bh2PM=;
+        b=idGc8oUN0FKByV8smjac+Qkl6D4SPJj34xxFOgR94RDEI5qoVKfiThE3F7CO64N2R0
+         Q6mowNqmN6ersF9+z/WbrS+Blr7DIUll7KJAGJwUpfw4wWWXaLk/wxD+e459kmlDHlAg
+         Zdo7mqSQ2Y5P7xGClGxcVRxiaL6NJz5ewnEAmUkeeGMg2/W3oBlU+MGJwU5Ln4/mM/f6
+         gFm1iyNt+egy6MeQy/sXbiWd92VN0qABaR9ZvdBYm3CkUri2ckxz95az41n5HkIFm6GH
+         bm4423fa6lwtGis77seFniUbOQDopFhdWwElZQtUKw2Akg6REyFLypd/MMUGTNfdmdz7
+         u5+Q==
+X-Gm-Message-State: AOAM532T+ZqB88H/DaXu9jHGPxx58AtrDmsx3NUz6PyhW4vi9ymkhkxc
+        +44UxUi5BOmeqikyvjmJvE4=
+X-Google-Smtp-Source: ABdhPJyIs9IWzjK743hlXZoMFHInBnLRvDmLCWyajvYtiX/RZyuArU0Ujf4/VWAO+ti3AC/Ken4gfA==
+X-Received: by 2002:a17:906:ff51:: with SMTP id zo17mr1800990ejb.193.1633037438506;
+        Thu, 30 Sep 2021 14:30:38 -0700 (PDT)
+Received: from tom-desktop (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
+        by smtp.gmail.com with ESMTPSA id cb7sm2109271edb.49.2021.09.30.14.30.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 14:24:58 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: 9p: cache.h: cleanup some format warning
-Date:   Thu, 30 Sep 2021 23:24:54 +0200
-Message-Id: <20210930212455.30047-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Sep 2021 14:30:37 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 23:30:35 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] staging: vt6655: fix camelcase in ldBmThreshold
+Message-ID: <20210930213035.GA45822@tom-desktop>
+References: <20210926162527.21462-1-tomm.merciai@gmail.com>
+ <20210926162527.21462-3-tomm.merciai@gmail.com>
+ <YVHirHixyOIgvqKB@kroah.com>
+ <20210927214624.GB6953@tom-desktop>
+ <YVKdJdTxlNJ55zCy@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVKdJdTxlNJ55zCy@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warnings found by checkpatch.pl
+On Tue, Sep 28, 2021 at 06:42:13AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Sep 27, 2021 at 11:46:24PM +0200, Tommaso Merciai wrote:
+> > On Mon, Sep 27, 2021 at 05:26:36PM +0200, Greg Kroah-Hartman wrote:
+> > > On Sun, Sep 26, 2021 at 06:25:19PM +0200, Tommaso Merciai wrote:
+> > > > Replace camel case variable ldBmThreshold with snake case
+> > > > variable ld_bm_threshold.
+> > > 
+> > > Same here, what exactly does this name mean and why did you pick it?
+> > >
+> >   You are right the same here. What do you think about "bm_threshold"?
+> 
+> What does "bm" stand for?
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- fs/9p/cache.h | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+  Got it. In the current variable name "l_" is for long (hungarian
+  notation), "dBm" is decibel milliwatts, signal strenght.
+  A good solution could be "dbm_threshold"?
 
-diff --git a/fs/9p/cache.h b/fs/9p/cache.h
-index 00f107af443e..14fd222352f3 100644
---- a/fs/9p/cache.h
-+++ b/fs/9p/cache.h
-@@ -34,7 +34,7 @@ extern int __v9fs_readpage_from_fscache(struct inode *inode,
- extern int __v9fs_readpages_from_fscache(struct inode *inode,
- 					 struct address_space *mapping,
- 					 struct list_head *pages,
--					 unsigned *nr_pages);
-+					 unsigned int *nr_pages);
- extern void __v9fs_readpage_to_fscache(struct inode *inode, struct page *page);
- extern void __v9fs_fscache_wait_on_page_write(struct inode *inode,
- 					      struct page *page);
-@@ -59,7 +59,7 @@ static inline int v9fs_readpage_from_fscache(struct inode *inode,
- static inline int v9fs_readpages_from_fscache(struct inode *inode,
- 					      struct address_space *mapping,
- 					      struct list_head *pages,
--					      unsigned *nr_pages)
-+					      unsigned int *nr_pages)
- {
- 	return __v9fs_readpages_from_fscache(inode, mapping, pages,
- 					     nr_pages);
-@@ -75,6 +75,7 @@ static inline void v9fs_readpage_to_fscache(struct inode *inode,
- static inline void v9fs_uncache_page(struct inode *inode, struct page *page)
- {
- 	struct v9fs_inode *v9inode = V9FS_I(inode);
-+
- 	fscache_uncache_page(v9inode->fscache, page);
- 	BUG_ON(PageFsCache(page));
- }
-@@ -115,7 +116,7 @@ static inline int v9fs_readpage_from_fscache(struct inode *inode,
- static inline int v9fs_readpages_from_fscache(struct inode *inode,
- 					      struct address_space *mapping,
- 					      struct list_head *pages,
--					      unsigned *nr_pages)
-+					      unsigned int *nr_pages)
- {
- 	return -ENOBUFS;
- }
-@@ -129,9 +130,7 @@ static inline void v9fs_uncache_page(struct inode *inode, struct page *page)
- 
- static inline void v9fs_fscache_wait_on_page_write(struct inode *inode,
- 						   struct page *page)
--{
--	return;
--}
-+{}
- 
- #endif /* CONFIG_9P_FSCACHE */
- #endif /* _9P_CACHE_H */
--- 
-2.25.1
+  thanks.
+  tommaso
 
+> thanks,
+> 
+> greg k-h
