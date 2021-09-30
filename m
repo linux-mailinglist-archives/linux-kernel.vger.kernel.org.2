@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6322F41D973
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6CB41D976
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350751AbhI3MPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:15:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:38148 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348765AbhI3MOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:14:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="223283964"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="223283964"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 05:12:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="618097823"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Sep 2021 05:12:46 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v2 2/2] device property: Remove device_add_properties() API
-Date:   Thu, 30 Sep 2021 15:12:46 +0300
-Message-Id: <20210930121246.22833-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210930121246.22833-1-heikki.krogerus@linux.intel.com>
-References: <20210930121246.22833-1-heikki.krogerus@linux.intel.com>
+        id S1349265AbhI3MQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348201AbhI3MQI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 08:16:08 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094BAC06176A;
+        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id r1so12607426ybo.10;
+        Thu, 30 Sep 2021 05:14:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
+        b=D3yALrGFWCHoJefkI8XjZMKrwZ18ui6XDMw4t95SVu6n4b+QlQDXUbKuYqj+3ZUR77
+         4OraB2xwKiXlxZZNnGmNOHTq5acSirqEeu5hMoj3h8R24v2FpumBTvNIfEGIUIDjTWke
+         dkjas9WJSrST1VbmPCOntur+clVa23wWWI2RAVuGhzrik9BskkbnlF3cScob9/OZa++q
+         zXE7q1BSlOymhD3sKQLngpY0g741BFHsJFuU/FMsebpo+A1PiQtm3o24bcLml9xVln5K
+         mrZ0oBecfxxCxRSmjBC9vfAJ90S8NFMZroKhANmw42yTzYnnMAF+9h8wraYhzlLDGKFA
+         usSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ly6d2NRz/CO4e+/occWByJ+1ybkH2AhzgC827GNKok=;
+        b=6pQCy3Mz9Ed8lQbEZNRY59215zyoScAKpxk9w8IJMOBESr0+Yd9RF/WUL1zHUZKCXj
+         pxOpEuAKHVpgKU01ihekITnqDM9MHtfws9wy3tHeRP2XaHlNPPhns9h8RfxY4M4FYwYT
+         iLFQ660BxVWNWq5zsA2sU+qoPE+U0PhEExLEt8Vn+6OzyhHWBaR9etB1hPZDtq+VGuBt
+         QVzWgJXjonnhOJgJspECOmhc92aN9vNxHcFBidgPKSmiIXEI7uGEzEWHTNjgvJuOcCww
+         ibvGBJbnlmR8AdfMhgU9rtemxQ6+uuZxUpTEVg9kOzEDkDiEfyG0jZQsR7iEOzpcsPS5
+         fJCQ==
+X-Gm-Message-State: AOAM530A6wYG0clXk9FoWtIDr7zgtbxN+GCbZk+C8fQREasNAO2Yl8Os
+        22ejaHgj0QmgWuUhvRF0+qKZ9qHP1V6Tw0CLJ8o=
+X-Google-Smtp-Source: ABdhPJx8FtzrbD51HUmiENPFGgET25pOeR5F1yAAzL7J7koVSiUqSLdK0Jmqh5ZoQDDR0cyJLgayWISpxy8Dt9tMI4E=
+X-Received: by 2002:a25:515:: with SMTP id 21mr6157057ybf.279.1633004065280;
+ Thu, 30 Sep 2021 05:14:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210925053106.1031798-1-th.yasumatsu@gmail.com> <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
+In-Reply-To: <9be5acb8-5eaa-6101-1be8-a74d7df7e20e@iogearbox.net>
+From:   Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
+Date:   Thu, 30 Sep 2021 21:14:14 +0900
+Message-ID: <CA+_JbcvO-1NZ1aumJoVfJyRgnGv49U1pMqMvQS7h3j1FUfMO1g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix integer overflow in prealloc_elems_and_freelist()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tatushiko Yasumatsu <th.yasumatsu@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no more users for it.
+On Tue, Sep 28, 2021 at 02:29:43PM +0200, Daniel Borkmann wrote:
+> On 9/25/21 7:31 AM, Tatsuhiko Yasumatsu wrote:
+> > In prealloc_elems_and_freelist(), the multiplication to calculate the
+> > size passed to bpf_map_area_alloc() could lead to an integer overflow.
+> > As a result, out-of-bounds write could occur in pcpu_freelist_populate()
+> > as reported by KASAN:
+> >
+> > [...]
+> > [   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
+> > [   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
+> > [   16.970038]
+> > [   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
+> > [   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> > [   16.972026] Call Trace:
+> > [   16.972306]  dump_stack_lvl+0x34/0x44
+> > [   16.972687]  print_address_description.constprop.0+0x21/0x140
+> > [   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
+> > [   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
+> > [   16.974257]  kasan_report.cold+0x7f/0x11b
+> > [   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
+> > [   16.975190]  pcpu_freelist_populate+0xd9/0x100
+> > [   16.975669]  stack_map_alloc+0x209/0x2a0
+> > [   16.976106]  __sys_bpf+0xd83/0x2ce0
+> > [...]
+> >
+> > The possibility of this overflow was originally discussed in [0], but
+> > was overlooked.
+> >
+> > Fix the integer overflow by casting one operand to u64.
+> >
+> > [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
+> >
+> > Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
+> > Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+> > ---
+> >   kernel/bpf/stackmap.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> > index 09a3fd97d329..8941dc83a769 100644
+> > --- a/kernel/bpf/stackmap.c
+> > +++ b/kernel/bpf/stackmap.c
+> > @@ -66,7 +66,7 @@ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+> >     u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+>
+> Thanks a lot for the fix, Tatsuhiko! Could we just change the above elem_size to u64 instead?
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/core.c      |  1 -
- drivers/base/property.c  | 48 ----------------------------------------
- include/linux/property.h |  4 ----
- 3 files changed, 53 deletions(-)
+Thank you for your review, Daniel!
+Yes, I think it's possible to just change elem_size to u64.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 7758223f040c8..7935ee642fa3f 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -3573,7 +3573,6 @@ void device_del(struct device *dev)
- 	device_pm_remove(dev);
- 	driver_deferred_probe_del(dev);
- 	device_platform_notify_remove(dev);
--	device_remove_properties(dev);
- 	device_links_purge(dev);
- 
- 	if (dev->bus)
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 453918eb7390c..1f1eee37817e0 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -508,54 +508,6 @@ struct fwnode_handle *fwnode_find_reference(const struct fwnode_handle *fwnode,
- }
- EXPORT_SYMBOL_GPL(fwnode_find_reference);
- 
--/**
-- * device_remove_properties - Remove properties from a device object.
-- * @dev: Device whose properties to remove.
-- *
-- * The function removes properties previously associated to the device
-- * firmware node with device_add_properties(). Memory allocated to the
-- * properties will also be released.
-- */
--void device_remove_properties(struct device *dev)
--{
--	struct fwnode_handle *fwnode = dev_fwnode(dev);
--
--	if (!fwnode)
--		return;
--
--	if (is_software_node(fwnode->secondary)) {
--		fwnode_remove_software_node(fwnode->secondary);
--		set_secondary_fwnode(dev, NULL);
--	}
--}
--EXPORT_SYMBOL_GPL(device_remove_properties);
--
--/**
-- * device_add_properties - Add a collection of properties to a device object.
-- * @dev: Device to add properties to.
-- * @properties: Collection of properties to add.
-- *
-- * Associate a collection of device properties represented by @properties with
-- * @dev. The function takes a copy of @properties.
-- *
-- * WARNING: The callers should not use this function if it is known that there
-- * is no real firmware node associated with @dev! In that case the callers
-- * should create a software node and assign it to @dev directly.
-- */
--int device_add_properties(struct device *dev,
--			  const struct property_entry *properties)
--{
--	struct fwnode_handle *fwnode;
--
--	fwnode = fwnode_create_software_node(properties, NULL);
--	if (IS_ERR(fwnode))
--		return PTR_ERR(fwnode);
--
--	set_secondary_fwnode(dev, fwnode);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(device_add_properties);
--
- /**
-  * fwnode_get_name - Return the name of a node
-  * @fwnode: The firmware node
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 357513a977e5d..daf0b5841286f 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -377,10 +377,6 @@ property_entries_dup(const struct property_entry *properties);
- 
- void property_entries_free(const struct property_entry *properties);
- 
--int device_add_properties(struct device *dev,
--			  const struct property_entry *properties);
--void device_remove_properties(struct device *dev);
--
- bool device_dma_supported(struct device *dev);
- 
- enum dev_dma_attr device_get_dma_attr(struct device *dev);
--- 
-2.33.0
+We just have to be careful to cast one operand (smap->map.value_size)
+to u64, so that the integer overflow won't happen in 32-bit
+architectures.
+This is necessary because in 32-bit architectures, the result of
+sizeof() is a 32-bit integer.
 
+I will update the patch.
+
+>
+> >     int err;
+> > -   smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
+> > +   smap->elems = bpf_map_area_alloc((u64)elem_size * smap->map.max_entries,
+> >                                      smap->map.numa_node);
+> >     if (!smap->elems)
+> >             return -ENOMEM;
+> >
+>
+> Best,
+> Daniel
+
+Best regards,
+Tatsuhiko Yasumatsu
