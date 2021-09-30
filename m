@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CD141E3FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4E641E3FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346146AbhI3Wev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:34:51 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41481 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345059AbhI3Weu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:34:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HL7L96p73z4xbT;
-        Fri,  1 Oct 2021 08:33:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633041186;
-        bh=LCM8DNO1qI3dWRJlOo6wyWQYwjIr5Y4EtneKXHAGK6s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=msHtktWlqDXiFFAZzuB9kz9YZgVOcdnohssQAkSQSyOhVF7x603yXB6f9bGMs4lEo
-         glXEuFjcbKpgg0+ObmyTu2hf2lahT7e9tPsXkcb6KWOZIwjrcp+soyPdVZwvd1VnS0
-         23FOnhzE/UTnnsY8EEiEz4ZGqmgGUw6dWyiHPxpfVg/UwP7aHDgIqWlik5GpTkXf+9
-         s7X4Ub4OeLFudAgBKLLshhFrqlCjfC1YViwXgkyn0buasGC2di75ZbK7d5Pt3UDZvG
-         Z2fOFvwb03qjEKI6u2jkbfhKODw1ufrAb39pkzwgbnEMesH7acoDbxWsElhxkz282B
-         j6RM9HXNK9XwQ==
-Date:   Fri, 1 Oct 2021 08:33:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Jacky Bai <ping.bai@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the clk-imx tree
-Message-ID: <20211001083304.3cab4195@canb.auug.org.au>
+        id S1348376AbhI3Wfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229759AbhI3Wfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 18:35:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EA8A61A63;
+        Thu, 30 Sep 2021 22:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633041235;
+        bh=tbWf3k8o6Kty0/VGLPw0uDkT0kg0hb4J5EzgYuToWmc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=GtSnQRK3Ce8FJbeaDg7RWU2j2/0kbmNBvabob93GbHbYi/LpE3W7vayp0diJ2wXIK
+         JsYCC2Bnm8iITthgMNo49pZ5WBlpX3doVxwspQ8sLLxGvNw5UujcGMCdHBbI5ceJV8
+         2nyL1zQ+5eBP8yoMmHvCx9XLFko9UP0BrZnA0xT92M+4maOSJCHYXfaET2UOaGjHkt
+         H9VZC8kaZzRRUCxCD8sNcizQ6D0Cel+OLKnQwsoe2M0/D69proYGEPGvCjNEZ4QNUS
+         zDF5B+2pxkghqekjhvcy4XdGF5RfO42T8KcNwNcU78MrcLQCqB6Gs931UD7Zlmpk6E
+         Z3ptEqupbwLKQ==
+Subject: Re: [PATCH] MIPS: Revert "add support for buggy MT7621S core
+ detection"
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Strontium <strntydog@gmail.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Felix Fietkau <nbd@nbd.name>
+References: <20210930165741.9662-1-ilya.lipnitskiy@gmail.com>
+From:   Greg Ungerer <gerg@kernel.org>
+Message-ID: <a932d65e-e515-9a6b-c1d8-23ac21049ecd@kernel.org>
+Date:   Fri, 1 Oct 2021 08:33:51 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.3D828iSp.WqVXT5aChXQJJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210930165741.9662-1-ilya.lipnitskiy@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.3D828iSp.WqVXT5aChXQJJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 1/10/21 2:57 am, Ilya Lipnitskiy wrote:
+> This reverts commit 6decd1aad15f56b169217789630a0098b496de0e. CPULAUNCH
+> register is not set properly by some bootloaders, causing a regression
+> until a bootloader change is made, which is hard if not impossible on
+> some embedded devices. Revert the change until a more robust core
+> detection mechanism that works on MT7621S routers such as Netgear R6220
+> as well as platforms like Digi EX15 can be made.
+> 
+> Link: https://lore.kernel.org/lkml/4d9e3b39-7caa-d372-5d7b-42dcec36fec7@kernel.org
+> Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-In commit
+Acked-by: Greg Ungerer <gerg@kernel.org>
 
-  b00bad50a24f ("clk: imx: Fix the build break when clk-imx8ulp build as mo=
-dule")
+Thanks Ilya for taking care of this.
 
-Fixes tag
+Regards
+Greg
 
-  Fixes: 86ce2d393ff7 ("clk: imx: Add clock driver for imx8ulp")
 
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: c43a801a5789 ("clk: imx: Add clock driver for imx8ulp")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/.3D828iSp.WqVXT5aChXQJJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWOyAACgkQAVBC80lX
-0GyEFggAiD9uAkCxGNGy0+Z4urVs8ZtShc01U2GdhpPPrNFwqRWGI21JpM6Iv4/N
-LkhG7HEnFVkVN0iI5Eg32XaEhrjDn4xwy4QUwvii6rTcQBk4lFagLxU95f/Fscxm
-toEcHszQ9wCq0MBJ56aqfMWu4MR2/eRq/QkllGbMeqqMverRrvN1kL6NoBiTjC/P
-zqA1GACpGADDr6kWbmoISFISZaykgYtTDtPfdUjU09gLHzrC+PRNsDk/GKKjNFSg
-NXTBJo+ctUfx8k6hfBJo5BvfFoC3m+Q9Du9MAcXXRAk+64YsCYhoFy/F5yQyJSpH
-W7vSjzW9xrCvTu20Dul8C0Mhuvqzcg==
-=stfg
------END PGP SIGNATURE-----
-
---Sig_/.3D828iSp.WqVXT5aChXQJJ--
+> ---
+>   arch/mips/include/asm/mips-cps.h | 23 +----------------------
+>   1 file changed, 1 insertion(+), 22 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
+> index 35fb8ee6dd33..fd43d876892e 100644
+> --- a/arch/mips/include/asm/mips-cps.h
+> +++ b/arch/mips/include/asm/mips-cps.h
+> @@ -10,8 +10,6 @@
+>   #include <linux/io.h>
+>   #include <linux/types.h>
+>   
+> -#include <asm/mips-boards/launch.h>
+> -
+>   extern unsigned long __cps_access_bad_size(void)
+>   	__compiletime_error("Bad size for CPS accessor");
+>   
+> @@ -167,30 +165,11 @@ static inline uint64_t mips_cps_cluster_config(unsigned int cluster)
+>    */
+>   static inline unsigned int mips_cps_numcores(unsigned int cluster)
+>   {
+> -	unsigned int ncores;
+> -
+>   	if (!mips_cm_present())
+>   		return 0;
+>   
+>   	/* Add one before masking to handle 0xff indicating no cores */
+> -	ncores = (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+> -
+> -	if (IS_ENABLED(CONFIG_SOC_MT7621)) {
+> -		struct cpulaunch *launch;
+> -
+> -		/*
+> -		 * Ralink MT7621S SoC is single core, but the GCR_CONFIG method
+> -		 * always reports 2 cores. Check the second core's LAUNCH_FREADY
+> -		 * flag to detect if the second core is missing. This method
+> -		 * only works before the core has been started.
+> -		 */
+> -		launch = (struct cpulaunch *)CKSEG0ADDR(CPULAUNCH);
+> -		launch += 2; /* MT7621 has 2 VPEs per core */
+> -		if (!(launch->flags & LAUNCH_FREADY))
+> -			ncores = 1;
+> -	}
+> -
+> -	return ncores;
+> +	return (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
+>   }
+>   
+>   /**
+> 
