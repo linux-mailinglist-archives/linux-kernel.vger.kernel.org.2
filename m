@@ -2,162 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF83741E39C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B8241E3A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344332AbhI3WEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:04:21 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:38109 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhI3WEU (ORCPT
+        id S1345341AbhI3WHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 18:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhI3WHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:04:20 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7798C240007;
-        Thu, 30 Sep 2021 22:02:35 +0000 (UTC)
-Date:   Fri, 1 Oct 2021 00:02:34 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH] iio: adc: nau7802: convert probe to full device-managed
-Message-ID: <YVYz+rY9euHC4lb4@piout.net>
-References: <20210926154932.3287590-1-aardelean@deviqon.com>
- <20210930171023.2bf5a414@jic23-huawei>
+        Thu, 30 Sep 2021 18:07:09 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B051FC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:05:26 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d21so12346219wra.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 15:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VqyS6h3FznDu8EubeURpzw4zm7MTy7+ReY+kVhlyTcA=;
+        b=pnI+PVEGQz2zK1u7J+TOVlSECjcfROF2iiIFvTOUQjLOwLVcos+1w6mT2e2zTB+50X
+         lQYyRp/xsSanwklXdm/G+BZYDMHdSehTZ3ofy96+6z9wnhj7xgEP9iGuFU96BCRakLxE
+         tpnumu17f43BnK2vwjohiKZ1QaDzi++/3y5NwVq1FcmNUPvYo9nXthhV0f191NDYFKry
+         //VhHdpcKoy66gRuD84lCf22fXw2af/G8KkrIcDOWCPaT4lNixXiZLtpRk8Jy+j7n3eI
+         ng71ciRQ3EjVMnCUbNve/3TXi5DcsK6toPFW/re+NEcrZo/J9585HvNpRAoRggTxhm54
+         KMFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VqyS6h3FznDu8EubeURpzw4zm7MTy7+ReY+kVhlyTcA=;
+        b=kXZOmVUHgX5Y8wkZqym465tBIfTUokKpUCxCuXJhxseVTHUFtjEYZj7M08O0qT2SLc
+         Jc7agxl4dTnkdPw5urgWjorWm6lwRLmCOxyhemY6qSvVZzdJ8l9rVZWRtzLqvKXdqTAR
+         P0s92hrNPQJRRuKEa5YlJ6k+zMhonirdNzMm6R7+YcsINedceLxXbbjT+qzuFslgFjsL
+         S3Hxe5hxRQtkXRxcKS/a5Xc2t8DS1P8B4IXYY1eCEPlrLYTZr1XS59vjEqrPMpjs0juu
+         Sg8AizGaE1UQFBBEGMGnlBuPYkZ60AzjjjUxBUfBwpxe5BFPXYE6CaR42eeZmJqHBcg8
+         FfFw==
+X-Gm-Message-State: AOAM532Q/9IQt7LxQYyRS5rWeZVX3pPc4+fk68jhTwyl2MwtLzOmPwT8
+        sbLg0mIo0xhepBtixpkfS3fBY2wQanWJaQ==
+X-Google-Smtp-Source: ABdhPJx0OsfTQ+kN2qu1o5Iis6HqP17LZrgbVXo0dS+HRHEVJ6XQYka7ARZKmMuhaNDAyPZ1hyH4og==
+X-Received: by 2002:adf:e509:: with SMTP id j9mr8915985wrm.416.1633039525220;
+        Thu, 30 Sep 2021 15:05:25 -0700 (PDT)
+Received: from localhost.localdomain ([197.49.49.194])
+        by smtp.googlemail.com with ESMTPSA id z17sm4133149wrr.49.2021.09.30.15.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 15:05:24 -0700 (PDT)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/9p: fix indentation and Add missing a blank line after declaration
+Date:   Fri,  1 Oct 2021 00:04:20 +0200
+Message-Id: <20210930220420.44150-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930171023.2bf5a414@jic23-huawei>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 17:10:23+0100, Jonathan Cameron wrote:
-> On Sun, 26 Sep 2021 18:49:32 +0300
-> Alexandru Ardelean <aardelean@deviqon.com> wrote:
-> 
-> > This is a trivial conversion to device-managed functions.
-> > The mutex_destroy() calls are redundant, as the data will be free'd anyway.
-> > 
-> > And the IRQ and IIO register functions both have device-managed
-> > equivalents.
-> > 
-> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> 
-> +CC Maxime and Alexandre.
-> 
-> Looks simple enough to me that I won't wait on their replies to queue it up.
-> Obviously feedback welcome though!
-> 
-> Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-> to see if it can find stuff we missed.
-> 
+Warning found by checkpatch.pl
 
-This seems good to me too
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+---
+ fs/9p/fid.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Thanks,
-> 
-> Jonathan
-> 
-> 
-> > ---
-> >  drivers/iio/adc/nau7802.c | 50 +++++++--------------------------------
-> >  1 file changed, 9 insertions(+), 41 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/nau7802.c b/drivers/iio/adc/nau7802.c
-> > index bb70b51d25b1..976c235f3079 100644
-> > --- a/drivers/iio/adc/nau7802.c
-> > +++ b/drivers/iio/adc/nau7802.c
-> > @@ -428,8 +428,6 @@ static int nau7802_probe(struct i2c_client *client,
-> >  
-> >  	st = iio_priv(indio_dev);
-> >  
-> > -	i2c_set_clientdata(client, indio_dev);
-> > -
-> >  	indio_dev->name = dev_name(&client->dev);
-> >  	indio_dev->modes = INDIO_DIRECT_MODE;
-> >  	indio_dev->info = &nau7802_info;
-> > @@ -495,13 +493,13 @@ static int nau7802_probe(struct i2c_client *client,
-> >  	 * will enable them back when we will need them..
-> >  	 */
-> >  	if (client->irq) {
-> > -		ret = request_threaded_irq(client->irq,
-> > -				NULL,
-> > -				nau7802_eoc_trigger,
-> > -				IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
-> > -				IRQF_NO_AUTOEN,
-> > -				client->dev.driver->name,
-> > -				indio_dev);
-> > +		ret = devm_request_threaded_irq(&client->dev, client->irq,
-> > +						NULL,
-> > +						nau7802_eoc_trigger,
-> > +						IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
-> > +						IRQF_NO_AUTOEN,
-> > +						client->dev.driver->name,
-> > +						indio_dev);
-> >  		if (ret) {
-> >  			/*
-> >  			 * What may happen here is that our IRQ controller is
-> > @@ -526,7 +524,7 @@ static int nau7802_probe(struct i2c_client *client,
-> >  		ret = i2c_smbus_write_byte_data(st->client, NAU7802_REG_CTRL2,
-> >  					  NAU7802_CTRL2_CRS(st->sample_rate));
-> >  		if (ret)
-> > -			goto error_free_irq;
-> > +			return ret;
-> >  	}
-> >  
-> >  	/* Setup the ADC channels available on the board */
-> > @@ -536,36 +534,7 @@ static int nau7802_probe(struct i2c_client *client,
-> >  	mutex_init(&st->lock);
-> >  	mutex_init(&st->data_lock);
-> >  
-> > -	ret = iio_device_register(indio_dev);
-> > -	if (ret < 0) {
-> > -		dev_err(&client->dev, "Couldn't register the device.\n");
-> > -		goto error_device_register;
-> > -	}
-> > -
-> > -	return 0;
-> > -
-> > -error_device_register:
-> > -	mutex_destroy(&st->lock);
-> > -	mutex_destroy(&st->data_lock);
-> > -error_free_irq:
-> > -	if (client->irq)
-> > -		free_irq(client->irq, indio_dev);
-> > -
-> > -	return ret;
-> > -}
-> > -
-> > -static int nau7802_remove(struct i2c_client *client)
-> > -{
-> > -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > -	struct nau7802_state *st = iio_priv(indio_dev);
-> > -
-> > -	iio_device_unregister(indio_dev);
-> > -	mutex_destroy(&st->lock);
-> > -	mutex_destroy(&st->data_lock);
-> > -	if (client->irq)
-> > -		free_irq(client->irq, indio_dev);
-> > -
-> > -	return 0;
-> > +	return devm_iio_device_register(&client->dev, indio_dev);
-> >  }
-> >  
-> >  static const struct i2c_device_id nau7802_i2c_id[] = {
-> > @@ -582,7 +551,6 @@ MODULE_DEVICE_TABLE(of, nau7802_dt_ids);
-> >  
-> >  static struct i2c_driver nau7802_driver = {
-> >  	.probe = nau7802_probe,
-> > -	.remove = nau7802_remove,
-> >  	.id_table = nau7802_i2c_id,
-> >  	.driver = {
-> >  		   .name = "nau7802",
-> 
-
+diff --git a/fs/9p/fid.c b/fs/9p/fid.c
+index 9d9de62592be..0fd2d0d059c5 100644
+--- a/fs/9p/fid.c
++++ b/fs/9p/fid.c
+@@ -103,6 +103,7 @@ static struct p9_fid *v9fs_fid_find(struct dentry *dentry, kuid_t uid, int any)
+ 	/* we'll recheck under lock if there's anything to look in */
+ 	if (!ret && dentry->d_fsdata) {
+ 		struct hlist_head *h = (struct hlist_head *)&dentry->d_fsdata;
++
+ 		spin_lock(&dentry->d_lock);
+ 		hlist_for_each_entry(fid, h, dlist) {
+ 			if (any || uid_eq(fid->uid, uid)) {
+@@ -185,7 +186,7 @@ static struct p9_fid *v9fs_fid_lookup_with_uid(struct dentry *dentry,
+ 			return ERR_PTR(-EPERM);
+ 
+ 		if (v9fs_proto_dotu(v9ses) || v9fs_proto_dotl(v9ses))
+-				uname = NULL;
++			uname = NULL;
+ 		else
+ 			uname = v9ses->uname;
+ 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
