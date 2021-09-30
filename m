@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738F441DD84
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C9241DD95
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344180AbhI3Pd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245317AbhI3Pd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:33:28 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA0AC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:31:45 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id h132so3048718vke.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MMQZgqn6m+291rbD6FB65yGqtk2LWYklc58PG7BawH4=;
-        b=WeP91qmSgIXo1a/NFgp0fBJwwk/RQsIG6P3TGJEJBiYShkWapc/jobvYucjLJrBsuA
-         h2EV+zHcjy+Soh6Mfth9AW7mPPHQ+dx6X/FIFhiwhByHduZCcwZlwRyHztCr0gRmYYCR
-         Jn6XleEH08+3mv3q5L/ISO8/LIcjqsd6NXmpM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MMQZgqn6m+291rbD6FB65yGqtk2LWYklc58PG7BawH4=;
-        b=Gs9Etsb6rkZsw9I3o1yGEn8e5GfW5aaqfBsAfZYa6bjXvn1Ge2V9Nexo0ePqRhp32k
-         81UU2blcOvo/M6wqIAkvAJLcq5u3UwgDBqUDokSwUIJ4DfOJdTpObvqIkopUI7GJ7+cF
-         Kl+tE8uyZ/OQQxpfCR79HKJldhZV6HzGjLhxvx9gcaJdOnu/GznpZXKaN2GY7n0TXgcP
-         gQLC+u4KA8efTXAl+gtuoCJ7BdWo4ch8g4kjJCdI9D7LhKna9CcE5OoXYyR2/c6Vkobi
-         ky3T1fqwb1nPAhhziZuqNHQdzdW9GW/Rn3LS8DHUWkrZSQthku0nMG7CrKGq+/FHeABw
-         g3EQ==
-X-Gm-Message-State: AOAM532VjlWwbTYT9E0fMweMQpJ2y9Vt/HEfdU9wIIZd85aQ2goTipyP
-        1PvJseSXu+kokFrc+UjKh9EmoW/IwibI0JbBrsUtEg==
-X-Google-Smtp-Source: ABdhPJz5wnisH1ZAkrMyUoL5nwJGU72PDXvYsb979G+ivugO/mU+8liTpY1eHMQRJC1nHk6kOkqZL8h0N58DRETHcBY=
-X-Received: by 2002:a1f:f203:: with SMTP id q3mr3893652vkh.1.1633015904635;
- Thu, 30 Sep 2021 08:31:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210930124950.3069638-1-daniel@0x0f.com> <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
-In-Reply-To: <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Fri, 1 Oct 2021 00:31:34 +0900
-Message-ID: <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1343820AbhI3Pec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:34:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31591 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344286AbhI3PeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:34:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633015960; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UoX3t5l01qY1IVf8XES/yJPaHZjP4Dey0oxqRTxiqCk=; b=AJeQFlRie5oWU3YX40Cz8NRqBzawOF0bSTMtOkRdvB8nofjI31V+x9Rd9RCDDdQ6z0ZBpN3E
+ zB7Uui4tARWW0/dX0PyPTm23AQWlDm/SfrlgwvjB8CqKqIVVm41s/sQpTgpajSaCnwySrTxi
+ PmXcuWqJz/o/fIXiETkbefvZwAE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6155d88747d64efb6d65a078 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 15:32:23
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7BFB6C43618; Thu, 30 Sep 2021 15:32:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B02F1C4360C;
+        Thu, 30 Sep 2021 15:32:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B02F1C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
+        clew@codeaurora.org, mathieu.poirier@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: [PATCH V1 0/3] rpmsg and glink signaling api support
+Date:   Thu, 30 Sep 2021 21:02:00 +0530
+Message-Id: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+This patch series provides support for serial like signals (DTR, RTS etc)
+over glink. Clients on local host can use this interface for sending and 
+receiving these signals to and from modem for flow control purpose.
 
-On Fri, 1 Oct 2021 at 00:24, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> And incorrect fix. See my patches regarding to the topic
-> (`git log --grep ACPI_PTR`) and do accordingly, i.e. drop
-> ACPI_PTR() for good.
+Deepak Kumar Singh (3):
+  rpmsg: core: Add signal API support
+  rpmsg: glink: Add support to handle signals command
+  rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
 
-Something like 349bff48ae0f5f8aa2075d0bdc2091a30bd634f6?
+ drivers/rpmsg/qcom_glink_native.c | 75 +++++++++++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_char.c        | 43 ++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_core.c        | 21 +++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |  2 ++
+ include/linux/rpmsg.h             | 15 ++++++++
+ 5 files changed, 156 insertions(+)
 
-Doesn't this mean the ACPI table ends up in kernels that will never use ACPI?
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Cheers,
-
-Daniel
