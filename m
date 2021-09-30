@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F3341DD5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0153441DD63
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343700AbhI3PZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:25:42 -0400
-Received: from mga04.intel.com ([192.55.52.120]:55863 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343577AbhI3PZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:25:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="223323356"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="223323356"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:23:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="555816408"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:23:57 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mVxub-007Bh5-Jg;
-        Thu, 30 Sep 2021 18:23:53 +0300
-Date:   Thu, 30 Sep 2021 18:23:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
-Message-ID: <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
-References: <20210930124950.3069638-1-daniel@0x0f.com>
+        id S1343751AbhI3P04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:26:56 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:51034 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233612AbhI3P0y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:26:54 -0400
+X-UUID: 5d25e1bfb06f4ca3b8165406c2095b85-20210930
+X-UUID: 5d25e1bfb06f4ca3b8165406c2095b85-20210930
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 27754612; Thu, 30 Sep 2021 23:25:06 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Thu, 30 Sep 2021 23:25:05 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 30 Sep 2021 23:25:04 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v6, 0/1] drm/mediatek: add dither 6 setting
+Date:   Thu, 30 Sep 2021 23:25:05 +0800
+Message-ID: <20210930152506.12086-1-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930124950.3069638-1-daniel@0x0f.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:49:50PM +0900, Daniel Palmer wrote:
-> When building kernels without ACPI support the table is declared
-> but is not used because ACPI_PTR() turns it into a NULL.
+base v5.15
 
-Okay.
+Yongqiang Niu (1):
+  drm/mediatek: add dither 6 setting
 
-> Add the __maybe_unused attribute to stop the compiler whining.
-
-And incorrect fix. See my patches regarding to the topic
-(`git log --grep ACPI_PTR`) and do accordingly, i.e. drop
-ACPI_PTR() for good.
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
