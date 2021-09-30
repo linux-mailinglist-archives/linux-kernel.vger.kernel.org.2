@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A8441E0B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB76741E0B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353310AbhI3SOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
+        id S1353319AbhI3SPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353205AbhI3SOP (ORCPT
+        with ESMTP id S1353127AbhI3SPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:14:15 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F996C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:12:32 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t4so4658530plo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:12:32 -0700 (PDT)
+        Thu, 30 Sep 2021 14:15:17 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2094C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:13:34 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x27so29010297lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/jP68Qb3IOmFZtyBmCWtI8sRKP1bO4xuJlNxJXxFMLo=;
-        b=eEsa6HUQ1ug8JocDGdLB7jS8rTRNf4nqyY/oodN6m4TktfoLZ4ty8Nb+FwT5sZ/zkF
-         sMO73naAZDcBp4UQBX3l3Wunm9J9cMJrljTMO5D0Ch/WSk8j2E+ZZ5dpjxsFahZZewX3
-         mPfNaddSe5vK2Ko8GUCIHmjLbKcAxLL058uts=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=21wP2EKfSU+Ufh6L89NcQ77tMoe103kEUQ8sF6bdyKQ=;
+        b=OS7caeMplZM3tXloeqoV0mGVdFu2x8udydvRK5CxCqAj/9B7fEol2nS3CmLNS2+T9W
+         5UEdZEm29xZOOBCLKoZk/DchNcmgW7C306wMUDAt/B3XMQBBpnLsmMVfMJa0L/g+zHMm
+         UkS8zVTlHqoAsZqs1Gl7M5nqVgw9Qzr7w7PhlcRPuM7GtJQQhNGCcWAeJvshm5ttIBdi
+         rB2vwTYfRs68oM+LzfczqETFCYuLVYoXFyJZ6+qO+lVtRtiTvsXHfEX+mIXEL1GqyG2u
+         U2a4SMYcJLLPOY77hURTMrBwc20IjuhVPtTAaLxFYpJ9u++6RG0a/YpUA5fTxKQ22jIO
+         53xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/jP68Qb3IOmFZtyBmCWtI8sRKP1bO4xuJlNxJXxFMLo=;
-        b=fei9YTFS1UWwG64g/kIgqOS9nGQmJUAU5/69d6wYGgBncFJu8lOHuJKoOjZ4pgU/fg
-         AEL0EKGVBNb+S5/9A1g4AFHEB4XZQbvCBef2GPrmW3ja6M5cCm3VdEQq2aYopbhaw+jU
-         ew3M7AgwVLgx/SbwSjlkIneXWhqLSbAZdyRGjedDYJ8JFsXO/dRZPCMl6SI6jn7YivjB
-         awxQSOnP3I+UAiOM++vx8VXRG+fqkYs13dTHzo4pn68OPRKa5utCei8OiYXuQIiggNCp
-         X1OvGKRUsDZiBYiTeh3tnTLKcHZpYJvyEtdviRjCAXjevSBhZx7u++ienUU7Y8rQRL09
-         F1Ug==
-X-Gm-Message-State: AOAM533Y2SVrhYI+r3m/Ak9qhsAZL37IWsdSdGSaDDkc9+A6INy8Ibne
-        5ChYVpdqL2vcLacytdlseskpbw==
-X-Google-Smtp-Source: ABdhPJwA6GX/vcgv5ngu+bjUf2n7PrKcV867/lIhgcPiU4+jQau4QO3qCBLPDhd9B03CglGFhKlpuA==
-X-Received: by 2002:a17:902:b193:b029:11a:a179:453a with SMTP id s19-20020a170902b193b029011aa179453amr5469195plr.69.1633025551776;
-        Thu, 30 Sep 2021 11:12:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o3sm5391243pjq.34.2021.09.30.11.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 11:12:31 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:12:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Anand K Mistry <amistry@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Ohhoon Kwon <ohoono.kwon@samsung.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] proc: Disable /proc/$pid/wchan
-Message-ID: <202109301109.4E172219@keescook>
-References: <20210923233105.4045080-1-keescook@chromium.org>
- <c283c978-2563-06b9-4c21-59bedceda9ea@oracle.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=21wP2EKfSU+Ufh6L89NcQ77tMoe103kEUQ8sF6bdyKQ=;
+        b=l2LyI/rxr4touFZPbqKkSM7Eocv+kNECq7rr4gpTo4bQXJR6rCXDLp4+nl0eXIe5jF
+         VFAcCLSC30B7xVRxhzfcEh3nuu1+ozj8uJJubinm7r+v8Oq4+jKtykuJON3L7e0a0ByG
+         5pu0hYwJYp52YBV6+AhtcC2HBPhjoj1h2Ri/ksgKRG6jtlS/okoLmr8+2VTa7EQ4tSIn
+         5leaVZK9jUjqbHQ1/HuzLvL6CGvTO9KUKqrO5CN6Tv7nJZfixTbMIaB0ipSqVMPi6sri
+         3GekopTN1apdyIr+gma4sAOEhMAdKgYoZjCjMIkEoW8nmHKZJkniBvenrJX5sKS66/2A
+         2++Q==
+X-Gm-Message-State: AOAM5324M/QS2whMVSv4jy+wyulyYe/gSVAKwCSHDND0fUuasxxA4TMj
+        1J5sMNWOwRadeDAjkFBfTRw=
+X-Google-Smtp-Source: ABdhPJytVMhHv4TCK8GELEx5hOd4TlB/zAMKdLLbo/yDkc9oILmCbBxyiQ13M4IJewUL14FHijagag==
+X-Received: by 2002:a2e:9c8c:: with SMTP id x12mr7246029lji.332.1633025613181;
+        Thu, 30 Sep 2021 11:13:33 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.149])
+        by smtp.gmail.com with ESMTPSA id w4sm495026lfr.150.2021.09.30.11.13.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 11:13:32 -0700 (PDT)
+Message-ID: <7b77a803-7556-9343-74ea-ec98296d2f27@gmail.com>
+Date:   Thu, 30 Sep 2021 21:13:30 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c283c978-2563-06b9-4c21-59bedceda9ea@oracle.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [syzbot] memory leak in bsg_register_queue
+Content-Language: en-US
+To:     syzbot <syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000323d2305cd29ade7@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <000000000000323d2305cd29ade7@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05:35AM -0700, Stephen Brennan wrote:
-> On 9/23/21 4:31 PM, Kees Cook wrote:
-> > The /proc/$pid/wchan file has been broken by default on x86_64 for 4
-> > years now[1]. As this remains a potential leak of either kernel
-> > addresses (when symbolization fails) or limited observation of kernel
-> > function progress, just remove the contents for good.
-> > 
-> > Unconditionally set the contents to "0" and also mark the wchan
-> > field in /proc/$pid/stat with 0.
+On 9/30/21 01:16, syzbot wrote:
+> Hello,
 > 
-> Hi all,
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 > 
-> It looks like there's already been pushback on this idea, but I wanted
-> to add another voice from a frequent user of /proc/$pid/wchan (via PS).
-> Much of my job involves diagnosing kernel issues and performance issues
-> on stable kernels, frequently on production systems where I can't do
-> anything too invasive. wchan is incredibly useful for these situations,
-> so much so that we store regular snapshots of ps output, and we expand
-> the size of the WCHAN column to fit more data (e.g. ps -e -o
-> pid,wchan=WCHAN-WIDE-COLUMN). Disabling wchan would remove a critical
-> tool for me and my team.
+> Reported-and-tested-by: syzbot+cfe9b7cf55bb54ed4e57@syzkaller.appspotmail.com
+> 
+> Tested on:
+> 
+> commit:         1a0db774 scsi: bsg: Fix device unregistration
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a4a1f32762f17135
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cfe9b7cf55bb54ed4e57
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> 
+> Note: testing is done by a robot and is best-effort only.
+> 
 
-Thanks for speaking up! Yes, we've moved to fixing wchan correctly as
-it's clear it's still very much in use. :) Current thread is here:
-https://lore.kernel.org/lkml/20210929220218.691419-1-keescook@chromium.org/
+#syz fix: scsi: bsg: Fix device unregistration
 
--- 
-Kees Cook
+
+With regards,
+Pavel Skripkin
