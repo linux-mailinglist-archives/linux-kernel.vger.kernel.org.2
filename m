@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D05841D30A
+	by mail.lfdr.de (Postfix) with ESMTP id B11B241D30B
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348220AbhI3GIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:08:15 -0400
-Received: from muru.com ([72.249.23.125]:38814 "EHLO muru.com"
+        id S1348222AbhI3GI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:08:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347847AbhI3GIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:08:13 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 45CF780CF;
-        Thu, 30 Sep 2021 06:06:59 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] tty: n_gsm: Don't ignore write return value in gsmld_output()
-Date:   Thu, 30 Sep 2021 09:06:24 +0300
-Message-Id: <20210930060624.46523-1-tony@atomide.com>
-X-Mailer: git-send-email 2.33.0
+        id S1348054AbhI3GI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:08:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D0E5611C0;
+        Thu, 30 Sep 2021 06:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632982006;
+        bh=6v0o2oaBHUuXJtHcvE1qZ8zginS+Wa7xhhbrurvMJ0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jaYaemiFIxsztxYfk821mtLeBOfbjuomDLVkKc3HPGk0xyz38n91M2bb48tUpENUR
+         /bGmKw7DvUTtS2AClOOlg/QAKhPOM1nml4mHgGs8IoJkcvNtSDCSSpg/452fvwKfmr
+         pKuHm0dgEMMHH14Gcx8qPeSOg06zkrVkTyyN1NPU=
+Date:   Thu, 30 Sep 2021 08:06:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] dyndbg: recode for stronger precondition
+Message-ID: <YVVT8su0iYNXz5fn@kroah.com>
+References: <20210929183735.6630-1-jim.cromie@gmail.com>
+ <20210929183735.6630-2-jim.cromie@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929183735.6630-2-jim.cromie@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently have gsmld_output() ignore the return value from device
-write. This means we will lose packets if device write returns 0 or
-an error.
+On Wed, Sep 29, 2021 at 12:37:30PM -0600, Jim Cromie wrote:
+> The table of struct _ddebugs, due to its construction by the linker,
+> has an important property; namely that its "equal" fields have actual
+> ptr-equality, not just strcmp-equality.  Lets recognize that truth in
+> dynamic_debug_init(), while slicing the builtin table into a
+> per-module list.
+> ---
+>  lib/dynamic_debug.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index cb5abb42c16a..817a87e9c37f 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -1101,7 +1101,7 @@ static int __init dynamic_debug_init(void)
+>  	iter_start = iter;
+>  	for (; iter < __stop___dyndbg; iter++) {
+>  		entries++;
+> -		if (strcmp(modname, iter->modname)) {
+> +		if (modname != iter->modname) {
+>  			modct++;
+>  			ret = ddebug_add_module(iter_start, n, modname);
+>  			if (ret)
+> -- 
+> 2.31.1
+> 
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/tty/n_gsm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Always run checkpatch on a patch so you do not get a grumpy kernel
+developer telling you to run checkpatch on your patch :(
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -687,7 +687,7 @@ static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
- 			print_hex_dump_bytes("gsm_data_kick: ",
- 					     DUMP_PREFIX_OFFSET,
- 					     gsm->txframe, len);
--		if (gsmld_output(gsm, gsm->txframe, len) < 0)
-+		if (gsmld_output(gsm, gsm->txframe, len) <= 0)
- 			break;
- 		/* FIXME: Can eliminate one SOF in many more cases */
- 		gsm->tx_bytes -= msg->len;
-@@ -2358,8 +2358,7 @@ static int gsmld_output(struct gsm_mux *gsm, u8 *data, int len)
- 	if (debug & 4)
- 		print_hex_dump_bytes("gsmld_output: ", DUMP_PREFIX_OFFSET,
- 				     data, len);
--	gsm->tty->ops->write(gsm->tty, data, len);
--	return len;
-+	return gsm->tty->ops->write(gsm->tty, data, len);
- }
- 
- /**
--- 
-2.33.0
+I can't take this for the obvious reasons here...
+
+thanks,
+
+greg k-h
