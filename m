@@ -2,132 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AE241DE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000CC41DEBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349393AbhI3QQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46010 "EHLO mail.kernel.org"
+        id S1349695AbhI3QUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349188AbhI3QQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:16:35 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D94ED613CD;
-        Thu, 30 Sep 2021 16:14:49 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 17:18:44 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Iain Hunter <drhunter95@gmail.com>, lothar.felten@gmail.com,
-        iain@hunterembedded.co.uk, Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zeng Tao <prime.zeng@hisilicon.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] workaround regression in ina2xx introduced by
- cb47755725da("time: Prevent undefined behaviour in timespec64_to_ns()")
-Message-ID: <20210930171844.0c67b0ff@jic23-huawei>
-In-Reply-To: <87o88favd9.ffs@tglx>
-References: <20210926171711.194901-1-drhunter95@gmail.com>
-        <87o88favd9.ffs@tglx>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1349271AbhI3QUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:20:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B059613CE;
+        Thu, 30 Sep 2021 16:19:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633018748;
+        bh=rP34b39rMFTFSLIOSBofnZPX8DgrVC8oLCH2ImSxRzE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=upqkO0jQqG04MpzU7EQzRxEsEw2yZCGH0LLKUT4K63+m9c14nHg5GekQkMZsX5r6Z
+         k2+4gtTIw5CEvLGuEaTedahU84A9pB1Iykha5hPmB3dV+MARmDvNebC9FshMZ5Ku0Y
+         uoX5wHWBcmOvpYJmLl76NBS7VVOSSo32Ccx734bir9mGBIrKbA0jkUen6yRgEDZ2Y7
+         CW646+9irG5tRofdD6rumh1OScYBCPd9Nexp5UcSNUgdx3qed7767Jzh0jd3HRCRAU
+         bP8dBdc39vLehuiMxazZPq4WgzHXjGrxIvlZ/aZoUm6ZPaxsZiAxFBMfU1USizUCH9
+         B8ER/Vvv6Yi8A==
+Received: by pali.im (Postfix)
+        id 05893E79; Thu, 30 Sep 2021 18:19:05 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 18:19:05 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+Message-ID: <20210930161905.5a552go73c2o4e7l@pali>
+References: <YS/rn8b0O3FPBbtm@google.com>
+ <0ce93e7c-b041-d322-90cd-40ff5e0e8ef0@v0yd.nl>
+ <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+ <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
+ <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+ <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
+ <20210923202231.t2zjoejpxrbbe5hc@pali>
+ <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
+ <20210930154202.cvw3it3edv7pmqtb@pali>
+ <6ba104fa-a659-c192-4dc0-291ca3413f99@v0yd.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6ba104fa-a659-c192-4dc0-291ca3413f99@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sep 2021 23:18:42 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> On Sun, Sep 26 2021 at 18:16, Iain Hunter wrote:
-> > --- a/drivers/iio/adc/ina2xx-adc.c
-> > +++ b/drivers/iio/adc/ina2xx-adc.c
-> > @@ -817,10 +817,10 @@ static int ina2xx_capture_thread(void *data)
-> >  		 */
-> >  		do {
-> >  			timespec64_add_ns(&next, 1000 * sampling_us);
-> > -			delta = timespec64_sub(next, now);
-> > -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
-> > -		} while (delay_us <= 0);
-> > +		} while (timespec64_compare(&next, &now) < 0);
-> >  
-> > +		delta = timespec64_sub(next, now);
-> > +		delay_us = div_s64(timespec64_to_ns(&delta), 1000);  
+On Thursday 30 September 2021 18:14:04 Jonas Dreßler wrote:
+> On 9/30/21 5:42 PM, Pali Rohár wrote:
+> > On Thursday 30 September 2021 17:38:43 Jonas Dreßler wrote:
+> > > On 9/23/21 10:22 PM, Pali Rohár wrote:
+> > > > On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
+> > > > > On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+> > > > > > On 9/22/21 2:50 PM, Jonas Dreßler wrote:
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > > > - Just calling mwifiex_write_reg() once and then blocking until the card
+> > > > > > wakes up using my delay-loop doesn't fix the issue, it's actually
+> > > > > > writing multiple times that fixes the issue
+> > > > > > 
+> > > > > > These observations sound a lot like writes (and even reads) are actually
+> > > > > > being dropped, don't they?
+> > > > > 
+> > > > > It sounds like you're writing into a not ready (fully powered on) device.
+> > > > 
+> > > > This reminds me a discussion with Bjorn about CRS response returned
+> > > > after firmware crash / reset when device is not ready yet:
+> > > > https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
+> > > > 
+> > > > Could not be this similar issue? You could check it via reading
+> > > > PCI_VENDOR_ID register from config space. And if it is not valid value
+> > > > then card is not really ready yet.
+> > > > 
+> > > > > To check this, try to put a busy loop for reading and check the value
+> > > > > till it gets 0.
+> > > > > 
+> > > > > Something like
+> > > > > 
+> > > > >     unsigned int count = 1000;
+> > > > > 
+> > > > >     do {
+> > > > >       if (mwifiex_read_reg(...) == 0)
+> > > > >         break;
+> > > > >     } while (--count);
+> > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > With Best Regards,
+> > > > > Andy Shevchenko
+> > > 
+> > > I've tried both reading PCI_VENDOR_ID and the firmware status using a busy
+> > > loop now, but sadly none of them worked. It looks like the card always
+> > > replies with the correct values even though it sometimes won't wake up after
+> > > that.
+> > > 
+> > > I do have one new observation though, although I've no clue what could be
+> > > happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we can
+> > > "predict" the wakeup failure because exactly one (usually around the 20th)
+> > > of those 1000 reads will fail.
+> > 
+> > What does "fail" means here?
 > 
-> This whole timespec dance does not make any sense and can be completely
-> avoided by using just scalar nanoseconds. Untested patch below.
-> 
-> Thanks,
-> 
->         tglx
+> ioread32() returns all ones, that's interpreted as failure by
+> mwifiex_read_reg().
 
-Thanks Thomas.
+Ok. And can you check if PCI Bridge above this card has enabled CRSSVE
+bit (CRSVisible in RootCtl+RootCap in lspci output)? To determinate if
+Bridge could convert CRS response to all-ones as failed transaction.
 
-Iain could you test this approach?
-
-Thanks,
-
-Jonathan
-
-> ---
-> --- a/drivers/iio/adc/ina2xx-adc.c
-> +++ b/drivers/iio/adc/ina2xx-adc.c
-> @@ -775,7 +775,7 @@ static int ina2xx_capture_thread(void *d
->  	struct ina2xx_chip_info *chip = iio_priv(indio_dev);
->  	int sampling_us = SAMPLING_PERIOD(chip);
->  	int ret;
-> -	struct timespec64 next, now, delta;
-> +	ktime_t next, now, delta;
->  	s64 delay_us;
->  
->  	/*
-> @@ -785,7 +785,7 @@ static int ina2xx_capture_thread(void *d
->  	if (!chip->allow_async_readout)
->  		sampling_us -= 200;
->  
-> -	ktime_get_ts64(&next);
-> +	next = ktime_get();
->  
->  	do {
->  		while (!chip->allow_async_readout) {
-> @@ -798,7 +798,7 @@ static int ina2xx_capture_thread(void *d
->  			 * reset the reference timestamp.
->  			 */
->  			if (ret == 0)
-> -				ktime_get_ts64(&next);
-> +				next = ktime_get();
->  			else
->  				break;
->  		}
-> @@ -807,7 +807,7 @@ static int ina2xx_capture_thread(void *d
->  		if (ret < 0)
->  			return ret;
->  
-> -		ktime_get_ts64(&now);
-> +		now = ktime_get();
->  
->  		/*
->  		 * Advance the timestamp for the next poll by one sampling
-> @@ -816,11 +816,10 @@ static int ina2xx_capture_thread(void *d
->  		 * multiple times, i.e. samples are dropped.
->  		 */
->  		do {
-> -			timespec64_add_ns(&next, 1000 * sampling_us);
-> -			delta = timespec64_sub(next, now);
-> -			delay_us = div_s64(timespec64_to_ns(&delta), 1000);
-> -		} while (delay_us <= 0);
-> +			next = ktime_add_us(next, sampling_us);
-> +		} while (next <= now);
->  
-> +		delay_us = ktime_to_us(ktime_sub(next, now));
->  		usleep_range(delay_us, (delay_us * 3) >> 1);
->  
->  	} while (!kthread_should_stop());
-> 
-> 
-
+> > 
+> > > Maybe the firmware actually tries to wake up,
+> > > encounters an error somewhere in its wakeup routines and then goes down a
+> > > special failure code path. That code path keeps the cards CPU so busy that
+> > > at some point a PCI_VENDOR_ID request times out?
+> > > 
+> > > Or well, maybe the card actually wakes up fine, but we don't receive the
+> > > interrupt on our end, so many possibilities...
