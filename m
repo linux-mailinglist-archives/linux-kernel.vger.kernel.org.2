@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D6341E49C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3AC41E4C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349773AbhI3XQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:16:20 -0400
-Received: from mga05.intel.com ([192.55.52.43]:32665 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhI3XQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:16:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310853764"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="310853764"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:14:36 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="477156623"
-Received: from amitprak-mobl1.amr.corp.intel.com ([10.209.88.116])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 16:14:36 -0700
-Date:   Thu, 30 Sep 2021 16:14:36 -0700 (PDT)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     Tim Gardner <tim.gardner@canonical.com>
-cc:     mptcp@lists.linux.dev,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH][next] mptcp: Avoid NULL dereference in
- mptcp_getsockopt_subflow_addrs()
-In-Reply-To: <149982aa-720-35be-4866-39259b92884d@linux.intel.com>
-Message-ID: <96389960-fd3-616d-c829-203d2414ffe@linux.intel.com>
-References: <20210920154232.15494-1-tim.gardner@canonical.com> <149982aa-720-35be-4866-39259b92884d@linux.intel.com>
+        id S1348954AbhI3X0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345470AbhI3X0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 19:26:48 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B3AC06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:25:05 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so7910351pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eh34nKlBtcXIhSkXFiXgZHHEXy1pUVrM2m/QPvjGZhs=;
+        b=Hs3DNk4Z5KQlgSeNyHreuKuvEU3//1qlQHAU6a7/5w5PaGkR53udvoJVoOdC9VYM+4
+         oclqUS4GaVHxlcKo64+K6oVPlWjJLs2LIrFdjEdhbknM3o0FBpyNLGRmyykcmR2LSMoz
+         9dsuPdW3grv3wXZx7jpKUG0rnO+B3L23iItAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eh34nKlBtcXIhSkXFiXgZHHEXy1pUVrM2m/QPvjGZhs=;
+        b=Y1/iAO85OHQzz72ACd3XjvXhrc886y76lVf9uvlwIozdJL8LHqi+zHrSeK2dxLsBgZ
+         mc8Re8qsihQzQs/paG6OTXAUSp5pJYkyDadab8mXIaRfB66VJGTJedQhDu8bhkJ9lgBf
+         3SkbU+HEmgLpumr2r5iLs8s0GftMIL0hSA1HIU4WCSEthtad0QeqT9smQ9a03K/lD98I
+         K/WfBbQkujo46codPF0KaUXz+Y8jNTShxpx58b/z+OeV2wPG0xYXhqbrGsPPQC2LFpJE
+         V0amGQt0GUTRB9IM++hCP8F1PbIxDB84bHa3hTdmGj1fKzNoCaUCdz7bbRIYswi8ZY4j
+         E1Fw==
+X-Gm-Message-State: AOAM531ia8/UhjLy8p8ga6YYYKPTMJCa+mnK+ICtuVM3G+eoPtH0rLy5
+        1tmSCTUUXlHN1wVn5/nKBTpnuw==
+X-Google-Smtp-Source: ABdhPJylqjkv4pN89l4jFNBRqBmfAjaekWIwj3On6XS7U+IYWAgJXHbj5PZrkmGMBxnVbJZPind/Dg==
+X-Received: by 2002:a17:902:b205:b0:13d:b0a1:da90 with SMTP id t5-20020a170902b20500b0013db0a1da90mr6640971plr.26.1633044304955;
+        Thu, 30 Sep 2021 16:25:04 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 23sm4600716pfw.97.2021.09.30.16.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 16:25:03 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 16:25:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <202109301621.3E03AE14F@keescook>
+References: <20210902231813.3597709-1-surenb@google.com>
+ <20210902231813.3597709-2-surenb@google.com>
+ <YTZIGhbSTghbUay+@casper.infradead.org>
+ <CAJuCfpEYOC+6FPmVzzV2od3H8vqWVCsb1hiu5CiDS0-hSg6cfQ@mail.gmail.com>
+ <CAJuCfpH8LtKG+1LpVb8JM73dL11yaqR7io8+HDHLGNUVZYVTQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpH8LtKG+1LpVb8JM73dL11yaqR7io8+HDHLGNUVZYVTQw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021, Mat Martineau wrote:
+On Thu, Sep 30, 2021 at 11:56:12AM -0700, Suren Baghdasaryan wrote:
+> I thought more about these alternative suggestions for userspace to
+> record allocations but that would introduce considerable complexity
+> into userspace. Userspace would have to collect and consolidate this
+> data by some daemon, all users would have to query it for the data
+> (IPC or something similar), in case this daemon crashes the data would
+> need to be somehow recovered. So, in short, it's possible but makes
+> things much more complex compared to proposed in-kernel
+> implementation.
 
-> On Mon, 20 Sep 2021, Tim Gardner wrote:
->
->> Coverity complains of a possible NULL dereference in
->> mptcp_getsockopt_subflow_addrs():
->> 
->> 861        } else if (sk->sk_family == AF_INET6) {
->>    	3. returned_null: inet6_sk returns NULL. [show details]
->>    	4. var_assigned: Assigning: np = NULL return value from inet6_sk.
->> 862                const struct ipv6_pinfo *np = inet6_sk(sk);
->> 
->> Fix this by checking for NULL.
->> 
->> Cc: Mat Martineau <mathew.j.martineau@linux.intel.com>
->> Cc: Matthieu Baerts <matthieu.baerts@tessares.net>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: netdev@vger.kernel.org
->> Cc: mptcp@lists.linux.dev
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
->> 
->> [ I'm not at all sure this is the right thing to do since the final result is to
->> return garbage to user space in mptcp_getsockopt_subflow_addrs(). Is this one
->> of those cases where inet6_sk() can't fail ?]
->
-> Hi Tim -
->
-> Thanks for noticing this and proposing a fix.
->
-> As you commented, this isn't the right change to merge since 
-> mptcp_getsockopt_subflow_addrs() would copy garbage.
->
-> This block of code already checks that CONFIG_IPV6 is enabled, so the 
-> question is whether sk_fullsock() would return false because the subflow is 
-> in TCP_TIME_WAIT or TCP_NEW_SYN_RECV. The caller is iterating over sockets in 
-> the MPTCP socket's conn_list, which does not contain request_socks (so there 
-> are no sockets in the TCP_NEW_SYN_RECV state).
->
-> TCP subflow sockets are normally removed from the conn_list before they are 
-> closed by their parent MPTCP socket, but I need to double-check for corner 
-> cases. I created a github issue to track this: 
-> https://github.com/multipath-tcp/mptcp_net-next/issues/231
->
+Agreed: this is something for the kernel to manage.
 
-Tim,
+> OTOH, the only downside of the current implementation is the
+> additional memory required to store anon vma names. I checked the
+> memory consumption on the latest Android with these patches and
+> because we share vma names during fork, the actual memory required to
+> store vma names is no more than 600kB. Even on older phones like Pixel
+> 3 with 4GB RAM, this is less than 0.015% of total memory. IMHO, this
+> is an acceptable price to pay.
 
-Could you submit a v2 of this patch? Paolo took a look and the condition 
-should not happen, but adding the NULL check would be a good idea and 
-returning early as your patch does is ok. The data copied after the early 
-return will be zeroed and look like the address family is AF_UNSPEC.
+I think that's entirely fine. We don't end up with any GUP games, and
+everything is refcounted.
 
-Could you add a
+I think a v10 with the various nits fixed would be a good next step
+here. What do you think Matthew?
 
-Fixes: https://github.com/multipath-tcp/mptcp_net-next/issues/231
-
-tag and make the one change below?
-
->
->> ---
->> net/mptcp/sockopt.c | 3 +++
->> 1 file changed, 3 insertions(+)
->> 
->> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
->> index 8137cc3a4296..c89f2bedce79 100644
->> --- a/net/mptcp/sockopt.c
->> +++ b/net/mptcp/sockopt.c
->> @@ -861,6 +861,9 @@ static void mptcp_get_sub_addrs(const struct sock *sk, 
->> struct mptcp_subflow_addr
->> 	} else if (sk->sk_family == AF_INET6) {
->> 		const struct ipv6_pinfo *np = inet6_sk(sk);
->> 
->> +		if (!np)
-
-This could be
-
-if (WARN_ON_ONCE(!np))
-
-(as suggested by Paolo) to make it clear the condition is unexpected.
-
->> +			return;
->> +
->> 		a->sin6_local.sin6_family = AF_INET6;
->> 		a->sin6_local.sin6_port = inet->inet_sport;
->> 
->> -- 
->> 2.33.0
-
-Thanks,
-
---
-Mat Martineau
-Intel
+-- 
+Kees Cook
