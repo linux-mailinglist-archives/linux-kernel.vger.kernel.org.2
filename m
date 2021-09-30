@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2E641D729
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D8841D73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349733AbhI3KHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:07:04 -0400
-Received: from mga02.intel.com ([134.134.136.20]:24980 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349679AbhI3KHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:07:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212408503"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="212408503"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 03:05:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="618055875"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 30 Sep 2021 03:05:17 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 30 Sep 2021 13:05:16 +0300
-Date:   Thu, 30 Sep 2021 13:05:16 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device
- properties
-Message-ID: <YVWL3PyYRanGTlVG@kuha.fi.intel.com>
-References: <20210929170804.GA778424@bhelgaas>
- <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
+        id S1349751AbhI3KKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349688AbhI3KKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:10:16 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F51C06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:08:33 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i25so23003434lfg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mwTJIBSdS6R0C6OOzQhsYG/CA9Av8xCuOU1iydIZfq8=;
+        b=ivZCT+RSpG5Lr3g/DnUUf9qNfJjNYEBDbk0sXckN3US/d3v73YYcN23q0gW1WEDlCF
+         4QdzhSNaM0Lm9mjqyKiP/SvHhFGovDkoONIkjO6jEXsrqXkeuyGKcdG2dAh8vfVEmSRj
+         nke3WD52VbQKrXvU5FjyYTgmtUKEHPvQpiBan+Leef4aA7HQdSVd7xVwJ67rmFFTYmIt
+         zE+4gHgh7oa4RgNQvVReezvOaMgOIT+2CvBjbFAVrMr2Ej5UazkPfRl0orjBYUB0/MF5
+         4C2cUNV52DHLyVT8sMkGmEiMl7PP1Efg+OV9kaU8DlpmA6RXnUJOzKC55Om6qfkezQHS
+         mQgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mwTJIBSdS6R0C6OOzQhsYG/CA9Av8xCuOU1iydIZfq8=;
+        b=o7NW3/Dx18sCwkpkKUgXYA5QEM7FyC4v1xfpXTaO5ZTlheIzwxesFFRemEluFZU275
+         Qanmgxbr93TzSRBxdrL6tlKEv+C7WJS+6FRTVJ56MT5OaGXY55SLYVuwZcFiCPmhdOSM
+         oMN09nutrLvPP0wYxMmRnJQtEmErMKHvSCh8/B1dxfX7yQs0ZPrcZKf6tyaBthRIXyH+
+         SirIp8Y/EWSo//K/WP756bwIabS0QAGmSPlpwjMeHH/v26GAqW7Q0/+OR5snI1++QZW0
+         I9J8P7G2cPUEKbJ6JepPaK4yvBzOk6epmmLj8DbFG3WBA5rMCZGugGTShlZmxu8eneH2
+         zN5A==
+X-Gm-Message-State: AOAM533Nw2EQOPWd9R0yRBuZftBG7Hcg6wHYWU3b+qivfxlD5ZxGKB2u
+        1ous9xN2l50SRgp4j05OazKUIzugNCwNQnAM2Z2l1A==
+X-Google-Smtp-Source: ABdhPJxp5GhGqokFxVNBLzc5wAxYntlHon3eHPcHlnoTTXeNni+3NFATmwx155GBOUerq63XPBnIf991pZVt2hJfQIM=
+X-Received: by 2002:a2e:898c:: with SMTP id c12mr5105509lji.16.1632996511275;
+ Thu, 30 Sep 2021 03:08:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com> <20210920161136.2398632-9-Jerome.Pouiller@silabs.com>
+In-Reply-To: <20210920161136.2398632-9-Jerome.Pouiller@silabs.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 30 Sep 2021 12:07:55 +0200
+Message-ID: <CAPDyKFp2_41mScO=-Ev+kvYD5xjShQdLugU_2FTTmvzgCxmEWA@mail.gmail.com>
+Subject: Re: [PATCH v7 08/24] wfx: add bus_sdio.c
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+On Mon, 20 Sept 2021 at 18:12, Jerome Pouiller
+<Jerome.Pouiller@silabs.com> wrote:
+>
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/net/wireless/silabs/wfx/bus_sdio.c | 261 +++++++++++++++++++++
+>  1 file changed, 261 insertions(+)
+>  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
+>
+> diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wir=
+eless/silabs/wfx/bus_sdio.c
 
-On Thu, Sep 30, 2021 at 10:33:27AM +0800, Zhangfei Gao wrote:
-> On 2021/9/30 上午1:08, Bjorn Helgaas wrote:
-> > [+cc Zhangfei, author of 8304a3a199ee ("PCI: Set dma-can-stall for
-> > HiSilicon chips"), which added this]
-> > 
-> > On Wed, Sep 29, 2021 at 04:37:28PM +0300, Heikki Krogerus wrote:
-> > > Using device_create_managed_software_node() to inject the
-> > > properties in quirk_huawei_pcie_sva() instead of with the
-> > > old device_add_properties() API.
-> > > 
-> > > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > This is fine with me, but please update the subject line and commit
-> > log something like this:
-> > 
-> >    PCI: Convert to device_create_managed_software_node()
-> > 
-> >    In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
-> >    instead of device_add_properties() to set the "dma-can-stall"
-> >    property.
-> > 
-> >    This resolves a software node lifetime issue (see 151f6ff78cdf
-> >    ("software node: Provide replacement for device_add_properties()"))
-> >    and paves the way for removing device_add_properties() completely.
-> > 
-> > Actually, 8304a3a199ee was merged during the v5.15 merge window, so if
-> > this does in fact fix a lifetime issue, I can merge this before
-> > v5.15-final.
+[...]
 
-It does not fix lifetime issues. This is because device_del() called
-device_remove_properties() unconditionally with every device.
+> +
+> +static int wfx_sdio_probe(struct sdio_func *func,
+> +                         const struct sdio_device_id *id)
+> +{
+> +       struct device_node *np =3D func->dev.of_node;
+> +       struct wfx_sdio_priv *bus;
+> +       int ret;
+> +
+> +       if (func->num !=3D 1) {
+> +               dev_err(&func->dev, "SDIO function number is %d while it =
+should always be 1 (unsupported chip?)\n",
+> +                       func->num);
+> +               return -ENODEV;
+> +       }
+> +
+> +       bus =3D devm_kzalloc(&func->dev, sizeof(*bus), GFP_KERNEL);
+> +       if (!bus)
+> +               return -ENOMEM;
+> +
+> +       if (!np || !of_match_node(wfx_sdio_of_match, np)) {
+> +               dev_warn(&func->dev, "no compatible device found in DT\n"=
+);
+> +               return -ENODEV;
+> +       }
+> +
+> +       bus->func =3D func;
+> +       bus->of_irq =3D irq_of_parse_and_map(np, 0);
+> +       sdio_set_drvdata(func, bus);
+> +       func->card->quirks |=3D MMC_QUIRK_LENIENT_FN0 |
+> +                             MMC_QUIRK_BLKSZ_FOR_BYTE_MODE |
+> +                             MMC_QUIRK_BROKEN_BYTE_MODE_512;
 
-There should be no functional impact.
+I would rather see that you add an SDIO_FIXUP for the SDIO card, to
+the sdio_fixup_methods[], in drivers/mmc/core/quirks.h, instead of
+this.
 
-> > I know *this* quirk applies to AMBA devices, and I assume they cannot
-> > be removed, so there's no actual lifetime problem in this particular
-> > case, but in general it looks like a problem for PCI devices.
-> Thanks Bjorn
-> This patch also works, though the quirk is for platform devices and not
-> removed.
+> +
+> +       sdio_claim_host(func);
+> +       ret =3D sdio_enable_func(func);
+> +       /* Block of 64 bytes is more efficient than 512B for frame sizes =
+< 4k */
+> +       sdio_set_block_size(func, 64);
+> +       sdio_release_host(func);
+> +       if (ret)
+> +               return ret;
+> +
+> +       bus->core =3D wfx_init_common(&func->dev, &wfx_sdio_pdata,
+> +                                   &wfx_sdio_hwbus_ops, bus);
+> +       if (!bus->core) {
+> +               ret =3D -EIO;
+> +               goto sdio_release;
+> +       }
+> +
+> +       ret =3D wfx_probe(bus->core);
+> +       if (ret)
+> +               goto sdio_release;
+> +
+> +       return 0;
+> +
+> +sdio_release:
+> +       sdio_claim_host(func);
+> +       sdio_disable_func(func);
+> +       sdio_release_host(func);
+> +       return ret;
+> +}
+> +
+> +static void wfx_sdio_remove(struct sdio_func *func)
+> +{
+> +       struct wfx_sdio_priv *bus =3D sdio_get_drvdata(func);
+> +
+> +       wfx_release(bus->core);
+> +       sdio_claim_host(func);
+> +       sdio_disable_func(func);
+> +       sdio_release_host(func);
+> +}
+> +
+> +static const struct sdio_device_id wfx_sdio_ids[] =3D {
+> +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200)=
+ },
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
+> +
+> +struct sdio_driver wfx_sdio_driver =3D {
+> +       .name =3D "wfx-sdio",
+> +       .id_table =3D wfx_sdio_ids,
+> +       .probe =3D wfx_sdio_probe,
+> +       .remove =3D wfx_sdio_remove,
+> +       .drv =3D {
+> +               .owner =3D THIS_MODULE,
+> +               .of_match_table =3D wfx_sdio_of_match,
 
-If the device is really never removed, then we could also constify the
-node and the properties in it. Then the patch would look like this:
+Is there no power management? Or do you intend to add that on top?
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index b6b4c803bdc94..3dc7a1c62bf24 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -1833,13 +1833,17 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
-  * even when a "PCI" device turns out to be a regular old SoC device
-  * dressed up as a RCiEP and normal rules don't apply.
-  */
-+static const struct property_entry huawei_pcie_sva_props[] = {
-+       PROPERTY_ENTRY_BOOL("dma-can-stall"),
-+       { }
-+};
-+
-+static const struct software_node huawei_pcie_sva_swnode = {
-+       .properties = huawei_pcie_sva_props,
-+};
-+
- static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
- {
--       struct property_entry properties[] = {
--               PROPERTY_ENTRY_BOOL("dma-can-stall"),
--               {},
--       };
--
-        if (pdev->revision != 0x21 && pdev->revision != 0x30)
-                return;
- 
-@@ -1850,7 +1854,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
-         * can set it directly.
-         */
-        if (!pdev->dev.of_node &&
--           device_add_properties(&pdev->dev, properties))
-+           device_add_software_node(&pdev->dev, &huawei_pcie_sva_swnode))
-                pci_warn(pdev, "could not add stall property");
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+> +       }
+> +};
+> --
+> 2.33.0
+>
 
-
-Let me know if you prefer it that way.
-
-thanks,
-
--- 
-heikki
+Kind regards
+Uffe
