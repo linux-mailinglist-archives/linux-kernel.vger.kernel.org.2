@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C5841D4CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A4141D4D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348834AbhI3Hxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S1348842AbhI3H4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348824AbhI3Hxe (ORCPT
+        with ESMTP id S1348701AbhI3H4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:53:34 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6593C06161C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:51:51 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j5so16796966lfg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:51:51 -0700 (PDT)
+        Thu, 30 Sep 2021 03:56:08 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6641C06161C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:54:26 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d26so8500116wrb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uOQC9qDuzBo2C8E99AFpnFMO/c5cxqQImivipJ9VOGI=;
-        b=BssjWxgqLMDsW2dxYyrsl3lvvILHX4cQ9c9yZLwNzBjc5SgAMgQKCZzg4hJLWU7t3U
-         76Bz2XiWgqFt3q9gLHa9Ry19K9vlD6hwNwymd9Wq7WXSmaqNo/26ICRPKZo4hYWoY/ba
-         rS76bc/Lwkag6G5z50CjruSOuXwP06xZmInpG1odm+tWIhMDqykL8T7dy2cH6F90e6vr
-         0R0v+WBq8jbMIvDYvh9kn0GpKCscVTet+M2qR6dPCUAj9CeAterrydtwF23OV+flvcgs
-         gbV+YH4fkNBbKa2b/qBde61Nm5C97/U2OIwyr/1cyOPpq54k+UPbfVzFP2Ypbst4jIla
-         ugww==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tFbQ55QvE4VrWzx0WGzzZpPelBHUJX2nhQzISPTrz70=;
+        b=PUadw4c9isS2cxmqFi/YX6ItKbHK/CZky15wGeWzyFsJDGwdkFRU0Qfq6Z2EuMUW5o
+         3l2px3o6FszfOwoAcpLjIGJp3ofUG3NKuhQU4B3/Z0504nsVDapfs8gCD4m+bN/1Xkep
+         ndWK58TB5TBC+mDt9BCpgkLN9Kx1LxlyuTlGzXX3sAfaL2ZumBwfO+MGimu78MW85RwK
+         ICYEMjlJ6T0QONaOg4q2z89i6XV03nEouIzSXuMR62l8VkkUD6L8k6vMBPIXRu1dTt1z
+         RjCV8QepIE9eQi7iZKAxAc7Sqi+UB9E0WIDiTc1qnYZPf5WLD9WPuIf1IZCPPyLy9xOS
+         t0LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uOQC9qDuzBo2C8E99AFpnFMO/c5cxqQImivipJ9VOGI=;
-        b=wdPs+XMBYmls023HXd98DuTmaWeok8wQs7UCpjmaJniLcacLpM30jp5VaQ0KmT4EcB
-         tSUa9gBp6RvP8nBXlTJvTfdsfI3anWL7nwgG0CTNriEayWQQyvutyqxM9qhvP6puF9zk
-         GIboOjHMkcbw/ph9WAK/EH2vcpc7YHmrsYcgX4PvyCplfg3qvZMRaUb5KF3iX1krEMTW
-         CpkkhdQX9vKrQ2dOmsUUgnJomZ7mIwYgT9Zhd0Rb/tkIJhF1PE3IBgu3WmVkCVGcX0fs
-         cVAh0zdJ3nHiK4rqEJuvk5AWjIHVoPpuLnNe0Txtspyzadc+bTx7fAugriCrFPm5WIJ0
-         gMFg==
-X-Gm-Message-State: AOAM531GL+1yuvu6UbEkIPZi8MWbzkpTE5pVKZtUAOfQnpCxhR0cDNAh
-        N0GCE/O/tc40hl7sf78YHXmDUmBE9EsGda+EkTY=
-X-Google-Smtp-Source: ABdhPJy00FNBVoPYXCRJLUz4fYYVw+83ZeEGkmcEpC/iUaJIqpXfTbulRfEoNcPT+cJaHx3UeT316dObwNWV9cDuJZ4=
-X-Received: by 2002:a2e:7203:: with SMTP id n3mr4604188ljc.195.1632988310174;
- Thu, 30 Sep 2021 00:51:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tFbQ55QvE4VrWzx0WGzzZpPelBHUJX2nhQzISPTrz70=;
+        b=LZtJ1YFAWz7JhGQ4dMpjIJQUK6+5FW7bny8mB0MGk3JC5N9pK9L8000Bz3T+zhkjQk
+         M0vZi2cjCMtKI7dW+/I5scyaX1yJlXACIx2L/uVebuZt3FwtZEaFYH+0yH0cyNRSOah/
+         jbuXpai3VrV63GDJ4JSru2r0LvjtgmdVulWal7Y1Wry7EIcUJ0UKX2Q57s3bUgbJrXo6
+         0x6gnbqKS2f9wAWSYROLAx20PpVt9AKyMDTZlkm1Eb+6omUsodGBu21tyJj6v/sCHwtE
+         zEZ1MAxXoT5MxJK8s7n8yKFQc2I4nYstKdKtlJSSeUD73vtiQ1TPa8GZhH0RcW3Q9I8Y
+         +q6g==
+X-Gm-Message-State: AOAM532RFXRCGSP11Rtczy3QDWsxV0ke44k2lziL62LYVJBT1ywmpAcC
+        gPI8aiAIE83ohTazcZKr1y/gr4fN6Og75g==
+X-Google-Smtp-Source: ABdhPJxlSWHDK5dVmImux7/6JfIXow/ENgBS7KUEh5J/aun7idE2uWRl1wtPeVEbs/Vvqj2ovcIDlQ==
+X-Received: by 2002:adf:a3c7:: with SMTP id m7mr4442360wrb.339.1632988463070;
+        Thu, 30 Sep 2021 00:54:23 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id w5sm2135322wra.87.2021.09.30.00.54.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 00:54:22 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.15-rc4
+Date:   Thu, 30 Sep 2021 09:54:21 +0200
+Message-Id: <20210930075421.13146-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
- <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com> <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
-Date:   Thu, 30 Sep 2021 10:51:14 +0300
-Message-ID: <CAEn-LTqVd8z=kpCtWjiPbKuw24NuHLTQxWzw7g34fEJgDYrp8w@mail.gmail.com>
-Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 4:36 PM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
->
-> On 24 September 2021 17:17, Alexandre Ghiti wrote:
->
-> > > > +static int da9063_restart_notify(struct notifier_block *this,
-> > > > +                              unsigned long mode, void *cmd)
-> > > > +{
-> > > > +     struct da9063 *da9063 = container_of(this, struct da9063,
-> > > > restart_handler);
-> > > > +
-> > > > +     regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
-> > > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
-> > > > +     regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
-> > > > +
-> > > > +     return NOTIFY_DONE;
-> > > > +}
-> > >
-> > > I will talk with our HW team to clarify, but this sequence looks to be very
-> > > specific to the needs of the platform in question which doesn't feel right to
-> > > me. As was mentioned on another thread as well, the watchdog driver already
-> > has
-> > > a restart function to reset the device (and thus the system), so I don't believe
-> > > we should have multiple of these.
-> >
-> > From the discussion that happened here
-> > https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-
-> > support_tab_content,
-> > it does not seem possible to use the watchdog on a chip whose OTP does
-> > not set AUTOBOOT. But anyway, I'm looking forward to hearing from the
-> > HW team :)
->
-> So I've discussed this internally and so far it's not completely clear how the
-> sequence you provided actually performs the reset as you suggest. It certainly
-> doesn't look like it should, so maybe this relates to an external pin somehow
-> triggering the restart in this particular scenario? I'd be interested to
-> understand which event bits are set when the board does restart to understand
-> what did actually trigger the boot-up.
->
-> Regardless of this though, the consensus right now would be to use the RTC as a
-> wake event to restart the platform. An alarm can be set for a couple of seconds
-> into the future (or longer if required) and that would provide the event
-> required to come up from powerdown/shutdown, in the absence of AUTOBOOT being
-> set in OTP. I believe this would be the safest route to take in this case. You
-> can then just use the SHUTDOWN bit on CONTROL_F to take down the board.
+Linus,
 
-Today I was looking into OpenBSD DA9063 drivers and they might be
-doing what you described for the reset.
+This PR contains a single fix for the gpio-pca953x driver and two commits
+updating the MAINTAINERS entries for Mun Yew Tham (GPIO specific) and myself
+(treewide after a change in professional situation).
 
-dev/fdt/dapmic.c
+Please pull.
+Bartosz
 
-[..]
-241 void
-242 dapmic_reset(void)
-243 {
-244     struct dapmic_softc *sc = dapmic_cd.cd_devs[0];
-245     uint8_t reg;
-246
-247     /* Enable tick alarm wakeup with a one second interval. */
-248     reg = dapmic_reg_read(sc, ALARM_MO);
-249     reg &= ~ALARM_MO_TICK_TYPE;
-250     reg |= ALARM_MO_TICK_WAKE;
-251     dapmic_reg_write(sc, ALARM_MO, reg);
-252
-253     /* Enable tick function. */
-254     reg = dapmic_reg_read(sc, ALARM_Y);
-255     reg |= ALARM_Y_TICK_ON;
-256     dapmic_reg_write(sc, ALARM_Y, reg);
-257
-258     /* Clear events such that we wake up again. */
-259     dapmic_reg_write(sc, EVENT_A, dapmic_reg_read(sc, EVENT_A));
-260     dapmic_reg_write(sc, CONTROL_F, CONTROL_F_SHUTDOWN);
-261 }
-[..]
+The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
 
->
-> To reiterate, I believe this should be made a board specific quirk, rather than
-> as part of the generic MFD core of DA9063, as the timings may vary for other
-> platforms.
+  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
 
-Agree. Currently it seems Linux drivers expect DA9063 boards to have
-AUTOBOOT ON set in OTP, which is not the case for SiFive Unmatched
-(thus issues with reset and WDT).
+are available in the Git repository at:
 
-david
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc4
 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+for you to fetch changes up to 040d985e27dc39353d50d0f75a6be3330f4fece2:
+
+  MAINTAINERS: Update Mun Yew Tham as Altera Pio Driver maintainer (2021-09-29 20:42:31 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v5.15-rc4
+
+- don't ignore I2C errors in gpio-pca953x
+- update MAINTAINERS entries for Mun Yew Tham and myself
+
+----------------------------------------------------------------
+Andrey Gusakov (1):
+      gpio: pca953x: do not ignore i2c errors
+
+Bartosz Golaszewski (1):
+      MAINTAINERS: update my email address
+
+Mun Yew Tham (1):
+      MAINTAINERS: Update Mun Yew Tham as Altera Pio Driver maintainer
+
+ MAINTAINERS                 | 10 +++++-----
+ drivers/gpio/gpio-pca953x.c | 11 ++---------
+ 2 files changed, 7 insertions(+), 14 deletions(-)
