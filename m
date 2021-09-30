@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A5841E056
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F335E41E05C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352835AbhI3RtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S1352851AbhI3RwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352829AbhI3RtE (ORCPT
+        with ESMTP id S1352839AbhI3RwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:49:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9739C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so913645pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
+        Thu, 30 Sep 2021 13:52:10 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F9DC06176A;
+        Thu, 30 Sep 2021 10:50:27 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so28236759lfa.9;
+        Thu, 30 Sep 2021 10:50:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+IS0gEgo7hipR9gibsQw5KtPLx6dQXKFRc1+dywoXVA=;
-        b=m0rDM0cnK0yrtL29pL81MAGf7w2Yed+jc4KUJF0fL6YCvGOj2OOT/73pX0N1cuLGzf
-         ECJdJfF5q+Tu3Vs0H54vg8YCX4POSPt/jTDx97+sRolpUheG7qnd3LACShH3YDUGL+oL
-         edpJws/IQ1QQ+9i+FXscZHebVHzxRo9Z53ybE=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WbMGoSeIG8Nre7YI94HB+1s+5OyVO37vI/FQasjDNY0=;
+        b=qKckho3veE14jzoQZa3FHX5ehyczkirMrSzEPpck72OtAr3vB9PyWSrebSRG9I/sHP
+         6IsrpzAOdLNiEudtcudInoxpEGgzbYB33JMUki6jD9wXa/qa689vM8U8HfVP69AJGFzd
+         eFswiR4DEymO4lgUpvyk9smlkFfWLENrJvza3tWKrfpWI8hTcNmyO0oXJAuNqMfIj5FJ
+         YPvJRxm2kHaW0kZezFrmKGfUtWSG5CzIwo701Pe4Y3LOV3EEZEvTTlInFIpA7mZxQEZA
+         RNGwB0Ey6aa4NH+bBMZs+KVFO2xgrgx4yj7s31jeiPVutjV6P/j4VyPhqiNWy5hVCPRa
+         F4IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+IS0gEgo7hipR9gibsQw5KtPLx6dQXKFRc1+dywoXVA=;
-        b=8F4eRkeCMz7lSRla/KXuxVeiVxxujhUf0PSxhThFkMc81YCCgAhZ5AQ9nfX9ivTSIW
-         e7jWj2W/M3CgKmpZXxQugJ2nZFhLYAgFbiSVkWv9A757KkTTGCif9F224xcECV+xNzTB
-         9RJv/rE/tJ1GtWtfZa9EBvwkkeYfPkqCoy4kq+LA+fj36Gz0M0ZjrcLUwXKD9Oqlt5s+
-         tnYJUERbBxYLcxGnJnasT9GzrtJW4pK5PUjl8KfY7FLXHg9jGCTveWbtK0JCbqvuCyP1
-         3EiRpTXPtMz8rBCrCW1M05llA8oPjiKmojWdgWCfrht2ydC74W3hDaQk+yhh+9EWThYi
-         YNrA==
-X-Gm-Message-State: AOAM533n/FsmYMJEME0F8H5TfULuGiYUeUhjpvuTG7TlUn8oHTDmbFSF
-        y8K3bT3UciNKYSYlkWLEWDsscA==
-X-Google-Smtp-Source: ABdhPJwKcuP6DGDrVJJap2YBfnw9gJ29cZ6T8aj/WEWFIltD4Sz9lDFqVeOwFghXxQzDWleVwS3vJg==
-X-Received: by 2002:a17:902:e74d:b0:13e:77cd:a300 with SMTP id p13-20020a170902e74d00b0013e77cda300mr2394421plf.80.1633024041447;
-        Thu, 30 Sep 2021 10:47:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x19sm3606048pfn.105.2021.09.30.10.47.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WbMGoSeIG8Nre7YI94HB+1s+5OyVO37vI/FQasjDNY0=;
+        b=5UE9e/4Qa57fHv4xKEFv2juW4QGHb18JxdKtihZgOgLwrHwPEy90WLdamsPpeEqcCP
+         g9doasuvfFJek0G55MAZGcNRn0ITbd9ZThCzUPyTzzxwnQ38KZWM1be+XIZQP2ufaCRv
+         oUPkNyzaFnUT7GZ9SH7WT4cE9/ksM5/7Cuno8idPvj+O5BCSnQDSk5mrPCO2WFJwpYph
+         kLci+OAF2maV5sWNcDlScjWmgtSamDFvylf9EGl3rQiMrt8ctjvXL7qSWwJOAaeuC99K
+         MNeNk3WEeO+VfCKhi1vE7Lp0rYV8JMPJVOIKtLN4rRnIbmXG4BnsAMcWktR3g8Vypa1x
+         QyQQ==
+X-Gm-Message-State: AOAM5305tBPDRCNof88UMxdOmNIBNygnQormNWhcs9UfvF7ciXm7CkOS
+        997nFqMwbIyCOq5ReAKSdb4=
+X-Google-Smtp-Source: ABdhPJzld8V0K1gmh+IgO8cfbtKL/xWokjolndUwXEnW/wfwaR9oljJXtjxvR61kmj0h8nuNQxqJoA==
+X-Received: by 2002:a05:6512:b0c:: with SMTP id w12mr568372lfu.240.1633024225985;
+        Thu, 30 Sep 2021 10:50:25 -0700 (PDT)
+Received: from localhost.localdomain ([217.117.245.149])
+        by smtp.gmail.com with ESMTPSA id q6sm485712lfn.170.2021.09.30.10.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 10:47:20 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 10:47:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
-Message-ID: <202109301045.15DDDA0B@keescook>
-References: <20210914121036.3975026-1-ardb@kernel.org>
- <20210914121036.3975026-5-ardb@kernel.org>
- <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
- <87ee99lii7.fsf@mpe.ellerman.id.au>
- <87pmst1rn9.fsf@mpe.ellerman.id.au>
- <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
- <878rzf0zmb.fsf@mpe.ellerman.id.au>
+        Thu, 30 Sep 2021 10:50:25 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, buytenh@marvell.com,
+        afleming@freescale.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>
+Subject: [PATCH v4 1/2] Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+Date:   Thu, 30 Sep 2021 20:49:42 +0300
+Message-Id: <f12fb1faa4eccf0f355788225335eb4309ff2599.1633024062.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878rzf0zmb.fsf@mpe.ellerman.id.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:46:04AM +1000, Michael Ellerman wrote:
-> Ard Biesheuvel <ardb@kernel.org> writes:
-> > On Tue, 28 Sept 2021 at 02:16, Michael Ellerman <mpe@ellerman.id.au> wrote:
-> >>
-> >> Michael Ellerman <mpe@ellerman.id.au> writes:
-> >> > Ard Biesheuvel <ardb@kernel.org> writes:
-> >> >> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >> >>>
-> >> >>> The CPU field will be moved back into thread_info even when
-> >> >>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
-> >> >>> of struct thread_info.
-> >> >>>
-> >> >>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> >> >>
-> >> >> Michael,
-> >> >>
-> >> >> Do you have any objections or issues with this patch or the subsequent
-> >> >> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
-> >> >> that he was happy with it.
-> >> >
-> >> > No objections, it looks good to me, thanks for cleaning up that horror :)
-> >> >
-> >> > It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
-> >> > git tree with the dependencies I'd be happy to run some tests over it.
-> >>
-> >> Actually I realised I can just drop the last patch.
-> >>
-> >> So that looks fine, passes my standard quick build & boot on qemu tests,
-> >> and builds with/without stack protector enabled.
-> >>
-> >
-> > Thanks.
-> >
-> > Do you have any opinion on how this series should be merged? Kees Cook
-> > is willing to take them via his cross-arch tree, or you could carry
-> > them if you prefer. Taking it via multiple trees at the same time is
-> > going to be tricky, or take two cycles, with I'd prefer to avoid.
-> 
-> I don't really mind. If Kees is happy to take it then that's OK by me.
-> 
-> If Kees put the series in a topic branch based off rc2 then I could
-> merge that, and avoid any conflicts.
+This reverts commit ab609f25d19858513919369ff3d9a63c02cd9e2e.
 
-I've created:
+This patch is correct in the sense that we _should_ call device_put() in
+case of device_register() failure, but the problem in this code is more
+vast.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/thread_info/cpu
+We need to set bus->state to UNMDIOBUS_REGISTERED before calling
+device_register() to correctly release the device in mdiobus_free().
+This patch prevents us from doing it, since in case of device_register()
+failure put_device() will be called 2 times and it will cause UAF or
+something else.
 
-it includes a --no-ff merge commit, which I'm not sure is desirable? Let
-me know if I should adjust this, or if Linus will yell about this if I
-send him a PR containing a merge commit? I'm not sure what's right here.
+Also, Reported-by: tag in revered commit was wrong, since syzbot
+reported different leak in same function.
 
-Thanks!
+Link: https://lore.kernel.org/netdev/20210928092657.GI2048@kadam/
+Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
+Chnages in v4:
+	No changes
+
+Changes in v3:
+	CC Yanfei -> Acked-by Yanfei
+
+Changes in v2:
+	Added this revert
+
+---
+ drivers/net/phy/mdio_bus.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 6f4b4e5df639..53f034fc2ef7 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -537,7 +537,6 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
+-		put_device(&bus->dev);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
-Kees Cook
+2.33.0
+
