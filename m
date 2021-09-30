@@ -2,133 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B257C41D17C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3604441D17F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347854AbhI3CfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
+        id S1347862AbhI3Cgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 22:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347777AbhI3CfP (ORCPT
+        with ESMTP id S1347759AbhI3Cgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:35:15 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1C5C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:33:34 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so3604732pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 19:33:34 -0700 (PDT)
+        Wed, 29 Sep 2021 22:36:39 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDB8C06161C;
+        Wed, 29 Sep 2021 19:34:57 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id m7so4383251qke.8;
+        Wed, 29 Sep 2021 19:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=I3Ka97zNeP725BXVDk5arDvDOWeoP2d7phzXrFZ8n4s=;
-        b=IlRJhaJg6rWVYyPM3VkfA65JEOSMQR6+oGsrVfOjOVHxL4WefefiLThzdZ40jTO6g8
-         Zx06WckyPxrt7Uy1K+0hnl1HZNYlZYL10ofG/bR9wh4e8/Sdc4VuKMTRKIl8zPF5jJ7b
-         sjkMrT9HnS0yDqFDQe+M7s9gEumGF4V6wnL/r/ioJHTbv1B5hcwZr7q3Q7Fh0N9xwdBQ
-         mKHz1fKGbNjriH5rlOs5OE5DOSH3XOBzj8Lukkx/0TWYEppgGXItvcJmX816w6eG33kU
-         rLof2DKdxqbIKj9nn22MFA22Eph/X4eFxJFCLPGAno38hVvSmS7EidBFKjCNQxoU0tMa
-         AGRQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5H3zl6oYi2k/pahNWHm1qYAiJEHuNXY47Unp3/acgsA=;
+        b=ZWVqNdXJefB3MNBd7cVgBZxBZthq+q6h0PLTl/PWYzH0mbOaYjPeVKBTRPZDBb1Fnv
+         KhfowHhhakCGH2Olp+bCfriV0pQuFhBg0VXvLjYEelptqSsjQc175ANwQjswGiw5VsT7
+         0TbUdrVWoPVPcANFr+KEG1Go8FgaSvG4XJWGCcJ1fjh+TnaKKCtiodlsvVgImU92YmEl
+         THg79NjpOBfgytWQolN5U2Bk1YRjqNyyPvnFIexpNjzclGsYfygrzJNpqhht1AMSSoUs
+         LpeQRb7DfjTX/XYJ9CN2pAiFJmhm4xGL3+EafRK4+cizjxpX/q5BBZfhNUAORHzPvq3/
+         7RNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=I3Ka97zNeP725BXVDk5arDvDOWeoP2d7phzXrFZ8n4s=;
-        b=vxv7XV7KT168scrNyoT9/0xHEspT9/pLRYCKjilnqDhWfoFckgVhYd82WENvO7eML6
-         QuCqDXgeXvecdbS/d5dsqpBJ8bNqxDDUo40+8EUisXhDrlyDbin+2x2d6UhCi9o7gvvv
-         bR3Gn5al3CEgBmRR6RDYxMtbSpBEiv6w2GNgupCWCPCwjx7SzBUO6/43TfQ/LzGP6bBA
-         YJNhU+PJb+ieU4HwFcKucrIrHqIWoS1SZlAV8rfj/NPdmKa9ALRDlA296S+35AMswtCh
-         MWKfJ77BQMeamhOP36toQDryj6WRp2o5Zj6gJFP4KcWNgwmhImD4q8wRIgxbvWygcGl+
-         o1eA==
-X-Gm-Message-State: AOAM530mEyPkiCeHew5nJxoNk1oVu/ewspwXunK/ljxGh7O8E4dDEulj
-        V21uhVpR6iRYlk1gHwJwNa0CjQ==
-X-Google-Smtp-Source: ABdhPJxE6Hl3kX+pF11sEnIDGPtqYsZz4qjfhIf79ZIQfd0DSxRKUumrZjOUcb3ap3qqZ7YvCqj5eQ==
-X-Received: by 2002:a17:90a:af86:: with SMTP id w6mr3675210pjq.8.1632969213549;
-        Wed, 29 Sep 2021 19:33:33 -0700 (PDT)
-Received: from [10.50.0.6] ([94.177.118.147])
-        by smtp.gmail.com with ESMTPSA id y3sm834162pjg.7.2021.09.29.19.33.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Sep 2021 19:33:33 -0700 (PDT)
-Subject: Re: [PATCH 1/2] PCI: Use software node API with additional device
- properties
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-References: <20210929170804.GA778424@bhelgaas>
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-Message-ID: <b3e3e9a3-c430-db98-9e6d-0e3526ddc6f7@linaro.org>
-Date:   Thu, 30 Sep 2021 10:33:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5H3zl6oYi2k/pahNWHm1qYAiJEHuNXY47Unp3/acgsA=;
+        b=y3AH1NUQK3NIZI77w4QZH7vbpogCybwjF7C0wSZ7MUbze6iCD9XKeXin8ZBwXmlqON
+         ocIZiNqEJK7aQbkEO9+ConZmFOmw2GVGr+ylKr/lT8uppYnagcv/UZogwRk7wXKtqVV3
+         nSykmlx79TpDf26dLBYcrYjuoEG6S8BFK8N5wUfuVxEUSQfzQJn6ZSnPpymxzAur4y74
+         zAQEH+wgV6CRPyxmYIjDKnMiAtliQJP2d5DtzPnDV7jisePuTt6v5vIMxLYFXApZPpbW
+         mkyUrBhXZa4aRwvd2Zms5y1/w+G5WExKdxQz9fecwsizr8xwiH7jCmxz2zWGmh6FUuCy
+         YOzQ==
+X-Gm-Message-State: AOAM533ydQd6NS4DphiGaIUQBqxAiLohpxZqPFWxFHjeTVuANl4ABS5A
+        rjQ+ELiOVZWNKcp0zk3P92W9XbsGR8srf1UBmc0=
+X-Google-Smtp-Source: ABdhPJwtPGdTpTNc5xgsgBlvtb/Wau0tzIHEBNiDnQI1DOjcDsVINKS3Mt8l/3BoBpDXW5kArtbRpujHlvw/FPwlBcA=
+X-Received: by 2002:a37:b087:: with SMTP id z129mr2754043qke.392.1632969297030;
+ Wed, 29 Sep 2021 19:34:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210929170804.GA778424@bhelgaas>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
+ <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com> <YVTrbPC4/ir974xs@robh.at.kernel.org>
+In-Reply-To: <YVTrbPC4/ir974xs@robh.at.kernel.org>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 30 Sep 2021 10:34:46 +0800
+Message-ID: <CAA+D8ANdQQFuPh_F8DZka+Y6hVDGuT8BvRfWdUFJxHd5JTQPNA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] dt-bindings: dsp: fsl: update binding document for
+ remote proc driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob
 
+On Thu, Sep 30, 2021 at 6:40 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Sep 26, 2021 at 11:07:10AM +0800, Shengjiu Wang wrote:
+> > As there are two drivers for DSP on i.MX, one is for sound open
+> > firmware, another is for remote processor framework. In order to
+> > distinguish two kinds of driver, defining different compatible strings.
+> >
+> > For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
+> > are needed and the mailbox channel is different with SOF.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
+> >  1 file changed, 75 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > index 7afc9f2be13a..51ea657f6d42 100644
+> > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
+> >
+> >  maintainers:
+> >    - Daniel Baluta <daniel.baluta@nxp.com>
+> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> >
+> >  description: |
+> >    Some boards from i.MX8 family contain a DSP core used for
+> > @@ -19,6 +20,10 @@ properties:
+> >        - fsl,imx8qxp-dsp
+> >        - fsl,imx8qm-dsp
+> >        - fsl,imx8mp-dsp
+> > +      - fsl,imx8qxp-hifi4
+> > +      - fsl,imx8qm-hifi4
+> > +      - fsl,imx8mp-hifi4
+> > +      - fsl,imx8ulp-hifi4
+> >
+> >    reg:
+> >      maxItems: 1
+> > @@ -28,37 +33,63 @@ properties:
+> >        - description: ipg clock
+> >        - description: ocram clock
+> >        - description: core clock
+> > +      - description: debug interface clock
+> > +      - description: message unit clock
+> > +    minItems: 3
+> > +    maxItems: 5
+>
+> Don't need maxItems.
 
-On 2021/9/30 上午1:08, Bjorn Helgaas wrote:
-> [+cc Zhangfei, author of 8304a3a199ee ("PCI: Set dma-can-stall for
-> HiSilicon chips"), which added this]
->
-> On Wed, Sep 29, 2021 at 04:37:28PM +0300, Heikki Krogerus wrote:
->> Using device_create_managed_software_node() to inject the
->> properties in quirk_huawei_pcie_sva() instead of with the
->> old device_add_properties() API.
->>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> This is fine with me, but please update the subject line and commit
-> log something like this:
->
->    PCI: Convert to device_create_managed_software_node()
->
->    In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
->    instead of device_add_properties() to set the "dma-can-stall"
->    property.
->
->    This resolves a software node lifetime issue (see 151f6ff78cdf
->    ("software node: Provide replacement for device_add_properties()"))
->    and paves the way for removing device_add_properties() completely.
->
-> Actually, 8304a3a199ee was merged during the v5.15 merge window, so if
-> this does in fact fix a lifetime issue, I can merge this before
-> v5.15-final.
->
-> I know *this* quirk applies to AMBA devices, and I assume they cannot
-> be removed, so there's no actual lifetime problem in this particular
-> case, but in general it looks like a problem for PCI devices.
-Thanks Bjorn
-This patch also works, though the quirk is for platform devices and not 
-removed.
+Ok, I will update it.
 
-Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
 >
->> ---
->>   drivers/pci/quirks.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
->> index b6b4c803bdc94..fe5eedba47908 100644
->> --- a/drivers/pci/quirks.c
->> +++ b/drivers/pci/quirks.c
->> @@ -1850,7 +1850,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
->>   	 * can set it directly.
->>   	 */
->>   	if (!pdev->dev.of_node &&
->> -	    device_add_properties(&pdev->dev, properties))
->> +	    device_create_managed_software_node(&pdev->dev, properties, NULL))
->>   		pci_warn(pdev, "could not add stall property");
->>   }
->>   DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
->> -- 
->> 2.33.0
->>
+> >
+> >    clock-names:
+> >      items:
+> >        - const: ipg
+> >        - const: ocram
+> >        - const: core
+> > +      - const: debug
+> > +      - const: mu
+> > +    minItems: 3
+> > +    maxItems: 5
+>
+> ditto
 
+Ok, I will update it.
+
+>
+> >
+> >    power-domains:
+> >      description:
+> >        List of phandle and PM domain specifier as documented in
+> >        Documentation/devicetree/bindings/power/power_domain.txt
+> > +    minItems: 1
+>
+> This is curious. The h/w sometimes has fewer power domains?
+
+On i.MX8QM/8QXP,  there are independent power domains for DSP core,
+DSP's RAM and DSP's MU.
+But on i.MX8MP, all these DSP components are in same audio subsystem
+There is only one power domain for whole audio subsystem,  when
+power on audio subsystem, the DSP's components are powered on also.
+
+So the number of power domain depends on how the DSP component
+integrated in SoC.
+
+Best regards
+Wang Shengjiu
