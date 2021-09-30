@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7AC41E524
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19CE41E527
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 01:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350830AbhI3X5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 19:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
+        id S1350682AbhI3X7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350480AbhI3X5J (ORCPT
+        with ESMTP id S1350449AbhI3X7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:57:09 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDF9C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:55:25 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v17so12633574wrv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:55:25 -0700 (PDT)
+        Thu, 30 Sep 2021 19:59:42 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4601CC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:57:59 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so7968648pjc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 16:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5BrSuGYueWf6EfrUyyUD6C+VJ4gRKADB8g+IHAwfFGg=;
-        b=aqKXppeMugpli8ejwnQ6/HAAv7/Tgkab/3kWMDC9hqyyJjXEaBiA4Adrc4wtKh87CM
-         5DWcVYWDBPFL2XJILqSSjLHecQIuyYhgaM8ESb+WTyGQtUmcZH3pXL6pmGqLzzQwypSz
-         5XBZj3VwRwHpPjEVfOpV1z2nEcrFMogiBk9mdYvyFVphRvZWIfnX6uxQJeOSl6/CqQb3
-         ZguF37TN6VstUBDIsgi4tocYqpnyA8gDa5gC3ymwHuxXVHE8kTxGITaSkFdMmhJRMf+8
-         1aAdyGdnWhJ2jsyzDwTGUUfV1B+w9NKcvR7pzMPmVl8rT3WIUGbuJPhoxfD+7QwW5VQ8
-         ngsw==
+        bh=5j14yW/PypKR9/SrD65vjQsfYpY9smLiA7zJp8BFIpg=;
+        b=WUDQVGma0l2Gi8MnTvhtJyoerNkG/h/WMEFR+rm/XM5WuTHotMNFmuoICR1Jc0252F
+         wyIag7onxIrqWq+pxX2kRMqDINTs3Zqy1CNw2lG+65uzuBFqXfWD766uE0LXXkFxOf0K
+         lp/4MNMZX0yhppTdimTBMfBoZ4DzksB+OtkwI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5BrSuGYueWf6EfrUyyUD6C+VJ4gRKADB8g+IHAwfFGg=;
-        b=a/NOKwbOlztBJrf+GqflQ7+AhAJ1rJPfrxrK2S8grssCNMOQXG71dfxcHAarhpamO2
-         D2eSbYj1FiqMfUT+OEtTW1toVFrJy4snqoXBjDWLiqeD7cSDEEXqCSkwAHP0tOKaIT0T
-         q2p1ZIZI36G92N26nC2L+WFwt1L/JPDlZFLEmxpVVRniv0OTVAhL+x5DGNbWY/OVKfpb
-         TFkTs7M2apyAqHZzQI3tPKYRJN1kLhREyOt0/fUjzZan2xdlKaKipTWbldPGjMQjvxG3
-         vSb2lSa+krbp9VfspVU1pzADXCk1MGe00uJf2Jpx7ygXPwrOuaGKZE38pRM5zGliuxf2
-         PCew==
-X-Gm-Message-State: AOAM532QOl2qG143J38NtnNhVaA2ZejuDJJ4m/vvXUvMrHMkqMiYdUK8
-        xc5dbDu3WrsorQ8pC9FqI9WhjeLhMU+uVw==
-X-Google-Smtp-Source: ABdhPJw01j7WcnhLmp3/4huTZDs72+/5mFipVznMuysmGkpjEJl521nXmUYbcUjQry4flDJzDMq1qw==
-X-Received: by 2002:adf:a1d4:: with SMTP id v20mr5352257wrv.168.1633046124310;
-        Thu, 30 Sep 2021 16:55:24 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.49.194])
-        by smtp.googlemail.com with ESMTPSA id r2sm4479114wmq.28.2021.09.30.16.55.23
+        bh=5j14yW/PypKR9/SrD65vjQsfYpY9smLiA7zJp8BFIpg=;
+        b=QI+3jz+nm6PyXp4xfMxQ6w2e5xEfwkhFtV/Rdy1Fweu5pqn2K/RrNP031lI7vDgRc2
+         C5cggjdU78uRN0+irI/SnikBUzmFJKY/hDkXl7rkAcJ9Q9VfeIese21xP9k/Gz+7Cq/N
+         Z+kryQoxj4um3JBV0dv9A8xgw6fwD4lG2PiOyifwwZQsHtmfv6m4g1CAXC4oo4+5rXV4
+         JXgCKYpLHi5NnCq42bi2AqAlUJLBYhAFn2pUnYV4b7a1N44Mxuh0rjxFDsPvmGbw4Luk
+         SFBDf395CPnu2rKIIRuvNNiyazPCEDQE3PcMxa9iwgYzDzYKjnpdfOlp9B8ydO+7fb3p
+         1H7g==
+X-Gm-Message-State: AOAM530MPArYvZV+NIzncLNDPU9q2a9diar3eBAqE3VfaVyyj29Mudxg
+        wYcm89P9KNPGEcZqoPfJ77Jtlw==
+X-Google-Smtp-Source: ABdhPJwuOq7B41EACaboD7SHo9y2ZqSCOJSJPrgHWzAce7aXLZEwM7+zwvveG7Li/nbR98kxbxoQBw==
+X-Received: by 2002:a17:902:6e02:b0:13a:41f5:1666 with SMTP id u2-20020a1709026e0200b0013a41f51666mr8006363plk.39.1633046278609;
+        Thu, 30 Sep 2021 16:57:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u24sm4358170pfm.27.2021.09.30.16.57.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 16:55:24 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] 9p: fix minor indentation and codestyle
-Date:   Fri,  1 Oct 2021 01:55:03 +0200
-Message-Id: <20210930235503.126033-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Sep 2021 16:57:58 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v4] docs: Explain the desired position of function attributes
+Date:   Thu, 30 Sep 2021 16:57:54 -0700
+Message-Id: <20210930235754.2635912-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2798; h=from:subject; bh=59BKj9K6C4nRsKqbRsBlH2BSu9B8VLmTPJNoZZp8k+c=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhVk8CauaXOjnvxaWiuW4a9hEnvYBhMGesbVq1iMZF 5JOMjQ+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYVZPAgAKCRCJcvTf3G3AJoEJD/ sHJfHWedBPEbJOXNVuGu6/X/7ZvYmpkZO4mku8tWkcmyk7FG/D3mkbLoO+M+Om67Ivz5JhLQ6noh8w q7SE/hfkWpX5z7Ga5d39BK6vEzz9R34TxjcXUtvIU0J/RBUK5G7SBJoAGMF9evK4aiElZix4u6tYaV sFH5it4+H41ac4cKORTnjdzZ3sRmvlO/vfsYEMsYR2f1GKVVOgP/KaB41jsDsCk2WcPx+HJ52MNqiu NsconvQBCbBaIZ6vklp83Rk/OheyvfsOx0Qu90+Rq7RXWeOgwOh6M4TOiMP8Nmisy5D3HQd+asVQ6f f6UmMeYp1J3UYG2J5jm/DDRZf1/wi9vnWo1zDsV7LhHMFE87lweRBYh8V6EjeXxUwvTo9W8eS7BCj9 WFJ58N/oV6dcLJdAiUIhD3vkEkAHv7axxqBism0OZnMVg1gUJjZoqd+MJi7s/Rfxj744w2KKpDM7j/ bLYkwWAKVlpwIodyZclDf4E/6eY/lTYA1+G3X/rd6RJI/Qv+9FjAgd3GDpSiaO6F32IVwUxzmcwHXR kIH4/7T8DvHZF6R/m1aVv665HbUJQSoHIpuAuPJfPLRit8KzGNbiZEwfrqynNFfKEuS3ukC5o83N/a DZDdx5H3fOaIyxGOMHTYg6YdKvNjub633C9HYWtSr3hqgHs8xBYcoioizMsA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warnings found by checkpatch.pl
+While discussing how to format the addition of various function
+attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+close as possible to Linus's preferences for future reference.
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+(Though I note the dissent voiced by Joe Perches, Alexey Dobriyan, and
+others that would prefer all attributes live on a separate leading line.)
+
+[1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/9p/vfs_dir.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v4:
+- fix another stray "void"! This is why code needs a compiler... (thx randy)
+---
+ Documentation/process/coding-style.rst | 30 ++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/fs/9p/vfs_dir.c b/fs/9p/vfs_dir.c
-index b6a5a0be444d..61b29bad6d9a 100644
---- a/fs/9p/vfs_dir.c
-+++ b/fs/9p/vfs_dir.c
-@@ -71,6 +71,7 @@ static inline int dt_type(struct p9_wstat *mistat)
- static struct p9_rdir *v9fs_alloc_rdir_buf(struct file *filp, int buflen)
- {
- 	struct p9_fid *fid = filp->private_data;
+diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+index 42969ab37b34..45b48510f5ec 100644
+--- a/Documentation/process/coding-style.rst
++++ b/Documentation/process/coding-style.rst
+@@ -487,6 +487,36 @@ because it is a simple way to add valuable information for the reader.
+ Do not use the ``extern`` keyword with function prototypes as this makes
+ lines longer and isn't strictly necessary.
+ 
++When writing a function declarations, please keep the `order of elements regular
++<https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/>`_.
++For example::
 +
- 	if (!fid->rdir)
- 		fid->rdir = kzalloc(sizeof(struct p9_rdir) + buflen, GFP_KERNEL);
- 	return fid->rdir;
-@@ -108,6 +109,7 @@ static int v9fs_dir_readdir(struct file *file, struct dir_context *ctx)
- 		if (rdir->tail == rdir->head) {
- 			struct iov_iter to;
- 			int n;
++ extern __init void * __must_check action(enum magic value, size_t size, u8 count,
++ 					  char *fmt, ...) __printf(4, 5) __malloc;
 +
- 			iov_iter_kvec(&to, READ, &kvec, 1, buflen);
- 			n = p9_client_read(file->private_data, ctx->pos, &to,
- 					   &err);
-@@ -233,5 +235,5 @@ const struct file_operations v9fs_dir_operations_dotl = {
- 	.iterate_shared = v9fs_dir_readdir_dotl,
- 	.open = v9fs_file_open,
- 	.release = v9fs_dir_release,
--        .fsync = v9fs_file_fsync_dotl,
-+	.fsync = v9fs_file_fsync_dotl,
- };
++The preferred order of elements for a function prototype is:
++
++- storage class (here, ``extern``, and things like ``static __always_inline`` even though
++  ``__always_inline`` is technically an attribute, it is treated like ``inline``)
++- storage class attributes (here, ``__init`` -- i.e. section declarations, but also things like ``__cold``)
++- return type (here, ``void *``)
++- return type attributes (here, ``__must_check``)
++- function name (here, ``action``)
++- function parameters (here, ``(enum magic value, size_t size, u8 count, char *fmt, ...)``, noting that parameter names should always be included)
++- function parameter attributes (here, ``__printf(4, 5)``)
++- function behavior attributes (here, ``__malloc``)
++
++Note that for a function definition (e.g. ``static inline``), the compiler does
++not allow function parameter attributes after the function parameters. In these
++cases, they should go after the storage class attributes (e.g. note the changed
++position of ``__printf(4, 5)``)::
++
++ static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
++ 		size_t size, u8 count, char *fmt, ...)
++ 		__malloc
++ {
++ 	...
++ }
+ 
+ 7) Centralized exiting of functions
+ -----------------------------------
 -- 
-2.25.1
+2.30.2
 
