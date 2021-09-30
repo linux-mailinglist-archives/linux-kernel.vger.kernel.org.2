@@ -2,222 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC4341D8A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4476C41D898
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350439AbhI3L1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        id S1350411AbhI3L0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350433AbhI3L1G (ORCPT
+        with ESMTP id S1350403AbhI3L0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:27:06 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B48FC06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x27so23962877lfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:25:23 -0700 (PDT)
+        Thu, 30 Sep 2021 07:26:42 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14AFC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:24:59 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y26so23827864lfa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q8PvzGV7RQh9r19dv7sQTAnPOmVRl05fj0IURPoGTjE=;
-        b=RXfkA+78yN2AQYzVjgxXgCUGzZNUhbTFuc4ZS4gofT3I8tJ2l+/uKe+ri6q1WKsmtt
-         JhkaOU7nWduEFt+meXYv3p6g3K2J6cecRxgrVhLl+L5SvKZR2o+stcNUAY0kyMJOyQ4k
-         xbpku8hUtiZ2b5dvIXGlfgnvzCe1TpZLKQGU2mE9ZutxqPKDscNkDX8L+3N71xBVPElG
-         5jrqMpTc7TwMmBOZgaeDHoik6ZSWNSMkMNf76y1ISu5XjYJcs4FuVvl0KmRg8azGnWwc
-         nyiR8sJHyPaxwHLA+DVVIBzxduHcE8yxJbTNKA8Ga3pLHglJngTOJl6TL13LWTdnVMJE
-         UnYg==
+         :cc:content-transfer-encoding;
+        bh=uXuubpiaHvCGjqJffAaQTQ1G86vGkNu1fG+McR/4pJE=;
+        b=1YXxmYyDwyXa/pLD69OSg2dh2mD/CUMQXRNl40rzYEuhbROwsKquSxKvdFuafnh9vu
+         vYUv21YMe6/waaoWrHcGy9OAvWlWqt+7dQwi4CwP7Ou/STf13JOOpmLQUE/rQ70KI9CI
+         KdhgUmW8bEVEEcVf9ek3SNqrlb6QD4+nD3cWr0fLeTWesHQsbzWK0vj/6Bq6gHy6zov3
+         WDcdEgbBKrYpRCx/lgkqmSkSdWfy/ee6civKUNyF51TXweZEq9IS8wZ4eoWb+HvTKOo6
+         8jKkubBqoMB8V8kxGb0nPYbNuLDNlG6siN2Q6X4afp3NO8jFV2mPIDxL0UDVeOOgG4xB
+         uayw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q8PvzGV7RQh9r19dv7sQTAnPOmVRl05fj0IURPoGTjE=;
-        b=LDsTTNaj/zQ8n0pFMbSiAxcgvoHN170OWIxeNaVJiu/1VFOWlzvBiqN9Wx6IGeH2hv
-         u4/kR39F8LAIRxbZFL3seujpVKZIerwmAPGSnlghxl4ZRzhvSBCn1k2EdkOaZ6DKURFX
-         k1rdK6iDMf1V6QyFv1woKB8lILo2bj+2Z1EUnRShOQ8hWTLwoeZzG+CDuBzy8Coq/Wz5
-         ooXNVBXI0k7j1KrUUQlICB8BldQ1cUC7wW+0I/E7e+5ooOwnS8PQCgch1fqSyhDhwq1Y
-         YpQuF/szBIgA7A5soRpmCCx5U5cZXxldwPbbpLJIBmBY/4sC8hPTV6Nvf+KUIXjj90/P
-         mfWw==
-X-Gm-Message-State: AOAM530Y9+IMmqAvFNg6YRhmWlzjsbaeuIgAEDquTfOXFZXcUeaGt25B
-        cpZko+8BlLoMp82qkiDF+ypL41aSacrAkU8Lrohs8g==
-X-Google-Smtp-Source: ABdhPJzqAgHZsEsSUpxycEma4VWu16tr1ftIM/UiErO8t6pDuEHCXDKqX+uW4bQjUZYqCDKNXtdclOjuZZIpv/IsnBQ=
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr169648lfd.167.1633001121852;
- Thu, 30 Sep 2021 04:25:21 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uXuubpiaHvCGjqJffAaQTQ1G86vGkNu1fG+McR/4pJE=;
+        b=HfVroEKOtCpPDhCeORGgu7UkZvYyP4p3dQyWUdFbkT0ed2tsCuaW8mdjGyJAQRzAx7
+         aYsV6lMyrQsC2y25P65JHQaWQww8KNKZHipwpYBy0+uxci5+zGdIIHT2e6oIwclBrXVN
+         la+NsQwzR1Mkc7xtCNB9aKZUIfj72sMC+ds+T+ARBmYb9VW0Rw8kCCniQDJfIsZinG01
+         oigZ1VbdANBy794K9rn1eU6lYH4cbCzDScFcrboY5+6WhPAtQpSSdBRNG4xwpONfTOL1
+         jTuNEAicJNaOorXD007gGxEp11S898uVZzcOw/kveE1/3DIKSNwl+f3U2Q7Q/CGi16kP
+         dzIA==
+X-Gm-Message-State: AOAM5336QP3ZpMDz6NDlJzNtcT1lVEdA633UpWc5tINUeNrPjoX74ZHG
+        enYHvi9ws6MDD5mk5mLmYKnqPnLPY8R9IMhMbJU8WQ==
+X-Google-Smtp-Source: ABdhPJxdfAUcC0QOenFkKvmeHW4aJET0/QGn+h1YaNdBa6n8HLQG3FkbKif1NKriNUpSsDncNn7d4vM/CQGGK3Cz1uc=
+X-Received: by 2002:a2e:904a:: with SMTP id n10mr5131362ljg.124.1633001098105;
+ Thu, 30 Sep 2021 04:24:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928073652.434690-1-narmstrong@baylibre.com>
-In-Reply-To: <20210928073652.434690-1-narmstrong@baylibre.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 30 Sep 2021 13:24:45 +0200
-Message-ID: <CAPDyKFqZX4BNZcZ3NgpPiMcabXj2-tetR8cEvy-LV3JSxRG-og@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
+ <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
+ <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com>
+ <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+ <CANXvt5oZp=Ap3fEm4nsiP2WfG_c_8o57mN4+PHrQAGHcp-EH2A@mail.gmail.com> <CAD=hENfMu+OEW7K-WiYqbP7TpksU=0C9e0YZu3xCbqAurNpT9A@mail.gmail.com>
+In-Reply-To: <CAD=hENfMu+OEW7K-WiYqbP7TpksU=0C9e0YZu3xCbqAurNpT9A@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Thu, 30 Sep 2021 20:24:46 +0900
+Message-ID: <CANXvt5qAesicr6m=YE0ZT4DMqo=MihfWfgdasXRJOhpnaKWbUA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 09:37, Neil Armstrong <narmstrong@baylibre.com> wrote:
+2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 20:18 Zhu Yanjun <zyjzyj2000@=
+gmail.com>:
 >
-> The memory at the end of the controller only accepts 32bit read/write
-> accesses, but the arm64 memcpy_to/fromio implementation only uses 64bit
-> (which will be split into two 32bit access) and 8bit leading to incomplete
-> copies to/from this memory when the buffer is not multiple of 8bytes.
+> On Thu, Sep 30, 2021 at 7:06 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> >
+> > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 16:23 Zhu Yanjun <zyjzyj2=
+000@gmail.com>:
+> > >
+> > > On Thu, Sep 30, 2021 at 2:58 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > > >
+> > > > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyj=
+zyj2000@gmail.com>:
+> > > > >
+> > > > > On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wro=
+te:
+> > > > > >
+> > > > > > Implement a new provider method for dma-buf base memory registr=
+ation.
+> > > > > >
+> > > > > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > > > > > ---
+> > > > > >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
+> > > > > >  1 file changed, 21 insertions(+)
+> > > > > >
+> > > > > > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> > > > > > index 3c3ea8bb..84e00e60 100644
+> > > > > > --- a/providers/rxe/rxe.c
+> > > > > > +++ b/providers/rxe/rxe.c
+> > > > > > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ib=
+v_pd *pd, void *addr, size_t length,
+> > > > > >         return &vmr->ibv_mr;
+> > > > > >  }
+> > > > > >
+> > > > > > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uin=
+t64_t offset,
+> > > > > > +                                       size_t length, uint64_t=
+ iova, int fd,
+> > > > > > +                                       int access)
+> > > > > > +{
+> > > > > > +       struct verbs_mr *vmr;
+> > > > > > +       int ret;
+> > > > > > +
+> > > > > > +       vmr =3D malloc(sizeof(*vmr));
+> > > > > > +       if (!vmr)
+> > > > > > +               return NULL;
+> > > > > > +
+> > > > >
+> > > > > Do we need to set vmr to zero like the following?
+> > > > >
+> > > > > memset(vmr, 0, sizeof(*vmr));
+> > > > >
+> > > > > Zhu Yanjun
+> > > > Thank you for your quick response.
+> > > >
+> > > > I think it is better to clear the vmr. Actually the mlx5 driver all=
+ocates
+> > > > the vmr using calloc().
+> > > >
+> > > > In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the mal=
+loc
+> > > > and not clear the vmr. I think It has to be fixed too. Should I mak=
+e
+> > > > another patch to fix this problem?
+> > >
+> > > Yes. Please.
+> > >
+> > > Zhu Yanjun
+> > >
+> > > >
+> > > > Thanks a lot.
+> > > > Shunsuke
+> > > >
+> > > > ~
+> >
+> > I looked into the vmr more, but there was no need to clear it. Moreover=
+,
+> > some implementations also use malloc without memory clear.
+> >
 >
-> Add a local copy using writel/readl accesses to make sure we use the right
-> memory access width.
+> I confronted a lot of problems with memory not initialization.
+> And a latest bug is https://www.spinics.net/lists/linux-rdma/msg105001.ht=
+ml
 >
-> The switch to memcpy_to/fromio was done because of 285133040e6c
-> ("arm64: Import latest memcpy()/memmove() implementation"), but using memcpy
-> worked before since it mainly used 32bit memory acceses.
+> So it is a good habit to clear a newly allocated memory.
 >
-> Fixes: 103a5348c22c ("mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk")
-> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
-> Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Zhu Yanjun
+>
+> > Thanks,
+> > Shunsuke
+Ok, I understand that thought. I'll send a patch.
 
-Applied for fixes and by adding a stable tag, thanks!
-
-Kind regards
-Uffe
-
-
-> ---
-> Changes since v1:
-> - added sg pre-validation at meson_mmc_request and dropped checks in meson_mmc_copy_buffer
->
->  drivers/mmc/host/meson-gx-mmc.c | 73 ++++++++++++++++++++++++++-------
->  1 file changed, 59 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-> index 3f28eb4d17fe..8f36536cb1b6 100644
-> --- a/drivers/mmc/host/meson-gx-mmc.c
-> +++ b/drivers/mmc/host/meson-gx-mmc.c
-> @@ -746,7 +746,7 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
->         writel(start, host->regs + SD_EMMC_START);
->  }
->
-> -/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
-> +/* local sg copy for dram_access_quirk */
->  static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
->                                   size_t buflen, bool to_buffer)
->  {
-> @@ -764,21 +764,27 @@ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data
->         sg_miter_start(&miter, sgl, nents, sg_flags);
->
->         while ((offset < buflen) && sg_miter_next(&miter)) {
-> -               unsigned int len;
-> +               unsigned int buf_offset = 0;
-> +               unsigned int len, left;
-> +               u32 *buf = miter.addr;
->
->                 len = min(miter.length, buflen - offset);
-> +               left = len;
->
-> -               /* When dram_access_quirk, the bounce buffer is a iomem mapping */
-> -               if (host->dram_access_quirk) {
-> -                       if (to_buffer)
-> -                               memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
-> -                       else
-> -                               memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
-> +               if (to_buffer) {
-> +                       do {
-> +                               writel(*buf++, host->bounce_iomem_buf + offset + buf_offset);
-> +
-> +                               buf_offset += 4;
-> +                               left -= 4;
-> +                       } while (left);
->                 } else {
-> -                       if (to_buffer)
-> -                               memcpy(host->bounce_buf + offset, miter.addr, len);
-> -                       else
-> -                               memcpy(miter.addr, host->bounce_buf + offset, len);
-> +                       do {
-> +                               *buf++ = readl(host->bounce_iomem_buf + offset + buf_offset);
-> +
-> +                               buf_offset += 4;
-> +                               left -= 4;
-> +                       } while (left);
->                 }
->
->                 offset += len;
-> @@ -830,7 +836,11 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->                 if (data->flags & MMC_DATA_WRITE) {
->                         cmd_cfg |= CMD_CFG_DATA_WR;
->                         WARN_ON(xfer_bytes > host->bounce_buf_size);
-> -                       meson_mmc_copy_buffer(host, data, xfer_bytes, true);
-> +                       if (host->dram_access_quirk)
-> +                               meson_mmc_copy_buffer(host, data, xfer_bytes, true);
-> +                       else
-> +                               sg_copy_to_buffer(data->sg, data->sg_len,
-> +                                                 host->bounce_buf, xfer_bytes);
->                         dma_wmb();
->                 }
->
-> @@ -849,12 +859,43 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->         writel(cmd->arg, host->regs + SD_EMMC_CMD_ARG);
->  }
->
-> +static int meson_mmc_validate_dram_access(struct mmc_host *mmc, struct mmc_data *data)
-> +{
-> +       struct scatterlist *sg;
-> +       int i;
-> +
-> +       /* Reject request if any element offset or size is not 32bit aligned */
-> +       for_each_sg(data->sg, sg, data->sg_len, i) {
-> +               if (!IS_ALIGNED(sg->offset, sizeof(u32)) ||
-> +                   !IS_ALIGNED(sg->length, sizeof(u32))) {
-> +                       dev_err(mmc_dev(mmc), "unaligned sg offset %u len %u\n",
-> +                               data->sg->offset, data->sg->length);
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static void meson_mmc_request(struct mmc_host *mmc, struct mmc_request *mrq)
->  {
->         struct meson_host *host = mmc_priv(mmc);
->         bool needs_pre_post_req = mrq->data &&
->                         !(mrq->data->host_cookie & SD_EMMC_PRE_REQ_DONE);
->
-> +       /*
-> +        * The memory at the end of the controller used as bounce buffer for
-> +        * the dram_access_quirk only accepts 32bit read/write access,
-> +        * check the aligment and length of the data before starting the request.
-> +        */
-> +       if (host->dram_access_quirk && mrq->data) {
-> +               mrq->cmd->error = meson_mmc_validate_dram_access(mmc, mrq->data);
-> +               if (mrq->cmd->error) {
-> +                       mmc_request_done(mmc, mrq);
-> +                       return;
-> +               }
-> +       }
-> +
->         if (needs_pre_post_req) {
->                 meson_mmc_get_transfer_mode(mmc, mrq);
->                 if (!meson_mmc_desc_chain_mode(mrq->data))
-> @@ -999,7 +1040,11 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
->         if (meson_mmc_bounce_buf_read(data)) {
->                 xfer_bytes = data->blksz * data->blocks;
->                 WARN_ON(xfer_bytes > host->bounce_buf_size);
-> -               meson_mmc_copy_buffer(host, data, xfer_bytes, false);
-> +               if (host->dram_access_quirk)
-> +                       meson_mmc_copy_buffer(host, data, xfer_bytes, false);
-> +               else
-> +                       sg_copy_from_buffer(data->sg, data->sg_len,
-> +                                           host->bounce_buf, xfer_bytes);
->         }
->
->         next_cmd = meson_mmc_get_next_command(cmd);
-> --
-> 2.25.1
->
+Shunsuke.
