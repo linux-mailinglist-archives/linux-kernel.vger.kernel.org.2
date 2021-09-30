@@ -2,153 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945D741DA48
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3FF41DA46
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351163AbhI3MyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:54:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7776 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351133AbhI3MyS (ORCPT
+        id S1351128AbhI3MyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351051AbhI3MyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:54:18 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UCgkRf015395;
-        Thu, 30 Sep 2021 08:52:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=jcneVHluFK9Ah2ZjC1w6GzemQbNI/5QEimSyZhzoQ7k=;
- b=QuT1wYjhLT3BeRswTb9P40UIABwdryo1cldcGvVYHN5v7uMl/UzQgehhW37P78dKfpTE
- /NVeOktsZ1Q8s0MtwwO18kAjeN2x/3KSUuVF25WfUWZ114t9RTiue+sgBNk8qNwzZHHT
- Hhmt6F71Ut7Pzpnwo/D8I5dZB0LwjMe2fNPi/ejVsxTdyiB35bsJOnUHzeyZx7A2Qwyr
- DLkH/JXhRPcOTzZQx8IOHBS1jljCYMrtDTBT5tSgIgSsxBM95brMPuXKYh1ztSq/C1dD
- tK2P2cmlQWIqEsRQdIMYrXjACuEkBTTwj9zn9N3/+c6yyK7xJqYMOJx1TCLfEViR+wW6 fA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bddfs06k4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 08:52:28 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18UChGfI017001;
-        Thu, 30 Sep 2021 12:52:26 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b9udabkh6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 12:52:25 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18UClIts45941230
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 12:47:18 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56688A405B;
-        Thu, 30 Sep 2021 12:52:23 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8F1A0A4062;
-        Thu, 30 Sep 2021 12:52:21 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.207.39])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Sep 2021 12:52:21 +0000 (GMT)
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        arjan@linux.intel.com, srikar@linux.vnet.ibm.com,
-        maddy@linux.vnet.ibm.com, kjain@linux.ibm.com
-Subject: [RFC] hrtimer: Fix the hrtimer_forward to use correct delta for expiry time
-Date:   Thu, 30 Sep 2021 18:22:19 +0530
-Message-Id: <20210930125219.1658-1-atrajeev@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Thu, 30 Sep 2021 08:54:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECA8C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:52:30 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mVvXz-00049S-CL; Thu, 30 Sep 2021 14:52:23 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mVvXy-0007sL-Hp; Thu, 30 Sep 2021 14:52:22 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH v1] ARM: dts: imx6: skov: provide panel support for lt2 variants
+Date:   Thu, 30 Sep 2021 14:52:21 +0200
+Message-Id: <20210930125221.30127-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wiznxC953AO-n5qFKBaJt0C-uWtud3Sh
-X-Proofpoint-ORIG-GUID: wiznxC953AO-n5qFKBaJt0C-uWtud3Sh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_04,2021-09-30_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 phishscore=0
- malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300079
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hrtimer uses "hrtimer_forward" function to forward the timer
-expiry. This function takes the "time" from when to forward
-and how much "interval" to forward as inputs. In some cases, it
-is observed that though correct interval is given to forward the
-timer, the expiry time is set to value less than expected interval.
-This will cause the timer to expire ahead of expected expiry time.
-Before updating the timer expiry value, hrtimer_forward checks to
-see if there is any delta between the time from when to forwad
-and previously set expiry. And this behaviiour is observed when
-delta is large value.
+Add support for the Logic Technologies LTTD800x480 L2RT 7" 800x480 TFT
+Resistive Touch Module.
 
-For example, consider case where we want to forward the expiry
-from "now" to 10 milliseconds. Below is trace prints captured by
-dumping the values used in "hrtimer_forward". And this instance is
-captured while forwarding timer from perf event multiplexing code
-which uses hrtimer.
-
-<<>>
-[001] d....   304.118944: perf_mux_hrtimer_restart: Restarting timer from perf_mux_hrtimer_restart
-[001] d....   304.118945: hrtimer_forward: In nanoseconds, now is 303938589749, delta is 52868589749, hrtimer_get_expires(timer) is 251070000000, interval is 10000000
-[001] d....   304.118945: hrtimer_forward: Caller is perf_mux_hrtimer_restart+0xb0/0x120
-[001] d....   304.118946: hrtimer_forward: Caller's caller is merge_sched_in+0x268/0x4e0
-[001] d....   304.118946: hrtimer_forward: orun is 5286
-[001] d....   304.118947: hrtimer_forward: In hrtimer_add_expires_ns, before ktime_add_ns timer->node.expires in ns is 251070000000, timer->_softexpires is 251070000000,  ns is 52860000000
-[001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires_ns, after ktime_add_ns timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
-[001] d....   304.118948: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, before ktime_add_safe, timer->node.expires in ns is 303930000000, timer->_softexpires is 303930000000
-[001] d....   304.118949: hrtimer_forward: In hrtimer_add_expires, in nanoseconds, after ktime_add_safe, timer->node.expires in ns is 303940000000, timer->_softexpires is 303940000000
-[001] d....   304.118949: hrtimer_forward: After hrtimer_add_expires, hrtimer_get_remaining in nanoseconds is 1405169
-
-<<>>
-
-In this example,
-timer->node.expires = 251070000000 ns ( previously set expiry )
-now = 303938589749 ns
-delta = 52868589749 ns
-
-Here delta is "52868589749" which is greater than the interval to
-forward ( ie 10000000 ns ). Hence hrtimer_forwards adds this difference
-to present timer->node.expires in hrtimer_add_expires_ns() function. But
-instead of using actual "delta", code is using (delta/interval * interval)
-as below:
-
-<<>>
-s64 incr = ktime_to_ns(interval);
-orun = ktime_divns(delta, incr);
-hrtimer_add_expires_ns(timer, incr * orun);
-<<>>
-
-Hence we are actually using "orun * 10000000". In this example, it will be
-"52860000000" since "orun" does not include the mod value. Here we are
-missing "8589749" nanoseconds in the timer expiry. Hence, the final expiry
-time will be set to "303940000000".
-
-Since we are not using exact delta, the hrtime remaining will be
-around 1405169 nanoseconds and will cause the timer to expire in 1.4 ms
-instead of 10 ms. Fix this by using "delta" instead of using the divided
-value.
-
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- kernel/time/hrtimer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6dl-skov-revc-lt2.dts   |  1 +
+ arch/arm/boot/dts/imx6q-skov-revc-lt2.dts    |  1 +
+ arch/arm/boot/dts/imx6qdl-skov-revc-lt2.dtsi | 99 ++++++++++++++++++++
+ 3 files changed, 101 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6qdl-skov-revc-lt2.dtsi
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 0ea8702eb516..9e085813d9d2 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1054,7 +1054,7 @@ u64 hrtimer_forward(struct hrtimer *timer, ktime_t now, ktime_t interval)
- 		s64 incr = ktime_to_ns(interval);
+diff --git a/arch/arm/boot/dts/imx6dl-skov-revc-lt2.dts b/arch/arm/boot/dts/imx6dl-skov-revc-lt2.dts
+index 667b8faa1807..b12b5aabe70a 100644
+--- a/arch/arm/boot/dts/imx6dl-skov-revc-lt2.dts
++++ b/arch/arm/boot/dts/imx6dl-skov-revc-lt2.dts
+@@ -6,6 +6,7 @@
+ #include "imx6dl.dtsi"
+ #include "imx6qdl-skov-cpu.dtsi"
+ #include "imx6qdl-skov-cpu-revc.dtsi"
++#include "imx6qdl-skov-revc-lt2.dtsi"
  
- 		orun = ktime_divns(delta, incr);
--		hrtimer_add_expires_ns(timer, incr * orun);
-+		hrtimer_add_expires_ns(timer, ktime_to_ns(delta));
- 		if (hrtimer_get_expires_tv64(timer) > now)
- 			return orun;
- 		/*
+ / {
+ 	model = "SKOV IMX6 CPU SoloCore";
+diff --git a/arch/arm/boot/dts/imx6q-skov-revc-lt2.dts b/arch/arm/boot/dts/imx6q-skov-revc-lt2.dts
+index f00add7b3048..ff97d22eb09f 100644
+--- a/arch/arm/boot/dts/imx6q-skov-revc-lt2.dts
++++ b/arch/arm/boot/dts/imx6q-skov-revc-lt2.dts
+@@ -6,6 +6,7 @@
+ #include "imx6q.dtsi"
+ #include "imx6qdl-skov-cpu.dtsi"
+ #include "imx6qdl-skov-cpu-revc.dtsi"
++#include "imx6qdl-skov-revc-lt2.dtsi"
+ 
+ / {
+ 	model = "SKOV IMX6 CPU QuadCore";
+diff --git a/arch/arm/boot/dts/imx6qdl-skov-revc-lt2.dtsi b/arch/arm/boot/dts/imx6qdl-skov-revc-lt2.dtsi
+new file mode 100644
+index 000000000000..48c9ce051f47
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qdl-skov-revc-lt2.dtsi
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++//
++// Copyright (C) 2021 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
++
++/ {
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_backlight>;
++		enable-gpios = <&gpio6 23 GPIO_ACTIVE_LOW>;
++		pwms = <&pwm2 0 20000 0>;
++		brightness-levels = <0 255>;
++		num-interpolated-steps = <17>;
++		default-brightness-level = <8>;
++		power-supply = <&reg_24v0>;
++	};
++
++	display {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		compatible = "fsl,imx-parallel-display";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_ipu1>;
++
++		port@0 {
++			reg = <0>;
++
++			display0_in: endpoint {
++				remote-endpoint = <&ipu1_di0_disp0>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++
++			display0_out: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++
++	panel {
++		compatible = "logictechno,lttd800480070-l2rt";
++		backlight = <&backlight>;
++		power-supply = <&reg_3v3>;
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&display0_out>;
++			};
++		};
++	};
++};
++
++&ipu1_di0_disp0 {
++	remote-endpoint = <&display0_in>;
++};
++
++&iomuxc {
++	pinctrl_backlight: backlightgrp {
++		fsl,pins = <
++			MX6QDL_PAD_RGMII_TD3__GPIO6_IO23		0x58
++		>;
++	};
++
++	pinctrl_ipu1: ipu1grp {
++		fsl,pins = <
++			MX6QDL_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK	0x10
++			MX6QDL_PAD_DI0_PIN15__IPU1_DI0_PIN15		0x10
++			MX6QDL_PAD_DI0_PIN2__IPU1_DI0_PIN02		0x10
++			MX6QDL_PAD_DI0_PIN3__IPU1_DI0_PIN03		0x10
++			MX6QDL_PAD_DISP0_DAT0__IPU1_DISP0_DATA00	0x10
++			MX6QDL_PAD_DISP0_DAT1__IPU1_DISP0_DATA01	0x10
++			MX6QDL_PAD_DISP0_DAT2__IPU1_DISP0_DATA02	0x10
++			MX6QDL_PAD_DISP0_DAT3__IPU1_DISP0_DATA03	0x10
++			MX6QDL_PAD_DISP0_DAT4__IPU1_DISP0_DATA04	0x10
++			MX6QDL_PAD_DISP0_DAT5__IPU1_DISP0_DATA05	0x10
++			MX6QDL_PAD_DISP0_DAT6__IPU1_DISP0_DATA06	0x10
++			MX6QDL_PAD_DISP0_DAT7__IPU1_DISP0_DATA07	0x10
++			MX6QDL_PAD_DISP0_DAT8__IPU1_DISP0_DATA08	0x10
++			MX6QDL_PAD_DISP0_DAT9__IPU1_DISP0_DATA09	0x10
++			MX6QDL_PAD_DISP0_DAT10__IPU1_DISP0_DATA10	0x10
++			MX6QDL_PAD_DISP0_DAT11__IPU1_DISP0_DATA11	0x10
++			MX6QDL_PAD_DISP0_DAT12__IPU1_DISP0_DATA12	0x10
++			MX6QDL_PAD_DISP0_DAT13__IPU1_DISP0_DATA13	0x10
++			MX6QDL_PAD_DISP0_DAT14__IPU1_DISP0_DATA14	0x10
++			MX6QDL_PAD_DISP0_DAT15__IPU1_DISP0_DATA15	0x10
++			MX6QDL_PAD_DISP0_DAT16__IPU1_DISP0_DATA16	0x10
++			MX6QDL_PAD_DISP0_DAT17__IPU1_DISP0_DATA17	0x10
++			MX6QDL_PAD_DISP0_DAT18__IPU1_DISP0_DATA18	0x10
++			MX6QDL_PAD_DISP0_DAT19__IPU1_DISP0_DATA19	0x10
++			MX6QDL_PAD_DISP0_DAT20__IPU1_DISP0_DATA20	0x10
++			MX6QDL_PAD_DISP0_DAT21__IPU1_DISP0_DATA21	0x10
++			MX6QDL_PAD_DISP0_DAT22__IPU1_DISP0_DATA22	0x10
++			MX6QDL_PAD_DISP0_DAT23__IPU1_DISP0_DATA23	0x10
++		>;
++	};
++};
 -- 
-2.27.0
+2.30.2
 
