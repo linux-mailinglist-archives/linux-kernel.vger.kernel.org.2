@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3942441E2EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 22:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4351B41E2F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348558AbhI3VAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:00:32 -0400
-Received: from mga05.intel.com ([192.55.52.43]:22707 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229957AbhI3VAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:00:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310832977"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="310832977"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 13:58:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="618437339"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 13:58:43 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mW38Z-007Fx0-P6;
-        Thu, 30 Sep 2021 23:58:39 +0300
-Date:   Thu, 30 Sep 2021 23:58:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mwifiex: Try waking the firmware until we get an
- interrupt
-Message-ID: <YVYk/1+ftFUOoitF@smile.fi.intel.com>
-References: <20210914114813.15404-1-verdre@v0yd.nl>
- <20210914114813.15404-3-verdre@v0yd.nl>
- <YUsRT1rmtITJiJRh@smile.fi.intel.com>
- <d9b1c8ea-99e2-7c3e-ec8e-61362e8ccfa7@v0yd.nl>
+        id S1345825AbhI3VEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:04:04 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:46079 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhI3VEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:04:02 -0400
+Received: from [192.168.100.1] ([82.142.21.142]) by mrelayeu.kundenserver.de
+ (mreue108 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1MS3vJ-1mPDgh22d1-00TRvk; Thu, 30 Sep 2021 23:02:00 +0200
+Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20210323221430.3735147-1-laurent@vivier.eu>
+ <20210323221430.3735147-3-laurent@vivier.eu>
+ <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+ <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
+ <c28b0c92-a997-6978-890f-4222f4bb8cc6@vivier.eu>
+ <9f7ad0df-b58c-1b24-5c48-5ee6478260dd@physik.fu-berlin.de>
+From:   Laurent Vivier <laurent@vivier.eu>
+Message-ID: <7748de16-1087-1039-a1cc-5a94dc293dbb@vivier.eu>
+Date:   Thu, 30 Sep 2021 23:01:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <9f7ad0df-b58c-1b24-5c48-5ee6478260dd@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d9b1c8ea-99e2-7c3e-ec8e-61362e8ccfa7@v0yd.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Provags-ID: V03:K1:KwAzeqLKWmeHvbBipaoWRg9gsbROUHqCygHskcptL60d6q9Kp5G
+ +ElasxtHFdquzPB+XB8UuXpI0dBToT4jfg/z4/2CedMqcxtR86v1yMdvcCWMxQKCFe6N4VQ
+ B9yNxtbzxan6zlCT8wpvoehKXG7Z0/QHg/PPRU5TTKE3k4He+YszGVJIhKrzUDJ75UmCcic
+ KpCD9iMY7vy7l+SE+j9jA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IKF5m6Zp7xk=:dlUvunV4r2NsEQ1dBIzuiL
+ Hk2Jna+3DuA2CjDSEwx4Tq0IqIevHdqPJ/XYeQllfdZWboVObG2TaqdTfKl2NknvrAVqFsN/x
+ EPx/irCs5HZUgGVXL8JXQzVst1pplqpmpiAUqjrOMhU0CIhVgiUFggBYiv1PhtAudEuRT+DF/
+ BoN1hb3LQJru92bfNLOa0+l6Kj3ObDy5caxmhCrfITtGn6E9cq7PisvnHXkl81DtnqN/PSbQK
+ il173Q6HDhR9Aoi00SEjRxwfh9HXCrMRAtxb/ZELMMXqqOek7DTZIrcxsYK+D4fMSkJeeDwiD
+ R5NdALSC9PvTslCAL8ZHhsp8GO2UZYNBA71GjlvXmp8CyMfD8K/wGHms4TdYuqoSjDVF7y+13
+ Hef7U/fNXgX4Bde38ND5Q85DaLPz1zMiBcpDC2EUCB1K6GSQLerfxy+Y2WzC58GcsW8yXlHrv
+ m1Mxj4P+Zior7rZ9OXSM5z3syNLLHhv0VH17/OjIuDwy4IZL2+YI8k+49ggr8irTlVwTD06/Q
+ dPrwWRYuSGg0vWnt8QtTTapaeL9dJt9txhWbPQhzZDj7BkHLOi1zLcc1gJIZWHy8O1Ju/Y9Vx
+ exrejKJznItYO0i2Ax7X9Wmq0CpFgLyZOPrVWsLIuasQDD51I6FnqmYeN/UzlH+7PW174Hqfm
+ q5Uzx3DEeA9/hhjEi3xuomwQbJx7ZKXvo6X0Wm+7UDRUr+rmKIKeim6A/9SzoaVJVwHkF+OyT
+ kEcuitxScfaqOyjdrpASH7y5lfqQI353XRbMig==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:04:00PM +0200, Jonas Dreßler wrote:
-> On 9/22/21 1:19 PM, Andy Shevchenko wrote:
-> > On Tue, Sep 14, 2021 at 01:48:13PM +0200, Jonas Dreßler wrote:
-
-...
-
-> > > +	do {
-> > > +		if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
-> > > +			mwifiex_dbg(adapter, ERROR,
-> > > +				    "Writing fw_status register failed\n");
-> > > +			return -EIO;
-> > > +		}
-> > > +
-> > > +		n_tries++;
-> > > +
-> > > +		if (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL)
-> > > +			usleep_range(400, 700);
-> > > +		else
-> > > +			msleep(10);
-> > > +	} while (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL + N_WAKEUP_TRIES_LONG_INTERVAL &&
-> > > +		 READ_ONCE(adapter->int_status) == 0);
-> > 
-> > Can't you use read_poll_timeout() twice instead of this custom approach?
+Le 30/09/2021 Ã  22:56, John Paul Adrian Glaubitz a Ã©critÂ :
+> Hi Laurent!
 > 
-> I've tried this now, but read_poll_timeout() is not ideal for our use-case.
-> What we'd need would be read->sleep->poll->repeat instead of
-> read->poll->sleep->repeat. With read_poll_timeout() we always end up doing
-> one more (unnecessary) write.
+> On 4/28/21 14:15, Laurent Vivier wrote:
+>>> I have tested and reviewed your patch, great work!
+>>> I'm confident this can make v5.14, with the small nits fixed.
+>>
+>> Thank you for your review.
+>>
+>> I will answer to some of your comments and update accordingly my patch.
+> 
+> It looks like this patch somehow fell off the table, didn't it?
+> 
+> I was hoping to be able to build a virt kernel for Debian/m68k by default
+> in the near future.
 
-First of all, there is a parameter to get sleep beforehand.
-Second, what is the problem with having one write more or less?
-Your current code doesn't guarantee this either. It only decreases
-probability of such scenario. Am I wrong?
+Yes, I started to update my work according to the comments from Geert but didn't have time to finish.
 
+Especially I tried to remove the LEGACY_TIMER_TICK, but it doesn't work, and as it has been tested
+like this by you and most of the other m68k targets uses it I think I will let the patch with it.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I'm going to update my patch to have a v2, at least to have fresh reviews.
 
-
+Thanks,
+Laurent
