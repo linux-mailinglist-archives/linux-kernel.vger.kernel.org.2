@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C63041DB3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56A341DB3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351352AbhI3Niu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351492AbhI3NiO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:38:14 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1381C061770
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:36:29 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id x4so4016853pln.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IhpYyYMkI0XeCNTdHlGSDJ81bcd7IFryeGArrY+szTQ=;
-        b=tzWjBg/nHXskXvXdSbdUAWirx10WGMvuJ25QnMqWGEKVu117WsUQDqo4BXxwBZM4Vy
-         iMml9XLmdFezpL9PbFm884VgwXYcmMmqEdsqZo/9avYsPncDNWceavMqHTp7IFuX5Fiv
-         v1r1F93OnXI9jmqpBVM3KAPk4tWkBhXozrofq6QyHPWA5TQdjsNkKSQVf8j8CwL26cu0
-         X1L7FlxzkkWZnmbRFR9XxQuyeFhA5I/9zP6wcOvF0wUweSJoIYAs5Q4vf/0C2jEdhC6w
-         ywbhSEggIflJxp6X9N1danfTLv6L8n3TWRtAzZkKsVJ10omi+3CgBK5+GJa6KgGcSdJq
-         KKFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IhpYyYMkI0XeCNTdHlGSDJ81bcd7IFryeGArrY+szTQ=;
-        b=2C/e3sP4vAhEkPNHN3/WakXpnLtQbZan/0CF5c7kHxeYywsByO9AayafhtUwz6gwdT
-         DfHqkxixbEMqIuxMVEteEn3hM2cckJzOG1U5zP8ik/0IjpMkETpKXd9bm7jr9/nIPUQT
-         Nl+KSvW1VTO7UDfzgAy9Ik8pnSX5MMW5qKTnx4JwVXSDR0oP9xJTg/1wTHxqdBiFMrVb
-         cBLzeMb8/6fRhxUHVepU5qxtaYeT1RWp1Oqzvlw+3Yv2QQBIRbaVysMGkKB2jOG7POqA
-         C6jr9KfeMQi5b90gZEHwVtaym0kCVM2eV71zvebKNOnCxt2jal6c1gOKk+OjhF9tfaNx
-         +gMA==
-X-Gm-Message-State: AOAM5330j+5RJau8BFccYny//3GQtZqMQi+W/WhUj2V+fkV5nWB3Q92G
-        4crTj6Z7w1VEY2Ledse0zyS6ycm/otzLMJ0BzEIBnQ==
-X-Google-Smtp-Source: ABdhPJx9Xs+gNqlcxbnlbCdHKqDDoKF331LGbfaO4gqbfJsLmZV5ogqMQNLLtD+mtDfBhXnpfvjX8RedejWnYxnG7hg=
-X-Received: by 2002:a17:90b:3ec3:: with SMTP id rm3mr5619607pjb.93.1633008989101;
- Thu, 30 Sep 2021 06:36:29 -0700 (PDT)
+        id S1351417AbhI3NjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:39:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351402AbhI3NjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E694619E9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633009038;
+        bh=QYlLL3GDBPrVtkL8isJVyF2sdgxesbQ3gmGxtfmFI40=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sC49Wc0f3dRgeawqjDFy5eptV2aXdrCeTrYnmRJhsMpWUXhT1sTlwULeZb/6SxErp
+         j1Ue71E0jVQEJGAOPo9ZVXcz//r9Rwd092n5YCkgtJ0lDf1+a7lZa8qJgOa2zAuCTR
+         o92JMs6I588PloSXUlMtVzkcn9KK20yAxHo2pw2c51LOyKdQQ5DzSYmXewp0g5cGzC
+         fmNcESn5APGOxInOrKQTzQMYuiM0Uo4dhDniARrkWK6DIbHaTJ3G+dkcCboijaBC4/
+         kyCKDpFMPd7rsK6Jn4Mwi8Sp3mBmAXqZzmpxuwdB2C3eEq480o/qDA523e02m3y5Wp
+         Ik1eWtkTdvqDw==
+Received: by mail-ed1-f47.google.com with SMTP id v10so22491641edj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:37:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533M0w9h/Kg3xdrGRj1gcW0+DboZ7VhJhXrZ8kzXwbvTZhrIiUyF
+        0/RXNw+IdPgZL19nTLbVPK5acozUFJckBJHErw==
+X-Google-Smtp-Source: ABdhPJypDb2VkWrdf3paMX9Tqzf51KNdYw6dumy+pE04VPMjkYX0wM15CC9zyo395rIQ9HHurwSkXhmuwWRQT+vaaEg=
+X-Received: by 2002:a17:906:3181:: with SMTP id 1mr7127794ejy.388.1633009013939;
+ Thu, 30 Sep 2021 06:36:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com> <20210930065953-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210930065953-mutt-send-email-mst@kernel.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 30 Sep 2021 06:36:18 -0700
-Message-ID: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
+References: <20210929094425.745-1-granquet@baylibre.com> <20210929094425.745-5-granquet@baylibre.com>
+In-Reply-To: <20210929094425.745-5-granquet@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 30 Sep 2021 21:36:42 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9tWULx768c9pgnarVj6V1x6d5ZA9U2-hJ3+k2BW+vrAg@mail.gmail.com>
+Message-ID: <CAAOTY_9tWULx768c9pgnarVj6V1x6d5ZA9U2-hJ3+k2BW+vrAg@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] drm/mediatek: add mt8195 hdmi TX support
+To:     Guillaume Ranquet <granquet@baylibre.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 4:03 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+Hi, Guillaume:
+
+This is a big patch, and I'm not familiar with this driver, so the
+review process would be long. So I tell you about how I review this
+patch, and if you could process according to my way, the process would
+be more short.
+
+1. Find the common part of all hdmi driver.
+Even though mt8195 hdmi has many difference with other mediatek soc
+hdmi driver, I would like to find the common part and have just one
+copy of the common part. I expect there would three file finally:
+
+mtk_hdmi.c               (the common part)
+mtk_hdmi_mt8173.c (each soc special part)
+mtk_hdmi_mt8195.c (each soc special part)
+
+But this would be difficult in this stage, so you could temporarily
+have these three file:
+
+mtk_hdmi_common.c (the common part)
+mtk_hdmi.c                 (each soc special part)
+mtk_hdmi_mt8195.c   (each soc special part)
+
+When review is almost done, then change the file name as I wish.
+
+2. The first patch has only basic function, separate advance function
+to another patch.
+When comparing mt8195 hdmi driver with other hdmi driver, if mt8195
+hdmi driver has some function that other hdmi does not have, I would
+think that function is advance function and should be separate to
+another patch.
+
+If you follow this way, I think the review process would be short.
+Because this patch is big, I would just review partial part each time.
+
+Regards,
+Chun-Kuang.
+
+
+Guillaume Ranquet <granquet@baylibre.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=88=
+29=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:47=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> On Wed, Sep 29, 2021 at 06:05:09PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> > Confidential guest platforms like TDX have a requirement to allow
-> > only trusted devices. By default the confidential-guest core will
-> > arrange for all devices to default to unauthorized (via
-> > dev_default_authorization) in device_initialize(). Since virtio
-> > driver is already hardened against the attack from the un-trusted host,
-> > override the confidential computing default unauthorized state
-> >
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Add basic hdmi TX support for the mediatek mt8195 SoCs
 >
-> Architecturally this all looks backwards. IIUC nothing about virtio
-> makes it authorized or trusted. The driver is hardened,
-> true, but this should be set at the driver not the device level.
-
-That's was my initial reaction to this proposal as well, and I ended
-up leading Sathya astray from what Greg wanted. Greg rightly points
-out that the "authorized" attribute from USB and Thunderbolt already
-exists [1] [2]. So the choice is find an awkward way to mix driver
-trust with existing bus-local "authorized" mechanisms, or promote the
-authorized capability to the driver-core. This patch set implements
-the latter to keep the momentum on the already shipping design scheme
-to not add to the driver-core maintenance burden.
-
-[1]: https://lore.kernel.org/all/YQuaJ78y8j1UmBoz@kroah.com/
-[2]: https://lore.kernel.org/all/YQzF%2FutgrJfbZuHh@kroah.com/
-
-> And in particular, not all virtio drivers are hardened -
-> I think at this point blk and scsi drivers have been hardened - so
-> treating them all the same looks wrong.
-
-My understanding was that they have been audited, Sathya?
+> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+> ---
+>  drivers/gpu/drm/mediatek/Kconfig              |   10 +
+>  drivers/gpu/drm/mediatek/Makefile             |    4 +-
+>  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c    | 2293 +++++++++++++++++
+>  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h    |  128 +
+>  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.c    |  530 ++++
+>  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.h    |   20 +
+>  .../gpu/drm/mediatek/mtk_mt8195_hdmi_regs.h   |  329 +++
+>  7 files changed, 3313 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.c
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.h
+>  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_regs.h
+>
+> diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediatek/=
+Kconfig
+> index 2976d21e9a34a..517d065f0511b 100644
+> --- a/drivers/gpu/drm/mediatek/Kconfig
+> +++ b/drivers/gpu/drm/mediatek/Kconfig
+> @@ -28,3 +28,13 @@ config DRM_MEDIATEK_HDMI
+>         select PHY_MTK_HDMI
+>         help
+>           DRM/KMS HDMI driver for Mediatek SoCs
+> +
+> +config DRM_MEDIATEK_HDMI_MT8195_SUSPEND_LOW_POWER
+> +       tristate "DRM HDMI SUSPEND LOW POWER Support for Mediatek mt8195 =
+SoCs"
+> +       depends on DRM_MEDIATEK_HDMI
+> +       help
+> +         DRM/KMS HDMI SUSPEND_LOW_POWER for Mediatek SoCs.
+> +         Choose this option if you want to disable/enable
+> +         clock and power domain when platform enter suspend,
+> +         and this config depends on DRM_MEDIATEK_HDMI.
+> +
+> diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek=
+/Makefile
+> index 29098d7c8307c..736f0816083d0 100644
+> --- a/drivers/gpu/drm/mediatek/Makefile
+> +++ b/drivers/gpu/drm/mediatek/Makefile
+> @@ -18,6 +18,8 @@ obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek-drm.o
+>
+>  mediatek-drm-hdmi-objs :=3D mtk_cec.o \
+>                           mtk_hdmi.o \
+> -                         mtk_hdmi_ddc.o
+> +                         mtk_hdmi_ddc.o \
+> +                         mtk_mt8195_hdmi.o \
+> +                         mtk_mt8195_hdmi_ddc.o \
+>
+>  obj-$(CONFIG_DRM_MEDIATEK_HDMI) +=3D mediatek-drm-hdmi.o
+> diff --git a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c b/drivers/gpu/drm=
+/mediatek/mtk_mt8195_hdmi.c
+> new file mode 100644
+> index 0000000000000..46c7c8af524ac
+> --- /dev/null
+>
