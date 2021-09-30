@@ -2,140 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D361241DE5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57BF41DE73
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348172AbhI3QHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348160AbhI3QHO (ORCPT
+        id S1348689AbhI3QLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:11:32 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:45707 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348067AbhI3QLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:07:14 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D646C06176E
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:05:32 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id q16so7882939oiw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vYKsPBiDJqWgn94z0UrisRrDiPIkl/InaR+MbnDzd8o=;
-        b=XhAVOr/0A4R/z99tlCeSSHraD2rZ5vHyFbhTb43A/MXaFjTdRn+YxPnSnr1gS5DDF9
-         8uKdNk+GEVCTF6jBsbp7QiwGS2/UWZ0UOBqGCAkVw+TITRFWXcCa1t9MKQX3c1GRGt1F
-         jvYccHHP5wBGLZcruY3bA3Yfi2fTnH0pmQHx4S/KXKGyM/DPAen3gCCaglOumcRoiejK
-         vsApbVLIdx6ZrUVI6P+zV9rtBwob8R8V/bdBTbtI75T39PmMgTDsZUi1GOQOodK2jkUp
-         Azjel8ZfF9N+C2z29j3eN1LjCz/NSn2+rzolTfTiGoU3WUhSwJAPblDHUP/jM6fE32I/
-         CGIA==
+        Thu, 30 Sep 2021 12:11:31 -0400
+Received: by mail-vs1-f48.google.com with SMTP id x1so7958662vsp.12;
+        Thu, 30 Sep 2021 09:09:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vYKsPBiDJqWgn94z0UrisRrDiPIkl/InaR+MbnDzd8o=;
-        b=GX6pxOgvfghpoRWRfQS/Q1eY00G0SeObs5gBVXdYS3Qte6l36NlRNVWpFF7tNhzLm9
-         Qb5+LHWOA31xAOuazm39+MgnkEprsSdElXRuFFLGUqhECJ/2j0VR9wMwNwe8O2tqKFAF
-         MryjC/FgU+GbDSXekNL/7++ocP7L7bZ0UPDqmx2R8jA8x9FmsbjvS5QR/LPKqGx8glZw
-         dXNr7bYHVT22rKoWYADSzOoWlvbspU5luWBg/NWzEkqg1Q/1Vg2j74clD7I0ICsG4AKH
-         Ld+7TYp7UlpFfgRuT42jdUCl1ve4+dsZx7HJVfI4xBdyoDY2bok/8YcmeFrAZ9vFJB4k
-         vClA==
-X-Gm-Message-State: AOAM531Xu5bLQiIf37ESOBc9lLJXof2LmCXzWcgD6rKjKobxbHrPKzVE
-        Ge7iXi/O5RuZu7hpD3+Oax5urg==
-X-Google-Smtp-Source: ABdhPJzkcIYZeTpr8veDVdd9USNDj/qqDvR5BA6ShZH//YGQawtDR/aJqibAv9FK+9S05XHjuwQutQ==
-X-Received: by 2002:a05:6808:144b:: with SMTP id x11mr3467780oiv.111.1633017931479;
-        Thu, 30 Sep 2021 09:05:31 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b2sm248127ooi.25.2021.09.30.09.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 09:05:31 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 09:07:20 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
- for dwc3 qcom
-Message-ID: <YVXguCSrsdMoCCXH@ripper>
-References: <1630346073-7099-1-git-send-email-sanm@codeaurora.org>
- <1630346073-7099-2-git-send-email-sanm@codeaurora.org>
- <YTduDqCO9aUyAsw1@ripper>
- <e947695b-cd50-391b-3de9-3c028dbddab2@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=btWh24rHyubmeV83vibGBCyrXuvNnvx5n7q6pEiaBwg=;
+        b=e+hEal/YH+v4c3JlJ58MgJlhty8fAAAhrFBxL8Cbllh1DhHVKbSMcXXB/tKNPCEzmr
+         0A6mhB4ThOZKcNK8s+rGArux/mFIj1a0HfEPBl131BlSJZT8G/anQl0Cfu5lj+cGcYnx
+         K0uNzaHroZREherwIqcMC8TQ8GBbNr3cs7+gydEXPWz8DDAzgzjedZSEyJYSGpMZa67F
+         BYN/w4yv0qFNrhhC03zDbc7/V1Pau4oRNU3RRHDcvFtAiROYyLZNKfJapfnPMpP5eymk
+         zCLeIzLVmgEodxge9/wT9VpY8trX30EW0fHu2QwI7hZPUKvd1wU6Qjh6wYgvm9GDenKk
+         EIHg==
+X-Gm-Message-State: AOAM5305VNWk3WmrOoFARexQRwVbzcKsP0vm58FMpWdGtsNemsLswufP
+        xvDr91m/1s1516ov6jrD9SQALlFyLWKac31dWpo=
+X-Google-Smtp-Source: ABdhPJx2JJB9HsYLNBhd62Z2YB/HHkr4P/7Y/N+4NCRmU4zcTCZw+cQTvOZ73fbp30VbBcvWLNmTOSqHt7xcVwc7tUM=
+X-Received: by 2002:a67:2c58:: with SMTP id s85mr21426vss.35.1633018187955;
+ Thu, 30 Sep 2021 09:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e947695b-cd50-391b-3de9-3c028dbddab2@codeaurora.org>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
+ <CAMuHMdVkF--Oq_EBRq-8Wn=E5DyOVzgSNYwo8ujf18zRCJSL9Q@mail.gmail.com>
+ <YVWX1fFB1L1K3Mnn@google.com> <CAMuHMdUkP6Jg5sXAXEw7twGqPs8rKftiyh+wYomFVdRHyhUrgQ@mail.gmail.com>
+ <YVWoucIlDy/klYnL@google.com>
+In-Reply-To: <YVWoucIlDy/klYnL@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Sep 2021 18:09:36 +0200
+Message-ID: <CAMuHMdW96DUXSWOuU3prUAt67pXNe-+CV+6igSuLLwF=k65pUA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30 Sep 02:41 PDT 2021, Sandeep Maheswaram wrote:
+Hi Lee,
 
-> 
-> On 9/7/2021 7:20 PM, Bjorn Andersson wrote:
-> > On Mon 30 Aug 10:54 PDT 2021, Sandeep Maheswaram wrote:
-> > 
-> > > Add multi pd bindings to set performance state for cx domain
-> > > to maintain minimum corner voltage for USB clocks.
-> > > 
-> > > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> > > ---
-> > >   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 13 ++++++++++++-
-> > >   1 file changed, 12 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > index e70afc4..838d9c4 100644
-> > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > @@ -41,7 +41,18 @@ properties:
-> > >     power-domains:
-> > >       description: specifies a phandle to PM domain provider node
-> > > -    maxItems: 1
-> > > +    minItems: 1
-> > > +    items:
-> > > +      - description: optional,cx power domain
-> > > +      - description: USB gdsc power domain
-> > > +
-> > > +  power-domain-names:
-> > > +     items:
-> > > +      - const: cx
-> > > +      - const: usb_gdsc
-> > But "usb_gdsc" is a subdomain of "cx", why can't we describe this fact
-> > in gcc?
-> > 
-> > Regards,
-> > Bjorn
-> Thanks for your review.
-> Any idea on how can this be described in gcc ? Can you point any reference
-> for this .
-> 
+On Thu, Sep 30, 2021 at 2:08 PM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+> > On Thu, Sep 30, 2021 at 12:56 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Thu, 30 Sep 2021, Geert Uytterhoeven wrote:
+> > > > On Thu, Sep 30, 2021 at 11:23 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > I've taken the liberty of cherry-picking some of the points you have
+> > > > > reiteratted a few times.  Hopefully I can help to address them
+> > > > > adequently.
+> > > > >
+> > > > > On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > > > > > Reminder: these are essential drivers and all Exynos platforms must have
+> > > > > > them as built-in (at least till someone really tests this on multiple
+> > > > > > setups).
+> > > > >
+> > > > > > Therefore I don't agree with calling it a "problem" that we select
+> > > > > > *necessary* drivers for supported platforms. It's by design - supported
+> > > > > > platforms should receive them without ability to remove.
+> > > > >
+> > > > > > The selected drivers are essential for supported platforms.
+> > > > >
+> > > > > SoC specific drivers are only essential/necessary/required in
+> > > > > images designed to execute solely on a platform that requires them.
+> > > >
+> > > > Why?
+> > >
+> > > Because without them the image wouldn't functional on any level.
+> > >
+> > > But you're right, there is still no requirement for it to be built-in.
+> > >
+> > > > > For a kernel image which is designed to be generic i.e. one that has
+> > > > > the ability to boot on vast array of platforms, the drivers simply
+> > > > > have to be *available*.
+> > > >
+> > > > If the drivers are really essential/necessary/required, this precludes
+> > > > running the generic kernel image on the platform that requires them,
+> > > > making the kernel not sufficiently generic.
+> > >
+> > > If they are not at all present, then yes.  However that is not what is
+> > > being suggested.  The essential functionality will be provided.  Just
+> > > not built-in.
+> >
+> > I really meant "essential/necessary/required to be built-in".
+>
+> Then I agree with you.  My position is that if they don't *have* to be
+> built-in, then why force it?
+>
+> > > > > Forcing all H/W drivers that are only *potentially* utilised on *some*
+> > > > > platforms as core binary built-ins doesn't make any technical sense.
+> > > > > The two most important issues this causes are image size and a lack of
+> > > > > configurability/flexibility relating to real-world application i.e.
+> > > > > the one issue we already agreed upon; H/W or features that are too
+> > > > > new (pre-release).
+> > > >
+> > > > True, if "potentially".  If not potentially, they must be included.
+> > >
+> > > I'm not sure what you're trying to say here.  Would you mind elaborating?
+> >
+> > It was a comment to your "*potentially* utilised on *some* platforms".
+> > It is clear they are not used on the other ("not *some*") platforms, but your
+> > sentence was unclear whether they are always or only sometimes used on
+> > "*some*" platforms.
+> > "always" => "not potentially"
+> > "sometimes" => "potentially".
+> >
+> > I hope this makes it more clear.
+>
+> Not really, but I'll try to clean mine up:
+>
+> The aim is to have a single kernel (image + modules) that can be
+> booted on a plethora of platforms.  For the sake of argument say 10.
+> Let's also say that each of the platforms are equal and will be booted
+> the same amount of times.
+>
+> Taking the example above, when I say that the H/W specific drivers
+> will only be *potentially* utilised, I mean that they will only be
+> bound and probed 1/10 times i.e. when booted on the associated
+> platform.  Which means that in the vast majority of boots (9/10) they
+> will lie dormant, taking up unnecessary space.
+>
+> Another way to say this would be; the kernel needs to have the
+> capability to boot all of the supported platforms, but it will only
+> ever be utilised on one at a time.
 
-There's a series from Dmitry that defines such a relationship between
-MDSS_GDSC and the MMCX domain on SM8250. This seems like a continuation
-of that support, given that we have multiple parent domains (cx, mx
-etc).
+That's true even for drivers for "generic" hardware, right?
+E.g. arm64 selects ARM_GIC and ARM_GIC_V3, where most (all?)
+platforms have at most one of them.
 
-You can find that discussion here:
+> > > > > Bloating a generic kernel with potentially hundreds of unnecessary
+> > > > > drivers that will never be executed in the vast majority of instances
+> > > > > doesn't achieve anything.  If we have a kernel image that has the
+> > > > > ability to boot on 10's of architectures which have 10's of platforms
+> > > > > each, that's a whole host of unused/wasted executable space.
+> > > >
+> > > > The key here is if the driver is required or not to use the platform,
+> > > > and why it is required.  If the requirement comes from some deficiency
+> > > > in the kernel code or config system, it should be fixed, if possible.
+> > > > And the fix should be tested.
+> > > > If it cannot be fixed, the driver should be included, else it would
+> > > > preclude running the generic kernel on the affected platform.
+> > >
+> > > Sorry, I'm not following.
+> >
+> > It all depends on why the driver is "required to be built-in".
+> > Depending on the reason behind that requirement, the driver can be
+> > changed from built-in to modular without ill effects on functionality.
+>
+> Absolutely.
+>
+> There are cases where drivers simply can't be built as modules.  These
+> unavoidable situations are legitimate use-cases and the technology/
+> code-base will have to work around these as required.
+>
+> The argument here is that if they can be separated and have been shown
+> to work well in either use-case, then it is my opinion that placing an
+> artificial barrier up based mostly on politics is not the correct
+> approach.
 
-https://lore.kernel.org/all/20210727202004.712665-1-dmitry.baryshkov@linaro.org/
+Agreed.
 
-Regards,
-Bjorn
+Gr{oetje,eeting}s,
 
-> Regards
-> Sandeep
-> > > +
-> > > +  required-opps:
-> > > +    description: specifies the performance state to cx power domain
-> > >     clocks:
-> > >       description:
-> > > -- 
-> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> > > of Code Aurora Forum, hosted by The Linux Foundation
-> > > 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
