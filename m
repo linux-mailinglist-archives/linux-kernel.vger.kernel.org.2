@@ -2,101 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F07641E269
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A37341E266
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347300AbhI3TvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhI3TvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:51:00 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E1AC06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:49:15 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 71so15777713ybe.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qzu64fXHTiIcfDbo11y5nmqEplOgcWDPv9SREtrsAds=;
-        b=Bb62IHSQDymweZCjp9xCrijJ4lA8x9M279DwXdVGqH/5uAqnookw/HiEaQlaS5zWqU
-         9KGcmVWArgai7IWvkHgaVbOJP6ugo6RiOI7h5W4m66/auYzQMFZBfhqxotRbpU8kiRzS
-         PZpSxywFF1bA4enUzOcab2PVSVcafmV3BKdv/+cJCvBaH6GBJzbxROInp0b6E7+hWhz9
-         Ul0ZNkN01tBQkGdA9zJk9MLl8igAvDL+GZQi+qXIz5RzsiXi6c05uExo/xXTfJCOTaNW
-         BP6luiLNrOScu1xZBasjy9zw4hyUtdM+E14rR5GhzRfXe7+i8ZwqAw15pTxYAg6uKmaP
-         BawQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qzu64fXHTiIcfDbo11y5nmqEplOgcWDPv9SREtrsAds=;
-        b=BMSSZzTD0YIORYO9zHASMC/kIBFdKLoFUk00u++Hm+vDrKL+QpcVVK2GK0XDnXcbXT
-         bCwENYH/P7xe0Wqmlvsb4kTBH+1Up6K+Zgolj9t5GalrCX8O1dBfTTkhAzeI23pdSwHi
-         ow6qB6VUA+EhO8tVNqa0Nia8VjCCgeSjlrMIvbcvZhAeArMArcPCy01N7JMB3bu+FdMr
-         7PV1hQVsk/LW/BM3ZjXYnCS4E2EdvPa73mS+aL7QwJHDVjs7vCo+Q1gWsR8PUAVaPyJe
-         RL23jhWDlvj6ojc5y8d4kZ7lIvvo+RXLSWifdRuL2109ynLhQebT4/HLqqe0opx3a7Ps
-         ymdw==
-X-Gm-Message-State: AOAM532MVpCSzPEe9XGrCfn+tH5RS/wZ7kqdnV7Id0LTnVlwuNU3RjCU
-        nGOmu68d0bRwqkqAELIZBBiDGFupDlhcwAW2fnkkQA==
-X-Google-Smtp-Source: ABdhPJy+W7Tlus6n8v/jVtsLypB52CV1qGme2IbGkCZFgbZ1vtZMJQTdf96zuBomuacwcNbKiYAd8eQ34FMvbgF1v1g=
-X-Received: by 2002:a25:db91:: with SMTP id g139mr1183581ybf.391.1633031354608;
- Thu, 30 Sep 2021 12:49:14 -0700 (PDT)
+        id S1346503AbhI3Tuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:50:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229777AbhI3Tui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F14DC60C51;
+        Thu, 30 Sep 2021 19:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633031335;
+        bh=hDdTWheoUb4ZPM90BwAajZQdvPLHWOT4OxlEVDwGXig=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=LTGpyZWG7WUD4OlNOPnmQIEH++4rz1slz2w49GSixX+nv5xl1b1QSYUAGOoYF7VyS
+         YOp6yIjK1Z9S1oQnXTlCKRBjwxlRJMYFbKIJrvnNF2sP56WeGUIan5USqKFl1/rtPq
+         g2BLVFemgMVFe+kCG+2zB2nfYRFNgq7qCWYY1lLRMew9VtGxKj2UjwyfwVtzXgTqIG
+         vXAcc0hKdqAVzyrTHXFe3squ+9E/om6esEohzIMs3vyxKZYRj6o5NhpibTbhhc2aQn
+         PZdiDO1bRR2X1XaCnSzn/+CNF0duPMQ+HphR79pG4QCv9SLe8Vv5sKHyspuphniaqT
+         U8V0lRRv+qY8Q==
+Date:   Thu, 30 Sep 2021 14:48:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     mingchuang qiao <mingchuang.qiao@mediatek.com>
+Cc:     kerun.zhu@mediatek.com, linux-pci@vger.kernel.org,
+        lambert.wang@mediatek.com, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, matthias.bgg@gmail.com,
+        alex.williamson@redhat.com, linux-mediatek@lists.infradead.org,
+        utkarsh.h.patel@intel.com, haijun.liu@mediatek.com,
+        bhelgaas@google.com, mika.westerberg@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [v4] PCI: Avoid unsync of LTR mechanism configuration
+Message-ID: <20210930194853.GA903868@bhelgaas>
 MIME-Version: 1.0
-References: <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
- <CAGETcx8MXzFhhxom3u2MXw8XA-uUtm9XGEbYNobfr+Ptq5+fVQ@mail.gmail.com>
- <20210930134343.ztq3hgianm34dvqb@skbuf> <YVXDAQc6RMvDjjFu@lunn.ch>
- <CAGETcx8emDg1rojU=_rrQJ3ezpx=wTukFdbBV-uXiu1EQ87=wQ@mail.gmail.com> <YVYSMMMkmHQn6n2+@lunn.ch>
-In-Reply-To: <YVYSMMMkmHQn6n2+@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 30 Sep 2021 12:48:38 -0700
-Message-ID: <CAGETcx-L7zhfd72+aRmapb=nAbbFGR5NX0aFK-V9K1WT4ubohA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d11f5fa62151db0d490ea03e2f8399d784ea522.camel@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 12:38 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Btw, do we have non-DSA networking devices where fw_devlink=on
-> > delaying PHY probes is causing an issue?
->
-> I don't know if issues have been reported, but the realtek driver has
-> had problems in the past when the generic driver is used. Take a look
-> at r8169_mdio_register(), it does something similar to DSA.
+On Thu, Sep 30, 2021 at 03:02:24PM +0800, mingchuang qiao wrote:
+> Hi Bjorn,
+> 
+> A friendly ping.
+> Thanks.
 
-Does it have the issue of having the PHY as its child too and then
-depending on it to bind to a driver? I can't tell because I didn't
-know how to find that info for a PCI device.
+I pointed out a couple issues, but you never responded.  See below.
 
->
-> What is going to make things interesting is that phy_attach_direct()
-> is called in two different contexts. During the MAC drivers probe, it
-> is O.K. to return EPROBE_DEFER, and let the MAC driver try again
-> later, if we know there is a specific PHY driver for it. But when
-> called during the MAC drivers open() op, -EPROBE_DEFER is not
-> allowed. What to do then is an interesting question.
+> On Mon, 2021-09-06 at 13:36 +0800, mingchuang qiao wrote:
+> > Hi Bjorn,
+> > 
+> > On Thu, 2021-02-18 at 10:50 -0600, Bjorn Helgaas wrote:
+> > > On Thu, Feb 04, 2021 at 05:51:25PM +0800, mingchuang.qiao@mediatek.
+> > > co
+> > > m wrote:
+> > > > From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> > > > 
+> > > > In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2
+> > > > register is
+> > > > configured in pci_configure_ltr(). If device and bridge both
+> > > > support LTR
+> > > > mechanism, the "LTR Mechanism Enable" bit of device and bridge
+> > > > will
+> > > > be
+> > > > enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as
+> > > > 1.
+> > > > 
+> > > > If PCIe link goes down when device resets, the "LTR Mechanism
+> > > > Enable" bit
+> > > > of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16.
+> > > > However,
+> > > > the pci_dev->ltr_path value of bridge is still 1.
+> > > > 
+> > > > For following conditions, check and re-configure "LTR Mechanism
+> > > > Enable" bit
+> > > > of bridge to make "LTR Mechanism Enable" bit match ltr_path
+> > > > value.
+> > > >    -before configuring device's LTR for hot-remove/hot-add
+> > > >    -before restoring device's DEVCTL2 register when restore
+> > > > device
+> > > > state
+> > > 
+> > > There's definitely a bug here.  The commit log should say a little
+> > > more about what it is.  I *think* if LTR is enabled and we suspend
+> > > (putting the device in D3cold) and resume, LTR probably doesn't
+> > > work
+> > > after resume because LTR is disabled in the upstream bridge, which
+> > > would be an obvious bug.
 
-Yeah, basically before doing an open() it'll have to call an API to
-say "just bind with whatever you got". Or something along those lines.
-I already know how to get that to work. I'll send some RFC soonish (I
-hope).
+Here's one thing.  Above I was asking for more details.  In
+particular, how would a user notice this bug?  How did *you* notice
+the bug?
 
--Saravana
+> > > Also, if a device with LTR enabled is hot-removed, and we hot-add a
+> > > device, I think LTR will not work on the new device.  Possibly also
+> > > a
+> > > bug, although I'm not convinced we know how to configure LTR on the
+> > > new device anyway.
+> > > 
+> > > So I'd *like* to merge the bug fix for v5.12, but I think I'll wait
+> > > because of the issue below.
+> > > 
+> > 
+> > A friendly ping.
+> > Any further process shall I make to get this patch merged?
+> > 
+> > > > Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> > > > ---
+> > > > changes of v4
+> > > >  -fix typo of commit message
+> > > >  -rename: pci_reconfigure_bridge_ltr()-
+> > > > > pci_bridge_reconfigure_ltr()
+> > > > 
+> > > > changes of v3
+> > > >  -call pci_reconfigure_bridge_ltr() in probe.c
+> > > > changes of v2
+> > > >  -modify patch description
+> > > >  -reconfigure bridge's LTR before restoring device DEVCTL2
+> > > > register
+> > > > ---
+> > > >  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
+> > > >  drivers/pci/pci.h   |  1 +
+> > > >  drivers/pci/probe.c | 13 ++++++++++---
+> > > >  3 files changed, 36 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > index b9fecc25d213..6bf65d295331 100644
+> > > > --- a/drivers/pci/pci.c
+> > > > +++ b/drivers/pci/pci.c
+> > > > @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct
+> > > > pci_dev *dev)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > +void pci_bridge_reconfigure_ltr(struct pci_dev *dev)
+> > > > +{
+> > > > +#ifdef CONFIG_PCIEASPM
+> > > > +	struct pci_dev *bridge;
+> > > > +	u32 ctl;
+> > > > +
+> > > > +	bridge = pci_upstream_bridge(dev);
+> > > > +	if (bridge && bridge->ltr_path) {
+> > > > +		pcie_capability_read_dword(bridge,
+> > > > PCI_EXP_DEVCTL2, &ctl);
+> > > > +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> > > > +			pci_dbg(bridge, "re-enabling LTR\n");
+> > > > +			pcie_capability_set_word(bridge,
+> > > > PCI_EXP_DEVCTL2,
+> > > > +						 PCI_EXP_DEVCTL2
+> > > > _L
+> > > > TR_EN);
+> > > 
+> > > This pattern of updating the upstream bridge on behalf of "dev" is
+> > > problematic because it's racy:
+> > > 
+> > >   CPU 1                     CPU 2
+> > >   -------------------       ---------------------
+> > >   ctl = read DEVCTL2        ctl = read(DEVCTL2)
+> > >   ctl |= DEVCTL2_LTR_EN     ctl |= DEVCTL2_ARI
+> > >   write(DEVCTL2, ctl)
+> > >                             write(DEVCTL2, ctl)
+> > > 
+> > > Now the bridge has ARI set, but not LTR_EN.
+> > > 
+> > > We have the same problem in the pci_enable_device() path.  The most
+> > > recent try at fixing it is [1].
+
+I was hoping you would respond with "yes, I understand the problem,
+but don't think it's likely" or "no, this isn't actually a problem
+because ..."
+
+I think it *is* a problem, but we're probably unlikely to hit it, so
+we can probably live with it for now.  
+
+> > > [1] https://lore.kernel.org/linux-pci/20201218174011.340514-2-s.mir
+> > > os
+> > > hnichenko@yadro.com/
+> > > 
+> > > > +		}
+> > > > +	}
+> > > > +#endif
+> > > > +}
+> > > > +
+> > > >  static void pci_restore_pcie_state(struct pci_dev *dev)
+> > > >  {
+> > > >  	int i = 0;
+> > > > @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct
+> > > > pci_dev *dev)
+> > > >  	if (!save_state)
+> > > >  		return;
+> > > >  
+> > > > +	/*
+> > > > +	 * Downstream ports reset the LTR enable bit when link
+> > > > goes down.
+> > > > +	 * Check and re-configure the bit here before restoring
+> > > > device.
+> > > > +	 * PCIe r5.0, sec 7.5.3.16.
+> > > > +	 */
+> > > > +	pci_bridge_reconfigure_ltr(dev);
+> > > > +
+> > > >  	cap = (u16 *)&save_state->cap.data[0];
+> > > >  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL,
+> > > > cap[i++]);
+> > > >  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
+> > > > cap[i++]);
+> > > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > > > index 5c59365092fa..b3a5e5287cb7 100644
+> > > > --- a/drivers/pci/pci.h
+> > > > +++ b/drivers/pci/pci.h
+> > > > @@ -111,6 +111,7 @@ void pci_free_cap_save_buffers(struct pci_dev
+> > > > *dev);
+> > > >  bool pci_bridge_d3_possible(struct pci_dev *dev);
+> > > >  void pci_bridge_d3_update(struct pci_dev *dev);
+> > > >  void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev);
+> > > > +void pci_bridge_reconfigure_ltr(struct pci_dev *dev);
+> > > >  
+> > > >  static inline void pci_wakeup_event(struct pci_dev *dev)
+> > > >  {
+> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > > > index 953f15abc850..ade055e9fb58 100644
+> > > > --- a/drivers/pci/probe.c
+> > > > +++ b/drivers/pci/probe.c
+> > > > @@ -2132,9 +2132,16 @@ static void pci_configure_ltr(struct
+> > > > pci_dev
+> > > > *dev)
+> > > >  	 * Complex and all intermediate Switches indicate
+> > > > support
+> > > > for LTR.
+> > > >  	 * PCIe r4.0, sec 6.18.
+> > > >  	 */
+> > > > -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> > > > -	    ((bridge = pci_upstream_bridge(dev)) &&
+> > > > -	      bridge->ltr_path)) {
+> > > > +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> > > > +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> > > > +					 PCI_EXP_DEVCTL2_LTR_EN)
+> > > > ;
+> > > > +		dev->ltr_path = 1;
+> > > > +		return;
+> > > > +	}
+> > > > +
+> > > > +	bridge = pci_upstream_bridge(dev);
+> > > > +	if (bridge && bridge->ltr_path) {
+> > > > +		pci_bridge_reconfigure_ltr(dev);
+> > > >  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> > > >  					 PCI_EXP_DEVCTL2_LTR_EN)
+> > > > ;
+> > > >  		dev->ltr_path = 1;
+> > > > -- 
+> > > > 2.18.0
+> > > 
+> > > _______________________________________________
+> > > Linux-mediatek mailing list
+> > > Linux-mediatek@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
