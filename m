@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0A041DBCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7494241DBD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351674AbhI3OCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:02:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:54706 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351650AbhI3OCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:02:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6049101E;
-        Thu, 30 Sep 2021 07:01:02 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30B4B3F70D;
-        Thu, 30 Sep 2021 07:01:01 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 15:00:59 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <julien.thierry@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yuichi Ito <ito-yuichi@fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv3 2/3] arm64: entry: refactor EL1 interrupt entry logic
-Message-ID: <20210930140058.GD18258@lakrids.cambridge.arm.com>
-References: <20210930131708.35328-1-kernelfans@gmail.com>
- <20210930131708.35328-3-kernelfans@gmail.com>
+        id S1351682AbhI3ODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351598AbhI3ODD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:03:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD70C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:01:21 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 16:01:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633010479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bEaU61dOdKgM7/AO/0iYOp6ClHW9w4Lvq2/tyBRb3F0=;
+        b=qRI6kak+J1IF5brZ3i3lxzTFpnL6+Tlu2CTHSNov0hFcurHrnXpo/llbrfJs6HPtxMYkQX
+        E2bObP6fJP0pK8GOMvf86LMEEQXVrJx3CroEjM5FpdJgTmVx3T7KjNQiJcvR9g94+8/gJN
+        X2/jgq4de8oHVQLWCLPSQH8FhSihRUSz0hTU9UWcVAfZ2ezWJSOD08byEqbIgnSs2jYmYf
+        7Sr9we/RyQT9KDNcw9Q9e3Rir6Gf1hQ+jkYto1nJIjADsn7o5Q+gBlmtZPeRZRMIKUs8Jk
+        sVq4XRJE0Lu3HlCLR0oU0Fa3ljcPV0qvA0ARCikp8G9ah4cz5YTYH50kp1an5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633010479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bEaU61dOdKgM7/AO/0iYOp6ClHW9w4Lvq2/tyBRb3F0=;
+        b=DckXyQJjpUYLUZyL6exsf+TwGpGbCLHc8ihveqqcbfIspT92KdxFdpxWSObYivI5eIcF32
+        tun9y7n/a0ywYeBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+Cc:     peterz@infradead.org, valentin.schneider@arm.com, mingo@kernel.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        arei.gonglei@huawei.com
+Subject: Re: [RFC] cpu/hotplug: allow the cpu in UP_PREPARE state to bringup
+ again
+Message-ID: <20210930140118.z352cj3uzjscctcb@linutronix.de>
+References: <20210901051143.2752-1-longpeng2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210930131708.35328-3-kernelfans@gmail.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+In-Reply-To: <20210901051143.2752-1-longpeng2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:17:07PM +0800, Pingfan Liu wrote:
-> From: Mark Rutland <mark.rutland@arm.com>
+On 2021-09-01 13:11:43 [+0800], Longpeng(Mike) wrote:
+> The cpu's cpu_hotplug_state will be set to CPU_UP_PREPARE before
+> the cpu is waken up, but it won't be reset when the failure occurs.
+> Then the user cannot to make the cpu online anymore, because the
+> CPU_UP_PREPARE state makes cpu_check_up_prepare() unhappy.
 > 
-> Currently we distinguish IRQ and definitely-PNMI at entry/exit time
-> via the enter_el1_irq_or_nmi() and enter_el1_irq_or_nmi() helpers. In
-> subsequent patches we'll need to handle the two cases more distinctly
-> in the body of the exception handler.
-> 
-> To make this possible, this patch refactors el1_interrupt to be a
-> top-level dispatcher to separate handlers for the IRQ and PNMI cases,
-> removing the need for the enter_el1_irq_or_nmi() and
-> exit_el1_irq_or_nmi() helpers.
-> 
-> Note that since arm64_enter_nmi() calls __nmi_enter(), which
-> increments the preemt_count, we could never preempt when handling a
-> PNMI. We now only check for preemption in the IRQ case, which makes
-> this clearer.
-> 
-> There should be no functional change as a result of this patch.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Joey Gouly <joey.gouly@arm.com>
-> Cc: Sami Tolvanen <samitolvanen@google.com>
-> Cc: Julien Thierry <julien.thierry@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
-> Cc: Pingfan Liu <kernelfans@gmail.com>
-> Cc: linux-kernel@vger.kernel.org
-> To: linux-arm-kernel@lists.infradead.org
+> We should allow the user to try again in this case.
 
-As a heads-up, you need to add your Signed-off-by tag when you post
-patches from other people, even if you make no changes. See:
+Can you please describe where it failed / what did you reach that state?
 
-https://www.kernel.org/doc/html/v5.14/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-
-Other than that, this looks fine to me.
-
-Mark.
-
+> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
 > ---
->  arch/arm64/kernel/entry-common.c | 44 ++++++++++++++++----------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
+>  kernel/smpboot.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 32f9796c4ffe..5f1473319fb0 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -219,22 +219,6 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
->  		lockdep_hardirqs_on(CALLER_ADDR0);
->  }
+> diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+> index f6bc0bc..d18f8ff 100644
+> --- a/kernel/smpboot.c
+> +++ b/kernel/smpboot.c
+> @@ -392,6 +392,13 @@ int cpu_check_up_prepare(int cpu)
+>  		 */
+>  		return -EAGAIN;
 >  
-> -static void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs)
-> -{
-> -	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-> -		arm64_enter_nmi(regs);
-> -	else
-> -		enter_from_kernel_mode(regs);
-> -}
-> -
-> -static void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs)
-> -{
-> -	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-> -		arm64_exit_nmi(regs);
-> -	else
-> -		exit_to_kernel_mode(regs);
-> -}
-> -
->  static void __sched arm64_preempt_schedule_irq(void)
->  {
->  	lockdep_assert_irqs_disabled();
-> @@ -432,14 +416,19 @@ asmlinkage void noinstr el1h_64_sync_handler(struct pt_regs *regs)
->  	}
->  }
->  
-> -static void noinstr el1_interrupt(struct pt_regs *regs,
-> -				  void (*handler)(struct pt_regs *))
-> +static __always_inline void
-> +__el1_pnmi(struct pt_regs *regs, void (*handler)(struct pt_regs *))
->  {
-> -	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
-> -
-> -	enter_el1_irq_or_nmi(regs);
-> +	arm64_enter_nmi(regs);
->  	do_interrupt_handler(regs, handler);
-> +	arm64_exit_nmi(regs);
-> +}
->  
-> +static __always_inline void
-> +__el1_interrupt(struct pt_regs *regs, void (*handler)(struct pt_regs *))
-> +{
-> +	enter_from_kernel_mode(regs);
-> +	do_interrupt_handler(regs, handler);
->  	/*
->  	 * Note: thread_info::preempt_count includes both thread_info::count
->  	 * and thread_info::need_resched, and is not equivalent to
-> @@ -448,8 +437,19 @@ static void noinstr el1_interrupt(struct pt_regs *regs,
->  	if (IS_ENABLED(CONFIG_PREEMPTION) &&
->  	    READ_ONCE(current_thread_info()->preempt_count) == 0)
->  		arm64_preempt_schedule_irq();
-> +	exit_to_kernel_mode(regs);
-> +}
+> +	case CPU_UP_PREPARE:
+> +		/*
+> +		 * The CPU failed to bringup last time, allow the user
+> +		 * continue to try to start it up.
+> +		 */
+> +		return 0;
 > +
-> +static void noinstr el1_interrupt(struct pt_regs *regs,
-> +				  void (*handler)(struct pt_regs *))
-> +{
-> +	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
-> +
-> +	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-> +		__el1_pnmi(regs, handler);
-> +	else
-> +		__el1_interrupt(regs, handler);
+>  	default:
 >  
-> -	exit_el1_irq_or_nmi(regs);
->  }
->  
->  asmlinkage void noinstr el1h_64_irq_handler(struct pt_regs *regs)
+>  		/* Should not happen.  Famous last words. */
 > -- 
-> 2.31.1
-> 
+> 1.8.3.1
+
+Sebastian
