@@ -2,193 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076F841E164
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FF141E171
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344849AbhI3SwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344777AbhI3SwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:52:09 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD52C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:50:26 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i25so29248858lfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hWitM0oBtgSbSNuh7FbCHTwd99GX2nX2dA9XhUdlU74=;
-        b=ZLG63FktyWv+RybYSzSL2qFeCGnsmrIHsRTZUACIK8vDatq78aNZkLrK+f9NlgqAvS
-         Jx9Za1sjvTL049HkZU/eK3R5OupW5tioTG5LZtB8py2mcA8e3c3sj0T3ikB6HDK3gIYL
-         8SDHIAqURPBfbgjh+tLWK3oECM35mmTggEOr4tBGKzzmVEYcjFUZWNk/dyYD05qD15bz
-         c4bEx6J9ZVanUQLA1BeWCIbR8lu8JO2HOnxpU9lj9ZGwhpRKDJTBEPr80gkQrIbb1rM4
-         IMYCDsmv9rde7lC5agMhnn3P+uCT4njA59H3Sg1TNHxl0CLMHpF8Ef8LbpW8/kUS3xA3
-         lyeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hWitM0oBtgSbSNuh7FbCHTwd99GX2nX2dA9XhUdlU74=;
-        b=huHQYGR5wZMR5XpKUXfj8X7rsHfGJHrKCZ4LzPv+ucxsZHCXTzOB47AlYzpPAvfe2a
-         Ogit9swQfDuVeto6MHfa+Zb5IkR/fuAFGqAkd+2l6/IWMR0LyVQ3kEhm9r46wsy3Qtl7
-         afQqxBDsnZaIBWyRPoJI3cZh56338b16KzF+LdFliP3DgRBay7/1wRuk1yaBJCFF7vNO
-         OEgHytvXZzQV7vV8iWQiqz27ywYquF6Yx5pisG/mPLI4MrRk44QoDRXxSO72UiUChM/V
-         Kkg09Q9tl/A22nR7XoETr24Ononv2sk7Y4ipvAZWCYDtnU654qdR9z9ff22YA1EBY3lg
-         iMnA==
-X-Gm-Message-State: AOAM532CF8DKe/IfdOedoEOsONCMrQK0gWXL4oN4nRjGOxZqWjPs4yEr
-        5PSZH8X9dgyQHAyVagbFVhGekJPjIPf6E2cheH4neA==
-X-Google-Smtp-Source: ABdhPJz3Bn8rJGaOZV5Vj0101XSEKUvm4JuxzRUyshaM+ETq3KaK35bLzMTRK/Wg2lD/B2CKh+0M11TwPBvY7oDPV4c=
-X-Received: by 2002:a05:6512:3ba5:: with SMTP id g37mr692891lfv.651.1633027824058;
- Thu, 30 Sep 2021 11:50:24 -0700 (PDT)
+        id S1345189AbhI3Swc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344879AbhI3SwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 14:52:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8244C61216;
+        Thu, 30 Sep 2021 18:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633027842;
+        bh=sHuklxRhVNrOUIGACjRjjFQjjWujtmMEebA4SOO7XVI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uHnQO7KnOuN+F6Kg/VYMCkYNZKP/FQuRQKsHlQ02RSvOU+Lsr6a/Ejf3NJuypnQ0r
+         wgcHaC0oqgL3wh/+Bjpr7enKokEpGkilkhAcBEHhE9uLRLhpb0YgHbs+X+j4bqDpV7
+         0AkfKl3RUdJBxJT+ECt+6aVhpjwQ315nbX0A7Nb4a9ZuqQ7VSnVENanCiGErOWceKw
+         TlOjeEhAK0IhpTcaKezOnHkaHC7hBR/4sk1qUNqqo7JqlIbR9UE+BEQUtaXKIMytSU
+         2kYuIhxuTpWdfCtUUQdGYdGcDoSXL5vM5e4zMX86OIlLp0nscaVxPuacUtXLN3LJw1
+         +kT+1vHV0j00g==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Juergen Gross <jgross@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
+        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
+        kasan-dev@googlegroups.com, kvm@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-efi@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH v2 0/6] memblock: cleanup memblock_free interface
+Date:   Thu, 30 Sep 2021 21:50:25 +0300
+Message-Id: <20210930185031.18648-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com> <20210930180531.1190642-5-samitolvanen@google.com>
-In-Reply-To: <20210930180531.1190642-5-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 30 Sep 2021 11:50:13 -0700
-Message-ID: <CAKwvOdnN-5PBnegEpb4eq3uPWezmAO6Zrvy3O7zyCNEBFvYt4A@mail.gmail.com>
-Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05 AM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
-> which defines a stub function that immediately returns and when
-> defined in the core kernel, always passes indirect call checking
-> with CONFIG_CFI_CLANG. Note that this macro should only be used when
-> a stub cannot be called using the correct function type.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi,
 
-Seems like the only use is in patch 5/15. Probably could be squashed...
+Following the discussion on [1] this is the fix for memblock freeing APIs
+mismatch. 
 
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  include/asm-generic/vmlinux.lds.h | 11 +++++++++++
->  include/linux/cfi.h               | 13 +++++++++++++
->  kernel/cfi.c                      | 24 +++++++++++++++++++++++-
->  3 files changed, 47 insertions(+), 1 deletion(-)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index f2984af2b85b..5b77284f7221 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -407,6 +407,16 @@
->         KEEP(*(.static_call_tramp_key))                                 \
->         __stop_static_call_tramp_key = .;
->
-> +#ifdef CONFIG_CFI_CLANG
-> +#define CFI_EXCLUDED_DATA                                              \
-> +       . = ALIGN(8);                                                   \
-> +       __start_cfi_excluded = .;                                       \
-> +       KEEP(*(.cfi_excluded_stubs))                                    \
-> +       __stop_cfi_excluded = .;
-> +#else
-> +#define CFI_EXCLUDED_DATA
-> +#endif
-> +
->  /*
->   * Allow architectures to handle ro_after_init data on their
->   * own by defining an empty RO_AFTER_INIT_DATA.
-> @@ -430,6 +440,7 @@
->                 __start_rodata = .;                                     \
->                 *(.rodata) *(.rodata.*)                                 \
->                 SCHED_DATA                                              \
-> +               CFI_EXCLUDED_DATA                                       \
->                 RO_AFTER_INIT_DATA      /* Read only after init */      \
->                 . = ALIGN(8);                                           \
->                 __start___tracepoints_ptrs = .;                         \
-> diff --git a/include/linux/cfi.h b/include/linux/cfi.h
-> index 879744aaa6e0..19f74af8eac2 100644
-> --- a/include/linux/cfi.h
-> +++ b/include/linux/cfi.h
-> @@ -20,6 +20,17 @@ extern void __cfi_check(uint64_t id, void *ptr, void *diag);
->  #define __CFI_ADDRESSABLE(fn, __attr) \
->         const void *__cfi_jt_ ## fn __visible __attr = (void *)&fn
->
-> +/*
-> + * Defines a stub function that returns immediately, and when defined and
-> + * referenced in the core kernel, always passes CFI checking. This should
-> + * be used only for stubs that cannot be called using the correct function
-> + * pointer type, which should be rare.
-> + */
-> +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> +       void fn(void) { return; } \
-> +       const void *__cfi_excl_ ## fn __visible \
-> +               __section(".cfi_excluded_stubs") = (void *)&fn
-> +
->  #ifdef CONFIG_CFI_CLANG_SHADOW
->
->  extern void cfi_module_add(struct module *mod, unsigned long base_addr);
-> @@ -35,6 +46,8 @@ static inline void cfi_module_remove(struct module *mod, unsigned long base_addr
->  #else /* !CONFIG_CFI_CLANG */
->
->  #define __CFI_ADDRESSABLE(fn, __attr)
-> +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> +       void fn(void) { return; }
->
->  #endif /* CONFIG_CFI_CLANG */
->
-> diff --git a/kernel/cfi.c b/kernel/cfi.c
-> index 9594cfd1cf2c..8d931089141b 100644
-> --- a/kernel/cfi.c
-> +++ b/kernel/cfi.c
-> @@ -278,12 +278,34 @@ static inline cfi_check_fn find_module_check_fn(unsigned long ptr)
->         return fn;
->  }
->
-> +extern unsigned long __start_cfi_excluded[];
-> +extern unsigned long __stop_cfi_excluded[];
-> +
-> +static inline bool is_cfi_excluded(unsigned long ptr)
-> +{
-> +       unsigned long *p = __start_cfi_excluded;
-> +
-> +       for ( ; p < __stop_cfi_excluded; ++p)
-> +               if (*p == ptr)
-> +                       return true;
-> +
-> +       return false;
-> +}
-> +
-> +static void __cfi_pass(uint64_t id, void *ptr, void *diag)
-> +{
-> +}
-> +
->  static inline cfi_check_fn find_check_fn(unsigned long ptr)
->  {
->         cfi_check_fn fn = NULL;
->
-> -       if (is_kernel_text(ptr))
-> +       if (is_kernel_text(ptr)) {
-> +               if (unlikely(is_cfi_excluded(ptr)))
-> +                       return __cfi_pass;
-> +
->                 return __cfi_check;
-> +       }
->
->         /*
->          * Indirect call checks can happen when RCU is not watching. Both
-> --
-> 2.33.0.800.g4c38ced690-goog
->
+The first patch is a cleanup of numa_distance allocation in arch_numa I've
+spotted during the conversion.
+The second patch is a fix for Xen memory freeing on some of the error
+paths.
+
+I agree with Christophe that doing step by step makes the thing easier to
+review, so the patches 3-6 do the actual cleanup step by step.
+
+This time I used stricter coccinelle scripts so that only straightforward
+uses would get converted.
+
+There still a couple of (void *) castings for the cases when a virtual
+address has unsigned long type rather than a pointer type, like e.g
+initrd_start.
+
+Since scripts/get_maintainer.pl returned more than 100 addresses I've
+trimmed the distribution list only to the relevant lists.
+
+Juergen and Shahab, I didn't keep your Reviewed-by because the patches are
+a bit different this time.
+
+v2:
+* split changes into several patches
+* use stricter coccinelle scripts 
+
+[1] https://lore.kernel.org/all/CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com
+
+Mike Rapoport (6):
+  arch_numa: simplify numa_distance allocation
+  xen/x86: free_p2m_page: use memblock_free_ptr() to free a virtual pointer
+  memblock: drop memblock_free_early_nid() and memblock_free_early()
+  memblock: stop aliasing __memblock_free_late with memblock_free_late
+  memblock: rename memblock_free to memblock_phys_free
+  memblock: use memblock_free for freeing virtual pointers
+
+ arch/alpha/kernel/core_irongate.c         |  2 +-
+ arch/arc/mm/init.c                        |  2 +-
+ arch/arm/mach-hisi/platmcpm.c             |  2 +-
+ arch/arm/mm/init.c                        |  2 +-
+ arch/arm64/mm/mmu.c                       |  4 ++--
+ arch/mips/mm/init.c                       |  2 +-
+ arch/mips/sgi-ip30/ip30-setup.c           |  6 +++---
+ arch/powerpc/kernel/dt_cpu_ftrs.c         |  4 ++--
+ arch/powerpc/kernel/paca.c                |  8 ++++----
+ arch/powerpc/kernel/setup-common.c        |  2 +-
+ arch/powerpc/kernel/setup_64.c            |  2 +-
+ arch/powerpc/platforms/powernv/pci-ioda.c |  2 +-
+ arch/powerpc/platforms/pseries/svm.c      |  3 +--
+ arch/riscv/kernel/setup.c                 |  4 ++--
+ arch/s390/kernel/setup.c                  |  8 ++++----
+ arch/s390/kernel/smp.c                    |  4 ++--
+ arch/s390/kernel/uv.c                     |  2 +-
+ arch/s390/mm/kasan_init.c                 |  2 +-
+ arch/sh/boards/mach-ap325rxa/setup.c      |  2 +-
+ arch/sh/boards/mach-ecovec24/setup.c      |  4 ++--
+ arch/sh/boards/mach-kfr2r09/setup.c       |  2 +-
+ arch/sh/boards/mach-migor/setup.c         |  2 +-
+ arch/sh/boards/mach-se/7724/setup.c       |  4 ++--
+ arch/sparc/kernel/smp_64.c                |  2 +-
+ arch/um/kernel/mem.c                      |  2 +-
+ arch/x86/kernel/setup.c                   |  4 ++--
+ arch/x86/kernel/setup_percpu.c            |  2 +-
+ arch/x86/mm/init.c                        |  2 +-
+ arch/x86/mm/kasan_init_64.c               |  4 ++--
+ arch/x86/mm/numa.c                        |  2 +-
+ arch/x86/mm/numa_emulation.c              |  2 +-
+ arch/x86/xen/mmu_pv.c                     |  6 +++---
+ arch/x86/xen/p2m.c                        |  2 +-
+ arch/x86/xen/setup.c                      |  6 +++---
+ drivers/base/arch_numa.c                  | 10 ++++------
+ drivers/firmware/efi/memmap.c             |  2 +-
+ drivers/macintosh/smu.c                   |  2 +-
+ drivers/of/kexec.c                        |  3 +--
+ drivers/of/of_reserved_mem.c              |  5 +++--
+ drivers/s390/char/sclp_early.c            |  2 +-
+ drivers/usb/early/xhci-dbc.c              | 10 +++++-----
+ drivers/xen/swiotlb-xen.c                 |  2 +-
+ include/linux/memblock.h                  | 23 +++--------------------
+ init/initramfs.c                          |  2 +-
+ init/main.c                               |  2 +-
+ kernel/dma/swiotlb.c                      |  2 +-
+ kernel/printk/printk.c                    |  4 ++--
+ lib/bootconfig.c                          |  2 +-
+ lib/cpumask.c                             |  2 +-
+ mm/cma.c                                  |  2 +-
+ mm/memblock.c                             | 22 +++++++++++-----------
+ mm/memory_hotplug.c                       |  2 +-
+ mm/percpu.c                               |  8 ++++----
+ mm/sparse.c                               |  2 +-
+ 54 files changed, 99 insertions(+), 119 deletions(-)
 
 
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 -- 
-Thanks,
-~Nick Desaulniers
+2.28.0
+
