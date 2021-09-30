@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E2B41DD08
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1A441DD0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245251AbhI3PNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245132AbhI3PNQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:13:16 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D01C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:11:31 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so6978410pjv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 08:11:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QMXkTSWKWE6IOTwgZL4qEhWkaG0vz1XKQFudBOV/uFM=;
-        b=DZam6ASZNWqT//2uufR62sif+1Las8Y6W53M/dKFeka+a6T8T/wMUkKq4LfWwXrDlS
-         AKeBKhORnyrCWco1bRD79u/8tR+v1IoJ9YHG5NR4e5ZRNbA2UVO+wg4uvT4Ka9Sh0PaP
-         +HqPeWNFp/fTDC+GcAOuLLiUhXggiGO/IBIWXpAoxkXNqnXphVqgalZ6GrigCzDxzdt8
-         bN6SzD7IPT2CiRE+IqRFb+xUtOI83CD09AKDCCbbBEnGtlK0AEuMqQpHM1oixXKfRGzn
-         6ESDHBGFAj5axFshHo9uhJGDzEpH1jq++TVtyAV2fcuDl+xxzsrPhrXGJCVJTHWe3SBA
-         hUwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QMXkTSWKWE6IOTwgZL4qEhWkaG0vz1XKQFudBOV/uFM=;
-        b=RWMKPifreIej8aKe8OFoahxgJrepSUb/dOVx8Re+mPg/XzbXlAGminql7qbNwWilqT
-         WzZr8iRbXd3xHVC+pqdOqHacSSSSt3/7AGKNEe6cB7jORdymDjFO0xPwjSUmNchHhB8Q
-         AycmIVF56h8vxoZgcUc/hAmcmpv0uAYOdx09VJPGaF4naIfY07fUpSBqNjN0ZrSsPm6g
-         y19GHK+x8rCRoBd2vcjEHixfG4V3656XoOxQs9E0gfz8QjIp8J2Ms9TlZpaqzBfEYdOz
-         CayqTqSMiddu7+ZkaC+euagb7uqYXbF32f+UfExd8cRS2vnY9kKW5ChGoaR9wLwwfmmJ
-         Gx5Q==
-X-Gm-Message-State: AOAM533zwVxDWaA5eVAqK/M1unyaq0QpPeXzp20xZb7yJHVfaJ7hhGbb
-        I44jRKDqjOL2sHd8FhulzG0LcQ==
-X-Google-Smtp-Source: ABdhPJzWcwPdYwdLJ+5nxnLJ3fIdOxEitU8PB0EX6nFJI4cqI6Goe8KhCueoZ13Y7u1uUk383CaqNQ==
-X-Received: by 2002:a17:90a:181:: with SMTP id 1mr7110103pjc.214.1633014691201;
-        Thu, 30 Sep 2021 08:11:31 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c4sm3380348pfd.80.2021.09.30.08.11.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 08:11:30 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 15:11:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S232957AbhI3PO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:14:56 -0400
+Received: from phobos.denx.de ([85.214.62.61]:35984 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245132AbhI3POz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:14:55 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 9F46F81FEC;
+        Thu, 30 Sep 2021 17:13:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1633014791;
+        bh=4n+78j9+c4MNjpI8CIXjUqArDX7g1K5iL35BABt5u6M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=c9iM/svv66/9gVlCeN6ciTz7ljQ3i6Yqc422DnME00grr3LTtOT3UWOir40oLGfVf
+         x8lWoESgZuxUQvFZOiv3sdMRuYSI/BvjQLKTj/IALhVyry7VDBp2DPCXQD9KpLMeVC
+         6cUSRGk6xApgc3LZUMn/Z0QZU64n5Mgfk1X4xTBKVYPmWIZojRHfi9Q98FdOKG2Jg4
+         PG1h975ZRLb6TJHnSpWWvon2tgyHP6yhbwwJWFuJlYz26Q8/O4Wtda12reVvTC3Q72
+         FFegOB9RA1vLrs04zlyegsqAk8x6YcGNeqdQ/T97mL0N+z2BOqU4S/d2/yuBWH6xgr
+         iDRoiSdMtSmyA==
+Subject: Re: [PATCH 1/1] ARM: dts: stm32: fix AV96 board SAI2B pin muxing on
+ stm32mp15
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
-        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Manually retrieve CPUID.0x1 when getting
- FMS for RESET/INIT
-Message-ID: <YVXTnheIB6MCKGve@google.com>
-References: <20210929222426.1855730-1-seanjc@google.com>
- <20210929222426.1855730-3-seanjc@google.com>
- <75632fa9-e813-266c-7b72-cf9d8142cebf@redhat.com>
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20210927114553.21843-1-olivier.moysan@foss.st.com>
+ <beb6e7c8-f3c8-fc4e-6017-fea5690b9f33@denx.de>
+ <e8d40be8-045c-096a-f079-d9f6364254e9@foss.st.com>
+ <cfbb8475-ad1e-9075-cd82-92a8b315efc9@denx.de>
+ <9b278eb2-7ca9-0e4b-ecb1-5949ce3c5c10@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <88867104-97f5-1c5f-506a-cfcac0962e55@denx.de>
+Date:   Thu, 30 Sep 2021 17:13:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75632fa9-e813-266c-7b72-cf9d8142cebf@redhat.com>
+In-Reply-To: <9b278eb2-7ca9-0e4b-ecb1-5949ce3c5c10@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021, Paolo Bonzini wrote:
-> On 30/09/21 00:24, Sean Christopherson wrote:
-> >  	 * RESET since KVM emulates RESET before exposing the vCPU to userspace,
-> >  	 * i.e. it'simpossible for kvm_cpuid() to find a valid entry on RESET.
-> > +	 * But, go through the motions in case that's ever remedied.  Note, the
-> > +	 * index for CPUID.0x1 is not significant, arbitrarily specify '0'.
+On 9/30/21 5:05 PM, Alexandre TORGUE wrote:
+> On 9/30/21 12:26 PM, Marek Vasut wrote:
+>> On 9/30/21 10:47 AM, Alexandre TORGUE wrote:
+>>> Hi Marek
+>>>
+>>> On 9/29/21 1:18 PM, Marek Vasut wrote:
+>>>> On 9/27/21 1:45 PM, Olivier Moysan wrote:
+>>>>> Fix SAI2B pin muxing for AV96 board on STM32MP15.
+>>>>> The label "sai2a-4" is defined twice. Change redundant label to 
+>>>>> "sai2b-4".
+>>>>>
+>>>>> Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for 
+>>>>> SAI2 pins on stm32mp15")
+>>>>>
+>>>>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+>>>>> ---
+>>>>>   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi 
+>>>>> b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>>> index 5b60ecbd718f..b9cc9e0dd4fc 100644
+>>>>> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>>> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>>> @@ -1235,7 +1235,7 @@
+>>>>>           };
+>>>>>       };
+>>>>> -    sai2b_pins_c: sai2a-4 {
+>>>>> +    sai2b_pins_c: sai2b-4 {
+>>>>>           pins1 {
+>>>>>               pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+>>>>>               bias-disable;
+>>>>
+>>>> This mp1 pinmuxing is a total mess, sigh.
+>>>
+>>> What is the issue here ?
+>>
+>> The same-old discussion about where to place the pinmux nodes, whether 
+>> we should have these clusters of pre-defined options in 
+>> ...pinctrl.dtsi, or whether we should do more nxp-like per-board 
+>> configuration.
 > 
-> Just one nit, this comment change is not really needed because almost all
-> callers are using '0' for the same reason.
->
-> But, perhaps adding kvm_find_cpuid_entry_index and removing the last
-> parameter from kvm_find_cpuid_entry would be a good idea.
+> ok it's a bit more precise. Honestly I don't understand why the current 
+> topology is an issue here. Maybe pinctrl SAI nodes names are not well 
+> chosen or are not enough explicit. Concerning our topology and the NXP 
+> ones both exists and both have advantages and drawbacks. For ST boards 
+> (DK/EV) we want to keep all configs in the same place.
+> 
+> As I prefer to not re open this topic again and again, feel free to add 
+> your pin config in your dts board file, I'll accept it.
 
-I like this idea, but only if callers are forced to specify the index when the
-index is significant, e.g. add a magic CPUID_INDEX_DONT_CARE and WARN in
-cpuid_entry2_find() if index is significant and index == DONT_CARE.
-
-I'll fiddle with this, unless you want the honors?
-
-> Also, the kvm_cpuid() reference needs to be changed, which I did upon
-> commit.
-
-Doh, thanks!
+Yes, let's not reopen it. I'm sorry if my grumbling came across as too 
+strong.
