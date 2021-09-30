@@ -2,132 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DA41DF06
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FAE41DEF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351070AbhI3Qak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49840 "EHLO mail.kernel.org"
+        id S1350572AbhI3Q06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350390AbhI3Qaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:30:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6069615A2;
-        Thu, 30 Sep 2021 16:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633019337;
-        bh=h13uQ1EWLRKHyHC6YygYqklFpBEzNTt4uGMAdUKEMqo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=XQvEycRN0dYR+LyhAPO+j6JK+ylD0+gajchvaAVGHiRLhO88MbUYNpbYWCr0OGDYO
-         qxSXQgqIPsZSYJob171o7VrJsgSAf0A+1ojVvGlJOkPhmndLGgyvrYlf+D2Z3A3+lm
-         WGzgNyTh3JgDhzr1r1Kj/bxnFMRU5LZgcUBlOv1cQGyzoJn63re9eNOm7AaohySBvs
-         x2M0pDm7eCGuBDBxeoHjF1WCsFvd9WA3+49RI6iOBUi5jufYsqKPzEIHJUWKWp2UGV
-         1QnkWnM0zrFd5Cys3B/LmpalwYgWVl1O1i078Pvdzf0r1GGhz7RDAFIiMKWZdmUj+r
-         pAZxbMhe1GUBw==
-Date:   Thu, 30 Sep 2021 11:28:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 3/4] PCI/ASPM: Remove struct
- pcie_link_state.clkpm_enabled
-Message-ID: <20210930162854.GA888559@bhelgaas>
+        id S1350163AbhI3Q05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:26:57 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9967361507;
+        Thu, 30 Sep 2021 16:25:13 +0000 (UTC)
+Date:   Thu, 30 Sep 2021 17:29:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 2/2] iio: adc: Kconfig: add COMPILE_TEST dep for
+ berlin2-adc
+Message-ID: <20210930172908.10a31910@jic23-huawei>
+In-Reply-To: <20210926192642.4051329-2-aardelean@deviqon.com>
+References: <20210926192642.4051329-1-aardelean@deviqon.com>
+        <20210926192642.4051329-2-aardelean@deviqon.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929004400.25717-4-refactormyself@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:43:59AM +0200, Saheed O. Bolarinwa wrote:
-> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
-> 
-> The clkpm_enabled member of the struct pcie_link_state stores the
-> current Clock PM state for the device. However, when the state changes
-> it is persisted and can be retrieve by calling pcie_get_clkpm_state()
-> introduced in patch [1/3] in this series.
-> 
-> This patch:
->    - removes clkpm_enabled from the struct pcie_link_state
->    - removes all instance where clkpm_enable is set
->    - replaces references to clkpm_enabled with a call to
->      pcie_get_clkpm_state()
+On Sun, 26 Sep 2021 22:26:42 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-Similar commit log comments as previous patch.
+> Otherwise most build checks will omit this driver from a compile-test due
+> to it's dependency only on the BERLIN_ARCH symbol.
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+I was rather expecting this to need more dependencies, but I can't find
+anything that isn't appropriately stubbed out.
 
-> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
+Guess time to let 0-day and it's brute force builds work their magic.
+
+Series applied to the togreg branch of iio.git and pushed out as testing to
+see if we did miss a select or two in here.
+
+Thanks,
+
+Jonathan
+
 > ---
->  drivers/pci/pcie/aspm.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  drivers/iio/adc/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 9e65da9a22dd..368828cd427d 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -61,7 +61,6 @@ struct pcie_link_state {
->  	u32 aspm_disable:7;		/* Disabled ASPM state */
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 0ceea8e69e3c..8bf5b62a73f4 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -354,7 +354,7 @@ config BCM_IPROC_ADC
 >  
->  	/* Clock PM state */
-> -	u32 clkpm_enabled:1;		/* Current Clock PM state */
->  	u32 clkpm_disable:1;		/* Clock PM disabled */
->  
->  	/* Exit latencies */
-> @@ -190,7 +189,6 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
->  		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
->  						   PCI_EXP_LNKCTL_CLKREQ_EN,
->  						   val);
-> -	link->clkpm_enabled = !!enable;
->  }
->  
->  static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
-> @@ -203,14 +201,13 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  	if (!capable || link->clkpm_disable)
->  		enable = 0;
->  	/* Need nothing if the specified equals to current state */
-> -	if (link->clkpm_enabled == enable)
-> +	if (pcie_get_clkpm_state(link->pdev) == enable)
+>  config BERLIN2_ADC
+>  	tristate "Marvell Berlin2 ADC driver"
+> -	depends on ARCH_BERLIN
+> +	depends on ARCH_BERLIN || COMPILE_TEST
+>  	help
+>  	  Marvell Berlin2 ADC driver. This ADC has 8 channels, with one used for
+>  	  temperature measurement.
 
-Instead of pcie_get_clkpm_state(), I think I would add this:
-
-  static int pcie_clkpm_enabled(struct pci_dev *pdev)
-  {
-    struct pci_dev *child;
-    struct pci_bus *linkbus = pdev->subordinate;
-    u16 ctl;
-
-    /* CLKREQ_EN is only applicable for Upstream Ports */
-    list_for_each_entry(child, &linkbus->devices, bus_list) {
-      pcie_capability_read_word(PCI_EXP_LNKCTL, &ctl);
-      if (!(ctl & PCI_EXP_LNKCTL_CLKREQ_EN))
-        return 0;
-    }
-    return 1;
-  }
-
-And I would rename pcie_is_clkpm_capable() from the previous patch to
-match, i.e., pcie_clkpm_capable().  I suggested "bool" for it, but maybe
-it should stay "int" to match this.  They both could be "bool", but
-that seems a little messy because "enable" comes from
-policy_to_clkpm_state(), so it would involve quite a few more changes.
-
->  		return;
->  	pcie_set_clkpm_nocheck(link, enable);
->  }
->  
->  static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
->  {
-> -	link->clkpm_enabled = pcie_get_clkpm_state(link->pdev);
->  	link->clkpm_disable = blacklist ? 1 : 0;
->  }
->  
-> @@ -1287,7 +1284,7 @@ static ssize_t clkpm_show(struct device *dev,
->  	struct pci_dev *pdev = to_pci_dev(dev);
->  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
->  
-> -	return sysfs_emit(buf, "%d\n", link->clkpm_enabled);
-> +	return sysfs_emit(buf, "%d\n", pcie_get_clkpm_state(link->pdev));
->  }
->  
->  static ssize_t clkpm_store(struct device *dev,
-> -- 
-> 2.20.1
-> 
