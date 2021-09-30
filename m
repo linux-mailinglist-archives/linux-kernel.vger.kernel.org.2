@@ -2,120 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B1A41DB8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A770541DB92
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351523AbhI3Nz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351484AbhI3Nzz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:55:55 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDEFC06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:54:12 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b20so25895520lfv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kempniu.pl; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IdLMxkgri7V5entmZJQNJDz8zpFwVw1y07FV58dcbto=;
-        b=ERulCy/fsaITHIG0mWFm3/2gwLLrJI6tKL0vkkC4oD7KAbYsmkiy0BKmIqn/+pfmEJ
-         7t3Iah/ieg/J1wCyPzsfIRtmy+TRgB+Ae6DTdkeEIR2hbDFumh9ZZirPQ8GHVfnK3Jr0
-         xVnTofriDTprFctoGaE46m/G4WLc1C6m4M0UA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IdLMxkgri7V5entmZJQNJDz8zpFwVw1y07FV58dcbto=;
-        b=BhJy8EK+TPqqHyHogbzUFJXOCx4ShLd5oiy2KBC+OO/2Qa6mI6M5s+Gxmeg4qUT4BR
-         IWynsqvTQ02/fK4oaNYNPpDglWHUMdL+BpsIoGFkSU74jn7L0s2VSXygTmqWATSVaULk
-         NtJAC7E5+YAvPL951iF37x3DmGF9BCBXzHJG1oboNWYAGyAfmtQt0B+FhHrGE3CkY769
-         2SECAP8nFUPMJE9PSbxy/pVLO4zbCCznTMg510OJELESKVL8qBb9uTQAqYKBrJSwkQxu
-         udGR0mtKFGDJ6mgM30AZq8xb6bfDckc8hC2GXzeFvKh+oo6McxhVz3PRLykedXlGxzx6
-         5BUw==
-X-Gm-Message-State: AOAM532tw9Z3kk4ra9VSz+Wnijq4lh3sdyQxi7lh1dlqOeM9AYfE4SeS
-        cccXZs1/Sg1dQljWr6MtosHMeQ==
-X-Google-Smtp-Source: ABdhPJyjxExAlth6xAb+iGCfadGoFBjFej58ch5RdBRbApgFFu8ZjE/BJ/DbtYOQYm+YD0Ca+M+Kaw==
-X-Received: by 2002:a19:f249:: with SMTP id d9mr6080077lfk.229.1633010050307;
-        Thu, 30 Sep 2021 06:54:10 -0700 (PDT)
-Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::e02])
-        by smtp.gmail.com with ESMTPSA id 10sm346077ljp.12.2021.09.30.06.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 06:54:09 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 15:54:07 +0200
-From:   =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Richard Weinberger <richard@nod.at>,
+        id S1351546AbhI3N5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:57:01 -0400
+Received: from www.zeus03.de ([194.117.254.33]:34144 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351531AbhI3N5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:57:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=lACN/fAUucdc9g/2SkCkqipA6nj3
+        JMT9I8knLNGVIRc=; b=RamTHQIWkQK+fuLGLW0ws8vId009JxFNyus/bGbMvQpe
+        N/LLTH3ZSg4tG2e3fbGaN5ZCtiBc28jZfSELK1ogZgFP8AJXfmoclxqt5Pgj9osX
+        rcypf/pOERZPljCCM6gwAEmuYGC1mwz1zgBG0q1p6DGUe7775T6r9XpsjNaJib8=
+Received: (qmail 2098631 invoked from network); 30 Sep 2021 15:55:15 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Sep 2021 15:55:15 +0200
+X-UD-Smtp-Session: l3s3148p1@OM3WyzbN1oQgARa4RV6LAWawlO8I9jL3
+Date:   Thu, 30 Sep 2021 15:55:15 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <YVXBf0v0AQ5+G9dt@larwa.hq.kempniu.pl>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
- <20210928155859.433844cb@xps13>
- <20210928162402.6bb64fcf@collabora.com>
- <20210928163519.08cd1138@xps13>
- <YVTBoAnQKYLNpOPc@larwa.hq.kempniu.pl>
- <20210930085133.13b5a228@collabora.com>
- <20210930104721.03dc45bb@xps13>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 5/6] memory: renesas-rpc-if: Drop usage of
+ RPCIF_DIRMAP_SIZE macro
+Message-ID: <YVXBwx7rxJLRhlTI@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210928140721.8805-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="okOuMtWAHaaiVQFC"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210930104721.03dc45bb@xps13>
+In-Reply-To: <20210928140721.8805-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > > I remember discussing search a new READ ioctl with Sascha Hauer a few
-> > > > > years back, but I can't find the discussion...    
-> > > 
-> > > I think this is the thread in question:
-> > > 
-> > >     https://www.infradead.org/pipermail/linux-mtd/2016-April/thread.html#67085
-> > > 
-> > > In fact, it looks like Boris beat me to preparing a draft patch adding a
-> > > MEMREAD ioctl by some five years:
-> > > 
-> > >     https://www.infradead.org/pipermail/linux-mtd/2016-April/067187.html  
-> > 
-> > Exactly the one I was referring to. Note that this patch still contains
-> > the unbounded malloc which I think is worth fixing, but other than
-> > that and the addition of ECC stats, it looks pretty similar to yours.
 
-Right, thanks.
+--okOuMtWAHaaiVQFC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > I guess the big question from my perspective is: should I revive Boris'
-> > > original effort on the MEMREAD ioctl (which returns more detailed
-> > > bitflip stats in the structure passed by user space) or would that be a
-> > > waste of time because the subsystem will be switched over wholesale to a
-> > > new way of doing I/O (mtd_io_op) in the foreseeable future and therefore
-> > > exposing yet another ioctl to user space today would be frowned upon?
-> > >   
-> > 
-> > That's not my call to make, but I think those 2 things are orthogonal
-> > and can be addressed separately.
-> 
-> Agreed.
+On Tue, Sep 28, 2021 at 03:07:20PM +0100, Lad Prabhakar wrote:
+> RPCIF_DIRMAP_SIZE may differ on various SoC's. Instead of using
+> RPCIF_DIRMAP_SIZE macro use resource size to get dirmap size
+> which is already part of struct rpcif.
+>=20
+> Also make sure we return error in case devm_ioremap_resource()
+> fails for dirmap.
+>=20
+> Fixes: ca7d8b980b67 ("memory: add Renesas RPC-IF driver")
+> Fixes: 59e27d7c94aa ("memory: renesas-rpc-if: fix possible NULL pointer d=
+ereference of resource")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Thank you both - it sounds like I should start working on a v2 that will
-make the new MEMREAD ioctl return more detailed ECC statistics to user
-space.
+In general, all fine. I just think this should be split into two
+patches:
 
-Boris, I think a Suggested-by tag crediting you is in order for both the
-unbounded malloc issue and the MEMREAD ioctl, but submitting-patches.rst
-says I should not add this tag without your permission.  So, are you
-okay with me adding it?
+> @@ -147,8 +147,6 @@
+>  #define RPCIF_PHYINT		0x0088	/* R/W */
+>  #define RPCIF_PHYINT_WPVAL	BIT(1)
+> =20
+> -#define RPCIF_DIRMAP_SIZE	0x4000000
+> -
+>  static const struct regmap_range rpcif_volatile_ranges[] =3D {
+>  	regmap_reg_range(RPCIF_SMRDR0, RPCIF_SMRDR1),
+>  	regmap_reg_range(RPCIF_SMWDR0, RPCIF_SMWDR1),
+> @@ -547,8 +545,8 @@ EXPORT_SYMBOL(rpcif_manual_xfer);
+> =20
+>  ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void =
+*buf)
+>  {
+> -	loff_t from =3D offs & (RPCIF_DIRMAP_SIZE - 1);
+> -	size_t size =3D RPCIF_DIRMAP_SIZE - from;
+> +	loff_t from =3D offs & (rpc->size - 1);
+> +	size_t size =3D rpc->size - from;
+> =20
+>  	if (len > size)
+>  		len =3D size;
 
-Miquel, as for the unbounded malloc issue, should I address this in a
-separate (preliminary) patch or rather submit a two-patch v2 series
-(unbounded malloc fix + new MEMREAD ioctl)?
+This is the second patch to split which fixes ca7d8b980b67.
 
--- 
-Best regards,
-Michał Kępień
+
+> @@ -244,7 +242,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *d=
+ev)
+>  	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
+>  	rpc->dirmap =3D devm_ioremap_resource(&pdev->dev, res);
+>  	if (IS_ERR(rpc->dirmap))
+> -		rpc->dirmap =3D NULL;
+> +		return PTR_ERR(rpc->dirmap);
+>  	rpc->size =3D resource_size(res);
+> =20
+>  	rpc->rstc =3D devm_reset_control_get_exclusive(&pdev->dev, NULL);
+
+This is the first patch to split which fixes 59e27d7c94aa.
+
+Makes sense?
+
+If you agree, you can add my tag already to the new patches:
+
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+
+--okOuMtWAHaaiVQFC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFVwcMACgkQFA3kzBSg
+KbZM5A//fXS4viqAsvu5+MJsDqWy1PnkkxWVX0eKh7vxVxdV7ykHo6BWNIor3Trb
+RNDFycLEbVe+9SrnhLKUZiShiFR4xNQsBmJGds25YGFdQogDFGmnyapKA6zXtGj8
+KBe34UCyjUo5dv8Mvl5DGo5HEhYmu4OVZpGxPBfFqzmUEpk5dW9nUbiuH8rROVpW
+cs4UyGIAWC+NjGCm04VXy8pAWikVwCrs0RLBTGlk1KITESWts2Sz2q9EXuJdymy8
+yLfHKeTWl8oUAhLBlULhvaOp9z55U4utgBUtzP7xEwXdyWbSAmzluYIrQVaS/xtQ
+Mp6zCCwl4rpsYjWPPv5CKioj/qtBp2S9hbB4E/iigjMcpPCL7Znu+42/ehVu5HDf
+NLS4dizP/N+qTjZYIv1oCrkYFsdvOGwryAHYStOsZS9aSjO71lNLFBNdxnzi2B7p
+ySFR7l/Eb1VdNa82ZAfz1HbTxPKVhzHZHont7LW8LvqcfM3lZ1Xjm7+vvKmh1mq3
+Ypb0Hs6VlCIeBsvUUSTtmKYHA9E8+goahA4t5VPwtJVVXXVps5EnBFjoOEYZWAS2
+5t+rHMCIPX3+HB+kcr82WSZwoTydzO8lbwyIg7as1/U9nC0riYLPueeI3Wf/sxWt
+lpreIkbOSze9ThMEedlaTRzQouFaQW4JTTYG6IlCk/wpzadT/hE=
+=Pshj
+-----END PGP SIGNATURE-----
+
+--okOuMtWAHaaiVQFC--
