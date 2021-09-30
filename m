@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A020641D1EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E7341D209
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347989AbhI3Dj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 23:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346796AbhI3DjZ (ORCPT
+        id S1348016AbhI3D72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 23:59:28 -0400
+Received: from m97136.mail.qiye.163.com ([220.181.97.136]:20750 "EHLO
+        m97136.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348004AbhI3D71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 23:39:25 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE52C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:37:43 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id s137so2174806vke.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4b3DOEuint+WBw7an5Qknmrkjl0i1y1HcTIoKU3zalE=;
-        b=BNthy7e7lNpu4+NE9vBtOHHjcEgbb9FfvTE2xiomHVM5k2AoSstsZb0Ib/bCmpHFL2
-         I7MR8CYJ1bz2mS6+go3Vk3zlHbpEz2YpzUW4xC+aZL+sl50WG8u78lofZsgMmXGZO6wh
-         SLuR9F9VRZ68fE7aorklrfFUs40JM6A2qD1kgg8mj6vBGvoiR/kUJ0cnY9Shc0zUkdmu
-         ZSWq3OAoyiTyhP074mbKhtSX7Dif1MwN/KE1ylJ708rkMwt1FA6CQhcKE2gVly5xOd3G
-         cJOK7OgaI/JneKqOYeXV4utbWJjLCypgybzg8yYzI27DyrECFZKR+YY/IVrB4p1G4/h5
-         jiPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4b3DOEuint+WBw7an5Qknmrkjl0i1y1HcTIoKU3zalE=;
-        b=efFVIj8DlV7Y1B1/fzhlV3DfmUk9bc3dLniD9WLaaaMRIz7ZAb27f/v1BCKTOHvuDA
-         tfuIlcVBxT1vi+tawe1O0oU7V16nv/Y8v8cl5OVU3xlcb6WRunJp9amzeoeZu9rFuT6y
-         joeyGIv0cpV6ezVOjZFeaCExzyKGgWY+Ub19tcdcWyvDFlbqMbX70lT5knDCrKg38xig
-         q/UrLKHQWbnsrUWW8SDgtSQGQtZhawBriZddk2N9GOs4rEAE6OcZrXGIowRmA3eztjhi
-         xertewb1Yr565nV6oOkIxtl/tbVg8Hk3+ot5J3O2MRsdQ3vwMXOpZ2U0mJxdO55UdsL2
-         cINA==
-X-Gm-Message-State: AOAM533W3ub5RXf87PaB/o0zMykvumLi7sXYxYHWSV8oOBObNoHsi6Un
-        2tJZrKrF9cEZYgtWBdz8UXzTqsZQ3KoEXPFvbb7F/09H
-X-Google-Smtp-Source: ABdhPJziVCgaFcxzo8BazIHTTlgJGuIrwL4ipzqezGpkldOKIC4mrZi+hraS0wbXD15E+6UNWvZS0MEa3h+MYmpMsEU=
-X-Received: by 2002:a1f:1f0a:: with SMTP id f10mr1667502vkf.21.1632973062492;
- Wed, 29 Sep 2021 20:37:42 -0700 (PDT)
+        Wed, 29 Sep 2021 23:59:27 -0400
+X-Greylist: delayed 311 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Sep 2021 23:59:27 EDT
+Received: from localhost.localdomain (unknown [58.56.27.130])
+        by smtp2 (Coremail) with SMTP id iOCowAD3WgVbNFVhNQyaAw--.22799S2;
+        Thu, 30 Sep 2021 11:51:56 +0800 (CST)
+From:   Shi Lei <shi_lei@massclouds.com>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shi Lei <shi_lei@massclouds.com>
+Subject: [PATCH] mm: remove useless lines in enable_cpucache()
+Date:   Thu, 30 Sep 2021 11:48:45 +0800
+Message-Id: <20210930034845.2539-1-shi_lei@massclouds.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210930014427.14239-1-jim.cromie@gmail.com> <20210930014427.14239-3-jim.cromie@gmail.com>
- <a61f6bc2dc18397de92e4b7cdd9b37e2dff7e114.camel@perches.com>
-In-Reply-To: <a61f6bc2dc18397de92e4b7cdd9b37e2dff7e114.camel@perches.com>
-From:   jim.cromie@gmail.com
-Date:   Wed, 29 Sep 2021 21:37:16 -0600
-Message-ID: <CAJfuBxxHM+peMGnFQaQVOvhLC8n9GhVtWBOk1zmLwXpVmDSYpA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] amdgpu_ucode: reduce number of pr_debug calls
-To:     Joe Perches <joe@perches.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: iOCowAD3WgVbNFVhNQyaAw--.22799S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUBwF4DUUUU
+X-Originating-IP: [58.56.27.130]
+X-CM-SenderInfo: pvklsz1hl6ztxvvfz0xxgvhudrp/1tbiVRweT1f4pxhyDAAAs2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 8:08 PM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2021-09-29 at 19:44 -0600, Jim Cromie wrote:
-> > There are blocks of DRM_DEBUG calls, consolidate their args into
-> > single calls.  With dynamic-debug in use, each callsite consumes 56
-> > bytes of callsite data, and this patch removes about 65 calls, so
-> > it saves ~3.5kb.
-> >
-> > no functional changes.
->
-> No functional change, but an output logging content change.
->
-> > RFC: this creates multi-line log messages, does that break any syslog
-> > conventions ?
->
-> It does change the output as each individual DRM_DEBUG is a call to
-> __drm_dbg which is effectively:
->
->         printk(KERN_DEBUG "[" DRM_NAME ":%ps] %pV",
->                __builtin_return_address(0), &vaf);
->
->
+These lines are useless, so remove them.
 
-ok.  that would disqualify the nouveau patch too.
+Signed-off-by: Shi Lei <shi_lei@massclouds.com>
+---
+ mm/slab.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/mm/slab.c b/mm/slab.c
+index 4d826394ffcb..01775fe0e002 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -3900,8 +3900,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
+ 	if (err)
+ 		goto end;
+ 
+-	if (limit && shared && batchcount)
+-		goto skip_setup;
+ 	/*
+ 	 * The head array serves three purposes:
+ 	 * - create a LIFO ordering, i.e. return objects that are cache-warm
+@@ -3944,7 +3942,6 @@ static int enable_cpucache(struct kmem_cache *cachep, gfp_t gfp)
+ 		limit = 32;
+ #endif
+ 	batchcount = (limit + 1) / 2;
+-skip_setup:
+ 	err = do_tune_cpucache(cachep, limit, batchcount, shared, gfp);
+ end:
+ 	if (err)
+-- 
+2.25.1
+
