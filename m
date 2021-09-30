@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5EC41D2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3403F41D2C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348180AbhI3F7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
+        id S1348120AbhI3FmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:42:01 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2158 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348054AbhI3F7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC6661152;
-        Thu, 30 Sep 2021 05:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632981472;
-        bh=cHI+A6gWItcKl8S7wlbHfgAOUQDGvwT7rOAnVOuQdZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1E5LHfS+W04KdzhJbAryOJ6aSF15dqa6lndcHhoTAohB1FIlOOkWYX9T2LGGWeijd
-         b6RcbtspdCcReU7f7004s+7wF2SHuGWt0div0UGiWkR9v0FX0MqooPFsyWcYWMtHC6
-         J7TY7OMFDBPqZetZ+CNdsXUdRWtEwnOEp5rlbYkI=
-Date:   Thu, 30 Sep 2021 07:57:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Changhui Zhong <czhong@redhat.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: Re: [PATCH 2/2] scsi: core: put LLD module refcnt after SCSI device
- is released
-Message-ID: <YVVR20qW6i6eT0rg@kroah.com>
-References: <20210930052028.934747-1-ming.lei@redhat.com>
- <20210930052028.934747-3-ming.lei@redhat.com>
+        id S1348124AbhI3Fl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:41:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204590414"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="204590414"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:40:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="555450426"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:40:08 -0700
+Date:   Thu, 30 Sep 2021 13:59:44 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>, 0day robot <lkp@intel.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [driver core]  eedc73d4f3:
+ BUG:kernel_reboot-without-warning_in_boot_stage
+Message-ID: <20210930055944.GA29843@xsang-OptiPlex-9020>
+References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
+ <20210929150240.GB12854@xsang-OptiPlex-9020>
+ <YVSCs7BDC6ODf+oZ@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930052028.934747-3-ming.lei@redhat.com>
+In-Reply-To: <YVSCs7BDC6ODf+oZ@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:20:28PM +0800, Ming Lei wrote:
-> SCSI host release is triggered when SCSI device is released, and we have to
-> make sure that LLD module won't be unloaded before SCSI host instance is
-> released.
+Hi, Greg KH,
+
+On Wed, Sep 29, 2021 at 05:13:55PM +0200, Greg KH wrote:
+> On Wed, Sep 29, 2021 at 11:02:40PM +0800, kernel test robot wrote:
+> > 
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: eedc73d4f330cf7a8d18d64f327837ae9a00d003 ("[PATCH] driver core: Switch to using the new API kobj_to_dev()")
+> > url: https://github.com/0day-ci/linux/commits/Yang-Li/driver-core-Switch-to-using-the-new-API-kobj_to_dev/20210929-102216
+> > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 > 
-> So put LLD module refcnt after SCSI device is released.
+> There is no such commit in my tree, or anywhere else I can see, so I
+> have no idea what is happening here :(
 > 
-> SCSI device release may be moved into workqueue context if scsi_device_put
-> is called in interrupt context, and handle this case by piggybacking
-> putting LLD module refcnt into SCSI device release handler.
-> 
-> Reported-by: Changhui Zhong <czhong@redhat.com>
-> Reported-by: Yi Zhang <yi.zhang@redhat.com>
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  drivers/scsi/scsi.c        | 14 ++++++++++++--
->  drivers/scsi/scsi_sysfs.c  |  8 ++++++++
->  include/scsi/scsi_device.h |  1 +
->  3 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
-> index b241f9e3885c..7cad256ba895 100644
-> --- a/drivers/scsi/scsi.c
-> +++ b/drivers/scsi/scsi.c
-> @@ -553,8 +553,18 @@ EXPORT_SYMBOL(scsi_device_get);
->   */
->  void scsi_device_put(struct scsi_device *sdev)
->  {
-> -	module_put(sdev->host->hostt->module);
-> -	put_device(&sdev->sdev_gendev);
-> +	struct module *mod = sdev->host->hostt->module;
-> +	/*
-> +	 * sdev->sdev_gendev's real release handler will be scheduled into
-> +	 * user context if we are in interrupt context, and we have to put
-> +	 * LLD module refcnt after the device is really released.
-> +	 */
-> +	preempt_disable();
-> +	if (put_device(&sdev->sdev_gendev) && in_interrupt())
 
-Why does in_interrupt() matter here?  And is this even set if you have
-threaded interrupts?
+this report was sent to Yang Li, who is the patch author.
+https://lore.kernel.org/lkml/1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com/
 
-This feels very wrong as you are doing something different if this is
-called depending on the context and you really do not have control over
-the context of when this is called at all.
-
-What problem is this solving?  How is a host controller driver being
-unloaded before the children it controls are removed?  Who is holding a
-reference on them and why is this happening only now?
-
-And who cares about unloading the kernel module in this fashion?
-
-thanks,
-
-greg k-h
+since Yang sent the patch to you, so our Rot automatically add you in
+the Cc list.
