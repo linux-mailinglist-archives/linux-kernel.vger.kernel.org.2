@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2324541DFF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BFE41DFF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352494AbhI3RUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:20:13 -0400
+        id S1352497AbhI3RUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:20:16 -0400
 Received: from mga05.intel.com ([192.55.52.43]:4346 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352469AbhI3RUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:20:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310787650"
+        id S1352480AbhI3RUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:20:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310787657"
 X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="310787650"
+   d="scan'208";a="310787657"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 10:16:20 -0700
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 10:16:21 -0700
 X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="520489378"
+   d="scan'208";a="520489464"
 Received: from dboland-mobl.ger.corp.intel.com (HELO tursulin-mobl2.home) ([10.213.223.141])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 10:16:17 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 10:16:19 -0700
 From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 To:     Intel-gfx@lists.freedesktop.org
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
@@ -28,10 +28,12 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [RFC 0/6] CPU + GPU synchronised priority scheduling
-Date:   Thu, 30 Sep 2021 18:15:46 +0100
-Message-Id: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
+Subject: [RFC 1/6] sched: Add nice value change notifier
+Date:   Thu, 30 Sep 2021 18:15:47 +0100
+Message-Id: <20210930171552.501553-2-tvrtko.ursulin@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
+References: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -40,86 +42,101 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 
-This is a somewhat early sketch of one of my ideas intended for early feedback
-from the core scheduler experts. First and last two patches in the series are
-the most interesting ones for people outside of i915. (Note I did not copy
-everyone on all patches but just the cover letter for context and the rest
-should be available from the mailing list.)
+Implement a simple notifier chain via which interested parties can track
+when process nice value changes. Simple because it is global so each user
+would have to track which tasks it is interested in.
 
-General idea is that current processing landscape seems to be more and more
-composed of pipelines where computations are done on multiple hardware devices.
-Furthermore some of the non-CPU devices, like in this case many GPUs supported
-by the i915 driver, actually support priority based scheduling which is
-currently rather inaccesible to the user (in terms of being able to control it
-from the outside).
+To use register_user_nice_notifier and unregister_user_nice_notifier
+functions are provided and new nice value and pointer to task_struct
+being modified passed to the callbacks.
 
-From these two statements a question arises on how to allow for a simple,
-effective and consolidated user experience. In other words why user would not be
-able to do something like:
+Opens:
+ * Security. Would some sort of a  per process mechanism be better and
+   feasible?
+ * Put it all behind kconfig to be selected by interested drivers?
 
- $ nice ffmmpeg ...transcode my videos...
- $ my-favourite-game
-
-And have the nice hint apply to GPU parts of the transcode pipeline as well?
-
-Another reason why I started thinking about this is that I noticed Chrome
-browser for instance uses nice to de-prioritise background tabs. So again,
-having that decision propagate to the GPU rendering pipeline sounds like a big
-plus to the overall user experience.
-
-This RFC implements this idea with the hairy part being the notifier chain I
-added to enable dynamic adjustments. It is a global notifier which raises a few
-questions so I am very curious what experts will think here. Please see the
-opens in the first patch for more on this. And also the last two patches are the
-ones which implement a hash table in i915 so it can associate the notifier call-
-back with the correct GPU rendering contexts.
-
-On a more positive note the thing seems to even work as is. For instance I
-roughly simulated the above scenario by running a GPU hog at three nice levels
-and a GfxBench TRex in parallel (as a game proxy). This is what I got:
-
-   GPU hog nice	|   TRex fps
-  ------------------------------
-        0	|	34.8
-       10	|	38.0
-      -10	|	30.8
-
-So it is visible the feature can improve the user experience. Question is just
-if people are happy with this method of implementing it.
-
+Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Juri Lelli <juri.lelli@redhat.com>
 Cc: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ include/linux/sched.h |  5 +++++
+ kernel/sched/core.c   | 37 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 41 insertions(+), 1 deletion(-)
 
-Tvrtko Ursulin (6):
-  sched: Add nice value change notifier
-  drm/i915: Explicitly track DRM clients
-  drm/i915: Make GEM contexts track DRM clients
-  drm/i915: Track all user contexts per client
-  drm/i915: Keep track of registered clients indexed by task struct
-  drm/i915: Connect task and GPU scheduling priorities
-
- drivers/gpu/drm/i915/Makefile                 |   5 +-
- drivers/gpu/drm/i915/gem/i915_gem_context.c   |  20 +++
- .../gpu/drm/i915/gem/i915_gem_context_types.h |   6 +
- .../drm/i915/gt/intel_execlists_submission.c  |   2 +-
- drivers/gpu/drm/i915/i915_drm_client.c        | 129 ++++++++++++++++++
- drivers/gpu/drm/i915/i915_drm_client.h        |  71 ++++++++++
- drivers/gpu/drm/i915/i915_drv.c               |   6 +
- drivers/gpu/drm/i915/i915_drv.h               |   5 +
- drivers/gpu/drm/i915/i915_gem.c               |  21 ++-
- drivers/gpu/drm/i915/i915_request.c           |   2 +-
- drivers/gpu/drm/i915/i915_request.h           |   5 +
- drivers/gpu/drm/i915/i915_scheduler.c         |   3 +-
- drivers/gpu/drm/i915/i915_scheduler.h         |  14 ++
- drivers/gpu/drm/i915/i915_scheduler_types.h   |   8 ++
- include/linux/sched.h                         |   5 +
- kernel/sched/core.c                           |  37 ++++-
- 16 files changed, 330 insertions(+), 9 deletions(-)
- create mode 100644 drivers/gpu/drm/i915/i915_drm_client.c
- create mode 100644 drivers/gpu/drm/i915/i915_drm_client.h
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 39039ce8ac4c..45ae9eca38c6 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2309,4 +2309,9 @@ static inline void sched_core_free(struct task_struct *tsk) { }
+ static inline void sched_core_fork(struct task_struct *p) { }
+ #endif
+ 
++struct notifier_block;
++
++extern int register_user_nice_notifier(struct notifier_block *);
++extern int unregister_user_nice_notifier(struct notifier_block *);
++
+ #endif
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1bba4128a3e6..26ff75d6fe00 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6864,10 +6864,42 @@ static inline int rt_effective_prio(struct task_struct *p, int prio)
+ }
+ #endif
+ 
++ATOMIC_NOTIFIER_HEAD(user_nice_notifier_list);
++
++/**
++ * register_user_nice_notifier - Register function to be called when task nice changes
++ * @nb: Info about notifier function to be called
++ *
++ * Registers a function with the list of functions to be called when task nice
++ * value changes.
++ *
++ * Currently always returns zero, as atomic_notifier_chain_register()
++ * always returns zero.
++ */
++int register_user_nice_notifier(struct notifier_block *nb)
++{
++	return atomic_notifier_chain_register(&user_nice_notifier_list, nb);
++}
++EXPORT_SYMBOL(register_user_nice_notifier);
++
++/**
++ * unregister_user_nice_notifier - Unregister previously registered user nice notifier
++ * @nb: Hook to be unregistered
++ *
++ * Unregisters a previously registered user nice notifier function.
++ *
++ * Returns zero on success, or %-ENOENT on failure.
++ */
++int unregister_user_nice_notifier(struct notifier_block *nb)
++{
++	return atomic_notifier_chain_unregister(&user_nice_notifier_list, nb);
++}
++EXPORT_SYMBOL(unregister_user_nice_notifier);
++
+ void set_user_nice(struct task_struct *p, long nice)
+ {
+ 	bool queued, running;
+-	int old_prio;
++	int old_prio, ret;
+ 	struct rq_flags rf;
+ 	struct rq *rq;
+ 
+@@ -6913,6 +6945,9 @@ void set_user_nice(struct task_struct *p, long nice)
+ 	 */
+ 	p->sched_class->prio_changed(rq, p, old_prio);
+ 
++	ret = atomic_notifier_call_chain(&user_nice_notifier_list, nice, p);
++	WARN_ON_ONCE(ret != NOTIFY_DONE);
++
+ out_unlock:
+ 	task_rq_unlock(rq, p, &rf);
+ }
 -- 
 2.30.2
 
