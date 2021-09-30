@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31EE41E368
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8744141E36C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345478AbhI3VgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45582 "EHLO mail.kernel.org"
+        id S1346666AbhI3VgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhI3VgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:36:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B6D361A08;
-        Thu, 30 Sep 2021 21:34:36 +0000 (UTC)
+        id S1346099AbhI3VgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 17:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7394761A08;
+        Thu, 30 Sep 2021 21:34:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633037676;
-        bh=viz0vsJ9DYMWgsR7KdMVIFQa7QgqHAuEdg4BGAXalZM=;
+        s=k20201202; t=1633037679;
+        bh=6qiqqtaFUmsbEzR9gXZw02ewjS63+mSJ0Lh4Gl3qjMU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ICELzSWpXSwRl2QzETS3qfjCdXgUXi68vItsWqYIBEuPxdQdE++ZUaG1txGNKV1S2
-         2rJ+aoA+1Frbk5ia0XdOldlygsrqpxKAtZJy0BwYbDyi5or31lH4q8hbg+chO7Qx27
-         1cDAsmes/wrRuQaWaUjmbp30rcfF9SAr+vaahNwZUFP8Tu/pj7dy2tNBpMsypI4ahg
-         nwwm7HvX8rvACr8c5CQPQaW1CVwytrJeP9tvS6yY9nFY/wp+Mnh2f7oeiaRepul82k
-         QCln2YEmhqRiTmulfoYQOaHh9ir9+NK9MMuKo1hFv7/PwNR1lB+PAFfFlpzw4AvGoa
-         au8ami1mlPvUQ==
+        b=VcSYwFNVnb8nqDUbw7ZQ5qcCDoQ/bjmeIm0/uV7ziyUAIGHopFRVOUONTWEVuXYHZ
+         hN+9P+Yb5UVmVkNZr9vk1Q9hGj86gbSXLt5Vt9kTlD903dGQWrzjoh/sRhIRTKQGd3
+         9gYS0Nbm3Axv8O+TD3C9LroUsZIhNmNMuCZ6ct0dfa7sHy24KCX9OXFQkQoML6ZaVI
+         A3jsZ2hD267/T2gFTfOpLYI13bs3+fMvjsLwJWmtHaz9NL5sI7HKrapOnrXvqeWBda
+         Q8MXGl+0rssJBU0XWNAvoDrII0Nr7jFdSpr0KMBlh+THC8RiG6454YpWM4IFPDJr0a
+         zHQw8J+Rpqh/g==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 67D5660A7E;
-        Thu, 30 Sep 2021 21:34:36 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6D68760A7E;
+        Thu, 30 Sep 2021 21:34:39 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: fixes for v5.15-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210930010235.GA1888324@nvidia.com>
-References: <20210930010235.GA1888324@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210930010235.GA1888324@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: e671f0ecfece14940a9bb81981098910ea278cf7
+In-Reply-To: <20210930075421.13146-1-brgl@bgdev.pl>
+References: <20210930075421.13146-1-brgl@bgdev.pl>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210930075421.13146-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc4
+X-PR-Tracked-Commit-Id: 040d985e27dc39353d50d0f75a6be3330f4fece2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 78c56e53821a7ec3462ce448c1fe6a8d44358831
-Message-Id: <163303767636.5240.10301402475924787419.pr-tracker-bot@kernel.org>
-Date:   Thu, 30 Sep 2021 21:34:36 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
+X-PR-Merge-Commit-Id: 115f6134a050bb098414f38555a5ab780ebbfef0
+Message-Id: <163303767944.5240.5538848633086183181.pr-tracker-bot@kernel.org>
+Date:   Thu, 30 Sep 2021 21:34:39 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 29 Sep 2021 22:02:35 -0300:
+The pull request you sent on Thu, 30 Sep 2021 09:54:21 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/78c56e53821a7ec3462ce448c1fe6a8d44358831
+https://git.kernel.org/torvalds/c/115f6134a050bb098414f38555a5ab780ebbfef0
 
 Thank you!
 
