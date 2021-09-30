@@ -2,419 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DED41DE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D361241DE5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348685AbhI3QPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:15:13 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37976 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1349127AbhI3QPF (ORCPT
+        id S1348172AbhI3QHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348160AbhI3QHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:15:05 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UCX1Zw005254;
-        Thu, 30 Sep 2021 18:13:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=lWRemdQ6Yo76iGQr3NteaAQFW7SktmpxwhxEALjrut0=;
- b=filq562WkB+W5zwkatijKWtYrnQRfNFodXEcdkyPqE+utQ5PQeaz/AubKhFRTjJthy4E
- geu2iJHh+5TOT+zRuOhiGbWOMycXr7WtnYEuLeEhX/YMjigksoxzsmxHk+Glz9s77kLE
- 5Biki8bWCzRZMIjZFWsDQSsKUqsOmu3kYjtH5zvA/AHnKv8/EK4te98I7XaNda2dGUsL
- IUdQUSkqamvZklWVZOGaMMdNEMfuRnNSYCNbMaqzrc48aM9feGuyztlwnPf+BjBjFBqa
- 7QvWTi4E7+s7RcT8Cf1zMrYTX8CxgIHWyGE+tLSiNPlp5+q1T1lyHtAaLvmRHrQqrCaj pA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bd93kayt4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 18:13:08 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A199A100034;
-        Thu, 30 Sep 2021 18:13:07 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 986A8238687;
-        Thu, 30 Sep 2021 18:13:07 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep 2021 18:13:06
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        <arnaud.pouliquen@foss.st.com>, Suman Anna <s-anna@ti.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>
-Subject: [PATCH v8 2/2] tty: add rpmsg driver
-Date:   Thu, 30 Sep 2021 18:05:20 +0200
-Message-ID: <20210930160520.19678-3-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
-References: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
+        Thu, 30 Sep 2021 12:07:14 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D646C06176E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:05:32 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id q16so7882939oiw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vYKsPBiDJqWgn94z0UrisRrDiPIkl/InaR+MbnDzd8o=;
+        b=XhAVOr/0A4R/z99tlCeSSHraD2rZ5vHyFbhTb43A/MXaFjTdRn+YxPnSnr1gS5DDF9
+         8uKdNk+GEVCTF6jBsbp7QiwGS2/UWZ0UOBqGCAkVw+TITRFWXcCa1t9MKQX3c1GRGt1F
+         jvYccHHP5wBGLZcruY3bA3Yfi2fTnH0pmQHx4S/KXKGyM/DPAen3gCCaglOumcRoiejK
+         vsApbVLIdx6ZrUVI6P+zV9rtBwob8R8V/bdBTbtI75T39PmMgTDsZUi1GOQOodK2jkUp
+         Azjel8ZfF9N+C2z29j3eN1LjCz/NSn2+rzolTfTiGoU3WUhSwJAPblDHUP/jM6fE32I/
+         CGIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vYKsPBiDJqWgn94z0UrisRrDiPIkl/InaR+MbnDzd8o=;
+        b=GX6pxOgvfghpoRWRfQS/Q1eY00G0SeObs5gBVXdYS3Qte6l36NlRNVWpFF7tNhzLm9
+         Qb5+LHWOA31xAOuazm39+MgnkEprsSdElXRuFFLGUqhECJ/2j0VR9wMwNwe8O2tqKFAF
+         MryjC/FgU+GbDSXekNL/7++ocP7L7bZ0UPDqmx2R8jA8x9FmsbjvS5QR/LPKqGx8glZw
+         dXNr7bYHVT22rKoWYADSzOoWlvbspU5luWBg/NWzEkqg1Q/1Vg2j74clD7I0ICsG4AKH
+         Ld+7TYp7UlpFfgRuT42jdUCl1ve4+dsZx7HJVfI4xBdyoDY2bok/8YcmeFrAZ9vFJB4k
+         vClA==
+X-Gm-Message-State: AOAM531Xu5bLQiIf37ESOBc9lLJXof2LmCXzWcgD6rKjKobxbHrPKzVE
+        Ge7iXi/O5RuZu7hpD3+Oax5urg==
+X-Google-Smtp-Source: ABdhPJzkcIYZeTpr8veDVdd9USNDj/qqDvR5BA6ShZH//YGQawtDR/aJqibAv9FK+9S05XHjuwQutQ==
+X-Received: by 2002:a05:6808:144b:: with SMTP id x11mr3467780oiv.111.1633017931479;
+        Thu, 30 Sep 2021 09:05:31 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b2sm248127ooi.25.2021.09.30.09.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 09:05:31 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 09:07:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+Message-ID: <YVXguCSrsdMoCCXH@ripper>
+References: <1630346073-7099-1-git-send-email-sanm@codeaurora.org>
+ <1630346073-7099-2-git-send-email-sanm@codeaurora.org>
+ <YTduDqCO9aUyAsw1@ripper>
+ <e947695b-cd50-391b-3de9-3c028dbddab2@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_05,2021-09-30_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e947695b-cd50-391b-3de9-3c028dbddab2@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver exposes a standard TTY interface on top of the rpmsg
-framework through a rpmsg service.
+On Thu 30 Sep 02:41 PDT 2021, Sandeep Maheswaram wrote:
 
-This driver supports multi-instances, offering a /dev/ttyRPMSGx entry
-per rpmsg endpoint.
+> 
+> On 9/7/2021 7:20 PM, Bjorn Andersson wrote:
+> > On Mon 30 Aug 10:54 PDT 2021, Sandeep Maheswaram wrote:
+> > 
+> > > Add multi pd bindings to set performance state for cx domain
+> > > to maintain minimum corner voltage for USB clocks.
+> > > 
+> > > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> > > ---
+> > >   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 13 ++++++++++++-
+> > >   1 file changed, 12 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > index e70afc4..838d9c4 100644
+> > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> > > @@ -41,7 +41,18 @@ properties:
+> > >     power-domains:
+> > >       description: specifies a phandle to PM domain provider node
+> > > -    maxItems: 1
+> > > +    minItems: 1
+> > > +    items:
+> > > +      - description: optional,cx power domain
+> > > +      - description: USB gdsc power domain
+> > > +
+> > > +  power-domain-names:
+> > > +     items:
+> > > +      - const: cx
+> > > +      - const: usb_gdsc
+> > But "usb_gdsc" is a subdomain of "cx", why can't we describe this fact
+> > in gcc?
+> > 
+> > Regards,
+> > Bjorn
+> Thanks for your review.
+> Any idea on how can this be described in gcc ? Can you point any reference
+> for this .
+> 
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- Documentation/serial/tty_rpmsg.rst |  15 ++
- drivers/tty/Kconfig                |   9 +
- drivers/tty/Makefile               |   1 +
- drivers/tty/rpmsg_tty.c            | 275 +++++++++++++++++++++++++++++
- 4 files changed, 300 insertions(+)
- create mode 100644 Documentation/serial/tty_rpmsg.rst
- create mode 100644 drivers/tty/rpmsg_tty.c
+There's a series from Dmitry that defines such a relationship between
+MDSS_GDSC and the MMCX domain on SM8250. This seems like a continuation
+of that support, given that we have multiple parent domains (cx, mx
+etc).
 
-diff --git a/Documentation/serial/tty_rpmsg.rst b/Documentation/serial/tty_rpmsg.rst
-new file mode 100644
-index 000000000000..b055107866c9
---- /dev/null
-+++ b/Documentation/serial/tty_rpmsg.rst
-@@ -0,0 +1,15 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=========
-+RPMsg TTY
-+=========
-+
-+The rpmsg tty driver implements serial communication on the RPMsg bus to makes possible for
-+user-space programs to send and receive rpmsg messages as a standard tty protocol.
-+
-+The remote processor can instantiate a new tty by requesting a "rpmsg-tty" RPMsg service.
-+
-+The "rpmsg-tty" service is directly used for data exchange. No flow control is implemented.
-+
-+Information related to the RPMsg and associated tty device is available in
-+/sys/bus/rpmsg/devices/.
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index 23cc988c68a4..5095513029d7 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -368,6 +368,15 @@ config VCC
- 
- source "drivers/tty/hvc/Kconfig"
- 
-+config RPMSG_TTY
-+	tristate "RPMSG tty driver"
-+	depends on RPMSG
-+	help
-+	  Say y here to export rpmsg endpoints as tty devices, usually found
-+	  in /dev/ttyRPMSGx.
-+	  This makes it possible for user-space programs to send and receive
-+	  rpmsg messages as a standard tty protocol.
-+
- endif # TTY
- 
- source "drivers/tty/serdev/Kconfig"
-diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
-index a2bd75fbaaa4..07aca5184a55 100644
---- a/drivers/tty/Makefile
-+++ b/drivers/tty/Makefile
-@@ -26,5 +26,6 @@ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
- obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
- obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
- obj-$(CONFIG_VCC)		+= vcc.o
-+obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
- 
- obj-y += ipwireless/
-diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
-new file mode 100644
-index 000000000000..0c99f54c2911
---- /dev/null
-+++ b/drivers/tty/rpmsg_tty.c
-@@ -0,0 +1,275 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) STMicroelectronics 2021 - All Rights Reserved
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/rpmsg.h>
-+#include <linux/slab.h>
-+#include <linux/tty.h>
-+#include <linux/tty_flip.h>
-+
-+#define MAX_TTY_RPMSG	32
-+
-+static DEFINE_IDR(tty_idr);	/* tty instance id */
-+static DEFINE_MUTEX(idr_lock);	/* protects tty_idr */
-+
-+static struct tty_driver *rpmsg_tty_driver;
-+
-+struct rpmsg_tty_port {
-+	struct tty_port		port;	 /* TTY port data */
-+	int			id;	 /* TTY rpmsg index */
-+	struct rpmsg_device	*rpdev;	 /* rpmsg device */
-+};
-+
-+static int rpmsg_tty_cb(struct rpmsg_device *rpdev, void *data, int len, void *priv, u32 src)
-+{
-+	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
-+	int copied;
-+
-+	if (!len)
-+		return -EINVAL;
-+	copied = tty_insert_flip_string(&cport->port, data, len);
-+	if (copied != len)
-+		dev_dbg(&rpdev->dev, "Trunc buffer: available space is %d\n",
-+			copied);
-+	tty_flip_buffer_push(&cport->port);
-+
-+	return 0;
-+}
-+
-+static int rpmsg_tty_install(struct tty_driver *driver, struct tty_struct *tty)
-+{
-+	struct rpmsg_tty_port *cport = idr_find(&tty_idr, tty->index);
-+
-+	if (!cport) {
-+		dev_err(tty->dev, "Cannot get cport\n");
-+		return -ENODEV;
-+	}
-+
-+	tty->driver_data = cport;
-+
-+	return tty_port_install(&cport->port, driver, tty);
-+}
-+
-+static int rpmsg_tty_open(struct tty_struct *tty, struct file *filp)
-+{
-+	return tty_port_open(tty->port, tty, filp);
-+}
-+
-+static void rpmsg_tty_close(struct tty_struct *tty, struct file *filp)
-+{
-+	return tty_port_close(tty->port, tty, filp);
-+}
-+
-+static int rpmsg_tty_write(struct tty_struct *tty, const u8 *buf, int len)
-+{
-+	struct rpmsg_tty_port *cport = tty->driver_data;
-+	struct rpmsg_device *rpdev;
-+	int msg_max_size, msg_size;
-+	int ret;
-+
-+	rpdev = cport->rpdev;
-+
-+	dev_dbg(&rpdev->dev, "Send msg from tty->index = %d, len = %d\n", tty->index, len);
-+
-+	msg_max_size = rpmsg_get_mtu(rpdev->ept);
-+	if (msg_max_size < 0)
-+		return msg_max_size;
-+
-+	msg_size = min(len, msg_max_size);
-+
-+	/*
-+	 * Use rpmsg_trysend instead of rpmsg_send to send the message so the caller is not
-+	 * hung until a rpmsg buffer is available. In such case rpmsg_trysend returns -ENOMEM.
-+	 */
-+	ret = rpmsg_trysend(rpdev->ept, (void *)buf, msg_size);
-+	if (ret) {
-+		dev_dbg(&rpdev->dev, "rpmsg_send failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return msg_size;
-+}
-+
-+static unsigned int rpmsg_tty_write_room(struct tty_struct *tty)
-+{
-+	struct rpmsg_tty_port *cport = tty->driver_data;
-+	int size;
-+
-+	size = rpmsg_get_mtu(cport->rpdev->ept);
-+	if (size < 0)
-+		return 0;
-+
-+	return size;
-+}
-+
-+static const struct tty_operations rpmsg_tty_ops = {
-+	.install	= rpmsg_tty_install,
-+	.open		= rpmsg_tty_open,
-+	.close		= rpmsg_tty_close,
-+	.write		= rpmsg_tty_write,
-+	.write_room	= rpmsg_tty_write_room,
-+};
-+
-+static struct rpmsg_tty_port *rpmsg_tty_alloc_cport(void)
-+{
-+	struct rpmsg_tty_port *cport;
-+	int err;
-+
-+	cport = kzalloc(sizeof(*cport), GFP_KERNEL);
-+	if (!cport)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mutex_lock(&idr_lock);
-+	cport->id = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
-+	mutex_unlock(&idr_lock);
-+
-+	if (cport->id < 0) {
-+		err = cport->id;
-+		kfree(cport);
-+		return ERR_PTR(err);
-+	}
-+
-+	return cport;
-+}
-+
-+static void rpmsg_tty_release_cport(struct rpmsg_tty_port *cport)
-+{
-+	mutex_lock(&idr_lock);
-+	idr_remove(&tty_idr, cport->id);
-+	mutex_unlock(&idr_lock);
-+
-+	kfree(cport);
-+}
-+
-+static const struct tty_port_operations rpmsg_tty_port_ops = { };
-+
-+static int rpmsg_tty_probe(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_tty_port *cport;
-+	struct device *dev = &rpdev->dev;
-+	struct device *tty_dev;
-+	int ret;
-+
-+	cport = rpmsg_tty_alloc_cport();
-+	if (IS_ERR(cport)) {
-+		dev_err(dev, "Failed to alloc tty port\n");
-+		return PTR_ERR(cport);
-+	}
-+
-+	tty_port_init(&cport->port);
-+	cport->port.ops = &rpmsg_tty_port_ops;
-+
-+	tty_dev = tty_port_register_device(&cport->port, rpmsg_tty_driver,
-+					   cport->id, dev);
-+	if (IS_ERR(tty_dev)) {
-+		dev_err(dev, "Failed to register tty port\n");
-+		ret = PTR_ERR(tty_dev);
-+		goto  err_destroy;
-+	}
-+
-+	cport->rpdev = rpdev;
-+
-+	dev_set_drvdata(dev, cport);
-+
-+	dev_dbg(dev, "New channel: 0x%x -> 0x%x : ttyRPMSG%d\n",
-+		rpdev->src, rpdev->dst, cport->id);
-+
-+	return 0;
-+
-+err_destroy:
-+	tty_port_destroy(&cport->port);
-+	rpmsg_tty_release_cport(cport);
-+
-+	return ret;
-+}
-+
-+static void rpmsg_tty_remove(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
-+
-+	dev_dbg(&rpdev->dev, "Removing rpmsg tty device %d\n", cport->id);
-+
-+	/* User hang up to release the tty */
-+	if (tty_port_initialized(&cport->port))
-+		tty_port_tty_hangup(&cport->port, false);
-+
-+	tty_unregister_device(rpmsg_tty_driver, cport->id);
-+
-+	tty_port_destroy(&cport->port);
-+	rpmsg_tty_release_cport(cport);
-+}
-+
-+static struct rpmsg_device_id rpmsg_driver_tty_id_table[] = {
-+	{ .name	= "rpmsg-tty" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_tty_id_table);
-+
-+static struct rpmsg_driver rpmsg_tty_rpmsg_drv = {
-+	.drv.name	= KBUILD_MODNAME,
-+	.id_table	= rpmsg_driver_tty_id_table,
-+	.probe		= rpmsg_tty_probe,
-+	.callback	= rpmsg_tty_cb,
-+	.remove		= rpmsg_tty_remove,
-+};
-+
-+static int __init rpmsg_tty_init(void)
-+{
-+	int err;
-+
-+	rpmsg_tty_driver = tty_alloc_driver(MAX_TTY_RPMSG, TTY_DRIVER_REAL_RAW |
-+					    TTY_DRIVER_DYNAMIC_DEV);
-+	if (IS_ERR(rpmsg_tty_driver))
-+		return PTR_ERR(rpmsg_tty_driver);
-+
-+	rpmsg_tty_driver->driver_name = "rpmsg_tty";
-+	rpmsg_tty_driver->name = "ttyRPMSG";
-+	rpmsg_tty_driver->major = 0;
-+	rpmsg_tty_driver->type = TTY_DRIVER_TYPE_CONSOLE;
-+
-+	/* Disable unused mode by default */
-+	rpmsg_tty_driver->init_termios = tty_std_termios;
-+	rpmsg_tty_driver->init_termios.c_lflag &= ~(ECHO | ICANON);
-+	rpmsg_tty_driver->init_termios.c_oflag &= ~(OPOST | ONLCR);
-+
-+	tty_set_operations(rpmsg_tty_driver, &rpmsg_tty_ops);
-+
-+	err = tty_register_driver(rpmsg_tty_driver);
-+	if (err < 0) {
-+		pr_err("Couldn't install rpmsg tty driver: err %d\n", err);
-+		goto error_put;
-+	}
-+
-+	err = register_rpmsg_driver(&rpmsg_tty_rpmsg_drv);
-+	if (err < 0) {
-+		pr_err("Couldn't register rpmsg tty driver: err %d\n", err);
-+		goto error_unregister;
-+	}
-+
-+	return 0;
-+
-+error_unregister:
-+	tty_unregister_driver(rpmsg_tty_driver);
-+
-+error_put:
-+	tty_driver_kref_put(rpmsg_tty_driver);
-+
-+	return err;
-+}
-+
-+static void __exit rpmsg_tty_exit(void)
-+{
-+	unregister_rpmsg_driver(&rpmsg_tty_rpmsg_drv);
-+	tty_unregister_driver(rpmsg_tty_driver);
-+	tty_driver_kref_put(rpmsg_tty_driver);
-+	idr_destroy(&tty_idr);
-+}
-+
-+module_init(rpmsg_tty_init);
-+module_exit(rpmsg_tty_exit);
-+
-+MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>");
-+MODULE_DESCRIPTION("remote processor messaging tty driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+You can find that discussion here:
 
+https://lore.kernel.org/all/20210727202004.712665-1-dmitry.baryshkov@linaro.org/
+
+Regards,
+Bjorn
+
+> Regards
+> Sandeep
+> > > +
+> > > +  required-opps:
+> > > +    description: specifies the performance state to cx power domain
+> > >     clocks:
+> > >       description:
+> > > -- 
+> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > > of Code Aurora Forum, hosted by The Linux Foundation
+> > > 
