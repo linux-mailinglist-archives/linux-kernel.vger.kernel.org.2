@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4760F41D7DD
+	by mail.lfdr.de (Postfix) with ESMTP id 905EB41D7DE
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350117AbhI3Kgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:36:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:52108 "EHLO foss.arm.com"
+        id S1350104AbhI3Kgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:36:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:52116 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350094AbhI3Kgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:36:32 -0400
+        id S1350102AbhI3Kgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 06:36:35 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BD3E106F;
-        Thu, 30 Sep 2021 03:34:49 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 231A7113E;
+        Thu, 30 Sep 2021 03:34:53 -0700 (PDT)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.73.203])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4139D3F793;
-        Thu, 30 Sep 2021 03:34:46 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EA80F3F793;
+        Thu, 30 Sep 2021 03:34:49 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
         catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
         steven.price@arm.com, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC V3 09/13] arm64/mm: Add __cpu_secondary_check52bitpa()
-Date:   Thu, 30 Sep 2021 16:05:12 +0530
-Message-Id: <1632998116-11552-10-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC V3 10/13] arm64/mm: Add FEAT_LPA2 specific PTE_SHARED and PMD_SECT_S
+Date:   Thu, 30 Sep 2021 16:05:13 +0530
+Message-Id: <1632998116-11552-11-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
 References: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
@@ -32,84 +32,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FEAT_LPA2 enabled systems needs to test ID_AA64MMFR0.TGRAN value to ensure
-that 52 bit PA range is supported across all secondary CPUs both for 4K and
-16K configs. This adds a new __cpu_secondary_check52bitva check along with
-a corresponding reason code CPU_STUCK_REASON_52_BIT_PA. This will identify
-the exact reason in case the system gets stuck after detecting a secondary
-CPU that does not support 52 bit PA.
+PTE[9:8] which holds the sharability attribute bits SH[1:0] could collide
+with PA[51:50] when CONFIG_ARM64_PA_BITS_52 is enabled but then FEAT_LPA2
+is not detected during boot. Dropping PTE_SHARED and PMD_SECT_S attributes
+completely in this scenario will create non-shared page table entries which
+would cause regression.
+
+Instead just define PTE_SHARED and PMD_SECT_S after accounting for runtime
+'arm64_lpa2_enable', thus maintaining required sharability attributes for
+both kernel and user space page table entries. This updates ptdump handling
+for page table entry shared attributes accommodating FEAT_LPA2 scenarios.
 
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/include/asm/smp.h |  1 +
- arch/arm64/kernel/head.S     | 21 +++++++++++++++++++++
- arch/arm64/kernel/smp.c      |  2 ++
- 3 files changed, 24 insertions(+)
+ arch/arm64/include/asm/kernel-pgtable.h |  4 ++--
+ arch/arm64/include/asm/pgtable-hwdef.h  | 12 ++++++++++--
+ arch/arm64/kernel/head.S                | 15 +++++++++++++++
+ arch/arm64/mm/ptdump.c                  | 26 ++++++++++++++++++++++++--
+ 4 files changed, 51 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index fc55f5a..e5ff305 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -22,6 +22,7 @@
+diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
+index 96dc0f7..bdd38046 100644
+--- a/arch/arm64/include/asm/kernel-pgtable.h
++++ b/arch/arm64/include/asm/kernel-pgtable.h
+@@ -103,8 +103,8 @@
+ /*
+  * Initial memory map attributes.
+  */
+-#define SWAPPER_PTE_FLAGS	(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
+-#define SWAPPER_PMD_FLAGS	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
++#define SWAPPER_PTE_FLAGS	(PTE_TYPE_PAGE | PTE_AF)
++#define SWAPPER_PMD_FLAGS	(PMD_TYPE_SECT | PMD_SECT_AF)
  
- #define CPU_STUCK_REASON_52_BIT_VA	(UL(1) << CPU_STUCK_REASON_SHIFT)
- #define CPU_STUCK_REASON_NO_GRAN	(UL(2) << CPU_STUCK_REASON_SHIFT)
-+#define CPU_STUCK_REASON_52_BIT_PA	(UL(3) << CPU_STUCK_REASON_SHIFT)
+ #if ARM64_KERNEL_USES_PMD_MAPS
+ #define SWAPPER_MM_MMUFLAGS	(PMD_ATTRINDX(MT_NORMAL) | SWAPPER_PMD_FLAGS)
+diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+index c815a85..8a3b75e 100644
+--- a/arch/arm64/include/asm/pgtable-hwdef.h
++++ b/arch/arm64/include/asm/pgtable-hwdef.h
+@@ -116,13 +116,21 @@
+ #define PMD_TYPE_SECT		(_AT(pmdval_t, 1) << 0)
+ #define PMD_TABLE_BIT		(_AT(pmdval_t, 1) << 1)
  
- #ifndef __ASSEMBLY__
- 
++#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
++#define PTE_SHARED		(arm64_lpa2_enabled ? 0 : PTE_SHARED_STATIC)
++#define PMD_SECT_S		(arm64_lpa2_enabled ? 0 : PMD_SECT_S_STATIC)
++#else  /* !CONFIG_ARM64_PA_BITS_52_LPA2 */
++#define PTE_SHARED		PTE_SHARED_STATIC
++#define PMD_SECT_S		PMD_SECT_S_STATIC
++#endif /* CONFIG_ARM64_PA_BITS_52_LPA2 */
++
+ /*
+  * Section
+  */
+ #define PMD_SECT_VALID		(_AT(pmdval_t, 1) << 0)
+ #define PMD_SECT_USER		(_AT(pmdval_t, 1) << 6)		/* AP[1] */
+ #define PMD_SECT_RDONLY		(_AT(pmdval_t, 1) << 7)		/* AP[2] */
+-#define PMD_SECT_S		(_AT(pmdval_t, 3) << 8)
++#define PMD_SECT_S_STATIC	(_AT(pmdval_t, 3) << 8)
+ #define PMD_SECT_AF		(_AT(pmdval_t, 1) << 10)
+ #define PMD_SECT_NG		(_AT(pmdval_t, 1) << 11)
+ #define PMD_SECT_CONT		(_AT(pmdval_t, 1) << 52)
+@@ -146,7 +154,7 @@
+ #define PTE_TABLE_BIT		(_AT(pteval_t, 1) << 1)
+ #define PTE_USER		(_AT(pteval_t, 1) << 6)		/* AP[1] */
+ #define PTE_RDONLY		(_AT(pteval_t, 1) << 7)		/* AP[2] */
+-#define PTE_SHARED		(_AT(pteval_t, 3) << 8)		/* SH[1:0], inner shareable */
++#define PTE_SHARED_STATIC	(_AT(pteval_t, 3) << 8)         /* SH[1:0], inner shareable */
+ #define PTE_AF			(_AT(pteval_t, 1) << 10)	/* Access Flag */
+ #define PTE_NG			(_AT(pteval_t, 1) << 11)	/* nG */
+ #define PTE_GP			(_AT(pteval_t, 1) << 50)	/* BTI guarded */
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index ab21aac..0b48e4c 100644
+index 0b48e4c..f62f360 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
-@@ -667,6 +667,7 @@ SYM_FUNC_START_LOCAL(secondary_startup)
- 	 */
- 	bl	switch_to_vhe
- 	bl	__cpu_secondary_check52bitva
-+	bl	__cpu_secondary_check52bitpa
- 	bl	__cpu_setup			// initialise processor
- 	adrp	x1, swapper_pg_dir
- 	bl	__enable_mmu
-@@ -770,6 +771,26 @@ SYM_FUNC_START(__cpu_secondary_check52bitva)
- 2:	ret
- SYM_FUNC_END(__cpu_secondary_check52bitva)
+@@ -302,6 +302,21 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
  
-+SYM_FUNC_START(__cpu_secondary_check52bitpa)
+ 	mov	x7, SWAPPER_MM_MMUFLAGS
+ 
 +#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
-+	ldr_l	x0, arm64_lpa2_enabled
++	ldr_l   x2, arm64_lpa2_enabled
 +	cmp     x2, #1
-+	b.ne	2f
++	b.eq    1f
++#endif /* CONFIG_ARM64_PA_BITS_52_LPA2 */
 +
-+	mrs     x0, ID_AA64MMFR0_EL1
-+	ubfx    x0, x0, #ID_AA64MMFR0_TGRAN_SHIFT, 4
-+	cmp     x0, #ID_AA64MMFR0_TGRAN_LPA2
-+	b.ge	2f
-+
-+	update_early_cpu_boot_status \
-+		CPU_STUCK_IN_KERNEL | CPU_STUCK_REASON_52_BIT_PA, x0, x1
-+1:	wfe
-+	wfi
-+	b	1b
-+#endif
-+2:	ret
-+SYM_FUNC_END(__cpu_secondary_check52bitpa)
-+
- SYM_FUNC_START_LOCAL(__no_granule_support)
- 	/* Indicate that this CPU can't boot and is stuck in the kernel */
- 	update_early_cpu_boot_status \
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 6f6ff072..a8d08d1 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -164,6 +164,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
- 		if (status & CPU_STUCK_REASON_NO_GRAN) {
- 			pr_crit("CPU%u: does not support %luK granule\n",
- 				cpu, PAGE_SIZE / SZ_1K);
-+		if (status & CPU_STUCK_REASON_52_BIT_PA)
-+			pr_crit("CPU%u: does not support 52-bit PAs\n", cpu);
- 		}
- 		cpus_stuck_in_kernel++;
- 		break;
++	/*
++	 * FEAT_LPA2 has not been detected during boot.
++	 * Hence SWAPPER_MM_MMUFLAGS needs to have the
++	 * regular sharability attributes in PTE[9:8].
++	 * Same is also applicable when FEAT_LPA2 has
++	 * not been requested in the first place.
++	 */
++	orr     x7, x7, PTE_SHARED_STATIC
++1:
+ 	/*
+ 	 * Create the identity mapping.
+ 	 */
+diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+index 1c40353..be171cf 100644
+--- a/arch/arm64/mm/ptdump.c
++++ b/arch/arm64/mm/ptdump.c
+@@ -115,8 +115,8 @@ static const struct prot_bits pte_bits[] = {
+ 		.set	= "NX",
+ 		.clear	= "x ",
+ 	}, {
+-		.mask	= PTE_SHARED,
+-		.val	= PTE_SHARED,
++		.mask	= PTE_SHARED_STATIC,
++		.val	= PTE_SHARED_STATIC,
+ 		.set	= "SHD",
+ 		.clear	= "   ",
+ 	}, {
+@@ -211,6 +211,28 @@ static void dump_prot(struct pg_state *st, const struct prot_bits *bits,
+ 	for (i = 0; i < num; i++, bits++) {
+ 		const char *s;
+ 
++		if (IS_ENABLED(CONFIG_ARM64_PA_BITS_52_LPA2) &&
++		   (bits->mask == PTE_SHARED_STATIC)) {
++			/*
++			 * If FEAT_LPA2 has been detected and enabled
++			 * sharing attributes for page table entries
++			 * are inherited from TCR_EL1.SH1 as init_mm
++			 * based mappings are enabled from TTBR1_EL1.
++			 */
++			if (arm64_lpa2_enabled) {
++				if ((read_sysreg(tcr_el1) & TCR_SH1_INNER) == TCR_SH1_INNER)
++					pt_dump_seq_printf(st->seq, " SHD ");
++				else
++					pt_dump_seq_printf(st->seq, " ");
++				continue;
++			}
++			/*
++			 * In case FEAT_LPA2 has not been detected and
++			 * enabled sharing attributes should be found
++			 * in the regular PTE positions. It just falls
++			 * through regular PTE attribute handling.
++			 */
++		}
+ 		if ((st->current_prot & bits->mask) == bits->val)
+ 			s = bits->set;
+ 		else
 -- 
 2.7.4
 
