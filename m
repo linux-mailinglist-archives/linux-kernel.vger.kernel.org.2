@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A1F41E015
+	by mail.lfdr.de (Postfix) with ESMTP id 57D1841E013
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352579AbhI3RYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352565AbhI3RYq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:24:46 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF1DC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:23:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id e15so28421928lfr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H8Db515P2u3wr8eXpxbK+mdL07rAEGHZYTKLOrQ0Ezw=;
-        b=BLudoU1R5T/CW89tzCG/kuhg5sdEQS1uJDH9zxbhJO16UL5oDpz87cOexihq6kA0GQ
-         sfvfHJEXVSEKxpc4dG6OIUZ+biW+n9i/NjdbEc4QgrozJY5506juVmjJfXLkX6ZD6fh9
-         D3o7GNWJEvwNHDxhF694ejAjzK1CpMMUJxxDWz7MxszI5XZPKG7F9YhYU/jzaA3hIcvJ
-         AFbLyOIkHHZfNuL+z1mlniTqeo5VhnJfGAye/bZlcP43dq8u0O+K5qj+QHJA4e60VGIb
-         f5CBFez0yMwbHYeNzDgpiSzFFPM4+N58pVNaALuRu1BkxWOq5xqnJlLdkOzUsfCw+ryt
-         ODgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H8Db515P2u3wr8eXpxbK+mdL07rAEGHZYTKLOrQ0Ezw=;
-        b=yrbLrzbD5pLB6hvINqGAhqNTQ6RYfrv67T1jzxbY70Hw8n1pj+uBbxZjCssvTcETZJ
-         HDx0UHPoSwFVQhNqYjFhgMHRY8ViAduInRwUF3cD6YILKN5VO8H4uK85ZOYtTp8pSRsS
-         ogHelnxqF/ogoqCVyx8oSumfbFjDaP+R7qtwPGm/CzPB3MqaUZGzhgLy57H9C76/jN0x
-         N230WMeroCGmACJ8vxUZsxG0Hp+igyODDY8CDvib0m/xwxQNY0+nfUghdjOnTAB1Tb02
-         TNf0zGf7Ax8n3aK7VQLl7k0ZtbEMaATNiaMlOGGoGKw9znosVVwEiwC/IX0Xh3wSWbGV
-         tufw==
-X-Gm-Message-State: AOAM531lUZ5U7ovGvZwq4ugNejTpyphB1LAwv7e9JZVlG92ty5bHh/aq
-        lM0c39FA2Fg2M8gXUUiYVzjojmm1YdDE9nB3grXw1w==
-X-Google-Smtp-Source: ABdhPJyvjrJEB0rRbVB9O+YguaIBi4LthEutwQhoaWse0IUnkg0n/FYjG3RqA3+pw+y/Sq3ipUz9tZwJgyVXblJ7cmQ=
-X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr393783lfg.550.1633022580476;
- Thu, 30 Sep 2021 10:23:00 -0700 (PDT)
+        id S1352571AbhI3RYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352459AbhI3RYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:24:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B919613A0;
+        Thu, 30 Sep 2021 17:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633022581;
+        bh=9rag8usx11vrfz5n1Alc5CNlxdSu7yLNHJusXs6H3Xc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=smT4INWHGimM8VYsC/zVfp5QMujuZ5U21z40UH9cFM5G70cYo0d2lKW1axqmPFwHK
+         ednwMaotuLnaClhXaxpoP0e43qc2gnvXfAoSltS7tmKX1wnMxutMJZyInXZ9oQe9PO
+         WMSJJUTDb+GcvMDiKZnoUeotF/c021KEkYFZ7lsWtyAMhLQK0L3KjY25ce6PyXZlWy
+         ykexidoxN/DmaHtSawowBwieM1XQwlvGiaHPW63tTlSBD1/M+Pq62kQsVruaiP22/N
+         +yQQ6zqMPlT/5OSWAuqq8x1OwRG/YVzL09M/fYfc59mLMNcgd/nbzQJJztM5SpEjWk
+         3IA6zqn6gfoIg==
+Received: by pali.im (Postfix)
+        id 7D7BEE79; Thu, 30 Sep 2021 19:22:59 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 19:22:59 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     Konstantin Porotchkin <kostap@marvell.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: Issues with A3720 PCIe controller driver pci-aardvark.c
+Message-ID: <20210930172259.gdz75oxz7doqrvna@pali>
+References: <20210723221710.wtztsrddudnxeoj3@pali>
 MIME-Version: 1.0
-References: <20210930162302.2344542-1-nathan@kernel.org> <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
-In-Reply-To: <CADnq5_PBMGdUG8VMUQ2UOSdd9qXbZ7QoyGH2RTgUPnTjdzKqFA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 30 Sep 2021 10:22:49 -0700
-Message-ID: <CAKwvOdk56-7UQDs_EAn+WK397mnd5H7_JMrsjROPk5ZFCw2QLw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: Return NULL instead of false in dcn201_acquire_idle_pipe_for_layer()
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        "Koenig, Christian" <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210723221710.wtztsrddudnxeoj3@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:10 AM Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> Applied.  Thanks!
->
-> Alex
->
-> On Thu, Sep 30, 2021 at 12:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Clang warns:
+Hello Stefan! Could you please look at this email and help us with this issue?
 
-Any chance AMDGPU folks can look into adding clang to the CI roster?
--- 
-Thanks,
-~Nick Desaulniers
+On Saturday 24 July 2021 00:17:10 Pali Rohár wrote:
+> Hello Konstantin!
+> 
+> There are issues with Marvell Armada 3720 PCIe controller when high
+> performance PCIe card (e.g. WiFi AX) is connected to this SOC. Under
+> heavy load PCIe controller sends fatal abort to CPU and kernel crash.
+> 
+> In Marvell Armada 3700 Functional Errata, Guidelines, and Restrictions
+> document is described erratum 3.12 PCIe Completion Timeout (Ref #: 251)
+> which may be relevant. But neither Bjorn, Thomas nor me were able to
+> understood text of this erratum. And we have already spent lot of time
+> on this erratum. My guess that is that in erratum itself are mistakes
+> and there are missing some other important details.
+> 
+> Konstantin, are you able to understand this erratum? Or do you know
+> somebody in Marvell who understand this erratum and can explain details
+> to us? Or do you know some more details about this erratum?
+> 
+> Also it would be useful if you / Marvell could share text of this
+> erratum with linux-pci people as currently it is available only on
+> Marvell Customer Portal which requires registration with signed NDA.
+> 
+> In past Thomas wrote patch "according to this erratum" and I have
+> rebased, rewritten and resent it to linux-pci mailing list for review:
+> https://lore.kernel.org/linux-pci/20210624222621.4776-6-pali@kernel.org/
+> 
+> Similar patch is available also in kernel which is part of Marvell SDK.
+> 
+> Bjorn has objections for this patch as he thinks that bit DIS_ORD_CHK in
+> that patch should be disabled. Seems that enabling this bit effectively
+> disables PCIe strong ordering model. PCIe kernel drivers rely on PCIe
+> strong ordering, so it would implicate that that bit should not be
+> enabled. Which is opposite of what is mentioned patch doing.
+> 
+> Konstantin, could you help us with this problem?
