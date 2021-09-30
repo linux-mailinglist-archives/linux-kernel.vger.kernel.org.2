@@ -2,104 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CFD41DF2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D01741DF2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352160AbhI3Qkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352035AbhI3Qko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:40:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26DEC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:39:01 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 18:38:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633019939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfyxy9FKVnpBOR385KJqgLwbAYCIUV3vt3a58Pj39Tg=;
-        b=2tiT2n5+VhjPdsd1VJ2an7XV1XipKcASoazP3VLLQQthWIBQ6npiKHG11uONPdqwIAjVIm
-        bdaNrxElEbpkBYZIdWzvyLKCEtVym0DKcsO3bkFk6oZTP7VMJYN+6FzRYiI2emf9porMwV
-        1GIisOQ9TdykD7XJEBR3OYKbZoevAhdk8Dg5JIK4epb8qjSyfOp75AhpRAHLGvq7ImcC6r
-        DKC8mWb9bvm0ZsZeBr3RxgWIonurnkgyFkWHPFb8JBWQ7F97xmFQO75zzhuqWORXp6LwUd
-        pWS6OCLlzle+S+LO+l4DWKmF89qHwBUuvkf+OcgnVErdS9rYSH8vdUaIqRQnIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633019939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfyxy9FKVnpBOR385KJqgLwbAYCIUV3vt3a58Pj39Tg=;
-        b=+lLIM6zBLf9mZ1jfFTo3d13W5oY7larBnVLUXwC98ADVHUCrXcPPr4z/JZM9tOFQlgpt0o
-        YV9305wxNlLdZ/Cw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
- PREEMPT_RT
-Message-ID: <20210930163858.orndmu5xfxue3zck@linutronix.de>
-References: <20210927211919.310855-1-bigeasy@linutronix.de>
- <20210927211919.310855-5-bigeasy@linutronix.de>
- <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
- <20210930095348.tud6jdcenfkfzugz@linutronix.de>
- <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
+        id S1352177AbhI3Qkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352163AbhI3Qkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:40:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 843FB615E0;
+        Thu, 30 Sep 2021 16:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633019946;
+        bh=l4psnDS2L4mNszZp3eSV39BLlsLnxaYRmZiaPEPx/DM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EDo+iZBLh61LjGBdXtXCGg7fsozqORH2v8dvTewaNZuP59U/Tsyw6NNHDzlLGYhBo
+         CF9isbBPlTNlRlq7dCzjxMalsuQvDx6tXPcmP6f16p2QZb2SabvCEmSBo06LdJWhTN
+         OojibY9LjoCfTYpycpQmrt4vdbw0OHqS0Wmn40pBQU6CLxnexuJf5LJKksESIdZAvF
+         XcddVlKSFw1KCtom961I8wGjttZ5Rpktiy3T4+cjjm9U0BIGTCy5WD2EPRNBEWtLNm
+         WJA8/cUlExi3NbnzJbwTjSmds5GYJzQKYu6z/Bskr/1+lWC+034E8CZXffMcc6Q/Bk
+         tBO+WvnLLZC+w==
+Received: by pali.im (Postfix)
+        id 466D7E79; Thu, 30 Sep 2021 18:39:04 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 18:39:04 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+Message-ID: <20210930163904.asr3ugj7oj7l2arx@pali>
+References: <CA+ASDXNMhrxX-nFrr6kBo0a0c-25+Ge2gBP2uTjE8UWJMeQO2A@mail.gmail.com>
+ <bd64c142-93d0-c348-834c-34ed80c460f9@v0yd.nl>
+ <e4cbf804-c374-79a3-53ac-8a0fbd8f75b8@v0yd.nl>
+ <CAHp75Vd5iCLELx8s+Zvcj8ufd2bN6CK26soDMkZyC1CwMO2Qeg@mail.gmail.com>
+ <20210923202231.t2zjoejpxrbbe5hc@pali>
+ <db583b3c-6bfc-d765-a588-eb47c76cea31@v0yd.nl>
+ <20210930154202.cvw3it3edv7pmqtb@pali>
+ <6ba104fa-a659-c192-4dc0-291ca3413f99@v0yd.nl>
+ <20210930161905.5a552go73c2o4e7l@pali>
+ <4e4f3b6a-25c6-289f-2de0-660aeee2b695@v0yd.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4e4f3b6a-25c6-289f-2de0-660aeee2b695@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-30 16:39:51 [+0200], Peter Zijlstra wrote:
-> > > I think the problem was something Jolsa found a while ago, where perf
-> > > defers to an irq_work (from NMI context) and that irq_work wants to
-> > > deliver signals, which it can't on -RT, so the whole thing gets punted
-> > > to softirq. With the end-result that if you self-profile RT tasks,
-> > > things come apart or something.
+On Thursday 30 September 2021 18:22:42 Jonas Dreßler wrote:
+> On 9/30/21 6:19 PM, Pali Rohár wrote:
+> > On Thursday 30 September 2021 18:14:04 Jonas Dreßler wrote:
+> > > On 9/30/21 5:42 PM, Pali Rohár wrote:
+> > > > On Thursday 30 September 2021 17:38:43 Jonas Dreßler wrote:
+> > > > > On 9/23/21 10:22 PM, Pali Rohár wrote:
+> > > > > > On Thursday 23 September 2021 22:41:30 Andy Shevchenko wrote:
+> > > > > > > On Thu, Sep 23, 2021 at 6:28 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+> > > > > > > > On 9/22/21 2:50 PM, Jonas Dreßler wrote:
+> > > > > > > 
+> > > > > > > ...
+> > > > > > > 
+> > > > > > > > - Just calling mwifiex_write_reg() once and then blocking until the card
+> > > > > > > > wakes up using my delay-loop doesn't fix the issue, it's actually
+> > > > > > > > writing multiple times that fixes the issue
+> > > > > > > > 
+> > > > > > > > These observations sound a lot like writes (and even reads) are actually
+> > > > > > > > being dropped, don't they?
+> > > > > > > 
+> > > > > > > It sounds like you're writing into a not ready (fully powered on) device.
+> > > > > > 
+> > > > > > This reminds me a discussion with Bjorn about CRS response returned
+> > > > > > after firmware crash / reset when device is not ready yet:
+> > > > > > https://lore.kernel.org/linux-pci/20210922164803.GA203171@bhelgaas/
+> > > > > > 
+> > > > > > Could not be this similar issue? You could check it via reading
+> > > > > > PCI_VENDOR_ID register from config space. And if it is not valid value
+> > > > > > then card is not really ready yet.
+> > > > > > 
+> > > > > > > To check this, try to put a busy loop for reading and check the value
+> > > > > > > till it gets 0.
+> > > > > > > 
+> > > > > > > Something like
+> > > > > > > 
+> > > > > > >      unsigned int count = 1000;
+> > > > > > > 
+> > > > > > >      do {
+> > > > > > >        if (mwifiex_read_reg(...) == 0)
+> > > > > > >          break;
+> > > > > > >      } while (--count);
+> > > > > > > 
+> > > > > > > 
+> > > > > > > -- 
+> > > > > > > With Best Regards,
+> > > > > > > Andy Shevchenko
+> > > > > 
+> > > > > I've tried both reading PCI_VENDOR_ID and the firmware status using a busy
+> > > > > loop now, but sadly none of them worked. It looks like the card always
+> > > > > replies with the correct values even though it sometimes won't wake up after
+> > > > > that.
+> > > > > 
+> > > > > I do have one new observation though, although I've no clue what could be
+> > > > > happening here: When reading PCI_VENDOR_ID 1000 times to wakeup we can
+> > > > > "predict" the wakeup failure because exactly one (usually around the 20th)
+> > > > > of those 1000 reads will fail.
+> > > > 
+> > > > What does "fail" means here?
+> > > 
+> > > ioread32() returns all ones, that's interpreted as failure by
+> > > mwifiex_read_reg().
 > > 
-> > For signals (at least on x86) we this ARCH_RT_DELAYS_SIGNAL_SEND thingy
-> > where the signal is delayed until exit_to_user_mode_loop().
+> > Ok. And can you check if PCI Bridge above this card has enabled CRSSVE
+> > bit (CRSVisible in RootCtl+RootCap in lspci output)? To determinate if
+> > Bridge could convert CRS response to all-ones as failed transaction.
+> > 
 > 
-> Yeah, I think that is what started much of the entry rework.. the signal
-> rework is still pending.
+> Seems like that bit is disabled:
+> > RootCap: CRSVisible-
+> > RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna+ CRSVisible-
 
-posix timer were also guilty here :)
+So it means that CRSSVE is unsupported by upper bridge. In case card
+returns CRS response to system (via bridge) that is not ready yet,
+bridge re-issue read request, and after some failures it returns to
+system all-ones to indicate failed transaction. But all-ones can be
+returned also by bridge when card does not send any response.
 
-> > perf_pending_event() is the only non-HARD on RT (on the perf side). I
-> > think that is due to perf_event_wakeup() where we have wake_up_all() and
-> 
-> Right, and that is exactly the problem, that needs to run at a higher
-> prio than the task that needs it, but softirq makes that 'difficult'.
-> 
-> One possible 'solution' would be to, instead of softirq, run the thing
-> as a kthread (worker or otherwise) such that userspace can at least set
-> the priority and has a small chance of making it work.
->
-> Runing them all at the same prio still sucks (much like the single
-> net-RX thing), but at least a kthread is somewhat controllable.
+So from this test we do not know what happened. It would be nice to know
+it, but such test requires to connect this card into system which
+supports CRSSVE, in which case CRS response it passed directly to OS as
+value 0xffff0001. Look at the link above where I discussed with Bjorn
+about buggy wifi cards which resets internally, for more details.
 
-I could replace the softirq processing with a per-CPU thread. This
-should work. But I would have to (still) delay the wake-up of the thread
-to the timer tick - or - we try the wake from the irqwork-self-IPI. I
-just don't know how many will arrive back-to-back. The RCU callback
-(rcu_preempt_deferred_qs_handler()) pops up a lot. By my naive guesswork
-I would say that the irqwork is not needed since preempt-enable
-somewhere should do needed scheduling. But then commit
-  0864f057b050b ("rcu: Use irq_work to get scheduler's attention in clean context")
+But in this setup when CRSSVE is not supported, I think there is no
+other option than just adding sleep prior accessing card...
 
-claims it is not enough.
+For debugging such issues I got the only advice to use PCIe analyzer and
+look at what is really happening on the bus. But required equipment for
+this debugging is not cheap...
 
-> > read_lock_irqsave().
-> 
-> That one is really vexing, that really is just signal delivery to self
-> but even when signal stuff is fixed, we're stuck behind that fasync
-> rwlock :/
-
-Yea. We are already in a RCU section and then this.
-
-Sebastian
+> > > > 
+> > > > > Maybe the firmware actually tries to wake up,
+> > > > > encounters an error somewhere in its wakeup routines and then goes down a
+> > > > > special failure code path. That code path keeps the cards CPU so busy that
+> > > > > at some point a PCI_VENDOR_ID request times out?
+> > > > > 
+> > > > > Or well, maybe the card actually wakes up fine, but we don't receive the
+> > > > > interrupt on our end, so many possibilities...
