@@ -2,205 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C978A41E451
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCD641E459
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 00:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349823AbhI3W75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 18:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhI3W7q (ORCPT
+        id S1349300AbhI3XAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 19:00:06 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:40888 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348921AbhI3XAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 18:59:46 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F4AC061771;
-        Thu, 30 Sep 2021 15:58:02 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id dn26so27767700edb.13;
-        Thu, 30 Sep 2021 15:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XWANcquiC3OT/k9PEu3qx71OxUdcpZJWv4aU3uSky5s=;
-        b=SDE9WHQtL/a9M0clbm0TCl7lNza8vukyFjIcehlRUTJ2tYNz2gpfdRWku/XgIJY78e
-         T6WddEkciw7Eze35I1x2HEr/LjeUPp1Ju0aWb2eOiJ5SK4WvvpkJUKrlpAA+tofpOebP
-         TBhAGkjFZak2w3Ih50qnbrxY34I/g8mUCU8Ogwpar26o0K/svWEvI8DDIpJwhC8Wjnsw
-         kXWgO/fUJDuh2t7UFcrTfqyJZSU80xvbX7EU1d2fPvIwHRHgRIvUJca3NakZCoRpjeuf
-         zYE8fR8mlqVWHwNBwEMZ4ATkh3/XCIpPGy6Oj1PuMr7UDZz6OHDa1QwyfbPyFja9GLlI
-         DZ2A==
+        Thu, 30 Sep 2021 19:00:02 -0400
+Received: by mail-lf1-f46.google.com with SMTP id b15so31326655lfe.7;
+        Thu, 30 Sep 2021 15:58:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XWANcquiC3OT/k9PEu3qx71OxUdcpZJWv4aU3uSky5s=;
-        b=xvrM/x/aDAQBGtgjEvsRoJLJbjEyPsRPvhmKSkfKvafRr/EguHM/y8uxg+E9ncKlv4
-         j1TAWtVbxijCOb/JTv7DH3ne1CJ9kQY+KtAPlTeRPYIIc/Blm0vG+2KTlP7Sqqljj6G/
-         d152qosBFBQbyB4MJelRo9frwD4OaYAlWcXKOLCBf/0Tgj+kuVoOiPenBjXNFX420hpC
-         +9Icx7+xC+4diF+ZkTnHDwDJ3m0BLog/RiBjPTfLrrdUBJwBjpE2k6OiJvwg9aMXSlie
-         4N1gexc7OZ1vw2bUsjnDaA+/+SX1wdHtWFAg3SBwjN1hqUxgJcXuYBWcbPeP+YH2B93K
-         fr1w==
-X-Gm-Message-State: AOAM530j6cGQ1bicg5JXs8Dwn5CCxlFlqKfqHK/bSXdNUozgBfdRbVPs
-        mp2hbUulZfmBphDPBRBsSaVDcRJ8HXaitdJMn78=
-X-Google-Smtp-Source: ABdhPJz/YMmmeE5YFvsQBtzY8jRRBhr1m6d+5MtRxBBdFR8Khw3S3Y5hJKORenGCFsIVpvNAsPOKrDagnO48N5mKHTA=
-X-Received: by 2002:aa7:d7d5:: with SMTP id e21mr10586747eds.27.1633042681168;
- Thu, 30 Sep 2021 15:58:01 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=XyaNvh9Xs6AkDGl/pcn1sfY9JyqCtB/i0b3ibbUEjPU=;
+        b=dWqMuUqkRrK6htRz3LMLeJzisXgwrZsCZuI7aS//dKPSNb9eFu4DVsqJr43k/XO3vG
+         6lhHTMzGMaz/7lrReHe4o3eT1nk1WaadvzcRhwCM1FArnv0/IvfOd+u8vzm8sPXpDxCW
+         2Wn66oXGiaFbZZiiElTmbzlg7T3VyTmKu2KAAESoWiBjo4tNIBhCHh3J59LNuTuZNYel
+         IBMvm9nvEEXTjI/TmPNdWyUyJR2VJFKySIhcwhfE7BzLcxe91OetrEoLJNN8ye6BgzhE
+         x5A3CF4ODdgkZw+jRea4dXLhMgujUyvf3ceB9cyNZCNHODvvkHCieD0HdBtZwFd5CLD1
+         gFxQ==
+X-Gm-Message-State: AOAM531czLgECHirXnN+SGI5xr+zcWz3XCbL7m4uZeWEiZoP4sGJF03+
+        E5Iqg1aizKAQG9JLMUFzj6PJr8+BtXnHFjkqGnU=
+X-Google-Smtp-Source: ABdhPJy5CVwrSpfRhPw00RtBuvbmvtiTNsnmpjnMCPQ6mTw1yTZs90kdBTwdZwETe3ArmExmBZzDAcGFyzLu0CyxgVI=
+X-Received: by 2002:a2e:1609:: with SMTP id w9mr5346671ljd.90.1633042697541;
+ Thu, 30 Sep 2021 15:58:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210514200743.3026725-1-alex.kogan@oracle.com>
- <20210930094447.9719-1-21cnbao@gmail.com> <a6340beb-3b4a-2518-9340-ea0fc7583dbe@redhat.com>
-In-Reply-To: <a6340beb-3b4a-2518-9340-ea0fc7583dbe@redhat.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 1 Oct 2021 11:57:49 +1300
-Message-ID: <CAGsJ_4wtyLOSwYH0n5vbJ3YFyXcxyVstXxn7q=nr=bPuX5oNaQ@mail.gmail.com>
-Subject: Re: [PATCH v15 0/6] Add NUMA-awareness to qspinlock
-To:     Waiman Long <llong@redhat.com>
-Cc:     alex.kogan@oracle.com, Arnd Bergmann <arnd@arndb.de>,
-        Borislav Petkov <bp@alien8.de>, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com, guohanjun@huawei.com,
-        "H. Peter Anvin" <hpa@zytor.com>, jglauber@marvell.com,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, linux@armlinux.org.uk,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        steven.sistare@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will.deacon@arm.com>, x86@kernel.org
+References: <20210915195306.612966-1-kaleshsingh@google.com> <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com>
+In-Reply-To: <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 30 Sep 2021 15:58:06 -0700
+Message-ID: <CAM9d7ciQC1sV8hOOsgHVLxk7sze_Qp_dBqBkK_FrtVhZ0=AzZQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 5:58 AM Waiman Long <llong@redhat.com> wrote:
+Hi Kalesh,
+
+On Wed, Sep 15, 2021 at 1:09 PM Kalesh Singh <kaleshsingh@google.com> wrote:
 >
-> On 9/30/21 5:44 AM, Barry Song wrote:
-> >> We have done some performance evaluation with the locktorture module
-> >> as well as with several benchmarks from the will-it-scale repo.
-> >> The following locktorture results are from an Oracle X5-4 server
-> >> (four Intel Xeon E7-8895 v3 @ 2.60GHz sockets with 18 hyperthreaded
-> >> cores each). Each number represents an average (over 25 runs) of the
-> >> total number of ops (x10^7) reported at the end of each run. The
-> >> standard deviation is also reported in (), and in general is about 3%
-> >> from the average. The 'stock' kernel is v5.12.0,
-> > I assume x5-4 server has the crossbar topology and its numa diameter is
-> > 1hop, and all tests were done on this kind of symmetrical topology. Am
-> > I right?
+> On Wed, Sep 15, 2021 at 12:53 PM Kalesh Singh <kaleshsingh@google.com> wrote:
 > >
-> >      =E2=94=8C=E2=94=80=E2=94=90                 =E2=94=8C=E2=94=80=E2=
-=94=90
-> >      =E2=94=82 =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4 =E2=94=82
-> >      =E2=94=94=E2=94=80=E2=94=A41               1=E2=94=94=E2=94=AC=E2=
-=94=98
-> >        =E2=94=82  1           1   =E2=94=82
-> >        =E2=94=82    1       1     =E2=94=82
-> >        =E2=94=82      1   1       =E2=94=82
-> >        =E2=94=82        1         =E2=94=82
-> >        =E2=94=82      1   1       =E2=94=82
-> >        =E2=94=82     1      1     =E2=94=82
-> >        =E2=94=82   1         1    =E2=94=82
-> >       =E2=94=8C=E2=94=BC=E2=94=901             1  =E2=94=9C=E2=94=80=E2=
-=94=90
-> >       =E2=94=82=E2=94=BC=E2=94=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4 =E2=94=82
-> >       =E2=94=94=E2=94=80=E2=94=98                 =E2=94=94=E2=94=80=E2=
-=94=98
+> > The frequency of the rss_stat trace event is known to be of the same
+> > magnitude as that of the sched_switch event on Android devices. This can
+> > cause flooding of the trace buffer with rss_stat traces leading to a
+> > decreased trace buffer capacity and loss of data.
 > >
+> > If it is not necessary to monitor very small changes in rss (as is the
+> > case in Android) then the rss_stat tracepoint can be throttled to only
+> > emit the event once there is a large enough change in the rss size.
+> > The original patch that introduced the rss_stat tracepoint also proposed
+> > a fixed throttling mechanism that only emits the rss_stat event
+> > when the rss size crosses a 512KB boundary. It was concluded that more
+> > generic support for this type of filtering/throttling was need, so that
+> > it can be applied to any trace event. [1]
 > >
-> > what if the hardware is using the ring topology and other topologies wi=
-th
-> > 2-hops or even 3-hops such as:
+> > From the discussion in [1], histogram triggers seemed the most likely
+> > candidate to support this type of throttling. For instance to achieve the
+> > same throttling as was proposed in [1]:
 > >
-> >       =E2=94=8C=E2=94=80=E2=94=90                 =E2=94=8C=E2=94=80=E2=
-=94=90
-> >       =E2=94=82 =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4 =E2=94=82
-> >       =E2=94=94=E2=94=80=E2=94=A4                 =E2=94=94=E2=94=AC=E2=
-=94=98
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >         =E2=94=82                  =E2=94=82
-> >        =E2=94=8C=E2=94=A4                  =E2=94=9C=E2=94=80=E2=94=90
-> >        =E2=94=82=E2=94=BC=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4 =E2=94=82
-> >        =E2=94=94=E2=94=80=E2=94=98                 =E2=94=94=E2=94=80=
-=E2=94=98
+> >   (1) Create a histogram variable to save the 512KB bucket of the rss size
+> >   (2) Use the onchange handler to generate a synthetic event when the
+> >       rss size bucket changes.
 > >
+> > The only missing pieces to support such a hist trigger are:
+> >   (1) Support for setting a hist variable to a specific value -- to set
+> >       the bucket size / granularity.
+> >   (2) Support for division arithmetic operation -- to determine the
+> >       corresponding bucket for an rss size.
 > >
-> > or:
+> > This series extends histogram trigger expressions to:
+> >   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
+> >       and using literals directly in expressions (eg. x=size/1234)
+> >   (2) Support division and multiplication in hist expressions.
+> >       (eg. a=$x/$y*z); and
+> >   (3) Fixes expression parsing for non-associative operators: subtraction
+> >       and division. (eg. 8-4-2 should be 2 not 6)
 > >
+> > The rss_stat event can then be throttled using histogram triggers as
+> > below:
 > >
-> >      =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=90       =E2=94=8C=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=90      =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=90      =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=90
-> >      =E2=94=82   =E2=94=82       =E2=94=82   =E2=94=82      =E2=94=82  =
-  =E2=94=82      =E2=94=82     =E2=94=82
-> >      =E2=94=82   =E2=94=82       =E2=94=82   =E2=94=82      =E2=94=82  =
-  =E2=94=82      =E2=94=82     =E2=94=82
-> >      =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=BC=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=BC=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=BC=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=BC=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=A4
-> >      =E2=94=82   =E2=94=82       =E2=94=82   =E2=94=82      =E2=94=82  =
-  =E2=94=82      =E2=94=82     =E2=94=82
-> >      =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=98       =E2=94=94=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=98      =E2=94=94=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=98      =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=98
+> >   # Create a synthetic event to monitor instead of the high frequency
+> >   # rss_stat event
+> >   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
+> >          int member; long size' >> tracing/synthetic_events
 > >
-> > do we need to consider the distances of numa nodes in the secondary
-> > queue? does it still make sense to treat everyone else equal in
-> > secondary queue?
+> >   # Create a hist trigger that emits the synthetic rss_stat_throttled
+> >   # event only when the rss size crosses a 512KB boundary.
+> >   echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
+> >               .rss_stat_throttled(mm_id,curr,member,size)'
+> >         >> events/kmem/rss_stat/trigger
+> >
 >
-> The purpose of this patch series is to minimize cacheline transfer from
-> one numa node to another. Taking the fine grained detail of the numa
-> topology into account will complicate the code without much performance
-> benefit from my point of view. Let's keep it simple first. We can always
-> improve it later on if one can show real benefit of doing so.
-
-for sure i am not expecting the complex  NUMA topology taken into account f=
-or
-this moment. I am just curious how things will be different if topology isn=
-'t a
-crossbar with 1-hop only.
-
-when the master queue is empty, the distance of the numa node spinlock will
-jump to will affect the performance. but I am not quite sure how much it wi=
-ll
-be. just like a disk, bumping back and forth between far cylinders and sect=
-ors
-might waste a lot of time.
-
-On the other hand, some numa nodes might be very close while some others
-might be very far. for example, if one socket has several DIEs, and the mac=
-hine
-has several sockets, cacheline coherence overhead for NUMA nodes of DIEs wi=
-thin
-one socket might be much less than that of NUMA nodes which are in differen=
-t
-sockets. I assume maintaining the master/secondary queues need some
-overhead especially while the system has many cores and multiple NUMA nodes=
-,
-in this case, making neighbor NUMA nodes share one master queue might win.
-
-Anyway, we need a lot of benchmarking on this before we can really do anyth=
-ing
-on it.  For this moment, ignoring the complicated topology should be a
-better way
-to start.
-
+> Sorry, I have a clerical mistake here. The above key should be:
+> s/keys=common_pid/keys=keys=mm_id,member
 >
-> Cheers,
-> Longman
+> The rss size is specific to the mm struct's member not the pid.
+> The results below were captured with the correct key so no changes there.
+>
+> >  ------ Test Results ------
+> > Histograms can also be used to evaluate the effectiveness of this
+> > throttling by noting the Total Hits on each trigger:
+> >
+> >   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+> >   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
+> >   echo 'hist:keys=common_pid'
+> >            >> events/synthetic/rss_stat_throttled/trigger
+> >
+> > Allowing the above example (512KB granularity) run for 5 minutes on
+> > an arm64 device with 5.10 kernel:
+> >
+> >    sched_switch      : total hits = 147153
+> >    rss_stat          : total hits =  38863
+> >    rss_stat_throttled: total hits =   2409
+> >
+> > The synthetic rss_stat_throttled event is ~16x less frequent than the
+> > rss_stat event when using a 512KB granularity.
+> >
+> >
+> > The results are more pronounced when rss size is changing at a higher
+> > rate in small increments. For instance the following results were obtained
+> > by recording the hits on the above events for a run of Android's
+> > lmkd_unit_test [2], which continually forks processes that map anonymous
+> > memory until there is an oom kill:
+> >
+> >    sched_switch      : total hits =  148832
+> >    rss_stat          : total hits = 4754802
+> >    rss_stat_throttled: total hits =   96214
+> >
+> > In this stress this, the  synthetic rss_stat_throttled event is ~50x less
+> > frequent than the rss_stat event when using a 512KB granularity.
+> >
+> >
+> > [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
+> > [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
-Thanks
-barry
+Reviewed-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
+
+
+> >
+> > Kalesh Singh (5):
+> >   tracing: Add support for creating hist trigger variables from literal
+> >   tracing: Add division and multiplication support for hist triggers
+> >   tracing: Fix operator precedence for hist triggers expression
+> >   tracing/selftests: Add tests for hist trigger expression parsing
+> >   tracing/histogram: Document expression arithmetic and constants
+> >
+> >  Documentation/trace/histogram.rst             |  14 +
+> >  kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
+> >  .../testing/selftests/ftrace/test.d/functions |   4 +-
+> >  .../trigger/trigger-hist-expressions.tc       |  73 ++++
+> >  4 files changed, 357 insertions(+), 52 deletions(-)
+> >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> >
+> >
+> > base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
+> > --
+> > 2.33.0.309.g3052b89438-goog
+> >
