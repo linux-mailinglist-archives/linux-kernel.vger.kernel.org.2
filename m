@@ -2,259 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37341E266
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED1B41E26F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346503AbhI3Tuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:50:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhI3Tui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F14DC60C51;
-        Thu, 30 Sep 2021 19:48:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633031335;
-        bh=hDdTWheoUb4ZPM90BwAajZQdvPLHWOT4OxlEVDwGXig=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=LTGpyZWG7WUD4OlNOPnmQIEH++4rz1slz2w49GSixX+nv5xl1b1QSYUAGOoYF7VyS
-         YOp6yIjK1Z9S1oQnXTlCKRBjwxlRJMYFbKIJrvnNF2sP56WeGUIan5USqKFl1/rtPq
-         g2BLVFemgMVFe+kCG+2zB2nfYRFNgq7qCWYY1lLRMew9VtGxKj2UjwyfwVtzXgTqIG
-         vXAcc0hKdqAVzyrTHXFe3squ+9E/om6esEohzIMs3vyxKZYRj6o5NhpibTbhhc2aQn
-         PZdiDO1bRR2X1XaCnSzn/+CNF0duPMQ+HphR79pG4QCv9SLe8Vv5sKHyspuphniaqT
-         U8V0lRRv+qY8Q==
-Date:   Thu, 30 Sep 2021 14:48:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     mingchuang qiao <mingchuang.qiao@mediatek.com>
-Cc:     kerun.zhu@mediatek.com, linux-pci@vger.kernel.org,
-        lambert.wang@mediatek.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, matthias.bgg@gmail.com,
-        alex.williamson@redhat.com, linux-mediatek@lists.infradead.org,
-        utkarsh.h.patel@intel.com, haijun.liu@mediatek.com,
-        bhelgaas@google.com, mika.westerberg@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [v4] PCI: Avoid unsync of LTR mechanism configuration
-Message-ID: <20210930194853.GA903868@bhelgaas>
+        id S1347485AbhI3Tvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347353AbhI3Tvb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:51:31 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0AFC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:49:47 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id d18so9036960iof.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EB277iFt75fl+4aHOINXc6MZFx1y8U+fiFPNDywa6l0=;
+        b=sVwEennI3YOv/UrOQmnsqVqIhhmjAqxaNwYAVxmqBTd4rixuqJ97suJdLoBCvAYXsq
+         vqUyUs6E/zFeeVvYYctFUEAvSIJUjkLfscDw1/XGt8HMdQH02ZPsajyKFSOGMMQnQBE7
+         OMZNJzxZZVH/zuzFfgFLZ7OO5ZUexLEoQULY0HRt9la5ssJXraGbEWXERcIxAXj/Y4iL
+         GbovCIs9o8pOzBpoOA6W3+iSevcBLzocfy3UW8lbRum4hnIXQ32Q6Z4QMmXqv3ToB55w
+         +b0xMP9oWaRrnUXapNlG4vPu4Xu9sUJA3SxgVX6Z9uQmLuh97KpN3INV6q1zl525Tu7h
+         +LSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EB277iFt75fl+4aHOINXc6MZFx1y8U+fiFPNDywa6l0=;
+        b=zmaFZURIlJybGVyeWQ2gqD8DBXQXIbJ/84HG2/N8RrnJ4w/gfsK9yoJFvBwGMn51aA
+         ikA5eeXZfRwMPs95fHlDYM/xR8ijPg85U04vLGvSv7SOpXrzAvZFX3IBDoPqW4578AvI
+         ge3ZRRDwDPZfpDry1c104SFKMZAl5wrJ9IFWvnEJiH+EXdBsfiw/ovlKhXt+9l07anoj
+         b/yMoHbimjlsPDFZ5Mdv6uJO3W/p36OHkvzRMKfp93D8E02/ZNsx4xMPenwph+SlN8eb
+         kV4oANkD7c1LbMRXFznSxUm2V78t445Lf/5w2TcYM1uEvZXyXwqViPN4WW2QHqjyypct
+         ZD2w==
+X-Gm-Message-State: AOAM532TiUQK1WpRy5pVRgFKuMPyvZuJ5/BL7CBESSIfqG2ZR6lCISsK
+        Vw8L8OLhh+fr8QZuT2vieqofIsWlNNd0LUK0w5miRQ==
+X-Google-Smtp-Source: ABdhPJwJrWmWi/hsIsUS4oPU9/SBSkqOkq20r51rFH2xJ/wOLttpZT4oZowTFy/G1fwZD09J6piBpcqyb2OELajF8rg=
+X-Received: by 2002:a05:6638:2650:: with SMTP id n16mr6428740jat.30.1633031387130;
+ Thu, 30 Sep 2021 12:49:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d11f5fa62151db0d490ea03e2f8399d784ea522.camel@mediatek.com>
+References: <20210910101218.1632297-1-maxime@cerno.tech> <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com>
+ <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com> <CAF6AEGuJgrYrg7FXpVj8P_qf73CXb4=0KysSYQaobJuheDeUSA@mail.gmail.com>
+In-Reply-To: <CAF6AEGuJgrYrg7FXpVj8P_qf73CXb4=0KysSYQaobJuheDeUSA@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 1 Oct 2021 01:19:11 +0530
+Message-ID: <CAMi1Hd0sUUFvNzYwt29af9d99o1-x+LiXBPCrQ8=9H0tHvxVHg@mail.gmail.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order consistent
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 03:02:24PM +0800, mingchuang qiao wrote:
-> Hi Bjorn,
-> 
-> A friendly ping.
-> Thanks.
+On Thu, 30 Sept 2021 at 04:50, Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrote:
+> >
+> > On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > > The best practice to avoid those issues is to register its functions only after
+> > > > > all its dependencies are live. We also shouldn't wait any longer than we should
+> > > > > to play nice with the other components that are waiting for us, so in our case
+> > > > > that would mean moving the DSI device registration to the bridge probe.
+> > > > >
+> > > > > I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+> > > > > would be affected by this and wouldn't probe anymore after those changes.
+> > > > > Exynos and kirin seems to be simple enough for a mechanical change (that still
+> > > > > requires to be tested), but the changes in msm seemed to be far more important
+> > > > > and I wasn't confortable doing them.
+> > > >
+> > > >
+> > > > Hey Maxime,
+> > > >   Sorry for taking so long to get to this, but now that plumbers is
+> > > > over I've had a chance to check it out on kirin
+> > > >
+> > > > Rob Clark pointed me to his branch with some fixups here:
+> > > >    https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+> > > >
+> > > > But trying to boot hikey with that, I see the following loop indefinitely:
+> > > > [    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
+> > > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
+> > > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
+> > > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+> > > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+> > > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+> > > > [    4.681898] adv7511 2-0039: failed to find dsi host
+> > >
+> > > I just realized Rob's tree is missing the kirin patch. My apologies!
+> > > I'll retest and let you know.
+> >
+> > Ok, just retested including the kirin patch and unfortunately I'm
+> > still seeing the same thing.  :(
+> >
+> > Will dig a bit and let you know when I find more.
+>
+> Did you have a chance to test it on anything using drm/msm with DSI
+> panels?  That would at least confirm that I didn't miss anything in
+> the drm/msm patch to swap the dsi-host vs bridge ordering..
 
-I pointed out a couple issues, but you never responded.  See below.
+Hi, smoke tested
+https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+on Pocophone F1 (sdm845 / A630) with v5.15-rc3. I see no obvious
+regressions in my limited testing so far including video (youtube)
+playback.
 
-> On Mon, 2021-09-06 at 13:36 +0800, mingchuang qiao wrote:
-> > Hi Bjorn,
-> > 
-> > On Thu, 2021-02-18 at 10:50 -0600, Bjorn Helgaas wrote:
-> > > On Thu, Feb 04, 2021 at 05:51:25PM +0800, mingchuang.qiao@mediatek.
-> > > co
-> > > m wrote:
-> > > > From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-> > > > 
-> > > > In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2
-> > > > register is
-> > > > configured in pci_configure_ltr(). If device and bridge both
-> > > > support LTR
-> > > > mechanism, the "LTR Mechanism Enable" bit of device and bridge
-> > > > will
-> > > > be
-> > > > enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as
-> > > > 1.
-> > > > 
-> > > > If PCIe link goes down when device resets, the "LTR Mechanism
-> > > > Enable" bit
-> > > > of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16.
-> > > > However,
-> > > > the pci_dev->ltr_path value of bridge is still 1.
-> > > > 
-> > > > For following conditions, check and re-configure "LTR Mechanism
-> > > > Enable" bit
-> > > > of bridge to make "LTR Mechanism Enable" bit match ltr_path
-> > > > value.
-> > > >    -before configuring device's LTR for hot-remove/hot-add
-> > > >    -before restoring device's DEVCTL2 register when restore
-> > > > device
-> > > > state
-> > > 
-> > > There's definitely a bug here.  The commit log should say a little
-> > > more about what it is.  I *think* if LTR is enabled and we suspend
-> > > (putting the device in D3cold) and resume, LTR probably doesn't
-> > > work
-> > > after resume because LTR is disabled in the upstream bridge, which
-> > > would be an obvious bug.
-
-Here's one thing.  Above I was asking for more details.  In
-particular, how would a user notice this bug?  How did *you* notice
-the bug?
-
-> > > Also, if a device with LTR enabled is hot-removed, and we hot-add a
-> > > device, I think LTR will not work on the new device.  Possibly also
-> > > a
-> > > bug, although I'm not convinced we know how to configure LTR on the
-> > > new device anyway.
-> > > 
-> > > So I'd *like* to merge the bug fix for v5.12, but I think I'll wait
-> > > because of the issue below.
-> > > 
-> > 
-> > A friendly ping.
-> > Any further process shall I make to get this patch merged?
-> > 
-> > > > Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-> > > > ---
-> > > > changes of v4
-> > > >  -fix typo of commit message
-> > > >  -rename: pci_reconfigure_bridge_ltr()-
-> > > > > pci_bridge_reconfigure_ltr()
-> > > > 
-> > > > changes of v3
-> > > >  -call pci_reconfigure_bridge_ltr() in probe.c
-> > > > changes of v2
-> > > >  -modify patch description
-> > > >  -reconfigure bridge's LTR before restoring device DEVCTL2
-> > > > register
-> > > > ---
-> > > >  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
-> > > >  drivers/pci/pci.h   |  1 +
-> > > >  drivers/pci/probe.c | 13 ++++++++++---
-> > > >  3 files changed, 36 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > index b9fecc25d213..6bf65d295331 100644
-> > > > --- a/drivers/pci/pci.c
-> > > > +++ b/drivers/pci/pci.c
-> > > > @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct
-> > > > pci_dev *dev)
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > +void pci_bridge_reconfigure_ltr(struct pci_dev *dev)
-> > > > +{
-> > > > +#ifdef CONFIG_PCIEASPM
-> > > > +	struct pci_dev *bridge;
-> > > > +	u32 ctl;
-> > > > +
-> > > > +	bridge = pci_upstream_bridge(dev);
-> > > > +	if (bridge && bridge->ltr_path) {
-> > > > +		pcie_capability_read_dword(bridge,
-> > > > PCI_EXP_DEVCTL2, &ctl);
-> > > > +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
-> > > > +			pci_dbg(bridge, "re-enabling LTR\n");
-> > > > +			pcie_capability_set_word(bridge,
-> > > > PCI_EXP_DEVCTL2,
-> > > > +						 PCI_EXP_DEVCTL2
-> > > > _L
-> > > > TR_EN);
-> > > 
-> > > This pattern of updating the upstream bridge on behalf of "dev" is
-> > > problematic because it's racy:
-> > > 
-> > >   CPU 1                     CPU 2
-> > >   -------------------       ---------------------
-> > >   ctl = read DEVCTL2        ctl = read(DEVCTL2)
-> > >   ctl |= DEVCTL2_LTR_EN     ctl |= DEVCTL2_ARI
-> > >   write(DEVCTL2, ctl)
-> > >                             write(DEVCTL2, ctl)
-> > > 
-> > > Now the bridge has ARI set, but not LTR_EN.
-> > > 
-> > > We have the same problem in the pci_enable_device() path.  The most
-> > > recent try at fixing it is [1].
-
-I was hoping you would respond with "yes, I understand the problem,
-but don't think it's likely" or "no, this isn't actually a problem
-because ..."
-
-I think it *is* a problem, but we're probably unlikely to hit it, so
-we can probably live with it for now.  
-
-> > > [1] https://lore.kernel.org/linux-pci/20201218174011.340514-2-s.mir
-> > > os
-> > > hnichenko@yadro.com/
-> > > 
-> > > > +		}
-> > > > +	}
-> > > > +#endif
-> > > > +}
-> > > > +
-> > > >  static void pci_restore_pcie_state(struct pci_dev *dev)
-> > > >  {
-> > > >  	int i = 0;
-> > > > @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct
-> > > > pci_dev *dev)
-> > > >  	if (!save_state)
-> > > >  		return;
-> > > >  
-> > > > +	/*
-> > > > +	 * Downstream ports reset the LTR enable bit when link
-> > > > goes down.
-> > > > +	 * Check and re-configure the bit here before restoring
-> > > > device.
-> > > > +	 * PCIe r5.0, sec 7.5.3.16.
-> > > > +	 */
-> > > > +	pci_bridge_reconfigure_ltr(dev);
-> > > > +
-> > > >  	cap = (u16 *)&save_state->cap.data[0];
-> > > >  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL,
-> > > > cap[i++]);
-> > > >  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL,
-> > > > cap[i++]);
-> > > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> > > > index 5c59365092fa..b3a5e5287cb7 100644
-> > > > --- a/drivers/pci/pci.h
-> > > > +++ b/drivers/pci/pci.h
-> > > > @@ -111,6 +111,7 @@ void pci_free_cap_save_buffers(struct pci_dev
-> > > > *dev);
-> > > >  bool pci_bridge_d3_possible(struct pci_dev *dev);
-> > > >  void pci_bridge_d3_update(struct pci_dev *dev);
-> > > >  void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev);
-> > > > +void pci_bridge_reconfigure_ltr(struct pci_dev *dev);
-> > > >  
-> > > >  static inline void pci_wakeup_event(struct pci_dev *dev)
-> > > >  {
-> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > > index 953f15abc850..ade055e9fb58 100644
-> > > > --- a/drivers/pci/probe.c
-> > > > +++ b/drivers/pci/probe.c
-> > > > @@ -2132,9 +2132,16 @@ static void pci_configure_ltr(struct
-> > > > pci_dev
-> > > > *dev)
-> > > >  	 * Complex and all intermediate Switches indicate
-> > > > support
-> > > > for LTR.
-> > > >  	 * PCIe r4.0, sec 6.18.
-> > > >  	 */
-> > > > -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-> > > > -	    ((bridge = pci_upstream_bridge(dev)) &&
-> > > > -	      bridge->ltr_path)) {
-> > > > +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
-> > > > +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
-> > > > +					 PCI_EXP_DEVCTL2_LTR_EN)
-> > > > ;
-> > > > +		dev->ltr_path = 1;
-> > > > +		return;
-> > > > +	}
-> > > > +
-> > > > +	bridge = pci_upstream_bridge(dev);
-> > > > +	if (bridge && bridge->ltr_path) {
-> > > > +		pci_bridge_reconfigure_ltr(dev);
-> > > >  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
-> > > >  					 PCI_EXP_DEVCTL2_LTR_EN)
-> > > > ;
-> > > >  		dev->ltr_path = 1;
-> > > > -- 
-> > > > 2.18.0
-> > > 
-> > > _______________________________________________
-> > > Linux-mediatek mailing list
-> > > Linux-mediatek@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
+> BR,
+> -R
