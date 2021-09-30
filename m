@@ -2,158 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4DE41D7D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B542041D7C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350002AbhI3KfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349969AbhI3KfT (ORCPT
+        id S1349973AbhI3KfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:35:05 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38354
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239842AbhI3KfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:35:19 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60435C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:33:36 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z2so4242592wmc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ClOTz/czY4oI64rzJtLLTprqersW1WZ3UxUbkRSunI0=;
-        b=q+0y5cUx0pM5xAXd9rFB+2TbqS16LQDpJqNisDwC+zRbUPYdm0x2tN2I4jGADIKWdo
-         Z6Rmg1LBjvD0U+lbZHVncOeHbWEzo6DTx4j/vHIPLAddqpGbfp9B0SrwLQd9BSPJauZr
-         pgi4zLKE3yUk8HInLzgtqnp4yWEeyTDx+hokIuH2Vqw5Gkh+znIfyFVR68RplyMaQqIi
-         300GvZwMPWNP88uDYzycq2i/slMp88Ydfvw6DtH8LMR9o9fD5Xq5OjGoWssYpYLGJiw+
-         6CFym6xccfUdcJypN02A+RKhGaoOT52czvNe45fwXbPLnSqvMMH5VNPfRn4UdjhwHdq2
-         DNeQ==
+        Thu, 30 Sep 2021 06:35:02 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0ADFA405FD
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632997999;
+        bh=GOsn/2G+QDkwZL3ol+c1IzRmuz+gnJwlWT3R8gDjJFk=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=TluQn6sD7QJKk+Ci0i6shg4sCnC9KWVABJu10ThX/Se9lIEmJVlTnlrgzKSuA99jg
+         1fF9azwMbC5IzSrvL8Ojq9Epm7LvBgyQil39Wh4guI0coD7Ovg7LcyZ2llvv4Gz7S6
+         vVRwzRQpXJKxZ8EZrt0HdPcsiCL40CaA2wfIURxK87aAPmSMc1lDKnDKp1Z15Tl+UC
+         67GTl5q3hiaWgk0heHhp87mBNlbG5CA3wl0QBdhCIbuDONrPotb9m4Gu0mDa1KZn1w
+         geaytV97MPbhiG9O5kQ8Rz5CUfxGym50wyx6zAAgiWAUMPF7E6ir5yqkVgC3Suif4B
+         DRnfiAxLU8FcQ==
+Received: by mail-lf1-f70.google.com with SMTP id s8-20020ac25c48000000b003faf62e104eso5136644lfp.22
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:33:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ClOTz/czY4oI64rzJtLLTprqersW1WZ3UxUbkRSunI0=;
-        b=G1YGfCsgQiMBpBgXaOkHvo6Fwzs3Yeqeu0XTt+S0wzIY+EgvE1dCJWHgRmmVxmEOPd
-         v6WQagJ+Eglg1NynWmuAd7XXUkUwtKa5Kgu24q4OLWN5wBYQCA40KzsuvSdXjUUXl5zE
-         Ag3bzI3Vs3kfpFFvleeM5/a7gT/7M32Lv45OWG/kNLHJY2qx4g0mRuwub8oWahxWbbbZ
-         QJm29YBUJ/GZNo84i01TJelArnaDoLDDklyky2SbyF8d5tWp8fSwxBxBJ2GASPZ8X+Qk
-         bVcGBtHjk0VxsVtcLmz9cY4uXRFKuNFJ8ObMCy2aQL/H0DGXeIs2/4IySMlRPyYMAHlx
-         SIQA==
-X-Gm-Message-State: AOAM530ETy5AUDOlWyb/7ODSuHHf5MwQc4N7+dukv5vKCEPJTejso2eh
-        I2e0bMDIgM7ncxjbssgv5RAEBA==
-X-Google-Smtp-Source: ABdhPJwhVvXXZXdlPItKlpNndOzQ9KbEhrdXbLjx7tfpvI/2kBpGRZ4Qz4ldiDgmI+V7wQlqYvW+Dg==
-X-Received: by 2002:a05:600c:3b83:: with SMTP id n3mr4618919wms.50.1632998014911;
-        Thu, 30 Sep 2021 03:33:34 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id m4sm4568115wml.28.2021.09.30.03.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 03:33:34 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:33:13 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "hch@lst.de" <hch@lst.de>, "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
-Message-ID: <YVWSaU4CHFHnwEA5@myrica>
-References: <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
- <20210922234954.GB964074@nvidia.com>
- <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YUxTvCt1mYDntO8z@myrica>
- <20210923112716.GE964074@nvidia.com>
- <BN9PR11MB5433BCFCF3B0CB657E9BFE898CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210923122220.GL964074@nvidia.com>
- <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210929123630.GS964074@nvidia.com>
- <BN9PR11MB5433C9B5A0CD0B58163859EC8CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GOsn/2G+QDkwZL3ol+c1IzRmuz+gnJwlWT3R8gDjJFk=;
+        b=LVLjHwbegveNVA66RwgXeHqqm8JzJILOFlYo4L6sD/YX9G9pGnHmJnzIotEPiDRifi
+         wWaJnKQXscgLtvTu37ZUyxayaw2XWHw5nKMq4LgiJdItxRmhWS0p8NllcoiWr6aLrquC
+         i4HX/IBENPts7eVUf50EhGohPzSZdhsepHn30+8UAZsY3wfxWGUe68ITJnZs1yxmHR3y
+         0PjU4G/J21qHQqmGa18aNduApfZR3cdkOLzEs9/0+tljTW6sEjUWqMsJV+l4TbUyt8Fj
+         BwUmC7znovdic9ikATT6FAMfXPIVfI8DvyTZDIEAwayRGWns209o3hK7iRD/n71mFtn1
+         1asg==
+X-Gm-Message-State: AOAM533i97dssLlGmqLbrS/D630L+DZic120f3gSwxxQJbRNnoJojWJs
+        5fRLsoO0bbIRA+hxmHquPu/7rGyeGFCk7atyywcpEwfRxYlK4RS7cxzAo35meN7ceHIFp7lfbg1
+        7m907z9n1ZlnXFjNPgazEngURpzUrWQnQuZ2Tl/X0iw==
+X-Received: by 2002:a05:6512:3e0d:: with SMTP id i13mr4920590lfv.163.1632997998215;
+        Thu, 30 Sep 2021 03:33:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxETr3CaHtbnwBWgWoqOUI2YRgnTBmnRAzo89eooVW15+hZ/fIaabzddiJvzz02VweMmWN/VA==
+X-Received: by 2002:a05:6512:3e0d:: with SMTP id i13mr4920553lfv.163.1632997997906;
+        Thu, 30 Sep 2021 03:33:17 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id q1sm327976lfg.18.2021.09.30.03.33.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 03:33:17 -0700 (PDT)
+To:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Olof Johansson <olof@lixom.net>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <CAK8P3a0zezKvexqvL29Oc44uQq-8QG7LwZy31VYJuYAYbh-Utw@mail.gmail.com>
+ <YVWDsFE7qyH6AwxR@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <8928290c-73d9-0843-25ed-2a4817ad32f7@canonical.com>
+Date:   Thu, 30 Sep 2021 12:33:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5433C9B5A0CD0B58163859EC8CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
+In-Reply-To: <YVWDsFE7qyH6AwxR@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:30:42AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe
-> > Sent: Wednesday, September 29, 2021 8:37 PM
-> > 
-> > On Wed, Sep 29, 2021 at 08:48:28AM +0000, Tian, Kevin wrote:
-> > 
-> > > ARM:
-> > >     - set to snoop format if IOMMU_CACHE
-> > >     - set to nonsnoop format if !IOMMU_CACHE
-> > > (in both cases TLP snoop bit is ignored?)
-> > 
-> > Where do you see this? I couldn't even find this functionality in the
-> > ARM HW manual??
+On 30/09/2021 11:30, Lee Jones wrote:
+> On Thu, 30 Sep 2021, Arnd Bergmann wrote:
 > 
-> Honestly speaking I'm getting confused by the complex attribute
-> transformation control (default, replace, combine, input, output, etc.)
-> in SMMU manual. Above was my impression after last check, but now
-> I cannot find necessary info to build the same picture (except below 
-> code). :/
+>> On Thu, Sep 30, 2021 at 8:15 AM Krzysztof Kozlowski
+>> <krzysztof.kozlowski@canonical.com> wrote:
+>>> On 29/09/2021 21:48, Will McVicker wrote:
+>>>> On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+>>>>> What is more, it seems you entirely ignored Geert's comments. I pointed
+>>>>> attention to it last time and you just said you will send v2 instead of
+>>>>> joining discussion.
+>>>>>
+>>>>> It's a NAK for this reason - ignoring what Geert brought: you just broke
+>>>>> distro configs for Exynos.
+>>>>
+>>>> First off I did want to chime into the discussion from the previous
+>>>> patchset, but I felt that Lee and Saravana addressed all your concerns
+>>>> regarding the intent and feasibility. You also made it clear what the
+>>>> next steps were that I needed to take.
+>>>
+>>> One of the steps was problem with distros using everything as modules.
+>>> They should not receive these drivers as modules.
+>>> Reminder: these are essential drivers and all Exynos platforms must have
+>>> them as built-in (at least till someone really tests this on multiple
+>>> setups).
+>>
+>> Agreed. I absolutely love the work of the GKI developers to turn more
+>> drivers into loadable modules, but the "correctness-first" principle is
+>> not up for negotiation. If you are uncomfortable with the code or the
+>> amount of testing because you think it breaks something, you should
+>> reject the patches. Moving core platform functionality is fundamentally
+>> hard and it can go wrong in all possible ways where it used to work
+>> by accident because the init order was fixed.
+>>
+>>>>> Please also explain why Exynos is so special that we deviate from the
+>>>>> policy for all SoC that critical SoC-related drivers have to be enabled
+>>>>> (built-in or as module).
+>>>>
+>>>> I am not actually changing ANY default build configurations here and
+>>>> I'm not removing any existing configuration.
+>>>
+>>> You are changing not default, but selectability which is part of the
+>>> enforced configuration to make platforms working. The distros do not
+>>> always choose defaults but rather all as modules. Kernel configuration
+>>> is huge and complex, so by mistake they could now even disable
+>>> potentially essential driver. There is no need to disable for example
+>>> essential clock driver on a supported Exynos platform.
+>>
+>> I'm not overly worried about the defaults. If the drivers work as loadable
+>> modules, I'm happy with them being loadable modules in distros.
+>> If they don't work this way, then the patches are broken and should
+>> not get merged.
+>>
+>> I don't even mind having essential drivers that can be turned off,
+>> since we already have a ton of those (e.g. serial ports on most platforms).
+>> It's up to distros to know which drivers to enable, though having
+>> either reasonable defaults or fail-safe Kconfig dependencies (e.g.
+>> making it impossible to turn off but allowing modules) is clearly
+>> best.
+>>
+>>>> I tried to make it pretty
+>>>> clear in my original patch series commit messages that none of my
+>>>> changes modify the default behavior. The .config is the same with and
+>>>> without my patches. All of these drivers remain enabled as built-in.
+>>>> So if there is a distro that requires all of these drivers to be
+>>>> built-in, then they can continue as is without noticing any
+>>>> difference. IOW, all of these changes are/should be backwards
+>>>> compatible.
+>>>
+>>> I was not referring to default neither to backwards compatibility.
+>>> Please explain why Exynos is special that it does not require essential
+>>> drivers to be selected as built-in. For example why aren't same changes
+>>> done for Renesas?
+>>>
+>>> Is that now a new global approach that all SoC drivers should be allowed
+>>> to be disabled for ARCH_XXX?
+>>
+>> I wouldn't enforce it either way across platforms. I would prefer drivers
+>> to be loadable modules where possible (and tested), rather than
+>> selected by the platform Kconfig. If you want to ensure the exynos
+>> drivers are impossible to turn into a nonworking state, that's up to you.
+>>
+>>>> You said that upstream supports a generic
+>>>> kernel, but I argue that the upstream "generic" arm64 kernel can't be
+>>>> considered generic if it builds in SoC specific drivers that can be
+>>>> modules.
+>>>
+>>> Good point, but since having them as modules was not tested, I consider
+>>> it as theoretical topic.
+>>
+>> I actually disagree strongly with labelling the kernel as "non-generic"
+>> just because it requires platform specific support to be built-in rather than
+>> a loadable module. This has never been possible on any platform
+>> I'm aware of, and likely never will, except for minor variations of
+>> an existing platform.
+>>
+>> Look at x86 as an example: there are less than a dozen SoC platforms
+>> supported and they are incredibly similar hardware-wise, but the kernel
+>> is anything but "generic" in the sense that was mentioned above.
+>> Most of the platform specific drivers in arch/x86/platform and the
+>> corresponding bits in drivers/{irqchip,clocksource,iommu} are always
+>> built-in, and a lot more is hardwired in architecture code as PCI
+>> quirks or conditional on cpuid or dmi firmware checks.
+>>
+>>>>> Even if there was, I think it is good to have dependencies like
+>>>>> ARCH_EXYNOS, as they let us partition the (19000, as Arnd said recently)
+>>>>> Kconfig symbols into better manageable groups.  Without these, we cannot
+>>>>> do better than "depends on ARM || ARM64 || COMPILE_TEST".
+>>>>
+>>>> My patch series still keeps the dependencies on ARCH_EXYNOS. I am
+>>>> totally fine with "depends on ARCH_EXYNOS" and totally fine with
+>>>> "default ARCH_EXYNOS". The problem we have is that ARCH_EXYNOS
+>>>> forcefully selects SoC specific drivers to be built-in because it just
+>>>> adds more and more SoC-specific drivers to a generic kernel.
+>>>
+>>> The selected drivers are essential for supported platforms. We don't
+>>> even know what are these unsupported, downstream platforms you want
+>>> customize kernel for. They cannot be audited, cannot be compared.
+>>>
+>>> Therefore I don't agree with calling it a "problem" that we select
+>>> *necessary* drivers for supported platforms. It's by design - supported
+>>> platforms should receive them without ability to remove.
+>>>
+>>> If you want to change it, let me paste from previous discussion:
+>>>
+>>> Affecting upstream platforms just because vendor/downstream does not
+>>> want to mainline some code is unacceptable. Please upstream your drivers
+>>> and DTS.
+>>
+>> Agreed. I understand that it would be convenient for SoC vendors to
+>> never have to upstream their platform code again, and that Android
+>> would benefit from this in the short run.
+>>
+>> From my upstream perspective, this is absolutely a non-goal. If it becomes
+>> easier as a side-effect of making the kernel more modular, that's fine.
+>> The actual goal should be to get more people to contribute upstream so
+>> devices run code that has been reviewed and integrated into new kernels.
+>>
+>>>> I know you are asking for me to only push changes that have proven to
+>>>> work.
+>>>
+>>> Yep, tested.
+>>
+>> I'm generally fine with "obviously correct" ones as well, but it's up to
+>> you to categorize them ;-)
+
+Thanks Arnd!
+
 > 
-> > 
-> > What I saw is ARM linking the IOMMU_CACHE to a IO PTE bit that causes
-> > the cache coherence to be disabled, which is not ignoring no snoop.
+> Arnd,
 > 
-> My impression was that snoop is one way of implementing cache
-> coherency and now since the PTE can explicitly specify cache coherency 
-> like below:
+>   FWIW, I agree with all of your points.>
+> Krzysztof,
 > 
->                 else if (prot & IOMMU_CACHE)
->                         pte |= ARM_LPAE_PTE_MEMATTR_OIWB;
->                 else
->                         pte |= ARM_LPAE_PTE_MEMATTR_NC;
+>   It sounds like a lack of testing is your main concern.
 > 
-> This setting in concept overrides the snoop attribute from the device thus
-> make it sort of ignored?
+>   How can I help here?  What H/W do I need to be able to fully test this?
 
-To make sure we're talking about the same thing: "the snoop attribute from
-the device" is the "No snoop" attribute in the PCI TLP, right?
+The changes here need to be tested on affected platforms (ARMv7 and
+ARMv8), when built as a modules on some types of regular distros (e.g.
+Arch, Ubuntu). From each of such boot I would be happy to see number of
+new dmesg warnings/errors plus number of probe deferrals.
 
-The PTE flags define whether the memory access is cache-coherent or not.
-* WB is cacheable (short for write-back cacheable. Doesn't matter here
-  what OI or RWA mean.)
-* NC is non-cacheable.
+Since the drivers could be switched to modules (and some distros might
+do it), they might be hit by surprise regressions in boot performance
+due to probe deferrals. This should be also checked on these platforms.
+Geert pointed out before that clocks in many cases are not optional -
+driver needs them and will wait defer.
 
-         | Normal PCI access | No_snoop PCI access
-  -------+-------------------+-------------------
-  PTE WB | Cacheable         | Non-cacheable
-  PTE NC | Non-cacheable     | Non-cacheable
+Assuming of course that boot succeeds. Minor differences in boot speed
+should not be a problem, I think, because distro anyway chosen
+all-module approach so it accepts the penalty.
 
-Cacheable memory access participate in cache coherency. Non-cacheable
-accesses go directly to memory, do not cause cache allocation.
-
-On Arm cache coherency is configured through PTE attributes. I don't think
-PCI No_snoop should be used because it's not necessarily supported
-throughout the system and, as far as I understand, software can't discover
-whether it is.
-
-[...]
-> Maybe I'll get a clearer picture on this after understanding the difference 
-> between cache coherency and snoop on ARM.
-
-The architecture uses terms "cacheable" and "coherent". The term "snoop"
-is used when referring specifically to the PCI "No snoop" attribute. It is
-also used within the interconnect coherency protocols, which are invisible
-to software.
-
-Thanks,
-Jean
-
+Best regards,
+Krzysztof
