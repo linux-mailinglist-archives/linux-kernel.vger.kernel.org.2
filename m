@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B17641D0C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 02:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907AF41D0C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347089AbhI3BBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 21:01:38 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:63180 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhI3BBg (ORCPT
+        id S1347430AbhI3BDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 21:03:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346416AbhI3BDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:01:36 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210930005953epoutp0375a5606b11c67568a9a96401a1bc71a3~pc7x3UqMA2392123921epoutp03k
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 00:59:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210930005953epoutp0375a5606b11c67568a9a96401a1bc71a3~pc7x3UqMA2392123921epoutp03k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1632963593;
-        bh=Hmrht/E5BxEbIYYeu0hx6z1MushbCu0sIpLHFV6KIxs=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=sj/EyOF413SUbtyW8oXYSaEm/v/EFETwVOfRA4CkrYvcbN6mZ1HZzvAiorp2Z+UAX
-         +AXesCl5L4kGbN0LnU63mm46x4TcXK2GfM/UGtzMbYRwWJ1U4SMDSwOLHD6G8VaREk
-         v6Lge5+1kdmD1ikb3qn1y+b4ofkBiMW1pM2RKvzA=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210930005952epcas2p48cd1057fa3b2260997dbc75f1db6b174~pc7xcC_KZ1553315533epcas2p4I;
-        Thu, 30 Sep 2021 00:59:52 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.36.97]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HKZdp4N6nz4x9QZ; Thu, 30 Sep
-        2021 00:59:42 +0000 (GMT)
-X-AuditID: b6c32a48-d75ff70000002500-58-61550bfb2484
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        25.30.09472.BFB05516; Thu, 30 Sep 2021 09:59:39 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v2] f2fs: fix to use WHINT_MODE
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "chao@kernel.org" <chao@kernel.org>
-CC:     "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tanghuan@vivo.com" <tanghuan@vivo.com>,
-        "changfengnan@vivo.com" <changfengnan@vivo.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210930005939epcms2p7303bf6f96c824720f824989746491cba@epcms2p7>
-Date:   Thu, 30 Sep 2021 09:59:39 +0900
-X-CMS-MailID: 20210930005939epcms2p7303bf6f96c824720f824989746491cba
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmue5v7tBEg90/ZCzW9O1isjg99SyT
-        xctDmharHoRb9PZvZbN4sn4Ws8WlRe4Wl3fNYbPonL6GxWLO0U52By6PTas62Tx2L/jM5NG3
-        ZRWjx+dNch4bPnUwB7BGZdtkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam
-        2iq5+AToumXmAJ2kpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwL9ArTswtLs1L
-        18tLLbEyNDAwMgUqTMjO6Nl9ga1gOmfFm/VLmRsYb7B3MXJySAiYSGx69oypi5GLQ0hgB6PE
-        4tebWLoYOTh4BQQl/u4QBqkRFtCX2D7xPFi9kICSRNfCrcwQcQOJddP3gNlsAnoSU37fYQSx
-        RQRCJF5PbgGbySzwjUni29OHbBDLeCVmtD9lgbClJbYv38oIYWtI/FjWywxhi0rcXP2WHcZ+
-        f2w+VI2IROu9s1A1ghIPfu5mBLlTQkBS4sxhV4hwucTC88vYQfZKCHQwSrz+vgBqjr7EtY6N
-        YHt5BXwlbu9uB+tlEVCVWHVKFaLERWLekktgJcwC8hLb385hBilhFtCUWL9LH2KTssSRWyww
-        jzRs/M2OzmYW4JPoOPwXLr5j3hMmCFtN4tGCLawQtozExTnnmCcwKs1ChPMsJHtnIexdwMi8
-        ilEstaA4Nz212KjABB61yfm5mxjBaVPLYwfj7Lcf9A4xMnEwHmKU4GBWEuH9IR6cKMSbklhZ
-        lVqUH19UmpNafIjRFOjhicxSosn5wMSdVxJvaGJpYGJmZmhuZGpgriTOO/efU6KQQHpiSWp2
-        ampBahFMHxMHp1QD016HFI3WdzX7rF27QzUvtTZ8Y+er3u+qNE3o4ssH9/2lUx3f17vnmiy7
-        E8Clp+ckbf7Mg989YEX9WvN77qZzP1h0t3EGatyMjxBwYFk0P8jyvIpMWUjW23LxnUsM8mIe
-        KET7KX4MuZKjuHyb3/kXy3dP4pyWbRUzLXBC9fUlEjfiHFVs9c9X3tQQmtA7P0DueHp8VcHC
-        2Rwdd+xNFpx0ZRJK6F00447ikkOLuI9l1fOff35z2sKOg+9vdW4rqrn78+Lbi8IacTEl6nzq
-        D8UWKqqmLi9J0zkZtyr4V/ephYuuat2O8tfjn89Zzflm4bYV8yNybtU1aDjN9j4Wy2GzqtCS
-        Pdz59DqZEvO+KauUWIozEg21mIuKEwE6XthxJAQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210930005939epcms2p7303bf6f96c824720f824989746491cba
-References: <CGME20210930005939epcms2p7303bf6f96c824720f824989746491cba@epcms2p7>
+        Wed, 29 Sep 2021 21:03:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632963724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a9UdvZG0YEJVZClWq53eAG02FCtxvmE6sqFoeosFyqE=;
+        b=D4yNfFEbaz5GytgCUXA3IL2MYxr+ZZTAfAl7y2HGyMtg+0za8JVAEs0Q09V6z3Qk/6JZzD
+        W/hL8QUtWUmILJID1NqWbD4H+ZP5bePJm6/rCumYvQXYQW64Wj2nMLdLds7qWtbRWwJhIX
+        Z38e4PE9M7/dd1VH5i9WK/XIiIefaVo=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-XE9TTIkQP7a8ZTPDHb8geQ-1; Wed, 29 Sep 2021 21:02:03 -0400
+X-MC-Unique: XE9TTIkQP7a8ZTPDHb8geQ-1
+Received: by mail-oi1-f199.google.com with SMTP id w26-20020a056808091a00b0027630e0f24aso3222943oih.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 18:02:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a9UdvZG0YEJVZClWq53eAG02FCtxvmE6sqFoeosFyqE=;
+        b=qbqjOpOtjkrXQfgtiOfxS8x4dvB4AcLswG4XfIicQTF38JHzJQpFnBGEcjnc9lI4Vl
+         ZwtVXl4Ka9nXwjRdvxQJecU+qPE3HWhzIicLCiI0kLqfdwKo2bfUfeGGRsIfhcIULBs2
+         ex+frMVRx5Yciwc+KHP0G0DGWYj5tnsrQ4mu6spq6uR3ugUOPZrkq3SIipTsJCXrkZOE
+         lNGbBIyxBaMzV342wettQUAlohdfjLYQUgVDTG4qjZ6Q8Q6SCtIj43VjQCRYiAnI1RkC
+         aXhs6EyHZmCBZwZUSszTCkgS5gK9QzFP2JvoZ6DKly+YNzUjAps6ijgc/8nVYWyzHqaa
+         fRlw==
+X-Gm-Message-State: AOAM531RS/9DY9UKiOPSRmK4qwDJdNNF8U/vsMZoLAtHntTNGUZTNKSC
+        obC7vma1morPIIwODL6GPuPmyJEnOH0PziEJIvQBQQ4hdalXC+Thmp/L+AgfrRaGCJ/jJ0doG6o
+        k5DglLvfyZXxze6rPSap/XCjR
+X-Received: by 2002:aca:c087:: with SMTP id q129mr529086oif.135.1632963722693;
+        Wed, 29 Sep 2021 18:02:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0Tw4Fp0MMhT/H3V+Dn5VteSAFCUkXlIdi80tvmOHj5l49S0YmJu4v/9X8jLPdZyJiM/wNWw==
+X-Received: by 2002:aca:c087:: with SMTP id q129mr529059oif.135.1632963722411;
+        Wed, 29 Sep 2021 18:02:02 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id g12sm300036oof.6.2021.09.29.18.01.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 18:02:02 -0700 (PDT)
+Date:   Wed, 29 Sep 2021 18:01:57 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Jann Horn <jannh@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Anand K Mistry <amistry@google.com>,
+        "Kenta.Tada@sony.com" <Kenta.Tada@sony.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+        Michal Hocko <mhocko@suse.com>, Helge Deller <deller@gmx.de>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Tobin C. Harding" <me@tobin.cc>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Stefan Metzmacher <metze@samba.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ohhoon Kwon <ohoono.kwon@samsung.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 0/6] wchan: Fix ORC support and leaky fallback
+Message-ID: <20210930010157.mtn7pjyxkxokzmyh@treble>
+References: <20210929220218.691419-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210929220218.691419-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since active_logs can be set to 2 or 4 or NR_CURSEG_PERSIST_TYPE(6),
-it cannot be set to NR_CURSEG_TYPE(8).
-That is, whint_mode is always off.
+On Wed, Sep 29, 2021 at 03:02:12PM -0700, Kees Cook wrote:
+> Hi,
+> 
+> This attempts to solve the issues from the discussion here[1]. Specifically:
+> 
+> 1) wchan leaking raw addresses since 152c432b128c (v5.12).
+> 
+> patch 1 fixes this with a revert.
+> 
+> 2) wchan has been broken under ORC, seen as a failure to stack walk
+>    resulting in _usually_ a 0 value, since ee9f8fce9964 (v4.14).
+> 
+> patches 2-5 fixes this with Qi Zheng's new get_wchan() and changes to
+> the /proc code to use the new helper suggested by Peter to do the stack
+> walk only if the process can be kept blocked:
+> https://lore.kernel.org/lkml/20210929194026.GA4323@worktop.programming.kicks-ass.net/
+> 
+> Peter, can you take this via -tip?
 
-Therefore, the condition is changed from NR_CURSEG_TYPE to NR_CURSEG_PERSIST_TYPE.
+It all looks sane to me.  Thanks for cleaning up this mess.
 
-Cc: Chao Yu <chao@kernel.org>
-Reported-by: Huan Tang <tanghuan@vivo.com>
-Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
-v1 -> v2:
-	* Merge Signed-off and Reported tags for the same fix patch.
+- Should we use a similar sched wrapper for /proc/$pid/stack to make its
+  raciness go away?
 
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- At the risk of triggering a much larger patch set, I suspect
+  get_wchan() can be made generic ;-)  It's just a glorified wrapper
+  around stack_trace_save_tsk().
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78ebc306ee2b..86eeb019cc52 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1292,7 +1292,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 	/* Not pass down write hints if the number of active logs is lesser
- 	 * than NR_CURSEG_PERSIST_TYPE.
- 	 */
--	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
-+	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_PERSIST_TYPE)
- 		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
- 
- 	if (f2fs_sb_has_readonly(sbi) && !f2fs_readonly(sbi->sb)) {
+Regardless:
+
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+
 -- 
-2.17.1
+Josh
+
