@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748541D204
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAD741D206
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347828AbhI3D5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 23:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S1348009AbhI3D6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 23:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhI3D5R (ORCPT
+        with ESMTP id S1348004AbhI3D6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 23:57:17 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D81C06161C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:55:35 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id i25so19509375lfg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:55:35 -0700 (PDT)
+        Wed, 29 Sep 2021 23:58:15 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ECEC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:56:34 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so5648600otj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 20:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IJPS6zsrbHWsNjyLPU/ZEz8loyvWlYIAC7D3Kjus4wI=;
-        b=YjPebZ0q5PidpdWfeNvzuH2+99nPTXGOHWRkng7FrDkiDsyBNwr72s82v4vvSRe4xx
-         rv0m4mHhjIx9cgbvVrjzns/0edl/WBkZxLfPjKf1BFLYavvrcEtZnvrov4nuEx4/7JEH
-         IBK45AImTIdDV0VLpanEItUN2rTX8mIq9uTDcH/YuEeVb4NN6UB8caxg46kYAVocdvd/
-         QTQBTktNNoxoGnBXZVfyDXR1CAxVlmXJplsiRClkXp5cCTpsDX5/sRc34RkJH4+bJc9b
-         79jc4Uz8oQkwhtrPqUYTrJuO/1RhGptjALTBIos5Wqtc0sDOPFof9eFvR9neXZCoWWLE
-         cqLg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=pbICwdgUqYk+MY3CjajdFyZDTldPCutWBH9nPk1NU9M=;
+        b=dYYg+xr2qgVzVQpnw1vKySEYeTZUMyLCO3IjCFtkwCbD9pKzqZBm0wXSYwHIqbVnZB
+         j6j/az0gTXbKp/PPg7uz9Ed09jHYplqn0gK7ylwDo/7ULm7qTckwzVEwAQxTaMQ02IEW
+         qPujZVK/wt6fs6hmVDo6J410aSqfL7yzXjTro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IJPS6zsrbHWsNjyLPU/ZEz8loyvWlYIAC7D3Kjus4wI=;
-        b=FvRtgydAnfmdBdO+a1dwfXeh4An0dDxwwmpxIPBXyoGu3A8TvJgaEmZSriIwkWZkep
-         nxqH0TclArgUGDru2fNDGEExdqWDg+lUlDczBTtHcjY7qpnBXE6xUaW5JeXyfMekozTU
-         68nrKOgpQRL9ZMCNP1ZCNfBuKzmZbvb7vfzO0fqrH8QqDx4JMKjROUsXP0KmvRJbon5S
-         X9rntGWtf9C20ha3+PsTzVcgJ7S2fy20qhM0weZrXsNh0QliJqtl4QwerVY2Jq4l2uLb
-         AdVfJzrQBv6myTQJjJxvCsoKs1MHKUWRoh8G3+9Ws/+pglKfnLNUJEPL+nQr6I7LwUCq
-         M2Eg==
-X-Gm-Message-State: AOAM5302fBPCHNCdG3w4CJnU0CfEItxEQsiaIk2XZKnp/2Sg2fu2tYvG
-        JamFEICgOWeW9gy7BbiB95zlNORKSGF2l2swYlSkbg==
-X-Google-Smtp-Source: ABdhPJzQpUwHrNZI+47+bpMwucbwQyrcr9cEb2tHbF6fwCa0fLlhSCubtfIoDhoT5JCiMiJc7npB8YSsvil7o96dPnw=
-X-Received: by 2002:a19:f515:: with SMTP id j21mr3373622lfb.125.1632974132348;
- Wed, 29 Sep 2021 20:55:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=pbICwdgUqYk+MY3CjajdFyZDTldPCutWBH9nPk1NU9M=;
+        b=203+o2kb0QImjo6A+IBKULpgL+X4BgDCN0E/a+2gKUH/gHCSODTCE6Pb8UhZ5XRUDG
+         gqAjpZjIhnMrD4iZLVdOreV6y+m+bRUP4C+406S47KogRHSYP4De/OoRMNdC5vBZmAf6
+         oimBkmSHpDpWmDcB2I7GG2lsjC2EEnzyq5c0wkoncI0957d43zSGeKiQ9dz/Js4ToNmo
+         ePZZlRK5DhKg3XkviiEXOS/XMih+YGMyYMo5M8VdL2uP5AL64Cl/9uzAbRhDEhvyhxZ9
+         HDCIWWeWxTbhBblVmbCajdGu+2QB7cRPXVsXGrGV9kQXUD4LdprGT+tJFC7Abbe2GYsB
+         GW1A==
+X-Gm-Message-State: AOAM531RjWEVO1eHgPqtcBYPsvew20QNzGMmPdvcHT6d90eT89vzWJMI
+        ueSRxQnmqVdtQYyf6aLIhiasIV0ZliI31a1JnLsxfPUBMmI=
+X-Google-Smtp-Source: ABdhPJyg5d3ErOcJIXToSHSHSONJcSYacRkFBefewskavVwKz804P1gLqh9+QSY2AHtW62MgsT4klS34ZxzhA+GxzKA=
+X-Received: by 2002:a05:6830:358:: with SMTP id h24mr3010200ote.159.1632974193021;
+ Wed, 29 Sep 2021 20:56:33 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 29 Sep 2021 20:56:32 -0700
 MIME-Version: 1.0
-References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
- <20210916231325.125533-9-pasha.tatashin@soleen.com> <20210929123513.GC21631@willie-the-truck>
-In-Reply-To: <20210929123513.GC21631@willie-the-truck>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 29 Sep 2021 23:54:55 -0400
-Message-ID: <CA+CK2bDw3A7FkZoQbB-AQWHj89Azqjrm12WFQVcfQjS+2Tmgyg@mail.gmail.com>
-Subject: Re: [PATCH v17 08/15] arm64: kexec: configure EL2 vectors for kexec
-To:     Will Deacon <will@kernel.org>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        madvenka@linux.microsoft.com
+In-Reply-To: <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
+References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
+ <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 29 Sep 2021 20:56:32 -0700
+Message-ID: <CAE-0n51sDbBfS82K7pY_yvWEQYdBVheqtzZcNVm16AZxaFMTng@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: drm/bridge: ps8640: Add aux-bus child
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org,
+        Balletbo i Serra <enric.balletbo@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +/* Allocates pages for kexec page table */
-> > +static void *kexec_page_alloc(void *arg)
-> > +{
-> > +     struct kimage *kimage = (struct kimage *)arg;
-> > +     struct page *page = kimage_alloc_control_pages(kimage, 0);
-> > +
-> > +     if (!page)
-> > +             return NULL;
-> > +
-> > +     memset(page_address(page), 0, PAGE_SIZE);
+Quoting Philip Chen (2021-09-29 17:34:57)
+> dp-aux-bus.yaml says we can list an eDP panel as a child of
+> an eDP controller node to represent the fact that the panel
+> is connected to the controller's DP AUX bus.
 >
-> Hmm, I think we might be missing barriers here to ensure that the zeroes
-> are visible to the page-table walker before we plumb the page into the
-> page-table.
+> Let's add it to the ps8640 bindings.
 >
-> Usually, that's taken care of by the smp_wmb() in __pXX_alloc() but I
-> can't see that here. Is it hiding?
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> ---
 
-Based on the comment in __pte_alloc() that smp_wmb() is needed in
-order to synchronize pte setup with other cpus prior to making it
-visible to them. This is not needed here. First, by the time these
-page tables are used the other cpus are offlined (kexec reboot code is
-single threaded). Second, we never insert any entry into a page table
-that is actively used by any cpu.
-
-Pasha
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
