@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E1F41D5D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEC741D5C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349168AbhI3I7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:59:07 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13009 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348225AbhI3I7G (ORCPT
+        id S1349043AbhI3IyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:54:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:23342 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348239AbhI3IyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:59:06 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HKnCP5HTrzVfjT;
-        Thu, 30 Sep 2021 16:56:01 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+        Thu, 30 Sep 2021 04:54:12 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HKn2L3gQRzRfhp;
+        Thu, 30 Sep 2021 16:48:10 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 30 Sep 2021 16:57:22 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ 15.1.2308.8; Thu, 30 Sep 2021 16:52:28 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 30 Sep
- 2021 16:57:21 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH] crypto: hisilicon - replace 'smp_processor_id' with 'get_cpu' in preemptible
-Date:   Thu, 30 Sep 2021 16:55:46 +0800
-Message-ID: <20210930085546.54000-1-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
+ 2021 16:52:28 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
+        <saravanak@google.com>
+Subject: [PATCH] driver core: Fix possible memory leak in device_link_add()
+Date:   Thu, 30 Sep 2021 16:57:14 +0800
+Message-ID: <20210930085714.2057460-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500012.china.huawei.com (7.185.36.15)
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smp_processor_id() is unsafe if it's used in a preemption-on critical
-section. It will cause the call trace when the preemption-on and sets the
-CONFIG_DEBUG_PREEMPT. So replace 'smp_processor_id' with 'get_cpu' in
-preemptible to avoid the following call trace:
+I got memory leak as follows:
 
-[ 7538.874350] BUG: using smp_processor_id() in preemptible [00000000] code: af_alg06/8438
-[ 7538.874368] caller is debug_smp_processor_id+0x1c/0x28
-[ 7538.874373] CPU: 50 PID: 8438 Comm: af_alg06 Kdump: loaded Not tainted 5.10.0.pc+ #18
-[ 7538.874377] Call trace:
-[ 7538.874387]  dump_backtrace+0x0/0x210
-[ 7538.874389]  show_stack+0x2c/0x38
-[ 7538.874392]  dump_stack+0x110/0x164
-[ 7538.874394]  check_preemption_disabled+0xf4/0x108
-[ 7538.874396]  debug_smp_processor_id+0x1c/0x28
-[ 7538.874406]  sec_create_qps+0x24/0xe8 [hisi_sec2]
-[ 7538.874408]  sec_ctx_base_init+0x20/0x4d8 [hisi_sec2]
-[ 7538.874411]  sec_aead_ctx_init+0x68/0x180 [hisi_sec2]
-[ 7538.874413]  sec_aead_sha256_ctx_init+0x28/0x38 [hisi_sec2]
-[ 7538.874421]  crypto_aead_init_tfm+0x54/0x68
-[ 7538.874423]  crypto_create_tfm_node+0x6c/0x110
-[ 7538.874424]  crypto_alloc_tfm_node+0x74/0x288
-[ 7538.874426]  crypto_alloc_aead+0x40/0x50
-[ 7538.874431]  aead_bind+0x50/0xd0
-[ 7538.874433]  alg_bind+0x94/0x148
-[ 7538.874439]  __sys_bind+0x98/0x118
-[ 7538.874441]  __arm64_sys_bind+0x28/0x38
-[ 7538.874445]  do_el0_svc+0x88/0x258
-[ 7538.874447]  el0_svc+0x1c/0x28
-[ 7538.874449]  el0_sync_handler+0x8c/0xb8
-[ 7538.874452]  el0_sync+0x148/0x180
+unreferenced object 0xffff88801f0b2200 (size 64):
+  comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
+  hex dump (first 32 bytes):
+    72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
+    74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
+  backtrace:
+    [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
+    [<0000000050da42d9>] kvasprintf+0xb5/0x150
+    [<000000004bbbed13>] kvasprintf_const+0x60/0x190
+    [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
+    [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
+    [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
+    [<000000009db9faed>] _regulator_get+0x297/0x680
+    [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
+    [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
+    [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
+    [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
+    [<0000000070fb977b>] really_probe+0x299/0xc30
+    [<0000000088e226ce>] __driver_probe_device+0x357/0x500
+    [<00000000c21dda32>] driver_probe_device+0x4e/0x140
+    [<000000004e650441>] __device_attach_driver+0x257/0x340
+    [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+When device_register() returns an error, the name allocated in dev_set_name()
+will be leaked, the put_device() should be used instead of kfree() to give up
+the device reference, then the name will be freed in kobject_cleanup() and the
+references of consumer and supplier will be decreased in device_link_release_fn().
+
+Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c | 3 ++-
- drivers/crypto/hisilicon/sec2/sec_main.c  | 3 ++-
- drivers/crypto/hisilicon/zip/zip_main.c   | 6 ++++--
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/base/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 65a641396c07..d1754e7b7a9c 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -277,10 +277,11 @@ static inline int hpre_cluster_core_mask(struct hisi_qm *qm)
- 
- struct hisi_qp *hpre_create_qp(u8 type)
- {
--	int node = cpu_to_node(smp_processor_id());
-+	int node = cpu_to_node(get_cpu());
- 	struct hisi_qp *qp = NULL;
- 	int ret;
- 
-+	put_cpu();
- 	if (type != HPRE_V2_ALG_TYPE && type != HPRE_V3_ECC_ALG_TYPE)
- 		return NULL;
- 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 90551bf38b52..e3a4d4f8637b 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -282,11 +282,12 @@ void sec_destroy_qps(struct hisi_qp **qps, int qp_num)
- 
- struct hisi_qp **sec_create_qps(void)
- {
--	int node = cpu_to_node(smp_processor_id());
-+	int node = cpu_to_node(get_cpu());
- 	u32 ctx_num = ctx_q_num;
- 	struct hisi_qp **qps;
- 	int ret;
- 
-+	put_cpu();
- 	qps = kcalloc(ctx_num, sizeof(struct hisi_qp *), GFP_KERNEL);
- 	if (!qps)
- 		return NULL;
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 7148201ce76e..bdf2eff6d8bd 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -276,8 +276,10 @@ MODULE_DEVICE_TABLE(pci, hisi_zip_dev_ids);
- 
- int zip_create_qps(struct hisi_qp **qps, int qp_num, int node)
- {
--	if (node == NUMA_NO_NODE)
--		node = cpu_to_node(smp_processor_id());
-+	if (node == NUMA_NO_NODE) {
-+		node = cpu_to_node(get_cpu());
-+		put_cpu();
-+	}
- 
- 	return hisi_qm_alloc_qps_node(&zip_devices, qp_num, 0, node, qps);
- }
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index e65dd803a453..4a123e58711f 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -809,9 +809,7 @@ struct device_link *device_link_add(struct device *consumer,
+ 		     dev_bus_name(supplier), dev_name(supplier),
+ 		     dev_bus_name(consumer), dev_name(consumer));
+ 	if (device_register(&link->link_dev)) {
+-		put_device(consumer);
+-		put_device(supplier);
+-		kfree(link);
++		put_device(&link->link_dev);
+ 		link = NULL;
+ 		goto out;
+ 	}
 -- 
-2.33.0
+2.25.1
 
