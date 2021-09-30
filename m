@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE5541DD3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C2E41DD34
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245339AbhI3PUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:20:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46943 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245624AbhI3PUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:20:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="247750991"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="247750991"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:18:21 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="479978381"
-Received: from rnmathur-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.105.173])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 08:18:21 -0700
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065953-mutt-send-email-mst@kernel.org>
- <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
-Date:   Thu, 30 Sep 2021 08:18:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S245512AbhI3PUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:20:05 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40469 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S245339AbhI3PUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:20:03 -0400
+Received: (qmail 472189 invoked by uid 1000); 30 Sep 2021 11:18:19 -0400
+Date:   Thu, 30 Sep 2021 11:18:19 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@google.com" <hsinyi@google.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
+Message-ID: <20210930151819.GC464826@rowland.harvard.edu>
+References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+ <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
+ <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+ <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 11:30:17AM +0200, Oliver Neukum wrote:
+> 
+> On 29.09.21 11:52, Jason-ch Chen wrote:
+> > On Wed, 2021-09-29 at 08:14 +0000, Hayes Wang wrote:
+> >>
+> > Hi Hayes,
+> >
+> > Sometimes Rx submits rapidly and the USB kernel driver of opensource
+> > cannot receive any disconnect event due to CPU heavy loading, which
+> > finally causes a system crash.
+> > Do you have any suggestions to modify the r8152 driver to prevent this
+> > situation happened?
+> >
+> > Regards,
+> > Jason
+> >
+> Hi,
+> 
+> Hayes proposed a solution. Basically you solve this the way HID or WDM do it
+> delaying resubmission. This makes me wonder whether this problem is specific
+> to any driver. If it is not, as I would argue, do we have a deficiency
+> in our API?
+> 
+> Should we have something like: usb_submit_delayed_urb() ?
 
+There has been some discussion about this in the past.
 
-On 9/30/21 6:36 AM, Dan Williams wrote:
->> And in particular, not all virtio drivers are hardened -
->> I think at this point blk and scsi drivers have been hardened - so
->> treating them all the same looks wrong.
-> My understanding was that they have been audited, Sathya?
+In general, -EPROTO is almost always a non-recoverable error.  In 
+usually occurs when a USB cable has been unplugged, before the 
+upstream hub has notified the kernel about the unplug event.  It also 
+can occur when the device's firmware has crashed.
 
-Yes, AFAIK, it has been audited. Andi also submitted some patches
-related to it. Andi, can you confirm.
+I do tend to think there is a deficiency in our API, and that it 
+should be fixed by making the core logically disable an endpoint 
+(clear the ep->enabled flag) whenever an URB for that endpoint 
+completes with -EPROTO, -EILSEQ, or -ETIME status.  (In retrospect, 
+using three distinct status codes for these errors was a mistake.)  
+Then we wouldn't have to go through this piecemeal approach, 
+modifying individual drivers to make them give up whenever they get 
+one of these errors.
 
-We also authorize the virtio at PCI ID level. And currently we allow
-console, block and net virtio PCI devices.
+But then we'd have also have to make sure drivers have a way to 
+logically re-enable endpoints, for the unlikely case that the error 
+can be recovered from.  Certainly set-config, set-interface, and 
+clear-halt should do this.  Anything else?
 
-{ PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_NET) },
-{ PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_BLOCK) },
-{ PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, VIRTIO_TRANS_ID_CONSOLE) },
-
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Alan Stern
