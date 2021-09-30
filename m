@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D51E41E02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6710841E030
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 19:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352667AbhI3R3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 13:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352606AbhI3R3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 13:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 595EB6137A;
-        Thu, 30 Sep 2021 17:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633022841;
-        bh=/0C11BR2NcWcrknqe3Jef9DMxhZDB9pEs6MHYZPMVss=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=JY3R+b3M4LV4FvPcQQ9Wn7grCq2Z36+1IxMR8ecV+Y7EQTZLwP0xcj+F0R6a/702z
-         pNRt+ec6zFQkS36emeXZS4SF+8ZC/7r+qf5ExF6j3xALFDfDRpwsePsiK/FO92qrtP
-         b8KJKarrsxoIPxh5S3GlhnsrAkrFrQkwy3DJH23vClkLI+Dp7Zr2fSuIhJOF3NoXJU
-         s+agUlcSuV6mYAdTnahSi8DUh47FKXIsnBOPPDp+GdwpWQpM32CiRjNCg5gLqZ/JEy
-         XTl4SSiSJC3ajOaruB+72dNH/uH5GafOdbw4aRsfkKT99lNsI6WFC/VRmh6G5txK67
-         sxRlGi7uycXGQ==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 67C2827C007B;
-        Thu, 30 Sep 2021 13:27:18 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Thu, 30 Sep 2021 13:27:18 -0400
-X-ME-Sender: <xms:dfNVYV7vrUnN9XIzk7mylcbKYQwGbt3UXBgRPRf7xyGid4ST7NMYYA>
-    <xme:dfNVYS57uxrJ9VAzy9PhgRJU0OQF_yHZNzqQH-UuK74sOjLe7cZk5J3Z-ZNHyt4DI
-    MtMymVHiX0bBG9TPqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgedgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
-    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:dfNVYcceRzxnGFtGVDGetyZvcFnwvgBlJQIjasDPRT-dh_2pnLTM2A>
-    <xmx:dfNVYeJQRsbhOnGGGJeDrq3uuBZH8BwMwTVWDcSUOj6hbfMU2uYXwQ>
-    <xmx:dfNVYZJAN2GV7R9Kjeo8PPu1xI0YzNslIgPBKeHZd6o_D7VwRSN_qg>
-    <xmx:dvNVYW7wX7ozg-K_PbsIX-cQdXveJHHHIyZ2XlhiYESUfa_n4KwBDjJiI14>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3CD8621E0063; Thu, 30 Sep 2021 13:27:17 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1322-g921842b88a-fm-20210929.001-g921842b8
-Mime-Version: 1.0
-Message-Id: <c8d69bc1-55eb-44c3-bf97-c5c4c475fded@www.fastmail.com>
-In-Reply-To: <778d40fe-ad8e-fd7c-4caa-499910bb0925@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
- <YVXmGTo5Uzp44QQq@stefanha-x1.localdomain>
- <778d40fe-ad8e-fd7c-4caa-499910bb0925@intel.com>
-Date:   Thu, 30 Sep 2021 10:26:55 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Sohil Mehta" <sohil.mehta@intel.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Jens Axboe" <axboe@kernel.dk>,
-        "Christian Brauner" <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Shuah Khan" <shuah@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj Ashok" <ashok.raj@intel.com>,
-        "Jacob Pan" <jacob.jun.pan@linux.intel.com>,
-        "Gayatri Kammela" <gayatri.kammela@intel.com>,
-        "Zeng Guang" <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Randy E Witt" <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Ramesh Thomas" <ramesh.thomas@intel.com>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
-Content-Type: text/plain
+        id S1352692AbhI3R3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 13:29:12 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:51993 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352673AbhI3R3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 13:29:06 -0400
+Received: by mail-io1-f72.google.com with SMTP id i11-20020a056602134b00b005be82e3028bso6425201iov.18
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 10:27:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=gv72izE33dTTEKceIEpVEdBmjtFaKZ1ur9yqMhFllDo=;
+        b=nb9pLAUTvnYYZ/QtG00BfhdUwC2NsCNBqBInLNeoQUZ5ot6U+SYPKZ2kb/jdxrFYnD
+         HLaDWBH57VbxnxO7SJj+IYG4JND/CZa4c8X+NMZnEQn9KlLfkxNBzi28mXQWqmfoNJyK
+         UVfwdn3tbQVT4SjIFC1bsggTMBpU1begfa4ZiYghOHMGhtvE5GhN696qiu6LWtLCTZaq
+         cg3MjOQ3p+gj+Fc5ax8CaVwMcFW/qaZrGj5JzQ+BDVe3G+W/hX//LyFQKk/ESyev7X7q
+         SAePOUlCZmKsGempuY/7SUQtoKZqQMBfu+26iFc10wRuClTy3E/oW9ny749xm3W7x7xO
+         JZnA==
+X-Gm-Message-State: AOAM533t+Q0z6WmjznzKc73AAXaAgbkJ9VmglhlA/Kvg2LvP3i7Y+e3L
+        9S0MtydJ/qxCJZyDIqduiONwkaO+vSG2kCleB9jMqrUpBazP
+X-Google-Smtp-Source: ABdhPJzTKeu9j9ZBqZUXdfdt6ko9tQU8sPwwXxTOCH4fM2w78ltzGfeqSxRairbfrC4tMUNhURM6tX2167mf6NKJp4vqqvuJJMgv
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9256:: with SMTP id e22mr4718594iol.152.1633022843884;
+ Thu, 30 Sep 2021 10:27:23 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 10:27:23 -0700
+In-Reply-To: <0000000000008ce91e05bf9f62bc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008519a705cd39c2f2@google.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
+From:   syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, dvyukov@google.com,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
+HEAD commit:    02d5e016800d Merge tag 'sound-5.15-rc4' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=160132c0b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=154bd5be532a63aa778b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1400bf0f300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144eaf17300000
 
-On Thu, Sep 30, 2021, at 10:24 AM, Sohil Mehta wrote:
-> On 9/30/2021 9:30 AM, Stefan Hajnoczi wrote:
->> On Tue, Sep 28, 2021 at 09:31:34PM -0700, Andy Lutomirski wrote:
->>>
->>> I spent some time reviewing the docs (ISE) and contemplating how this all fits together, and I have a high level question:
->>>
->>> Can someone give an example of a realistic workload that would benefit from SENDUIPI and precisely how it would use SENDUIPI?  Or an example of a realistic workload that would benefit from hypothetical device-initiated user interrupts and how it would use them?  I'm having trouble imagining something that wouldn't work as well or better by simply polling, at least on DMA-coherent architectures like x86.
->> I was wondering the same thing. One thing came to mind:
->>
->> An application that wants to be *interrupted* from what it's doing
->> rather than waiting until the next polling point. For example,
->> applications that are CPU-intensive and have green threads. I can't name
->> a real application like this though :P.
->
-> Thank you Stefan and Andy for giving this some thought.
->
-> We are consolidating the information internally on where and how exactly 
-> we expect to see benefits with real workloads for the various sources of 
-> User Interrupts. It will take a few days to get back on this one.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
 
-Thanks!
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2648 at net/netfilter/core.c:468 __nf_unregister_net_hook+0x4b1/0x600 net/netfilter/core.c:468
+Modules linked in:
+CPU: 0 PID: 2648 Comm: kworker/u4:6 Not tainted 5.15.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:__nf_unregister_net_hook+0x4b1/0x600 net/netfilter/core.c:468
+Code: 00 00 00 e8 41 e9 16 fa 41 83 fc 05 74 5e e8 f6 e1 16 fa 44 89 e6 bf 05 00 00 00 e8 29 e9 16 fa e9 f5 fd ff ff e8 df e1 16 fa <0f> 0b 48 c7 c7 80 dd 17 8d e8 c1 a8 d7 01 e9 b1 fe ff ff 48 89 f7
+RSP: 0018:ffffc9000b10f658 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888070c20b98 RCX: 0000000000000000
+RDX: ffff888024aa9c80 RSI: ffffffff875f1991 RDI: 0000000000000003
+RBP: 0000000000000005 R08: 0000000000000000 R09: ffffc9000b10f597
+R10: ffffffff875f159f R11: 000000000000000e R12: 0000000000000001
+R13: ffff88801d2b43d8 R14: 0000000000000000 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2f45ae09b0 CR3: 000000000b68e000 CR4: 0000000000350ef0
+Call Trace:
+ nf_unregister_net_hook+0xd5/0x110 net/netfilter/core.c:502
+ nft_netdev_unregister_hooks net/netfilter/nf_tables_api.c:230 [inline]
+ nf_tables_unregister_hook.part.0+0x1ab/0x200 net/netfilter/nf_tables_api.c:273
+ nf_tables_unregister_hook include/net/netfilter/nf_tables.h:1090 [inline]
+ __nft_release_basechain+0x138/0x640 net/netfilter/nf_tables_api.c:9524
+ nft_netdev_event net/netfilter/nft_chain_filter.c:351 [inline]
+ nf_tables_netdev_event+0x521/0x8a0 net/netfilter/nft_chain_filter.c:382
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ unregister_netdevice_many+0x951/0x1790 net/core/dev.c:11043
+ ieee80211_remove_interfaces+0x394/0x820 net/mac80211/iface.c:2140
+ ieee80211_unregister_hw+0x47/0x1f0 net/mac80211/main.c:1391
+ mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3457 [inline]
+ hwsim_exit_net+0x50e/0xca0 drivers/net/wireless/mac80211_hwsim.c:4217
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ cleanup_net+0x4ea/0xb00 net/core/net_namespace.c:591
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
->
->
->> (I can imagine some benefit to a hypothetical improved SENDUIPI with idential user semantics but that supported a proper interaction with the scheduler and blocking syscalls.  But that's not what's documented in the ISE...)
->
-> Andy, can you please provide some more context/details on this? Is this 
-> regarding the blocking syscalls discussion (in patch 11) or something else?
->
-
-Yes, and I'll follow up there.  I hereby upgrade my opinion of SENDUIPI wakeups to "probably doable but maybe not in a nice way."
