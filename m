@@ -2,229 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89D641E1E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B4C41E1EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344793AbhI3TAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:00:31 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:55965 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344221AbhI3TA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:00:29 -0400
-Received: from [192.168.1.18] ([90.126.248.220])
-        by mwinf5d10 with ME
-        id 0JyF260054m3Hzu03JyFua; Thu, 30 Sep 2021 20:58:42 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 30 Sep 2021 20:58:42 +0200
-X-ME-IP: 90.126.248.220
-Subject: Re: [PATCH] drm/i915: Use direction definition DMA_BIDIRECTIONAL
- instead of PCI_DMA_BIDIRECTIONAL
-To:     Cai Huoqing <caihuoqing@baidu.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org
-References: <20210925124613.144-1-caihuoqing@baidu.com>
- <YVXH87Uw3urD6q5x@phenom.ffwll.local>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <3a2ada00-fe4f-284c-46a5-c0f6676bcfe1@wanadoo.fr>
-Date:   Thu, 30 Sep 2021 20:58:15 +0200
+        id S1345849AbhI3TER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:04:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:4234 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345619AbhI3TDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:03:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="224919968"
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="224919968"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:01:03 -0700
+X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
+   d="scan'208";a="521314581"
+Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:01:01 -0700
+Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
+To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-2-git-send-email-spujar@nvidia.com>
+ <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
+ <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <40f098c8-b9e3-8da6-849a-eb9a39fefdb0@linux.intel.com>
+Date:   Thu, 30 Sep 2021 14:00:59 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YVXH87Uw3urD6q5x@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 30/09/2021 à 16:21, Daniel Vetter a écrit :
-> On Sat, Sep 25, 2021 at 08:46:12PM +0800, Cai Huoqing wrote:
->> Replace direction definition PCI_DMA_BIDIRECTIONAL
->> with DMA_BIDIRECTIONAL, because it helps to enhance readability
->> and avoid possible inconsistency.
->>
->> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+> 1. The original issue at my end was not just a configuration redundancy.
+> I realize now that with more stream addition following error print is seen.
+>    "ASoC: too many users playback at open 4"
 > 
-> Applied to drm-intel-gt-next, thanks for the patch.
-> -Daniel
+>    This is because the max DPCM users is capped at 8. Increasing this
+> may help (need to see what number is better), but does not address the
+> redundancy problem.
+Going back to this DPCM_MAX_BE_USERS definition, it seems rather
+arbitrary and not so useful indeed.
 
-Hi,
-just in case, a similar patch received some (unrelated) comments a few 
-weeks ago. See [1].
+	/* first time the dpcm is open ? */
+	if (be->dpcm[stream].users == DPCM_MAX_BE_USERS) {
+		dev_err(be->dev, "ASoC: too many users %s at open %d\n",
+			stream ? "capture" : "playback",
+			be->dpcm[stream].state);
+		continue;
+	}
 
-Should it rings some bells to someone who know who knows what should be 
-done.
+The comment is no longer aligned with the code, wondering if this is a
+feature or a bug. There's no reason to arbitrarily restrict the number
+of users of a BE, or the check would need to use platform-specific
+information such as the number of inputs/outputs supported by a mixer/demux.
 
-Just my 2c.
+Maybe Morimoto-san can comment since this was added in:
 
-[1]: 
-https://lore.kernel.org/kernel-janitors/0cd61d5b-ac88-31e8-99ad-143af480416f@arm.com/
+1db19c151819 ('ASoC: soc-pcm: fixup dpcm_be_dai_startup() user count')
 
-CJ
-
-
-> 
->> ---
->>   drivers/gpu/drm/i915/gt/intel_region_lmem.c |  4 ++--
->>   drivers/gpu/drm/i915/gvt/gtt.c              | 17 ++++++++---------
->>   drivers/gpu/drm/i915/gvt/kvmgt.c            |  4 ++--
->>   drivers/gpu/drm/i915/i915_gem_gtt.c         |  4 ++--
->>   4 files changed, 14 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
->> index a74b72f50cc9..afb35d2e5c73 100644
->> --- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
->> +++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
->> @@ -32,7 +32,7 @@ static int init_fake_lmem_bar(struct intel_memory_region *mem)
->>   	mem->remap_addr = dma_map_resource(i915->drm.dev,
->>   					   mem->region.start,
->>   					   mem->fake_mappable.size,
->> -					   PCI_DMA_BIDIRECTIONAL,
->> +					   DMA_BIDIRECTIONAL,
->>   					   DMA_ATTR_FORCE_CONTIGUOUS);
->>   	if (dma_mapping_error(i915->drm.dev, mem->remap_addr)) {
->>   		drm_mm_remove_node(&mem->fake_mappable);
->> @@ -62,7 +62,7 @@ static void release_fake_lmem_bar(struct intel_memory_region *mem)
->>   	dma_unmap_resource(mem->i915->drm.dev,
->>   			   mem->remap_addr,
->>   			   mem->fake_mappable.size,
->> -			   PCI_DMA_BIDIRECTIONAL,
->> +			   DMA_BIDIRECTIONAL,
->>   			   DMA_ATTR_FORCE_CONTIGUOUS);
->>   }
->>   
->> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
->> index e5c2fdfc20e3..53d0cb327539 100644
->> --- a/drivers/gpu/drm/i915/gvt/gtt.c
->> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
->> @@ -745,7 +745,7 @@ static void ppgtt_free_spt(struct intel_vgpu_ppgtt_spt *spt)
->>   	trace_spt_free(spt->vgpu->id, spt, spt->guest_page.type);
->>   
->>   	dma_unmap_page(kdev, spt->shadow_page.mfn << I915_GTT_PAGE_SHIFT, 4096,
->> -		       PCI_DMA_BIDIRECTIONAL);
->> +		       DMA_BIDIRECTIONAL);
->>   
->>   	radix_tree_delete(&spt->vgpu->gtt.spt_tree, spt->shadow_page.mfn);
->>   
->> @@ -849,7 +849,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
->>   	 */
->>   	spt->shadow_page.type = type;
->>   	daddr = dma_map_page(kdev, spt->shadow_page.page,
->> -			     0, 4096, PCI_DMA_BIDIRECTIONAL);
->> +			     0, 4096, DMA_BIDIRECTIONAL);
->>   	if (dma_mapping_error(kdev, daddr)) {
->>   		gvt_vgpu_err("fail to map dma addr\n");
->>   		ret = -EINVAL;
->> @@ -865,7 +865,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
->>   	return spt;
->>   
->>   err_unmap_dma:
->> -	dma_unmap_page(kdev, daddr, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
->> +	dma_unmap_page(kdev, daddr, PAGE_SIZE, DMA_BIDIRECTIONAL);
->>   err_free_spt:
->>   	free_spt(spt);
->>   	return ERR_PTR(ret);
->> @@ -2409,8 +2409,7 @@ static int alloc_scratch_pages(struct intel_vgpu *vgpu,
->>   		return -ENOMEM;
->>   	}
->>   
->> -	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0,
->> -			4096, PCI_DMA_BIDIRECTIONAL);
->> +	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0, 4096, DMA_BIDIRECTIONAL);
->>   	if (dma_mapping_error(dev, daddr)) {
->>   		gvt_vgpu_err("fail to dmamap scratch_pt\n");
->>   		__free_page(virt_to_page(scratch_pt));
->> @@ -2461,7 +2460,7 @@ static int release_scratch_page_tree(struct intel_vgpu *vgpu)
->>   		if (vgpu->gtt.scratch_pt[i].page != NULL) {
->>   			daddr = (dma_addr_t)(vgpu->gtt.scratch_pt[i].page_mfn <<
->>   					I915_GTT_PAGE_SHIFT);
->> -			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
->> +			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
->>   			__free_page(vgpu->gtt.scratch_pt[i].page);
->>   			vgpu->gtt.scratch_pt[i].page = NULL;
->>   			vgpu->gtt.scratch_pt[i].page_mfn = 0;
->> @@ -2741,7 +2740,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
->>   	}
->>   
->>   	daddr = dma_map_page(dev, virt_to_page(page), 0,
->> -			4096, PCI_DMA_BIDIRECTIONAL);
->> +			4096, DMA_BIDIRECTIONAL);
->>   	if (dma_mapping_error(dev, daddr)) {
->>   		gvt_err("fail to dmamap scratch ggtt page\n");
->>   		__free_page(virt_to_page(page));
->> @@ -2755,7 +2754,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
->>   		ret = setup_spt_oos(gvt);
->>   		if (ret) {
->>   			gvt_err("fail to initialize SPT oos\n");
->> -			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
->> +			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
->>   			__free_page(gvt->gtt.scratch_page);
->>   			return ret;
->>   		}
->> @@ -2779,7 +2778,7 @@ void intel_gvt_clean_gtt(struct intel_gvt *gvt)
->>   	dma_addr_t daddr = (dma_addr_t)(gvt->gtt.scratch_mfn <<
->>   					I915_GTT_PAGE_SHIFT);
->>   
->> -	dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
->> +	dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
->>   
->>   	__free_page(gvt->gtt.scratch_page);
->>   
->> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
->> index 7efa386449d1..20b82fb036f8 100644
->> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
->> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
->> @@ -328,7 +328,7 @@ static int gvt_dma_map_page(struct intel_vgpu *vgpu, unsigned long gfn,
->>   		return ret;
->>   
->>   	/* Setup DMA mapping. */
->> -	*dma_addr = dma_map_page(dev, page, 0, size, PCI_DMA_BIDIRECTIONAL);
->> +	*dma_addr = dma_map_page(dev, page, 0, size, DMA_BIDIRECTIONAL);
->>   	if (dma_mapping_error(dev, *dma_addr)) {
->>   		gvt_vgpu_err("DMA mapping failed for pfn 0x%lx, ret %d\n",
->>   			     page_to_pfn(page), ret);
->> @@ -344,7 +344,7 @@ static void gvt_dma_unmap_page(struct intel_vgpu *vgpu, unsigned long gfn,
->>   {
->>   	struct device *dev = vgpu->gvt->gt->i915->drm.dev;
->>   
->> -	dma_unmap_page(dev, dma_addr, size, PCI_DMA_BIDIRECTIONAL);
->> +	dma_unmap_page(dev, dma_addr, size, DMA_BIDIRECTIONAL);
->>   	gvt_unpin_guest_page(vgpu, gfn, size);
->>   }
->>   
->> diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
->> index 36489be4896b..cd5f2348a187 100644
->> --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
->> +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
->> @@ -30,7 +30,7 @@ int i915_gem_gtt_prepare_pages(struct drm_i915_gem_object *obj,
->>   	do {
->>   		if (dma_map_sg_attrs(obj->base.dev->dev,
->>   				     pages->sgl, pages->nents,
->> -				     PCI_DMA_BIDIRECTIONAL,
->> +				     DMA_BIDIRECTIONAL,
->>   				     DMA_ATTR_SKIP_CPU_SYNC |
->>   				     DMA_ATTR_NO_KERNEL_MAPPING |
->>   				     DMA_ATTR_NO_WARN))
->> @@ -64,7 +64,7 @@ void i915_gem_gtt_finish_pages(struct drm_i915_gem_object *obj,
->>   		usleep_range(100, 250);
->>   
->>   	dma_unmap_sg(i915->drm.dev, pages->sgl, pages->nents,
->> -		     PCI_DMA_BIDIRECTIONAL);
->> +		     DMA_BIDIRECTIONAL);
->>   }
->>   
->>   /**
->> -- 
->> 2.25.1
->>
-> 
-
+We're not done with soc-pcm.c cleanups :-)
