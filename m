@@ -2,275 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A90C41D525
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C2341D528
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349332AbhI3IHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:07:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32884 "EHLO mail.kernel.org"
+        id S1349103AbhI3IHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:07:22 -0400
+Received: from comms.puri.sm ([159.203.221.185]:35176 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348976AbhI3IFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:05:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09150617E5;
-        Thu, 30 Sep 2021 08:03:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632988998;
-        bh=t/AsPHEMF54UA1pivQhB1Pn10/GqZeXwfh1mJ1DtMMs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hoGnF6Xthlv02jt+j3j4T0gWAQ62ebzAQ6buxHIMFNFUhByjt3HtD8Fm67axLj/gU
-         MBaURha78AiHSvRNYzzakN4r7ZdA2mWAs7p6UtLmjlcdH2tGWB4oxMZjxOq/OQyAx2
-         xusVTONVKDnOzx3fUdNiVWbbQdKStHmLDUPDnTn66lZLOstMCeDa7w12ZNeOu31yaU
-         Y+NpDnWAvhsYYnKdW4DD9lWSvYZ7QQHK5eMJIPXmyiCgiJI2fY7UfrHrkFjKIHGWaN
-         DSweJXcUqZqj5XtgU/0qBv3NIf02KLos2soUvPy0KU8CoES2FIE61BqhllePMnUskD
-         Ka0rr0foVX/4Q==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v2 13/13] RDMA/nldev: Add support to get status of all counters
-Date:   Thu, 30 Sep 2021 11:02:29 +0300
-Message-Id: <e4f07e8ff4c79eabc12fd8cd859deb7b3c6391f0.1632988543.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632988543.git.leonro@nvidia.com>
-References: <cover.1632988543.git.leonro@nvidia.com>
-MIME-Version: 1.0
+        id S1348979AbhI3IFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:05:47 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id C7B57E114A;
+        Thu, 30 Sep 2021 01:03:54 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DGMzyBi4lGRH; Thu, 30 Sep 2021 01:03:53 -0700 (PDT)
+Message-ID: <a01be64e31fbeb910b237ce8b8031fe20f245c7e.camel@puri.sm>
+Subject: Re: [RFC 00/19] Add interconnect and devfreq support for i.MX8MQ
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     a.fatoum@pengutronix.de, adrian.hunter@intel.com,
+        aisheng.dong@nxp.com, catalin.marinas@arm.com,
+        cw00.choi@samsung.com, devicetree@vger.kernel.org,
+        djakov@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
+        kyungmin.park@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
+        myungjoo.ham@samsung.com, robh@kernel.org, s.hauer@pengutronix.de,
+        shawnguo@kernel.org, ulf.hansson@linaro.org, will.deacon@arm.com
+Date:   Thu, 30 Sep 2021 10:03:46 +0200
+In-Reply-To: <YVRRomS8ut6NjYlV@ryzen>
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
+         <20210924102026.2679952-1-martin.kepplinger@puri.sm>
+         <YVRRomS8ut6NjYlV@ryzen>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+Am Mittwoch, dem 29.09.2021 um 14:44 +0300 schrieb Abel Vesa:
+> On 21-09-24 12:20:26, Martin Kepplinger wrote:
+> > hi Abel,
+> > 
+> > thank you for the update (this is actually v2 of this RFC right?)!
+> > 
+> > all in all this runs fine on the imx8mq (Librem 5 and devkit) I
+> > use. For all
+> > the pl301 nodes I'm not yet sure what I can actually test / switch
+> > frequencies.
+> > 
+> 
+> You can start by looking into each of the following:
+> 
+>  $ ls -1d /sys/devices/platform/soc@0/*/devfreq/*/trans_stat
+> 
+> and look if the transitions happen when a specific driver that is a
+> icc user suspends.
+> 
+> You can also look at:
+> 
+>  /sys/kernel/debug/interconnect/interconnect_summary 
+> 
+> and:
+> 
+>  /sys/kernel/debug/interconnect/interconnect_graph
+> 
+> > But I still have one problem: lcdif/mxfb already has the
+> > interconnect dram
+> > DT property and I use the following call to request bandwidth:
+> > https://source.puri.sm/martin.kepplinger/linux-next/-/commit/d690e4c021293f938eb2253607f92f5a64f15688
+> > (mainlining this is on our todo list).
+> > 
+> > With your patchset, I get:
+> > 
+> > [    0.792960] genirq: Flags mismatch irq 30. 00000004 (mxsfb-drm)
+> > vs. 00000004 (mxsfb-drm)
+> > [    0.801143] mxsfb 30320000.lcd-controller: Failed to install IRQ
+> > handler
+> > [    0.808058] mxsfb: probe of 30320000.lcd-controller failed with
+> > error -16
+> > 
+> > so the main devfreq user (mxsfb) is not there :) why?
+> > 
+> 
+> OK, I admit, this patchset doesn't provide support for all the icc
+> consumer drivers.
+> But that should come at a later stage. I only provided example like
+> fec and usdhc, to show
+> how it all fits together.
+> 
+> > and when I remove the interconnect property from the lcdif DT node,
+> > mxsfb
+> > probes again, but of course it doesn't lower dram freq as needed.
+> > 
+> > Do I do the icc calls wrong in mxsfb despite it working without
+> > your
+> > patchset, or may there be something wrong on your side that breaks
+> > the mxsfb IRQ?
+> > 
+> 
+> Do you have the following changes into your tree?
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> b/arch/arm64/boot/dts/freescale/imx8mq.dtsi               
+> index 00dd8e39a595..c43a84622af5
+> 100644                                                               
+>            
+> ---
+> a/arch/arm64/boot/dts/freescale/imx8mq.dtsi                          
+>                                         
+> +++
+> b/arch/arm64/boot/dts/freescale/imx8mq.dtsi                          
+>                                         
+> @@ -524,7 +524,7 @@ lcdif: lcd-controller@30320000
+> {                                                             
+>                                                   <&clk
+> IMX8MQ_VIDEO_PLL1>,                                      
+>                                                   <&clk
+> IMX8MQ_VIDEO_PLL1_OUT>;                                  
+>                                 assigned-clock-rates = <0>, <0>, <0>,
+> <594000000>;                               
+> -                               interconnects = <&noc
+> IMX8MQ_ICM_LCDIF &noc IMX8MQ_ICS_DRAM>;                    
+> +                               interconnects = <&icc
+> IMX8MQ_ICM_LCDIF &icc IMX8MQ_ICS_DRAM>;                    
+>                                 interconnect-names =
+> "dram";                                                     
+>                                 status =
+> "disabled";                                                          
+>    
+>                                                                      
+>                                             
+> @@ -1117,7 +1117,7 @@ mipi_csi1: csi@30a70000
+> {                                                                  
+>                                          <&src
+> IMX8MQ_RESET_MIPI_CSI1_PHY_REF_RESET>,                            
+>                                          <&src
+> IMX8MQ_RESET_MIPI_CSI1_ESC_RESET>;                                
+>                                 fsl,mipi-phy-gpr = <&iomuxc_gpr
+> 0x88>;                                           
+> -                               interconnects = <&noc IMX8MQ_ICM_CSI1
+> &noc IMX8MQ_ICS_DRAM>;                     
+> +                               interconnects = <&icc IMX8MQ_ICM_CSI1
+> &icc IMX8MQ_ICS_DRAM>;                     
+>                                 interconnect-names =
+> "dram";                                                     
+>                                 status =
+> "disabled";                                                          
+>    
+>                                                                      
+>                                             
+> @@ -1169,7 +1169,7 @@ mipi_csi2: csi@30b60000
+> {                                                                  
+>                                          <&src
+> IMX8MQ_RESET_MIPI_CSI2_PHY_REF_RESET>,                            
+>                                          <&src
+> IMX8MQ_RESET_MIPI_CSI2_ESC_RESET>;                                
+>                                 fsl,mipi-phy-gpr = <&iomuxc_gpr
+> 0xa4>;                                           
+> -                               interconnects = <&noc IMX8MQ_ICM_CSI2
+> &noc IMX8MQ_ICS_DRAM>;                     
+> +                               interconnects = <&icc IMX8MQ_ICM_CSI2
+> &icc IMX8MQ_ICS_DRAM>;                     
+>                                 interconnect-names =
+> "dram";                                                     
+>                                 status =
+> "disabled";                                                          
+>    
+> 
+> I forgot to update these in the current version of the patchset. Will
+> do in the next version.
+> 
+> Also, would help a lot if you could give me a link to a tree you're
+> testing with.
+> That way I can look exactly at what's going on.
+> 
+> 
 
-This patch adds the ability to get the name, index and status of all
-counters for each link through RDMA netlink. This can be used for
-user-space to get the current optional-counter mode.
 
-Examples:
-$ rdma statistic mode
-link rocep8s0f0/1 optional-counters cc_rx_ce_pkts
+thanks Abel, with the above fix of existing interconnects properties my
+system runs as expected and here's the output of
 
-$ rdma statistic mode supported
-link rocep8s0f0/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
-link rocep8s0f1/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
+for each in `ls -1d /sys/devices/platform/soc@0/*/devfreq/*`; do echo
+$each; cat $each/trans_stat; done
 
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Signed-off-by: Neta Ostrovsky <netao@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/nldev.c | 152 ++++++++++++++++++++++++--------
- 1 file changed, 116 insertions(+), 36 deletions(-)
+for mxsfb requesting (max) bandwith (display on):
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 2cf3e85470c4..adbddb07b08e 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -2109,49 +2109,90 @@ static int nldev_stat_del_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	return ret;
- }
- 
--static int stat_get_doit_default_counter(struct sk_buff *skb,
--					 struct nlmsghdr *nlh,
--					 struct netlink_ext_ack *extack,
--					 struct nlattr *tb[])
-+static int stat_get_doit_stats_list(struct sk_buff *skb,
-+				    struct nlmsghdr *nlh,
-+				    struct netlink_ext_ack *extack,
-+				    struct nlattr *tb[],
-+				    struct ib_device *device, u32 port,
-+				    struct rdma_hw_stats *stats)
- {
--	struct rdma_hw_stats *stats;
--	struct nlattr *table_attr;
--	struct ib_device *device;
--	int ret, num_cnts, i;
-+	struct nlattr *table, *entry;
- 	struct sk_buff *msg;
--	u32 index, port;
--	u64 v;
-+	int i;
- 
--	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
--		return -EINVAL;
-+	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
- 
--	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
--	device = ib_device_get_by_index(sock_net(skb->sk), index);
--	if (!device)
--		return -EINVAL;
-+	nlh = nlmsg_put(
-+		msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-+		RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_STAT_GET), 0, 0);
- 
--	if (!device->ops.alloc_hw_port_stats || !device->ops.get_hw_stats) {
--		ret = -EINVAL;
--		goto err;
--	}
-+	if (fill_nldev_handle(msg, device) ||
-+	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port))
-+		goto err_msg;
- 
--	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
--	stats = ib_get_hw_stats_port(device, port);
--	if (!stats) {
--		ret = -EINVAL;
--		goto err;
-+	table = nla_nest_start(msg, RDMA_NLDEV_ATTR_STAT_HWCOUNTERS);
-+	if (!table)
-+		goto err_msg;
-+
-+	mutex_lock(&stats->lock);
-+	for (i = 0; i < stats->num_counters; i++) {
-+		entry = nla_nest_start(msg,
-+				       RDMA_NLDEV_ATTR_STAT_HWCOUNTER_ENTRY);
-+		if (!entry)
-+			goto err_msg_table;
-+
-+		if (nla_put_string(msg,
-+				   RDMA_NLDEV_ATTR_STAT_HWCOUNTER_ENTRY_NAME,
-+				   stats->descs[i].name) ||
-+		    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_HWCOUNTER_INDEX, i))
-+			goto err_msg_entry;
-+
-+		if ((stats->descs[i].flags & IB_STAT_FLAG_OPTIONAL) &&
-+		    (nla_put_u8(msg, RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC,
-+				!test_bit(i, stats->is_disabled))))
-+			goto err_msg_entry;
-+
-+		nla_nest_end(msg, entry);
- 	}
-+	mutex_unlock(&stats->lock);
-+
-+	nla_nest_end(msg, table);
-+	nlmsg_end(msg, nlh);
-+	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
-+
-+err_msg_entry:
-+	nla_nest_cancel(msg, entry);
-+err_msg_table:
-+	mutex_unlock(&stats->lock);
-+	nla_nest_cancel(msg, table);
-+err_msg:
-+	nlmsg_free(msg);
-+	return -EMSGSIZE;
-+}
-+
-+static int stat_get_doit_stats_values(struct sk_buff *skb, struct nlmsghdr *nlh,
-+				      struct netlink_ext_ack *extack,
-+				      struct nlattr *tb[],
-+				      struct ib_device *device, u32 port,
-+				      struct rdma_hw_stats *stats)
-+{
-+	struct nlattr *table_attr;
-+	int ret, num_cnts, i;
-+	struct sk_buff *msg;
-+	u64 v;
-+
-+	if (!device->ops.alloc_hw_port_stats || !device->ops.get_hw_stats)
-+		return -EINVAL;
- 
- 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
--	if (!msg) {
--		ret = -ENOMEM;
--		goto err;
--	}
-+	if (!msg)
-+		return -ENOMEM;
- 
--	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
--			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV,
--					 RDMA_NLDEV_CMD_STAT_GET),
--			0, 0);
-+	nlh = nlmsg_put(
-+		msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-+		RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_STAT_GET), 0, 0);
- 
- 	if (fill_nldev_handle(msg, device) ||
- 	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port)) {
-@@ -2161,7 +2202,8 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
- 
- 	mutex_lock(&stats->lock);
- 
--	num_cnts = device->ops.get_hw_stats(device, stats, port, 0);
-+	num_cnts = device->ops.get_hw_stats(device, stats, port,
-+					    stats->num_counters);
- 	if (num_cnts < 0) {
- 		ret = -EINVAL;
- 		goto err_stats;
-@@ -2188,7 +2230,6 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
- 
- 	mutex_unlock(&stats->lock);
- 	nlmsg_end(msg, nlh);
--	ib_device_put(device);
- 	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
- 
- err_table:
-@@ -2197,7 +2238,46 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
- 	mutex_unlock(&stats->lock);
- err_msg:
- 	nlmsg_free(msg);
--err:
-+	return ret;
-+}
-+
-+static int stat_get_doit_default_counter(struct sk_buff *skb,
-+					 struct nlmsghdr *nlh,
-+					 struct netlink_ext_ack *extack,
-+					 struct nlattr *tb[])
-+{
-+	struct rdma_hw_stats *stats;
-+	struct ib_device *device;
-+	u32 index, port;
-+	int ret;
-+
-+	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-+		return -EINVAL;
-+
-+	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-+	device = ib_device_get_by_index(sock_net(skb->sk), index);
-+	if (!device)
-+		return -EINVAL;
-+
-+	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-+	if (!rdma_is_port_valid(device, port)) {
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	stats = ib_get_hw_stats_port(device, port);
-+	if (!stats) {
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
-+		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
-+					       device, port, stats);
-+	else
-+		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
-+						 port, stats);
-+end:
- 	ib_device_put(device);
- 	return ret;
- }
--- 
-2.31.1
+/sys/devices/platform/soc@0/32700000.noc/devfreq/32700000.noc
+     From  :   To
+           : 133333333 400000000 800000000   time(ms)
+  133333333:         0         1         0       624
+  400000000:         0         0         1        28
+* 800000000:         1         0         0     30624
+Total transition : 3
+/sys/devices/platform/soc@0/3d400000.memory-
+controller/devfreq/3d400000.memory-controller
+     From  :   To
+           :  25000000 100000000 800000000   time(ms)
+   25000000:         0         0         1       620
+  100000000:         0         0         0         0
+* 800000000:         1         0         0     30652
+Total transition : 2
+/sys/devices/platform/soc@0/soc@0:pl301@0/devfreq/soc@0:pl301@0
+     From  :   To
+           :  25000000 133333333 333333333   time(ms)
+   25000000:         0         0         1       616
+  133333333:         0         0         0         0
+* 333333333:         1         0         0     30668
+Total transition : 2
+/sys/devices/platform/soc@0/soc@0:pl301@1/devfreq/soc@0:pl301@1
+     From  :   To
+           :  25000000 266666666   time(ms)
+*  25000000:         0         0     31284
+  266666666:         0         0         0
+Total transition : 0
+/sys/devices/platform/soc@0/soc@0:pl301@2/devfreq/soc@0:pl301@2
+     From  :   To
+           :  25000000 800000000   time(ms)
+*  25000000:         0         0     31288
+  800000000:         1         0         0
+Total transition : 1
+/sys/devices/platform/soc@0/soc@0:pl301@3/devfreq/soc@0:pl301@3
+     From  :   To
+           :  25000000 800000000   time(ms)
+*  25000000:         0         0     31292
+  800000000:         1         0         0
+Total transition : 1
+/sys/devices/platform/soc@0/soc@0:pl301@4/devfreq/soc@0:pl301@4
+     From  :   To
+           :  25000000 333333333   time(ms)
+   25000000:         0         1       648
+* 333333333:         0         0     30652
+Total transition : 1
+/sys/devices/platform/soc@0/soc@0:pl301@5/devfreq/soc@0:pl301@5
+     From  :   To
+           :  25000000 500000000   time(ms)
+*  25000000:         0         0     31304
+  500000000:         1         0         0
+Total transition : 1
+/sys/devices/platform/soc@0/soc@0:pl301@6/devfreq/soc@0:pl301@6
+     From  :   To
+           :  25000000 500000000   time(ms)
+*  25000000:         0         0     31308
+  500000000:         0         0         0
+Total transition : 0
+/sys/devices/platform/soc@0/soc@0:pl301@7/devfreq/soc@0:pl301@7
+     From  :   To
+           :  25000000 128000000 500000000   time(ms)
+*  25000000:         0         0         0     31312
+  128000000:         0         0         0         0
+  500000000:         1         0         0         0
+Total transition : 1
+/sys/devices/platform/soc@0/soc@0:pl301@8/devfreq/soc@0:pl301@8
+     From  :   To
+           :  25000000 133333333   time(ms)
+*  25000000:         0         0     31316
+  133333333:         0         0         0
+Total transition : 0
+/sys/devices/platform/soc@0/soc@0:pl301@9/devfreq/soc@0:pl301@9
+     From  :   To
+           :  25000000 133333333 266666666   time(ms)
+   25000000:         0         0         5      1052
+  133333333:         0         0         0         0
+* 266666666:         5         0         0     30268
+Total transition : 10
+
+
+but with display off (mxsfb not requesting anything), I get the same
+fast freqs for noc and memory-controller. They should use the lowest
+freqs. Only pl301@4 switches to 25mhz in that case. That's odd.
+
+said (still) out-of-tree mxsfb request is
+https://source.puri.sm/martin.kepplinger/linux-next/-/commit/ee7b1453295932da1e292b734afa7a03651ad9ba
+
+and the exact tree I'm running for the above is
+https://source.puri.sm/martin.kepplinger/linux-next/-/commits/5.15-rc3/librem5__integration_byzantium_test_new_devfreq_interconnect
+
+thanks,
+
+                              martin
 
