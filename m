@@ -2,87 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73E741DDDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2239941DDE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345978AbhI3Ppb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:45:31 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:37122 "EHLO mengyan1223.wang"
+        id S1346099AbhI3Pqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:46:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45564 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344638AbhI3Pp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:45:29 -0400
-Received: from localhost.localdomain (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 17F2F659C3;
-        Thu, 30 Sep 2021 11:43:42 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1633016626;
-        bh=FMs1Fhsw2K98QlB0rPqFFGEgdRlNdvHCn8NhtpKTEws=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=yravmq85GEczVyiyS3kw3UN/+Os3oI44etkXNZCUyWBj1JxkGv8jPUO1MWKB6VW/e
-         ba6Ld7lEMYQgXkoI63CEYMwmU06pRyRo+O32o3MrnBska6Dk71DgncIDjgtimFlUiG
-         5ybkPVFjcJbvUi4LK3RuW9ykdPQLWmCeiFC2KlO5plwKpAZK0XpCUPHmXD5ke9XMFz
-         EShRwWetuxhyWCyuGaoBtpUFoz+QrLAkp9WxhiU9LBm1Q3E4Upx75r2kIl8ojMQ3Vy
-         CgZhLCA5S/iN5hi9r7x2L2qpozMnViR+tqMmheuWgdw8uQw0SlXNU9MtkEatYWUAB0
-         B9rBoeWMRiZ2Q==
-Message-ID: <f6fc1fa8bf4decf97d76900a64fe0bc2bf25576d.camel@mengyan1223.wang>
-Subject: Re: [PATCH V4 19/22] LoongArch: Add VDSO and VSYSCALL support
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Thu, 30 Sep 2021 23:43:41 +0800
-In-Reply-To: <20210927064300.624279-20-chenhuacai@loongson.cn>
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
-         <20210927064300.624279-20-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S1346003AbhI3Pqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:46:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633016691; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=uGUTYZfYt5gnSnL/YNTvC3u00AGC/+SA5QqjzrPCBbg=; b=ay0dkYpctpjLTp3pzCL+p2WLVmmUE62putlkZFrSOQQyFjBiFrI+8be8jRf7oNjIye+ECyTx
+ V0qnT2KDSHD1qA6VALweJa18wrrLCFsGkKIGSMaAcXM3zgTh09bKjNzSVxQoEs5cXqoHadNx
+ 85r/SJ7z8+WP3z7JuOvRQV2sn7I=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6155db72713d5d6f9605bf0b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 30 Sep 2021 15:44:50
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27C1DC43616; Thu, 30 Sep 2021 15:44:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [122.163.140.115])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C0C4C43460;
+        Thu, 30 Sep 2021 15:44:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3C0C4C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 1/1] soc: qcom: smp2p: add feature negotiation and ssr ack
+ feature support
+To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
+        clew@codeaurora.org, mathieu.poirier@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+References: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
+ <1633015924-881-3-git-send-email-deesin@codeaurora.org>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <c9dd7bc4-a1a6-b6c4-874c-8eebdd206196@codeaurora.org>
+Date:   Thu, 30 Sep 2021 21:14:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <1633015924-881-3-git-send-email-deesin@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-27 at 14:42 +0800, Huacai Chen wrote:
-> diff --git a/arch/loongarch/vdso/gen_vdso_offsets.sh
-> b/arch/loongarch/vdso/gen_vdso_offsets.sh
-> new file mode 100755
-> index 000000000000..7da255fea213
-> --- /dev/null
-> +++ b/arch/loongarch/vdso/gen_vdso_offsets.sh
-> @@ -0,0 +1,14 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +#
-> +# Derived from RISC-V and ARM64:
-> +# Author: Will Deacon <will.deacon@arm.com>
-> +#
-> +# Match symbols in the DSO that look like VDSO_*; produce a header
-> file
-> +# of constant offsets into the shared object.
-> +#
-> +
-> +LC_ALL=C
+Please ignore this patch. This is inadvertently uploaded.
 
-I'm wondering whether this line is really useful... There is no "export"
-here so the variable won't be passed to the environment of the sed
-command below.
+Thanks,
 
-> +sed -n -e 's/^00*/0/' -e \
-> +'s/^\([0-9a-fA-F]*\) . VDSO_\([a-zA-Z0-9_]*\)$/\#define
-> vdso_offset_\2\t0x\1/p'
+Deepak
+
+On 9/30/2021 9:02 PM, Deepak Kumar Singh wrote:
+> This patch adds feature negotiation and ssr ack feature between
+> local and remote host. Local host can negotiate on common features
+> supported with remote host.
+> ---
+>   drivers/soc/qcom/smp2p.c | 151 ++++++++++++++++++++++++++++++++---------------
+>   1 file changed, 104 insertions(+), 47 deletions(-)
+>
+> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+> index 38585a7..1c6ad1c 100644
+> --- a/drivers/soc/qcom/smp2p.c
+> +++ b/drivers/soc/qcom/smp2p.c
+> @@ -14,7 +14,6 @@
+>   #include <linux/mfd/syscon.h>
+>   #include <linux/module.h>
+>   #include <linux/platform_device.h>
+> -#include <linux/pm_wakeirq.h>
+>   #include <linux/regmap.h>
+>   #include <linux/soc/qcom/smem.h>
+>   #include <linux/soc/qcom/smem_state.h>
+> @@ -41,8 +40,11 @@
+>   #define SMP2P_MAX_ENTRY_NAME 16
+>   
+>   #define SMP2P_FEATURE_SSR_ACK 0x1
+> +#define SMP2P_FLAGS_RESTART_DONE_BIT 0
+> +#define SMP2P_FLAGS_RESTART_ACK_BIT 1
+>   
+>   #define SMP2P_MAGIC 0x504d5324
+> +#define SMP2P_FEATURES	SMP2P_FEATURE_SSR_ACK
+>   
+>   /**
+>    * struct smp2p_smem_item - in memory communication structure
+> @@ -113,7 +115,6 @@ struct smp2p_entry {
+>    * struct qcom_smp2p - device driver context
+>    * @dev:	device driver handle
+>    * @in:		pointer to the inbound smem item
+> - * @out:	pointer to the outbound smem item
+>    * @smem_items:	ids of the two smem items
+>    * @valid_entries: already scanned inbound entries
+>    * @local_pid:	processor id of the inbound edge
+> @@ -136,6 +137,10 @@ struct qcom_smp2p {
+>   
+>   	unsigned valid_entries;
+>   
+> +	bool ssr_ack_enabled;
+> +	bool ssr_ack;
+> +	bool open;
+> +
+>   	unsigned local_pid;
+>   	unsigned remote_pid;
+>   
+> @@ -163,22 +168,59 @@ static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
+>   	}
+>   }
+>   
+> -/**
+> - * qcom_smp2p_intr() - interrupt handler for incoming notifications
+> - * @irq:	unused
+> - * @data:	smp2p driver context
+> - *
+> - * Handle notifications from the remote side to handle newly allocated entries
+> - * or any changes to the state bits of existing entries.
+> - */
+> -static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+> +static bool qcom_smp2p_check_ssr(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *in = smp2p->in;
+> +	bool restart;
+> +
+> +	if (!smp2p->ssr_ack_enabled)
+> +		return false;
+> +
+> +	restart = in->flags & BIT(SMP2P_FLAGS_RESTART_DONE_BIT);
+> +	if (restart == smp2p->ssr_ack)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void qcom_smp2p_do_ssr_ack(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *out = smp2p->out;
+> +	u32 ack;
+> +	u32 val;
+> +
+> +	ack = !smp2p->ssr_ack;
+> +	smp2p->ssr_ack = ack;
+> +	ack = ack << SMP2P_FLAGS_RESTART_ACK_BIT;
+> +
+> +	val = out->flags & ~BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
+> +	val |= ack;
+> +	out->flags = val;
+> +
+> +	qcom_smp2p_kick(smp2p);
+> +}
+> +
+> +static void qcom_smp2p_negotiate(struct qcom_smp2p *smp2p)
+> +{
+> +	struct smp2p_smem_item *out = smp2p->out;
+> +	struct smp2p_smem_item *in = smp2p->in;
+> +	u32 features;
+> +
+> +	if (in->version == out->version) {
+> +		features = in->features & out->features;
+> +		out->features = features;
+> +
+> +		if (features & SMP2P_FEATURE_SSR_ACK)
+> +			smp2p->ssr_ack_enabled = true;
+> +
+> +		smp2p->open = true;
+> +	}
+> +}
+> +
+> +static void qcom_smp2p_notify_in(struct qcom_smp2p *smp2p)
+>   {
+>   	struct smp2p_smem_item *in;
+>   	struct smp2p_entry *entry;
+> -	struct qcom_smp2p *smp2p = data;
+> -	unsigned smem_id = smp2p->smem_items[SMP2P_INBOUND];
+> -	unsigned pid = smp2p->remote_pid;
+> -	size_t size;
+>   	int irq_pin;
+>   	u32 status;
+>   	char buf[SMP2P_MAX_ENTRY_NAME];
+> @@ -187,18 +229,6 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+>   
+>   	in = smp2p->in;
+>   
+> -	/* Acquire smem item, if not already found */
+> -	if (!in) {
+> -		in = qcom_smem_get(pid, smem_id, &size);
+> -		if (IS_ERR(in)) {
+> -			dev_err(smp2p->dev,
+> -				"Unable to acquire remote smp2p item\n");
+> -			return IRQ_HANDLED;
+> -		}
+> -
+> -		smp2p->in = in;
+> -	}
+> -
+>   	/* Match newly created entries */
+>   	for (i = smp2p->valid_entries; i < in->valid_entries; i++) {
+>   		list_for_each_entry(entry, &smp2p->inbound, node) {
+> @@ -210,7 +240,7 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+>   		}
+>   	}
+>   	smp2p->valid_entries = i;
+> -
+> +	
+>   	/* Fire interrupts based on any value changes */
+>   	list_for_each_entry(entry, &smp2p->inbound, node) {
+>   		/* Ignore entries not yet allocated by the remote side */
+> @@ -237,7 +267,52 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+>   			}
+>   		}
+>   	}
+> +}
+> +
+> +/**
+> + * qcom_smp2p_intr() - interrupt handler for incoming notifications
+> + * @irq:	unused
+> + * @data:	smp2p driver context
+> + *
+> + * Handle notifications from the remote side to handle newly allocated entries
+> + * or any changes to the state bits of existing entries.
+> + */
+> +static irqreturn_t qcom_smp2p_intr(int irq, void *data)
+> +{
+> +	struct smp2p_smem_item *in;
+> +	struct qcom_smp2p *smp2p = data;
+> +	unsigned int smem_id = smp2p->smem_items[SMP2P_INBOUND];
+> +	unsigned int pid = smp2p->remote_pid;
+> +	size_t size;
+>   
+> +	in = smp2p->in;
+> +
+> +	/* Acquire smem item, if not already found */
+> +	if (!in) {
+> +		in = qcom_smem_get(pid, smem_id, &size);
+> +		if (IS_ERR(in)) {
+> +			dev_err(smp2p->dev,
+> +				"Unable to acquire remote smp2p item\n");
+> +			goto out;
+> +		}
+> +
+> +		smp2p->in = in;
+> +	}
+> +
+> +	if (!smp2p->open)
+> +		qcom_smp2p_negotiate(smp2p);
+> +
+> +	if (smp2p->open) {
+> +		bool do_restart;
+> +
+> +		do_restart = qcom_smp2p_check_ssr(smp2p);
+> +		qcom_smp2p_notify_in(smp2p);
+> +
+> +		if (do_restart)
+> +			qcom_smp2p_do_ssr_ack(smp2p);
+> +	}
+> +
+> +out:
+>   	return IRQ_HANDLED;
+>   }
+>   
+> @@ -393,6 +468,7 @@ static int qcom_smp2p_alloc_outbound_item(struct qcom_smp2p *smp2p)
+>   	out->remote_pid = smp2p->remote_pid;
+>   	out->total_entries = SMP2P_MAX_ENTRY;
+>   	out->valid_entries = 0;
+> +	out->features = SMP2P_FEATURES;
+>   
+>   	/*
+>   	 * Make sure the rest of the header is written before we validate the
+> @@ -539,26 +615,9 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
+>   		goto unwind_interfaces;
+>   	}
+>   
+> -	/*
+> -	 * Treat smp2p interrupt as wakeup source, but keep it disabled
+> -	 * by default. User space can decide enabling it depending on its
+> -	 * use cases. For example if remoteproc crashes and device wants
+> -	 * to handle it immediatedly (e.g. to not miss phone calls) it can
+> -	 * enable wakeup source from user space, while other devices which
+> -	 * do not have proper autosleep feature may want to handle it with
+> -	 * other wakeup events (e.g. Power button) instead waking up immediately.
+> -	 */
+> -	device_set_wakeup_capable(&pdev->dev, true);
+> -
+> -	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
+> -	if (ret)
+> -		goto set_wake_irq_fail;
+>   
+>   	return 0;
+>   
+> -set_wake_irq_fail:
+> -	dev_pm_clear_wake_irq(&pdev->dev);
+> -
+>   unwind_interfaces:
+>   	list_for_each_entry(entry, &smp2p->inbound, node)
+>   		irq_domain_remove(entry->domain);
+> @@ -583,8 +642,6 @@ static int qcom_smp2p_remove(struct platform_device *pdev)
+>   	struct qcom_smp2p *smp2p = platform_get_drvdata(pdev);
+>   	struct smp2p_entry *entry;
+>   
+> -	dev_pm_clear_wake_irq(&pdev->dev);
+> -
+>   	list_for_each_entry(entry, &smp2p->inbound, node)
+>   		irq_domain_remove(entry->domain);
+>   
