@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A20B41DA4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AC141DA4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351165AbhI3Mzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S1351174AbhI3M4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351127AbhI3Mzp (ORCPT
+        with ESMTP id S1351127AbhI3M43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:55:45 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEA0C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:03 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id n71so7448385iod.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:03 -0700 (PDT)
+        Thu, 30 Sep 2021 08:56:29 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DAAC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:47 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id q205so7356273iod.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=se4EiZ00KtrBxjyRNVBoxuylYR7GsMp6vwQq86rutw4=;
-        b=LmRe3QFhGUUogxSg/CCyhlKdpk/4mZBmoSK5hvOhVvGWQaUJHDIO0TfaqXzIjmXCBH
-         WUJK6oGSX3BJuE9OChsHTC4d497mmW83oPSjbhhSa0WV1cwNHca532+qYfZD06C9aZPc
-         nHwbB8TVQelA5DeQONC90hxdF4wAp+oq+FfPTqmBsQarPQXGc3XSxCYPNx6aEiLSTyUc
-         CeVa/NfGioZ+5Jww//Z0l5BjKvHnEU80gJDdjfO5iVHzPDoKcMBIDkt3H80Et+ATy9jB
-         35UKDxLR2R1JJw4eStsmBtW3Ry4P3Gv56B451/2LYKAxbpH1jIqeQqlzPM0eCloQRui1
-         iZDQ==
+        bh=fH13Xgrw2lKv2ATD+0Vi8DFH5bvKRlk6OCHTv30PLdo=;
+        b=IoCT97nkjFhhN0OOhlCi5bM3V2hzYAoVVrQIBAHU+s/X8Om9nSY2RbrjeRmS6/eSe/
+         89Tg0r0/CuS9x0V++RvU8ZPcYvs13fYcZAJTe0lkD2SHsmLt2Ytvytom2B18NNR9Fy0z
+         hltXcoWYagJvzTbYnLLQmAy8fydopJW1EGyFoiUhr9AdB8/+7TXRZ9fj5q59+TMLzG2P
+         b8FooZA+WvG/6VOpiQXMscx1ZJGwhZ98HLNVLLYKRCyZDCESlBnzNd9ZPQx/eAi7wvxA
+         gKpXZvwYZut7CWOHKwzmI4Jho22HsFe58eaJEjmAjAQ6/+/M7F4q/TzBRhWxduGpAshF
+         ipSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=se4EiZ00KtrBxjyRNVBoxuylYR7GsMp6vwQq86rutw4=;
-        b=K5Skp2ZH/2Vw7c807pLwqD4xE1q7xNaotndlsREEYRD5IGJBgrtwCqJ4vBPR6j4W3P
-         WMgvd9QXfLRt/fEIKk3niJ0Rc26t8aF4w8Si8cTz/e7OfEY8wGyDQgMU5JaOlJ9K9xXE
-         u8/UwEQxw93QHHyLtqVmjMQ4y+5pL4EAa+gO/D0esXi2vWV/wjvuko+PmPmUWGFF6JSm
-         tJV1AlykwFHYJj1uWoZzR/Yz9YfUNRazQqr5kZ9DNxn05rkr+DeqFOa1siqQIno8ExXj
-         EXMdrnUfv4/gPqAL3dpRFdMaKWLpKvvh7mGJT8ZaqDNlExvEH0cLUN4drP98oq38J+vk
-         gMDg==
-X-Gm-Message-State: AOAM533bnViah1Zz4V9AcGr2MMcr9YqOjCrANZgJ1KXpMBF8nhgwsH60
-        EltlTIKBxOZLSfguUMqA/2k40V6tQerH9ZGUAiQ=
-X-Google-Smtp-Source: ABdhPJxGJAPx9Jjiz0QqV8F7jMg1PldCu6DQT0Q0wxjqT54Ja84VaZxZSsZxpigYPVS12yntEsfNSOF9DyPsQPYPXco=
-X-Received: by 2002:a5d:9493:: with SMTP id v19mr3677984ioj.34.1633006442959;
- Thu, 30 Sep 2021 05:54:02 -0700 (PDT)
+        bh=fH13Xgrw2lKv2ATD+0Vi8DFH5bvKRlk6OCHTv30PLdo=;
+        b=zWXHj6BA2sEqY8b4fKYOD12ZCiPLttpdVjFPb9TLHi3hYIlM8U7aKvowJOZh1GG4XE
+         HyRYdZBx+2TakV6itlnJp2kH27nN5ik+Z+zV9qIZXTMndeVa57z/FbnbPN7KjsGWzp7/
+         7eDu0fiuwfw7eVzJNvbGtZVj0MRrp/bmvtRjP+o9IibZCslgEBQ0/2xO1BkECW+oNECg
+         oGO8etlPfL50a3A026MZumx29usUA6dHq/hyGI3N2841T7zhiWPwzIMGmymVBHtHwuHJ
+         cjqPIIQI0IVZpADycquP39NYvnXo+qOXYplowJkCZ5blKSvM0toknPMJ/T1Q2COUSkGp
+         mXGQ==
+X-Gm-Message-State: AOAM533X7CU/4t06Yx8Hng2U2y8ocvnAg0Xb8ccCBGksOrSo+1s+UgcA
+        Mmm4xwpJvXgoshdY3hPPiflX4kbZ6Y9nGbG6T2I=
+X-Google-Smtp-Source: ABdhPJyfgOPxTOyNIpjzalpQcNvMLKIfHdZhacjmG4CqwowmB8Xbd6yxc7iTtzE1oeGLnjEgFZ5VEmwq9eS/KCpfDEc=
+X-Received: by 2002:a05:6602:240d:: with SMTP id s13mr3756457ioa.94.1633006486680;
+ Thu, 30 Sep 2021 05:54:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-5-laoar.shao@gmail.com>
- <202109291113.6DE8D6F3D@keescook>
-In-Reply-To: <202109291113.6DE8D6F3D@keescook>
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-6-laoar.shao@gmail.com>
+ <202109291120.C37E6C9E6@keescook>
+In-Reply-To: <202109291120.C37E6C9E6@keescook>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 30 Sep 2021 20:53:27 +0800
-Message-ID: <CALOAHbD3HUqUnjMYKX7NGwVWiS4K7OvS6uPNWucnOA5Cy3pn9w@mail.gmail.com>
-Subject: Re: [PATCH 4/5] kernel: increase the size of kthread's comm
+Date:   Thu, 30 Sep 2021 20:54:10 +0800
+Message-ID: <CALOAHbAki4sRrSZ6RY6Kp+nYSJ8-Ximray+wLP+e3N4GvUDWnw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] kernel/kthread: show a warning if kthread's comm is
+ still trucated
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Petr Mladek <pmladek@suse.com>,
@@ -69,42 +70,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Sep 30, 2021 at 2:20 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> On Wed, Sep 29, 2021 at 11:50:35AM +0000, Yafang Shao wrote:
-> > This patch increases the size of ktread's comm from 16 to 24, which is
-> > the same with workqueue's, to improve this situation. After this cahnge,
-> > [...]
-> > Because there're only a few of kthreads, so it won't increase too much
-> > memory.
+> On Wed, Sep 29, 2021 at 11:50:36AM +0000, Yafang Shao wrote:
+> > Show a warning if the ktrhead's comm is still trucated. Below is the
+> > result of my test case -
+> >
+> > __kthread_create_on_node:410: comm of pid 14 is truncated from "I-am-a-kthread-with-long-name" to "I-am-a-kthread-with-lon"
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 >
-> Even without the performance impact changes, the math here doesn't hold
-> either, since using kmalloc means there are slabs being allocated to hold
-> the task "comm"s now (which comes with overhead), and every task added
-> a pointer to those 16 bytes (i.e. 8 more bytes on 64-bit systems). So
-> this change, even if there was 0 overhead in using slabs, would be
-> identical to having just raised TASK_COMM_LEN to 24. 8 byte pointer,
-> 16 byte allocation == 24 bytes.
+> I like this check as a reasonable way to make kthread authors aware of
+> the TASK_COMM_LEN limitation.
 >
 
-Right, thanks for the explanation. I missed the pointer before.
+Thanks for the review.
 
-What about reusing the kthread_data() to store the the comm if the
-kthread is not a kworker?
+> > ---
+> >  kernel/kthread.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > index 6def951c605a..aa093f1f423a 100644
+> > --- a/kernel/kthread.c
+> > +++ b/kernel/kthread.c
+> > @@ -404,7 +404,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> >                * task is already visible to other tasks, so updating
+> >                * COMM must be protected.
+> >                */
+> > -             vsnprintf(name, sizeof(name), namefmt, args);
+> > +             if (vsnprintf(name, KTHREAD_COMM_LEN, namefmt, args) >=
+> > +                 KTHREAD_COMM_LEN)
+> > +                     pr_warn("%s:%d: comm of pid %d is truncated from \"%s\" to \"%s\"\n",
+> > +                             __func__, __LINE__, task->pid, namefmt, name);
+> > +
+> >               set_task_comm(task, name);
+> >               /*
+> >                * root may have changed our (kthreadd's) priority or CPU mask.
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Kees Cook
 
-struct kthread {
-     ...
-     void *data;  // reuse this pointer
-     ...
-}
 
-The logic will be something as follows,
-
-    if (kthread_is_kworker) {
-          store_worker_desc_into_kthread_data(); // already did in the kernel
-     } else {
-          store_comm_into_kthread_data();   // that is what we should change
-    }
-
-And then we modify the  proc_task_name() correspondingly.
 
 -- 
 Thanks
