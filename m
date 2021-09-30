@@ -2,189 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FCE41D3E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7D341D3F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348488AbhI3HGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:06:21 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63978 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233661AbhI3HGT (ORCPT
+        id S1348513AbhI3HK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:10:56 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:41908 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233661AbhI3HKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:06:19 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18U6gK7O021987;
-        Thu, 30 Sep 2021 03:04:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Q00eudB6gXZxLSoYORbSMIt2sLyq3sde+WvhQ39CBBU=;
- b=Go0UVew+ul8n9PLdFBg5H6omIpN2qANt8lBfC+528iB9eUvl/EuYQnq/NhuYVCQ87dzf
- xGSkHRjBlt6EgvTWOk7iEwHte4vAGNJDlzko8tDaaNDXxnodXhw3nu20VYBiUXvzd3Xt
- lDs2QfSjpFu16ufUB36cpRbyHtqgSKhSqmZoGiukN8gagkmXEWdWG5+vjjl2DzLv3SZM
- 0RPrTtFaKv1CWkPKfgofaP4knVpHjJcctgf3YB2vOKfr8wVOhTEmAp7OMFz0ItcAXu15
- NJ6PdfwXG4/OxJI3961g5z0u3xNYiSuLFLIrxTqzGAU3iDydOmJxapQUPMJcfylS54+V YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd86qrg0m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 03:04:32 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18U6jhgu001508;
-        Thu, 30 Sep 2021 03:04:31 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bd86qrfyr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 03:04:31 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18U727fo009668;
-        Thu, 30 Sep 2021 07:04:29 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3b9udag5h6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 07:04:28 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18U6xHi658458532
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 06:59:17 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E46B311C04A;
-        Thu, 30 Sep 2021 07:04:24 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6EBB211C04C;
-        Thu, 30 Sep 2021 07:04:20 +0000 (GMT)
-Received: from Madhavan.com (unknown [9.43.101.207])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Sep 2021 07:04:20 +0000 (GMT)
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     michael@ellerman.id.au, eranian@google.com, mark.rutland@arm.com,
-        namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, jolsa@redhat.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Madhavan Srinivasan <maddy@linux.ibm.com>
-Subject: [PATCH 2/2] tools/perf/test: Add endian test for struct branch_flags
-Date:   Thu, 30 Sep 2021 12:34:10 +0530
-Message-Id: <20210930070410.52703-2-maddy@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210930070410.52703-1-maddy@linux.ibm.com>
-References: <20210930070410.52703-1-maddy@linux.ibm.com>
+        Thu, 30 Sep 2021 03:10:54 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 0E17144A024E;
+        Thu, 30 Sep 2021 09:09:10 +0200 (CEST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: G2Zj_TAqG3-2aMfTjFSdbU52BPTjocGp
-X-Proofpoint-GUID: g8TTNauH8Q9QQt9CnIxSDesbxlnFt9Je
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_02,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 lowpriorityscore=0
- adultscore=0 malwarescore=0 phishscore=0 spamscore=0 bulkscore=0
- mlxscore=0 clxscore=1015 mlxlogscore=464 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300042
+Date:   Thu, 30 Sep 2021 09:09:10 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 16/19] auxdisplay: ht16k33: Extract frame buffer
+ probing
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210914143835.511051-17-geert@linux-m68k.org>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
+ <20210914143835.511051-17-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <50e2415e70f3c8b2afd583a42a4cf94e@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend sample-parsing test to include branch_flag
-endian-reverse test. Patch include "util/trace-event.h"
-to sample-parsing for importing bigendian() and extends
-samples_same() to include "needs_swap" to detect/enable
-check for endian-reverse.
+Reviewed-by: Robin van der Gracht <robin@protonic.nl>
 
-Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
----
- tools/perf/tests/sample-parsing.c | 43 +++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 5 deletions(-)
+On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+> Extract all frame buffer (including backlight) probing into
+> ht16k33_fbdev_probe().
+> 
+> Call ht16k33_fbdev_probe() after ht16k33_keypad_probe(), as the latter
+> does not need any manual cleanup in the probe error path.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v6:
+>   - No changes,
+> 
+> v5:
+>   - No changes,
+> 
+> v4:
+>   - No changes,
+> 
+> v3:
+>   - Pass "dev" instead of "client" to ht16k33_fbdev_probe(),
+>   - Drop local variable "node",
+> 
+> v2:
+>   - Rebased.
+> ---
+>  drivers/auxdisplay/ht16k33.c | 101 ++++++++++++++++++-----------------
+>  1 file changed, 53 insertions(+), 48 deletions(-)
+> 
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index 928ac9722c142855..27ac167dae74bd82 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -394,33 +394,13 @@ static int ht16k33_keypad_probe(struct i2c_client 
+> *client,
+>  	return input_register_device(keypad->dev);
+>  }
+> 
+> -static int ht16k33_probe(struct i2c_client *client)
+> +static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv 
+> *priv,
+> +			       uint32_t brightness)
+>  {
+> -	int err;
+> -	uint32_t dft_brightness;
+> -	struct backlight_device *bl;
+> +	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+>  	struct backlight_properties bl_props;
+> -	struct ht16k33_priv *priv;
+> -	struct ht16k33_fbdev *fbdev;
+> -	struct device *dev = &client->dev;
+> -	struct device_node *node = dev->of_node;
+> -
+> -	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+> -		dev_err(dev, "i2c_check_functionality error\n");
+> -		return -EIO;
+> -	}
+> -
+> -	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv)
+> -		return -ENOMEM;
+> -
+> -	priv->client = client;
+> -	i2c_set_clientdata(client, priv);
+> -	fbdev = &priv->fbdev;
+> -
+> -	err = ht16k33_initialize(priv);
+> -	if (err)
+> -		return err;
+> +	struct backlight_device *bl;
+> +	int err;
+> 
+>  	/* Backlight */
+>  	memset(&bl_props, 0, sizeof(struct backlight_properties));
+> @@ -434,18 +414,7 @@ static int ht16k33_probe(struct i2c_client *client)
+>  		return PTR_ERR(bl);
+>  	}
+> 
+> -	err = of_property_read_u32(node, "default-brightness-level",
+> -				   &dft_brightness);
+> -	if (err) {
+> -		dft_brightness = MAX_BRIGHTNESS;
+> -	} else if (dft_brightness > MAX_BRIGHTNESS) {
+> -		dev_warn(dev,
+> -			 "invalid default brightness level: %u, using %u\n",
+> -			 dft_brightness, MAX_BRIGHTNESS);
+> -		dft_brightness = MAX_BRIGHTNESS;
+> -	}
+> -
+> -	bl->props.brightness = dft_brightness;
+> +	bl->props.brightness = brightness;
+>  	ht16k33_bl_update_status(bl);
+> 
+>  	/* Framebuffer (2 bytes per column) */
+> @@ -466,8 +435,8 @@ static int ht16k33_probe(struct i2c_client *client)
+>  		goto err_fbdev_buffer;
+>  	}
+> 
+> -	err = of_property_read_u32(node, "refresh-rate-hz",
+> -		&fbdev->refresh_rate);
+> +	err = of_property_read_u32(dev->of_node, "refresh-rate-hz",
+> +				   &fbdev->refresh_rate);
+>  	if (err) {
+>  		dev_err(dev, "refresh rate not specified\n");
+>  		goto err_fbdev_info;
+> @@ -489,18 +458,9 @@ static int ht16k33_probe(struct i2c_client *client)
+>  	if (err)
+>  		goto err_fbdev_info;
+> 
+> -	/* Keypad */
+> -	if (client->irq > 0) {
+> -		err = ht16k33_keypad_probe(client, &priv->keypad);
+> -		if (err)
+> -			goto err_fbdev_unregister;
+> -	}
+> -
+>  	ht16k33_fb_queue(priv);
+>  	return 0;
+> 
+> -err_fbdev_unregister:
+> -	unregister_framebuffer(fbdev->info);
+>  err_fbdev_info:
+>  	framebuffer_release(fbdev->info);
+>  err_fbdev_buffer:
+> @@ -509,6 +469,51 @@ static int ht16k33_probe(struct i2c_client *client)
+>  	return err;
+>  }
+> 
+> +static int ht16k33_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct ht16k33_priv *priv;
+> +	uint32_t dft_brightness;
+> +	int err;
+> +
+> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+> +		dev_err(dev, "i2c_check_functionality error\n");
+> +		return -EIO;
+> +	}
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->client = client;
+> +	i2c_set_clientdata(client, priv);
+> +
+> +	err = ht16k33_initialize(priv);
+> +	if (err)
+> +		return err;
+> +
+> +	err = of_property_read_u32(dev->of_node, "default-brightness-level",
+> +				   &dft_brightness);
+> +	if (err) {
+> +		dft_brightness = MAX_BRIGHTNESS;
+> +	} else if (dft_brightness > MAX_BRIGHTNESS) {
+> +		dev_warn(dev,
+> +			 "invalid default brightness level: %u, using %u\n",
+> +			 dft_brightness, MAX_BRIGHTNESS);
+> +		dft_brightness = MAX_BRIGHTNESS;
+> +	}
+> +
+> +	/* Keypad */
+> +	if (client->irq > 0) {
+> +		err = ht16k33_keypad_probe(client, &priv->keypad);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	/* Frame Buffer Display */
+> +	return ht16k33_fbdev_probe(dev, priv, dft_brightness);
+> +}
+> +
+>  static int ht16k33_remove(struct i2c_client *client)
+>  {
+>  	struct ht16k33_priv *priv = i2c_get_clientdata(client);
 
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index 8fd8a4ef97da..a67158c12773 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -13,6 +13,7 @@
- #include "evsel.h"
- #include "debug.h"
- #include "util/synthetic-events.h"
-+#include "util/trace-event.h"
- 
- #include "tests.h"
- 
-@@ -30,9 +31,18 @@
- 	}						\
- } while (0)
- 
-+/*
-+ * Hardcode the expected values for branch_entry flags.
-+ * These are based on the input value (213) specified
-+ * in branch_stack variable.
-+ */
-+#define BS_EXPECTED_BE	0xa00d000000000000
-+#define BS_EXPECTED_LE	0xd5000000
-+#define FLAG(s)	s->branch_stack->entries[i].flags
-+
- static bool samples_same(const struct perf_sample *s1,
- 			 const struct perf_sample *s2,
--			 u64 type, u64 read_format)
-+			 u64 type, u64 read_format, bool needs_swap)
- {
- 	size_t i;
- 
-@@ -100,8 +110,14 @@ static bool samples_same(const struct perf_sample *s1,
- 	if (type & PERF_SAMPLE_BRANCH_STACK) {
- 		COMP(branch_stack->nr);
- 		COMP(branch_stack->hw_idx);
--		for (i = 0; i < s1->branch_stack->nr; i++)
--			MCOMP(branch_stack->entries[i]);
-+		for (i = 0; i < s1->branch_stack->nr; i++) {
-+			if (needs_swap)
-+				return ((bigendian()) ?
-+					(FLAG(s2).value == BS_EXPECTED_BE) :
-+					(FLAG(s2).value == BS_EXPECTED_LE));
-+			else
-+				MCOMP(branch_stack->entries[i]);
-+		}
- 	}
- 
- 	if (type & PERF_SAMPLE_REGS_USER) {
-@@ -248,7 +264,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		},
- 	};
- 	struct sample_read_value values[] = {{1, 5}, {9, 3}, {2, 7}, {6, 4},};
--	struct perf_sample sample_out;
-+	struct perf_sample sample_out, sample_out_endian;
- 	size_t i, sz, bufsz;
- 	int err, ret = -1;
- 
-@@ -313,12 +329,29 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		goto out_free;
- 	}
- 
--	if (!samples_same(&sample, &sample_out, sample_type, read_format)) {
-+	if (!samples_same(&sample, &sample_out, sample_type, read_format, evsel.needs_swap)) {
- 		pr_debug("parsing failed for sample_type %#"PRIx64"\n",
- 			 sample_type);
- 		goto out_free;
- 	}
- 
-+	if (sample_type == PERF_SAMPLE_BRANCH_STACK) {
-+		evsel.needs_swap = true;
-+		evsel.sample_size = __evsel__sample_size(sample_type);
-+		err = evsel__parse_sample(&evsel, event, &sample_out_endian);
-+		if (err) {
-+			pr_debug("%s failed for sample_type %#"PRIx64", error %d\n",
-+				 "evsel__parse_sample", sample_type, err);
-+			goto out_free;
-+		}
-+
-+		if (!samples_same(&sample, &sample_out_endian, sample_type, read_format, evsel.needs_swap)) {
-+			pr_debug("parsing failed for sample_type %#"PRIx64"\n",
-+				 sample_type);
-+			goto out_free;
-+		}
-+	}
-+
- 	ret = 0;
- out_free:
- 	free(event);
+Met vriendelijke groet,
+Robin van der Gracht
+
 -- 
-2.31.1
-
+Protonic Holland
+Factorij 36
+1689AL Zwaag
++31 (0)229 212928
+https://www.protonic.nl
