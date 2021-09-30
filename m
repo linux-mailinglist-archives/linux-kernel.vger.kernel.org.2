@@ -2,182 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F4F41D842
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D3141D844
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350253AbhI3LB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:01:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350244AbhI3LB1 (ORCPT
+        id S1350259AbhI3LCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350206AbhI3LCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:01:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632999585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b7LaHsUMLVR6EA21h5UrbLpMuCN6Sr+ds/6TKiPoY6M=;
-        b=FoWmsJvsC6XSdx6XXPn2rHxwNNmAatuEGh6Xut40OEt8SWUGRM6sfGwBWtm5C+unLQjRoQ
-        4hLa6zv7XxJNnPBgG1wPL/yCC8RjfrPfrP24+iBC2R9vgzElX5xZNZFDZfSpvKU6Fnjne3
-        7qePn6hsf+Hz3pm6Hocw1zGti90ygLg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-oPww-ZYGOW2FyF-sqwFCJQ-1; Thu, 30 Sep 2021 06:59:43 -0400
-X-MC-Unique: oPww-ZYGOW2FyF-sqwFCJQ-1
-Received: by mail-ed1-f72.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so5858317edn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:59:43 -0700 (PDT)
+        Thu, 30 Sep 2021 07:02:23 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1490C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:00:40 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id y26so23555552lfa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3paTwRjuoWutw0fS6/rPNTw4z+kWTMvX0jj70+ZzL4k=;
+        b=cD2OX5QDfrdNPoZ9A4XO3D6eqhyMMxfaYKqbM6zDQXwU4mrq886RI2lJonX3G1Xbj1
+         B9cp0Ua9DwOfvKaNLPaCL0aP6sY9y7udhrEzOMtzhAuTgswAXyO8aff+ZXYQpyJO3idR
+         kE+Oxo/2Xe6VXt7Q0oa+SvePrU3C36PFG0kcH7zt1p+YBtbQBIgwTTPvxfKR+V/+D+iN
+         s+OnFLmSlxWyqNiPG4HxWXEClKyAtS4o9CakIyZi7U6lknTBeVqjA3N/ezifZ58Z18mJ
+         TDDKRkjXV5TEq+O5Sdawl79edJH/mXv47pG+IBoX24RwyXC4sz7ZJDYuTYfuufWUQANz
+         af1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b7LaHsUMLVR6EA21h5UrbLpMuCN6Sr+ds/6TKiPoY6M=;
-        b=mR1siUfHgK/T52sReFV+PmkekyfTyGIJA7aK5kBLPXfOg3qE93TK8VDjptSv5wtupS
-         t1q44T/dRP10Gj7SjtvrZ5ZRLYp40cYvM7MQMYwaxj+URHOjWpDnGJRP3IajHaLzLPPq
-         W5E8s9bxT2qEKPB1cO8Tby5ic6bynh/C3Pex8S+oNtwiVhaf9+vWMT3cp0xt0OqF1mkz
-         ufBz9tO65is/5peaomkrQUhoplDFjalT2izlkNWkeafZf0UQEXQgOp9iqfh1b6y2iI6C
-         spAuSyx3EJVbGHVM3k0NC32Nah7ypYzguqI5DNCBmE2mCPosrY9MNSPNU9SFXAqZSmtK
-         JsCw==
-X-Gm-Message-State: AOAM533XF6N7W9G/WbwPHZ8uQd5j0rwG9R69Xg9zl2CII3k3HmDcRWT9
-        VGJ9SRb2Mvb8XLPTdLfzUDBKll5ULMKtc+UTgqkjUbtQ1yLp4YWIwm+zjH/p0xaVPZJcq77NDJN
-        MZvhpLUAu0yizL+jbWO3Gs7qJ
-X-Received: by 2002:a17:906:3f95:: with SMTP id b21mr5678166ejj.368.1632999582386;
-        Thu, 30 Sep 2021 03:59:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2i5HxRxp9m+CxrlD+fPbT58I6Y4N17yAXQUmiEQobb4UJZApVX/orNJjFHXXlnrsZIHnlVQ==
-X-Received: by 2002:a17:906:3f95:: with SMTP id b21mr5678143ejj.368.1632999582132;
-        Thu, 30 Sep 2021 03:59:42 -0700 (PDT)
-Received: from redhat.com ([2.55.134.220])
-        by smtp.gmail.com with ESMTPSA id w26sm1254203edu.59.2021.09.30.03.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 03:59:40 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 06:59:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
- un-authorized devices
-Message-ID: <20210930065807-mutt-send-email-mst@kernel.org>
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3paTwRjuoWutw0fS6/rPNTw4z+kWTMvX0jj70+ZzL4k=;
+        b=IPFC6Y0EeFRbS3GvJCq4ojBRZaUa0KkZ13znkpLlCknCLR4jcDa2f0uz0uIeHEkpf6
+         J1+nxKoxFqVg3s4NYZpMpmf94QBaRBOENhQ5UL19wDr3BkxChbsl4WirAdKCt3355pDJ
+         KXPRhdCJaHXIAxJGzoBu1yewLru/8gke9qFZJFrmmGwMh7GkGLFsvWiwWqPS91Ran3cZ
+         h503lsLlCF2xFjJYGvbC0kBSsvaAgOvXDEAsAFTu46mLQlsGCKe9OIK9HHlBi/yBovui
+         Enw1UTAoyfPc4IMl051o052ajW1qH9xRySkMw5I6JTITmGKlItSrcJqTbBQ1n3bAw47B
+         ZVXA==
+X-Gm-Message-State: AOAM533KDvnDjQ0npnsB88l2xZ+gLY7T52sIJhW22pgqirR9p82G4Jqg
+        lnsNCPt/LB0SH9jHzfL7oqyIYNep4uSLuVFLeSFwuA==
+X-Google-Smtp-Source: ABdhPJwlcPYRdliaFL/hRdve/aA6h3WG2/GLsSKGwlkKHIB0RGyN7KREuv1W0CW/YZik2WJlpZRa6gdfWMqznikfaMU=
+X-Received: by 2002:a19:5f4b:: with SMTP id a11mr5099579lfj.373.1632999639151;
+ Thu, 30 Sep 2021 04:00:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210926132847.22268-1-shawn.guo@linaro.org>
+In-Reply-To: <20210926132847.22268-1-shawn.guo@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 30 Sep 2021 13:00:03 +0200
+Message-ID: <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 06:05:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> While the common case for device-authorization is to skip probe of
-> unauthorized devices, some buses may still want to emit a message on
-> probe failure (Thunderbolt), or base probe failures on the
-> authorization status of a related device like a parent (USB). So add
-> an option (has_probe_authorization) in struct bus_type for the bus
-> driver to own probe authorization policy.
-> 
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
-
-
-So what e.g. the PCI patch
-https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
-actually proposes is a list of
-allowed drivers, not devices. Doing it at the device level
-has disadvantages, for example some devices might have a legacy
-unsafe driver, or an out of tree driver. It also does not
-address drivers that poke at hardware during init.
-
-Accordingly, I think the right thing to do is to skip
-driver init for disallowed drivers, not skip probe
-for specific devices.
-
-
+On Sun, 26 Sept 2021 at 15:28, Shawn Guo <shawn.guo@linaro.org> wrote:
+>
+> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
+> which is being treated as an invalid value by sdhci_set_power_noreg().
+> And thus eMMC is totally broken on the platform.
+>
+> [    1.436599] ------------[ cut here ]------------
+> [    1.436606] mmc0: Invalid vdd 0x17
+> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436655] Modules linked in:
+> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
+> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
+> [    1.436674] Workqueue: events_unbound async_run_entry_fn
+> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436703] sp : ffff800010803a60
+> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
+> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
+> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
+> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
+> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
+> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
+> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
+> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
+> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
+> [    1.436797] Call trace:
+> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
+> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
+> [    1.436818]  mmc_start_host+0xa0/0xb0
+> [    1.436824]  mmc_add_host+0x60/0x90
+> [    1.436830]  __sdhci_add_host+0x174/0x330
+> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
+> [    1.436842]  platform_probe+0x68/0xe0
+> [    1.436850]  really_probe.part.0+0x9c/0x31c
+> [    1.436857]  __driver_probe_device+0x98/0x144
+> [    1.436863]  driver_probe_device+0xc8/0x15c
+> [    1.436869]  __device_attach_driver+0xb4/0x120
+> [    1.436875]  bus_for_each_drv+0x78/0xd0
+> [    1.436881]  __device_attach_async_helper+0xac/0xd0
+> [    1.436888]  async_run_entry_fn+0x34/0x110
+> [    1.436895]  process_one_work+0x1d0/0x354
+> [    1.436903]  worker_thread+0x13c/0x470
+> [    1.436910]  kthread+0x150/0x160
+> [    1.436915]  ret_from_fork+0x10/0x20
+> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
+>
+> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
+> SDHCI_POWER_330 as well.
+>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 > ---
->  drivers/base/dd.c            | 5 +++++
->  drivers/thunderbolt/domain.c | 1 +
->  drivers/usb/core/driver.c    | 1 +
->  include/linux/device/bus.h   | 4 ++++
->  4 files changed, 11 insertions(+)
-> 
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 68ea1f949daa..0cd03ac7d3b1 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -544,6 +544,11 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->  			   !drv->suppress_bind_attrs;
->  	int ret;
->  
-> +	if (!dev->authorized && !dev->bus->has_probe_authorization) {
-> +		dev_dbg(dev, "Device is not authorized\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	if (defer_all_probes) {
->  		/*
->  		 * Value of defer_all_probes can be set only by
-> diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
-> index 3e39686eff14..6de8a366b796 100644
-> --- a/drivers/thunderbolt/domain.c
-> +++ b/drivers/thunderbolt/domain.c
-> @@ -321,6 +321,7 @@ struct bus_type tb_bus_type = {
->  	.probe = tb_service_probe,
->  	.remove = tb_service_remove,
->  	.shutdown = tb_service_shutdown,
-> +	.has_probe_authorization = true,
->  };
->  
->  static void tb_domain_release(struct device *dev)
-> diff --git a/drivers/usb/core/driver.c b/drivers/usb/core/driver.c
-> index fb476665f52d..f57b5a7a90ca 100644
-> --- a/drivers/usb/core/driver.c
-> +++ b/drivers/usb/core/driver.c
-> @@ -2028,4 +2028,5 @@ struct bus_type usb_bus_type = {
->  	.match =	usb_device_match,
->  	.uevent =	usb_uevent,
->  	.need_parent_lock =	true,
-> +	.has_probe_authorization = true,
->  };
-> diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
-> index 062777a45a74..571a2f6e7c1d 100644
-> --- a/include/linux/device/bus.h
-> +++ b/include/linux/device/bus.h
-> @@ -69,6 +69,9 @@ struct fwnode_handle;
->   * @lock_key:	Lock class key for use by the lock validator
->   * @need_parent_lock:	When probing or removing a device on this bus, the
->   *			device core should lock the device's parent.
-> + * @has_probe_authorization: Set true to indicate to the driver-core to skip
-> + *			     the authorization checks and let bus drivers
-> + *			     handle it locally.
->   *
->   * A bus is a channel between the processor and one or more devices. For the
->   * purposes of the device model, all devices are connected via a bus, even if
-> @@ -112,6 +115,7 @@ struct bus_type {
->  	struct lock_class_key lock_key;
->  
->  	bool need_parent_lock;
-> +	bool has_probe_authorization;
->  };
->  
->  extern int __must_check bus_register(struct bus_type *bus);
-> -- 
-> 2.25.1
+> I'm not sure if this is the right solution, as I do not have SDHCI
+> specification.  Hence it's a RFC.
+>
+>  drivers/mmc/host/sdhci.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 8eefa7d5fe85..2427481535a3 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -2042,6 +2042,8 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+>                         break;
+>                 case MMC_VDD_32_33:
+>                 case MMC_VDD_33_34:
+> +               case MMC_VDD_34_35:
+> +               case MMC_VDD_35_36:
+>                         pwr = SDHCI_POWER_330;
 
+The SDHCI specification doesn't state exactly what level
+SDHCI_POWER_330 corresponds to. It's 3.3V typically.
+
+I don't have any strong opinion about this change, although I am a
+little bit puzzled over why this solves the problem for you.
+
+Unless the host (sdhci) announces that it supports MMC_VDD_34_35 or
+MMC_VDD_35_36 through its mmc->ocr_avail mask, the mmc core shouldn't
+try to use it. Can you perhaps check what value the mmc->ocr_avail
+gets assigned to in sdhci_setup_host() for your mmc host?
+
+>                         break;
+>                 default:
+> --
+> 2.17.1
+>
+
+Kind regards
+Uffe
