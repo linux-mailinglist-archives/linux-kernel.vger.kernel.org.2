@@ -2,111 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D1B41E37E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D41141E380
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 23:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244794AbhI3Vw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 17:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S245683AbhI3VzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 17:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhI3Vw5 (ORCPT
+        with ESMTP id S229787AbhI3VzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 17:52:57 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7B5C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so9202532otu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
+        Thu, 30 Sep 2021 17:55:00 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0406AC06176A;
+        Thu, 30 Sep 2021 14:53:17 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r201so1651060pgr.4;
+        Thu, 30 Sep 2021 14:53:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FYmJqhBP9Gy5I1JVDj0HW7OppwoO5pAX8Rg1hw6n6CA=;
-        b=YeNEvEBk8SLRom8LultWOuQewDBu1X4/91nIAKjtOyEauCf/W3CvI0biMBm3yZ27iw
-         ySMu43hW+BXzYnWZ5aSE7qE5Qd+SIVPqsmhDER1eBFE0yULqvsoEWJ6vOEbbfuSUV+ZY
-         VMAiymy275ZtEGn9hUErbiuHm4ePNE2F+NeCfBMsKfeIt+Fx0ojXMnqXp8d6eC7Eoou9
-         JVvZ15i8ZvFEHl9v5pPZv2GF6tOahSLL/Vo1A87pCTUvjzvDiBSXduZHYl9ARaCDpBm0
-         XkiIE60aSDDz/U9FX+W6Fvwww79dreIf6hjA281+T1sBKeN2au95I1U8m0IFiIvMbBbe
-         9cTw==
+        bh=b91JNmgBs9FvxSHNJZlK8LCb6pIcgS0V6e/WL1ZeX70=;
+        b=D+jiga5zkvtDM8pphyD7273sQkPhE155EYcr/nmh6p73psfFTYAS/NoXjjjuzttp//
+         D3vI2Jx6LfuY/IHRLyUeWDeMuCAHu4y3FHVhnM3r+RzraASCO49dqtYQLi881elYt4k+
+         OPlnbku361y7hzOBKJUKijPFd3N+C1v0RB0L8CrPEJv0TpUiyPsq4Az30ZHJCBT7wxOs
+         rh/7OLyFnZ4RPeS6BsP+XASRwUR7PnUCvCdOb2/D/Ce1pekE8dTiqnuBtiGiix9XYlzy
+         NbRgRf/NivfKMRtfpNfwm+8QncdwTt9DsN7mzL8t6rF2q/YM647Ej/os46jIhRyTFlDW
+         rcZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FYmJqhBP9Gy5I1JVDj0HW7OppwoO5pAX8Rg1hw6n6CA=;
-        b=v7GZKJ1KPkW0SJvJsJ1C9zIaKRFsRlaD5van42D5TRl2tAAGkkqWT7Ctepclp0p0II
-         m/hflySESwAFsFFe+DO0DP4Qf5WFR5ghdyCuzOhTZ7afKSJLiMY/PD6of+CIRaBbsq1K
-         tt2yoe6LiWx9Vl4PhRH2/eFp7mIoJyKFE5YNsGD8UC3FD4rqFyUUV3Ifmf6Xa6aGUQhL
-         fa4sZ1zRs7F65g0xvGNWia/jhxwFWipGSL4+MhpI1FQmnRTXmVbkKS/wEQxIXx6fdpaT
-         4G56+9+JjJ1VcqX4pkox6+oWN3Glq2EaF21IUQYfoq4Guoa8baG/IzYcIlkTGK6Aa9Ls
-         thbw==
-X-Gm-Message-State: AOAM533R6r5W0dzDj16YA8FJLbnSvEZ/2KcuW7+pL/+ZMj5Z05y5NNyc
-        w8UBRe2FpUyUzyniPocUGjXnWA==
-X-Google-Smtp-Source: ABdhPJwNJ5kqZrlgIyGNRUEqn1VIxbpJK1XB/LsvhT2fRtitc9fd94G6D8uZQPNl3VcNYORLiYbsjw==
-X-Received: by 2002:a05:6830:2706:: with SMTP id j6mr7359200otu.380.1633038673122;
-        Thu, 30 Sep 2021 14:51:13 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h1sm846908otm.45.2021.09.30.14.51.12
+        bh=b91JNmgBs9FvxSHNJZlK8LCb6pIcgS0V6e/WL1ZeX70=;
+        b=6TzQ2PHWnOLn7DNewprUbwDKJgwGsKlVQC0arLbgfMnuIM/Y7cwc9fBxax36IPfwGt
+         SPR4JZRi/2JsYXxzpKDHBmau3ztF8KBX4c8dCsi2oEtQIuTXv+zfQwSiRCymS/aowgls
+         s+9MJIRgPvzr6qEfNkbiE6MBZP3LvK3wGFL+TUGm40RQpfDXsIInYPDfwEKUDHhc/hJY
+         xyeaapWA3zQR4k167ziRvdO9e+brair45Qg2JSj+Sa2apSCsZp0KkMbZq71pS2oEdkWk
+         qllyoKAAe6qtSDqyJvxBzlFCMo5+6LOhXdJV8SXhZMBXu/WD6pjwr20NjTsoWWBCisey
+         0g6w==
+X-Gm-Message-State: AOAM531DtShQRVEK54QsagwZqvusfaJZjMuUkt3F9YAvhUfmmDF5cqW7
+        +qZhXsR684+a+1QHpC7pDo6HvDXRvEI=
+X-Google-Smtp-Source: ABdhPJxwj4Z9BwgO9J0ScgP/SgIfkjSrFfHVQW21v+uWYPmuQANXYFw1njf1wRrPK5erk7uwDMZLHw==
+X-Received: by 2002:a65:6251:: with SMTP id q17mr6903883pgv.416.1633038796460;
+        Thu, 30 Sep 2021 14:53:16 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id p17sm5647535pjg.54.2021.09.30.14.53.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 14:51:12 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>
-Subject: [PATCH] arm64: defconfig: Disable firmware sysfs fallback
-Date:   Thu, 30 Sep 2021 14:53:00 -0700
-Message-Id: <20210930215300.60290-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Thu, 30 Sep 2021 14:53:15 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v3 PATCH 0/5] Solve silent data loss caused by poisoned page cache (shmem/tmpfs)
+Date:   Thu, 30 Sep 2021 14:53:06 -0700
+Message-Id: <20210930215311.240774-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Part of the enablement of SDMA on the IMX platforms, '7f4e4afa140c
-("arm64: defconfig: Enable SDMA on i.mx8mq/8mm")' also enabled
-CONFIG_FW_LOADER_USER_HELPER_FALLBACK, to allow "firmware loaded by
-udev".
 
-Unfortunately having the fallback enabled does, due to the 60 second
-timeout, essentially requiring userspace to provide a firmware loader.
-But systemd dropped the support for this interface back in 2014 and
-because arm64 is the only architecture that has this enabled, there
-doesn't seem to be any standard solution available.
+When discussing the patch that splits page cache THP in order to offline the
+poisoned page, Noaya mentioned there is a bigger problem [1] that prevents this
+from working since the page cache page will be truncated if uncorrectable
+errors happen.  By looking this deeper it turns out this approach (truncating
+poisoned page) may incur silent data loss for all non-readonly filesystems if
+the page is dirty.  It may be worse for in-memory filesystem, e.g. shmem/tmpfs
+since the data blocks are actually gone.
 
-Examples of this problem can be found in e.g. the ath10k driver, which
-with a standard distro can take about 10 minutes before wlan0 appears.
+To solve this problem we could keep the poisoned dirty page in page cache then
+notify the users on any later access, e.g. page fault, read/write, etc.  The
+clean page could be truncated as is since they can be reread from disk later on.
 
-The alternative to this patch would be to change these drivers to use
-firmware_request_direct(), to avoid the sysfs fallback. But that would
-prevent other systems, such as Android, to rely on a userspace firmware
-loader to pick the firmware from a non-standard place, with just a
-custom defconfig.
+The consequence is the filesystems may find poisoned page and manipulate it as
+healthy page since all the filesystems actually don't check if the page is
+poisoned or not in all the relevant paths except page fault.  In general, we
+need make the filesystems be aware of poisoned page before we could keep the
+poisoned page in page cache in order to solve the data loss problem.
 
-This patch therefor attempts to align the arm64 defconfig will all other
-architectures in the upstream kernel.
+To make filesystems be aware of poisoned page we should consider:
+- The page should be not written back: clearing dirty flag could prevent from
+  writeback.
+- The page should not be dropped (it shows as a clean page) by drop caches or
+  other callers: the refcount pin from hwpoison could prevent from invalidating
+  (called by cache drop, inode cache shrinking, etc), but it doesn't avoid
+  invalidation in DIO path.
+- The page should be able to get truncated/hole punched/unlinked: it works as it
+  is.
+- Notify users when the page is accessed, e.g. read/write, page fault and other
+  paths (compression, encryption, etc).
 
-Cc: Robin Gong <yibin.gong@nxp.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/configs/defconfig | 1 -
- 1 file changed, 1 deletion(-)
+The scope of the last one is huge since almost all filesystems need do it once
+a page is returned from page cache lookup.  There are a couple of options to
+do it:
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index da988a54bfb9..f9e0b3fdaf0b 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -243,7 +243,6 @@ CONFIG_PCI_EPF_TEST=m
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_FW_LOADER_USER_HELPER=y
--CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- CONFIG_HISILICON_LPC=y
- CONFIG_SIMPLE_PM_BUS=y
- CONFIG_FSL_MC_BUS=y
--- 
-2.29.2
+1. Check hwpoison flag for every path, the most straightforward way.
+2. Return NULL for poisoned page from page cache lookup, the most callsites
+   check if NULL is returned, this should have least work I think.  But the
+   error handling in filesystems just return -ENOMEM, the error code will incur
+   confusion to the users obviously.
+3. To improve #2, we could return error pointer, e.g. ERR_PTR(-EIO), but this
+   will involve significant amount of code change as well since all the paths
+   need check if the pointer is ERR or not just like option #1.
+
+I did prototype for both #1 and #3, but it seems #3 may require more changes
+than #1.  For #3 ERR_PTR will be returned so all the callers need to check the
+return value otherwise invalid pointer may be dereferenced, but not all callers
+really care about the content of the page, for example, partial truncate which
+just sets the truncated range in one page to 0.  So for such paths it needs
+additional modification if ERR_PTR is returned.  And if the callers have their
+own way to handle the problematic pages we need to add a new FGP flag to tell
+FGP functions to return the pointer to the page.
+
+It may happen very rarely, but once it happens the consequence (data corruption)
+could be very bad and it is very hard to debug.  It seems this problem had been
+slightly discussed before, but seems no action was taken at that time. [2]
+
+As the aforementioned investigation, it needs huge amount of work to solve
+the potential data loss for all filesystems.  But it is much easier for
+in-memory filesystems and such filesystems actually suffer more than others
+since even the data blocks are gone due to truncating.  So this patchset starts
+from shmem/tmpfs by taking option #1.
+
+Patch #1: cleanup, depended by patch #2
+Patch #2: fix THP with hwpoisoned subpage(s) PMD map bug
+Patch #2: refactor and preparation.
+Patch #4: keep the poisoned page in page cache and handle such case for all
+          the paths.
+Patch #5: the previous patches unblock page cache THP split, so this patch
+          add page cache THP split support.
+
+I didn't receive too many comments for patch #3 ~ #5, so may consider separate
+the bug fixes (patch #1 and #2) from others to make them merged sooner.  This
+version still includes all 5 patches.
+
+
+Changelog
+v2 --> v3:
+  * Incorporated the comments from Kirill.
+  * Reordered the series to reflect the right dependency (patch #3 from v2
+    is patch #1 in this revision, patch #1 from v2 is patch #2 in this
+    revision).
+  * After the reorder, patch #2 depends on patch #1 and both need to be
+    backported to -stable.
+v1 --> v2:
+  * Incorporated the suggestion from Kirill to use a new page flag to
+    indicate there is hwpoisoned subpage(s) in a THP. (patch #1)
+  * Dropped patch #2 of v1.
+  * Refctored the page refcount check logic of hwpoison per Naoya. (patch #2)
+  * Removed unnecessary THP check per Naoya. (patch #3)
+  * Incorporated the other comments for shmem from Naoya. (patch #4)
+
+
+Yang Shi (5):
+      mm: hwpoison: remove the unnecessary THP check
+      mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
+      mm: hwpoison: refactor refcount check handling
+      mm: shmem: don't truncate page if memory failure happens
+      mm: hwpoison: handle non-anonymous THP correctly
+
+ include/linux/page-flags.h |  19 +++++++++++
+ mm/filemap.c               |  12 +++----
+ mm/huge_memory.c           |   2 ++
+ mm/memory-failure.c        | 129 +++++++++++++++++++++++++++++++++++++++++++--------------------------
+ mm/memory.c                |   9 +++++
+ mm/page_alloc.c            |   4 ++-
+ mm/shmem.c                 |  31 +++++++++++++++--
+ mm/userfaultfd.c           |   5 +++
+ 8 files changed, 153 insertions(+), 58 deletions(-)
+
+
+[1] https://lore.kernel.org/linux-mm/CAHbLzkqNPBh_sK09qfr4yu4WTFOzRy+MKj+PA7iG-adzi9zGsg@mail.gmail.com/T/#m0e959283380156f1d064456af01ae51fdff91265
+[2] https://lore.kernel.org/lkml/20210318183350.GT3420@casper.infradead.org/
 
