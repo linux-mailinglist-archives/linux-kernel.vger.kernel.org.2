@@ -2,181 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8680A41DCBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716DF41DCC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351965AbhI3Oz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S1352016AbhI3O5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351915AbhI3Oz0 (ORCPT
+        with ESMTP id S1351985AbhI3O5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:55:26 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7509DC06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:53:43 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id t189so7587305oie.7
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 07:53:43 -0700 (PDT)
+        Thu, 30 Sep 2021 10:57:43 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60399C06176A;
+        Thu, 30 Sep 2021 07:56:00 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g41so26407732lfv.1;
+        Thu, 30 Sep 2021 07:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VIxcNt9zqnRNapqvBD226bMsuD2C6DbQkjAikT4Sfbs=;
-        b=EZLK+026N367xK6Of3/3GFxZQGgcXh52/fAR/gMfyylEAMSLOjaGozS4BXHjQ0K/0K
-         LUGvtSWNBkGbj3vK3NaM3SSlSlmXhEBUukIBUMcuNDEBcaKo29JVDhFwVhFH5z1k0Gvo
-         Ejswi89qmuPtm2VivBxcTHW0bvbYqPLLm6Tc3PzXOGXXcHhChpAuSOGvtGhsYNz0v3KQ
-         BCmp3DFDvaFHNeB2EP8FOGXDwgmbJCMGTjiU4uOYAgFnK7ihgh13gwKXhmDN4C7/EHGa
-         0rhUVaPzBMur7fhj0lIC2F9eei/bW7mAO/kPsVadZyD1N39peE9xlYhe4pUyXEryKfZq
-         A7Yw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uaAT5wob0YiOJmkWdlUFhs2KZnxNPqhCjHclKoH74vs=;
+        b=M6M4cVtrgzJCn3k1Nx3Js2ddtxJSAL5FKq0toORwn5TSYaQJo4j+glrjZH0j1AkKjC
+         Nr0C/u3n/0g0kgj8dViKf+o1Do2dyB4FtAh8knqyaWQlQIiNg/uMsi3gT0TVFUQtC1WF
+         ZPYk8lJJJYxdD/OpZ7oF9y//oLSSyTY6JPipc94TpMGO2BwVchhCWY929/aTSLyhhFtP
+         8M040RATCSTsG9Y5mPSe7DPmhgHmNl9OoGzadsiG2NLUUB9FmyKbzTPeKmNxKqnFB53/
+         iQkSw6y0glt88aWPg9gVW4GyMt1VUvsdkkF14/j0BbRtXjJBGq8K2YWX2lZ6sywuWhOs
+         naNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VIxcNt9zqnRNapqvBD226bMsuD2C6DbQkjAikT4Sfbs=;
-        b=occYuU+lbB/9v72DSt0AadnhXiRVspEHjDz740uH2QyawdAfr0BHxUZZm3Uogy8Gls
-         w8E1a8KfAwn4fzqP5AqOaMt+vpg9uiuzFWQizxOSPklQljjIcTScnfkqm9B202K+mDjZ
-         VdVRSZx+vLMx8roUX0ijOlq/+nDqNPv4oDpGHVaHqZMBIngj2V40N3WOp3ptBdWGoqow
-         XPmbcB76q8eEpB341nTJsIkGyySVe+SKceUBuKF5X+Ia4G1xQXsZtgvML9A4+bAjQUl9
-         BZVK6ua9w8jwic629RmIoUw9mKGevhJaXfoDJR1gDwtmnlS0cQEe2FcWmRpEzQWEhs35
-         3jrQ==
-X-Gm-Message-State: AOAM5304iY7aFVsQ0AHIH+kGkwe1NdSYPJ0udvsSAw6V5IDgJKNa/aGr
-        4TZQl5gxZT4fWSozqQqRTfAHKg==
-X-Google-Smtp-Source: ABdhPJxoDnNjjvVhWww8Ms5gJnrwtghVKekf8KDWX4JcOvmCGqZvKZBxs7JTCgp9mPP+WeYCpgBpGA==
-X-Received: by 2002:aca:744:: with SMTP id 65mr3319322oih.174.1633013622716;
-        Thu, 30 Sep 2021 07:53:42 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m26sm606177otf.12.2021.09.30.07.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 07:53:42 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 07:55:31 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
-Message-ID: <YVXP46FvzmZ1xDvY@ripper>
-References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
- <YUfZbsf3MX1aQJ2+@builder.lan>
- <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
- <YUoHr0F9qjr2Toeb@ripper>
- <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uaAT5wob0YiOJmkWdlUFhs2KZnxNPqhCjHclKoH74vs=;
+        b=TbTb+auJNUZQ/aBNA+ggy9oEuSuK4h60dsGrFdfK4nDBpJQ6cRBDOcOR6CBYr0W8L4
+         ykEmQs8e78Qn6vliQNRcD7zRK1mRZoaiU6AV2xQ3X9zqlwbJN9CkRl5GZNwbHmHpOs4z
+         Pru+0AkaASsR0PbRGrngSlVW3Cy8i+XSIBkWBVI2R6R0ckjZzErwbKKq05kguxH42x82
+         5Ht0rpAbd6AMQsaQi9unas9lrVKgeGtjoTq0lBwKheWNHDjkGFldcz3E5ea5vV+CuQuC
+         s7J2SetzmkcVqUg1pNztuHeXTLLrYWnkriLr+2FwLX4CRz3tviI5fjJT8vPRgvsKJV01
+         WgcA==
+X-Gm-Message-State: AOAM5314fzCo7XBTeJQfKqMwqK1OMoC7ELEe6yZ13bLTaxPm8tL2G+y+
+        7HF1OgnnUipXuljWUxC8LHskmFATNwc=
+X-Google-Smtp-Source: ABdhPJztldcpWswKHWSNTSLhS+h7rgGDHOMYE8V6m4YP8LB2puVHqMF8A8QSLxInr3/kKXcryoWeNg==
+X-Received: by 2002:ac2:4896:: with SMTP id x22mr6592226lfc.257.1633013740388;
+        Thu, 30 Sep 2021 07:55:40 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-80-108.dynamic.spd-mgts.ru. [46.138.80.108])
+        by smtp.googlemail.com with ESMTPSA id x128sm396434lff.102.2021.09.30.07.55.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 07:55:39 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] dt-bindings: memory: tegra20: emc: Document
+ optional LPDDR properties
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210929200305.4245-1-digetx@gmail.com>
+ <20210929200305.4245-2-digetx@gmail.com>
+ <2df06f23-1a5e-f6e9-8e2c-0bb4c93fe23c@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b4309371-fac4-00dc-418e-86c2cf8a8902@gmail.com>
+Date:   Thu, 30 Sep 2021 17:55:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
+In-Reply-To: <2df06f23-1a5e-f6e9-8e2c-0bb4c93fe23c@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30 Sep 02:46 PDT 2021, Rajendra Nayak wrote:
-
+30.09.2021 09:54, Krzysztof Kozlowski пишет:
+> On 29/09/2021 22:03, Dmitry Osipenko wrote:
+>> Some Tegra20 boards don't use RAM code for the memory chip identification
+>> and the identity information should read out from LPDDR chip in this case.
+>> Document new optional generic LPDDR properties that will be used for the
+>> memory chip identification if RAM code isn't provided.
 > 
+> Please mention how they are going to be used. Naively I would assume
+> that these new properties describe the RAM you have. However it seems
+> you do not use them to configure the device but to compare with the
+> device. Why do you need them?
+
+Yes, the properties describe hardware configuration of external DRAM
+chip. This information is read-only and it's actually used for
+configuring SoC memory controller. This MC configuration is already
+pre-configured by bootloader and partially it shouldn't be ever touched
+by software. Kernel driver needs to reconfigure only a part of hardware
+on memory freq changes. The memory timing data is tuned for a specific
+DRAM chip and board, it doesn't include info which identifies the chip.
+So we need to read out DRAM config from hardware and find the matching
+timing in a device-tree by comparing the chip-unique properties. Note
+that only LPDDR chips have that chip-identity info. Regular DDR chips
+require SPD or other means, like NVMEM in case of Tegra.
+
+I'll extend the commit message.
+
+...
+>> +          - 4 # S4 (4 words prefetch architecture)
+>> +          - 2 # S2 (2 words prefetch architecture)
 > 
-> On 9/21/2021 9:56 PM, Bjorn Andersson wrote:
-> > On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
-> > 
-> > > 
-> > > 
-> > > On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
-> > > > On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
-> > > > 
-> > > > > From: Prasad Sodagudi <psodagud@codeaurora.org>
-> > > > > 
-> > > > > egpio is a scheme which allows special power Island Domain IOs
-> > > > > (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
-> > > > > TLMM functions with Island Domain functions.
-> > > > > With this scheme, an IO can be controlled both by the cpu running
-> > > > > linux and the Island processor. This provides great flexibility to
-> > > > > re-purpose the Island IOs for regular TLMM usecases.
-> > > > > 
-> > > > > 2 new bits are added to ctl_reg, egpio_present is a read only bit
-> > > > > which shows if egpio feature is available or not on a given gpio.
-> > > > > egpio_enable is the read/write bit and only effective if egpio_present
-> > > > > is 1. Once its set, the Island IO is controlled from Chip TLMM.
-> > > > > egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
-> > > > > 
-> > > > > The support exists on most recent qcom SoCs, and we add support
-> > > > > for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
-> > > > > 
-> > > > 
-> > > > I was under the impression that this feature would allow you to
-> > > > repurpose pins for use either by the remote island or by apps.
-> > > 
-> > > thats right, you can repurpose the pins for usage by apps by setting
-> > > the egpio_enable to 1, when set to 0 its owned by the island processor.
-> > 
-> > Good.
-> > 
-> > > > 
-> > > > But if I understand your proposal, you check to see if the pin is
-> > > > "egpio capable" for a pin and if so just sets the bit - muxing it to
-> > > > apps (or the island?).
-> > > 
-> > > Right, so if there is a request for a egpio-capable pin, the driver
-> > > flips the ownership. Are you suggesting having some kind of checks to determine
-> > > who should own it?
-> > > 
-> > 
-> > I see, I missed that nuance. So Linux will steal any pins that are
-> > mentioned in DT. But that would mean that you're relying on someone else
-> > to ensure that this bit is cleared for the other pins and you would not
-> > be able to explicitly flip the state back to island mode in runtime.
-> > 
-> > I would prefer that this was more explicit.
-> > 
-> > > > It seems reasonable that this would be another pinmux state for these
-> > > > pins, rather than just flipping them all in one or the other direction.
-> > > 
-> > > hmm, I don't understand. This is not a pinmux state, its a switch to decide
-> > > the ownership.
-> > 
-> > But does it mux the pin to the island, or does it state that the island
-> > is now in charge of the associated TLMM registers?
-> 
-> The island processor does not access the APPS TLMM register space, it has its
-> own TLMM register space that it configures. APPS TLMM registers control its
-> mux/conf settings and Island TLMM registers controls its mux/conf. So essentially
-> there are 2 sets of registers to control the same pin.
-> This bit is more like a top level mux which decides what register settings
-> take affect.
-> 
+> I think instead you should use generic lpddr{2,3} bindings - have a
+> separate node and reference it via a phandle.
 
-"One mux to rule them all" :)
+It indeed shouldn't be a problem to create lpddr binding and move these
+props there.
 
-When we switch this mux towards the Island TLMM, do we need to configure
-the APPS TLMM in a particular way, or does the state of that not matter?
+Extra phandle shouldn't be needed, should be fine to keep these new DRAM
+properties within the chip-descriptor nodes that we already have in
+tegra device-trees. We'll only need to $ref the lpddr binding for the
+descriptor node in the binding. I.e. to make it similar to regulator
+bindings where there is generic regulator.yaml + hw-specific properties.
 
-Would it be reasonable to say that when muxed towards the island the
-apps should always be in gpio mux with some predetermined properties, to
-save power?
-
-
-To reiterate, as proposed, mentioning a egpio-capable pin in the apps
-DTS will cause it to be muxed to the APSS TLMM. But I'm not convinced
-that we don't have scenarios where one might want to dynamically mux the
-pin between island and apss tlmm.
-
-My suggestion is that even that it's two independent muxes controlled in
-the apps tlmm, we'd express them in the same pinmux, i.e. we'd have
-something like:
-
-some-local-state {
-	pins = "gpio1";
-	function = "gpio";
-	output-high;
-};
-
-some-remote-state {
-	pins = "gpio1";
-	function = "island"; /* or just egpio... ? */
-};
-
-One case I imaging where this could be useful is to allow Linux to
-configure a known state of pins when the island isn't running, from the
-remoteproc driver and then flip it over to island mode before booting
-the remote.
-
-Regards,
-Bjorn
+I'll try to implement this in v2, thanks!
