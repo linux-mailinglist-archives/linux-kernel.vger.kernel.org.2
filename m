@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9493041DAC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4456941DAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350111AbhI3NN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36364 "EHLO mail.kernel.org"
+        id S1350178AbhI3NOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:14:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349938AbhI3NN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:13:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC2A161278
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:12:15 +0000 (UTC)
+        id S1349892AbhI3NOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 09:14:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7256761528
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633007535;
-        bh=tmn4BbXKbxNZ0EBee9Cj9y0DfwstE28MZfJScaAzQBA=;
+        s=k20201202; t=1633007556;
+        bh=vHSfNPWmgwIIa9+j2tmKGBTEDiaUE/7eNtYnP7G/W4Q=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DOz6l0JPvlnGCx7pxlN5fyg2rBnOza4mMZ7wnNOLToA8VBDrSQGV98gty+VnvyCpP
-         fWz/Ak8Tti/m/DnySmUqobkj2xAtFPmelwvfIEy0MSwe85lNuG73RpImLZop8PRBse
-         BgbetPqy4D6EU33reOBSbKGccsuXe/p6RfTLQPjj0jfyNC3O94N0B7WK+dOLW7VOuX
-         Db1PkWtVPYdRjFQHSXhrPJ4+LRW3TUmFHODgXj6VqJmCW8yuNye+4a3CpOx4Q44rww
-         Td9Gs1X61Deia5H2PPPYg0hz+3dC4f1EKg7bF/4dTw/0czSpZGbxp/INOco0vT8E5I
-         w28LKAifcoyuA==
-Received: by mail-ed1-f42.google.com with SMTP id y35so21968057ede.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:12:15 -0700 (PDT)
-X-Gm-Message-State: AOAM531rk7/VutHdTZ1jREhYGuOw46HQ3U1VD0+gFUGMliKoB31IzoaF
-        dlho787GEagCLzAawK/41xvgJRzuJfN2LexQ1Q==
-X-Google-Smtp-Source: ABdhPJzTgzKXplVDdgs4A4kIx4YRhy9CpZE0oMSC8hlIlknZBKVudawCQ4nfm82XLN5T4dpicwf+1KmANU1PzkR7hB8=
-X-Received: by 2002:a17:906:3181:: with SMTP id 1mr6983672ejy.388.1633007533447;
- Thu, 30 Sep 2021 06:12:13 -0700 (PDT)
+        b=MGtqMo5E4xGTkHt1jJrxW8YHOcPFO6LUA7iPXBkoNrThnA0ffRV3HacMGjBlXi7AH
+         RNHpE4lexIfAM7aq6K6LgijwPx/6A6p5Y5SrzoY8RO4nc3WV3U9+Do//3GcXknocn1
+         wS7kEkFjzHqyOuluSTRw5D3ZZgG8uiokciZXS3uctswM3fwsUotYXHTKlp1i512dHM
+         tdtjS4eJw2XqnTU27/hYsF7pp7cV5k8CswjDFvpdYwFaNYFkFJiBOdmwgF5KllrrHI
+         JZ619kzb9PZiCVhV0p3CVsLaR8bB0IjAyylIqYloWAsSpF1ZMCv9JaviPjyRfkrNml
+         tntDlL5n/8AbA==
+Received: by mail-oi1-f172.google.com with SMTP id s24so7147426oij.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:12:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530Fq5hzv4ls2HuodYk0ZwAbKfc41/qlYDdvUt52s4ib4+MdrozP
+        mcpWj1E0jsTfYhO8fq4NVEhE3IBORGvEajSIkMk=
+X-Google-Smtp-Source: ABdhPJw8aCnwIHEA1Jv1HQMZO8zxfC4IOKBOuq+3Wj+bcPVnd8wKzwVnaZWqAwug1Q+dyXuyUb6l+3W1Ethn3DDUZGo=
+X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr2628592oiu.33.1633007555710;
+ Thu, 30 Sep 2021 06:12:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930024704.6966-1-jason-jh.lin@mediatek.com> <20210930024704.6966-4-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210930024704.6966-4-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 30 Sep 2021 21:12:02 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__51QPovSD2_DyBFPPMED1H0hGqxHQSdFWkL7nCngkX8g@mail.gmail.com>
-Message-ID: <CAAOTY__51QPovSD2_DyBFPPMED1H0hGqxHQSdFWkL7nCngkX8g@mail.gmail.com>
-Subject: Re: [v2 PATCH 3/3] drm/mediatek: Fix cursor plane is not config when
- primary is updating
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+References: <20210930125813.197418-1-ardb@kernel.org> <20210930125813.197418-6-ardb@kernel.org>
+ <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
+In-Reply-To: <427566ca-80c0-56eb-880b-908bd4a71e9a@csgroup.eu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 30 Sep 2021 15:12:24 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
+Message-ID: <CAMj1kXF6NSy1WRrmHkg15ZD_myCa1gj7dN-CqPyz=bmRmoOdMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Thu, 30 Sept 2021 at 15:09, Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 30/09/2021 =C3=A0 14:58, Ard Biesheuvel a =C3=A9crit :
+> > THREAD_INFO_IN_TASK moved the CPU field out of thread_info, but this
+> > causes some issues on architectures that define raw_smp_processor_id()
+> > in terms of this field, due to the fact that #include'ing linux/sched.h
+> > to get at struct task_struct is problematic in terms of circular
+> > dependencies.
+> >
+> > Given that thread_info and task_struct are the same data structure
+> > anyway when THREAD_INFO_IN_TASK=3Dy, let's move it back so that having
+> > access to the type definition of struct thread_info is sufficient to
+> > reference the CPU number of the current task.
+> >
+> > Note that this requires THREAD_INFO_IN_TASK's definition of the
+> > task_thread_info() helper to be updated, as task_cpu() takes a
+> > pointer-to-const, whereas task_thread_info() (which is used to generate
+> > lvalues as well), needs a non-const pointer. So make it a macro instead=
+.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+> > ---
+> >   arch/arm64/kernel/asm-offsets.c   |  1 -
+> >   arch/arm64/kernel/head.S          |  2 +-
+> >   arch/powerpc/kernel/asm-offsets.c |  2 +-
+> >   arch/powerpc/kernel/smp.c         |  2 +-
+> >   include/linux/sched.h             | 13 +------------
+> >   kernel/sched/sched.h              |  4 ----
+> >   6 files changed, 4 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-of=
+fsets.c
+> > index cee9f3e9f906..0bfc048221af 100644
+> > --- a/arch/arm64/kernel/asm-offsets.c
+> > +++ b/arch/arm64/kernel/asm-offsets.c
+> > @@ -27,7 +27,6 @@
+> >   int main(void)
+> >   {
+> >     DEFINE(TSK_ACTIVE_MM,             offsetof(struct task_struct, acti=
+ve_mm));
+> > -  DEFINE(TSK_CPU,            offsetof(struct task_struct, cpu));
+> >     BLANK();
+> >     DEFINE(TSK_TI_CPU,                offsetof(struct task_struct, thre=
+ad_info.cpu));
+> >     DEFINE(TSK_TI_FLAGS,              offsetof(struct task_struct, thre=
+ad_info.flags));
+> > diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> > index 17962452e31d..6a98f1a38c29 100644
+> > --- a/arch/arm64/kernel/head.S
+> > +++ b/arch/arm64/kernel/head.S
+> > @@ -412,7 +412,7 @@ SYM_FUNC_END(__create_page_tables)
+> >       scs_load \tsk
+> >
+> >       adr_l   \tmp1, __per_cpu_offset
+> > -     ldr     w\tmp2, [\tsk, #TSK_CPU]
+> > +     ldr     w\tmp2, [\tsk, #TSK_TI_CPU]
+>
+> Why do you need to change the name ?
+>
+> For powerpc64, you leave TASK_CPU.
+>
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=883=
-0=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:47=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> If cursor plane has updated but primary plane config task is not
-> finished, mtk_drm_crtc_update_config will call mbox_flush() to clear
-> all task in current GCE thread and let cursor plane re-send a new
-> GCE task with cursor + primary plane config to replace the unfinished
-> GCE task.
->
-> So the plane config flag should not be cleared when mailbox callback
-> with a error status.
+Because arm64 has a clear idiom here, where TSK_TI_ is used for
+thread_info fields accessed via a task_struct pointer. Also, it only
+occurs once in the code.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Power does not seem to have this idiom, and TASK_CPU is used in many
+more places, so I don't think it makes sense to change its name.
 
+
+> >       ldr     \tmp1, [\tmp1, \tmp2, lsl #3]
+> >       set_this_cpu_offset \tmp1
+> >       .endm
+> > diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/as=
+m-offsets.c
+> > index e563d3222d69..e37e4546034e 100644
+> > --- a/arch/powerpc/kernel/asm-offsets.c
+> > +++ b/arch/powerpc/kernel/asm-offsets.c
+> > @@ -93,7 +93,7 @@ int main(void)
+> >   #endif /* CONFIG_PPC64 */
+> >       OFFSET(TASK_STACK, task_struct, stack);
+> >   #ifdef CONFIG_SMP
+> > -     OFFSET(TASK_CPU, task_struct, cpu);
+> > +     OFFSET(TASK_CPU, task_struct, thread_info.cpu);
+> >   #endif
+> >
+> >   #ifdef CONFIG_LIVEPATCH
 >
-> Fixes: 9efb16c2fdd6 ("drm/mediatek: Clear pending flag when cmdq packet i=
-s done")
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 274e5c67507d..b96dbc867890 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -281,6 +281,9 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void =
-*mssg)
->         struct mtk_crtc_state *state;
->         unsigned int i;
->
-> +       if (data->sta < 0)
-> +               return;
-> +
->         state =3D to_mtk_crtc_state(mtk_crtc->base.state);
->
->         state->pending_config =3D false;
-> --
-> 2.18.0
->
+> ...
