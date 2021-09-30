@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194B941DCF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F0F41DCF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhI3PFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhI3PFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:05:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E2B560F4A;
-        Thu, 30 Sep 2021 15:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633014244;
-        bh=nSTw+j4d2UCCKhsHid2M5WQ7GT4HxeOWxUwBItejV+c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=g11GVhubWbJ/GMBOb23KR6WPBnQbnsPapEPAmH9W/CkHL4SrnZ6OSbtFjLvlWWwVA
-         KI45hsV88rEDkrA4e9dQNzQPI63wb3PgbcgguUcOz9DEqcl+JUDxREpl7zAHJf05r4
-         EgArSxHg4bp6ARdwVMjfAU6NZ2jMy6WYnnx3r3UcgKD1bvzo36HdVJ+yDjeaeqc6Xs
-         Of2ntw2JDzgpJnzTlcyjEX4Sdl5Yx10fgBVug4nheliVVzuitooDJs+nRHUdDo95Zx
-         tndStmMdbBgumBc6UaOmEvZTg+43p8gVuuMe9Td4PFvkjWILpJQIRZsJJ2a/8RI5sW
-         3SmGakWn783xw==
-Date:   Thu, 30 Sep 2021 10:04:02 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: Convert to
- device_create_managed_software_node()
-Message-ID: <20210930150402.GA877907@bhelgaas>
+        id S239315AbhI3PHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:07:50 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36650 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235547AbhI3PHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:07:47 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UDUKPh006556;
+        Thu, 30 Sep 2021 17:05:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=sspGCg/P+hrJnTfsc1SrMwVnAR/3nxeD+gtuxpS5IiQ=;
+ b=3N+iS++7Dx0oCCzhKcR+yKwrvwy+vQfuqhzBPj6pF11pCgtAcRPiDW9j3sYI6DnO+HDr
+ X1nBnNqcM1hKNDqq/G8cCXSX5BPZTDraKSt955VkoK+Ot83dR74RyUmeAgBneitrqQdh
+ Dt/oCso4n2EWHzziukyocysFbHvMhQCJcfFd5N30ihikO2dozrDoZXww3gHdQ8oJ4ybF
+ V9psSspNagjdDkZGKs7Ib3ZYI5JuROUDQ4CYW5fGlyvxOaDAyd1IKBR7aaI1ZbuJpmez
+ 03HL/QyWBfgAGjaFkYGO7Y5vSkQuSlPqVF4dgdN5g4ROVh0ZGaob/vKm7qkNZ+ULus+Q 6w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bde69rh62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Sep 2021 17:05:54 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3F0A410002A;
+        Thu, 30 Sep 2021 17:05:53 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2D0232A4D71;
+        Thu, 30 Sep 2021 17:05:53 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
+ 2021 17:05:52 +0200
+Subject: Re: [PATCH 1/1] ARM: dts: stm32: fix AV96 board SAI2B pin muxing on
+ stm32mp15
+To:     Marek Vasut <marex@denx.de>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210927114553.21843-1-olivier.moysan@foss.st.com>
+ <beb6e7c8-f3c8-fc4e-6017-fea5690b9f33@denx.de>
+ <e8d40be8-045c-096a-f079-d9f6364254e9@foss.st.com>
+ <cfbb8475-ad1e-9075-cd82-92a8b315efc9@denx.de>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <9b278eb2-7ca9-0e4b-ecb1-5949ce3c5c10@foss.st.com>
+Date:   Thu, 30 Sep 2021 17:05:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930121246.22833-2-heikki.krogerus@linux.intel.com>
+In-Reply-To: <cfbb8475-ad1e-9075-cd82-92a8b315efc9@denx.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-30_05,2021-09-30_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 03:12:45PM +0300, Heikki Krogerus wrote:
-> In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
-> instead of device_add_properties() to set the "dma-can-stall"
-> property.
+On 9/30/21 12:26 PM, Marek Vasut wrote:
+> On 9/30/21 10:47 AM, Alexandre TORGUE wrote:
+>> Hi Marek
+>>
+>> On 9/29/21 1:18 PM, Marek Vasut wrote:
+>>> On 9/27/21 1:45 PM, Olivier Moysan wrote:
+>>>> Fix SAI2B pin muxing for AV96 board on STM32MP15.
+>>>> The label "sai2a-4" is defined twice. Change redundant label to 
+>>>> "sai2b-4".
+>>>>
+>>>> Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 
+>>>> pins on stm32mp15")
+>>>>
+>>>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+>>>> ---
+>>>>   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi 
+>>>> b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>> index 5b60ecbd718f..b9cc9e0dd4fc 100644
+>>>> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+>>>> @@ -1235,7 +1235,7 @@
+>>>>           };
+>>>>       };
+>>>> -    sai2b_pins_c: sai2a-4 {
+>>>> +    sai2b_pins_c: sai2b-4 {
+>>>>           pins1 {
+>>>>               pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+>>>>               bias-disable;
+>>>
+>>> This mp1 pinmuxing is a total mess, sigh.
+>>
+>> What is the issue here ?
 > 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
-> Hi,
-> 
-> The commit message now says what Bjorn requested, except I left out
-> the claim that the patch fixes a lifetime issue.
+> The same-old discussion about where to place the pinmux nodes, whether 
+> we should have these clusters of pre-defined options in ...pinctrl.dtsi, 
+> or whether we should do more nxp-like per-board configuration.
 
-Thanks.
+ok it's a bit more precise. Honestly I don't understand why the current 
+topology is an issue here. Maybe pinctrl SAI nodes names are not well 
+chosen or are not enough explicit. Concerning our topology and the NXP 
+ones both exists and both have advantages and drawbacks. For ST boards 
+(DK/EV) we want to keep all configs in the same place.
 
-The commit log should help reviewers determine whether the change is
-safe and necessary.  So far it doesn't have any hints along that line.
-
-Comparing device_add_properties() [1] and
-device_create_managed_software_node() [2], the only difference in this
-case is that the latter sets "swnode->managed = true".  The function
-comment says "managed" means the lifetime of the swnode is tied to the
-lifetime of dev, hence my question about a lifetime issue.
-
-I can see that one reason for this change is to remove the last caller
-of device_add_properties(), so device_add_properties() itself can be
-removed.  That's a good reason for wanting to do it, and the commit
-log could mention it.
-
-But it doesn't help me figure out whether it's safe.  For that,
-I need to know the effect of setting "managed = true".  Obviously
-it means *something*, but I don't know what.  It looks like the only
-test is in software_node_notify():
-
-  device_del
-    device_platform_notify_remove
-      software_node_notify_remove
-        sysfs_remove_link(dev_name)
-        sysfs_remove_link("software_node")
-        if (swnode->managed)                 <--
-          set_secondary_fwnode(dev, NULL)
-          kobject_put(&swnode->kobj)
-    device_remove_properties
-      if (is_software_node())
-        fwnode_remove_software_node
-          kobject_put(&swnode->kobj)
-        set_secondary_fwnode(dev, NULL)
-
-I'm not sure what's going on here; it looks like some redundancy with
-multiple calls of kobject_put() and set_secondary_fwnode().  Maybe you
-are in the process of removing device_remove_properties() as well as
-device_add_properties()?
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/property.c?id=v5.14#n533
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/swnode.c?id=v5.14#n1083
-
-> There shouldn't be any functional impact.
-> 
-> thanks,
-> ---
->  drivers/pci/quirks.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index b6b4c803bdc94..fe5eedba47908 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -1850,7 +1850,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
->  	 * can set it directly.
->  	 */
->  	if (!pdev->dev.of_node &&
-> -	    device_add_properties(&pdev->dev, properties))
-> +	    device_create_managed_software_node(&pdev->dev, properties, NULL))
->  		pci_warn(pdev, "could not add stall property");
->  }
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
-> -- 
-> 2.33.0
-> 
+As I prefer to not re open this topic again and again, feel free to add 
+your pin config in your dts board file, I'll accept it.
