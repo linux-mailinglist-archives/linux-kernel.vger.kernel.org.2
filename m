@@ -2,154 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D3141D844
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DDB41D84B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 13:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350259AbhI3LCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 07:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        id S1350285AbhI3LD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 07:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350206AbhI3LCX (ORCPT
+        with ESMTP id S1350262AbhI3LD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:02:23 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1490C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:00:40 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y26so23555552lfa.11
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 04:00:40 -0700 (PDT)
+        Thu, 30 Sep 2021 07:03:26 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D6EC06176A;
+        Thu, 30 Sep 2021 04:01:44 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id h20so6309886ilj.13;
+        Thu, 30 Sep 2021 04:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3paTwRjuoWutw0fS6/rPNTw4z+kWTMvX0jj70+ZzL4k=;
-        b=cD2OX5QDfrdNPoZ9A4XO3D6eqhyMMxfaYKqbM6zDQXwU4mrq886RI2lJonX3G1Xbj1
-         B9cp0Ua9DwOfvKaNLPaCL0aP6sY9y7udhrEzOMtzhAuTgswAXyO8aff+ZXYQpyJO3idR
-         kE+Oxo/2Xe6VXt7Q0oa+SvePrU3C36PFG0kcH7zt1p+YBtbQBIgwTTPvxfKR+V/+D+iN
-         s+OnFLmSlxWyqNiPG4HxWXEClKyAtS4o9CakIyZi7U6lknTBeVqjA3N/ezifZ58Z18mJ
-         TDDKRkjXV5TEq+O5Sdawl79edJH/mXv47pG+IBoX24RwyXC4sz7ZJDYuTYfuufWUQANz
-         af1g==
+         :cc:content-transfer-encoding;
+        bh=sI1mIG42y3NEuIaeyCkeJUiQ2a25iQMmIeBT19wOWsg=;
+        b=ib51AfAqKfbbJA4QpJkaIteofQSgCDOZnD/g5j7+mriwhrwp/QYE7TvAqg4eg42aQA
+         T6EPqGn5KaiNfpFaXbErMsPTQp68C7ow/ZnJeC/dvRxDSaOUKkdDyRwiQ4XIm+T6qdgj
+         CtoEtTHPnTiiVjiHj8egzHaOxUfEpTT4+hZpyf+AuX3Vseh++/3hFCxLyLtENavfhN9X
+         68SowWtjYWi0rtXW9rzabJk1Ozj3vrH3shjsOiD5SsxNIgZFMgjnrFEUmV1GFeYOZwxb
+         iLdknJloQarqcJsHti8OgFnj+PbqSHCwgUxkG7kvPZfaUHQ58tVAbJxzVKX8U/4kbcG0
+         lgMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3paTwRjuoWutw0fS6/rPNTw4z+kWTMvX0jj70+ZzL4k=;
-        b=IPFC6Y0EeFRbS3GvJCq4ojBRZaUa0KkZ13znkpLlCknCLR4jcDa2f0uz0uIeHEkpf6
-         J1+nxKoxFqVg3s4NYZpMpmf94QBaRBOENhQ5UL19wDr3BkxChbsl4WirAdKCt3355pDJ
-         KXPRhdCJaHXIAxJGzoBu1yewLru/8gke9qFZJFrmmGwMh7GkGLFsvWiwWqPS91Ran3cZ
-         h503lsLlCF2xFjJYGvbC0kBSsvaAgOvXDEAsAFTu46mLQlsGCKe9OIK9HHlBi/yBovui
-         Enw1UTAoyfPc4IMl051o052ajW1qH9xRySkMw5I6JTITmGKlItSrcJqTbBQ1n3bAw47B
-         ZVXA==
-X-Gm-Message-State: AOAM533KDvnDjQ0npnsB88l2xZ+gLY7T52sIJhW22pgqirR9p82G4Jqg
-        lnsNCPt/LB0SH9jHzfL7oqyIYNep4uSLuVFLeSFwuA==
-X-Google-Smtp-Source: ABdhPJwlcPYRdliaFL/hRdve/aA6h3WG2/GLsSKGwlkKHIB0RGyN7KREuv1W0CW/YZik2WJlpZRa6gdfWMqznikfaMU=
-X-Received: by 2002:a19:5f4b:: with SMTP id a11mr5099579lfj.373.1632999639151;
- Thu, 30 Sep 2021 04:00:39 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sI1mIG42y3NEuIaeyCkeJUiQ2a25iQMmIeBT19wOWsg=;
+        b=QJpzokY9RhHBry9vHUbf426pmnFUjk+yMIwqp1Dqs3jQd7zsUMic5Ibhyn3apWtrG6
+         jExzerSQ6kX1QOCujwNxMHhNkZSmZmoH6WLdoOy2diCrBCuGB3OI/0kX782G5lXrqRJK
+         8Fp6eo0Bi8wc8zsZMTMmTcjO5X0+Dd0TzTcEt3TYhE6nx6vF7SK/17YRkfXZM111V2Vx
+         43ulZLreFxuacPeRQV+hWZGqJwQZw2pcKh5+FFyPt5V4mluNOyhjHxFXeVVEFZyWDMlY
+         TrUIFJmY/GBEGOb7+JXjpHNNkY6ob7JxHSkynS/qCcTVc5YsnFSHB47yuRu6REkD6sjZ
+         S/MA==
+X-Gm-Message-State: AOAM530l3vVwi69rxbLglVRX6EJSJltZj9iI/dDoq0UcQLUBU1QE5KQb
+        w/ljdISrQzu7Mmolgo1jYYeoWMSTlHo2gYLHJdM=
+X-Google-Smtp-Source: ABdhPJx8SB0hw0YFekIWEw0c9alVbTYaJVFxN/13kenxvRFCv+EjuctA31TmOZgr9g9sCT6WhP5upHhwgpdq+i8QI4c=
+X-Received: by 2002:a05:6e02:b4d:: with SMTP id f13mr3585904ilu.183.1632999703831;
+ Thu, 30 Sep 2021 04:01:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210926132847.22268-1-shawn.guo@linaro.org>
-In-Reply-To: <20210926132847.22268-1-shawn.guo@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 30 Sep 2021 13:00:03 +0200
-Message-ID: <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com> <YVWCK5QO331rfhJJ@google.com>
+In-Reply-To: <YVWCK5QO331rfhJJ@google.com>
+From:   Tomasz Figa <tomasz.figa@gmail.com>
+Date:   Thu, 30 Sep 2021 20:01:32 +0900
+Message-ID: <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sept 2021 at 15:28, Shawn Guo <shawn.guo@linaro.org> wrote:
+2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 18:23 Lee Jones <lee.jones@li=
+naro.org>:
 >
-> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-> which is being treated as an invalid value by sdhci_set_power_noreg().
-> And thus eMMC is totally broken on the platform.
+> I've taken the liberty of cherry-picking some of the points you have
+> reiteratted a few times.  Hopefully I can help to address them
+> adequently.
 >
-> [    1.436599] ------------[ cut here ]------------
-> [    1.436606] mmc0: Invalid vdd 0x17
-> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436655] Modules linked in:
-> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-> [    1.436674] Workqueue: events_unbound async_run_entry_fn
-> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436703] sp : ffff800010803a60
-> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-> [    1.436797] Call trace:
-> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
-> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
-> [    1.436818]  mmc_start_host+0xa0/0xb0
-> [    1.436824]  mmc_add_host+0x60/0x90
-> [    1.436830]  __sdhci_add_host+0x174/0x330
-> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
-> [    1.436842]  platform_probe+0x68/0xe0
-> [    1.436850]  really_probe.part.0+0x9c/0x31c
-> [    1.436857]  __driver_probe_device+0x98/0x144
-> [    1.436863]  driver_probe_device+0xc8/0x15c
-> [    1.436869]  __device_attach_driver+0xb4/0x120
-> [    1.436875]  bus_for_each_drv+0x78/0xd0
-> [    1.436881]  __device_attach_async_helper+0xac/0xd0
-> [    1.436888]  async_run_entry_fn+0x34/0x110
-> [    1.436895]  process_one_work+0x1d0/0x354
-> [    1.436903]  worker_thread+0x13c/0x470
-> [    1.436910]  kthread+0x150/0x160
-> [    1.436915]  ret_from_fork+0x10/0x20
-> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
+> On Thu, 30 Sep 2021, Krzysztof Kozlowski wrote:
+> > Reminder: these are essential drivers and all Exynos platforms must hav=
+e
+> > them as built-in (at least till someone really tests this on multiple
+> > setups).
 >
-> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-> SDHCI_POWER_330 as well.
+> > Therefore I don't agree with calling it a "problem" that we select
+> > *necessary* drivers for supported platforms. It's by design - supported
+> > platforms should receive them without ability to remove.
 >
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
-> I'm not sure if this is the right solution, as I do not have SDHCI
-> specification.  Hence it's a RFC.
+> > The selected drivers are essential for supported platforms.
 >
->  drivers/mmc/host/sdhci.c | 2 ++
->  1 file changed, 2 insertions(+)
+> SoC specific drivers are only essential/necessary/required in
+> images designed to execute solely on a platform that requires them.
+> For a kernel image which is designed to be generic i.e. one that has
+> the ability to boot on vast array of platforms, the drivers simply
+> have to be *available*.
 >
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 8eefa7d5fe85..2427481535a3 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -2042,6 +2042,8 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->                         break;
->                 case MMC_VDD_32_33:
->                 case MMC_VDD_33_34:
-> +               case MMC_VDD_34_35:
-> +               case MMC_VDD_35_36:
->                         pwr = SDHCI_POWER_330;
+> Forcing all H/W drivers that are only *potentially* utilised on *some*
+> platforms as core binary built-ins doesn't make any technical sense.
+> The two most important issues this causes are image size and a lack of
+> configurability/flexibility relating to real-world application i.e.
+> the one issue we already agreed upon; H/W or features that are too
+> new (pre-release).
+>
+> Bloating a generic kernel with potentially hundreds of unnecessary
+> drivers that will never be executed in the vast majority of instances
+> doesn't achieve anything.  If we have a kernel image that has the
+> ability to boot on 10's of architectures which have 10's of platforms
+> each, that's a whole host of unused/wasted executable space.
+>
+> In order for vendors to work more closely with upstream, they need the
+> ability to over-ride a *few* drivers to supplement them with some
+> functionality which they believe provides them with a competitive edge
+> (I think you called this "value-add" before) prior to the release of a
+> device.  This is a requirement that cannot be worked around.
 
-The SDHCI specification doesn't state exactly what level
-SDHCI_POWER_330 corresponds to. It's 3.3V typically.
+[Chiming in as a clock driver sub-maintainer and someone who spent a
+non-insignificant part of his life on SoC driver bring-up - not as a
+Google employee.]
 
-I don't have any strong opinion about this change, although I am a
-little bit puzzled over why this solves the problem for you.
+I'd argue that the proper way for them to achieve it would be to
+extend the upstream frameworks and/or existing drivers with
+appropriate APIs to allow their downstream modules to plug into what's
+already available upstream.
 
-Unless the host (sdhci) announces that it supports MMC_VDD_34_35 or
-MMC_VDD_35_36 through its mmc->ocr_avail mask, the mmc core shouldn't
-try to use it. Can you perhaps check what value the mmc->ocr_avail
-gets assigned to in sdhci_setup_host() for your mmc host?
-
->                         break;
->                 default:
-> --
-> 2.17.1
->
-
-Kind regards
-Uffe
+Best regards,
+Tomasz
