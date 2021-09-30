@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075E341D54C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5363E41D550
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349033AbhI3IP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348866AbhI3IP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:15:28 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0762CC06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:13:46 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i4so22010479lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rngmrucDKKX7vdIHXqMF2aFdczPuqoVJOJOEzSi6QbY=;
-        b=iNpcZg4FJSl/E0D91jTLYN066/g4fht1tZDk+kVvvvC7m46uhYrADY0r2LKAGRpsvC
-         eMq9NuvIAdmLDYXSKlH8gq0n7rin832Urmt2vVm4t69SGxz4h7WuoI7te1dYuO7XqSIL
-         XIpEflqiahGNwxX+hyvImbJ2T6Wrr2CE9nk5w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rngmrucDKKX7vdIHXqMF2aFdczPuqoVJOJOEzSi6QbY=;
-        b=NRz5wKlov95iWgRm9PRduWbrvGSJ3Pl8Yli52J7FigSAXjByoWnxwNxVSGTKxWgM8c
-         k2kYPc/qCQW/Vs8xxLhbUrKOiPvrrAE71ZGAhTTc8LnjsZIKrmggDR4/nCPyEdTmqqQQ
-         xPueswNN2GTxQadffH1kXW/VDpcLDBlhGr7LDVirLgH/R85907oAvgQJBcGMtbnL/TKD
-         e1ztMmpuWaBR49WFxjXg5GWeKp/I9RoUwEH9UbUzdjod4MF9epGmewdGvObldmwFgKFo
-         v+vMg270Ma/ck+VrJVm/j6JvxBRTTgSdnO7Zw8xzcl2uMzenpQQbLSRwSRB5yEOOVtPS
-         FcrA==
-X-Gm-Message-State: AOAM5324jpELuBvRPwZBg8FN7UM15TLS4O/v3SK03TnwN5QPuR7xc9RO
-        Tgk3pO25GDmTNnVlNAEM4qZ26Q==
-X-Google-Smtp-Source: ABdhPJwVZAMv47uohlDP+rsIJRUSKybyRwjMsKkN5RqtA6lISri5H7k6tbqtVyiHSqpzDdtegqaX8w==
-X-Received: by 2002:a2e:8eda:: with SMTP id e26mr4699363ljl.266.1632989624326;
-        Thu, 30 Sep 2021 01:13:44 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id s2sm259046lji.1.2021.09.30.01.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 01:13:43 -0700 (PDT)
-Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-References: <20210929225850.3889950-1-ndesaulniers@google.com>
- <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
- <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <77204240-ef3a-d72c-dfe1-d8a47de5329b@rasmusvillemoes.dk>
-Date:   Thu, 30 Sep 2021 10:13:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1349060AbhI3IR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348949AbhI3IR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:17:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F5661528;
+        Thu, 30 Sep 2021 08:16:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632989774;
+        bh=IG9QanQU30BLOgTHId32QxYcNknUkvBQ+NHpixLYVRQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r/QiGQjMBdERAF+TEj/DaIlMsGCQTgzbvy1yvZpmUKkympQ2p3y9BFGXwHdhcT0tf
+         i7M9CfaKuPQQ5RVAK+/tRVKSp+oR2mnUmmbNx/9KKdjcXdnaInSfMPDV2i+zpUYkHk
+         2YSCDJ1tF0tzOArcbGJQHC1iZgYfrohiAwO+vZmj7wDpKb006LxLNKtLlAtGMGL91u
+         lRfl8gglbql1M4KFSkiqcf3NYXU6gnPHnhTfkSwySAZM1bMXmbmWK9gGiZcVkvDxyd
+         EJgh9cWq1xivkblynxfp20eC3NbHEWZpbX9sVRWfuolWWE0ksGR0zWDHE8NEq4Z04e
+         MkFb6pq9C3ErQ==
+Date:   Thu, 30 Sep 2021 09:16:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        madvenka@linux.microsoft.com
+Subject: Re: [PATCH v17 08/15] arm64: kexec: configure EL2 vectors for kexec
+Message-ID: <20210930081607.GA23250@willie-the-truck>
+References: <20210916231325.125533-1-pasha.tatashin@soleen.com>
+ <20210916231325.125533-9-pasha.tatashin@soleen.com>
+ <20210929123513.GC21631@willie-the-truck>
+ <CA+CK2bDw3A7FkZoQbB-AQWHj89Azqjrm12WFQVcfQjS+2Tmgyg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bDw3A7FkZoQbB-AQWHj89Azqjrm12WFQVcfQjS+2Tmgyg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 02.18, Nick Desaulniers wrote:
-> On Wed, Sep 29, 2021 at 4:28 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
-
-> Though for the defconfig case...somehow the cost is more than with the
-> sanitizers...
+On Wed, Sep 29, 2021 at 11:54:55PM -0400, Pasha Tatashin wrote:
+> > > +/* Allocates pages for kexec page table */
+> > > +static void *kexec_page_alloc(void *arg)
+> > > +{
+> > > +     struct kimage *kimage = (struct kimage *)arg;
+> > > +     struct page *page = kimage_alloc_control_pages(kimage, 0);
+> > > +
+> > > +     if (!page)
+> > > +             return NULL;
+> > > +
+> > > +     memset(page_address(page), 0, PAGE_SIZE);
+> >
+> > Hmm, I think we might be missing barriers here to ensure that the zeroes
+> > are visible to the page-table walker before we plumb the page into the
+> > page-table.
+> >
+> > Usually, that's taken care of by the smp_wmb() in __pXX_alloc() but I
+> > can't see that here. Is it hiding?
 > 
-> arch/x86/mm/amdtopology.c:157:7: remark: '__nodes_weight' not inlined
-> into 'amd_numa_init' because too costly to inline (cost=930,
-> threshold=45) [-Rpass-missed=inline]
->         if (!nodes_weight(numa_nodes_parsed))
->              ^
-> 
-> Looking at the output of `make LLVM=1 -j72
-> arch/x86/mm/amdtopology.ll`, @__nodes_weight is just some inline asm
-> (.altinstructions). I wonder if I need to teach the cost model about
-> `asm inline`...
+> Based on the comment in __pte_alloc() that smp_wmb() is needed in
+> order to synchronize pte setup with other cpus prior to making it
+> visible to them. This is not needed here. First, by the time these
+> page tables are used the other cpus are offlined (kexec reboot code is
+> single threaded). Second, we never insert any entry into a page table
+> that is actively used by any cpu.
 
-Remind me, does clang understand 'asm inline("foo")'? Regardless, it
-seems that the
+I think the comment there is wrong, but the barrier is still necessary.
+How else do you guarantee that the page-table walker reads the zeroes from
+the memset?
 
-  asm (ALTERNATIVE("call __sw_hweight32", ...
-  asm (ALTERNATIVE("call __sw_hweight64", ...
-
-in arch/x86/include/asm/arch_hweight.h could/should be made asm_inline
-at least for gcc's sake.
-
-Somewhat related: I really think we should remove __cold from the
-definition of __init: It hurts boot time (on a simple board with quite
-reproducible boot timing I measured 1-3% some time ago), and it is
-likely at least partially responsible for the never-ending tsunami of
-functions-that-obviously-should-have-been-inlined(TM) but were not
-because the caller is being optimized for size. Whatever small cost in
-extra .text is reclaimed after init - and those who are concerned about
-the size of the kernel image itself probably build with
-CONFIG_OPTIMIZE_FOR_SIZE=y, and I see no change in such an image whether
-__init includes __cold or not.
-
-Rasmus
+Will
