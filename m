@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3CA41D357
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0B741D36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348356AbhI3GbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 02:31:11 -0400
-Received: from muru.com ([72.249.23.125]:38888 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348320AbhI3GbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 02:31:06 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id B00D78150;
-        Thu, 30 Sep 2021 06:29:51 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] serial: 8250_omap: Drop the use of pm_runtime_irq_safe()
-Date:   Thu, 30 Sep 2021 09:29:06 +0300
-Message-Id: <20210930062906.58937-5-tony@atomide.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210930062906.58937-1-tony@atomide.com>
-References: <20210930062906.58937-1-tony@atomide.com>
+        id S1348089AbhI3Gdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348053AbhI3Gda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:33:30 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39CFC06161C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:31:48 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id l6so3266007plh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 23:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=gyrLKv0De6yyODRa16jnm+SfxHUmqz6ZDHmNG+6Xi1g=;
+        b=f7IsQBX97Is3sCYEG6NfEKFwqngoDf7mR6pgldjBnukgc10D6B6oFJBPxV1TFk3gvJ
+         kuwWL+hxm0jFDp6oSHpEG7Ky5d1LVH0UnKJdM70Xdp6l4JaHz6l8PExmHzX8EWnuqWul
+         NKE1ZLrXGLcKbDxR1QC+dYXUXD9hZ72YiqvZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gyrLKv0De6yyODRa16jnm+SfxHUmqz6ZDHmNG+6Xi1g=;
+        b=PssaeUNWDEMUkR2+UWCVPcjDtIKac2BzbVFnJar3iK/Vq7JaQ+yedtlhRepZFM1yaz
+         groUNIJeDy8srTXUpk0YvVVUuCjIiSMoZDV8SN7yQ0+Ek4yn15bHaMl5RCB5nTn1kvgP
+         uhuK2SxvpO/3XdcWNY8fBVTIsMYN2hK3zJZD64z/vFQdzTDNLcn9WOFoF70GjZnZ+8M8
+         PA39YnsgiwZ41t8BSn/gJHK8I10ner1OzGwi40lusfGG5rEDA+0KrW9P9LgfNhIMB2Kt
+         76kDw4pE4XIUlIdUTcFi+9zfRCcEsPO8E2TL/q++roaDApe0NqwIzGm6vze3c/m4S7Af
+         yu7Q==
+X-Gm-Message-State: AOAM532RFJ9GCz9F7RwRccRT8+rNjD9mlaT6kvEI9rSyeWoXK4poh9rR
+        E5X3mIClDH5AaNzEUqS/yBbcU/tUzHkClw==
+X-Google-Smtp-Source: ABdhPJxj+BqBDKVAcE0XKUIsqsj9Cvta0er2MBa+BXV44ddtnpR2lYR2YnDfU8srW3rHSV9wrV4tqw==
+X-Received: by 2002:a17:902:db02:b0:13e:683c:7523 with SMTP id m2-20020a170902db0200b0013e683c7523mr2706267plx.43.1632983508394;
+        Wed, 29 Sep 2021 23:31:48 -0700 (PDT)
+Received: from localhost ([2001:4479:e200:df00:7dea:cb77:bac7:65dc])
+        by smtp.gmail.com with ESMTPSA id c8sm1633541pfj.204.2021.09.29.23.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 23:31:48 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Kai Song <songkai01@inspur.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     Kai Song <songkai01@inspur.com>, linux-kernel@vger.kernel.org,
+        oohall@gmail.com, paulus@samba.org
+Subject: Re: [PATCH] powerpc/eeh:Fix some mistakes in comments
+In-Reply-To: <20210927023507.32564-1-songkai01@inspur.com>
+References: <20210927023507.32564-1-songkai01@inspur.com>
+Date:   Thu, 30 Sep 2021 16:31:45 +1000
+Message-ID: <878rze60by.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can finally drop the pm_runtime_irq_safe() usage for 8250_omap driver.
+Hi Kai,
 
-We already have the serial layer RX wake path fixed for power management.
-We no longer allow deeper idle states unless the kernel console has been
-detached, and we require that the RX wakeirq is configured.
+Thank you for your contribution to the powerpc kernel!
 
-For TX path, we now use the prep_tx() and uart_flush_tx() calls.
+> Get rid of warning:
+> arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
 
-To drop pm_runtime_irq_safe(), we remove all PM runtime calls from the
-interrupt context. If we ever see an interrupt for an idled port, we just
-bail out. We now also need to restore the port context with interrupts
-disabled to prevent interrupts from happening while restoring the port.
+You haven't said where this warning is from. I thought it might be from
+sparse but I couldn't seem to reproduce it - is my version of sparse too
+old or are you using a different tool?
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/tty/serial/8250/8250_omap.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+>  /**
+> - * eeh_set_pe_freset - Check the required reset for the indicated device
+> - * @data: EEH device
+> + * eeh_set_dev_freset - Check the required reset for the indicated device
+> + * @edev: EEH device
+>   * @flag: return value
+>   *
+>   * Each device might have its preferred reset type: fundamental or
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -621,6 +621,9 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	unsigned int iir, lsr;
- 	int ret;
- 
-+	if (atomic_read(&port->runtime_suspended))
-+		return IRQ_NONE;
-+
- #ifdef CONFIG_SERIAL_8250_DMA
- 	if (up->dma) {
- 		ret = omap_8250_dma_handle_irq(port);
-@@ -628,7 +631,6 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	}
- #endif
- 
--	serial8250_rpm_get(up);
- 	lsr = serial_port_in(port, UART_LSR);
- 	iir = serial_port_in(port, UART_IIR);
- 	ret = serial8250_handle_irq(port, iir);
-@@ -662,8 +664,6 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 		schedule_delayed_work(&up->overrun_backoff, delay);
- 	}
- 
--	serial8250_rpm_put(up);
--
- 	return IRQ_RETVAL(ret);
- }
- 
-@@ -1191,13 +1191,9 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
- 	unsigned char status;
- 	u8 iir;
- 
--	serial8250_rpm_get(up);
--
- 	iir = serial_port_in(port, UART_IIR);
--	if (iir & UART_IIR_NO_INT) {
--		serial8250_rpm_put(up);
-+	if (iir & UART_IIR_NO_INT)
- 		return IRQ_HANDLED;
--	}
- 
- 	spin_lock(&port->lock);
- 
-@@ -1226,7 +1222,6 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
- 
- 	uart_unlock_and_check_sysrq(port);
- 
--	serial8250_rpm_put(up);
- 	return 1;
- }
- 
-@@ -1420,8 +1415,6 @@ static int omap8250_probe(struct platform_device *pdev)
- 	if (!of_get_available_child_count(pdev->dev.of_node))
- 		pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
- 
--	pm_runtime_irq_safe(&pdev->dev);
--
- 	pm_runtime_get_sync(&pdev->dev);
- 
- 	omap_serial_fill_features_erratas(&up, priv);
-@@ -1652,6 +1645,7 @@ static int omap8250_runtime_resume(struct device *dev)
- 	struct omap8250_priv *priv = dev_get_drvdata(dev);
- 	struct uart_8250_port *up;
- 	struct uart_port *port;
-+	unsigned long flags;
- 
- 	/* In case runtime-pm tries this before we are setup */
- 	if (!priv)
-@@ -1660,6 +1654,8 @@ static int omap8250_runtime_resume(struct device *dev)
- 	up = serial8250_get_port(priv->line);
- 	port = &up->port;
- 
-+	/* Restore state with interrupts disabled */
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (omap8250_lost_context(up))
- 		omap8250_restore_regs(up);
- 
-@@ -1671,6 +1667,8 @@ static int omap8250_runtime_resume(struct device *dev)
- 
- 	atomic_set(&port->runtime_suspended, 0);
- 
-+	spin_unlock_irqrestore(&port->lock, flags);
-+
- 	uart_start_pending_tx(port);
- 
- 	return 0;
--- 
-2.33.0
+This looks like a good and correct change.
+
+I checked through git history with git blame to see when the function
+was renamed. There are 2 commits that should have updated the comment:
+one renamed the function and one renamed an argument. So, I think this
+commit could have:
+
+Fixes: d6c4932fbf24 ("powerpc/eeh: Strengthen types of eeh traversal functions")
+Fixes: c270a24c59bd ("powerpc/eeh: Do reset based on PE")
+
+But I don't know if an out of date comment is enough of a 'bug' to
+justify a Fixes: tag? (mpe, I'm sure I've asked this before, sorry!)
+
+All up, this is a good correction to the comment.
+
+There are a few other functions in the file that have incorrect
+docstrings:
+
+ - eeh_pci_enable - missing parameter
+
+ - eeh_pe_reset and eeh_pe_reset_full - missing parameter
+
+ - eeh_init - missing parameter
+
+ - eeh_pe_inject_err - wrong name for a parameter
+
+Could you fix all of the docstrings in the file at once?
+
+Kind regards,
+Daniel
+
