@@ -2,105 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A49E41D431
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571CF41D433
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 09:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348552AbhI3HNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 03:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348502AbhI3HNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:13:09 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F95DC06161C;
-        Thu, 30 Sep 2021 00:11:27 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id dn26so18197285edb.13;
-        Thu, 30 Sep 2021 00:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NivLtE6bvPyO2eyOUU5H2C9JkdzXbEFTOOy+OnsfGMY=;
-        b=Wa9ruBHMvrn2OTCwoSQGdpxt13Dc/jBSLCn4+4zCn16WlmlPrjv4GeFntmA38wVtZ1
-         epRUkC1rqJ5Al4EB2uMGK1S3CB9woAYdZ/gIu6zLTww/SWYVO6vhsEAijQ84dz9Rv6Rv
-         jhqI4sVrkPElOLSNOymWIv56xUOezeXE3mZ5ugIH/4kLvbrHidX3wZ5MkqjGFyQaMKhz
-         jqo6eZTQcr2c39wBOijtPmaRfXQNinMOAE39x8Qe2/ZJTTaG+xL2nSe1COA6KxnRZgU7
-         0BVejs7UypCK2FgDBQDuKfsyWT75VZggk4yqTNOsNF3p+FBCHtYga0WJiwlvQU874bKa
-         6d7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NivLtE6bvPyO2eyOUU5H2C9JkdzXbEFTOOy+OnsfGMY=;
-        b=l93Jb9rYbG7uOv3VfiE6LeKn9LTulOdCCPNzEEWrlO5Y58IV0dCzaUwasow/4jEkGb
-         yhY6LPWVpyywGHG+f485/C7K0kZBjGUnTFFE7dVeb8gloabMgfzyTED59f8q7BPuN8Ib
-         x0RpELp69KPrw/uW9BvfluBzBzb9gJFoUDDmi+hol7VopY/8W4WnySDwy7JnLdPMci8Z
-         gLb8yjC0RfscRvyBzf9ZMbycJG+9UpXw/7PveTR2IDuBOnq/vLprmthRl58bKTyG4gIw
-         JnZQ/lZQyPUrtF3w3YCsiGmsYLtR0MxtSHjmnvrdnaTXqgWfVo5lOZuNMNh91AknzPYY
-         d+MQ==
-X-Gm-Message-State: AOAM530ciMQVudcIhW1W1YHXY/qd3C0SGHiNnT6d0Tz0vP1u0A9St6O9
-        MleDhOlsAQX5vxzTrEQfqF8ELdtJgNBEp4DCC+7CUP6KMnSuDw==
-X-Google-Smtp-Source: ABdhPJyKh0Jnwae394jsULl/1bhpDPyEVgwmlAFmuLsD4VhBrum9ZCgRztHmezNuWMQd7J5/6LbGrixu8Whi87MEqc8=
-X-Received: by 2002:a50:e0c8:: with SMTP id j8mr5185272edl.283.1632985885993;
- Thu, 30 Sep 2021 00:11:25 -0700 (PDT)
+        id S1348567AbhI3HNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 03:13:38 -0400
+Received: from mga11.intel.com ([192.55.52.93]:37293 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348502AbhI3HNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:13:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="221917055"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="221917055"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 00:11:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="539319350"
+Received: from lkp-server02.sh.intel.com (HELO f7acefbbae94) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2021 00:11:49 -0700
+Received: from kbuild by f7acefbbae94 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mVqEO-0003zI-Gt; Thu, 30 Sep 2021 07:11:48 +0000
+Date:   Thu, 30 Sep 2021 15:11:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 85784470efa2d5733e86679ba05d310ece81b20f
+Message-ID: <6155630b.LEX8hVxZEVl8lQQ5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210930062906.58937-1-tony@atomide.com> <20210930062906.58937-2-tony@atomide.com>
-In-Reply-To: <20210930062906.58937-2-tony@atomide.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 30 Sep 2021 10:10:49 +0300
-Message-ID: <CAHp75Ve4RTSdbQYA_u8vs=U75KsNdrm9EqFASAGf4rFKSqVWvQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] serial: core: Add wakeup() and start_pending_tx() for
- power management
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:30 AM Tony Lindgren <tony@atomide.com> wrote:
->
-> If the serial driver implements PM runtime with autosuspend, the port may
-> be powered down on TX. To wake up the port, let's add new wakeup() call
-> for serial drivers to implement as needed. We can call wakeup() from
-> __uart_start() and flow control related functions before attempting to
-> write to the serial port registers.
->
-> Let's keep track of the serial port with a new runtime_suspended flag
-> that the device driver runtime PM suspend and resume can manage with
-> atomic_set(). This is because only the device driver knows what the
-> device runtime PM state as in Documentation/power/runtime_pm.rst
-> under "9. Autosuspend, or automatically-delayed suspend" for locking.
->
-> To allow the serial port drivers to send out pending tx on runtime PM
-> resume, let's add start_pending_tx() as suggested by Johan Hovold
-> <johan@kernel.org>.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 85784470efa2d5733e86679ba05d310ece81b20f  x86/smp: Remove unnecessary assignment to local var freq_scale
 
-...
+elapsed time: 790m
 
-> +  wakeup(port)
-> +       Wake up port if it has been runtime PM suspended.
-> +
-> +       Locking: port->lock taken.
-> +
-> +       Interrupts: locally disabled.
+configs tested: 117
+configs skipped: 76
 
-> +       This call must not sleep
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If it's suspended via ACPI methods, it can't be resumed here, right?
-Only what we can do is to schedule a resume, but it means we may not
-access registers immediately after and we have to be sure that the
-device is resumed.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210929
+arm                      pxa255-idp_defconfig
+arm                         lpc32xx_defconfig
+arm                            qcom_defconfig
+powerpc                   lite5200b_defconfig
+arm                             rpc_defconfig
+sparc64                          alldefconfig
+sh                            shmin_defconfig
+xtensa                              defconfig
+powerpc                         ps3_defconfig
+sh                                  defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                       imx_v6_v7_defconfig
+sh                   secureedge5410_defconfig
+arm                          iop32x_defconfig
+arm                         socfpga_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+powerpc                     asp8347_defconfig
+arm                      integrator_defconfig
+mips                     loongson2k_defconfig
+arc                                 defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     ksi8560_defconfig
+parisc                           allyesconfig
+arm                       mainstone_defconfig
+mips                           ip27_defconfig
+powerpc                      walnut_defconfig
+sh                        sh7757lcr_defconfig
+arm                         shannon_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           h5000_defconfig
+powerpc                        cell_defconfig
+powerpc                      pmac32_defconfig
+mips                         cobalt_defconfig
+x86_64               randconfig-c001-20210929
+arm                  randconfig-c002-20210929
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                 randconfig-a001-20210929
+i386                 randconfig-a005-20210929
+i386                 randconfig-a002-20210929
+i386                 randconfig-a006-20210929
+i386                 randconfig-a004-20210929
+i386                 randconfig-a003-20210929
+x86_64               randconfig-a002-20210929
+x86_64               randconfig-a005-20210929
+x86_64               randconfig-a001-20210929
+x86_64               randconfig-a006-20210929
+x86_64               randconfig-a003-20210929
+x86_64               randconfig-a004-20210929
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-Dead end?
+clang tested configs:
+powerpc              randconfig-c003-20210929
+mips                 randconfig-c004-20210929
+arm                  randconfig-c002-20210929
+x86_64               randconfig-c007-20210929
+riscv                randconfig-c006-20210929
+s390                 randconfig-c005-20210929
+i386                 randconfig-c001-20210929
+x86_64               randconfig-a014-20210929
+x86_64               randconfig-a011-20210929
+x86_64               randconfig-a013-20210929
+x86_64               randconfig-a015-20210929
+x86_64               randconfig-a012-20210929
+x86_64               randconfig-a016-20210929
+i386                 randconfig-a014-20210929
+i386                 randconfig-a013-20210929
+i386                 randconfig-a016-20210929
+i386                 randconfig-a011-20210929
+i386                 randconfig-a015-20210929
+i386                 randconfig-a012-20210929
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+hexagon              randconfig-r045-20210929
+riscv                randconfig-r042-20210929
+hexagon              randconfig-r041-20210929
+s390                 randconfig-r044-20210929
 
--- 
-With Best Regards,
-Andy Shevchenko
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
