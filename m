@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220E941DAD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52B441DAD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 15:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350857AbhI3NTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 09:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S1350921AbhI3NTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 09:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350866AbhI3NTT (ORCPT
+        with ESMTP id S1350894AbhI3NTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:19:19 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA9C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:17:37 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so4772382pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:17:37 -0700 (PDT)
+        Thu, 30 Sep 2021 09:19:23 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C247C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:17:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q23so4954518pfs.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 06:17:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+fGUHUny1dnqCh4cK/3bY76s0DaNu1CCpvmKY7qLA9w=;
-        b=KYl65inEHkVzQxgTDgLFF4qybr2aei25/bK+XCw+F+bwkBOp2BIzmZ0JaLesk6BZgY
-         kAWZaMVqgQawvoJF9/q/OF9Wg6d1mUqYCo9TOTt1J8uj9pWbgrweD9VgLX6PhlKi7A31
-         k1GHr4vHgaZ2FuDTLb4uV53S3vZpbkD0756hjLSQQ5/43kJMuH64/sfhwEDzi5N75DS7
-         UgmkrR4HW4JW3D6G4q+EkSS0fLuP3OjW/QGACC9RMbCv1snLqso/3udC9xMeUCk7HHpy
-         nadNQ5YBOqw8tmROhm7+N6AZC+EPEAFvVkxZebpiC7wCIxRIUk0Upe6I5dLhhSguXYs0
-         /BRQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1cWLoh4CcvhLIKXy9j6hWHn1puHnoZvSz+6V1tIrhSk=;
+        b=YfKG4IUcpSD7uSwsssV39u5kc8ZC2MbIPeDm8sgud8s3bBX/YRXM6c1vSmbIpj8EBt
+         tnkAw11U4fIHFXVcRjiAKL5Rd3fWPl1ZNgSYGldu4IJ8SzgoGTkrBFT9g4K+QB2C98Fb
+         4HCZFS4onI3HYrtegYyaJn08syHn+lQqbyaet6e/ErRh4ahKlXYWxC+iMdmgpNBMdzzB
+         a341uFQ0wuv+s0OjYC5suSrjSMULh3MfCHLsfJWFk45031miqQ20k++gAaGUp53/USAG
+         dPCu85eqytFEcoN4Oh8E9fvKiWiP+8dr9ovxiUncvKD9nZNUnjVLe37DhnvQwmDN0/f+
+         dU6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+fGUHUny1dnqCh4cK/3bY76s0DaNu1CCpvmKY7qLA9w=;
-        b=PrV9/6SYtHCGAk56QOvtia1bTmbjUy0VljtOIaZqUpdlUWM3zMXykm8fkfXcRgGGe6
-         S/3C5vkjIDq8Jh0ChiuSoAFV6zEVpF3OOm3kCI0jTfRUOohZIjddIjc4ZGeAyzkBFnug
-         JYlPKdHO8gx2j7GTlHvZYG2etiyxEpclVDSA1oXke4EHHs7/G+spjj0FnEME1H7sayVy
-         v+36aCWfFnJWC2WkotOeDflZxADnZBWC6lU/3yDOMMVTCRhjpItFkJO4YfIEqwqGpr/g
-         TO6zH4pHoyVM6TI3v+MeGei0WDHfVwLM6EJfBxwAzqqEXH+S6c69mPzbihvatUgqe5vD
-         bgkQ==
-X-Gm-Message-State: AOAM530V43WccNt0R8W5o0MUse57qdmA9/qXko+pTfOc7xZfnmvAVYFU
-        I6U9v42sSLoyqa96pvkpFg==
-X-Google-Smtp-Source: ABdhPJyX00G5w4leTEyLGDW9uTa8J4BNfFDvDwvL1ndiv78iXZ1MsJKVXB//68Zv7JN1nH6qLLXLwA==
-X-Received: by 2002:a17:902:7297:b0:13e:6650:a4ca with SMTP id d23-20020a170902729700b0013e6650a4camr4154634pll.37.1633007855676;
-        Thu, 30 Sep 2021 06:17:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1cWLoh4CcvhLIKXy9j6hWHn1puHnoZvSz+6V1tIrhSk=;
+        b=qpyiTnAQW2QpTLSQ78cK79LtP1PMkEOWeOTpPmof+aPxMTjm0gl4WyeQsCxNAR5w8s
+         ZRUputri/v4F9vx/WXQsTjD8w/RE3lbxKWm8E48Yi1qWXX1SmexTs6KPbFk4H5jzEUKc
+         zrUVqVo+s3UUJbWQY2XkywhhTdA86w3Re0mzQknLvTrnavC5HLq0dHThExpZTe51qGmj
+         ESx1YMAW8Q8hyJ1dtAr8KnOq3QlIV8THPzslmoQGhJStnmkGXDLhuBFIfT8Kyyv+TKrh
+         Ozh9bsyU7F1R1cQwlgTivDqLoHU6TSnrO7AxsrsRlLz+HNiQ0X1TQu35rpuZJSyvvhrJ
+         OmkQ==
+X-Gm-Message-State: AOAM5313NTxMPO/qi/hnU1vlS0TbRRPqMLRaZKnSSFZGio3jT8oFAnVi
+        eZuPk4+tk4Ckdy/u6I2yVg==
+X-Google-Smtp-Source: ABdhPJycB7rq7UJHpu341EboMwpUw/7YqAzCRDLpdyf1azRDx54df25WpeVOis767oN6z24e3R8baQ==
+X-Received: by 2002:a62:15c3:0:b0:43d:e6be:156a with SMTP id 186-20020a6215c3000000b0043de6be156amr4403272pfv.1.1633007860790;
+        Thu, 30 Sep 2021 06:17:40 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id q3sm3083167pgf.18.2021.09.30.06.17.30
+        by smtp.gmail.com with ESMTPSA id q3sm3083167pgf.18.2021.09.30.06.17.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 06:17:35 -0700 (PDT)
+        Thu, 30 Sep 2021 06:17:40 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
         Sami Tolvanen <samitolvanen@google.com>,
         Julien Thierry <julien.thierry@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Yuichi Ito <ito-yuichi@fujitsu.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCHv3 0/3] arm64/irqentry: remove duplicate housekeeping of rcu
-Date:   Thu, 30 Sep 2021 21:17:05 +0800
-Message-Id: <20210930131708.35328-1-kernelfans@gmail.com>
+Subject: [PATCHv3 1/3] kernel/irq: make irq_{enter,exit}() in handle_domain_irq() arch optional
+Date:   Thu, 30 Sep 2021 21:17:06 +0800
+Message-Id: <20210930131708.35328-2-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210930131708.35328-1-kernelfans@gmail.com>
+References: <20210930131708.35328-1-kernelfans@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -91,20 +93,14 @@ accounting depending on a new HAVE_ARCH_IRQENTRY Kconfig symbol that
 architectures can select if they perform this entry accounting
 themselves.
 
-V2 -> V3:
-  Drop other patches and concentrate on the purpose of [3-4/5] of V2.
-  And lift the level, where to add {irq_enter,exit}_rcu(), from the
-  interrupt controler to exception entry  
+For architectures which do not select the symbol. there should be no
+functional change as a result of this patch.
 
-History:
-V1: https://lore.kernel.org/linux-arm-kernel/1607912752-12481-1-git-send-email-kernelfans@gmail.com
-V2: https://lore.kernel.org/linux-arm-kernel/20210924132837.45994-1-kernelfans@gmail.com
-
-
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Joey Gouly <joey.gouly@arm.com>
 Cc: Sami Tolvanen <samitolvanen@google.com>
@@ -113,22 +109,49 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
 Cc: linux-kernel@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
+---
+ kernel/irq/Kconfig   | 3 +++
+ kernel/irq/irqdesc.c | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-
-Mark Rutland (1):
-  arm64: entry: refactor EL1 interrupt entry logic
-
-Pingfan Liu (2):
-  kernel/irq: make irq_{enter,exit}() in handle_domain_irq() arch
-    optional
-  arm64/entry-common: supplement irq accounting
-
- arch/arm64/Kconfig               |  1 +
- arch/arm64/kernel/entry-common.c | 48 +++++++++++++++++---------------
- kernel/irq/Kconfig               |  3 ++
- kernel/irq/irqdesc.c             |  4 +++
- 4 files changed, 34 insertions(+), 22 deletions(-)
-
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index fbc54c2a7f23..defa1db2d664 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -100,6 +100,9 @@ config IRQ_MSI_IOMMU
+ config HANDLE_DOMAIN_IRQ
+ 	bool
+ 
++config HAVE_ARCH_IRQENTRY
++	bool
++
+ config IRQ_TIMINGS
+ 	bool
+ 
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index 4e3c29bb603c..fd5dd9d278b5 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -693,7 +693,9 @@ int handle_domain_irq(struct irq_domain *domain,
+ 	struct irq_desc *desc;
+ 	int ret = 0;
+ 
++#ifndef CONFIG_HAVE_ARCH_IRQENTRY
+ 	irq_enter();
++#endif
+ 
+ 	/* The irqdomain code provides boundary checks */
+ 	desc = irq_resolve_mapping(domain, hwirq);
+@@ -702,7 +704,9 @@ int handle_domain_irq(struct irq_domain *domain,
+ 	else
+ 		ret = -EINVAL;
+ 
++#ifndef CONFIG_HAVE_ARCH_IRQENTRY
+ 	irq_exit();
++#endif
+ 	set_irq_regs(old_regs);
+ 	return ret;
+ }
 -- 
 2.31.1
 
