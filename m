@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98BB41E1C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFB541E1CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245359AbhI3Syb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239130AbhI3Sya (ORCPT
+        id S245540AbhI3Syz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:54:55 -0400
+Received: from mail-oo1-f52.google.com ([209.85.161.52]:34506 "EHLO
+        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231637AbhI3Syx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:54:30 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5055CC06176A;
-        Thu, 30 Sep 2021 11:52:47 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i19so26049183lfu.0;
-        Thu, 30 Sep 2021 11:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zsZzgfbUxGvjY/35BurfncfGOk+t4Oowod0eAnc2ywY=;
-        b=D7wBGA4MHOGlZToVTsDa3JbYniANqoTYX/L6Nf4gW7M0qzAFuTAAmQT4b0mgmasKe1
-         B13/UIE0PYaJ53o6dCSwAeSoc7wpvW2mHhhGhij/ZeDEjjVSsYmD1kYBGvvlFczFo0WV
-         jfET0P/eh9p6p6HZrKVCSeWXoPpzIrxV+YesYe9n/bhkGIrpkhcCJdM/aG0V1EGp0USs
-         B9y71wxNnfgalkU/Y0ExhC7ttpwhxmEJDtBZbhK5oiXRRjTM9OUmsEqwSmDcVr5dRnzk
-         uLFeE0+VikbsX+VUIz64f9vqBcOi72dUJws2t/P8+53sAK9ZmczIZcjCmCbYoPPOKg1t
-         nxcA==
+        Thu, 30 Sep 2021 14:54:53 -0400
+Received: by mail-oo1-f52.google.com with SMTP id k11-20020a4abd8b000000b002b5c622a4ddso2158707oop.1;
+        Thu, 30 Sep 2021 11:53:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zsZzgfbUxGvjY/35BurfncfGOk+t4Oowod0eAnc2ywY=;
-        b=UyVaXWYuLnxXVSgQfi9G7gCUZ4KT5dHtThAJv0H1z/EHhXHPVUBGEdpArQRy0l6ZQV
-         +/cmErZb1ctI75AK5ADBFj422LfOM0XqWytVsQnAaACoWmj+nKRvBV4uic0MKbtYsoqa
-         kAMetLxJfF2YCUpZ+Chn3c0PQI+7Oz4X1xEufaRLL46fSyOFm9JUGUUdHdfzzUKHMKjY
-         04Q6NlYysAIWr+e+Zdh/cKFhZv5yxGK20jySfcTnLsNIUL5PW+47ebXVxcQH5vsnRTXY
-         GrN+GqJAfUS126wkSq3lFLik8/y93Gp/gJVQ9diZEgKLJTFDEeEW8WKWZKkSgGgOEgJC
-         2WqQ==
-X-Gm-Message-State: AOAM530nT3nvCA8SDsCqLTP4FJgfWt+2/1k2TwoUlwkW712neuGgkvJn
-        /SoiUUBrUxa7NSz2jfPw0i8xkl0cY3e/MUxTYkk=
-X-Google-Smtp-Source: ABdhPJyuLNTMt0ZfVRJivxJBhQSBqt1uAJ+pmxKpumn8GqdqEowJcyZIyMRooTQjTfPV8wn3f2cuHNFaz00vrHt0a6Y=
-X-Received: by 2002:a2e:a26b:: with SMTP id k11mr7698881ljm.185.1633027964954;
- Thu, 30 Sep 2021 11:52:44 -0700 (PDT)
+        bh=AWz5foWcr+bWR6CSFDKJoUEhYPxpGczQBoONhahdcus=;
+        b=6zI9O/BfzTHbkcmFk6j3uN5Yaq53uE0Z9r2yZMNJvSSqQIan/jE8vZOG+xg13DreMs
+         hv6O0UiVv6459N+21foxCzQbUg83Q5NJygstIZMZvSbWmFtp6M4U8xomc3mg4MBrHzQC
+         x4o9xdr8Xmv6r3UMcCFT6+igaqmsc1uNkuT5pU31l/gKG1SFoL/ynefVCuftE5np9ihw
+         dQmEN9OJBEHnGiSbr3ycnlsJRRWRhVEeDIUNuIouN93Eu9ZUyegHiLv6KbikUhS44yMu
+         J0Oz1XDaI1oV0jNYOoKwQtmpTDLZR5XV5ZJo2Y0uUkD4sijIRolfPIIzCeYCp3z6ZUNC
+         8/MQ==
+X-Gm-Message-State: AOAM532e9r7QhmXW42AmXja79zo9+trtQV4OY49HQvFF2UrKzCf2UWwW
+        9RKo614sURhPGRNr+Pwbsf0em5cypRRWdKA8FWry/6jgKkI=
+X-Google-Smtp-Source: ABdhPJw8+m2xqrDVqABBbHFhPc+Vi/u0KcQlXUvSeYYp71RAa69bRuSXSureyv6cjZyWA10UqXHMSc2jbi7XhFK/J08=
+X-Received: by 2002:a05:6820:17a:: with SMTP id k26mr6219832ood.37.1633027990202;
+ Thu, 30 Sep 2021 11:53:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930155633.2745201-1-frieder@fris.de> <20210930155633.2745201-9-frieder@fris.de>
-In-Reply-To: <20210930155633.2745201-9-frieder@fris.de>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Thu, 30 Sep 2021 20:52:33 +0200
-Message-ID: <CAEyMn7YbYAUvxEgKDB4x4AGomhBeuBDj71b2LuCs1A2emToU0w@mail.gmail.com>
-Subject: Re: [PATCH 8/8] arm64: dts: imx8mm-kontron: Leave reg_vdd_arm always
- powered on
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     devicetree@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, stable@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20210927121338.938994-1-arnd@kernel.org> <CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jJRYQPSfVV_hCD6uxch+vU6kvWV9-KAfqHckHgkFOeaA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 30 Sep 2021 20:52:59 +0200
+Message-ID: <CAJZ5v0jDKK6ecsubVDv_=EUF3goiiDW28tvbKF9cesMphgKaug@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: avoid NULL pointer arithmetic
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frieder,
+On Wed, Sep 29, 2021 at 8:47 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Mon, Sep 27, 2021 at 2:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > There are some very old macros for doing an open-coded offsetof() and
+> > cast between pointer and integer in ACPI headers. clang-14 now complains
+> > about these:
+> >
+> > drivers/acpi/acpica/tbfadt.c:86:3: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+> >          ACPI_FADT_OFFSET(pm_timer_block),
+> >          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/acpi/actbl.h:376:47: note: expanded from macro 'ACPI_FADT_OFFSET'
+> >  #define ACPI_FADT_OFFSET(f)             (u16) ACPI_OFFSET (struct acpi_table_fadt, f)
+> >                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/acpi/actypes.h:511:41: note: expanded from macro 'ACPI_OFFSET'
+> >  #define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
+> >                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/acpi/actypes.h:505:79: note: expanded from macro 'ACPI_PTR_DIFF'
+> >  #define ACPI_PTR_DIFF(a, b)             ((acpi_size) (ACPI_CAST_PTR (u8, (a)) - ACPI_CAST_PTR (u8, (b))))
+> >                                                                               ^ ~~~~~~~~~~~~~~~~~~~~~~~
+> > Convert them to the modern equivalents.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  include/acpi/actypes.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+> > index 92c71dfce0d5..285bc7b73de3 100644
+> > --- a/include/acpi/actypes.h
+> > +++ b/include/acpi/actypes.h
+> > @@ -507,8 +507,8 @@ typedef u64 acpi_integer;
+> >  /* Pointer/Integer type conversions */
+> >
+> >  #define ACPI_TO_POINTER(i)              ACPI_CAST_PTR (void, (acpi_size) (i))
+> > -#define ACPI_TO_INTEGER(p)              ACPI_PTR_DIFF (p, (void *) 0)
+> > -#define ACPI_OFFSET(d, f)               ACPI_PTR_DIFF (&(((d *) 0)->f), (void *) 0)
+> > +#define ACPI_TO_INTEGER(p)              ((uintptr_t)(p))
+> > +#define ACPI_OFFSET(d, f)               offsetof(d, f)
+> >  #define ACPI_PHYSADDR_TO_PTR(i)         ACPI_TO_POINTER(i)
+> >  #define ACPI_PTR_TO_PHYSADDR(i)         ACPI_TO_INTEGER(i)
+> >
+> > --
+>
+> Queued up as 5.16 material, converted into an upstream ACPICA pull
+> request and submitted, thanks!
 
-Am Do., 30. Sept. 2021 um 17:57 Uhr schrieb Frieder Schrempf <frieder@fris.de>:
->
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
->
-> When the cpufreq driver is enabled, the buck2 regulator is kept powered on
-> by the dependency between the CPU nodes with 'cpu-supply' set. Without the
-> cpufreq driver the kernel will power off the regulator as it doesn't see
-> any users. This is obviously not what we want, therefore keep the regulator
-> powered on in any case.
->
-> Reported-by: Heiko Thiery <heiko.thiery@gmail.com>
-> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+And reverted from there, because it introduced build issues.
 
-Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
-
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> index 213014f59b46..c3418d263eb4 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> @@ -105,6 +105,7 @@ reg_vdd_arm: BUCK2 {
->                                 regulator-min-microvolt = <850000>;
->                                 regulator-max-microvolt = <950000>;
->                                 regulator-boot-on;
-> +                               regulator-always-on;
->                                 regulator-ramp-delay = <3125>;
->                                 nxp,dvs-run-voltage = <950000>;
->                                 nxp,dvs-standby-voltage = <850000>;
-> --
-> 2.33.0
->
+Can we use alternative definitions that don't depend on uintptr_t and
+offsetof()?
