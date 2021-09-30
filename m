@@ -2,167 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288DE41DA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B345941DA10
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351010AbhI3Mn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:43:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46188 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350974AbhI3Mn0 (ORCPT
+        id S1351034AbhI3MoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350736AbhI3Mn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:43:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633005703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Unbty8nNkK7YONUoWOx1LklE7WdRs1VG0UIIrgjCenI=;
-        b=HGZRWHAwRiMg7xk6aBelgvJMRTdsfxx6pOdYxyugg70517rkmMaJvhPh0tDcdPUvfcrA8I
-        PJ9JOHX0o+fNt/dnEWM3YvHcyiKU3ogIZnC9owsGPNhGVE87Js2gkLVPQ7QsWoNW8nVKJr
-        HbAwnMGjmW3jfXoBImcMpsc5pDgKpUM=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-UfYWzS1XPTe80Oq30_Z3og-1; Thu, 30 Sep 2021 08:41:42 -0400
-X-MC-Unique: UfYWzS1XPTe80Oq30_Z3og-1
-Received: by mail-oo1-f70.google.com with SMTP id i1-20020a4a9001000000b002a9c41e0eabso4667430oog.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:41:42 -0700 (PDT)
+        Thu, 30 Sep 2021 08:43:59 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A522EC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:42:16 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id q205so7308382iod.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SFMbuda0Dk9sjkU1tNsSxuYlVqPZvVPogDDokKwo7f4=;
+        b=mmdUlGxQuAzuCVK2mtAwoJLafNpXEudZ1PwWgeoQ0BBGa1+ykfAdpbqQT8vqgnIJb8
+         NHEVrK2IcnR/gt2KXr/qcoYE4VCwpDOZGGFm9/yesf1C+RJkgK0TB/xCPO1wNAtjJTil
+         NTUWb/U8cH5CZV7/uGG9gawEy5IQbgf5blGgRfBJ3X1srAvk1z3ZIvJ7C8Zj68C19hG0
+         SsHnbMpSAtPNgBVdNP9EYnpOyH5iO1qMyU4PxQFh7IBi/o6fY0uCKQUxANzPaRRtZeE+
+         g5uJpKu6JINFz3Qd1iIY6XO1SnW9X0W8H19dETh1hVg78jii/05MFZ7xGb5s8lmn+9Ab
+         5JNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Unbty8nNkK7YONUoWOx1LklE7WdRs1VG0UIIrgjCenI=;
-        b=xPJwYvVGtq6TvSET3KDSqEltS8HfxGcbBAEE0YdNHEYzyL6loa2xoP6AsXH7MRlA3h
-         SNoQZSMr8vnC49VuaAVqTl3789OgQ3xpSC1dltEGivyCDL0ulU4j/8dXYWgxgOZ9CGMN
-         bxyxLOEcVTJxsr7JfsByR7BM5QufYlNHjKcrfK1xrG8pjoXMAVxJFE2jz8COElJ3Rnnb
-         0vWIQ9iyruVYRzJx46H5sXp9jaGF+uKbUVOrhKNOzOI1s4KNSjeXqWqFFYK7/NRfebsJ
-         GwFKygWumnF19I1fISoAWq+1vi16iW+Gc+8d413eVlRDB46bL4GPDUVcru7hjNBle9Jc
-         Hq7w==
-X-Gm-Message-State: AOAM53025fIguiH+vmqmgzFt9OkU9D9GhmSXI61MJQQVLNE6fVnrTVdJ
-        BJwo+qgR1c3k5cZQ+ZrDc6HZyplefwLD5L6NBfoetPI/mLXmd3DoqgrfG4sWvQeAe5u5YWuVrfs
-        Xb0Be0fTMbkPUyQGpjQbGgSMa
-X-Received: by 2002:a05:6808:46:: with SMTP id v6mr2547338oic.72.1633005701661;
-        Thu, 30 Sep 2021 05:41:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMRYKLy+B+MpdesoWZkxr5N1driI4Zy8XmLACnQxDaRZIHqyWhxnO2lDZUxuKPwWjg5RQWJg==
-X-Received: by 2002:a05:6808:46:: with SMTP id v6mr2547322oic.72.1633005701417;
-        Thu, 30 Sep 2021 05:41:41 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id e6sm530698otr.79.2021.09.30.05.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 05:41:40 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 06:41:39 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210930064139.57bb74c0.alex.williamson@redhat.com>
-In-Reply-To: <bad28179-cbca-9337-8e6b-d730f06c6c58@nvidia.com>
-References: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
-        <20210927231239.GE3544071@ziepe.ca>
-        <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
-        <20210929063551.47590fbb.alex.williamson@redhat.com>
-        <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-        <20210929075019.48d07deb.alex.williamson@redhat.com>
-        <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
-        <20210929091712.6390141c.alex.williamson@redhat.com>
-        <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
-        <20210929161433.GA1808627@ziepe.ca>
-        <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
-        <20210929164409.3c33e311.alex.williamson@redhat.com>
-        <bad28179-cbca-9337-8e6b-d730f06c6c58@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SFMbuda0Dk9sjkU1tNsSxuYlVqPZvVPogDDokKwo7f4=;
+        b=eSennDwQk8JY2LX99vXXGcGvQQRMgn98HLzfJ9I0Xp101NZJHRso8hs9X/MDuKLzMK
+         zLOSmbPtclwiq1ZTPcvtQuMPUxtLILh1N9vhGA38TiiO1778JdIgYHs1TLlZsdy9bWBD
+         wBIuyO1LLFJ4knwHqHZeMVJYzgQA2goB8Kyz+plYDGCUTgOUn4vNXJCl10wDiuDX63FC
+         7zK+El26bJGEf/Gnpo42TNQ4Pz2ZcUW+6k50QnEbhICqEAlyEdJxusV+fNGzkdlwxfha
+         LATpXjOJhD9Mun2LpDJX4WwXphSpKdlwn69BUzBSKMIJ77d20E/mVaLfr+9uT0U+JJRR
+         xEgQ==
+X-Gm-Message-State: AOAM532OKBaGtbvTsCAbB3cOq438oN9K0qDfzTRUjUSPSiSOv9IntkVm
+        b4Be5Io0yiS3LLhjVy+0dtTorbsCxBpKL/hDkxc=
+X-Google-Smtp-Source: ABdhPJyfhSQEh8RWdMzkRKhW9bqqAnDBZfA/+R/CYEP8yhnvGQbJlAEwcv/Ei55UWl6dB0I62ZeqY0YL9Yp/58f/o/k=
+X-Received: by 2002:a5d:9493:: with SMTP id v19mr3640656ioj.34.1633005736112;
+ Thu, 30 Sep 2021 05:42:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-3-laoar.shao@gmail.com>
+ <202109291109.FAF3F47BA@keescook>
+In-Reply-To: <202109291109.FAF3F47BA@keescook>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 30 Sep 2021 20:41:40 +0800
+Message-ID: <CALOAHbB3_q0stoUyqZdScZR3_edJE5ncmys6HNiQrBZTEgGVMw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 12:25:23 +0300
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+On Thu, Sep 30, 2021 at 2:11 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 11:50:33AM +0000, Yafang Shao wrote:
+> > task->comm is defined as an array embedded in struct task_struct before.
+> > This patch changes it to a char pointer. It will be allocated in the fork
+> > and freed when the task is freed.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  include/linux/sched.h |  2 +-
+> >  kernel/fork.c         | 19 +++++++++++++++++++
+> >  2 files changed, 20 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index e12b524426b0..b387b5943db4 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1051,7 +1051,7 @@ struct task_struct {
+> >        * - access it with [gs]et_task_comm()
+> >        * - lock it with task_lock()
+> >        */
+> > -     char                            comm[TASK_COMM_LEN];
+> > +     char                            *comm;
+>
+> This, I think, is basically a non-starter. It adds another kmalloc to
+> the fork path without a well-justified reason. TASK_COMM_LEN is small,
+> yes, but why is growing it valuable enough to slow things down?
+>
+> (Or, can you prove that this does NOT slow things down? It seems like
+> it would.)
+>
 
-> On 9/30/2021 1:44 AM, Alex Williamson wrote:
-> > On Thu, 30 Sep 2021 00:48:55 +0300
-> > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> >  
-> >> On 9/29/2021 7:14 PM, Jason Gunthorpe wrote:  
-> >>> On Wed, Sep 29, 2021 at 06:28:44PM +0300, Max Gurtovoy wrote:
-> >>>     
-> >>>>> So you have a device that's actively modifying its internal state,
-> >>>>> performing I/O, including DMA (thereby dirtying VM memory), all while
-> >>>>> in the _STOP state?  And you don't see this as a problem?  
-> >>>> I don't see how is it different from vfio-pci situation.  
-> >>> vfio-pci provides no way to observe the migration state. It isn't
-> >>> "000b"  
-> >> Alex said that there is a problem of compatibility.
-> >>
-> >> I migration SW is not involved, nobody will read this migration state.  
-> > The _STOP state has a specific meaning regardless of whether userspace
-> > reads the device state value.  I think what you're suggesting is that
-> > the device reports itself as _STOP'd but it's actually _RUNNING.  Is
-> > that the compatibility workaround, create a self inconsistency?  
-> 
->  From migration point of view the device is stopped.
+Right, the new kmalloc would take some extra latency.
+Seems it is not easy to measure which one is more valuable.
 
-The _RESUMING and _SAVING bits control the migration activity, the
-_RUNNING bit controls the ability of the device to modify its internal
-state and affect external state.  The initial state of the device is
-absolutely not stopped.
+>
+> >
+> >       struct nameidata                *nameidata;
+> >
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 38681ad44c76..227aec240501 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -721,6 +721,20 @@ static void mmdrop_async(struct mm_struct *mm)
+> >       }
+> >  }
+> >
+> > +static int task_comm_alloc(struct task_struct *p)
+> > +{
+> > +     p->comm = kzalloc(TASK_COMM_LEN, GFP_KERNEL);
+> > +     if (!p->comm)
+> > +             return -ENOMEM;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void task_comm_free(struct task_struct *p)
+> > +{
+> > +     kfree(p->comm);
+> > +}
+> > +
+> >  static inline void free_signal_struct(struct signal_struct *sig)
+> >  {
+> >       taskstats_tgid_free(sig);
+> > @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
+> >       bpf_task_storage_free(tsk);
+> >       exit_creds(tsk);
+> >       delayacct_tsk_free(tsk);
+> > +     task_comm_free(tsk);
+> >       put_signal_struct(tsk->signal);
+> >       sched_core_free(tsk);
+> >
+> > @@ -2076,6 +2091,10 @@ static __latent_entropy struct task_struct *copy_process(
+> >       if (data_race(nr_threads >= max_threads))
+> >               goto bad_fork_cleanup_count;
+> >
+> > +     retval = task_comm_alloc(p);
+> > +     if (retval)
+> > +             goto bad_fork_cleanup_count;
+> > +
+> >       delayacct_tsk_init(p);  /* Must remain after dup_task_struct() */
+> >       p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE | PF_NO_SETAFFINITY);
+> >       p->flags |= PF_FORKNOEXEC;
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Kees Cook
 
-> > We cannot impose on userspace to move a device from _STOP to _RUNNING
-> > simply because the device supports the migration region, nor should we
-> > report a device state that is inconsistent with the actual device state.  
-> 
-> In this case we can think maybe moving to running during enabling the 
-> bus master..
 
-There are no spontaneous state transitions, device_state changes only
-via user manipulation of the register.
 
-> >>>> Maybe we need to rename STOP state. We can call it READY or LIVE or
-> >>>> NON_MIGRATION_STATE.  
-> >>> It was a poor choice to use 000b as stop, but it doesn't really
-> >>> matter. The mlx5 driver should just pre-init this readable to running.  
-> >> I guess we can do it for this reason. There is no functional problem nor
-> >> compatibility issue here as was mentioned.
-> >>
-> >> But still we need the kernel to track transitions. We don't want to
-> >> allow moving from RESUMING to SAVING state for example. How this
-> >> transition can be allowed ?
-> >>
-> >> In this case we need to fail the request from the migration SW...  
-> > _RESUMING to _SAVING seems like a good way to test round trip migration
-> > without running the device to modify the state.  Potentially it's a
-> > means to update a saved device migration data stream to a newer format
-> > using an intermediate driver version.  
-> 
-> what do you mean by "without running the device to modify the state." ?
-
-If a device is !_RUNNING it should not be advancing its internal state,
-therefore state-in == state-out.
- 
-> did you describe a case where you migrate from source to dst and then 
-> back to source with a new migration data format ?
-
-I'm speculating that as the driver evolves, the migration data stream
-generated from the device's migration region can change.  Hopefully in
-compatible ways.  The above sequence of restoring and extracting state
-without the complication of the device running could help to validate
-compatibility.  Thanks,
-
-Alex
-
+-- 
+Thanks
+Yafang
