@@ -2,115 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99D641D18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 04:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCA041D1B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 05:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347905AbhI3CnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 22:43:21 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:60830 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347886AbhI3CnU (ORCPT
+        id S1347948AbhI3DEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 23:04:30 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:53435 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347939AbhI3DE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 22:43:20 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18U2fJ811012331, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18U2fJ811012331
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Sep 2021 10:41:19 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 30 Sep 2021 10:41:19 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 30 Sep 2021 10:41:18 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Thu, 30 Sep 2021 10:41:18 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAZuNgA==
-Date:   Thu, 30 Sep 2021 02:41:18 +0000
-Message-ID: <7dc4198f05784b6686973500150faca7@realtek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
-         <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
-In-Reply-To: <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMjkg5LiL5Y2IIDExOjI3OjAw?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 29 Sep 2021 23:04:29 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HKdMn56h9z4xbL; Thu, 30 Sep 2021 13:02:45 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1632970965;
+        bh=2chqBsylnpGWmu4/Ed3eGkp8ajdFLitawmHgzQaDmXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A4cfx1VeFIsTqJ1k4Q6E8pZP0Hfou7CmoniTfjOaeN1WkMvgKiG8Vw28t86iAyGSh
+         N7PAncCR5TeJOCgm6Q07ayfhhXlfSLz4baebq0BiVDlF5nS2SLDRyOO6qFAIj8SIJX
+         tGP84lGIl13L4sz2ILlRGWUZErmjSbvgGaN6oY6w=
+Date:   Thu, 30 Sep 2021 12:43:46 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Liu Yi L <yi.l.liu@intel.com>, jgg@nvidia.com, hch@lst.de,
+        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
+        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
+        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
+        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        nicolinc@nvidia.com
+Subject: Re: [RFC 02/20] vfio: Add device class for /dev/vfio/devices
+Message-ID: <YVUkYu59TJn5tcFg@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-3-yi.l.liu@intel.com>
+ <YVPKu/F3IpPMtGCh@yekko>
+ <20210929130521.738c56ed.alex.williamson@redhat.com>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BWB8IX6FMezkTNqc"
+Content-Disposition: inline
+In-Reply-To: <20210929130521.738c56ed.alex.williamson@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SmFzb24tY2ggQ2hlbiA8amFzb24tY2guY2hlbkBtZWRpYXRlay5jb20+DQo+IFNlbnQ6IFdlZG5l
-c2RheSwgU2VwdGVtYmVyIDI5LCAyMDIxIDU6NTMgUE0NClsuLi5dDQo+IEhpIEhheWVzLA0KPiAN
-Cj4gU29tZXRpbWVzIFJ4IHN1Ym1pdHMgcmFwaWRseSBhbmQgdGhlIFVTQiBrZXJuZWwgZHJpdmVy
-IG9mIG9wZW5zb3VyY2UNCj4gY2Fubm90IHJlY2VpdmUgYW55IGRpc2Nvbm5lY3QgZXZlbnQgZHVl
-IHRvIENQVSBoZWF2eSBsb2FkaW5nLCB3aGljaA0KPiBmaW5hbGx5IGNhdXNlcyBhIHN5c3RlbSBj
-cmFzaC4NCj4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIHRvIG1vZGlmeSB0aGUgcjgxNTIg
-ZHJpdmVyIHRvIHByZXZlbnQgdGhpcw0KPiBzaXR1YXRpb24gaGFwcGVuZWQ/DQoNCkRvIHlvdSBt
-aW5kIHRvIHRyeSB0aGUgZm9sbG93aW5nIHBhdGNoPw0KSXQgYXZvaWRzIHRvIHJlLXN1Ym1pdCBS
-WCBpbW1lZGlhdGVseS4NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3VzYi9yODE1Mi5jIGIv
-ZHJpdmVycy9uZXQvdXNiL3I4MTUyLmMNCmluZGV4IDYwYmE5YjczNDA1NS4uYmZlMDBhZjgyODNm
-IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9uZXQvdXNiL3I4MTUyLmMNCisrKyBiL2RyaXZlcnMvbmV0
-L3VzYi9yODE1Mi5jDQpAQCAtNzY3LDYgKzc2Nyw3IEBAIGVudW0gcnRsODE1Ml9mbGFncyB7DQog
-CVBIWV9SRVNFVCwNCiAJU0NIRURVTEVfVEFTS0xFVCwNCiAJR1JFRU5fRVRIRVJORVQsDQorCVND
-SEVEVUxFX05BUEksDQogfTsNCiANCiAjZGVmaW5lIERFVklDRV9JRF9USElOS1BBRF9USFVOREVS
-Qk9MVDNfRE9DS19HRU4yCTB4MzA4Mg0KQEAgLTE3NzAsNiArMTc3MSwxNCBAQCBzdGF0aWMgdm9p
-ZCByZWFkX2J1bGtfY2FsbGJhY2soc3RydWN0IHVyYiAqdXJiKQ0KIAkJcnRsX3NldF91bnBsdWco
-dHApOw0KIAkJbmV0aWZfZGV2aWNlX2RldGFjaCh0cC0+bmV0ZGV2KTsNCiAJCXJldHVybjsNCisJ
-Y2FzZSAtRVBST1RPOg0KKwkJdXJiLT5hY3R1YWxfbGVuZ3RoID0gMDsNCisJCXNwaW5fbG9ja19p
-cnFzYXZlKCZ0cC0+cnhfbG9jaywgZmxhZ3MpOw0KKwkJbGlzdF9hZGRfdGFpbCgmYWdnLT5saXN0
-LCAmdHAtPnJ4X2RvbmUpOw0KKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmdHAtPnJ4X2xvY2ss
-IGZsYWdzKTsNCisJCXNldF9iaXQoU0NIRURVTEVfTkFQSSwgJnRwLT5mbGFncyk7DQorCQlzY2hl
-ZHVsZV9kZWxheWVkX3dvcmsoJnRwLT5zY2hlZHVsZSwgMSk7DQorCQlyZXR1cm47DQogCWNhc2Ug
-LUVOT0VOVDoNCiAJCXJldHVybjsJLyogdGhlIHVyYiBpcyBpbiB1bmxpbmsgc3RhdGUgKi8NCiAJ
-Y2FzZSAtRVRJTUU6DQpAQCAtMjQyNSw2ICsyNDM0LDcgQEAgc3RhdGljIGludCByeF9ib3R0b20o
-c3RydWN0IHI4MTUyICp0cCwgaW50IGJ1ZGdldCkNCiAJaWYgKGxpc3RfZW1wdHkoJnRwLT5yeF9k
-b25lKSkNCiAJCWdvdG8gb3V0MTsNCiANCisJY2xlYXJfYml0KFNDSEVEVUxFX05BUEksICZ0cC0+
-ZmxhZ3MpOw0KIAlJTklUX0xJU1RfSEVBRCgmcnhfcXVldWUpOw0KIAlzcGluX2xvY2tfaXJxc2F2
-ZSgmdHAtPnJ4X2xvY2ssIGZsYWdzKTsNCiAJbGlzdF9zcGxpY2VfaW5pdCgmdHAtPnJ4X2RvbmUs
-ICZyeF9xdWV1ZSk7DQpAQCAtMjQ0MSw3ICsyNDUxLDcgQEAgc3RhdGljIGludCByeF9ib3R0b20o
-c3RydWN0IHI4MTUyICp0cCwgaW50IGJ1ZGdldCkNCiANCiAJCWFnZyA9IGxpc3RfZW50cnkoY3Vy
-c29yLCBzdHJ1Y3QgcnhfYWdnLCBsaXN0KTsNCiAJCXVyYiA9IGFnZy0+dXJiOw0KLQkJaWYgKHVy
-Yi0+YWN0dWFsX2xlbmd0aCA8IEVUSF9aTEVOKQ0KKwkJaWYgKHVyYi0+c3RhdHVzICE9IDAgfHwg
-dXJiLT5hY3R1YWxfbGVuZ3RoIDwgRVRIX1pMRU4pDQogCQkJZ290byBzdWJtaXQ7DQogDQogCQlh
-Z2dfZnJlZSA9IHJ0bF9nZXRfZnJlZV9yeCh0cCwgR0ZQX0FUT01JQyk7DQpAQCAtNjY0Myw2ICs2
-NjUzLDEwIEBAIHN0YXRpYyB2b2lkIHJ0bF93b3JrX2Z1bmNfdChzdHJ1Y3Qgd29ya19zdHJ1Y3Qg
-KndvcmspDQogCSAgICBuZXRpZl9jYXJyaWVyX29rKHRwLT5uZXRkZXYpKQ0KIAkJdGFza2xldF9z
-Y2hlZHVsZSgmdHAtPnR4X3RsKTsNCiANCisJaWYgKHRlc3RfYW5kX2NsZWFyX2JpdChTQ0hFRFVM
-RV9OQVBJLCAmdHAtPmZsYWdzKSAmJg0KKwkgICAgIWxpc3RfZW1wdHkoJnRwLT5yeF9kb25lKSkN
-CisJCW5hcGlfc2NoZWR1bGUoJnRwLT5uYXBpKTsNCisNCiAJbXV0ZXhfdW5sb2NrKCZ0cC0+Y29u
-dHJvbCk7DQogDQogb3V0MToNCg0KDQpCZXN0IFJlZ2FyZHMsDQpIYXllcw0KDQo=
+
+--BWB8IX6FMezkTNqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 29, 2021 at 01:05:21PM -0600, Alex Williamson wrote:
+> On Wed, 29 Sep 2021 12:08:59 +1000
+> David Gibson <david@gibson.dropbear.id.au> wrote:
+>=20
+> > On Sun, Sep 19, 2021 at 02:38:30PM +0800, Liu Yi L wrote:
+> > > This patch introduces a new interface (/dev/vfio/devices/$DEVICE) for
+> > > userspace to directly open a vfio device w/o relying on container/gro=
+up
+> > > (/dev/vfio/$GROUP). Anything related to group is now hidden behind
+> > > iommufd (more specifically in iommu core by this RFC) in a device-cen=
+tric
+> > > manner.
+> > >=20
+> > > In case a device is exposed in both legacy and new interfaces (see ne=
+xt
+> > > patch for how to decide it), this patch also ensures that when the de=
+vice
+> > > is already opened via one interface then the other one must be blocke=
+d.
+> > >=20
+> > > Signed-off-by: Liu Yi L <yi.l.liu@intel.com> =20
+> > [snip]
+> >=20
+> > > +static bool vfio_device_in_container(struct vfio_device *device)
+> > > +{
+> > > +	return !!(device->group && device->group->container); =20
+> >=20
+> > You don't need !! here.  && is already a logical operation, so returns
+> > a valid bool.
+> >=20
+> > > +}
+> > > +
+> > >  static int vfio_device_fops_release(struct inode *inode, struct file=
+ *filep)
+> > >  {
+> > >  	struct vfio_device *device =3D filep->private_data;
+> > > @@ -1560,7 +1691,16 @@ static int vfio_device_fops_release(struct ino=
+de *inode, struct file *filep)
+> > > =20
+> > >  	module_put(device->dev->driver->owner);
+> > > =20
+> > > -	vfio_group_try_dissolve_container(device->group);
+> > > +	if (vfio_device_in_container(device)) {
+> > > +		vfio_group_try_dissolve_container(device->group);
+> > > +	} else {
+> > > +		atomic_dec(&device->opened);
+> > > +		if (device->group) {
+> > > +			mutex_lock(&device->group->opened_lock);
+> > > +			device->group->opened--;
+> > > +			mutex_unlock(&device->group->opened_lock);
+> > > +		}
+> > > +	}
+> > > =20
+> > >  	vfio_device_put(device);
+> > > =20
+> > > @@ -1613,6 +1753,7 @@ static int vfio_device_fops_mmap(struct file *f=
+ilep, struct vm_area_struct *vma)
+> > > =20
+> > >  static const struct file_operations vfio_device_fops =3D {
+> > >  	.owner		=3D THIS_MODULE,
+> > > +	.open		=3D vfio_device_fops_open,
+> > >  	.release	=3D vfio_device_fops_release,
+> > >  	.read		=3D vfio_device_fops_read,
+> > >  	.write		=3D vfio_device_fops_write,
+> > > @@ -2295,6 +2436,52 @@ static struct miscdevice vfio_dev =3D {
+> > >  	.mode =3D S_IRUGO | S_IWUGO,
+> > >  };
+> > > =20
+> > > +static char *vfio_device_devnode(struct device *dev, umode_t *mode)
+> > > +{
+> > > +	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev)); =20
+> >=20
+> > Others have pointed out some problems with the use of dev_name()
+> > here.  I'll add that I think you'll make things much easier if instead
+> > of using one huge "devices" subdir, you use a separate subdir for each
+> > vfio sub-driver (so, one for PCI, one for each type of mdev, one for
+> > platform, etc.).  That should make avoiding name conflicts a lot simple=
+r.
+>=20
+> It seems like this is unnecessary if we use the vfioX naming approach.
+> Conflicts are trivial to ignore if we don't involve dev_name() and
+> looking for the correct major:minor chardev in the correct subdirectory
+> seems like a hassle for userspace.  Thanks,
+
+Right.. it does sound like a hassle, but AFAICT that's *more*
+necessary with /dev/vfio/vfioXX than with /dev/vfio/pci/DDDD:BB:SS.F,
+since you have to look up a meaningful name in sysfs to find the right
+devnode.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--BWB8IX6FMezkTNqc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFVJGAACgkQbDjKyiDZ
+s5KzhhAApuv/xOzLxLHMyjuwLZM9hndWaHiOABTekrzAPageCyg8VIoWQld0IJZ7
+m7jhClwoV3hwiJlg6HmyiRv7RAR6tMDJ3mVmaVXbHtWnRutl+4ZFBVdtuVlN3kYZ
+WPVbqDupUviFlyO2+1i42HczlsUi2AFRiz7iEnJ8VBmkk00iYQNww0yRl8aB/vwl
+E7c9G0HujmDtL+ob2jleWp2ynLDHCIU6VffkKUnp4irpyjPcWZ0pmnAVFiblP9I+
+WdTEYw+HX+N3RWPKs7h+azughTZNJL+W6WGQkorEOvBmIYLgrt0Llf6UxXglw98d
+QbtvusTEpn59yGnPuJQoSg8c3wPGuK81MFZQXY34GJwyNNf6j69UZMk82/TmUwav
+u7DbHq82cG3Dn1jAlwRJnT4PSGBKU9dYmwh9J9sxCoPyS9nJqCk9tCj2aj5+WQqC
+vJ9VP/p4QXwMnlPnXsKEBgDSyzC2WrNiwZ6tIy2TtsPMVaTQQts/3lKrABR5bGiN
+2kjHuVbRpMxch0cXDo01Ft+wEhDLDl5zv6P5hhcdSgixX0GGh2M0YHZu/cxy4eS2
+rbvrS5/NhtAGprFhdQDWFN5u+m1xE8tytmVCpY/23FBn6jU0nagNvEqx1fSqX4GY
+UZQM5BL9nAbEY3hH9h1Y2ioJKMgdKT/XqK10coN5jku6rByU2Rs=
+=o0Zb
+-----END PGP SIGNATURE-----
+
+--BWB8IX6FMezkTNqc--
