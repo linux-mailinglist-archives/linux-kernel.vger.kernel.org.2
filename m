@@ -2,119 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAAC41DF13
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A2541DF16
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 18:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351367AbhI3Qc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 12:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S1351420AbhI3Qco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 12:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351165AbhI3QcY (ORCPT
+        with ESMTP id S1351414AbhI3Qch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:32:24 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B0C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:41 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e7so6849640pgk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:41 -0700 (PDT)
+        Thu, 30 Sep 2021 12:32:37 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8EBC06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:54 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id d11so7532471ilc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 09:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ciyh0EVHcl3WRsnW2ZREWfVT9JlEKA9hfP6r96v0iyo=;
-        b=KLa5TC+QH0mRltEWVuTIoKEr3I5WlJ5ps07gPtG+fFyGEdV1U/dfQymhN/OCTfFMB9
-         Y7+88FcoTDrTJg23LJDHozJMKKBrw1K+Cf1qDSuKJe+iDC2e4yju2MKv7h+5KATiNn51
-         0z+EpCXkz4hgoHRq2xu2wdBaorGBdI+Cw8KN08f2UQfJlPBfTclLpIjTHLKaIMhCUz1F
-         B+TvY7+bfat4KzRY/LvcdNCxOYpJD0qZUuZI0K4VtD+g1iLDQrTqBm2oSCndAtEeQStQ
-         AFKlCWAbvVu1NDaQ251VibzsX3vBLQtFql8481C2fo8BdtOorsLXcCp6Ce7kavuT+nro
-         WpXw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E3GJDPU5FEHjM1zieJ1Pg3C9OcpkH8T3yE1WPI8iwRk=;
+        b=jnQtQEZwbakpMbIrU6BktCG2/inzQOtpdpjQw9GFNM2cjvIUWX5NbltcFZLNuHvA2n
+         omhiIhSvbsNelvHhOtQFFsCTqqUuoywrm+8tEsoIVpXGbDJBe1s5euVwfg7OpE0kQ5oi
+         U6sG3boo6qm1Y6VL8sqwkGCkv+cwZa3ROsMZilOm7/tODkVJAYl752nAmoWYJ8kIt/pE
+         YYwVNWWVaHW5nfQPrqcWHufwu23DOQLKGWovMl/Wg14RqRt8HcgIowWOQaGhLAOnh9mi
+         9cVn+97H+OJmESUNQpp3DEBH17xNfM4bl6nWjmE00pDap7S5l94w358A1xg2uGLLNj8a
+         nDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ciyh0EVHcl3WRsnW2ZREWfVT9JlEKA9hfP6r96v0iyo=;
-        b=iqXNsLXOo2VEQyvTr/Oinqca5cwbi4Q9np94OFDVqjMEPk/RooyG1DBwCkm3BIYXpm
-         fXWLj+3yFo9XHht5u9Otu47qBTX1GUNzNkxQlxoYJfxjuJG1c+vaCS+LtwW9MkCRcDJh
-         RmgbZUQUzt2ofZEvR9Bz2vegHyQQMOqwHqpcVYbBIKvCAdE40yzfmYzbMfMTkj2qtgIe
-         5h4oTl9OwHYbdrdK7Db92e2j8cEbq728pEM7HJyfKLXlivrJyAiJ9mNVetSaWq/fl9Sn
-         O2b0roD/KwJ8EMY0QLQp2ihHvwq10OMX3j1tyXcGtUPpZpD9TxQrNDPvpvRACIv2aCBL
-         orNw==
-X-Gm-Message-State: AOAM531CwWvG00A08e+EZODMCp3/Act39iab+7VqugzbBvUKPO/2GmWX
-        Y2QKHj5zFZUx9UxCblpUKt1GPw==
-X-Google-Smtp-Source: ABdhPJwypV3JkcUF52yFwFeC0CYHKTJzN0cIsYLiSO0D2ExL+no2wARl/7UePGspmFaRIyeVnclmmw==
-X-Received: by 2002:a62:1d4d:0:b0:443:eac2:8a1b with SMTP id d74-20020a621d4d000000b00443eac28a1bmr5281219pfd.2.1633019440914;
-        Thu, 30 Sep 2021 09:30:40 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 127sm3663367pfw.10.2021.09.30.09.30.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 09:30:39 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 10:30:37 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 1/5] perf cs-etm: Print size using consistent format
-Message-ID: <20210930163037.GA3047827@p14s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210923162434.GA2189675@p14s>
- <67a54101-a514-6077-96ba-8809226181eb@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E3GJDPU5FEHjM1zieJ1Pg3C9OcpkH8T3yE1WPI8iwRk=;
+        b=03z/TndfSk0XxzYjJ6oR/6w2e2bzPLOGz8QNnzFYmCraElgtYXloUPoONmNYNupzyR
+         rQ9s0n8w5MLo2DEkZ8U1G891gEOz2Cx+hcJfYdhGr1QBydg10F88NX7eiAzXghjILFz/
+         tdmFfe/rLKtJOI+AskuQMo85EFy9TdXppH28fFDO77uOTH+Fbgb0m+LCV2Y9WtUdc5a9
+         /dYrFTScnBqAjdooKRsPAnT8edVLLc4U9/osxCN8+WqHNgqRTpNx9GLfMWq+2/hOx7Xk
+         WWeV+La5CXO9OVLxwEjqFA7XalYvm+BTxsO1dXsQKDymoWLQqzOGMeEMPGaX3zbqAglk
+         URCw==
+X-Gm-Message-State: AOAM533sj1ApUcklAwXUzJXmSiKsZFD0Axng2ckTXfN4AdPFk5D+xdLh
+        vXoEXgfksYSZZyRvzPVeXHfrfm9ang+pM30swVLtZw==
+X-Google-Smtp-Source: ABdhPJzfvozwNzo0WYuTVzS114nYJ0s+7qbCvouyVk0V06G+G7nr7iHJZxVnz8fP2xlyKNTeJu7nQXzqNqzdvRj9+dI=
+X-Received: by 2002:a92:b301:: with SMTP id p1mr4732412ilh.10.1633019453444;
+ Thu, 30 Sep 2021 09:30:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67a54101-a514-6077-96ba-8809226181eb@arm.com>
+References: <20210929195436.1405996-1-dlatypov@google.com> <20210929195436.1405996-5-dlatypov@google.com>
+ <CABVgOSne4ymK6ajB8vT-=pptvKJNxBNppzA3X7Jv2mghjsf4RQ@mail.gmail.com>
+In-Reply-To: <CABVgOSne4ymK6ajB8vT-=pptvKJNxBNppzA3X7Jv2mghjsf4RQ@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 30 Sep 2021 09:30:42 -0700
+Message-ID: <CAGS_qxqRoMRDZBmdRFj_kQwoWxA2rd5LGNyrjS4rSeZaNGLXXw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] kunit: tool: support running each suite/test separately
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:09:16PM +0100, German Gomez wrote:
-> Hi Mathieu,
-> 
-> Thanks for your feedback. I will keep these points in mind for future
-> submissions.
-> 
-> On 23/09/2021 17:24, Mathieu Poirier wrote:
-> > Hi German,
-> > 
-> > On Thu, Sep 16, 2021 at 04:46:31PM +0100, German Gomez wrote:
-> > > [...]
-> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > 
-> > A couple of things to improve for your next interactions with the Linux community:
-> > 
-> > 1) Using a cover letter, even for small changes, is always a good idea.
-> > 2) RB tags should be picked up publicly rather than done internally and added to
-> > a patchset.
-> > 3) Keep patches semantically grouped.  Here patches 04 and 05 have nothing to do
-> > with 01, 02 and 03.
-> Did you perhaps mean separating 01 and 02 from the rest? I grouped 03 to 05
-> because
-> they were related to snapshot mode.
+On Wed, Sep 29, 2021 at 7:27 PM David Gow <davidgow@google.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 3:54 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > The new --run_isolated flag makes the tool boot the kernel once per
+> > suite or test, preventing leftover state from one suite to impact the
+> > other. This can be useful as a starting point to debugging test
+> > hermeticity issues.
+> >
+> > Note: it takes a lot longer, so people should not use it normally.
+> >
+> > Consider the following very simplified example:
+> >
+> >   bool disable_something_for_test = false;
+> >   void function_being_tested() {
+> >     ...
+> >     if (disable_something_for_test) return;
+> >     ...
+> >   }
+> >
+> >   static void test_before(struct kunit *test)
+> >   {
+> >     disable_something_for_test = true;
+> >     function_being_tested();
+> >     /* oops, we forgot to reset it back to false */
+> >   }
+> >
+> >   static void test_after(struct kunit *test)
+> >   {
+> >     /* oops, now "fixing" test_before can cause test_after to fail! */
+> >     function_being_tested();
+> >   }
+> >
+> > Presented like this, the issues are obvious, but it gets a lot more
+> > complicated to track down as the amount of test setup and helper
+> > functions increases.
+> >
+> > Another use case is memory corruption. It might not be surfaced as a
+> > failure/crash in the test case or suite that caused it. I've noticed in
+> > kunit's own unit tests, the 3rd suite after might be the one to finally
+> > crash after an out-of-bounds write, for example.
+> >
+> > Example usage:
+> >
+> > Per suite:
+> > $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
+> > ...
+> > Starting KUnit Kernel (1/7)...
+> > ============================================================
+> > ======== [PASSED] kunit_executor_test ========
+> > ....
+> > Testing complete. 5 tests run. 0 failed. 0 crashed. 0 skipped.
+> > Starting KUnit Kernel (2/7)...
+> > ============================================================
+> > ======== [PASSED] kunit-try-catch-test ========
+> > ...
+> >
+> > Per test:
+> > $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
+> > Starting KUnit Kernel (1/23)...
+> > ============================================================
+> > ======== [PASSED] kunit_executor_test ========
+> > [PASSED] parse_filter_test
+> > ============================================================
+> > Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
+> > Starting KUnit Kernel (2/23)...
+> > ============================================================
+> > ======== [PASSED] kunit_executor_test ========
+> > [PASSED] filter_subsuite_test
+> > ...
+> >
+> > It works with filters as well:
+> > $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite example
+> > ...
+> > Starting KUnit Kernel (1/1)...
+> > ============================================================
+> > ======== [PASSED] example ========
+> > ...
+> >
+> > It also handles test filters, '*.*skip*' runs these 3 tests:
+> >   kunit_status.kunit_status_mark_skipped_test
+> >   example.example_skip_test
+> >   example.example_mark_skipped_test
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > Reviewed-by: David Gow <davidgow@google.com>
+> > ---
+>
+> Thanks. This is good. A part of me still would've preferred the TAP
+> header to have been altered, but it probably makes more sense to leave
+> that until after Rae's parser rework patch anyway, which has better
+> support for multiple possible TAP headers anyway.
+>
+> I did find an issue when running this under qemu/i386: a timing
+> problem with interleaved lines. We could do something drastic, like
+> having a marker at the start of every line to identify which ones are
+> tests, but that does seem like overkill for a (hopefully) rare
+> problem. Just ignoring obviously invalid lines should do it. Futher
+> details below.
+>
+> -- David
+>
+> >  tools/testing/kunit/kunit.py           | 95 ++++++++++++++++++++------
+> >  tools/testing/kunit/kunit_tool_test.py | 40 +++++++++++
+> >  2 files changed, 114 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> > index 5e717594df5b..b9d63f558765 100755
+> > --- a/tools/testing/kunit/kunit.py
+> > +++ b/tools/testing/kunit/kunit.py
+> > @@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+> >
+> >  from collections import namedtuple
+> >  from enum import Enum, auto
+> > -from typing import Iterable
+> > +from typing import Iterable, List
+> >
+> >  import kunit_config
+> >  import kunit_json
+> > @@ -31,13 +31,13 @@ KunitBuildRequest = namedtuple('KunitBuildRequest',
+> >                                ['jobs', 'build_dir', 'alltests',
+> >                                 'make_options'])
+> >  KunitExecRequest = namedtuple('KunitExecRequest',
+> > -                              ['timeout', 'build_dir', 'alltests',
+> > -                               'filter_glob', 'kernel_args'])
+> > +                             ['timeout', 'build_dir', 'alltests',
+> > +                              'filter_glob', 'kernel_args', 'run_isolated'])
+> >  KunitParseRequest = namedtuple('KunitParseRequest',
+> >                                ['raw_output', 'build_dir', 'json'])
+> >  KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
+> >                                            'build_dir', 'alltests', 'filter_glob',
+> > -                                          'kernel_args', 'json', 'make_options'])
+> > +                                          'kernel_args', 'run_isolated', 'json', 'make_options'])
+> >
+> >  KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
+> >
+> > @@ -91,23 +91,68 @@ def build_tests(linux: kunit_kernel.LinuxSourceTree,
+> >                            'built kernel successfully',
+> >                            build_end - build_start)
+> >
+> > +def _list_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest) -> List[str]:
+> > +       args = ['kunit.action=list']
+> > +       if request.kernel_args:
+> > +               args.extend(request.kernel_args)
+> > +
+> > +       output = linux.run_kernel(args=args,
+> > +                          timeout=None if request.alltests else request.timeout,
+> > +                          filter_glob=request.filter_glob,
+> > +                          build_dir=request.build_dir)
+> > +       lines = kunit_parser.extract_tap_lines(output)
+> > +       # Hack! Drop the dummy TAP version header that the executor prints out.
+> > +       lines.pop()
+> > +       return list(lines)
+> > +
+> > +def _suites_from_test_list(tests: List[str]) -> List[str]:
+> > +       """Extracts all the suites from an ordered list of tests."""
+> > +       suites = []  # type: List[str]
+> > +       for t in tests:
+> > +               parts = t.split('.', maxsplit=2)
+> > +               if len(parts) != 2:
+> > +                       raise ValueError(f'internal KUnit error, test name should be of the form "<suite>.<test>", got "{t}"')
+>
+> It turns out that this can trigger on some machines/architectures if
+> there are other lines of kernel output which either get interspersed
+> in the test list, or -- more likely -- between the test list and the
+> "Restarting System" line.
+>
+> On i386, under qemu, I'm seeing this output:
+> $ qemu-system-x86_64 -nodefaults -m 1024 -kernel
+> .kunit/arch/x86/boot/bzImage -append 'kunit.action=list mem=1G
+> console=tty kunit_shutdown=halt console=ttyS0 kunit_shutdown=reboot'
+> -no-reboot -nographic -serial stdio
+> ...
+> property-entry.pe_test_reference
+> random: fast init done
+> input: ImExPS/2 Generic Explorer Mouse as
+> /devices/platform/i8042/serio1/input/input2
+> reboot: Restarting system
+> reboot: machine restart
+>
+> Which translates into the following kunit_tool error:
+> $ ./tools/testing/kunit/kunit.py run --run_isolated=suite --arch=i386
+> ...
+>  File "./tools/testing/kunit/kunit.py", line 114, in _suites_from_test_list
+>    raise ValueError(f'internal KUnit error, test name should be of the
+> form "<suite>.<test>", got "{t}"')
+> ValueError: internal KUnit error, test name should be of the form
+> "<suite>.<test>", got "random: fast init done"
+>
+>
+> Could we maybe ignore entries of the incorrect form?
 
-Yes - you are correct.  It should have been 01 and 02 in one set and the rest in
-another set.
+I'm thinking we change _list_tests() above like
+-       return list(lines)
++
++       # Filter out any extraneous non-test output that might have
+gotten mixed in.
++       return [l for l in lines if re.match('^\w+\.\w+$', l)]
 
-> 
-> Thanks,
-> German
-> 
-> > 
-> > Moreover Arnaldo queues changes to the perf tools but I don't see him CC'ed to
-> > this patchset.  As such he will not see your work.  Ask James about how to
-> > proceed when submitting patches to the perf tools.
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> > >   		     cs_etm_decoder__get_name(etmq->decoder), buffer->size);
-> > >   	do {
-> > > -- 
-> > > 2.17.1
-> > > 
+The problem with \w is that it doesn't match -.
+So I'm thinking we maybe go with something very lax like
+  '^[^\s.]+\.[^\s.]+$'
+
+Since we don't have any requirements on the naming convention, I don't
+know if we can be stricter.
+Like, KUNIT_CASE() sorta enforces that test cases follow C identifier
+naming rules, but users could always work around it fairly easily by
+instantiating the struct directly.
