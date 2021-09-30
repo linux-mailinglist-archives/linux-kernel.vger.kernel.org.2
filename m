@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A831441D58B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3926B41D591
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348688AbhI3IhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
+        id S1348696AbhI3IjA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 04:39:00 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41463 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348151AbhI3IhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:37:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DDAB617E6;
-        Thu, 30 Sep 2021 08:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632990941;
-        bh=biKQOK9BNQIY7fMMihIuq+3RLN7WPO/dyZN4WOWslM4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MsLRpcXM9k2jNYBxFxe6cx+zXX7w1u0npEUi5VtBEmfNdr6ZEOz5uDyXcpSgB6THa
-         h4H4Wgk9NNPiHiexNP7NYv214SSaViZKg6YI0YfUHvHBQVe1lS/Mh8h8Nejo5Tup17
-         inj6fx+DhkXflKuxixCU9+Q0muuWiqJNmJrYFIhUqLuox1/BlDDChJPPyiowgAxtOL
-         TYKKrS69zRH5RFabyQvL+Yn58n+79dptIc5mhJgJj4HxsYuEu61U5UdNEk/rnG5LnC
-         JpjVM43E793r64LKAL2aWqgwu0T6mZ1gBbbqtz3dpawjlM47LI6yULFwXxbEWVJg7s
-         ZhV3cQzRVv0Dw==
-Date:   Thu, 30 Sep 2021 09:35:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     yee.lee@mediatek.com
-Cc:     linux-kernel@vger.kernel.org, nicholas.Tang@mediatek.com,
-        Kuan-Ying.lee@mediatek.com, chinwen.chang@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v2] scs: Release kasan vmalloc poison in scs_free process
-Message-ID: <20210930083535.GB23389@willie-the-truck>
-References: <20210930081619.30091-1-yee.lee@mediatek.com>
+        id S1348048AbhI3Ii7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:38:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212215353"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="212215353"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:37:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
+   d="scan'208";a="487241757"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga008.jf.intel.com with ESMTP; 30 Sep 2021 01:37:15 -0700
+Received: from lcsmsx602.ger.corp.intel.com (10.109.210.11) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 30 Sep 2021 01:37:14 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX602.ger.corp.intel.com (10.109.210.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 30 Sep 2021 11:37:12 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2242.012;
+ Thu, 30 Sep 2021 11:37:12 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Box, David E" <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        "Mashiah, Tamar" <tamar.mashiah@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [PATCH 7/7] ABI: sysfs-platform-intel-pmc: add blank lines to
+ make it valid for ReST
+Thread-Topic: [PATCH 7/7] ABI: sysfs-platform-intel-pmc: add blank lines to
+ make it valid for ReST
+Thread-Index: AQHXs5BhWDSB44ICBEuOmGxnwUE14Ku8RYTw
+Date:   Thu, 30 Sep 2021 08:37:12 +0000
+Message-ID: <b21707f01a3646bf929db9c9df3653d7@intel.com>
+References: <cover.1632740376.git.mchehab+huawei@kernel.org>
+ <3673e1a255ad4100c933af215b60d68ba126f820.1632740376.git.mchehab+huawei@kernel.org>
+In-Reply-To: <3673e1a255ad4100c933af215b60d68ba126f820.1632740376.git.mchehab+huawei@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930081619.30091-1-yee.lee@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 04:16:13PM +0800, yee.lee@mediatek.com wrote:
-> From: Yee Lee <yee.lee@mediatek.com>
 > 
-> Since scs allocation is moved to vmalloc region, the
-> shadow stack is protected by kasan_posion_vmalloc.
-> However, the vfree_atomic operation needs to access
-> its context for scs_free process and causes kasan error
-> as the dump info below.
+> The ReST format requires blank lines before/after identation changes, for it
+> to properly detect lists.
 > 
-> This patch Adds kasan_unpoison_vmalloc() before vfree_atomic,
-> which aligns to the prior flow as using kmem_cache.
-> The vmalloc region will go back posioned in the following
-> vumap() operations.
+> Fixes: ee7abc105e2b ("platform/x86: intel_pmc_core: export platform global
+> reset bits via etr3 sysfs file")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Ack.
+> ---
 > 
->  ==================================================================
->  BUG: KASAN: vmalloc-out-of-bounds in llist_add_batch+0x60/0xd4
->  Write of size 8 at addr ffff8000100b9000 by task kthreadd/2
+> See [PATCH 0/7] at:
+> https://lore.kernel.org/all/cover.1632740376.git.mchehab+huawei@kernel.o
+> rg/T/#t
 > 
->  CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.15.0-rc2-11681-g92477dd1faa6-dirty #1
->  Hardware name: linux,dummy-virt (DT)
->  Call trace:
->   dump_backtrace+0x0/0x43c
->   show_stack+0x1c/0x2c
->   dump_stack_lvl+0x68/0x84
->   print_address_description+0x80/0x394
->   kasan_report+0x180/0x1dc
->   __asan_report_store8_noabort+0x48/0x58
->   llist_add_batch+0x60/0xd4
->   vfree_atomic+0x60/0xe0
->   scs_free+0x1dc/0x1fc
->   scs_release+0xa4/0xd4
->   free_task+0x30/0xe4
->   __put_task_struct+0x1ec/0x2e0
->   delayed_put_task_struct+0x5c/0xa0
->   rcu_do_batch+0x62c/0x8a0
->   rcu_core+0x60c/0xc14
->   rcu_core_si+0x14/0x24
->   __do_softirq+0x19c/0x68c
->   irq_exit+0x118/0x2dc
->   handle_domain_irq+0xcc/0x134
->   gic_handle_irq+0x7c/0x1bc
->   call_on_irq_stack+0x40/0x70
->   do_interrupt_handler+0x78/0x9c
->   el1_interrupt+0x34/0x60
->   el1h_64_irq_handler+0x1c/0x2c
->   el1h_64_irq+0x78/0x7c
->   _raw_spin_unlock_irqrestore+0x40/0xcc
->   sched_fork+0x4f0/0xb00
->   copy_process+0xacc/0x3648
->   kernel_clone+0x168/0x534
->   kernel_thread+0x13c/0x1b0
->   kthreadd+0x2bc/0x400
->   ret_from_fork+0x10/0x20
+>  Documentation/ABI/testing/sysfs-platform-intel-pmc | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
->  Memory state around the buggy address:
->   ffff8000100b8f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->   ffff8000100b8f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->  >ffff8000100b9000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->                     ^
->   ffff8000100b9080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->   ffff8000100b9100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->  ==================================================================
+> diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> index ef199af75ab0..f31d59b21f9b 100644
+> --- a/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+> @@ -11,8 +11,10 @@ Description:
+>  		to take effect.
+> 
+>  		Display global reset setting bits for PMC.
+> +
+>  			* bit 31 - global reset is locked
+>  			* bit 20 - global reset is set
+> +
+>  		Writing bit 20 value to the etr3 will induce
+>  		a platform "global reset" upon consequent platform reset,
+>  		in case the register is not locked.
+> --
+> 2.31.1
 
-Thanks, I'll take this via the arm64 tree as we're the only use of SCS.
-
-One thing for future:
-
-> Suggested-by: Kuan-Ying Lee <kuan-ying.lee@mediatek.com>
-> Reviewd-by: Will Deacon <will@kernel.org>
-
-I gave an "Acked-by" and a "Tested-by" at [1], so those are the tags you
-should be using. Please don't convert them into a "Reviewed-by".
-
-> Reviewd-by: Sami Tolvanen <samitolvanen@google.com>
-
-This should be "Reviewed-by" (you have a typo).
-
-Anyway, I'll fix these locally, no need to resend this time.
-
-Will
-
-[1] https://lore.kernel.org/r/20210929115447.GA21631@willie-the-truck
