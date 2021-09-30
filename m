@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C7841DE15
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F293E41DE20
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 17:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346811AbhI3Pzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 11:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346582AbhI3Pzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 11:55:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1F661411;
-        Thu, 30 Sep 2021 15:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633017242;
-        bh=4FLgrYfiAV1mkDxGMwPnsUgIYDlrsX1nBmoYjQHKOrs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=LQ/9JqDQ6td04d9li5F/dooPp/dOE3SlVNgF7u9Si5Kjew50vR+hVWBfsIIzJ+014
-         N8v+vCGq5AXzoCrCt+vTQHnjT6aXmqePpBODEjc3u2H1yZyKPneMl6p+EB3ZEKnRWC
-         t7KR/gFlY+F11CcGQOEVWeiDpHjkDxX27wH4n4ITAcmyYSd/M0WjR38k7hAfepJB76
-         iu3JWBvAMASHhgc8rAkbZ2Y9JGoNfsoaS9ng6IJsQGmJMTFzKDeQO5O5nHTC1SRTE+
-         FeVov8TjM9GUqeg+iWrn8GbDlAo46roW84eAQr+B+Zms1vXcwM1DlF1mHu7jNb+lnM
-         wHHzoZnoflP5Q==
-Date:   Thu, 30 Sep 2021 10:54:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/4] [PCI/ASPM:] Remove struct
- pcie_link_state.clkpm_default
-Message-ID: <20210930155400.GA886716@bhelgaas>
+        id S1347032AbhI3P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 11:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346577AbhI3P42 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 11:56:28 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C0AC06176A;
+        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i4so27713049lfv.4;
+        Thu, 30 Sep 2021 08:54:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
+        b=PXKNBxqcRYxhwIV2v2X64yZJayzFfGuPEaFJcRpO4WCNqMpCZwI1df/zPBhLNhmRG9
+         7YWtoaofqurtGMdx0tYBEI6UfndHKtDaw4PBX49q9qi3J9QTKWYVNSDazJnLhCwGhWpW
+         sQyH53wtu7PQHWXKpw0IKJFLkzoLewsXUWMxyWUFA0GoZc/geWBr365BCc9DFKmEuqTx
+         QD1UXjg8vOB88FTGI55O4xvrqxi80eDmibsD2swnwubvtT8jN+7r24raClw1eWxICIMn
+         Xqc+xF7xzZT7TnBUA1RA5nmOrLjD64wC+WGfBcYeYx3rm7565L5ZdR6xyKgYS9WfGChU
+         NdlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8LuCj9+8GFiHaMYgM8A65UudQg+qoOQQ2QUvcQ4XJ6s=;
+        b=XbBmZKylOYkv9SoXviPKr9BWXkZnTMEhN/fJ51HYr7LvZ50SCBNVHrOfV5SWpjYM2r
+         Y2qiC9CZ/lZsMRA6GQqL2/yNfuvwmt01k+raQ/914z/0iuApGZgUMbKUALfvCbUniGRI
+         gSalxO6Z+kngZPgLhCAU9cS1ehUiZTvEswwuJASnjNdOIUR0Z+riW4QpL82Pr+TXguTS
+         2fDK3wKyn6cI/dVyVPlz5oC6323Y0CaVOJqjzh8gwILnBViU/sGrMjSLtCdVqkbFx6bt
+         8hDoqhoj9aXS9t5aF9sa3JGdoOav5Q8f/6EcjMIWu/mSG6lZ8XF7xAHIVtuMFICV5S9y
+         uQUg==
+X-Gm-Message-State: AOAM530xbUXEPedn3z2RSBSh4SRFgiu7yX3y79mfdsl/iauHJLStOASh
+        TzYK5mmp8+9+DBjHeQ/cTbqVveEdVpYvTtbgkUjRp9WQ
+X-Google-Smtp-Source: ABdhPJyOHnVmMylaeGdsSDUQCs/a7NstziQ8gAm3Iq6Rldf9w/4qe7wGWECjl3a+7RS3TZsUTx6/zgFOVy33MH5VI2M=
+X-Received: by 2002:a05:6512:32c5:: with SMTP id f5mr7091563lfg.234.1633017283958;
+ Thu, 30 Sep 2021 08:54:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929004400.25717-2-refactormyself@gmail.com>
+References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+ <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+In-Reply-To: <163279868982.18792.10448745714922373194@noble.neil.brown.name>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 30 Sep 2021 10:54:32 -0500
+Message-ID: <CAH2r5msHO9HTQGeO6MoR2_U76B9kLeoFS=FRbMuiNsh=YeFdWg@mail.gmail.com>
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+To:     NeilBrown <neilb@suse.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Trond Myklebust <trond.myklebust@primarydata.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-mm <linux-mm@kvack.org>, Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:43:57AM +0200, Saheed O. Bolarinwa wrote:
-> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
-> 
-> The clkpm_default member of the struct pcie_link_state stores the
-> value of the default clkpm state as it is in the BIOS.
-> 
-> This patch:
-> - Removes clkpm_default from struct pcie_link_state
-> - Creates pcie_get_clkpm_state() which return the clkpm state
->   obtained the BIOS
-> - Replaces references to clkpm_default with call to
->   pcie_get_clkpm_state()
-> 
-> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
-> ---
->  drivers/pci/pcie/aspm.c | 37 +++++++++++++++++++++++++++----------
->  1 file changed, 27 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 013a47f587ce..c23da9a4e2fb 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -63,7 +63,6 @@ struct pcie_link_state {
->  	/* Clock PM state */
->  	u32 clkpm_capable:1;		/* Clock PM capable? */
->  	u32 clkpm_enabled:1;		/* Current Clock PM state */
-> -	u32 clkpm_default:1;		/* Default Clock PM state by BIOS */
->  	u32 clkpm_disable:1;		/* Clock PM disabled */
->  
->  	/* Exit latencies */
-> @@ -123,6 +122,30 @@ static int policy_to_aspm_state(struct pcie_link_state *link)
->  	return 0;
->  }
->  
-> +static int pcie_get_clkpm_state(struct pci_dev *pdev)
-> +{
-> +	int enabled = 1;
-> +	u32 reg32;
-> +	u16 reg16;
-> +	struct pci_dev *child;
-> +	struct pci_bus *linkbus = pdev->subordinate;
-> +
-> +	/* All functions should have the same clkpm state, take the worst */
-> +	list_for_each_entry(child, &linkbus->devices, bus_list) {
-> +		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
-> +		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
-> +			enabled = 0;
-> +			break;
-> +		}
-> +
-> +		pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
-> +		if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
-> +			enabled = 0;
-> +	}
-> +
-> +	return enabled;
-> +}
-> +
->  static int policy_to_clkpm_state(struct pcie_link_state *link)
->  {
->  	switch (aspm_policy) {
-> @@ -134,7 +157,7 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
->  		/* Enable Clock PM */
->  		return 1;
->  	case POLICY_DEFAULT:
-> -		return link->clkpm_default;
-> +		return pcie_get_clkpm_state(link->pdev);
->  	}
->  	return 0;
->  }
-> @@ -168,9 +191,8 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  
->  static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
->  {
-> -	int capable = 1, enabled = 1;
-> +	int capable = 1;
->  	u32 reg32;
-> -	u16 reg16;
->  	struct pci_dev *child;
->  	struct pci_bus *linkbus = link->pdev->subordinate;
->  
-> @@ -179,15 +201,10 @@ static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
->  		pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
->  		if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
->  			capable = 0;
-> -			enabled = 0;
->  			break;
->  		}
-> -		pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
-> -		if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
-> -			enabled = 0;
->  	}
-> -	link->clkpm_enabled = enabled;
-> -	link->clkpm_default = enabled;
-> +	link->clkpm_enabled = pcie_get_clkpm_state(link->pdev);
+On Mon, Sep 27, 2021 at 10:12 PM NeilBrown <neilb@suse.de> wrote:
+>
+> On Sat, 25 Sep 2021, David Howells wrote:
+> > Whilst trying to make this work, I found that NFS's support for swapfiles
+> > seems to have been non-functional since Aug 2019 (I think), so the first
+> > patch fixes that.  Question is: do we actually *want* to keep this
+> > functionality, given that it seems that no one's tested it with an upstream
+> > kernel in the last couple of years?
+>
+> SUSE definitely want to keep this functionality.  We have customers
+> using it.
+> I agree it would be good if it was being tested somewhere....
+>
 
-I love the idea of removing clkpm_default, but I need a little more
-convincing.  Before this patch, this code computes clkpm_default from
-PCI_EXP_LNKCAP_CLKPM and PCI_EXP_LNKCTL_CLKREQ_EN of all the functions
-of the device.
+I am trying to work through the testing of swap over SMB3 mounts
+since there are use cases where you need to expand the swap
+space to remote storage and so this requirement comes up.  The main difficulty
+I run into is forgetting to mount with the mount options (to store mode bits)
+(so swap file has the right permissions) and debugging some of the
+xfstests relating to swap can be a little confusing.
 
-PCI_EXP_LNKCAP_CLKPM is a read-only value, so we can re-read that any
-time.  But PCI_EXP_LNKCTL_CLKREQ_EN is writable, so if we want to know
-the value that firmware put there, we need to read and save it before
-we modify it.
+-- 
+Thanks,
 
-Why is it safe to remove this init-time read of
-PCI_EXP_LNKCTL_CLKREQ_EN and instead re-read it any time we need the
-"default" settings from firmware?
-
->  	link->clkpm_capable = capable;
->  	link->clkpm_disable = blacklist ? 1 : 0;
->  }
-> -- 
-> 2.20.1
-> 
+Steve
