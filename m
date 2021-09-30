@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EE641E095
+	by mail.lfdr.de (Postfix) with ESMTP id 709AB41E096
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 20:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353062AbhI3SH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 14:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S1353076AbhI3SH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 14:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353061AbhI3SHZ (ORCPT
+        with ESMTP id S1353070AbhI3SH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 14:07:25 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B588C06176E
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:05:42 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id l18-20020a056214039200b0037e4da8b408so11413269qvy.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:05:42 -0700 (PDT)
+        Thu, 30 Sep 2021 14:07:27 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FE9C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:05:44 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id j6-20020a05620a288600b0045e5d85ca17so14133251qkp.16
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 11:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=7QsELX2b4zYjlGgyKK6SovhZ4mE+qI9YjYk7qrPU0wo=;
-        b=U3ToAP/4F0z7c/GCezlIqVZAyjDQl9Undff00n8rJGZDjq+07eqdViNINuCfWY1gAV
-         unl0hcnz0BXbOBcy4UqMjtpy6qawy4EcwcORy+8OW1ACvyXXa6zNSchJ1AgtSuMiyhci
-         A2Rb3gS4n1GsjAdz8QP0qRZXZlN7W5YcVoEHpCHtWmD7vAunZfgv5OLov4Y4ncEh1Feb
-         8FI5yhThK1PcJDaedcnZ0vKjLy0BIpS4W/lszSEK1gEaPNiwNcDLMreQ6kvO28TkAnOW
-         hUXG+aiWaZ407Veb2EEYZn3WXY1mJv3sZVnKlxe3E/7bfH5npygUexLcxyON5o7gD53g
-         m+Kw==
+        bh=UPn3WtDbLCsbJwfnPoAfGXnHgXkJDxwgkdwnBZu0rd0=;
+        b=LRSomAQTsHguWWIKiMw9RL00G2RwUJwWty90kpxqVCwzfIlu+csku0f3xJTJ72BD6F
+         yXJ22lD7BN8EYgnROAkXZRaywcWzJXpqzXsLDih1PLHbwhivOr2f+PMAriDNh+MUeZOP
+         BCfzOtSkQg4k+23cBSVoFXCUxo1PKOZKKI6nLGtBCUmQM28BvI5ySpHt3V+xhHmaoVke
+         y/8c5MuDXtIcVFOK0LYzBdy2v3gW9BnfQ+0YsarknLZGD87mbIzFlQUBx3V2C7uN5GWz
+         aRkaAtBBlCAJ2TXIaBGq/HcSEJ6D+ZmZyUgAgCRMXr9MaU+Dhc5FMWM922utY0OBExHd
+         LqCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7QsELX2b4zYjlGgyKK6SovhZ4mE+qI9YjYk7qrPU0wo=;
-        b=4/WwbMo+MWKPaq1rwQ6XmegOPJKmh0coY9Gx71Op39z3rWudtJ0Y1P6mnXCsyaKTgp
-         tcOEmiMd9yPfWePLnBB5RZ40L1P7tJTdjGqsFTjSJzbyoBmeCxfAvaTQGC/Iq2KeqzyU
-         rJRmI79xwA8oiUdrhL8MJS4q+DipWulZsofUHKZ2hUAYRZkihvqGErVBVpmdsA7MK7vR
-         assHeTZcpr9OoXEAC9qk0vTuTFOwuJamK5Zvj5AVBrZEcjqvCZ6n7iJ6VZHWET6T69Hl
-         rd/q0eIo3MDTC4a8rsVFDR+zNONhpo4SB5T2g6KNsfUiQsImXPCEYzGMWdCl82XAb1mo
-         A89Q==
-X-Gm-Message-State: AOAM5331bX7QjfRZvhRfpLyMBJDRgUR+3hp1OfGHKN8T7xcVNy7YChNU
-        DSk7lIhp0IqKxqyGANybwY5Hl703q+y08WHcSK4=
-X-Google-Smtp-Source: ABdhPJx2qfURfbEwyFW4qktv+A5fIlkTLMCqBZahUPc77DrDAO6ToNYtooGeOAIl80LkI4WjSBoXazOHhIJ3TSe3qUs=
+        bh=UPn3WtDbLCsbJwfnPoAfGXnHgXkJDxwgkdwnBZu0rd0=;
+        b=Pse4ydoEwt6tvwuO32KJZRAgE06nIxjPQJQaF/u6mSkw8s53X5TsTz5Gfoo6KE3WTn
+         nnknFQ8UOvL8JkVMQFkp7AMgydln+ConhBkED3iwFloffxSjI3Z4gqXICO13EzAShzbL
+         6OPO5qx+EJxkT3REebWMSTxnqKTVHEEkl2nErYfl++mC6aGgfTZfEwEFtes1y4sn9IKe
+         CSIDZGC86cTVYUp4Pox9HlJq7PSFF5FdoU0uNrJ0oW3ub//pCk0JrnZLScdigtNHSwgF
+         LvFsa80oh/5hjYOu6CvEBG1uJd++mxDFDVB8rQ9VjMlBku/lWqbZR+up1jz4dMwrFLRc
+         PsbQ==
+X-Gm-Message-State: AOAM5320W5sbRF8qjvbY+IRiXcDObMGqi2lEKAz1RSWXsgFQyvvL/uBq
+        PiZA6yswYmmhtoXBwtQO2wDrdNpMvLMPtMQ4mvA=
+X-Google-Smtp-Source: ABdhPJyt+DoXC8M8wV+eSBDlDe6RpKid8twadzBUYb7JQ4nxap7WFvIXyFpTNj3EkS84jhtbCdxnm7bYEDsu1PiKEJk=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:ce43:4366:95ca:d6e9])
- (user=samitolvanen job=sendgmr) by 2002:a05:6214:1c8d:: with SMTP id
- ib13mr81485qvb.10.1633025141843; Thu, 30 Sep 2021 11:05:41 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 11:05:19 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a0c:c189:: with SMTP id
+ n9mr6585773qvh.5.1633025144137; Thu, 30 Sep 2021 11:05:44 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 11:05:20 -0700
 In-Reply-To: <20210930180531.1190642-1-samitolvanen@google.com>
-Message-Id: <20210930180531.1190642-4-samitolvanen@google.com>
+Message-Id: <20210930180531.1190642-5-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210930180531.1190642-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v4 03/15] linkage: Add DECLARE_ASM_FUNC_SYMBOL
+Subject: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -67,43 +67,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel has several assembly functions, which are not directly
-callable from C but need to be referred to from C code. This change adds
-the DECLARE_ASM_FUNC_SYMBOL macro, which allows us to declare these
-symbols using an opaque type, which makes misuse harder, and avoids the
-need to annotate references to the functions for Clang's Control-Flow
-Integrity (CFI).
+This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
+which defines a stub function that immediately returns and when
+defined in the core kernel, always passes indirect call checking
+with CONFIG_CFI_CLANG. Note that this macro should only be used when
+a stub cannot be called using the correct function type.
 
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- include/linux/linkage.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/asm-generic/vmlinux.lds.h | 11 +++++++++++
+ include/linux/cfi.h               | 13 +++++++++++++
+ kernel/cfi.c                      | 24 +++++++++++++++++++++++-
+ 3 files changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/linkage.h b/include/linux/linkage.h
-index dbf8506decca..f1eac26b2dd6 100644
---- a/include/linux/linkage.h
-+++ b/include/linux/linkage.h
-@@ -48,6 +48,19 @@
- #define __PAGE_ALIGNED_DATA	.section ".data..page_aligned", "aw"
- #define __PAGE_ALIGNED_BSS	.section ".bss..page_aligned", "aw"
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index f2984af2b85b..5b77284f7221 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -407,6 +407,16 @@
+ 	KEEP(*(.static_call_tramp_key))					\
+ 	__stop_static_call_tramp_key = .;
  
-+/*
-+ * Declares a function not callable from C using an opaque type. Defined as
-+ * an array to allow the address of the symbol to be taken without '&'.
-+ */
-+#ifndef DECLARE_ASM_FUNC_SYMBOL
-+#define DECLARE_ASM_FUNC_SYMBOL(sym) \
-+	extern const u8 sym[]
-+#endif
-+
-+#ifndef __ASSEMBLY__
-+typedef const u8 *asm_func_ptr;
++#ifdef CONFIG_CFI_CLANG
++#define CFI_EXCLUDED_DATA						\
++	. = ALIGN(8);							\
++	__start_cfi_excluded = .;					\
++	KEEP(*(.cfi_excluded_stubs))					\
++	__stop_cfi_excluded = .;
++#else
++#define CFI_EXCLUDED_DATA
 +#endif
 +
  /*
-  * This is used by architectures to keep arguments on the stack
-  * untouched by the compiler by keeping them live until the end.
+  * Allow architectures to handle ro_after_init data on their
+  * own by defining an empty RO_AFTER_INIT_DATA.
+@@ -430,6 +440,7 @@
+ 		__start_rodata = .;					\
+ 		*(.rodata) *(.rodata.*)					\
+ 		SCHED_DATA						\
++		CFI_EXCLUDED_DATA					\
+ 		RO_AFTER_INIT_DATA	/* Read only after init */	\
+ 		. = ALIGN(8);						\
+ 		__start___tracepoints_ptrs = .;				\
+diff --git a/include/linux/cfi.h b/include/linux/cfi.h
+index 879744aaa6e0..19f74af8eac2 100644
+--- a/include/linux/cfi.h
++++ b/include/linux/cfi.h
+@@ -20,6 +20,17 @@ extern void __cfi_check(uint64_t id, void *ptr, void *diag);
+ #define __CFI_ADDRESSABLE(fn, __attr) \
+ 	const void *__cfi_jt_ ## fn __visible __attr = (void *)&fn
+ 
++/*
++ * Defines a stub function that returns immediately, and when defined and
++ * referenced in the core kernel, always passes CFI checking. This should
++ * be used only for stubs that cannot be called using the correct function
++ * pointer type, which should be rare.
++ */
++#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
++	void fn(void) { return; } \
++	const void *__cfi_excl_ ## fn __visible \
++		__section(".cfi_excluded_stubs") = (void *)&fn
++
+ #ifdef CONFIG_CFI_CLANG_SHADOW
+ 
+ extern void cfi_module_add(struct module *mod, unsigned long base_addr);
+@@ -35,6 +46,8 @@ static inline void cfi_module_remove(struct module *mod, unsigned long base_addr
+ #else /* !CONFIG_CFI_CLANG */
+ 
+ #define __CFI_ADDRESSABLE(fn, __attr)
++#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
++	void fn(void) { return; }
+ 
+ #endif /* CONFIG_CFI_CLANG */
+ 
+diff --git a/kernel/cfi.c b/kernel/cfi.c
+index 9594cfd1cf2c..8d931089141b 100644
+--- a/kernel/cfi.c
++++ b/kernel/cfi.c
+@@ -278,12 +278,34 @@ static inline cfi_check_fn find_module_check_fn(unsigned long ptr)
+ 	return fn;
+ }
+ 
++extern unsigned long __start_cfi_excluded[];
++extern unsigned long __stop_cfi_excluded[];
++
++static inline bool is_cfi_excluded(unsigned long ptr)
++{
++	unsigned long *p = __start_cfi_excluded;
++
++	for ( ; p < __stop_cfi_excluded; ++p)
++		if (*p == ptr)
++			return true;
++
++	return false;
++}
++
++static void __cfi_pass(uint64_t id, void *ptr, void *diag)
++{
++}
++
+ static inline cfi_check_fn find_check_fn(unsigned long ptr)
+ {
+ 	cfi_check_fn fn = NULL;
+ 
+-	if (is_kernel_text(ptr))
++	if (is_kernel_text(ptr)) {
++		if (unlikely(is_cfi_excluded(ptr)))
++			return __cfi_pass;
++
+ 		return __cfi_check;
++	}
+ 
+ 	/*
+ 	 * Indirect call checks can happen when RCU is not watching. Both
 -- 
 2.33.0.800.g4c38ced690-goog
 
