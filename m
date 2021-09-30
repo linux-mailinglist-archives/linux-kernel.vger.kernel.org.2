@@ -2,265 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5131641DC63
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B733241DC66
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 16:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350217AbhI3Oge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 10:36:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4129 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348440AbhI3Ogd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:36:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="212277417"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="212277417"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 07:34:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="521230778"
-Received: from lcalx-mobl1.amr.corp.intel.com (HELO [10.212.88.180]) ([10.212.88.180])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 07:34:48 -0700
-Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
-To:     Sameer Pujar <spujar@nvidia.com>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        catalin.marinas@arm.com, will@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
- <1630056839-6562-2-git-send-email-spujar@nvidia.com>
- <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
- <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
- <2f96f1aa-74f2-8ea8-3f43-e4da97400fde@linux.intel.com>
- <647b1d54-dbd7-ce91-291d-d677ce908398@linux.intel.com>
- <94861852-29ba-be9e-8c63-a70a01550b3a@nvidia.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b68d3c04-07b5-966c-5cd3-8cc715cc470e@linux.intel.com>
-Date:   Thu, 30 Sep 2021 09:34:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1350381AbhI3OhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 10:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348440AbhI3OhN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 10:37:13 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1A4C06176A;
+        Thu, 30 Sep 2021 07:35:31 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id t11so4144429plq.11;
+        Thu, 30 Sep 2021 07:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lYJPRniTRBZbff9MFqNleWr6TXhR2CJIGNuRoQ2wgy8=;
+        b=XQEYgilh70OAlHfZfNiT4UE+CVMlUBQBBEfmJuQpsArcbqLTUq2qLCSTq3g+lPTSuA
+         dsil27f5oQCy6Hg5aa+KT279e0Zeli5QMjLxeCUfpExxRMcIttaoa/SArfrgd0L7QeDt
+         mfDKQesUR1GNj5IQhtH5ailEAiefK2xyc2iA9qr7bKOlbC+AIpNDBmGB+OJMJ654bdBs
+         oRxExW0W3xlZF8SvT/AW6pnx7pdQ3jTfnxDto7MwUygnBoLsE4wygMbnmM0r20jPLdZC
+         rUn4GC2A9kzWvE1vXEif7hDxMrSX1heB5xMZEBfAR+h3FgM91M3BYcqQ5PcRaT25ebk0
+         QR3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lYJPRniTRBZbff9MFqNleWr6TXhR2CJIGNuRoQ2wgy8=;
+        b=pvp4M+chC2WEYc16DCsE75K69ornul7PrT1So9WgRJK7hkC24N5AjYroYGKeJkN+P5
+         D7qdyiExao5Srlr5Wd/UnV+atGq7hCPy5ddN82HMZMH3Ztng6XgirkoG8rqbhKgDIw+E
+         NfUSdaeY4kD4TWYgvQ5frmRYcaJg36gD+v6hWboWpd9lYzjfuikbBcJ5Z0rjWJNQ47UQ
+         srS4Cer5Pwd87o2Oo/ZlXGlste4X09AhA0GFK5eRdnglMLFQ7576t16XpCpoqhKvWsKk
+         AG0+RUrF5AOqEjh8aBGQM1jD9S+qHJvU6amGV7Fp0dsnHSND4KtlNXE/Xr86osvHvctR
+         779Q==
+X-Gm-Message-State: AOAM533oN/ULwVoSSB1bzHir4XNbwU2Sb6JgDiWs8zmGgTCkCoOhSSnJ
+        hoO+xCqvAOLqby16LEI/abs=
+X-Google-Smtp-Source: ABdhPJzOYNarPIvIznW68ec40qAzjkKpHUN+ruoL95o7U+ATJK1Bqw1yOg5bN+fboQvyHOo6Hz2vlg==
+X-Received: by 2002:a17:90a:db95:: with SMTP id h21mr13615635pjv.102.1633012530501;
+        Thu, 30 Sep 2021 07:35:30 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id d5sm2966317pjs.53.2021.09.30.07.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 07:35:29 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 07:35:27 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Sebastien Laveze <sebastien.laveze@oss.nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
+        rui.sousa@oss.nxp.com
+Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
+Message-ID: <20210930143527.GA14158@hoboy.vegasvil.org>
+References: <20210927093250.202131-1-sebastien.laveze@oss.nxp.com>
+ <20210927145916.GA9549@hoboy.vegasvil.org>
+ <b9397ec109ca1055af74bd8f20be8f64a7a1c961.camel@oss.nxp.com>
+ <20210927202304.GC11172@hoboy.vegasvil.org>
+ <98a91f5889b346f7a3b347bebb9aab56bddfd6dc.camel@oss.nxp.com>
+ <20210928133100.GB28632@hoboy.vegasvil.org>
+ <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <94861852-29ba-be9e-8c63-a70a01550b3a@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->>>>> But in addition we'd need to agree on what an 'active BE' is. Why
->>>>> can't
->>>>> we connect a second stream while the first one is already in HW_PARAMS
->>>>> or PAUSED or STOP? It's perfectly legal in ALSA/ASoC to have multiple
->>>>> HW_PARAMS calls, and when we reach STOP we have to do a prepare again.
->>>>>
->>>>> And more fundamentally, the ability to add a second FE on a
->>>>> 'active' BE
->>>>> in START state is a basic requirement for a mixer, e.g. to play a
->>>>> notification on one FE while listening to music on another. What needs
->>>>> to happen is only to make sure that the FE and BE are compatible in
->>>>> terms of HW_PARAMS and not sending a second TRIGGER_STOP, only
->>>>> checking
->>>>> the BE NEW or CLOSE state is way too restrictive.
->>>> Sorry for the trouble to your system.
->>>>
->>>> Idea was to avoid reconfiguration of the same BE DAI again, but not to
->>>> stop the provision to add a subsequent FE. In fact I had tested mixing
->>>> of streams coming from 10 different FEs.
->> Can you describe the sequence that you used to start them? That may be
->> useful to understand the criteria you used?
+On Wed, Sep 29, 2021 at 05:00:56PM +0200, Sebastien Laveze wrote:
+> On Tue, 2021-09-28 at 06:31 -0700, Richard Cochran wrote:
+> > On Tue, Sep 28, 2021 at 01:50:23PM +0200, Sebastien Laveze wrote:
+> > > Yes that would do it. Only drawback is that ALL rx and tx timestamps
+> > > are converted to the N domains instead of a few as needed.
+> > 
+> > No, the kernel would provide only those that are selected by the
+> > program via the socket option API.
 > 
-> I have something like this:
-> 
-> FE1  --> Crossbar -> Mixer Input1    |
-> FE2  --> Crossbar -> Mixer Input2    |
-> ...                                  | --> Mixer Output -->
-> ... |
-> FE10 --> Crossbar -> Mixer Input10   |
-> 
-> All these FEs are started one after the other. This is an example of
-> 10x1. Similarly we can have 2x1, 3x1 etc.,
-> In our system, the crossbar [0] and mixer [1] are separate ASoC
-> components. Basically audio paths consist of a group of ASoC components
-> which are connected back to back.
+> But _all_ timestamps (rx and tx) are converted when a domain is
+> selected.
 
-Not following. Can you explain how starting FE1 does not change the
-state of the mixer output then?
+So what?  It is only a mult/shift.  Cheaper than syscall by far.
 
-Or is each 'Crossbar' instance a full-blown BE? In that case you have a
-1:1 mapping between FE and BE, a *really* simple topology...
+> If we consider gPTP,
+> -using the ioctl, you only need to convert the sync receive timestamps.
+> PDelay (rx, tx, fup), sync (tx and fup) and signalling don't need to be
+> converted. So that's for a default sync period of 125 ms, 8 ioctl /
+> second / domain.
 
->> I don't fully understand the notion of mixer input DAI, in our case we
->> have a bunch of PCM devices connected to a mixer. The mixer is not
->> directly connected to a DAI.
-> 
-> Please see above mixer example. Since mixer is a separate ASoC
-> component, it exposes 10 inputs (or DAIs) and outputs. Originally what I
-> wanted to do was, for subsequent FE runs (FE2, FE3 ...) mixer output
-> need not be configured again and again.
-> 
->>> The problem as I see is that with this patch one can not connect a new
->>> FE to a BE which is _not_ in NEW or CLOSE state.
->>>
->>> The FE and BE needs to be connected to have DPCM working and this patch
->>> makes the code to skip the dpcm_be_connect().
->>>
->>> Consider this simple setup:
->>>
->>> FE1 -->|
->>>         | --> BE -->
->>> FE2- ->|
->>>
->>> First we start FE1, dpcm_be_connect(FE1, BE, stream) is made.
->>>
->>> Later FE2 is started but dpcm_be_connect(FE2, BE, stream) would be not
->>> made because BE is no longer in NEW/CLOSE state.
->> I share Peter's analysis, there cannot be any restrictions on
->> connections - at any time. A mixer input might become active and be
->> added to the mix. We might have a temporary lock to delay new
->> connections but cannot not reject them outright based on BE state.
-> 
-> Yes, I understand how this affects a system like yours. As per mixer
-> example above, in our case subsequent FEs always find BE from Crossbar.
-> That is why I don't see similar error.
+Well, today that is true, for your very specific use case.  But we
+don't invent kernel interfaces for one-off projects.
 
-Not following either.
+> -doing the conversion in the kernel will necessarly be done for every
+> timestamp handled by the socket. In addition, the vclock device lookup
+> is not free as well and done for _each_ conversion.
 
->>>> I am just
->>>> curious to know, if originally you were reconfiguring the BE DAI again
->>>> with same parameters (for a second FE) or some additional configuration
->>>> is done?
->> That's a different question - and a good one.
->>
->> In the case of a mixer, the propagation of hw_params is a broken
->> concept. It leads to the first FE configuring the BE to define its
->> preferred parameters, e.g. S16_LE format. If later on a second FE is
->> started which could play S24_LE, the mixer and BE are already configured
->> to a lower resolution. A mixer should really have its own parameters and
->> be the start of a new 'domain' - as Lars described it several years ago
->> at the audio miniconference.
-> 
-> Propagation is one of the problems we want to address and require help
-> from DPCM experts. But the scenario you mentioned is a special case
-> which need not be supported, because mixer can operate in one
-> configuration at a given time and subsequent FEs should agree to the
-> already running configuration. However mixer should support both S16_LE
-> and S24_LE (whenever possible), but not simultaneously. At least this is
-> the expecation from our systems. Yes mixer may require fixup of a
-> specific config (we earlier had proposed mixer controls to configure
-> mixer parameters, but the idea was disliked), but propagation may help
-> avoid fixing up everywhere in the audio path where it is not really
-> required. But I don't know how this can be done at the moment.
+Sounds like something that can be optimized in the kernel implementation.
 
-What I am saying is that the mixer should be pre-configured with the
-desired resolution/sample rate, and some adaptation needs to happen if
-the FE provides data in a different format.
+> From a high-level view, I understand that you would have N
+> instance/process of linuxptp to support N domains ?
 
-This is similar to what sound servers typically do on their sinks, they
-define ONE configuration. Dynamic changes are annoying and result in
-corner cases where the quality can vary depending on which FE is started
-first.
+Yes.
 
->>>> For now, the only restriction that we could enforce is that the BE
->> cannot be reconfigured after the prepare step.
->>
->> Note that our DAIs tolerate multiple calls to hw_params. If you have a
->> case where the hw_params allocates resources, maybe you should consider
->> moving that allocation to the prepare step, or free them if you detect a
->> reconfiguration. That would be something needed even outside of the DPCM
->> scope. Similarly you need to support the case where the DAI hw_free is
->> called without hw_params ever being called, it's a known sequence that
->> can happen if the FE hw-params fails.
-> 
-> Currently this does not seem to be a problem for us. Patch was to avoid
-> reconfiguration which was felt to be redundant for our system.
-> 
->>>>> I can send a revert with the explanations in the commit message if
->>>>> there
->>>>> is a consensus that this patch needs to be revisited.
->>>> May be this can be revisited since it appears to be a critical problem
->>>> for your system. But I hope this discussion can be alive on following
->>>> points for a better fix.
->>>>
->>>> 1. The original issue at my end was not just a configuration
->>>> redundancy.
->>>> I realize now that with more stream addition following error print
->>>> is seen.
->>>>     "ASoC: too many users playback at open 4"
->>>>
->>>>     This is because the max DPCM users is capped at 8. Increasing this
->>>> may help (need to see what number is better), but does not address the
->>>> redundancy problem.
->> we haven't used more than 2 users, but it's already broken at 2 with
->> race conditions left and right. I am really surprised you managed to
->> have more than 2 without hitting inconsistent states - our automated
->> play/stop/pause monkey tests reliably break DPCM in less than 20s.
-> 
-> I am not sure what is the exact difference, may be DPCM usage in our
-> case is different from what you have. I have mixer tests for different
-> combinations (2x1, 3x1 ...), which seem to pass. In general, we want to
-> have path like this.
-> 
-> FE -> BE1 -> BE2 -> ... -> BEx
-> 
-> Each BEx could be a mixer, resampler etc., Currently DPCM core sees this
-> as multiple BEs for a given FE and that is why multiple "users" are
-> reported.
+> CMLDS performed by
+> one of them and then some signalling to the other instances ?
 
-This sort of flow vastly exceeds the capabilities of DPCM, which is
-already badly broken with one BE and 2 FEs... I think what you want is
-what Lars described at the audio miniconf with 'domains'.
+Yes, something like that.  One process measures peer delay, and the
+others read the result via management messages (could also be pushed
+via ptp4l's management notification method).
+ 
+> What we miss currently in the kernel for a better multi-domain usage
+> and would like to find a solution:
+> -allow PHC adjustment with virtual clocks. Otherwise scheduled traffic
+> cannot be used... (I've read your comments on this topic, we are
+> experimenting things on MCUs and we need to assess on measurements)
 
-> In the interim, may be we can have following patch to keep both systems
-> working and keep the discussion going to address the oustanding
-> requirements/issues?
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index ab25f99..0fbab50 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1395,7 +1395,13 @@ static int dpcm_add_paths(struct
-> snd_soc_pcm_runtime *fe, int stream,
->                 if (!fe->dpcm[stream].runtime && !fe->fe_compr)
->                         continue;
-> 
-> -               if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_NEW) &&
-> +               /*
-> +                * Filter for systems with 'component_chaining' enabled.
-> +                * This helps to avoid unnecessary re-configuration of an
-> +                * already active BE on such systems.
-> +                */
-> +               if (fe->card->component_chaining &&
-> +                   (be->dpcm[stream].state != SND_SOC_DPCM_STATE_NEW) &&
->                     (be->dpcm[stream].state != SND_SOC_DPCM_STATE_CLOSE))
->                         continue;
+Yeah, so you cannot have it both ways, I'm afraid.  Either you adjust
+the HW clock or not.  If you don't, it becomes impractical to program
+the event registers for output signals.  (Time stamps on input signals
+are not an issue, though)
 
-that wouldn't work. We need to support the STOP and START cases as well.
+> -timer support for virtual clocks (nanosleep likely, as yous suggested
+> IIRC).
+
+Right, and this is (probably) difficult to sell on lkml.  Look at the
+hrtimer implementation to see what I mean.
+
+I could imagine adding one additional hrtimer base under user space
+control that isn't clock_monotonic or _realtime or _tai, but not N new
+bases.
+
+I think the best option for user space wanting timers in multiple
+domains is to periodically do 
+
+   gettime(monotonic); gettime(vclock); gettime(monotonic);
+
+figure the conversion, and schedule using clock_monotonic.
 
 
->>>> 2. If reconfiguration of the same BE is not necessary for a subsequent
->>>> FE run, shouldn't we avoid the reconfig itself and somehow avoid FE
->>>> failure?
->>> I'm not sure, but it might be possible to just skip the
->>> dpcm_set_be_update_state(be, stream, SND_SOC_DPCM_UPDATE_BE);
->>> call at the end of the loop, but the question is under which condition?
->>> Can a BE asked to be reconfigured when STOP/OPEN/HW_PARAMS?
->>>
->>> Skipping the connect does not sound right for a new FE-BE connection.
->> The reconfiguration is one problem, but what also happens is that the BE
->> dailink will see multiple triggers. I've been playing with refcounts to
->> force consistency and make sure there is only one TRIGGER_START send to
->> the dailink, and conversely there are cases where the TRIGGER_STOP is
->> never sent...
-> Just a thought. FE links have dummy codec DAI and core wants to find a
-> real BE when FE is started. May be don't fail a FE when no back end DAI
-> is found (and/or find if the same BE is already connected to some FE)
-> and the above problem becomes simpler?
+HTH,
+Richard
 
-That would be just moving the problem. In our case we would be silently
-playing on a dummy output just because the correct output was not found
-due to state handling issues.
