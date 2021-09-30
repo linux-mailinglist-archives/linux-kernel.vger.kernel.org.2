@@ -2,116 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBB941E222
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA0641E228
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344566AbhI3TSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:18:42 -0400
-Received: from mga12.intel.com ([192.55.52.136]:9088 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhI3TSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:18:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="204751445"
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="204751445"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:16:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,336,1624345200"; 
-   d="scan'208";a="480055921"
-Received: from rnmathur-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.105.173])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 12:16:57 -0700
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065953-mutt-send-email-mst@kernel.org>
- <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
- <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
-Message-ID: <2ead1b1a-f5d2-f89c-b94f-071fdb99094b@linux.intel.com>
-Date:   Thu, 30 Sep 2021 12:16:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1346146AbhI3TX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344294AbhI3TX4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 15:23:56 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF96DC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:22:12 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 194so6904555qkj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/tuWyi96ya0DlbzWNr34/HVx+HP3Iol741vjN64iIc=;
+        b=AnkZHp5Jxa0Wk/NFWfm8jROZ4vvwpLiSaBjXqAL2Oj1rT8lPI5/T+3P56rGO8gKyxc
+         kvInbIhXASrI/xTvh9/fbw4QmCGU0MaFulfd4JkXMuFWPqLvO4VCU+udtyP9m4y21FSZ
+         Rw2TC2kmSA+ecaVyQDNVXPE9k049LXNX+T1MU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/tuWyi96ya0DlbzWNr34/HVx+HP3Iol741vjN64iIc=;
+        b=cyg/frbMnWY4mplX4IY7L9FVi1sqbV+2q0tOwtehhfBIq+edzUj0On3mxxGnZ+Ijq4
+         BHDS+fXGl2PGKOw6euGmXGZaY0go4E00rTZpZAsxsDkFS/dSkSj6R9YvSOWsnmJ6qGAd
+         abJWmDu8AKuyS81hCbb/M26EcMR/opsaaIpLhFhUmN5uz4KEY+xAMZoRe9TdoczR4PtC
+         k0e9B+R/N4mOQWk6nHqdleD5VqXGWcFplMzaKXbXLzQQ6DFAF0SzOlZxHlnDN1b6vCPZ
+         rdkLZYKXFSwrz2tejSwfj9my8R4LvfiyT8J7t7yyt+QtENq+H/Tslx5D+ulYEslkpBWJ
+         xuMg==
+X-Gm-Message-State: AOAM532Buopi19MedvF3GduiB3GEFsvmdc22pVbDKJZPq1yai0m/5+3Y
+        lDFGOT3D+JlPeGhUdalvibx51mKYhRDh6ZKwgyf/ew==
+X-Google-Smtp-Source: ABdhPJx8uofsbPhEi0jcgcPhI3StEBoRMOS0qCtVKSUDYyZEeIY35vq1lDvQV6QCztBjA6Q2kl585g==
+X-Received: by 2002:a37:9881:: with SMTP id a123mr6266592qke.486.1633029731757;
+        Thu, 30 Sep 2021 12:22:11 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id v23sm1812039qkj.76.2021.09.30.12.22.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 12:22:10 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id u32so15573774ybd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:22:10 -0700 (PDT)
+X-Received: by 2002:a25:6b11:: with SMTP id g17mr1212374ybc.251.1633029729737;
+ Thu, 30 Sep 2021 12:22:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210929225850.3889950-1-ndesaulniers@google.com>
+ <CAHk-=wh0BNEDz+uOdJWG8iW=n0PeOEjZpHyuSN2g0pKSCj+6iQ@mail.gmail.com>
+ <CAKwvOdn-Z1q99zZW4GQ2aNnVMQ_JYuczrResTG7tvcfv0WLJ-w@mail.gmail.com> <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
+In-Reply-To: <CAHk-=wip2uVAaRtPNFF4+C2ZmkUZ+rs2-676syUR_kJ9+8hFNA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 30 Sep 2021 12:21:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wix+P0EtxFSEhmubWNZ++Qg1fj46e32uEKo+mzPu0jPAA@mail.gmail.com>
+Message-ID: <CAHk-=wix+P0EtxFSEhmubWNZ++Qg1fj46e32uEKo+mzPu0jPAA@mail.gmail.com>
+Subject: Re: [PATCH] modpost: add allow list for llvm IPSCCP
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Elena
+On Thu, Sep 30, 2021 at 11:54 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Hmm. That's just a "bitmap_weight()", and that function in turn is
+> __always_inline.
+>
+> And the *reason* it is __always_inline is that it really wants to act
+> as a macro, and look at the second argument and do special things if
+> it is a small constant value.
 
-On 9/30/21 12:04 PM, Kuppuswamy, Sathyanarayanan wrote:
-> 
-> 
-> On 9/30/21 8:23 AM, Greg Kroah-Hartman wrote:
->> On Thu, Sep 30, 2021 at 08:18:18AM -0700, Kuppuswamy, Sathyanarayanan wrote:
->>>
->>>
->>> On 9/30/21 6:36 AM, Dan Williams wrote:
->>>>> And in particular, not all virtio drivers are hardened -
->>>>> I think at this point blk and scsi drivers have been hardened - so
->>>>> treating them all the same looks wrong.
->>>> My understanding was that they have been audited, Sathya?
->>>
->>> Yes, AFAIK, it has been audited. Andi also submitted some patches
->>> related to it. Andi, can you confirm.
->>
->> What is the official definition of "audited"?
-> 
-> 
-> In our case (Confidential Computing platform), the host is an un-trusted
-> entity. So any interaction with host from the drivers will have to be
-> protected against the possible attack from the host. For example, if we
-> are accessing a memory based on index value received from host, we have
-> to make sure it does not lead to out of bound access or when sharing the
-> memory with the host, we need to make sure only the required region is
-> shared with the host and the memory is un-shared after use properly.
-> 
-> Elena can share more details, but it was achieved with static analysis
-> and fuzzing. Here is a presentation she is sharing about the work at the
-> Linux Security Summit:
-> https://static.sched.com/hosted_files/lssna2021/b6/LSS-HardeningLinuxGuestForCCC.pdf
-> 
-> Andi, can talk more about the specific driver changes that came out of this
-> effort.
-> 
-> In our case the driver is considered "hardened" / "audited" if it can handle
-> the above scenarios.
-> 
->>
->> thanks,
->>
->> greg k-h
->>
-> 
+Looking around, it's not the only one. A lot of the bitmap functions
+do that, but it looks like we're missing a few __always_inline cases.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+I wonder if we should have a macro to generate those "do X or Y
+depending on small_const_nbits()" - and have it generate
+__always_inline functions.
+
+Of course, some of those functions have more complex "check at build
+time" cases, like that bitmap_clear/set() thing that has a special
+case for when it just turns into "memset()"
+
+We have a lot of these kinds of situations where we have a "generic"
+function that specializes itself based on arguments. And yes, they are
+often recursive, so that you need more than one level of inlining to
+actually determine what the arguments are.
+
+I don't know if we might have some way to mark these (and detect the
+cases where they don't get inlined and we lose the vasy basic
+optimizations).
+
+It's kind of similar to the _Generic() thing that does different
+things based on static types, it's just that it does it based on
+argument ranges.
+
+          Linus
