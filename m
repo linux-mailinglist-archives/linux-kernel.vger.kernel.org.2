@@ -2,167 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BA641E299
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 22:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C6141E2A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 22:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346929AbhI3UVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 16:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhI3UVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 16:21:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E668961439;
-        Thu, 30 Sep 2021 20:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633033202;
-        bh=eHVjgQVQ3o/+zTrjKH2Jy2IkIIM4qWeeIyY1HhsgZTQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=K825TWjImFo7pD0Ga9oPLweBdXvViUmyHwVGLwQxmXlrdVRaAL5vFmsoR6eusDgH9
-         zWY6TsYMSOb6qujEcbmX7UjOWk8wwA/yyar0Wkj1jKl/k1gipRwnUAkDg8JlNQuNXI
-         K7sF/eB9E17Lhh8jN9sId69fj5pB0pPWh3qgOuyYkd6u7ZpjwkkE+Mlb/4tC2XUBD7
-         AUkY+TnBr3XBsko8ihArvR4G2xKGmA3u1KNZnN/rcP5ipYfYGuI37T9AKODxBjS/EY
-         dF7MAWyxQ+ScytGMH03asUzXpNQUCkBTV3bHLDd/VVwafri6T8C61pPguabOJP/0P6
-         PR1Z+zcNWvSZw==
-Date:   Thu, 30 Sep 2021 15:20:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 4/4] PCI/ASPM: Remove struct
- pcie_link_state.clkpm_disable
-Message-ID: <20210930202000.GA906085@bhelgaas>
+        id S1347839AbhI3UWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 16:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347353AbhI3UWk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 16:22:40 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E30C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:20:57 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k7so11925706wrd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 13:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=498LPkH4Nb6HbpN3dLoVr/vBONswYBBw5ue0vyNDRvI=;
+        b=sMhtUwruXOyJZn2fDxnyX3+v2mNpf3hIbtFmvxWrbeAgH8ik+FRE9CJVcS+CPtg4a2
+         f8hyMOcyVA8sbGIIO7E9SoFuwi3+FYQoqFla5XHmvCT6u6xSH6Gk+UFXUFXAIVGUgl0I
+         Jp9whRs5hhprrmxGI5poYcKgqo7AOJcb3aDTEfM3ZlfVr5Et5pBL/hgVzmKdwGNsd64+
+         MQ7NSayuqLd7LHCwvOKZ9WbGd5UdJmChkz7RMXqm5ssqnamUoEJ3El1YPCN2pTtvc2yD
+         kFpaY5Z+ORItx4cV5uZvyYb5Kf0Zaov34n9Aa6S9uEnBJmQQUDNUwcOzI77dX11FFIL4
+         bbxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=498LPkH4Nb6HbpN3dLoVr/vBONswYBBw5ue0vyNDRvI=;
+        b=oC01ImKJ0aBsna5esRs9bAz39vAYgQQ4qTiqtSAp3htdhTH93d6JM9E/ZXs92QAXut
+         jlwKAVvRNM3aQ4ewih9MSetlEBBmKl/iFhTDopmKfS4mhPyZBkAKDh87px1P2JLarS3t
+         Czh4hMkyRm4LQXjHBOLjkbn7f6oTqox/xZ4RQiczmB+uwQGEOepnuONu2NYfLM8Q8iQo
+         8dj55vl2vurq98XZJYjXHnjdnT3KBPEsJGrG2f0Fpenbnkxfn4b2j+OPR+QG4d4WgkbT
+         fszAwXHhYgC7CLbn7GPyW9A8MsRYbCT1r4fCIC/lRS0tJ/v6V9yGbkZ+YGsQuajei0ap
+         ZPig==
+X-Gm-Message-State: AOAM532WdbrtpX2m94i7C/EUxsD61C9CZwH0V1EFm9jXWULL5kYBwvI4
+        PJsQxHuF7HRwnBwJ1PJ1Wk9jnw==
+X-Google-Smtp-Source: ABdhPJxhz8iWM9UY3qGxY1zsVr08xvko8HAZeg4iYl/l4ntzdnbIG4I3UJSrJH6N/YFj2uMGiYvQEw==
+X-Received: by 2002:a05:6000:144d:: with SMTP id v13mr8224593wrx.303.1633033255681;
+        Thu, 30 Sep 2021 13:20:55 -0700 (PDT)
+Received: from [192.168.0.30] (cpc78119-cwma10-2-0-cust590.7-3.cable.virginm.net. [81.96.50.79])
+        by smtp.gmail.com with ESMTPSA id c132sm5830516wma.22.2021.09.30.13.20.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 13:20:54 -0700 (PDT)
+Message-ID: <b57fbc24-9ef3-a57b-17d4-2cb33fb409d4@linaro.org>
+Date:   Thu, 30 Sep 2021 21:20:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929004400.25717-5-refactormyself@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order
+ consistent
+Content-Language: en-US
+To:     Amit Pundir <amit.pundir@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+ <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com>
+ <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+ <CAF6AEGuJgrYrg7FXpVj8P_qf73CXb4=0KysSYQaobJuheDeUSA@mail.gmail.com>
+ <YXiZIuao6wNch7j-D3ZktdSR3_IRAQ3oSeL8sLCCX8lEhwsoWaouE6_eV6C2Zv9r2_dww_Mtal18UBJfc4fz4g==@protonmail.internalid>
+ <CAMi1Hd0sUUFvNzYwt29af9d99o1-x+LiXBPCrQ8=9H0tHvxVHg@mail.gmail.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <CAMi1Hd0sUUFvNzYwt29af9d99o1-x+LiXBPCrQ8=9H0tHvxVHg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:44:00AM +0200, Saheed O. Bolarinwa wrote:
-> From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
+Hi,
+
+On 30/09/2021 20:49, Amit Pundir wrote:
+> On Thu, 30 Sept 2021 at 04:50, Rob Clark <robdclark@gmail.com> wrote:
+>>
+>> On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrote:
+>>>
+>>> On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wrote:
+>>>> On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> wrote:
+>>>>> On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> wrote:
+>>>>>> The best practice to avoid those issues is to register its functions only after
+>>>>>> all its dependencies are live. We also shouldn't wait any longer than we should
+>>>>>> to play nice with the other components that are waiting for us, so in our case
+>>>>>> that would mean moving the DSI device registration to the bridge probe.
+>>>>>>
+>>>>>> I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+>>>>>> would be affected by this and wouldn't probe anymore after those changes.
+>>>>>> Exynos and kirin seems to be simple enough for a mechanical change (that still
+>>>>>> requires to be tested), but the changes in msm seemed to be far more important
+>>>>>> and I wasn't confortable doing them.
+>>>>>
+>>>>>
+>>>>> Hey Maxime,
+>>>>>    Sorry for taking so long to get to this, but now that plumbers is
+>>>>> over I've had a chance to check it out on kirin
+>>>>>
+>>>>> Rob Clark pointed me to his branch with some fixups here:
+>>>>>     https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+>>>>>
+>>>>> But trying to boot hikey with that, I see the following loop indefinitely:
+>>>>> [    4.632132] adv7511 2-0039: supply avdd not found, using dummy regulator
+>>>>> [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy regulator
+>>>>> [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy regulator
+>>>>> [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy regulator
+>>>>> [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy regulator
+>>>>> [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy regulator
+>>>>> [    4.681898] adv7511 2-0039: failed to find dsi host
+>>>>
+>>>> I just realized Rob's tree is missing the kirin patch. My apologies!
+>>>> I'll retest and let you know.
+>>>
+>>> Ok, just retested including the kirin patch and unfortunately I'm
+>>> still seeing the same thing.  :(
+>>>
+>>> Will dig a bit and let you know when I find more.
+>>
+>> Did you have a chance to test it on anything using drm/msm with DSI
+>> panels?  That would at least confirm that I didn't miss anything in
+>> the drm/msm patch to swap the dsi-host vs bridge ordering..
 > 
-> The clkpm_disable member of the struct pcie_link_state indicates
-> if the Clock PM state of the device is disabled. There are two
-> situations which can cause the Clock PM state disabled.
-> 1. If the device fails sanity check as in pcie_aspm_sanity_check()
-> 2. By calling __pci_disable_link_state()
+> Hi, smoke tested
+> https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridge-rework
+> on Pocophone F1 (sdm845 / A630) with v5.15-rc3. I see no obvious
+> regressions in my limited testing so far including video (youtube)
+> playback.
+Tested on the OnePlus 6 too booting AOSP, works fine. This *fixes* FBDEV_EMULATION (so we can get a working framebuffer 
+console) which was otherwise broken on 5.15.
 
-And, 3. clkpm_store(), when the user writes to the "clkpm" sysfs file,
-right?
+However it spits out some warnings during boot: https://p.calebs.dev/gucysowyna.yaml
 
-IIUC, clkpm_disable really tells us whether we can enable clkpm.  The
-only place we test clkpm_disable is in pcie_set_clkpm():
 
-  pcie_set_clkpm(struct pcie_link_state *link, int enable)
-  {
-    if (!link->clkpm_capable || link->clkpm_disable)
-      enable = 0;
-    pcie_set_clkpm_nocheck(link, enable);
-  }
-
-So in other words, if clkpm_disable is set, we will never call
-pcie_set_clkpm_nocheck() to *enable* clkpm.  We will only call it to
-*disable* clkpm.
-
-Tangent: I think the usefulness of pcie_set_clkpm_nocheck() being a
-separate function is gone.  I think things will be a little simpler if
-we integrate it into pcie_set_clkpm().  Separate preliminary patch, of
-course.
-
-> It is possible to set the Clock PM state of a device ON or OFF by
-> calling pcie_set_clkpm(). The state can be retieved by calling
-> pcie_get_clkpm_state().
-
-s/retieved/retrieved/
-
-> pcie_link_state.clkpm_disable is only accessed in pcie_set_clkpm()
-> to ensure that Clock PM state can be reenabled after being disabled.
 > 
-> This patch:
->   - add pm_disable to the struct pcie_link_state, to indicate that
->     the kernel has marked the device's AS and Clock PM states disabled
->   - removes clkpm_disable from the struct pcie_link_state
->   - removes all instance where clkpm_disable is set
->   - ensure that the Clock PM is always disabled if it is part of the
->     states passed into __pci_disable_link_state(), regardless of the
->     global policy
-> 
-> Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
-> ---
->  drivers/pci/pcie/aspm.c | 18 +++++-------------
->  1 file changed, 5 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 368828cd427d..e6ae00daa7ae 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -60,8 +60,7 @@ struct pcie_link_state {
->  	u32 aspm_default:7;		/* Default ASPM state by BIOS */
->  	u32 aspm_disable:7;		/* Disabled ASPM state */
->  
-> -	/* Clock PM state */
-> -	u32 clkpm_disable:1;		/* Clock PM disabled */
-> +	u32 pm_disabled:1;		/* Disabled AS and Clock PM ? */
+>>
+>> BR,
+>> -R
 
-What did we gain by renaming this?  AFAICT this only affects clkpm
-(the only test of pm_disabled is in pcie_set_clkpm()).
-
->  	/* Exit latencies */
->  	struct aspm_latency latency_up;	/* Upstream direction exit latency */
-> @@ -198,7 +197,7 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  	 * Don't enable Clock PM if the link is not Clock PM capable
->  	 * or Clock PM is disabled
->  	 */
-> -	if (!capable || link->clkpm_disable)
-> +	if (enable && (!capable || link->pm_disabled))
->  		enable = 0;
->  	/* Need nothing if the specified equals to current state */
->  	if (pcie_get_clkpm_state(link->pdev) == enable)
-> @@ -206,11 +205,6 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
->  	pcie_set_clkpm_nocheck(link, enable);
->  }
->  
-> -static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
-> -{
-> -	link->clkpm_disable = blacklist ? 1 : 0;
-> -}
-> -
->  static bool pcie_retrain_link(struct pcie_link_state *link)
->  {
->  	struct pci_dev *parent = link->pdev;
-> @@ -952,8 +946,7 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev)
->  	 */
->  	pcie_aspm_cap_init(link, blacklist);
->  
-> -	/* Setup initial Clock PM state */
-> -	pcie_clkpm_cap_init(link, blacklist);
-> +	link->pm_disabled = blacklist;
->  
->  	/*
->  	 * At this stage drivers haven't had an opportunity to change the
-> @@ -1129,8 +1122,8 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
->  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
->  
->  	if (state & PCIE_LINK_STATE_CLKPM)
-> -		link->clkpm_disable = 1;
-> -	pcie_set_clkpm(link, policy_to_clkpm_state(link));
-> +		pcie_set_clkpm(link, 0);
-> +
->  	mutex_unlock(&aspm_lock);
->  	if (sem)
->  		up_read(&pci_bus_sem);
-> @@ -1301,7 +1294,6 @@ static ssize_t clkpm_store(struct device *dev,
->  	down_read(&pci_bus_sem);
->  	mutex_lock(&aspm_lock);
->  
-> -	link->clkpm_disable = !state_enable;
-
-Something is seriously wrong here because clkpm_store() no longer does
-anything with "state_enable", the value we got from the user.
-
->  	pcie_set_clkpm(link, policy_to_clkpm_state(link));
->  
->  	mutex_unlock(&aspm_lock);
-> -- 
-> 2.20.1
-> 
+-- 
+Kind Regards,
+Caleb (they/them)
