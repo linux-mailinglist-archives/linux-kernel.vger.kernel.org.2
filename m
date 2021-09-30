@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3403F41D2C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E1241D2F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 08:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348120AbhI3FmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:42:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2158 "EHLO mga12.intel.com"
+        id S1348186AbhI3GBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 02:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348124AbhI3Fl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:41:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="204590414"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="204590414"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:40:10 -0700
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="555450426"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2021 22:40:08 -0700
-Date:   Thu, 30 Sep 2021 13:59:44 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>, 0day robot <lkp@intel.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [driver core]  eedc73d4f3:
- BUG:kernel_reboot-without-warning_in_boot_stage
-Message-ID: <20210930055944.GA29843@xsang-OptiPlex-9020>
-References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
- <20210929150240.GB12854@xsang-OptiPlex-9020>
- <YVSCs7BDC6ODf+oZ@kroah.com>
+        id S1348054AbhI3GBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 02:01:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A6261265;
+        Thu, 30 Sep 2021 06:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632981606;
+        bh=+9Cimias7j0INGICFeEb++U9FTUPDMbOhsM3g32/A/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FJ9v3kPBgadWq9TqyDSkBB+ZjCCPeEb68cegwt58vk1kS1yM5e1cWDPYnwdpXz2Cv
+         hAKlC9vcnNclW3U+9HxmV1aUWWR+JTuIuDnK9Rxanfkl55bGXaFDXvyYWTPXlXtKts
+         dpVzVAdvmFM3U1qB5YQ8EQXj7BsZyEXZ8RjlCM9o=
+Date:   Thu, 30 Sep 2021 08:00:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dawid Esterhuizen <desterhuizen@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8712: Statements should start on a tabstop
+Message-ID: <YVVSYVpUPekkUsLy@kroah.com>
+References: <YVTN5i8qwjlGwOPp@kkobus.whirley.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVSCs7BDC6ODf+oZ@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YVTN5i8qwjlGwOPp@kkobus.whirley.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Greg KH,
-
-On Wed, Sep 29, 2021 at 05:13:55PM +0200, Greg KH wrote:
-> On Wed, Sep 29, 2021 at 11:02:40PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: eedc73d4f330cf7a8d18d64f327837ae9a00d003 ("[PATCH] driver core: Switch to using the new API kobj_to_dev()")
-> > url: https://github.com/0day-ci/linux/commits/Yang-Li/driver-core-Switch-to-using-the-new-API-kobj_to_dev/20210929-102216
-> > base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+On Wed, Sep 29, 2021 at 10:34:46PM +0200, Dawid Esterhuizen wrote:
+> This path fixes four checkpatch.pl warnings:
 > 
-> There is no such commit in my tree, or anywhere else I can see, so I
-> have no idea what is happening here :(
+> Statements should start on a tabstop
 > 
+> Signed-off-by: Dawid Esterhuizen <desterhuizen@gmail.com>
+> ---
+>  drivers/staging/rtl8712/rtl871x_xmit.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
+> index 2e6afc7bb0a1..bc1287cc853e 100644
+> --- a/drivers/staging/rtl8712/rtl871x_xmit.h
+> +++ b/drivers/staging/rtl8712/rtl871x_xmit.h
+> @@ -182,11 +182,11 @@ struct sta_xmit_priv {
+>  };
+>  
+>  struct	hw_txqueue {
+> -	/*volatile*/ sint	head;
+> -	/*volatile*/ sint	tail;
+> -	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
+> -	/*volatile*/ sint      free_cmdsz;
+> -	/*volatile*/ sint	 txsz[8];
+> +  /*volatile*/ sint head;
+> +  /*volatile*/ sint tail;
+> +  /*volatile*/ sint free_sz;	/*in units of 64 bytes*/
+> +  /*volatile*/ sint free_cmdsz;
+> +  /*volatile*/ sint txsz[8];
 
-this report was sent to Yang Li, who is the patch author.
-https://lore.kernel.org/lkml/1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com/
+I think you now have added a new checkpatch warning, right?
 
-since Yang sent the patch to you, so our Rot automatically add you in
-the Cc list.
+This is not the correct indentation anymore, why not work to see if you
+can remove the volatile comment instead?
+
+thanks,
+
+greg k-h
