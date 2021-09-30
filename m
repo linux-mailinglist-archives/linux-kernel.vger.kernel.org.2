@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5357541E23C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE79541E241
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 21:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347272AbhI3T22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 15:28:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229751AbhI3T21 (ORCPT
+        id S1343554AbhI3TbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 15:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhI3TbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 15:28:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633030003;
+        Thu, 30 Sep 2021 15:31:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78994C06176A;
+        Thu, 30 Sep 2021 12:29:35 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633030173;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=84aioMVzye4mu3+jKsp5Lz9dVTyI5BIn8daf8EFsh/I=;
-        b=BQq+bC0hpp9fUdAEgXk60bvNNuiFjLty5D+AgoGZrDRK9j9gj701BC6VSqE4phOzfZkuk6
-        3jgNm77XTZMOkG4LXR80W410WmVp3HiEaCmS5TvI6AmiNlpkTuOgLZMecndOFEC22h72L5
-        gnzG5A92Udn7kiHqy6Oh9PcqRBBdWzc=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-tDseWlyqOKmnMGqoe6vHUA-1; Thu, 30 Sep 2021 15:26:42 -0400
-X-MC-Unique: tDseWlyqOKmnMGqoe6vHUA-1
-Received: by mail-oi1-f197.google.com with SMTP id o22-20020a05680803d600b002763c423af6so4886429oie.20
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 12:26:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=84aioMVzye4mu3+jKsp5Lz9dVTyI5BIn8daf8EFsh/I=;
-        b=NEqQOz6x2Iebuod6c0hsfuonTXwtZwSOOx9bwB7BYndLglOYfxx4Binfbkr22S6Rf4
-         eaDWlUQLsjy5cH20C0jMwlnJAg5UnUjzmml21LJ3yJxQRW9U+cKyAQwlzBC7YMB8OBsQ
-         gCIIVcSVT3w5JaNxithNshNpNRjkMS1hfyjZnsUxjkVnhz0h8XjsaKmWDQb4Vrbkr+fZ
-         6zQoKQzLT3K5qDE2WlWWe1WWaOqSchmgktrUX9IIKMVUgtFuYOFTORchguVwtihdCLKk
-         iaRcbXcvAGh34ZUy2hxRLSAs7MOJz50VBBgiYTxphc+3BD78Q3VIlarmuMHj6ko/mk9t
-         7nDA==
-X-Gm-Message-State: AOAM532lYj6r4MhpKVn4phfDX9+xVUwV48cPP8oWXwod4NzdmQDXYdE/
-        N+tX5VPdD3xor+WgxM1auj75nWiJTuuxc4hupJ9ghOf1TfRi75VdnuhOHl8wQjuUCkG3+zJ6KHg
-        4HY4Fpy6EhlFYT8xs5rF6VBPc
-X-Received: by 2002:a4a:b282:: with SMTP id k2mr6154860ooo.11.1633030001820;
-        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzul+KG+HIrMR3r/kdHh8q4z01ZL0Yv343OQE1gnyfoE9GjNSC5C76UwoXDsn37+QmYhDN5kQ==
-X-Received: by 2002:a4a:b282:: with SMTP id k2mr6154840ooo.11.1633030001550;
-        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id x4sm748421otq.25.2021.09.30.12.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 12:26:41 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 12:26:38 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        will@kernel.org, x86@kernel.org, live-patching@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
- __entry_tramp_text_end
-Message-ID: <20210930192638.xwemcsohivoynwx3@treble>
-References: <20210927170122.GA9201@C02TD0UTHF1T.local>
- <20210927171812.GB9201@C02TD0UTHF1T.local>
- <CACT4Y+actfuftwMMOGXmEsLYbnCnqcZ2gJGeoMLsFCUNE-AxcQ@mail.gmail.com>
- <20210928103543.GF1924@C02TD0UTHF1T.local>
- <20210929013637.bcarm56e4mqo3ndt@treble>
- <YVQYQzP/vqNWm/hO@hirez.programming.kicks-ass.net>
- <20210929085035.GA33284@C02TD0UTHF1T.local>
- <YVQ5F9aT7oSEKenh@hirez.programming.kicks-ass.net>
- <20210929103730.GC33284@C02TD0UTHF1T.local>
- <YVRRWzXqhMIpwelm@hirez.programming.kicks-ass.net>
+        bh=AIdCSYbm8ik7U+N6WK8d0kVM6bR1OsN7ZyYesBKBQCM=;
+        b=LZSN5dm7wppSXaxVXLB/LjNGJetLP/IT5oWLaUEObCWihxjRDlRB9NJPIWatWaMwqQPx7W
+        jw3rD5dj736d4lWN3WDUDiWguPq5kEfQUJIA3z8i+vUs+KkalFhtATH8fB+e7s1RCll0ZW
+        KGuRUrl4h+GHw1eszR99Vihp01mPzvQuuyYaU/NJWoc6tv9sq8tibPBmrFKXTF20EXWSB3
+        3cfUmk1RwpApIHHRclMAz+6gPLcRF0jit8LOn6QZLcnmBYZ17bXcwtIdI7DaGIXd9NQSpF
+        m/yLUIV5hDHoWLvh7rEpd8env6CUg5v6LPHDYUbKEJPqF1c4flLqUYyRIaTA2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633030173;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AIdCSYbm8ik7U+N6WK8d0kVM6bR1OsN7ZyYesBKBQCM=;
+        b=rJPlIqbkUDGzGH6aIb23aL/mCDYZZ7u09DaDe2jY8HBzsD/KRAYer52sgY3urDo5GHIpt/
+        axkXkL5JtfpUXjDA==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+In-Reply-To: <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com>
+ <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
+ <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
+ <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com>
+Date:   Thu, 30 Sep 2021 21:29:32 +0200
+Message-ID: <877dex7tgj.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVRRWzXqhMIpwelm@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 01:43:23PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 29, 2021 at 11:37:30AM +0100, Mark Rutland wrote:
-> 
-> > > This is because _ASM_EXTABLE only generates data for another section.
-> > > There doesn't need to be code continuity between these two asm
-> > > statements.
-> > 
-> > I think you've missed my point. It doesn't matter that the
-> > asm_volatile_goto() doesn't contain code, and this is solely about the
-> > *state* expected at entry/exit from each asm block being different.
-> 
-> Urgh.. indeed :/
+On Thu, Sep 30 2021 at 11:08, Andy Lutomirski wrote:
+> On Tue, Sep 28, 2021, at 9:56 PM, Sohil Mehta wrote:
+> I think we have three choices:
+>
+> Use a fancy wrapper around SENDUIPI.  This is probably a bad idea.
+>
+> Treat the NV-2 as a real interrupt and honor affinity settings.  This
+> will be annoying and slow, I think, if it's even workable at all.
 
-So much for that idea :-/
+We can make it a real interrupt in form of a per CPU interrupt, but
+affinity settings are not really feasible because the affinity is in the
+UPID.ndst field. So, yes we can target it to some CPU, but that's racy.
 
-To fix the issue of the wrong .fixup code symbol names getting printed,
-we could (as Mark suggested) add a '__fixup_text_start' symbol at the
-start of the .fixup section.  And then remove all other symbols in the
-.fixup section.
+> Handle this case with faults instead of interrupts.  We could set a
+> reserved bit in UPID so that SENDUIPI results in #GP, decode it, and
+> process it.  This puts the onus on the actual task causing trouble,
+> which is nice, and it lets us find the UPID and target directly
+> instead of walking all of them.  I don't know how well it would play
+> with hypothetical future hardware-initiated uintrs, though.
 
-For x86, that means removing the kvm_fastop_exception symbol and a few
-others.  That way it's all anonymous code, displayed by the kernel as
-"__fixup_text_start+0x1234".  Which isn't all that useful, but still
-better than printing the wrong symbol.
+I thought about that as well and dismissed it due to the hardware
+initiated ones but thinking more about it, those need some translation
+unit (e.g. irq remapping) anyway, so it might be doable to catch those
+as well. So we could just ignore them for now and go for the #GP trick
+and deal with the device initiated ones later when they come around :)
 
-But there's still a bigger problem: the function with the faulting
-instruction doesn't get reported in the stack trace.
+But even with that we still need to keep track of the armed ones per CPU
+so we can handle CPU hotunplug correctly. Sigh...
 
-For example, in the up-thread bug report, __d_lookup() bug report
-doesn't get printed, even though its anonymous .fixup code is running in
-the context of the function and will be branching back to it shortly.
+Thanks,
 
-Even worse, this means livepatch is broken, because if for example
-__d_lookup()'s .fixup code gets preempted, __d_lookup() can get skipped
-by a reliable stack trace.
+        tglx
 
-So we may need to get rid of .fixup altogether.  Especially for arches
-which support livepatch.
-
-We can replace some of the custom .fixup handlers with generic handlers
-like x86 does, which do the fixup work in exception context.  This
-generally works better for more generic work like putting an error code
-in a certain register and resuming execution at the subsequent
-instruction.
-
-However a lot of the .fixup code is rather custom and doesn't
-necessarily work well with that model.
-
-In such cases we could just move the .fixup code into the function
-(inline for older compilers; out-of-line for compilers that support
-CC_HAS_ASM_GOTO_OUTPUT).
-
-Alternatively we could convert each .fixup code fragment into a proper
-function which returns to a specified resume point in the function, and
-then have the exception handler emulate a call to it like we do with
-int3_emulate_call().
-
--- 
-Josh
 
