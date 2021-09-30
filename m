@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC6541D7F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A801A41D803
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 12:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350048AbhI3Kmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 06:42:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4021 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1349873AbhI3Kmf (ORCPT
+        id S1350066AbhI3KqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 06:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350082AbhI3KqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 06:42:35 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UAUPRo006123;
-        Thu, 30 Sep 2021 06:40:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4ybqJxaoY6ZlbdRrFNDirPiZBDFbSWcR3c9/NdWfwAk=;
- b=O1rsYPe7nEyB/ZVeAc/OfYTCd6XT7nGGgePhkcnc2b6KjMaW8t0IB42nZS+12H/4/vYo
- nf6Ao8nnxCFPbqfECWtK1iyK87G1HqYctFg8MkIeo0qsoK5NODX8bElTZDbm330ExJk5
- rKZtUnSsK4TvN3xSmYmKeiQ+FiryBL9XjYmV1tYMwDvVXXuBlHZ9gOZxVUpmS95+SXTU
- uhr0RlFuV/XmaIyg2HEpxqxO/h0D8LxwjaD+tJIPHFbYrO//RTU4DuHbdAFpiovkR/H6
- HgFreXv7D391ESeuUusfgHfhTG3Y6Jz31qa9QKx0Gdn2IBP6HVnOW7/z7YDMr3zj3DRN /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bdbhy05kt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 06:40:50 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18UAenct010571;
-        Thu, 30 Sep 2021 06:40:49 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bdbhy05k9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 06:40:49 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18UAc86P032664;
-        Thu, 30 Sep 2021 10:40:48 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3b9udajfre-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Sep 2021 10:40:48 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18UAej2m2359832
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Sep 2021 10:40:45 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FD4C4C08B;
-        Thu, 30 Sep 2021 10:40:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02EBD4C081;
-        Thu, 30 Sep 2021 10:40:44 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.93.90])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Sep 2021 10:40:43 +0000 (GMT)
-Subject: Re: [PATCH] perf tools: Suppress 'rm dlfilter' build message
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-References: <20210930062849.110416-1-adrian.hunter@intel.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <9bb7e02d-1394-4b1e-f955-97f2f9f9f6f0@linux.ibm.com>
-Date:   Thu, 30 Sep 2021 16:10:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 30 Sep 2021 06:46:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305B9C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 03:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=UZS7L5sdXa7FYPEbrMCpL9TsId2dqB5wF+AhnZfv+AQ=; b=wRTVDJD5p9+9D9AfPRjqBaKl3j
+        /+a8yHnVg78mPC4HF5ik9BHozkqFsKmnNVVr863F6wdt8fSgyHcFG7DxCw8kvo/MOhaaqSTMV9Odm
+        mLZWE0mB3U604vxl7BDBTru+N+om1iUyXrTcjgjtCogxzWE7jbgV/KH2n0jtI2wLu/JXfW2Zzjwsx
+        /2B3EJQHq5ZJN/y/9UF6ByZXXU6E4ny7PVZE1vpTjT/Qz6abHIYQNRZe13rw/6zRiBNDlNCjqr1nC
+        qLMFvM8q1eV2Jm/k+a9oAPkB26jnbJNhMx0gZkdDhsDvMPIUe/J0Y6FXEUUu0RbYVFzuVDOSJnI2K
+        64xyEwTw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mVtWy-00CkwW-RC; Thu, 30 Sep 2021 10:43:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9D82E300252;
+        Thu, 30 Sep 2021 12:43:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CC3902C8F7853; Thu, 30 Sep 2021 12:43:10 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 12:43:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, sfr@canb.auug.org.au,
+        mbenes@suse.cz
+Subject: [PATCH] objtool: Teach get_alt_entry() about more relocation types
+Message-ID: <YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210930062849.110416-1-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BvmQGf54L2d7DAWx0u3p7L1tuvVTpvla
-X-Proofpoint-ORIG-GUID: snCbMIyvBp4d-Ap49Y4DHhr7B4BrMAOW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-30_03,2021-09-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 adultscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109300065
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Occasionally objtool encounters symbol (as opposed to section)
+relocations in .altinstructions. Typically they are the alternatives
+written by elf_add_alternative() as encountered on a noinstr
+validation run on vmlinux after having already ran objtool on the
+individual .o files.
 
-On 9/30/21 11:58 AM, Adrian Hunter wrote:
-> The following build message:
-> 
-> 	rm dlfilters/dlfilter-test-api-v0.o
-> 
-> is unwanted.
-> 
+Basically this is the counterpart of commit 44f6a7c0755d ("objtool:
+Fix seg fault with Clang non-section symbols"), because when these new
+assemblers (binutils now also does this) strip the section symbols,
+elf_add_reloc_to_insn() is forced to emit symbol based relocations.
 
-Hi Adrian,
+As such, teach get_alt_entry() about different relocation types.
 
-> The object fle is being treated as an intermediate file and being
+Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ tools/objtool/special.c |   32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
-Just minor nit, it should be `object file` not `object fle`
-
-Thanks,
-Kajol Jain
-
-> automatically removed. Mark the object file as .SECONDARY to prevent
-> removal and hence the message.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/Makefile.perf | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index e04313c4d840..ab8cb17d9ec5 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -787,6 +787,8 @@ $(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
->  	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
->  	$(QUIET_CC)$(CC) -c -Iinclude $(EXTRA_CFLAGS) -o $@ -fpic $<
->  
-> +.SECONDARY: $(DLFILTERS:.so=.o)
-> +
->  $(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
->  	$(QUIET_LINK)$(CC) $(EXTRA_CFLAGS) -shared -o $@ $<
->  
-> 
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -58,6 +58,24 @@ void __weak arch_handle_alternative(unsi
+ {
+ }
+ 
++static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
++{
++	switch (reloc->sym->type) {
++	case STT_FUNC:
++		*sec = reloc->sym->sec;
++		*off = reloc->sym->offset + reloc->addend;
++		return true;
++
++	case STT_SECTION:
++		*sec = reloc->sym->sec;
++		*off = reloc->addend;
++		return true;
++
++	default:
++		return false;
++	}
++}
++
+ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 			 struct section *sec, int idx,
+ 			 struct special_alt *alt)
+@@ -91,15 +109,12 @@ static int get_alt_entry(struct elf *elf
+ 		WARN_FUNC("can't find orig reloc", sec, offset + entry->orig);
+ 		return -1;
+ 	}
+-	if (orig_reloc->sym->type != STT_SECTION) {
+-		WARN_FUNC("don't know how to handle non-section reloc symbol %s",
++	if (!reloc2sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off)) {
++		WARN_FUNC("don't know how to handle reloc symbol type: %s",
+ 			   sec, offset + entry->orig, orig_reloc->sym->name);
+ 		return -1;
+ 	}
+ 
+-	alt->orig_sec = orig_reloc->sym->sec;
+-	alt->orig_off = orig_reloc->addend;
+-
+ 	if (!entry->group || alt->new_len) {
+ 		new_reloc = find_reloc_by_dest(elf, sec, offset + entry->new);
+ 		if (!new_reloc) {
+@@ -116,8 +131,11 @@ static int get_alt_entry(struct elf *elf
+ 		if (arch_is_retpoline(new_reloc->sym))
+ 			return 1;
+ 
+-		alt->new_sec = new_reloc->sym->sec;
+-		alt->new_off = (unsigned int)new_reloc->addend;
++		if (!reloc2sec_off(new_reloc, &alt->new_sec, &alt->new_off)) {
++			WARN_FUNC("don't know how to handle reloc symbol type: %s",
++				  sec, offset + entry->new, new_reloc->sym->name);
++			return -1;
++		}
+ 
+ 		/* _ASM_EXTABLE_EX hack */
+ 		if (alt->new_off >= 0x7ffffff0)
