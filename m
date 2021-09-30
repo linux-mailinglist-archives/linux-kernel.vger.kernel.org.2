@@ -2,184 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277FC41DA47
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A20B41DA4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 14:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351140AbhI3MyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 08:54:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35319 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351051AbhI3MyR (ORCPT
+        id S1351165AbhI3Mzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 08:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351127AbhI3Mzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 08:54:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633006354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VnmEL5D+n0vLcuY2Pvx+p26aDEwSUVG7NRxCGhW/K98=;
-        b=V0SA4nQb3ONbz44i/NOZIm15BirZ9AlK0Ts2dqXQQqM52wnxEYp+39br4khA3Y5/oqyY7e
-        zy481eGFWf0Y8SAN+plIvxKEzdr89SwYH5ymCsxXNMu6ZZC/zoIsJ7b8nMUEZKePcBjRqd
-        7tM3TDiaFT2Csp/lOkx5buSvJqo2ZeQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-NgRy8MDGMduIFwQ0JP51NA-1; Thu, 30 Sep 2021 08:52:32 -0400
-X-MC-Unique: NgRy8MDGMduIFwQ0JP51NA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91482802C87;
-        Thu, 30 Sep 2021 12:52:30 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-72.pek2.redhat.com [10.72.12.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C98C5F4E1;
-        Thu, 30 Sep 2021 12:52:25 +0000 (UTC)
-Date:   Thu, 30 Sep 2021 20:52:22 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        Coiby Xu <coxu@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] kexec, KEYS: make the code in bzImage64_verify_sig
- public
-Message-ID: <YVWzBkycaSbNi18o@dhcp-128-65.nay.redhat.com>
-References: <20210927005004.36367-1-coiby.xu@gmail.com>
- <20210927005004.36367-2-coiby.xu@gmail.com>
- <YVWyPu3pDvnEfATe@dhcp-128-65.nay.redhat.com>
+        Thu, 30 Sep 2021 08:55:45 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEA0C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:03 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id n71so7448385iod.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 05:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=se4EiZ00KtrBxjyRNVBoxuylYR7GsMp6vwQq86rutw4=;
+        b=LmRe3QFhGUUogxSg/CCyhlKdpk/4mZBmoSK5hvOhVvGWQaUJHDIO0TfaqXzIjmXCBH
+         WUJK6oGSX3BJuE9OChsHTC4d497mmW83oPSjbhhSa0WV1cwNHca532+qYfZD06C9aZPc
+         nHwbB8TVQelA5DeQONC90hxdF4wAp+oq+FfPTqmBsQarPQXGc3XSxCYPNx6aEiLSTyUc
+         CeVa/NfGioZ+5Jww//Z0l5BjKvHnEU80gJDdjfO5iVHzPDoKcMBIDkt3H80Et+ATy9jB
+         35UKDxLR2R1JJw4eStsmBtW3Ry4P3Gv56B451/2LYKAxbpH1jIqeQqlzPM0eCloQRui1
+         iZDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=se4EiZ00KtrBxjyRNVBoxuylYR7GsMp6vwQq86rutw4=;
+        b=K5Skp2ZH/2Vw7c807pLwqD4xE1q7xNaotndlsREEYRD5IGJBgrtwCqJ4vBPR6j4W3P
+         WMgvd9QXfLRt/fEIKk3niJ0Rc26t8aF4w8Si8cTz/e7OfEY8wGyDQgMU5JaOlJ9K9xXE
+         u8/UwEQxw93QHHyLtqVmjMQ4y+5pL4EAa+gO/D0esXi2vWV/wjvuko+PmPmUWGFF6JSm
+         tJV1AlykwFHYJj1uWoZzR/Yz9YfUNRazQqr5kZ9DNxn05rkr+DeqFOa1siqQIno8ExXj
+         EXMdrnUfv4/gPqAL3dpRFdMaKWLpKvvh7mGJT8ZaqDNlExvEH0cLUN4drP98oq38J+vk
+         gMDg==
+X-Gm-Message-State: AOAM533bnViah1Zz4V9AcGr2MMcr9YqOjCrANZgJ1KXpMBF8nhgwsH60
+        EltlTIKBxOZLSfguUMqA/2k40V6tQerH9ZGUAiQ=
+X-Google-Smtp-Source: ABdhPJxGJAPx9Jjiz0QqV8F7jMg1PldCu6DQT0Q0wxjqT54Ja84VaZxZSsZxpigYPVS12yntEsfNSOF9DyPsQPYPXco=
+X-Received: by 2002:a5d:9493:: with SMTP id v19mr3677984ioj.34.1633006442959;
+ Thu, 30 Sep 2021 05:54:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVWyPu3pDvnEfATe@dhcp-128-65.nay.redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-5-laoar.shao@gmail.com>
+ <202109291113.6DE8D6F3D@keescook>
+In-Reply-To: <202109291113.6DE8D6F3D@keescook>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 30 Sep 2021 20:53:27 +0800
+Message-ID: <CALOAHbD3HUqUnjMYKX7NGwVWiS4K7OvS6uPNWucnOA5Cy3pn9w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] kernel: increase the size of kthread's comm
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/30/21 at 08:49pm, Dave Young wrote:
-> Hi Coiby,
-> On 09/27/21 at 08:50am, Coiby Xu wrote:
-> > From: Coiby Xu <coxu@redhat.com>
-> > 
-> > The code in bzImage64_verify_sig could make use of system keyrings including
-> > .buitin_trusted_keys, .secondary_trusted_keys and .platform keyring to verify
-> > signed kernel image as PE file. Move it to a public function.
-> > 
-> > Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> > ---
-> >  arch/x86/kernel/kexec-bzimage64.c | 13 +------------
-> >  include/linux/kexec.h             |  3 +++
-> >  kernel/kexec_file.c               | 15 +++++++++++++++
-> >  3 files changed, 19 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-> > index 170d0fd68b1f..4136dd3be5a9 100644
-> > --- a/arch/x86/kernel/kexec-bzimage64.c
-> > +++ b/arch/x86/kernel/kexec-bzimage64.c
-> > @@ -17,7 +17,6 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/mm.h>
-> >  #include <linux/efi.h>
-> > -#include <linux/verification.h>
-> >  
-> >  #include <asm/bootparam.h>
-> >  #include <asm/setup.h>
-> > @@ -531,17 +530,7 @@ static int bzImage64_cleanup(void *loader_data)
-> >  #ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
-> >  static int bzImage64_verify_sig(const char *kernel, unsigned long kernel_len)
-> >  {
-> > -	int ret;
-> > -
-> > -	ret = verify_pefile_signature(kernel, kernel_len,
-> > -				      VERIFY_USE_SECONDARY_KEYRING,
-> > -				      VERIFYING_KEXEC_PE_SIGNATURE);
-> > -	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
-> > -		ret = verify_pefile_signature(kernel, kernel_len,
-> > -					      VERIFY_USE_PLATFORM_KEYRING,
-> > -					      VERIFYING_KEXEC_PE_SIGNATURE);
-> > -	}
-> > -	return ret;
-> > +	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
-> >  }
-> >  #endif
-> >  
-> > diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> > index 0c994ae37729..d45f32336dbe 100644
-> > --- a/include/linux/kexec.h
-> > +++ b/include/linux/kexec.h
-> > @@ -19,6 +19,7 @@
-> >  #include <asm/io.h>
-> >  
-> >  #include <uapi/linux/kexec.h>
-> > +#include <linux/verification.h>
-> >  
-> >  #ifdef CONFIG_KEXEC_CORE
-> >  #include <linux/list.h>
-> > @@ -199,6 +200,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
-> >  #ifdef CONFIG_KEXEC_SIG
-> >  int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
-> >  				 unsigned long buf_len);
-> > +int arch_kexec_kernel_verify_pe_sig(const char *kernel,
-> > +				    unsigned long kernel_len);
-> >  #endif
-> >  int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
-> >  
-> > diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-> > index 33400ff051a8..85ed6984ad8f 100644
-> > --- a/kernel/kexec_file.c
-> > +++ b/kernel/kexec_file.c
-> > @@ -106,6 +106,21 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
-> >  {
-> >  	return kexec_image_verify_sig_default(image, buf, buf_len);
-> >  }
-> > +
-> > +int arch_kexec_kernel_verify_pe_sig(const char *kernel, unsigned long kernel_len)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = verify_pefile_signature(kernel, kernel_len,
-> > +				      VERIFY_USE_SECONDARY_KEYRING,
-> > +				      VERIFYING_KEXEC_PE_SIGNATURE);
-> > +	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
-> > +		ret = verify_pefile_signature(kernel, kernel_len,
-> > +					      VERIFY_USE_PLATFORM_KEYRING,
-> > +					      VERIFYING_KEXEC_PE_SIGNATURE);
-> > +	}
-> > +	return ret;
-> > +}
-> 
-> Since the function is moved as generic code, the kconfig option
-> CONFIG_KEXEC_BZIMAGE_VERIFY_SIG can be removed.
-> 
-> Instead a CONFIG_KEXEC_PEFILE_VERIFY_SIG can be added so that it does
-> not need to be compiled for only platform which support UEFI pefile
+On Thu, Sep 30, 2021 at 2:20 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 11:50:35AM +0000, Yafang Shao wrote:
+> > This patch increases the size of ktread's comm from 16 to 24, which is
+> > the same with workqueue's, to improve this situation. After this cahnge,
+> > [...]
+> > Because there're only a few of kthreads, so it won't increase too much
+> > memory.
+>
+> Even without the performance impact changes, the math here doesn't hold
+> either, since using kmalloc means there are slabs being allocated to hold
+> the task "comm"s now (which comes with overhead), and every task added
+> a pointer to those 16 bytes (i.e. 8 more bytes on 64-bit systems). So
+> this change, even if there was 0 overhead in using slabs, would be
+> identical to having just raised TASK_COMM_LEN to 24. 8 byte pointer,
+> 16 byte allocation == 24 bytes.
+>
 
-Fix the sick sentence: I means only to compile for x86_64 and arm64..
+Right, thanks for the explanation. I missed the pointer before.
 
-> signature verification.  And the related arch kexec_file kconfig can
-> just select it.
-> 
-> Coiby, can you try above?
-> 
-> >  #endif
-> >  
-> >  /*
-> > -- 
-> > 2.33.0
-> > 
-> > 
-> > _______________________________________________
-> > kexec mailing list
-> > kexec@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/kexec
-> > 
-> > 
-> 
-> Thanks
-> Dave
-> 
+What about reusing the kthread_data() to store the the comm if the
+kthread is not a kworker?
 
+struct kthread {
+     ...
+     void *data;  // reuse this pointer
+     ...
+}
+
+The logic will be something as follows,
+
+    if (kthread_is_kworker) {
+          store_worker_desc_into_kthread_data(); // already did in the kernel
+     } else {
+          store_comm_into_kthread_data();   // that is what we should change
+    }
+
+And then we modify the  proc_task_name() correspondingly.
+
+-- 
+Thanks
+Yafang
