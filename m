@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A3741D29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94F141D2A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 07:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348043AbhI3FOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 01:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236162AbhI3FOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 01:14:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9309D6142A;
-        Thu, 30 Sep 2021 05:12:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632978769;
-        bh=4QH/619IxiuIEopsC3sn97j1l53+ZQHiNJ5wMPJ/Qh8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=t4f5+IOoNuPKrETE3mgjPdJlnlgf4s8MGtVu4ewbBLvwS18Ny9A5rq4buMZ9VF6ZH
-         +MuYGdVUhM4YfoVYmvn/5K41HG4mMtAdJ+hR2c8CI1MRRlLyA/Yx6dyjPVGOT+qGY+
-         fZZaRCHjlIXaMwIvuG1mGEtNHpyyP5x+2dxbX899ALEaTznwN8QojvHSsx3HFk6Y17
-         6U7B3OQ4+wC02rZRxKIDdI8cXwlom6w8imd2l1sfmYcGuqIiT6ujzk7hxPKoWZgtgf
-         W5P9pSgZVoOKXNR72kFbCOkvXdcdhmsQnraKOCJnyWpGhjRewP9enDo3mSJr0Sucmp
-         5I6gSw2+FqKAg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH net] MAINTAINERS: Remove Bin Luo as his email bounces
-Date:   Thu, 30 Sep 2021 08:12:43 +0300
-Message-Id: <045a32ccf394de66b7899c8b732f44dc5f4a1154.1632978665.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S1348015AbhI3FWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 01:22:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236162AbhI3FWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 01:22:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632979271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Dz+qCsoc48LipRhHm4trgLssdzpozJ8ns9MbHfNQxF8=;
+        b=BwBhuyEIDAgC/iBshymXPxCTbE7voL9kFWoxPvWLH7DMQxQE3ue6LC1en30SIwyIvkxJLZ
+        GNQKVMW8ypKL4jab7yMhdW/kZPr/uEfnfAK57jfzB0DIMK5Bliz7FUwTbJXiRNpCgpekOZ
+        GHR5Gb8wTyUwg0AmF6/3tGtr7J3Rs+c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-N3Zyp2naN02OQTybRwmxqw-1; Thu, 30 Sep 2021 01:21:10 -0400
+X-MC-Unique: N3Zyp2naN02OQTybRwmxqw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EDFF362FB;
+        Thu, 30 Sep 2021 05:21:09 +0000 (UTC)
+Received: from localhost (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8685160E1C;
+        Thu, 30 Sep 2021 05:20:37 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Changhui Zhong <czhong@redhat.com>, Yi Zhang <yi.zhang@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH 0/2] SCSI: fix race between releasing shost and unloading LLD module
+Date:   Thu, 30 Sep 2021 13:20:26 +0800
+Message-Id: <20210930052028.934747-1-ming.lei@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hello,
 
-The emails sent to luobin9@huawei.com bounce with error:
- "Recipient address rejected: Failed recipient validation check."
+Patch 1 allows put_device() to return if the device is really released.
 
-So let's remove his entry and change the status of hinic driver till
-someone in Huawei will step-in to maintain it again.
+Patch 2 fixes one race between releasing shost and unloading LLD module
+by making sure that LLD module refcnt is dropped after the scsi device
+is released.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- MAINTAINERS | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Fix the kernel panic of 'BUG: unable to handle page fault for address'
+reported by Changhui and Yi.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b585e6092a74..1e39189b4004 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8609,9 +8609,8 @@ F:	Documentation/devicetree/bindings/iio/humidity/st,hts221.yaml
- F:	drivers/iio/humidity/hts221*
- 
- HUAWEI ETHERNET DRIVER
--M:	Bin Luo <luobin9@huawei.com>
- L:	netdev@vger.kernel.org
--S:	Supported
-+S:	Orphan
- F:	Documentation/networking/device_drivers/ethernet/huawei/hinic.rst
- F:	drivers/net/ethernet/huawei/hinic/
- 
+
+Ming Lei (2):
+  driver core: tell caller if the device/kboject is really released
+  scsi: core: put LLD module refcnt after SCSI device is released
+
+ drivers/base/core.c        |  5 +++--
+ drivers/scsi/scsi.c        | 14 ++++++++++++--
+ drivers/scsi/scsi_sysfs.c  |  8 ++++++++
+ include/linux/device.h     |  2 +-
+ include/linux/kobject.h    |  2 +-
+ include/scsi/scsi_device.h |  1 +
+ lib/kobject.c              |  5 +++--
+ 7 files changed, 29 insertions(+), 8 deletions(-)
+
 -- 
 2.31.1
 
