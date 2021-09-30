@@ -2,305 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2157341D55C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E3B41D55F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 10:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349084AbhI3IZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 04:25:35 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12520 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348984AbhI3IZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 04:25:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="247670126"
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="247670126"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2021 01:23:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; 
-   d="scan'208";a="520262214"
-Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Sep 2021 01:23:50 -0700
-Date:   Thu, 30 Sep 2021 16:24:29 +0800
-From:   Li Fei1 <fei1.li@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
-        shuox.liu@gmail.com, fei1.li@intel.com
-Subject: Re: [PATCH v5 2/2] virt: acrn: Introduce interfaces for virtual
- device creating/destroying
-Message-ID: <20210930082429.GA6460@louislifei-OptiPlex-7050>
-References: <20210923084128.18902-1-fei1.li@intel.com>
- <20210923084128.18902-3-fei1.li@intel.com>
- <YUxAHtGrYZ0n1Foa@kroah.com>
- <20210923091637.GA19102@louislifei-OptiPlex-7050>
- <YUx8GCInYRP9DcZS@kroah.com>
- <20210923152636.GA19873@louislifei-OptiPlex-7050>
+        id S1349092AbhI3I1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 04:27:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27577 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348048AbhI3I1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:27:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632990327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZDlrtySWZ8aKYElfHM2QvkjVRqwG+Yrljzwwq0Gl48=;
+        b=iwn1wDd6DugpCLFen0QeHSDkhmo38eEFP3atbfzEPOUzGIYOpxx2f8eX4Hj6yjUP9bu6qV
+        Bs8wESJabcgVOZHc3lObe6x7v26yF0AtF96oSbse0KAXCsP6AEvYch9/q1dy4oWKSlIIn8
+        cc5ucGpMcExi0xVG2M8GzyvAAxW7rHE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314-z8g20zW5P4edOUrSh7Ue4A-1; Thu, 30 Sep 2021 04:25:26 -0400
+X-MC-Unique: z8g20zW5P4edOUrSh7Ue4A-1
+Received: by mail-ed1-f69.google.com with SMTP id e7-20020a50d4c7000000b003d871ecccd8so5407563edj.18
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 01:25:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=qZDlrtySWZ8aKYElfHM2QvkjVRqwG+Yrljzwwq0Gl48=;
+        b=22nSAHVf/UHKG13zztifLLhGgZK69/12jmLvhJ+QJYPtWvfrVXk5byiQDWLU43Uhwn
+         ex/+nLBoLqOorJhmTiuIz4HF1a1LR0JCfwP2FaiVmquvwPgNV459Jp4qSLeKzhY6Z93t
+         K3jhLhhLWdS+vX48JH+4I0o085Ydp5Ei5el9LAKrwwejkU/NmBshTPh9eVXtdUFAAa9I
+         8meJSxtklSP47xeL2aaoOd8rKcvckIsVyhiQzRxXQ497FxADukoXWJ2GkRIC1VaUqQq7
+         1yVlX0Lk+IZdZNxULhrPYfQ9pjYtVruKZcf4WF7W6cCo0CiDtEqCgLWz83QNM9+xfUOs
+         H1sQ==
+X-Gm-Message-State: AOAM530btBAcZtREDPs3gpmZUVLw97GBjAL/CA5R4A/8VRSdBHPDflpB
+        YUaIRKZx0Di7CKWNdNtUaqM6+Wdv12dyI322IgTQ4fjHyAPUohDOfAVY4jMe2L0RKHF7gvmFIUh
+        DJttD3jS5eprccEj8imJzMMDS
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr5306283eju.10.1632990325031;
+        Thu, 30 Sep 2021 01:25:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6dmrAQnGVYDpSFITeZQ5J78A0Qbz6DDf8Zt8iSZNnThEDyhAzvKmWq+5AFnH0Qaik7Pezug==
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr5306267eju.10.1632990324849;
+        Thu, 30 Sep 2021 01:25:24 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id k7sm1052460eds.96.2021.09.30.01.25.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 01:25:24 -0700 (PDT)
+Message-ID: <75632fa9-e813-266c-7b72-cf9d8142cebf@redhat.com>
+Date:   Thu, 30 Sep 2021 10:25:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210923152636.GA19873@louislifei-OptiPlex-7050>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 2/2] KVM: x86: Manually retrieve CPUID.0x1 when getting
+ FMS for RESET/INIT
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
+        Alexander Potapenko <glider@google.com>
+References: <20210929222426.1855730-1-seanjc@google.com>
+ <20210929222426.1855730-3-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20210929222426.1855730-3-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 11:26:36PM +0800, Li, Fei1 wrote:
-> On Thu, Sep 23, 2021 at 03:07:36PM +0200, Greg KH wrote:
-> > On Thu, Sep 23, 2021 at 05:16:37PM +0800, Li Fei1 wrote:
-> > > On Thu, Sep 23, 2021 at 10:51:42AM +0200, Greg KH wrote:
-> > > > On Thu, Sep 23, 2021 at 04:41:28PM +0800, Fei Li wrote:
-> > > > > From: Shuo Liu <shuo.a.liu@intel.com>
-> > > > >
-> > > > > The ACRN hypervisor can emulate a virtual device within hypervisor for a
-> > > > > Guest VM. The emulated virtual device can work without the ACRN
-> > > > > userspace after creation. The hypervisor do the emulation of that device.
-> > > > >
-> > > > > To support the virtual device creating/destroying, HSM provides the
-> > > > > following ioctls:
-> > > > >   - ACRN_IOCTL_CREATE_VDEV
-> > > > >     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
-> > > > >     the hypervisor to create a virtual device for a User VM.
-> > > > >   - ACRN_IOCTL_DESTROY_VDEV
-> > > > >     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
-> > > > >     the hypervisor to destroy a virtual device of a User VM.
-> > > > >
-> > > > > These new APIs will be used by user space code vm_add_hv_vdev and
-> > > > > vm_remove_hv_vdev in
-> > > > > https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c
-> > > > >
-> > > > > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> > > > > Signed-off-by: Fei Li <fei1.li@intel.com>
-> > > > > ---
-> > > > >  drivers/virt/acrn/hsm.c       | 24 ++++++++++++++++++++
-> > > > >  drivers/virt/acrn/hypercall.h | 26 ++++++++++++++++++++++
-> > > > >  include/uapi/linux/acrn.h     | 42 +++++++++++++++++++++++++++++++++++
-> > > > >  3 files changed, 92 insertions(+)
-> > > > >
+On 30/09/21 00:24, Sean Christopherson wrote:
+>  	 * RESET since KVM emulates RESET before exposing the vCPU to userspace,
+>  	 * i.e. it'simpossible for kvm_cpuid() to find a valid entry on RESET.
+> +	 * But, go through the motions in case that's ever remedied.  Note, the
+> +	 * index for CPUID.0x1 is not significant, arbitrarily specify '0'.
 
-Hi Greg
+Just one nit, this comment change is not really needed because almost 
+all callers are using '0' for the same reason.
 
-Any comments about my explanation ?
+But, perhaps adding kvm_find_cpuid_entry_index and removing the last 
+parameter from kvm_find_cpuid_entry would be a good idea.
 
-thanks a lot.
+Also, the kvm_cpuid() reference needs to be changed, which I did upon 
+commit.
 
-> > > > > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> > > > > index f567ca59d7c2..5419794fccf1 100644
-> > > > > --- a/drivers/virt/acrn/hsm.c
-> > > > > +++ b/drivers/virt/acrn/hsm.c
-> > > > > @@ -118,6 +118,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
-> > > > >  struct acrn_msi_entry *msi;
-> > > > >  struct acrn_pcidev *pcidev;
-> > > > >  struct acrn_irqfd irqfd;
-> > > > > +struct acrn_vdev *vdev;
-> > > > >  struct page *page;
-> > > > >  u64 cstate_cmd;
-> > > > >  int i, ret = 0;
-> > > > > @@ -266,6 +267,29 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
-> > > > >  "Failed to deassign pci device!\n");
-> > > > >  kfree(pcidev);
-> > > > >  break;
-> > > > > +case ACRN_IOCTL_CREATE_VDEV:
-> > > > > +vdev = memdup_user((void __user *)ioctl_param,
-> > > > > +   sizeof(struct acrn_vdev));
-> > > > > +if (IS_ERR(vdev))
-> > > > > +return PTR_ERR(vdev);
-> > > > > +
-> > > > > +ret = hcall_create_vdev(vm->vmid, virt_to_phys(vdev));
-> > > > > +if (ret < 0)
-> > > > > +dev_dbg(acrn_dev.this_device,
-> > > > > +"Failed to create virtual device!\n");
-> > > > > +kfree(vdev);
-> > > > > +break;
-> > > > > +case ACRN_IOCTL_DESTROY_VDEV:
-> > > > > +vdev = memdup_user((void __user *)ioctl_param,
-> > > > > +   sizeof(struct acrn_vdev));
-> > > > > +if (IS_ERR(vdev))
-> > > > > +return PTR_ERR(vdev);
-> > > > > +ret = hcall_destroy_vdev(vm->vmid, virt_to_phys(vdev));
-> > > > > +if (ret < 0)
-> > > > > +dev_dbg(acrn_dev.this_device,
-> > > > > +"Failed to destroy virtual device!\n");
-> > > > > +kfree(vdev);
-> > > > > +break;
-> > > > >  case ACRN_IOCTL_SET_PTDEV_INTR:
-> > > > >  irq_info = memdup_user((void __user *)ioctl_param,
-> > > > >         sizeof(struct acrn_ptdev_irq));
-> > > > > diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-> > > > > index f0c78e52cebb..71d300821a18 100644
-> > > > > --- a/drivers/virt/acrn/hypercall.h
-> > > > > +++ b/drivers/virt/acrn/hypercall.h
-> > > > > @@ -43,6 +43,8 @@
-> > > > >  #define HC_DEASSIGN_PCIDEV_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x06)
-> > > > >  #define HC_ASSIGN_MMIODEV_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x07)
-> > > > >  #define HC_DEASSIGN_MMIODEV_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x08)
-> > > > > +#define HC_CREATE_VDEV_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x09)
-> > > > > +#define HC_DESTROY_VDEV_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x0A)
-> > > > >
-> > > > >  #define HC_ID_PM_BASE0x80UL
-> > > > >  #define HC_PM_GET_CPU_STATE_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
-> > > > > @@ -196,6 +198,30 @@ static inline long hcall_set_memory_regions(u64 regions_pa)
-> > > > >  return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
-> > > > >  }
-> > > > >
-> > > > > +/**
-> > > > > + * hcall_create_vdev() - Create a virtual device for a User VM
-> > > > > + * @vmid:User VM ID
-> > > > > + * @addr:Service VM GPA of the &struct acrn_vdev
-> > > > > + *
-> > > > > + * Return: 0 on success, <0 on failure
-> > > > > + */
-> > > > > +static inline long hcall_create_vdev(u64 vmid, u64 addr)
-> > > > > +{
-> > > > > +return acrn_hypercall2(HC_CREATE_VDEV, vmid, addr);
-> > > > > +}
-> > > > > +
-> > > > > +/**
-> > > > > + * hcall_destroy_vdev() - Destroy a virtual device of a User VM
-> > > > > + * @vmid:User VM ID
-> > > > > + * @addr:Service VM GPA of the &struct acrn_vdev
-> > > > > + *
-> > > > > + * Return: 0 on success, <0 on failure
-> > > > > + */
-> > > > > +static inline long hcall_destroy_vdev(u64 vmid, u64 addr)
-> > > > > +{
-> > > > > +return acrn_hypercall2(HC_DESTROY_VDEV, vmid, addr);
-> > > > > +}
-> > > > > +
-> > > > >  /**
-> > > > >   * hcall_assign_mmiodev() - Assign a MMIO device to a User VM
-> > > > >   * @vmid:User VM ID
-> > > > > diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-> > > > > index 470036d6b1ac..ccf47ed92500 100644
-> > > > > --- a/include/uapi/linux/acrn.h
-> > > > > +++ b/include/uapi/linux/acrn.h
-> > > > > @@ -441,6 +441,44 @@ struct acrn_mmiodev {
-> > > > >  } res[ACRN_MMIODEV_RES_NUM];
-> > > > >  };
-> > > > >
-> > > > > +/**
-> > > > > + * struct acrn_vdev - Info for creating or destroying a virtual device
-> > > > > + * @id:Union of identifier of the virtual device
-> > > > > + * @id.value:Raw data of the identifier
-> > > > > + * @id.fields.vendor:Vendor id of the virtual PCI device
-> > > > > + * @id.fields.device:Device id of the virtual PCI device
-> > > > > + * @id.fields.legacy_id:ID of the virtual device if not a PCI device
-> > > > > + * @slot:Virtual Bus/Device/Function of the virtual
-> > > > > + *device
-> > > > > + * @io_base:IO resource base address of the virtual device
-> > > > > + * @io_size:IO resource size of the virtual device
-> > > > > + * @args:Arguments for the virtual device creation
-> > > > > + *
-> > > > > + * The created virtual device can be a PCI device or a legacy device (e.g.
-> > > > > + * a virtual UART controller) and it is emulated by the hypervisor. This
-> > > > > + * structure will be passed to hypervisor directly.
-> > > > > + */
-> > > > > +struct acrn_vdev {
-> > > > > +/*
-> > > > > + * the identifier of the device, the low 32 bits represent the vendor
-> > > > > + * id and device id of PCI device and the high 32 bits represent the
-> > > > > + * device number of the legacy device
-> > > > > + */
-> > > > > +union {
-> > > > > +__u64 value;
-> > > > > +struct {
-> > > > > +__le16 vendor;
-> > > > > +__le16 device;
-> > > > > +__le32 legacy_id;
-> > > > > +} fields;
-> > > > > +} id;
-> > > > > +
-> > > > > +__u64slot;
-> > > > > +__u32io_addr[ACRN_PCI_NUM_BARS];
-> > > >
-> > >
-> > > Hi Greg
-> > >
-> > > > Why is an io address only 32 bits?
-> > > >
-> > >
-> > > A PCI device could have six (ACRN_PCI_NUM_BARS) Base Address Registers,
-> > > Base Address registers that map into Memory Space can be 32 bits or 64
-> > > bits wide. Here doesn't mean this io address only is 32 bits.
-> > > Two io_addr could be a 64 bits io_addr which depends on the
-> > > Base Address Register Bits 3:0 Encoding.
-> >
-> > Where does that encoding show up and how is that expressed that you need
-> > to merge multiple 32bit values into one 64bit value?
-> 
-> Hi Greg
-> 
-> For a virtual PCI device which used to communicate between VMs, you could refer to
-> init_ivshmem_bar in
-> https://github.com/lifeix/acrn-hypervisor/blob/master/hypervisor/dm/vpci/ivshmem.c#L287
-> 
-> For a PCI device, if the bit 0 of BAR is zero, it means this BAR is a MMIO BAR.
-> And in this case, if the bit[2-1] is 10b, it means this BAR is a 64 bits MMIO BAR.
-> This current BAR (assume its index is X) and the next BAR (which index is X+1) form
-> a 64 bits MMIO BAR. You may refer to Chap 7.5.1.2.1 Base Address Registers, PCI Express® Base
-> Specification Revision 5.0 Version 1.0 for detail.
-> 
-> >
-> > > > And what endian is this?
-> > >
-> > > It's just an array which would be initialzied for index 0 to (ACRN_PCI_NUM_BARS - 1).
-> > > So I think what's the endian of it doesn't matter.
-> >
-> > It's a 32bit number in some endian format :)
-> >
-> > I know you all are dealing with "little endian only", but this is a
-> > user/kernel api that should be defined properly, right?
-> Yes, but I'm confused when should I add the endian. IMHO, if I add the endian for this field,
-> I need to add endian for each field of each data structure, right ?
-> 
-> >
-> > > > > +__u32io_size[ACRN_PCI_NUM_BARS];
-> > > >
-> > > > Again, why only 32 bits?
-> > >
-> > > Here also doesn't mean the io_size is 32 bits. a 64 bits PCI BAR (Base Address Register)
-> > > could use two io_size element.
-> >
-> > How?
-> 
-> If the current BAR is a 64 bits MMIO BAR, we need to combine two io_size into one io_size.
-> Also, you may refer to Chap 7.5.1.2.1 Base Address Registers, PCI Express® Base Specification
-> Revision 5.0 Version 1.0 for detail.
-> 
-> >
-> > > > > +__u8args[128];
-> > > >
-> > > > Where are args defined?
-> > >
-> > > For different kinds of vdevs, it represents differently.
-> > > For current usages, it may be:
-> > > a) a vdev's name of a virtual PCI device which used to communicate between VMs
-> > > b) an index of virtual Uart
-> > > c) a structure to represent a virtual Root Port.
-> >
-> > So you are multiplexing this single structure into multiple ones
-> > somehow?  Why not break these up and be explicit about the individual
-> yes
-> > commands happening here?  Is userspace supposed to create these bit
-> just as you said, the linux kernel doesn't need to handle this data.
-> it just needs to pass this data to hypervisor and the hypervisor to
-> check whether this data is valid according to the id field in this data structure.
-> > fields and somehow just pass them to the hypervisor properly?
-> the userspace code only needs to copy this kind of data into args fields.
-> Here is an example,
-> https://github.com/lifeix/acrn-hypervisor/blob/master/devicemodel/hw/pci/ivshmem.c#L169
-> >
-> > I know you all are just treating the kernel as a dumb pipe here, and
-> > that's fine, but you are adding new functions that have specific
-> > formats, so why not break this up into the individual formats as well?
-> ACRN hypervisor would do this work. The Linux kernel doesn't need to know
-> what the data is and what does this data use for. And it doesn't need to
-> know how to check this data. This also reduces the Linux kernel's workload
-> and saves a lot of code. :-)
-> 
-> thanks.
-> > Otherwise, why break any of them up?  :)
-> >
-> > thanks,
-> >
-> > greg k-h
+Paolo
+
+
+>   	 */
+> -	eax = 1;
+> -	if (!kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true))
+> -		eax = 0x600;
+> -	kvm_rdx_write(vcpu, eax);
+> +	cpuid_0x1 = kvm_find_cpuid_entry(vcpu, 1, 0);
+> +	kvm_rdx_write(vcpu, cpuid_0x1 ? cpuid_0x1->eax : 0x600);
+
