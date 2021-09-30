@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3B941D128
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3778341D12E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Sep 2021 03:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347647AbhI3B4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Sep 2021 21:56:30 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:54944 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233941AbhI3B43 (ORCPT
+        id S1347727AbhI3B5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Sep 2021 21:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347699AbhI3B5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Sep 2021 21:56:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Uq41Vho_1632966885;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Uq41Vho_1632966885)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 30 Sep 2021 09:54:46 +0800
-Subject: Re: [PATCH v2] ocfs2: mount fails with buffer overflow in strlen
-To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        akpm <akpm@linux-foundation.org>
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <1ab61ba3-8c9b-092c-7843-9c45b58e3987@linux.alibaba.com>
- <20210929180654.32460-1-vvidic@valentin-vidic.from.hr>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <a1bea8f5-91bc-66c2-0262-cb091b15b4d5@linux.alibaba.com>
-Date:   Thu, 30 Sep 2021 09:54:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Wed, 29 Sep 2021 21:57:04 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F54DC06176A
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 18:55:22 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id u7so3524768pfg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Sep 2021 18:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ppSjAe5S3xlWKT7s8el3Il5gQkJrN0MmdVf0E/AP7Gc=;
+        b=ydGPiSJNMnM7op/wkyAmXwGCpbqUNFYUHuTIB1J9VMHKIEt0sSU7kMooEJf9ONRPIA
+         1epCxOZbM0aS2EhNFY6KaCCjZUa3fkU0LWjAEDekFcojleEFYbUWcOuBjLnFNrOYEP0b
+         mA+QtRVrgb+QVIzp8Q6gIPM6zutuAF5hBMmH4psZDUSy/atAm1KGSsMtdvT9RYXwFNoC
+         0OxTcAvRXaSSlv2eJGo5aW5AjIbbmaejIHX929b6XcPXwpNZj92Vz8XUEuL92z5RkXVg
+         41hSRYzrA1jBcQMejxi5WxXv4SfKoIIdMc6rLHA0kQZZpePX/R7ifabPflyujG0OznzI
+         tNCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ppSjAe5S3xlWKT7s8el3Il5gQkJrN0MmdVf0E/AP7Gc=;
+        b=pWxtFC2QEPA++oMdkxHi0+9+TI4Db+aPJJfULNiQ4wIfS/3AsxC/FSFJBe1Oo5KMIR
+         1VYXp2iFKA45w6RnGLZhzs5ED8XhInD8TmRW98Sf1JFrdQTv2SD3tNZXA2hxoHzoD1Rs
+         HbUiGbtn2CKe/K14MyYOopsZE9NcRuYRPnCq2nT/vhzpnEGvjn6LkSIAHkzpvTl9Km/t
+         wwIS4kgjolDz42LPDSQNXGcFgbkHumYsRSx1Cw65g8nKOBBbEa/mnFD8EJZY9nsnXeZH
+         mxJvr2TfK+IctU8FcuVI4lYIWx6q4iogtcm5wVBSWXVEEI8pydv663hR9UjcsK+PBuIQ
+         MeQw==
+X-Gm-Message-State: AOAM532/tqRSJiohspV0Qq1QgiUePHlC3LLlsVBA4ETOfyo8PXwoA9Nf
+        epdbDvl/BkKCr7N32BxIDZUwV63lvFxsJoi/aBvIyw==
+X-Google-Smtp-Source: ABdhPJxRCE7JDiUtfbj2unJgpoYL58Y7cUzTX2X/PJ4QmiFOuX+rJGY6EYObim88lDm7ERTzm39OsGnRXceY8UTFM6A=
+X-Received: by 2002:a63:d709:: with SMTP id d9mr2624751pgg.377.1632966921696;
+ Wed, 29 Sep 2021 18:55:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210929180654.32460-1-vvidic@valentin-vidic.from.hr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-2-sathyanarayanan.kuppuswamy@linux.intel.com> <20210930014229.GA447956@rowland.harvard.edu>
+In-Reply-To: <20210930014229.GA447956@rowland.harvard.edu>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 29 Sep 2021 18:55:12 -0700
+Message-ID: <CAPcyv4iiEC3B2i81evZpLP+XHa8dLkfgWmrY7HocORwP8FMPZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] driver core: Move the "authorized" attribute from
+ USB/Thunderbolt to core
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 6:43 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Wed, Sep 29, 2021 at 06:05:06PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > Currently bus drivers like "USB" or "Thunderbolt" implement a custom
+> > version of device authorization to selectively authorize the driver
+> > probes. Since there is a common requirement, move the "authorized"
+> > attribute support to the driver core in order to allow it to be used
+> > by other subsystems / buses.
+> >
+> > Similar requirements have been discussed in the PCI [1] community for
+> > PCI bus drivers as well.
+> >
+> > No functional changes are intended. It just converts authorized
+> > attribute from int to bool and moves it to the driver core. There
+> > should be no user-visible change in the location or semantics of
+> > attributes for USB devices.
+> >
+> > Regarding thunderbolt driver, although it declares sw->authorized as
+> > "int" and allows 0,1,2 as valid values for sw->authorized attribute,
+> > but within the driver, in all authorized attribute related checks,
+> > it is treated as bool value. So when converting the authorized
+> > attribute from int to bool value, there should be no functional
+> > changes other than value 2 being not visible to the user.
+> >
+> > [1]: https://lore.kernel.org/all/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/
+> >
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+> Since you're moving the authorized flag from the USB core to the
+> driver core, the corresponding sysfs attribute functions should be
+> moved as well.
 
+Unlike when 'removable' moved from USB to the driver core there isn't
+a common definition for how the 'authorized' sysfs-attribute behaves
+across buses. The only common piece is where this flag is stored in
+the data structure, i.e. the 'authorized' sysfs interface is
+purposefully left bus specific.
 
-On 9/30/21 2:06 AM, Valentin Vidic wrote:
-> Starting with kernel 5.11 built with CONFIG_FORTIFY_SOURCE mouting an
-> ocfs2 filesystem with either o2cb or pcmk cluster stack fails with the
-> trace below. Problem seems to be that strings for cluster stack and
-> cluster name are not guaranteed to be null terminated in the disk
-> representation, while strlcpy assumes that the source string is always
-> null terminated. This causes a read outside of the source string
-> triggering the buffer overflow detection.
-> 
-> detected buffer overflow in strlen
-> ------------[ cut here ]------------
-> kernel BUG at lib/string.c:1149!
-> invalid opcode: 0000 [#1] SMP PTI
-> CPU: 1 PID: 910 Comm: mount.ocfs2 Not tainted 5.14.0-1-amd64 #1
->   Debian 5.14.6-2
-> RIP: 0010:fortify_panic+0xf/0x11
-> ...
-> Call Trace:
->  ocfs2_initialize_super.isra.0.cold+0xc/0x18 [ocfs2]
->  ocfs2_fill_super+0x359/0x19b0 [ocfs2]
->  mount_bdev+0x185/0x1b0
->  ? ocfs2_remount+0x440/0x440 [ocfs2]
->  legacy_get_tree+0x27/0x40
->  vfs_get_tree+0x25/0xb0
->  path_mount+0x454/0xa20
->  __x64_sys_mount+0x103/0x140
->  do_syscall_64+0x3b/0xc0
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+> Also, you ignored the usb_[de]authorize_interface() functions and
+> their friends.
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
-> v2: update description, add comment, drop null termination
-> 
->  fs/ocfs2/super.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-> index c86bd4e60e20..5c914ce9b3ac 100644
-> --- a/fs/ocfs2/super.c
-> +++ b/fs/ocfs2/super.c
-> @@ -2167,11 +2167,17 @@ static int ocfs2_initialize_super(struct super_block *sb,
->  	}
->  
->  	if (ocfs2_clusterinfo_valid(osb)) {
-> +		/*
-> +		 * ci_stack and ci_cluster in ocfs2_cluster_info may not be null
-> +		 * terminated, so make sure no overflow happens here by using
-> +		 * memcpy. Destination strings will always be null terminated
-> +		 * because osb is allocated using kzalloc.
-> +		 */
->  		osb->osb_stackflags =
->  			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
-> -		strlcpy(osb->osb_cluster_stack,
-> +		memcpy(osb->osb_cluster_stack,
->  		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
-> -		       OCFS2_STACK_LABEL_LEN + 1);
-> +		       OCFS2_STACK_LABEL_LEN);
->  		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
->  			mlog(ML_ERROR,
->  			     "couldn't mount because of an invalid "
-> @@ -2180,9 +2186,9 @@ static int ocfs2_initialize_super(struct super_block *sb,
->  			status = -EINVAL;
->  			goto bail;
->  		}
-> -		strlcpy(osb->osb_cluster_name,
-> +		memcpy(osb->osb_cluster_name,
->  			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
-> -			OCFS2_CLUSTER_NAME_LEN + 1);
-> +			OCFS2_CLUSTER_NAME_LEN);
->  	} else {
->  		/* The empty string is identical with classic tools that
->  		 * don't know about s_cluster_info. */
-> 
+Ugh, yes.
