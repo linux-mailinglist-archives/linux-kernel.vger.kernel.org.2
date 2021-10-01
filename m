@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1A641E957
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D9F41E95A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352797AbhJAJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:06:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15923 "EHLO m43-7.mailgun.net"
+        id S1352714AbhJAJGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:06:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:46927 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352790AbhJAJGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:06:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633079090; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=cpJfrVD21TBGi3vlqlhhncFFuVx/RfR2fTJK+8Jpqvs=; b=f56x5bB7huNxuKeQj9ygJ5wHbiXDevkTUuRHKOpJPahj6tDIL8yXdWiLwE0FuEaJPovTNVQM
- UjMZaiHMGsRObM3Oyqz+xnOQvk+ZyKdLplSaeSr7vpM0kfblaNxU0rr2ArHZRNMG/X5lJGF0
- 4iElxPJowI5RcZKfWwvCTsh/aak=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6156cf31519bd8dcf0997cd9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 09:04:49
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31D58C4360D; Fri,  1 Oct 2021 09:04:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B85A0C4338F;
-        Fri,  1 Oct 2021 09:04:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B85A0C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 03/24] wfx: add Makefile/Kconfig
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-4-Jerome.Pouiller@silabs.com>
-Date:   Fri, 01 Oct 2021 12:04:39 +0300
-In-Reply-To: <20210920161136.2398632-4-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Mon, 20 Sep 2021 18:11:15 +0200")
-Message-ID: <877dexm7yw.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1352432AbhJAJGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:06:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225417949"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="225417949"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 02:04:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="618905648"
+Received: from howells-mobl.ger.corp.intel.com (HELO [10.213.208.92]) ([10.213.208.92])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 02:04:55 -0700
+Subject: Re: [RFC 1/6] sched: Add nice value change notifier
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
+ <20210930171552.501553-2-tvrtko.ursulin@linux.intel.com>
+ <20210930183316.GC4323@worktop.programming.kicks-ass.net>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <4aca656d-678f-4d61-38a4-d2e7a8fd89ab@linux.intel.com>
+Date:   Fri, 1 Oct 2021 10:04:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210930183316.GC4323@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/net/wireless/silabs/wfx/Kconfig  | 12 +++++++++++
->  drivers/net/wireless/silabs/wfx/Makefile | 26 ++++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
->  create mode 100644 drivers/net/wireless/silabs/wfx/Kconfig
->  create mode 100644 drivers/net/wireless/silabs/wfx/Makefile
->
-> diff --git a/drivers/net/wireless/silabs/wfx/Kconfig
-> b/drivers/net/wireless/silabs/wfx/Kconfig
-> new file mode 100644
-> index 000000000000..3be4b1e735e1
-> --- /dev/null
-> +++ b/drivers/net/wireless/silabs/wfx/Kconfig
-> @@ -0,0 +1,12 @@
-> +config WFX
-> +	tristate "Silicon Labs wireless chips WF200 and further"
+Hi Peter,
 
-Kconfig file should have an SPDX tag as well.
+On 30/09/2021 19:33, Peter Zijlstra wrote:
+> On Thu, Sep 30, 2021 at 06:15:47PM +0100, Tvrtko Ursulin wrote:
+>>   void set_user_nice(struct task_struct *p, long nice)
+>>   {
+>>   	bool queued, running;
+>> -	int old_prio;
+>> +	int old_prio, ret;
+>>   	struct rq_flags rf;
+>>   	struct rq *rq;
+>>   
+>> @@ -6913,6 +6945,9 @@ void set_user_nice(struct task_struct *p, long nice)
+>>   	 */
+>>   	p->sched_class->prio_changed(rq, p, old_prio);
+>>   
+>> +	ret = atomic_notifier_call_chain(&user_nice_notifier_list, nice, p);
+>> +	WARN_ON_ONCE(ret != NOTIFY_DONE);
+>> +
+>>   out_unlock:
+>>   	task_rq_unlock(rq, p, &rf);
+>>   }
+> 
+> No, we're not going to call out to exported, and potentially unbounded,
+> functions under scheduler locks.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Agreed, that's another good point why it is even more hairy, as I have 
+generally alluded in the cover letter.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Do you have any immediate thoughts on possible alternatives?
+
+Like for instance if I did a queue_work from set_user_nice and then ran 
+a notifier chain async from a worker? I haven't looked at yet what 
+repercussion would that have in terms of having to cancel the pending 
+workers when tasks exit. I can try and prototype that and see how it 
+would look.
+
+There is of course an example ioprio which solves the runtime 
+adjustments via a dedicated system call. But I don't currently feel that 
+a third one would be a good solution. At least I don't see a case for 
+being able to decouple the priority of CPU and GPU and computations.
+
+Have I opened a large can of worms? :)
+
+Regards,
+
+Tvrtko
