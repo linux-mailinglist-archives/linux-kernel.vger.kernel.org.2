@@ -2,94 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF49B41E8A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F38941E8AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352656AbhJAIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352638AbhJAIGB (ORCPT
+        id S1352682AbhJAIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:06:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52745 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352695AbhJAIGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:06:01 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19800C06177E;
-        Fri,  1 Oct 2021 01:04:02 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id s64so15739451yba.11;
-        Fri, 01 Oct 2021 01:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=UkTV/Hx+0kC37e1L6jOI1Y69QnSHLaF5uOLMErL9pfc=;
-        b=GS/7MMG8VG3EwqT0c2Lm/gYv66cowtYEkkkYVz/u6kPeC85dCTVJAaINucv6NV4anJ
-         WURJMEJYRdpMlrz5j94NWwQ9/h9EsNPPOMQvJYZ/h/FlUfACMlzAtPB4tr9KyJt3RlFC
-         YvVoNPusNVvTpMoSapP6s7iwHvUzyQSBmWCLJCOgbXBSkgiBw2X63DYEPPypHsNUc5ZQ
-         9uz4yJSK5+fgUrG+aCQhPejDp4ryP21GSG7OvVhTHXA/AGGZog8GcSnuFzwzgdNQ5XOt
-         Ba7c5OqWgWTBtS6Z0zPcD6WMIiAxOhuNYRCFLz40gs0oMj90477929zEcOZ01xc04Mqz
-         s0vA==
+        Fri, 1 Oct 2021 04:06:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633075469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RgbMOii1S0zNC4XfQSp0PtfslNwqAcBT4JkfYppI8hA=;
+        b=OZ6Odsr6/Ou3OkNozU8+KOTyK3nS0Ixrk9QX6f0E/girQLne3Z+Is9xiDp5fBS64UJ2QJJ
+        J4OiR8XSuD8Ofhr/lztxeuhyEpafS27NrC/m8PGg0/CKDxzMRvbGmAk6yFhT398jbFG9aF
+        ivsCi/lBKUrmOC2Mfqkvs81CXDQABHw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-LsB2kXYOMtuj8bnNgIv-Wg-1; Fri, 01 Oct 2021 04:04:28 -0400
+X-MC-Unique: LsB2kXYOMtuj8bnNgIv-Wg-1
+Received: by mail-wr1-f71.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so2533692wrt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:04:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=UkTV/Hx+0kC37e1L6jOI1Y69QnSHLaF5uOLMErL9pfc=;
-        b=SP3sgJa7laiLqbGRcm+9VYW2E739i2VWUZ+gMv8ak6kGbEFt1KguzNTTzu8bWcLvZj
-         5JxoUEelvzmE0icslGFVLe4cTkNMxFwhjCJh8XQZOelIhzDfRdfkcp5erRBh05TbyFFm
-         Gtf2CjPJzHmB3Iy4QBlgeLCoTq6+jnu7Uj729L074piqR+CLx0Qvof/Px0G+w4O6jFjj
-         at68RtzSFC7LBRUvpeTiNEiM/Q9Lw65bh6P61j0GBZQipIdzFga3zjX+zyqvAwFdNLX+
-         iQI9n/DRx+DQkWt9v0y8+IKR7cg+htGR6YWUqow65fwE/NdINRMVs5T2Z/mcJJq8CkAA
-         +vCA==
-X-Gm-Message-State: AOAM5331lOGkyMCLoR3vJNOE8MK5BDo8hY8nBQV2/n2krq02WF5dxKyL
-        oE6go1byJOFyYE5EFefZ5ON9H+nZ+/3zKm8W/do=
-X-Google-Smtp-Source: ABdhPJy4j6EHmIy0MQOCvwAUhMRlGC9OoRrjR5IIMh88aRHWKguGjBgt+bJrkUsVhzvBNTkQVHOU9teoh/blCdQzwzE=
-X-Received: by 2002:a25:b7c6:: with SMTP id u6mr4323825ybj.16.1633075441369;
- Fri, 01 Oct 2021 01:04:01 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RgbMOii1S0zNC4XfQSp0PtfslNwqAcBT4JkfYppI8hA=;
+        b=iA42Jf09mdYYImt6AQv/zcWGfq9zmLO04gQjbZuVPEs5Jar5BQIRLzcuCvhRsW+/L4
+         rk2DXsWm8pvwY2dfGqYHuIro/WAA1PRvqRz3r2lg/7BhuZnZfERlu9yPjGWsnB0850CX
+         bIRjTfdClr6K3GN2obkMufGehVRvx4qzKnJjQGi8ksL5NpxPgArOLRu4fXnb9p2tlXbs
+         F8XAYkzyVyQSgW2QPfS12B+YnPJCHQ2FTTIB+42Joe4LW2JvsU1dr+Xps1r47eEVEHDb
+         BVDjcWD6FcB6KizBmd/TCt7F28gGhZ/LIt6v2KAC7i3+jdoW09rMf7XQQLpAeKK7QgCs
+         Pnbg==
+X-Gm-Message-State: AOAM533mJOMVakz4M4PpKU43SlsTCiCVZ7IomWXxOIB0yNWOoqG+ScaO
+        cD9ww+rUteNZNT3G4RyTV9QRuP5rHt4jbP001nf+7NhLzaKfEoOW390gn1du4ZHtXXW9jpt2UKO
+        VaXwJgdEfBXxvi5sfKIcRpor0
+X-Received: by 2002:a1c:f310:: with SMTP id q16mr3156055wmq.145.1633075467036;
+        Fri, 01 Oct 2021 01:04:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy09IiCKfFi33tOU52HzJrT7VrbqrMf/P7p34oNrrEfUQJ/n90uGLajbxmxEo4tDXieDpGReQ==
+X-Received: by 2002:a1c:f310:: with SMTP id q16mr3156030wmq.145.1633075466790;
+        Fri, 01 Oct 2021 01:04:26 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64da.dip0.t-ipconnect.de. [91.12.100.218])
+        by smtp.gmail.com with ESMTPSA id z17sm5132732wrr.49.2021.10.01.01.04.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 01:04:26 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+References: <20210927150518.8607-1-david@redhat.com>
+ <20210927150518.8607-4-david@redhat.com> <YVSW3uuu7mIcJMm3@kernel.org>
+ <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
+ <YVYqdN7MFdzBlCVm@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 3/4] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+ IORESOURCE_SYSRAM_DRIVER_MANAGED
+Message-ID: <0d6c86ba-076b-5d4b-33a8-da267f951a85@redhat.com>
+Date:   Fri, 1 Oct 2021 10:04:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <YVXRZNxrgmfROlJy@shikoro>
-In-Reply-To: <YVXRZNxrgmfROlJy@shikoro>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 1 Oct 2021 09:03:35 +0100
-Message-ID: <CA+V-a8vKogydunptYaWVBq_UUQ98UUTp-n2-T+WH8thTRL8M4Q@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Add SPI Multi I/O Bus Controller support for RZ/G2L
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVYqdN7MFdzBlCVm@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On 30.09.21 23:21, Mike Rapoport wrote:
+> On Wed, Sep 29, 2021 at 06:54:01PM +0200, David Hildenbrand wrote:
+>> On 29.09.21 18:39, Mike Rapoport wrote:
+>>> Hi,
+>>>
+>>> On Mon, Sep 27, 2021 at 05:05:17PM +0200, David Hildenbrand wrote:
+>>>> Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED.
+>>>> Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
+>>>> like ordinary MEMBLOCK_NONE memory -- for example, when selecting memory
+>>>> regions to add to the vmcore for dumping in the crashkernel via
+>>>> for_each_mem_range().
+>>> Can you please elaborate on the difference in semantics of MEMBLOCK_HOTPLUG
+>>> and MEMBLOCK_DRIVER_MANAGED?
+>>> Unless I'm missing something they both mark memory that can be unplugged
+>>> anytime and so it should not be used in certain cases. Why is there a need
+>>> for a new flag?
+>>
+>> In the cover letter I have "Alternative B: Reuse MEMBLOCK_HOTPLUG.
+>> MEMBLOCK_HOTPLUG serves a different purpose, though.", but looking into the
+>> details it won't work as is.
+>>
+>> MEMBLOCK_HOTPLUG is used to mark memory early during boot that can later get
+>> hotunplugged again and should be placed into ZONE_MOVABLE if the
+>> "movable_node" kernel parameter is set.
+>>
+>> The confusing part is that we talk about "hotpluggable" but really mean
+>> "hotunpluggable": the reason is that HW flags DIMM slots that can later be
+>> hotplugged as "hotpluggable" even though there is already something
+>> hotplugged.
+> 
+> MEMBLOCK_HOTPLUG name is indeed somewhat confusing, but still it's core
+> meaning "this memory may be removed" which does not differ from what
+> IORESOURCE_SYSRAM_DRIVER_MANAGED means.
+> 
+> MEMBLOCK_HOTPLUG regions are indeed placed into ZONE_MOVABLE, but more
+> importantly, they are avoided when we allocate memory from memblock.
+> 
+> So, in my view, both flags mean that the memory may be removed and it
+> should not be used for certain types of allocations.
 
-On Thu, Sep 30, 2021 at 4:01 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
->
->
-> > This patch series adds a couple of fixes for rpc-if driver and
-> > adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> > is identical to the RPC-IF block found on R-Car Gen3 SoC's.
->
-> I did some basic testing on the Falcon board with a Renesas R-Car V3U
-> SoC and did not find a regression, so:
->
-> Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-Thank you for testing this, I will include the Tested-by tag along
-with the RB tags.
+The semantics are different:
 
-Cheers,
-Prabhakar
+MEMBLOCK_HOTPLUG: memory is indicated as "System RAM" in the 
+firmware-provided memory map and added to the system early during boot; 
+we want this memory to be managed by ZONE_MOVABLE with "movable_node" 
+set on the kernel command line, because only then we want it to be 
+hotpluggable again. kexec *has to* indicate this memory to the second 
+kernel and can place kexec-images on this memory. After memory 
+hotunplug, kexec has to be re-armed.
+
+MEMBLOCK_DRIVER_MANAGED: memory is not indicated as System RAM" in the 
+firmware-provided memory map; this memory is always detected and added 
+to the system by a driver; memory might not actually be physically 
+hotunpluggable and the ZONE selection does not depend on "movable_core". 
+kexec *must not* indicate this memory to the second kernel and *must 
+not* place kexec-images on this memory.
+
+
+I would really advise against mixing concepts here.
+
+
+What we could do is indicate *all* hotplugged memory (not just 
+IORESOURCE_SYSRAM_DRIVER_MANAGED memory) as MEMBLOCK_HOTPLUG and make 
+MEMBLOCK_HOTPLUG less dependent on "movable_node".
+
+MEMBLOCK_HOTPLUG for early boot memory: with "movable_core", place it in 
+ZONE_MOVABLE. Even without "movable_core", don't place early kernel 
+allocations on this memory.
+MEMBLOCK_HOTPLUG for all memory: don't place kexec images or on this 
+memory, independent of "movable_core".
+
+
+memblock would then not contain the information "contained in 
+firmware-provided memory map" vs. "not contained in firmware-provided 
+memory map"; but I think right now it's not strictly required to have 
+that information if we'd go down that path.
+
+>   
+>> For example, ranges in the ACPI SRAT that are marked as
+>> ACPI_SRAT_MEM_HOT_PLUGGABLE will be marked MEMBLOCK_HOTPLUG early during
+>> boot (drivers/acpi/numa/srat.c:acpi_numa_memory_affinity_init()). Later, we
+>> use that information to size ZONE_MOVABLE
+>> (mm/page_alloc.c:find_zone_movable_pfns_for_nodes()). This will make sure
+>> that these "hotpluggable" DIMMs can later get hotunplugged.
+>>
+>> Also, see should_skip_region() how this relates to the "movable_node" kernel
+>> parameter:
+>>
+>> 	/* skip hotpluggable memory regions if needed */
+>> 	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
+>> 	    (flags & MEMBLOCK_HOTPLUG))
+>> 		return true;
+> 
+> Hmm, I think that the movable_node_is_enabled() check here is excessive,
+> but I suspect we cannot simply remove it without breaking anything.
+
+The reasoning is: without "movable_core" we don't want this memory to be 
+hotunpluggable; consequently, we don't care if we place kexec-images on 
+this memory. MEMBLOCK_HOTPLUG is currently only active with "movable_core".
+
+If we remove that check, we will always not place early kernel 
+allocations on that memory, even if we don't care about ZONE_MOVABLE.
+
+> 
+> I'll take a deeper look on the potential consequences.
+> 
+> BTW, is there anything that prevents putting kexec to hot-unplugable memory
+> that was cold-plugged on boot?
+
+I think it depends on how the platform handles hotunpluggable DIMMs or 
+hotunpluggable NUMA nodes. If the platform ends up indicates such memory 
+via MEMBLOCK_HOTPLUG, and "movable_core" is set, memory would be put 
+into ZONE_MOVABLE and kexec would not place kexec-images on that memory.
+
+-- 
+Thanks,
+
+David / dhildenb
+
