@@ -2,135 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4574A41F79C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75B041F7B7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356202AbhJAWq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
+        id S1356006AbhJAWsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356096AbhJAWq0 (ORCPT
+        with ESMTP id S1356307AbhJAWsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:46:26 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45510C0613E8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:44:41 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x27so43774483lfa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:44:41 -0700 (PDT)
+        Fri, 1 Oct 2021 18:48:37 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E1BC0613B5
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:46:07 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id c20so10471057qtb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Hyp8rNNNxhnx5usv5qotyjNm77T/YbCfuFJQXDZjm3c=;
-        b=LEPUccLyJKnO/BgxSMsvSUj35HCuvuikhLC2YvuLl0jbh4rkra5+FjPhTH0OldVFY0
-         p53mOk4WghDtxRZTz2ynhwx4yxm1w/IvCoyyuqM9nsbBvlDwH6y00FZPTbDgHZD1OaWK
-         XDl0uC5I4gsOoqgkvNBqn4LjvLbfKbnEbejY8JgwJhwm3itjWyIktd9A5YjrtSC0gy/X
-         XQlM8MO9tNQ+7SlKWPgDw260KjYbUeM5IZmNWQcCgU3JMZwrZIfwDBdLZH5RjuSDolhQ
-         jqKpGuNa7JQp4jyGTJvs6OnZ4LZaGgwCw2+wocIkEIhRiDB4eYQDt3gGYOaJNeRZ6i7r
-         8V1A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tnXGytG/2aEvcazdaoXj71bXQnwjyukOXIDiPveIZXA=;
+        b=pOTSnHYVXRz06VuaU1BDucThq3XLijVNOmqw8gUYgVjcX4bjaU1DPW80GPFpz1Bry3
+         5Izso0qtrLy+uxnjkbarKVIHYAhUgvRAYbABr2JkvP9GCyg+7YRvw6KqUUc7seGsa9fH
+         KzDaVUI4r8DRENRxq0vwC8QCWDmKp8VauDJh3yS5lxyhzeb0C6mReZGMghzJA7mUDjLv
+         3H6R6bTZK2L5cSKTP/HRhXJP2RtP51MG45N0gotai5Ttri7QJaEBuKZ8DLCGMwehfYns
+         QMf6evJgsJzNYeGrSyM/G3W4DM7LKIUGIRGLmulP3Gv60VEJqAsqbGSn5orZIQ0iTuZ9
+         WZEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Hyp8rNNNxhnx5usv5qotyjNm77T/YbCfuFJQXDZjm3c=;
-        b=GDuwtF3ibQX+ynHORS3z5jL9pbiEfpCPNmJBUacfbk+rW+fR8MUJDQN5R7FR0lK/jH
-         aVx12rqJsW4/eO5TpdXJYNHyos5qL96RcztNqfWTM2OVrTtj3hIO3Nt9De1MHfGXaEOF
-         iHgBO/RfbQmN2gin20RgL6plktDQ0lZ9hUhk2rDDDfmF5vvI7f0gFk9KNJx845/1Y95I
-         /X8A5G9130jFJnyFwxVgLS5tOn/2UJSV82LlvWum9c/l0UreJYTjQuXQZSssHOojqvBE
-         AQnoD/3cvTT4dnZGHEfxKZjklTdinnur5MiuyPcQ1ESDl2FSC8NjZrBEqyY5G0VLWFkn
-         McQg==
-X-Gm-Message-State: AOAM5317dzOIpkk7i94pgJXS+SGJ55q8UI9WEzyN36BSDIdmxbnapaAf
-        4mo6kcJr74/66rZ3kM/Fya75Esy/bLgO4g==
-X-Google-Smtp-Source: ABdhPJyA1oFgS9X9yRcyXvH/zXNSgT0lDX4E6n03krWyg15pFA2D/72tYTF5y0tv2tQwK4EqFrtI4Q==
-X-Received: by 2002:a2e:5453:: with SMTP id y19mr501616ljd.247.1633128279396;
-        Fri, 01 Oct 2021 15:44:39 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id o12sm865329lft.254.2021.10.01.15.44.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 15:44:39 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm/dsi: prevent unintentional integer overflow in
- dsi_pll_28nm_clk_recalc_rate()
-To:     Tim Gardner <tim.gardner@canonical.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210929175134.15808-1-tim.gardner@canonical.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <2f625866-89d0-3bc7-2618-2e01884d003d@linaro.org>
-Date:   Sat, 2 Oct 2021 01:44:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tnXGytG/2aEvcazdaoXj71bXQnwjyukOXIDiPveIZXA=;
+        b=JZPeF0LTTZtFynlG0wp49Z6omBMt5ihAs1RIiVcsI0C3JJP4b4syJDT20ZATTymnlG
+         X+tM7ZMp0o/jKH3e/dvj4nZRbTc3ft4fOOqPFMtG87a5SkDhEjK5ouKj5nymlRZrIYk3
+         KN8OdiBt+l8QKjQYGPPj7Wetge/EdgQWFEEkTnynXHBZd7A5ouTVz9mG/Z1FAT4tfzI+
+         lQ3EARd1F0lU0KswEzxqTKD25XCGZPFS8jdFKzT1BRUr0rXfSR3gBhM/2KI19mwNuyjS
+         UTD3g57K4N/1ebsZo3/c18FRBJM0K+A9qy3LKhSo4rIs4Q+ReTByvlEsaVtgZWilFNuA
+         u9DA==
+X-Gm-Message-State: AOAM5326lakrGpVBN5HzlJxsuGKuEhm2cK+l5TzWL/Sn0wn2fXPYxcBi
+        CHNUuosVaxjGizei6se1WWyKGg==
+X-Google-Smtp-Source: ABdhPJwIsqD13TKJo7mm1SIikHRk6qEvBFD6JpS7ZAJB6SMruIQLkql7OpNf4qMoVFvzMVj7AMSNJA==
+X-Received: by 2002:ac8:7dc1:: with SMTP id c1mr551179qte.289.1633128366918;
+        Fri, 01 Oct 2021 15:46:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id p187sm3759342qkd.101.2021.10.01.15.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 15:46:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mWRI5-009Y55-Ly; Fri, 01 Oct 2021 19:46:05 -0300
+Date:   Fri, 1 Oct 2021 19:46:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Alistair Popple <apopple@nvidia.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
+Message-ID: <20211001224605.GS3544071@ziepe.ca>
+References: <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
+ <20210929233540.GF3544071@ziepe.ca>
+ <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
+ <20210930003652.GH3544071@ziepe.ca>
+ <20211001134856.GN3544071@ziepe.ca>
+ <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
+ <20211001174511.GQ3544071@ziepe.ca>
+ <95ada0ac-08cc-5b77-8675-b955b1b6d488@deltatee.com>
+ <20211001221405.GR3544071@ziepe.ca>
+ <8871549c-63b5-d062-87ea-9036605984d5@deltatee.com>
 MIME-Version: 1.0
-In-Reply-To: <20210929175134.15808-1-tim.gardner@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8871549c-63b5-d062-87ea-9036605984d5@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2021 20:51, Tim Gardner wrote:
-> Coverity warns of an unintentional integer overflow
-> 
-> CID 120715 (#1 of 1): Unintentional integer overflow (OVERFLOW_BEFORE_WIDEN)
-> overflow_before_widen: Potentially overflowing expression ref_clk * sdm_byp_div
->    with type unsigned int (32 bits, unsigned) is evaluated using 32-bit arithmetic,
->    and then used in a context that expects an expression of type unsigned long
->    (64 bits, unsigned).
-> To avoid overflow, cast either ref_clk or sdm_byp_div to type unsigned long.
-> 263                vco_rate = ref_clk * sdm_byp_div;
-> 
-> Fix this and another possible overflow by casting ref_clk to unsigned long.
+On Fri, Oct 01, 2021 at 04:22:28PM -0600, Logan Gunthorpe wrote:
 
-Changing ref_clk from u32 to unsigned long would be a more simple and 
-elegant way of fixing this issue. Could you please update your patch?
-
+> > It would close this issue, however synchronize_rcu() is very slow
+> > (think > 1second) in some cases and thus cannot be inserted here.
 > 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-> ---
->   drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c
-> index 2da673a2add6..cfe4b30eb96d 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c
-> @@ -260,7 +260,7 @@ static unsigned long dsi_pll_28nm_clk_recalc_rate(struct clk_hw *hw,
->   		sdm_byp_div = FIELD(
->   				dsi_phy_read(base + REG_DSI_28nm_PHY_PLL_SDM_CFG0),
->   				DSI_28nm_PHY_PLL_SDM_CFG0_BYP_DIV) + 1;
-> -		vco_rate = ref_clk * sdm_byp_div;
-> +		vco_rate = (unsigned long)ref_clk * sdm_byp_div;
->   	} else {
->   		/* sdm mode */
->   		sdm_dc_off = FIELD(
-> @@ -274,7 +274,7 @@ static unsigned long dsi_pll_28nm_clk_recalc_rate(struct clk_hw *hw,
->   		sdm_freq_seed = (sdm3 << 8) | sdm2;
->   		DBG("sdm_freq_seed = %d", sdm_freq_seed);
->   
-> -		vco_rate = (ref_clk * (sdm_dc_off + 1)) +
-> +		vco_rate = ((unsigned long)ref_clk * (sdm_dc_off + 1)) +
->   			mult_frac(ref_clk, sdm_freq_seed, BIT(16));
->   		DBG("vco rate = %lu", vco_rate);
->   	}
-> 
+> It shouldn't be *that* slow, at least not the vast majority of the
+> time... it seems a bit unreasonable that a CPU wouldn't schedule for
+> more than a second. 
 
+I've seen bug reports on exactly this, it is well known. Loaded
+big multi-cpu systems have high delays here, for whatever reason.
 
--- 
-With best wishes
-Dmitry
+> But these aren't fast paths and synchronize_rcu() already gets
+> called in the unbind path for p2pdma a of couple times. I'm sure it
+> would also be fine to slow down the vma_close() path as well.
+
+vma_close is done in a loop destroying vma's and if each synchronize
+costs > 1s it can take forever to close a process. We had to kill a
+similar use of synchronize_rcu in RDMA because users were complaining
+of > 40s process exit times.
+
+The driver unload path is fine to be slow, and is probably done on an
+unloaded system where synchronize_rcu is not so bad
+
+Anyway, it is not really something for this series to fix, just
+something we should all be aware of and probably ought to get fixed
+before we do much more with ZONE_DEVICE pages
+
+Jason
