@@ -2,79 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC57441E9B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA1141E9BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353100AbhJAJmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:42:03 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59652 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353037AbhJAJmB (ORCPT
+        id S1353114AbhJAJna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:43:30 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46500
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352872AbhJAJn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:42:01 -0400
-Received: from smtpclient.apple (62-134-92-74.business.static.de.bt.net [62.134.92.74])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9CD41CED29;
-        Fri,  1 Oct 2021 11:40:16 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: btusb: Add support for TP-Link UB500 Adapter
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210930082239.3699395-1-nick@flinny.org>
-Date:   Fri, 1 Oct 2021 11:40:16 +0200
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <AA46BDE4-CE2B-4A47-ABCC-F56A004AEDC3@holtmann.org>
-References: <20210930082239.3699395-1-nick@flinny.org>
-To:     Nicholas Flintham <nick@flinny.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Fri, 1 Oct 2021 05:43:29 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 89B7F402CE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633081304;
+        bh=hCpMRXvOk2qr7XekeSwTAlezX0sg/HHCf3cdaEa6PNI=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=V+uoDUE4Tys3jJRO5q2Qa+/TQHrreER05Q4dtzhm2vF7Hvi+5VvRdwtjuVUOpxu0U
+         I96AR3ETnJ+MUD5E5m5No0jUUSteg8/Ii4KTiBBR3an0a41xLWXC4bZFf503W2Id/a
+         rkBjXGCJXU2pfeOUQR/Stoqr0QblX0pYkSIFUYStrL9nGkhq9Xd/IDG9Eo7N+VsD67
+         y23CvTZFwLoXxu2jcnsBP/TZu3i7lKHVg6qkasUScy6YXWX19+q+Ge23QHEsqqa8ut
+         mAF9tocEvSkyoAB5VZv5hVTmgKYZqVPnOUYH8kb+SrhXF5zTLw4RAA9MEcJYElXFIK
+         r21515v5lKzvA==
+Received: by mail-lf1-f70.google.com with SMTP id r14-20020ac25c0e000000b003fc149ed50eso8437500lfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 02:41:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hCpMRXvOk2qr7XekeSwTAlezX0sg/HHCf3cdaEa6PNI=;
+        b=On5YptS9lEklJNsQnY/O5grRQ6vs5jd8biLJUGjhfWmSuXP3au3uSozpzlgnOCcUWO
+         pb7b5PJrCCSZLBWjslRmQHJoC8eE4aS6E0+MZruGkNo/fgRXHYA+4oRUXBtARwyTfgop
+         pcvyKcZxOr/ktPMxvNnMaM7/wEJhjJ5rXMIc178GjuKXxZwFZThXi57LdBoX0pKgGI3V
+         VanTgtxdYomqkSgT3uefUvQjyAwsMi5HQyDUpEtaLWy+1JTXjbU4o5jC2CQKnQbZN+0e
+         cvNiqboi0FbqVxYfbZ/oXyyA2u5NmwbPu3GjY8L8YEuFc0TjtXmTOsUdXvw/w2br2GK/
+         ZObA==
+X-Gm-Message-State: AOAM530LFnIh8+TPOGcMzTEQle36++7H/xIXxMwuSrvmDl0ewgkHUZVB
+        5fCTxrMDBW60CcfAJz/av96TppiHgh9qepUAcBS5/6Bmf/d1iPEhVkhFlrEiAyO+nBQpvD7fKvu
+        E54iDCVBmQlRJwhbuq6seKg2lX0n8kwpwlhLYcFeoZg==
+X-Received: by 2002:ac2:5b10:: with SMTP id v16mr4303304lfn.331.1633081303912;
+        Fri, 01 Oct 2021 02:41:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxx27QWtjCHIBqlzXq+yG8hpF1waFM4KgjEZAEVScGpVqd57scj/Mcll414XykeZPaNgSPJLQ==
+X-Received: by 2002:ac2:5b10:: with SMTP id v16mr4303273lfn.331.1633081303584;
+        Fri, 01 Oct 2021 02:41:43 -0700 (PDT)
+Received: from localhost.localdomain ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id g29sm673784lfj.212.2021.10.01.02.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 02:41:43 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M and S5M to dtschema
+Date:   Fri,  1 Oct 2021 11:40:56 +0200
+Message-Id: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicholas,
+Hi All,
 
-> Add support for TP-Link UB500 Adapter (RTL8761B)
-> 
-> * /sys/kernel/debug/usb/devices
-> T:  Bus=01 Lev=02 Prnt=05 Port=01 Cnt=01 Dev#= 78 Spd=12   MxCh= 0
-> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=2357 ProdID=0604 Rev= 2.00
-> S:  Manufacturer=
-> S:  Product=TP-Link UB500 Adapter
-> S:  SerialNumber=E848B8C82000
-> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> 
-> Signed-off-by: Nicholas Flintham <nick@flinny.org>
-> ---
-> drivers/bluetooth/btusb.c | 4 ++++
-> 1 file changed, 4 insertions(+)
+Changes since v1
+================
+1. Drop DTS patches - applied.
+2. Fully remove bindings/regulator/samsung,s5m8767.txt .
+3. Minor subject reformatting and few typos in text.
 
-patch has been applied to bluetooth-next tree.
 
-Regards
+Intro
+=====
+This patchset converts all devicetree bindings of Samsung S2M and S5M
+PMIC devices from txt to dtschema.
 
-Marcel
+It includes also two fixes because later conversion depends on it
+(contextually).
+
+
+Merging/dependencies
+====================
+1. Regulator related binding changes depend on first two commits (the
+   fixes), because of context.
+2. The mfd bindings depend on clock and regulator bindings.
+
+The fixes and bindings changes (patches 1-10) should go via the same
+tree.  For example regulator or mfd tree.  I propose the regulator tree,
+since it will have also one driver change (the fix, first commit).
+
+
+Overview of devices
+===================
+Essentially all Samsung S2M and S5M PMICs are very similar devices. They
+provide the same functionality: regulators, RTC, 2 or 3 clocks and main
+power management (e.g. power cut to SoC).
+
+The differences are mostly in registers layout and number of regulators.
+
+The drivers are built around one common part, mfd/sec-core.c, and share
+some drivers between devices:
+1. MFD sec-core for all devices,
+1. one clock driver for most of devices,
+2. one RTC driver for all devices,
+3. three regulator drivers.
+
+The regulator drivers were implementing slightly different features,
+therefore one regulator binding for all devices does not make much
+sense.  However the clock device binding can be shared.
+
+The final dtschema bindings try to implement this - share only the clock
+bindings.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (10):
+  regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS
+    is disabled
+  regulator: dt-bindings: samsung,s5m8767: correct
+    s5m8767,pmic-buck-default-dvs-idx property
+  dt-bindings: clock: samsung,s2mps11: convert to dtschema
+  regulator: dt-bindings: samsung,s2m: convert to dtschema
+  regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
+  regulator: dt-bindings: samsung,s5m8767: convert to dtschema
+  dt-bindings: mfd: samsung,s2mps11: convert to dtschema
+  dt-bindings: mfd: samsung,s2mpa01: convert to dtschema
+  dt-bindings: mfd: samsung,s5m8767: convert to dtschema
+  dt-bindings: mfd: samsung,s5m8767: document buck and LDO supplies
+
+ .../bindings/clock/samsung,s2mps11.txt        |  49 ---
+ .../bindings/clock/samsung,s2mps11.yaml       |  45 +++
+ .../bindings/mfd/samsung,s2mpa01.yaml         |  91 ++++++
+ .../bindings/mfd/samsung,s2mps11.yaml         | 267 +++++++++++++++
+ .../bindings/mfd/samsung,s5m8767.yaml         | 307 ++++++++++++++++++
+ .../bindings/mfd/samsung,sec-core.txt         |  86 -----
+ .../bindings/regulator/samsung,s2mpa01.txt    |  79 -----
+ .../bindings/regulator/samsung,s2mpa01.yaml   |  69 ++++
+ .../bindings/regulator/samsung,s2mps11.txt    | 102 ------
+ .../bindings/regulator/samsung,s2mps11.yaml   |  52 +++
+ .../bindings/regulator/samsung,s2mps13.yaml   |  52 +++
+ .../bindings/regulator/samsung,s2mps14.yaml   |  52 +++
+ .../bindings/regulator/samsung,s2mps15.yaml   |  52 +++
+ .../bindings/regulator/samsung,s2mpu02.yaml   |  52 +++
+ .../bindings/regulator/samsung,s5m8767.txt    | 145 ---------
+ .../bindings/regulator/samsung,s5m8767.yaml   |  83 +++++
+ MAINTAINERS                                   |   9 +-
+ drivers/regulator/s5m8767.c                   |  21 +-
+ 18 files changed, 1136 insertions(+), 477 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mpa01.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mps11.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/samsung,sec-core.txt
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps13.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps14.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps15.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpu02.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+
+-- 
+2.30.2
 
