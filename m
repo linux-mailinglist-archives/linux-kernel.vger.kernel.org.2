@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D6741E60D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E82641E610
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351639AbhJACm2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 22:42:28 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:39036 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhJACm1 (ORCPT
+        id S1351606AbhJACod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 22:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhJACob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 22:42:27 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1912e6Ho9025237, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1912e6Ho9025237
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 1 Oct 2021 10:40:06 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 1 Oct 2021 10:40:05 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 1 Oct 2021 10:40:05 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Fri, 1 Oct 2021 10:40:05 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>
-CC:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAYwXgIAAYT6AgAFAzFA=
-Date:   Fri, 1 Oct 2021 02:40:05 +0000
-Message-ID: <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
- <20210930151819.GC464826@rowland.harvard.edu>
-In-Reply-To: <20210930151819.GC464826@rowland.harvard.edu>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/9/29_=3F=3F_11:27:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 30 Sep 2021 22:44:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB5EC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=9b7Y2D8y+bwLRWgPDl2sed9F2MPffsUsdfPD7nrHpcA=; b=L8hPFr3Z7+3SrGqtbww3txa5GZ
+        u98C5rrfId8pWL+7SmgDI09ZodTyAVpx6TMAYILDJh1EHnsAcjLkMODKSzbqxHktWvEf29HQdtdqQ
+        A/+7uexrV8VjYIo40pIZZymyEPiqx0vLCZCBvNJ0f+1Qwowno2VeD65ofDRzDc2dAFXmu3RFRJHe+
+        gYrHtAA4lo/LPeNu9qLMqZG6mE6ZaB27LpfwqzLI14oR7QzB/AdHTR3k4OUpnOLzqIGRSQ9C5bZHN
+        wLHAWE1y98zP1ZtFVieZ8QagKjQU9rINydtVJH1DcHEWEClYxlD+q1xtml70cw45RFCjKr4pj/GCO
+        6ZAtNLbg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mW8U8-00DV2b-6j; Fri, 01 Oct 2021 02:41:37 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] kasan: Fix tag for large allocations when using CONFIG_SLAB
+Date:   Fri,  1 Oct 2021 03:41:05 +0100
+Message-Id: <20211001024105.3217339-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alan Stern <stern@rowland.harvard.edu>
-[...]
-> There has been some discussion about this in the past.
-> 
-> In general, -EPROTO is almost always a non-recoverable error.
+If an object is allocated on a tail page of a multi-page slab, kasan
+will get the wrong tag because page->s_mem is NULL for tail pages.
+I'm not quite sure what the user-visible effect of this might be.
 
-Excuse me. I am confused about the above description.
-I got -EPROTO before, when I debugged another issue.
-However, the bulk transfer still worked after I resubmitted
-the transfer. I didn't do anything to recover it. That is why
-I do resubmission for -EPROTO.
+Fixes: 7f94ffbc4c6a ("kasan: add hooks implementation for tag-based mode")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ mm/kasan/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards,
-Hayes
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 2baf121fb8c5..41779ad109cd 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -298,7 +298,7 @@ static inline u8 assign_tag(struct kmem_cache *cache,
+ 	/* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
+ #ifdef CONFIG_SLAB
+ 	/* For SLAB assign tags based on the object index in the freelist. */
+-	return (u8)obj_to_index(cache, virt_to_page(object), (void *)object);
++	return (u8)obj_to_index(cache, virt_to_head_page(object), (void *)object);
+ #else
+ 	/*
+ 	 * For SLUB assign a random tag during slab creation, otherwise reuse
+-- 
+2.32.0
 
