@@ -2,170 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144F941F771
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BB341F76E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355937AbhJAWfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        id S1355913AbhJAWfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhJAWfS (ORCPT
+        with ESMTP id S230171AbhJAWfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:35:18 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7067EC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:33:33 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j10-20020a1c230a000000b0030d523b6693so1796779wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:33:33 -0700 (PDT)
+        Fri, 1 Oct 2021 18:35:17 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5349DC06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:33:32 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id m3so43638402lfu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8nDTUff3NWAShPXkSJUHpdXF/tre0swCngGs+0ldBuo=;
-        b=iTFcfgD9k1Ew/Q3d85rswksP5KXCDig/JMG7z4OhD2EquHZpCoQt7WZ1Ks7iAxlx5F
-         j79zOLzzrSFIu3t5mp3BdYb8xK+ue+VQpYMOng91ymPADIOBDQXsYPTrI+Y8Pp8Ddl3z
-         VStEoSKYKklC02gxEXkv2MM+BBemjoiJHqs0CPbPJq/xooJxLlrm6IaCkzaW9U0bInzq
-         ssdNVwWQQrjFwmBfEXg3Q4QVKTRZvE6SqrE19ONi7tNV0Uq2cvwjt8FESqH/Y2ij2+56
-         Cw+mRWRH+K+isrtp97UodjIvbXVjfs5bke++3w26zh5lK1BoDhVuHpNnxoSRP5I+eSuS
-         5kCQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+GGpQB1eoOvtXRgcP9cErq9HPOsKMWs+3BfVhk5Dh2w=;
+        b=Qs5fOVMz612VsObKjPOggkEfD+Uia9/Hn4FLDX3M9oodQJMMfNivODTI9mTwo9fZ1h
+         IVWJ8D7ew8UWXbTrcuZwHyrufGjm8nT7/Q0lcn0RarqDIi7l8yCWBB34FyTrXMkoSwVe
+         wToMte27WQTnllnISTCD1WMowTtJS33E+Kk93rTRx/wsXMMax6YHNcsZrvX7W53oU3E/
+         fmE0laRhAs4borxCJgOwo2k5+pklzLHVOYl/EQL+Nyy39jeLzhpIEeQlH2fNPVqC2mDU
+         7HO+Pt17hgJU9gcjT/IchZ7NAa9O0yl5pw9Q4H6ImxTUgGR/KtDNpvROpaN6CMpF2qQv
+         kIfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=8nDTUff3NWAShPXkSJUHpdXF/tre0swCngGs+0ldBuo=;
-        b=ynInlM8xt7hQmgAD9b1KGVRPxOzL/XAUKbxwWLU0cHAAuTh2Hx0/J2JWe5U7PemVrZ
-         SqfYbihf/xZIhTqmIdNHVgbjaPlV0sY+KJJgaY9I4JWkwxZo136amqB6Wnf45M5rL5cr
-         WRP9/0GtMlxcZ/KJ6YZE/KflNbQabdp5sgYLTSZ/5OVuF7Jwsk5g4jrkvwSMer9C+6WU
-         8mX8T+M6jZxkEGfIIZTXduS7FXxRglsqowrC1QfZMc9CX/Ezr01gS5itpIOXVq8i4ABc
-         BnnZTwKuR+Aq7UJYsLQ401nRMnYKHSTg7ggbK9BcMC09g9pPCsLNoKilgVbPR9DqchWQ
-         kjVA==
-X-Gm-Message-State: AOAM531C5jTG5t5lNabUg+9kPrJ5QLJrR/yix94PZU/PvNT7J03FHm+o
-        Nxv3+lLCMy83Ox+Cqnk6unRHBA==
-X-Google-Smtp-Source: ABdhPJzh1k5pcEzW+6hASRwgn1OJytpkdGERs5wRyy/ZUXwRtlPchpG7YDA1eNuK2SyZAzEIk0QR1A==
-X-Received: by 2002:a05:600c:a45:: with SMTP id c5mr6979189wmq.79.1633127611224;
-        Fri, 01 Oct 2021 15:33:31 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.20.44])
-        by smtp.gmail.com with ESMTPSA id 8sm6921066wmo.47.2021.10.01.15.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=+GGpQB1eoOvtXRgcP9cErq9HPOsKMWs+3BfVhk5Dh2w=;
+        b=cvxpEbR6CgyvmMpYng2Aop4vsehZAdq9cis0UC+HeumKk0PmrWy0aidJ3Fr3mLX7SP
+         amas3MTXPYNzfYw7pDyp1+qaaeKoBpDvVEh12W+vy/6PN2B7Lwn5MDHq2qERaW4/gZq5
+         7Kb5J4ZMHRucbkmxWpgh/jHXSmW7Dei1o2dpXSUBPJ/uUNVc7CSB8NLvYgLx3NGqnlSW
+         8DF1pKTl/dNWee+fwIHe9zh1ZalJjtXFm+PiY1Y4J7Tl4Bmz1a1qnZov7fJWBgJ9Tn90
+         EQ2isS8TmAm5QmVCy8S/Ka61F4qF4HS7H0foOBzxm1eyfzOJmrSlrEbK98rKx3m4phQQ
+         kqTg==
+X-Gm-Message-State: AOAM530XM/kLlTpgu3sU/H8dgz4tn48fYt15fkW6A63yduCIbYaum4r0
+        qdMh30hoJxtyzKFiYlYWntOouw==
+X-Google-Smtp-Source: ABdhPJyELC/Nwio1dFl3sO/VK8PLLU2EqustpT6Gxg2fQDCTHVW17MAX8bRKjL8jJcOzOOPUo8WR0A==
+X-Received: by 2002:a05:6512:1521:: with SMTP id bq33mr608727lfb.118.1633127610451;
         Fri, 01 Oct 2021 15:33:30 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rafael@kernel.org
-Cc:     srinivas.pandruvada@linux.intel.com, daniel.lezcano@linaro.org,
-        rui.zhang@intel.com, rkumbako@quicinc.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Amit Kucheria <amitk@kernel.org>
-Subject: [PATCH RESEND] thermal/drivers/netlink: Add the temperature when crossing a trip point
-Date:   Sat,  2 Oct 2021 00:33:23 +0200
-Message-Id: <20211001223323.1836640-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id j16sm312325lfk.257.2021.10.01.15.33.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 15:33:29 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] drm/msm/dpu: Fix timeout issues on command mode
+ panels
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org
+References: <20210911163919.47173-1-angelogioacchino.delregno@somainline.org>
+ <20210911163919.47173-2-angelogioacchino.delregno@somainline.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <b325fc8d-e06b-36de-b40a-b5ffbcebb1c5@linaro.org>
+Date:   Sat, 2 Oct 2021 01:33:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210911163919.47173-2-angelogioacchino.delregno@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The slope of the temperature increase or decrease can be high and when
-the temperature crosses the trip point, there could be a significant
-difference between the trip temperature and the measured temperatures.
+On 11/09/2021 19:39, AngeloGioacchino Del Regno wrote:
+> In function dpu_encoder_phys_cmd_wait_for_commit_done we are always
+> checking if the relative CTL is started by waiting for an interrupt
+> to fire: it is fine to do that, but then sometimes we call this
+> function while the CTL is up and has never been put down, but that
+> interrupt gets raised only when the CTL gets a state change from
+> 0 to 1 (disabled to enabled), so we're going to wait for something
+> that will never happen on its own.
+> 
+> Solving this while avoiding to restart the CTL is actually possible
+> and can be done by just checking if it is already up and running
+> when the wait_for_commit_done function is called: in this case, so,
+> if the CTL was already running, we can say that the commit is done
+> if the command transmission is complete (in other terms, if the
+> interface has been flushed).
 
-That forces the userspace to read the temperature back right after
-receiving a trip violation notification.
+I've compared this with the MDP5 driver, where we always wait for 
+PP_DONE interrupt. Would it be enough to always wait for it (= always 
+call dpu_encoder_phys_cmd_wait_for_tx_complete())?
 
-In order to be efficient, give the temperature which resulted in the
-trip violation.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index aa01698d6b25..aa5d3b3cef15 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -682,6 +682,9 @@ static int dpu_encoder_phys_cmd_wait_for_commit_done(
+>   	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
+>   		return 0;
+>   
+> +	if (phys_enc->hw_ctl->ops.is_started(phys_enc->hw_ctl))
+> +		return dpu_encoder_phys_cmd_wait_for_tx_complete(phys_enc);
+> +
+>   	return _dpu_encoder_phys_cmd_wait_for_ctl_start(phys_enc);
+>   }
+>   
+> 
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/thermal/thermal_core.c    |  6 ++++--
- drivers/thermal/thermal_netlink.c | 11 ++++++-----
- drivers/thermal/thermal_netlink.h |  8 ++++----
- 3 files changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 51374f4e1cca..9e243d9f929e 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -375,10 +375,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
- 	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
- 		if (tz->last_temperature < trip_temp &&
- 		    tz->temperature >= trip_temp)
--			thermal_notify_tz_trip_up(tz->id, trip);
-+			thermal_notify_tz_trip_up(tz->id, trip,
-+						  tz->temperature);
- 		if (tz->last_temperature >= trip_temp &&
- 		    tz->temperature < (trip_temp - hyst))
--			thermal_notify_tz_trip_down(tz->id, trip);
-+			thermal_notify_tz_trip_down(tz->id, trip,
-+						    tz->temperature);
- 	}
- 
- 	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
-diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
-index 1234dbe95895..a16dd4d5d710 100644
---- a/drivers/thermal/thermal_netlink.c
-+++ b/drivers/thermal/thermal_netlink.c
-@@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
- static int thermal_genl_event_tz_trip_up(struct param *p)
- {
- 	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
--	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
-+	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
-+	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
- 		return -EMSGSIZE;
- 
- 	return 0;
-@@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
- }
- 
--int thermal_notify_tz_trip_down(int tz_id, int trip_id)
-+int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
- {
--	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-+	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
- 
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
- }
- 
--int thermal_notify_tz_trip_up(int tz_id, int trip_id)
-+int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
- {
--	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-+	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
- 
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
- }
-diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
-index 828d1dddfa98..e554f76291f4 100644
---- a/drivers/thermal/thermal_netlink.h
-+++ b/drivers/thermal/thermal_netlink.h
-@@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
- int thermal_notify_tz_delete(int tz_id);
- int thermal_notify_tz_enable(int tz_id);
- int thermal_notify_tz_disable(int tz_id);
--int thermal_notify_tz_trip_down(int tz_id, int id);
--int thermal_notify_tz_trip_up(int tz_id, int id);
-+int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
-+int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
- int thermal_notify_tz_trip_delete(int tz_id, int id);
- int thermal_notify_tz_trip_add(int tz_id, int id, int type,
- 			       int temp, int hyst);
-@@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
- 	return 0;
- }
- 
--static inline int thermal_notify_tz_trip_down(int tz_id, int id)
-+static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
- {
- 	return 0;
- }
- 
--static inline int thermal_notify_tz_trip_up(int tz_id, int id)
-+static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
- {
- 	return 0;
- }
 -- 
-2.25.1
-
+With best wishes
+Dmitry
