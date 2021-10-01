@@ -2,175 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4971D41F548
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685A041F54D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355173AbhJATB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S1355272AbhJATCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355112AbhJATB4 (ORCPT
+        with ESMTP id S238809AbhJATCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:01:56 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C05AC06177E;
-        Fri,  1 Oct 2021 12:00:12 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id b20so42697028lfv.3;
-        Fri, 01 Oct 2021 12:00:12 -0700 (PDT)
+        Fri, 1 Oct 2021 15:02:32 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400A9C06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:00:48 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id w71-20020a627b4a000000b0044bfb1b33dbso3329485pfc.19
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e6gi0M/AqEbA7u3btM50oJv1wsjKr2syx1Jco1Jlq6c=;
-        b=FAGbn4qSG8KlBDD00DSO8AFyqWHWvqs1m1gB5jMoP74MuYCbf5S0w4PCLfyLW/PKuk
-         0PeEopSb+SMk/Po1VQtUDjZ2//xAQuYY7ezbPcxwU3pxjedXonVKrhplqAX4/A+whxQC
-         Vm+24lhxFRzfPJvfB1g2KqNBWYxrF6YEQL4+cF76ZHLvZNFNvixtmd3hLckVq13kaFSr
-         sBDrz9/D3MP5jZbXKqJehZgAZPCoRK7il91MQAZ5QkO7+OWVSkB3uKA67Ss+I1T5KKVM
-         SG/tUl4bKpP05yxobSJjOUeHgYrApJi8HaKmllINb+YmbwMDq8i6CdSynRfQdvwj5dfW
-         b4Cg==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=6eaOrx6B9WTfA79dzFjS+JPlNyBUQULetUEsCbO4l+A=;
+        b=gBoqBjumM+ARyiIKWQvUhK9hG+lBFscSv/woVNTb0aHmNmPO90ZO9aLhckcOu1nx6Z
+         kVncrTjjIVtsO6zP4Puly78rWvi5zI4syAoJg4/QIv4c4j8JhOwD5de25nNbf3s31hW9
+         vi3+1L86KkqQjIo144G+PdtXoCTd/6Q7Di62QOjw/PxHnJx3Hk0PMSZhnEh7NcaPxB0D
+         wO52jucST0sPnaoXOGm89E8yqaj94mu0DhdcF8yZE0pkec7Q8IUwsEBsxqbyJN41GLgo
+         NzechnLrbZvDq37r4XMfh7ag1p11dGoXLZ3K9KRG33RIg0CCOZVbukr4KuYbpRKGdLKl
+         ISrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
          :content-transfer-encoding;
-        bh=e6gi0M/AqEbA7u3btM50oJv1wsjKr2syx1Jco1Jlq6c=;
-        b=tqs1hksmGYt4ybvr6hNLwEJ+WqXiwHbCH675e8dr72qZELWFuW+R9yE292LtJccnSN
-         /29n8ya9UaQ9BV15XJOfsrT3KQgMqZ623s00lcb41jMgdp0uuVsxHc8dxaAozDz2Zo+i
-         BKGocFdWy0Ilx7GQDgtKATaJShAIvVi8NToq5t5u1aXFPCEfGCP+jKAaIaYw3at3PIf9
-         U4q8TNAD1BiIDM78QpNzTgSraQ2MeTPOjezUQD983kSmgF4RRW80d4hb+ZcJ82KVTml4
-         CQ53OIAKFor87pNP8XCA/FO30wKmPHimRQmYE68XS+r1JH7O8RnZDNoV7nQoKdVhbgEz
-         AJVw==
-X-Gm-Message-State: AOAM533yFdQs4Gyc6FkA83s35t/SylLk5vuylrSDrGO9EnSJaXfEWNaK
-        XIKwAaPDbJ+oTMZDzrpaEXU=
-X-Google-Smtp-Source: ABdhPJy1oSJ9yS1MaBKIwPeslGW2FPitJ2Zo2pJgC8IK1+6k8OKnhiFrQSrQ349eR2y3eq9o8WlyQg==
-X-Received: by 2002:a05:6512:238e:: with SMTP id c14mr6922750lfv.19.1633114810476;
-        Fri, 01 Oct 2021 12:00:10 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
-        by smtp.googlemail.com with ESMTPSA id c3sm479665ljh.58.2021.10.01.12.00.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 12:00:09 -0700 (PDT)
-Subject: Re: [PATCH v13 13/35] drm/tegra: gr2d: Support generic power domain
- and runtime PM
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-14-digetx@gmail.com>
- <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com>
- <aad7a508-7fb5-3418-f902-def80c365094@gmail.com>
- <CAPDyKFppSuP6FfaBaGn3o+8WvTT=vJ8XMzZ47WPQ1JKiUYyEpw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8d75436d-864a-7ce0-ba53-daa8b663035a@gmail.com>
-Date:   Fri, 1 Oct 2021 22:00:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAPDyKFppSuP6FfaBaGn3o+8WvTT=vJ8XMzZ47WPQ1JKiUYyEpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        bh=6eaOrx6B9WTfA79dzFjS+JPlNyBUQULetUEsCbO4l+A=;
+        b=blVVlnK0/DWcEn/P4Gaw8AfY5hA05qcGioIb6MOzd3oL4JXHSgUZJj8esjKz+lCaIn
+         NILH5ruURP4/ekBP2f+2nznFYql6nlZUKs6+6TB3G7Fn14NtB2ZMDqebgwF0jHqy1Pxv
+         nA+X9dHG45fd11b7NKWpsgLWDOJjpehFynoVVXKU5irMh6bjvigAdpKzwQKvGWT8ka5C
+         wncPddeFNoCzRAkMYBtw8c9gayAj13brZa7rHGg7zThdyX4R/wnlouTa1SOm8vZvqHLX
+         C03GrEL5fTO2eDQT2PUd//9LHtoHI9N/nTkzMzLJObqVoPNkEOb31uhXH9r9a4yLlg2U
+         8Bxg==
+X-Gm-Message-State: AOAM530+O/T6XBbdX31wmaV7MiSQHjB3yHJ144LpUWsbgeMGBDcWIL2S
+        k5nOMCruDExhEK+U/kV4gSUqMNU4JYHtAw==
+X-Google-Smtp-Source: ABdhPJx6IgvBeYEk+UPLwvs9Zhx5drq1IwkilKeIvGG35/M5gj+3M4JrFlVfvTWWs6+j9lVZmuYqGmq0Gg2hVg==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:af1a:f1cd:5283:aa67])
+ (user=shakeelb job=sendgmr) by 2002:a17:90b:1258:: with SMTP id
+ gx24mr5127236pjb.205.1633114847633; Fri, 01 Oct 2021 12:00:47 -0700 (PDT)
+Date:   Fri,  1 Oct 2021 12:00:39 -0700
+Message-Id: <20211001190040.48086-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH v2 1/2] memcg: flush stats only if updated
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 17:55, Ulf Hansson пишет:
-> On Fri, 1 Oct 2021 at 16:29, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 01.10.2021 16:39, Ulf Hansson пишет:
->>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>
->>>> Add runtime power management and support generic power domains.
->>>>
->>>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->>>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
->>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
->>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  drivers/gpu/drm/tegra/gr2d.c | 155 +++++++++++++++++++++++++++++++++--
->>>
->>> [...]
->>>
->>>>  static int gr2d_remove(struct platform_device *pdev)
->>>> @@ -259,15 +312,101 @@ static int gr2d_remove(struct platform_device *pdev)
->>>>                 return err;
->>>>         }
->>>>
->>>> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
->>>> +       pm_runtime_disable(&pdev->dev);
->>>
->>> There is no guarantee that the ->runtime_suspend() has been invoked
->>> here, which means that clock may be left prepared/enabled beyond this
->>> point.
->>>
->>> I suggest you call pm_runtime_force_suspend(), instead of
->>> pm_runtime_disable(), to make sure that gets done.
->>
->> The pm_runtime_disable() performs the final synchronization, please see [1].
->>
->> [1]
->> https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/base/power/runtime.c#L1412
-> 
-> pm_runtime_disable() end up calling _pm_runtime_barrier(), which calls
-> cancel_work_sync() if dev->power.request_pending has been set.
-> 
-> If the work that was punted to the pm_wq in rpm_idle() has not been
-> started yet, we end up just canceling it. In other words, there are no
-> guarantees it runs to completion.
+At the moment, the kernel flushes the memcg stats on every refault and
+also on every reclaim iteration.  Although rstat maintains per-cpu update
+tree but on the flush the kernel still has to go through all the cpu rstat
+update tree to check if there is anything to flush.  This patch adds the
+tracking on the stats update side to make flush side more clever by
+skipping the flush if there is no update.
 
-You're right. Although, in a case of this particular patch, the syncing
-is actually implicitly done by pm_runtime_dont_use_autosuspend().
+The stats update codepath is very sensitive performance wise for many
+workloads and benchmarks.  So, we can not follow what the commit
+aa48e47e3906 ("memcg: infrastructure to flush memcg stats") did which was
+triggering async flush through queue_work() and caused a lot performance
+regression reports.  That got reverted by the commit 1f828223b799 ("memcg:
+flush lruvec stats in the refault").
 
-But for drivers which don't use auto-suspend, there is no sync. This
-looks like a disaster, it's a very common pattern for drivers to
-'put+disable'.
+In this patch we kept the stats update codepath very minimal and let the
+stats reader side to flush the stats only when the updates are over a
+specific threshold.  For now the threshold is (nr_cpus * CHARGE_BATCH).
 
-> Moreover, use space may have bumped the usage count via sysfs for the
-> device (pm_runtime_forbid()) to keep the device runtime resumed.
+To evaluate the impact of this patch, an 8 GiB tmpfs file is created on a
+system with swap-on-zram and the file was pushed to swap through
+memory.force_empty interface.  On reading the whole file, the memcg stat
+flush in the refault code path is triggered.  With this patch, we observed
+63% reduction in the read time of 8 GiB file.
 
-Right, this is also a disaster in a case of driver removal.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+Changelog since v1:
+- Moved code and comment added as suggested by Johannes Weiner
 
->> Calling pm_runtime_force_suspend() isn't correct because each 'enable'
->> must have the corresponding 'disable'. Hence there is no problem here.
-> 
-> pm_runtime_force_suspend() calls pm_runtime_disable(), so I think that
-> should be fine. No?
+ mm/memcontrol.c | 78 ++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 55 insertions(+), 23 deletions(-)
 
-[adding Rafael]
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7c9d5703700e..25f55636ca37 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -103,11 +103,6 @@ static bool do_memsw_account(void)
+ 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap=
+;
+ }
+=20
+-/* memcg and lruvec stats flushing */
+-static void flush_memcg_stats_dwork(struct work_struct *w);
+-static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork)=
+;
+-static DEFINE_SPINLOCK(stats_flush_lock);
+-
+ #define THRESHOLDS_EVENTS_TARGET 128
+ #define SOFTLIMIT_EVENTS_TARGET 1024
+=20
+@@ -613,6 +608,56 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_t=
+ree_per_node *mctz)
+ 	return mz;
+ }
+=20
++/*
++ * memcg and lruvec stats flushing
++ *
++ * Many codepaths leading to stats update or read are performance sensitiv=
+e and
++ * adding stats flushing in such codepaths is not desirable. So, to optimi=
+ze the
++ * flushing the kernel does:
++ *
++ * 1) Periodically and asynchronously flush the stats every 2 seconds to n=
+ot let
++ *    rstat update tree grow unbounded.
++ *
++ * 2) Flush the stats synchronously on reader side only when there are mor=
+e than
++ *    (MEMCG_CHARGE_BATCH * nr_cpus) update events. Though this optimizati=
+on
++ *    will let stats be out of sync by atmost (MEMCG_CHARGE_BATCH * nr_cpu=
+s) but
++ *    only for 2 seconds due to (1).
++ */
++static void flush_memcg_stats_dwork(struct work_struct *w);
++static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork)=
+;
++static DEFINE_SPINLOCK(stats_flush_lock);
++static DEFINE_PER_CPU(unsigned int, stats_updates);
++static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
++
++static inline void memcg_rstat_updated(struct mem_cgroup *memcg)
++{
++	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
++	if (!(__this_cpu_inc_return(stats_updates) % MEMCG_CHARGE_BATCH))
++		atomic_inc(&stats_flush_threshold);
++}
++
++static void __mem_cgroup_flush_stats(void)
++{
++	if (!spin_trylock(&stats_flush_lock))
++		return;
++
++	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
++	atomic_set(&stats_flush_threshold, 0);
++	spin_unlock(&stats_flush_lock);
++}
++
++void mem_cgroup_flush_stats(void)
++{
++	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
++		__mem_cgroup_flush_stats();
++}
++
++static void flush_memcg_stats_dwork(struct work_struct *w)
++{
++	mem_cgroup_flush_stats();
++	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
++}
++
+ /**
+  * __mod_memcg_state - update cgroup memory statistics
+  * @memcg: the memory cgroup
+@@ -625,7 +670,7 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int id=
+x, int val)
+ 		return;
+=20
+ 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
+-	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
++	memcg_rstat_updated(memcg);
+ }
+=20
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+@@ -653,10 +698,12 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, =
+enum node_stat_item idx,
+ 	memcg =3D pn->memcg;
+=20
+ 	/* Update memcg */
+-	__mod_memcg_state(memcg, idx, val);
++	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
+=20
+ 	/* Update lruvec */
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
++
++	memcg_rstat_updated(memcg);
+ }
+=20
+ /**
+@@ -758,7 +805,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enu=
+m vm_event_item idx,
+ 		return;
+=20
+ 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
+-	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
++	memcg_rstat_updated(memcg);
+ }
+=20
+ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+@@ -5342,21 +5389,6 @@ static void mem_cgroup_css_reset(struct cgroup_subsy=
+s_state *css)
+ 	memcg_wb_domain_size_changed(memcg);
+ }
+=20
+-void mem_cgroup_flush_stats(void)
+-{
+-	if (!spin_trylock(&stats_flush_lock))
+-		return;
+-
+-	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
+-	spin_unlock(&stats_flush_lock);
+-}
+-
+-static void flush_memcg_stats_dwork(struct work_struct *w)
+-{
+-	mem_cgroup_flush_stats();
+-	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
+-}
+-
+ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, in=
+t cpu)
+ {
+ 	struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+--=20
+2.33.0.800.g4c38ced690-goog
 
-Rafael, could you please explain how drivers are supposed to properly
-suspend and disable RPM to cut off power and reset state that was
-altered by the driver's resume callback? What we're missing? Is Ulf's
-suggestion acceptable?
-
-The RPM state of a device is getting reset on driver's removal, hence
-all refcounts that were bumped by the rpm-resume callback of the device
-driver will be screwed up if device is kept resumed after removal. I
-just verified that it's true in practice.
