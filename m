@@ -2,73 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FFB41EF02
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171AB41EF09
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353522AbhJAOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhJAOBB (ORCPT
+        id S1353627AbhJAODL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:03:11 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:52282 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhJAODJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:01:01 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E0DC061775;
-        Fri,  1 Oct 2021 06:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=l0QKhZJiAMYm7mghBwurn/4et/ZmCUBUJgrearXat5U=; b=Ijcc/b8pN/nBoXWU0tDCNKAo0i
-        wJZmZZeytyRph7TCobJihIYREzd8TKIbbO/EhKxX0H/q2BubmrxCq+9gRjPAgmEI+HPalk4n3Xv5o
-        fQxpLNUTG4/HeszbJhbrVQA0xVWH8yxUFUJILUWpjXm26EEpVWjMvFDhZwKSyIQpbOr0=;
-Received: from p200300ccff0b42001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0b:4200:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mWJ4B-0000sG-Gc; Fri, 01 Oct 2021 15:59:12 +0200
-Received: from andi by aktux with local (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mWJ4B-00CDum-1D; Fri, 01 Oct 2021 15:59:11 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
-        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH] ARM: dts: omap3: fix cpu thermal label name
-Date:   Fri,  1 Oct 2021 15:59:08 +0200
-Message-Id: <20211001135908.2913378-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+        Fri, 1 Oct 2021 10:03:09 -0400
+Received: from localhost (cpc147930-brnt3-2-0-cust60.4-2.cable.virginm.net [86.15.196.61])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 203CA4D050C06;
+        Fri,  1 Oct 2021 07:01:22 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 15:01:21 +0100 (BST)
+Message-Id: <20211001.150121.833595483429151133.davem@davemloft.net>
+To:     sfr@canb.auug.org.au
+Cc:     netdev@vger.kernel.org, edumazet@google.com, weiwan@google.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Subject: Re: linux-next: build failure after merge of the net-next tree
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20211001.144046.309542880703739165.davem@davemloft.net>
+References: <20211001161849.51b6deca@canb.auug.org.au>
+        <20211001.144046.309542880703739165.davem@davemloft.net>
+X-Mailer: Mew version 6.8 on Emacs 27.2
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 01 Oct 2021 07:01:24 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyphens should be used in label names. make dtbs_check complains
-about that since it does not match the corresponding pattern
+From: David Miller <davem@davemloft.net>
+Date: Fri, 01 Oct 2021 14:40:46 +0100 (BST)
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- arch/arm/boot/dts/omap3-cpu-thermal.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I committed the sparc part into net-next today, thanks.
 
-diff --git a/arch/arm/boot/dts/omap3-cpu-thermal.dtsi b/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
-index 1ed837859374..a9069cca5888 100644
---- a/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
-+++ b/arch/arm/boot/dts/omap3-cpu-thermal.dtsi
-@@ -10,7 +10,7 @@
- 
- #include <dt-bindings/thermal/thermal.h>
- 
--cpu_thermal: cpu_thermal {
-+cpu_thermal: cpu-thermal {
- 	polling-delay-passive = <250>; /* milliseconds */
- 	polling-delay = <1000>; /* milliseconds */
- 	coefficients = <0 20000>;
--- 
-2.30.2
-
+I put the rest into the tree now too, thank you.
