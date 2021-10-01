@@ -2,95 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7241241F318
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302E041F31C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355405AbhJAR3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:29:48 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35276 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355340AbhJAR3r (ORCPT
+        id S1355417AbhJARaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355399AbhJARaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:29:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 50C14387085;
-        Fri,  1 Oct 2021 13:28:02 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id lq8dsp9cdxNa; Fri,  1 Oct 2021 13:28:01 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B365F386CF6;
-        Fri,  1 Oct 2021 13:28:01 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B365F386CF6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633109281;
-        bh=7N3hqrVDPZoEeqvjnRSW/PvE1OIfBC0sTtoSyM6UFEQ=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=duPgBz5qWMYIYKFsdx/H6NAzPDoUHfb6T6XQtbGyBnaDwgmcp79/yUBPiO6+L4cQz
-         DFYhVYaTzFPE56ddMVptW9dmZG/GZ32ewq91yjrOzh11FzOcsP2h6WuYM86DGy5+lN
-         H2mpmmbcTrBCqOiEPMKSIdxeEln8MinqBe+KG3HWWCAlp8lQAetGSyPOSFD1garUCE
-         JKnp2cYVlfA34t8J0EmBsLKlJ+iduZMqgBjf8wv4k3aWWu38kbXnaapvX2TZnc5vr1
-         Bj1ulzgRhceWxm9FHjU1TEwuxZm3OqBoS9SRInWmHRLBw2RR447kn/+y1jxyEXYHrQ
-         yEAhkILTBveqg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6IH4YKtaNHrY; Fri,  1 Oct 2021 13:28:01 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9FC0C386E1A;
-        Fri,  1 Oct 2021 13:28:01 -0400 (EDT)
-Date:   Fri, 1 Oct 2021 13:28:01 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
-        paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <1097444747.48074.1633109281556.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAHk-=whcN4ACLFvst0THwwpUFK4DDSM4O_frSoUQJ1m+0ENWjw@mail.gmail.com>
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <YVRWyq+rDeAFLx+X@elver.google.com> <1340204910.47919.1633103136293.JavaMail.zimbra@efficios.com> <CAHk-=whcN4ACLFvst0THwwpUFK4DDSM4O_frSoUQJ1m+0ENWjw@mail.gmail.com>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+        Fri, 1 Oct 2021 13:30:16 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8070C06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:28:31 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y26so41766898lfa.11
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:28:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SXD/dhTGRzLIJNIJHPxlcHALOO5cR+ta5YocZSpUDMc=;
+        b=W4C54TU577sWSJ4nGNktuMxuuxsYRp8tqsS48uEkCA5pm1bmo3NfwTsk9mm6eIJGcI
+         LsNB7btWyqE+fnMjAOVYKhS+Fd+nHLzHBwe/tBUqN9C7RdW8wkkL3FkDW9Hmj4DjQqda
+         6HD+7R2whwyv2/NwoWkaUw1o71ylC1v19gX8lnMGFbfUR08QVN+ilLPHnBH54MSda6Cs
+         CB1moVwccgEIJ21iZgoT1DytQD3YfqOpDXaMy036UGx46MhOHf/e1CmWIdyZCYHgIHQR
+         mOYbCmQT6tV6agrK04fVY70kJ/8STIY2udXnnMx8RDMgx5Gr+sP0Eb7b2ZlYc2oFm+d5
+         Loug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SXD/dhTGRzLIJNIJHPxlcHALOO5cR+ta5YocZSpUDMc=;
+        b=Mp0Hv8XmCEI/tEt90x0LiqmeeiiKk7izFvGkQG4wXe1uc+1Kj+v74qGIp2SSExZcNR
+         MCgtpE2R2YY227F82N1o0/x/1ALEK0feFbLI2hSuzOKHYKhguw99GDZfxj6Yqsa7CXEG
+         NEl8yl2Ignzgyt4xeQGVWd+jJQ1fMA7dNhP1RJJtNIVZUMbB0y8MyZ0IJ5EML4Yr1kC9
+         IvhUzTL49Eopo/dEmReVqHRzohEjjxxXt4R7pekvAF3tUUF0ISinDfsX+9ZP83/i44UL
+         bW0imt3X5ZLaUzJcHjqbUtsQSimwIocLijFomjQUY8fCUABLRKZlO1MGYEnAd8PuANbq
+         Kugg==
+X-Gm-Message-State: AOAM5306VxJcbAQ1Gb/f7bfOcJ8ltT6pf3GbZE5arbfNLQHyY7PL1012
+        +vmDAYZDFa5/EGV0m2nB7BTa/Ikp+SJIZmU9
+X-Google-Smtp-Source: ABdhPJxrmfprjqGO+7bREO2hzyzs5Eer1fEYYEYzh7OREwAsozmlMafhZTDhGm+ZNv7Z18fIrU2yIg==
+X-Received: by 2002:a05:6512:3f87:: with SMTP id x7mr6703806lfa.129.1633109309855;
+        Fri, 01 Oct 2021 10:28:29 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id m29sm793507lfj.236.2021.10.01.10.28.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 10:28:29 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] drm/msm/dsi: Support NO_CONNECTOR bridges
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210920225801.227211-1-robdclark@gmail.com>
+ <20210920225801.227211-2-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <bbcf5361-32e7-a2db-ffcc-986e012f000d@linaro.org>
+Date:   Fri, 1 Oct 2021 20:28:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210920225801.227211-2-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
-Thread-Index: PUaQPCRz5juCZ3ZAN/T/b+zlfZwrzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 1, 2021, at 12:20 PM, Linus Torvalds torvalds@linux-foundation.org wrote:
-[...]
-> But again - a lot of these made-up examples are exactly that: made up.
-> For us to have a ctrl_dep() macro, I really want to see an actual
-> honest-to-goodness case of this that we can point to.
+On 21/09/2021 01:57, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> For now, since we have a mix of bridges which support this flag, which
+> which do *not* support this flag, or work both ways, try it once with
+> NO_CONNECTOR and then fall back to the old way if that doesn't work.
+> Eventually we can drop the fallback path.
+> 
+> v2: Add missing drm_connector_attach_encoder() so display actually comes
+>      up when the bridge properly handles the NO_CONNECTOR flag
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-I've spent some quality time staring at generated assembler diff in the past
-days, and looking for code patterns of refcount_dec_and_test users, without
-much success. There are some cases which end up working by chance, e.g. in
-cases where the if leg has a smp_acquire__after_ctrl_dep and the else leg has
-code that emits a barrier(), but I did not find any buggy generated
-code per se. In order to observe those issues in real life, we would
-really need to have identical then/else legs to the branch.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks,
+I think this patch can go through the drm/msm, while two other patches 
+would need to through the drm-misc. Is it correct?
 
-Mathieu
+> ---
+>   drivers/gpu/drm/msm/Kconfig           |  2 ++
+>   drivers/gpu/drm/msm/dsi/dsi_manager.c | 50 ++++++++++++++++++++-------
+>   2 files changed, 39 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index e9c6af78b1d7..36e5ba3ccc28 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -14,6 +14,8 @@ config DRM_MSM
+>   	select REGULATOR
+>   	select DRM_KMS_HELPER
+>   	select DRM_PANEL
+> +	select DRM_BRIDGE
+> +	select DRM_PANEL_BRIDGE
+>   	select DRM_SCHED
+>   	select SHMEM
+>   	select TMPFS
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> index c41d39f5b7cf..e25877073d31 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> @@ -3,6 +3,8 @@
+>    * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>    */
+>   
+> +#include "drm/drm_bridge_connector.h"
+> +
+>   #include "msm_kms.h"
+>   #include "dsi.h"
+>   
+> @@ -688,10 +690,10 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
+>   {
+>   	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
+>   	struct drm_device *dev = msm_dsi->dev;
+> +	struct drm_connector *connector;
+>   	struct drm_encoder *encoder;
+>   	struct drm_bridge *int_bridge, *ext_bridge;
+> -	struct drm_connector *connector;
+> -	struct list_head *connector_list;
+> +	int ret;
+>   
+>   	int_bridge = msm_dsi->bridge;
+>   	ext_bridge = msm_dsi->external_bridge =
+> @@ -699,22 +701,44 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
+>   
+>   	encoder = msm_dsi->encoder;
+>   
+> -	/* link the internal dsi bridge to the external bridge */
+> -	drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
+> -
+>   	/*
+> -	 * we need the drm_connector created by the external bridge
+> -	 * driver (or someone else) to feed it to our driver's
+> -	 * priv->connector[] list, mainly for msm_fbdev_init()
+> +	 * Try first to create the bridge without it creating its own
+> +	 * connector.. currently some bridges support this, and others
+> +	 * do not (and some support both modes)
+>   	 */
+> -	connector_list = &dev->mode_config.connector_list;
+> +	ret = drm_bridge_attach(encoder, ext_bridge, int_bridge,
+> +			DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> +	if (ret == -EINVAL) {
+> +		struct drm_connector *connector;
+> +		struct list_head *connector_list;
+> +
+> +		/* link the internal dsi bridge to the external bridge */
+> +		drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
+> +
+> +		/*
+> +		 * we need the drm_connector created by the external bridge
+> +		 * driver (or someone else) to feed it to our driver's
+> +		 * priv->connector[] list, mainly for msm_fbdev_init()
+> +		 */
+> +		connector_list = &dev->mode_config.connector_list;
+>   
+> -	list_for_each_entry(connector, connector_list, head) {
+> -		if (drm_connector_has_possible_encoder(connector, encoder))
+> -			return connector;
+> +		list_for_each_entry(connector, connector_list, head) {
+> +			if (drm_connector_has_possible_encoder(connector, encoder))
+> +				return connector;
+> +		}
+> +
+> +		return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	connector = drm_bridge_connector_init(dev, encoder);
+> +	if (IS_ERR(connector)) {
+> +		DRM_ERROR("Unable to create bridge connector\n");
+> +		return ERR_CAST(connector);
+>   	}
+>   
+> -	return ERR_PTR(-ENODEV);
+> +	drm_connector_attach_encoder(connector, encoder);
+> +
+> +	return connector;
+>   }
+>   
+>   void msm_dsi_manager_bridge_destroy(struct drm_bridge *bridge)
+> 
+
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+With best wishes
+Dmitry
