@@ -2,169 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661B141E916
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C532C41E919
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352216AbhJAI26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:28:58 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:35647 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1352723AbhJAI20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:28:26 -0400
-Received: from [192.168.0.3] (ip5f5aef40.dynamic.kabel-deutschland.de [95.90.239.64])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E843E61E64846;
-        Fri,  1 Oct 2021 10:26:20 +0200 (CEST)
-Subject: Re: [smartpqi updates PATCH V2 09/11] smartpqi: fix duplicate device
- nodes for tape changers
-To:     Don Brace <don.brace@microchip.com>
-Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
-        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
-        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
-        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
-        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
-        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
-        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
-        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        linux-scsi@vger.kernel.org
-References: <20210928235442.201875-1-don.brace@microchip.com>
- <20210928235442.201875-10-don.brace@microchip.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <1351a25f-5310-cae3-ae47-01c842e0a185@molgen.mpg.de>
-Date:   Fri, 1 Oct 2021 10:26:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1352714AbhJAIaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:30:10 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3905 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352731AbhJAI3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 04:29:52 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HLNTg3DfCz67Psy;
+        Fri,  1 Oct 2021 16:25:27 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 1 Oct 2021 10:28:04 +0200
+Received: from localhost (10.52.123.156) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 1 Oct 2021
+ 09:28:04 +0100
+Date:   Fri, 1 Oct 2021 09:27:46 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+CC:     Billy Tsai <billy_tsai@aspeedtech.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the iio tree with the iio-fixes
+ tree
+Message-ID: <20211001092746.00006ef5@Huawei.com>
+In-Reply-To: <20211001133841.2b46b779@canb.auug.org.au>
+References: <20211001133841.2b46b779@canb.auug.org.au>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210928235442.201875-10-don.brace@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.156]
+X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Kevin, dear Don,
+On Fri, 1 Oct 2021 13:38:41 +1000
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-
-Am 29.09.21 um 01:54 schrieb Don Brace:
-> From: Kevin Barnett <kevin.barnett@microchip.com>
+> Hi all,
 > 
-> Stop the OS from re-discovering multiple LUNs for
-> tape drive and medium changer.
+> Today's linux-next merge of the iio tree got a conflict in:
 > 
-> Duplicate device nodes for Ultrium tape drive and
-> medium changer are being created.
+>   drivers/iio/adc/aspeed_adc.c
 > 
-> The Ultrium tape drive is a multi-LUN SCSI target.
-> It presents a LUN for the tape drive and a 2nd
-> LUN for the medium changer.
-> Our controller FW lists both LUNs in the RPL
-> results.
-
-Please document the firmware version (and controller) you tested with in 
-the commit message.
-
-> As a result, the smartpqi driver exposes both
-> devices to the OS. Then the OS does its normal
-> device discovery via the SCSI REPORT LUNS command,
-> which causes it to re-discover both devices a 2nd time,
-> which results in the duplicate device nodes.
-
-Shortly describing the implementation (new struct member ignore_device) 
-would be nice.
-
-> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
-> Reviewed-by: Scott Teel <scott.teel@microchip.com>
-> Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
-> Signed-off-by: Kevin Barnett <kevin.barnett@microchip.com>
-> Signed-off-by: Don Brace <don.brace@microchip.com>
-> ---
->   drivers/scsi/smartpqi/smartpqi.h      |  1 +
->   drivers/scsi/smartpqi/smartpqi_init.c | 23 +++++++++++++++++++----
->   2 files changed, 20 insertions(+), 4 deletions(-)
+> between commit:
 > 
-> diff --git a/drivers/scsi/smartpqi/smartpqi.h b/drivers/scsi/smartpqi/smartpqi.h
-> index c439583a4ca5..aac88ac0a0b7 100644
-> --- a/drivers/scsi/smartpqi/smartpqi.h
-> +++ b/drivers/scsi/smartpqi/smartpqi.h
-> @@ -1106,6 +1106,7 @@ struct pqi_scsi_dev {
->   	u8	keep_device : 1;
->   	u8	volume_offline : 1;
->   	u8	rescan : 1;
-> +	u8	ignore_device : 1;
+>   eb795cd97365 ("iio: adc: aspeed: set driver data when adc probe.")
+> 
+> from the iio-fixes tree and commit:
+> 
+>   e96b152c6cc2 ("iio: adc: aspeed: Keep model data to driver data.")
+> 
+> from the iio tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-Why not type bool?
+Thanks.
 
->   	bool	aio_enabled;		/* only valid for physical disks */
->   	bool	in_remove;
->   	bool	device_offline;
-> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-> index c28eb7ea4a24..8be116992cb0 100644
-> --- a/drivers/scsi/smartpqi/smartpqi_init.c
-> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
-> @@ -6297,9 +6297,13 @@ static int pqi_slave_alloc(struct scsi_device *sdev)
->   		rphy = target_to_rphy(starget);
->   		device = pqi_find_device_by_sas_rphy(ctrl_info, rphy);
->   		if (device) {
-> -			device->target = sdev_id(sdev);
-> -			device->lun = sdev->lun;
-> -			device->target_lun_valid = true;
+Looks good to me.
 
-Off topic, with `u8 target_lun_valid : 1`, why is `true` used.
+Jonathan
 
-> +			if (device->target_lun_valid) {
-> +				device->ignore_device = true;
-> +			} else {
-> +				device->target = sdev_id(sdev);
-> +				device->lun = sdev->lun;
-> +				device->target_lun_valid = true;
-> +			}
-
-If the LUN should be ignored, is it actually valid? Why not extend 
-target_lun_valid and add a third option (enums?) to ignore it?
-
->   		}
->   	} else {
->   		device = pqi_find_scsi_dev(ctrl_info, sdev_channel(sdev),
-> @@ -6336,14 +6340,25 @@ static int pqi_map_queues(struct Scsi_Host *shost)
->   					ctrl_info->pci_dev, 0);
->   }
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/iio/adc/aspeed_adc.c
+> index 34ec0c28b2df,9e2c85c3cbe9..000000000000
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@@ -183,7 -492,7 +492,8 @@@ static int aspeed_adc_probe(struct plat
 >   
-> +static inline bool pqi_is_tape_changer_device(struct pqi_scsi_dev *device)
-> +{
-> +	return device->devtype == TYPE_TAPE || device->devtype == TYPE_MEDIUM_CHANGER;
-
-Why also check for TYPE_TAPE? The function name should be updated then?
-
-> +}
-> +
->   static int pqi_slave_configure(struct scsi_device *sdev)
->   {
-> +	int rc = 0;
->   	struct pqi_scsi_dev *device;
+>   	data = iio_priv(indio_dev);
+>   	data->dev = &pdev->dev;
+>  +	platform_set_drvdata(pdev, indio_dev);
+> + 	data->model_data = of_device_get_match_data(&pdev->dev);
 >   
->   	device = sdev->hostdata;
->   	device->devtype = sdev->type;
->   
-> -	return 0;
-> +	if (pqi_is_tape_changer_device(device) && device->ignore_device) {
-> +		rc = -ENXIO;
-> +		device->ignore_device = false;
-
-I’d add a `return -ENXIO` here, and remove the variable.
-
-> +	}
-> +
-> +	return rc;
->   }
->   
->   static int pqi_getpciinfo_ioctl(struct pqi_ctrl_info *ctrl_info, void __user *arg)
-> 
-
-
-Kind regards,
-
-Paul
+>   	data->base = devm_platform_ioremap_resource(pdev, 0);
+>   	if (IS_ERR(data->base))
