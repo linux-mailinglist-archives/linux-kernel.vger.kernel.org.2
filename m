@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FB941ECD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F57E41ECD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354245AbhJAMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:03:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31789 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354275AbhJAMDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:03:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633089695; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=p2Ore5ulMIaePgcqUBJyw2WiETcga1BN2OxeVaOjVH4=; b=Km+Zf+Fwobqqn4QiuQrm7nO+Buud6nv6h68G1uwWHDOtzNWcUAzOrPZeFVjsbRIdBgKsRId5
- pkvgRMzTnrDh62uX8US9EuZrpevW700tMdzsOgAEfl2XVqWEKRcA9QYBQwBkuJvSVbR5j278
- K7Gfh4Zdf2mnJgyhgzvlm2WQt5M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6156f897605ecf100bc57fcf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 12:01:26
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84B00C43619; Fri,  1 Oct 2021 12:01:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 08EC7C4338F;
-        Fri,  1 Oct 2021 12:01:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 08EC7C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 21/24] wfx: add debug.c/debug.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-22-Jerome.Pouiller@silabs.com>
-Date:   Fri, 01 Oct 2021 15:01:20 +0300
-In-Reply-To: <20210920161136.2398632-22-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Mon, 20 Sep 2021 18:11:33 +0200")
-Message-ID: <87o889j6nj.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1354262AbhJAMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354242AbhJAMDj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:03:39 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02D0C06177C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:01:55 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id x12so8795602qkf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/6097/x0bH8fn11DO7zQixS8XGYmq5JexxJGkiKIeJM=;
+        b=EC5UhFlrdlvfIJbMnU2s9Yv7KXlbiJiAnecO2J1Fd+k1iZJZw8wUdmvdNHoEexxJEl
+         64Dd3zgFC5LU/b7e0Mv269r5WaLt8+RfH9yGr/EcpV+T10iZWOyCV4VdMtrb0Fhl2pnk
+         e6i0gBFS8rAXkb52u1IHqrPkspFLMZdeFc4x4O8TL2xFugQ+INrRSjGDiWuSH58TC9yR
+         PjYA1+5Ygua0tpHoPyUOYSEB84l0xvpP56/nzBA7V3UM453FLVQcYGVMcx8aSVryMMFS
+         VrdXbzo99YCbQFwH+USSYpjGkrfRU5TwJIKFC3DPOPJmF01MD3dK4z38195Ifu0CkysU
+         8eqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/6097/x0bH8fn11DO7zQixS8XGYmq5JexxJGkiKIeJM=;
+        b=sXV8N156MaLj6e4fp1lvS0bnxtmrC+4r3HhtzPmEmepnixXNZspZYtyr96mG2zb5RC
+         XZT5Ie0ob6TnldtKNbkqcGw9g5ioEOo1BGxdr0xNZ9rgCUeELtfzD7yYudQFfYtYu86S
+         AbcN7HPND2ya3wy8tMPbnJbwfxFDsgQGtK2M47xV9jED6Dg86IIAA9lU0i631/u6KDNj
+         Tmsbyf9REJu5+nQh+jpEApvLi+0XQ8YFgM5B25r5i56K73GuUWjOcKRQa0GKNdgP8elp
+         rKpFBDGP+lNZElGm0Lc1EF6UwP45czKR5QOOGFvJT+L2xlWihBjRj0uf/fSqJV7HHlpR
+         kORw==
+X-Gm-Message-State: AOAM531ZdVBujz0hthvXCKqw9ZNlCBjA8LEZb1ffNM1NAaXf7wPmYqmB
+        ZYIyBakvsfuOJo8LQ79GVg76wA==
+X-Google-Smtp-Source: ABdhPJymjrXyBr0b9jL9p/S95qrY6eFFPXNaqk8tNbbL4nEKxtHTN6MN7b+O4ZMIEuFdg+tspNXnGw==
+X-Received: by 2002:a37:b142:: with SMTP id a63mr9065903qkf.393.1633089714387;
+        Fri, 01 Oct 2021 05:01:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id v3sm3300012qtx.11.2021.10.01.05.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 05:01:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mWHEf-008P5N-7L; Fri, 01 Oct 2021 09:01:53 -0300
+Date:   Fri, 1 Oct 2021 09:01:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Enabling RO on a VF
+Message-ID: <20211001120153.GL3544071@ziepe.ca>
+References: <48FF6F8E-95E2-4A29-A059-12EF614B381C@oracle.com>
+ <20211001115455.GJ3544071@ziepe.ca>
+ <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+On Fri, Oct 01, 2021 at 11:59:15AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 1 Oct 2021, at 13:54, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > 
+> > On Fri, Oct 01, 2021 at 11:05:15AM +0000, Haakon Bugge wrote:
+> >> Hey,
+> >> 
+> >> 
+> >> Commit 1477d44ce47d ("RDMA/mlx5: Enable Relaxed Ordering by default
+> >> for kernel ULPs") uses pcie_relaxed_ordering_enabled() to check if
+> >> RO can be enabled. This function checks if the Enable Relaxed
+> >> Ordering bit in the Device Control register is set. However, on a
+> >> VF, this bit is RsvdP (Reserved for future RW
+> >> implementations. Register bits are read-only and must return zero
+> >> when read. Software must preserve the value read for writes to
+> >> bits.).
+> >> 
+> >> Hence, AFAICT, RO will not be enabled when using a VF.
+> >> 
+> >> How can that be fixed?
+> > 
+> > When qemu takes a VF and turns it into a PF in a VM it must emulate
+> > the RO bit and return one
+> 
+> I have a pass-through VF:
+> 
+> # lspci -s ff:00.0 -vvv
+> ff:00.0 Ethernet controller: Mellanox Technologies MT28800 Family [ConnectX-5 Ex Virtual Function]
+> []
+> 		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> 			RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+Like I said, it is a problem in the qemu area..
 
-[...]
-
-> +static int wfx_ps_timeout_set(void *data, u64 val)
-> +{
-> +	struct wfx_dev *wdev =3D (struct wfx_dev *)data;
-> +	struct wfx_vif *wvif;
-> +
-> +	wdev->force_ps_timeout =3D val;
-> +	wvif =3D NULL;
-> +	while ((wvif =3D wvif_iterate(wdev, wvif)) !=3D NULL)
-> +		wfx_update_pm(wvif);
-> +	return 0;
-> +}
-> +
-> +static int wfx_ps_timeout_get(void *data, u64 *val)
-> +{
-> +	struct wfx_dev *wdev =3D (struct wfx_dev *)data;
-> +
-> +	*val =3D wdev->force_ps_timeout;
-> +	return 0;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(wfx_ps_timeout_fops, wfx_ps_timeout_get,
-> wfx_ps_timeout_set, "%lld\n");
-> +
-> +int wfx_debug_init(struct wfx_dev *wdev)
-> +{
-> +	struct dentry *d;
-> +
-> +	d =3D debugfs_create_dir("wfx", wdev->hw->wiphy->debugfsdir);
-> +	debugfs_create_file("counters", 0444, d, wdev, &wfx_counters_fops);
-> +	debugfs_create_file("rx_stats", 0444, d, wdev, &wfx_rx_stats_fops);
-> +	debugfs_create_file("tx_power_loop", 0444, d, wdev,
-> +			    &wfx_tx_power_loop_fops);
-> +	debugfs_create_file("send_pds", 0200, d, wdev, &wfx_send_pds_fops);
-> +	debugfs_create_file("send_hif_msg", 0600, d, wdev,
-> +			    &wfx_send_hif_msg_fops);
-> +	debugfs_create_file("ps_timeout", 0600, d, wdev, &wfx_ps_timeout_fops);
-
-ps_timeout sounds like something which should be in nl80211, not in
-debugfs. Please remove it until the driver is accepted.
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Jason
