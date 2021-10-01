@@ -2,215 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FEF41E780
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3BC41E782
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352148AbhJAG3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352141AbhJAG3j (ORCPT
+        id S1352147AbhJAGaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:30:55 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43666
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352084AbhJAGax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:29:39 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9100CC061775
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:27:55 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so2725247pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvZn7AesUks9d97kUkTzFpGFd394pZVY+vzK7UrpvMc=;
-        b=CxYwS62rmXRLPrmbM1Udr5F7yvHoCoqP+3aFF1JKHxMdFjINagvDLNsMu9UIPqUrDB
-         t6u80kl9j+/iD2YjZpmCqjt3U2ItlhOIenB0XK6dUiaWhpA6R2Tm1t/pBiPtu7ryrZmQ
-         VEm0glWKUmIwyIthgmR2r2U/oCvTW2V6xnB2xftLOIYAPEjt7FvPFnskcUYarmGWVHlj
-         bnGhmStPW8IPgxgdkyOVUOo4Wrz9J6u+/BOQ4nn83CISikMWox4mK+nN/VWiycObWbp2
-         2kcBz6IV5hwq6Dq4DeGHHG7AUUR/cDreJc5cRTeRephvaz7A/E0aTp/w2pJtKxYpChuG
-         AjYg==
+        Fri, 1 Oct 2021 02:30:53 -0400
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 76529405FB
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:29:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633069744;
+        bh=YyJ0fdVjmCzXOoJiRjIyyp/ZqjWN0zD1fovbCCHJr+U=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=XRkENSfuFYXI5sMhFl8teFJIdWys63K9lBgfQ207w2t04Rtjxnw4+P4zyA76UDBbP
+         vniveY3Dfe4smfDeyDl+j42+CiFtilTL0KMZKjkPCA8v/QgOTnzBY3srw1FOczKlr0
+         4MzyhHpJmTLFFUZ+cRw1elXDCgdND7NCS9nIU8P9QxS8xrx/GRgkUP7CRR1tcFAuuK
+         s3HJIcMqgeGcwAjeJlG1b3sGc1GMUjwVzmi0aUZxBzdA25t4gmlPNLy674KUptzbzn
+         D8+i6GJcOh5oqGy8ae7k3D2Dxje+OsCWeKvkDyA9GMepKjl88gFw+Rxe4jVgdvs4UE
+         rDfOzy7kl09Og==
+Received: by mail-pg1-f198.google.com with SMTP id 15-20020a630d4f000000b00287c5b3f77bso5779023pgn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:29:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvZn7AesUks9d97kUkTzFpGFd394pZVY+vzK7UrpvMc=;
-        b=sA02hBq/SVezNJ23MmyY6fYiUw1BkL/wdspY13hZv+YRfPwloF3p8rUIYfiii+OlBG
-         khYjgqFVRkE1nJSr2y5AJIGI6oMd2F2mTb5XKvFMBOpF8SDDdFee5MhJHqCP7AoGtXxz
-         wCQiyR3xcF6kfXN31MYEpjN+aaRURcQPLpDOg546SRqvHZIHN4JUuIRB32fHTI+TF6l4
-         xjKthRBIVD0pZcig8eEsJTNdGbK+LAaLtcjm0qX8bvjp5yO7gArEglZz5L+pFsOfSqAj
-         0kHXrmrBLvDvEI2+dpuk/YdI0PpT7DJeRNXG2b4UTDvPIOlyZcd794YTMyID5J5phypC
-         Tecg==
-X-Gm-Message-State: AOAM533yC3KCD+T+ly3st8e/GxqpPsKDjiJURHdKMyVMs0pKJX2vajxx
-        JbpAQi/Szq2RgZYGgAkvnkHVq7Dgn7+P5uPeDH7qFA==
-X-Google-Smtp-Source: ABdhPJzF/bNLMOGXHCLWZPGUzdyAlhfNYt7masDw5O96Xj/PCO2GX6b69viZ98gYcmlz1uo4cGbw0TI3QA1SBZQKrs8=
-X-Received: by 2002:a17:90a:7301:: with SMTP id m1mr11368037pjk.34.1633069674838;
- Thu, 30 Sep 2021 23:27:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YyJ0fdVjmCzXOoJiRjIyyp/ZqjWN0zD1fovbCCHJr+U=;
+        b=yrJYdLhF020wUjNPT1Itgw/sltEWsRIo38Nb/B+ASjjvw942gGLcGWouI/MMaJFPZb
+         fE9+yhYhPUI8HUbgeZQELj1xrlrk7Wu+yCrPicVNAdls+cBTsK93Q2Ue63uu40CliGU+
+         BS6jnDk8ndTCyyvbKruzOuMU6w02RSOpHb4cS/LnilD+TBayA0C4kRlWCxdYucI0iM1q
+         IgpPXOZWFVQz2eDhRv9Q0lIab9WgK7+Wkw7hgnIAXeJMZ6c+RYvoJOP3dqowE9MlG1lw
+         oFPwCDf33TRhvt73nGKbqn6O55BrScFali5R+j43jpfpzXR4Fuxqv9IwqEWZeVdURfg0
+         9RzA==
+X-Gm-Message-State: AOAM531zkhF3K7VWOnHzSavdjZ6Ub2oX7fCp3HDz1lpRUgZ+daY+s/8k
+        fSCmMcPhDmUYC4kmY2G7Cc2IhsAClaypHICk1EF5GJzPMUww9cQnElcNYM6qv3iQU0nRPYoHxtS
+        78WqjlivWrOnRqh9ibeYmtKHILm17kf0cCDLZlOsryg==
+X-Received: by 2002:a17:90b:1909:: with SMTP id mp9mr4617161pjb.55.1633069742661;
+        Thu, 30 Sep 2021 23:29:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw22K5pK3MVs8uNXMcL4NftP/1Hm0OOcm0nnlcZc5uStWijE4TWaDDvLPPzDw9g93zW0yrxNw==
+X-Received: by 2002:a17:90b:1909:: with SMTP id mp9mr4617134pjb.55.1633069742351;
+        Thu, 30 Sep 2021 23:29:02 -0700 (PDT)
+Received: from localhost.localdomain (111-240-125-184.dynamic-ip.hinet.net. [111.240.125.184])
+        by smtp.gmail.com with ESMTPSA id t3sm1461124pfb.100.2021.09.30.23.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 23:29:02 -0700 (PDT)
+From:   Chris Chiu <chris.chiu@canonical.com>
+To:     tiwai@suse.com, kailang@realtek.com, hui.wang@canonical.com,
+        jhp@endlessos.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH] ALSA: hda - Enable headphone mic on Dell Latitude laptops with ALC3254
+Date:   Fri,  1 Oct 2021 14:28:56 +0800
+Message-Id: <20211001062856.1037901-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
- <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com> <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
-In-Reply-To: <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Thu, 30 Sep 2021 23:27:43 -0700
-Message-ID: <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:03 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
-> > > >
-> > > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
-> > > > >
-> > > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
-> > > > > <krzysztof.kozlowski@canonical.com> wrote:
-> > > > > >
-> > > > > > On 29/09/2021 01:56, Will McVicker wrote:
-> > > > > > > This is v2 of the series of patches that modularizes a number of core
-> > > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
-> > > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
-> > > > > > > series of "select XXX". This includes setting the following configs as
-> > > > > > > tristate:
-> > > > > > >
-> > > > > > >  * COMMON_CLK_SAMSUNG
-> > > > > > >  * EXYNOS_ARM64_COMMON_CLK
-> > > > > > >  * PINCTRL_SAMSUNG
-> > > > > > >  * PINCTRL_EXYNOS
-> > > > > > >  * EXYNOS_PMU_ARM64
-> > > > > > >  * EXYNOS_PM_DOMAINS
-> > > > > > >
-> > > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
-> > > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
-> > > > > > > The reason for these new configs is because we are not able to easily
-> > > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
-> > > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
-> > > > > > > the ARM and ARM64 portions into two separate configs.
-> > > > > > >
-> > > > > > > Overall, these drivers didn't require much refactoring and converted to
-> > > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
-> > > > > > > was not able to boot test these changes. I'm mostly concerned about the
-> > > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
-> > > > > > > requesting help for testing these changes on the respective hardware.
-> > > > > > >
-> > > > > >
-> > > > > > These are all not tested at all? In such case, since these are not
-> > > > > > trivial changes, please mark the series as RFT.
-> > > > > >
-> > > > > > I will not be able to test these for some days, so it must wait.
-> > > > > >
-> > > > > >
-> > > > > > Best regards,
-> > > > > > Krzysztof
-> > > > >
-> > > > > +Cc Arnd and Olof,
-> > > > >
-> > > > > Hi Krzysztof,
-> > > > >
-> > > > > To avoid the scrambled conversation from the first patchset, I'm going
-> > > > > to address all your general questions here in the cover letter thread
-> > > > > so that it's easier for everyone to follow and reference in the
-> > > > > future.
-> > > >
-> > > > This patchset shouldn't go in.
-> > > >
-> > > > GKI is a fantastic effort, since it finally seems like Google has the
-> > > > backbone to put pressure on the vendors to upstream all their stuff.
-> > > >
-> > > > This patcheset dilutes and undermines all of that by opening up a
-> > > > truck-size loophole, reducing the impact of GKI, and overall removes
-> > > > leverage to get vendors to do the right thing.
-> > > >
-> > > > It's against our interest as a community to have this happen, since
-> > > > there's no other reasonably justifiable reason to do this.
-> > >
-> > > Oolf, Geert, Krzysztof, Arnd,
-> >
-> > So close.
->
-> I'm sorry, it's pretty late here and I'm sleepy and messed it up.
+The headphone mic is not working on Dell Latitude laptops with ALC3254.
+The codec vendor id is 0x10ec0295 and share the same pincfg as defined
+in ALC295_STANDARD_PINS. So the ALC269_FIXUP_DELL1_MIC_NO_PRESENCE will
+be applied per alc269_pin_fixup_tbl[] but actually the headphone mic is
+using NID 0x1b instead of 0x1a. The ALC269_FIXUP_DELL4_MIC_NO_PRESENCE
+need to be applied instead.
 
-This email thread will be here in the morning too, this is the last
-reply I will make tonight myself.
+Use ALC269_FIXUP_DELL4_MIC_NO_PRESENCE for particular models before
+a generic fixup comes out.
 
-> > > I skimmed through the emails and you all make a lot of good points.
-> >
-> > I skimmed through this email and I think it adds a lot of new
-> > complexity and fragility to solve a problem that doesn't really exist
-> > for upstream, adding yet more config parameter combinations to build
-> > and test for.
->
-> How is this not an upstream problem? Having a minimal kernel with as
-> many drivers as modules is of interest to upstream. And what's the
-> complexity in having a config to easily disable a bunch of configs?
-> The new config gives a clear config against which new
-> platforms/systems should be developed against.
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The approach for general kernel upstream has been to have the built-in
-drivers needed to reach rootfs and runtime load the rest from there.
-For downstream embedded kernels, the right answer is to just exclude
-the drivers you don't need.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4407f7da57c4..70778aa137cf 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8452,6 +8452,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a58, "Dell", ALC255_FIXUP_DELL_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a61, "Dell XPS 15 9510", ALC289_FIXUP_DUAL_SPK),
++	SND_PCI_QUIRK(0x1028, 0x0a9d, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0a9e, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+-- 
+2.20.1
 
-I agree, some of this is probably useful work but
-1) It was posted as a burden on the maintainers of the legacy
-platforms to test and make sure it's not broken
-2) It regresses distro configs, which we do care about
-3) Based on the above, it's unclear whether the people pushing for
-this patchset cares about the existing platforms, they're looking to
-solve a different problem
-
-I didn't go back and look at who and where, but the person who started
-justifying this work with making it easier for out-of-tree vendors to
-integrate their non-contributed code killed this patchset.
-
-Would the out-of-tree argument on its own kill it? No, but the above
-complexities/cost, plus the actual intent behind the patchset did.
-
-> > A much more valuable approach would be to work towards being able to
-> > free up memory by un-probed drivers at the end of boot. That would
-> > possibly benefit all platforms on all architectures.
->
-> Sure it would help memory after boot, but it won't help with size on
-> "disk", kernel load time, etc. And some of the devices have very tight
-> boot requirements. Think battery operated outdoor cameras for example.
-
-I would question the choices made if someone ships a camera with a
-generic kernel (without a generic filesystem which at that point also
-needs sufficient storage such that the kernel image size becomes a
-secondary consideration). Once your storage is that constrained the
-balance shifts towards a custom minimal config.
-
-
--Olof
