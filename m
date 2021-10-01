@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C83341F410
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AB541F411
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355540AbhJAR7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:59:35 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29105 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238784AbhJAR7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:59:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="222315899"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="222315899"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:57:49 -0700
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="540435721"
-Received: from pwhela2-mobl1.ger.corp.intel.com (HELO [10.213.160.166]) ([10.213.160.166])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:57:48 -0700
-Subject: Re: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for
- version 1.6
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a2b6a9c7-2191-4bc9-b03b-3b22b495a4be@linux.intel.com>
-Date:   Fri, 1 Oct 2021 12:57:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1355559AbhJAR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:59:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58920 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355546AbhJAR7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:59:38 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 558581FEFD;
+        Fri,  1 Oct 2021 17:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633111073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ilpkw1PaV61JJ9sLSth/ZoVtlT/iBzt2bJzF/XtJ8pE=;
+        b=OLYLYoWltMBBM6EdoElvxv4XEK2Q+Cy6HrHDb34cmiCsqY1v//d2cW4ICkObOpj7zYTm54
+        C0XFZv0M+qpjLwJx351JKfZQl7UuvkowO9wsN7Bgjbg6VaRBrtx1Hczan6G4T/H5Qj7fVm
+        2Vd2rkCsQhbQ0uPv//zas71+VAPR9Gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633111073;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ilpkw1PaV61JJ9sLSth/ZoVtlT/iBzt2bJzF/XtJ8pE=;
+        b=xIpct/XFDEefOkbidhPMwyPTaiasloJk9SxrUdEoNWKqaG/F5WXhihC5vpl4Fyp0dpIddF
+        3I6ALLafMEtYPzCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D50FD13BC3;
+        Fri,  1 Oct 2021 17:57:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EMRkMiBMV2H+DQAAMHmgww
+        (envelope-from <jroedel@suse.de>); Fri, 01 Oct 2021 17:57:52 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v3 3/4] x86/mm: Flush global TLB when switching to
+ trampoline page-table
+From:   =?utf-8?B?SsO2cmcgUsO2ZGVs?= <jroedel@suse.de>
+In-Reply-To: <03994224-abba-4551-9f9d-1360af69c78e@intel.com>
+Date:   Fri, 1 Oct 2021 19:57:52 +0200
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <76A7441A-2A7B-4FBD-A17E-B370893B9CEA@suse.de>
+References: <20211001154817.29225-1-joro@8bytes.org>
+ <20211001154817.29225-4-joro@8bytes.org>
+ <03994224-abba-4551-9f9d-1360af69c78e@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> @@ -610,6 +611,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->  	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
->  	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
->  
-> +	if (ctrl->swrm_hctl_reg) {
-> +		val = ioread32(ctrl->swrm_hctl_reg);
-> +		val &= 0xFFFFFFFD;
 
-magic value, use a #define MASK_SOMETHING?
+> Am 01.10.2021 um 18:13 schrieb Dave Hansen <dave.hansen@intel.com>:
+>=20
+> On 10/1/21 8:48 AM, Joerg Roedel wrote:
+>> Move the switching code into a function so that it can be re-used and
+>> add a global TLB flush. This makes sure that usage of memory which is
+>> not mapped in the trampoline page-table is reliably caught.
+>=20
+> This looks fine.  But, just to be clear, nothing in this series reuses
+> the code, right?
 
-> +		iowrite32(val, ctrl->swrm_hctl_reg);
-> +	}
-> +
->  	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
->  
->  	/* Enable Auto enumeration */
-> @@ -1200,7 +1207,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	struct qcom_swrm_ctrl *ctrl;
->  	const struct qcom_swrm_data *data;
->  	int ret;
-> -	u32 val;
-> +	int val, swrm_hctl_reg = 0;
->  
->  	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
->  	if (!ctrl)
-> @@ -1251,6 +1258,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
->  	ctrl->bus.compute_params = &qcom_swrm_compute_params;
->  
-> +	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg))
-> +		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
+Correct, but my SEV-ES kexec series will re-use it, as it also uses the =
+trampoline_pgd and switches to real-mode to park the APs.
 
-if (!ctrl->swrm_hctl_reg)
-    return -ENODEV;
+Regards,
 
-?
-
-> +
->  	ret = qcom_swrm_get_port_config(ctrl);
->  	if (ret)
->  		goto err_clk;
-> 
+J=C3=B6rg=
