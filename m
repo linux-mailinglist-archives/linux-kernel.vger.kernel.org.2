@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3073041EFDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2610841EFDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354621AbhJAOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        id S1354627AbhJAOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354616AbhJAOqP (ORCPT
+        with ESMTP id S231679AbhJAOqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:46:15 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9DC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:44:31 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id k26so8129345pfi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:44:31 -0700 (PDT)
+        Fri, 1 Oct 2021 10:46:20 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264C8C06177C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:44:36 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j15so6443566plh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TKjVR6/OIbtaDS2aKgtnt+zzA9GH3sGfYZy/bT0/UJQ=;
-        b=qobJ08dRI10r2InHr8xeRxigYELnCvL0kdMhtx8j0neLGSvzqJzls+vCvxNrQtkvqD
-         CMDy1MlMppe/J0lSWd8sCKS3TV7UrYj/I/YTgP9wO0785caWfgaaaPgh1LKOvorRVlNx
-         QIyZlz08dvM2rUtknaTv8BzWJLjkyDvgLDNlEIlTZSnvlmhky4dZ5xIIn8r6CkrrL8va
-         jRf85nBB0A6Zw7rkIHhWEENK01q0+uLSuS5it6WSYTujXZpG0wkZ8MwwBsgLcagqQOWj
-         Oz+rtdZAsnfnTGMC5dsivqzImk78MXR7vmtkjreQDNLgqBrP10vDcyqmf6+vQaKXt5UM
-         P21A==
+        bh=ad+1NfwHnbLkN/4DhPh8YfoW0rtkGTB5w67G5jKzAqA=;
+        b=m4AoOUSeWpSf+BmE/E5JE7QAW2tuRX2lPWbrPrr9rFDDwcu+fkJv5fHqWTYvkVAfS9
+         nyDfJG623FAQ6TzwfPGjIphoAVqWn78S0YkkNvAAb+1PHVvRaSrBRQZfPHsu8FVIv1CT
+         Q51DGGxE2xiabv82hDlYmW68H6KIgUrpAOdy2t7vnat5ZE/huyPGWCW0aiNpgFcIhtz+
+         qpVWzBO7OuPd2gOHVDwoApKG/vpWkUXTbJm4K1epfsDsV/C7XecY0uYXOa2dkf827S0D
+         AofPgMwSxn2N60kBaOsTOwv4iN7kHPH+41iT3sZ13QeDkVHt45byN15UmonuU2qzpvH3
+         8P8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TKjVR6/OIbtaDS2aKgtnt+zzA9GH3sGfYZy/bT0/UJQ=;
-        b=who/vtOo4lNgrgo1832KemXYir7tBBTNfkB9pGtB9uYpcP3RCbifisMVyIIbwYDV4v
-         EeJ2fOGhmKFM6IbEQ/onirj6PXh2MZmOuK2doVTETDQ/Fytu+6UwUyJAIdDsM7w4liMH
-         ufgBYmb5kMj0iM7oiCir3XfY7i1ncPgDrX71MBCiVqgfcT8xAUkIDP7VPZyTJm7ebe8x
-         S78nbVHcqNb15DQqIMyKgUO0E1qaPmZtJm3R63J/gZWrjcnAW0w65bqPbXZu8DOmHCB5
-         I3FEBgXc7gd15Vj/VMuK38+JIMnGXdPd6YPASry+f3RTL7MdiyQh+4yxwVZQEWiNKtk7
-         fNLg==
-X-Gm-Message-State: AOAM530i2rpSZjqyiyM9T9R02E4JQPCCN5aFAr5IoFw7qZKLR1K4mURs
-        Ms+MnQuodFG/0WdZnXBcqg==
-X-Google-Smtp-Source: ABdhPJyvQsUwbRBCwjEBRRPxwgvVl9HSspJ8+/s3D+U6IrIIB6kJOG95/xHOOZZtvf6CpT9+fVX5nQ==
-X-Received: by 2002:a63:fb18:: with SMTP id o24mr4857595pgh.8.1633099471003;
-        Fri, 01 Oct 2021 07:44:31 -0700 (PDT)
+        bh=ad+1NfwHnbLkN/4DhPh8YfoW0rtkGTB5w67G5jKzAqA=;
+        b=OBTpS+JbFj89qDbMfWh2z4bWtyLFsn4OLXyGbuzawldkBkao5nZSi5jXmSdYQ2s9Ws
+         lBMywJsGedUYnXs5a7dLk+xU6na0+zacR32GBjRI7P6EssOYtwpMvaqt3wXBu28SEBr/
+         XnvW0x1+ffEYbpdR684bqxVrsYraTlCqeRS6QO+A7RZiAd/U7O5PE6WesxmPzcPtlwjU
+         ex+d79zzvIuar+NCGjoQJtKA2guKzHblQppwgRgcPfBtrbjAMB8SrvWt360MZZcaNc0m
+         N4D0cYWAYQFNcrddqDIXEdmJ38f5doD+05wzaAWjNHSAx12UIqHV3HxlbiWTtbiairGT
+         haaA==
+X-Gm-Message-State: AOAM533JBbVR5WrYsTZ/4eLCdp7sYml7yp93JzXDMBBKkD3rRIz2ZTKJ
+        bo428cY5X/KotTSdbeNyag==
+X-Google-Smtp-Source: ABdhPJzRN0EOIHvRUOUv9bkTENMQoAeWuRf06FqsKjZbaWa0u8oeHc3rRZvzDN47mdSXjksUi2ampA==
+X-Received: by 2002:a17:902:708c:b0:13e:b42:88b5 with SMTP id z12-20020a170902708c00b0013e0b4288b5mr9862002plk.4.1633099475725;
+        Fri, 01 Oct 2021 07:44:35 -0700 (PDT)
 Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z12sm6766203pge.16.2021.10.01.07.44.26
+        by smtp.gmail.com with ESMTPSA id z12sm6766203pge.16.2021.10.01.07.44.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 07:44:30 -0700 (PDT)
+        Fri, 01 Oct 2021 07:44:35 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Marc Zyngier <maz@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
         Sami Tolvanen <samitolvanen@google.com>,
@@ -60,9 +61,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Yuichi Ito <ito-yuichi@fujitsu.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCHv4 2/3] arm64: entry: refactor EL1 interrupt entry logic
-Date:   Fri,  1 Oct 2021 22:44:05 +0800
-Message-Id: <20211001144406.7719-3-kernelfans@gmail.com>
+Subject: [PATCHv4 3/3] arm64: entry: avoid double-accounting IRQ RCU entry
+Date:   Fri,  1 Oct 2021 22:44:06 +0800
+Message-Id: <20211001144406.7719-4-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211001144406.7719-1-kernelfans@gmail.com>
 References: <20211001144406.7719-1-kernelfans@gmail.com>
@@ -72,28 +73,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+When an IRQ is taken, some accounting needs to be performed to enter and
+exit IRQ context around the IRQ handler. On arm64 some of this
+accounting is performed by both the architecture code and the IRQ domain
+code, resulting in calling rcu_irq_enter() twice per exception entry,
+violating the expectations of the core RCU code, and resulting in
+failing to identify quiescent periods correctly (e.g. in
+rcu_is_cpu_rrupt_from_idle()).
 
-Currently we distinguish IRQ and definitely-PNMI at entry/exit time
-via the enter_el1_irq_or_nmi() and enter_el1_irq_or_nmi() helpers. In
-subsequent patches we'll need to handle the two cases more distinctly
-in the body of the exception handler.
+To fix this, we must perform all the accounting from the architecture
+code. We prevent the IRQ domain code from performing any accounting by
+selecting HAVE_ARCH_IRQENTRY, and must call irq_enter_rcu() and
+irq_exit_rcu() around invoking the root IRQ handler.
 
-To make this possible, this patch refactors el1_interrupt to be a
-top-level dispatcher to separate handlers for the IRQ and PNMI cases,
-removing the need for the enter_el1_irq_or_nmi() and
-exit_el1_irq_or_nmi() helpers.
+When we take a pNMI from a context with IRQs disabled, we'll perform the
+necessary accounting as part of arm64_enter_nmi() and arm64_exit_nmi(),
+and should only call irq_enter_rcu() and irq_exit_rcu() when we may have
+taken a regular interrupt.
 
-Note that since arm64_enter_nmi() calls __nmi_enter(), which
-increments the preemt_count, we could never preempt when handling a
-PNMI. We now only check for preemption in the IRQ case, which makes
-this clearer.
-
-There should be no functional change as a result of this patch.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Joey Gouly <joey.gouly@arm.com>
@@ -104,81 +105,46 @@ Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
 Cc: linux-kernel@vger.kernel.org
 To: linux-arm-kernel@lists.infradead.org
 ---
- arch/arm64/kernel/entry-common.c | 43 ++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 22 deletions(-)
+ arch/arm64/Kconfig               | 1 +
+ arch/arm64/kernel/entry-common.c | 4 ++++
+ 2 files changed, 5 insertions(+)
 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 5c7ae4c3954b..c0ba052116b2 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -144,6 +144,7 @@ config ARM64
+ 	select HAVE_ARCH_BITREVERSE
+ 	select HAVE_ARCH_COMPILER_H
+ 	select HAVE_ARCH_HUGE_VMAP
++	select HAVE_ARCH_IRQENTRY
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
 diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 32f9796c4ffe..fecf046f0708 100644
+index fecf046f0708..af931e63dc59 100644
 --- a/arch/arm64/kernel/entry-common.c
 +++ b/arch/arm64/kernel/entry-common.c
-@@ -219,22 +219,6 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
- 		lockdep_hardirqs_on(CALLER_ADDR0);
- }
- 
--static void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs)
--{
--	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
--		arm64_enter_nmi(regs);
--	else
--		enter_from_kernel_mode(regs);
--}
--
--static void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs)
--{
--	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
--		arm64_exit_nmi(regs);
--	else
--		exit_to_kernel_mode(regs);
--}
--
- static void __sched arm64_preempt_schedule_irq(void)
+@@ -428,7 +428,9 @@ static __always_inline void
+ __el1_interrupt(struct pt_regs *regs, void (*handler)(struct pt_regs *))
  {
- 	lockdep_assert_irqs_disabled();
-@@ -432,14 +416,19 @@ asmlinkage void noinstr el1h_64_sync_handler(struct pt_regs *regs)
- 	}
- }
- 
--static void noinstr el1_interrupt(struct pt_regs *regs,
--				  void (*handler)(struct pt_regs *))
-+static __always_inline void
-+__el1_pnmi(struct pt_regs *regs, void (*handler)(struct pt_regs *))
- {
--	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
--
--	enter_el1_irq_or_nmi(regs);
-+	arm64_enter_nmi(regs);
+ 	enter_from_kernel_mode(regs);
++	irq_enter_rcu();
  	do_interrupt_handler(regs, handler);
-+	arm64_exit_nmi(regs);
-+}
- 
-+static __always_inline void
-+__el1_interrupt(struct pt_regs *regs, void (*handler)(struct pt_regs *))
-+{
-+	enter_from_kernel_mode(regs);
-+	do_interrupt_handler(regs, handler);
++	irq_exit_rcu();
  	/*
  	 * Note: thread_info::preempt_count includes both thread_info::count
  	 * and thread_info::need_resched, and is not equivalent to
-@@ -448,8 +437,18 @@ static void noinstr el1_interrupt(struct pt_regs *regs,
- 	if (IS_ENABLED(CONFIG_PREEMPTION) &&
- 	    READ_ONCE(current_thread_info()->preempt_count) == 0)
- 		arm64_preempt_schedule_irq();
-+	exit_to_kernel_mode(regs);
-+}
+@@ -666,7 +668,9 @@ static void noinstr el0_interrupt(struct pt_regs *regs,
+ 	if (regs->pc & BIT(55))
+ 		arm64_apply_bp_hardening();
  
--	exit_el1_irq_or_nmi(regs);
-+static void noinstr el1_interrupt(struct pt_regs *regs,
-+				  void (*handler)(struct pt_regs *))
-+{
-+	write_sysreg(DAIF_PROCCTX_NOIRQ, daif);
-+
-+	if (IS_ENABLED(CONFIG_ARM64_PSEUDO_NMI) && !interrupts_enabled(regs))
-+		__el1_pnmi(regs, handler);
-+	else
-+		__el1_interrupt(regs, handler);
++	irq_enter_rcu();
+ 	do_interrupt_handler(regs, handler);
++	irq_exit_rcu();
+ 
+ 	exit_to_user_mode(regs);
  }
- 
- asmlinkage void noinstr el1h_64_irq_handler(struct pt_regs *regs)
 -- 
 2.31.1
 
