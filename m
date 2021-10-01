@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1227A41EA3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE2D41EA41
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353294AbhJAKA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353235AbhJAKA1 (ORCPT
+        id S1353301AbhJAKBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:01:16 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:33787 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353069AbhJAKBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:00:27 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F06DC06177B
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 02:58:43 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id q189so1258100ybq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 02:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+uUHmF2RAI7sGbaKJoO4TbpCYkh0FNhqLtnQn6C5nRU=;
-        b=B/w1+gFIDYDBBVD5ke/IYcG9PiVaGQrFIW+FP7bHGT0AHZNr3RXHy+r41P5ZSriwVd
-         qyKrX7I+hmEdtb6G9DDDj0guwCOeZn705q5suOzsPBeiI3x6y6S6GmVYptwR/BNejdB/
-         Rxj/zob1caMoNb7I/Z2GwwZMWqsn64/7A/ZjqcOt+RFAL6cQ8leOaSA3vQ/JchDB7GZG
-         iJn0nKcPfAS0BNfHpBaMDevGHbhdlemAy6N/IH/+ykTZa9x/oGPMAcJ95H5nMEMMcykd
-         rPnY99D090Ilp1EUnxhAxsc6A85epbVewDQsA8P6rSzmQZvuhVgAlcRdxrzdSucu4ylT
-         j/5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+uUHmF2RAI7sGbaKJoO4TbpCYkh0FNhqLtnQn6C5nRU=;
-        b=oSR5wUfo+aem/U/hupXRS3otqnyMpb7QOythrRpTJuEVFCAaAl8RvCozDJ4D3j6ram
-         sYLVOaDrDBZB6IcvhYTx3ojfRM2FQ8lZWY/Hm6zu9j0Wp0HtnJA+8xMGXBuDcQpMgCAB
-         0fhr52E5TzkHjbQQ+DMVsh7JvP3PON3epkA7r1gUzryfKkhg0ItOzeYp9CXLQmpmxnrs
-         c+HfHA+N1siBc/j0iYqbL424zpcw7sYzZdaMcMqvhO6d/aQYtPlhLRNQkexYelubrZHd
-         tDboptu08AnYRUssRvzbf/uMiAGUX3sf0H4ykWDghHUHUcW6x3KvFZBw6LlkabR0hgoi
-         Fi3Q==
-X-Gm-Message-State: AOAM532rnhltFmYjXS3kVCPh2QEUTxKF2hJPDDRETWQaC6PbaCAXXUx1
-        BD13ceMQQwStwtfOEO+YuQt1GVXEIEOc+HPBOhOB6g==
-X-Google-Smtp-Source: ABdhPJz0BOFm+x8/UFrf+y3CI5cVPYOdCxxnW3Sif8MwolFw8b0XI6lihHmRXLsz2GG1NReXzKCrbVzH9S4X793QBGw=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr4867872ybq.328.1633082322563;
- Fri, 01 Oct 2021 02:58:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923224640.62258-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210923224640.62258-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 1 Oct 2021 11:58:31 +0200
-Message-ID: <CAMpxmJWG1rO69i9WmFu-a23W2cjNtabyySoAyOB-NXCN5VjNHw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: pca953x: Improve bias setting
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 1 Oct 2021 06:01:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633082355;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=w7sUq6VJrsloj/8hoAJ9FcuFqQDBPa68Sv7hZ9Jm3Og=;
+    b=ZQMWyINswwhaTtSbMHYTg3UI8KdfyyD8BuZWtHm92xE981aY1vxh5nV4jiNDMMynZe
+    BevYiwpa0IAFdVYYV4u4eHd7dakjfUxl6XOeH68IqC+brxaNPuYKhH2KEMaFm3BX8YV+
+    +auHcHEqFtYH2hWcfYcPpD+qWR8aOCCsDXwz/qSwxqNHvI0YwctWoX+lt60YZLDAAyvy
+    PF7Q3N2CZKjO6kMhD/QK2W1UohjD/3C+uKmxZY+VMMd2mObCZ7rlP8yo421yh4r2eWhT
+    FoP/kRKXnFe4FMBhLTrpv61ahYCPzVEBGX62/X7QPIafN1b7EMUQIaNNGqxp1CsW/lV6
+    jReQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMMVxw=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id I01f74x919xEruR
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Fri, 1 Oct 2021 11:59:14 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH V2] ARM: dts: omap36xx: Remove turbo mode for 1GHz
+ variants
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20211001095404.41f73d88@aktux>
+Date:   Fri, 1 Oct 2021 11:59:14 +0200
+Cc:     Adam Ford <aford173@gmail.com>, linux-omap@vger.kernel.org,
+        aford@beaconembedded.com,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C0A84970-0AAC-42E7-8E0F-4D165F0C9551@goldelico.com>
+References: <20210109170103.1249838-1-aford173@gmail.com>
+ <20211001095404.41f73d88@aktux>
+To:     Andreas Kemnade <andreas@kemnade.info>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 12:46 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> The commit 15add06841a3 ("gpio: pca953x: add ->set_config implementation")
-> introduced support for bias setting. However this, due to being half-baked,
-> brought potential issues:
->  - the turning bias via disabling makes the pin floating for a while;
->  - once enabled, bias can't be disabled.
->
-> Fix all these by adding support for bias disabling and move the disabling
-> part under the corresponding conditional.
->
-> While at it, add support for default setting, since it's cheap to add.
->
-> Fixes: 15add06841a3 ("gpio: pca953x: add ->set_config implementation")
-> Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpio-pca953x.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-> index f5cfc0698799..dac4d772a4d1 100644
-> --- a/drivers/gpio/gpio-pca953x.c
-> +++ b/drivers/gpio/gpio-pca953x.c
-> @@ -566,21 +566,21 @@ static int pca953x_gpio_set_pull_up_down(struct pca953x_chip *chip,
->
->         mutex_lock(&chip->i2c_lock);
->
-> -       /* Disable pull-up/pull-down */
-> -       ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, 0);
-> -       if (ret)
-> -               goto exit;
-> -
->         /* Configure pull-up/pull-down */
->         if (config == PIN_CONFIG_BIAS_PULL_UP)
->                 ret = regmap_write_bits(chip->regmap, pull_sel_reg, bit, bit);
->         else if (config == PIN_CONFIG_BIAS_PULL_DOWN)
->                 ret = regmap_write_bits(chip->regmap, pull_sel_reg, bit, 0);
-> +       else
-> +               ret = 0;
->         if (ret)
->                 goto exit;
->
-> -       /* Enable pull-up/pull-down */
-> -       ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, bit);
-> +       /* Disable/Enable pull-up/pull-down */
-> +       if (config == PIN_CONFIG_BIAS_DISABLE)
-> +               ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, 0);
-> +       else
-> +               ret = regmap_write_bits(chip->regmap, pull_en_reg, bit, bit);
->
->  exit:
->         mutex_unlock(&chip->i2c_lock);
-> @@ -594,7 +594,9 @@ static int pca953x_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
->
->         switch (pinconf_to_config_param(config)) {
->         case PIN_CONFIG_BIAS_PULL_UP:
-> +       case PIN_CONFIG_BIAS_PULL_PIN_DEFAULT:
->         case PIN_CONFIG_BIAS_PULL_DOWN:
-> +       case PIN_CONFIG_BIAS_DISABLE:
->                 return pca953x_gpio_set_pull_up_down(chip, offset, config);
->         default:
->                 return -ENOTSUPP;
-> --
-> 2.33.0
->
 
-Applied, thanks!
 
-Bart
+> Am 01.10.2021 um 09:54 schrieb Andreas Kemnade <andreas@kemnade.info>:
+>=20
+> On Sat,  9 Jan 2021 11:01:03 -0600
+> Adam Ford <aford173@gmail.com> wrote:
+>=20
+>> Previously, the 1GHz variants were marked as a turbo,
+>> because that variant has reduced thermal operating range.
+>>=20
+>> Now that the thermal throttling is in place, it should be
+>> safe to remove the turbo-mode from the 1GHz variants, because
+>> the CPU will automatically slow if the thermal limit is reached.
+>>=20
+>> Signed-off-by: Adam Ford <aford173@gmail.com>
+>> ---
+>> V2:  The orignal patch had the wrong file added. Add the =
+omap36xx.dtsi
+>>=20
+> hmm, I somehow expected that there is a revert of this thing going
+> through. But now, the turbo-mode is still missing
+
+tagging by turbo-mode means the OPP is *disabled* by default and
+needs to be enabled actively.
+
+> and I understood the
+> revert is only in Nikolaus' trees.
+
+It is just a revert for the gta04a5 because I think it is the only board
+which is affected (maybe it would need SmartReflex in operation to
+fine tune the OPPs compared to the generic table). Therefore I have
+a patch which adds turbo-mode to the gta04a5.dts
+
+> The 1Ghz mode was working for some
+> time but does not anymore. Is it just me or do others also have the
+> same problems?
+
+That would be interesting to know.
+
+BR,
+NIkolaus
+
+>=20
+>=20
+>> diff --git a/arch/arm/boot/dts/omap36xx.dtsi =
+b/arch/arm/boot/dts/omap36xx.dtsi
+>> index 05fe5ed127b0..20844dbc002e 100644
+>> --- a/arch/arm/boot/dts/omap36xx.dtsi
+>> +++ b/arch/arm/boot/dts/omap36xx.dtsi
+>> @@ -72,7 +72,6 @@ opp1g-1000000000 {
+>> 					 <1375000 1375000 1375000>;
+>> 			/* only on am/dm37x with speed-binned bit set */
+>> 			opp-supported-hw =3D <0xffffffff 2>;
+>> -			turbo-mode;
+>> 		};
+>> 	};
+>>=20
+>=20
+
