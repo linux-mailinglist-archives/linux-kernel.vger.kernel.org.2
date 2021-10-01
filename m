@@ -2,118 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883341F1E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A0641F1E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhJAQOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhJAQOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:14:36 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1D1C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:12:51 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dn26so36528138edb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ADTH4O/xVdp0zOdiyrZ3pudKmhw84Ea6QbVkbGyXPnU=;
-        b=YzUMn2zHMYqwvQBKhiWEsku2N+eKNBTI+NgPXvgIUqUC5qxgHv60MignLHtVF/VZ0x
-         E6MW9T+m3/Us0J7G/+hgFygVnCvRy+NUXWIpA+wfzrzC5iWN8479sevsActE3Ldd/snx
-         3uRUG8jjFlV9VwcpiETLWajM/me+mNTimHbLkm7r2lLf+25So73QHs8QnhfAvni7GlGZ
-         eJJhJBz4XWqV7zhpAv+xhJQKKHtIVjkScUbpXc9iDz7N+jgr84PoK7EnB3bT6UbGY2IH
-         ot2zwIAKydfo7GyAfMVsV32fpZ1y9mr0Ed9tNLXimKC54msw9BiZY83gsp6oqyhQyVfX
-         nCQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ADTH4O/xVdp0zOdiyrZ3pudKmhw84Ea6QbVkbGyXPnU=;
-        b=iG24ofXhDEXDChpm8HC3Rteyzg0ec2VXCLwHxLn1svg8lBgBIXCbYb/npWlCCDYlUM
-         +WmGAcyf8oIyes658dddsbVj6PGnL8YhqH0TKJSDi2Z0NWLShigqgpAgSJd+f43Xjmd+
-         n6DABaXUvSejunQ1I5pojs56+ej9dKGLOJQ0bdyaFyASzvpM/HOdyjumpPs0LrtatM72
-         HvYRmiWkvtE1qJSDkaaFfwSPxugPOpwyW6XrfbAzGes09vnLWHEt5lkCNcDpFis3yA9k
-         7317lMZ7JROcMkifQfSK9ubI2XRqUabEVb3Iabwu1HYJ0IMycPS+LTwi//v3vEIz2KzP
-         XWJw==
-X-Gm-Message-State: AOAM530tDPDctNxw0XfP9PLxx4Tj+NHXBE+bJ3v/f3sWfQXuP7o7AYWc
-        N8UuQbgDETRB0/+l4MNbU2s6TGHJomCfdj1qE1w67g==
-X-Google-Smtp-Source: ABdhPJwVoqKY1frUnuINUHM9ti7r8x1XUX0LdXrIumCujyF3cyWBggs5dXcf5xUvt6tJHIjcg/97oLVEFqtllUEfsGw=
-X-Received: by 2002:a17:906:8e0c:: with SMTP id rx12mr7225749ejc.423.1633104768129;
- Fri, 01 Oct 2021 09:12:48 -0700 (PDT)
+        id S1353675AbhJAQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232047AbhJAQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:15:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C46619E7;
+        Fri,  1 Oct 2021 16:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633104799;
+        bh=mMEfl2DznOLS6As2JE8WI2CMTaAzNlFeLwPjlOMFh+M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qtGKYpJVkWBpyfyIyf10q2LSp6HasZDVzScNFobfxXXMug+wL9eZareCzYk+rZb9q
+         Bp31Pex6eOAkyzHPX38/nYND0zavBfBuQLf5X9pR5y+icTLrveqPNhRfrkZb8ZooIy
+         /GTrNaYJiAxzqVgrk2dLPgxp1qkD1n+MiEWkz86PNnnm1Nod5545kqh8TzCw1pT547
+         wyIwuckD3T+tChy8asdoEfjyBw0Eu6Q/JJEE+KZNz+n9SrB93B+iHQWSLLXQYcPJzj
+         SL6prBx77BEXuIGdSRsDzZusFqGJFTqCSVyMR7/Pi4GIUPXm88fjSm0HJ1kcj8vGLD
+         kcEeoJ2NLE7tQ==
+Received: by pali.im (Postfix)
+        id 4384A821; Fri,  1 Oct 2021 18:13:16 +0200 (CEST)
+Date:   Fri, 1 Oct 2021 18:13:16 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 13/24] wfx: add hif_tx*.c/hif_tx*.h
+Message-ID: <20211001161316.w3cwsigacznjbowl@pali>
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+ <20210920161136.2398632-14-Jerome.Pouiller@silabs.com>
+ <87fstlkr1m.fsf@codeaurora.org>
+ <2873071.CAOYYqaKbK@pc-42>
 MIME-Version: 1.0
-References: <20210928122339.502270600@linutronix.de> <20210928122411.593486363@linutronix.de>
- <YVRT6QbX5zwiIJkI@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVRT6QbX5zwiIJkI@hirez.programming.kicks-ass.net>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Fri, 1 Oct 2021 09:12:34 -0700
-Message-ID: <CALCETrVP3asoqWyNqEe+rDs+YECd9gnp9eFb1==X0140oMZ41g@mail.gmail.com>
-Subject: Re: [patch 4/5] sched: Delay task stack freeing on RT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2873071.CAOYYqaKbK@pc-42>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 4:54 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Sep 28, 2021 at 02:24:30PM +0200, Thomas Gleixner wrote:
->
-> > --- a/kernel/exit.c
-> > +++ b/kernel/exit.c
-> > @@ -172,6 +172,11 @@ static void delayed_put_task_struct(stru
-> >       kprobe_flush_task(tsk);
-> >       perf_event_delayed_put(tsk);
-> >       trace_sched_process_free(tsk);
-> > +
-> > +     /* RT enabled kernels delay freeing the VMAP'ed task stack */
-> > +     if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> > +             put_task_stack(tsk);
-> > +
-> >       put_task_struct(tsk);
-> >  }
->
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4846,8 +4846,12 @@ static struct rq *finish_task_switch(str
-> >               if (prev->sched_class->task_dead)
-> >                       prev->sched_class->task_dead(prev);
-> >
-> > -             /* Task is done with its stack. */
-> > -             put_task_stack(prev);
-> > +             /*
-> > +              * Release VMAP'ed task stack immediate for reuse. On RT
-> > +              * enabled kernels this is delayed for latency reasons.
-> > +              */
-> > +             if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-> > +                     put_task_stack(prev);
-> >
-> >               put_task_struct_rcu_user(prev);
-> >       }
->
->
-> Having this logic split across two files seems unfortunate and prone to
-> 'accidents'. Is there a real down-side to unconditionally doing it in
-> delayed_put_task_struct() ?
->
-> /me goes out for lunch... meanwhile tglx points at: 68f24b08ee89.
->
-> Bah.. Andy?
+On Friday 01 October 2021 17:17:52 Jérôme Pouiller wrote:
+> On Friday 1 October 2021 11:55:33 CEST Kalle Valo wrote:
+> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> > 
+> > 
+> > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> > 
+> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> > 
+> > [...]
+> > 
+> > > --- /dev/null
+> > > +++ b/drivers/net/wireless/silabs/wfx/hif_tx_mib.h
+> > > @@ -0,0 +1,49 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * Implementation of the host-to-chip MIBs of the hardware API.
+> > > + *
+> > > + * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
+> > > + * Copyright (c) 2010, ST-Ericsson
+> > > + * Copyright (C) 2010, ST-Ericsson SA
+> > > + */
+> > > +#ifndef WFX_HIF_TX_MIB_H
+> > > +#define WFX_HIF_TX_MIB_H
+> > > +
+> > > +struct wfx_vif;
+> > > +struct sk_buff;
+> > > +
+> > > +int hif_set_output_power(struct wfx_vif *wvif, int val);
+> > > +int hif_set_beacon_wakeup_period(struct wfx_vif *wvif,
+> > > +                              unsigned int dtim_interval,
+> > > +                              unsigned int listen_interval);
+> > > +int hif_set_rcpi_rssi_threshold(struct wfx_vif *wvif,
+> > > +                             int rssi_thold, int rssi_hyst);
+> > > +int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
+> > > +                        struct hif_mib_extended_count_table *arg);
+> > > +int hif_set_macaddr(struct wfx_vif *wvif, u8 *mac);
+> > > +int hif_set_rx_filter(struct wfx_vif *wvif,
+> > > +                   bool filter_bssid, bool fwd_probe_req);
+> > > +int hif_set_beacon_filter_table(struct wfx_vif *wvif, int tbl_len,
+> > > +                             const struct hif_ie_table_entry *tbl);
+> > > +int hif_beacon_filter_control(struct wfx_vif *wvif,
+> > > +                           int enable, int beacon_count);
+> > > +int hif_set_operational_mode(struct wfx_dev *wdev, enum hif_op_power_mode mode);
+> > > +int hif_set_template_frame(struct wfx_vif *wvif, struct sk_buff *skb,
+> > > +                        u8 frame_type, int init_rate);
+> > > +int hif_set_mfp(struct wfx_vif *wvif, bool capable, bool required);
+> > > +int hif_set_block_ack_policy(struct wfx_vif *wvif,
+> > > +                          u8 tx_tid_policy, u8 rx_tid_policy);
+> > > +int hif_set_association_mode(struct wfx_vif *wvif, int ampdu_density,
+> > > +                          bool greenfield, bool short_preamble);
+> > > +int hif_set_tx_rate_retry_policy(struct wfx_vif *wvif,
+> > > +                              int policy_index, u8 *rates);
+> > > +int hif_keep_alive_period(struct wfx_vif *wvif, int period);
+> > > +int hif_set_arp_ipv4_filter(struct wfx_vif *wvif, int idx, __be32 *addr);
+> > > +int hif_use_multi_tx_conf(struct wfx_dev *wdev, bool enable);
+> > > +int hif_set_uapsd_info(struct wfx_vif *wvif, unsigned long val);
+> > > +int hif_erp_use_protection(struct wfx_vif *wvif, bool enable);
+> > > +int hif_slot_time(struct wfx_vif *wvif, int val);
+> > > +int hif_wep_default_key_id(struct wfx_vif *wvif, int val);
+> > > +int hif_rts_threshold(struct wfx_vif *wvif, int val);
+> > 
+> > "wfx_" prefix missing from quite a few functions.
+> 
+> I didn't know it was mandatory to prefix all the functions with the
+> same prefix. With the rule of 80-columns, I think I will have to change
+> a bunch of code :( .
 
-Could we make whatever we do here unconditional?  And what actually
-causes the latency?  If it's vfree, shouldn't the existing use of
-vfree_atomic() in free_thread_stack() handle it?  Or is it the
-accounting?
-
-
--- 
-Andy Lutomirski
-AMA Capital Management, LLC
+I think that new drivers can use 100 characters per line.
