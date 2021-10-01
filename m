@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE8241EF0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A370241EF0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353643AbhJAOD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
+        id S1353653AbhJAOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:03:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354209AbhJAODY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:03:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA7361278;
-        Fri,  1 Oct 2021 14:01:36 +0000 (UTC)
+        id S1353675AbhJAOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:03:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0EBD61A03;
+        Fri,  1 Oct 2021 14:01:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633096900;
-        bh=7k8J4hVLhFBK3eMiMiK8hqRuB3P9jfD+acMH4FlpzHQ=;
+        s=k20201202; t=1633096903;
+        bh=BsLzucRJ7iKQ3GfXIzsq7Cvk+aim72OP90PDiMEECj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQyJM5PE1v2PsPXtMgVXPRS69jwYq15GCSqJntv5wVEYDfl6Z+C1NIDAhFag6zmd1
-         VCEyXmJrfivvtcv3FverqmQVlPja35LihszBynyo7jqqwynRoG6oIBH3f82V+BtRZA
-         ny/rtimklWt138RI4HjweojYhA0pn+w+34FmvHX1fD/f/WiuwwdgU7Lu5rMIpn9UYS
-         Y2eEBi7AnyZ3TRyeyg5YXZcb7VbXwqCDFJYKtPnL5KrCBUva64SXr9vHIYSGB+LsLh
-         GBwkvYstWhDEVdKyiP0iFbR8XthYNxF2CkdOHvDtr54CDM87H+HErnyHmS4B18qOqw
-         3+LlcLLbNRCzQ==
+        b=j5GdhvssI4RdbYJP3J1S9LJ0NqL4nQUK7KN50vCwzskamQeWQMudtzvO7P0BFxuuV
+         K0Xyofnxi0Ih3eOzHDGWHcAwgmUYYqqqZyqwWwKmXY1imuBSvdqCwVUXML4PcJW9Ys
+         Tw1z0OgxoaEGRT2gWxPmnipsLa+vNwyBjonCXsCr4a3qbyrH6dKLB/ZHHSNzBAcYTX
+         tkcsVj6kqfbNSXaiDKQ18nz9QUqKZDLArkXPbpJcacFejUZE5cZ2mM4NGDhGDNcHB3
+         QyLBlk/1XEqB4Coh2Cvl6FooRW0+upYa4OFgj+VeLVgsiEZ0S42SIMIjMWkTNZsuMK
+         igtmUN0yh/6Uw==
 From:   Will Deacon <will@kernel.org>
-To:     linux-mm@kvack.org, ebiederm@xmission.com, corbet@lwn.net,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        matthias.bgg@gmail.com, akpm@linux-foundation.org,
-        mark.rutland@arm.com, rfontana@redhat.com, maz@kernel.org,
-        james.morse@arm.com, tglx@linutronix.de, selindag@gmail.com,
-        linux-arm-kernel@lists.infradead.org, vladimir.murzin@arm.com,
-        kernelfans@gmail.com, kexec@lists.infradead.org,
-        steve.capper@arm.com, sashal@kernel.org,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v18 00/15] arm64: MMU enabled kexec relocation
-Date:   Fri,  1 Oct 2021 15:01:31 +0100
-Message-Id: <163309146157.2070475.7111592087053001525.b4-ty@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Alex Bee <knaerzche@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 0/2] arm64: retry dropping HAVE_ARCH_PFN_VALID
+Date:   Fri,  1 Oct 2021 15:01:32 +0100
+Message-Id: <163309648548.1106750.5985957686338166630.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210930143113.1502553-1-pasha.tatashin@soleen.com>
-References: <20210930143113.1502553-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20210930013039.11260-1-rppt@kernel.org>
+References: <20210930013039.11260-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,93 +51,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 14:30:58 +0000, Pasha Tatashin wrote:
-> Changelog:
-> v18:
-> 	- Addressed comments from Will Deacon
-> 	- Added Acks from Catalin Marinas
-> v17:
-> 	- Merged with 5.15-rc1 as requested by Catalin Marinas
-> 	- Added Tested-by: Pingfan Liu <piliu@redhat.com>
-> v16:
-> 	- Merged with 5.14-rc4
-> v15:
-> 	- Changed trans_pgd_copy_el2_vectors() to use vector table that
-> 	  only shared by kexec and hibernate. This way sync does not have
-> 	  dangling branch that was recently introduced. (Reported by Marc
-> 	  Zyngier)
-> 	- Renamed is_hyp_callable() to is_hyp_nvhe() as requested by Marc
-> 	  Zyngier
-> 	- Clean-ups, comment fixes.
-> 	- Sync with upstream 368094df48e680fa51cedb68537408cfa64b788e
-> v14:
-> 	- Fixed a bug in "arm64: hyp-stub: Move elx_sync into the vectors"
-> 	  that was noticed by Marc Zyngier
-> 	- Merged with upstream
-> v13:
-> 	- Fixed a hang on ThunderX2, thank you Pingfan Liu for reporting
-> 	  the problem. In relocation function we need civac not ivac, we
-> 	  need to clean data in addition to invalidating it.
-> 	  Since I was using ThunderX2 machine I also measured the new
-> 	  performance data on this large ARM64 server. The MMU improves
-> 	  kexec relocation 190 times on this machine! (see below for
-> 	  raw data). Saves 7.5s during CentOS kexec reboot.
-> v12:
-> 	- A major change compared to previous version. Instead of using
-> 	  contiguous VA range a copy of linear map is now used to perform
-> 	  copying of segments during relocation as it was agreed in the
-> 	  discussion of version 11 of this project.
-> 	- In addition to using linear map, I also took several ideas from
-> 	  James Morse to better organize the kexec relocation:
-> 	  	1. skip relocation function entirely if that is not needed
-> 		2. remove the PoC flushing function since it is not needed
-> 		   anymore with MMU enabled.
-> v11:
-> 	- Fixed missing KEXEC_CORE dependency for trans_pgd.c
-> 	- Removed useless "if(rc) return rc" statement (thank you Tyler Hicks)
-> 	- Another 12 patches were accepted into maintainer's get.
-> 	  Re-based patches against:
-> 	  https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-> 	  Branch: for-next/kexec
-> v10:
-> 	- Addressed a lot of comments form James Morse and from  Marc Zyngier
-> 	- Added review-by's
-> 	- Synchronized with mainline
+On Thu, 30 Sep 2021 04:30:37 +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Hi,
+> 
+> This is a new attempt to drop HAVE_ARCH_PFN_VALID on arm64 and start using
+> the generic implementation of pfn_valid().
 > 
 > [...]
 
-Applied to arm64 (for-next/kexec), thanks!
+Applied to arm64 (for-next/pfn-valid), thanks!
 
-[01/15] arm64: kernel: add helper for booted at EL2 and not VHE
-        https://git.kernel.org/arm64/c/094a3684b9b6
-[02/15] arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
-        https://git.kernel.org/arm64/c/788bfdd97434
-[03/15] arm64: hibernate: abstract ttrb0 setup function
-        https://git.kernel.org/arm64/c/a347f601452f
-[04/15] arm64: kexec: flush image and lists during kexec load time
-        https://git.kernel.org/arm64/c/0d8732e461d6
-[05/15] arm64: kexec: skip relocation code for inplace kexec
-        https://git.kernel.org/arm64/c/5bb6834fc290
-[06/15] arm64: kexec: Use dcache ops macros instead of open-coding
-        https://git.kernel.org/arm64/c/3036ec599332
-[07/15] arm64: kexec: pass kimage as the only argument to relocation function
-        https://git.kernel.org/arm64/c/878fdbd70486
-[08/15] arm64: kexec: configure EL2 vectors for kexec
-        https://git.kernel.org/arm64/c/08eae0ef618f
-[09/15] arm64: kexec: relocate in EL1 mode
-        https://git.kernel.org/arm64/c/ba959fe96a1b
-[10/15] arm64: kexec: use ld script for relocation function
-        https://git.kernel.org/arm64/c/19a046f07ce5
-[11/15] arm64: kexec: install a copy of the linear-map
-        https://git.kernel.org/arm64/c/3744b5280e67
-[12/15] arm64: kexec: keep MMU enabled during kexec relocation
-        https://git.kernel.org/arm64/c/efc2d0f20a9d
-[13/15] arm64: kexec: remove the pre-kexec PoC maintenance
-        https://git.kernel.org/arm64/c/939f1b9564c6
-[14/15] arm64: kexec: remove cpu-reset.h
-        https://git.kernel.org/arm64/c/7a2512fa6493
-[15/15] arm64: trans_pgd: remove trans_pgd_map_page()
-        https://git.kernel.org/arm64/c/6091dd9eaf8e
+[1/2] dma-mapping: remove bogus test for pfn_valid from dma_map_resource
+      https://git.kernel.org/arm64/c/a9c38c5d267c
+[2/2] arm64/mm: drop HAVE_ARCH_PFN_VALID
+      https://git.kernel.org/arm64/c/3de360c3fdb3
 
 Cheers,
 -- 
