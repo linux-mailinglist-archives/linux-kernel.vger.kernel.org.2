@@ -2,128 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2977F41ED75
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2441B41ED7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354368AbhJAMcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S1353707AbhJAMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352822AbhJAMch (ORCPT
+        with ESMTP id S1352922AbhJAMdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:32:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90446C06177B
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:30:53 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mWHgV-00065L-Oj; Fri, 01 Oct 2021 14:30:39 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mWHgQ-0001DT-4A; Fri, 01 Oct 2021 14:30:34 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mWHgQ-0002ZN-2n; Fri, 01 Oct 2021 14:30:34 +0200
-Date:   Fri, 1 Oct 2021 14:30:33 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Eric Tremblay <etremblay@distech-controls.com>
-Cc:     kernel test robot <lkp@intel.com>, gregkh@linuxfoundation.org,
-        kbuild-all@lists.01.org, jslaby@suse.com,
-        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
-        giulio.benetti@micronovasrl.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com, heiko@sntech.de
-Subject: Re: [PATCH v2 1/3] serial: 8250: Handle UART without interrupt on
- TEMT using em485
-Message-ID: <20211001123033.l7ivfm35knnp3j5s@pengutronix.de>
-References: <20210204161158.643-2-etremblay@distech-controls.com>
- <202102050539.ILyUUHHw-lkp@intel.com>
+        Fri, 1 Oct 2021 08:33:22 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8AEC06177B
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:31:37 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id s24so7107179wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Mu18CAq1hBqJeqwZJAQst74KZfOgiaFerApR3I6y0OU=;
+        b=FXQiOVBOuXGIos9ZeYjN3BTAxm8yH1TdT07eKtbvce8xv5IVrtB1Lg4FQNFN9p7TN9
+         QkzNV6Ct/N3bi2v03QgZ1xJ+RqGFou/Pao0LO5z6nRQ51/hYNajXGlPREYU8VP7YoD6Y
+         vV13HXltj32P+yT4nhrAPpmLdz3iJUMgJuVprWHaBQkgObe1fnscPjuC3mtmfv6wIUB1
+         zgZQWcaz0BAljE8CIgE7XCnwZRuScBaNR274lLCpj9jara54mzkZPLfAIs3Ehiyyluo3
+         TRuxz5k1l+uYwZM5+DfHuL4h2dX6BIBeF0LRqMKWNoL9E0He3LhLvGa3XQg3e5Yq0tTQ
+         9DUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Mu18CAq1hBqJeqwZJAQst74KZfOgiaFerApR3I6y0OU=;
+        b=Qyiox3I4NZrce/GnlsHnmx/p6vPR/XdrYy0sQwp/1vxrp9VdM1/Y98q2bw4h2ndWSU
+         sYE1/rPkXPdEdX6oqNteWW5pfzvjKlOGtKC/FsMl0D5HP4ZN9VXRmlKum2jd1H6qiRYU
+         zP/lhI4EUFp5ufMSYTy7u3cnG5JKbDvifPg5lZ3SRhIydValw8KX8RDahtpD69SRPRNw
+         8SBjsuk27TxBFHSeZRxikzAPPDZOZYAeBg6S/4NZBMiamLkIF68t525x1UXJLNN3jIRd
+         vPOdqzSRRusczAfqdayB0HNGQ2NBmNI3oXSlTf7RaMofRkZf2qrUDmesdaWqqmaDPV1R
+         CN6A==
+X-Gm-Message-State: AOAM533kQofhTnbuo49cgqfhEST131OJ7niKeN4fEixDrELCXQ9+hO2q
+        3hPO4mBmIfFlOA0+Mi4ySOlXmQ==
+X-Google-Smtp-Source: ABdhPJyANjmM1xve1FUQ4nbwObWE0NHXAsZCEc1kKceOWCG8u6kOYtyXw5EldAPiHn3NgpgT0bxlGA==
+X-Received: by 2002:a05:600c:3646:: with SMTP id y6mr4250718wmq.61.1633091496338;
+        Fri, 01 Oct 2021 05:31:36 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id v18sm5429361wml.44.2021.10.01.05.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 05:31:35 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 13:31:33 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Olof Johansson <olof@lixom.net>,
+        Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <YVb/pQ1l34TcP81G@google.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
+ <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
+ <CAK8P3a1HtDoEDeqs42s1hDzCZMwU7MhudJ7TVONn6TjoijaWRw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qrt5arkzevvzhv5i"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202102050539.ILyUUHHw-lkp@intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a1HtDoEDeqs42s1hDzCZMwU7MhudJ7TVONn6TjoijaWRw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 01 Oct 2021, Arnd Bergmann wrote:
+> The vmlinux file is clearly too big and includes too much stuff that should
+> be in loadable modules
 
---qrt5arkzevvzhv5i
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This for me is the crux of the matter.
 
-Hello,
+The ability to replace modules was only brought to light as an "and
+also, this is possible".  However in retrospect, given the attention
+this has received, it probably shouldn't have even mentioned, as it's
+not that important.
 
-On Fri, Feb 05, 2021 at 05:36:44AM +0800, kernel test robot wrote:
-> Hi Eric,
->=20
-> I love your patch! Yet something to improve:
->=20
-> [auto build test ERROR on tty/tty-testing]
-> [also build test ERROR on usb/usb-testing v5.11-rc6 next-20210125]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->=20
-> url:    https://github.com/0day-ci/linux/commits/Eric-Tremblay/Handle-UAR=
-T-without-interrupt-on-TEMT-using-em485/20210205-002255
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tt=
-y-testing
-> config: ia64-randconfig-r032-20210204 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/070c956e2d260c56b13f43b=
-7d092b4a20664248c
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Eric-Tremblay/Handle-UART-withou=
-t-interrupt-on-TEMT-using-em485/20210205-002255
->         git checkout 070c956e2d260c56b13f43b7d092b4a20664248c
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-9.3.0 make.cros=
-s ARCH=3Dia64=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
->=20
-> >> ERROR: modpost: "uart_get_byte_size" [drivers/tty/serial/8250/8250_bas=
-e.ko] undefined!
+We should focus on the benefits of making parts of the kernel modular
+if technically possible.  The most prominent of those is core binary
+size, since this has a direct impact on boot-time and RAM usage.
 
-FTR: This is a missing EXPORT_SYMBOL_GPL for uart_get_byte_size().
+Reclaiming dead code after boot is certainly one way to tackle part of
+the problem.  Ensuring that it's not even loaded into RAM in the first
+place is a better more encompassing solution to both issues IMHO.
 
-Best regards
-Uwe
-
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---qrt5arkzevvzhv5i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFW/2cACgkQwfwUeK3K
-7AnNHgf+NctiIL+EfYSw911JkshMGJK6JfE1mHbsGchqkgItoTCvsEFHXS1+3H02
-aXSlUL+JecBnnV/TXsvHC3nFIqAOer89aNYdwW8m2plJgEaWFg63UDlGvG3tpe+e
-ZJxSMch9jwhnBjCaZQKAWF7dUfuCPfzG7TCk99vsWtgVqBWDrSaK9+UcvfA6zmcT
-blMV61ooL2zP0zHymb5etdtSRf5+ukQkq9dfmprI34yZm12WvfVIu2fDW3JuVH0L
-31RQnJEKYptsFc9VTbYJ7BTy8fCqSyiUWH5bw0G7S2FFydEGNbJkT2IA+Q3vl3EA
-QT7wmTR9gcUYX3DTWzJ+7A/M/AaD3A==
-=tU0w
------END PGP SIGNATURE-----
-
---qrt5arkzevvzhv5i--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
