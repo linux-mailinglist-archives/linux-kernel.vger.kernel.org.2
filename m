@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E218841E66B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4565641E661
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343670AbhJAEDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:03:44 -0400
+        id S237049AbhJAEDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:03:25 -0400
 Received: from alexa-out.qualcomm.com ([129.46.98.28]:5008 "EHLO
         alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237618AbhJAEDd (ORCPT
+        with ESMTP id S237622AbhJAEDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:03:33 -0400
+        Fri, 1 Oct 2021 00:03:24 -0400
 Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 30 Sep 2021 21:01:42 -0700
+  by alexa-out.qualcomm.com with ESMTP; 30 Sep 2021 21:01:38 -0700
 X-QCInternal: smtphost
 Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Sep 2021 21:01:40 -0700
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Sep 2021 21:01:36 -0700
 X-QCInternal: smtphost
 Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
   by ironmsg02-blr.qualcomm.com with ESMTP; 01 Oct 2021 09:31:17 +0530
 Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 119F0533C; Fri,  1 Oct 2021 09:31:15 +0530 (IST)
+        id 28BB85514; Fri,  1 Oct 2021 09:31:16 +0530 (IST)
 From:   Satya Priya <skakit@codeaurora.org>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
@@ -34,9 +34,9 @@ Cc:     Lee Jones <lee.jones@linaro.org>,
         swboyd@chromium.org, collinsd@codeurora.org,
         subbaram@codeaurora.org, kgunda@codeaurora.org,
         Satya Priya <skakit@codeaurora.org>
-Subject: [PATCH V2 1/4] regulator: dt-bindings: Add pm8008 regulator bindings
-Date:   Fri,  1 Oct 2021 09:30:56 +0530
-Message-Id: <1633060859-22969-2-git-send-email-skakit@codeaurora.org>
+Subject: [PATCH V2 2/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
+Date:   Fri,  1 Oct 2021 09:30:57 +0530
+Message-Id: <1633060859-22969-3-git-send-email-skakit@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
 References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
@@ -44,97 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for pm8008 pmic regulators.
+Add pm8008-regulator node and example.
 
 Signed-off-by: Satya Priya <skakit@codeaurora.org>
 ---
 Changes in V2:
- - Moved this patch before "mfd: pm8008: Add pm8008 regulator node" to
-   resolve dtschema errors. Removed regulator-min-microvolt and 
-   regulator-max-microvolt properties.
+ - As per Rob's comments changed "pm8008[a-z]?-regulator" to
+   "^pm8008[a-z]?-regulators".
 
- .../bindings/regulator/qcom,pm8008-regulator.yaml  | 72 ++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
-new file mode 100644
-index 0000000..31ac1eb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/qcom,pm8008-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Technologies, Inc. PM8008 Regulator bindings
-+
-+maintainers:
-+  - Satya Priya <skakit@codeaurora.org>
-+
-+description:
-+  Qualcomm Technologies, Inc. PM8008 is an I2C controlled PMIC
-+  containing 7 LDO regulators.
-+
-+properties:
-+  compatible:
-+    const: qcom,pm8008-regulator
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  vdd_l1_l2-supply:
-+    description: Input supply phandle of ldo1 and ldo2 regulators.
-+
-+  vdd_l3_l4-supply:
-+    description: Input supply phandle of ldo3 and ldo4 regulators.
-+
-+  vdd_l5-supply:
-+    description: Input supply phandle of ldo5 regulator.
-+
-+  vdd_l6-supply:
-+    description: Input supply phandle of ldo6 regulator.
-+
-+  vdd_l7-supply:
-+    description: Input supply phandle of ldo7 regulator.
-+
-+patternProperties:
-+  "^regulator@[0-9a-f]+$":
+diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+index ec3138c..0c9665e 100644
+--- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
++++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+@@ -45,6 +45,10 @@ properties:
+     const: 0
+ 
+ patternProperties:
++  "^pm8008[a-z]?-regulators$":
 +    type: object
++    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
 +
-+    $ref: "regulator.yaml#"
+   "^gpio@[0-9a-f]+$":
+     type: object
+ 
+@@ -122,6 +126,26 @@ examples:
+           interrupt-controller;
+           #interrupt-cells = <2>;
+         };
 +
-+    description: PM8008 regulator peripherals of PM8008 regulator device
++        pm8008-regulators {
++          compatible = "qcom,pm8008-regulator";
++          #address-cells = <1>;
++          #size-cells = <0>;
 +
-+    properties:
-+      reg:
-+        maxItems: 1
-+      regulator-name: true
-+      qcom,min-dropout-voltage:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        description:
-+          Specifies the minimum voltage in microvolts that the parent
-+          supply regulator must output, above the output of this
-+          regulator.
++          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
++          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
++          vdd_l5-supply = <&vreg_bob>;
++          vdd_l6-supply = <&vreg_bob>;
++          vdd_l7-supply = <&vreg_bob>;
 +
-+    required:
-+      - reg
-+      - regulator-name
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+...
++          pm8008_l1: regulator@4000 {
++            reg = <0x4000>;
++            regulator-name = "pm8008_l1";
++            regulator-min-microvolt = <950000>;
++            regulator-max-microvolt = <1300000>;
++            qcom,min-dropout-voltage = <96000>;
++          };
++        };
+       };
+     };
+ 
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
 of Code Aurora Forum, hosted by The Linux Foundation
