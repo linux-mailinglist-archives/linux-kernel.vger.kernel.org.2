@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D119341F78D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D0541F78E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355684AbhJAWqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:46:00 -0400
+        id S1356026AbhJAWqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:46:01 -0400
 Received: from mga14.intel.com ([192.55.52.115]:57189 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355927AbhJAWp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:45:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="225258580"
+        id S1355920AbhJAWp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:45:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="225258589"
 X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="225258580"
+   d="scan'208";a="225258589"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:44:11 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:44:12 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="565343848"
+   d="scan'208";a="565343862"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 15:44:10 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 15:44:11 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
 To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
         thiago.macieira@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: [PATCH v11 02/29] x86/fpu/xstate: Modify the initialization helper to handle both static and dynamic buffers
-Date:   Fri,  1 Oct 2021 15:37:01 -0700
-Message-Id: <20211001223728.9309-3-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v11 03/29] x86/fpu/xstate: Modify state copy helpers to handle both static and dynamic buffers
+Date:   Fri,  1 Oct 2021 15:37:02 -0700
+Message-Id: <20211001223728.9309-4-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211001223728.9309-1-chang.seok.bae@intel.com>
 References: <20211001223728.9309-1-chang.seok.bae@intel.com>
@@ -38,14 +38,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Have the function initializing the XSTATE buffer take a struct fpu *
-pointer in preparation for dynamic state buffer support.
-
-init_fpstate is a special case, which is indicated by a null pointer
-parameter to fpstate_init().
-
-Also, fpstate_init_xstate() now accepts the state component bitmap to
-customize the compacted format.
+Have all the functions copying XSTATE take a struct fpu * pointer in
+preparation for dynamic state buffer support.
 
 No functional change.
 
@@ -53,153 +47,106 @@ Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org
 ---
 Changes from v5:
-* Moved fpstate_init_xstate() back to the header (again).
-* Massaged the changelog.
-
-Changes from v4:
-* Added a proper function description. (Borislav Petkov)
-* Added the likely() statement as a null pointer is a special case.
+* Adjusted function prototype changes to the recent renamed on the new
+  base.
 
 Changes from v3:
 * Updated the changelog. (Borislav Petkov)
-* Updated the function comment to use kernel-doc style. (Borislav Petkov)
 
 Changes from v2:
 * Updated the changelog with task->fpu removed. (Borislav Petkov)
 ---
- arch/x86/include/asm/fpu/internal.h | 11 ++++++++++-
- arch/x86/kernel/fpu/core.c          | 28 +++++++++++++++++-----------
- arch/x86/kernel/fpu/init.c          |  2 +-
- arch/x86/kernel/fpu/xstate.c        |  3 +--
- arch/x86/kvm/x86.c                  |  2 +-
- 5 files changed, 30 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/fpu/xstate.h |  4 ++--
+ arch/x86/kernel/fpu/regset.c      |  2 +-
+ arch/x86/kernel/fpu/signal.c      |  2 +-
+ arch/x86/kernel/fpu/xstate.c      | 12 ++++++------
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 5a18694a89b2..c7a64e2806a9 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -80,7 +80,7 @@ static __always_inline __pure bool use_fxsr(void)
+diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+index 109dfcc75299..ede166e9d3f2 100644
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -136,8 +136,8 @@ extern void __init update_regset_xstate_info(unsigned int size,
  
- extern union fpregs_state init_fpstate;
+ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
+ int xfeature_size(int xfeature_nr);
+-int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
+-int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
++int copy_uabi_from_kernel_to_xstate(struct fpu *fpu, const void *kbuf);
++int copy_sigframe_from_user_to_xstate(struct fpu *fpu, const void __user *ubuf);
  
--extern void fpstate_init(union fpregs_state *state);
-+extern void fpstate_init(struct fpu *fpu);
- #ifdef CONFIG_MATH_EMULATION
- extern void fpstate_init_soft(struct swregs_state *soft);
- #else
-@@ -88,6 +88,15 @@ static inline void fpstate_init_soft(struct swregs_state *soft) {}
- #endif
- extern void save_fpregs_to_fpstate(struct fpu *fpu);
+ void xsaves(struct xregs_state *xsave, u64 mask);
+ void xrstors(struct xregs_state *xsave, u64 mask);
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index 66ed317ebc0d..49dd307003ec 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -164,7 +164,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
+ 	}
  
-+static inline void fpstate_init_xstate(struct xregs_state *xsave, u64 mask)
-+{
-+	/*
-+	 * XRSTORS requires these bits set in xcomp_bv, or it will
-+	 * trigger #GP:
-+	 */
-+	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | mask;
-+}
-+
- /* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
- #define user_insn(insn, output, input...)				\
- ({									\
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 7ada7bd03a32..c0098f8422de 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -203,15 +203,6 @@ void fpu_sync_fpstate(struct fpu *fpu)
+ 	fpu_force_restore(fpu);
+-	ret = copy_uabi_from_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
++	ret = copy_uabi_from_kernel_to_xstate(fpu, kbuf ?: tmpbuf);
+ 
+ out:
+ 	vfree(tmpbuf);
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 445c57c9c539..bec8c8046888 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -371,7 +371,7 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
  	fpregs_unlock();
- }
  
--static inline void fpstate_init_xstate(struct xregs_state *xsave)
--{
--	/*
--	 * XRSTORS requires these bits set in xcomp_bv, or it will
--	 * trigger #GP:
--	 */
--	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | xfeatures_mask_all;
--}
--
- static inline void fpstate_init_fxstate(struct fxregs_state *fx)
- {
- 	fx->cwd = 0x37f;
-@@ -229,8 +220,23 @@ static inline void fpstate_init_fstate(struct fregs_state *fp)
- 	fp->fos = 0xffff0000u;
- }
- 
--void fpstate_init(union fpregs_state *state)
-+/**
-+ *
-+ * fpstate_init - initialize the xstate buffer
-+ *
-+ * If @fpu is NULL, initialize init_fpstate.
-+ *
-+ * @fpu:	A struct fpu * pointer
-+ */
-+void fpstate_init(struct fpu *fpu)
- {
-+	union fpregs_state *state;
-+
-+	if (likely(fpu))
-+		state = &fpu->state;
-+	else
-+		state = &init_fpstate;
-+
- 	if (!static_cpu_has(X86_FEATURE_FPU)) {
- 		fpstate_init_soft(&state->soft);
- 		return;
-@@ -239,7 +245,7 @@ void fpstate_init(union fpregs_state *state)
- 	memset(state, 0, fpu_kernel_xstate_size);
- 
- 	if (static_cpu_has(X86_FEATURE_XSAVES))
--		fpstate_init_xstate(&state->xsave);
-+		fpstate_init_xstate(&state->xsave, xfeatures_mask_all);
- 	if (static_cpu_has(X86_FEATURE_FXSR))
- 		fpstate_init_fxstate(&state->fxsave);
- 	else
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 64e29927cc32..e14c72bc8706 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -124,7 +124,7 @@ static void __init fpu__init_system_generic(void)
- 	 * Set up the legacy init FPU context. (xstate init might overwrite this
- 	 * with a more modern format, if the CPU supports it.)
- 	 */
--	fpstate_init(&init_fpstate);
-+	fpstate_init(NULL);
- 
- 	fpu__init_system_mxcsr();
- }
+ 	if (use_xsave() && !fx_only) {
+-		ret = copy_sigframe_from_user_to_xstate(&fpu->state.xsave, buf_fx);
++		ret = copy_sigframe_from_user_to_xstate(fpu, buf_fx);
+ 		if (ret)
+ 			return ret;
+ 	} else {
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index fc1d529547e6..0fed7fbcf2e8 100644
+index 0fed7fbcf2e8..df39085e9d05 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -395,8 +395,7 @@ static void __init setup_init_fpu_buf(void)
- 	print_xstate_features();
+@@ -1089,10 +1089,10 @@ static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
+ 	return 0;
+ }
  
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		init_fpstate.xsave.header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
--						     xfeatures_mask_all;
-+		fpstate_init_xstate(&init_fpstate.xsave, xfeatures_mask_all);
+-
+-static int copy_uabi_to_xstate(struct xregs_state *xsave, const void *kbuf,
++static int copy_uabi_to_xstate(struct fpu *fpu, const void *kbuf,
+ 			       const void __user *ubuf)
+ {
++	struct xregs_state *xsave = &fpu->state.xsave;
+ 	unsigned int offset, size;
+ 	struct xstate_header hdr;
+ 	u64 mask;
+@@ -1161,9 +1161,9 @@ static int copy_uabi_to_xstate(struct xregs_state *xsave, const void *kbuf,
+  * format and copy to the target thread. This is called from
+  * xstateregs_set().
+  */
+-int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
++int copy_uabi_from_kernel_to_xstate(struct fpu *fpu, const void *kbuf)
+ {
+-	return copy_uabi_to_xstate(xsave, kbuf, NULL);
++	return copy_uabi_to_xstate(fpu, kbuf, NULL);
+ }
  
- 	/*
- 	 * Init all the features state with header.xfeatures being 0x0
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 28ef14155726..3263567729ed 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10615,7 +10615,7 @@ static void fx_init(struct kvm_vcpu *vcpu)
- 	if (!vcpu->arch.guest_fpu)
- 		return;
+ /*
+@@ -1171,10 +1171,10 @@ int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+  * XSAVE[S] format and copy to the target thread. This is called from the
+  * sigreturn() and rt_sigreturn() system calls.
+  */
+-int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave,
++int copy_sigframe_from_user_to_xstate(struct fpu *fpu,
+ 				      const void __user *ubuf)
+ {
+-	return copy_uabi_to_xstate(xsave, NULL, ubuf);
++	return copy_uabi_to_xstate(fpu, NULL, ubuf);
+ }
  
--	fpstate_init(&vcpu->arch.guest_fpu->state);
-+	fpstate_init(vcpu->arch.guest_fpu);
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
- 		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
- 			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+ static bool validate_xsaves_xrstors(u64 mask)
 -- 
 2.17.1
 
