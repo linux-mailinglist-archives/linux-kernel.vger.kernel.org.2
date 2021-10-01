@@ -2,91 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1147541E6D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F25E41E6D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351817AbhJAEjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51562 "EHLO mail.kernel.org"
+        id S1351808AbhJAEi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:38:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:34562 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhJAEjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:39:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3324B61A54;
-        Fri,  1 Oct 2021 04:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633063078;
-        bh=t5IURBDxfZPai/CGrMzCSvsfRwGEicSy+gaqsFTHCdw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a8x1lO2IZANAIkvkRE36jcRwzbLcEG5INzAL0THLU6GTNwyGAw3WRaHxrdXufgTEj
-         vOsWsPOxkU33wakgddjZe0mhQ4Y7jdIovbQAvIiCCB6aTb3N/+dFvnFGDso3Ma9/Jo
-         nPFBZepRmn761dx4282Bnd5gD+jMD5flNa7ZOS5dX6AbTq739a7uDoC9FUOEPoRc7p
-         f0n6HWlRb/LmYmea8xanzCK14ssZwEecIsm/vHPlntCYJLCL4gHbvJv//p3AgQtirl
-         08g7x0uCvIQOFRAWbVQ7vDXWOz/F78WPlsBSn6UKkB5oqHq0c8+WHMYcH3yNxrL4p7
-         XPLuEJyho/EBQ==
-Date:   Fri, 1 Oct 2021 10:07:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 16/30] ABI: sysfs-bus-soundwire-slave: use wildcards
- on What definitions
-Message-ID: <YVaQohW0ykARCJJh@matsya>
-References: <cover.1631782432.git.mchehab+huawei@kernel.org>
- <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
- <9a379f0a-e076-844c-fb5d-130359e36754@linux.intel.com>
- <20210916184757.4f0b3cbf@coco.lan>
+        id S230477AbhJAEi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 00:38:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBFA2106F;
+        Thu, 30 Sep 2021 21:37:13 -0700 (PDT)
+Received: from [10.163.74.5] (unknown [10.163.74.5])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9556C3F70D;
+        Thu, 30 Sep 2021 21:37:09 -0700 (PDT)
+Subject: Re: [PATCH v2 11/17] arm64: errata: Add workaround for TSB flush
+ failures
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
+        leo.yan@linaro.org, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-12-suzuki.poulose@arm.com>
+ <d4223300-e50a-b1f2-19e7-0ecf844a81c4@arm.com>
+ <8d34f219-3257-9b9b-98db-6ade4a1647bf@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <07cb1a4b-d4b1-3492-9126-c2ee860e784f@arm.com>
+Date:   Fri, 1 Oct 2021 10:08:16 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916184757.4f0b3cbf@coco.lan>
+In-Reply-To: <8d34f219-3257-9b9b-98db-6ade4a1647bf@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-09-21, 18:47, Mauro Carvalho Chehab wrote:
-> Hi Pierre,
-> 
-> Em Thu, 16 Sep 2021 11:36:33 -0500
-> Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
-> 
-> > On 9/16/21 3:59 AM, Mauro Carvalho Chehab wrote:
-> > > An "N" upper letter is not a wildcard, nor can easily be identified
-> > > by script, specially since the USB sysfs define things like.
-> > > bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
-> > > to convert it into a Regex.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Thanks!
-> 
-> > 
-> > I also realized that we have a similar with the 'master' case
-> > 
-> > more sysfs-bus-soundwire-master
-> > What:		/sys/bus/soundwire/devices/sdw-master-N/revision
-> > 		/sys/bus/soundwire/devices/sdw-master-N/clk_stop_modes
-> > 		/sys/bus/soundwire/devices/sdw-master-N/clk_freq
-> > 		/sys/bus/soundwire/devices/sdw-master-N/clk_gears
-> > 		/sys/bus/soundwire/devices/sdw-master-N/default_col
-> > 		/sys/bus/soundwire/devices/sdw-master-N/default_frame_rate
-> > 		/sys/bus/soundwire/devices/sdw-master-N/default_row
-> > 		/sys/bus/soundwire/devices/sdw-master-N/dynamic_shape
-> > 		/sys/bus/soundwire/devices/sdw-master-N/err_threshold
-> > 		/sys/bus/soundwire/devices/sdw-master-N/max_clk_freq
-> > 
-> > If there is an update we should modify this as well for consistency with
-> > sdw-master-<N>?
-> 
-> It is on patch 15/30:
-> 
-> 	https://lkml.org/lkml/2021/9/16/198
- we should have been cced :(
 
-Thanks to b4, I was able to grab this and apply as well
 
--- 
-~Vinod
+On 9/22/21 5:33 PM, Suzuki K Poulose wrote:
+> Hi Anshuman
+> 
+> On 22/09/2021 08:39, Anshuman Khandual wrote:
+>>
+>>
+>> On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
+>>> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
+>>> from errata, where a TSB (trace synchronization barrier)
+>>> fails to flush the trace data completely, when executed from
+>>> a trace prohibited region. In Linux we always execute it
+>>> after we have moved the PE to trace prohibited region. So,
+>>> we can apply the workaround everytime a TSB is executed.
+>>
+>> s/everytime/every time
+> 
+> Ack
+> 
+>>
+>>>
+>>> The work around is to issue two TSB consecutively.
+>>>
+>>> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
+>>> that a late CPU could be blocked from booting if it is the
+>>> first CPU that requires the workaround. This is because we
+>>> do not allow setting a cpu_hwcaps after the SMP boot. The
+>>> other alternative is to use "this_cpu_has_cap()" instead
+>>> of the faster system wide check, which may be a bit of an
+>>> overhead, given we may have to do this in nvhe KVM host
+>>> before a guest entry.
+>>>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> Cc: Marc Zyngier <maz@kernel.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> ---
+> 
+> ...
+> 
+>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>> index eac4030322df..0764774e12bb 100644
+>>> --- a/arch/arm64/Kconfig
+>>> +++ b/arch/arm64/Kconfig
+>>> @@ -705,6 +705,37 @@ config ARM64_ERRATUM_2139208
+>>>           If unsure, say Y.
+>>>   +config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+>>> +    bool
+>>> +
+>>> +config ARM64_ERRATUM_2054223
+>>> +    bool "Cortex-A710: 2054223: workaround TSB instruction failing to flush trace"
+>>> +    default y
+>>> +    help
+>>> +      Enable workaround for ARM Cortex-A710 erratum 2054223
+>>> +
+>>> +      Affected cores may fail to flush the trace data on a TSB instruction, when
+>>> +      the PE is in trace prohibited state. This will cause losing a few bytes
+>>> +      of the trace cached.
+>>> +
+>>> +      Workaround is to issue two TSB consecutively on affected cores.
+>>> +
+>>> +      If unsure, say Y.
+>>> +
+>>> +config ARM64_ERRATUM_2067961
+>>> +    bool "Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace"
+>>> +    default y
+>>> +    help
+>>> +      Enable workaround for ARM Neoverse-N2 erratum 2067961
+>>> +
+>>> +      Affected cores may fail to flush the trace data on a TSB instruction, when
+>>> +      the PE is in trace prohibited state. This will cause losing a few bytes
+>>> +      of the trace cached.
+>>> +
+>>> +      Workaround is to issue two TSB consecutively on affected cores.
+>>
+>> Like I had mentioned in the previous patch, these descriptions here could
+>> be just factored out inside ARM64_WORKAROUND_TSB_FLUSH_FAILURE instead.
+> 
+> Please see my response there.
+> 
+>>
+>>> +
+>>> +      If unsure, say Y.
+>>> +
+>>>   config CAVIUM_ERRATUM_22375
+>>>       bool "Cavium erratum 22375, 24313"
+>>>       default y
+>>> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+>>> index 451e11e5fd23..1c5a00598458 100644
+>>> --- a/arch/arm64/include/asm/barrier.h
+>>> +++ b/arch/arm64/include/asm/barrier.h
+>>> @@ -23,7 +23,7 @@
+>>>   #define dsb(opt)    asm volatile("dsb " #opt : : : "memory")
+>>>     #define psb_csync()    asm volatile("hint #17" : : : "memory")
+>>> -#define tsb_csync()    asm volatile("hint #18" : : : "memory")
+>>> +#define __tsb_csync()    asm volatile("hint #18" : : : "memory")
+>>>   #define csdb()        asm volatile("hint #20" : : : "memory")
+>>>     #ifdef CONFIG_ARM64_PSEUDO_NMI
+>>> @@ -46,6 +46,20 @@
+>>>   #define dma_rmb()    dmb(oshld)
+>>>   #define dma_wmb()    dmb(oshst)
+>>>   +
+>>> +#define tsb_csync()                                \
+>>> +    do {                                    \
+>>> +        /*                                \
+>>> +         * CPUs affected by Arm Erratum 2054223 or 2067961 needs    \
+>>> +         * another TSB to ensure the trace is flushed. The barriers    \
+>>> +         * don't have to be strictly back to back, as long as the    \
+>>> +         * CPU is in trace prohibited state.                \
+>>> +         */                                \
+>>> +        if (cpus_have_final_cap(ARM64_WORKAROUND_TSB_FLUSH_FAILURE))    \
+>>> +            __tsb_csync();                        \
+>>> +        __tsb_csync();                            \
+>>> +    } while (0)
+>>> +
+>>>   /*
+>>>    * Generate a mask for array_index__nospec() that is ~0UL when 0 <= idx < sz
+>>>    * and 0 otherwise.
+>>> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+>>> index ccd757373f36..bdbeac75ead6 100644
+>>> --- a/arch/arm64/kernel/cpu_errata.c
+>>> +++ b/arch/arm64/kernel/cpu_errata.c
+>>> @@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
+>>>   };
+>>>   #endif    /* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
+>>>   +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+>>> +static const struct midr_range tsb_flush_fail_cpus[] = {
+>>> +#ifdef CONFIG_ARM64_ERRATUM_2067961
+>>> +    MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
+>>> +#endif
+>>> +#ifdef CONFIG_ARM64_ERRATUM_2054223
+>>> +    MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
+>>> +#endif
+>>> +    {},
+>>> +};
+>>> +#endif    /* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
+>>> +
+>>>   const struct arm64_cpu_capabilities arm64_errata[] = {
+>>>   #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
+>>>       {
+>>> @@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+>>>           .type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
+>>>           CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
+>>>       },
+>>> +#endif
+>>> +#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
+>>> +    {
+>>> +        .desc = "ARM erratum 2067961 or 2054223",
+>>> +        .capability = ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
+>>> +        ERRATA_MIDR_RANGE_LIST(tsb_flush_fail_cpus),
+>>> +    },
+>>>   #endif
+>>>       {
+>>>       }
+>>> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
+>>> index 1ccb92165bd8..2102e15af43d 100644
+>>> --- a/arch/arm64/tools/cpucaps
+>>> +++ b/arch/arm64/tools/cpucaps
+>>> @@ -54,6 +54,7 @@ WORKAROUND_1463225
+>>>   WORKAROUND_1508412
+>>>   WORKAROUND_1542419
+>>>   WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>>> +WORKAROUND_TSB_FLUSH_FAILURE
+>>>   WORKAROUND_CAVIUM_23154
+>>>   WORKAROUND_CAVIUM_27456
+>>>   WORKAROUND_CAVIUM_30115
+>>>
+>>
+>> This adds all the required bits of these erratas in a single patch,
+>> where as the previous work around had split all the required pieces
+>> into multiple patches. Could we instead follow the same standard in
+>> both the places ?
+> 
+> We could do this for this particular erratum as the work around is
+> within the arm64 kernel code, unlike the other ones - where the TRBE
+> driver needs a change.
+> 
+> So, there is a kind of dependency for the other two, which we don't
+> in this particular case.
+> 
+> i.e, TRBE driver needs a cpucap number to implement the work around ->
+> The arm64 kernel must define one, which we cant advertise yet until
+> we have a TRBE work around.
+> 
+> Thus, they follow a 3 step model.
+> 
+>  - Define CPUCAP erratum
+>  - TRBE driver work around
+>  - Finally advertise to the user.
+> 
+> I don't think this one needs that.
+
+Okay, understood.
