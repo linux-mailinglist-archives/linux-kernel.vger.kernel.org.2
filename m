@@ -2,123 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4903841EFED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671F941EFF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354653AbhJAOrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:47:40 -0400
-Received: from mail-co1nam11on2078.outbound.protection.outlook.com ([40.107.220.78]:17248
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231862AbhJAOrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:47:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AEdZANO1AlvYsGWWw63QKDeW8wCzoO69jtTsp8TcZDnmCWfmaja4m4NXVQk74pUDbBHKwG11iUzLwt2Id2EjjTwMWhwtM11j+px8jzxnwDb+9xN8giSjrG+t879EVDZ75bolWLY95L9K9xBQzGGAkpz2aSOBAjb+7vnaCLkNphEZHiw2sZemgm0uwuUSmmogiE2hkwiJ4tRgRHFobhVI5XbyoYEg34eyPTJOrM59anG+pNCHdPLnusMZry3e818tnmOgD51KhdOle5rXapJvpMIpaPh6R+Pubg+gejqOsFHctD9jQr27cbKLIqaZFU8Xl0vSJ8f++c8wpKd13KUV7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pBaAqdpzFm2a1/Jb+ybRc1hT2yIk15kh6F7qhviqYIw=;
- b=hUfyj11GWFAQvjpyu1y9pQ0kPd2RF/EqzBrJdNhw3psr0YDhtXt93kgcHpqs1FP8WeK+OZ7YlFBy6eDSP5EIkNXOONrzaxlgABd7cW30tzwCfxc9vbHuw/Cvv7HHFDstxFH4+XaTpCK/iMoBgzYia7OSuy8aGjXR0nZotA4WZSE5Zc4vie4Sdshiuh6GYrtCQGvjMTRt9nMOMi9dufyj7oS76H/h769aiq0UqlqxI/HquPpH+Fmn2Cm3QsxfhVhQeM813N5PxbmWBAp87FSp7nvjJiFBJSYrGLA1Wr7TC/x7zF6fQeGNhXVQKOsFoWAktMZ6avHSV9PLuwJox3ZKbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pBaAqdpzFm2a1/Jb+ybRc1hT2yIk15kh6F7qhviqYIw=;
- b=ZwvHBVxmBpnOSQI1LDpVhbD3asp56iLKJ8/R+52M0YfJyRjuyT2C2Swwse97YBZT13HQAoFffSV9wvIPA4iOVAGwAJaOEHYMf7sltOxhnTO9Rhjt1nJZdm6MW3kanhHoaw6Mx7MoYcQWtYEbptjdtIekCQgPafbUbSniFIF+NsRb1rjIepNJfpfgarMZJUeRIsWpyplOo+fiilfsj0vE2MZXw83jT9vpsdG1KjlwoLxxFVMKXiTB4gcA9D0ohNLNxI3QGiyuad4rR/K5bEiYLtEdGz+IGrLWIPwcxwD9/4IhjZGk57apehOTMoyQYmIdWgvIh7HaQkDgLPdofXYoMQ==
-Authentication-Results: fujitsu.com; dkim=none (message not signed)
- header.d=none;fujitsu.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Fri, 1 Oct
- 2021 14:45:52 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
- 14:45:52 +0000
-Date:   Fri, 1 Oct 2021 11:45:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-Cc:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/mlx5: unify return value to ENOENT
-Message-ID: <20211001144550.GV964074@nvidia.com>
-References: <20210903084815.184320-1-lizhijian@cn.fujitsu.com>
- <20210928170846.GA1721590@nvidia.com>
- <ea12fb42-97e4-0321-da0d-049a0650db9f@fujitsu.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea12fb42-97e4-0321-da0d-049a0650db9f@fujitsu.com>
-X-ClientProxiedBy: MN2PR07CA0009.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::19) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S1354608AbhJAOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354139AbhJAOwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:52:06 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465E4C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:50:22 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id z2so7424544wmc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XObjtU4PyVbF/ZbbwoSfuVLsd6n+GoMhRgnIczIDqqE=;
+        b=g+tE4NGMt8NgHUTGaid9q2/e6/yn54CaeuKWN84VbR9vgKLRNepXvLoLL/MiAwIEJ4
+         dIxekSzimYn5iQCF1lDktkOpQrU1qCqtdxt9JQF74fWAeUzDyk2p5dt4QE5f22PgO2/o
+         Wwk1wQsas67fVB6OOL4mzsqkgqtLrHFZhEiAA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=XObjtU4PyVbF/ZbbwoSfuVLsd6n+GoMhRgnIczIDqqE=;
+        b=7WWz7Hmb8uxcX3yIUhMa/3EoFwLKgr1mWd7TdJY9TZtjkT9eyDRAY5MOGUOg7kYVl+
+         voZAd2qhDz9rIQJVPD9HB6FJdNJu6wOfegvKKrRxsnEGdWYjxGoSP+5bfgr8QreMC1Np
+         9qPTlBxArgFeBosbTzSecbb+9CKpmJkZfQlJdq2U1gA/GQsaLR2fEAW57bFa3FkRg+mX
+         vpi0T6D91vBj3SBSL/dPyN80VL6N0IU/dUMoeN8ssllIwMWFhD/x03n/EVv+hGOtO3Sc
+         L1J8JmLna/E3NztnQJL7T4J9ehQgzVyw1Y9uXooAfbCAwSmkS9cIYa7Y5ZePcIjSUnA5
+         n6dw==
+X-Gm-Message-State: AOAM533injNCPbaSjWIOG22dd4L/413H7/ycR4v8AVuSx1iQk6W1Wr3h
+        3DW8Ujpqfc/55GbjIdkRcgcmbQ==
+X-Google-Smtp-Source: ABdhPJw8T8GUVt7v4Ij+Ecdrg5qyP218Ix34mdcAMZ78zHjwhCBNKnCwsTQ9nfDW+q8et8Ml/yuf4Q==
+X-Received: by 2002:a05:600c:4e86:: with SMTP id f6mr5180927wmq.52.1633099820785;
+        Fri, 01 Oct 2021 07:50:20 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k10sm7821605wmr.32.2021.10.01.07.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 07:50:20 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 16:50:18 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org
+Subject: Re: [PATCH] drm/i915: Use direction definition DMA_BIDIRECTIONAL
+ instead of PCI_DMA_BIDIRECTIONAL
+Message-ID: <YVcgKj0UCB2WmBXF@phenom.ffwll.local>
+Mail-Followup-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org
+References: <20210925124613.144-1-caihuoqing@baidu.com>
+ <YVXH87Uw3urD6q5x@phenom.ffwll.local>
+ <3a2ada00-fe4f-284c-46a5-c0f6676bcfe1@wanadoo.fr>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR07CA0009.namprd07.prod.outlook.com (2603:10b6:208:1a0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Fri, 1 Oct 2021 14:45:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mWJnK-008btT-Lx; Fri, 01 Oct 2021 11:45:50 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 896021a2-268e-412c-ac8c-08d984ea2a72
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5377:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5377C34785BC4949B3250779C2AB9@BL1PR12MB5377.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e+JFqAPbgegCLWj84m4uGXI3q9EwDCLg26FH7qLsn4Ckq4O3oYWAbI1pw+pNOQLyIeGKtpDJJP8yONAvHgaJDYvijOW5hQhWmWVqQZ0enEa97loax5+nsK2arNeLhhcX2C6pmfg10GaizWwDe9gKVqC7FVrk+kEKcjujPAku+/gi+NfKiyyCC468J23FWy7SIcR3D6yImpN5qOqLBJGS2mWjS0/W0ziw/HM1wLMTnuw0ZG+rs+XMeLQ5Or2oZHgY8sJn3aZUkqZVmu4fZcBOWLB0WXFi6Ks/1OG3CWS1m3it/UmLRRo/ZjpzISU3E/FLdWMPD6S8RcAs57c3JLnePntDEjS6HGTSWyq1N7zoyPwOGlm6ONQCmF66moooAgu5TKaDRUB/hwhx4DFkoFtG3BfDbJGEjH0YptS4rvhKQyCMYdQTCsd2Mgkw/vJzf+B5poTafjNWwcnmAgbj4JfiMVm4SY/0YU6gu2JGTjYp31nKfd+WtpKTupPgbyeIUdaZvUwh96jc1b9o7+pN15FuFpceYgy0XPedhgS7ht5AJHI8YEERqVCIdPyNSxHByVCGtZVhIlfm6UlS+AQUHuQyPoNRZdDnC7cw0LzPwc8FoGiLMv6p+dscNL2RjsdzFzke67X6w/tYt2qGjYPE5iVkPOOypFKe0k4SByfMKowC9qbEqYlVGh8vtykJt2rq+HI7GqiSUoQh0bVOwTzfyOHDmg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(26005)(33656002)(1076003)(6916009)(54906003)(86362001)(4326008)(53546011)(5660300002)(8676002)(316002)(66946007)(8936002)(36756003)(2906002)(9746002)(66556008)(4744005)(66476007)(9786002)(426003)(2616005)(186003)(38100700002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aX0OuzdBDYndWH8sUzCVoneQSGlwm2QHZ/ImxUgxQU9y5G0Ff+AqrYDRcQm9?=
- =?us-ascii?Q?No5AYkG2CML7urDyzHbcaP2i1Z8RR2C01lJNUMGYnO+POr+a2CJx2s5ieigD?=
- =?us-ascii?Q?b82+og9eVebUj4lR/8wtEtGhGLWY3NKb0ShpI1aFRVU2d++nY+kr9knH8hfo?=
- =?us-ascii?Q?9mw4HMlEYK8xTpp7dOYc964T33Hdi+K+dgB12o4N5mGzUJ95P3BOrgOyahbK?=
- =?us-ascii?Q?T0mGWh5DVj84BUn0wzzd3JJYOubAv2ccWrvWo1wKQ1ynbKrcWK97djRttry7?=
- =?us-ascii?Q?HesWlr7l8lxQOJQy7jz/UUCFxs9t+83+WAsLCjWSRysDcMdAul6MlNYDvEyj?=
- =?us-ascii?Q?fu6TGQ2JnDiaHIU/80zT5hazSyC73IA4D9oWlUrOsc4vOWjGm0qTlqYtERBb?=
- =?us-ascii?Q?0nn7ikXV3hZEOsY1o1tg7+6ieLdmnEagVbdIvcwzB70sqclbEp42eV/go21M?=
- =?us-ascii?Q?3FPO5oYCZBTD9yael8jTtjoX+x/Q7dLLUE6qQPoCQ5nGe2J+0OpsJatZl90D?=
- =?us-ascii?Q?hVPsKyQvFfJ1CPScjXd1SZiVe74tPOv4QCZ7ndnXPrRyQg0J0VA3CJoqb9F8?=
- =?us-ascii?Q?mDtPJaXuDakdDc44yQsyCuRToX5hMUnQ2dI8OwJyxq7DvOg5+cYCAhbPOBFq?=
- =?us-ascii?Q?CdBjNLpdvU+IKlFT+94MnlMkc9yzO7BZweqUyaNI9x8oe6nEVN1+Skr5FYBy?=
- =?us-ascii?Q?v0iifxLcPok7ecjzyu6U/a960BNEH71aJ1RpO7CsOA0rdevOgFk2ycIp4Dk3?=
- =?us-ascii?Q?ZZJG7gXUwuUgET8AqHd+OsOSf+8ROXi79FbrrIRsFZXCfLsRtrcVVnXQ0Cul?=
- =?us-ascii?Q?nY4Us1dldq6zJE/z4sDrNoxVVnG9OQl8Zyu4V1p/bTrkY3ztOw40GTnaiwio?=
- =?us-ascii?Q?NptsGTZ5riaan/CMnPH8Lc33DcVaqVQEPKs7ux0ntdNkRzbqhUthCqXjfgxK?=
- =?us-ascii?Q?7s0VovmEhNAxKc48SZ9Xr+D1fSaCqwAa0420EbvFBC5BJQ9UtjWcrXuZ84DR?=
- =?us-ascii?Q?UQksoNwMO3/nqYZiwYnBptwwXCtHu1yXONFxQfrKanrMGiXd75YbIk8FEYiv?=
- =?us-ascii?Q?RR2PCvUL7oB+6riBlCyzyf6t0WQu3+x54bCWYumoNpibmRAczV20o3+MuOTz?=
- =?us-ascii?Q?+TZ7qpYLdLi1i8RKwvA7I/m47rVYL8l5Lvh9Z4AM2ny9R7iDEdHS3btozo1n?=
- =?us-ascii?Q?DLeNz6RsvtOyOul6MyWTCVJMMDwlg7g5L0sHrUqU61Z1XunrgUDkrFIbW9xo?=
- =?us-ascii?Q?+zSJ/C2xZvQkGUL9iVDSI1iqeGiPJveurvupm78Koaz1QaVoG7qFshwRimDp?=
- =?us-ascii?Q?67YhUbNuBCwtYy3F3GprPUCPjVavfD3Xr3F5KNthdvN+og=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 896021a2-268e-412c-ac8c-08d984ea2a72
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 14:45:52.1258
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e1QFqqoa84W+9/haF7XEc/y8tWuTffLt3Oq+1zXbXI77uoKRLIWHmDcXvzc7p1Si
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3a2ada00-fe4f-284c-46a5-c0f6676bcfe1@wanadoo.fr>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:37:22AM +0000, lizhijian@fujitsu.com wrote:
-> So sorry, I missed this reply at previous ping
+On Thu, Sep 30, 2021 at 08:58:15PM +0200, Christophe JAILLET wrote:
+> Le 30/09/2021 à 16:21, Daniel Vetter a écrit :
+> > On Sat, Sep 25, 2021 at 08:46:12PM +0800, Cai Huoqing wrote:
+> > > Replace direction definition PCI_DMA_BIDIRECTIONAL
+> > > with DMA_BIDIRECTIONAL, because it helps to enhance readability
+> > > and avoid possible inconsistency.
+> > > 
+> > > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> > 
+> > Applied to drm-intel-gt-next, thanks for the patch.
+> > -Daniel
+> 
+> Hi,
+> just in case, a similar patch received some (unrelated) comments a few weeks
+> ago. See [1].
+> 
+> Should it rings some bells to someone who know who knows what should be
+> done.
+> 
+> Just my 2c.
+> 
+> [1]: https://lore.kernel.org/kernel-janitors/0cd61d5b-ac88-31e8-99ad-143af480416f@arm.com/
+
+Hm yeah there's some fishy stuff in here, but it's cc'ed to intel-gfx so
+should get picked up there.
+-Daniel
+
+> 
+> CJ
 > 
 > 
-> On 29/09/2021 01:08, Jason Gunthorpe wrote:
-> > On Fri, Sep 03, 2021 at 04:48:15PM +0800, Li Zhijian wrote:
-> >> Previously, ENOENT or EINVAL will be returned by ibv_advise_mr() although
-> >> the errors all occur at get_prefetchable_mr().
-> > What do you think about this instead?
-> Thank you, it's much better.
+> > 
+> > > ---
+> > >   drivers/gpu/drm/i915/gt/intel_region_lmem.c |  4 ++--
+> > >   drivers/gpu/drm/i915/gvt/gtt.c              | 17 ++++++++---------
+> > >   drivers/gpu/drm/i915/gvt/kvmgt.c            |  4 ++--
+> > >   drivers/gpu/drm/i915/i915_gem_gtt.c         |  4 ++--
+> > >   4 files changed, 14 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> > > index a74b72f50cc9..afb35d2e5c73 100644
+> > > --- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> > > +++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+> > > @@ -32,7 +32,7 @@ static int init_fake_lmem_bar(struct intel_memory_region *mem)
+> > >   	mem->remap_addr = dma_map_resource(i915->drm.dev,
+> > >   					   mem->region.start,
+> > >   					   mem->fake_mappable.size,
+> > > -					   PCI_DMA_BIDIRECTIONAL,
+> > > +					   DMA_BIDIRECTIONAL,
+> > >   					   DMA_ATTR_FORCE_CONTIGUOUS);
+> > >   	if (dma_mapping_error(i915->drm.dev, mem->remap_addr)) {
+> > >   		drm_mm_remove_node(&mem->fake_mappable);
+> > > @@ -62,7 +62,7 @@ static void release_fake_lmem_bar(struct intel_memory_region *mem)
+> > >   	dma_unmap_resource(mem->i915->drm.dev,
+> > >   			   mem->remap_addr,
+> > >   			   mem->fake_mappable.size,
+> > > -			   PCI_DMA_BIDIRECTIONAL,
+> > > +			   DMA_BIDIRECTIONAL,
+> > >   			   DMA_ATTR_FORCE_CONTIGUOUS);
+> > >   }
+> > > diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
+> > > index e5c2fdfc20e3..53d0cb327539 100644
+> > > --- a/drivers/gpu/drm/i915/gvt/gtt.c
+> > > +++ b/drivers/gpu/drm/i915/gvt/gtt.c
+> > > @@ -745,7 +745,7 @@ static void ppgtt_free_spt(struct intel_vgpu_ppgtt_spt *spt)
+> > >   	trace_spt_free(spt->vgpu->id, spt, spt->guest_page.type);
+> > >   	dma_unmap_page(kdev, spt->shadow_page.mfn << I915_GTT_PAGE_SHIFT, 4096,
+> > > -		       PCI_DMA_BIDIRECTIONAL);
+> > > +		       DMA_BIDIRECTIONAL);
+> > >   	radix_tree_delete(&spt->vgpu->gtt.spt_tree, spt->shadow_page.mfn);
+> > > @@ -849,7 +849,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
+> > >   	 */
+> > >   	spt->shadow_page.type = type;
+> > >   	daddr = dma_map_page(kdev, spt->shadow_page.page,
+> > > -			     0, 4096, PCI_DMA_BIDIRECTIONAL);
+> > > +			     0, 4096, DMA_BIDIRECTIONAL);
+> > >   	if (dma_mapping_error(kdev, daddr)) {
+> > >   		gvt_vgpu_err("fail to map dma addr\n");
+> > >   		ret = -EINVAL;
+> > > @@ -865,7 +865,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
+> > >   	return spt;
+> > >   err_unmap_dma:
+> > > -	dma_unmap_page(kdev, daddr, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
+> > > +	dma_unmap_page(kdev, daddr, PAGE_SIZE, DMA_BIDIRECTIONAL);
+> > >   err_free_spt:
+> > >   	free_spt(spt);
+> > >   	return ERR_PTR(ret);
+> > > @@ -2409,8 +2409,7 @@ static int alloc_scratch_pages(struct intel_vgpu *vgpu,
+> > >   		return -ENOMEM;
+> > >   	}
+> > > -	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0,
+> > > -			4096, PCI_DMA_BIDIRECTIONAL);
+> > > +	daddr = dma_map_page(dev, virt_to_page(scratch_pt), 0, 4096, DMA_BIDIRECTIONAL);
+> > >   	if (dma_mapping_error(dev, daddr)) {
+> > >   		gvt_vgpu_err("fail to dmamap scratch_pt\n");
+> > >   		__free_page(virt_to_page(scratch_pt));
+> > > @@ -2461,7 +2460,7 @@ static int release_scratch_page_tree(struct intel_vgpu *vgpu)
+> > >   		if (vgpu->gtt.scratch_pt[i].page != NULL) {
+> > >   			daddr = (dma_addr_t)(vgpu->gtt.scratch_pt[i].page_mfn <<
+> > >   					I915_GTT_PAGE_SHIFT);
+> > > -			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
+> > > +			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
+> > >   			__free_page(vgpu->gtt.scratch_pt[i].page);
+> > >   			vgpu->gtt.scratch_pt[i].page = NULL;
+> > >   			vgpu->gtt.scratch_pt[i].page_mfn = 0;
+> > > @@ -2741,7 +2740,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
+> > >   	}
+> > >   	daddr = dma_map_page(dev, virt_to_page(page), 0,
+> > > -			4096, PCI_DMA_BIDIRECTIONAL);
+> > > +			4096, DMA_BIDIRECTIONAL);
+> > >   	if (dma_mapping_error(dev, daddr)) {
+> > >   		gvt_err("fail to dmamap scratch ggtt page\n");
+> > >   		__free_page(virt_to_page(page));
+> > > @@ -2755,7 +2754,7 @@ int intel_gvt_init_gtt(struct intel_gvt *gvt)
+> > >   		ret = setup_spt_oos(gvt);
+> > >   		if (ret) {
+> > >   			gvt_err("fail to initialize SPT oos\n");
+> > > -			dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
+> > > +			dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
+> > >   			__free_page(gvt->gtt.scratch_page);
+> > >   			return ret;
+> > >   		}
+> > > @@ -2779,7 +2778,7 @@ void intel_gvt_clean_gtt(struct intel_gvt *gvt)
+> > >   	dma_addr_t daddr = (dma_addr_t)(gvt->gtt.scratch_mfn <<
+> > >   					I915_GTT_PAGE_SHIFT);
+> > > -	dma_unmap_page(dev, daddr, 4096, PCI_DMA_BIDIRECTIONAL);
+> > > +	dma_unmap_page(dev, daddr, 4096, DMA_BIDIRECTIONAL);
+> > >   	__free_page(gvt->gtt.scratch_page);
+> > > diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> > > index 7efa386449d1..20b82fb036f8 100644
+> > > --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+> > > +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> > > @@ -328,7 +328,7 @@ static int gvt_dma_map_page(struct intel_vgpu *vgpu, unsigned long gfn,
+> > >   		return ret;
+> > >   	/* Setup DMA mapping. */
+> > > -	*dma_addr = dma_map_page(dev, page, 0, size, PCI_DMA_BIDIRECTIONAL);
+> > > +	*dma_addr = dma_map_page(dev, page, 0, size, DMA_BIDIRECTIONAL);
+> > >   	if (dma_mapping_error(dev, *dma_addr)) {
+> > >   		gvt_vgpu_err("DMA mapping failed for pfn 0x%lx, ret %d\n",
+> > >   			     page_to_pfn(page), ret);
+> > > @@ -344,7 +344,7 @@ static void gvt_dma_unmap_page(struct intel_vgpu *vgpu, unsigned long gfn,
+> > >   {
+> > >   	struct device *dev = vgpu->gvt->gt->i915->drm.dev;
+> > > -	dma_unmap_page(dev, dma_addr, size, PCI_DMA_BIDIRECTIONAL);
+> > > +	dma_unmap_page(dev, dma_addr, size, DMA_BIDIRECTIONAL);
+> > >   	gvt_unpin_guest_page(vgpu, gfn, size);
+> > >   }
+> > > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > index 36489be4896b..cd5f2348a187 100644
+> > > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > @@ -30,7 +30,7 @@ int i915_gem_gtt_prepare_pages(struct drm_i915_gem_object *obj,
+> > >   	do {
+> > >   		if (dma_map_sg_attrs(obj->base.dev->dev,
+> > >   				     pages->sgl, pages->nents,
+> > > -				     PCI_DMA_BIDIRECTIONAL,
+> > > +				     DMA_BIDIRECTIONAL,
+> > >   				     DMA_ATTR_SKIP_CPU_SYNC |
+> > >   				     DMA_ATTR_NO_KERNEL_MAPPING |
+> > >   				     DMA_ATTR_NO_WARN))
+> > > @@ -64,7 +64,7 @@ void i915_gem_gtt_finish_pages(struct drm_i915_gem_object *obj,
+> > >   		usleep_range(100, 250);
+> > >   	dma_unmap_sg(i915->drm.dev, pages->sgl, pages->nents,
+> > > -		     PCI_DMA_BIDIRECTIONAL);
+> > > +		     DMA_BIDIRECTIONAL);
+> > >   }
+> > >   /**
+> > > -- 
+> > > 2.25.1
+> > > 
+> > 
+> 
 
-Ok, applied to for-next
-
-Jason
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
