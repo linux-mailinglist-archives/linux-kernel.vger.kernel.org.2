@@ -2,59 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1663041E9EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BC641E9EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353360AbhJAJoU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Oct 2021 05:44:20 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44106 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353285AbhJAJn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:43:56 -0400
-Received: from smtpclient.apple (unknown [62.214.10.150])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8123CCED29;
-        Fri,  1 Oct 2021 11:42:10 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210930103634.1710-1-hildawu@realtek.com>
-Date:   Fri, 1 Oct 2021 11:42:10 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kai.heng.feng@canonical.com, apusaka@chromium.org,
-        max.chou@realtek.com, alex_lu@realsil.com.cn, kidman@realtek.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <D5B18E08-AE60-4B8B-960B-694D62E067B5@holtmann.org>
-References: <20210930103634.1710-1-hildawu@realtek.com>
-To:     Hilda Wu <hildawu@realtek.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S1353079AbhJAJo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:44:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:60521 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353256AbhJAJoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:44:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310927039"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="310927039"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 02:42:30 -0700
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="618981713"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 02:42:28 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 81B782010B;
+        Fri,  1 Oct 2021 12:42:26 +0300 (EEST)
+Date:   Fri, 1 Oct 2021 12:42:26 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
+Subject: Re: [PATCH v2 2/7] media: ipu3-cio2: Set valid initial format
+Message-ID: <YVbYAhc3u9IUrOha@paasikivi.fi.intel.com>
+References: <20211001093344.2812707-1-ribalda@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001093344.2812707-1-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hilda,
-
-> Some un-support wakeup platforms keep USB power and suspend signal
-> is coming late, this makes Realtek some chip keep its firmware,
-> and make it never load new firmware.
+On Fri, Oct 01, 2021 at 09:33:43AM +0000, Ricardo Ribalda wrote:
+> The initial format did not have a valid size.
 > 
-> So use vendor specific HCI command to ask them drop its firmware after
-> system shutdown or resume.
+> Fixes v4l2-compliance:
 > 
-> Signed-off-by: Hilda Wu <hildawu@realtek.com>
+> fail: v4l2-test-formats.cpp(723): Video Output Multiplanar:
+> 				  TRY_FMT(G_FMT) != G_FMT
+> test VIDIOC_TRY_FMT: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
-> drivers/bluetooth/btrtl.c | 12 +++++++-----
-> 1 file changed, 7 insertions(+), 5 deletions(-)
+> v2: Suggested by Sakari Ailus <sakari.ailus@linux.intel.com>
+> 
+> Replace number with calculation based on width.
+> 
+>  drivers/staging/media/ipu3/ipu3-v4l2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+> index 38a2407645096..19c4fcabce0db 100644
+> --- a/drivers/staging/media/ipu3/ipu3-v4l2.c
+> +++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+> @@ -1136,7 +1136,8 @@ static int imgu_v4l2_node_setup(struct imgu_device *imgu, unsigned int pipe,
+>  	def_pix_fmt.height = def_bus_fmt.height;
+>  	def_pix_fmt.field = def_bus_fmt.field;
+>  	def_pix_fmt.num_planes = 1;
+> -	def_pix_fmt.plane_fmt[0].bytesperline = def_pix_fmt.width * 2;
+> +	def_pix_fmt.plane_fmt[0].bytesperline =
+> +		DIV_ROUND_UP(def_bus_fmt.width, 50) * 64;
 
-patch has been applied to bluetooth-next tree.
+cio2_bytesperline()? :-)
 
-Btw. is there a simple way (via vendor HCI commands or similar) to tell which RTL device supports the MSFT or AOSP extensions. I rather have this done once and not keep hacking it over and over again.
-
-Regards
-
-Marcel
-
+-- 
+Sakari Ailus
