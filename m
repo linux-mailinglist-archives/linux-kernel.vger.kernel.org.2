@@ -2,144 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1920941F5FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3584841F5FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhJAT7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        id S232096AbhJAUAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhJAT7p (ORCPT
+        with ESMTP id S229916AbhJAUAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:59:45 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732D1C06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:58:00 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id 5so455918iov.9
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:58:00 -0700 (PDT)
+        Fri, 1 Oct 2021 16:00:22 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A217C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:58:38 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id bv15-20020ad4488f000000b003827388ecfcso14219357qvb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s6pRFF/X8rzKRYzB08v21cTq+o2ffnNGgmWS4AC7+Xg=;
-        b=hxBkz1LaiDsMz+JPw/3iMZLO7QG2xgZBZpo8J2ySjCsRtBKMs7d8JhpKpHsSRw1d3r
-         zwjFbl56NkLEDbWYJveXejMjKcKlhDTUAi2s17bWrrhPzVghzS+PIeXrZVwCUh+xoqTt
-         RmBKhiQxygIX/REqG29GMJdZaTOK6rmwKwQ4tDXzIAbsOBb83fQZafmoWwdWekzmQo22
-         UVLUkZ/2Pcxxs19v+Zodx65lm8YciEGrxA7H5BIVT65rQ52TXa+7A4u+fZmLDbEHR8Tz
-         /sIus1C3i5R2OH7QQSjmi7fnkVnld6F7x0WyrFLkBIrmCDbDDw1J9JEipBhjFtpjRsnh
-         l+Rg==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=jAuT2Ih3MFOePb85QCkMtLI141zk5gS6D05a628HxZY=;
+        b=r0CihtWGn69tmcZFeSCcKUPbPscg8Kju+ik2iGSaKknPFwicL/q+zW6y8jRIZzsb+R
+         oOTIJpRHvE3GWgAtPgp3NDvLWUryCfaAtHOIBwoSng+UFL7jOz/dONqVIog6AyRl9sgN
+         Onu9y1UaXTdlYcHkLuf4uWyL5VdqQCaWNL07mw92SNmYfvurN/rUFQolH+gxPU90KG9I
+         aqQobN0ap1r/xSllQkvAT3y5Qgkd4nnhsuh42ypNHDyzf/Uw/UCSO9wbMv2Zu0IPaE3S
+         CQ4IIZZhrSQAa87g9Icjc72Hvo6D2Pze8tuspMulRG42sbiiXojrguCJa3scEfEhN2Fm
+         ujQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s6pRFF/X8rzKRYzB08v21cTq+o2ffnNGgmWS4AC7+Xg=;
-        b=ykrmXU6Tg2EzxXbz0/U6cdoN08uJWUJjjF2C+HzOaA2rpoGS/A2FxgcjXAiujlVVrW
-         pKtOVIiWwqKkTAoFJSIAXY4uMIJT+d2NDIHH0XN513SnNVOmfUPfM8Pm7Pu+O8nHyHH9
-         46L7RAd87teljzPXuYOQ7Wj+ZcVDYG+uHpigtcYw3GgWieTE9YGE9wxgOnEa7J2FRJ7t
-         On5k588EAAg/3LRL+B4iisloTG6z7nZckCctsOXFX13W2JiP8q7ajuxQiRbzPopbgJgi
-         tOXY2z8xdrJNd5S8F5jLyzG9in7faMxNrm8AmhVW/g1mgNGk4g1TPs+XheU4LeTzNoEk
-         CqhA==
-X-Gm-Message-State: AOAM5325VFxITSg2uG3aLw8s6LBVpIrPudACvWdteAh1nxnW+yQTIFI5
-        qkyuJ/HKfqFqdxoCppQSl+Y4IA==
-X-Google-Smtp-Source: ABdhPJyJnfMffDAo6OzdHBoErcW15s034VdkP0Asp1YuINROuGgHNXlevHd2e3Rdyv6qRTvnwOw4PQ==
-X-Received: by 2002:a5d:9d15:: with SMTP id j21mr9589505ioj.121.1633118279526;
-        Fri, 01 Oct 2021 12:57:59 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id z6sm4329725iox.28.2021.10.01.12.57.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 12:57:59 -0700 (PDT)
-Subject: Re: swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first use in
- this function)
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>
-References: <CA+G9fYsKjyOL1xj+GFC=Ab7Yw+b0Tg9jf8uvnN2tOc6OdupA-Q@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <250970e7-e430-e8fe-2844-5c7f627b0c26@kernel.dk>
-Date:   Fri, 1 Oct 2021 13:57:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CA+G9fYsKjyOL1xj+GFC=Ab7Yw+b0Tg9jf8uvnN2tOc6OdupA-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=jAuT2Ih3MFOePb85QCkMtLI141zk5gS6D05a628HxZY=;
+        b=wIYfewNC4on9b+cPiyEC6nWsWUfrz8wSL3QOLRGOh5A0kuDmLN3r5bVvFb5Kf+hmMR
+         QkKTHFbzMM2GtfrnJ6kbozbLK/Z5mF+00chhNJW7S7NfpEA5mikZfx2uBjOAmLR/IUBp
+         uNKvqbEaKIOIvfpuyTENFhpNv6LQmMDornimiYTUdDNK4zobTsQ4GP3N34ENrcjxsG2H
+         dT8M4sJsog/CNdcy+N5JaWLaI2YDgMV53wqctWmBsbl25UoA9zgu9P0ZqRE8Q8X7U/TZ
+         sbHBbex/u2YywvegXaXxhzKpUl2p39sP+cG+s94eQg9kend9Ul7S601RAYhNpJcehl+X
+         YNbQ==
+X-Gm-Message-State: AOAM531onrNvHffcuSMJ546+vMcxIxNPgHAhuXnRIxMat9ONOrj0RgDM
+        EleGrVRfhhA2FyWDDiTzMw8yl3nOVbE2vY8W3Xs=
+X-Google-Smtp-Source: ABdhPJyiYvFeU2KcQlXH3qtdKxpV2Uk5f53K4zvyFxfeL4giQfZehQqsQuS621d0cjHXGQQTb4re4DkvbtAAPAxEQN0=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:99e9:cd62:e5f3:763d])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:c293:: with SMTP id
+ b19mr11016594qvi.22.1633118317541; Fri, 01 Oct 2021 12:58:37 -0700 (PDT)
+Date:   Fri,  1 Oct 2021 12:58:21 -0700
+In-Reply-To: <CABCJKue5Ay6_+8sibzh5wRh3gPzV1g72gJ9m2ot4E1ezj8bpHA@mail.gmail.com>
+Message-Id: <20211001195823.581937-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <CABCJKue5Ay6_+8sibzh5wRh3gPzV1g72gJ9m2ot4E1ezj8bpHA@mail.gmail.com>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH v5] kallsyms: strip LTO suffixes from static functions
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        "KE . LI" <like1@oppo.com>, Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Padmanabha Srinivasaiah <treasure4paddy@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miroslav Benes <mbenes@suse.cz>, Jessica Yu <jeyu@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/21 4:49 AM, Naresh Kamboju wrote:
-> Following build errors noticed while building Linux next 20211001
-> with gcc-11 for powerpc architecture.
-> 
-> kernel/sched/debug.c: In function 'print_cfs_group_stats':
-> kernel/sched/debug.c:460:41: warning: unused variable 'stats'
-> [-Wunused-variable]
->   460 |                struct sched_statistics *stats =
-> __schedstats_from_se(se);
->       |                                         ^~~~~
-> In file included from include/linux/blkdev.h:6,
->                  from include/linux/blk-mq.h:5,
->                  from drivers/block/swim3.c:24:
-> drivers/block/swim3.c: In function 'swim3_attach':
-> drivers/block/swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first
-> use in this function)
->  1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
->       |                                      ^~~~~~~~~~~~
-> include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
->   276 |         __register_blkdev(major, name, NULL)
->       |                           ^~~~~
-> drivers/block/swim3.c:1200:38: note: each undeclared identifier is
-> reported only once for each function it appears in
->  1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
->       |                                      ^~~~~~~~~~~~
-> include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
->   276 |         __register_blkdev(major, name, NULL)
->       |                           ^~~~~
-> make[3]: *** [scripts/Makefile.build:288: drivers/block/swim3.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> make[2]: *** [scripts/Makefile.build:571: drivers/block] Error 2
-> make[2]: Target '__build' not remade because of errors.
-> make[1]: *** [Makefile:2034: drivers] Error 2
-> 
-> Build config:
-> https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/config
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> meta data:
-> -----------
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
->     git_short_log: a25006a77348 (\"Add linux-next specific files for 20211001\")
->     kconfig:  ppc6xx_defconfig
->     kernel_version: 5.15.0-rc3
->     target_arch: powerpc
->     toolchain: gcc-11
-> 
-> steps to reproduce:
-> https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/tuxmake_reproducer.sh
+Similar to:
+commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
+functions")
 
-Does this fix it?
+It's very common for compilers to modify the symbol name for static
+functions as part of optimizing transformations. That makes hooking
+static functions (that weren't inlined or DCE'd) with kprobes difficult.
 
+LLVM has yet another name mangling scheme used by thin LTO.
 
-diff --git a/drivers/block/swim3.c b/drivers/block/swim3.c
-index f7e3482e846b..4b91c9aa5892 100644
---- a/drivers/block/swim3.c
-+++ b/drivers/block/swim3.c
-@@ -27,6 +27,7 @@
- #include <linux/module.h>
- #include <linux/spinlock.h>
- #include <linux/wait.h>
-+#include <linux/major.h>
- #include <asm/io.h>
- #include <asm/dbdma.h>
- #include <asm/prom.h>
+Combine handling of the various schemes by truncating after the first
+'.'.  Strip off these suffixes so that we can continue to hook such
+static functions.  Clang releases prior to clang-13 would use '$'
+instead of '.'
 
+Link: https://reviews.llvm.org/rGc6e5c4654bd5045fe22a1a52779e48e2038a404c
+Reported-by: KE.LI(Lieke) <like1@oppo.com>
+Suggested-by: Fangrui Song <maskray@google.com>
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+Suggested-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes v4 -> v5:
+* Absorb Padmanabha Srinivasaiah's patch from
+  https://lore.kernel.org/lkml/20210814124224.8551-1-treasure4paddy@gmail.com/.
+* Add Padmanabha's Suggested-by tag.
+* Rewrite the patch to truncate after first '.', as per Sami's comment
+  from
+  https://lore.kernel.org/lkml/CABCJKue5Ay6_+8sibzh5wRh3gPzV1g72gJ9m2ot4E1ezj8bpHA@mail.gmail.com/.
+* Add Sami's Suggested-by tag.
+* Verify that the '$' delimiter only appears for
+  thin LTO + CFI + clang <= 12, use __clang_minor__ to check.
+* Update comments as per Nathan + Fangrui, add their Suggested-by tags.
+* While Nathan + Fangrui did review v4, v5 is too different IMO to carry
+  those tags forward.
+
+Changes v3 -> v4:
+* Convert this function to use IS_ENABLED rather than provide multiple
+  definitions based on preprocessor checks.
+* Add Nathan's suggested-by.
+
+Changes v2 -> v3:
+* Un-nest preprocessor checks, as per Nathan.
+
+Changes v1 -> v2:
+* Both mangling schemes can occur for thinLTO + CFI, this new scheme can
+  also occur for thinLTO without CFI. Split cleanup_symbol_name() into
+  two function calls.
+* Drop KE.LI's tested by tag.
+* Do not carry Fangrui's Reviewed by tag.
+* Drop the inline keyword; it is meaningless.
+
+ kernel/kallsyms.c | 45 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 0ba87982d017..3e4766204b07 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -164,26 +164,45 @@ static unsigned long kallsyms_sym_address(int idx)
+ 	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
+ }
+ 
+-#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
+-/*
+- * LLVM appends a hash to static function names when ThinLTO and CFI are
+- * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
+- * This causes confusion and potentially breaks user space tools, so we
+- * strip the suffix from expanded symbol names.
+- */
+-static inline bool cleanup_symbol_name(char *s)
++static bool cleanup_symbol_name(char *s)
+ {
+ 	char *res;
+ 
++	if (!IS_ENABLED(CONFIG_LTO_CLANG))
++		return false;
++
++	/*
++	 * LLVM appends various suffixes for local functions and variables that must
++	 * be promoted to global scope as part of LTO.  This can break hooking of
++	 * static functions with kprobes. '.' is not a valid character in an
++	 * identifier in C. Suffixes observed:
++	 * - foo.llvm.[0-9a-f]+
++	 * - foo.[0-9a-f]+
++	 * - foo.[0-9a-f]+.cfi_jt
++	 */
++	res = strchr(s, '.');
++	if (res) {
++		*res = '\0';
++		return true;
++	}
++
++	if (!IS_ENABLED(CONFIG_CFI_CLANG) || !IS_ENABLED(CONFIG_LTO_CLANG_THIN) ||
++	    __clang_major__ >= 13)
++		return false;
++
++	/*
++	 * Prior to LLVM 13, the following suffixes were observed when thinLTO
++	 * and CFI are both enabled:
++	 * - foo$[0-9]+
++	 */
+ 	res = strrchr(s, '$');
+-	if (res)
++	if (res) {
+ 		*res = '\0';
++		return true;
++	}
+ 
+-	return res != NULL;
++	return false;
+ }
+-#else
+-static inline bool cleanup_symbol_name(char *s) { return false; }
+-#endif
+ 
+ /* Lookup the address for this symbol. Returns 0 if not found. */
+ unsigned long kallsyms_lookup_name(const char *name)
+
+base-commit: 4de593fb965fc2bd11a0b767e0c65ff43540a6e4
 -- 
-Jens Axboe
+2.33.0.800.g4c38ced690-goog
 
