@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2782B41EE56
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C4541EE60
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhJANSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:18:46 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:42836 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhJANSn (ORCPT
+        id S231667AbhJANTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:19:47 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:39636 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231590AbhJANSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:18:43 -0400
-Received: by mail-oi1-f179.google.com with SMTP id x124so11355393oix.9;
-        Fri, 01 Oct 2021 06:16:59 -0700 (PDT)
+        Fri, 1 Oct 2021 09:18:49 -0400
+Received: by mail-ot1-f53.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so11428743ota.6;
+        Fri, 01 Oct 2021 06:17:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=s93FCbEY6wiV8iS/EDoBTCM7Mo8XJASc8RhUVRLOCxo=;
-        b=rt42qo3y/On5LIqnPcuE+mLBLlRtTBSjfGXhbZ+xJ2sg42++AgZ432ulGbhIhGDxr9
-         4jYJU/Klz/0tHxuF4+xO2ceJOGmIsHsb6Xhl5+HcfyLGfLwbRMGwKRGm4OFE3PniqMpu
-         qOKIfUI4XF1TONHev5otb88z8/+ymfbGYaW9heusb8zfiFieu201VFhzpiHfojuMRHCf
-         ofoWz8KgXu/QW0VTBz+Ik52vR1OCA65uScbX84hDXMpLqxqiN/G0ACAzTR/LERO0wM37
-         4f3voamk8Q5pYRCO+gANN3Vb3VyIj6/GMPw8G77wUiqWlXLhERNaMivqRqat5gUl1RO/
-         uYng==
-X-Gm-Message-State: AOAM531gqeCuAg7EiHpwswI6wYiAFgxmDUfUTv9tqDVOijk1TfF7bR9q
-        nbz5xRpkbDGilmGsOGGGIQ==
-X-Google-Smtp-Source: ABdhPJxqIZBVEGOYTlvgGELRTch2AV0JHIMbH+6kmz85mv3lykRhU/J6zCE6YTwRePhunB+9Higd6A==
-X-Received: by 2002:aca:d686:: with SMTP id n128mr3734516oig.144.1633094219252;
-        Fri, 01 Oct 2021 06:16:59 -0700 (PDT)
+        bh=GpaCFBluFudPZ/yH9IF+RzTInuanJkVWpBhaYtuvn70=;
+        b=CN0QfsG/2V9NCnju8N2IcSC6qYSDaG6PKOcjRl+1y5x5+8SE3n9Cr2H59q73IZV9iz
+         SXq1LO8uQSVqPt0VlxOLZBf+52Y6XB/cIvbkPwCyYyqplwXdef3/K5JCyApL7KOJ+4iO
+         XNmpUYzz0+NvOL4Wq5O16sbHkllW3unOVOgxl6dDJWxhrPV1BWqWeROcKsTD9HyXtRjf
+         sOlbEWdBs/zcJeQkKFTGEFMkWrJRyO2/KUPetNfNlvJKMqKkRGYl0UcMFpHE5X4E1voE
+         kwG6fjVdkD60Uyec3UvmQ9HfWgYCL/WcZCbduj/YaJpRiRbL4qOJhbRv9rvi1RzxCgLx
+         EmCw==
+X-Gm-Message-State: AOAM531zMTa+ojPHzFuCQIzMb0FlgBzW0TgqPfMzR1C4z0QqpY1nR8K+
+        TcSCk7RRY5lNVeDCtWOFbA==
+X-Google-Smtp-Source: ABdhPJzzeLKszTrXu+Szgav1S9FdZxShBPRvj5IXzS/1VS1vS3CRzG7P9PPuOKzQLyPVho+hlNMAMg==
+X-Received: by 2002:a05:6830:112:: with SMTP id i18mr10003411otp.186.1633094225354;
+        Fri, 01 Oct 2021 06:17:05 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c21sm1124500oiy.18.2021.10.01.06.16.58
+        by smtp.gmail.com with ESMTPSA id d7sm1169115ooa.36.2021.10.01.06.17.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 06:16:58 -0700 (PDT)
-Received: (nullmailer pid 3666441 invoked by uid 1000);
+        Fri, 01 Oct 2021 06:17:04 -0700 (PDT)
+Received: (nullmailer pid 3666446 invoked by uid 1000);
         Fri, 01 Oct 2021 13:16:57 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     Li Yang <leoyang.li@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20211001000924.15421-2-leoyang.li@nxp.com>
-References: <20211001000924.15421-1-leoyang.li@nxp.com> <20211001000924.15421-2-leoyang.li@nxp.com>
-Subject: Re: [PATCH 1/5] dt-bindings: memory: fsl: convert ifc binding to yaml schema
+Cc:     devicetree@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Shawn Guo <shawnguo@kernel.org>
+In-Reply-To: <20211001000417.15334-3-leoyang.li@nxp.com>
+References: <20211001000417.15334-1-leoyang.li@nxp.com> <20211001000417.15334-3-leoyang.li@nxp.com>
+Subject: Re: [PATCH v2 02/16] dt-bindings: i2c: imx: update schema to align with original txt binding
 Date:   Fri, 01 Oct 2021 08:16:57 -0500
-Message-Id: <1633094217.843390.3666440.nullmailer@robh.at.kernel.org>
+Message-Id: <1633094217.893290.3666445.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 19:09:20 -0500, Li Yang wrote:
-> Convert the txt binding to yaml format and add description.  Drop the
-> "simple-bus" compatible string from the example and not allowed by the
-> binding any more.  This will help to enforce the correct probe order
-> between parent device and child devices, but will require the ifc driver
-> to probe the child devices to work properly.
+On Thu, 30 Sep 2021 19:04:03 -0500, Li Yang wrote:
+> When the binding was converted from txt to yaml, it actually added more
+> constrains than the original txt binding which was already used in many
+> in-tree DTSes.  Some of the newly added constrains are either not valid
+> or not neccessary.
+> 
+> Not all SoCs use ipg as the clock name for i2c.  There is no point in
+> having SoC integration information defined in i2c binding.  Remove the
+> clock name requirement in the schema.
+> 
+> The original txt binding didn't require the order of tx and rx for
+> dmas/dma-names.  Many in tree DTSes are already using the other order.
+> Both orders should just work fine.  Update the schema to allow both.
 > 
 > Signed-off-by: Li Yang <leoyang.li@nxp.com>
 > ---
-> updates from previous submission:
-> - Drop "simple-bus" from binding and only "fsl,ifc" as compatible
-> - Fix one identiation problem of "reg"
-> - Add type restriction to "little-endian" property
+> v2:
+> Updated the patch description
 > 
->  .../bindings/memory-controllers/fsl/ifc.txt   |  82 -----------
->  .../bindings/memory-controllers/fsl/ifc.yaml  | 137 ++++++++++++++++++
->  2 files changed, 137 insertions(+), 82 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+>  Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/memory-controllers/fsl/ifc.example.dt.yaml:0:0: /example-0/soc/ifc@ffe1e000/flash@1,0: failed to match any schema with compatible: ['fsl,ifc-nand']
-Documentation/devicetree/bindings/memory-controllers/fsl/ifc.example.dt.yaml:0:0: /example-0/soc/ifc@ffe1e000/cpld@3,0: failed to match any schema with compatible: ['fsl,p1010rdb-cpld']
+Full log is available here: https://patchwork.ozlabs.org/patch/1535099
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1535102
+i2c@21a4000: clock-frequency:0:0: 50000 is not one of [100000, 400000]
+	arch/arm/boot/dts/imx6dl-alti6p.dt.yaml
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+i2c@21f8000: clock-frequency:0:0: 50000 is not one of [100000, 400000]
+	arch/arm/boot/dts/imx6dl-alti6p.dt.yaml
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+i2c@30a20000: clock-frequency:0:0: 387000 is not one of [100000, 400000]
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
 
-pip3 install dtschema --upgrade
+i2c@30a30000: clock-frequency:0:0: 387000 is not one of [100000, 400000]
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
 
-Please check and re-submit.
+i2c@30a40000: clock-frequency:0:0: 387000 is not one of [100000, 400000]
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
+
+i2c@30a50000: clock-frequency:0:0: 387000 is not one of [100000, 400000]
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
 
