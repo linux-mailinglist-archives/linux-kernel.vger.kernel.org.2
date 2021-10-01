@@ -2,191 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F69841E911
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712FE41E917
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352717AbhJAI0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhJAI0v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:26:51 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F24EC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 01:25:07 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id h2-20020a05620a400200b0045e87af96ebso3750348qko.14
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=FBeS3lAS+por1ohyx/M0kt+AefAERRaWIO//vKJDGMg=;
-        b=Igt9T9yO/5jq8bTU8Slk/+qXPJnpzeVRlwYbguo4zhvuxTnqitoD/MUmgK4d4wP+jy
-         JCgz+0rDWfpeLlkkhq1RLKraTzwEGldb6F02+fWK9x77HWxkc+VXSbADRkLa7NEqROBf
-         5lLCrjsARGKKremElg5bLtqws68xRA3E/ta2/+3ISY/lbbljJsRX2vxbgRv8e57iP455
-         i4UxcKSEVu3JPyeLpLu26qlaNEelGbkFMKeB5V66id/k3JOKJM3a6Afj3tan0yZ44Yr3
-         a+naMXOW32aWMge4au5lzL4z2YeXvHV1syA4nHeLh988AB7AwhzWlX7QlebPWg08FjH/
-         R7Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=FBeS3lAS+por1ohyx/M0kt+AefAERRaWIO//vKJDGMg=;
-        b=z2sv+qPPS2LCwip4aJy5zGiihaAgF/kNDGjYbU+Tkk+ctobwkiPZtWgNp5vigXVZhg
-         z2fvIudeiTrjbvnsogZttIvw+Cn9bYbcrnV2t2gDyqFEF5cGSN0Hq/g7ZDuXsQqfS6lF
-         gcK/nwpvXRbRvMWCjVaaBGJ+6ow9DGI0Dzd0zmURwdUNlYDUtgaLIrW9ajoa9mYl1mRY
-         oEZ4EVQpmWfRBNg938kgYz1qwuYpdaTen7CULHQObx8hMC+flnYzDI5S/usPlKhsA4QR
-         gnawHukja/X63mWe4XTMLzRkf5GpfADiF5MtbqbKT6SqbBkv7XeZfoQnphUeFTDCjjCC
-         dOXQ==
-X-Gm-Message-State: AOAM530ddRjzBJ7Sp4JygYrNKgA6zpYP9CNnHFbPK53KJ28dMtGyMgZ3
-        +ZSl+pX1Min20H5WhIzz8kNsmQNDYP6g
-X-Google-Smtp-Source: ABdhPJwhkUAODYrhLn6L1bmIF8sOe7J0I9ppMJm9mpv+iX8G/rSh4U/jKkv1R1/VneNtOqsP0oKplnV/vL+5
-X-Received: from tzungbi-z840.tpe.corp.google.com ([2401:fa00:1:10:2aeb:a516:cf6:c5a1])
- (user=tzungbi job=sendgmr) by 2002:a05:6214:1233:: with SMTP id
- p19mr7994309qvv.20.1633076706803; Fri, 01 Oct 2021 01:25:06 -0700 (PDT)
-Date:   Fri,  1 Oct 2021 16:24:56 +0800
-Message-Id: <20211001082456.1986968-1-tzungbi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH] platform/chrome: cros_ec_debugfs: detach log reader wq from devm
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     bleung@chromium.org, enric.balletbo@collabora.com
-Cc:     groeck@chromium.org, linux-kernel@vger.kernel.org,
-        tzungbi@google.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1352844AbhJAI3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:29:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57344 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352727AbhJAI20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 04:28:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="204856568"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="204856568"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 01:26:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="709668546"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Oct 2021 01:26:17 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mWDs1-0000x0-4v; Fri, 01 Oct 2021 08:26:17 +0000
+Date:   Fri, 01 Oct 2021 16:25:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2021.09.22a] BUILD SUCCESS
+ a690c71f8f712fb9e7223b945d79fad1a60fc743
+Message-ID: <6156c5f9.tflmnfOXbR1XuIo0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Debugfs console_log uses devm memory (see struct cros_ec_debugfs in
-cros_ec_console_log fops).  However, lifecycles of device and debugfs
-are independent.  An use-after-free issue is observed if userland
-program operates the debugfs after the memory has been freed.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.09.22a
+branch HEAD: a690c71f8f712fb9e7223b945d79fad1a60fc743  rcutorture: Provide bits for nested RCU readers
 
-An userland program example in Python code:
-... import select
-... p = select.epoll()
-... f = open('/sys/kernel/debug/cros_scp/console_log')
-... p.register(f, select.POLLIN)
-... p.poll(1)
-[(4, 1)]                    # 4=fd, 1=select.POLLIN
+elapsed time: 1208m
 
-[ shutdown cros_scp at the point ]
+configs tested: 149
+configs skipped: 3
 
-... p.poll(1)
-[(4, 16)]                   # 4=fd, 16=select.POLLHUP
-... p.unregister(f)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-An use-after-free issue raises here.  It called epoll_ctl with
-EPOLL_CTL_DEL which in turn to use the workqueue in the devm (i.e.
-log_wq).
+gcc tested configs:
+arm                              allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20210930
+arm                         s3c6400_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                   secureedge5410_defconfig
+m68k                         amcore_defconfig
+sh                            shmin_defconfig
+sh                           se7751_defconfig
+arm                          pcm027_defconfig
+powerpc                 canyonlands_defconfig
+arm                          ixp4xx_defconfig
+microblaze                      mmu_defconfig
+sh                          rsk7201_defconfig
+arm                     eseries_pxa_defconfig
+sh                   sh7770_generic_defconfig
+x86_64                              defconfig
+mips                        vocore2_defconfig
+arm                        spear3xx_defconfig
+sh                                  defconfig
+riscv                            alldefconfig
+powerpc                      cm5200_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     kilauea_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                          gemini_defconfig
+powerpc                       ebony_defconfig
+arm                            mmp2_defconfig
+arc                        nsim_700_defconfig
+arm                       netwinder_defconfig
+arm                       imx_v4_v5_defconfig
+arm                           corgi_defconfig
+sh                        sh7763rdp_defconfig
+arm                        magician_defconfig
+mips                          ath25_defconfig
+powerpc                     stx_gp3_defconfig
+h8300                       h8s-sim_defconfig
+arm                         bcm2835_defconfig
+arm                            lart_defconfig
+sparc64                             defconfig
+arm                          ep93xx_defconfig
+arm                           tegra_defconfig
+m68k                         apollo_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                     cu1000-neo_defconfig
+mips                        qi_lb60_defconfig
+s390                          debug_defconfig
+sh                         ap325rxa_defconfig
+powerpc                        cell_defconfig
+powerpc                     ksi8560_defconfig
+m68k                        m5307c3_defconfig
+arm                        spear6xx_defconfig
+ia64                          tiger_defconfig
+arm                          simpad_defconfig
+arm                           u8500_defconfig
+xtensa                       common_defconfig
+arc                        nsimosci_defconfig
+arm                              alldefconfig
+powerpc                    socrates_defconfig
+um                             i386_defconfig
+sh                        apsh4ad0a_defconfig
+mips                       bmips_be_defconfig
+mips                       lemote2f_defconfig
+arm                       omap2plus_defconfig
+powerpc                      pcm030_defconfig
+sh                          r7780mp_defconfig
+arm                  randconfig-c002-20210930
+x86_64               randconfig-c001-20210930
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210930
+x86_64               randconfig-a001-20210930
+x86_64               randconfig-a002-20210930
+x86_64               randconfig-a005-20210930
+x86_64               randconfig-a006-20210930
+x86_64               randconfig-a003-20210930
+i386                 randconfig-a003-20210930
+i386                 randconfig-a001-20210930
+i386                 randconfig-a004-20210930
+i386                 randconfig-a002-20210930
+i386                 randconfig-a006-20210930
+i386                 randconfig-a005-20210930
+arc                  randconfig-r043-20210930
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-The calling stack:
-do_raw_spin_lock
-_raw_spin_lock_irqsave
-remove_wait_queue
-ep_unregister_pollwait
-ep_remove
-do_epoll_ctl
+clang tested configs:
+i386                 randconfig-c001-20210930
+arm                  randconfig-c002-20210930
+powerpc              randconfig-c003-20210930
+mips                 randconfig-c004-20210930
+s390                 randconfig-c005-20210930
+riscv                randconfig-c006-20210930
+x86_64               randconfig-c007-20210930
+x86_64               randconfig-a015-20210930
+x86_64               randconfig-a011-20210930
+x86_64               randconfig-a012-20210930
+x86_64               randconfig-a013-20210930
+x86_64               randconfig-a016-20210930
+x86_64               randconfig-a014-20210930
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+riscv                randconfig-r042-20210930
+hexagon              randconfig-r041-20210930
+s390                 randconfig-r044-20210930
+hexagon              randconfig-r045-20210930
 
-Detaches log reader's workqueue from devm to make sure it is persistent
-even if the device has been removed.
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
-As for 2 other cases:
-
-Case 1. userland program opens the debugfs after the device has been removed
-
-ENOENT.  cros_ec_debugfs_remove() calls debugfs_remove_recursive().
-
-Case 2. userland program is reading when the device is removing
-
-If the userland program is waiting in cros_ec_console_log_read(), the device
-removal will wait for it.
-
-See the calling stack for the case:
-wait_for_completion
-__debugfs_file_removed
-remove_one
-simple_recursive_removal
-debugfs_remove
-cros_ec_debugfs_remove
-platform_drv_remove
-device_release_driver_internal
-device_release_driver
-bus_remove_device
-device_del
-platform_device_del
-platform_device_unregister
-
- drivers/platform/chrome/cros_ec_debugfs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
-index 272c89837d74..0dbceee87a4b 100644
---- a/drivers/platform/chrome/cros_ec_debugfs.c
-+++ b/drivers/platform/chrome/cros_ec_debugfs.c
-@@ -25,6 +25,9 @@
- 
- #define CIRC_ADD(idx, size, value)	(((idx) + (value)) & ((size) - 1))
- 
-+/* waitqueue for log readers */
-+static DECLARE_WAIT_QUEUE_HEAD(cros_ec_debugfs_log_wq);
-+
- /**
-  * struct cros_ec_debugfs - EC debugging information.
-  *
-@@ -33,7 +36,6 @@
-  * @log_buffer: circular buffer for console log information
-  * @read_msg: preallocated EC command and buffer to read console log
-  * @log_mutex: mutex to protect circular buffer
-- * @log_wq: waitqueue for log readers
-  * @log_poll_work: recurring task to poll EC for new console log data
-  * @panicinfo_blob: panicinfo debugfs blob
-  */
-@@ -44,7 +46,6 @@ struct cros_ec_debugfs {
- 	struct circ_buf log_buffer;
- 	struct cros_ec_command *read_msg;
- 	struct mutex log_mutex;
--	wait_queue_head_t log_wq;
- 	struct delayed_work log_poll_work;
- 	/* EC panicinfo */
- 	struct debugfs_blob_wrapper panicinfo_blob;
-@@ -107,7 +108,7 @@ static void cros_ec_console_log_work(struct work_struct *__work)
- 			buf_space--;
- 		}
- 
--		wake_up(&debug_info->log_wq);
-+		wake_up(&cros_ec_debugfs_log_wq);
- 	}
- 
- 	mutex_unlock(&debug_info->log_mutex);
-@@ -141,7 +142,7 @@ static ssize_t cros_ec_console_log_read(struct file *file, char __user *buf,
- 
- 		mutex_unlock(&debug_info->log_mutex);
- 
--		ret = wait_event_interruptible(debug_info->log_wq,
-+		ret = wait_event_interruptible(cros_ec_debugfs_log_wq,
- 					CIRC_CNT(cb->head, cb->tail, LOG_SIZE));
- 		if (ret < 0)
- 			return ret;
-@@ -173,7 +174,7 @@ static __poll_t cros_ec_console_log_poll(struct file *file,
- 	struct cros_ec_debugfs *debug_info = file->private_data;
- 	__poll_t mask = 0;
- 
--	poll_wait(file, &debug_info->log_wq, wait);
-+	poll_wait(file, &cros_ec_debugfs_log_wq, wait);
- 
- 	mutex_lock(&debug_info->log_mutex);
- 	if (CIRC_CNT(debug_info->log_buffer.head,
-@@ -377,7 +378,6 @@ static int cros_ec_create_console_log(struct cros_ec_debugfs *debug_info)
- 	debug_info->log_buffer.tail = 0;
- 
- 	mutex_init(&debug_info->log_mutex);
--	init_waitqueue_head(&debug_info->log_wq);
- 
- 	debugfs_create_file("console_log", S_IFREG | 0444, debug_info->dir,
- 			    debug_info, &cros_ec_console_log_fops);
--- 
-2.33.0.800.g4c38ced690-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
