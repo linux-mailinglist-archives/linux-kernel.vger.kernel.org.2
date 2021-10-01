@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EFE41E684
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031C041E671
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237578AbhJAEPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S237841AbhJAEFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235689AbhJAEPq (ORCPT
+        with ESMTP id S230365AbhJAEFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:15:46 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BAEC06176A;
-        Thu, 30 Sep 2021 21:14:02 -0700 (PDT)
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HLGvX3VR8z4xbT; Fri,  1 Oct 2021 14:14:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633061640;
-        bh=ErzESc+3j15+IBkmNZmWRkNDim6Klxc8DaJ69XgNhq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ARxZnU3s5FNr8NvyJlmKRTVFYh6OTyT7VDurD/TxE3AgXrUf0o3e0BEn5otjeg9Gh
-         V+tlfc9uRhb4TapUkstbqYbj/OvuZqK2eF2/sIuv2u9+EwpTjqnBnL390uNsxu9sCr
-         thN9IcRSVl7shSeObTIvRdq5bYQJZwz6iOXfstXI=
-Date:   Fri, 1 Oct 2021 13:54:52 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
- interfaces
-Message-ID: <YVaGjKggJ9guJ4gE@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-7-yi.l.liu@intel.com>
- <YVPxzad5TYHAc1H/@yekko>
- <BN9PR11MB5433E1BF538C7D3632F4C6188CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YVQJJ/ZlRoJbAt0+@yekko>
- <20210929125716.GT964074@nvidia.com>
- <YVUqYsJTMkt1nnXL@yekko>
- <20210930222818.GI964074@nvidia.com>
+        Fri, 1 Oct 2021 00:05:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AE1C06176A;
+        Thu, 30 Sep 2021 21:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l1N8Q92br4UA/MbVypFtkW95ihkVHD2seHhnh8CX54Y=; b=bdiZHUH9Zl9Ix8k5QUmEq5g1yk
+        P6geezCXSrKp1xmxX6Cln0BYNphiCc1tr7nPVveemsVE0O9WN06UaDAHIenHbHd1cuKFuIPBpNJaM
+        DvbL36Exb80gTm6Vym3rgHz5+1+oeCxW/mf5Rmutl0nThGlAjx6j74KHUJg8/NwSdRSJ2ZnGAp6+x
+        tTc3q0GcfeWlfM6Dy1fCJXTOdocpBcv9JbLLH7fVJMXSR+z8GEUq+DnyWpmLAtxOmcuT1RoXOeUGa
+        gj6+7mTX4f53YNkOl73mNv1rKosg25WO6tskcHiLyNyiZJ8mIXdSgsmfaq8Yk6Kx3Urk0XH6IFOmO
+        aWHzAVsw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mW9jX-00DXBa-Gm; Fri, 01 Oct 2021 04:01:30 +0000
+Date:   Fri, 1 Oct 2021 05:01:15 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <YVaIC8GTzvLKmZ5z@infradead.org>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <YVWCK5QO331rfhJJ@google.com>
+ <CA+Ln22EbXKsRFZ=3L4A_jqciRxG2hnAh9iKTfQ_Ypr2NJgDzQQ@mail.gmail.com>
+ <YVWkxnc8wTdBgRsv@google.com>
+ <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yg8w2iyVSrHxaZnC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930222818.GI964074@nvidia.com>
+In-Reply-To: <CA+Ln22FBy2ks9gX3df=rQw-6W3iftMVoqsoqBPchGCqDDoMaLg@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 09:10:31PM +0900, Tomasz Figa wrote:
+> Generally, the subsystems being mentioned here are so basic (clock,
+> pinctrl, rtc), that I really can't imagine what kind of rocket science
+> one might want to hide for competitive reasons... If it's for an
+> entire SoC, I wonder why Intel and AMD don't have similar concerns and
+> contribute support for their newest hardware far before the release.
 
---yg8w2iyVSrHxaZnC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 30, 2021 at 07:28:18PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 30, 2021 at 01:09:22PM +1000, David Gibson wrote:
->=20
-> > > The *admin* the one responsible to understand the groups, not the
-> > > applications. The admin has no idea what a group FD is - they should
-> > > be looking at the sysfs and seeing the iommu_group directories.
-> >=20
-> > Not just the admin.  If an app is given two devices in the same group
-> > to use *both* it must understand that and act accordingly.
->=20
-> Yes, but this is true regardless of what the uAPI is,
-
-Yes, but formerly it was explicit and now it is implicit.  Before we
-said "attach this group to this container", which can reasonably be
-expected to affect the whole group.  Now we say "attach this device to
-this IOAS" and it silently also affects other devices.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---yg8w2iyVSrHxaZnC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWhooACgkQbDjKyiDZ
-s5KWOxAAjyayEpk3/2UCunzQoONH2hekaB3mFVJmCIhc7mJCra4nKi0QetNRNSJR
-Mu4bgd8Espq9vrCUL2gHPfaXOfJqi34ln+aElFfmOiKSiBz0tXQJ3e/L/KWpDAAL
-L5KsZxLwWJ4nOCpk9skfKxzECUasDHOgeUHvLhJiLEoHP3dYwO+gijf96rOcTwmj
-PHBPL960LXUGBIbFAocGquSuvMOUpbtIRUlCmdVgkPZeWqm2WCUs5/jesBnxAKtj
-qJU5aEytGm6bAhFfhvtLasQUVC42xVJmE0A9fXGvhvKtigEcWHWd4c16E7tGYYB3
-z7IliPfnD8cuhMN7MzlImEM3zBQWxrgdQn8zKXvCvcIVBGAvlfcj53KYHuPyLGZE
-8SzuCMbiqGQjLNZ/d7fxrTalaOvn8r3/njB/YpLUzaRXeUIM5K8MK1pmxLtbOF2q
-jYt8WGVQhDFU+BE/YdPDme4E8kgrskk9d3QDeb00pzHayBuq2RZtA1WqnjXDGvfr
-uJPnyOiH2WigaRlsyKO6l0a9WmnbWZE5f75rW476Lw9qGFpU8d3vfNXhQHM6payb
-4LwEHjDGgdlQncfujTBXHpBt6kH9r0Zg+lmA8mmHTpfRVfNoJtB2HuvFQgUMYVNa
-Fa0jPYeQTMyjlp7DpxGosCLB9OQJ3E5S64ppTdpPIQULRQKFx4w=
-=37P5
------END PGP SIGNATURE-----
-
---yg8w2iyVSrHxaZnC--
+There is no reason at all, and to be honest this whole discussion with
+these bullshit arguments from the Google/Linaro/SoC vendor crowd just
+shows how on crack these people are, and shows a good example of why
+we should not support these models at all.  There is no good reason
+to "overide" uptream functionality EVER.  Stop digging yourselves into
+your ever bigger holes and just f***king contribute upstream NOW.  Just
+as we always have we should not give you more rope to shoot yoursel
+while ausing us extra overhead.
