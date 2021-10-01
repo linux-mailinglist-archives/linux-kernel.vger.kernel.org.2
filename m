@@ -2,421 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C78F41F190
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCE741F192
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353938AbhJAPye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhJAPyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:54:31 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A00C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:52:47 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id g2so8302605pfc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W/2GzNB3u7TT74q9PP+qr3+N2+FbkoiA6tUqxu1t9uk=;
-        b=BlZFV/FP1uVSPdR/tPI438iaxuP71Hl/02jq4Q+B9+U+0kjLBbKDPDjXSYC5UAbKOP
-         +OmHjKtRjb9gEJ9IUzlOvD4mVL4YkU0f3ifg0nBStp6Tn0WO8ubCRPHIfXdE5AAY5y0w
-         PGfluAAYRZjK7Oi0BJgcvYjs8gc+XFUorBLu4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W/2GzNB3u7TT74q9PP+qr3+N2+FbkoiA6tUqxu1t9uk=;
-        b=wM7h7uqOHmcksmDUbLksYGN8UJO/Y4AEj3l8E7kSDhQtRsMMnuGHRp5aKm3lE1pvgc
-         R+ucrlIVWihWhyPvHtWB2kX9csFWJ2E4ArGYsyfHkCLnK0+Cf7XekdDjh9lhR/B30dxG
-         tKb3BNrNIfCl2S2Pg3zViFfA1DvbQpHOFMVprkmVJ55nQMPre6bcp6446H7m8qp9TVyW
-         zRHnMreHegOFC3ILAz4kI0yyQXv8vl8HOWzxG4Ya+EFIs23k/uRkuHMIwh3VLrhUeQtN
-         uiC9DlQjYOBnr3+C1pkugqtOKdpEJ+6CoVhGlCQSp74ncWT9NwA4Uec+ST0i7IUX51x6
-         yOpQ==
-X-Gm-Message-State: AOAM533WVT27uxbV21Vf0z/LqZ9r9BfF/olQ/pN4eFG1LMmiThQasy70
-        Z2zzOyO4unyZjwRX/TQCJb3n0w==
-X-Google-Smtp-Source: ABdhPJxbW/w0AacFdyk0ikXT+slEN8/ifKr5jE1IrW4gPBXgMAtnj1+sCIqCQNOpG9muNHWycaARPw==
-X-Received: by 2002:a63:f30c:: with SMTP id l12mr10226543pgh.360.1633103566594;
-        Fri, 01 Oct 2021 08:52:46 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:f57f:9f3a:1408:a801])
-        by smtp.gmail.com with UTF8SMTPSA id n14sm6885211pgd.48.2021.10.01.08.52.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 08:52:46 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 08:52:44 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: Re: [PATCH 4/8] ASoC: qcom: Add lapss CPU driver for codec dma
- control
-Message-ID: <YVcuzEXA4Ej3HpHH@google.com>
-References: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
- <1633087292-1378-5-git-send-email-srivasam@codeaurora.org>
+        id S1355121AbhJAPyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:54:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355096AbhJAPyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:54:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC54C61ACF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633103577;
+        bh=jFCTGoNM7kXhzIy5u6FeGgm3nFsVRyLlZlXxykIL0ag=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T+5fJXNs+6lD6K1e+SBF+VRL/3usLUDapCAUOMzQgDxBtQnSzmirQhsCpgFj3NnqC
+         9APuQhphmx8CdqkG90yTUdScxNNDTNLwA8nBDigPEjQMmJGf2BJBmS2dxcXnuA8xV2
+         ImrYpIlJ0WPuMu2uXMdjvB3tldqya5lkWOkV8THjdOGk7NfTOGytrP1GTIt88CDHyg
+         cnKGU4q0mGJIbRNCpqZzo/FAcMaIe2p4KAKWueUHMzh42tJFjBNkW91WXzGL9aAM9I
+         v8Ebdex4f+FuqcA00SK73Xa4GSTpPRGJtpxPSIelnYFkyxYU1TlG+NaAPqG7E9UdRE
+         iupaBlK7GGuFw==
+Received: by mail-ed1-f50.google.com with SMTP id dn26so36307621edb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:52:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533heVwXQW2uKJRBoNtt9yVBDWLSuiYDP+iBXtUDwQGuEvMpAwEi
+        HaZECTmaVVWNChA4wYlq6+eKPA/TEnAKseLnbg==
+X-Google-Smtp-Source: ABdhPJwIaCPJFnc4N+YU/9iiTssFja3Ohcwz3hKDU1cbsPtm4hkGkuHZ+VpjcO1x9eGcVt7Ku2otLE/+B/KN7M/Y6kQ=
+X-Received: by 2002:a50:9d49:: with SMTP id j9mr14725210edk.39.1633103576227;
+ Fri, 01 Oct 2021 08:52:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1633087292-1378-5-git-send-email-srivasam@codeaurora.org>
+References: <20210930024704.6966-1-jason-jh.lin@mediatek.com>
+ <20210930024704.6966-2-jason-jh.lin@mediatek.com> <CAFqH_52w787DGbVE0WqMjA2y8Psw6XDMp8AFhj=7UMyCA-uv+g@mail.gmail.com>
+ <CAAOTY_-bU-zuNE6-omHV=54R5UDOH2KQ0iD_ZcLc-VDeA65vTA@mail.gmail.com> <CAFqH_52W6qaG665rikgo5rkiYfo5Z_xX9RycHpA1rG_+yEm_xg@mail.gmail.com>
+In-Reply-To: <CAFqH_52W6qaG665rikgo5rkiYfo5Z_xX9RycHpA1rG_+yEm_xg@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 1 Oct 2021 23:52:45 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8gXd_XtePjuOfheY6A6QuPJiYsXhyxt70R3MZP2juDZw@mail.gmail.com>
+Message-ID: <CAAOTY_8gXd_XtePjuOfheY6A6QuPJiYsXhyxt70R3MZP2juDZw@mail.gmail.com>
+Subject: Re: [v2 PATCH 1/3] drm/mediatek: Fix crash at using pkt->cl->chan in cmdq_pkt_finalize
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        "Nancy.Lin" <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 04:51:28PM +0530, Srinivasa Rao Mandadapu wrote:
-> Subject: ASoC: qcom: Add lapss CPU driver for codec dma control
+Hi, Enric:
 
-nit: s/lapss/lpass/
+Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8830=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:48=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> Hi Chun-Kuang,
+>
+> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dj., 30 de
+> set. 2021 a les 15:11:
+> >
+> > Hi, Enric:
+> >
+> > Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=
+=9C=8830=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=883:12=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+> > >
+> > > Hi Jason,
+> > >
+> > >
+> > > Missatge de jason-jh.lin <jason-jh.lin@mediatek.com> del dia dj., 30
+> > > de set. 2021 a les 4:47:
+> > > >
+> > > > Because mtk_drm_crtc_create_pkt didn't assign pkt->cl, it will
+> > > > crash at using pkt->cl->chan in cmdq_pkt_finalize.
+> > > >
+> > > > So add struct cmdq_client and let mtk_drm_crtc instance define
+> > > > cmdq_client as:
+> > > >
+> > > > struct mtk_drm_crtc {
+> > > >         /* client instance data */
+> > > >         struct cmdq_client cmdq_client;
+> > > > };
+> > > >
+> > > > and in rx_callback function can use pkt->cl to get
+> > > > struct cmdq_client.
+> > > >
+> > > > Fixes: f4be17cd5b14 ("drm/mediatek: Remove struct cmdq_client")
+> > >
+> > > Looking at this patchset looks like you're fixing the above commit by
+> > > reintroducing the 'struct cmdq_client' again, which makes the above
+> > > commit as a non-sense commit. That's confusing and not clear. I'm
+> > > wondering if it wouldn't be more clear if you can just revert that
+> > > patch. Then if there are more changes that need to be done do it with
+> > > a follow up patch and really explain why these changes are needed.
+> >
+> > The patch f4be17cd5b14 ("drm/mediatek: Remove struct cmdq_client")
+> > does two things. One is to remove struct cmdq_client, another one is
+> > to embed cmdq_cl
+>
+> Then it should have been two patches, one thing for patch really
+> helps, specially when something breaks and you try to bisect it.
+>
+> > in mtk_drm_crtc (This means the pointer of cmdq_cl could be used to
+> > find the pointer of mtk_drm_crtc). The correct way to fix that patch
+> > is to remove the access to cmdq_client in cmdq_pkt_finalize(), but
+> > that would be a long term process. The simple way is to revert that
+> > patch, but the other patches depend on embedding cmdq_cl in
+> > mtk_drm_crtc. So this patch just revert the removing of struct
+> > cmdq_client but keep embedding cmdq_cl in mtk_drm_crtc.
+> >
+>
+> Yes, I know and I suffered that when bisecting and I ended to revert
+> the full series in my local tree,  although I figured out that the
+> problem was this specific patch.
+>
+> The following series landed during -rc1 cycle and break the Acer Chromebo=
+ok R13
+>
+>  9efb16c2fdd6 ("drm/mediatek: Clear pending flag when cmdq packet is done=
+")
+>  bc9241be73d9 ("drm/mediatek: Add cmdq_handle in mtk_crtc")
+>  8cdcb3653424 ("drm/mediatek: Detect CMDQ execution timeout")
+>  f4be17cd5b14 ("drm/mediatek: Remove struct cmdq_client")
+>  c1ec54b7b5af ("drm/mediatek: Use mailbox rx_callback instead of cmdq_tas=
+k_cb")
+>
+> Apart from that it was a pain bisecting and introduced different
+> behaviours between patches, all the above commits have a follow-up
+> patch (see [1] and [2]) as a fix for the landed series. That makes me
+> think that were no stable enough. As we're in the rc, and as you said
+> this is not the correct way to fix it, and the landed patches seems
+> more a cleanup that really solving a real problem I'd consider to just
+> revert the full series and resubmit again for next release with these
+> fixes squashed. IMO that will also help to no miss anything when
+> someone would backport all this to the stable versions and understand
+> better the history.
+>
+> Just my 5 cents. In any case, I can confirm that applying the full
+> series solves the current problems that I have with my Acer Chromebook
+> R13.
+
+OK, that series depend on an WARN_ON fixes in mailbox driver, and need
+a better solution in cmdq helper, so let's revert that series first.
+Would you like to send the revert patches? Or I send the revert
+patches and let you test?
+
+Regards,
+Chun-Kuang.
 
 >
-> Add lpass cpu driver to support audio over codec dma for
-> ADSP bypass usecase.
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  sound/soc/qcom/lpass-cdc-dma.c | 263 +++++++++++++++++++++++++++++++++++++++++
->  sound/soc/qcom/lpass.h         |   1 +
->  2 files changed, 264 insertions(+)
->  create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
-> 
-> diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
-> new file mode 100644
-> index 0000000..56b3791
-> --- /dev/null
-> +++ b/sound/soc/qcom/lpass-cdc-dma.c
-> @@ -0,0 +1,263 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
-> + *
-> + * lpass-cdc-dma.c -- ALSA SoC WCD -CPU DAI driver for QTi LPASS WCD
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <sound/soc.h>
-> +#include <sound/soc-dai.h>
-> +
-> +#include "lpass-lpaif-reg.h"
-> +#include "lpass.h"
-> +
-> +static int __lpass_platform_codec_intf_init(struct snd_soc_dai *dai,
-> +					 struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *rt = substream->runtime;
-> +	struct lpass_pcm_data *pcm_data = rt->private_data;
-> +	struct lpass_variant *v = drvdata->variant;
-> +	struct lpaif_dmactl *dmactl;
-> +	struct regmap *map;
-> +	int dir = substream->stream;
-> +	int ret, id;
-> +	unsigned int dai_id = cpu_dai->driver->id;
-> +
-> +	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
-
-s/ ==  / == /
-
-> +		dmactl = drvdata->rxtx_rd_dmactl;
-> +		map = drvdata->rxtx_lpaif_map;
-> +		id = pcm_data->dma_ch;
-> +	} else {
-> +		if (dai_id == LPASS_CDC_DMA_TX3) {
-> +			dmactl = drvdata->rxtx_wr_dmactl;
-> +			map = drvdata->rxtx_lpaif_map;
-> +			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
-> +		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
-> +			dmactl = drvdata->va_wr_dmactl;
-> +			map = drvdata->va_lpaif_map;
-> +			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
-> +		}
-> +	}
-
-'map' is assigned here, but not used in the rest of the function, drop it.
-
-> +
-> +	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
-
-s/ ==  / == /
-
-> +		ret = regmap_fields_write(dmactl->codec_intf, id, LPASS_CDC_DMA_RX0_INTERFACE);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl reg: %d\n", ret);
-
-Some of the logs print the register name, others don't, why not log it
-always?
-
-> +			return ret;
-> +		}
-> +	    ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
-
-fix indentation
-
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl reg: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl codec_fs_delay reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl codec_pack reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl reg: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-
-Remove empty line
-
-> +	} else {
-> +		ret = regmap_fields_write(dmactl->codec_intf, id, LPASS_CDC_DMA_INTERFACE(dai_id));
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to wrdmactl codec_intf reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +	    ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
-
-fix indentation
-
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to wrdmactl codec_fs_sel reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to wrdmactl codec_fs_delay reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to wrdmactl codec_pack reg field: %d\n", ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to wrdmactl codec_enable reg field: %d\n", ret);
-> +			return ret;
-> +		}
-
-The last four register writes are exactly the same in both branches, only the
-logging distinguishes between 'rdmactl' and 'wrdmactl'. Those should be in the
-main branch, if you really need to distinguish between 'rdmactl' and 'wrdmactl'
-in the logging you can assign a string pointer in the 'if (dir == SNDRV_PCM_STREAM_PLAYBACK)'
-branches.
-
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int lpass_wcd_daiops_startup(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	int ret, i;
-> +
-> +	for (i = 0; i < drvdata->cdc_num_clks; i++) {
-> +		ret = clk_prepare_enable(drvdata->cdc_dma_clks[i]);
-> +		if (ret) {
-> +			dev_err(dai->dev, "error in enabling cdc dma clks: %d\n", ret);
-> +			return ret;
-
-Disable clocks that have been enabled previously?
-
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void lpass_wcd_daiops_shutdown(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	int i;
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +
-> +	for (i = 0; i < drvdata->cdc_num_clks; i++)
-> +		clk_disable_unprepare(drvdata->cdc_dma_clks[i]);
-> +}
-> +
-> +static int lpass_wcd_daiops_hw_params(struct snd_pcm_substream *substream,
-> +		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
-> +	struct lpaif_dmactl *dmactl;
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *rt = substream->runtime;
-> +	struct lpass_pcm_data *pcm_data = rt->private_data;
-> +	struct lpass_variant *v = drvdata->variant;
-> +	struct regmap *map;
-> +	int dir = substream->stream;
-> +	unsigned int ret, regval;
-> +	unsigned int channels = params_channels(params);
-> +	int id;
-> +	unsigned int dai_id = cpu_dai->driver->id;
-> +
-> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		dmactl = drvdata->rxtx_rd_dmactl;
-> +		map = drvdata->rxtx_lpaif_map;
-> +		id = pcm_data->dma_ch;
-> +	} else {
-> +		if (dai_id == LPASS_CDC_DMA_TX3) {
-> +			dmactl = drvdata->rxtx_wr_dmactl;
-> +			map = drvdata->rxtx_lpaif_map;
-> +			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
-> +		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
-> +			dmactl = drvdata->va_wr_dmactl;
-> +			map = drvdata->va_lpaif_map;
-> +			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
-> +		}
-> +	}
-
-The exact same code block is used 3 times in this driver. Add a helper with
-'substream' and 'dai' as parameters, which determines 'dmactl and 'id'.
-That would also make the variable declaration/assignment section of these
-functions signifcantly shorter.
-
-> +
-> +	switch (channels) {
-> +	case 1:
-> +		regval = LPASS_CDC_DMA_INTF_ONE_CHANNEL;
-> +		break;
-> +	case 2:
-> +		regval = LPASS_CDC_DMA_INTF_TWO_CHANNEL;
-> +		break;
-> +	case 4:
-> +		regval = LPASS_CDC_DMA_INTF_FOUR_CHANNEL;
-> +		break;
-> +	case 6:
-> +		regval = LPASS_CDC_DMA_INTF_SIX_CHANNEL;
-> +		break;
-> +	case 8:
-> +		regval = LPASS_CDC_DMA_INTF_EIGHT_CHANNEL;
-> +		break;
-> +	default:
-> +		dev_err(soc_runtime->dev, "invalid PCM config\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = regmap_fields_write(dmactl->codec_channel, id, regval);
-> +	if (ret) {
-> +		dev_err(soc_runtime->dev,
-> +			"error writing to rdmactl codec_channel reg field: %d\n", ret);
-
-not necessarily 'rdmactl'.
-
-> +		return ret;
-> +	}
-> +	return ret;
-
-	return 0
-
-> +}
-> +
-> +static int lpass_wcd_daiops_trigger(struct snd_pcm_substream *substream,
-> +		int cmd, struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *rt = substream->runtime;
-> +	struct lpass_pcm_data *pcm_data = rt->private_data;
-> +	struct lpass_variant *v = drvdata->variant;
-> +	int dir = substream->stream;
-> +	struct lpaif_dmactl *dmactl;
-> +	struct regmap *map;
-> +	unsigned int dai_id = cpu_dai->driver->id;
-> +	int ret = 0, id;
-> +
-> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		dmactl = drvdata->rxtx_rd_dmactl;
-> +		map = drvdata->rxtx_lpaif_map;
-> +		id = pcm_data->dma_ch;
-> +	} else {
-> +		if (dai_id == LPASS_CDC_DMA_TX3) {
-> +			dmactl = drvdata->rxtx_wr_dmactl;
-> +			map = drvdata->rxtx_lpaif_map;
-> +			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
-> +		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
-> +			dmactl = drvdata->va_wr_dmactl;
-> +			map = drvdata->va_lpaif_map;
-> +			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
-> +		}
-> +	}
-
-see above
-
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		__lpass_platform_codec_intf_init(dai, substream);
-> +		break;
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_OFF);
-> +		if (ret) {
-> +			dev_err(soc_runtime->dev,
-> +				"error writing to rdmactl reg: %d\n", ret);
-
-not necessarily rdmactl, better log that it's the codec enable reg.
-
-> +			return ret;
-> +		}
-> +
-> +		break;
-> +	}
-> +	return ret;
-> +}
-> +
-> +const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops = {
-> +	.startup	= lpass_wcd_daiops_startup,
-> +	.shutdown	= lpass_wcd_daiops_shutdown,
-> +	.hw_params	= lpass_wcd_daiops_hw_params,
-> +	.trigger	= lpass_wcd_daiops_trigger,
-> +};
-> +EXPORT_SYMBOL_GPL(asoc_qcom_lpass_wcd_dai_ops);
-> +
-> +MODULE_DESCRIPTION("QTi LPASS CDC DMA Driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-> index 058b42d..e0ea698 100644
-> --- a/sound/soc/qcom/lpass.h
-> +++ b/sound/soc/qcom/lpass.h
-> @@ -418,5 +418,6 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
->  extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
->  int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
->  				struct snd_soc_dai *dai);
-> +extern const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops;
->  
->  #endif /* __LPASS_H__ */
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+> Thanks,
+>   Enric
+>
+> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D55=
+5383
+> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D55=
+4767
+>
+>
+>
+> > Regards,
+> > Chun-Kuang.
+> >
+> > >
+> > > Thanks,
+> > >   Enric
+> > >
+> > >
+> > > > Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> > > > ---
+> > > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 73 +++++++++++++--------=
+----
+> > > >  1 file changed, 38 insertions(+), 35 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/=
+drm/mediatek/mtk_drm_crtc.c
+> > > > index 5f81489fc60c..411d99fcbb8f 100644
+> > > > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > > > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > > > @@ -52,8 +52,7 @@ struct mtk_drm_crtc {
+> > > >         bool                            pending_async_planes;
+> > > >
+> > > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > > > -       struct mbox_client              cmdq_cl;
+> > > > -       struct mbox_chan                *cmdq_chan;
+> > > > +       struct cmdq_client              cmdq_client;
+> > > >         struct cmdq_pkt                 cmdq_handle;
+> > > >         u32                             cmdq_event;
+> > > >         u32                             cmdq_vblank_cnt;
+> > > > @@ -227,8 +226,8 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane=
+(struct drm_crtc *crtc,
+> > > >  }
+> > > >
+> > > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > > > -static int mtk_drm_cmdq_pkt_create(struct mbox_chan *chan, struct =
+cmdq_pkt *pkt,
+> > > > -                                   size_t size)
+> > > > +static int mtk_drm_cmdq_pkt_create(struct cmdq_client *client, str=
+uct cmdq_pkt *pkt,
+> > > > +                                  size_t size)
+> > > >  {
+> > > >         struct device *dev;
+> > > >         dma_addr_t dma_addr;
+> > > > @@ -239,8 +238,9 @@ static int mtk_drm_cmdq_pkt_create(struct mbox_=
+chan *chan, struct cmdq_pkt *pkt,
+> > > >                 return -ENOMEM;
+> > > >         }
+> > > >         pkt->buf_size =3D size;
+> > > > +       pkt->cl =3D (void *)client;
+> > > >
+> > > > -       dev =3D chan->mbox->dev;
+> > > > +       dev =3D client->chan->mbox->dev;
+> > > >         dma_addr =3D dma_map_single(dev, pkt->va_base, pkt->buf_siz=
+e,
+> > > >                                   DMA_TO_DEVICE);
+> > > >         if (dma_mapping_error(dev, dma_addr)) {
+> > > > @@ -255,9 +255,11 @@ static int mtk_drm_cmdq_pkt_create(struct mbox=
+_chan *chan, struct cmdq_pkt *pkt,
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > -static void mtk_drm_cmdq_pkt_destroy(struct mbox_chan *chan, struc=
+t cmdq_pkt *pkt)
+> > > > +static void mtk_drm_cmdq_pkt_destroy(struct cmdq_pkt *pkt)
+> > > >  {
+> > > > -       dma_unmap_single(chan->mbox->dev, pkt->pa_base, pkt->buf_si=
+ze,
+> > > > +       struct cmdq_client *client =3D (struct cmdq_client *)pkt->c=
+l;
+> > > > +
+> > > > +       dma_unmap_single(client->chan->mbox->dev, pkt->pa_base, pkt=
+->buf_size,
+> > > >                          DMA_TO_DEVICE);
+> > > >         kfree(pkt->va_base);
+> > > >         kfree(pkt);
+> > > > @@ -265,8 +267,9 @@ static void mtk_drm_cmdq_pkt_destroy(struct mbo=
+x_chan *chan, struct cmdq_pkt *pk
+> > > >
+> > > >  static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+> > > >  {
+> > > > -       struct mtk_drm_crtc *mtk_crtc =3D container_of(cl, struct m=
+tk_drm_crtc, cmdq_cl);
+> > > >         struct cmdq_cb_data *data =3D mssg;
+> > > > +       struct cmdq_client *cmdq_cl =3D container_of(cl, struct cmd=
+q_client, client);
+> > > > +       struct mtk_drm_crtc *mtk_crtc =3D container_of(cmdq_cl, str=
+uct mtk_drm_crtc, cmdq_client);
+> > > >         struct mtk_crtc_state *state;
+> > > >         unsigned int i;
+> > > >
+> > > > @@ -299,7 +302,7 @@ static void ddp_cmdq_cb(struct mbox_client *cl,=
+ void *mssg)
+> > > >         }
+> > > >
+> > > >         mtk_crtc->cmdq_vblank_cnt =3D 0;
+> > > > -       mtk_drm_cmdq_pkt_destroy(mtk_crtc->cmdq_chan, data->pkt);
+> > > > +       mtk_drm_cmdq_pkt_destroy(data->pkt);
+> > > >  }
+> > > >  #endif
+> > > >
+> > > > @@ -550,24 +553,24 @@ static void mtk_drm_crtc_update_config(struct=
+ mtk_drm_crtc *mtk_crtc,
+> > > >                 mtk_mutex_release(mtk_crtc->mutex);
+> > > >         }
+> > > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > > > -       if (mtk_crtc->cmdq_chan) {
+> > > > -               mbox_flush(mtk_crtc->cmdq_chan, 2000);
+> > > > +       if (mtk_crtc->cmdq_client.chan) {
+> > > > +               mbox_flush(mtk_crtc->cmdq_client.chan, 2000);
+> > > >                 cmdq_handle->cmd_buf_size =3D 0;
+> > > >                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_ev=
+ent);
+> > > >                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, fal=
+se);
+> > > >                 mtk_crtc_ddp_config(crtc, cmdq_handle);
+> > > >                 cmdq_pkt_finalize(cmdq_handle);
+> > > > -               dma_sync_single_for_device(mtk_crtc->cmdq_chan->mbo=
+x->dev,
+> > > > -                                           cmdq_handle->pa_base,
+> > > > -                                           cmdq_handle->cmd_buf_si=
+ze,
+> > > > -                                           DMA_TO_DEVICE);
+> > > > +               dma_sync_single_for_device(mtk_crtc->cmdq_client.ch=
+an->mbox->dev,
+> > > > +                                          cmdq_handle->pa_base,
+> > > > +                                          cmdq_handle->cmd_buf_siz=
+e,
+> > > > +                                          DMA_TO_DEVICE);
+> > > >                 /*
+> > > >                  * CMDQ command should execute in next vblank,
+> > > >                  * If it fail to execute in next 2 vblank, timeout =
+happen.
+> > > >                  */
+> > > >                 mtk_crtc->cmdq_vblank_cnt =3D 2;
+> > > > -               mbox_send_message(mtk_crtc->cmdq_chan, cmdq_handle)=
+;
+> > > > -               mbox_client_txdone(mtk_crtc->cmdq_chan, 0);
+> > > > +               mbox_send_message(mtk_crtc->cmdq_client.chan, cmdq_=
+handle);
+> > > > +               mbox_client_txdone(mtk_crtc->cmdq_client.chan, 0);
+> > > >         }
+> > > >  #endif
+> > > >         mtk_crtc->config_updating =3D false;
+> > > > @@ -581,7 +584,7 @@ static void mtk_crtc_ddp_irq(void *data)
+> > > >         struct mtk_drm_private *priv =3D crtc->dev->dev_private;
+> > > >
+> > > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > > > -       if (!priv->data->shadow_register && !mtk_crtc->cmdq_chan)
+> > > > +       if (!priv->data->shadow_register && !mtk_crtc->cmdq_client.=
+chan)
+> > > >                 mtk_crtc_ddp_config(crtc, NULL);
+> > > >         else if (mtk_crtc->cmdq_vblank_cnt > 0 && --mtk_crtc->cmdq_=
+vblank_cnt =3D=3D 0)
+> > > >                 DRM_ERROR("mtk_crtc %d CMDQ execute command timeout=
+!\n",
+> > > > @@ -924,20 +927,20 @@ int mtk_drm_crtc_create(struct drm_device *dr=
+m_dev,
+> > > >         mutex_init(&mtk_crtc->hw_lock);
+> > > >
+> > > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > > > -       mtk_crtc->cmdq_cl.dev =3D mtk_crtc->mmsys_dev;
+> > > > -       mtk_crtc->cmdq_cl.tx_block =3D false;
+> > > > -       mtk_crtc->cmdq_cl.knows_txdone =3D true;
+> > > > -       mtk_crtc->cmdq_cl.rx_callback =3D ddp_cmdq_cb;
+> > > > -       mtk_crtc->cmdq_chan =3D
+> > > > -                       mbox_request_channel(&mtk_crtc->cmdq_cl,
+> > > > -                                             drm_crtc_index(&mtk_c=
+rtc->base));
+> > > > -       if (IS_ERR(mtk_crtc->cmdq_chan)) {
+> > > > +       mtk_crtc->cmdq_client.client.dev =3D mtk_crtc->mmsys_dev;
+> > > > +       mtk_crtc->cmdq_client.client.tx_block =3D false;
+> > > > +       mtk_crtc->cmdq_client.client.knows_txdone =3D true;
+> > > > +       mtk_crtc->cmdq_client.client.rx_callback =3D ddp_cmdq_cb;
+> > > > +       mtk_crtc->cmdq_client.chan =3D
+> > > > +                       mbox_request_channel(&mtk_crtc->cmdq_client=
+.client,
+> > > > +                                            drm_crtc_index(&mtk_cr=
+tc->base));
+> > > > +       if (IS_ERR(mtk_crtc->cmdq_client.chan)) {
+> > > >                 dev_dbg(dev, "mtk_crtc %d failed to create mailbox =
+client, writing register by CPU now\n",
+> > > >                         drm_crtc_index(&mtk_crtc->base));
+> > > > -               mtk_crtc->cmdq_chan =3D NULL;
+> > > > +               mtk_crtc->cmdq_client.chan =3D NULL;
+> > > >         }
+> > > >
+> > > > -       if (mtk_crtc->cmdq_chan) {
+> > > > +       if (mtk_crtc->cmdq_client.chan) {
+> > > >                 ret =3D of_property_read_u32_index(priv->mutex_node=
+,
+> > > >                                                  "mediatek,gce-even=
+ts",
+> > > >                                                  drm_crtc_index(&mt=
+k_crtc->base),
+> > > > @@ -945,17 +948,17 @@ int mtk_drm_crtc_create(struct drm_device *dr=
+m_dev,
+> > > >                 if (ret) {
+> > > >                         dev_dbg(dev, "mtk_crtc %d failed to get med=
+iatek,gce-events property\n",
+> > > >                                 drm_crtc_index(&mtk_crtc->base));
+> > > > -                       mbox_free_channel(mtk_crtc->cmdq_chan);
+> > > > -                       mtk_crtc->cmdq_chan =3D NULL;
+> > > > +                       mbox_free_channel(mtk_crtc->cmdq_client.cha=
+n);
+> > > > +                       mtk_crtc->cmdq_client.chan =3D NULL;
+> > > >                 } else {
+> > > > -                       ret =3D mtk_drm_cmdq_pkt_create(mtk_crtc->c=
+mdq_chan,
+> > > > -                                                      &mtk_crtc->c=
+mdq_handle,
+> > > > -                                                      PAGE_SIZE);
+> > > > +                       ret =3D mtk_drm_cmdq_pkt_create(&mtk_crtc->=
+cmdq_client,
+> > > > +                                                     &mtk_crtc->cm=
+dq_handle,
+> > > > +                                                     PAGE_SIZE);
+> > > >                         if (ret) {
+> > > >                                 dev_dbg(dev, "mtk_crtc %d failed to=
+ create cmdq packet\n",
+> > > >                                         drm_crtc_index(&mtk_crtc->b=
+ase));
+> > > > -                               mbox_free_channel(mtk_crtc->cmdq_ch=
+an);
+> > > > -                               mtk_crtc->cmdq_chan =3D NULL;
+> > > > +                               mbox_free_channel(mtk_crtc->cmdq_cl=
+ient.chan);
+> > > > +                               mtk_crtc->cmdq_client.chan =3D NULL=
+;
+> > > >                         }
+> > > >                 }
+> > > >         }
+> > > > --
+> > > > 2.18.0
+> > > >
