@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7664341EBEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AC541EBEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353912AbhJALbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:31:53 -0400
-Received: from mail.avm.de ([212.42.244.119]:59924 "EHLO mail.avm.de"
+        id S1353892AbhJALbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353780AbhJALbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:31:52 -0400
-Received: from mail-notes.avm.de (mail-notes.avm.de [172.16.0.1])
-        by mail.avm.de (Postfix) with ESMTP
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:30:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-        t=1633087806; bh=RlNM0TgJbqwGyS7qd1mq0/neCkw0zZkWlkjkYNyK8Eo=;
-        h=Date:Subject:References:In-Reply-To:To:Cc:From:From;
-        b=h8bNJvCitqNw01TWQGs9LOApAlxc/ES1q3tRhSL1IIrthZx5wCyzY+JbtRqccCyLZ
-         Q3iNikNxcQCs37TQR24fDETpDgSJuW9851/bHGTCIxGet8MISfWtZppoFz2AdLGEti
-         Qbkjm8qx4qZFdTNEh4F6UkFSk81z+kmdFXf/p0ME=
-Received: from mail.avm.de ([212.42.244.94])
-          by mail-notes.avm.de (HCL Domino Release 11.0.1FP3)
-          with ESMTP id 2021100113283188-8256 ;
-          Fri, 1 Oct 2021 13:28:31 +0200 
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-        by mail.avm.de (Postfix) with ESMTPS
-        for <n.schier@mail-notes.avm.de>; Fri,  1 Oct 2021 13:28:31 +0200 (CEST)
-Received: from deb-nschier.ads.avm.de (unknown [172.17.24.144])
-        by mail-auth.avm.de (Postfix) with ESMTPSA id 58DCC80521
-        for <n.schier@avm.de>; Fri,  1 Oct 2021 13:28:31 +0200 (CEST)
-Received: by deb-nschier.ads.avm.de (Postfix)
-        id 499A27FEFB; Fri,  1 Oct 2021 13:28:31 +0200 (CEST)
-Date:   Fri, 1 Oct 2021 13:28:31 +0200
-Subject: Re: [PATCH 10/10] [for next only] kconfig: generate
- include/generated/rustc_cfg
-References: <20211001053253.1223316-1-masahiroy@kernel.org>
- <20211001053253.1223316-10-masahiroy@kernel.org>
+        id S1353865AbhJALba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20BE360EBD;
+        Fri,  1 Oct 2021 11:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633087785;
+        bh=AOesFciQFfqDQGdIEvwsqkxbyxwJeoyuNHwKVFmlXTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CEFUt//w51BGtH8mXtgvC3OzuQ1ev0Lx2QYUAumKwZPK8Gc8Bj44+kbreBUoKmM96
+         6GAXqe/0X9FQx+gZwzCSCAW4839Om4mmzyHBzGPmjEgkysUb/cT4Gv9ikI+/l4AlRA
+         HIaztO5U58IOPrUn5s8DY4qnvwZ6bTdCLhc9orOw=
+Date:   Fri, 1 Oct 2021 13:29:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
+ driver
+Message-ID: <YVbxJjjn4I97nnmv@kroah.com>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+ <20211001012815.1999501-6-david.e.box@linux.intel.com>
+ <YVa1aiTqS6Ik5cO1@kroah.com>
+ <d988a4b8698b20a151680cc98a6b7434efbaea55.camel@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211001053253.1223316-10-masahiroy@kernel.org>
-Message-Id: <20211001112831.499A27FEFB@deb-nschier.ads.avm.de>
-X-TNEFEvaluated: 1
-Sensitivity: 
-To:     "Masahiro Yamada" <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   n.schier@avm.de
-X-Mailer: Lotus Domino Web Server Release 11.0.1FP3 March 31, 2021
-X-MIMETrack: Itemize by SMTP Server on ANIS1/AVM(Release 11.0.1FP3|March 31, 2021) at
- 01.10.2021 13:28:31,
-        Serialize by http on ANIS1/AVM(Release 11.0.1FP3|March 31, 2021) at
- 01.10.2021 13:30:06,
-        Serialize complete at 01.10.2021 13:30:06,
-        Serialize by Router on ANIS1/AVM(Release 11.0.1FP3|March 31, 2021) at
- 01.10.2021 13:30:06
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Notes-Item: linux-kernel@vger.kernel.org; name=AltBlindCopyTo
-X-purgate-ID: 149429::1633087806-0000056E-2D2BDC2C/0/0
-X-purgate-type: clean
-X-purgate-size: 3050
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d988a4b8698b20a151680cc98a6b7434efbaea55.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 02:32:53PM +0900, Masahiro Yamada wrote:
-> This patch is not intended for the mainline.
+On Fri, Oct 01, 2021 at 03:38:23AM -0700, David E. Box wrote:
+> On Fri, 2021-10-01 at 09:14 +0200, Greg KH wrote:
+> > On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
+> > > +static int sdsi_device_open(struct inode *inode, struct file *file)
+> > > +{
+> > > +       struct miscdevice *miscdev = file->private_data;
+> > > +
+> > > +       get_device(miscdev->this_device);
+> > 
+> > Why do you think this is needed?  Shouldn't the misc core handle all of
+> > this for you already?
+> > 
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static int sdsi_device_release(struct inode *inode, struct file *file)
+> > > +{
+> > > +
+> > > +       struct miscdevice *miscdev = file->private_data;
+> > > +       struct sdsi_priv *priv = to_sdsi_priv(miscdev);
+> > > +
+> > > +       if (priv->akc_owner == file)
+> > > +               priv->akc_owner = NULL;
+> > 
+> > Why is this needed?
+> > 
+> > > +
+> > > +       put_device(miscdev->this_device);
+> > 
+> > I see this matches the open call, but if you do not have this in the
+> > open call, is it needed here as well?
+> > 
+> > > +       ret = devm_add_action_or_reset(priv->miscdev.this_device, sdsi_miscdev_remove, priv);
+> > > +       if (ret)
+> > > +               goto deregister_misc;
+> > 
+> > I think this is all you need to clean up your device memory, not the
+> > get/put device in open/release, right?
 > 
-> I created this patch for Stephen Rothwell to resolve the merge
-> conflicts more easily.
+> It does clean up the memory, but it does so immediately after the device has been unregistered, even
+> if a file is open. The get/put ensures that if files are open, the memory isn't cleaned up until the
+> files are closed.
 > 
-> The Rust tree is touching scripts/kconfig/confdata.c to generate
-> include/generated/rustc_cfg, which would cause complicated conflicts
-> with changes from the kbuild tree.
+> I can show that this happens without the get/put,
 > 
-> I re-implemented it to produce the equaivalent rustc_cfg.
+> 	open()
+> 	unbind device -> devm action called -> kfree(priv)
+> 	ioctl() -> priv accessed
 > 
-> I also fixed the memory leak; the original code from the Rust tree
-> did not free the malloc'ed pointer.
-> 
-> Stephen:
-> When you resolve the conflicts in confdata.c, please take this one.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/kconfig/confdata.c | 42 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-> index 9ece2f3b61a6..4767f3810cf4 100644
-> --- a/scripts/kconfig/confdata.c
-> +++ b/scripts/kconfig/confdata.c
-> @@ -603,6 +603,9 @@ static const struct comment_style comment_style_c = {
->  
->  static void conf_write_heading(FILE *fp, const struct comment_style *cs)
->  {
-> +	if (!cs) /* no heading for rustc_cfg? */
-> +		return;
-> +
->  	fprintf(fp, "%s\n", cs->comment_block_begin);
->  
->  	fprintf(fp, "%s Automatically generated file; DO NOT EDIT.\n",
-> @@ -750,6 +753,39 @@ static void print_symbol_for_c(FILE *fp, struct symbol *sym)
->  	free(escaped);
->  }
->  
-> +/* rustc configuration */
-> +static void print_symbol_for_rustc_cfg(FILE *fp, struct symbol *sym)
-> +{
-> +	const char *val;
-> +	char *escaped;
-> +
-> +	if (sym->type == S_UNKNOWN)
-> +		return;
-> +
-> +	val = sym_get_string_value(sym);
-> +	escaped = escape_string_value(val);
-> +
-> +	if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
-> +		if (*val == 'n')
-> +			return;
+> but it doesn't blow up. I guess because the former location of priv is accessible by container_of on
+> the miscdev. But that memory was freed right?
 
-I'd expect a "free(escaped);" here.
+You are dealing with two different structures with two different
+lifecycles and reference counts.  Yes, you can kind of try to tie them
+together here, but really, that way lies madness.  Why not just drop the
+misc device entirely and only use the struct device that the kernel
+created for you?  That would make everything much simpler.
 
-> +
-> +		/*
-> +		 * To have similar functionality to the C macro `IS_ENABLED()`
-> +		 * we provide an empty `--cfg CONFIG_X` here in both `y`
-> +		 * and `m` cases.
-> +		 *
-> +		 * Then, the common `fprintf()` below will also give us
-> +		 * a `--cfg CONFIG_X="y"` or `--cfg CONFIG_X="m"`, which can
-> +		 * be used as the equivalent of `IS_BUILTIN()`/`IS_MODULE()`.
-> +		 */
-> +		fprintf(fp, "--cfg=%s%s\n", CONFIG_, sym->name);
-> +	}
-> +
-> +	fprintf(fp, "--cfg=%s%s=%s\n", CONFIG_, sym->name, escaped);
-> +
-> +	free(escaped);
-> +}
-> +
->  /*
->   * Write out a minimal config.
->   * All values that has default values are skipped as this is redundant.
-> @@ -1129,6 +1165,12 @@ int conf_write_autoconf(int overwrite)
->  	if (ret)
->  		return ret;
->  
-> +	ret = __conf_write_autoconf("include/generated/rustc_cfg",
-> +				    print_symbol_for_rustc_cfg,
-> +				    NULL);
-> +	if (ret)
-> +		return ret;
-> +
->  	/*
->  	 * Create include/config/auto.conf. This must be the last step because
->  	 * Kbuild has a dependency on auto.conf and this marks the successful
-> -- 
-> 2.30.2
-> 
+thanks,
+
+greg k-h
