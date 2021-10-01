@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A989B41F04E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E587C41F044
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354783AbhJAPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S1354753AbhJAPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354785AbhJAPEj (ORCPT
+        with ESMTP id S1354696AbhJAPER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:04:39 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F36C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:02:54 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i25so39877550lfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:02:54 -0700 (PDT)
+        Fri, 1 Oct 2021 11:04:17 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB2EC061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:02:30 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b78so12018230iof.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:02:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RRYA+dwntp7uVySc4zhYcXxMP7m3tm96xWjdtz/hFGQ=;
-        b=wEpKAHyG/Z2DV3VekAfpccfohS6GuleXT+sluDZqrLWc4fVXO49fTrUqrSvxv8Zw8s
-         RcDa8OGQoiU5NceOwJQxZmdavoBpaLp5cpZxOY6F+bufDOZ4FaXS7oneoiRNEd91hAaQ
-         fi0ahFYRT+uLqfme/EMkPYKyQOUjJfW1EYU/EWc5+MnERt9ifHnZPT0xlsv79INHvAVa
-         n5iBrHjvoImw38ZK0VwfsIEQXxUdGrUEBOEe3mKZSU/NxPY46J9bjQ5D+37CLL9HCmlI
-         03umH+yMd9J3zUrj55H5Ndk+MkCDMyLMUCaV6SGBRA2cOlVqS1jw5smxfm9J/cnyAziI
-         nodg==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NaTmLQHutOXSYvks1euo385cJGTEqbXqI4mBttmOtvg=;
+        b=Z8PQZy2fPVLka1su7mx6sXp/mDWSSTWeuMeVVVq8o7U7s9m9/60dQoaYR5ZDmPh44S
+         ejJIXTpVEdwZMH+92h/qg6nngVARrV/sGm5z1FUqkSq67I1X3dc1sOPq7r1dF52t0A2c
+         4bGmUNS81U5bL4WAXoaiQjKycdoWdq2ofev+loDjKCJ8fn23X6vWNhod3K7tA5hkEuM1
+         PRM4gT+oSQTdW4Lc3w5oH1swOEhtq/a6BL7d63DZ9jq+py70E6aX8otlSZoecjHVYF1Q
+         xK5xtk0y/HTA2wnGxyZolvcTc0uCiq28F/G2AKXnYh+c+CClxMj5tLzsIRAUCtJzoj0d
+         fjKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RRYA+dwntp7uVySc4zhYcXxMP7m3tm96xWjdtz/hFGQ=;
-        b=se1eG+AOO6WI1UI3YmYCD2OVtCNRmfqys+RWiPgdZ1et7I/rz6g5iv1xJNn0WvX+6m
-         9snEmmaHNdRBikkyrAajg0y85ZFu25DNYEsMOj6x/DMFpbDSqKw/0zM2mwuwKxgoTupb
-         Oc+ZmIddEFRwi7TY9JYEPyL/wKMDzHlZLe8IJQwJSzlWJmxQNm4yG7w8bH+26R5YD+cb
-         /jn5g7Y0braVU0i86G43RO/SJ2DoougQKPp2n6UiGgNzRBc1baUpFYaFPnV3PZDZPS9r
-         ZpouUI5Vyy/Yhji4O5b+MyAkkdL5uIrNuUt+sPxOx47+c75tm5gLpp07r9UfLSm5oH3q
-         IyXw==
-X-Gm-Message-State: AOAM53151+Aev0i/eIvZypGdrL/01PNEjWWV72braVVPfG9ER3xgYCin
-        if5YhNjkCPDgWkkUPqVFykfDxY8ljjR9pYL0lEBHayTIzPQ=
-X-Google-Smtp-Source: ABdhPJxxMpC0sB/h1irGfplTvjCJzB8zxjxG16OKRPTRKR56TwhoKCfQgSz0EgtJooAfO/BDyR8+6WRX6Wl2uWGM0Ow=
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr5969378lfd.167.1633100572233;
- Fri, 01 Oct 2021 08:02:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NaTmLQHutOXSYvks1euo385cJGTEqbXqI4mBttmOtvg=;
+        b=tZ/7haV+MR+dkTZUXkplVvE0FXxBvBKQBnHzYqawtjlapcW2seiJjHHu41g5puDYLT
+         GhBGaaqjD/QfYnzOqmgeY5zThSTjUR6txK8HulOD1Ca8poKeaMtfOxP/B0DLHM+3gk00
+         9NyHsN+pGxHluoWPS98Ts+UK1/Tkz/FgaMK6KYG9+bX5Ow1TKgEkb2g4he/m+oATFm9H
+         ZfP4+fa8xB6o7Zrl6MnBoU7CIOwV5AKiE6yarXl7Yjkmzcjx6sfV2wcncGexVi3iyW15
+         GSapbDE6EmApGdOj9ZWIscm46banpTbhbqKJLqf1fzWW7t71zA6Az0NChr/jxLgzbBmF
+         m+Pg==
+X-Gm-Message-State: AOAM530Xh5NHzoFAPWdWFwQjtmn+j6i61h/5HUlZsGiVLvYZbXrRqFSN
+        LqWfOzG03WAfklWSBzIe1OthVg==
+X-Google-Smtp-Source: ABdhPJy8UlhmOPUHsoI8FAXWb/rucZsNMvv2SmhthlVHBgCgpxHOdlNOsVMRQr3U/JPu/j2M4vVOXw==
+X-Received: by 2002:a6b:6302:: with SMTP id p2mr8524609iog.105.1633100549748;
+        Fri, 01 Oct 2021 08:02:29 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id p11sm3937686ilh.38.2021.10.01.08.02.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 08:02:29 -0700 (PDT)
+Subject: Re: [BUG] kernel BUG at mm/slub.c - possible BFQ issue?
+To:     torvic9@mailbox.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+References: <1624640454.149631.1632987871186@office.mailbox.org>
+ <1889051823.161943.1633100469857@office.mailbox.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2abec603-cad9-d87e-356c-9fe49dbbb3a3@kernel.dk>
+Date:   Fri, 1 Oct 2021 09:02:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <CAPDyKFog31OatzU0fHUMfN5FRsX+8Thm8TfipA4QisgFepU+rA@mail.gmail.com>
- <662251e0-d1e4-97ce-16f9-703521cc2600@gmail.com>
-In-Reply-To: <662251e0-d1e4-97ce-16f9-703521cc2600@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 17:02:15 +0200
-Message-ID: <CAPDyKFoEbemYawwKW_muUKt9W+pGx_pncXvT57K2k4o68Z3P7g@mail.gmail.com>
-Subject: Re: [PATCH v13 00/35] NVIDIA Tegra power management patches for 5.16
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1889051823.161943.1633100469857@office.mailbox.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 at 16:41, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 01.10.2021 17:36, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote=
-:
-> >>
-> >> This series adds runtime PM support to Tegra drivers and enables core
-> >> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
-> >>
-> >> All patches in this series are interdependent and should go via Tegra =
-tree.
-> >>
-> >> Changelog:
-> >>
-> >> v13: - Fixed compile-test error reported by build bot by reverting the
-> >>        mmc/ patch to v11. The sdhci_suspend/resume_host() functions ar=
-en't
-> >>        available with the disabled CONFIG_PM_SLEEP, some code needs th=
-e
-> >>        ifdef.
-> >>
-> >>      - Added last r-b from Rob Herring for the DT patches.
-> >>
-> >>      - Corrected clk/ PM domain-support patch by not using the
-> >>        devm_tegra_core_dev_init_opp_table_common() helper, which I
-> >>        utilized in v12. The clk driver implements its own power domain
-> >>        state syncing and common helper shouldn't be used. This fixes d=
-river
-> >>        probing for some clocks on some devices. It was reported by
-> >>        Svyatoslav Ryhel for PLLE OPP error on T30 Asus Transformer tab=
-let.
-> >
-> > Dmitry, I have looked through the series and besides those comments
-> > that I have posted, I have nothing more to add. Overall it looks good
-> > to me.
->
-> Ulf, thank you very much! Yours input is invaluable. I'm happy that this
-> series moving steadily to the final stage.
+On 10/1/21 9:01 AM, torvic9@mailbox.org wrote:
+>> torvic9@mailbox.org hat am 30.09.2021 09:44 geschrieben:
+>>
+>>  
+>> Hello,
+>>
+>> I encounter a hard freeze on both 5.14 and 5.15 when using BFQ.
+>> Unfortunately, I do not have a full error log, because the computer
+>> totally freezes and slightly corrupts the display, so it's
+>> impossible to read the entire message.
+>>
+>> However, what I could get is the following:
+>>
+>>   kernel BUG at mm/slub.c:379
+>>   invalid opcode: 0000 [#1]
+>>   RIP: 0010:__slab_free
+>>   [...]
+>>   Call Trace:
+>>   bfq_set_next_ioprio_data
+>>   [...]
+>>   bfq_put_queue
+>>   bfq_insert_requests
+>>   [...]
+>>
+>> This issue appears more or less randomly and it sometimes takes a
+>> little while to reproduce it (running fio helps).
+>> The call trace always contains references to BFQ, but they are not
+>> always the exact same. Once, I could see on the corrupted display
+>> the message "general protection fault".
+>> I could reproduce this issue on two computers.
+>>
+>> Not quite sure but I *think* the issue first appeared somewhere around
+>> 5.14.5 or 5.14.6, during which time BFQ only got the following commit:
+>>
+>>   (88013a0c5d99) block, bfq: honor already-setup queue merges
+> 
+> I have now reverted the above commit and launched some heavy I/O like
+> e.g. git kernel, fio, xz compression, and so far, no freezes anymore!
+> Too early to say that this commit really is the cause though.
+> Would be great if someone could have a look at it.
 
-My pleasure. Let's get the final pieces fixed so we can get this merged! :-=
-)
+It's known buggy, and a revert has been queued up since earlier this
+week. It'll go to Linus for 5.15-rc4, and will hit 5.14 stable shortly
+thereafter.
 
-Kind regards
-Uffe
+-- 
+Jens Axboe
+
