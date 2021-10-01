@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E50C41E636
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C75241E639
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhJAD24 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Sep 2021 23:28:56 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:42326 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhJAD2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 23:28:55 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1913QnFD2004059, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1913QnFD2004059
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 1 Oct 2021 11:26:49 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 1 Oct 2021 11:26:49 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 1 Oct 2021 11:26:48 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Fri, 1 Oct 2021 11:26:48 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>
-CC:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        id S1351793AbhJADaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 23:30:04 -0400
+Received: from verein.lst.de ([213.95.11.211]:33481 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230283AbhJADaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 23:30:03 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C1AB068AFE; Fri,  1 Oct 2021 05:28:16 +0200 (CEST)
+Date:   Fri, 1 Oct 2021 05:28:16 +0200
+From:   "hch@lst.de" <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "hch@lst.de" <hch@lst.de>, "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAYwXgIAAYT6AgAFAzFCAAA04sA==
-Date:   Fri, 1 Oct 2021 03:26:48 +0000
-Message-ID: <5f56b21575dd4f64a3b46aac21151667@realtek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
- <20210930151819.GC464826@rowland.harvard.edu>
- <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
-In-Reply-To: <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/9/30_=3F=3F_10:00:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Message-ID: <20211001032816.GC16450@lst.de>
+References: <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com> <YUxTvCt1mYDntO8z@myrica> <20210923112716.GE964074@nvidia.com> <BN9PR11MB5433BCFCF3B0CB657E9BFE898CA39@BN9PR11MB5433.namprd11.prod.outlook.com> <20210923122220.GL964074@nvidia.com> <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com> <20210929123630.GS964074@nvidia.com> <BN9PR11MB5433C9B5A0CD0B58163859EC8CAA9@BN9PR11MB5433.namprd11.prod.outlook.com> <YVWSaU4CHFHnwEA5@myrica> <20210930220446.GF964074@nvidia.com>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930220446.GF964074@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Alan Stern <stern@rowland.harvard.edu>
-> [...]
-> > There has been some discussion about this in the past.
-> >
-> > In general, -EPROTO is almost always a non-recoverable error.
+On Thu, Sep 30, 2021 at 07:04:46PM -0300, Jason Gunthorpe wrote:
+> > On Arm cache coherency is configured through PTE attributes. I don't think
+> > PCI No_snoop should be used because it's not necessarily supported
+> > throughout the system and, as far as I understand, software can't discover
+> > whether it is.
 > 
-> Excuse me. I am confused about the above description.
-> I got -EPROTO before, when I debugged another issue.
-> However, the bulk transfer still worked after I resubmitted
-> the transfer. I didn't do anything to recover it. That is why
-> I do resubmission for -EPROTO.
+> The usage of no-snoop is a behavior of a device. A generic PCI driver
+> should be able to program the device to generate no-snoop TLPs and
+> ideally rely on an arch specific API in the OS to trigger the required
+> cache maintenance.
 
-I check the Linux driver and the xHCI spec.
-The driver gets -EPROTO for bulk transfer, when the host
-returns COMP_USB_TRANSACTION_ERROR.
-According to the spec of xHCI, USB TRANSACTION ERROR
-means the host did not receive a valid response from the
-device (Timeout, CRC, Bad PID, unexpected NYET, etc.).
-It seems to be reasonable why resubmission sometimes works.
+Well, it is a combination of the device, the root port and the driver
+which all need to be in line to use this.
 
-Best Regards,
-Hayes
+> It doesn't make much sense for a portable driver to rely on a
+> non-portable IO PTE flag to control coherency, since that is not a
+> standards based approach.
+> 
+> That said, Linux doesn't have a generic DMA API to support
+> no-snoop. The few GPUs drivers that use this stuff just hardwired
+> wbsync on Intel..
 
+Yes, as usual the GPU folks come up with nasty hacks instead of
+providing generic helper.  Basically all we'd need to support it
+in a generic way is:
 
+ - a DMA_ATTR_NO_SNOOP (or DMA_ATTR_FORCE_NONCOHERENT to fit the Linux
+   terminology) which treats the current dma_map/unmap/sync calls as
+   if dev_is_dma_coherent was false
+ - a way for the driver to discover that a given architecture / running
+   system actually supports this
+
+> What I don't really understand is why ARM, with an IOMMU that supports
+> PTE WB, has devices where dev_is_dma_coherent() == false ? 
+
+Because no IOMMU in the world can help that fact that a periphal on the
+SOC is not part of the cache coherency protocol.
