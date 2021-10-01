@@ -2,182 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AFE41E665
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EFE41E684
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237691AbhJAEDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:03:32 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:21977 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237038AbhJAED0 (ORCPT
+        id S237578AbhJAEPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235689AbhJAEPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:03:26 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 30 Sep 2021 21:01:41 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Sep 2021 21:01:39 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 01 Oct 2021 09:31:17 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 4BDE3551D; Fri,  1 Oct 2021 09:31:16 +0530 (IST)
-From:   Satya Priya <skakit@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        swboyd@chromium.org, collinsd@codeurora.org,
-        subbaram@codeaurora.org, kgunda@codeaurora.org,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V2 4/4] arm64: dts: qcom: sc7280: Add pm8008 regulators support for sc7280-idp
-Date:   Fri,  1 Oct 2021 09:30:59 +0530
-Message-Id: <1633060859-22969-5-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
+        Fri, 1 Oct 2021 00:15:46 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BAEC06176A;
+        Thu, 30 Sep 2021 21:14:02 -0700 (PDT)
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HLGvX3VR8z4xbT; Fri,  1 Oct 2021 14:14:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1633061640;
+        bh=ErzESc+3j15+IBkmNZmWRkNDim6Klxc8DaJ69XgNhq4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ARxZnU3s5FNr8NvyJlmKRTVFYh6OTyT7VDurD/TxE3AgXrUf0o3e0BEn5otjeg9Gh
+         V+tlfc9uRhb4TapUkstbqYbj/OvuZqK2eF2/sIuv2u9+EwpTjqnBnL390uNsxu9sCr
+         thN9IcRSVl7shSeObTIvRdq5bYQJZwz6iOXfstXI=
+Date:   Fri, 1 Oct 2021 13:54:52 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 06/20] iommu: Add iommu_device_init[exit]_user_dma
+ interfaces
+Message-ID: <YVaGjKggJ9guJ4gE@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-7-yi.l.liu@intel.com>
+ <YVPxzad5TYHAc1H/@yekko>
+ <BN9PR11MB5433E1BF538C7D3632F4C6188CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YVQJJ/ZlRoJbAt0+@yekko>
+ <20210929125716.GT964074@nvidia.com>
+ <YVUqYsJTMkt1nnXL@yekko>
+ <20210930222818.GI964074@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yg8w2iyVSrHxaZnC"
+Content-Disposition: inline
+In-Reply-To: <20210930222818.GI964074@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: satya priya <skakit@codeaurora.org>
 
-Add pm8008 regulators support for sc7280 idp.
+--yg8w2iyVSrHxaZnC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
----
-Changes in V2:
- - As per Stephen's comments, replaced '_' with '-' for node names.
+On Thu, Sep 30, 2021 at 07:28:18PM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 30, 2021 at 01:09:22PM +1000, David Gibson wrote:
+>=20
+> > > The *admin* the one responsible to understand the groups, not the
+> > > applications. The admin has no idea what a group FD is - they should
+> > > be looking at the sysfs and seeing the iommu_group directories.
+> >=20
+> > Not just the admin.  If an app is given two devices in the same group
+> > to use *both* it must understand that and act accordingly.
+>=20
+> Yes, but this is true regardless of what the uAPI is,
 
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 103 +++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+Yes, but formerly it was explicit and now it is implicit.  Before we
+said "attach this group to this container", which can reasonably be
+expected to affect the whole group.  Now we say "attach this device to
+this IOAS" and it silently also affects other devices.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index 272d5ca..b953261 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -280,6 +280,97 @@
- 	};
- };
- 
-+&i2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	pm8008_chip: pm8008@8 {
-+		compatible = "qcom,pm8008";
-+		reg = <0x8>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pm8008_active>;
-+	};
-+
-+	pm8008_ldo: pm8008@9 {
-+		compatible = "qcom,pm8008";
-+		reg = <0x9>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pm8008-regulators {
-+			compatible = "qcom,pm8008-regulator";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			vdd_l1_l2-supply = <&vreg_s8b_1p2>;
-+			vdd_l3_l4-supply = <&vreg_s1b_1p8>;
-+			vdd_l5-supply = <&vreg_bob>;
-+			vdd_l6-supply = <&vreg_bob>;
-+			vdd_l7-supply = <&vreg_bob>;
-+
-+			pm8008_l1: regulator@4000 {
-+				reg = <0x4000>;
-+				regulator-name = "pm8008_l1";
-+				regulator-min-microvolt = <950000>;
-+				regulator-max-microvolt = <1300000>;
-+				qcom,min-dropout-voltage = <96000>;
-+			};
-+
-+			pm8008_l2: regulator@4100 {
-+				reg = <0x4100>;
-+				regulator-name = "pm8008_l2";
-+				regulator-min-microvolt = <950000>;
-+				regulator-max-microvolt = <1250000>;
-+				qcom,min-dropout-voltage = <24000>;
-+			};
-+
-+			pm8008_l3: regulator@4200 {
-+				reg = <0x4200>;
-+				regulator-name = "pm8008_l3";
-+				regulator-min-microvolt = <1650000>;
-+				regulator-max-microvolt = <3000000>;
-+				qcom,min-dropout-voltage = <224000>;
-+			};
-+
-+			pm8008_l4: regulator@4300 {
-+				reg = <0x4300>;
-+				regulator-name = "pm8008_l4";
-+				regulator-min-microvolt = <1504000>;
-+				regulator-max-microvolt = <1600000>;
-+				qcom,min-dropout-voltage = <0>;
-+			};
-+
-+			pm8008_l5: regulator@4400 {
-+				reg = <0x4400>;
-+				regulator-name = "pm8008_l5";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3000000>;
-+				qcom,min-dropout-voltage = <104000>;
-+			};
-+
-+			pm8008_l6: regulator@4500 {
-+				reg = <0x4500>;
-+				regulator-name = "pm8008_l6";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3000000>;
-+				qcom,min-dropout-voltage = <112000>;
-+			};
-+
-+			pm8008_l7: regulator@4600 {
-+				reg = <0x4600>;
-+				regulator-name = "pm8008_l7";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3544000>;
-+				qcom,min-dropout-voltage = <96000>;
-+			};
-+		};
-+	};
-+};
-+
- &qfprom {
- 	vcc-supply = <&vreg_l1c_1p8>;
- };
-@@ -408,6 +499,18 @@
- 	};
- };
- 
-+&pm8350c_gpios {
-+	pm8008-reset {
-+		pm8008_active: pm8008-active {
-+			pins = "gpio4";
-+			function = "normal";
-+			bias-disable;
-+			output-high;
-+			power-source = <0>;
-+		};
-+	};
-+};
-+
- &qspi_cs0 {
- 	bias-disable;
- };
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
+--yg8w2iyVSrHxaZnC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWhooACgkQbDjKyiDZ
+s5KWOxAAjyayEpk3/2UCunzQoONH2hekaB3mFVJmCIhc7mJCra4nKi0QetNRNSJR
+Mu4bgd8Espq9vrCUL2gHPfaXOfJqi34ln+aElFfmOiKSiBz0tXQJ3e/L/KWpDAAL
+L5KsZxLwWJ4nOCpk9skfKxzECUasDHOgeUHvLhJiLEoHP3dYwO+gijf96rOcTwmj
+PHBPL960LXUGBIbFAocGquSuvMOUpbtIRUlCmdVgkPZeWqm2WCUs5/jesBnxAKtj
+qJU5aEytGm6bAhFfhvtLasQUVC42xVJmE0A9fXGvhvKtigEcWHWd4c16E7tGYYB3
+z7IliPfnD8cuhMN7MzlImEM3zBQWxrgdQn8zKXvCvcIVBGAvlfcj53KYHuPyLGZE
+8SzuCMbiqGQjLNZ/d7fxrTalaOvn8r3/njB/YpLUzaRXeUIM5K8MK1pmxLtbOF2q
+jYt8WGVQhDFU+BE/YdPDme4E8kgrskk9d3QDeb00pzHayBuq2RZtA1WqnjXDGvfr
+uJPnyOiH2WigaRlsyKO6l0a9WmnbWZE5f75rW476Lw9qGFpU8d3vfNXhQHM6payb
+4LwEHjDGgdlQncfujTBXHpBt6kH9r0Zg+lmA8mmHTpfRVfNoJtB2HuvFQgUMYVNa
+Fa0jPYeQTMyjlp7DpxGosCLB9OQJ3E5S64ppTdpPIQULRQKFx4w=
+=37P5
+-----END PGP SIGNATURE-----
+
+--yg8w2iyVSrHxaZnC--
