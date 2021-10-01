@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBA041ECC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80F941ECC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354211AbhJAMCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:02:13 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59252
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354205AbhJAMCL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:02:11 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C559440186;
-        Fri,  1 Oct 2021 12:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633089618;
-        bh=xoVeBwEbq5yYbiC4MKK88HqPxlCFGkYEHA+6yK4TZTA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=p1BeaFQ3coUHtNeEOxSWXmLfJIOD2R8e8FtDlN3E4OAKig7Wd0rxW1Mhx1drNO9dX
-         w2rjQ/A32OQpuUe9lrBVfHweu7KZpUGqXto90jf0HrDEWLwK2PamMgJ1ww2eWp6Yrb
-         NK7ppO1l8n73F38kpKfYvqC7rBI/eqJgZFPFax2xWI+5ExE8KBYqQPIjLjhHezD17O
-         deBMeiL8VLAygvegr/ER3nWo9st/BgZfYnDEpKly73jSCo2Fp/71ZhdWDnY1pA5Wqj
-         V867cDEXBTLiDirFjE4hpUN8vmOrJymx7xtcpP3xL5Ir3mNRnV2SjLao5vHv2thlVc
-         J8rTqh+z6BiZg==
-From:   Colin King <colin.king@canonical.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Billy Tsai <billy_tsai@aspeedtech.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] iio: adc: aspeed: Fix spelling mistake "battey" -> "battery"
-Date:   Fri,  1 Oct 2021 13:00:18 +0100
-Message-Id: <20211001120018.17570-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S1354224AbhJAMCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:02:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354141AbhJAMCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E62F61A85;
+        Fri,  1 Oct 2021 12:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633089647;
+        bh=dlFohkdyq4B3ChcKaI0Uh88n7YiWcgS8pefiGzDjOXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h267QHBVglJ5HU3jQ/1Mj5NLl4Mkdkkvyvp7kwvOkY1Upd6Xhr7fjimI/F6NfvQ54
+         0x3msTrnmpaDAHrdfVObAQIntRMGjRqST/3ayer4POOJrirJqxT+2DxvzU77S4Hyny
+         T1b0K/qWI7AtSks0l6USgco/t50I5CNsESi/dRJdz3OVx+asaTpJv5BS7Vf7x83f0s
+         ZVAbEqtwfQR0TT2QjA+Hc2anGr5+n0vn+zE7b4QQkkdGPlp4wCukYKGBexNYp6Oh3a
+         jOUUqUTjtvhvz9LwZ6C9ik7FtOT7WoyE5XoxoQvsjJa1Op7HDBaGnbX5X1EsqcBv8k
+         /RGRUzAA2qgCA==
+Date:   Fri, 1 Oct 2021 17:30:43 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Qing Wang <wangqing@vivo.com>
+Cc:     Logan Gunthorpe <logang@deltatee.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] dma: plx_dma: switch from 'pci_' to 'dma_' API
+Message-ID: <YVb4a0CN/X/T+voq@matsya>
+References: <1632800542-108522-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632800542-108522-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 27-09-21, 20:42, Qing Wang wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below.
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+> updated to a much less verbose 'dma_set_mask_and_coherent()'.
 
-There is a spelling mistake in a dev_warn message. Fix it.
+the susbsystem tag is dmaengine: pls use that and send a series for
+similar stuff, no point is having different patches
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/iio/adc/aspeed_adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index 3e9850a43372..a957cad1bfab 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -581,7 +581,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 			}
- 		} else
- 			dev_warn(&pdev->dev,
--				 "Failed to enable battey-sensing mode\n");
-+				 "Failed to enable battery-sensing mode\n");
- 	}
- 
- 	ret = clk_prepare_enable(data->clk_scaler->clk);
 -- 
-2.32.0
-
+~Vinod
