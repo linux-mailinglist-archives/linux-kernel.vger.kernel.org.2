@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162C941F0F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9B641F0F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354869AbhJAPPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:15:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51204 "EHLO mail.kernel.org"
+        id S1354945AbhJAPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354868AbhJAPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:15:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D2C61A03;
-        Fri,  1 Oct 2021 15:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633101233;
-        bh=AN2KczzHH12GPIyjRmOqJEClIqeRchZXDMq1q/SMB9A=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=CwFRT8SokK/HWVzf7McAlR8ZCAMlc6y9V2UiDE5RwrmJp2ca4OU1YwRL8mP6GM39s
-         pO4lkDw6HS2R3VlMw79ZT93TUlzVyqOk7fZo/HYTWy4h3VaHw3W5nMN90U4CYpCcEI
-         L1vtNUyAy4Bi3JcLrLy2rHynpO/wSTqx6EvlVZeZOS0QK4Yx2EP3asWUdP9gR0rW+6
-         5vw+QuBIxIDu91iWzrGTgLyWUq2uHan5ht4roXamlYb+/mcle94HpjJIdUr2rPZAeX
-         Ok00D40w40K3DtAbOjHLRRJxtnlcKRHQCD1HSmzfc0jMUIF9kfqdBS5WorJaCJrPSC
-         pXsRd3K0SIMLA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 41DE927C005A;
-        Fri,  1 Oct 2021 11:13:50 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Fri, 01 Oct 2021 11:13:50 -0400
-X-ME-Sender: <xms:rCVXYQyKU-wP9158rpGYIA6Wna6y97sWd-dkZ5a1wYc3MiRKBl8NHA>
-    <xme:rCVXYUSrnqAgb0RPhyj-O3Lb3g039kEcNiTqZt6IjKraJjEXLSqV55s04MD8Vfx_V
-    5P6_aDqsDllclBaNU4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
-    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:rCVXYSVcfsOzYKsBRlwwwDNJOKwa7T58ktBwU56C2cxE917vh5G7yA>
-    <xmx:rCVXYejllRAV3DUoYO_jmBahwxnXlS0ZmZuM_2tQZBHhpbxZ9AZ2Xw>
-    <xmx:rCVXYSAYhRpOhQDWXRMj7ms6goy05oVqERViiWI0rtF8DmQQ3CS2Yg>
-    <xmx:riVXYTyNDpBk5sDQXLXQAeEZPZOXzo0hZOdrowsBezGDn7FJLO6sxkiA1l8>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4010121E0066; Fri,  1 Oct 2021 11:13:48 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1322-g921842b88a-fm-20210929.001-g921842b8
-Mime-Version: 1.0
-Message-Id: <0364c572-4bc2-4538-8d65-485dbfa81f0d@www.fastmail.com>
-In-Reply-To: <87pmsp5aqx.ffs@tglx>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-12-sohil.mehta@intel.com>
- <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
- <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
- <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com> <877dex7tgj.ffs@tglx>
- <b537a890-4b9f-462e-8c17-5c7aa9b60138@www.fastmail.com> <87tui162am.ffs@tglx>
- <25ba1e1f-c05b-4b67-b547-6b5dbc958a2f@www.fastmail.com> <87pmsp5aqx.ffs@tglx>
-Date:   Fri, 01 Oct 2021 08:13:26 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Sohil Mehta" <sohil.mehta@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Cc:     "Tony Luck" <tony.luck@intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Jens Axboe" <axboe@kernel.dk>,
-        "Christian Brauner" <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Shuah Khan" <shuah@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj Ashok" <ashok.raj@intel.com>,
-        "Jacob Pan" <jacob.jun.pan@linux.intel.com>,
-        "Gayatri Kammela" <gayatri.kammela@intel.com>,
-        "Zeng Guang" <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Randy E Witt" <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Ramesh Thomas" <ramesh.thomas@intel.com>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
-Content-Type: text/plain
+        id S1354869AbhJAPP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:15:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB1761A03;
+        Fri,  1 Oct 2021 15:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633101223;
+        bh=lBCw9bkSZZDHUXzzaKop+6Hnc/MB752lkrnFW0SX3Yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VldMVTz6nDca+vkVL8e0kiTzKzysrG6rFWnNAdrhL29IS+EMl5QwhGpw8dSZLXlBh
+         RYbctzhceiSbuD4LaWuLtoUIuBQXVmxEPSlh4UE5F+8UMCNeglXC361wnol0MdUsAc
+         ExxYnVHJCfPy1EhxNh6TSc2+qsyiFjynOVMT4zPg=
+Date:   Fri, 1 Oct 2021 17:13:40 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] usb: Introduce Xen pvUSB frontend (xen hcd)
+Message-ID: <YVclpB4HP4hynENV@kroah.com>
+References: <20211001150039.15921-1-jgross@suse.com>
+ <20211001150039.15921-3-jgross@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001150039.15921-3-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021, at 2:56 AM, Thomas Gleixner wrote:
-> On Thu, Sep 30 2021 at 21:41, Andy Lutomirski wrote:
->> On Thu, Sep 30, 2021, at 5:01 PM, Thomas Gleixner wrote:
->
->> Now that I read the docs some more, I'm seriously concerned about this
->> XSAVE design.  XSAVES with UINTR is destructive -- it clears UINV.  If
->> we actually use this, then the whole last_cpu "preserve the state in
->> registers" optimization goes out the window.  So does anything that
->> happens to assume that merely saving the state doesn't destroy it on
->> respectable modern CPUs XRSTORS will #GP if you XRSTORS twice, which
->> makes me nervous and would need a serious audit of our XRSTORS paths.
->
-> I have no idea what you are fantasizing about. You can XRSTORS five
-> times in a row as long as your XSTATE memory image is correct.
+On Fri, Oct 01, 2021 at 05:00:38PM +0200, Juergen Gross wrote:
+> --- /dev/null
+> +++ b/drivers/usb/host/xen-hcd.c
+> @@ -0,0 +1,1641 @@
+> +/*
+> + * xen-hcd.c
 
-I'm just reading TFM, which is some kind of dystopian fantasy.
+Need a SPDX line here, instead of the license boiler-plate text you
+have.
 
-11.8.2.4 XRSTORS
+Did you run checkpatch on this thing?  I thought that would have told
+you about this.
 
-Before restoring the user-interrupt state component, XRSTORS verifies that UINV is 0. If it is not, XRSTORS
-causes a general-protection fault (#GP) before loading any part of the user-interrupt state component. (UINV
-is IA32_UINTR_MISC[39:32]; XRSTORS does not check the contents of the remainder of that MSR.)
+> + *
+> + * Xen USB Virtual Host Controller driver
+> + *
+> + * Copyright (C) 2009, FUJITSU LABORATORIES LTD.
+> + * Author: Noboru Iwamatsu <n_iwamatsu@jp.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
+> + *
+> + * Or, by your choice:
+> + *
+> + * When distributed separately from the Linux kernel or incorporated into
+> + * other software packages, subject to the following license:
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining a copy
+> + * of this software and associated documentation files (the "Software"), to
+> + * deal in the Software without restriction, including without limitation the
+> + * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+> + * sell copies of the Software, and to permit persons to whom the Software is
+> + * furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+> + * DEALINGS IN THE SOFTWARE.
 
-So if UINV is set in the memory image and you XRSTORS five times in a row, the first one will work assuming UINV was zero.  The second one will #GP.  And:
+Dual licensing a USB host controller driver is, um, a very dubious
+thing given that you can only interact with symbols exported with
+EXPORT_SYMBOL_GPL() from the USB stack.
 
-11.8.2.3 XSAVES
-After saving the user-interrupt state component, XSAVES clears UINV. (UINV is IA32_UINTR_MISC[39:32];
-XSAVES does not modify the remainder of that MSR.)
+So you might want to change this...
 
-So if we're running a UPID-enabled user task and we switch to a kernel thread, we do XSAVES and UINV is cleared.  Then we switch back to the same task and don't do XRSTORS (or otherwise write IA32_UINTR_MISC) and UINV is still clear.
+If not, and you want to keep the dual license, I need some explaination
+from a legal person at your company included in the changelog text, and
+a signed-off-by from them as well.
 
-And we had better clear UINV when running a kernel thread because the UPID might get freed or the kernel thread might do some CPL3 shenanigans (via EFI, perhaps? I don't know if any firmwares actually do this).
+thanks,
 
-So all this seems to put UINV into the "independent" category of feature along with LBR.  And the 512-byte wastes from extra copies of the legacy area and the loss of the XMODIFIED optimization will just be collateral damage.
+greg k-h
