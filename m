@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775241F1C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B2341F1C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355227AbhJAQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:05:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:46562 "EHLO foss.arm.com"
+        id S1355248AbhJAQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:05:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:46592 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355259AbhJAQFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:05:30 -0400
+        id S1355250AbhJAQFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:05:33 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3878E13D5;
-        Fri,  1 Oct 2021 09:03:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5121113E;
+        Fri,  1 Oct 2021 09:03:48 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C1B13F766;
-        Fri,  1 Oct 2021 09:03:44 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E81C53F766;
+        Fri,  1 Oct 2021 09:03:46 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -31,9 +31,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         D Scott Phillips OS <scott@os.amperecomputing.com>,
         lcherian@marvell.com, bobo.shaobowang@huawei.com,
         tan.shaopeng@fujitsu.com
-Subject: [PATCH v2 08/23] x86/resctrl: Create mba_sc configuration in the rdt_domain
-Date:   Fri,  1 Oct 2021 16:02:47 +0000
-Message-Id: <20211001160302.31189-9-james.morse@arm.com>
+Subject: [PATCH v2 09/23] x86/resctrl: Switch over to the resctrl mbps_val list
+Date:   Fri,  1 Oct 2021 16:02:48 +0000
+Message-Id: <20211001160302.31189-10-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211001160302.31189-1-james.morse@arm.com>
 References: <20211001160302.31189-1-james.morse@arm.com>
@@ -43,174 +43,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support resctrl's MBA software controller, the architecture must provide
-a second configuration array to hold the mbps_val from user-space.
+Updates to resctrl's software controller follow the same path as
+other configuration updates, but they don't modify the hardware state.
+rdtgroup_schemata_write() uses parse_line() and the resource's
+ctrlval_parse function to stage the configuration.
+resctrl_arch_update_domains() then updates the mbps_val[] array
+instead, and resctrl_arch_update_domains() skips the rdt_ctrl_update()
+call that would update hardware.
 
-This complicates the interface between the architecture code.
+This complicates the interface between resctrl's filesystem parts
+and architecture specific code. It should be possible for mba_sc
+to be completely implemented by the filesystem parts of resctrl. This
+would allow it to work on a second architecture with no additional code.
 
-Make the filesystem parts of resctrl create an array for the mba_sc
-values when is_mba_sc() is set to true. The software controller
-can be changed to use this, allowing the architecture code to only
-consider the values configured in hardware.
+Change parse_bw() to write the configuration value directly to the
+mba_sc[] array in the domain structure. Change rdtgroup_schemata_write()
+to skip the call to resctrl_arch_update_domains(), meaning all the
+mba_sc specific code in resctrl_arch_update_domains() can be removed.
+On the read-side, show_doms() and update_mba_bw() are changed to read
+the mba_sc[] array from the domain structure. With this,
+resctrl_arch_get_config() no longer needs to consider mba_sc resources.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
 Changes since v1:
- * Added missing error handling to mba_sc_domain_allocate() in
-   domain_setup_mon_state()
- * Added comment about mba_sc_domain_allocate() races
  * Squashed out struct resctrl_mba_sc
- * Moved mount time alloc/free calls to set_mba_sc().
- * Removed mount check in resctrl_offline_domain()
- * Reword commit message
+ * Removed stray paragraphs from commit message
 ---
- arch/x86/kernel/cpu/resctrl/internal.h |  1 -
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 67 ++++++++++++++++++++++++++
- include/linux/resctrl.h                |  6 +++
- 3 files changed, 73 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 44 ++++++++++++++---------
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 10 +++---
+ 2 files changed, 31 insertions(+), 23 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index e12b55f815bf..a7e2cbce29d5 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -36,7 +36,6 @@
- #define MBM_OVERFLOW_INTERVAL		1000
- #define MAX_MBA_BW			100u
- #define MBA_IS_LINEAR			0x4
--#define MBA_MAX_MBPS			U32_MAX
- #define MAX_MBA_BW_AMD			0x800
- #define MBM_CNTR_WIDTH_OFFSET_AMD	20
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index 87666275eed9..9f45207a6c74 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -61,6 +61,7 @@ int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
+ 	     struct rdt_domain *d)
+ {
+ 	struct resctrl_staged_config *cfg;
++	u32 closid = data->rdtgrp->closid;
+ 	struct rdt_resource *r = s->res;
+ 	unsigned long bw_val;
  
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 38670bb810cb..9d402bc8bdff 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1889,6 +1889,64 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
- 		l3_qos_cfg_update(&hw_res->cdp_enabled);
- }
+@@ -72,6 +73,12 @@ int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
  
-+static int mba_sc_domain_allocate(struct rdt_resource *r, struct rdt_domain *d)
-+{
-+	u32 num_closid = resctrl_arch_get_num_closid(r);
-+	int cpu = cpumask_any(&d->cpu_mask);
-+	int i;
+ 	if (!bw_validate(data->buf, &bw_val, r))
+ 		return -EINVAL;
 +
-+	/*
-+	 * d->mbps_val is allocated by a call to this function in set_mba_sc(),
-+	 * and domain_setup_mon_state(). Both calls are guarded by is_mba_sc(),
-+	 * which can only return true while the filesystem is mounted. The
-+	 * two calls are prevented from racing as rdt_get_tree() takes the
-+	 * cpuhp read lock before calling rdt_enable_ctx(ctx), which prevents
-+	 * it running concurrently with resctrl_online_domain().
-+	 */
-+	lockdep_assert_cpus_held();
-+
-+	d->mbps_val = kcalloc_node(num_closid, sizeof(*d->mbps_val),
-+				   GFP_KERNEL, cpu_to_node(cpu));
-+	if (!d->mbps_val)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num_closid; i++)
-+		d->mbps_val[i] = MBA_MAX_MBPS;
-+
-+	return 0;
-+}
-+
-+static int mba_sc_allocate(struct rdt_resource *r)
-+{
-+	struct rdt_domain *d;
-+	int ret;
-+
-+	list_for_each_entry(d, &r->domains, list) {
-+		ret = mba_sc_domain_allocate(r, d);
-+		if (ret)
-+			break;
++	if (is_mba_sc(r)) {
++		d->mbps_val[closid] = bw_val;
++		return 0;
 +	}
 +
-+	return ret;
-+}
-+
-+static void mba_sc_domain_destroy(struct rdt_resource *r,
-+				  struct rdt_domain *d)
-+{
-+	kfree(d->mbps_val);
-+	d->mbps_val = NULL;
-+}
-+
-+static void mba_sc_destroy(struct rdt_resource *r)
-+{
-+	struct rdt_domain *d;
-+
-+	lockdep_assert_cpus_held();
-+
-+	list_for_each_entry(d, &r->domains, list)
-+		mba_sc_domain_destroy(r, d);
-+}
-+
- /*
-  * Enable or disable the MBA software controller
-  * which helps user specify bandwidth in MBps.
-@@ -1911,6 +1969,10 @@ static int set_mba_sc(bool mba_sc)
- 		setup_default_ctrlval(r, hw_dom->ctrl_val, hw_dom->mbps_val);
- 	}
+ 	cfg->new_ctrl = bw_val;
+ 	cfg->have_new_ctrl = true;
  
-+	if (is_mba_sc(r))
-+		return mba_sc_allocate(r);
-+
-+	mba_sc_destroy(r);
- 	return 0;
- }
+@@ -261,14 +268,13 @@ static u32 get_config_index(u32 closid, enum resctrl_conf_type type)
  
-@@ -3259,6 +3321,8 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
- 		__check_limbo(d, true);
- 		cancel_delayed_work(&d->cqm_limbo);
+ static bool apply_config(struct rdt_hw_domain *hw_dom,
+ 			 struct resctrl_staged_config *cfg, u32 idx,
+-			 cpumask_var_t cpu_mask, bool mba_sc)
++			 cpumask_var_t cpu_mask)
+ {
+ 	struct rdt_domain *dom = &hw_dom->d_resctrl;
+-	u32 *dc = !mba_sc ? hw_dom->ctrl_val : hw_dom->mbps_val;
+ 
+-	if (cfg->new_ctrl != dc[idx]) {
++	if (cfg->new_ctrl != hw_dom->ctrl_val[idx]) {
+ 		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
+-		dc[idx] = cfg->new_ctrl;
++		hw_dom->ctrl_val[idx] = cfg->new_ctrl;
+ 
+ 		return true;
  	}
-+	if (is_mba_sc(r))
-+		mba_sc_domain_destroy(r, d);
- 	bitmap_free(d->rmid_busy_llc);
- 	kfree(d->mbm_total);
- 	kfree(d->mbm_local);
-@@ -3291,6 +3355,9 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+@@ -284,14 +290,12 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 	enum resctrl_conf_type t;
+ 	cpumask_var_t cpu_mask;
+ 	struct rdt_domain *d;
+-	bool mba_sc;
+ 	int cpu;
+ 	u32 idx;
+ 
+ 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+-	mba_sc = is_mba_sc(r);
+ 	msr_param.res = NULL;
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		hw_dom = resctrl_to_arch_dom(d);
+@@ -301,7 +305,7 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 				continue;
+ 
+ 			idx = get_config_index(closid, t);
+-			if (!apply_config(hw_dom, cfg, idx, cpu_mask, mba_sc))
++			if (!apply_config(hw_dom, cfg, idx, cpu_mask))
+ 				continue;
+ 
+ 			if (!msr_param.res) {
+@@ -315,11 +319,7 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
  		}
  	}
  
-+	if (is_mba_sc(r))
-+		return mba_sc_domain_allocate(r, d);
+-	/*
+-	 * Avoid writing the control msr with control values when
+-	 * MBA software controller is enabled
+-	 */
+-	if (cpumask_empty(cpu_mask) || mba_sc)
++	if (cpumask_empty(cpu_mask))
+ 		goto done;
+ 	cpu = get_cpu();
+ 	/* Update resource control msr on this CPU if it's in cpu_mask. */
+@@ -406,6 +406,14 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
+ 
+ 	list_for_each_entry(s, &resctrl_schema_all, list) {
+ 		r = s->res;
 +
- 	return 0;
++		/*
++		 * Writes to mba_sc resources update the software controller,
++		 * not the control msr.
++		 */
++		if (is_mba_sc(r))
++			continue;
++
+ 		ret = resctrl_arch_update_domains(r, rdtgrp->closid);
+ 		if (ret)
+ 			goto out;
+@@ -433,9 +441,7 @@ u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
+ 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+ 	u32 idx = get_config_index(closid, type);
+ 
+-	if (!is_mba_sc(r))
+-		return hw_dom->ctrl_val[idx];
+-	return hw_dom->mbps_val[idx];
++	return hw_dom->ctrl_val[idx];
  }
  
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 5d283bdd6162..355660d46612 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -15,6 +15,9 @@ int proc_resctrl_show(struct seq_file *m,
+ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int closid)
+@@ -450,8 +456,12 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
+ 		if (sep)
+ 			seq_puts(s, ";");
  
- #endif
- 
-+/* max value for struct resctrl_mba_sc's mbps_val */
-+#define MBA_MAX_MBPS   U32_MAX
+-		ctrl_val = resctrl_arch_get_config(r, dom, closid,
+-						   schema->conf_type);
++		if (is_mba_sc(r))
++			ctrl_val = dom->mbps_val[closid];
++		else
++			ctrl_val = resctrl_arch_get_config(r, dom, closid,
++							   schema->conf_type);
 +
- /**
-  * enum resctrl_conf_type - The type of configuration.
-  * @CDP_NONE:	No prioritisation, both code and data are controlled or monitored.
-@@ -53,6 +56,8 @@ struct resctrl_staged_config {
-  * @cqm_work_cpu:	worker CPU for CQM h/w counters
-  * @plr:		pseudo-locked region (if any) associated with domain
-  * @staged_config:	parsed configuration to be applied
-+ * @mbps_val:		Array of user specified control values for mba_sc,
-+ *			indexed by closid
-  */
- struct rdt_domain {
- 	struct list_head		list;
-@@ -67,6 +72,7 @@ struct rdt_domain {
- 	int				cqm_work_cpu;
- 	struct pseudo_lock_region	*plr;
- 	struct resctrl_staged_config	staged_config[CDP_NUM_TYPES];
-+	u32				*mbps_val;
- };
+ 		seq_printf(s, r->format_str, dom->id, max_data_width,
+ 			   ctrl_val);
+ 		sep = true;
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 37af1790337f..66c2667584dc 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -447,13 +447,11 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	hw_dom_mba = resctrl_to_arch_dom(dom_mba);
  
- /**
+ 	cur_bw = pmbm_data->prev_bw;
+-	user_bw = resctrl_arch_get_config(r_mba, dom_mba, closid, CDP_NONE);
++	user_bw = dom_mba->mbps_val[closid];
+ 	delta_bw = pmbm_data->delta_bw;
+-	/*
+-	 * resctrl_arch_get_config() chooses the mbps/ctrl value to return
+-	 * based on is_mba_sc(). For now, reach into the hw_dom.
+-	 */
+-	cur_msr_val = hw_dom_mba->ctrl_val[closid];
++
++	/* MBA monitor resource doesn't support CDP */
++	cur_msr_val = resctrl_arch_get_config(r_mba, dom_mba, closid, CDP_NONE);
+ 
+ 	/*
+ 	 * For Ctrl groups read data from child monitor groups.
 -- 
 2.30.2
 
