@@ -2,55 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F3D41E68D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B4641E690
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242244AbhJAEVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:21:48 -0400
-Received: from verein.lst.de ([213.95.11.211]:33575 "EHLO verein.lst.de"
+        id S1351605AbhJAEW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230351AbhJAEVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:21:46 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C70FC67373; Fri,  1 Oct 2021 06:19:59 +0200 (CEST)
-Date:   Fri, 1 Oct 2021 06:19:59 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     Jeremy Linton <jeremy.linton@arm.com>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in
- add_dma_entry
-Message-ID: <20211001041959.GA17448@lst.de>
-References: <20210518125443.34148-1-someguy@effective-light.com> <fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com> <20210914154504.z6vqxuh3byqwgfzx@skbuf>
+        id S1345456AbhJAEWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 00:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E8461A40;
+        Fri,  1 Oct 2021 04:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633062041;
+        bh=P1aX9F2pe3olEwuezxcNa6NkzrsGb7AJ7jerrhnDnJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eTHJJOzbxXLg7tBsiLtwlBQFBMMfVLEi9P3xu08vOt4JwboxSS6yyAWMxC9VB3pbj
+         0IBzDTTFzqUlhTRnDYQJgnINkBN31hnzQPQ2DEJbFAfprsVfn+/94vY6R0L2NSBSyG
+         zdzS/aNVE/R9tIHOj1f3ilaRSxzWTliuhgJR34CC/bpDaygjprIIQt/qTCtiVOZvpC
+         gwMNdQxzFTQaXcETYdLIP8pcL7Ri/iy+v9p3CxPtIhcpLHITVAPze2eB+ly+XAsEGr
+         JU8Zwn2spZLQSXPti1DXl1fHc/5e8Xjl7wtWqUG1EbEQsaP9z/qbTpPSFZb81MwNq8
+         TjHxWTBZyGTlQ==
+Date:   Fri, 1 Oct 2021 09:50:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soundwire: qcom: add debugfs entry for soundwire
+ register dump
+Message-ID: <YVaMlSbmFnrQyb0u@matsya>
+References: <20210907105636.3171-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210914154504.z6vqxuh3byqwgfzx@skbuf>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210907105636.3171-1-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:45:06PM +0000, Ioana Ciornei wrote:
-> [  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
-> [  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
-> [  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
-> 
-> The first line is the dump of the dma_debug_entry which is already present
-> in the radix tree and the second one is the entry which just triggered
-> the EEXIST.
-> 
-> As we can see, they are not actually overlapping, at least from my
-> understanding. The first one starts at 0x20a7320000 with a size 0x30
-> and the second one at 0x20a7320030.
+HI Srini,
 
-They overlap the cache lines.  Which means if you use this driver
-on a system that is not dma coherent you will corrupt data.
+On 07-09-21, 11:56, Srinivas Kandagatla wrote:
+> +#ifdef CONFIG_DEBUG_FS
+> +static int swrm_reg_show(struct seq_file *s_file, void *data)
+> +{
+> +	struct qcom_swrm_ctrl *swrm = s_file->private;
+> +	int reg, reg_val;
+> +
+> +	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
+> +		swrm->reg_read(swrm, reg, &reg_val);
+
+Why not use regmap_read here, that would avoid reading from the bus when
+we already have the values...
+
+Second make sure later when pm_runtime support is added, this take a
+reference ..
+
+Thanks
+-- 
+~Vinod
