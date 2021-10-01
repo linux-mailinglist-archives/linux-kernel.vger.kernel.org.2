@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B0B41ECE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCDA41ECE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354255AbhJAMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:06:37 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47056
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231263AbhJAMGf (ORCPT
+        id S1354276AbhJAMHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:07:13 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52796 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354260AbhJAMHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:06:35 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E487E4030C;
-        Fri,  1 Oct 2021 12:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633089890;
-        bh=5fW1zbFX9A+lWTjDceGHH/kyiO5490vMTq5bgwnRlDE=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=LNgCHl6STFmq8gzscybaEkOEZ6mqkxCypEqJuj7bi509k+QXiO6uxCHbRMm+5PGEE
-         Tk18nrjC30MkOU1uTxQjCngAxLOcX0sQSGQJOE85nWOdgtSv7v6Kl0Du/LWkICYVLj
-         jmjYevQqu1RbXu07ZLxw4VnZQHDl874Q3WJJm8In5h+UdZeSKlwueEgEmcVCSORQaf
-         vzYGmx87TbLpO9xHn/9Z2SG9bau6oZHavtwb3tRV1JhIDvzLLmUd362ce8jo9X4zSF
-         SgNloDsv7Kq9FXHmz1sO9oPzIEgS4w2zJZ31ntSdvuFEQ8KzY7ZUMPpPAMhtN1xvNc
-         ytkDOURi+bgRg==
-From:   Colin King <colin.king@canonical.com>
-To:     Sebastian Reichel <sre@kernel.org>, patches@opensource.cirrus.com,
-        linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: wm831x_power: fix spelling mistake on function name
-Date:   Fri,  1 Oct 2021 13:04:49 +0100
-Message-Id: <20211001120449.17914-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 1 Oct 2021 08:07:10 -0400
+Received: by mail-il1-f198.google.com with SMTP id n13-20020a92d9cd000000b0025872f0c828so7227441ilq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6XR7AcFwJGCAhR4U8M+rl8QBYvsM2ERoXA6/OjrO3zU=;
+        b=a8IrJMggYl8u7lYnU84MfNp48cuVDNMRgwlZPIJMSrR/2mxegI5aY/otEFjA4qi84l
+         m9f4Ryd9EGqxFQDNguI9aHNU5HQLKLhc1YHyKXGX0wEJzf6Ibp0QQ6TulpYetFjJ7fPp
+         dw03sMrhPDdZ2p3pCLlnJCkPAErRYXhtVO7DlW1PkPIOlax/7VNGLHFZMRzo7bIBINzl
+         712qK/fyuLCIYuqlDVuwBrlEaUTuIf3uozv+7VKP9NiYFAJrBTjVtPWXZOP7J9b//u3B
+         2G/Mn//44YENae99K7atXVdU7UKrn2krny/qef9ecd6hGaJ4IPARVRWo4MXnrXkuovL/
+         ZXtw==
+X-Gm-Message-State: AOAM532nh2NTuCpRgrDvlfMBHKog1xFgVn90mYbm38F4X0yw9VI8H/a3
+        XNpmiJ/0aiFFCUpb9/RrDcERFpnjPb/LYeHBhs9cvRm6PPUp
+X-Google-Smtp-Source: ABdhPJwZrhf9uro0TwU2UOZIoHBcW5RwGMHaI/lnR0Z6n+s/V1okJosAbQA4JH0TJt6dPG7/SbUbRK7nnzUVOKsuaZLFQp/Q5dMY
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9f44:: with SMTP id u4mr3449828iot.155.1633089926290;
+ Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 05:05:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1645705cd496085@google.com>
+Subject: [syzbot] general protection fault in perf_tp_event (3)
+From:   syzbot <syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hello,
 
-There is a spelling mistake in the name wm831x_battey_apply_config,
-fix it.
+syzbot found the following issue on:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+HEAD commit:    a3debf177f21 libbpf: Fix segfault in static linker for obj..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=122fa35f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=f27ed6d2b22fe3b92377
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xfe001bea7e002090: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0xf000ff53f0010480-0xf000ff53f0010487]
+CPU: 0 PID: 29889 Comm: syz-executor.4 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
+RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
+Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
+RSP: 0018:ffffc90002137540 EFLAGS: 00010806
+RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
+RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
+RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
+FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ perf_trace_run_bpf_submit+0x11c/0x210 kernel/events/core.c:9657
+ perf_trace_lock+0x2ef/0x4d0 include/trace/events/lock.h:39
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x4a8/0x720 kernel/locking/lockdep.c:5636
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:158 [inline]
+ _raw_spin_unlock_irqrestore+0x16/0x70 kernel/locking/spinlock.c:194
+ spin_unlock_irqrestore include/linux/spinlock.h:418 [inline]
+ pcpu_alloc+0x848/0x1350 mm/percpu.c:1851
+ bpf_prog_alloc+0x4b/0x1a0 kernel/bpf/core.c:125
+ bpf_prog_load+0x651/0x21f0 kernel/bpf/syscall.c:2248
+ __sys_bpf+0x67e/0x5df0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb427a93709
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb42500a188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fb427b97f60 RCX: 00007fb427a93709
+RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
+RBP: 00007fb427aedcb4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fffe8ec545f R14: 00007fb42500a300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 01ae9f661067bd97 ]---
+RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
+RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
+RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
+Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
+RSP: 0018:ffffc90002137540 EFLAGS: 00010806
+RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
+RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
+RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
+FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	20 00                	and    %al,(%rax)
+   2:	0f 85 d7 07 00 00    	jne    0x7df
+   8:	4c 8b bb e8 02 00 00 	mov    0x2e8(%rbx),%r15
+   f:	4d 85 ff             	test   %r15,%r15
+  12:	4c 0f 44 fb          	cmove  %rbx,%r15
+  16:	e8 df 37 e1 ff       	callq  0xffe137fa
+  1b:	49 8d bf 30 05 00 00 	lea    0x530(%r15),%rdi
+  22:	48 89 fa             	mov    %rdi,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	42 80 3c 22 00       	cmpb   $0x0,(%rdx,%r12,1) <-- trapping instruction
+  2e:	0f 85 a1 07 00 00    	jne    0x7d5
+  34:	4d 8b 87 30 05 00 00 	mov    0x530(%r15),%r8
+  3b:	4d 85 c0             	test   %r8,%r8
+  3e:	0f                   	.byte 0xf
+
+
 ---
- drivers/power/supply/wm831x_power.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/power/supply/wm831x_power.c b/drivers/power/supply/wm831x_power.c
-index 4cd2dd870039..82e31066c746 100644
---- a/drivers/power/supply/wm831x_power.c
-+++ b/drivers/power/supply/wm831x_power.c
-@@ -234,7 +234,7 @@ static struct chg_map chg_times[] = {
- 	{ 510, 15 << WM831X_CHG_TIME_SHIFT },
- };
- 
--static void wm831x_battey_apply_config(struct wm831x *wm831x,
-+static void wm831x_battery_apply_config(struct wm831x *wm831x,
- 				       struct chg_map *map, int count, int val,
- 				       int *reg, const char *name,
- 				       const char *units)
-@@ -281,24 +281,24 @@ static void wm831x_config_battery(struct wm831x *wm831x)
- 	if (pdata->fast_enable)
- 		reg1 |= WM831X_CHG_FAST;
- 
--	wm831x_battey_apply_config(wm831x, trickle_ilims,
-+	wm831x_battery_apply_config(wm831x, trickle_ilims,
- 				   ARRAY_SIZE(trickle_ilims),
- 				   pdata->trickle_ilim, &reg2,
- 				   "trickle charge current limit", "mA");
- 
--	wm831x_battey_apply_config(wm831x, vsels, ARRAY_SIZE(vsels),
-+	wm831x_battery_apply_config(wm831x, vsels, ARRAY_SIZE(vsels),
- 				   pdata->vsel, &reg2,
- 				   "target voltage", "mV");
- 
--	wm831x_battey_apply_config(wm831x, fast_ilims, ARRAY_SIZE(fast_ilims),
-+	wm831x_battery_apply_config(wm831x, fast_ilims, ARRAY_SIZE(fast_ilims),
- 				   pdata->fast_ilim, &reg2,
- 				   "fast charge current limit", "mA");
- 
--	wm831x_battey_apply_config(wm831x, eoc_iterms, ARRAY_SIZE(eoc_iterms),
-+	wm831x_battery_apply_config(wm831x, eoc_iterms, ARRAY_SIZE(eoc_iterms),
- 				   pdata->eoc_iterm, &reg1,
- 				   "end of charge current threshold", "mA");
- 
--	wm831x_battey_apply_config(wm831x, chg_times, ARRAY_SIZE(chg_times),
-+	wm831x_battery_apply_config(wm831x, chg_times, ARRAY_SIZE(chg_times),
- 				   pdata->timeout, &reg2,
- 				   "charger timeout", "min");
- 
--- 
-2.32.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
