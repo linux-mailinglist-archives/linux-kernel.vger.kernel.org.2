@@ -2,129 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACA441EF8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E83441EF9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354532AbhJAOg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:36:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10060 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231511AbhJAOg1 (ORCPT
+        id S1354555AbhJAOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhJAOhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:36:27 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191ETZen029792;
-        Fri, 1 Oct 2021 10:34:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Aw/TLxn4JXwymx4JUy3eYLLVRjyRGgqyl5QZTSadiHQ=;
- b=IqEZOksQjWs5pA+fsF9a/BbxxunocigeXhFFhu6yJNzUfneUynDzdZTZkxb64TYc0Oaa
- MYrGOR+86X8mqJMVHLwe9PXrk2b5Vyv5eMkfPM83nQWaagk3zS7Ao5UpMxSRPK/GYVVu
- ahYD4JE1baZ/6jZNr1XDuAa7c5L5OPEeIPtb433k0gh5w9lo5C9BkPZX7JAEkc0fJS/e
- 7HtPjdx4qgfglRvadQBredOvcwLBFgWmBMg+xiV6KzYKrym9UrXUkZDFoZqSJk8IUvGM
- oadzGQAe/Y0nuWWI/N1XjRhSDpnlZavSySf+JjZiqB8DcGF/T9meUdJhhaLEmE4jHLJc NQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3be453854h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Oct 2021 10:34:40 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 191EX4DG012739;
-        Fri, 1 Oct 2021 10:34:40 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3be453853b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Oct 2021 10:34:40 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 191EY4ZO018507;
-        Fri, 1 Oct 2021 14:34:37 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b9u1kfmgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Oct 2021 14:34:37 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 191ETRVw60752136
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Oct 2021 14:29:27 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA6254C040;
-        Fri,  1 Oct 2021 14:34:34 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5ADA04C052;
-        Fri,  1 Oct 2021 14:34:34 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.52.34])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Oct 2021 14:34:34 +0000 (GMT)
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        linux-s390@vger.kernel.org
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <4138cd95-618d-e892-cf56-64f91bf30da4@de.ibm.com>
-Date:   Fri, 1 Oct 2021 16:34:34 +0200
+        Fri, 1 Oct 2021 10:37:08 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1435C061775;
+        Fri,  1 Oct 2021 07:35:23 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id g41so39325432lfv.1;
+        Fri, 01 Oct 2021 07:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hmV8HiS2tOf7621YfFrxpYJRebZdp4NqBv255LyC2LE=;
+        b=gVfVeWzlIRRZb5mmgFJpuc+Yfw2CJzBdf6wr0/B7EujBKlivLfiVtM/grTuqnXkqXG
+         yL8Eg6rh9P6iXsBJY7WXnQN929pxP30S5RRlBov9cYfYTncN1DBpTAARGYHxLycdOQxq
+         LoF/IhH7L2KT1pyRob0U6ByUrBDl1TmjVVkeH7+nYQQNTiStrkF1dM00+3fLFQJ8oXZE
+         7uXslh4Ukfr2j7Mb7RkORfFYa5ef8CKw5FEYlT3u3Ybu5fMh/Takf4SHFHwf5//hRg4G
+         lyAxaTeJleP7SYkxCfJV6MSOmxbhUc3DqsYLGPw/q/v25xceW5ZUPvo1euKVX4OyRa4S
+         tvOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hmV8HiS2tOf7621YfFrxpYJRebZdp4NqBv255LyC2LE=;
+        b=nRVNgyFV3N0E85TU1wtZyntSBDhyiaMjGjGkZyxGtfpYuBd2VZB5wfqBdVR6DE+AKz
+         8aCZQc9APlFhgcrpBXk9o6sbHRPSOQT0W8JujmOlJwXInGgD44RAtf8HClbDpmK7QytM
+         dpf4rBE5TuLfC3Wdr5Vz3pOyulFqUCwHZZPyrbj+FCspPNURT+BZSCo/u4RPOaW8lZzP
+         betvtcFViT7L6sBuBSmX6Hcif61bn+nxjK0uBSJM11Wf/EkiSU5e1r5yY6T5AFIzllbK
+         5o/HjuKFWvnXZU5wDaS+Y2KLwErWF8hjF9x7iUhkf3ZHp42IBousTcAwOyx8es/uwrh6
+         dUgA==
+X-Gm-Message-State: AOAM533Oiv8xvTougdkdiEs7RE9ex2eY3N9vosijxIlmhli1snITI3le
+        jyisdsolSu8km92dcOu5Rv8=
+X-Google-Smtp-Source: ABdhPJw//TuGFtjAUNUsrPnJxIYfZyV7+RdRH4nZbJDVr/PeCRJiHyUV+Xd9Z3J4jT4xr3JBkfK0Fw==
+X-Received: by 2002:a2e:9e87:: with SMTP id f7mr12283717ljk.413.1633098922043;
+        Fri, 01 Oct 2021 07:35:22 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
+        by smtp.googlemail.com with ESMTPSA id m29sm752018lfo.191.2021.10.01.07.35.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 07:35:21 -0700 (PDT)
+Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP
+ support
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-21-digetx@gmail.com>
+ <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com>
+Date:   Fri, 1 Oct 2021 17:35:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210930012049.3780865-1-pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QXEJ23kUyVorBxz70vcM3-uA2_9UqFyV
-X-Proofpoint-GUID: pwQS0m4PhCCNMJptg9cIKcX4Bqn8dt6E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-01_03,2021-10-01_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- spamscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
- malwarescore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110010100
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.09.21 um 03:20 schrieb Halil Pasic:
-> This patch fixes a regression introduced by commit 82e89ea077b9
-> ("virtio-blk: Add validation for block size in config space") and
-> enables similar checks in verify() on big endian platforms.
+01.10.2021 17:24, Ulf Hansson пишет:
+> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> The NAND on Tegra belongs to the core power domain and we're going to
+>> enable GENPD support for the core domain. Now NAND must be resumed using
+>> runtime PM API in order to initialize the NAND power state. Add runtime PM
+>> and OPP support to the NAND driver.
+>>
+>> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++-----
+>>  1 file changed, 47 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+>> index 32431bbe69b8..098fcc9cb9df 100644
+>> --- a/drivers/mtd/nand/raw/tegra_nand.c
+>> +++ b/drivers/mtd/nand/raw/tegra_nand.c
+>> @@ -17,8 +17,11 @@
+>>  #include <linux/mtd/rawnand.h>
+>>  #include <linux/of.h>
+>>  #include <linux/platform_device.h>
+>> +#include <linux/pm_runtime.h>
+>>  #include <linux/reset.h>
+>>
+>> +#include <soc/tegra/common.h>
+>> +
+>>  #define COMMAND                                        0x00
+>>  #define   COMMAND_GO                           BIT(31)
+>>  #define   COMMAND_CLE                          BIT(30)
+>> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>>                 return -ENOMEM;
+>>
+>>         ctrl->dev = &pdev->dev;
+>> +       platform_set_drvdata(pdev, ctrl);
+>>         nand_controller_init(&ctrl->controller);
+>>         ctrl->controller.ops = &tegra_nand_controller_ops;
+>>
+>> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>>         if (IS_ERR(ctrl->clk))
+>>                 return PTR_ERR(ctrl->clk);
+>>
+>> -       err = clk_prepare_enable(ctrl->clk);
+>> +       err = devm_pm_runtime_enable(&pdev->dev);
+>> +       if (err)
+>> +               return err;
+>> +
+>> +       err = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
+>> +       if (err)
+>> +               return err;
+>> +
+>> +       err = pm_runtime_resume_and_get(&pdev->dev);
+>>         if (err)
+>>                 return err;
+>>
+>>         err = reset_control_reset(rst);
+>>         if (err) {
+>>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
+>> -               goto err_disable_clk;
+>> +               goto err_put_pm;
+>>         }
+>>
+>>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_CMD);
+>> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>>                                dev_name(&pdev->dev), ctrl);
+>>         if (err) {
+>>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
+>> -               goto err_disable_clk;
+>> +               goto err_put_pm;
+>>         }
+>>
+>>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CTRL);
+>>
+>>         err = tegra_nand_chips_init(ctrl->dev, ctrl);
+>>         if (err)
+>> -               goto err_disable_clk;
+>> -
+>> -       platform_set_drvdata(pdev, ctrl);
+>> +               goto err_put_pm;
+>>
 > 
-> The problem with checking multi-byte config fields in the verify
-> callback, on big endian platforms, and with a possibly transitional
-> device is the following. The verify() callback is called between
-> config->get_features() and virtio_finalize_features(). That we have a
-> device that offered F_VERSION_1 then we have the following options
-> either the device is transitional, and then it has to present the legacy
-> interface, i.e. a big endian config space until F_VERSION_1 is
-> negotiated, or we have a non-transitional device, which makes
-> F_VERSION_1 mandatory, and only implements the non-legacy interface and
-> thus presents a little endian config space. Because at this point we
-> can't know if the device is transitional or non-transitional, we can't
-> know do we need to byte swap or not.
+> There is no corresponding call pm_runtime_put() here. Is it
+> intentional to always leave the device runtime resumed after ->probe()
+> has succeeded?
 > 
-> The virtio spec explicitly states that the driver MAY read config
-> between reading and writing the features so saying that first accessing
-> the config before feature negotiation is done is not an option. The
-> specification ain't clear about setting the features multiple times
-> before FEATURES_OK, so I guess that should be fine.
-> 
-> I don't consider this patch super clean, but frankly I don't think we
-> have a ton of options. Another option that may or man not be cleaner,
-> but is also IMHO much uglier is to figure out whether the device is
-> transitional by rejecting _F_VERSION_1, then resetting it and proceeding
-> according tho what we have figured out, hoping that the characteristics
-> of the device didn't change.
-> 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> Reported-by: markver@us.ibm.com
+> I noticed you included some comments about this for some other
+> drivers, as those needed more tweaks. Is that also the case for this
+> driver?
 
-Just to make this more obvious. Since 5.14 DASD devices as backing for virtio-blk no
-longer work as the block size is no longer reported to the guest. So we need a fix
-for the issue.
+Could you please clarify? There is pm_runtime_put() in both probe-error
+and remove() code paths here.
+
+I assume you're meaning pm_runtime_disable(), but this patch uses
+resource-managed devm_pm_runtime_enable(), and thus, explicit disable
+isn't needed.
+
+>>         return 0;
+>>
+>> -err_disable_clk:
+>> -       clk_disable_unprepare(ctrl->clk);
+>> +err_put_pm:
+>> +       pm_runtime_put(ctrl->dev);
+>>         return err;
+>>  }
+>>
+> 
+> [...]
+> 
+> Kind regards
+> Uffe
+> 
+
