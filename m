@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ECF41E66C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE0041E67E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237686AbhJAEEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:04:11 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:29250 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351940AbhJAEEC (ORCPT
+        id S231140AbhJAEIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230464AbhJAEIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:04:02 -0400
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 19141WTN003428;
-        Fri, 1 Oct 2021 13:01:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 19141WTN003428
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633060893;
-        bh=Lu4p3V/xxGLNCSHJGvk3pxjNusgCANavrVDQnaMoHTM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dd+t/k+M03RVwQkpC5ZUDDZYCKXtUcg7oOPUfEZzH9Ry9tdF3CGEyF5DorfcR6CYL
-         27khpNWL/OqoQ6CCGv9n7vJO4yb4tI6Xx8mkORAY1oR691dP1ZA4V3A6l6MuES37xb
-         5mXa4ldxR6xIIlFNJmY75N5R5L1CKUxwc5SPol0Oy7ES2wMXHLm2/Q4Cz4KnOxfKAH
-         wXw7ldfyHxah4z9/W/ixRJcUrnkaYHlZTRJI9h3bLrgxwulnGBTSPJGg/YnoGD6EAU
-         RP8RG+m77whzXA7C/DpZPX0x5n/9ij/FMcEYybvMEXZv+fJJRWIjG1W9VWmRC0F8h+
-         ZVK9zz9kUpN7A==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     keyrings@vger.kernel.org
-Cc:     Stefan Berger <stefanb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] certs: move the 'depends on' to the choice of module signing keys
-Date:   Fri,  1 Oct 2021 13:01:26 +0900
-Message-Id: <20211001040126.1200230-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 1 Oct 2021 00:08:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180BDC06176A;
+        Thu, 30 Sep 2021 21:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gHTqeRkmuQ+F9S1fgl4jiNZyC8/WXLk5udP/SJxj3NE=; b=O2zZ/bz5e4NeWk2JsS5WrgIqmx
+        cna7kkW5EH+wIp0NOd5aPehRdZUvJPyyjl8XIyeGHBMUnmSS0fiCQvIGgpearoR30FWKlI+VdwPCa
+        jTBrZVbMw/+A1W+vj0znodixmnsGPk925elTvuyLJzizAC5DfPT6jfgBSz/s2cZKu1pXuKCrYDQaD
+        MsWKntIpUIwok9ZNGaR2qROlTr4lppQvhDGH1tBufU3TiQvoY6Cm/J0kfy4pbpVQEl+s0dTUD2y9f
+        +aMzSZXZ03hn6WqjVV35YtvpsZHmc58Oz0jhGpBks/xqj0itnHVf2C5gFsYDYFLT2U799BUzn8Quk
+        JomSBfGQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mW9mb-00DXJr-QF; Fri, 01 Oct 2021 04:04:33 +0000
+Date:   Fri, 1 Oct 2021 05:04:25 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <YVaIydrh/+ez669b@infradead.org>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
+ <YVWCK5QO331rfhJJ@google.com>
+ <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com>
+ <YVWwBz8jrznqXah4@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVWwBz8jrznqXah4@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the condition "MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)"
-is unmet, you cannot choose anything in the choice, but the choice
-menu is still displayed in the menuconfig etc.
+On Thu, Sep 30, 2021 at 01:39:35PM +0100, Lee Jones wrote:
+> How would they fix this besides upstreaming support for unreleased
+> work-in-progress H/W?
+> 
+> Haven't I explained this several times already? :)
 
-Move the 'depends on' to the choice to hide the meaningless menu.
-
-Also delete the redundant 'default'. In a choice, the first entry is
-the default.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- certs/Kconfig | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/certs/Kconfig b/certs/Kconfig
-index ae7f2e876a31..73d1350c223a 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -17,21 +17,19 @@ config MODULE_SIG_KEY
- 
- choice
- 	prompt "Type of module signing key to be generated"
--	default MODULE_SIG_KEY_TYPE_RSA
-+	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
- 	help
- 	 The type of module signing key type to generate. This option
- 	 does not apply if a #PKCS11 URI is used.
- 
- config MODULE_SIG_KEY_TYPE_RSA
- 	bool "RSA"
--	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
- 	help
- 	 Use an RSA key for module signing.
- 
- config MODULE_SIG_KEY_TYPE_ECDSA
- 	bool "ECDSA"
- 	select CRYPTO_ECDSA
--	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
- 	help
- 	 Use an elliptic curve key (NIST P384) for module signing. Consider
- 	 using a strong hash like sha256 or sha384 for hashing modules.
--- 
-2.30.2
-
+No you haven't.  Mostly likely because there is absolutely no good
+explanation.  And if google/Linaro think they want to create hooks
+for stupid vendor modules we need to do whatever we can to make your
+life as miserable as possible.
