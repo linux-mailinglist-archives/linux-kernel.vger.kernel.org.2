@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030AA41EDBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321BF41EDC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354443AbhJAMqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:46:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57124 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353947AbhJAMqa (ORCPT
+        id S1354473AbhJAMrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:47:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:35157 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353785AbhJAMrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:46:30 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633092285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oIyJDdC53xIoNqfLRWbYB8WyMBpf1JDla/NRP6eGp84=;
-        b=V6rYACth5+b7OaGX6468Y8c6WIFDZUnDV/ehWorJP9tMdKFpSd3GxGiDlfEIjSwIOD61sp
-        YNkZJvIw5I85QB7JYDdHVztKbMmgfx56N4L5byH7seHRA0x+qHiuY1YsPk40EbaEsK15QN
-        /pXJAf3YNsl7T8seTEkNAIlXSi12QFeXOLaMy02y2Gp5QWGdRPtk1xXKEspLVxDswuqNtB
-        0d2nUmWqvlv9akvxCxpqyNIaljDyd+N3WbxfDMSbf8mQAKCZP5TvTfqzQpknYUy7yun1CN
-        7zEhgVKn2IGmTL+oSvrZeGyGelo6NpI1CEFEg9C6J0pLQ5ZNf0TqS7v6PCKSFA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633092285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oIyJDdC53xIoNqfLRWbYB8WyMBpf1JDla/NRP6eGp84=;
-        b=x6Ua6H7dCUmPyAKvHZD6uYS1g+vnrs+BAQC+czWvcuYHjKwni+h3d7gjkIPZ/vvpY6Kgfy
-        SbijEk11ibgJOaCw==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v10 01/28] x86/fpu/xstate: Fix the state copy function
- to the XSTATE buffer
-In-Reply-To: <20210825155413.19673-2-chang.seok.bae@intel.com>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-2-chang.seok.bae@intel.com>
-Date:   Fri, 01 Oct 2021 14:44:45 +0200
-Message-ID: <87lf3c6hj6.ffs@tglx>
+        Fri, 1 Oct 2021 08:47:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633092325; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=DxUzotX+Y7gO/nEKkP180xLqp5Xbdp3BDVDGIp9TVHI=; b=AP08yk6XSzc/ZrFpN+kUqCZrpWY4Gv+47bE64L6xSAqkAdCjYqtuwMMSu9WIP+Kmblvfsqlp
+ 6YhOV8qxDZH4/yRb61ZrFuVF/kgpjPPCeBHB35dhPmcGzrzWwdC0GaYxWjJkFr+FlMXNDFj/
+ XBdUQKuAtCI9u9sRPrqN27/qM2k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 615702db605ecf100bfaac91 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 12:45:15
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 23036C43618; Fri,  1 Oct 2021 12:45:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3539C4338F;
+        Fri,  1 Oct 2021 12:45:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A3539C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 12/24] wfx: add hif_api_*.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-13-Jerome.Pouiller@silabs.com>
+        <875yuhkm4c.fsf@codeaurora.org> <2600267.GQK6fj20dd@pc-42>
+Date:   Fri, 01 Oct 2021 15:45:05 +0300
+In-Reply-To: <2600267.GQK6fj20dd@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
+ Pouiller"'s message of "Fri,
+        01 Oct 2021 13:52:52 +0200")
+Message-ID: <877dewkj72.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chang,
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+> On Friday 1 October 2021 13:41:55 CEST Kalle Valo wrote:
+>> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+>>=20
+>> > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>> >
+>> > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>>=20
+>> [...]
+>>=20
+>> > --- /dev/null
+>> > +++ b/drivers/net/wireless/silabs/wfx/hif_api_cmd.h
+>> > @@ -0,0 +1,555 @@
+>> > +/* SPDX-License-Identifier: Apache-2.0 */
+>>=20
+>> I don't how I missed this earlier:
+>>=20
+>> hif_api_cmd.h:/* SPDX-License-Identifier: Apache-2.0 */
+>> hif_api_general.h:/* SPDX-License-Identifier: Apache-2.0 */
+>> hif_api_mib.h:/* SPDX-License-Identifier: Apache-2.0 */
+>>=20
+>> Apache-2.0 license is a blocker for me, see LICENSES/dual/Apache-2.0.
+>
+> Ok. It is not a problem here. I have the authorisation to change it in
+> GPLv2-only.
 
-> Harden copy_uabi_to_xstate() so that it can handle the case where
-> __raw_xsave() returns NULL.
+Great, thanks!
 
-That's an implementation detail, but does not explain why this can
-happen and what this patch is about.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> This does not happen in practice today, but theoretically could happen
-> in the future.
-
-So what does the patch "fix"? When the subject says "Fix..." then I'm
-expecting a bug in the code to be fixed.
-
-There is none because the use case which can trip over this does not
-exist today. You are adding it later.
-
-Subject: .....: Prepare copy_uabi_to_xstate() to handle dynamic features
-
-or something like that along with a reasonable explanation.
-
-But in a later patch you add in the very same function:
-
-> +    hdr.xfeatures &= fpu->state_mask;
-
-which prevents that already because __raw_xsave_addr() is not invoked
-for the zeroed bits in hdr.xfeatures:
-
->  		if (hdr.xfeatures & mask) {
->  			void *dst = __raw_xsave_addr(xsave, i);
-
-Confused.
-
-I'm not against the change per se, but I'm not accepting changelogs
-which make no sense at all. News at 11.
-
-Thanks,
-
-        tglx
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
