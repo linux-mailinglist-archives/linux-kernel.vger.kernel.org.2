@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EB441F5EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667E841F5ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhJATxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhJATxL (ORCPT
+        id S229963AbhJATx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:53:28 -0400
+Received: from mail-qk1-f171.google.com ([209.85.222.171]:44571 "EHLO
+        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhJATx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:53:11 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C67C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:51:26 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so42945954lfu.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OASN1DWXrIyD6gQMB0CvKRtBfiSz7Btq5Vz6GIW00BE=;
-        b=pggztfgWW5/r760u67qMKk/gTZdTITQgtnm3gsdGguHjcPYeUrqfnJ1Ts/Q8zWqhwu
-         +HBU/MNmhVO8smF7opyPX9VNyK1Fp5kiQMn7GyqBpkTvdPA0ydBPoQSBZtdYo8YURLwl
-         3tGka8IMoYW/kKnrhIpQ+1XF1sCw+rvBzldSAyrs8wm/GlQyk6fd5/JFQwk3kiF81KnQ
-         onxrXDIA4LOqeSja4oFc4zGKVKfBJvfADJh3c6BplTORvbepH/RZojxT33BqibLljLad
-         N/H0dfwVeCeFN3AlCaOG/FyxomgOhHkI7xyAvzbNN+fSW8TAoOKjJ6zy166m0yhWGtIt
-         787Q==
+        Fri, 1 Oct 2021 15:53:27 -0400
+Received: by mail-qk1-f171.google.com with SMTP id 194so10271985qkj.11;
+        Fri, 01 Oct 2021 12:51:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OASN1DWXrIyD6gQMB0CvKRtBfiSz7Btq5Vz6GIW00BE=;
-        b=Ufv6DYo2o4ONUH6wuYCUQWEsZdvymyNKABhgRIDPTzj6F0JOIqzPo2J1hzNs4V0HXi
-         /2CLT32yfpihoNBnZIU/IolAsVBQetvxzghvftjyajs1FMyrsmw0fgPVXRFlmRm4PLc9
-         emkYekMx3URly9JP5kCvA+1/9akdTZ70JU5KKbkIXZR20LMAfCVv3EcKmQlGw6YAb5CS
-         +0x//Cg0fHVQphOUgAVHjv2/3wPb10S33MlWpwHMKQ9EDYF2SOuB0b8JikTMvtHlaiHT
-         D2kqoxpNGr1A5yOKMm4wPM8uKcuECNYBx596jdJgsyB5iTrnXmWvVznInJzUJnIjkTGj
-         313w==
-X-Gm-Message-State: AOAM533QBY/NKptrCo7UEMv84nBu0UJVn5RxBb7Vjv9f2J5nWJ3YZWUH
-        XErWWMviPfefC8A07cej39C3m7715ph4xvy2aaYZlA==
-X-Google-Smtp-Source: ABdhPJzyi89yz4Ys7YmWbiYxSX179Y8R/JtbkovCtO5Snt8v5Te8qZFir2+vrfNRPa3XFPVfkfW/5UQtafjENmEXRYo=
-X-Received: by 2002:a2e:9243:: with SMTP id v3mr2195425ljg.47.1633117884418;
- Fri, 01 Oct 2021 12:51:24 -0700 (PDT)
+        bh=CP2czsJFLPOz9RraUZFgCkPw+6TZRIivrlAU3dXRTyE=;
+        b=jg+QsgAHUog8mfT0c45KQX1/4PRfPCun1pet/4a9PXZoQsAlG1/kOX5/wH3uxLJBDK
+         RvLMkjQMQ943KYbU5rATWjL1iWFP8gKbgy8MGqVuRUqdN6Kt26UGJLtMNvRqFBm8iVE1
+         d09qnOSYw17Gu4zNtWUK4LMlpKo9VI+iwJ1adKTY5i+SjwCbURUkgFVvKYw/pPHfepR1
+         uFa2Ta1VEh0EtDN+CPzXpzzz6cgXOmmeFZEXmdtaTxHoh6tlP+vOr9XVQxF7aR4UVG/D
+         CrFiGJvSY22Y5J++knE3T/M/igbah1WZGcffrVt+32mhdx7ayCrTQeNzo7lxHbTKaYdA
+         CPvw==
+X-Gm-Message-State: AOAM531szHzTCyC1MMK8VOIy4VfyO0w8j0SczfrNvyuBiKDcUxCJ0M6u
+        5YlMLAjLz2MveX5iziJZpR6FuYXk4RE=
+X-Google-Smtp-Source: ABdhPJxiql+SvQ7JhIqib3BIwYulUPpviLXE9ODVRim+NLLN2xt7zDQW2TRN3KJpn8N9QhCcrTeB5g==
+X-Received: by 2002:a37:668d:: with SMTP id a135mr10825796qkc.288.1633117901819;
+        Fri, 01 Oct 2021 12:51:41 -0700 (PDT)
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com. [209.85.160.181])
+        by smtp.gmail.com with ESMTPSA id y6sm3423358qkj.26.2021.10.01.12.51.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 12:51:41 -0700 (PDT)
+Received: by mail-qt1-f181.google.com with SMTP id e16so10090234qts.4;
+        Fri, 01 Oct 2021 12:51:41 -0700 (PDT)
+X-Received: by 2002:ac8:1e0e:: with SMTP id n14mr14774869qtl.95.1633117900842;
+ Fri, 01 Oct 2021 12:51:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
- <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
-In-Reply-To: <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 1 Oct 2021 21:50:58 +0200
-Message-ID: <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
-Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
-        paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        kernel-team@android.com, stable@vger.kernel.org
+References: <20211001000924.15421-1-leoyang.li@nxp.com> <4697aa5c-35de-8331-e7a9-831837618477@canonical.com>
+In-Reply-To: <4697aa5c-35de-8331-e7a9-831837618477@canonical.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Fri, 1 Oct 2021 14:51:29 -0500
+X-Gmail-Original-Message-ID: <CADRPPNRv2n7RHX9=2CTQ25Qce1PNeJnYZ3rt1EwYuCx5Ku5-PQ@mail.gmail.com>
+Message-ID: <CADRPPNRv2n7RHX9=2CTQ25Qce1PNeJnYZ3rt1EwYuCx5Ku5-PQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] convert ifc binding to yaml and drop "simple-bus"
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
-> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > On 10/1/2021 10:55 AM, Todd Kjos wrote:
-> > > Save the struct cred associated with a binder process
-> > > at initial open to avoid potential race conditions
-> > > when converting to a security ID.
-> > >
-> > > Since binder was integrated with selinux, it has passed
-> > > 'struct task_struct' associated with the binder_proc
-> > > to represent the source and target of transactions.
-> > > The conversion of task to SID was then done in the hook
-> > > implementations. It turns out that there are race conditions
-> > > which can result in an incorrect security context being used.
-> >
-> > In the LSM stacking patch set I've been posting for a while
-> > (on version 29 now) I use information from the task structure
-> > to ensure that the security information passed via the binder
-> > interface is agreeable to both sides. Passing the cred will
-> > make it impossible to do this check. The task information
-> > required is not appropriate to have in the cred.
+On Fri, Oct 1, 2021 at 4:46 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> Why not? Why can't you put the security identity of the task into the creds?
+> On 01/10/2021 02:09, Li Yang wrote:
+> > Convert the ifc binding to yaml schema, in the mean while remove the
+> > "simple-bus" compatible from the binding to make sure ifc device probes
+> > before any of the child devices.  Update the driver and existing DTSes
+> > accordingly.
+> >
+> > DTS changes should be merged together with the driver/binding changes
+> > if DTS maintainer is ok with it or after the driver changes are applied.
+> >
+>
+> It's discouraged to merge DTS along with drivers (e.g. soc folks don't
+> accept such pull requests), so I propose to apply it in the next cycle.
 
-Ah, I get it now, you're concerned about different processes wanting
-to see security contexts formatted differently (e.g. printing the
-SELinux label vs printing the AppArmor label), right?
+Ok.  Will separate the DTS changes in the next version.
 
-But still, I don't think you can pull that information from the
-receiving task. Maybe the easiest solution would be to also store that
-in the creds? Or you'd have to manually grab that information when
-/dev/binder is opened.
+>
+> Best regards,
+> Krzysztof
