@@ -2,160 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212C741EE68
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6B441EE6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhJANVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:21:48 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:57626 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352680AbhJANVE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:21:04 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211001131911epoutp02b16b3719c320590e03434c5c443a5dfd~p6qkeLmIw0502205022epoutp02B
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:19:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211001131911epoutp02b16b3719c320590e03434c5c443a5dfd~p6qkeLmIw0502205022epoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1633094352;
-        bh=Uoq8lJdkPEySjR00dTt/XhZVBdKIweEujHidGpEDP7E=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=CeabwzhkPS+EgeSt4ePwbkklXrJ8HJoad9vUB8xvhb9v9SRuTvinFR8c0qGf2zWRE
-         zE1LGmllQ+TBL7JX0XUt7EW9KmsYQgGPVebG5Q0qxtfxoVkGZFnftpR3RVGY8XIEmz
-         r55sByz6S/BLwLhnp3kZUxBGAIitJTegBuGl6Pac=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20211001131911epcas1p3ef202b1fbbc229cb3013d3e72bd08a13~p6qj-YDEH2548425484epcas1p3d;
-        Fri,  1 Oct 2021 13:19:11 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.38.250]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4HLW0Y6QsQz4x9Pw; Fri,  1 Oct
-        2021 13:19:09 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.5E.24398.CCA07516; Fri,  1 Oct 2021 22:19:08 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20211001131908epcas1p36430ce381613d8e0f9f613f3e0ebadb5~p6qhSRmqs2548425484epcas1p3a;
-        Fri,  1 Oct 2021 13:19:08 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211001131908epsmtrp1731e9a23852b65d7d00835d1408f7c6b~p6qhP6OC02253322533epsmtrp1-;
-        Fri,  1 Oct 2021 13:19:08 +0000 (GMT)
-X-AuditID: b6c32a35-0d7ff70000005f4e-81-61570accd885
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D2.F3.09091.BCA07516; Fri,  1 Oct 2021 22:19:07 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211001131908epsmtip2dd46e9e0b840b8a6217e5632f523fd59~p6qhEzMTo1763117631epsmtip2E;
-        Fri,  1 Oct 2021 13:19:08 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Namjae Jeon'" <linkinjeon@kernel.org>,
-        "'Chung-Chiang Cheng'" <cccheng@synology.com>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <shepjeng@gmail.com>, <sj1557.seo@samsung.com>
-In-Reply-To: <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com>
-Subject: RE: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID isn't
- set
-Date:   Fri, 1 Oct 2021 22:19:07 +0900
-Message-ID: <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
+        id S231611AbhJANWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:22:52 -0400
+Received: from mga11.intel.com ([192.55.52.93]:57773 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231484AbhJANWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:22:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222230946"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="222230946"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:20:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="708614512"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:20:42 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mWISs-007Rxr-TQ;
+        Fri, 01 Oct 2021 16:20:38 +0300
+Date:   Fri, 1 Oct 2021 16:20:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3 2/4] uuid: Make guid_t completely internal type to the
+ kernel
+Message-ID: <YVcLJmb4h7ZRBmoh@smile.fi.intel.com>
+References: <20211001113747.64040-1-andriy.shevchenko@linux.intel.com>
+ <20211001113747.64040-2-andriy.shevchenko@linux.intel.com>
+ <YVb4i330sXrvHLWa@kroah.com>
+ <YVcKAH6C/dAZqoAw@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGbLD2CCutv2trCrUWvFxdYN9vjigGoD6NLAWfhRkasHqXMoA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmvu4ZrvBEgyVthhZbnx1ntZg4bSmz
-        xZ69J1ksLu+aw2bROlvSYsu/I6wObB47Z91l99i0qpPNo2/LKkaPGR/2s3p83iQXwBqVbZOR
-        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdICSQlliTilQ
-        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CsQK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj2b+t
-        rAX3+CtOXvjI3sC4jLeLkZNDQsBEYvGk64xdjFwcQgI7GCXO9z9mgnA+MUoc/HuTDcL5xiix
-        59hZJpiW3e2/oBJ7GSV+n9zBCuG8ZJT433kZrIpNQFfiyY2fzCC2iECMxMQlr9hBbGaBUonb
-        K1aygticAoESV/YvBqsXFgiQ6J15ASzOIqAicej8JDCbV8BSouf2c3YIW1Di5MwnLBBztCWW
-        LXzNDHGRgsTuT0dZIXY5SZxb2MQEUSMiMbuzDaqmk0Oi9X4EhO0iMefmHahvhCVeHd/CDmFL
-        Sbzsb4Oy6yX+z1/LDvKYhEALo8TDT9uAGjiAHHuJ95csQExmAU2J9bv0IcoVJXb+nssIsZZP
-        4t3XHlaIal6JjjYhiBIVie8fdrLAbLry4yrTBEalWUgem4XksVlIHpiFsGwBI8sqRrHUguLc
-        9NRiwwJDeGQn5+duYgSnTS3THYwT337QO8TIxMF4iFGCg1lJhPeHeHCiEG9KYmVValF+fFFp
-        TmrxIUZTYFBPZJYSTc4HJu68knhDE0sDEzMjEwtjS2MzJXHeY68tE4UE0hNLUrNTUwtSi2D6
-        mDg4pRqYKjcIP/w9iy/hSJbq7cmKvjnON+02vCjVumrcvdp56/zH6fdlUpIfPN8UwVMuveTg
-        Md7dDMKyJQJHfm7IuK+84VXAjUz3CY0fzb7qLby8oz6Rj2+qrv3my1etM10Lq53Viy5c3vd7
-        xXt1XwWPitRN3m/dVJeW2DT1fWhkyhJP3T9/yylz30ZrlUuefm4ztlZGXfncduqpZWp7b41G
-        vKFp6bSZxUY7LDPvZpdo7Y94edGs6J3YypwpbRoGFzqdWDx12JdXJP70+HQt7JTNmpRtDrVL
-        1IXu751R+GeLh73fF/OSKdGREybfdJTv+VHf3Wknx6tjKJETszWoo23Tl9hSDva3rCe827N4
-        LY1+3FFiKc5INNRiLipOBACC5FMwJAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsWy7bCSvO5prvBEgylLzC22PjvOajFx2lJm
-        iz17T7JYXN41h82idbakxZZ/R1gd2Dx2zrrL7rFpVSebR9+WVYweMz7sZ/X4vEkugDWKyyYl
-        NSezLLVI3y6BK+PLvfyCA/wV/Q/fMjYwtvB2MXJySAiYSOxu/8XWxcjFISSwm1Hi4ObN7F2M
-        HEAJKYmD+zQhTGGJw4eLIUqeM0pc3bqUDaSXTUBX4smNn8wgtohAjMSPN9/YQWxmgUqJMx+f
-        s0A0XGSU2PNrIitIglMgUOLK/sVMIEOFBfwk5u+0BwmzCKhIHDo/CayEV8BSouf2c3YIW1Di
-        5MwnLBAztSV6H7YywtjLFr5mhrhfQWL3p6OsEDc4SZxb2MQEUSMiMbuzjXkCo/AsJKNmIRk1
-        C8moWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4eLc0djNtXfdA7xMjE
-        wXiIUYKDWUmE94d4cKIQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1KzU1MLUotg
-        skwcnFINTLX6aSryrv02YqyHbH5XT1h91Fj9NYPgN26Denk77njPMlXzbL7Hx/+sVbuc1vYt
-        sXeiy6JgqTtLed7JyBb5bTvA4XFZ5e81w/oGxaNzM+5+vZ+3yWneJcXex46OjbqP/ufsP3s4
-        VmKP46+5Ue+iOGzPXOd4lnHMrytl34fo30d6r8//wXH9RP3CjaEr2K0S9/CplLLvzF6xttQ1
-        Q23VLRnF2L1vTHIOLou48d7KNeDoC9Vfoue2Jf+be+Ujk9GCySe/rlEo+pM9e4vwj78bJhf3
-        Js9xEwq6aW/D9Dri2Oqbk+w/TnMN5MoT65SSYK/u1lxx4b2kxfR1fvl5ZVJNq+fHLp75NThZ
-        Rnlr34LDAkosxRmJhlrMRcWJAMZ/D+UNAwAA
-X-CMS-MailID: 20211001131908epcas1p36430ce381613d8e0f9f613f3e0ebadb5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd
-References: <20210909065543.164329-1-cccheng@synology.com>
-        <CGME20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd@epcas1p4.samsung.com>
-        <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVcKAH6C/dAZqoAw@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Namjae,
+On Fri, Oct 01, 2021 at 04:15:44PM +0300, Andy Shevchenko wrote:
+> On Fri, Oct 01, 2021 at 02:01:15PM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Oct 01, 2021 at 02:37:45PM +0300, Andy Shevchenko wrote:
+> > > The guid_t type was defined in UAPI by mistake.
+> > > Keep it an internal type and leave uuid_le UAPI
+> > > for it's only user, i.e. MEI.
+> > 
+> > It's used in they hyper-v drivers as a uapi between the kernel and the
+> > hypervisor, so isn't that something valid here?
+> 
+> I'm not sure I see that interface defined in the kernel. As far as I remember
+> the guid_t is used solely inside kernel by Hyper-V code and the rest is using
+> raw buffers. Can you point out to the specific place(s)?
 
-I found an important difference between the code we first wrote and the cod=
-e that has changed since our initial patch review. This difference seems to=
- cause compatibility issues when reading saved timestamps without timezone.=
- (In our initial patch review, there were concerns about possible compatibi=
-lity issues.)
-I think the code that reads timestamps without timezone should go back to t=
-he concept we wrote in the first place like reported patch.
-It could be an answer of another timestamp issue.
+Ah, it's a leftover inclusion in the uapi! Thanks for noticing.
+I will add a patch to replace it.
 
-Could you please let me know what you think?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks.
-> -----Original Message-----
-> From: Namjae Jeon =5Bmailto:linkinjeon=40kernel.org=5D
-> Sent: Friday, September 10, 2021 10:01 AM
-> To: Chung-Chiang Cheng <cccheng=40synology.com>
-> Cc: sj1557.seo=40samsung.com; linux-fsdevel=40vger.kernel.org; linux-
-> kernel=40vger.kernel.org; shepjeng=40gmail.com
-> Subject: Re: =5BPATCH=5D exfat: use local UTC offset when EXFAT_TZ_VALID =
-isn't
-> set
->=20
-> 2021-09-09 15:55 GMT+09:00, Chung-Chiang Cheng <cccheng=40synology.com>:
-> > EXFAT_TZ_VALID is corresponding to OffsetValid field in exfat
-> > specification =5B1=5D. If this bit isn't set, timestamps should be trea=
-ted
-> > as having the same UTC offset as the current local time.
-> >
-> > This patch uses the existing mount option 'time_offset' as fat does.
-> > If time_offset isn't set, local UTC offset in sys_tz will be used as
-> > the default value.
-> >
-> > Link: =5B1=5D
-> > https://protect2.fireeye.com/v1/url?k=3Dcba4edf5-943fd4c8-cba566ba-0cc4=
-7
-> > a31309a-e70aa065be678729&q=3D1&e=3D225feff2-841f-404c-9a2e-c12064b232d0=
-&u=3D
-> > https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fwindows%2Fwin32%2Ffileio%2F
-> > exfat-specification%2374102-offsetvalid-field
-> > Signed-off-by: Chung-Chiang Cheng <cccheng=40synology.com>
-> Please read this discussion:
->  https://patchwork.kernel.org/project/linux-
-> fsdevel/patch/20200115082447.19520-10-namjae.jeon=40samsung.com/
->=20
-> Thanks=21
 
