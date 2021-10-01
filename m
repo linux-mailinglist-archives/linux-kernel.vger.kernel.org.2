@@ -2,136 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B13B41ECDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B0B41ECE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354229AbhJAMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:06:13 -0400
-Received: from www.zeus03.de ([194.117.254.33]:55078 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231321AbhJAMGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:06:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=sU1jHZ5AxD4VfGEdE0alKPxI1996
-        qYnc3sUVIk98xIA=; b=o2DkK4TEJ2MjNtxegdLBJeBjQFr16jn7wHO4G/EAQU1K
-        j1RK0i4oldYwujwtqM3GV/UGHQONbcgn6x9RtjmzfinIm+xq3fgXYuoL/LArmIRH
-        m2gGCz81yu6LMx18Kdm4IrvgKuRj9bp7gMlhcF+D7jWKpZmPbsyTgyNG7rNUaMw=
-Received: (qmail 2459946 invoked from network); 1 Oct 2021 14:04:22 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 Oct 2021 14:04:22 +0200
-X-UD-Smtp-Session: l3s3148p1@MLMZXUnNftIgAwDPXwmDAJN1R91E6vGQ
-Date:   Fri, 1 Oct 2021 14:04:21 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YVb5RXvh9agIS7MG@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <YVXMc1A4D/y4kjim@shikoro>
- <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
- <YVbM3z7x+D0MCkTF@ninjato>
- <CA+V-a8uyQmW3+4hAt4534spKeQHDoeZzuJJE4RY70KLZfYOXoA@mail.gmail.com>
+        id S1354255AbhJAMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:06:37 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47056
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231263AbhJAMGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:06:35 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E487E4030C;
+        Fri,  1 Oct 2021 12:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633089890;
+        bh=5fW1zbFX9A+lWTjDceGHH/kyiO5490vMTq5bgwnRlDE=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=LNgCHl6STFmq8gzscybaEkOEZ6mqkxCypEqJuj7bi509k+QXiO6uxCHbRMm+5PGEE
+         Tk18nrjC30MkOU1uTxQjCngAxLOcX0sQSGQJOE85nWOdgtSv7v6Kl0Du/LWkICYVLj
+         jmjYevQqu1RbXu07ZLxw4VnZQHDl874Q3WJJm8In5h+UdZeSKlwueEgEmcVCSORQaf
+         vzYGmx87TbLpO9xHn/9Z2SG9bau6oZHavtwb3tRV1JhIDvzLLmUd362ce8jo9X4zSF
+         SgNloDsv7Kq9FXHmz1sO9oPzIEgS4w2zJZ31ntSdvuFEQ8KzY7ZUMPpPAMhtN1xvNc
+         ytkDOURi+bgRg==
+From:   Colin King <colin.king@canonical.com>
+To:     Sebastian Reichel <sre@kernel.org>, patches@opensource.cirrus.com,
+        linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] power: supply: wm831x_power: fix spelling mistake on function name
+Date:   Fri,  1 Oct 2021 13:04:49 +0100
+Message-Id: <20211001120449.17914-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5QK+6x2YA2y8yiDI"
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8uyQmW3+4hAt4534spKeQHDoeZzuJJE4RY70KLZfYOXoA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---5QK+6x2YA2y8yiDI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+There is a spelling mistake in the name wm831x_battey_apply_config,
+fix it.
 
-Hi Prabhakar,
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/power/supply/wm831x_power.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-I checked the G2L datasheet and reconsidered. It is better if your patch
-goes in first. That means...
+diff --git a/drivers/power/supply/wm831x_power.c b/drivers/power/supply/wm831x_power.c
+index 4cd2dd870039..82e31066c746 100644
+--- a/drivers/power/supply/wm831x_power.c
++++ b/drivers/power/supply/wm831x_power.c
+@@ -234,7 +234,7 @@ static struct chg_map chg_times[] = {
+ 	{ 510, 15 << WM831X_CHG_TIME_SHIFT },
+ };
+ 
+-static void wm831x_battey_apply_config(struct wm831x *wm831x,
++static void wm831x_battery_apply_config(struct wm831x *wm831x,
+ 				       struct chg_map *map, int count, int val,
+ 				       int *reg, const char *name,
+ 				       const char *units)
+@@ -281,24 +281,24 @@ static void wm831x_config_battery(struct wm831x *wm831x)
+ 	if (pdata->fast_enable)
+ 		reg1 |= WM831X_CHG_FAST;
+ 
+-	wm831x_battey_apply_config(wm831x, trickle_ilims,
++	wm831x_battery_apply_config(wm831x, trickle_ilims,
+ 				   ARRAY_SIZE(trickle_ilims),
+ 				   pdata->trickle_ilim, &reg2,
+ 				   "trickle charge current limit", "mA");
+ 
+-	wm831x_battey_apply_config(wm831x, vsels, ARRAY_SIZE(vsels),
++	wm831x_battery_apply_config(wm831x, vsels, ARRAY_SIZE(vsels),
+ 				   pdata->vsel, &reg2,
+ 				   "target voltage", "mV");
+ 
+-	wm831x_battey_apply_config(wm831x, fast_ilims, ARRAY_SIZE(fast_ilims),
++	wm831x_battery_apply_config(wm831x, fast_ilims, ARRAY_SIZE(fast_ilims),
+ 				   pdata->fast_ilim, &reg2,
+ 				   "fast charge current limit", "mA");
+ 
+-	wm831x_battey_apply_config(wm831x, eoc_iterms, ARRAY_SIZE(eoc_iterms),
++	wm831x_battery_apply_config(wm831x, eoc_iterms, ARRAY_SIZE(eoc_iterms),
+ 				   pdata->eoc_iterm, &reg1,
+ 				   "end of charge current threshold", "mA");
+ 
+-	wm831x_battey_apply_config(wm831x, chg_times, ARRAY_SIZE(chg_times),
++	wm831x_battery_apply_config(wm831x, chg_times, ARRAY_SIZE(chg_times),
+ 				   pdata->timeout, &reg2,
+ 				   "charger timeout", "min");
+ 
+-- 
+2.32.0
 
-> > > > Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
-> > > > datasheets? I am asking because I have a patch pending to remove writing
-> > > > to undocumented locations. So, I was aboout to remove the IO3FV and
-> > > > IO2FV macros.
-> > > >
-> > > Yes they are documented, you should be able to download the HW manual from [1]
-> >
-> > Great, then I will keep them!
-
-... that you could change the comments here from "undocumented" to
-"documened for G2L" or similar.
-
-> > > > > +             regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
-> > > > > +             dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
-> > > > > +             dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
-> > > > > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
-> > > >
-> > > > regmap_update_bits?
-> > > >
-> > > Im a bit hesitant to use regmap_update_bits() here as some of the bits
-> > > are not documented.
-
-Here you can keep your code as is. I will change it afterwards if needed
-once I clarified all undocumented locations.
-
-Thanks and have a nice weekend,
-
-   Wolfram
-
-
---5QK+6x2YA2y8yiDI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFW+UEACgkQFA3kzBSg
-Kbb9Nw//bCZjWZIYqwiSCfxBOafnLWkptccKRA/ccZ57W8k5zOSNRRPmx68uEr2+
-G6p3M5tlc9g9oqT0Yek9lce9f+7SIVrbOdHLONIpBpeEHEb4FfZUKqOiLzDB+JDf
-RlMF+IbEFNOwDAfhFCJdR9SY5GeobFjmLpTWyMfJlRnFvTFFe9S3NF7V1V9AQMHh
-KrTC2H67mMpgzVwT/iF7naTL4mHI7GaT9I1bm3U1meHYxDM7hDZB2uWvwErPzh1w
-plGrppDm02M6Bj+IllzZukxvC7ppzPDAjmuHMttjuurInrem5NrWCtTMT4mZdf/w
-0OIn2me7d40DI351em9tk5YL3tsqyIgTp+MpmrDGGi/9bs5FCQzPYh5RHtRVNwiZ
-XicfUYQzFXg5FxSwf2LcDOcuHu737TZxjjrr++cKC6e9uGnzfXUlAy+HNhzSce7M
-NqIZbnMNQD2t83mThggTvl+XgNQ/c4pMiJ11Je/fImfHkB/OV+ExZzhoTYqeRkjX
-STlHRriE+XIuotL+RFD/ImGqKXPauFhWJwCrQcJFmwMhV4vl8EkWdtZlNDiR9sR7
-+ir4YTUv1s7FUEpRCozcHus1MiKtFdoxDgC+yNDLwbo/fDE21lBB7o/4nTm3P3Qd
-itXUJBUf8jxaSazpaURv1jiRCGSFZZEZCYmbnD2SDS3+y4J3PDM=
-=nApo
------END PGP SIGNATURE-----
-
---5QK+6x2YA2y8yiDI--
