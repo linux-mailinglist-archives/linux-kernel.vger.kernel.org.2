@@ -2,178 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B8941E770
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D5141E794
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352126AbhJAGUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S1352325AbhJAGcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhJAGUj (ORCPT
+        with ESMTP id S1352216AbhJAGc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:20:39 -0400
+        Fri, 1 Oct 2021 02:32:28 -0400
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22C5C06176A;
-        Thu, 30 Sep 2021 23:18:54 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HLKgc3M82z4xbQ;
-        Fri,  1 Oct 2021 16:18:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633069132;
-        bh=FtDEQ6sQa+w0QICsIw2I0WfJjMFi2rKpIwYM1kIV+tc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lu1TqovdXmI40DJ1rcszuHV6A4xC363T/u3mY0cq1cF9oMz16yXfwHXrzc3nVM6fK
-         dJhw0WSnhGc88Tcatl7//OV4y4eKB6TexvG4tU+lde3QN5RJRCx7zfFeSh0r5ljTaG
-         9Bt5FAGShyu7fKs+ket8ruk9UpaslMZs6c3IbfNQzMn4TLoPUpzq+F/uuDczdL4RMH
-         S++y4wXfBrcHLqxADyGMGblh5y2iNM4E5qt01eX6y7NRQofp2/fPYoslWYuyLjSaGN
-         eLcslxRKfoXBuWa0XB+XheL4QDogw+LvjszeJRdtHqLeSn5MUNkTd1DS3q9ykJkvL6
-         Y8NCY4sBBf5xQ==
-Date:   Fri, 1 Oct 2021 16:18:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>, Wei Wang <weiwan@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20211001161849.51b6deca@canb.auug.org.au>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B3DC06176A;
+        Thu, 30 Sep 2021 23:30:44 -0700 (PDT)
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HLKxG5ddcz4xbX; Fri,  1 Oct 2021 16:30:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1633069842;
+        bh=8e3p6TcMHyRkYPl5aL0IcT9hwWBWAm1eByV6Ex3QjQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fmrCL9FoSlEpgqzzMuHtEIFJ5ELrO+YhZR+RUiPOoN2hvXbQz0WEIhHkT5wOOQMHf
+         AMP4c0w0aAH6duPu0eVAeaN5GIxXJbC+Q0PtSYr4r+DNB4masVwneN6GxilQUPlcRq
+         Hi6zgD6uJwYkjtypqC0k5G5BQzQU5BOKLm8IsAEM=
+Date:   Fri, 1 Oct 2021 16:19:22 +1000
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Message-ID: <YVaoamAaqayk1Hja@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922140911.GT327412@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/juQm59FPtUBQKGnQG5fzsSB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lHnk0tj9oYSt/rWa"
+Content-Disposition: inline
+In-Reply-To: <20210922140911.GT327412@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/juQm59FPtUBQKGnQG5fzsSB
-Content-Type: text/plain; charset=US-ASCII
+
+--lHnk0tj9oYSt/rWa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Wed, Sep 22, 2021 at 11:09:11AM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 22, 2021 at 03:40:25AM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Wednesday, September 22, 2021 1:45 AM
+> > >=20
+> > > On Sun, Sep 19, 2021 at 02:38:39PM +0800, Liu Yi L wrote:
+> > > > This patch adds IOASID allocation/free interface per iommufd. When
+> > > > allocating an IOASID, userspace is expected to specify the type and
+> > > > format information for the target I/O page table.
+> > > >
+> > > > This RFC supports only one type (IOMMU_IOASID_TYPE_KERNEL_TYPE1V2),
+> > > > implying a kernel-managed I/O page table with vfio type1v2 mapping
+> > > > semantics. For this type the user should specify the addr_width of
+> > > > the I/O address space and whether the I/O page table is created in
+> > > > an iommu enfore_snoop format. enforce_snoop must be true at this po=
+int,
+> > > > as the false setting requires additional contract with KVM on handl=
+ing
+> > > > WBINVD emulation, which can be added later.
+> > > >
+> > > > Userspace is expected to call IOMMU_CHECK_EXTENSION (see next patch)
+> > > > for what formats can be specified when allocating an IOASID.
+> > > >
+> > > > Open:
+> > > > - Devices on PPC platform currently use a different iommu driver in=
+ vfio.
+> > > >   Per previous discussion they can also use vfio type1v2 as long as=
+ there
+> > > >   is a way to claim a specific iova range from a system-wide addres=
+s space.
+> > > >   This requirement doesn't sound PPC specific, as addr_width for pci
+> > > devices
+> > > >   can be also represented by a range [0, 2^addr_width-1]. This RFC =
+hasn't
+> > > >   adopted this design yet. We hope to have formal alignment in v1
+> > > discussion
+> > > >   and then decide how to incorporate it in v2.
+> > >=20
+> > > I think the request was to include a start/end IO address hint when
+> > > creating the ios. When the kernel creates it then it can return the
+> >=20
+> > is the hint single-range or could be multiple-ranges?
+>=20
+> David explained it here:
+>=20
+> https://lore.kernel.org/kvm/YMrKksUeNW%2FPEGPM@yekko/
 
-After merging the net-next tree, today's linux-next build (sparc64
-defconfig) failed like this:
+Apparently not well enough.  I've attempted again in this thread.
 
-net/core/sock.c: In function 'sock_setsockopt':
-net/core/sock.c:1417:7: error: 'SO_RESERVE_MEM' undeclared (first use in th=
-is function); did you mean 'IORESOURCE_MEM'?
-  case SO_RESERVE_MEM:
-       ^~~~~~~~~~~~~~
-       IORESOURCE_MEM
-net/core/sock.c:1417:7: note: each undeclared identifier is reported only o=
-nce for each function it appears in
-net/core/sock.c: In function 'sock_getsockopt':
-net/core/sock.c:1817:7: error: 'SO_RESERVE_MEM' undeclared (first use in th=
-is function); did you mean 'IORESOURCE_MEM'?
-  case SO_RESERVE_MEM:
-       ^~~~~~~~~~~~~~
-       IORESOURCE_MEM
+> qeumu needs to be able to chooose if it gets the 32 bit range or 64
+> bit range.
 
-Caused by commit
+No. qemu needs to supply *both* the 32-bit and 64-bit range to its
+guest, and therefore needs to request both from the host.
 
-  2bb2f5fb21b0 ("net: add new socket option SO_RESERVE_MEM")
-
-arch/sparc/include/uapi/socket.h does not include uapi/asm/socket.h and
-some other architectures do not as well.
-
-I have added the following patch for today (I searched for SO_BUF_LOCK
-and, of these architectures, I have only compile tested sparc64 and
-sparc):
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 1 Oct 2021 15:51:50 +1000
-Subject: [PATCH] fix up for "net: add new socket option SO_RESERVE_MEM"
-
-Some architectures do not include uapi/asm/socket.h
-
-Fixes: 2bb2f5fb21b0 ("net: add new socket option SO_RESERVE_MEM")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/alpha/include/uapi/asm/socket.h  | 2 ++
- arch/mips/include/uapi/asm/socket.h   | 2 ++
- arch/parisc/include/uapi/asm/socket.h | 2 ++
- arch/sparc/include/uapi/asm/socket.h  | 2 ++
- 4 files changed, 8 insertions(+)
-
-diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi=
-/asm/socket.h
-index 1dd9baf4a6c2..284d28755b8d 100644
---- a/arch/alpha/include/uapi/asm/socket.h
-+++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -131,6 +131,8 @@
-=20
- #define SO_BUF_LOCK		72
-=20
-+#define SO_RESERVE_MEM		73
-+
- #if !defined(__KERNEL__)
-=20
- #if __BITS_PER_LONG =3D=3D 64
-diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/a=
-sm/socket.h
-index 1eaf6a1ca561..24e0efb360f6 100644
---- a/arch/mips/include/uapi/asm/socket.h
-+++ b/arch/mips/include/uapi/asm/socket.h
-@@ -142,6 +142,8 @@
-=20
- #define SO_BUF_LOCK		72
-=20
-+#define SO_RESERVE_MEM		73
-+
- #if !defined(__KERNEL__)
-=20
- #if __BITS_PER_LONG =3D=3D 64
-diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/ua=
-pi/asm/socket.h
-index 8baaad52d799..845ddc63c882 100644
---- a/arch/parisc/include/uapi/asm/socket.h
-+++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -123,6 +123,8 @@
-=20
- #define SO_BUF_LOCK		0x4046
-=20
-+#define SO_RESERVE_MEM		0x4047
-+
- #if !defined(__KERNEL__)
-=20
- #if __BITS_PER_LONG =3D=3D 64
-diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi=
-/asm/socket.h
-index e80ee8641ac3..9e9ceee6358f 100644
---- a/arch/sparc/include/uapi/asm/socket.h
-+++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -124,6 +124,8 @@
-=20
- #define SO_BUF_LOCK              0x0051
-=20
-+#define SO_RESERVE_MEM           0x0052
-+
- #if !defined(__KERNEL__)
-=20
-=20
---=20
-2.33.0
+Or rather, it *might* need to supply both.  It will supply just the
+32-bit range by default, but the guest can request the 64-bit range
+and/or remove and resize the 32-bit range via hypercall interfaces.
+Vaguely recent Linux guests certainly will request the 64-bit range in
+addition to the default 32-bit range.
 
 --=20
-Cheers,
-Stephen Rothwell
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
---Sig_/juQm59FPtUBQKGnQG5fzsSB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--lHnk0tj9oYSt/rWa
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWqEkACgkQAVBC80lX
-0GzURQf/Qb2+M65Vu7CVhw7LM8TnQWDV54GslYN4/danqEwXCP0w1siZZ8biRuZr
-BlCxM/7L+9d5bg+vkHUiLgqLUVCAP8t1kIPs+Oa1hnZpxM4JW7Ui8xuF3nHL3apR
-dnwDfWsK2C+wCpQz3XGwxRba5mMs2rh7bQG66VvRHqS3RiFVXJOq1xJgyOlqPdoK
-sxdq0HGVKljoM4CC9oeakhMv797yaduPvwE7ub4VjATRi/BdxfZecGqRE2pe1rdy
-SFmQHq52W9NMO0x4OTOkvbNunkpd0dQGdSNmeg/rmnKK4m9Eod3Arod79RkTaA4u
-IOL2RLYK8CIq1Hl2ME3CnBCTomxvHw==
-=c79C
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWqGoACgkQbDjKyiDZ
+s5L8tw//YY7tiUXvMIAGIXm61TIv66CLrMTg/3GyGWaYPOk+/BAQDLy5JD1g3v8n
+BFTejm6zx860jQwAkybZ9lBfZQrON5AwvUt75TGwjtMIgbHFJNfbicP9exYDtmrO
+p8ioJcXNUG1+lxpkNZwqHr7w65TMTpGdkxFPw4ndpMB6fnyr9nLMFq29XoH8P21A
+ksBSwHNAMnAffDWSo4f5WkOzn0lpr+wSJrdR300eHLpE7kAFxIsL89lse/q2t/RT
+eXxKn3+wh049SR7Hs/EMNemJZlgLy2+7HQxR0jBBBBFuTCDlv5TCRKdqBQbdamMc
+KJhaZLMub9D88YFof5rLYZ6VUfSQpcrtsJe7wmzjKvErjjYwRc/YhoQE+Ny+nWZh
+Ufvin7QR2SUFT2DvWkntoqjP16gNn6F4ojvs9XJzvFrV5UWSK9O080pBRhlilshK
+skD2BjpzeTGkSJyfVaK3JjV11Ng/JoJqE4jWddzDZlE3vcd1QYABuMhj0U/v9Nc3
+urDaZ08q9eu3Bvmn7gVMeApH5S4H0NDl2MTQeaayz9gn1/AZGMOi8ai3qT2I/iWS
+3OooRYVajkdqiMwsHhOF75UOHk38XYrrGp+NuQ6/vn3G7gMh0I5fADbCNKIP4LJJ
+oU544hDEtGp+2mUL8ljjnZVjmsYwJ3TMI6icSSfL+sZ3eI9JVAo=
+=iO+M
 -----END PGP SIGNATURE-----
 
---Sig_/juQm59FPtUBQKGnQG5fzsSB--
+--lHnk0tj9oYSt/rWa--
