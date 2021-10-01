@@ -2,181 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1F041F157
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E0341F165
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355072AbhJAPkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
+        id S232027AbhJAPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhJAPkB (ORCPT
+        with ESMTP id S231924AbhJAPn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:40:01 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FD6C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:38:16 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g41so40057859lfv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6A5eWZRYPq2y4phPK9+CWlezfURq0tv1a8DQf5ALkTk=;
-        b=O+MJpMdT+wGtP+L8d5YpDRq5uey0ctUtAD658N0P3a/rrf3cCwvjwKblyMc8BrpLKc
-         ZtlilAwX54jLce3m+AuzyBKpoBiblrSQtGPUanvdP+L3p/yGQp2/fR9Ras2oofTNACFE
-         5klqHeXe3dXV/7bw9GItNLb6s54DmQnNtkZlsTQysNE9BID/KXYNZNjL+YVGN90n6A/j
-         FVURrF/pCISPIYCn96pzNv/xglnMhTOvKtNak3d15JjtBnYG3QIHaPmm5C5qHkpQ3LKc
-         dzaMpVaomTHMZBGbLM+1e5i7ZOzCSZ4xbY40bR+E5g5Fa1Kg+GMFgpzCVZ4oX0Ahic0v
-         9p1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6A5eWZRYPq2y4phPK9+CWlezfURq0tv1a8DQf5ALkTk=;
-        b=h25atjRMeMKYs2jl/Dq2VwPIwh22pgUVSopuTTOnLYh93KUEG0OEcgSn27YKZeF6rI
-         yyLK1xjfwze4L84DXWNAqCsjTLMVZooN0yX1eVnalWVsfR2LpEQr9KwCEWz9dg/jqRG3
-         JVdDN56BmbXzYQyBARBA+XQr2Q9TzRjaJv/aE+ZPRG+ljfRV0o9hslBjKN4620lfCCeW
-         CZNerDMmjFuHIH4kYNuTT6wF8tDnUBZxteGWOBniYL2ocbxG3abC09fFRrjxHCbEOQah
-         /txHJE3WkchOWHmAWdvupZMWzMX8/8MN/pEkBdGLDcZBNXYXqt3PQshG9hII4tsbFQhT
-         pwgg==
-X-Gm-Message-State: AOAM530sgAiTcRuiSMatEkBDsAuVl0cHWphl91fUibCqqXhLceRWLI2L
-        ipsYeCsk5qzAnI1hHQf5zMyirWLrJUHONy7ndONvfg==
-X-Google-Smtp-Source: ABdhPJwoZz8ZbUHqp0gwTDx94pmhbFjVKS3zXTpbCPNRVrdBj9Exo6x5JROj2k8NVSQkldadAtO8LBiB11Huutsiuto=
-X-Received: by 2002:a05:651c:213:: with SMTP id y19mr12199656ljn.273.1633102694548;
- Fri, 01 Oct 2021 08:38:14 -0700 (PDT)
+        Fri, 1 Oct 2021 11:43:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FF4C061775;
+        Fri,  1 Oct 2021 08:41:45 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633102903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byc2IlkIYSWPNIeqNzT2D0FAqUb7gNOtQCa+3uZyf44=;
+        b=P2GSwiTe6hzVafYT7FlPYUlv9flFyPlWScvvxJl6lREbi/i7EtOh3mUmljYg0UVKgw0Iqa
+        mrx++FH+fowkN898y9GkRyG51eZ80fz3EkHczGOeOgrxtcHAJoKNymjrhK1J3ZGU/OGLSl
+        xf3etpSZAeFKvSBlYXpiV0iw32BiDRnS9EOPGrl/mHCdmgvW3iSSdeov0I6Ll688pWcfRw
+        XMljQuDynKXWJlLkU6y6nhBOq+R1VXgWurU69odB7AS3FCZh2n7AFX4LWtcT0w6zTOCw2J
+        eVB3JaniKQjU99WfIAeyi2LZF+D7PphjLyMd3nLb68cabA+o4dzwVb2Y3bx9Jg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633102903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byc2IlkIYSWPNIeqNzT2D0FAqUb7gNOtQCa+3uZyf44=;
+        b=NOn6f3p/uTC2tC2R8lNu9nR+TShS8dt0Q8gCtFBYs88FYMrXUviQIx3izHHZzbuyBvQSuQ
+        eS3GL6xaLPfw3zAg==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com, kvm@vger.kernel.org
+Subject: Re: [PATCH v10 10/28] x86/fpu/xstate: Update the XSTATE save
+ function to support dynamic states
+In-Reply-To: <20210825155413.19673-11-chang.seok.bae@intel.com>
+References: <20210825155413.19673-1-chang.seok.bae@intel.com>
+ <20210825155413.19673-11-chang.seok.bae@intel.com>
+Date:   Fri, 01 Oct 2021 17:41:42 +0200
+Message-ID: <87tui04urt.ffs@tglx>
 MIME-Version: 1.0
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20210920161136.2398632-9-Jerome.Pouiller@silabs.com> <CAPDyKFp2_41mScO=-Ev+kvYD5xjShQdLugU_2FTTmvzgCxmEWA@mail.gmail.com>
- <19731906.ZuIkq4dnIL@pc-42>
-In-Reply-To: <19731906.ZuIkq4dnIL@pc-42>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 17:37:38 +0200
-Message-ID: <CAPDyKFpbZypaLVmE2J+rGzAXgdWp1koD8pRxBKo3kFK3NDTFWw@mail.gmail.com>
-Subject: Re: [PATCH v7 08/24] wfx: add bus_sdio.c
-To:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sept 2021 at 18:51, J=C3=A9r=C3=B4me Pouiller
-<jerome.pouiller@silabs.com> wrote:
->
-> Hello Ulf,
->
-> On Thursday 30 September 2021 12:07:55 CEST Ulf Hansson wrote:
-> > On Mon, 20 Sept 2021 at 18:12, Jerome Pouiller
-> > <Jerome.Pouiller@silabs.com> wrote:
-> > >
-> > > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > >
-> > > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > > ---
-> > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 261 +++++++++++++++++++=
-++
-> > >  1 file changed, 261 insertions(+)
-> > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > >
-> > > diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net=
-/wireless/silabs/wfx/bus_sdio.c
-> >
-> > [...]
-> >
-> > > +
-> > > +static int wfx_sdio_probe(struct sdio_func *func,
-> > > +                         const struct sdio_device_id *id)
-> > > +{
-> > > +       struct device_node *np =3D func->dev.of_node;
-> > > +       struct wfx_sdio_priv *bus;
-> > > +       int ret;
-> > > +
-> > > +       if (func->num !=3D 1) {
-> > > +               dev_err(&func->dev, "SDIO function number is %d while=
- it should always be 1 (unsupported chip?)\n",
-> > > +                       func->num);
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       bus =3D devm_kzalloc(&func->dev, sizeof(*bus), GFP_KERNEL);
-> > > +       if (!bus)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       if (!np || !of_match_node(wfx_sdio_of_match, np)) {
-> > > +               dev_warn(&func->dev, "no compatible device found in D=
-T\n");
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       bus->func =3D func;
-> > > +       bus->of_irq =3D irq_of_parse_and_map(np, 0);
-> > > +       sdio_set_drvdata(func, bus);
-> > > +       func->card->quirks |=3D MMC_QUIRK_LENIENT_FN0 |
-> > > +                             MMC_QUIRK_BLKSZ_FOR_BYTE_MODE |
-> > > +                             MMC_QUIRK_BROKEN_BYTE_MODE_512;
-> >
-> > I would rather see that you add an SDIO_FIXUP for the SDIO card, to
-> > the sdio_fixup_methods[], in drivers/mmc/core/quirks.h, instead of
-> > this.
->
-> In the current patch, these quirks are applied only if the device appears
-> in the device tree (see the condition above). If I implement them in
-> drivers/mmc/core/quirks.h they will be applied as soon as the device is
-> detected. Is it what we want?
->
-> Note: we already have had a discussion about the strange VID/PID declared
-> by this device:
->   https://www.spinics.net/lists/netdev/msg692577.html
+On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 74dde635df40..7c46747f6865 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9899,11 +9899,16 @@ static void kvm_save_current_fpu(struct fpu *fpu)
+>  	 * KVM does not support dynamic user states yet. Assume the buffer
+>  	 * always has the minimum size.
+>  	 */
+> -	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> +	if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
+>  		memcpy(fpu->state, current->thread.fpu.state,
+>  		       fpu_buf_cfg.min_size);
 
-Please, see my other reply to Pali.
+What happens with the rest of the state?
 
->
->
-> [...]
-> > > +
-> > > +static const struct sdio_device_id wfx_sdio_ids[] =3D {
-> > > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF=
-200) },
-> > > +       { },
-> > > +};
-> > > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
-> > > +
-> > > +struct sdio_driver wfx_sdio_driver =3D {
-> > > +       .name =3D "wfx-sdio",
-> > > +       .id_table =3D wfx_sdio_ids,
-> > > +       .probe =3D wfx_sdio_probe,
-> > > +       .remove =3D wfx_sdio_remove,
-> > > +       .drv =3D {
-> > > +               .owner =3D THIS_MODULE,
-> > > +               .of_match_table =3D wfx_sdio_of_match,
-> >
-> > Is there no power management? Or do you intend to add that on top?
->
-> It seems we already have had this discussion:
->
->   https://lore.kernel.org/netdev/CAPDyKFqJf=3DvUqpQg3suDCadKrFTkQWFTY_qp=
-=3D+yDK=3D_Lu9gJGg@mail.gmail.com/#r
->
-> In this thread, Kalle said:
-> > Many mac80211 drivers do so that the device is powered off during
-> > interface down (ifconfig wlan0 down), and as mac80211 does interface
-> > down automatically during suspend, suspend then works without extra
-> > handlers.
+> -	else
+> +	} else {
+> +		struct fpu *src_fpu = &current->thread.fpu;
+> +
+> +		if (fpu->state_mask != src_fpu->state_mask)
+> +			fpu->state_mask = src_fpu->state_mask;
 
-Yeah, it's been a while since I looked at this, thanks for the pointer.
+What guarantees that the state size of @fpu is big enough when src_fpu
+has dynamic features included?
 
-[...]
+>  		save_fpregs_to_fpstate(fpu);
 
-Kind regards
-Uffe
+Thanks,
+
+        tglx
