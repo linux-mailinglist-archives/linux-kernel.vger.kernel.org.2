@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E4241E5F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1BF41E5FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351589AbhJACQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 22:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        id S1351573AbhJACV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 22:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhJACP7 (ORCPT
+        with ESMTP id S230260AbhJACV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 22:15:59 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5D6C06176A;
-        Thu, 30 Sep 2021 19:14:16 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id i132so7843988qke.1;
-        Thu, 30 Sep 2021 19:14:16 -0700 (PDT)
+        Thu, 30 Sep 2021 22:21:58 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1A0C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:20:15 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k23so5527624pji.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:20:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=GGYmwF1xgvF65xSTVkI/nNSL56SSFjAntwY9/8+7ZqI=;
-        b=QC8TwvSsowygfb8A/LjLjXaZf0ipGHDfyqReMGZ5VR3X+rW9ozE37Ob3MdTtipmlWQ
-         +bZyqKC7R2+T/AoEmHEYPYMdY89gXzX5kH7fF43glbIuCL5+a5OXE0i9B1/oQMqU+N7T
-         /W/WR6p78fdA9X6mPW+PEILw0IHwnXHRsPYmc0ITBvvYA0WvTPV+zH+a4i6NMoPzfhJJ
-         mUiuqkXjInPHqnNeqBBCv+GLbyBjcLIjVaW10Mh/aqO6m1kNblACB4H56NZVb1CpknIQ
-         WgLMcpWfdC7u3FpP04/YIWNoZGnSvCo3QmGGcVXvzLQn/JXPh/HnJwM08kNCmoLEBO5f
-         eVqQ==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1v7bfhbOYS9QQdwJ+dS1BX8nNt2lEyswi+C4uaCxgo=;
+        b=MCfltqqpgRZMipzrqKNzE4TCzkTYOE432mzaARuP6ZAPdOOvgGLlpUvdiffi7khzpY
+         r5ytcuFoPT7QP1M4OkD8d4AAlvn+vL0MyimnfkqRJhaR81vcmlu24dPrEc+YtKAlQybA
+         7uURmtuUtHfa/Nr7Epu3ozIGiZBUv0ryceNZpKerlCXqf9QNQpSj9B83sEeRR3HGje2V
+         ccammWBDCWeMLsP2DpIOuH4BWPqRZiqqTRMGUl6o6QVUfFIn9+Kh4TihdfnVd9FVq5xA
+         pfY/wl98KGZ2b/jqHOnCN5/hR5tIVmL9HTa0U3Dihde1AMTPm61wVlHLUYFEkJnvJlU6
+         RSGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GGYmwF1xgvF65xSTVkI/nNSL56SSFjAntwY9/8+7ZqI=;
-        b=yZa61KU/fO3HMpH+ReJQ6Wgz6UxzXCiqzf+ut6zURXh6kxBejVoMwYVJwomqJ8vlvS
-         3SkPKa51J24ZMv2F8sP5ueq6fVFAEslGjjgBBKi6G1O/OfxT8pAtgqFTiPXoPVgJkWne
-         owil1Hu0x8mtKzD+i8b/A/xgTTl5fkxplXieOCSEDmmRB83AK0XqTKrvWupHDJwGcEio
-         Wc0hSsnyBFfeLq5OiDoEadTGi8EDmCrGGW9NgoHkxg9HwbbpuO/a2qUBd5uU3AnA1Ak5
-         UaB5yLOgLQtfbHxYQjkLZNXe5PsZOFwz9ZGBHIS/pD1WcVIELG29EklbeGxCwevATcXG
-         6d/g==
-X-Gm-Message-State: AOAM5311/oJilUctHWoBvWxvKK4dwx6BvFKQIwFTi2syMQ1oZRhkIu/N
-        zBBG6ap/pGzC+09gfp4qELlKvuefEpA=
-X-Google-Smtp-Source: ABdhPJyvUWDCqjPpydCaCo3HekY6oOalFE3yBX0FulOOBPSO0SIW/JXOrcHtfr2OlMfvTU9J/WlP3A==
-X-Received: by 2002:a37:8883:: with SMTP id k125mr7387822qkd.458.1633054455347;
-        Thu, 30 Sep 2021 19:14:15 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:d9af:6c0e:ad27:8053? ([2600:1700:dfe0:49f0:d9af:6c0e:ad27:8053])
-        by smtp.gmail.com with ESMTPSA id w9sm2337475qki.80.2021.09.30.19.14.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 19:14:14 -0700 (PDT)
-Message-ID: <91eb5d7e-b62c-45e6-16a3-1d9c1c780c7b@gmail.com>
-Date:   Thu, 30 Sep 2021 19:14:13 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1v7bfhbOYS9QQdwJ+dS1BX8nNt2lEyswi+C4uaCxgo=;
+        b=MuyNUIaOFeiHgBWfnp3V4hEs+Z6+zU9D3PSQ46Ldhr8yiwi0Xw3KjCHMjap9bO9OFR
+         xkqCs5oGS+MYYKMtY57LLF7ww9yXp0gEWWSLxmyTRKS11VvVSta01AzjTrsM4aJmVrST
+         4q3Zu0nbeHpdTbGzUpT4OLjgmQKzhrZ6zHVnXnoncISFSiIXrNuzcknsWD6DBtmREJTk
+         PB6Idw+ufqacrEmv+iRgdL7ch7Q0BNdd67PYPA58zLh0LtbTj4Y/yekTvwqAqp/nbXHQ
+         oeHIsf4O68hK+56IGyh7iyk0Zzz7WDZLjqyFVvyjoQ3RpVfz1Cc+W5IjbUygPS8yRiud
+         4UJw==
+X-Gm-Message-State: AOAM530l5+XwH8b6Iv+/5BQwJJVJRD7D3tkABxIkBjRzDZ3+gi1rgttW
+        GepNzGJvxPKP4JSxBUrh3nHRhtmd9gqNpKAoyNzBRg==
+X-Google-Smtp-Source: ABdhPJw3+LICXsBfSEFCKXlafRA7xXZxwrcD4LdHbM7zaf1EyXu36rjRKL9bEqMGIfW1AeETHE+7h0w47T6Gie9PJI0=
+X-Received: by 2002:a17:902:8a97:b0:13e:6e77:af59 with SMTP id
+ p23-20020a1709028a9700b0013e6e77af59mr5975436plo.4.1633054814608; Thu, 30 Sep
+ 2021 19:20:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [RFC PATCH net-next] drivers: net: dsa: qca8k: convert to
- GENMASK/FIELD_PREP/FIELD_GET
-Content-Language: en-US
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211001013729.21849-1-ansuelsmth@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211001013729.21849-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065807-mutt-send-email-mst@kernel.org> <YVXBNJ431YIWwZdQ@kroah.com>
+ <20210930144305.GA464826@rowland.harvard.edu> <20210930104924-mutt-send-email-mst@kernel.org>
+ <20210930153509.GF464826@rowland.harvard.edu> <20210930115243-mutt-send-email-mst@kernel.org>
+ <00156941-300d-a34a-772b-17f0a9aad885@linux.intel.com> <20210930204447.GA482974@rowland.harvard.edu>
+ <CAPcyv4j8DvsMYppRtm=+JQWc7nJGoXeAGGz9U150x0p_KekqcA@mail.gmail.com> <20211001014114.GB489012@rowland.harvard.edu>
+In-Reply-To: <20211001014114.GB489012@rowland.harvard.edu>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 30 Sep 2021 19:20:04 -0700
+Message-ID: <CAPcyv4iRo0Hd=_3jAScb5KUEJp3bU=QrWM8FYeb94SzO4gqgJA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
+ un-authorized devices
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 6:41 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Thu, Sep 30, 2021 at 01:52:59PM -0700, Dan Williams wrote:
+> > On Thu, Sep 30, 2021 at 1:44 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> > >
+> > > On Thu, Sep 30, 2021 at 12:23:36PM -0700, Andi Kleen wrote:
+> > > >
+> > > > > I don't think the current mitigations under discussion here are about
+> > > > > keeping the system working. In fact most encrypted VM configs tend to
+> > > > > stop booting as a preferred way to handle security issues.
+> > > >
+> > > > Maybe we should avoid the "trusted" term here. We're only really using it
+> > > > because USB is using it and we're now using a common framework like Greg
+> > > > requested. But I don't think it's the right way to think about it.
+> > > >
+> > > > We usually call the drivers "hardened". The requirement for a hardened
+> > > > driver is that all interactions through MMIO/port/config space IO/MSRs are
+> > > > sanitized and do not cause memory safety issues or other information leaks.
+> > > > Other than that there is no requirement on the functionality. In particular
+> > > > DOS is ok since a malicious hypervisor can decide to not run the guest at
+> > > > any time anyways.
+> > > >
+> > > > Someone loading an malicious driver inside the guest would be out of scope.
+> > > > If an attacker can do that inside the guest you already violated the
+> > > > security mechanisms and there are likely easier ways to take over the guest
+> > > > or leak data.
+> > > >
+> > > > The goal of the device filter mechanism is to prevent loading unhardened
+> > > > drivers that could be exploited without them being themselves malicious.
+> > >
+> > > If all you want to do is prevent someone from loading a bunch of
+> > > drivers that you have identified as unhardened, why not just use a
+> > > modprobe blacklist?  Am I missing something?
+> >
+> > modules != drivers (i.e. multi-driver modules are a thing) and builtin
+> > modules do not adhere to modprobe policy.
+> >
+> > There is also a desire to be able to support a single kernel image
+> > across hosts and guests. So, if you were going to say, "just compile
+> > all unnecessary drivers as modules" that defeats the common kernel
+> > image goal. For confidential computing the expectation is that the
+> > necessary device set is small. As you can see in the patches in this
+> > case it's just a few lines of PCI ids and a hack to the virtio bus to
+> > achieve the goal of disabling all extraneous devices by default.
+>
+>
+>
+> If your goal is to prevent some unwanted _drivers_ from operating --
+> or all but a few desired drivers, as the case may be -- why extend
+> the "authorized" API to all _devices_?  Why not instead develop a
+> separate API (but of similar form) for drivers?
+>
+> Wouldn't that make more sense?  It corresponds a lot more directly
+> with what you say you want to accomplish.
 
+This was v1. v1 was NAKd [1] [2]:
 
-On 9/30/2021 6:37 PM, Ansuel Smith wrote:
-> Convert and try to standardize bit fields using
-> GENMASK/FIELD_PREP/FIELD_GET macros. Rework some logic to support the
-> standard macro and tidy things up. No functional change intended.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
-> 
-> I still need to test this in every part but I would like to have some
-> approval about this kind of change. Also there are tons of warning by
-> checkpatch about too long line... Are they accepted for headers? I can't
-> really find another way to workaround the problem as reducing the define
-> name would make them less descriptive.
-> Aside from that I did the conversion as carefully as possible so in
-> theory nothing should be broken and the conversion should be all
-> correct. Some real improvement by using filed macro are in the
-> fdb_read/fdb_write that now are much more readable.
+[1]: https://lore.kernel.org/all/YQwpa+LAYt7YZ5dh@kroah.com/
+[2]: https://lore.kernel.org/all/YQzDqm6FOezM6Rnu@kroah.com/
 
-My main concern is that it is going to be a tad harder to back port 
-fixes made to this driver with such changes in place, so unfortunately 
-it is usually a matter of either the initial version of the driver use 
-BIT(), FIELD_{PREP,GET} and GENMASK, or the very few commits following 
-the initial commit take care of that, and then it is all rosy for 
-everyone, or else it may be complicated.
+> What would you do in the theoretical case where two separate drivers
+> can manage the same device, but one of them is desired (or hardened)
+> and the other isn't?
 
-You are one of the active contributors to this driver, so ultimately you 
-should decide.
--- 
-Florian
+Allow for user override, just like we do today for new_id, remove_id,
+bind, and unbind  when default driver policy is insufficient.
+
+echo 1 > /sys/bus/$bus/devices/$device/authorized
+echo $device > /sys/bus/$bus/drivers/$desired_driver/bind
+
+The device filter is really only necessary to bootstrap until you can
+run override policy scripts. The driver firewall approach was overkill
+in that regard.
