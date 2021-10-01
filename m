@@ -2,316 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9464241EB45
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96FE41EB4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353688AbhJAK7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:59:44 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55254 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353421AbhJAK7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:59:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="247957392"
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="247957392"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 03:57:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="564892585"
-Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 03:57:58 -0700
-Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mWGEn-000163-NG; Fri, 01 Oct 2021 10:57:57 +0000
-Date:   Fri, 01 Oct 2021 18:57:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.09.16a] BUILD SUCCESS
- caa7c63eaf761874b766ef8f123114e80a23619c
-Message-ID: <6156e99c.EOvL4j0paiqq4TyX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1353705AbhJALCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:02:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44346 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353693AbhJALB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:01:58 -0400
+Received: from [IPv6:2a02:810a:880:f54:dd31:3048:d332:54e2] (unknown [IPv6:2a02:810a:880:f54:dd31:3048:d332:54e2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 679911F4554A;
+        Fri,  1 Oct 2021 12:00:12 +0100 (BST)
+Subject: Re: [PATCH v10, 2/5] drm/mediatek: add component POSTMASK
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
+References: <20210930155222.5861-1-yongqiang.niu@mediatek.com>
+ <20210930155222.5861-3-yongqiang.niu@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <fffdc65c-9c74-3183-f8cf-293134144042@collabora.com>
+Date:   Fri, 1 Oct 2021 13:00:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20210930155222.5861-3-yongqiang.niu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.09.16a
-branch HEAD: caa7c63eaf761874b766ef8f123114e80a23619c  EXP rcu-tasks: Don't remove tasks with pending IPIs from holdout list
 
-elapsed time: 1317m
 
-configs tested: 253
-configs skipped: 47
+On 30.09.21 17:52, Yongqiang Niu wrote:
+> This patch add component POSTMASK.
+> 
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 102 ++++++++++++++------
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   1 +
+>   2 files changed, 73 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> index 4a2abcf3e5f9..89170ad825fd 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -62,6 +62,12 @@
+>   #define DITHER_ADD_LSHIFT_G(x)			(((x) & 0x7) << 4)
+>   #define DITHER_ADD_RSHIFT_G(x)			(((x) & 0x7) << 0)
+>   
+> +#define DISP_POSTMASK_EN			0x0000
+> +#define POSTMASK_EN					BIT(0)
+> +#define DISP_POSTMASK_CFG			0x0020
+> +#define POSTMASK_RELAY_MODE				BIT(0)
+> +#define DISP_POSTMASK_SIZE			0x0030
+> +
+>   struct mtk_ddp_comp_dev {
+>   	struct clk *clk;
+>   	void __iomem *regs;
+> @@ -214,6 +220,32 @@ static void mtk_dither_stop(struct device *dev)
+>   	writel_relaxed(0x0, priv->regs + DISP_DITHER_EN);
+>   }
+>   
+> +static void mtk_postmask_config(struct device *dev, unsigned int w,
+> +				unsigned int h, unsigned int vrefresh,
+> +				unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
+> +{
+> +	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
+> +
+> +	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs,
+> +		      DISP_POSTMASK_SIZE);
+> +	mtk_ddp_write(cmdq_pkt, POSTMASK_RELAY_MODE, &priv->cmdq_reg,
+> +		      priv->regs, DISP_POSTMASK_CFG);
+> +}
+> +
+> +static void mtk_postmask_start(struct device *dev)
+> +{
+> +	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
+> +
+> +	writel(POSTMASK_EN, priv->regs + DISP_POSTMASK_EN);
+> +}
+> +
+> +static void mtk_postmask_stop(struct device *dev)
+> +{
+> +	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
+> +
+> +	writel_relaxed(0x0, priv->regs + DISP_POSTMASK_EN);
+> +}
+> +
+>   static const struct mtk_ddp_comp_funcs ddp_aal = {
+>   	.clk_enable = mtk_aal_clk_enable,
+>   	.clk_disable = mtk_aal_clk_disable,
+> @@ -289,6 +321,14 @@ static const struct mtk_ddp_comp_funcs ddp_ovl = {
+>   	.bgclr_in_off = mtk_ovl_bgclr_in_off,
+>   };
+>   
+> +static const struct mtk_ddp_comp_funcs ddp_postmask = {
+> +	.clk_enable = mtk_ddp_clk_enable,
+> +	.clk_disable = mtk_ddp_clk_disable,
+> +	.config = mtk_postmask_config,
+> +	.start = mtk_postmask_start,
+> +	.stop = mtk_postmask_stop,
+> +};
+> +
+>   static const struct mtk_ddp_comp_funcs ddp_rdma = {
+>   	.clk_enable = mtk_rdma_clk_enable,
+>   	.clk_disable = mtk_rdma_clk_disable,
+> @@ -324,6 +364,7 @@ static const char * const mtk_ddp_comp_stem[MTK_DDP_COMP_TYPE_MAX] = {
+>   	[MTK_DISP_MUTEX] = "mutex",
+>   	[MTK_DISP_OD] = "od",
+>   	[MTK_DISP_BLS] = "bls",
+> +	[MTK_DISP_POSTMASK] = "postmask",
+>   };
+>   
+>   struct mtk_ddp_comp_match {
+> @@ -333,36 +374,37 @@ struct mtk_ddp_comp_match {
+>   };
+>   
+>   static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_ID_MAX] = {
+> -	[DDP_COMPONENT_AAL0]	= { MTK_DISP_AAL,	0, &ddp_aal },
+> -	[DDP_COMPONENT_AAL1]	= { MTK_DISP_AAL,	1, &ddp_aal },
+> -	[DDP_COMPONENT_BLS]	= { MTK_DISP_BLS,	0, NULL },
+> -	[DDP_COMPONENT_CCORR]	= { MTK_DISP_CCORR,	0, &ddp_ccorr },
+> -	[DDP_COMPONENT_COLOR0]	= { MTK_DISP_COLOR,	0, &ddp_color },
+> -	[DDP_COMPONENT_COLOR1]	= { MTK_DISP_COLOR,	1, &ddp_color },
+> -	[DDP_COMPONENT_DITHER]	= { MTK_DISP_DITHER,	0, &ddp_dither },
+> -	[DDP_COMPONENT_DPI0]	= { MTK_DPI,		0, &ddp_dpi },
+> -	[DDP_COMPONENT_DPI1]	= { MTK_DPI,		1, &ddp_dpi },
+> -	[DDP_COMPONENT_DSI0]	= { MTK_DSI,		0, &ddp_dsi },
+> -	[DDP_COMPONENT_DSI1]	= { MTK_DSI,		1, &ddp_dsi },
+> -	[DDP_COMPONENT_DSI2]	= { MTK_DSI,		2, &ddp_dsi },
+> -	[DDP_COMPONENT_DSI3]	= { MTK_DSI,		3, &ddp_dsi },
+> -	[DDP_COMPONENT_GAMMA]	= { MTK_DISP_GAMMA,	0, &ddp_gamma },
+> -	[DDP_COMPONENT_OD0]	= { MTK_DISP_OD,	0, &ddp_od },
+> -	[DDP_COMPONENT_OD1]	= { MTK_DISP_OD,	1, &ddp_od },
+> -	[DDP_COMPONENT_OVL0]	= { MTK_DISP_OVL,	0, &ddp_ovl },
+> -	[DDP_COMPONENT_OVL1]	= { MTK_DISP_OVL,	1, &ddp_ovl },
+> -	[DDP_COMPONENT_OVL_2L0]	= { MTK_DISP_OVL_2L,	0, &ddp_ovl },
+> -	[DDP_COMPONENT_OVL_2L1]	= { MTK_DISP_OVL_2L,	1, &ddp_ovl },
+> -	[DDP_COMPONENT_OVL_2L2] = { MTK_DISP_OVL_2L,    2, &ddp_ovl },
+> -	[DDP_COMPONENT_PWM0]	= { MTK_DISP_PWM,	0, NULL },
+> -	[DDP_COMPONENT_PWM1]	= { MTK_DISP_PWM,	1, NULL },
+> -	[DDP_COMPONENT_PWM2]	= { MTK_DISP_PWM,	2, NULL },
+> -	[DDP_COMPONENT_RDMA0]	= { MTK_DISP_RDMA,	0, &ddp_rdma },
+> -	[DDP_COMPONENT_RDMA1]	= { MTK_DISP_RDMA,	1, &ddp_rdma },
+> -	[DDP_COMPONENT_RDMA2]	= { MTK_DISP_RDMA,	2, &ddp_rdma },
+> -	[DDP_COMPONENT_UFOE]	= { MTK_DISP_UFOE,	0, &ddp_ufoe },
+> -	[DDP_COMPONENT_WDMA0]	= { MTK_DISP_WDMA,	0, NULL },
+> -	[DDP_COMPONENT_WDMA1]	= { MTK_DISP_WDMA,	1, NULL },
+> +	[DDP_COMPONENT_AAL0]		= { MTK_DISP_AAL,	0, &ddp_aal },
+> +	[DDP_COMPONENT_AAL1]		= { MTK_DISP_AAL,	1, &ddp_aal },
+> +	[DDP_COMPONENT_BLS]		= { MTK_DISP_BLS,	0, NULL },
+> +	[DDP_COMPONENT_CCORR]		= { MTK_DISP_CCORR,	0, &ddp_ccorr },
+> +	[DDP_COMPONENT_COLOR0]		= { MTK_DISP_COLOR,	0, &ddp_color },
+> +	[DDP_COMPONENT_COLOR1]		= { MTK_DISP_COLOR,	1, &ddp_color },
+> +	[DDP_COMPONENT_DITHER]		= { MTK_DISP_DITHER,	0, &ddp_dither },
+> +	[DDP_COMPONENT_DPI0]		= { MTK_DPI,		0, &ddp_dpi },
+> +	[DDP_COMPONENT_DPI1]		= { MTK_DPI,		1, &ddp_dpi },
+> +	[DDP_COMPONENT_DSI0]		= { MTK_DSI,		0, &ddp_dsi },
+> +	[DDP_COMPONENT_DSI1]		= { MTK_DSI,		1, &ddp_dsi },
+> +	[DDP_COMPONENT_DSI2]		= { MTK_DSI,		2, &ddp_dsi },
+> +	[DDP_COMPONENT_DSI3]		= { MTK_DSI,		3, &ddp_dsi },
+> +	[DDP_COMPONENT_GAMMA]		= { MTK_DISP_GAMMA,	0, &ddp_gamma },
+> +	[DDP_COMPONENT_OD0]		= { MTK_DISP_OD,	0, &ddp_od },
+> +	[DDP_COMPONENT_OD1]		= { MTK_DISP_OD,	1, &ddp_od },
+> +	[DDP_COMPONENT_OVL0]		= { MTK_DISP_OVL,	0, &ddp_ovl },
+> +	[DDP_COMPONENT_OVL1]		= { MTK_DISP_OVL,	1, &ddp_ovl },
+> +	[DDP_COMPONENT_OVL_2L0]		= { MTK_DISP_OVL_2L,	0, &ddp_ovl },
+> +	[DDP_COMPONENT_OVL_2L1]		= { MTK_DISP_OVL_2L,	1, &ddp_ovl },
+> +	[DDP_COMPONENT_OVL_2L2]		= { MTK_DISP_OVL_2L,    2, &ddp_ovl },
+> +	[DDP_COMPONENT_POSTMASK0]	= { MTK_DISP_POSTMASK,	0, &ddp_postmask },
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi, I can't see where is DDP_COMPONENT_POSTMASK0 defined.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20211001
-i386                 randconfig-c001-20210930
-powerpc              randconfig-c003-20210930
-arm                         s3c6400_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                   secureedge5410_defconfig
-m68k                         amcore_defconfig
-sh                            shmin_defconfig
-mips                     loongson2k_defconfig
-arm                       imx_v6_v7_defconfig
-mips                         mpc30x_defconfig
-mips                          rb532_defconfig
-arm                     eseries_pxa_defconfig
-sh                   sh7770_generic_defconfig
-x86_64                              defconfig
-mips                        vocore2_defconfig
-arm                        spear3xx_defconfig
-sh                           se7722_defconfig
-alpha                            alldefconfig
-arm                           h3600_defconfig
-arm                          ep93xx_defconfig
-sh                                  defconfig
-riscv                            alldefconfig
-powerpc                      cm5200_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                     kilauea_defconfig
-sh                          rsk7264_defconfig
-ia64                                defconfig
-mips                           xway_defconfig
-mips                      bmips_stb_defconfig
-arm                          exynos_defconfig
-riscv             nommu_k210_sdcard_defconfig
-xtensa                              defconfig
-mips                          ath79_defconfig
-microblaze                          defconfig
-powerpc                 linkstation_defconfig
-i386                                defconfig
-arm                       mainstone_defconfig
-mips                     loongson1b_defconfig
-powerpc                      ppc64e_defconfig
-sh                           se7780_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      ppc40x_defconfig
-arm                           viper_defconfig
-arm                       imx_v4_v5_defconfig
-arm                           corgi_defconfig
-sh                        sh7763rdp_defconfig
-arm                        magician_defconfig
-mips                          ath25_defconfig
-powerpc                     stx_gp3_defconfig
-mips                         tb0287_defconfig
-powerpc                     powernv_defconfig
-arm                        oxnas_v6_defconfig
-arm                        spear6xx_defconfig
-sh                            titan_defconfig
-sh                             espt_defconfig
-arm                            mmp2_defconfig
-powerpc                        icon_defconfig
-arm                            zeus_defconfig
-sh                           se7724_defconfig
-sparc                            allyesconfig
-arm                   milbeaut_m10v_defconfig
-arm                          iop32x_defconfig
-mips                         cobalt_defconfig
-h8300                       h8s-sim_defconfig
-arm                         bcm2835_defconfig
-arm                            lart_defconfig
-sparc64                             defconfig
-arm                           tegra_defconfig
-m68k                         apollo_defconfig
-powerpc                 mpc8560_ads_defconfig
-mips                     cu1000-neo_defconfig
-mips                        qi_lb60_defconfig
-s390                          debug_defconfig
-sh                         ap325rxa_defconfig
-powerpc                        cell_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      pcm030_defconfig
-powerpc                     mpc83xx_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      tqm8xx_defconfig
-m68k                            q40_defconfig
-arm                  colibri_pxa270_defconfig
-sh                        edosk7705_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         at91_dt_defconfig
-sh                ecovec24-romimage_defconfig
-arm                             ezx_defconfig
-arm                         assabet_defconfig
-m68k                       m5475evb_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     skiroot_defconfig
-ia64                             allmodconfig
-m68k                        m5272c3_defconfig
-sh                              ul2_defconfig
-sh                     magicpanelr2_defconfig
-m68k                        m5307c3_defconfig
-sh                           se7751_defconfig
-ia64                          tiger_defconfig
-arm                          simpad_defconfig
-powerpc                     ep8248e_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     pseries_defconfig
-m68k                        stmark2_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                           u8500_defconfig
-xtensa                       common_defconfig
-arc                        nsimosci_defconfig
-arm                              alldefconfig
-arm                        mvebu_v5_defconfig
-arm                        mvebu_v7_defconfig
-csky                                defconfig
-ia64                             alldefconfig
-mips                        workpad_defconfig
-powerpc                     tqm8541_defconfig
-ia64                             allyesconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                    socrates_defconfig
-um                             i386_defconfig
-sh                        apsh4ad0a_defconfig
-mips                       bmips_be_defconfig
-mips                       lemote2f_defconfig
-powerpc                   motionpro_defconfig
-powerpc                     tqm5200_defconfig
-powerpc64                           defconfig
-x86_64                           alldefconfig
-mips                            e55_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      obs600_defconfig
-ia64                        generic_defconfig
-sh                            hp6xx_defconfig
-powerpc                     redwood_defconfig
-mips                            gpr_defconfig
-arm                       omap2plus_defconfig
-sh                          r7780mp_defconfig
-xtensa                    xip_kc705_defconfig
-arc                         haps_hs_defconfig
-arc                           tb10x_defconfig
-arm                  randconfig-c002-20210930
-x86_64               randconfig-c001-20210930
-x86_64               randconfig-c001-20211001
-arm                  randconfig-c002-20211001
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allmodconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a003-20211001
-x86_64               randconfig-a005-20211001
-x86_64               randconfig-a001-20211001
-x86_64               randconfig-a002-20211001
-x86_64               randconfig-a004-20211001
-x86_64               randconfig-a006-20211001
-x86_64               randconfig-a004-20210930
-x86_64               randconfig-a001-20210930
-x86_64               randconfig-a002-20210930
-x86_64               randconfig-a005-20210930
-x86_64               randconfig-a006-20210930
-x86_64               randconfig-a003-20210930
-i386                 randconfig-a003-20210930
-i386                 randconfig-a001-20210930
-i386                 randconfig-a004-20210930
-i386                 randconfig-a002-20210930
-i386                 randconfig-a006-20210930
-i386                 randconfig-a005-20210930
-i386                 randconfig-a001-20211001
-i386                 randconfig-a003-20211001
-i386                 randconfig-a005-20211001
-i386                 randconfig-a002-20211001
-i386                 randconfig-a004-20211001
-i386                 randconfig-a006-20211001
-arc                  randconfig-r043-20210930
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Thanks,
+Dafna
 
-clang tested configs:
-x86_64               randconfig-c007-20211001
-i386                 randconfig-c001-20211001
-arm                  randconfig-c002-20211001
-s390                 randconfig-c005-20211001
-powerpc              randconfig-c003-20211001
-riscv                randconfig-c006-20211001
-mips                 randconfig-c004-20211001
-i386                 randconfig-c001-20210930
-arm                  randconfig-c002-20210930
-powerpc              randconfig-c003-20210930
-mips                 randconfig-c004-20210930
-s390                 randconfig-c005-20210930
-riscv                randconfig-c006-20210930
-x86_64               randconfig-c007-20210930
-x86_64               randconfig-a015-20210930
-x86_64               randconfig-a011-20210930
-x86_64               randconfig-a012-20210930
-x86_64               randconfig-a013-20210930
-x86_64               randconfig-a016-20210930
-x86_64               randconfig-a014-20210930
-x86_64               randconfig-a015-20211001
-x86_64               randconfig-a012-20211001
-x86_64               randconfig-a016-20211001
-x86_64               randconfig-a014-20211001
-x86_64               randconfig-a013-20211001
-x86_64               randconfig-a011-20211001
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-i386                 randconfig-a013-20211001
-i386                 randconfig-a016-20211001
-i386                 randconfig-a014-20211001
-i386                 randconfig-a012-20211001
-i386                 randconfig-a011-20211001
-i386                 randconfig-a015-20211001
-riscv                randconfig-r042-20210930
-hexagon              randconfig-r041-20210930
-s390                 randconfig-r044-20210930
-hexagon              randconfig-r045-20210930
-hexagon              randconfig-r045-20211001
-hexagon              randconfig-r041-20211001
-s390                 randconfig-r044-20211001
-riscv                randconfig-r042-20211001
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +	[DDP_COMPONENT_PWM0]		= { MTK_DISP_PWM,	0, NULL },
+> +	[DDP_COMPONENT_PWM1]		= { MTK_DISP_PWM,	1, NULL },
+> +	[DDP_COMPONENT_PWM2]		= { MTK_DISP_PWM,	2, NULL },
+> +	[DDP_COMPONENT_RDMA0]		= { MTK_DISP_RDMA,	0, &ddp_rdma },
+> +	[DDP_COMPONENT_RDMA1]		= { MTK_DISP_RDMA,	1, &ddp_rdma },
+> +	[DDP_COMPONENT_RDMA2]		= { MTK_DISP_RDMA,	2, &ddp_rdma },
+> +	[DDP_COMPONENT_UFOE]		= { MTK_DISP_UFOE,	0, &ddp_ufoe },
+> +	[DDP_COMPONENT_WDMA0]		= { MTK_DISP_WDMA,	0, NULL },
+> +	[DDP_COMPONENT_WDMA1]		= { MTK_DISP_WDMA,	1, NULL },
+>   };
+>   
+>   static bool mtk_drm_find_comp_in_ddp(struct device *dev,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> index bb914d976cf5..cd1dec6b4cdf 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> @@ -30,6 +30,7 @@ enum mtk_ddp_comp_type {
+>   	MTK_DISP_UFOE,
+>   	MTK_DSI,
+>   	MTK_DPI,
+> +	MTK_DISP_POSTMASK,
+>   	MTK_DISP_PWM,
+>   	MTK_DISP_MUTEX,
+>   	MTK_DISP_OD,
+> 
