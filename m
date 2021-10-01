@@ -2,100 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875BB41ED32
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E7141ED3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhJAMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhJAMRM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:17:12 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF61C061775;
-        Fri,  1 Oct 2021 05:15:26 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id x124so11163576oix.9;
-        Fri, 01 Oct 2021 05:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TjUVHTJjAzGJMmv8jrIbahfJghLiBpbmkBoQ41RcfXk=;
-        b=cIk8P8Q5SliLeEO+YVlkoDVHv0nUGkSMFLyyfRIZtICkdHP6VEX47pgNk6fJWCzRVn
-         f3ZhDOPQp+B8/WFdxqxJV9kmlSFkmjvxqmwh33tAylTndgz6DWXdAx6CzAfW82auoe7h
-         AJp+XR6TShc27ZABZsc7tena62g1rEwcOFFPVszrY85DuyMrHWxUDd+ug/qFVcCc1OyF
-         3PitOdY7PAhRQUJVc8+p9uJxTEWnzwyNYMgufdpZ4DgZiq0GeGx5vLQSHC23Js+3CKtB
-         3B1nP8nGLduT81FrJ3qYSOORY6lfkIXPV4URDSG34TQSDVGeSogdfdmlOkLSJWfgbnK2
-         qBig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=TjUVHTJjAzGJMmv8jrIbahfJghLiBpbmkBoQ41RcfXk=;
-        b=GuR7LBK+zTfdkVzXoct8xUHCAiWh1vvdajR3HTzQyFb3r4wXuGF765c/hcjIw7F+U9
-         VayU8rG3V9DuVQjfWV9HjbKEFhG000yWFgxy11044hpmMe3DfNt0AdHtU7rKx+j+MxHc
-         g9sSQbTgEao8aQZLagQF7s9fyTZv4EkY1aP0Ldf6K4ySP9d2hw1keF6p1JCMVX5ajQxT
-         Q4mMHwFAkp/F25k+3bsPH+nhNahwNrva42si0TVpDPirHQZ+8HzEVzo9/gvEUj0g4cxJ
-         BB/gSc/rgIOfrQ2YPUq+MKCBnFfSuDJ9S3eN4GZBzyaa1bt3DwSshyB7Ybp9WnGimP+V
-         wdkQ==
-X-Gm-Message-State: AOAM532bmUU3S5eTy7FTRa/eThIxI0a1Gui6TpCEbaIJOSdNFP0HUn2X
-        6ddftiw62FO/CX/PRXgTLL3Lcf4hpw==
-X-Google-Smtp-Source: ABdhPJwlRTl/hZyr75BIi48UKqOsdWLpP2HpniDc44cZAoz2jDLHrGqStrVC1OLRZSqx1yZVxr3vMQ==
-X-Received: by 2002:a05:6808:17a4:: with SMTP id bg36mr3729514oib.49.1633090525804;
-        Fri, 01 Oct 2021 05:15:25 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id k3sm243224otn.16.2021.10.01.05.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 05:15:23 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:dcd4:c733:b801:5a91])
-        by serve.minyard.net (Postfix) with ESMTPSA id 3CA6E1800EF;
-        Fri,  1 Oct 2021 12:15:22 +0000 (UTC)
-Date:   Fri, 1 Oct 2021 07:15:21 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Corey Minyard <cminyard@mvista.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the ipmi tree
-Message-ID: <20211001121521.GP5419@minyard.net>
-Reply-To: minyard@acm.org
-References: <20211001125248.30adbdf3@canb.auug.org.au>
+        id S1354311AbhJAMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:20:23 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:10336 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230498AbhJAMUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:20:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633090718; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=f/2eL919u3xkJmcRONnoLnVQIj2Az0TQ9zKpjUlTIQM=; b=R3tEch6uxXQEbDsKb25ULVG3vxOF+GrszssFOkXgpUDVqmOg1UwXDfEKZdMt24jofgdCBJcn
+ MetufVImxTmKj+RPv5nyc36hn99CowBtfvQmXZ6hS4No19rIQzIJx/MpOAdug09rORxIIuI0
+ 5AtRSXUJ3PrBOaGP0+0lqNu0eW4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6156fc8447d64efb6d54ab4c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 12:18:12
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 96070C4361C; Fri,  1 Oct 2021 12:18:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0C26C43460;
+        Fri,  1 Oct 2021 12:18:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B0C26C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-6-Jerome.Pouiller@silabs.com>
+        <87y27dkslb.fsf@codeaurora.org> <2723787.uDASXpoAWK@pc-42>
+Date:   Fri, 01 Oct 2021 15:18:04 +0300
+In-Reply-To: <2723787.uDASXpoAWK@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
+ Pouiller"'s message of "Fri,
+        01 Oct 2021 11:44:17 +0200")
+Message-ID: <87k0ixj5vn.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001125248.30adbdf3@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 12:52:48PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the ipmi tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> drivers/char/ipmi/ipmi_msghandler.c: In function 'bmc_device_id_handler':
-> drivers/char/ipmi/ipmi_msghandler.c:2376:3: error: label 'out' used but not defined
->  2376 |   goto out;
->       |   ^~~~
+J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-I botched a cherry pick, it should be fixed now.  Sorry about that.
+> On Friday 1 October 2021 11:22:08 CEST Kalle Valo wrote:
+>> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+>>=20
+>> > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>> >
+>> > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>>=20
+>> [...]
+>>=20
+>> > +/* The device needs data about the antenna configuration. This inform=
+ation in
+>> > + * provided by PDS (Platform Data Set, this is the wording used in WF=
+200
+>> > + * documentation) files. For hardware integrators, the full process t=
+o create
+>> > + * PDS files is described here:
+>> > + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/README=
+.md
+>> > + *
+>> > + * So this function aims to send PDS to the device. However, the PDS =
+file is
+>> > + * often bigger than Rx buffers of the chip, so it has to be sent in =
+multiple
+>> > + * parts.
+>> > + *
+>> > + * In add, the PDS data cannot be split anywhere. The PDS files conta=
+ins tree
+>> > + * structures. Braces are used to enter/leave a level of the tree (in=
+ a JSON
+>> > + * fashion). PDS files can only been split between root nodes.
+>> > + */
+>> > +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
+>> > +{
+>> > +     int ret;
+>> > +     int start, brace_level, i;
+>> > +
+>> > +     start =3D 0;
+>> > +     brace_level =3D 0;
+>> > +     if (buf[0] !=3D '{') {
+>> > + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
+>> > compress it?\n");
+>> > +             return -EINVAL;
+>> > +     }
+>> > +     for (i =3D 1; i < len - 1; i++) {
+>> > +             if (buf[i] =3D=3D '{')
+>> > +                     brace_level++;
+>> > +             if (buf[i] =3D=3D '}')
+>> > +                     brace_level--;
+>> > +             if (buf[i] =3D=3D '}' && !brace_level) {
+>> > +                     i++;
+>> > +                     if (i - start + 1 > WFX_PDS_MAX_SIZE)
+>> > +                             return -EFBIG;
+>> > +                     buf[start] =3D '{';
+>> > +                     buf[i] =3D 0;
+>> > +                     dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + sta=
+rt);
+>> > +                     buf[i] =3D '}';
+>> > +                     ret =3D hif_configuration(wdev, buf + start,
+>> > +                                             i - start + 1);
+>> > +                     if (ret > 0) {
+>> > + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
+>> > options?)\n",
+>> > +                                     start, i);
+>> > +                             return -EINVAL;
+>> > +                     }
+>> > +                     if (ret =3D=3D -ETIMEDOUT) {
+>> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupted
+>> > file?)\n",
+>> > +                                     start, i);
+>> > +                             return ret;
+>> > +                     }
+>> > +                     if (ret) {
+>> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
+>> > error\n",
+>> > +                                     start, i);
+>> > +                             return -EIO;
+>> > +                     }
+>> > +                     buf[i] =3D ',';
+>> > +                     start =3D i;
+>> > +             }
+>> > +     }
+>> > +     return 0;
+>> > +}
+>>=20
+>> I'm not really fond of having this kind of ASCII based parser in the
+>> kernel. Do you have an example compressed file somewhere?
+>
+> An example of uncompressed configuration file can be found here[1]. Once
+> compressed with [2], you get:
+>
+>     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B},c:{a:=
+4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f:{a:4,b=
+:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a:4,b:0,=
+c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,b:0,c:0=
+,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:{a:6},e=
+:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0,0]},{a=
+:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},{a:B,b:=
+[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{a:0,b:0=
+}}
 
-Thanks for the work you do.
+So what's the grand idea with this braces format? I'm not getting it.
 
--corey
+Usually the drivers just consider this kind of firmware configuration
+data as a binary blob and dump it to the firmware, without knowing what
+the data contains. Can't you do the same?
 
-> 
-> Caused by commit
-> 
->   2d7a6d8467f9 ("ipmi: Check error code before processing BMC response")
-> 
-> I have used the ipmi tree from next-20210930 for today.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+>> Does the device still work without these PDS files? I ask because my
+>> suggestion is to remove this part altogether and revisit after the
+>> initial driver is moved to drivers/net/wireless. A lot simpler to review
+>> complex features separately.
+>
+> I think we will be able to communicate with the chip. However, the chip w=
+on't
+> have any antenna parameters. Thus, I think the RF won't work properly.
 
+RF not working properly is bad, so we can't drop PDS files for now. Too
+bad, it would have been so much faster if we would not need to worry
+about PDS files during review.
 
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
