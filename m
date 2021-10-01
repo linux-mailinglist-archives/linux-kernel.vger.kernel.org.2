@@ -2,99 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC55F41F2BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3486441F2C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhJARQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:16:18 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:64554 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhJARQQ (ORCPT
+        id S1353235AbhJARQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231622AbhJARQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:16:16 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id f0a72af3e010e61d; Fri, 1 Oct 2021 19:14:30 +0200
-Received: from kreacher.localnet (unknown [213.134.175.164])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 229CF66A686;
-        Fri,  1 Oct 2021 19:14:29 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-Subject: [PATCH] thermal: Update information in MAINTAINERS
-Date:   Fri, 01 Oct 2021 19:14:28 +0200
-Message-ID: <11859976.O9o76ZdvQC@kreacher>
+        Fri, 1 Oct 2021 13:16:32 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FC1C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:14:48 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u18so41643467lfd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0XGy+GRK48SGGxR1ZCE+Ciu2OxM1nuqOBwlHN8oBD9U=;
+        b=dLtBJrwYeEb7m8l51kN8I5xA2EeE3Dsu8p9BDuk1SrsxjeEvG5/uleGiLvQbFFC92g
+         RD4vaTnfZQRHi4pqOjTLit9ltpn5kI3c0QumTpCcv1Po4n8Ts2MOt3KILylZ+9P5SdGP
+         aoRbyvGQ8QEEBwZKtzcUDx52FRT7TdM+RMYmOog3f6tYJ/sGkgq27zxKKlnAJjW8VstJ
+         BH0SN9qrivJjIsjpc6cuiCqQl51RYOosDjTww5eDFx4TnBumDxGBqE6sXLEq75IsZ+We
+         udTzoCg21agxIeb5swqZnmgji7bzWuCDy8ALYDlWLfuH8l6mOPJN6tLTpE7xxQZmMZPu
+         VGxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0XGy+GRK48SGGxR1ZCE+Ciu2OxM1nuqOBwlHN8oBD9U=;
+        b=IbjMcLwrUxAzTyJu4g1sbug8uvoppAPRLFR64cmVC2EYatAEtNks1OGnP1XtT+wqSo
+         jWFTJNW/OG+snmZOD19h0ulw6Px18UgZENa+sVQHwfV2COTuh5qcDGn6ffcTfusySqBN
+         R6B++7K1/Qg75pv6TsetQ0HTCs+j+Qr9dZUtMjw8+VvUSMGkw585Un1l0M5wR0KE2HWM
+         8mqEYgZef627h2jtk3vCKRZJOg7/iqbqcMimJkVjI33qWwhaR8BUYDnTwnY+OzzfSu79
+         2fSfBjb7AdxJ/UcFMl420g/WCbOTEQ4zVxWa6QcEUACClh6tVSZusl1g84C0gVWQ39m/
+         MzDA==
+X-Gm-Message-State: AOAM532RKE9QbeTfUmYRMlL6+Cw9E4Sinw5aFulrZrvlzYYujhrFPmC6
+        CgoVm/jncj1B67pSqBFBGHSXJ0A+ovHQK6Q387y9zg==
+X-Google-Smtp-Source: ABdhPJzG2fpX+4ES3rah/rrVmMzv/jiF6NJ2zEQzoLdi+59TjyjMidoiQzhXf5vKJHWd+QnCCW46WpFl5hztiSkqOw0=
+X-Received: by 2002:a2e:1302:: with SMTP id 2mr13534028ljt.280.1633108486155;
+ Fri, 01 Oct 2021 10:14:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20211001024506.3762647-1-tkjos@google.com> <CAHC9VhQ-uziaYRYWaah=RMmz7HUVvxGs+4F=g2sizVXR0ZSWVw@mail.gmail.com>
+In-Reply-To: <CAHC9VhQ-uziaYRYWaah=RMmz7HUVvxGs+4F=g2sizVXR0ZSWVw@mail.gmail.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Fri, 1 Oct 2021 10:14:34 -0700
+Message-ID: <CAHRSSEyq2yUmznpr9G1kxoC_8RcGXzHo37h471uxygFUbD_nrg@mail.gmail.com>
+Subject: Re: [PATCH] binder: use cred instead of task for selinux checks
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.164
-X-CLIENT-HOSTNAME: 213.134.175.164
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedguddtiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfefftefgleejgeffffdtheelieelleejveettdeuteeugeetjeejudehhefftedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdptddurdhorhhgpdhlihhnuhigthhvrdhorhhgnecukfhppedvudefrddufeegrddujeehrdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrudeigedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhl
- vgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugihfohhunhgurghtihhonhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael@kernel.org>
+On Fri, Oct 1, 2021 at 7:38 AM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 10:45 PM Todd Kjos <tkjos@google.com> wrote:
+> >
+> > Save the struct cred associated with a binder process
+> > at initial open to avoid potential race conditions
+> > when converting to a security ID.
+> >
+> > Since binder was integrated with selinux, it has passed
+> > 'struct task_struct' associated with the binder_proc
+> > to represent the source and target of transactions.
+> > The conversion of task to SID was then done in the hook
+> > implementations. It turns out that there are race conditions
+> > which can result in an incorrect security context being used.
+> >
+> > Fix by saving the 'struct cred' during binder_open and pass
+> > it to the selinux subsystem.
+> >
+> > Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+> > hooks for SELinux.")
+> > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
+> > ---
+> >  drivers/android/binder.c          | 14 +++++----
+> >  drivers/android/binder_internal.h |  3 ++
+> >  include/linux/lsm_hook_defs.h     | 14 ++++-----
+> >  include/linux/security.h          | 28 +++++++++---------
+> >  security/security.c               | 14 ++++-----
+> >  security/selinux/hooks.c          | 48 +++++++++----------------------
+> >  6 files changed, 52 insertions(+), 69 deletions(-)
+>
+> Thanks Todd, I'm happy to see someone with a better understanding of
+> binder than me pitch in to clean this up :)  A couple of quick
+> comments/questions below ...
+>
+> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> > index 9edacc8b9768..ca599ebdea4a 100644
+> > --- a/drivers/android/binder.c
+> > +++ b/drivers/android/binder.c
+> > @@ -5055,6 +5056,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
+> >         spin_lock_init(&proc->outer_lock);
+> >         get_task_struct(current->group_leader);
+> >         proc->tsk = current->group_leader;
+> > +       proc->cred = get_cred(filp->f_cred);
+>
+> Is it *always* true that filp->f_cred is going to be the same as
+> current->group_leader->cred?
 
-Because Rui is now going to focus on work that is not related to the
-maintenance of the thermal subsystem in the kernel, Rafael will start
-to help Daniel with handling the development process as a new member
-of the thermal maintainers team.  Rui will continue to review patches
-in that area.
+Not necessarily -- it is current->cred of the task in binder_open()
+(not group_leader). This is fine. We used to set proc->tsk to current,
+but switched to group_leader a few years ago to make it easier to
+detect the same process with multiple opens during mmap (to solve some
+unrelated issues). We still use group_leader for that purpose, but for
+the cred, the current cred in binder_open() is sufficient.
 
-The thermal development process flow will change so that the material
-from the thermal git tree will be merged into the thermal branch of
-the linux-pm.git tree before going into the mainline.
+> Or rather does this help resolve the
+> issue of wanting the subjective creds but not being able to access
+> them mentioned in the task_sid_binder() comment?  If the latter, it
+> might be nice to add something to the related comment in struct
+> binder_ref (below).
 
-Update the information in MAINTAINERS accordingly.
+Yes, we want the subjective cred so that is part of the point. I
+started with "proc->cred = get_task_cred(current->group_leader)" and
+got feedback that the "subjective" cred is preferred to avoid some
+subtle races that could be introduced, for example, if /dev/binder is
+opened through io_uring.
 
-Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
-Acked-by: Zhang Rui <rui.zhang@intel.com>
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- MAINTAINERS |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> >         INIT_LIST_HEAD(&proc->todo);
+> >         init_waitqueue_head(&proc->freeze_wait);
+> >         proc->default_priority = task_nice(current);
+> > diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+> > index 402c4d4362a8..886fc327a534 100644
+> > --- a/drivers/android/binder_internal.h
+> > +++ b/drivers/android/binder_internal.h
+> > @@ -364,6 +364,8 @@ struct binder_ref {
+> >   *                        (invariant after initialized)
+> >   * @tsk                   task_struct for group_leader of process
+> >   *                        (invariant after initialized)
+> > + * @cred                  struct cred for group_leader of process
+> > + *                        (invariant after initialized)
+>
+> Related to the question above.  At the very least the comment should
+> probably be changed to indicate to make it clear the creds are coming
+> directly from the binder file/device and not always the group_leader.
 
-Index: linux-pm/MAINTAINERS
-===================================================================
---- linux-pm.orig/MAINTAINERS
-+++ linux-pm/MAINTAINERS
-@@ -414,7 +414,8 @@ T:	git git://git.kernel.org/pub/scm/linu
- F:	drivers/acpi/pmic/
- 
- ACPI THERMAL DRIVER
--M:	Zhang Rui <rui.zhang@intel.com>
-+M:	Rafael J. Wysocki <rafael@kernel.org>
-+R:	Zhang Rui <rui.zhang@intel.com>
- L:	linux-acpi@vger.kernel.org
- S:	Supported
- W:	https://01.org/linux-acpi
-@@ -18547,13 +18548,14 @@ T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/radio/radio-raremono.c
- 
- THERMAL
--M:	Zhang Rui <rui.zhang@intel.com>
-+M:	Rafael J. Wysocki <rafael@kernel.org>
- M:	Daniel Lezcano <daniel.lezcano@linaro.org>
- R:	Amit Kucheria <amitk@kernel.org>
-+R:	Zhang Rui <rui.zhang@intel.com>
- L:	linux-pm@vger.kernel.org
- S:	Supported
- Q:	https://patchwork.kernel.org/project/linux-pm/list/
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
- F:	Documentation/devicetree/bindings/thermal/
- F:	drivers/thermal/
- F:	include/linux/cpu_cooling.h
+Good catch. Will update the comment (it's actually struct binder_proc).
 
+>
+> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > index e7ebd45ca345..c8bf3db90c8b 100644
+> > --- a/security/selinux/hooks.c
+> > +++ b/security/selinux/hooks.c
+> > @@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const struct task_struct *task)
+> >         return sid;
+> >  }
+> >
+> > -/*
+> > - * get the security ID of a task for use with binder
+> > - */
+> > -static inline u32 task_sid_binder(const struct task_struct *task)
+> > -{
+> > -       /*
+> > -        * In many case where this function is used we should be using the
+> > -        * task's subjective SID, but we can't reliably access the subjective
+> > -        * creds of a task other than our own so we must use the objective
+> > -        * creds/SID, which are safe to access.  The downside is that if a task
+> > -        * is temporarily overriding it's creds it will not be reflected here;
+> > -        * however, it isn't clear that binder would handle that case well
+> > -        * anyway.
+> > -        *
+> > -        * If this ever changes and we can safely reference the subjective
+> > -        * creds/SID of another task, this function will make it easier to
+> > -        * identify the various places where we make use of the task SIDs in
+> > -        * the binder code.  It is also likely that we will need to adjust
+> > -        * the main drivers/android binder code as well.
+> > -        */
+> > -       return task_sid_obj(task);
+> > -}
+>
+> --
+> paul moore
+> www.paul-moore.com
 
+and from your next response:
 
+> Ooops, I was a little over zealous when trimming my response and I
+> accidentally cut off my comment that the associated comment blocks in
+> include/linux/lsm_hooks.h should also be updated to reflect the binder
+> LSM hook changes.
+
+Thanks for pointing this out! I didn't notice these comment blocks.
+
+-Todd
