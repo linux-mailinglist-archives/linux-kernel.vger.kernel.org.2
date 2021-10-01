@@ -2,243 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEDE41F10F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3599441F114
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354948AbhJAPUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:20:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354697AbhJAPUi (ORCPT
+        id S231985AbhJAPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:22:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34992 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhJAPW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:20:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633101533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7C7nph0IhS1Fw7syhYok+wzYniobVwIXFwlQp7ZOwZk=;
-        b=gztiy45WWpOorqfZMBX0xmiZh3M1TEWxKgYl2B+qTLK6i0McE/reGJ3TNBm8h/mVfsaEIG
-        bJay0kuJvMw26Y4yz1kxzZM/TYY6mIir5L62fGvhyBHU8I6gT3hHI379oGctopTpjz63Z6
-        aKPaqfCt8ka6yhaDo6TWzCLKeVZCKvs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-gwn_3wreOuavPHbos-PwJQ-1; Fri, 01 Oct 2021 11:18:50 -0400
-X-MC-Unique: gwn_3wreOuavPHbos-PwJQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 1 Oct 2021 11:22:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FD2D81426E;
-        Fri,  1 Oct 2021 15:18:48 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B975660936;
-        Fri,  1 Oct 2021 15:18:47 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-In-Reply-To: <20211001162213.18d7375e.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <87r1d64dl4.fsf@redhat.com> <20210930130350.0cdc7c65.pasic@linux.ibm.com>
- <87ilyi47wn.fsf@redhat.com> <20211001162213.18d7375e.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Fri, 01 Oct 2021 17:18:46 +0200
-Message-ID: <87v92g3h9l.fsf@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A3BF920063;
+        Fri,  1 Oct 2021 15:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633101644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bVBXsAy0b+itOER7N3I1oQ05RMyRcTR4aLXyKhF7/ow=;
+        b=WnVojoIqXGMCT3eLYfMopamfp7uBnYbCeyIQb5gjrfzq7m1Xl3Q/TJCmSZYUAFy0RkpQ7n
+        onDxqjmTbJ1Nx62uwCUVJo4GYn20sVBfZC+SdbZMn6VMtH87h2FOfmefDgGJ+dEcs8mGgd
+        iE38tX47/B4oO9zPcFRF1y1uFDhCKAU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 826FA13C6D;
+        Fri,  1 Oct 2021 15:20:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pf6EHkwnV2FyRQAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 01 Oct 2021 15:20:44 +0000
+Subject: Re: [PATCH v5 2/3] usb: Introduce Xen pvUSB frontend (xen hcd)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211001150039.15921-1-jgross@suse.com>
+ <20211001150039.15921-3-jgross@suse.com> <YVclpB4HP4hynENV@kroah.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <de25b52e-7db3-3845-38e9-dc8353b23308@suse.com>
+Date:   Fri, 1 Oct 2021 17:20:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YVclpB4HP4hynENV@kroah.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Hrj6TJnAjNUwTljeSgccEyMV8hhYdDI7S"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Hrj6TJnAjNUwTljeSgccEyMV8hhYdDI7S
+Content-Type: multipart/mixed; boundary="Rd4R2m5iuBTmN24qGWaADmT8GM6YKMIGa";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <de25b52e-7db3-3845-38e9-dc8353b23308@suse.com>
+Subject: Re: [PATCH v5 2/3] usb: Introduce Xen pvUSB frontend (xen hcd)
+References: <20211001150039.15921-1-jgross@suse.com>
+ <20211001150039.15921-3-jgross@suse.com> <YVclpB4HP4hynENV@kroah.com>
+In-Reply-To: <YVclpB4HP4hynENV@kroah.com>
 
-> On Thu, 30 Sep 2021 13:31:04 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
->
->> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
->> 
->> > On Thu, 30 Sep 2021 11:28:23 +0200
->> > Cornelia Huck <cohuck@redhat.com> wrote:
->> >  
->> >> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
->> >> > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
->> >> >  		if (device_features & (1ULL << i))
->> >> >  			__virtio_set_bit(dev, i);
->> >> >  
->> >> > +	/* Write back features before validate to know endianness */
->> >> > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
->> >> > +		dev->config->finalize_features(dev);    
->> >> 
->> >> This really looks like a mess :(
->> >> 
->> >> We end up calling ->finalize_features twice: once before ->validate, and
->> >> once after, that time with the complete song and dance. The first time,
->> >> we operate on one feature set; after validation, we operate on another,
->> >> and there might be interdependencies between the two (like a that a bit
->> >> is cleared because of another bit, which would not happen if validate
->> >> had a chance to clear that bit before).  
->> >
->> > Basically the second set is a subset of the first set.  
->> 
->> I don't think that's clear.
->
-> Validate can only remove features, or? So I guess after validate
-> is a subset of before validate.
+--Rd4R2m5iuBTmN24qGWaADmT8GM6YKMIGa
+Content-Type: multipart/mixed;
+ boundary="------------12BBFCA059E989F27D2F36B1"
+Content-Language: en-US
 
-I was thinking about (more-or-less hypothetical) interdependencies (see
-above). But that's not terribly important.
+This is a multi-part message in MIME format.
+--------------12BBFCA059E989F27D2F36B1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
->
->
->> 
->> >  
->> >> 
->> >> I'm not sure whether that is even a problem in the spec: while the
->> >> driver may read the config before finally accepting features  
->> >
->> > I'm not sure I'm following you. Let me please qoute the specification:
->> > """
->> > 4. Read device feature bits, and write the subset of feature bits
->> > understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it. 
->> > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step. 
->> > """
->> > https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-930001  
->> 
->> Yes, exactly, it MAY read before accepting features. How does the device
->> know whether the config space is little-endian or not?
->> 
->
-> Well that is what we are talking about. One can try to infer things from
-> the spec. This reset dance I called ugly is probably the cleanest,
-> because the spec says that re-nego should work.
->
->> >  
->> >> , it does
->> >> not really make sense to do so before a feature bit as basic as
->> >> VERSION_1 which determines the endianness has been negotiated.   
->> >
->> > Are you suggesting that ->verify() should be after
->> > virtio_finalize_features()?  
->> 
->> No, that would defeat the entire purpose of verify. After
->> virtio_finalize_features(), we are done with feature negotiation.
->>
->
-> Exactly!
+On 01.10.21 17:13, Greg Kroah-Hartman wrote:
+> On Fri, Oct 01, 2021 at 05:00:38PM +0200, Juergen Gross wrote:
+>> --- /dev/null
+>> +++ b/drivers/usb/host/xen-hcd.c
+>> @@ -0,0 +1,1641 @@
+>> +/*
+>> + * xen-hcd.c
+>=20
+> Need a SPDX line here, instead of the license boiler-plate text you
+> have.
+>=20
+> Did you run checkpatch on this thing?  I thought that would have told
+> you about this.
+>=20
+>> + *
+>> + * Xen USB Virtual Host Controller driver
+>> + *
+>> + * Copyright (C) 2009, FUJITSU LABORATORIES LTD.
+>> + * Author: Noboru Iwamatsu <n_iwamatsu@jp.fujitsu.com>
+>> + *
+>> + * This program is free software; you can redistribute it and/or modi=
+fy
+>> + * it under the terms of the GNU General Public License as published =
+by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, see <http://www.gnu.org/licenses/=
+>.
+>> + *
+>> + * Or, by your choice:
+>> + *
+>> + * When distributed separately from the Linux kernel or incorporated =
+into
+>> + * other software packages, subject to the following license:
+>> + *
+>> + * Permission is hereby granted, free of charge, to any person obtain=
+ing a copy
+>> + * of this software and associated documentation files (the "Software=
+"), to
+>> + * deal in the Software without restriction, including without limita=
+tion the
+>> + * rights to use, copy, modify, merge, publish, distribute, sublicens=
+e, and/or
+>> + * sell copies of the Software, and to permit persons to whom the Sof=
+tware is
+>> + * furnished to do so, subject to the following conditions:
+>> + *
+>> + * The above copyright notice and this permission notice shall be inc=
+luded in
+>> + * all copies or substantial portions of the Software.
+>> + *
+>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EX=
+PRESS OR
+>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTAB=
+ILITY,
+>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT =
+SHALL THE
+>> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR O=
+THER
+>> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, AR=
+ISING
+>> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHE=
+R
+>> + * DEALINGS IN THE SOFTWARE.
+>=20
+> Dual licensing a USB host controller driver is, um, a very dubious
+> thing given that you can only interact with symbols exported with
+> EXPORT_SYMBOL_GPL() from the USB stack.
+>=20
+> So you might want to change this...
 
-It seems we are in violent agreement :)
+Ah, right. I thought I wouldn't be able to do so, as the original driver
+was including above license text, but reading it again I think I can
+just make it GPL-V2.
 
->  
->> > Wouldn't
->> > that mean that verify() can't reject feature bits? But that is the whole
->> > point of commit 82e89ea077b9 ("virtio-blk: Add validation for block size
->> > in config space"). Do you think that the commit in question is
->> > conceptually flawed? My understanding of the verify is, that it is supposed
->> > to fence features and feature bits we can't support, e.g. because of
->> > config space things, but I may be wrong.  
->> 
->> No, that commit is not really flawed on its own, I think the whole
->> procedure may be problematic.
->> 
->
-> I agree! But that regression really hurts us. Maybe the best band-aid is
-> to conditional-compile it (not compile the check if s390).
 
-It's probably most likely to hit on s390 (big-endian, and devices with a
-blocksize != 512 in common use); but I'd like to make that band-aid more
-generic than "exclude for s390". A hack for honouring VERSION_1 before
-negotiation has finished is probably better as a stop-gap before we
-manage to figure out how to deal with this properly.
+Juergen
 
->
->> >
->> > The trouble is, feature bits are not negotiated one by one, but basically all
->> > at once. I suppose, I did the next best thing to first negotiating
->> > VERSION_1.  
->> 
->> We probably need to special-case VERSION_1 to move at least forward;
->> i.e. proceed as if we accepted it when reading the config space.
->> 
->> The problem is that we do not know what the device assumes when we read
->> the config space prior to setting FEATURES_OK. It may assume
->> little-endian if it offered VERSION_1, or it may not. The spec does not
->> really say what happens before feature negotiation has finished.
->> 
-> No it does not, but I hope, the implementations we care the most about do
-> little endian if VERSION_1 is set but FEATURES_OK is not yet done. A
-> transitional device would have to act upon a feature that is set,
-> because for legacy there is no FEATURES_OK. Where we can run into
-> trouble is minimum required feature set, e.g. mandatory features.
+--------------12BBFCA059E989F27D2F36B1
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-All ugly :(
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
->
-> I will do some testing.
->
->> >
->> >  
->> >> For
->> >> VERSION_1, we can probably go ahead and just assume that we will accept
->> >> it if offered, but what about other (future) bits?  
->> >
->> > I don't quite understand.  
->> 
->> There might be other bits in the future that change how the config space
->> works. We cannot assume that any of those bits will be accepted if
->> offered; i.e. we need a special hack for VERSION_1.
->
-> I tend to agree. What I didn't consider in this patch is that, setting
-> bits does not only set bits, but may also change the device in a way,
-> that clearing the bit would not change it back.
->
->> 
->> >
->> > Anyway, how do you think we should solve this problem?  
->> 
->> This is a mess. For starters, we need to think about if we should do
->> something in the spec, and if yes, what.. Then, we can probably think
->> about how to implement that properly.
->>
->
-> I agree.
->
->  
->> As we have an error right now that is basically a regression, we
->> probably need a band-aid to keep going. Not sure if your patch is the
->> right approach, maybe we really need to special-case VERSION_1 (the
->> "assume we accepted it" hack mentioned above.) This will likely fix the
->> reported problem (I assume that is s390x on QEMU); do we know about
->> other VMMs? Any other big-endian architectures?
->
-> I didn't quite get it. Would this hack take place in QEMU or in the guest
-> kernel?
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-I'd say we need a hack here so that we assume little-endian config space
-if VERSION_1 has been offered; if your patch here works, I assume QEMU
-does what we expect (assmuming little-endian as well.) I'm mostly
-wondering what happens if you use a different VMM; can we expect it to
-work similar to QEMU? Even if it helps for s390, we should double-check
-what happens for other architectures.
+--------------12BBFCA059E989F27D2F36B1--
 
->
->> 
->> Anyone have any better suggestions?
->> 
->
-> There is the conditional compile, as an option but I would not say it is
-> better.
+--Rd4R2m5iuBTmN24qGWaADmT8GM6YKMIGa--
 
-Yes, I agree.
+--Hrj6TJnAjNUwTljeSgccEyMV8hhYdDI7S
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Anyone else have an idea? This is a nasty regression; we could revert the
-patch, which would remove the symptoms and give us some time, but that
-doesn't really feel right, I'd do that only as a last resort.
+-----BEGIN PGP SIGNATURE-----
 
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFXJ0sFAwAAAAAACgkQsN6d1ii/Ey9C
+twf/Te9k/zYG2ynHFJXt3Ui3BhE+h5hZmqEvNpXtPnu1iQI9iRSVsSFBO7hIdbAhCWYubVGXxe4A
+1bijW5NnHOo891xlHI9VCgRQv3Wmg80oFVXtU5kQTIK+iacHkowzull4b9WnOZV1Yo9ROd8/PotQ
+PbCLiGrfNiUXGikjD30glIjvLOGpQIPXdGsWsxXWxM81gG/X74/863Sh4QrroGxC/J1a9v7j+xgr
+x5Jgd8AX85q0I0K7yGjBphj5vQZHkLd82WxH+be301EfJjwqUFsyNXxFn9wEZTpMlWPa7PWKA4pk
+k4t69HGXEgfO+zOptlC2E99ZusHYh7sdcDfoy3Crzg==
+=xvfH
+-----END PGP SIGNATURE-----
+
+--Hrj6TJnAjNUwTljeSgccEyMV8hhYdDI7S--
