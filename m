@@ -2,89 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BF141E5D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 03:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B60441E5D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 03:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351352AbhJABi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 21:38:27 -0400
-Received: from unicom146.biz-email.net ([210.51.26.146]:22152 "EHLO
-        unicom146.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhJABi0 (ORCPT
+        id S1351436AbhJABip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 21:38:45 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:58990 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230256AbhJABin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 21:38:26 -0400
-Received: from ([60.208.111.195])
-        by unicom146.biz-email.net ((LNX1044)) with ASMTP (SSL) id UBL00036;
-        Fri, 01 Oct 2021 09:36:36 +0800
-Received: from jtjnmail201621.home.langchao.com (10.100.2.21) by
- jtjnmail201624.home.langchao.com (10.100.2.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 1 Oct 2021 09:36:36 +0800
-Received: from jtjnmail201621.home.langchao.com ([fe80::31c7:1db7:6c09:282a])
- by jtjnmail201621.home.langchao.com ([fe80::31c7:1db7:6c09:282a%7]) with mapi
- id 15.01.2308.014; Fri, 1 Oct 2021 09:36:36 +0800
-From:   =?gb2312?B?SGFycmlzIHNvbmcgKMvOv60pLcDLs7HQxc+i?= 
-        <songkai01@inspur.com>
-To:     "dja@axtens.net" <dja@axtens.net>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "paulus@samba.org" <paulus@samba.org>
-Subject: Re: [PATCH] powerpc/eeh:Fix some mistakes in comments
-Thread-Topic: [PATCH] powerpc/eeh:Fix some mistakes in comments
-Thread-Index: Ade2Y/xuvP/VNTy0RX60R6t1xsfTFw==
-Date:   Fri, 1 Oct 2021 01:36:36 +0000
-Message-ID: <1423aa2e2ae343ffa487b4e34a815a51@inspur.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.27.192]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 30 Sep 2021 21:38:43 -0400
+X-UUID: 3bcfb2b1a06848beb28bad7608c253d6-20211001
+X-UUID: 3bcfb2b1a06848beb28bad7608c253d6-20211001
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <jason-ch.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2072459898; Fri, 01 Oct 2021 09:36:56 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 1 Oct 2021 09:36:55 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 1 Oct
+ 2021 09:36:55 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 1 Oct 2021 09:36:54 +0800
+Message-ID: <a891e733157ca7e631ca120ebae15557a6f05738.camel@mediatek.com>
+Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
+From:   Jason-ch Chen <jason-ch.chen@mediatek.com>
+To:     Hayes Wang <hayeswang@realtek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@google.com" <hsinyi@google.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Date:   Fri, 1 Oct 2021 09:36:54 +0800
+In-Reply-To: <7dc4198f05784b6686973500150faca7@realtek.com>
+References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+         <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
+         <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+         <7dc4198f05784b6686973500150faca7@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-tUid:   20211001093636a1d5289678fc2b889ceccaf9b7be5ba6
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGFuaWVsLA0KDQo+IEhpIEthaSwNCj4NCj4gVGhhbmsgeW91IGZvciB5b3VyIGNvbnRyaWJ1
-dGlvbiB0byB0aGUgcG93ZXJwYyBrZXJuZWwhDQo+DQo+ID4gR2V0IHJpZCBvZiB3YXJuaW5nOg0K
-PiA+IGFyY2gvcG93ZXJwYy9rZXJuZWwvZWVoLmM6Nzc0OiB3YXJuaW5nOiBleHBlY3RpbmcgcHJv
-dG90eXBlIGZvcg0KPiA+IGVlaF9zZXRfcGVfZnJlc2V0KCkuIFByb3RvdHlwZSB3YXMgZm9yIGVl
-aF9zZXRfZGV2X2ZyZXNldCgpIGluc3RlYWQNCj4NCj4gWW91IGhhdmVuJ3Qgc2FpZCB3aGVyZSB0
-aGlzIHdhcm5pbmcgaXMgZnJvbS4gSSB0aG91Z2h0IGl0IG1pZ2h0IGJlIGZyb20gc3BhcnNlDQo+
-IGJ1dCBJIGNvdWxkbid0IHNlZW0gdG8gcmVwcm9kdWNlIGl0IC0gaXMgbXkgdmVyc2lvbiBvZiBz
-cGFyc2UgdG9vIG9sZCBvciBhcmUgeW91DQo+IHVzaW5nIGEgZGlmZmVyZW50IHRvb2w/DQoNCldl
-IGNhbiBnZXQgdGhpcyB3YXJuaW5nIHdoZW4gYnVpbGRpbmcga2VybmVsIHdpdGggJ1c9MScgLg0K
-WW91IGNhbiByZWZlciB0byB0aGlzOiAgaHR0cHM6Ly9sd24ubmV0L0FydGljbGVzLzY4MzQ3Ni8N
-Cm9yIHRoaXM6IGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy80NDAwNjAvDQoNCj4gPiAgLyoqDQo+
-ID4gLSAqIGVlaF9zZXRfcGVfZnJlc2V0IC0gQ2hlY2sgdGhlIHJlcXVpcmVkIHJlc2V0IGZvciB0
-aGUgaW5kaWNhdGVkDQo+ID4gZGV2aWNlDQo+ID4gLSAqIEBkYXRhOiBFRUggZGV2aWNlDQo+ID4g
-KyAqIGVlaF9zZXRfZGV2X2ZyZXNldCAtIENoZWNrIHRoZSByZXF1aXJlZCByZXNldCBmb3IgdGhl
-IGluZGljYXRlZA0KPiA+ICsgZGV2aWNlDQo+ID4gKyAqIEBlZGV2OiBFRUggZGV2aWNlDQo+ID4g
-ICAqIEBmbGFnOiByZXR1cm4gdmFsdWUNCj4gPiAgICoNCj4gPiAgICogRWFjaCBkZXZpY2UgbWln
-aHQgaGF2ZSBpdHMgcHJlZmVycmVkIHJlc2V0IHR5cGU6IGZ1bmRhbWVudGFsIG9yDQo+DQo+IFRo
-aXMgbG9va3MgbGlrZSBhIGdvb2QgYW5kIGNvcnJlY3QgY2hhbmdlLg0KPg0KPiBJIGNoZWNrZWQg
-dGhyb3VnaCBnaXQgaGlzdG9yeSB3aXRoIGdpdCBibGFtZSB0byBzZWUgd2hlbiB0aGUgZnVuY3Rp
-b24gd2FzDQo+IHJlbmFtZWQuIFRoZXJlIGFyZSAyIGNvbW1pdHMgdGhhdCBzaG91bGQgaGF2ZSB1
-cGRhdGVkIHRoZSBjb21tZW50Og0KPiBvbmUgcmVuYW1lZCB0aGUgZnVuY3Rpb24gYW5kIG9uZSBy
-ZW5hbWVkIGFuIGFyZ3VtZW50LiBTbywgSSB0aGluayB0aGlzDQo+IGNvbW1pdCBjb3VsZCBoYXZl
-Og0KPg0KPiBGaXhlczogZDZjNDkzMmZiZjI0ICgicG93ZXJwYy9lZWg6IFN0cmVuZ3RoZW4gdHlw
-ZXMgb2YgZWVoIHRyYXZlcnNhbA0KPiBmdW5jdGlvbnMiKQ0KPiBGaXhlczogYzI3MGEyNGM1OWJk
-ICgicG93ZXJwYy9lZWg6IERvIHJlc2V0IGJhc2VkIG9uIFBFIikNCj4NCj4gQnV0IEkgZG9uJ3Qg
-a25vdyBpZiBhbiBvdXQgb2YgZGF0ZSBjb21tZW50IGlzIGVub3VnaCBvZiBhICdidWcnIHRvIGp1
-c3RpZnkgYQ0KPiBGaXhlczogdGFnPyAobXBlLCBJJ20gc3VyZSBJJ3ZlIGFza2VkIHRoaXMgYmVm
-b3JlLCBzb3JyeSEpDQo+DQo+IEFsbCB1cCwgdGhpcyBpcyBhIGdvb2QgY29ycmVjdGlvbiB0byB0
-aGUgY29tbWVudC4NCj4NCj4gVGhlcmUgYXJlIGEgZmV3IG90aGVyIGZ1bmN0aW9ucyBpbiB0aGUg
-ZmlsZSB0aGF0IGhhdmUgaW5jb3JyZWN0DQo+IGRvY3N0cmluZ3M6DQo+DQo+ICAtIGVlaF9wY2lf
-ZW5hYmxlIC0gbWlzc2luZyBwYXJhbWV0ZXINCj4NCj4gIC0gZWVoX3BlX3Jlc2V0IGFuZCBlZWhf
-cGVfcmVzZXRfZnVsbCAtIG1pc3NpbmcgcGFyYW1ldGVyDQo+DQo+ICAtIGVlaF9pbml0IC0gbWlz
-c2luZyBwYXJhbWV0ZXINCj4NCj4gIC0gZWVoX3BlX2luamVjdF9lcnIgLSB3cm9uZyBuYW1lIGZv
-ciBhIHBhcmFtZXRlcg0KPg0KPiBDb3VsZCB5b3UgZml4IGFsbCBvZiB0aGUgZG9jc3RyaW5ncyBp
-biB0aGUgZmlsZSBhdCBvbmNlPw0KDQpJbiBmYWN0LCB0aGVyZSAgYXJlIG90aGVyIHdhcm5pbmdz
-IGluIHRoaXMgZmlsZSwgSSB3aWxsIGZpeCB0aGVtIGFuZCBzZW5kIGENCm5ldyBwYXRjaCBzb29u
-Lg0KDQpLaW5kIHJlZ2FyZHMsDQpLYWkNCg0K
+On Thu, 2021-09-30 at 02:41 +0000, Hayes Wang wrote:
+> Jason-ch Chen <jason-ch.chen@mediatek.com>
+> > Sent: Wednesday, September 29, 2021 5:53 PM
+> 
+> [...]
+> > Hi Hayes,
+> > 
+> > Sometimes Rx submits rapidly and the USB kernel driver of
+> > opensource
+> > cannot receive any disconnect event due to CPU heavy loading, which
+> > finally causes a system crash.
+> > Do you have any suggestions to modify the r8152 driver to prevent
+> > this
+> > situation happened?
+> 
+> Do you mind to try the following patch?
+> It avoids to re-submit RX immediately.
+> 
+> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+> index 60ba9b734055..bfe00af8283f 100644
+> --- a/drivers/net/usb/r8152.c
+> +++ b/drivers/net/usb/r8152.c
+> @@ -767,6 +767,7 @@ enum rtl8152_flags {
+>  	PHY_RESET,
+>  	SCHEDULE_TASKLET,
+>  	GREEN_ETHERNET,
+> +	SCHEDULE_NAPI,
+>  };
+>  
+>  #define DEVICE_ID_THINKPAD_THUNDERBOLT3_DOCK_GEN2	0x3082
+> @@ -1770,6 +1771,14 @@ static void read_bulk_callback(struct urb
+> *urb)
+>  		rtl_set_unplug(tp);
+>  		netif_device_detach(tp->netdev);
+>  		return;
+> +	case -EPROTO:
+> +		urb->actual_length = 0;
+> +		spin_lock_irqsave(&tp->rx_lock, flags);
+> +		list_add_tail(&agg->list, &tp->rx_done);
+> +		spin_unlock_irqrestore(&tp->rx_lock, flags);
+> +		set_bit(SCHEDULE_NAPI, &tp->flags);
+> +		schedule_delayed_work(&tp->schedule, 1);
+> +		return;
+>  	case -ENOENT:
+>  		return;	/* the urb is in unlink state */
+>  	case -ETIME:
+> @@ -2425,6 +2434,7 @@ static int rx_bottom(struct r8152 *tp, int
+> budget)
+>  	if (list_empty(&tp->rx_done))
+>  		goto out1;
+>  
+> +	clear_bit(SCHEDULE_NAPI, &tp->flags);
+>  	INIT_LIST_HEAD(&rx_queue);
+>  	spin_lock_irqsave(&tp->rx_lock, flags);
+>  	list_splice_init(&tp->rx_done, &rx_queue);
+> @@ -2441,7 +2451,7 @@ static int rx_bottom(struct r8152 *tp, int
+> budget)
+>  
+>  		agg = list_entry(cursor, struct rx_agg, list);
+>  		urb = agg->urb;
+> -		if (urb->actual_length < ETH_ZLEN)
+> +		if (urb->status != 0 || urb->actual_length < ETH_ZLEN)
+>  			goto submit;
+>  
+>  		agg_free = rtl_get_free_rx(tp, GFP_ATOMIC);
+> @@ -6643,6 +6653,10 @@ static void rtl_work_func_t(struct work_struct
+> *work)
+>  	    netif_carrier_ok(tp->netdev))
+>  		tasklet_schedule(&tp->tx_tl);
+>  
+> +	if (test_and_clear_bit(SCHEDULE_NAPI, &tp->flags) &&
+> +	    !list_empty(&tp->rx_done))
+> +		napi_schedule(&tp->napi);
+> +
+>  	mutex_unlock(&tp->control);
+>  
+>  out1:
+> 
+> 
+> Best Regards,
+> Hayes
+
+Hi,
+
+This patch has been verified.
+It did avoid Rx re-submit immediately.
+
+Thanks,
+Jason
+
