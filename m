@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF8E41F823
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F75441F827
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhJAXWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 19:22:03 -0400
-Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:37308 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231207AbhJAXWB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 19:22:01 -0400
-Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id F0649837F24D;
-        Fri,  1 Oct 2021 23:20:15 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 3690B24023A;
-        Fri,  1 Oct 2021 23:20:15 +0000 (UTC)
-Message-ID: <7c9103aee37509a28e426756bce7d6a5ae0ced16.camel@perches.com>
-Subject: Re: [PATCH] memblock: Neaten logging
-From:   Joe Perches <joe@perches.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 01 Oct 2021 16:20:14 -0700
-In-Reply-To: <YVeVwL24j5P5ry2z@kernel.org>
-References: <623750dd31aa3fe5e45c416be98ab37707e2c45d.camel@perches.com>
-         <YVYoVNFBMER4bjrT@kernel.org>
-         <6573ccd25ce80f5e28ed35e4c88c898b0f994fbc.camel@perches.com>
-         <YVc5RYT+MovmWiiI@kernel.org>
-         <06ede4d0c1bf66614c9e9e013098a876aeec883f.camel@perches.com>
-         <YVeVwL24j5P5ry2z@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
+        id S231358AbhJAXXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 19:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231168AbhJAXXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 19:23:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E13561242;
+        Fri,  1 Oct 2021 23:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1633130524;
+        bh=48kjGt07XBXeXXNfXIiZPlrFB+e8fc/lTBUd5CtkDpU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dQva2a1ObWFaFe3AYuTtygyRk4aWa7w/7tFSY05KA7dL91MgCiWKWdCGzQhS6BlDR
+         k4Vj6fHYc4cGxSgLiT5gqKvbSy7PZHxxlMUBG10hq79mi2y2LBaYC++u0DGN7EswEg
+         eLMYkX1Dtecbltiz15dX8dM1za7l8Rw4GNPb+BGQ=
+Date:   Fri, 1 Oct 2021 16:22:04 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
+Message-Id: <20211001162204.f8d20e62e8b528f5e2e5fa3e@linux-foundation.org>
+In-Reply-To: <20211001181627.394921-1-bgeffon@google.com>
+References: <20211001181627.394921-1-bgeffon@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.80
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 3690B24023A
-X-Stat-Signature: er3ocr3e3ruyrdzysytghp9ggaxzfrrj
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+KTZ1DsDiZZssa0mGFdbvEO+ae1Z6kjbM=
-X-HE-Tag: 1633130415-644694
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-01 at 16:12 -0700, Mike Rapoport wrote:
-> On Fri, Oct 01, 2021 at 01:34:10PM -0700, Joe Perches wrote:
-> > On Fri, 2021-10-01 at 09:37 -0700, Mike Rapoport wrote:
-> > > On Thu, Sep 30, 2021 at 06:27:15PM -0700, Joe Perches wrote:
-> > > > On Thu, 2021-09-30 at 14:12 -0700, Mike Rapoport wrote:
-> > > > > Hi Joe,
-> > > > > 
-> > > > > On Wed, Sep 29, 2021 at 09:43:14PM -0700, Joe Perches wrote:
-> > > > > > Use more typical kernel logging styles.
-> > > > > > 
-> > > > > > o Add and use #define pr_fmt KBUILD_MODNAME ": " fmt
-> > > > > 
-> > > > > I don't see it as an improvement. On the contrary, the output becomes
-> > > > > somewhat tautological:
-> > > > 
-> > > > And rather easier to grep as the prefix is constant.
-> > > 
-> > > memblock_ is perfectly greppable
-> > 
-> > Of course, but only when it's there, 2 instances out of 9.
+On Fri,  1 Oct 2021 11:16:27 -0700 Brian Geffon <bgeffon@google.com> wrote:
+
+> There does not appear to be a technical reason to not
+> allow the zram backing device to be assigned after the
+> zram device is initialized.
 > 
-> I didn't object to the patch as a whole. I just don't like the pr_fmt
-> definition.
+> This change will allow for the backing device to be assigned
+> as long as no backing device is already assigned. In that
+> event backing_dev would return -EEXIST.
 
-You should do what you like.  I did what I like.
-
-cheers, Joe
-
-
+Why is this useful?
