@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9074641E9A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E2541E9A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352968AbhJAJfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352978AbhJAJfb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:35:31 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58EBC06177B
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 02:33:47 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id u18so14479263wrg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 02:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W+UVQc398g+a9GL4OPwcV1qUDjZQzTXTU04h2fCYKmI=;
-        b=TfQb1KkQf8PS+pMpXOe1NiBpU1gmAKjlAdnTBwLgV2KSChRbX7b0OKQ3bV2I+YJ2J8
-         Xdiy/QfJ7lqw4GIz52qQERC38GFLbxDGd53eWmFSK7EdueFTMgU2EawhyBrDSZEf1AVZ
-         y4wkff0JwzSNMgCwRueO5uOqRN23Pt8lG+5rM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W+UVQc398g+a9GL4OPwcV1qUDjZQzTXTU04h2fCYKmI=;
-        b=pY9lqLWT2hvVGQkmoah/5q7UR0K2vhYtedZb5+fJwmkViT4GmbR3MQCm3WZ5d7E7jl
-         JsA+qMjEfj0pdrJK+0uRM3rlR+gtJnJmUJO4qlhxCtJ2p20WQ6/trEFb9LUeeoGNf70e
-         yow2eF6wydSRvHm6OVCiOAnvyXny/4WzNQMH7YM5S5G2mtzKVNgynXD1HRJUYkXRlKUY
-         E5wPjYdOm6RG9cGwEXftF11/C9IFRbprZMiyCr8QN4hoKr11IuYnYKVPBzG8dIkg9uU1
-         w7KbDVXjtPlyUwYMA6+GWQnlm75DFZc5NrsCFlIHhbXqAaR6IrE9hjm5P3Bm0jYmhYLK
-         F2FQ==
-X-Gm-Message-State: AOAM532jItQ5beHqeF+2BMeUomd4hgqlbdifjze1LTPL/qlZ/F5Cn4g+
-        2gzIool5823uKAhkloZCmDSoMQ==
-X-Google-Smtp-Source: ABdhPJyXO4bBtjPSrHfPuRoQjjrh4SbCcEmHrUPA2k3pgfJjOwH+hc9/flD5IZB/qn7rZ3t0Hea0CA==
-X-Received: by 2002:a5d:59a4:: with SMTP id p4mr10665705wrr.332.1633080826314;
-        Fri, 01 Oct 2021 02:33:46 -0700 (PDT)
-Received: from beni.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id a3sm4486549wrt.6.2021.10.01.02.33.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 02:33:46 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v2 2/7] media: ipu3-cio2: Set valid initial format
-Date:   Fri,  1 Oct 2021 09:33:43 +0000
-Message-Id: <20211001093344.2812707-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+        id S1352979AbhJAJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:36:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:38798 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229906AbhJAJgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:36:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9491101E;
+        Fri,  1 Oct 2021 02:35:00 -0700 (PDT)
+Received: from bogus (unknown [10.57.26.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FFEC3F70D;
+        Fri,  1 Oct 2021 02:34:58 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 10:34:24 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        sughosh.ganu@linaro.org
+Subject: Re: [PATCH v5 5/5] optee: add FF-A support
+Message-ID: <20211001093424.n4x34qp3ewbbijmc@bogus>
+References: <20210831072412.887565-1-jens.wiklander@linaro.org>
+ <20210831072412.887565-6-jens.wiklander@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831072412.887565-6-jens.wiklander@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initial format did not have a valid size.
+On Tue, Aug 31, 2021 at 09:24:12AM +0200, Jens Wiklander wrote:
+> Adds support for using FF-A [1] as transport to the OP-TEE driver.
+> 
+> Introduces struct optee_msg_param_fmem which carries all information
+> needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
+> memory reference mapped by the hypervisor in S-EL2. Register usage is
+> also updated to include the information needed.
+> 
+> The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
+> enabled.
+> 
+> [1] https://developer.arm.com/documentation/den0077/latest
+> Acked-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  drivers/tee/optee/Makefile        |   3 +-
+>  drivers/tee/optee/call.c          |  13 +-
+>  drivers/tee/optee/core.c          |  16 +-
+>  drivers/tee/optee/ffa_abi.c       | 907 ++++++++++++++++++++++++++++++
+>  drivers/tee/optee/optee_ffa.h     | 153 +++++
+>  drivers/tee/optee/optee_msg.h     |  27 +-
+>  drivers/tee/optee/optee_private.h |  43 +-
+>  7 files changed, 1148 insertions(+), 14 deletions(-)
+>  create mode 100644 drivers/tee/optee/ffa_abi.c
+>  create mode 100644 drivers/tee/optee/optee_ffa.h
+> 
+> diff --git a/drivers/tee/optee/Makefile b/drivers/tee/optee/Makefile
+> index d4e4776d2dec..dbfd83d3c4ae 100644
+> --- a/drivers/tee/optee/Makefile
+> +++ b/drivers/tee/optee/Makefile
+> @@ -7,7 +7,8 @@ optee-objs += supp.o
+>  optee-objs += device.o
+>  
+>  optee-smc-abi-y = smc_abi.o
+> -optee-objs += $(optee-smc-abi-y)
+> +optee-ffa-abi-$(CONFIG_ARM_FFA_TRANSPORT) = ffa_abi.o
+> +optee-objs += $(optee-smc-abi-y) $(optee-ffa-abi-y)
+>
 
-Fixes v4l2-compliance:
+This may not work when CONFIG_ARM_FFA_TRANSPORT=m, I don't have cleaner
+solution apart from having if else.
 
-fail: v4l2-test-formats.cpp(723): Video Output Multiplanar:
-				  TRY_FMT(G_FMT) != G_FMT
-test VIDIOC_TRY_FMT: FAIL
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-v2: Suggested by Sakari Ailus <sakari.ailus@linux.intel.com>
+[...]
 
-Replace number with calculation based on width.
+> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+> index ca0213e330b5..2593742364da 100644
+> --- a/drivers/tee/optee/optee_private.h
+> +++ b/drivers/tee/optee/optee_private.h
 
- drivers/staging/media/ipu3/ipu3-v4l2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[...]
 
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index 38a2407645096..19c4fcabce0db 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -1136,7 +1136,8 @@ static int imgu_v4l2_node_setup(struct imgu_device *imgu, unsigned int pipe,
- 	def_pix_fmt.height = def_bus_fmt.height;
- 	def_pix_fmt.field = def_bus_fmt.field;
- 	def_pix_fmt.num_planes = 1;
--	def_pix_fmt.plane_fmt[0].bytesperline = def_pix_fmt.width * 2;
-+	def_pix_fmt.plane_fmt[0].bytesperline =
-+		DIV_ROUND_UP(def_bus_fmt.width, 50) * 64;
- 	def_pix_fmt.plane_fmt[0].sizeimage =
- 		def_pix_fmt.height * def_pix_fmt.plane_fmt[0].bytesperline;
- 	def_pix_fmt.flags = 0;
+> @@ -116,11 +127,13 @@ struct optee_ops {
+>   *			world
+>   * @teedev:		client device
+>   * @smc:		specific to SMC ABI
+> + * @ffa:		specific to FF-A ABI
+>   * @call_queue:		queue of threads waiting to call @invoke_fn
+>   * @wait_queue:		queue of threads from secure world waiting for a
+>   *			secure world sync object
+>   * @supp:		supplicant synchronization struct for RPC to supplicant
+>   * @pool:		shared memory pool
+> + * @rpc_arg_count:	If > 0 number of RPC parameters to make room for
+>   * @scan_bus_done	flag if device registation was already done.
+>   * @scan_bus_wq		workqueue to scan optee bus and register optee drivers
+>   * @scan_bus_work	workq to scan optee bus and register optee drivers
+> @@ -129,11 +142,17 @@ struct optee {
+>  	struct tee_device *supp_teedev;
+>  	struct tee_device *teedev;
+>  	const struct optee_ops *ops;
+> -	struct optee_smc smc;
+> +	union {
+> +		struct optee_smc smc;
+> +#ifdef CONFIG_ARM_FFA_TRANSPORT
+
+I don't see a point in saving this especially that the definition is
+available always. Also helps the case when FFA is module.
+
+> +		struct optee_ffa ffa;
+> +#endif
+> +	};
+>  	struct optee_call_queue call_queue;
+>  	struct optee_wait_queue wait_queue;
+>  	struct optee_supp supp;
+>  	struct tee_shm_pool *pool;
+> +	unsigned int rpc_arg_count;
+>  	bool   scan_bus_done;
+>  	struct workqueue_struct *scan_bus_wq;
+>  	struct work_struct scan_bus_work;
+> @@ -266,4 +285,12 @@ static inline void reg_pair_from_64(u32 *reg0, u32 *reg1, u64 val)
+>  int optee_smc_abi_register(void);
+>  void optee_smc_abi_unregister(void);
+>  
+> +#ifdef CONFIG_ARM_FFA_TRANSPORT
+
+To support CONFIG_ARM_FFA_TRANSPORT=m this must be,
+
+#if IS_REACHABLE(CONFIG_ARM_FFA_TRANSPORT)
+
 -- 
-2.33.0.800.g4c38ced690-goog
-
+Regards,
+Sudeep
