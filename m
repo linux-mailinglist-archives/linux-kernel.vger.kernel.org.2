@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF7141E58E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22BA41E591
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351017AbhJAAhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 20:37:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhJAAhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:37:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3822460F4B;
-        Fri,  1 Oct 2021 00:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633048551;
-        bh=kRtqkqym1qSC39AF/krJ32PfdnZTRxM17LtG7jSCgK4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Bvhqz1Up+B5Vy2pKAKxT3US42uCxaPmjVNZqV5leGeU2/V3txURh61CJJ4EtmPd14
-         f5jx9i1M3v2iT/cjQLbZ5hLV+V+xB53QILi7EHxuoFTV7hIQ38IwMHG6DVZqDqbqcB
-         eHclUApaj7f2YQ8yHq4Tp0Q3geuHQtXveytXBrPy+CjuRtZ5uTFr9yMLTHsU8bsTlg
-         3qpNHVyqQ+JNU+qPOyzCCrUnH8A07YYh50XMbOFAEKNud/scrcO0oGT6njIJF0I6uy
-         FRw612CrTw8SJrWXI4lQOBAo03+31F2ED4gsWibqAGqmuT0nZksBkM+6CmACrsj6TE
-         uxQwQtociDQoA==
-Date:   Fri, 1 Oct 2021 09:35:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
- on x86
-Message-Id: <20211001093547.f08d8b2477783d36c310b77a@kernel.org>
-In-Reply-To: <20210930193708.3b2caf23@oasis.local.home>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
-        <20210929112408.35b0ffe06b372533455d890d@kernel.org>
-        <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
-        <874ka17t8s.ffs@tglx>
-        <20210930172206.1a34279b@oasis.local.home>
-        <87wnmx64mn.ffs@tglx>
-        <20211001082733.236bee605f506b2b62c055ef@kernel.org>
-        <20210930193708.3b2caf23@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1351010AbhJAAk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 20:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350104AbhJAAk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 20:40:57 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC706C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 17:39:13 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so8052172pjw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 17:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fsgJJe7WOlN9DnqJOauj+mZ3ubzgkIojJ6QkyDZqouc=;
+        b=l4bCcl1a47UkkzW3mbzukb0KurVpGgxKyI/V3Ofv3BRDeQst1xcWBeAG1fna/I6scx
+         04PKT+MF6l6uj+4y5ZVugrNcoxECLKMBCq018wofS4HqoYth25pcdGT6P3+8SJzk+3Xx
+         T1v3CIugj0yUuNFXjkdfGR4sTT/44lerOnQPqsTUScDS7C7MNHZUfD2wakAYMOSnZxwd
+         Sp4k/tuUSz6Sz0E9h5j0/JGbe5H3W8Yi41TDXlMzelZjLeOhWGP24XcPvpAyuE7G67FA
+         9yX/IsZtE+5YF/6oI5oimOWcT22u7Ax51JCPqC4xaxVVYlcgXEOM3nBQW+w4Qhis40Zp
+         8kLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fsgJJe7WOlN9DnqJOauj+mZ3ubzgkIojJ6QkyDZqouc=;
+        b=NhWT6D3YnGZypS51pYUO/V6h3xHqxgr8tgSMmMqx9Vfx0uWJ60OZx14NbUcWYphl12
+         I/GA3oNl3eC+o++1+96u1L2x1Hx7bWF2kd1o3wbwWv4zedIhdJImEVz5VxO6pYB1wEbQ
+         vX7sqMxQ9DEi4ElHz5h2tPm+Bth/q58a3hipXCymCXcMnn4hg9hmHy0xkxqp+1ipRf2Y
+         zOT4K6WhP4kloFgEZgbV9gdLhw8bxcxtXmUY2XG0zP1Ejfh5rnzysneC5jdO1toddLpb
+         lxkZfmLBY4Y6G/SJEe0oPuWvnFZ6qoGtZwFwHxL7IUlTxex/1RTbiBggiCx7d0oxrl+t
+         z8sw==
+X-Gm-Message-State: AOAM5331yfwB7aOCbus2WV4iCB61yhB0+qDMkqioZEBMVIk9QmXSLhkZ
+        0MiWk4PhNsr57meJ8vatd1I=
+X-Google-Smtp-Source: ABdhPJxnjbIxtoCXYeWXBoNfyR9DqjYl+OzpSV/+oYdqMHZqVprHVFXyIX42fASFR1Rs5QW237r/fw==
+X-Received: by 2002:a17:90a:88c:: with SMTP id v12mr9905694pjc.232.1633048753379;
+        Thu, 30 Sep 2021 17:39:13 -0700 (PDT)
+Received: from linux.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id r13sm4013111pgl.90.2021.09.30.17.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 17:39:13 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 00:39:08 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Queueing is outside of SLUB nowdays
+Message-ID: <20211001003908.GA2657@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 19:37:08 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Fri, 1 Oct 2021 08:27:33 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Let me explain how the patches are usually merged.
+On Mon, Sep 27, 2021 at 07:03:19PM +0200, Vlastimil Babka wrote:
+> On 9/27/21 11:03, Hyeonggon Yoo wrote:
+> > Hello there,
 > > 
-> > - kernel/kprobes.c related patches go through the tip tree.
-> > - kernel/trace/* patches go through the tracing tree.
+> > I've been working on adding 'lockless cache' on sl[au]b for a while.
+> > But what it actually does is actually adding 'queuing' on slub.
 > 
-> And arch/*/kprobe* usually goes through tip as well.
-> 
-> > 
-> > So traditionally(?) I think this series go through the tip tree,
-> > but since the biggest user of kprobes is tracing and the kprobes fix
-> > now involves tree-wide fixes as you can see in this series, I think
-> > it is a good timing to move kprobes to tracing tree.
-> 
-> I'll pick it up and take the burden off of Thomas.
+> Yeah, I pointed out those threads from 2011 that called it exactly that...
+> was there any conclusion why that was not ultimately merged?
 
-Thank you very much!
+Looking at other layers, they implemented queuing layer outside of SLUB.
+See commit 795bb1c00dd ("net: bulk free infrastructure for NAPI context,
+use napi_consume_skb") for example. They made skb cache because SLUB is
+not suitable for intensive alloc/free.
 
-> 
-> Just to confirm, this is for the next merge window, right?
+And because the queue is outside of slab, it can go lockless
+depending on it's context. (But it's not easy to do so in slab because
+slab is general purpose allocator.)
 
-Yes, please push it to the next merge window.
+So current approach on place where slab's performance is critical
+is implementing queuing layer on top of slab.
 
-Thanks,
+Then new question arising:
+    - Is that proper way to solve fundamental problem?
+      - why not use SLAB if they need queuing?
+      - how does this approach work on SLAB?
 
-> 
-> -- Steve
+    - If there are no problems with queuing outside of slab, why does
+      SLAB exist? can we just drop SLAB?
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+I think we need to think about questions above.
