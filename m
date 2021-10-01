@@ -2,290 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D40341F1B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37A441F1C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355197AbhJAQEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:04:38 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:34426 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1355184AbhJAQEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:04:37 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id BEA9ED4;
-        Fri,  1 Oct 2021 19:02:51 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1633104171;
-        bh=3UJJxzDx9Q74zdwKz0wK73cjUkXg6LJ1o+BeyMURVzo=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=cl1Y/+kgYNJlFm1MnY4synOR1k+ggyomol0JmgcHRJV1AjOdCBXiiQVvB8aCRG02/
-         8bPi003fatCpkO8dNgF/N3NAHPEi32G/TDzulFqNWaJ2JTmIejSp64Fn1F6ULvnpSG
-         U8FnnD5XTKLzXxYa8HdGWXQJIh+D4Aio14Ppvths=
-Received: from [192.168.211.98] (192.168.211.98) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 1 Oct 2021 19:02:51 +0300
-Message-ID: <43e50860-3708-2887-86f7-e201782a2001@paragon-software.com>
-Date:   Fri, 1 Oct 2021 19:02:51 +0300
+        id S1355289AbhJAQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:05:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:46678 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355290AbhJAQFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:05:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8ECB101E;
+        Fri,  1 Oct 2021 09:03:56 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC48F3F766;
+        Fri,  1 Oct 2021 09:03:54 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com,
+        tan.shaopeng@fujitsu.com
+Subject: [PATCH v2 12/23] x86/resctrl: Abstract and use supports_mba_mbps()
+Date:   Fri,  1 Oct 2021 16:02:51 +0000
+Message-Id: <20211001160302.31189-13-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211001160302.31189-1-james.morse@arm.com>
+References: <20211001160302.31189-1-james.morse@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: [PATCH 2/2] fs/ntfs3: Remove unnecessary includes
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <992eee8f-bed8-4019-a966-1988bd4dd5de@paragon-software.com>
-In-Reply-To: <992eee8f-bed8-4019-a966-1988bd4dd5de@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.98]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All removed includes already included from other headers.
+To determine whether the mba_MBps option to resctrl should be supported,
+resctrl tests the boot cpus' x86_vendor.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+This isn't portable, and needs abstracting behind a helper so this check
+can be part of the filesystem code that moves to /fs/.
+
+Re-use the tests set_mba_sc() does to determine if the mba_sc is supported
+on this system. An 'alloc_capable' test is added so that support for the
+controls isn't implied by the 'delay_linear' property, which is always
+true for MPAM.
+
+Signed-off-by: James Morse <james.morse@arm.com>
 ---
- fs/ntfs3/attrib.c   | 2 --
- fs/ntfs3/attrlist.c | 2 --
- fs/ntfs3/dir.c      | 2 --
- fs/ntfs3/file.c     | 2 --
- fs/ntfs3/frecord.c  | 2 --
- fs/ntfs3/fslog.c    | 2 --
- fs/ntfs3/fsntfs.c   | 2 --
- fs/ntfs3/index.c    | 3 ---
- fs/ntfs3/inode.c    | 2 --
- fs/ntfs3/lznt.c     | 1 -
- fs/ntfs3/namei.c    | 2 --
- fs/ntfs3/ntfs_fs.h  | 1 -
- fs/ntfs3/record.c   | 2 --
- fs/ntfs3/run.c      | 2 --
- fs/ntfs3/super.c    | 4 +---
- fs/ntfs3/xattr.c    | 2 --
- 16 files changed, 1 insertion(+), 32 deletions(-)
+Changes since v1:
+ * Capitalisation
+ * Added MPAM example in commit message
+ * Fixed supports_mba_mbps() logic error in rdt_parse_param()
+---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 8a00fa978f5f..dd4f1613081d 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -10,8 +10,6 @@
- #include <linux/slab.h>
- #include <linux/kernel.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 069c209be1d5..1207271cce23 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1948,17 +1948,26 @@ static void mba_sc_destroy(struct rdt_resource *r)
+ }
  
  /*
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index bad6d8a849a2..c3934a2a28a9 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -7,8 +7,6 @@
+- * Enable or disable the MBA software controller
+- * which helps user specify bandwidth in MBps.
+  * MBA software controller is supported only if
+  * MBM is supported and MBA is in linear scale.
+  */
++static bool supports_mba_mbps(void)
++{
++	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
++
++	return (is_mbm_enabled() &&
++		r->alloc_capable && is_mba_linear());
++}
++
++/*
++ * Enable or disable the MBA software controller
++ * which helps user specify bandwidth in MBps.
++ */
+ static int set_mba_sc(bool mba_sc)
+ {
+ 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
  
- #include <linux/fs.h>
+-	if (!is_mbm_enabled() || !is_mba_linear() ||
+-	    mba_sc == is_mba_sc(r))
++	if (!supports_mba_mbps() || mba_sc == is_mba_sc(r))
+ 		return -EINVAL;
  
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /*
-diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
-index 785e72d4392e..293303f00b66 100644
---- a/fs/ntfs3/dir.c
-+++ b/fs/ntfs3/dir.c
-@@ -10,8 +10,6 @@
- #include <linux/fs.h>
- #include <linux/nls.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /* Convert little endian UTF-16 to NLS string. */
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 5fb3508e5422..13789543a0fb 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -13,8 +13,6 @@
- #include <linux/falloc.h>
- #include <linux/fiemap.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 007602badd90..b27f3ca2704b 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -9,8 +9,6 @@
- #include <linux/fs.h>
- #include <linux/vmalloc.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- #ifdef CONFIG_NTFS3_LZX_XPRESS
- #include "lib/lib.h"
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index 06492f088d60..4bf340babb32 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -10,8 +10,6 @@
- #include <linux/random.h>
- #include <linux/slab.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /*
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 4de9acb16968..85cbbb8f41ea 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -10,8 +10,6 @@
- #include <linux/fs.h>
- #include <linux/kernel.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- // clang-format off
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 6f81e3a49abf..a25f04dcb85b 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -8,10 +8,7 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/kernel.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- static const struct INDEX_NAMES {
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index 7dd162f6a7e2..06113610c529 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -13,8 +13,6 @@
- #include <linux/uio.h>
- #include <linux/writeback.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /*
-diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
-index 28f654561f27..d9614b8e1b4e 100644
---- a/fs/ntfs3/lznt.c
-+++ b/fs/ntfs3/lznt.c
-@@ -11,7 +11,6 @@
- #include <linux/string.h>
- #include <linux/types.h>
- 
--#include "debug.h"
- #include "ntfs_fs.h"
- 
- // clang-format off
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index bc741213ad84..ed29cd3e98f4 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -8,8 +8,6 @@
- #include <linux/fs.h>
- #include <linux/nls.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /*
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 38b7c1a9dc52..e6f37f9993a0 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -29,7 +29,6 @@
- #include <asm/div64.h>
- #include <asm/page.h>
- 
--#include "debug.h"
- #include "ntfs.h"
- 
- struct dentry;
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 861e35791506..3dd7b960ac8d 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -7,8 +7,6 @@
- 
- #include <linux/fs.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- static inline int compare_attr(const struct ATTRIB *left, enum ATTR_TYPE type,
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index a8fec651f973..f5a5ce7aa206 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -10,8 +10,6 @@
- #include <linux/fs.h>
- #include <linux/log2.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- /* runs_tree is a continues memory. Try to avoid big size. */
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 705d8b4f4894..bd8d39992b35 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -35,8 +35,6 @@
- #include <linux/seq_file.h>
- #include <linux/statfs.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- #ifdef CONFIG_NTFS3_LZX_XPRESS
- #include "lib/lib.h"
-@@ -772,7 +770,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 		/* No way to use ntfs_get_block in this case. */
- 		ntfs_err(
- 			sb,
--			"Failed to mount 'cause NTFS's cluster size (%u) is less than media sector size (%u)",
-+			"Failed to mount 'cause NTFS's cluster size (%u) is less than media's sector size (%u)",
- 			sbi->cluster_size, sector_size);
- 		goto out;
- 	}
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 111355692163..0673ba5e8c43 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -10,8 +10,6 @@
- #include <linux/posix_acl_xattr.h>
- #include <linux/xattr.h>
- 
--#include "debug.h"
--#include "ntfs.h"
- #include "ntfs_fs.h"
- 
- // clang-format off
+ 	r->membw.mba_sc = mba_sc;
+@@ -2317,7 +2326,7 @@ static int rdt_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		ctx->enable_cdpl2 = true;
+ 		return 0;
+ 	case Opt_mba_mbps:
+-		if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
++		if (!supports_mba_mbps())
+ 			return -EINVAL;
+ 		ctx->enable_mba_mbps = true;
+ 		return 0;
 -- 
-2.33.0
+2.30.2
 
