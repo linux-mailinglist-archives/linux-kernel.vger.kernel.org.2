@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D06241EDE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B36B41EDE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhJAMzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
+        id S231536AbhJAM5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhJAMzm (ORCPT
+        with ESMTP id S231434AbhJAM53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:55:42 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0106AC061775;
-        Fri,  1 Oct 2021 05:53:58 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id r4so20290505ybp.4;
-        Fri, 01 Oct 2021 05:53:57 -0700 (PDT)
+        Fri, 1 Oct 2021 08:57:29 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75367C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:55:45 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id n64so11347888oih.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=c+kURNAAkSIIC5kx7+rU/IV/731k5cWXXDLuC8d6BG4=;
-        b=CmoIj3+u5w6xdONToKlV8fG3jt47szGOKyPvH/oQSmMrhDRpA8wd8iTvAlViEFKcnE
-         ptqm7Fz8WTn/hYmhdBPUDI1pxU0BYKkaR0/Qx8uZUoU+s3AAdg43N+opw7vvcoUBvudJ
-         m+uduBukHAN126diABfdvwqCUu8S1uMeCv0z18Ca5Zu4h03H1g9e86piwSsC+VlqydfB
-         1pa456Rj02ulpijkQ9gFPtgOj7I+wxDjs//egaMSMWCNeOwmIMK8omDMPNLwztTIljWz
-         xbj4chFNRP/5Cm+zzHbNY0jKWhjRwdrHGn6hdZmAHKH1SW/MBKDTKU5BDE7ZJCuZg+4u
-         K0cA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/AsC9gcA0XJYYcAhr4WuFM8I+wFJ70cZAqi3ig1sGiA=;
+        b=HMEBWtnYLt6yISbEs4Q2Cwz1m3UQ1yulNvJ0hhpfERgJvtdLzIh9+EDAk3UocHZhDw
+         +zxT3mO1C/LFAzlH8Ndvye/XMNFjGM5/UWXaBl2Ix17uXm65Of7eZtFk9/wF7S0F3hHT
+         oVtdO4ywSBRBOP+7FYWCVaDdE36KJy7GUxqWAX/Ti4HZlw8bfD81t1vO20Q0K6ZhPdk9
+         7EijYtT2HxV/tSyl21XiAmdNDtGgLYgW8oowAbvJYtWf8CNC1mCwrKV/XXiUKvubFpVg
+         5dJRkd8VAvhj0WowVcz6SA4nXqmhVa+TovbEnklwBrIH9ojZBF+t5OKbORYUTVtqibtq
+         JAgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=c+kURNAAkSIIC5kx7+rU/IV/731k5cWXXDLuC8d6BG4=;
-        b=Hg3mpkULPyNHeStQfXOyXK673u9kLSEnIExa2fEki+69U+9E8bwE0twtOdGvsZVc+d
-         Fk6efwtKXUTNtX9Ksm52QovgT2u70pnjR3ghrA5ZnHGXt0lISdPhUt2IHuM+2FxOC96h
-         nNp5UsOSRK4SRORcqjnQhnUSUMLx1GbkoUw2/Pz4XquO8bOAAVmG5m87hglGbZ1xQVPw
-         rPeYPuCrZn6gsRODvo37XQj5x044wRF0LiMxAyzyEv1M/hUKx8X8LDpjwKSX36+vXSlq
-         tx8Zp1goES8OQokJfmSEqkBsqYoZQMr2xhWCJNYht3EhJZl9bNduhaIC4n2AoJfRnqjY
-         Op9g==
-X-Gm-Message-State: AOAM531w+u5HjDpRtWl7pQBzGvJIJ0Tl2A1PNsIXXVIDseqHjY7Wcl+I
-        lI53xh9+9Okilg5QKGxXJ4ktu9azxM+ku4yHqc8=
-X-Google-Smtp-Source: ABdhPJyoKAv0iarnUd7y3IYOy1Ztcq0Ch+N3p78eU2QqNjTH5HmI6jvK5PHdjjklcXIMiPSKYoLlsTnwZhQsST5T+GE=
-X-Received: by 2002:a25:c08a:: with SMTP id c132mr5971448ybf.49.1633092837128;
- Fri, 01 Oct 2021 05:53:57 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=/AsC9gcA0XJYYcAhr4WuFM8I+wFJ70cZAqi3ig1sGiA=;
+        b=7SIUkTKfQu74e5fq2FKTNSFtmxwjM9pwl8b6YQa3C5nwTV9h9qv30WahLbc4uDt2iH
+         +YcIKrbZ+9TRvEDbDH2CauqVl1bjrhqxw1CqPih9hgD6jPs+lqqywpIg39V/BPU6fU+R
+         kgEBKC+6RiFZZibT5IuzNelVdIhtlhqyoLcwzIkT+c8nLX1VE4/pz4WG0nit7z5yUP+o
+         XLm2Pg+T6p4F1AP/Ezap4l+L7anvytW8h13CX2JPvI2foMSQPlO0kFWn7GdsDsR+Q6b5
+         vEZKP5RjDozVNWARQe6rzOd9lef4Ptd4xEY7vero6naaIcR9cDQwy0ELwBraHEhGSMbs
+         5CEw==
+X-Gm-Message-State: AOAM533MtXdgvt2krbEili4FB8iYX1of+Ff/Q5VoKCqQFpJ5VYOlZiwD
+        pdIhPAUXu/6XUHcd7nTFPVqcCcOJPqjjadZhkTpS4Q==
+X-Google-Smtp-Source: ABdhPJygP7v+PRffHzXphUuOnN9ZUMARt4j5LSx+5wlRW/HRRgSzprzdwAptSS4dz+u7zDMbH+qHGrPh8RkgGOWupWc=
+X-Received: by 2002:aca:f189:: with SMTP id p131mr3753772oih.128.1633092944540;
+ Fri, 01 Oct 2021 05:55:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <YVXMc1A4D/y4kjim@shikoro> <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
- <YVbM3z7x+D0MCkTF@ninjato> <CA+V-a8uyQmW3+4hAt4534spKeQHDoeZzuJJE4RY70KLZfYOXoA@mail.gmail.com>
- <YVb5RXvh9agIS7MG@ninjato>
-In-Reply-To: <YVb5RXvh9agIS7MG@ninjato>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 1 Oct 2021 13:53:30 +0100
-Message-ID: <CA+V-a8vQ2EoMW18aEq5Ssa71M6VvA6YtOzU2UAe7L1Puorr07Q@mail.gmail.com>
-Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <CACT4Y+bgzorbDgYw=cguZ4WuZeLbqsdyKUeGiyQq3Vo9jyjs6Q@mail.gmail.com>
+ <YVXCzW+JHvClGG76@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVXCzW+JHvClGG76@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 1 Oct 2021 14:55:33 +0200
+Message-ID: <CACT4Y+aJJPhDKB51U3d=Jq5HLAupsP+giNKqi67jgpXoPg=4oQ@mail.gmail.com>
+Subject: Re: rseq with syscall as the last instruction
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On Thu, 30 Sept 2021 at 16:01, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Sep 28, 2021 at 11:09:24AM +0200, Dmitry Vyukov wrote:
+> > Hi rseq maintainers,
+> >
+> > I wonder if rseq can be used in the following scenario (or extended to be used).
+> > I want to pass extra arguments to syscalls using a kind of
+> > side-channel, for example, to say "do fault injection for the next
+> > system call", or "trace the next system call". But what is "next"
+> > system call should be atomic with respect to signals.
+> > Let's say there is shared per-task memory location known to the kernel
+> > where these arguments can be stored:
+> >
+> > __thread struct trace_descriptor desk;
+> > prctl(REGISTER_PER_TASK_TRACE_DESCRIPTOR, &desk);
+> >
+> > then before a system call I can setup the descriptor to enable tracing:
+> >
+> > desk = ...
+> > SYSCALL;
+> >
+> > The problem is that if a signal arrives in between we setup desk and
+> > SYSCALL instruction, we will actually trace some unrelated syscall in
+> > the signal handler.
+> > Potentially the kernel could switch/restore 'desk' around syscall
+> > delivery, but it becomes tricky/impossible for signal handlers that do
+> > longjmp or mess with PC in other ways; and also would require
+> > extending ucontext to include the desc information (not sure if it's
+> > feasible).
+> >
+> > So instead the idea is to protect this sequence with rseq that will be
+> > restarted on signal delivery:
+> >
+> > enter rseq critical section with end right after SYSCALL instruction;
+> > desk = ...
+> > SYSCALL;
+> >
+> > Then, the kernel can simply clear 'desc', on syscall delivery.
+> >
+> > rseq docs seem to suggest that this can work:
+> >
+> > https://lwn.net/Articles/774098/
+> > +Restartable sequences are atomic with respect to preemption (making it
+> > +atomic with respect to other threads running on the same CPU), as well
+> > +as signal delivery (user-space execution contexts nested over the same
+> > +thread). They either complete atomically with respect to preemption on
+> > +the current CPU and signal delivery, or they are aborted.
+> >
+> > But the doc also says that the sequence must not do syscalls:
+> >
+> > +Restartable sequences must not perform system calls. Doing so may result
+> > +in termination of the process by a segmentation fault.
+> >
+> > The question is:
+> > Can this restriction be weakened to allow syscalls as the last instruction?
+> > For flags in this case we would pass
+> > RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT and
+> > RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE, but no
+> > RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL.
+> >
+> > I don't see any fundamental reasons why this couldn't work b/c if we
+> > restart only on signals, then once we reach the syscall, rseq critical
+> > section is committed, right?
+> >
+> > Do you have any feeling of how hard it would be to support or if there
+> > can be some implementation issues?
+>
+> IIRC the only enforcement of this constraint is rseq_syscall() (which is
+> a NOP when !CONFIG_DEBUG_RSEQ, because performance).
+>
+> However, since we use regs->ip, which for SYSCALL points to right
+> *after* the SYSCALL instruction (for obvious reasons), it will not in
+> fact match in_rseq_cs().
+>
+> And as such, I think your scheme should just work as is. Did you try?
 
-On Fri, Oct 1, 2021 at 1:04 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
->
-> Hi Prabhakar,
->
-> I checked the G2L datasheet and reconsidered. It is better if your patch
-> goes in first. That means...
->
-> > > > > Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
-> > > > > datasheets? I am asking because I have a patch pending to remove writing
-> > > > > to undocumented locations. So, I was aboout to remove the IO3FV and
-> > > > > IO2FV macros.
-> > > > >
-> > > > Yes they are documented, you should be able to download the HW manual from [1]
-> > >
-> > > Great, then I will keep them!
->
-> ... that you could change the comments here from "undocumented" to
-> "documened for G2L" or similar.
->
-> > > > > > +             regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
-> > > > > > +             dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
-> > > > > > +             dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
-> > > > > > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
-> > > > >
-> > > > > regmap_update_bits?
-> > > > >
-> > > > Im a bit hesitant to use regmap_update_bits() here as some of the bits
-> > > > are not documented.
->
-> Here you can keep your code as is. I will change it afterwards if needed
-> once I clarified all undocumented locations.
->
-Thanks, will re-spin the patches with comments fixed.
-
-> Thanks and have a nice weekend,
->
-You too.
-
-Cheers,
-Prabhakar
-
->    Wolfram
->
+Well, no, I did not try (wasn't sure how to interpret results).
+Thanks, we will consider this option as well then.
