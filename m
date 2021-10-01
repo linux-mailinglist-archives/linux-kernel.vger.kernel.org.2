@@ -2,127 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75B041F7B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CD441F7C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356006AbhJAWsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356307AbhJAWsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:48:37 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E1BC0613B5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:46:07 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c20so10471057qtb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tnXGytG/2aEvcazdaoXj71bXQnwjyukOXIDiPveIZXA=;
-        b=pOTSnHYVXRz06VuaU1BDucThq3XLijVNOmqw8gUYgVjcX4bjaU1DPW80GPFpz1Bry3
-         5Izso0qtrLy+uxnjkbarKVIHYAhUgvRAYbABr2JkvP9GCyg+7YRvw6KqUUc7seGsa9fH
-         KzDaVUI4r8DRENRxq0vwC8QCWDmKp8VauDJh3yS5lxyhzeb0C6mReZGMghzJA7mUDjLv
-         3H6R6bTZK2L5cSKTP/HRhXJP2RtP51MG45N0gotai5Ttri7QJaEBuKZ8DLCGMwehfYns
-         QMf6evJgsJzNYeGrSyM/G3W4DM7LKIUGIRGLmulP3Gv60VEJqAsqbGSn5orZIQ0iTuZ9
-         WZEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tnXGytG/2aEvcazdaoXj71bXQnwjyukOXIDiPveIZXA=;
-        b=JZPeF0LTTZtFynlG0wp49Z6omBMt5ihAs1RIiVcsI0C3JJP4b4syJDT20ZATTymnlG
-         X+tM7ZMp0o/jKH3e/dvj4nZRbTc3ft4fOOqPFMtG87a5SkDhEjK5ouKj5nymlRZrIYk3
-         KN8OdiBt+l8QKjQYGPPj7Wetge/EdgQWFEEkTnynXHBZd7A5ouTVz9mG/Z1FAT4tfzI+
-         lQ3EARd1F0lU0KswEzxqTKD25XCGZPFS8jdFKzT1BRUr0rXfSR3gBhM/2KI19mwNuyjS
-         UTD3g57K4N/1ebsZo3/c18FRBJM0K+A9qy3LKhSo4rIs4Q+ReTByvlEsaVtgZWilFNuA
-         u9DA==
-X-Gm-Message-State: AOAM5326lakrGpVBN5HzlJxsuGKuEhm2cK+l5TzWL/Sn0wn2fXPYxcBi
-        CHNUuosVaxjGizei6se1WWyKGg==
-X-Google-Smtp-Source: ABdhPJwIsqD13TKJo7mm1SIikHRk6qEvBFD6JpS7ZAJB6SMruIQLkql7OpNf4qMoVFvzMVj7AMSNJA==
-X-Received: by 2002:ac8:7dc1:: with SMTP id c1mr551179qte.289.1633128366918;
-        Fri, 01 Oct 2021 15:46:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p187sm3759342qkd.101.2021.10.01.15.46.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 15:46:06 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mWRI5-009Y55-Ly; Fri, 01 Oct 2021 19:46:05 -0300
-Date:   Fri, 1 Oct 2021 19:46:05 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20211001224605.GS3544071@ziepe.ca>
-References: <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
- <20210929233540.GF3544071@ziepe.ca>
- <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
- <20210930003652.GH3544071@ziepe.ca>
- <20211001134856.GN3544071@ziepe.ca>
- <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
- <20211001174511.GQ3544071@ziepe.ca>
- <95ada0ac-08cc-5b77-8675-b955b1b6d488@deltatee.com>
- <20211001221405.GR3544071@ziepe.ca>
- <8871549c-63b5-d062-87ea-9036605984d5@deltatee.com>
+        id S1355862AbhJAWvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:51:12 -0400
+Received: from mga01.intel.com ([192.55.52.88]:9806 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230376AbhJAWtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:49:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="248174640"
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="248174640"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:47:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="521420383"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2021 15:47:29 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 15:47:29 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 1 Oct 2021 15:47:29 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 1 Oct 2021 15:47:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LKQXz47ynotuwu/ACdq6kg7mo1O+BipoMw6goPjF1DMgYsuw9jRo5KPu1RqdUOtCXxMSJtvL/5vOdjhE/VnmPrci0Gcm+wNJ/FfdSLTqDK0A2xP/4M6KrGcZVs9/x+g3Y+4tkPw5sFqp5rA7L8FuRTGLmQHUTbqi7rMP3mefv73p1n1lO67i57boHHH9jRnBLnGAhYpa9WuX7Q7MyHJm1FDiwKWHAP2hocxfo0GsqlGTVwjQP+/7g5IiQddYfNZND64eB5LeFjtLZyA7Wzt+IY2SRsco5g/H7IMW/fWRMH8Rp5XCyYloH1tBBFiskClZGERLLA1WDy1tQPHzUc7Sxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8OTAkgaY/1sxh4ysNU8ttz0VdxUvnBHyccx1+gPTGmQ=;
+ b=QE6e544sJca4j4cWE4ETzZJP3/gREovdP96WUgni+IfFU7/ksLPQXxSpbD9YtcHjaboIea3hozJ6gnG87dN1gmxx3L0112AjZADGbfE24t8bfHbiFZPdSHoqOMpoIg2CvZ0IsEdtqxQkOp3GaZ3FxjdQoiavCIlNCF4ae6VJJtrBBF4dpt0f1I/celn3sOHnuhW4KrhzFrEx30Gp7IcjjdEg1hcWJhrpfGgCMmDdKhrtuNXA5n8gQiWLzOHqkcExEiLXdwJ5Z4ZsdVTz9D9BW/osWbKVHxbBOh8X+vVS2aJK8POB/QZ6x/zDczJ0WGawFr8WXIT57wx0By8ttc524w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8OTAkgaY/1sxh4ysNU8ttz0VdxUvnBHyccx1+gPTGmQ=;
+ b=Du1mccL4qNA7at9Y6YOhL0ccdTV3nMTUJup9qYmii5SFOg43fLTit1qXnWxKU71eYDeNd7q4JjXlFOfZl7YgYxdacleZfh5qCvq/5bRDnC31BihFD5VZ7H5vGBjMAOkOkvBhb4U0FhxGTVNWlBf1gapK95V0vtyVefBshyAzZM8=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB5144.namprd11.prod.outlook.com (2603:10b6:510:3e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Fri, 1 Oct
+ 2021 22:47:28 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983%3]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
+ 22:47:28 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+Thread-Topic: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+Thread-Index: AQHXtxXjpXjC3Qk5Sky+qg9KSaDYk6u+vnGA
+Date:   Fri, 1 Oct 2021 22:47:27 +0000
+Message-ID: <B1364EA9-C3D0-4711-8C5D-01C8ED32447B@intel.com>
+References: <20211001223728.9309-1-chang.seok.bae@intel.com>
+In-Reply-To: <20211001223728.9309-1-chang.seok.bae@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.7)
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f5e9070a-3edd-4c04-957e-08d9852d71e2
+x-ms-traffictypediagnostic: PH0PR11MB5144:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB51440F7F3BC5896D99352F5CD8AB9@PH0PR11MB5144.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qQIb1lg9nk7G6RUynN4waFVrpKGdmCdrHDO0Rbr4/FCESIBS5j3TWrDirtACMBJi5BOUjhh8arCrDp+9reTkqawWrTwgmRVlvhDVl7qSrz+v+IOqJuep7OrZZ8u5jGZ446uiyivub6hMVz3UTnATZlzH6G4wk6oL8Y0cxnnRrLkScMpqc0Cmnn5m4ATjuc5RZ73YZm6gta/lqdl24F/nMctF53i3lyxEpjYNJnOt/b7P8J2xbRNxv63ZF1wJYAXlqmNPssFAIYwTnX+uXPvIHUZIqXsrRElIXbroSBJAziOJRFerGVGGO0n7P8AprHt5r9E5mQlU5X6FS3985BxNn2OA6Z29Cn8vQ/VhtbRaFgy2QjYhSdg1Ib7DnPEbCUmVN6ZpJEuWBSvfWYFoWtI8IfEPlI2wrMRdDN3olnF99ubmsfHTnTT7vm4HO0dPKW76h0kC0GJWRo9G83N9GQLcOS/0RcPkYXkMdlBHdHKM/DvzH4FH3jLRevfJRjUvCRsGLh2jKcUDdscO2xJxHkWNuJSUnfrtr2v5OU2t8rYaHNNQ4Rt0pYmdXIe7GKaOXDS88RiDUhHj8D3CYW0OoYV/77lBf5/qA4AWJZGlrrElXtJT9oHRY0zlt2DsYYp94QGOF3xSb/SAvlYbzrQLG2kJm3KTD/5lLX3SUl4v1KMmkceiv7AW2cH5WXGMvyuxzP/wnxXgl8kV86dW4ZlLCChpytucwvOf86/finmlsrNucf6YXmVhMj+MkUyVBSrvnLVvFU/jxNkh8GVXeCRqJG2cdTzt3H0v2kn/lCId8US2yJ21ekRXDENzVklGeOqcp5NZ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(4744005)(66446008)(66476007)(6486002)(8936002)(66556008)(4326008)(6916009)(508600001)(8676002)(5660300002)(316002)(6512007)(36756003)(71200400001)(64756008)(966005)(2906002)(33656002)(54906003)(66946007)(76116006)(2616005)(38070700005)(38100700002)(122000001)(186003)(26005)(86362001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fh6u42X4bLtX0vIOmEQceabp+vRtABzBBWX+Z3R0qdoSDhy06NqP4mL/L21Q?=
+ =?us-ascii?Q?PAvWU/+C9gUbcRQyvic3p04edx6r5gtUcOy/cM3Bk8wA/LBQb4JqX/++E25e?=
+ =?us-ascii?Q?9apEzj0UemU9XY9Du0XK3LWNJKSueclU8lY+8V2wYQJwc8cTqs2wQUv84Nw5?=
+ =?us-ascii?Q?+SVHB1Yw8prpQ9DK55fcTUPEZp8B/vERpeUboHLvop31VwLy+HEFCn83YK8e?=
+ =?us-ascii?Q?yp4JMSG1m/uHKlWqRlhuyhlM/qNgtWeAgA/BN49uSsskeprMAIH4ZtiGCN95?=
+ =?us-ascii?Q?5gFjXZEmc8fSmQmD+3GvVBaps7WF/qD9JatdY62OGDwUvZJz7S5pnWc2nQ/n?=
+ =?us-ascii?Q?g/oYXXHxwBJk1uMmOOTgFFajRkiJb6iPgbFrRZt2owc4rwzSOW2BqBFXGJ+X?=
+ =?us-ascii?Q?BwgroWV81x444yFM9+6LUqCddCBIMilUqvGVnYLpVwGnFyzfrnleypXyXkzg?=
+ =?us-ascii?Q?3g6wYBNojmLV1NlN3JJyWpr8okFB47NQiei8zxPLkyAlmL+eokUcea2388tQ?=
+ =?us-ascii?Q?3pUl0zVu30ad0o+uyT0nWC9zykvS+YjOdCGJJdAHsvzRGbMs5rxb9qRsTWeE?=
+ =?us-ascii?Q?32sBH1685koxZnkZdD3XPBsN/dKnCu1deBepliIDylylhMWAEp0Gj2SyOZ+9?=
+ =?us-ascii?Q?YwtQcKm3+L0IebU6kUPyvP5HV+Lu1d832cffSevH96GF3wCjebu6xpx9F3LL?=
+ =?us-ascii?Q?fZqtmE1a7V1JlGMP+2myobzp24NT4PtE9k70Y1oQKE89sJlG7z02iAiXI47k?=
+ =?us-ascii?Q?fLS5UzZ6gfNUxZxUieU4Jps1OzBClgvcDe+qy0MD4cJRFRElFjVTAECYXMBa?=
+ =?us-ascii?Q?2nkrYRnEpM7sHwVfLTemjsb2F53BSKyW5BjIUedmvPSyCTmpoFMWI7g6PI18?=
+ =?us-ascii?Q?lRy6p6KjqfhhVwx0rx8biW9jw/K/O66C0E/l1tAA4gqC9VKWeN5Ec7wR/esb?=
+ =?us-ascii?Q?Gqux/NiCMkpXHXfyWBnxs8vSxu86VqSWCq5LjvzE7S8npdaRAQSg036EkwDE?=
+ =?us-ascii?Q?JcnQeTRHX7zToFd1MFH79OY0Nwm8v9AnCNLTha2jmirGYzZky4OFGhZuB8MZ?=
+ =?us-ascii?Q?5WuRVMTDEEzEKFRuYIjF3UIbzlAMbLnCnTkm+2Z7ELhjAcfrmyXWZkfnzxja?=
+ =?us-ascii?Q?WL67vO5RGEaqVClFyJyBX3LFDBsGSwDwxo6h87Mm1CLk4R2JgVOSQYae4ZaI?=
+ =?us-ascii?Q?69YFG1RnF7hcIlYZC70wgr3UzKCcbfOwACv79xIfn6WFp/ikVRQ0duWITam5?=
+ =?us-ascii?Q?UXiEZw2EaCPDoPv1I31eJMzje0V15d32qCLiLkljUDSIvzsksE1m7fZEuUmX?=
+ =?us-ascii?Q?EwgN1rKiIjDb1ORqD11Dg+4P?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <84C314E7DB6EE54CA3A7FEF9BDE909E5@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8871549c-63b5-d062-87ea-9036605984d5@deltatee.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5e9070a-3edd-4c04-957e-08d9852d71e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 22:47:27.8929
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VoL3ilrV7Uh/BXJfRm/AgL0YxRKeIwnr4WNK5daopq+OYfCsdfDrzdIQTdhnHIppzycnybcaUbGLtbwlWOKhmDtKYx5swNqYjTT0o46fTRw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5144
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 04:22:28PM -0600, Logan Gunthorpe wrote:
+Hi Thomas,
 
-> > It would close this issue, however synchronize_rcu() is very slow
-> > (think > 1second) in some cases and thus cannot be inserted here.
-> 
-> It shouldn't be *that* slow, at least not the vast majority of the
-> time... it seems a bit unreasonable that a CPU wouldn't schedule for
-> more than a second. 
+Sending this version as it follows up the discussion [1] with some code cha=
+nges from v10. This is not intended to ignore your comment on v10 at all. A=
+ppreciate your points on my oversights that I will address in v12 soon.
 
-I've seen bug reports on exactly this, it is well known. Loaded
-big multi-cpu systems have high delays here, for whatever reason.
+[1] https://lore.kernel.org/lkml/CAJvTdKkK=3D_pp1PrWdh1_GN73VifuAkivnErgK+b=
+o2h34Vd_55w@mail.gmail.com/#t
 
-> But these aren't fast paths and synchronize_rcu() already gets
-> called in the unbind path for p2pdma a of couple times. I'm sure it
-> would also be fine to slow down the vma_close() path as well.
-
-vma_close is done in a loop destroying vma's and if each synchronize
-costs > 1s it can take forever to close a process. We had to kill a
-similar use of synchronize_rcu in RDMA because users were complaining
-of > 40s process exit times.
-
-The driver unload path is fine to be slow, and is probably done on an
-unloaded system where synchronize_rcu is not so bad
-
-Anyway, it is not really something for this series to fix, just
-something we should all be aware of and probably ought to get fixed
-before we do much more with ZONE_DEVICE pages
-
-Jason
+Thanks,
+Chang=
