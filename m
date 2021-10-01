@@ -2,157 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1AC41F666
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A7E41F66A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355442AbhJAUlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:41:16 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57916 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355332AbhJAUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:41:15 -0400
-Received: from zn.tnic (p200300ec2f0e8e008cd8fcde3ecc481f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:8cd8:fcde:3ecc:481f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E10001EC05DE;
-        Fri,  1 Oct 2021 22:39:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633120769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Nx12u0cB1s3RsxRSfxjFtysx8A9z2kvicyKJknGp5i4=;
-        b=QXYPwXLiwkYiXk85g0gRv5E0xzRqmPapSW3XPk9wdv7llQVr3hlir2tPQtbMBbunIjJT48
-        kxDx+7tBMI/XOsG4OIQkjHhZnQUEyHrwoPpCL7/29FEQ45E+FIHfNJYI40zuhnmfRJmLmi
-        tpVpmBfmz9u+lqasle08IumwAedRhvY=
-Date:   Fri, 1 Oct 2021 22:39:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
-Message-ID: <YVdx/SRNkeRFnIuX@zn.tnic>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
- <YVbNlXwiASQEsG+x@zn.tnic>
- <YVb2AGXAwYx/OI6J@suse.de>
- <YVcF9ENTfLAGaLec@zn.tnic>
- <YVcGdpVuSsieFL8W@suse.de>
- <YVcSuVqmTPiw4YLk@zn.tnic>
+        id S1355470AbhJAUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355332AbhJAUo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:44:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2636BC061775;
+        Fri,  1 Oct 2021 13:42:45 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j5so38471985lfg.8;
+        Fri, 01 Oct 2021 13:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VaEB82g66moSG49ibSQm4DaIHpTLHO/JhyYD6WTE38E=;
+        b=WT8tOvXoMB55QTeKzRCKfDDees9R7IsFTEjbNDM7JRfSa7C0vAXxtXKNYIj+zr9Zu+
+         KUa8MjXjG1pNe0dOCW/yqpVM8T7WmqHk7tBHtTcxB4p7Z3aBkNvmSYeb5PlnJg6Tl82Q
+         5HGo4ZIl9irAmOCGJJYfUyh4WJJP99Qgj0lMPZXyYpphgBFE19VF/8yd9+Ivc6V7UZcj
+         wNhA1wq8YKBLUtNe+pAbripBAKtsgYZD2QwdVzj0ETmpl1+4ECOLtGIavmMflJ5420ZU
+         a9HpFVggIV528qqWJ5nZWuozx/zlxo7WcIerGvq7Bp+4SPpGd4/Rhom9F9bB0sf9Nw0j
+         SLjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VaEB82g66moSG49ibSQm4DaIHpTLHO/JhyYD6WTE38E=;
+        b=pD0hliMBzWeeQm/WoJnGyzPvBvhElvOxYeTH6cLaCU6g+4kCbn2GYz8mGrFQ4g/aSu
+         s2GwIDJxjfDenK9WorwKvfqK7uBlFfATLb24KfeLhj26tLonE0Uy4FJBDUmwZ9O4cm2+
+         5c1SXbWhFssvfT0p/JiQCpBS8owOf+aCWyLMB7mZ+tgvLAZWQSribeOXKXnNlJ+wZ79r
+         5zqfoUudHfaQHTsb4/woDxCiCylJeOHvXek9ueMnvE+wXbJz7Qb6IjP7rX4ds04BGnl/
+         xPO/BUdnx508kFwzLjXNEqy975L3IdE9rVMlm5ULbVI3UOWY3yTk3nG1GZpIo/3KiumY
+         9Y/A==
+X-Gm-Message-State: AOAM530+YVjSgRzLDBXOlZQ7Q6Rl/p5bLSFX0yrQ06o/2tw2vWpNiTHF
+        wfiXOeaQSi2FpRfJ5Kf/EHxiKcYbB1oPIkwwWNo=
+X-Google-Smtp-Source: ABdhPJy9TwRcdV4sMm8TgMLXEZJfac+zanXG7g7DsutApUoAt1WpMctRE7+tJWPf4akrToetBj1AgpRLy0chKORI6OE=
+X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr92771lfb.161.1633120963250;
+ Fri, 01 Oct 2021 13:42:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVcSuVqmTPiw4YLk@zn.tnic>
+References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
+ <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d1e5b178-47f5-9791-73e9-0c1f805b0fca@6wind.com> <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAASuNyVe8z1R6xyCfSAxZbcrL3dej1n8TXXkqS-e8QvA6eWd+w@mail.gmail.com> <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
+In-Reply-To: <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
+From:   Cpp Code <cpp.code.lv@gmail.com>
+Date:   Fri, 1 Oct 2021 13:42:32 -0700
+Message-ID: <CAASuNyW81zpSu+FGSDuUrOsyqJj7SokZtvX081BbeXi0ARBaYg@mail.gmail.com>
+Subject: Re: [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6 extension
+ header support
+To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        pshelar@ovn.org, "David S. Miller" <davem@davemloft.net>,
+        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It doesn't get any more straight-forward than this.
+On Fri, Oct 1, 2021 at 12:21 AM Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+>
+> Le 30/09/2021 =C3=A0 18:11, Cpp Code a =C3=A9crit :
+> > On Wed, Sep 29, 2021 at 6:19 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >>
+> >> On Wed, 29 Sep 2021 08:19:05 +0200 Nicolas Dichtel wrote:
+> >>>> /* Insert a kernel only KEY_ATTR */
+> >>>> #define OVS_KEY_ATTR_TUNNEL_INFO    __OVS_KEY_ATTR_MAX
+> >>>> #undef OVS_KEY_ATTR_MAX
+> >>>> #define OVS_KEY_ATTR_MAX            __OVS_KEY_ATTR_MAX
+> >>> Following the other thread [1], this will break if a new app runs ove=
+r an old
+> >>> kernel.
+> >>
+> >> Good point.
+> >>
+> >>> Why not simply expose this attribute to userspace and throw an error =
+if a
+> >>> userspace app uses it?
+> >>
+> >> Does it matter if it's exposed or not? Either way the parsing policy
+> >> for attrs coming from user space should have a reject for the value.
+> >> (I say that not having looked at the code, so maybe I shouldn't...)
+> >
+> > To remove some confusion, there are some architectural nuances if we
+> > want to extend code without large refactor.
+> > The ovs_key_attr is defined only in kernel side. Userspace side is
+> > generated from this file. As well the code can be built without kernel
+> > modules.
+> > The code inside OVS repository and net-next is not identical, but I
+> > try to keep some consistency.
+> I didn't get why OVS_KEY_ATTR_TUNNEL_INFO cannot be exposed to userspace.
 
-We can ifdef around the ESTACKS_MEMBERS VC and VC2 arrays so that those
-things do get allocated only on a CONFIG_AMD_MEM_ENCRYPT kernel so that
-we don't waste 4 pages per CPU on machines which don't do SEV but meh.
+OVS_KEY_ATTR_TUNNEL_INFO is compressed version of OVS_KEY_ATTR_TUNNEL
+and for clarity purposes its not exposed to userspace as it will never
+use it.
+I would say it's a coding style as it would not brake anything if exposed.
 
-Thoughts?
+>
+> >
+> > JFYI This is the file responsible for generating userspace part:
+> > https://github.com/openvswitch/ovs/blob/master/build-aux/extract-odp-ne=
+tlink-h
+> > This is the how corresponding file for ovs_key_attr looks inside OVS:
+> > https://github.com/openvswitch/ovs/blob/master/datapath/linux/compat/in=
+clude/linux/openvswitch.h
+> > one can see there are more values than in net-next version.
+> There are still some '#ifdef __KERNEL__'. The standard 'make headers_inst=
+all'
+> filters them. Why not using this standard mechanism?
 
----
-diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
-index 3d52b094850a..13a3e8510c33 100644
---- a/arch/x86/include/asm/cpu_entry_area.h
-+++ b/arch/x86/include/asm/cpu_entry_area.h
-@@ -21,9 +21,9 @@
- 	char	MCE_stack_guard[guardsize];			\
- 	char	MCE_stack[EXCEPTION_STKSZ];			\
- 	char	VC_stack_guard[guardsize];			\
--	char	VC_stack[optional_stack_size];			\
-+	char	VC_stack[EXCEPTION_STKSZ];			\
- 	char	VC2_stack_guard[guardsize];			\
--	char	VC2_stack[optional_stack_size];			\
-+	char	VC2_stack[EXCEPTION_STKSZ];			\
- 	char	IST_top_guard[guardsize];			\
- 
- /* The exception stacks' physical storage. No guard pages required */
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index a6895e440bc3..88401675dabb 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -46,16 +46,6 @@ static struct ghcb __initdata *boot_ghcb;
- struct sev_es_runtime_data {
- 	struct ghcb ghcb_page;
- 
--	/* Physical storage for the per-CPU IST stack of the #VC handler */
--	char ist_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
--
--	/*
--	 * Physical storage for the per-CPU fall-back stack of the #VC handler.
--	 * The fall-back stack is used when it is not safe to switch back to the
--	 * interrupted stack in the #VC entry code.
--	 */
--	char fallback_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
--
- 	/*
- 	 * Reserve one page per CPU as backup storage for the unencrypted GHCB.
- 	 * It is needed when an NMI happens while the #VC handler uses the real
-@@ -99,27 +89,6 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
- /* Needed in vc_early_forward_exception */
- void do_early_exception(struct pt_regs *regs, int trapnr);
- 
--static void __init setup_vc_stacks(int cpu)
--{
--	struct sev_es_runtime_data *data;
--	struct cpu_entry_area *cea;
--	unsigned long vaddr;
--	phys_addr_t pa;
--
--	data = per_cpu(runtime_data, cpu);
--	cea  = get_cpu_entry_area(cpu);
--
--	/* Map #VC IST stack */
--	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
--	pa    = __pa(data->ist_stack);
--	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
--
--	/* Map VC fall-back stack */
--	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC2);
--	pa    = __pa(data->fallback_stack);
--	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
--}
--
- static __always_inline bool on_vc_stack(struct pt_regs *regs)
- {
- 	unsigned long sp = regs->sp;
-@@ -787,7 +756,6 @@ void __init sev_es_init_vc_handling(void)
- 	for_each_possible_cpu(cpu) {
- 		alloc_runtime_data(cpu);
- 		init_ghcb(cpu);
--		setup_vc_stacks(cpu);
- 	}
- 
- 	sev_es_setup_play_dead();
-diff --git a/arch/x86/mm/cpu_entry_area.c b/arch/x86/mm/cpu_entry_area.c
-index f5e1e60c9095..82d062414f19 100644
---- a/arch/x86/mm/cpu_entry_area.c
-+++ b/arch/x86/mm/cpu_entry_area.c
-@@ -110,6 +110,13 @@ static void __init percpu_setup_exception_stacks(unsigned int cpu)
- 	cea_map_stack(NMI);
- 	cea_map_stack(DB);
- 	cea_map_stack(MCE);
-+
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
-+		if (sev_es_active()) {
-+			cea_map_stack(VC);
-+			cea_map_stack(VC2);
-+		}
-+	}
- }
- #else
- static inline void percpu_setup_exception_stacks(unsigned int cpu)
+Could you elaborate on this, I don't quite understand the idea!? Which
+ifdef you are referring, the one along OVS_KEY_ATTR_TUNNEL_INFO or
+some other?
 
--- 
-Regards/Gruss,
-    Boris.
+>
+> In this file, there are two attributes (OVS_KEY_ATTR_PACKET_TYPE and
+> OVS_KEY_ATTR_ND_EXTENSIONS) that doesn't exist in the kernel.
+> This will also breaks if an old app runs over a new kernel. I don't see h=
+ow it
+> is possible to keep the compat between {old|new} {kernel|app}.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Looks like this most likely is a bug while working on multiple
+versions of code.  Need to do add more padding.
+
+>
+>
+> Regards,
+> Nicolas
