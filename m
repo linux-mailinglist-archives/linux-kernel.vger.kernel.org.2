@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6F141EB28
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223B141EB2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353652AbhJAKtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:49:13 -0400
-Received: from mga05.intel.com ([192.55.52.43]:2204 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231237AbhJAKtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:49:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310942535"
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="310942535"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 03:47:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="556239341"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2021 03:47:24 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id 0B4E1580970;
-        Fri,  1 Oct 2021 03:47:24 -0700 (PDT)
-Message-ID: <b3602f18c657765c604531430052efc62f85e83b.camel@linux.intel.com>
-Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
- driver
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
-        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Date:   Fri, 01 Oct 2021 03:47:23 -0700
-In-Reply-To: <YVa13/iTdZR6xkiq@kroah.com>
-References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
-         <20211001012815.1999501-6-david.e.box@linux.intel.com>
-         <YVa13/iTdZR6xkiq@kroah.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1353666AbhJAKuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:50:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41328 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231237AbhJAKuP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:50:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 994711FD61;
+        Fri,  1 Oct 2021 10:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633085309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NysnsI/e5faCEp+kLmLJ5w8n+/uCw/Z1o1IAQZbc4OY=;
+        b=IskfcKfihcAh9i9hI/07/freT+imtqyJ7RH7gfED0K/OnJ+XLayt59YNvovU06gwdyCzfO
+        bttW7vjH/qL7hNDzFx3Pj/V5fLPlugJcL8E1Vq2+6BSbYw+oyh08RgYyqHW5bFwgFBx4Vt
+        tH6tJIFMz59sg2BWuC92moylC88+EuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633085309;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NysnsI/e5faCEp+kLmLJ5w8n+/uCw/Z1o1IAQZbc4OY=;
+        b=EIGN09vbyN/Kvckj2OqhikWMi8PsU0BnfUEwZNWYbtn61aNmgtkMonPe/1EkyxWlFCxmPg
+        yJklWgEULlL4XpDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 70A2BA3B83;
+        Fri,  1 Oct 2021 10:48:29 +0000 (UTC)
+Date:   Fri, 01 Oct 2021 12:48:29 +0200
+Message-ID: <s5htui1hvgi.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: usb-audio: Fix sum of uninitialized variable sample_accum
+In-Reply-To: <20211001104417.14291-1-colin.king@canonical.com>
+References: <20211001104417.14291-1-colin.king@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-01 at 09:16 +0200, Greg KH wrote:
-> On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
-> > Intel Software Defined Silicon (SDSi) is a post manufacturing mechanism for
-> > activating additional silicon features. Features are enabled through a
-> > license activation process.  The SDSi driver provides a per socket, ioctl
-> > interface for applications to perform 3 main provisioning functions:
-> > 
-> > 1. Provision an Authentication Key Certificate (AKC), a key written to
-> >    internal NVRAM that is used to authenticate a capability specific
-> >    activation payload.
-> > 
-> > 2. Provision a Capability Activation Payload (CAP), a token authenticated
-> >    using the AKC and applied to the CPU configuration to activate a new
-> >    feature.
-> > 
-> > 3. Read the SDSi State Certificate, containing the CPU configuration
-> >    state.
-> > 
-> > The ioctl operations perform function specific mailbox commands that
-> > forward the requests to SDSi hardware to perform authentication of the
-> > payloads and enable the silicon configuration (to be made available after
-> > power cycling).
-> > 
-> > The SDSi device itself is enumerated as an auxiliary device from the
-> > intel_extended_caps driver and as such has a build dependency on
-> > CONFIG_INTEL_EXTENDED_CAPS.
-> > 
-> > Link: https://github.com/intel/intel-sdsi
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+On Fri, 01 Oct 2021 12:44:17 +0200,
+Colin King wrote:
 > 
-> I do not see the "required" review that Intel developers need when
-> sending stuff to me.  What happened here?
-
-Ah. You were added because of the doc change. Normally, the changes to the driver wouldn't have gone
-through you. So it's just a miss on that. But it been through internal review.
-
-David
-
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> thanks,
+> Variable sample_accum is not being intialized and then has
+> ep->sample_rem added to it, leading to a bogus value. One solution
+> is to initialize it to zero at declaration time, but it is probably
+> best to just assign it to ep->sample_rem on first use.
 > 
-> greg k-h
+> Addresses-Coveriry: ("Uninitialized scalar variable")
+> Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Thanks for the patch, but it's no right fix.  The Fixes tag points to
+a wrong commit, it was d215f63d49da9a8803af3e81acd6cad743686573
+    ALSA: usb-audio: Check available frames for the next packet size
+  
+And sample_accum has to be initialized from ep->sample_accum instead.
+I'll post the proper fix.
 
 
+Takashi
+
+
+> ---
+>  sound/usb/endpoint.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 42c0d2db8ba8..c6a33732db3f 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -182,7 +182,7 @@ static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
+>  	if (ep->fill_max)
+>  		return ep->maxframesize;
+>  
+> -	sample_accum += ep->sample_rem;
+> +	sample_accum = ep->sample_rem;
+>  	if (sample_accum >= ep->pps) {
+>  		sample_accum -= ep->pps;
+>  		ret = ep->packsize[1];
+> -- 
+> 2.32.0
+> 
