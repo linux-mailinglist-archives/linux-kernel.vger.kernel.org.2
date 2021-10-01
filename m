@@ -2,137 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AB041F6F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C91F41F6F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355427AbhJAVc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 17:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355158AbhJAVc5 (ORCPT
+        id S1355496AbhJAVeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 17:34:07 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:36212 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355158AbhJAVeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:32:57 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C211C06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 14:31:12 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id a18so5378378wru.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 14:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gbMaNhtOH4nXLp4HUS2ZPT1VowmcEtHTXpHcBFPpVz4=;
-        b=GepQiSuw0T0mJ1Cm1ZrL8yaNRxwFtjYqccsjcsM+yFgmRwMWX2QtZTUgab7+hyDtfV
-         r3qnReN67T/1jtXEkurkt7QPwLn3gzSIhvvpi0/DweLrDJ4q62exrQFKdxTg1znpJwVO
-         2mLTd4Mld7lyUU9pRGybmMJq4TWpM70wiwMIez9+bcVXsJPAxDVo4p7fSS1jtS7d0iWs
-         2oKVY/Qv9KDrvGuO0+/bhW0VhrtazQcCDhK1FgyIYEm7P6oAgpU+hV/qFuwRB6JBhB57
-         zNDApFqcoYy2GAKX3fH6Av8P2Qp1hhWNfApIeJV+NjCruyyCpYApexzH+vK2MDsUwwIE
-         +aVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gbMaNhtOH4nXLp4HUS2ZPT1VowmcEtHTXpHcBFPpVz4=;
-        b=IZJ81lndmVenxU5I4V6JqvYp/Is2qPxZ5tXkn5t2hwIgsjIri75wlfmngtJfCif5L2
-         vNX+sw24VtdheGDb/R0FvY6HJin6dmjmqk7qDvE5DUKMiC3u3kzvq44DaMuJMi0NAG0y
-         s27pgR0w2Dsp3wV1hJy3rb/wvulZH7ZrRn4XC4RBBCHTTg9nXcwMx8AFtPy+SKpDQ6y2
-         jHB1dlrWYdJuFBHiQ87WRHNXpIfVRMm7jJlYMUG9rWJ+LuTA1me+T7u5p4fkEWULyOIV
-         DdL66oYkRHwnGwJbwpApfAjwv9fL6e0nCSPpGYRHmyryYdLIY98ZJZ2Xx/vSRpDszlm7
-         aPrw==
-X-Gm-Message-State: AOAM530qPWNFtKyiSNgknBzGKZpvF2+0yBzuleosM8jRQ/+H547UcVPY
-        0dhZZj0/TUFNWJDZNQuD0gqZpw==
-X-Google-Smtp-Source: ABdhPJw66kQ9/jT7l/6SvbcqiM7kpnCVCSg5UgghtKDOc3IWGsjuYaHH4/ti9PBB8a9opfK2qnJwsw==
-X-Received: by 2002:adf:a154:: with SMTP id r20mr203761wrr.326.1633123870708;
-        Fri, 01 Oct 2021 14:31:10 -0700 (PDT)
-Received: from [192.168.1.12] (hst-221-15.medicom.bg. [84.238.221.15])
-        by smtp.googlemail.com with ESMTPSA id d3sm7839997wrb.36.2021.10.01.14.31.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 14:31:10 -0700 (PDT)
-Subject: Re: [PATCH v4 6/7] media: venus: helpers: update NUM_MBS macro
- calculation
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
- <1628588875-23790-7-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <283e23db-5383-57d7-48ca-0efa03420335@linaro.org>
-Date:   Sat, 2 Oct 2021 00:31:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 1 Oct 2021 17:34:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=9EqXMVRmHPxBHNxMn8elH1LYNshwi6HghvHvCX5UL6E=; b=Ejp+EqTjTRV7gnNEFupiDYQyxb
+        nFwiBpC4Tsx8bhC2FmLXF+BwF0jgp36UFoLJSUEvJMos+Sb9NkpwZNGVfh979vJUsAiFpyNNwQud2
+        gip51Dy4ZfSB234inFzkXham6c5qNZ07aRFsmNmcBc/6oSLd7VLqj2Qs9H6n+qr3DD/BQN8IpB2wW
+        AY3W09qboBzhuQ3RA47l4BgXH9tYkMd8UHx90YbDglJuZlg71Qe3xJPP9mHEjCzfkYYPZcyLWI4z2
+        BN2y8Qbup7TpjnAyVe8c8JkBYHzkjiAGeMSoSiaFD88cNJQ/FKO6lGsrtjYSaf8SLzOWOCL5bFMX4
+        XR1Vcgnw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1mWQ8h-0007oG-6i; Fri, 01 Oct 2021 15:32:20 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.94.2)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1mWQ8e-0000zS-Kh; Fri, 01 Oct 2021 15:32:16 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Weihang Li <liweihang@huawei.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Fri,  1 Oct 2021 15:32:15 -0600
+Message-Id: <20211001213215.3761-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1628588875-23790-7-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, leon@kernel.org, zhengyongjun3@huawei.com, liangwenpeng@huawei.com, liweihang@huawei.com, mbloch@nvidia.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.4 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_FREE,MYRULES_NO_TEXT,MYRULES_OFFER autolearn=no
+        autolearn_force=no version=3.4.2
+Subject: [PATCH] RDMA/rw: switch to dma_map_sgtable()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+There are a couple of subtle error path bugs related to mapping the
+sgls:
 
-On 8/10/21 12:47 PM, Dikshita Agarwal wrote:
-> Consider alignment while calculating NUM_MBS.
-> 
-> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  drivers/media/platform/qcom/venus/helpers.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> index 60a2775..2db33ba 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.c
-> +++ b/drivers/media/platform/qcom/venus/helpers.c
-> @@ -18,8 +18,8 @@
->  #include "hfi_platform.h"
->  #include "hfi_parser.h"
->  
-> -#define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
-> -#define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
-> +#define NUM_MBS_720P	(((ALIGN(1280, 16)) >> 4) * ((ALIGN(736, 16)) >> 4))
-> +#define NUM_MBS_4K	(((ALIGN(4096, 16)) >> 4) * ((ALIGN(2304, 16)) >> 4))
->  
->  struct intbuf {
->  	struct list_head list;
-> @@ -1098,16 +1098,17 @@ static u32 venus_helper_get_work_mode(struct venus_inst *inst)
->  	u32 num_mbs;
->  
->  	mode = VIDC_WORK_MODE_2;
-> +
->  	if (inst->session_type == VIDC_SESSION_TYPE_DEC) {
-> -		num_mbs = (ALIGN(inst->height, 16) * ALIGN(inst->width, 16)) / 256;
-> +		num_mbs = ((ALIGN(inst->height, 16))/16 * (ALIGN(inst->width, 16)))/16;
+- In rdma_rw_ctx_init(), dma_unmap would be called with an sg that
+  could have been incremented from the original call, as well as an
+  nents that was not the original number of nents called when mapped.
+- Similarly in rdma_rw_ctx_signature_init, both sg and prot_sg were
+  unmapped with the incorrect number of nents.
 
-Could you help me understand what is the difference between both
-calculations? IMO this patch should only change NUM_MBS_720P and
-NUM_MBS_4K macros.
+To fix this, switch to the sgtable interface for mapping which
+conveniently stores the original nents for unmapping. This will get
+cleaned up further once the dma mapping interface supports P2PDMA and
+pci_p2pdma_map_sg() can be removed. At that point the sgtable interface
+will be preferred as it offers better error reporting for P2PDMA pages.
 
->  		if (inst->hfi_codec == HFI_VIDEO_CODEC_MPEG2 ||
-> -		    inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE ||
-> -		    num_mbs <= NUM_MBS_720P)
-> +			inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE ||
-> +			num_mbs <= NUM_MBS_720P)
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
 
-This change just makes indentation wrong and also it is not related to
-the patch subject.
+This patch was extracted from my P2PDMA patchset per Jason's request[1]
+seeing it fixes some bugs.
 
->  			mode = VIDC_WORK_MODE_1;
->  	} else {
->  		num_mbs = (ALIGN(inst->out_height, 16) * ALIGN(inst->out_width, 16)) / 256;
->  		if (inst->hfi_codec == HFI_VIDEO_CODEC_VP8 &&
-> -		    num_mbs <= NUM_MBS_4K)
-> +			num_mbs <= NUM_MBS_4K)
+[1] https://lore.kernel.org/all/20210928194325.GS3544071@ziepe.ca/
 
-ditto
+ drivers/infiniband/core/rw.c | 66 ++++++++++++++++++++++--------------
+ 1 file changed, 41 insertions(+), 25 deletions(-)
 
->  			mode = VIDC_WORK_MODE_1;
->  	}
->  
-> 
+diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
+index 5221cce65675..5a3bd41b331c 100644
+--- a/drivers/infiniband/core/rw.c
++++ b/drivers/infiniband/core/rw.c
+@@ -282,15 +282,22 @@ static void rdma_rw_unmap_sg(struct ib_device *dev, struct scatterlist *sg,
+ 		ib_dma_unmap_sg(dev, sg, sg_cnt, dir);
+ }
 
--- 
-regards,
-Stan
+-static int rdma_rw_map_sg(struct ib_device *dev, struct scatterlist *sg,
+-			  u32 sg_cnt, enum dma_data_direction dir)
++static int rdma_rw_map_sgtable(struct ib_device *dev, struct sg_table *sgt,
++			       enum dma_data_direction dir)
+ {
+-	if (is_pci_p2pdma_page(sg_page(sg))) {
++	int nents;
++
++	if (is_pci_p2pdma_page(sg_page(sgt->sgl))) {
+ 		if (WARN_ON_ONCE(ib_uses_virt_dma(dev)))
+ 			return 0;
+-		return pci_p2pdma_map_sg(dev->dma_device, sg, sg_cnt, dir);
++		nents = pci_p2pdma_map_sg(dev->dma_device, sgt->sgl,
++					  sgt->orig_nents, dir);
++		if (!nents)
++			return -EIO;
++		sgt->nents = nents;
++		return 0;
+ 	}
+-	return ib_dma_map_sg(dev, sg, sg_cnt, dir);
++	return ib_dma_map_sgtable_attrs(dev, sgt, dir, 0);
+ }
+
+ /**
+@@ -313,12 +320,16 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u32 port_num,
+ 		u64 remote_addr, u32 rkey, enum dma_data_direction dir)
+ {
+ 	struct ib_device *dev = qp->pd->device;
++	struct sg_table sgt = {
++		.sgl = sg,
++		.orig_nents = sg_cnt,
++	};
+ 	int ret;
+
+-	ret = rdma_rw_map_sg(dev, sg, sg_cnt, dir);
+-	if (!ret)
+-		return -ENOMEM;
+-	sg_cnt = ret;
++	ret = rdma_rw_map_sgtable(dev, &sgt, dir);
++	if (ret)
++		return ret;
++	sg_cnt = sgt.nents;
+
+ 	/*
+ 	 * Skip to the S/G entry that sg_offset falls into:
+@@ -354,7 +365,7 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u32 port_num,
+ 	return ret;
+
+ out_unmap_sg:
+-	rdma_rw_unmap_sg(dev, sg, sg_cnt, dir);
++	rdma_rw_unmap_sg(dev, sgt.sgl, sgt.orig_nents, dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_init);
+@@ -385,6 +396,14 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 	struct ib_device *dev = qp->pd->device;
+ 	u32 pages_per_mr = rdma_rw_fr_page_list_len(qp->pd->device,
+ 						    qp->integrity_en);
++	struct sg_table sgt = {
++		.sgl = sg,
++		.orig_nents = sg_cnt,
++	};
++	struct sg_table prot_sgt = {
++		.sgl = prot_sg,
++		.orig_nents = prot_sg_cnt,
++	};
+ 	struct ib_rdma_wr *rdma_wr;
+ 	int count = 0, ret;
+
+@@ -394,18 +413,14 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 		return -EINVAL;
+ 	}
+
+-	ret = rdma_rw_map_sg(dev, sg, sg_cnt, dir);
+-	if (!ret)
+-		return -ENOMEM;
+-	sg_cnt = ret;
++	ret = rdma_rw_map_sgtable(dev, &sgt, dir);
++	if (ret)
++		return ret;
+
+ 	if (prot_sg_cnt) {
+-		ret = rdma_rw_map_sg(dev, prot_sg, prot_sg_cnt, dir);
+-		if (!ret) {
+-			ret = -ENOMEM;
++		ret = rdma_rw_map_sgtable(dev, &prot_sgt, dir);
++		if (ret)
+ 			goto out_unmap_sg;
+-		}
+-		prot_sg_cnt = ret;
+ 	}
+
+ 	ctx->type = RDMA_RW_SIG_MR;
+@@ -426,10 +441,11 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+
+ 	memcpy(ctx->reg->mr->sig_attrs, sig_attrs, sizeof(struct ib_sig_attrs));
+
+-	ret = ib_map_mr_sg_pi(ctx->reg->mr, sg, sg_cnt, NULL, prot_sg,
+-			      prot_sg_cnt, NULL, SZ_4K);
++	ret = ib_map_mr_sg_pi(ctx->reg->mr, sg, sgt.nents, NULL, prot_sg,
++			      prot_sgt.nents, NULL, SZ_4K);
+ 	if (unlikely(ret)) {
+-		pr_err("failed to map PI sg (%u)\n", sg_cnt + prot_sg_cnt);
++		pr_err("failed to map PI sg (%u)\n",
++		       sgt.nents + prot_sgt.nents);
+ 		goto out_destroy_sig_mr;
+ 	}
+
+@@ -468,10 +484,10 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ out_free_ctx:
+ 	kfree(ctx->reg);
+ out_unmap_prot_sg:
+-	if (prot_sg_cnt)
+-		rdma_rw_unmap_sg(dev, prot_sg, prot_sg_cnt, dir);
++	if (prot_sgt.nents)
++		rdma_rw_unmap_sg(dev, prot_sgt.sgl, prot_sgt.orig_nents, dir);
+ out_unmap_sg:
+-	rdma_rw_unmap_sg(dev, sg, sg_cnt, dir);
++	rdma_rw_unmap_sg(dev, sgt.sgl, sgt.orig_nents, dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_signature_init);
+
+base-commit: 450f4f6aa1a369cc3ffadc1c7e27dfab3e90199f
+--
+2.30.2
