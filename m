@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3840741F2BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F8741F2E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhJARPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:15:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231186AbhJARPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:15:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633108398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=sVz9m61lZAuKjlDG6AN5kGL/PhCyfwRd/qN/VMo9F+Q=;
-        b=QOp+fABIn12JLvYt2aSYEM656GPhqaoMJSLnz18JCu0/FY1satJCTAGEYc3BSAz8e1XTD8
-        Pb6cw8msMbLhv9t3auN8uz7b/N1e9h8wAUmWZxj1sEtfb0aBr8yfMBIYd9pd2ZaTqHP9Ds
-        I9NVrugPIygDM3pHGmMiEBzgqNBo4ME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-tqiJCmPBMTW4bQ7ddJMOpw-1; Fri, 01 Oct 2021 13:13:17 -0400
-X-MC-Unique: tqiJCmPBMTW4bQ7ddJMOpw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68B93100C661;
-        Fri,  1 Oct 2021 17:13:16 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 197195F4F0;
-        Fri,  1 Oct 2021 17:13:16 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] More KVM fixes Linux 5.15-rc4
-Date:   Fri,  1 Oct 2021 13:13:10 -0400
-Message-Id: <20211001171310.16659-1-pbonzini@redhat.com>
+        id S1353235AbhJARTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:19:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:16776 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231865AbhJARS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:18:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="223599967"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="223599967"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:13:46 -0700
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="619277115"
+Received: from unknown (HELO vcostago-mobl3) ([10.134.46.83])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:13:45 -0700
+From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
+        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
+        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "jhs@mojatatu.com" <jhs@mojatatu.com>
+Subject: Re: [EXT] Re: [RFC, net-next] net: qos: introduce a frer action to
+ implement 802.1CB
+In-Reply-To: <20211001161710.2sdz6o6lh3yg7k6p@skbuf>
+References: <20210928114451.24956-1-xiaoliang.yang_1@nxp.com>
+ <87czos9vnj.fsf@linux.intel.com>
+ <DB8PR04MB5785F3128FEB1FB1B2F9AC0DF0A99@DB8PR04MB5785.eurprd04.prod.outlook.com>
+ <20211001161710.2sdz6o6lh3yg7k6p@skbuf>
+Date:   Fri, 01 Oct 2021 10:13:44 -0700
+Message-ID: <87pmsofz1z.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Vladimir,
 
-The following changes since commit 50b078184604fea95adbb144ff653912fb0e48c6:
+Vladimir Oltean <vladimir.oltean@nxp.com> writes:
 
-  Merge tag 'kvmarm-fixes-5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into kvm-master (2021-09-24 06:04:42 -0400)
+> Hi Vinicius,
+>
+> On Wed, Sep 29, 2021 at 10:25:58AM +0000, Xiaoliang Yang wrote:
+>> Hi Vinicius,
+>>
+>> On Sep 29, 2021 at 6:35:59 +0000, Vinicius Costa Gomes wrote:
+>> > > This patch introduce a frer action to implement frame replication and
+>> > > elimination for reliability, which is defined in IEEE P802.1CB.
+>> > >
+>> >
+>> > An action seems, to me, a bit too limiting/fine grained for a frame replication
+>> > and elimination feature.
+>> >
+>> > At least I want to hear the reasons that the current hsr/prp support cannot be
+>> > extended to support one more tag format/protocol.
+>> >
+>> > And the current name for the spec is IEEE 802.1CB-2017.
+>> >
+>> 802.1CB can be set on bridge ports, and need to use bridge forward
+>> Function as a relay system. It only works on identified streams,
+>> unrecognized flows still need to pass through the bridged network
+>> normally.
+>>
+>> But current hsr/prp seems only support two ports, and cannot use the
+>> ports in bridge. It's hard to implement FRER functions on current HSR
+>> driver.
+>>
+>> You can see chapter "D.2 Example 2: Various stack positions" in IEEE 802.1CB-2017,
+>> Protocol stack for relay system is like follows:
+>>
+>>              Stream Transfer Function
+>>                 |             |
+>>                 |        Sequence generation
+>>                 |            Sequence encode/decode
+>>   Stream identification        Active Stream identification
+>>                 |              |
+>>                 |        Internal LAN---- Relay system forwarding
+>>                 |                        |        |
+>>                 MAC                    MAC        MAC
+>>
+>> Use port actions to easily implement FRER tag add/delete, split, and
+>> recover functions.
+>>
+>> Current HSR/PRP driver can be used for port HSR/PRP set, and tc-frer
+>> Action to be used for stream RTAG/HSR/PRP set and recover.
+>
+> Did Xiaoliang answer your question satisfactorily? :)
 
-are available in the Git repository at:
+Oh, yes, the answer was very good. I was taking some time to read the
+802.1CB spec, and try to think how things would fit together so I can
+ask better questions next time :-)
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-for you to fetch changes up to 7b0035eaa7dab9fd33d6658ad6a755024bdce26c:
-
-  KVM: selftests: Ensure all migrations are performed when test is affined (2021-09-30 04:25:57 -0400)
-
-----------------------------------------------------------------
-Small x86 fixes.
-
-----------------------------------------------------------------
-Oliver Upton (1):
-      selftests: KVM: Don't clobber XMM register when read
-
-Sean Christopherson (2):
-      KVM: x86: Swap order of CPUID entry "index" vs. "significant flag" checks
-      KVM: selftests: Ensure all migrations are performed when test is affined
-
-Zelin Deng (2):
-      x86/kvmclock: Move this_cpu_pvti into kvmclock.h
-      ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm
-
-Zhenzhong Duan (1):
-      KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
-
- arch/x86/include/asm/kvmclock.h                    | 14 +++++
- arch/x86/kernel/kvmclock.c                         | 13 +---
- arch/x86/kvm/cpuid.c                               |  4 +-
- arch/x86/kvm/vmx/vmx.c                             |  2 +-
- drivers/ptp/ptp_kvm_x86.c                          |  9 +--
- .../selftests/kvm/include/x86_64/processor.h       |  2 +-
- tools/testing/selftests/kvm/rseq_test.c            | 69 ++++++++++++++++++----
- 7 files changed, 81 insertions(+), 32 deletions(-)
-
+Cheers,
+-- 
+Vinicius
