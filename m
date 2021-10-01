@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48A741EEBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFA241EEBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354141AbhJANml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        id S1354369AbhJANm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353771AbhJANmj (ORCPT
+        with ESMTP id S1354222AbhJANmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:42:39 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5ED4C061775;
-        Fri,  1 Oct 2021 06:40:54 -0700 (PDT)
-Received: from localhost (cpc147930-brnt3-2-0-cust60.4-2.cable.virginm.net [86.15.196.61])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 172594D01041C;
-        Fri,  1 Oct 2021 06:40:51 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 14:40:46 +0100 (BST)
-Message-Id: <20211001.144046.309542880703739165.davem@davemloft.net>
-To:     sfr@canb.auug.org.au
-Cc:     netdev@vger.kernel.org, edumazet@google.com, weiwan@google.com,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Subject: Re: linux-next: build failure after merge of the net-next tree
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20211001161849.51b6deca@canb.auug.org.au>
-References: <20211001161849.51b6deca@canb.auug.org.au>
-X-Mailer: Mew version 6.8 on Emacs 27.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 01 Oct 2021 06:40:53 -0700 (PDT)
+        Fri, 1 Oct 2021 09:42:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BAAC06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ns7lmp26vxzWF66saKYYbwQ1SW1LaJgNeg9wHtAD4RY=; b=KhkkGZGTrNpEJ/MoaHXTKRs9oo
+        mbY5Nahst1AMYclkUcr7DGHNP0mwGXRZmVawg/55oRth5rqZusKJGN4i5APaFDEBV3bok3B2tNV7W
+        JQxAYBHip96X/Ys/f3Bvt5mHBCMJc1yK6Oyu5BPFeMKOf9W9tEkGtOEtKRfCAby5HMzFumpmcyvVX
+        lzt58XDcXaJT2IElXTmRAD/Wh/wFM2vSPi4JonUGfkEtWc0w2+u81yIMQPVio+bq96noltKOlYx46
+        KPcx1Ol/KDla0hCxYysbroTAB/gSaEUr8Rgk5/kyx3UbqQNBYZcON4Tsxiur32JOs0jSy17QzjfOL
+        7AizGGrQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWImU-007Ah0-ES; Fri, 01 Oct 2021 13:40:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A1E71300299;
+        Fri,  1 Oct 2021 15:40:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 84D142C53BFE3; Fri,  1 Oct 2021 15:40:53 +0200 (CEST)
+Date:   Fri, 1 Oct 2021 15:40:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
+ PREEMPT_RT
+Message-ID: <YVcP5bYyjyLvpHMd@hirez.programming.kicks-ass.net>
+References: <20210927211919.310855-1-bigeasy@linutronix.de>
+ <20210927211919.310855-5-bigeasy@linutronix.de>
+ <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
+ <20210930095348.tud6jdcenfkfzugz@linutronix.de>
+ <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
+ <20210930163858.orndmu5xfxue3zck@linutronix.de>
+ <YVbjxjzVM5Dx4Mv4@hirez.programming.kicks-ass.net>
+ <20211001120855.hjjaqt5bpowit2r7@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001120855.hjjaqt5bpowit2r7@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 1 Oct 2021 16:18:49 +1000
+On Fri, Oct 01, 2021 at 02:08:55PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-10-01 12:32:38 [+0200], Peter Zijlstra wrote:
 
-> Hi all,
+> > But basically that thing wants to reschedule, but suffers the same
+> > problem as:
+> > 
+> > 	preempt_disable();
+> > 
+> > 	<TIF_NEED_RESCHED gets set>
+> > 
+> > 	local_irq_disable();
+> > 	preempt_enable();
+> > 	  // cannea schedule because IRQs are disabled
+> > 	local_irq_enable();
+> > 	// lost a reschedule
+> > 
+> > 
+> > Yes, that will _eventually_ reschedule, but violates the PREEMPT rules
+> > because there is an unspecified amount of time until it does actually do
+> > reschedule.
 > 
-> After merging the net-next tree, today's linux-next build (sparc64
-> defconfig) failed like this:
-> 
-> net/core/sock.c: In function 'sock_setsockopt':
-> net/core/sock.c:1417:7: error: 'SO_RESERVE_MEM' undeclared (first use in this function); did you mean 'IORESOURCE_MEM'?
->   case SO_RESERVE_MEM:
->        ^~~~~~~~~~~~~~
->        IORESOURCE_MEM
-> net/core/sock.c:1417:7: note: each undeclared identifier is reported only once for each function it appears in
-> net/core/sock.c: In function 'sock_getsockopt':
-> net/core/sock.c:1817:7: error: 'SO_RESERVE_MEM' undeclared (first use in this function); did you mean 'IORESOURCE_MEM'?
->   case SO_RESERVE_MEM:
->        ^~~~~~~~~~~~~~
->        IORESOURCE_MEM
-> 
-> Caused by commit
-> 
->   2bb2f5fb21b0 ("net: add new socket option SO_RESERVE_MEM")
-> 
-> arch/sparc/include/uapi/socket.h does not include uapi/asm/socket.h and
-> some other architectures do not as well.
-> 
-> I have added the following patch for today (I searched for SO_BUF_LOCK
-> and, of these architectures, I have only compile tested sparc64 and
-> sparc):
+> Yeah but buh. We could let local_irq_enable/restore() check that
+> need-resched bit if the above is considered pretty and supported _or_
+> start to yell if it is not. A middle way would be to trigger that
+> self-IPI in such a case. I mean everyone suffers from that lost
+> reschedule and, if I'm not mistaken, you don't receive a remote wakeup
+> because the remote CPU notices need-resched bit and assumes that it is
+> about to be handled. So RCU isn't special here.
 
-I committed the sparc part into net-next today, thanks.
+Mostly the above pattern isn't 'allowed', but it does tend to happen
+with RCU quite a bit.
 
+As per the perf code, I'm actually fine if RCU wouldn't do this. But
+Paul feels that he needs to cater for it -- doesn't want to surprise his
+users.
+
+Fixing this in local_irq_enable() would blow up the code quite a bit.
+
+I'm not sure it's something we can sanely warn about either, the case
+for the remote reschedule IPI could cause false-positives.
