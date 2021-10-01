@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6BA41F218
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D2E41F21B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhJAQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:27:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61401 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbhJAQ1C (ORCPT
+        id S231966AbhJAQ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:28:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354749AbhJAQ2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:27:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633105518; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=kgyr6ftDMLI6z7X7YJR7MLOn6ed6XuuKLfvpzM9caV0=; b=AvGg8dd30oeehWmcYkxRkH48hxQBQJouAb+KockHTmsBC9ve053V+3Fakpi17tgXNSG3Ma5F
- CSAs1sk+gWfrwzRvVkosvZ1r1e8CeL8ojCXCiWB9uPS7Zju83PZZLkNfIlFYDzTviICH965n
- uEpZ6VxZ5S+rKferMKan7LD5pwc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 61573658a5a9bab6e8697cd7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 16:24:56
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 15228C43460; Fri,  1 Oct 2021 16:24:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Fri, 1 Oct 2021 12:28:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633105583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UwEKyPsnSKFhsqq8id3pFmmYALFQTXASAYKjNUFFU1A=;
+        b=FS7/6pNDxrMC2CAaN+mNTMtBpgzwgF/zsS4FlUl1ozAGWe3iACwZ1haV7OvYV7ff2ASEpx
+        YZ5o898kRgDFMcrU71Ui22cHANpisPvYGi+ffm5UW0w1RE+1S70eIHJYfeN6CNyfEMG/Tc
+        oM/JwteXEFlddFdLqQ77IDxEHwkr9SQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-scy-XxOJOru9zldaLqk83A-1; Fri, 01 Oct 2021 12:26:20 -0400
+X-MC-Unique: scy-XxOJOru9zldaLqk83A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8B01C4338F;
-        Fri,  1 Oct 2021 16:24:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E8B01C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for version 1.6
-Date:   Fri,  1 Oct 2021 21:54:31 +0530
-Message-Id: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E6AA1926DA0;
+        Fri,  1 Oct 2021 16:26:18 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 847575DA61;
+        Fri,  1 Oct 2021 16:26:13 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+        <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
+        <20210929174146.GF22689@gate.crashing.org>
+        <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+Date:   Fri, 01 Oct 2021 18:26:11 +0200
+In-Reply-To: <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+        (Mathieu Desnoyers's message of "Fri, 1 Oct 2021 12:13:28 -0400
+        (EDT)")
+Message-ID: <871r54ww2k.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for soundwire 1.6 version to gate RX/TX bus clock.
+* Mathieu Desnoyers:
 
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- drivers/soundwire/qcom.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+> One cheap way to achieve said R->W dependency (as well as R->RW on
+> architectures which to not reorder R->R) is to ensure that the
+> generated assembly contains a conditional branch.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 0ef79d6..599b3ed 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -127,6 +127,7 @@ struct qcom_swrm_ctrl {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	void __iomem *mmio;
-+	char __iomem *swrm_hctl_reg;
- 	struct completion broadcast;
- 	struct completion enumeration;
- 	struct work_struct slave_work;
-@@ -610,6 +611,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
- 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
- 
-+	if (ctrl->swrm_hctl_reg) {
-+		val = ioread32(ctrl->swrm_hctl_reg);
-+		val &= 0xFFFFFFFD;
-+		iowrite32(val, ctrl->swrm_hctl_reg);
-+	}
-+
- 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
- 
- 	/* Enable Auto enumeration */
-@@ -1200,7 +1207,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	struct qcom_swrm_ctrl *ctrl;
- 	const struct qcom_swrm_data *data;
- 	int ret;
--	u32 val;
-+	int val, swrm_hctl_reg = 0;
- 
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
-@@ -1251,6 +1258,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
- 	ctrl->bus.compute_params = &qcom_swrm_compute_params;
- 
-+	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg))
-+		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
-+
- 	ret = qcom_swrm_get_port_config(ctrl);
- 	if (ret)
- 		goto err_clk;
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Will any conditional branch do, or is it necessary that it depends in
+some way on the data read?
+
+Thanks,
+Florian
 
