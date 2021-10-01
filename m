@@ -2,77 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F94841F2F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E876241F2FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355095AbhJARXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354507AbhJARXA (ORCPT
+        id S1355137AbhJARX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:23:29 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:47196 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354507AbhJARXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:23:00 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB6BC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:21:15 -0700 (PDT)
-Received: from [IPv6:::1] (unknown [IPv6:2a02:810c:c240:2017:3906:69b3:d142:6568])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 1 Oct 2021 13:23:14 -0400
+Received: from mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id BB4A82EA9EC;
+        Fri,  1 Oct 2021 13:21:26 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19]) (amavisd-new, port 10024)
+        with ESMTP id LjGWOt4lj-jX; Fri,  1 Oct 2021 13:21:26 -0400 (EDT)
+Received: from [192.168.48.23] (host-23-91-187-47.dyn.295.ca [23.91.187.47])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 6977522234;
-        Fri,  1 Oct 2021 19:21:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1633108870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uT4IrMsFOFQcqRXXi3oqr7oTQ371TNfLR3LPEAjuufA=;
-        b=QUvHiYQGy6zKy1u/CsjnMQYpK8SWtxe79VSYO2yQEC/kmULU3OoKlYSTtx1+Fe9MpX2j1h
-        UYVd6sPEQ4FNMgv5b4bU+aINqg0OJ97v066RTgJWYKsBB8G68b6SGCqKOQnak7qq1QL4zl
-        eHfS62zqqyD7O5pqlB28IWKhvlHy0hE=
-Date:   Fri, 01 Oct 2021 19:21:08 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v1_1/1=5D_mtd=3A_spi-nor=3A_intel-spi=3A_Ad?= =?US-ASCII?Q?d_support_for_Intel_Ice_Lake-N_SPI_serial_flash?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20211001171530.15283-1-andriy.shevchenko@linux.intel.com>
-References: <20211001171530.15283-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <0D47CDDE-0F9E-4D5D-8524-1D911BF52CEF@walle.cc>
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id EA0922EA7B3;
+        Fri,  1 Oct 2021 13:21:25 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH 2/2] scsi: ufs: Stop clearing unit attentions
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com
+Cc:     Bart Van Assche <bvanassche@google.com>
+References: <20210930195237.1521436-1-jaegeuk@kernel.org>
+ <20210930195237.1521436-2-jaegeuk@kernel.org>
+ <12ba3462-ac6b-ef35-4b5e-e0de6086ab51@intel.com>
+ <f2436720-16d5-58da-abcc-20fa1ed01fb9@intel.com>
+ <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <f4f81b75-9b0b-7734-ebfa-14bd1b935c54@interlog.com>
+Date:   Fri, 1 Oct 2021 13:21:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 1=2E Oktober 2021 19:15:30 MESZ schrieb Andy Shevchenko <andriy=2Eshevch=
-enko@linux=2Eintel=2Ecom>:
->Intel Ice Lake-N has the same SPI serial flash controller as Ice Lake-LP=
-=2E
->Add Ice Lake-N PCI ID to the driver list of supported devices=2E
->
->The device can be found on MacBookPro16,2 [1]=2E
->
->[1]: https://linux-hardware=2Eorg/?probe=3Df1c5cf0c43
->
->Signed-off-by: Andy Shevchenko <andriy=2Eshevchenko@linux=2Eintel=2Ecom>
+On 2021-10-01 12:59 p.m., Bart Van Assche wrote:
+> On 9/30/21 11:52 PM, Adrian Hunter wrote:
+>> Finally, there is another thing to change.  The reason
+>> ufshcd_suspend_prepare() does a runtime resume of sdev_rpmb is because the
+>> UAC clear would wait for an async runtime resume, which will never happen
+>> during system suspend because the PM workqueue gets frozen.  So with the
+>> removal of UAC clear, ufshcd_suspend_prepare() and ufshcd_resume_complete()
+>> should be updated also, to leave rpmb alone.
 
-Hi Andy,=20
+Somewhat related ...
 
-there is currently a rewrite of this driver (to use spi-mem)
-in progress:
+Since there was some confusion among the members of T10 of what precisely
+the RPM bit meant, in SPC-6 revision (draft), a new "HOT PLUGGABLE" two
+bit field was introduced into the standard INQUIRY response:
 
-https://lore=2Ekernel=2Eorg/linux-mtd/20210930100719=2E2176-1-mika=2Eweste=
-rberg@linux=2Eintel=2Ecom/
+                 Table 151 — HOT PLUGGABLE field
 
-Could you try that series with your hardware?=20
+Code   Description
+00b    No information is provided regarding whether SCSI target device is hot
+        pluggable.
+01b    The SCSI target device is designed to be removed from a SCSI domain as
+        a single object (i.e., concurrent removal of the SCSI target ports,
+        logical units, and all other objects contained in that SCSI target
+        device (see SAM-6)) while that SCSI domain continues to operate for
+        all other SCSI target devices, if any, in that SCSI domain.
+10b    The SCSI target device is not designed to be removed from a SCSI
+        domain while that SCSI domain continues to operate.
+11b    Reserved
 
--michael=20
+That field is bits 5 and 4 of byte 1 of the response.
+
+Perhaps we should be adding provision for this new field.
+
+Doug Gilbert
+
+> 
+> Is the following change what you have in mind?
+> 
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 0a28cc4c09d8..0743f54e55f9 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -9648,10 +9648,6 @@ void ufshcd_resume_complete(struct device *dev)
+>           ufshcd_rpm_put(hba);
+>           hba->complete_put = false;
+>       }
+> -    if (hba->rpmb_complete_put) {
+> -        ufshcd_rpmb_rpm_put(hba);
+> -        hba->rpmb_complete_put = false;
+> -    }
+>   }
+>   EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
+> 
+> @@ -9674,10 +9670,6 @@ int ufshcd_suspend_prepare(struct device *dev)
+>           }
+>           hba->complete_put = true;
+>       }
+> -    if (hba->sdev_rpmb) {
+> -        ufshcd_rpmb_rpm_get_sync(hba);
+> -        hba->rpmb_complete_put = true;
+> -    }
+>       return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 86b615023ecb..5ecfcd8cae0a 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -921,7 +921,6 @@ struct ufs_hba {
+>   #endif
+>       u32 luns_avail;
+>       bool complete_put;
+> -    bool rpmb_complete_put;
+>   };
+> 
+>   /* Returns true if clocks can be gated. Otherwise false */
+> 
+> 
+> 
+> Thanks,
+> 
+> Bart.
+
