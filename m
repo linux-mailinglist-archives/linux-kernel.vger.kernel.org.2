@@ -2,136 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AEE41F511
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7DD41F51B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354452AbhJASiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        id S1355973AbhJASiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355969AbhJASig (ORCPT
+        with ESMTP id S1354492AbhJASir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:38:36 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6C9C061775;
-        Fri,  1 Oct 2021 11:36:44 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id p1so2647059pfh.8;
-        Fri, 01 Oct 2021 11:36:44 -0700 (PDT)
+        Fri, 1 Oct 2021 14:38:47 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5798C06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 11:37:02 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 73so10096470qki.4
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=poorly.run; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U/jeo0cc4IS12fXu/3bym/iiyWz3QTfkGKyYijbo8pY=;
-        b=cPfJPl85flsr5d4GoEpVUbaPdgMoIQXFsKWqOJIawh2OktBJif4WDJTgJfCp+DZVLE
-         xWjav8cTfeSzwz6vvFgspe8IuaOqaPNp1QmAXMnLOJhWBr+i9jTOc6g0I++ZmPq70S2u
-         wz+gnit0JRnRxpEKSiaFE/4qg58Qj5poqu6BZscEk7exNp72iz2SVBawCsfF7bRb9kd4
-         WQHbaZ7lwO2hmVGRat0sOY4CbIqesw4bhvmbdOsncWv6mImb8vtBs90Az8MFfTQzaGqX
-         NLKwh1XOC6ZlMYoPzZDX2cqXJ7bDqFJFTjyJjRGAPHJ1urMr9+ZmccUHI/ZdKgggTBpL
-         HMCw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=JgfrJwCNWFHH92jY3FPdA9RZ/LFPeXIIQjB7fHIn7dg=;
+        b=V8txkH5WI9HVciSyj1K7GFWAguDGZ/uXpIIG9EZ8p1BWDzPEjYQLZX8hkzqhAtGLq3
+         0zaBWthaBgGK9P7iiaKk9B0pHHR1AdI21rhVaoWSc8hi9Z+gpoWuop68GB8eYw9c0Edo
+         0PZowRL4+MdB5eM48MtFd1F9JNKsN4VAjm/nbCwKPlOON2/csYHi5DgXvGQirVfR1Ym0
+         n7hGaR89pQw7VgrXXh8Sp9pDzgoRNsEBiiCvqTnZmxgA4ZNi0/qNiyNSZvT9oxJp0DPI
+         WDMxP4cYbRd4iqwJx1MBtRACoEH8Jv6KqJM/xkc4y2BrTvRuySUmcx4KVmNqnuSpRWii
+         cWRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U/jeo0cc4IS12fXu/3bym/iiyWz3QTfkGKyYijbo8pY=;
-        b=p3PHMLbvL10ZT7WKQ3MUmMalH4Xgz4SBRI5LFbymV3M7k00S65G7KB4Cc5qX7eQk8Q
-         JsUYMVfDDmHcqSb3EsnzmcyEh0nOBVqDgC0nbBHXyHERFZeOsZ6rP3iRaYFgPXlee0wf
-         vmJ3h5k7Bln7j3ZEk10xfxZPIvlEStDjdfvkoZeMaUIAapj73mdUpF2tYauS3DxeinCi
-         U8b443AhUC9FnkJcYJGkJSoWjcC7/TUC5ROE9NdPi7qUr4OfIB7kFzsBaR4M6wxDIV8H
-         A+fhxsqMoarDLgyMSd3iBXNV04Vhijq9/DWM0dAht5tMNf5q8cMAZkyHd2UGXD7RZTgB
-         rCiQ==
-X-Gm-Message-State: AOAM532SN6xnR6UcfWMoch6otfb7/kqlT7QRc6pY9CF0AXvCTys+t+ip
-        EgB4Oui4+Jl6jxpWlYnRVBs=
-X-Google-Smtp-Source: ABdhPJxpcN7h+xroaO4ziJJc8u4TcIRQF/ZupaBuavc2M/JBoGPwQoLCynTihJtuxc2oGWN1VfWgvw==
-X-Received: by 2002:a62:e210:0:b0:44b:ae4c:8c01 with SMTP id a16-20020a62e210000000b0044bae4c8c01mr11498160pfi.45.1633113403479;
-        Fri, 01 Oct 2021 11:36:43 -0700 (PDT)
-Received: from localhost (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id t23sm2310819pgn.25.2021.10.01.11.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 11:36:43 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 11:36:44 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
-Message-ID: <YVdVPGaF2Gq1PGpG@yury-ThinkPad>
-References: <20211001181226.228340-1-yury.norov@gmail.com>
- <YVdSK4rFmLVFrKrD@smile.fi.intel.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JgfrJwCNWFHH92jY3FPdA9RZ/LFPeXIIQjB7fHIn7dg=;
+        b=nKZIB7iQXoVPo3rzIyXVeQdFaD1TMIuQX/6IC7ma47quJepOzPNpm8D4sxucM7pSsV
+         KmbTzmWD0Vm5ZJ5kvrkMnjK9rWtjajjEMt6XBJ2padYlvq9zopOK/0a8tXu6bTr9+UvM
+         9EZuGjcjiy5nbbfjuYMa4hOP+op1S6y18gdC5K5Dvqk441aL4o4vqgKqeZBteJL24yYd
+         JYzaSysMkGubj018FYD8jmaQz623lMSYiHZAk+bKHPLWTrafkUXvaDK7DT05hzofOsPN
+         O95nW1TIddktmPeRZIxLcIFedyVdcsi5HrgmGjlhATWqOO2Jl0S+CSppdMyCeZuasaNF
+         93rw==
+X-Gm-Message-State: AOAM5334kJinLjY6sMWNLCyabs+PJqc6hTyA53c2gDvCYED9NgFiZp1m
+        fMFVzuTkCMpnB3mLxw10uEpsWg==
+X-Google-Smtp-Source: ABdhPJzWLClrfa9cLP4JuqHXPKnm/GKbHbnm/Gpfe4qg6W378uFn/9WMBNa1f4gXolzUfArP3s/wvw==
+X-Received: by 2002:ae9:dc84:: with SMTP id q126mr11328203qkf.128.1633113421775;
+        Fri, 01 Oct 2021 11:37:01 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id c26sm3392066qka.33.2021.10.01.11.37.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 01 Oct 2021 11:37:01 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 14:36:55 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        sean@poorly.run, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] drm: cleanup: Use DRM_MODESET_LOCK_ALL_*
+ helpers where possible
+Message-ID: <20211001183655.GW2515@art_vandelay>
+References: <20210924064324.229457-1-greenfoo@u92.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVdSK4rFmLVFrKrD@smile.fi.intel.com>
+In-Reply-To: <20210924064324.229457-1-greenfoo@u92.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 09:23:39PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 01, 2021 at 11:12:10AM -0700, Yury Norov wrote:
-> > Hi Stephen,
-> > 
-> > Can you please take this series into the next tree? It has been already
-> > in next-tree for 5.14:
-> > 
-> > https://lore.kernel.org/linux-mmc/YSeduU41Ef568xhS@alley/T/
-> > 
-> > But it was damaged and we decided to merge it in 5.15 cycle. No changes
-> > comparing to 5.14, except for Andy's patch that was already upstreamed
-> > and therefore removed from here.
-> > 
-> > The git tree is here:
-> > 	https://github.com/norov/linux/tree/bitmap-20210929
+On Fri, Sep 24, 2021 at 08:43:07AM +0200, Fernando Ramos wrote:
+> Hi all,
+> 
+> One of the things in the DRM TODO list ("Documentation/gpu/todo.rst") was to
+> "use DRM_MODESET_LOCAL_ALL_* helpers instead of boilerplate". That's what this
+> patch series is about.
+> 
+> You will find two types of changes here:
+> 
+>   - Replacing "drm_modeset_lock_all_ctx()" (and surrounding boilerplate) with
+>     "DRM_MODESET_LOCK_ALL_BEGIN()/END()" in the remaining places (as it has
+>     already been done in previous commits such as b7ea04d2)
+> 
+>   - Replacing "drm_modeset_lock_all()" with "DRM_MODESET_LOCK_ALL_BEGIN()/END()"
+>     in the remaining places (as it has already been done in previous commits
+>     such as 57037094)
+>     
+> Most of the changes are straight forward, except for a few cases in the "amd"
+> and "i915" drivers where some extra dancing was needed to overcome the
+> limitation that the DRM_MODESET_LOCK_ALL_BEGIN()/END() macros can only be used
+> once inside the same function (the reason being that the macro expansion
+> includes *labels*, and you can not have two labels named the same inside one
+> function)
+> 
+> Notice that, even after this patch series, some places remain where
+> "drm_modeset_lock_all()" and "drm_modeset_lock_all_ctx()" are still present,
+> all inside drm core (which makes sense), except for two (in "amd" and "i915")
+> which cannot be replaced due to the way they are being used.
+> 
+> Changes in v2:
+> 
+>   - Fix commit message typo
+>   - Use the value returned by DRM_MODESET_LOCK_ALL_END when possible
+>   - Split drm/i915 patch into two simpler ones
+>   - Remove drm_modeset_(un)lock_all()
+>   - Fix build problems in non-x86 platforms
+> 
+> Fernando Ramos (17):
+>   drm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/i915: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/msm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN() drm/vmwgfx: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/tegra: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/shmobile: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/radeon: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/omapdrm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/nouveau: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/msm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN() part 2
+>   drm/gma500: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm/amd: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+>   drm: cleanup: remove drm_modeset_(un)lock_all()
+>   doc: drm: remove TODO entry regarding DRM_MODSET_LOCK_ALL cleanup
+> 
+
+Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
+with the necessary drm-tip conflict resolutions).
+
+Sean
+
+>  Documentation/gpu/todo.rst                    | 17 ----
+>  Documentation/locking/ww-mutex-design.rst     |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   | 21 +++--
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 50 +++++-----
+>  .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 25 ++---
+>  drivers/gpu/drm/drm_client_modeset.c          | 14 ++-
+>  drivers/gpu/drm/drm_crtc_helper.c             | 18 ++--
+>  drivers/gpu/drm/drm_fb_helper.c               | 10 +-
+>  drivers/gpu/drm/drm_framebuffer.c             |  6 +-
+>  drivers/gpu/drm/drm_modeset_lock.c            | 94 +------------------
+>  drivers/gpu/drm/gma500/psb_device.c           | 18 ++--
+>  drivers/gpu/drm/i915/display/intel_audio.c    | 16 ++--
+>  drivers/gpu/drm/i915/display/intel_display.c  | 23 ++---
+>  .../drm/i915/display/intel_display_debugfs.c  | 46 +++++----
+>  drivers/gpu/drm/i915/display/intel_overlay.c  | 46 ++++-----
+>  drivers/gpu/drm/i915/display/intel_pipe_crc.c |  7 +-
+>  drivers/gpu/drm/i915/i915_drv.c               | 13 ++-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      | 10 +-
+>  .../gpu/drm/msm/disp/msm_disp_snapshot_util.c | 12 +--
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c       | 15 ++-
+>  drivers/gpu/drm/omapdrm/omap_fb.c             |  9 +-
+>  drivers/gpu/drm/radeon/radeon_device.c        | 21 +++--
+>  drivers/gpu/drm/radeon/radeon_dp_mst.c        | 10 +-
+>  drivers/gpu/drm/shmobile/shmob_drm_drv.c      |  6 +-
+>  drivers/gpu/drm/tegra/dsi.c                   |  6 +-
+>  drivers/gpu/drm/tegra/hdmi.c                  |  6 +-
+>  drivers/gpu/drm/tegra/sor.c                   | 11 ++-
+>  drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         | 11 ++-
+>  drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 12 ++-
+>  include/drm/drm_modeset_lock.h                |  2 -
+>  30 files changed, 265 insertions(+), 292 deletions(-)
 > 
 > 
-> This is a dup with the same subject. Which one should we look into?
+> base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+> -- 
+> 2.33.0
+> 
 
-Please ignore this (short) series. It's a duplication, my connection
-was broken and I had to restart submitting.
-
-Sorry for noise.
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
