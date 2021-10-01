@@ -2,249 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B63041E7D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E9641E7D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352422AbhJAHBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhJAHBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1352449AbhJAHB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 03:01:56 -0400
+Received: from mail-eopbgr70107.outbound.protection.outlook.com ([40.107.7.107]:29600
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1352377AbhJAHBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Oct 2021 03:01:43 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7A6C06176A;
-        Thu, 30 Sep 2021 23:59:59 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id j27so6477857wms.0;
-        Thu, 30 Sep 2021 23:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lOm0pW5v0MBkaDugCS5YfwkOAvYOSU7oabQOMG2irfw=;
-        b=jsc0KVMvs+UBDRiBAunXDe6MGEGt2UApoPFusuhLBe1N/F44XlvbgynBk6l8kc+Ynj
-         XYEerSDC9vsJG14026Foo0LDKpyk1joMDcXUlYy5+pLwU7g8PauRQJ0KrDm1zfSXf6jw
-         sYhhfBHzKq0l5NdQXq8udnVAWcn+QSh0xZxaWN/sQkREfI7h1h5qJHCsc4ColiImLvd2
-         qSXhjEPVn5jpRwUHFzUd7U2rWuyWkDA3VhfTyUk1Gsg4I+fpMR8mryaDsZA6tp6xMzPq
-         SjapQVVAyuSUENutklSDe62UmXpxS0dersnEw5VH5Dp6DTbYk5kz7UrvLKVwk79e9fKx
-         FU3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lOm0pW5v0MBkaDugCS5YfwkOAvYOSU7oabQOMG2irfw=;
-        b=iVoQlFVw/vERT05RIkXBXxivcjkEMm5x8vMxD8zFiM9ra3+sSIGdDNbFF0t+XfOfFe
-         YDi3XsnwNgPMzdNaHNa9cCxrzaV/o7UmrJ3m5WcBfTGETLESlqckYdKT+9YYLb3hu3BQ
-         6rg6RKHEcDxIZ2gDBSRldGVdHD+mMqFlgnCHeJHm5NvEqr+u1yvDCYPkXUhnVcD5gkEN
-         /k4ddTFeqWlOEtMrTGgz3OmZT/XbmkesnEMvWJZSopyQ2G1J2xjppEOzpAJymamK9l3d
-         9n8VCL9DEYSuyvevPb81vG4OcHPqQcN/oJwwuOcadrS/uxv1QfGSdwzvWFY9eppP7UkC
-         ZLCg==
-X-Gm-Message-State: AOAM5338DWkLOk2HuiPuL4oI7E/jvxo33NeBZEedRNqBfdnXcSuCFKEn
-        DxjQNO9d7bZIv0sCvDkZfiM=
-X-Google-Smtp-Source: ABdhPJxuajbFXpaPlSpXiznEBB3q43NbShmltsZ42fSaQ6q4Wz3T7DpkNms3s3hrJ/8qdgk7pMXQbQ==
-X-Received: by 2002:a1c:f405:: with SMTP id z5mr2832895wma.72.1633071597498;
-        Thu, 30 Sep 2021 23:59:57 -0700 (PDT)
-Received: from localhost.localdomain (eth-east-parth2-46-193-64-114.wb.wifirst.net. [46.193.64.114])
-        by smtp.gmail.com with ESMTPSA id 15sm6782000wmk.48.2021.09.30.23.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 23:59:56 -0700 (PDT)
-From:   Himadri Pandya <himadrispandya@gmail.com>
-To:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Himadri Pandya <himadrispandya@gmail.com>
-Subject: [PATCH v3 2/2] USB: serial: cp210x: use usb_control_msg_recv() and usb_control_msg_send()
-Date:   Fri,  1 Oct 2021 08:57:20 +0200
-Message-Id: <20211001065720.21330-3-himadrispandya@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211001065720.21330-1-himadrispandya@gmail.com>
-References: <20211001065720.21330-1-himadrispandya@gmail.com>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LRJT/sX3TRgdm2vbT6AdxUUK26Fbx4BjH9m2XDHLfSBZUwtfkDUvZ1axMbxb0PNG6KyNMfKoTVbVj/dJR8pzqeWN+JI2dmM47yZ/d2x2Bn/BCjCdVnqesyc6EiqZM1JvpZOL+0v3sSBjkViiIVPgXP4Yt6D6AfJz80+UhomX78qIogRUj1pzJsui6KtK7aB2XF/GXmYoCI3ww3h8iNvdJR53v8o8u6pTbgOGP+5e4hM2w+GPB0YM5Vq8aOYBr241zxnjVsVJe6NnqeksBpGYCtcmgdx3bppKu/F9pIfX+QDjQuf62dovDQrXqUVJBsp+0tHMEDJpi3QF181D/4fl+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mV6NZ+jc1Rpwvixoj1C4VbA73uxeIkuoUFyCd0yfx5o=;
+ b=fDRjABPrGclUBIuhzd4WYYnnORAzlc6j5Rzoyu/8N8jZA+ubelKBk1AIEz3KndRbMd81bSOzt/h5Vbh+gF8mz/+PlkaTEGev3XAEEey8K3orONDTTnDjySuf8FPkY7qJTPPjNMDxYpmHspqxDCUFxE68KuzTXg74Tctq/hE5WlKCSfRkMnSlF3T8dc5irqYyl9kmqs236JWT0LozoK5cg4eYI73Y3moZJ/6QCG9vl2tJHambQi5/pII46Z6sowLfR93uvRg7ykCWsNn8vqG+BQUu1fOBjvmPR+j6M8lrg9t9IfISEXLV+9YLT/akTZVVep7XkW/qAKtQ7HyIfFf2Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mV6NZ+jc1Rpwvixoj1C4VbA73uxeIkuoUFyCd0yfx5o=;
+ b=freE3mzXlTqAAqg8iVxanQRna/kPIEhAClEDqIv5Da8nrZsqvUtT8ttsQ/o3cSZafhve60lpzotD/Wa4C+rS4K2Kx8qwkwE7I9Wu/+RLUKf7aVrSsYdT8uT9e4iSvUNw85WNQZT0led7WySaCrhPYKYwIVmkJk54KYOq96NZMnw=
+Authentication-Results: opensynergy.com; dkim=none (message not signed)
+ header.d=none;opensynergy.com; dmarc=none action=none
+ header.from=opensynergy.com;
+Subject: Re: [PATCH 1/1] iio/scmi: Add reading "raw" attribute.
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
+References: <20210922065235.12891-1-andriy.tryshnivskyy@opensynergy.com>
+ <20210922065235.12891-2-andriy.tryshnivskyy@opensynergy.com>
+ <20210925154310.2f31c032@jic23-huawei>
+ <18401c96-a88e-c7fa-8f20-56605945891d@opensynergy.com>
+ <20210930162618.0c53ec33@jic23-huawei>
+From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Message-ID: <94494815-8835-1faa-441a-ed89358f8048@opensynergy.com>
+Date:   Fri, 1 Oct 2021 09:59:54 +0300
+In-Reply-To: <20210930162618.0c53ec33@jic23-huawei>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: FR3P281CA0011.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1d::17) To AM6PR04MB6359.eurprd04.prod.outlook.com
+ (2603:10a6:20b:fc::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9353fe1f-4b7f-4c65-c849-08d984a913a8
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4934:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB4934748306C44469CE4A0A49E6AB9@AM6PR04MB4934.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GEIgxfqMTNQEyBUKTUk3LLSpvqfuFTbiol7inhgmc5NCXFKnXsPixopcbwnZLxwxBj++o+c51qJiNqh3jLOYcw7INPHtcy+TYQpnbf24w7vzf92rQr866cc/UHZ6HUCZm8I0KYfjTrKco4FWyCf5ZJOeOgrK5qH3pby31O3mxfCw8LNU8FH3t+eZD3QfHc3vQMG7X5nKrrRyN+I9RKSqVjFifew/rMmJGCYsfLBt/2IuzpKMSyYsLBifkw6irh0Pei0mitY840qPuVcHPWT3pf557a6/yKceLwRwW9y8NHKzkl7xGUof4FbOoO/K+J/GWzePvVZRS5yn4aJJz8hk6ayB0vQqcTJOufw7nzP88Vo7AVPAF+rC1iflXxYucGBzE7LAvsUOVDOLsDs/AFtHwgV8UE3CEYy/jxjD4ZmdzpD5gVL2dY+FZ1sy3XUoCrDHzapzRz9+nP7BabetD3EjJ0uWnrL7SqjfETF6x6BJnCQ0LShEfT1VdxWlY3+c3LhJcSks3Rt05Mful3MvVczkgL0kiB1jB0iFwcvoye+zNXVxSSJ+NwzW+niVFz97XJZkp9qwRwoC/KCArOFXDhTlSmOTREzbc0In5ZayXQ0Osm4tLU2ylLeLuSXagGyUiDgrGCmxInUxs7T2POrubW2Mug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(316002)(42186006)(31686004)(55236004)(26005)(2906002)(31696002)(6916009)(8936002)(186003)(8676002)(86362001)(4326008)(107886003)(66556008)(66476007)(2616005)(508600001)(44832011)(66946007)(4744005)(5660300002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjNHVFNvcm5JVGpIUDk4c1N0NElLR3d0Uitrd2E5SE95eWdZblVhTXM3OHQ0?=
+ =?utf-8?B?cGZScVZOMktJVDNGUzhVSjUwd1ZKbTluallNSzU3V1NBMjVqYzRFNjVMSmpk?=
+ =?utf-8?B?ZGNZWjd4aWdJQ3FIY2JGS1pwSlZHT2RsNTV3bHN6ZGMxeEFzRFEwRHpkOEIz?=
+ =?utf-8?B?TU01R3dVbVZKRis4K010WDZMR2I0eWJVSEduWit4Wk1OU082ejhuYmZxWUl0?=
+ =?utf-8?B?OWpudnpubUNuMkR2S3NVLzdkcG92SC9taFVzdEZkZURqVnNhbnQwSVdDZmMy?=
+ =?utf-8?B?ajV5QnUwellWTW5PL2tZT1lZVHFNOXJzdG9sY214Q3dVWUw4VFNkV1l1Ynpt?=
+ =?utf-8?B?ZGdRZ25pL2RaNWlOemJrL05CV3pBNmF2MFVYaHcyMm5oN3BqeUFOeTNWcUlE?=
+ =?utf-8?B?ODUzdGRBU1BIOS9pb1pRVWJZSWR3aENRY3FDMEtUMHlsMFR0aDN6Q0w5V0J4?=
+ =?utf-8?B?bXNXWGU5VHJzTjRyc2lWTmkrbTFvQ3RESFFWRDBkZmlpbHAvNjBoejQveE9y?=
+ =?utf-8?B?STVBS3hCQ3RWWk00NE5HeUNsUndXNmlMRk0yekJsY2FXWmdJSkY1ZkMxY2JT?=
+ =?utf-8?B?WW1DLzJrNFhTNWVreVNXaHlqQVJnYUUwTnVONUkyeUs5QTBSYmRxMXBMcnBJ?=
+ =?utf-8?B?d0dZbXg0MjlzWWJkKzlLYTlQNTA1Y1VXUWRMNXJ0b3FQZzhwZkdXZEFlQVM0?=
+ =?utf-8?B?VHdSREt4UEMvelJaZ0UzUUUxWllvZ1pWNFJqQ1djZTlieW1RbHlucWVubk1H?=
+ =?utf-8?B?d2RkS00zMzlwQ2VQTUNMaFFqbVBFTzY2cnFQU09ienRYN2RKdldIdEE1UjM2?=
+ =?utf-8?B?T1Axci9pZlZIN2l0SlRjZGhXWUYxdU10Uys0Szgyend6elBUc0VYYkhLbTg1?=
+ =?utf-8?B?dHdsYXhuVm5CR01uM2kzU3lvM1UzVkxRb2pnLzJRWE8vYlhhZHl5eFNyZDBJ?=
+ =?utf-8?B?R3NOUkhKeTZDZDl4NVNHdDdtaFlqTmpqVnVSNFFzcEtLYkwvZnRrcmwwVDBl?=
+ =?utf-8?B?Q2cwTW9xR1ZRb01BcUVYU3JHbVdNS3B6MEZVV2lZZHJmWW1YRW51OHQ4R3dJ?=
+ =?utf-8?B?UDErQWR1RDM5YlV6S0ZlMnZDSXNsM2NCMHlXQ3QzaGRPU1FvSTMxamk3alY3?=
+ =?utf-8?B?YVV4aGRtR2RWeGQ0bTg1a3pmU0FHQktmaHFFbUE5N3kxYlQwWVFNVURyWEVn?=
+ =?utf-8?B?V1F4VnFLeUhGM3dRaVRXL0t5THJDa1J6YTZ1YnJqeUhyV0MraDFEUXpkRWEr?=
+ =?utf-8?B?b3kzOEw2RGdadTB1VGF4TUlsWHF5S3Z6Z1FteHJyZUFZblFwb1c1bnFvWnYv?=
+ =?utf-8?B?ZURhVVFtK2xsK0lLeWZaZ010V25JRkFFdk1LQzhrSGk1NEtlN3kzTGNRZjhm?=
+ =?utf-8?B?K1lzdUZ4clVpRHBZNTVrTEVNNzFYRThDcTIvS2NKdjJMKzNraFY2d09aUVdz?=
+ =?utf-8?B?UkJYbWxnRTV4VHBjWm9Wam9SSXJKQzVFZ2hXZVhObVBBend4NVAyRjZwd05F?=
+ =?utf-8?B?aVk4aHJjWngycXB0aVVJMUxKQ3RMdktpTE5zalZST1N1Uk9mdFFuMnB1dkw5?=
+ =?utf-8?B?NTFDSDlHdU1wc01NUWJZOXBCenNkc25NT0JGOHpKeEpkbUpyTHRtVUo3ZG1i?=
+ =?utf-8?B?ank4c25jT0I4U1FLVFBDRmdEQ0FVOFlRT0dQbkhrVjMyc1J1QjVhVktpamtD?=
+ =?utf-8?B?Z2ZWNFkzODMwRk5NZVN6Sk1rY2E5OWJqMEo1VDJqVDRWNDhySU5yd0RnTEQ4?=
+ =?utf-8?Q?GqFsnYtt29ziWgGsKzXppsilCxPQou5FQ1aIzpw?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9353fe1f-4b7f-4c65-c849-08d984a913a8
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 06:59:56.5422
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rimQTRaLfH/BnLValqWY0regH5DCNpMYP7o++lz51U9vOqMQmFlDkAbOqMskYuYPfjtE47XxNgxd1ZH3fUs/CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4934
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new wrapper functions for usb_control_msg() can accept data from
-stack and treat short reads as error. Hence use the wrappers functions.
-Please note that because of this change, cp210x_read_reg_block() will no
-longer log the length of short reads.
 
-Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
----
-Changes in v3:
- - Rephrase the commit message
- - Explicitly mention that short reads don't log length now
+>>>> +             /* Use 32-bit value, since practically there is no need in 64 bits */
+>>>> +             *val = (u32)readings[ch->scan_index].value;
+>>> We should check it fits and if doesn't return an error rather than pretending all was fine.
+>>>
+>> What kind of error to return in the case it does not fit - ENOEXEC (Exec format error) ?
+> That one is a bit obscure.
+>
+> I'd go with either -ERANGE I think as we are reflecting that the clamp to 32 bit
+> is not representable.
 
-Changes in v2:
- - Drop unrelated style fixes
----
- drivers/usb/serial/cp210x.c | 106 ++++++++++--------------------------
- 1 file changed, 30 insertions(+), 76 deletions(-)
-
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 189279869a8b..3c3ca46b0b82 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -631,29 +631,19 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
- {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	void *dmabuf;
- 	int result;
- 
--	dmabuf = kmalloc(bufsize, GFP_KERNEL);
--	if (!dmabuf)
--		return -ENOMEM;
- 
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--			req, REQTYPE_INTERFACE_TO_HOST, 0,
--			port_priv->bInterfaceNumber, dmabuf, bufsize,
--			USB_CTRL_GET_TIMEOUT);
--	if (result == bufsize) {
--		memcpy(buf, dmabuf, bufsize);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, req,
-+				      REQTYPE_INTERFACE_TO_HOST, 0,
-+				      port_priv->bInterfaceNumber, buf,
-+				      bufsize, USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (result) {
- 		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
- 				req, bufsize, result);
--		if (result >= 0)
--			result = -EIO;
- 	}
- 
--	kfree(dmabuf);
--
- 	return result;
- }
- 
-@@ -672,30 +662,17 @@ static int cp210x_read_u8_reg(struct usb_serial_port *port, u8 req, u8 *val)
- static int cp210x_read_vendor_block(struct usb_serial *serial, u8 type, u16 val,
- 				    void *buf, int bufsize)
- {
--	void *dmabuf;
- 	int result;
- 
--	dmabuf = kmalloc(bufsize, GFP_KERNEL);
--	if (!dmabuf)
--		return -ENOMEM;
--
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--				 CP210X_VENDOR_SPECIFIC, type, val,
--				 cp210x_interface_num(serial), dmabuf, bufsize,
--				 USB_CTRL_GET_TIMEOUT);
--	if (result == bufsize) {
--		memcpy(buf, dmabuf, bufsize);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, CP210X_VENDOR_SPECIFIC,
-+				      type, val, cp210x_interface_num(serial),
-+				      buf, bufsize, USB_CTRL_GET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (result) {
- 		dev_err(&serial->interface->dev,
- 			"failed to get vendor val 0x%04x size %d: %d\n", val,
- 			bufsize, result);
--		if (result >= 0)
--			result = -EIO;
- 	}
--
--	kfree(dmabuf);
--
- 	return result;
- }
- 
-@@ -730,21 +707,14 @@ static int cp210x_write_reg_block(struct usb_serial_port *port, u8 req,
- {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	void *dmabuf;
- 	int result;
- 
--	dmabuf = kmemdup(buf, bufsize, GFP_KERNEL);
--	if (!dmabuf)
--		return -ENOMEM;
--
--	result = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
--			req, REQTYPE_HOST_TO_INTERFACE, 0,
--			port_priv->bInterfaceNumber, dmabuf, bufsize,
--			USB_CTRL_SET_TIMEOUT);
--
--	kfree(dmabuf);
-+	result = usb_control_msg_send(serial->dev, 0, req,
-+				      REQTYPE_HOST_TO_INTERFACE, 0,
-+				      port_priv->bInterfaceNumber, buf, bufsize,
-+				      USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
- 
--	if (result < 0) {
-+	if (result) {
- 		dev_err(&port->dev, "failed set req 0x%x size %d status: %d\n",
- 				req, bufsize, result);
- 		return result;
-@@ -773,21 +743,14 @@ static int cp210x_write_u32_reg(struct usb_serial_port *port, u8 req, u32 val)
- static int cp210x_write_vendor_block(struct usb_serial *serial, u8 type,
- 				     u16 val, void *buf, int bufsize)
- {
--	void *dmabuf;
- 	int result;
- 
--	dmabuf = kmemdup(buf, bufsize, GFP_KERNEL);
--	if (!dmabuf)
--		return -ENOMEM;
-+	result = usb_control_msg_send(serial->dev, 0, CP210X_VENDOR_SPECIFIC,
-+				      type, val, cp210x_interface_num(serial),
-+				      buf, bufsize, USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
- 
--	result = usb_control_msg(serial->dev, usb_sndctrlpipe(serial->dev, 0),
--				 CP210X_VENDOR_SPECIFIC, type, val,
--				 cp210x_interface_num(serial), dmabuf, bufsize,
--				 USB_CTRL_SET_TIMEOUT);
--
--	kfree(dmabuf);
--
--	if (result < 0) {
-+	if (result) {
- 		dev_err(&serial->interface->dev,
- 			"failed to set vendor val 0x%04x size %d: %d\n", val,
- 			bufsize, result);
-@@ -952,27 +915,18 @@ static int cp210x_get_tx_queue_byte_count(struct usb_serial_port *port,
- {
- 	struct usb_serial *serial = port->serial;
- 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
--	struct cp210x_comm_status *sts;
-+	struct cp210x_comm_status sts;
- 	int result;
- 
--	sts = kmalloc(sizeof(*sts), GFP_KERNEL);
--	if (!sts)
--		return -ENOMEM;
--
--	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
--			CP210X_GET_COMM_STATUS, REQTYPE_INTERFACE_TO_HOST,
--			0, port_priv->bInterfaceNumber, sts, sizeof(*sts),
--			USB_CTRL_GET_TIMEOUT);
--	if (result == sizeof(*sts)) {
--		*count = le32_to_cpu(sts->ulAmountInOutQueue);
--		result = 0;
--	} else {
-+	result = usb_control_msg_recv(serial->dev, 0, CP210X_GET_COMM_STATUS,
-+				      REQTYPE_INTERFACE_TO_HOST, 0,
-+				      port_priv->bInterfaceNumber, &sts,
-+				      sizeof(sts), USB_CTRL_GET_TIMEOUT,
-+				      GFP_KERNEL);
-+	if (result == 0)
-+		*count = le32_to_cpu(sts.ulAmountInOutQueue);
-+	else
- 		dev_err(&port->dev, "failed to get comm status: %d\n", result);
--		if (result >= 0)
--			result = -EIO;
--	}
--
--	kfree(sts);
- 
- 	return result;
- }
--- 
-2.17.1
+Thanks for hint. Later I've found -ERANGE also and used it in my next patch versions.
 
