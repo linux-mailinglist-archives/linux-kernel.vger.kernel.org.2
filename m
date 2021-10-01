@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F352B41EE02
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDA041EE07
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352766AbhJANAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:00:18 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38158 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230432AbhJANAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:00:17 -0400
-Received: from zn.tnic (p200300ec2f0e8e00c9205f48360a92d6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:c920:5f48:360a:92d6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 326D41EC008F;
-        Fri,  1 Oct 2021 14:58:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633093112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=tLM81yc0/7+B7uHrmMgKEmO5b6UgFGAaiCJVMuEeJXM=;
-        b=Ml3NHsy7CUwTkPrFBFlA3X5jnQTTIVigF8AFuKzUJu+/yBEuWERTM1FzxWNdPoGh0e07xu
-        3MKpvdaOoqomyjfHk+HKYrnjcMljpN3s0N0IDgOtlQvBwitx2PF2f7RCu2GNvYDxAlQV2K
-        AXemiTsJ3J7ZWPnVwAVqMpeIe7rSANk=
-Date:   Fri, 1 Oct 2021 14:58:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
-Message-ID: <YVcF9ENTfLAGaLec@zn.tnic>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
- <YVbNlXwiASQEsG+x@zn.tnic>
- <YVb2AGXAwYx/OI6J@suse.de>
+        id S1353536AbhJANBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:01:39 -0400
+Received: from smtprelay0083.hostedemail.com ([216.40.44.83]:59912 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1352814AbhJANBh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:01:37 -0400
+Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1EEB5182CED28;
+        Fri,  1 Oct 2021 12:59:53 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 11017B2797;
+        Fri,  1 Oct 2021 12:59:51 +0000 (UTC)
+Message-ID: <061762c85ea54ff7ebaaa1b2468f1c8c5cc84eb9.camel@perches.com>
+Subject: Re: [PATCH] fs/9p: fix warnings found by checkpatch.pl
+From:   Joe Perches <joe@perches.com>
+To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date:   Fri, 01 Oct 2021 05:59:50 -0700
+In-Reply-To: <20211001063444.102330-1-sohaib.amhmd@gmail.com>
+References: <20211001063444.102330-1-sohaib.amhmd@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVb2AGXAwYx/OI6J@suse.de>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 11017B2797
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: puwwxmhsexewzfpw3qbffo5mdcrmjsjr
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/T9D+S2TnbfTMVQ+IwfzVVUcKNC/yKCc4=
+X-HE-Tag: 1633093191-702007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 01:50:24PM +0200, Joerg Roedel wrote:
-> Yeah, I think the right fix is to export cea_map_percpu_pages() and move
-> the cea_map_stack() macro to a header and use it to map the VC stacks.
+On Fri, 2021-10-01 at 08:34 +0200, Sohaib Mohamed wrote:
+> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-I'll do you one better: Put the #VC stack mapping into
-percpu_setup_exception_stacks(), where it naturally belongs and where
-the other stacks are being mapped instead of doing everything "by hand"
-like now and exporting random helpers.
+try using checkpatch on your proposed patch.
 
-Thx.
+> diff --git a/fs/9p/v9fs.h b/fs/9p/v9fs.h
+[]
+> @@ -135,8 +135,8 @@ static inline struct fscache_cookie *v9fs_inode_cookie(struct v9fs_inode *v9inod
+>  
+> 
+>  extern int v9fs_show_options(struct seq_file *m, struct dentry *root);
+>  
+> 
+> -struct p9_fid *v9fs_session_init(struct v9fs_session_info *, const char *,
+> -									char *);
+> +struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses, const char
+> +		*dev_name, char *data);
 
--- 
-Regards/Gruss,
-    Boris.
+That's really not pretty as it separates the type of the 2nd argument.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Perhaps:
+
+struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
+				 const char *dev_name, char *data);
+
+
