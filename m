@@ -2,84 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE0041E67E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D264F41E68A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhJAEIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbhJAEIP (ORCPT
+        id S238367AbhJAETZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:19:25 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:57322
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237668AbhJAETY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:08:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180BDC06176A;
-        Thu, 30 Sep 2021 21:06:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gHTqeRkmuQ+F9S1fgl4jiNZyC8/WXLk5udP/SJxj3NE=; b=O2zZ/bz5e4NeWk2JsS5WrgIqmx
-        cna7kkW5EH+wIp0NOd5aPehRdZUvJPyyjl8XIyeGHBMUnmSS0fiCQvIGgpearoR30FWKlI+VdwPCa
-        jTBrZVbMw/+A1W+vj0znodixmnsGPk925elTvuyLJzizAC5DfPT6jfgBSz/s2cZKu1pXuKCrYDQaD
-        MsWKntIpUIwok9ZNGaR2qROlTr4lppQvhDGH1tBufU3TiQvoY6Cm/J0kfy4pbpVQEl+s0dTUD2y9f
-        +aMzSZXZ03hn6WqjVV35YtvpsZHmc58Oz0jhGpBks/xqj0itnHVf2C5gFsYDYFLT2U799BUzn8Quk
-        JomSBfGQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mW9mb-00DXJr-QF; Fri, 01 Oct 2021 04:04:33 +0000
-Date:   Fri, 1 Oct 2021 05:04:25 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <YVaIydrh/+ez669b@infradead.org>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <c65bf0db-6fd1-eb05-f407-37c41f9125f4@canonical.com>
- <YVWCK5QO331rfhJJ@google.com>
- <72d27a82-9d4d-1f91-bd1f-ebead3b75ffa@canonical.com>
- <YVWwBz8jrznqXah4@google.com>
+        Fri, 1 Oct 2021 00:19:24 -0400
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DF35C402CA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 04:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633061859;
+        bh=SQu/5bN0exvN+2VZmVqasdBLNWTyrRXGdzKFgUCYVbs=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=tjFsHEe7FFjNcbpMQ7PL/T7RZOI2ognR2H++m/2q41FRa00Bv4TKAkzR65JmqCeM7
+         yYTCJD4cVzKwRiC0pZHlny8vxxUuZE7zaMDlVoKX1hbpHqGcPak5FVgpf0uZrqW6hL
+         VMcvuK4Xz62WKrNMkwhTWiqCpq9TVj1aDJy6yDjrRjxEQWzqvgqUdg7CG7GFjrc/kc
+         iKSx5uO88f9xbcarEHGv6B0tWyGmjoPlNpXGkAxFV+Oav+pgCRb8sH47ZdEwkFs81U
+         jbfYqcOmDavadiaJ36jUu8SflLq/FIhtkjuqzfl8MC1dsuOZ4GSh9Nptah2FjDK3jq
+         1aplwvQt52wyQ==
+Received: by mail-ot1-f70.google.com with SMTP id l32-20020a9d1ca0000000b00546e6ec87afso5852747ota.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 21:17:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SQu/5bN0exvN+2VZmVqasdBLNWTyrRXGdzKFgUCYVbs=;
+        b=dQtnIQ99PZQbV9AyNwCedwHwpSgvXIJLchqzowA/CLSofBYKOv4LyxkyirkFOXNv9j
+         z5fQ9BLO+af+nZeBIvWataYYSZf8vd307XkElE6Hbqn/KTLtkgTWfzsFKdNKXYRwBgHM
+         5xtE1mb+vuIL85vqMz7QP88OkBOwsjWWj7E1h+rpxY22B8uo62CIx6VlcYMFrYlPHYug
+         Wde3pdiQEPt4HaJkdxROv1wYUQKC/FwD3twaxipDF7vDtjwNhQ4uA+KEQZ3jQ7ypj9mj
+         ReKyFXAb8q29FG/OFL+Pf04V1DeqjiNtcPdnz6EJc98N42VAs9Nl1BaGp6/l2uwRRkZ5
+         UjfQ==
+X-Gm-Message-State: AOAM532Wv82HvHBpJHHs+GEEjFGAm4jaPZJGX8IFvPCy0VVRdLhYTzC3
+        z9I6baNELONSeomMKB25NPk1fFwJ+j5DSIF5UR88A6ugLr32MRcCUzAIb5LM1PqqZR8W7hQEYjh
+        6+DN0sPt47zkKrM4C3WY/Z5rSNf4US1xys2UdqtYpNl9v/H50Yfxb/OdHKQ==
+X-Received: by 2002:a9d:6655:: with SMTP id q21mr8298622otm.269.1633061858447;
+        Thu, 30 Sep 2021 21:17:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5sIFTWlNrMXzTMDwY9YsLGtg0P9BgxhaFy/YbVon+0xU6YDee9qv+1r4cYz7/RpEmtDpUMMD7dYG2ftih8jY=
+X-Received: by 2002:a9d:6655:: with SMTP id q21mr8298609otm.269.1633061858170;
+ Thu, 30 Sep 2021 21:17:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVWwBz8jrznqXah4@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210916154417.664323-1-kai.heng.feng@canonical.com> <20210917220942.GA1748301@bjorn-Precision-5520>
+In-Reply-To: <20210917220942.GA1748301@bjorn-Precision-5520>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 1 Oct 2021 12:17:26 +0800
+Message-ID: <CAAd53p409uhbor1ArZ=kfiMK2JRHVGVyYukDSSyDvFsVSs=ErQ@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v5 0/3] r8169: Implement dynamic ASPM
+ mechanism for recent 1.0/2.5Gbps Realtek NICs
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:39:35PM +0100, Lee Jones wrote:
-> How would they fix this besides upstreaming support for unreleased
-> work-in-progress H/W?
-> 
-> Haven't I explained this several times already? :)
+On Sat, Sep 18, 2021 at 6:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Sep 16, 2021 at 11:44:14PM +0800, Kai-Heng Feng wrote:
+> > The purpose of the series is to get comments and reviews so we can merge
+> > and test the series in downstream kernel.
+> >
+> > The latest Realtek vendor driver and its Windows driver implements a
+> > feature called "dynamic ASPM" which can improve performance on it's
+> > ethernet NICs.
+> >
+> > Heiner Kallweit pointed out the potential root cause can be that the
+> > buffer is too small for its ASPM exit latency.
+>
+> I looked at the lspci data in your bugzilla
+> (https://bugzilla.kernel.org/show_bug.cgi?id=214307).
+>
+> L1.2 is enabled, which requires the Latency Tolerance Reporting
+> capability, which helps determine when the Link will be put in L1.2.
+> IIUC, these are analogous to the DevCap "Acceptable Latency" values.
+> Zero latency values indicate the device will be impacted by any delay
+> (PCIe r5.0, sec 6.18).
+>
+> Linux does not currently program those values, so the values there
+> must have been set by the BIOS.  On the working AMD system, they're
+> set to 1048576ns, while on the broken Intel system, they're set to
+> 3145728ns.
+>
+> I don't really understand how these values should be computed, and I
+> think they depend on some electrical characteristics of the Link, so
+> I'm not sure it's *necessarily* a problem that they are different.
+> But a 3X difference does seem pretty large.
+>
+> So I'm curious whether this is related to the problem.  Here are some
+> things we could try on the broken Intel system:
 
-No you haven't.  Mostly likely because there is absolutely no good
-explanation.  And if google/Linaro think they want to create hooks
-for stupid vendor modules we need to do whatever we can to make your
-life as miserable as possible.
+Original network speed, tested via iperf3:
+TX: ~255 Mbps
+RX: ~490 Mbps
+
+>
+>   - What happens if you disable ASPM L1.2 using
+>     /sys/devices/pci*/.../link/l1_2_aspm?
+
+TX: ~670 Mbps
+RX: ~670 Mbps
+
+>
+>   - If that doesn't work, what happens if you also disable PCI-PM L1.2
+>     using /sys/devices/pci*/.../link/l1_2_pcipm?
+
+Same as only disables l1_2_aspm.
+
+>
+>   - If either of the above makes things work, then at least we know
+>     the problem is sensitive to L1.2.
+
+Right now the downstream kernel disables ASPM L1.2 as workaround.
+
+>
+>   - Then what happens if you use setpci to set the LTR Latency
+>     registers to 0, then re-enable ASPM L1.2 and PCI-PM L1.2?  This
+>     should mean the Realtek device wants the best possible service and
+>     the Link probably won't spend much time in L1.2.
+
+# setpci -s 01:00.0 ECAP_LTR+4.w=0x0
+# setpci -s 01:00.0 ECAP_LTR+6.w=0x0
+
+Then re-enable ASPM L1.2, the issue persists - the network speed is
+still very slow.
+
+>
+>   - What happens if you set the LTR Latency registers to 0x1001
+>     (should be the same as on the AMD system)?
+
+Same slow speed here.
+
+Kai-Heng
