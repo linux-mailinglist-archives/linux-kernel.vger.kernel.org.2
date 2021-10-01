@@ -2,254 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEFB41E7A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5326141E7A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352171AbhJAGks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:40:48 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:13836 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhJAGkq (ORCPT
+        id S1352171AbhJAGgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230397AbhJAGgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:40:46 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1916Ht6c088858;
-        Fri, 1 Oct 2021 14:17:56 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 1 Oct
- 2021 14:38:45 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH v3] media: aspeed: add debugfs
-Date:   Fri, 1 Oct 2021 14:34:32 +0800
-Message-ID: <20211001063431.8446-1-jammy_huang@aspeedtech.com>
+        Fri, 1 Oct 2021 02:36:36 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3AAC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:34:52 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id v127so6380092wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mVXSClePRw23VTXz4l+/+e888Gbk2ilj3kNPqGf79zg=;
+        b=MDRwr01PKBnlGhAI74nZeDDj4I9RjOtvQmDn2a3Y95SAQyJHltSclBMQ38Yyy6/P2q
+         LbGp8sJ2Zswrmb1TYdF2WgVTHMcVOvmoZF5QbAQpRX+oa+2nvIHpcR7MmHcAbugLwGwm
+         x5PDI2Tjy0vnf3DqqFNE9p13F6N8aXmYAx53dzTkWOso3uABiRbX/RNK5agbxyBZJ8sY
+         lilDe9EUjkDHRG9tdBzxyDsYf6g1pEnKpM1WmQluZA2X/1yPPTA7LER9Dtl67QKXcuDm
+         gNL8rfKUUtQx4cpnakb6glQ9frVrC+DsGbTl+MMr4tzDnWuN4cI6WsKUUVOTPmLrlQHe
+         lVtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mVXSClePRw23VTXz4l+/+e888Gbk2ilj3kNPqGf79zg=;
+        b=xuPkEO7EFyBueerv12scHmicfpjC+/k2Ny3mvuo4Wu3ewCziIsgrGxORctPif90IAq
+         b9H5DQGN8yu6z5snOmPcjejMVSp4kfLAjQ3IKExSljq02sAj15AHejS/1dyp6vtVOa9E
+         4a4rSEkcDeHL58e+8S9n95Q2qNGkqc4SFeEBvU2mNJOTdr8EUbMjQYA3oGVE6wtRn1Q/
+         SZhhjTQg526xb8hk3KdITGDL0cwi2HXwW27/8/OpVSyIi6rLcOZefV3MCw7cQr2Ws4jn
+         6m5W+wxwdNd2IP75XilZG08gPfanqR1JhPMgdWtpnRo9yFaWL3pX6gqeg2hcNXc3kQrr
+         0ecw==
+X-Gm-Message-State: AOAM53079Pwsjqh6goIhw++fxIrr461awForf8aTXyc2bRYY03lb8GJW
+        qMtR39P8NtAp8DHDXCc/mtI=
+X-Google-Smtp-Source: ABdhPJwIBNtxxWYUraabzlZULyiClnV/Z0SgsiR9OEFntO2XYi1c0esnzc07fTwqKM/G4m2QqdLfSg==
+X-Received: by 2002:a1c:9a4f:: with SMTP id c76mr2760960wme.22.1633070091136;
+        Thu, 30 Sep 2021 23:34:51 -0700 (PDT)
+Received: from localhost.localdomain ([197.49.49.194])
+        by smtp.googlemail.com with ESMTPSA id o17sm5002032wrs.25.2021.09.30.23.34.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 23:34:50 -0700 (PDT)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/9p: fix warnings found by checkpatch.pl
+Date:   Fri,  1 Oct 2021 08:34:44 +0200
+Message-Id: <20211001063444.102330-1-sohaib.amhmd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1916Ht6c088858
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To show video real-time information as below:
-
-Caputre:
-  Signal              : Unlock
-  Width               : 1920
-  Height              : 1080
-  FRC                 : 30
-
-Performance:
-  Frame#              : 0
-  Frame Duration(ms)  :
-    Now               : 0
-    Min               : 0
-    Max               : 0
-  FPS                 : 0
-
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 ---
-v3:
- - let struct, aspeed_video_debugfs_ops, be const
-v2:
- - Change the style of debugfs information
- - Use Min/Max to remove test and branch cases
----
- drivers/media/platform/aspeed-video.c | 101 ++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+ fs/9p/v9fs.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 8b3939b8052d..c5c413844441 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -21,6 +21,8 @@
- #include <linux/videodev2.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/debugfs.h>
-+#include <linux/ktime.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-dev.h>
- #include <media/v4l2-device.h>
-@@ -203,6 +205,14 @@ struct aspeed_video_buffer {
- 	struct list_head link;
- };
+diff --git a/fs/9p/v9fs.h b/fs/9p/v9fs.h
+index 92124b235a6d..5dd031252236 100644
+--- a/fs/9p/v9fs.h
++++ b/fs/9p/v9fs.h
+@@ -135,8 +135,8 @@ static inline struct fscache_cookie *v9fs_inode_cookie(struct v9fs_inode *v9inod
  
-+struct aspeed_video_perf {
-+	ktime_t last_sample;
-+	u32 totaltime;
-+	u32 duration;
-+	u32 duration_min;
-+	u32 duration_max;
-+};
-+
- #define to_aspeed_video_buffer(x) \
- 	container_of((x), struct aspeed_video_buffer, vb)
+ extern int v9fs_show_options(struct seq_file *m, struct dentry *root);
  
-@@ -241,6 +251,8 @@ struct aspeed_video {
- 	unsigned int frame_left;
- 	unsigned int frame_right;
- 	unsigned int frame_top;
-+
-+	struct aspeed_video_perf perf;
- };
+-struct p9_fid *v9fs_session_init(struct v9fs_session_info *, const char *,
+-									char *);
++struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses, const char
++		*dev_name, char *data);
+ extern void v9fs_session_close(struct v9fs_session_info *v9ses);
+ extern void v9fs_session_cancel(struct v9fs_session_info *v9ses);
+ extern void v9fs_session_begin_cancel(struct v9fs_session_info *v9ses);
+@@ -167,7 +167,7 @@ extern struct inode *v9fs_inode_from_fid_dotl(struct v9fs_session_info *v9ses,
  
- #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
-@@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
- 		readl(video->base + reg));
+ static inline struct v9fs_session_info *v9fs_inode2v9ses(struct inode *inode)
+ {
+-	return (inode->i_sb->s_fs_info);
++	return inode->i_sb->s_fs_info;
  }
  
-+static void update_perf(struct aspeed_video_perf *p)
-+{
-+	p->duration =
-+		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
-+	p->totaltime += p->duration;
-+
-+	p->duration_max = max(p->duration, p->duration_max);
-+	p->duration_min = min(p->duration, p->duration_min);
-+}
-+
- static int aspeed_video_start_frame(struct aspeed_video *video)
- {
- 	dma_addr_t addr;
-@@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
- 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
- 			    VE_INTERRUPT_COMP_COMPLETE);
- 
-+	video->perf.last_sample = ktime_get();
-+
- 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
- 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
- 
-@@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
- 		u32 frame_size = aspeed_video_read(video,
- 						   VE_JPEG_COMP_SIZE_READ_BACK);
- 
-+		update_perf(&video->perf);
-+
- 		spin_lock(&video->lock);
- 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
- 		buf = list_first_entry_or_null(&video->buffers,
-@@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
- 	det->width = MIN_WIDTH;
- 	det->height = MIN_HEIGHT;
- 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
-+	memset(&video->perf, 0, sizeof(video->perf));
- 
- 	do {
- 		if (tries) {
-@@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
- 	struct aspeed_video *video = vb2_get_drv_priv(q);
- 
- 	video->sequence = 0;
-+	video->perf.duration_max = 0;
-+	video->perf.duration_min = 0xffffffff;
- 
- 	rc = aspeed_video_start_frame(video);
- 	if (rc) {
-@@ -1517,6 +1546,72 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
- 	.buf_queue =  aspeed_video_buf_queue,
- };
- 
-+#ifdef CONFIG_DEBUG_FS
-+static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
-+{
-+	struct aspeed_video *v = s->private;
-+
-+	seq_puts(s, "\n");
-+
-+	seq_printf(s, "  %-20s:\t%s\n", "Signal",
-+		   v->v4l2_input_status ? "Unlock" : "Lock");
-+	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-+	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
-+	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
-+
-+	seq_puts(s, "\n");
-+
-+	seq_puts(s, "Performance:\n");
-+	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
-+	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
-+	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
-+	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
-+	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
-+	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
-+
-+
-+	return 0;
-+}
-+
-+int aspeed_video_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
-+}
-+
-+static const struct file_operations aspeed_video_debugfs_ops = {
-+	.owner   = THIS_MODULE,
-+	.open    = aspeed_video_proc_open,
-+	.read    = seq_read,
-+	.llseek  = seq_lseek,
-+	.release = single_release,
-+};
-+
-+static struct dentry *debugfs_entry;
-+
-+static void aspeed_video_debugfs_remove(struct aspeed_video *video)
-+{
-+	debugfs_remove_recursive(debugfs_entry);
-+	debugfs_entry = NULL;
-+}
-+
-+static int aspeed_video_debugfs_create(struct aspeed_video *video)
-+{
-+	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
-+						   video,
-+						   &aspeed_video_debugfs_ops);
-+	if (!debugfs_entry)
-+		aspeed_video_debugfs_remove(video);
-+
-+	return debugfs_entry == NULL ? -EIO : 0;
-+}
-+#else
-+static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
-+static int aspeed_video_debugfs_create(struct aspeed_video *video)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int aspeed_video_setup_video(struct aspeed_video *video)
- {
- 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
-@@ -1708,6 +1803,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
- 		return rc;
- 	}
- 
-+	rc = aspeed_video_debugfs_create(video);
-+	if (rc)
-+		dev_err(video->dev, "debugfs create failed\n");
-+
- 	return 0;
- }
- 
-@@ -1719,6 +1818,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
- 
- 	aspeed_video_off(video);
- 
-+	aspeed_video_debugfs_remove(video);
-+
- 	clk_unprepare(video->vclk);
- 	clk_unprepare(video->eclk);
- 
+ static inline struct v9fs_session_info *v9fs_dentry2v9ses(struct dentry *dentry)
 -- 
 2.25.1
 
