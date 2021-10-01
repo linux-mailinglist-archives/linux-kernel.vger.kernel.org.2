@@ -2,77 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CA641E6C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC2941E6C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhJAE14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbhJAE1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:27:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CF1C06176A;
-        Thu, 30 Sep 2021 21:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=24jrab2AMnBJR4sZxClUsLnZ/JpBz5ErZJ2htaSG9zY=; b=OzHsgfjWfkdjvl3MY5vrI5LgyM
-        2wjXR/trg4l7/ZOEtBgUpNgUvQuqph6kQfyv8c/FTbSned5IsqPpNpAy1NTzY3itgF3tfKlyyM2sY
-        BMxQvstQWfs68VQzO5b276dwKK5XASFyQttzsD+Ar0XdE3bmeocFPbrrvbUFxDnpbh31aGmy1u3+2
-        xi2ozN5m2Z2fBO09rDPLlFhKxJ+Cg3eMzbXd6EnVc3BFmsyggpOjVJjMmMjHSjOZNqFVmkUXyPU6E
-        978D98QDqRenm2rpNZ/ymfOc1yppKUSXoSUe9u46yQFT8Io9uEgIiKJPIXFgKsnECCTwoeA1yc+PM
-        afKJ+9nA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWA6L-00DXtA-Sy; Fri, 01 Oct 2021 04:24:58 +0000
-Date:   Fri, 1 Oct 2021 05:24:49 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Manoj N. Kumar" <manoj@linux.ibm.com>,
-        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Uma Krishnan <ukrishn@linux.ibm.com>,
-        Brian King <brking@us.ibm.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        megaraidlinux.pdl@broadcom.com,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [RFC] Is lib/irq_poll still considered useful?
-Message-ID: <YVaNkVXYUt6tIYvS@infradead.org>
-References: <20210930103754.2128949-1-bigeasy@linutronix.de>
- <20210930105605.ofyayf3uwk75u25s@linutronix.de>
+        id S1344124AbhJAEb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:31:28 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28076 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237691AbhJAEb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 00:31:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633062582; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hMlYsnEpNAjIGcGeBS4W4NAj6nd6tI3JefAIl+pq0PI=;
+ b=PSHkEBLEGG/GtIEaZnZwGp/ixtl6mqFU8fOZ0qxXoX0xKHRWVRFpCgJ+OT21m3C9V79OXrwF
+ /d7f7RhC2atTQqqTWtV2/h0BfJ511NgMKbKMTFCHeMDuyj/Wg846O4/62L3ksFtxzQZ+z/UV
+ nJF6A9gD9cvhVm9Z6XKGOqaHL9c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61568eb447d64efb6d1f2c51 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 04:29:40
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AE5D0C43460; Fri,  1 Oct 2021 04:29:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AE4FC4338F;
+        Fri,  1 Oct 2021 04:29:39 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930105605.ofyayf3uwk75u25s@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 01 Oct 2021 09:59:39 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v9 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP
+ board
+In-Reply-To: <CAE-0n52G7=PFrPGr5Zwq43q55CWBSkaEm7HpC+C4r2+Gjv3JQg@mail.gmail.com>
+References: <1632837350-12100-1-git-send-email-pmaliset@codeaurora.org>
+ <1632837350-12100-4-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n52G7=PFrPGr5Zwq43q55CWBSkaEm7HpC+C4r2+Gjv3JQg@mail.gmail.com>
+Message-ID: <d009c9c26e8ea7058509e96d2e0cd282@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 12:56:05PM +0200, Sebastian Andrzej Siewior wrote:
-> Is there a reason for the remaining user of irq_poll to keep using it?
+On 2021-09-29 02:22, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-09-28 06:55:49)
+>> Enable PCIe controller and PHY for sc7280 IDP board.
+>> Add specific NVMe GPIO entries for SKU1 and SKU2 support.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  9 ++++++
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 54 
+>> ++++++++++++++++++++++++++++++++
+>>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 ++++++
+>>  3 files changed, 72 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index 64fc22a..1562386 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -61,6 +61,15 @@
+>>         modem-init;
+>>  };
+>> 
+>> +&nvme_pwren_pin {
+>> +       pins = "gpio19";
+>> +};
+> 
+> This should move to the bottom in the "pinctrl" section.
+> 
+Hi Stephen,
 
-At least for RDMA there are workloads where the latency difference
-matters.  That's why we added both the irq_poll and workqueue mode
-to thew new CQ API a few years ago.
+There is no pinctrl section in this file. we defined nvme_pwren_pin in 
+common IDP file(sc7280-idp.dtsi) and using the nvme_pwren_pin reference 
+to define SKU specific gpio pin for SKU1 and SKU2 support.
+
+Thanks
+-Prasad
+>> +
+>> +&nvme_3v3_regulators {
+>> +       gpio = <&tlmm 19 GPIO_ACTIVE_HIGH>;
+>> +       enable-active-high;
+> 
+> The enable-active-high can be in the idp.dtsi file? That doesn't seem 
+> to
+> change.
+> 
+>> +};
+>> +
+>>  &pmk8350_vadc {
+>>         pmr735a_die_temp {
+>>                 reg = <PMR735A_ADC7_DIE_TEMP>;
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> index def22ff..5b5505f 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> @@ -31,6 +31,17 @@
+>>                         linux,can-disable;
+>>                 };
+>>         };
+>> +
+>> +       nvme_3v3_regulators: nvme-3v3-regulators {
+> 
+> Why plural? Isn't it a single regulator?
+> 
+Sure, I will update in next version
+
+Thanks
+-Prasad
+>> +               compatible = "regulator-fixed";
+>> +               regulator-name = "VLDO_3V3";
+>> +
+>> +               regulator-min-microvolt = <3300000>;
+>> +               regulator-max-microvolt = <3300000>;
+>> +
+>> +               pinctrl-names = "default";
+>> +               pinctrl-0 = <&nvme_pwren_pin>;
+>> +       };
+>>  };
+>> 
+>>  &apps_rsc {
+>> @@ -220,6 +231,42 @@
+>>         modem-init;
+>>  };
+>> 
+>> +&pcie1 {
+>> +       status = "okay";
+>> +       perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+>> +
+>> +       vddpe-3v3-supply = <&nvme_3v3_regulators>;
+>> +
+>> +       pinctrl-names = "default";
+>> +       pinctrl-0 = <&pcie1_default_state>;
+>> +};
+>> +
+>> +&pcie1_phy {
+>> +       status = "okay";
+>> +
+>> +       vdda-phy-supply = <&vreg_l10c_0p8>;
+>> +       vdda-pll-supply = <&vreg_l6b_1p2>;
+>> +};
+>> +
+>> +&pcie1_default_state {
+> 
+> I thought the node would be split into a reset config node and a wake
+> config node. Is that not being done for some reason? The pinctrl-0 
+> would
+> look like
+> 
+Agree, I will incorporate the changes in next version.
+
+> 	pinctrl-0 = <&pcie1_default_state>, <&pcie1_reset_n>, <&pcie1_wake_n>;
+> 
+>> +       reset-n {
+>> +               pins = "gpio2";
+>> +               function = "gpio";
+>> +
+>> +               drive-strength = <16>;
+>> +               output-low;
+>> +               bias-disable;
+>> +       };
+>> +
+>> +       wake-n {
+>> +               pins = "gpio3";
+>> +               function = "gpio";
+>> +
+>> +               drive-strength = <2>;
+>> +               bias-pull-up;
+>> +       };
+>> +};
+>> +
+>>  &pmk8350_vadc {
+>>         pmk8350_die_temp {
+>>                 reg = <PMK8350_ADC7_DIE_TEMP>;
+>> @@ -489,3 +536,10 @@
+>>                 bias-pull-up;
+>>         };
+>>  };
+>> +
+>> +&tlmm {
+>> +       nvme_pwren_pin: nvme-pwren-pin {
+>> +               function = "gpio";
+>> +               bias-pull-up;
+>> +       };
+>> +};
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+>> index 1fc2add..0548cb6 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+>> @@ -21,3 +21,12 @@
+>>                 stdout-path = "serial0:115200n8";
+>>         };
+>>  };
+>> +
+>> +&nvme_pwren_pin {
+>> +       pins = "gpio51";
+>> +};
+> 
+> The pin config can go to a pinctrl section at the bottom of this file?
+> 
+Same as a like SKU1 (sc7280-idp.dts)
+>> +
+>> +&nvme_3v3_regulators {
+>> +       gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
+>> +       enable-active-high;
+>> +};
