@@ -2,122 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB5441EB4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627A541EB50
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353721AbhJALDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353710AbhJALCt (ORCPT
+        id S1353757AbhJALDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:03:35 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44008
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353712AbhJALCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:02:49 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B196DC061775;
-        Fri,  1 Oct 2021 04:01:04 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id q17-20020a7bce91000000b0030d4e298215so894111wmj.0;
-        Fri, 01 Oct 2021 04:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AlljMHBis/HGJBiP3p84b0NWwK4Vv/mNrhgfG66xRN0=;
-        b=kL8k3KExxNPjOhmf5Yc13M8iZH785dkPpqzkefCPkoYoobgeIRoIHDV8wgOno4cJnI
-         QBGI7Ak9zU7bgiDFYIMUJ7i6bSpO/5cGqY6Od1wDemxYR6iCuh4UEMviiE4BK3Z45RqJ
-         1LrZ85eo6KjDTmJvv1H3XMLHoh0Vz7Jdw5GuBHZUxXDF6kQwd2SrlfkdUdzxHvEQiP2q
-         uhkHMHTfJF2yV/HucKogY5JzXGXRfcAq60mT8AUjImo451ZxpQYjK373T2zdPg1AUX6N
-         AYB8xSYi/WM5rW4AyPhDw0gqEWyVfmh8HDPGmBPRL8iy+ypNZU1hzys3VllwC1P/TrKg
-         ut4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AlljMHBis/HGJBiP3p84b0NWwK4Vv/mNrhgfG66xRN0=;
-        b=5obvZzoNw99d6fy9vdldFGxvaffoXcnPkGU/1zMV8l5ahbhvYdHtmnZChcOIwueztY
-         /zs5e7Wpy0MmtLIEA4cnwatQ3NsqVVJRJWIgmgbnXpTn5xw0NQw67ZciqqBmiV1pr0Pa
-         PLiKSeRNXyP4xwWnn/rZ+4AwmBI8VZh9rGFfxfk5XUA1+QUr/MyvEnPYcJeJ7hhu693M
-         XGIqxJWm/e8Xz+9wHO46ynoIvIH6PmmEsTkqZjDUa1YEwxeaz2RPlBu9+G5MHhL9UYNe
-         cTE9lvjLtQik7OWdwTjexfrzZNOi6jkX3Lp972RA5EPutF3eGdW/etf5gd4X8HApwGvp
-         O6uQ==
-X-Gm-Message-State: AOAM531NbfYlpEGEAlLWllZ+M5ycrD84XAdzBvlWUsZNXaTj65bgtIES
-        sJiAfM9EOGG/n2/yGIo0iOYTQGXuGWI=
-X-Google-Smtp-Source: ABdhPJzLsgwBDTgq0mPqkClwiGnbU8lLscbd3XxcsEkz1bR8+RG3h7laXw0AK7hf+stOwcAdlLKVHQ==
-X-Received: by 2002:a7b:cb4b:: with SMTP id v11mr3803605wmj.155.1633086063029;
-        Fri, 01 Oct 2021 04:01:03 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-67-254.ip85.fastwebnet.it. [93.42.67.254])
-        by smtp.gmail.com with ESMTPSA id q18sm7337204wmc.7.2021.10.01.04.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 04:01:02 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 13:01:02 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] drivers: net: dsa: qca8k: convert to
- GENMASK/FIELD_PREP/FIELD_GET
-Message-ID: <YVbqbq180jgrhiIe@Ansuel-xps.localdomain>
-References: <20211001013729.21849-1-ansuelsmth@gmail.com>
- <91eb5d7e-b62c-45e6-16a3-1d9c1c780c7b@gmail.com>
+        Fri, 1 Oct 2021 07:02:52 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E430F41979;
+        Fri,  1 Oct 2021 11:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633086066;
+        bh=dn4OGJN7yHitmsR+lQU1cTUP+QKK1iKnmxAV8VlJ3E4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=B0bJbg34EwDnjlaPhWwcmqQPjpQfOWCJL/Rj23RKnP3CGG6aHsnYTwQXi0intnf+j
+         oz+XONCYLcWbXq3r0eqCeWdkb0qo+YgK9JeurUYiQChx7Rkxn0Of1/eKe0RIS6aV8V
+         +NH8/3LdkPkdjuFTPyCjGy/7tqbeNPH/AIVwTGi9Bee0NPO0pM0p5PWL7rizR1pKzZ
+         1TVQqrSsmFVhgb94K6PrQNX7CrBmy3YxbbFoHgepiU+VvjFWauQOUJbG6P9EnYw14l
+         okFVBzQ1nQHMJoUub95njDBo0XgEqXVYLF46jLTYJ3g5zzFbJywjYsZm/jsU8pq84L
+         SHRp+fuZC1s3w==
+From:   Colin King <colin.king@canonical.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        David Stevens <stevensd@chromium.org>, kvm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] KVM: x86: Fix allocation sizeof argument
+Date:   Fri,  1 Oct 2021 12:01:06 +0100
+Message-Id: <20211001110106.15056-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91eb5d7e-b62c-45e6-16a3-1d9c1c780c7b@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 07:14:13PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 9/30/2021 6:37 PM, Ansuel Smith wrote:
-> > Convert and try to standardize bit fields using
-> > GENMASK/FIELD_PREP/FIELD_GET macros. Rework some logic to support the
-> > standard macro and tidy things up. No functional change intended.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> > 
-> > I still need to test this in every part but I would like to have some
-> > approval about this kind of change. Also there are tons of warning by
-> > checkpatch about too long line... Are they accepted for headers? I can't
-> > really find another way to workaround the problem as reducing the define
-> > name would make them less descriptive.
-> > Aside from that I did the conversion as carefully as possible so in
-> > theory nothing should be broken and the conversion should be all
-> > correct. Some real improvement by using filed macro are in the
-> > fdb_read/fdb_write that now are much more readable.
-> 
-> My main concern is that it is going to be a tad harder to back port fixes
-> made to this driver with such changes in place, so unfortunately it is
-> usually a matter of either the initial version of the driver use BIT(),
-> FIELD_{PREP,GET} and GENMASK, or the very few commits following the initial
-> commit take care of that, and then it is all rosy for everyone, or else it
-> may be complicated.
-> 
-> You are one of the active contributors to this driver, so ultimately you
-> should decide.
-> -- 
-> Florian
+From: Colin Ian King <colin.king@canonical.com>
 
-Problem I'm trying to solve here is that I notice various name scheme
-used and not an unique one... (many _S and _M mixed with MASK and SHIFT)
-Various shift and strange bits handling. I think this is needed to
-improve the code in all the next release.
-About backports you mean for older kernel (bugfixes) or for external
-project (backports for openwrt, for example?) Anyway in the main code
-(the one in theory that should receive backports) I just reworked the ACL
-code that should be stable and the switch ID handling (I don't think
-there is anything to fix there). Aside from that and some improvement to
-VLAN, I tried to implement FIELD_PREP only in the define without
-touching qca8k code. 
-I honestly don't know if this would cause that much of a problem with
-backports (assuming they only touch qca8k code and not header).
-Would love to receive some feedback if I'm wrong about my idea.
-Any feedback about the warning for long names in the define? Are they
-accepted? I can't find anywhere how we should handle them.
+The allocation for *gfn_track should be for a slot->npages lot of
+short integers, however the current allocation is using sizeof(*gfn_track)
+and that is the size of a pointer, which is too large. Fix this by
+using sizeof(**gfn_track) instead.
+
+Addresses-Coverity: ("Wrong sizeof argument")
+Fixes: 35b330bba6a7 ("KVM: x86: only allocate gfn_track when necessary")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/x86/kvm/mmu/page_track.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index bb5d60bd4dbf..5b785a5f7dc9 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -92,7 +92,7 @@ int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
+ 		slots = __kvm_memslots(kvm, i);
+ 		kvm_for_each_memslot(slot, slots) {
+ 			gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
+-			*gfn_track = kvcalloc(slot->npages, sizeof(*gfn_track),
++			*gfn_track = kvcalloc(slot->npages, sizeof(**gfn_track),
+ 					      GFP_KERNEL_ACCOUNT);
+ 			if (*gfn_track == NULL) {
+ 				mutex_unlock(&kvm->slots_arch_lock);
 -- 
-Ansuel
+2.32.0
+
