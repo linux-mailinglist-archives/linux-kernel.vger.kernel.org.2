@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D4C41EC6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EED141EC77
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354122AbhJALoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:44:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56895 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354072AbhJALoN (ORCPT
+        id S1354170AbhJALrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353771AbhJALrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:44:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633088549; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=dIrdlju3fVWX1YgwfatLNksAWCETMoXVhNoE8IO4bXc=; b=OkNdI7K6M4DWPGPOLUb0Gs3sIrCMqoFqWgsl3iCaZwFOlgXxWnuRA/HBsZLQIGXrk4Nzr6q9
- BOikFxbbItjswa1Ov7AHHi7ru+Qjqa8NKA8TAh3PTl3SLlYzN5UMdJ+beyxgnCxJdGDgTTne
- ZHLwwUrrSAtk39Izamf1wLMluxg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6156f40a47d64efb6d32401f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:42:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 321FBC4360C; Fri,  1 Oct 2021 11:42:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A33EDC4338F;
-        Fri,  1 Oct 2021 11:41:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A33EDC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 12/24] wfx: add hif_api_*.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-13-Jerome.Pouiller@silabs.com>
-Date:   Fri, 01 Oct 2021 14:41:55 +0300
-In-Reply-To: <20210920161136.2398632-13-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Mon, 20 Sep 2021 18:11:24 +0200")
-Message-ID: <875yuhkm4c.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 1 Oct 2021 07:47:13 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D27C061775;
+        Fri,  1 Oct 2021 04:45:29 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y26so37888664lfa.11;
+        Fri, 01 Oct 2021 04:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
+        b=c5pnifb84S3cmH+v6CwyiCpgvnYoIn2qTma9lJrQG/5u3N4pvO/6mEaebzk5ODZ+8/
+         T5ilDAGNMAarZMJBsPb0WzWmZqiz6zrVP8amb0v4FjmPuU7Ya5IStGoAevd3FiveOQRo
+         fFqfxGUkJyhDiibsC7NzARCE5ReDri7f5s1F2f9uZEMsSAuxtWBRCwX/iH9GGq2gP1JM
+         bSQ51+djagI9hzzhdLbhcMD+HUszZEknVeZAuPP4ZFIK5sX8SEC5Ro99S8ptusxHouBQ
+         VtkDE/8uC3hQ6CcT3wb4xeAiq+hugvd8gonTzORNtgrfLEoUPoqxvRhYN/K/Yr14CW79
+         akkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
+        b=TSBvLmw/DsCzoh4CHt5Y+u+ogYSeMn7TSzwDqzdm+Bn9C4IZw2EDJqjDH1PJO5L2ij
+         bKUPWgSG1Cy5lsIwXRqu8jKR90yk/a2t5PCs9n9cetYaevJ/COinVKud0hc1LJ/mV4w2
+         8zIR9aQf4f2b6xncnBhYHRMEhp2h7E9mOcqF9LAjZ7cKqW3FFWz/74L8CbSvan/0gHW1
+         QCINAh/pUCWVAJ/OQgDr/u8LlKnzBYvcFlkzPrQ90BfAulPLDrJyYYyeo9lZ1pBxw5eQ
+         U2eoRlvTOnSdaCq23Rp64E/lo4jiGKQbRHQ9ePMm33IUZ5hqvj3OOTcm/BI54Mof0xOH
+         Bl4A==
+X-Gm-Message-State: AOAM530SM8y2YulpU8oMaIBr4GZ6P+vh3jSGvmEhLythmwgWl1FXr5Bl
+        bLI8CKCnT4Dkt9Wdlb2xZT4=
+X-Google-Smtp-Source: ABdhPJxtcbH1EXrolybxconjeDFwJnpNlfjqcarbu5zs4BQ+iGKIMEQhjRDzclxuvWBcQ7oOU6nNSw==
+X-Received: by 2002:a2e:bf0d:: with SMTP id c13mr11747222ljr.150.1633088727328;
+        Fri, 01 Oct 2021 04:45:27 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id v27sm710990lfd.127.2021.10.01.04.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 04:45:26 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] ASoC: tegra: Constify static snd_soc_ops
+Date:   Fri,  1 Oct 2021 13:45:17 +0200
+Message-Id: <20211001114517.6752-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+The struct tegra_machine_snd_ops is only assigned to the ops field in the
+snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+Make it const to allow the compiler to put it in read-only memory.
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ sound/soc/tegra/tegra_asoc_machine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 735909310a26..3cbe6ef1cf9f 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -313,7 +313,7 @@ static int tegra_machine_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops tegra_machine_snd_ops = {
++static const struct snd_soc_ops tegra_machine_snd_ops = {
+ 	.hw_params = tegra_machine_hw_params,
+ };
+ 
+-- 
+2.33.0
 
-> --- /dev/null
-> +++ b/drivers/net/wireless/silabs/wfx/hif_api_cmd.h
-> @@ -0,0 +1,555 @@
-> +/* SPDX-License-Identifier: Apache-2.0 */
-
-I don't how I missed this earlier:
-
-hif_api_cmd.h:/* SPDX-License-Identifier: Apache-2.0 */
-hif_api_general.h:/* SPDX-License-Identifier: Apache-2.0 */
-hif_api_mib.h:/* SPDX-License-Identifier: Apache-2.0 */
-
-Apache-2.0 license is a blocker for me, see LICENSES/dual/Apache-2.0.
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
