@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942C741F3A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C75E41F3A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355496AbhJARxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:53:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:49524 "EHLO foss.arm.com"
+        id S1355511AbhJARxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:53:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:49554 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355478AbhJARxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:53:10 -0400
+        id S1355530AbhJARxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:53:21 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67F00106F;
-        Fri,  1 Oct 2021 10:51:25 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86193106F;
+        Fri,  1 Oct 2021 10:51:36 -0700 (PDT)
 Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB96B3F70D;
-        Fri,  1 Oct 2021 10:51:23 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9CD83F70D;
+        Fri,  1 Oct 2021 10:51:34 -0700 (PDT)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -30,11 +30,11 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 09/11] rcu: Fix callbacks processing time limit retaining cond_resched()
-In-Reply-To: <20210929221012.228270-10-frederic@kernel.org>
-References: <20210929221012.228270-1-frederic@kernel.org> <20210929221012.228270-10-frederic@kernel.org>
-Date:   Fri, 01 Oct 2021 18:51:21 +0100
-Message-ID: <875yugmy5i.mognet@arm.com>
+Subject: Re: [PATCH 10/11] rcu: Apply callbacks processing time limit only on softirq
+In-Reply-To: <20210929221012.228270-11-frederic@kernel.org>
+References: <20210929221012.228270-1-frederic@kernel.org> <20210929221012.228270-11-frederic@kernel.org>
+Date:   Fri, 01 Oct 2021 18:51:32 +0100
+Message-ID: <874ka0my57.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -42,14 +42,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/09/21 00:10, Frederic Weisbecker wrote:
-> The callbacks processing time limit makes sure we are not exceeding a
-> given amount of time executing the queue.
+> Time limit only makes sense when callbacks are serviced in softirq mode
+> because:
 >
-> However its "continue" clause bypasses the cond_resched() call on
-> rcuc and NOCB kthreads, delaying it until we reach the limit, which can
-> be very long...
+> _ In case we need to get back to the scheduler,
+>   cond_resched_tasks_rcu_qs() is called after each callback.
 >
-> Make sure the scheduler has a higher priority than the time limit.
+> _ In case some other softirq vector needs the CPU, the call to
+>   local_bh_enable() before cond_resched_tasks_rcu_qs() takes care about
+>   them via a call to do_softirq().
+>
+> _ The time spent on other tasks after scheduling out, or on softirqs
+>   processing, is spuriously accounted to the time limit.
+>
+
+That wasn't the case before ("rcu: Fix callbacks processing time limit
+retaining cond_resched()"), though under PREEMPT_RT that *was* true (since
+bh-off remains preemptible). So I'd say that's a change we want.
+
+> Therefore, make sure the time limit only applies to softirq mode.
 >
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > Cc: Valentin Schneider <valentin.schneider@arm.com>
