@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8E941EEEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7638C41EEF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhJANyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:54:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:46718 "EHLO mail.skyhub.de"
+        id S231764AbhJAN4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:56:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:46984 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhJANyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:54:45 -0400
+        id S231513AbhJAN4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:56:04 -0400
 Received: from zn.tnic (p200300ec2f0e8e001f2e791e6d4c2984.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:1f2e:791e:6d4c:2984])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B21F11EC0354;
-        Fri,  1 Oct 2021 15:53:00 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92BB51EC0354;
+        Fri,  1 Oct 2021 15:54:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633096380;
+        t=1633096459;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=xUv5xjAXztgQHlMEJDvEYisLMtb5UO1HcGM0nw61kNY=;
-        b=KuusR7dMsKwj+U+gtx5xh2qM/w6uPTWcxj8vjqSDSbLs0grO12bskEhwT2ZtQ4wL++5Cc4
-        mA32hZ3LUg7Zmb3fbbCFAf7DtqNpq42NFBwuk1P9cpv/rLMpbRUyWjFyaCuxhWAA9JiK84
-        DqbuCKEK3ulUqF5HMSfeLoSOjpQPaPM=
-Date:   Fri, 1 Oct 2021 15:52:57 +0200
+        bh=n7NZ6CsYUzYt+ZZw63cyXvWPornkqmhriu39m35lizc=;
+        b=C/V1PuCf9XH8ATkHIA+8XQH7Wku6FrY/WkwouGqGE6V6kzIMOtgEKa0w7H2bHSSDj7uce3
+        sNczxucT7QjshyISnj20VYy8qFB3dmuzt5/2fh4Kv1M8DWJuljHgU+VRIPbQPG9D3fWR2M
+        ZXsTY9uC27A0f5tOe0Hx+CL/zRmEoPo=
+Date:   Fri, 1 Oct 2021 15:54:20 +0200
 From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
-Message-ID: <YVcSuVqmTPiw4YLk@zn.tnic>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
- <YVbNlXwiASQEsG+x@zn.tnic>
- <YVb2AGXAwYx/OI6J@suse.de>
- <YVcF9ENTfLAGaLec@zn.tnic>
- <YVcGdpVuSsieFL8W@suse.de>
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sev: Return an error on a returned non-zero
+ SW_EXITINFO1[31:0]
+Message-ID: <YVcTDM9hshdlUqbN@zn.tnic>
+References: <efc772af831e9e7f517f0439b13b41f56bad8784.1633063321.git.thomas.lendacky@amd.com>
+ <YVbYWz+8J7iMTJjc@zn.tnic>
+ <00d48af4-1683-350c-c334-08968d455e4c@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YVcGdpVuSsieFL8W@suse.de>
+In-Reply-To: <00d48af4-1683-350c-c334-08968d455e4c@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 03:00:38PM +0200, Joerg Roedel wrote:
-> The VC stack is only allocated and mapped when SEV-ES is detected, so
-> they can't always be mapped by generic code.
+On Fri, Oct 01, 2021 at 08:45:17AM -0500, Tom Lendacky wrote:
+> I'm assuming you don't want this last sentence...
 
-And? I am assuming you do know how to check whether SEV-ES is enabled.
-
-:-)
-
-I also assumed it is implicitly clear that the mapping should not happen
-unconditionally but of course behind a check.
-
-Thx.
+Bah, that's me fat-fingering it. It was supposed to say "No functional
+changes."
 
 -- 
 Regards/Gruss,
