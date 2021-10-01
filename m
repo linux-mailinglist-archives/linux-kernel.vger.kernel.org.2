@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A755C41F5E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EB441F5EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhJATv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
+        id S229919AbhJATxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhJATvw (ORCPT
+        with ESMTP id S229899AbhJATxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:51:52 -0400
+        Fri, 1 Oct 2021 15:53:11 -0400
 Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBEEC061775;
-        Fri,  1 Oct 2021 12:50:07 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so42934591lfu.5;
-        Fri, 01 Oct 2021 12:50:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C67C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:51:26 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x27so42945954lfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+3tCCW1vf690/4T30qcUTSO03STgS9Zq/gOdQmsNyEY=;
-        b=lY0wpPfvEJC3ODP4sRKgGKoG8Swu6fLZXyhOhUQdBtt8vAmwxCUggKysIiRbfpVECz
-         Cd3ipKChxLyI1Zlljt9jBoTItp7HmkRZNf+eWjSo0rRzLJpIXZuZSpuczURL7aSNbaxj
-         i27N4TFDl5jVrgoDNEymG3WJmbBn2a47R0QIsqRS8kEVT2EURQYnYf+OZQh4u5X906wS
-         OP71a4OED8ggbpaM9F9WPD+jQS6co7bb2ujJRxsbNvD0guBE62JtB6hzhNKWUuRSoEPm
-         eED+tROxrUYQsEDU12h+rkOJTDJ9NZqCO/m7egmIDgFRlkZFJ+0EKU6mPddmAv9siSJx
-         aPHw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OASN1DWXrIyD6gQMB0CvKRtBfiSz7Btq5Vz6GIW00BE=;
+        b=pggztfgWW5/r760u67qMKk/gTZdTITQgtnm3gsdGguHjcPYeUrqfnJ1Ts/Q8zWqhwu
+         +HBU/MNmhVO8smF7opyPX9VNyK1Fp5kiQMn7GyqBpkTvdPA0ydBPoQSBZtdYo8YURLwl
+         3tGka8IMoYW/kKnrhIpQ+1XF1sCw+rvBzldSAyrs8wm/GlQyk6fd5/JFQwk3kiF81KnQ
+         onxrXDIA4LOqeSja4oFc4zGKVKfBJvfADJh3c6BplTORvbepH/RZojxT33BqibLljLad
+         N/H0dfwVeCeFN3AlCaOG/FyxomgOhHkI7xyAvzbNN+fSW8TAoOKjJ6zy166m0yhWGtIt
+         787Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+3tCCW1vf690/4T30qcUTSO03STgS9Zq/gOdQmsNyEY=;
-        b=Z5MKWqJ44nV0FaQR+LgRdzd3D/DcVqURG5ba8wZhMGE6KgMLCzUFBhhYTmVTyQBSiM
-         vNwu+vpY8LIhD+xGa9ojgjPJFqtlrkYRwnGfZtUWv+1VIWDFkOhqYXxYdF0hPJbVNetG
-         S8++W0JJ0+D5pd2KnhJM23J6t6WVT9greYTkSOYvVI6IPOjq08LQViiqC/lajnFo5Q0T
-         0Igx/O4Xuqs8oLbhIO6CKuvNrolM82bRTDCUffb8BmhZlj6OhSRUfUtpaKrmcpJ7OvUJ
-         Y3gAkLXrodgyw33dv6gj6DADd8/B8t05KFDVKCzZE4dQQq4SWCDpv6WI8C6RCR4855K8
-         rDEA==
-X-Gm-Message-State: AOAM530roErC4l84PFvXKEHQXNYQSY4ucyZEkCIMviBdt0hp3MdwgF6J
-        hfkgfiCo/u1AeTOnYR6Atr0=
-X-Google-Smtp-Source: ABdhPJxYsYCCBKlCSGLAzxa6BXsGbqcTjHWvgb7beKpP4WisArOt1AAHN4vdv1Oz4AuVBT+h3gaDUA==
-X-Received: by 2002:a2e:924d:: with SMTP id v13mr13579672ljg.380.1633117806218;
-        Fri, 01 Oct 2021 12:50:06 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
-        by smtp.googlemail.com with ESMTPSA id d26sm835708ljj.45.2021.10.01.12.50.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 12:50:05 -0700 (PDT)
-Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-7-digetx@gmail.com>
- <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7386079f-0dfe-9f55-6297-1f9ee67cd9d6@gmail.com>
-Date:   Fri, 1 Oct 2021 22:50:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OASN1DWXrIyD6gQMB0CvKRtBfiSz7Btq5Vz6GIW00BE=;
+        b=Ufv6DYo2o4ONUH6wuYCUQWEsZdvymyNKABhgRIDPTzj6F0JOIqzPo2J1hzNs4V0HXi
+         /2CLT32yfpihoNBnZIU/IolAsVBQetvxzghvftjyajs1FMyrsmw0fgPVXRFlmRm4PLc9
+         emkYekMx3URly9JP5kCvA+1/9akdTZ70JU5KKbkIXZR20LMAfCVv3EcKmQlGw6YAb5CS
+         +0x//Cg0fHVQphOUgAVHjv2/3wPb10S33MlWpwHMKQ9EDYF2SOuB0b8JikTMvtHlaiHT
+         D2kqoxpNGr1A5yOKMm4wPM8uKcuECNYBx596jdJgsyB5iTrnXmWvVznInJzUJnIjkTGj
+         313w==
+X-Gm-Message-State: AOAM533QBY/NKptrCo7UEMv84nBu0UJVn5RxBb7Vjv9f2J5nWJ3YZWUH
+        XErWWMviPfefC8A07cej39C3m7715ph4xvy2aaYZlA==
+X-Google-Smtp-Source: ABdhPJzyi89yz4Ys7YmWbiYxSX179Y8R/JtbkovCtO5Snt8v5Te8qZFir2+vrfNRPa3XFPVfkfW/5UQtafjENmEXRYo=
+X-Received: by 2002:a2e:9243:: with SMTP id v3mr2195425ljg.47.1633117884418;
+ Fri, 01 Oct 2021 12:51:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+In-Reply-To: <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 1 Oct 2021 21:50:58 +0200
+Message-ID: <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 15:32, Ulf Hansson пишет:
->> +static int tegra_clock_sync_pd_state(struct tegra_clk_device *clk_dev)
->> +{
->> +       unsigned long rate;
->> +       int ret = 0;
->> +
->> +       mutex_lock(&clk_dev->lock);
->> +
->> +       if (!pm_runtime_status_suspended(clk_dev->dev)) {
->> +               rate = clk_hw_get_rate(clk_dev->hw);
->> +               ret = tegra_clock_set_pd_state(clk_dev, rate);
-> Don't we need to sync the performance state even when the device is
-> runtime suspended?
-> 
-> Perhaps the clock, via a child-clock for example, can get
-> prepared/enabled (hence its device gets runtime resumed) before there
-> is a clock rate update for it. Then there is no performance state set
-> for it, right? Or maybe that isn't a problem?
-> 
+On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
+> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> > On 10/1/2021 10:55 AM, Todd Kjos wrote:
+> > > Save the struct cred associated with a binder process
+> > > at initial open to avoid potential race conditions
+> > > when converting to a security ID.
+> > >
+> > > Since binder was integrated with selinux, it has passed
+> > > 'struct task_struct' associated with the binder_proc
+> > > to represent the source and target of transactions.
+> > > The conversion of task to SID was then done in the hook
+> > > implementations. It turns out that there are race conditions
+> > > which can result in an incorrect security context being used.
+> >
+> > In the LSM stacking patch set I've been posting for a while
+> > (on version 29 now) I use information from the task structure
+> > to ensure that the security information passed via the binder
+> > interface is agreeable to both sides. Passing the cred will
+> > make it impossible to do this check. The task information
+> > required is not appropriate to have in the cred.
+>
+> Why not? Why can't you put the security identity of the task into the creds?
 
-Good catch! Older versions of this patch had a special handling for clk
-enable/disable. I just forgot to update this function, it's now not a
-problem to change performance state of a suspended device and it
-actually needs to be done. I'll correct it, thanks!
+Ah, I get it now, you're concerned about different processes wanting
+to see security contexts formatted differently (e.g. printing the
+SELinux label vs printing the AppArmor label), right?
+
+But still, I don't think you can pull that information from the
+receiving task. Maybe the easiest solution would be to also store that
+in the creds? Or you'd have to manually grab that information when
+/dev/binder is opened.
