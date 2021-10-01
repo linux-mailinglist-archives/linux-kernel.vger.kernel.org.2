@@ -2,124 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A362941F596
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B41B41F59F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355887AbhJATOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:14:47 -0400
-Received: from mout.gmx.net ([212.227.15.19]:48913 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhJATOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:14:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633115573;
-        bh=1/tD9+i6K79wJvk6mIUgFY5BXkVQQ7kg9CSnpwZJmy4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FXt3MCG81EhlBPWLYL2tltIxPJPCK3WXrbF7cNtj9+pInkpHo7bejF1wwI4pO2hbA
-         nkB4wZ4ilE4jLfGuSg50D+eudNNMCKAdjLMOwHXg97C5YngEhLKDMubfxBM10vLOtA
-         nmaw2eZQM1qODJco+oJNV7lgCYXffC2ASxM0UJ7s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.147.253]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtOKi-1moalu3HJ8-00uoGT; Fri, 01
- Oct 2021 21:12:52 +0200
-Message-ID: <2ef5185a-9a0f-5ee0-23fc-37e0b1dd1099@gmx.de>
-Date:   Fri, 1 Oct 2021 21:12:43 +0200
+        id S1354847AbhJATRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhJATRR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 15:17:17 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBDEC061775;
+        Fri,  1 Oct 2021 12:15:32 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g41so42283748lfv.1;
+        Fri, 01 Oct 2021 12:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=niNmxAk0ssHAm3Elvv3RJuw0kSncCioQpK+Dv1hLMfQ=;
+        b=ompAaqfUP2nwflwfZymbIWdbQcFcOFoC+2uqB/pw0Y1WeA0ZFgZBrXXroc1D9iZE/3
+         r+IPUa14hP8aLxdvlyxUGLG/sRpD1eVdY6HINGphhODSA8qi/WKmBF/Y4qJmjtqG9i5c
+         QteCTEwJ3FXZQIQOvZg/gr4YarMpWJqOQByuYB3PUiBYUJEXrfcuahtdb4hIBH9fyTNN
+         mNv1yfewQHiWqoHrX0awqEd0Tl6wD/YvrU5uk1BErj6tECORNnLLUEEmHb+sWMY3uVV3
+         Di3gYCH1EFMU7aOskMvk2sJ93QZxwOrUh/JeZf7kFffGHX478Gg8fj5Vh9nZ5d15M/9/
+         cQ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=niNmxAk0ssHAm3Elvv3RJuw0kSncCioQpK+Dv1hLMfQ=;
+        b=jgiltYdEn9VV6EpxeD3Cc9Ww0mRwmqcceWht5OiYSwz2br8hlK+/uiFnDGiVpx+bEg
+         bbmUrJO7YWE6BSyyDCkBn5uovhjOuiN1v0GYhTDOONcGrH7ZD4Rp0LZdwPJra9BY2bAj
+         tF8trH6Ut8GDSRJ+Uf/TES9vHatzHZRGCEgH7RVo/kiPLt+u7J15hD3esmma2BOCoWSo
+         Kura87ogU+bWGoqJxeqixAOcMowu25ZSt8y9saAknWf8vwq9nYYv9kkvykoffv9U6nDf
+         RlqZn8NKHcIw2jb+eRroFsfDiPEnt76oOeXA3AXucTjZ32GPFDrtaeSx15TWAms83L3R
+         uk+w==
+X-Gm-Message-State: AOAM531yEm8Wt7gzw65anzwhic/CpnA5wvmhYwNH4rdhLFTSNZrCwmfq
+        d92qTPMYHjolrwHJbqjny6o=
+X-Google-Smtp-Source: ABdhPJy3ghoTNAi0Jb2SiS3hsWYw15h3Vk93zN4ib7q8hKhDd5DWUUMwX4Q7U3/o0nn9oofd85xS+Q==
+X-Received: by 2002:a2e:4e11:: with SMTP id c17mr13093513ljb.19.1633115730771;
+        Fri, 01 Oct 2021 12:15:30 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
+        by smtp.googlemail.com with ESMTPSA id d6sm820684lfi.137.2021.10.01.12.15.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 12:15:30 -0700 (PDT)
+Subject: Re: [PATCH v13 02/35] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table_common()
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-3-digetx@gmail.com>
+ <CAPDyKFrtE75Tf-vefM0isj52PJ5_v525AjqU2TMUpc4__rYLhA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ab874e0c-903a-fc3b-d33b-54a7a9f0e109@gmail.com>
+Date:   Fri, 1 Oct 2021 22:15:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: parisc/unwind: call callback with toplevel address
+In-Reply-To: <CAPDyKFrtE75Tf-vefM0isj52PJ5_v525AjqU2TMUpc4__rYLhA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-parisc@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>,
-        James.Bottomley@hansenpartnership.com,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        lkft-triage@lists.linaro.org
-References: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m4bcQkSWj0lpLhyoxxSrxte4MHqoI3/QJ8CtZN1qb4ts3rsZxhw
- fSGMRLTYdCWL/xEY+sp2T6P1Fy9VKcJ1M9E5trpBZXTEaWzn+LE74awyOEqrbnYml/bFMw6
- BgIbLbMb/hNGs3lIA37JktxozVnDqFzjRj4qrWc0Jpyd7Km4I86pzCF+PFZz8TJIuqmvqMT
- DG7j4d/ShOWhMe5BF7Z5w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vZJTgfu7RVY=:iI7xQry8ZZODMpie1mGAC4
- XL3Bh8CR9G5vNYd/8UlHHsw8W6HRUD3kL5Bl4JceR8KoNmCT8HoObzOH0+Wq7uGFRd4cdxVK1
- NfAlKQzhYJcLSc+fWzF5t3POV3MyWPwVDxKq2pVt8bDrOvQb+oupFBsghKxRa/3KhF5koknLG
- mi+/IKyU41UJA6tS6Cfsq1U5qHO0Zlwv0duPPBbO+QV3YIz98JDiHNYX6Gpt+Tl4VwknSjCc/
- 6ISLNbqBWQtGXAw5M3SWzGIT9h2vhGcOaNNLnY2fmLRxmj3b97Z41nDdTQ6Vq1c8Aj50QDh39
- Uyf+9dVvmxA5pHGg9dVBJ/EXrhZ9aNd9tCMEDSptYUsnlURejf3DIMFnyN2ayYr/oxuWbC5Xw
- l9mspghsO5qio2S6anPQS0UFnhQn6Dei68Hrspc1qLKnQ5kkAmyw6QFwwuGRoLU7sAuOJRAwx
- Iu3rBmF6+g22JC6G4e6O0fWpwLhg4lrqUb2M6yHzyncDAUOTVrHFMTQ+BJUiMNNoGt9IrHqqR
- g7TgVk+Fy/q1qvmYWd7LBKZbMSLDiuDcvvqevsgq62PrckyhUBDUWbm/k3tihQhGbewl7W9c2
- 8ObKLAUYsZD8oDJ8bzeNrUzALphLu3RpJznoVojhdjLrmyas/Zif7Nhi2FgtRfqrlsBcbLUe2
- x39eAZ1jKkiiD9qjV51+RxImlV/C/nNUr2zktAbd5EjJWCl5GCnrGoUuRiteyfkxAoXzL+Lvy
- qW6V9IyOCyjG7FhOxF8qmLMi43GXUSu0ZAV69Bi8nwww1KfVK5ISAId7PaExnjmjuIZ2QVHVw
- jCkh8wd6Ej0++tXJFYaEX6OTbxXUGRVivQtz3sq4NxkkN1SlLCab46akRBIb49iEynZPu55nw
- G0aenmRMOEeoQ8dvJo7+n4PRgxmHiDC8mREkdo6wUohm097qaMj3BnvvF37ogCUIZSwlpLTyX
- rzZgzB6btgLu85pG4OGe1FpxIFVKJ4AXRqJsGMgqNSOWZWe6+hXzR1pez9AHXfA4Hc7WrV8gL
- EXoZ5L1idGmGJHfFLQgJWq91SdOqpPXpl71uDuUed3zMexa7O9u64fGApUvYHNeMpJ2HIGtiu
- pNbm87LxSy6cmY=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/21 12:30, Naresh Kamboju wrote:
-> Following build errors noticed while building Linux next 20211001
-> with gcc-11 for parisc architecture.
->
-> arch/parisc/kernel/stacktrace.c: In function 'dump_trace':
-> arch/parisc/kernel/stacktrace.c:20:13: error: 'regs' undeclared (first
-> use in this function)
->    20 |         if (regs)
->       |             ^~~~
-> arch/parisc/kernel/stacktrace.c:20:13: note: each undeclared
-> identifier is reported only once for each function it appears in
-> arch/parisc/kernel/stacktrace.c:21:22: error: implicit declaration of
-> function 'fn' [-Werror=3Dimplicit-function-declaration]
->    21 |                 if (!fn(cookie, regs->iaoq[0]))
->       |                      ^~
-> arch/parisc/kernel/stacktrace.c:21:25: error: 'cookie' undeclared
-> (first use in this function)
->    21 |                 if (!fn(cookie, regs->iaoq[0]))
->       |                         ^~~~~~
-> cc1: some warnings being treated as errors
-> make[3]: *** [scripts/Makefile.build:288:
-> arch/parisc/kernel/stacktrace.o] Error 1
->
-> Build config:
-> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/config
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+01.10.2021 15:50, Ulf Hansson пишет:
+> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> Only couple drivers need to get the -ENODEV error code and majority of
+>> drivers need to explicitly initialize the performance state. Add new
+>> common helper which sets up OPP table for these drivers.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  include/soc/tegra/common.h | 24 ++++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
+>>
+>> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
+>> index af41ad80ec21..5b4a042f60fb 100644
+>> --- a/include/soc/tegra/common.h
+>> +++ b/include/soc/tegra/common.h
+>> @@ -39,4 +39,28 @@ devm_tegra_core_dev_init_opp_table(struct device *dev,
+>>  }
+>>  #endif
+>>
+>> +/*
+>> + * This function should be invoked with the enabled runtime PM of the device
+>> + * in order to initialize performance state properly. Most of Tegra devices
+>> + * are assumed to be suspended at a probe time and GENPD require RPM to be
+>> + * enabled to set up the rpm-resume state, otherwise device is active and
+>> + * performance state is applied immediately. Note that it will initialize
+>> + * OPP bandwidth if it's wired in a device-tree for this device, which is
+>> + * undesirable for a suspended device.
+>> + */
+>> +static inline int
+>> +devm_tegra_core_dev_init_opp_table_common(struct device *dev)
+>> +{
+>> +       struct tegra_core_opp_params opp_params = {};
+>> +       int err;
+>> +
+>> +       opp_params.init_state = true;
+>> +
+>> +       err = devm_tegra_core_dev_init_opp_table(dev, &opp_params);
+>> +       if (err != -ENODEV)
+>> +               return err;
+>> +
+>> +       return 0;
+>> +}
+> 
+> Just want to share a few thoughts around these functions.
+> 
+> So, I assume it's fine to call
+> devm_tegra_core_dev_init_opp_table_common() or
+> devm_tegra_core_dev_init_opp_table() from consumer drivers during
+> ->probe(), as long as those drivers are tegra specific, which I assume
+> all are in the series!?
 
-I've dropped that patch.
+That is correct, all drivers are tegra-specific in this series. External
+devices are attached to the internal SoC devices and this series is
+about the SoC power management.
 
-Thanks!
-Helge
+> My point is, a cross SoC consumer driver that needs to initiate OPP
+> tables can get rather messy, if it would need to make one specific
+> function call per SoC.
+> 
+> That said, I hope we can tackle this as a separate/future problem, so
+> the series can get merged as is.
 
-
-
-> meta data:
-> -----------
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
->     git_short_log: a25006a77348 (\"Add linux-next specific files for 202=
-11001\")
->     kconfig:  defconfig
->     kernel_version: 5.15.0-rc3
->     target_arch: parisc
->     toolchain: gcc-11
->
-> steps to reproduce:
-> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/tuxmake_reproduc=
-er.sh
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
->
-
+Yes, as we already have seen, it's not an easy problem to make PD core
+to handle it in a generic way. If there will be a similar demand from
+other SoCs, then we may try to solve that problem again.
