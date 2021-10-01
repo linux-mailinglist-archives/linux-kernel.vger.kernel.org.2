@@ -2,207 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4EB41E63F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4D041E641
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhJADh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 23:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhJADhy (ORCPT
+        id S230502AbhJADjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 23:39:08 -0400
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:38231 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbhJADjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 23:37:54 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B72BC06176A;
-        Thu, 30 Sep 2021 20:36:11 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj4so30622552edb.5;
-        Thu, 30 Sep 2021 20:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jkp98q2ixpv2/VB9hqcJl2RHzO1J0JRn3M5buNc2nMU=;
-        b=DovXkrN/rEmoX6kPkslXaKGObhyDRIbHo65GlK4pUJ4BXkN3mLqguDkwH9C3rMzdkc
-         HBoIpZDQx2u3lBK+K3hEMbphH7pgx9n9JotlDOKI0PKC+zkjgG7oPebZLkdzwMKsgOO7
-         iqa9+RMO0xlVxz3i3i7cj9wgq5Eaj9vSdnWDO0RmbVLAIYPpCZjZf/LIuYecv0mNP7YU
-         Y7fqcbS48QR1TSJnOku9ygQKx6oE7BeQmrI9ut9VUZw6rjmGb1petKtHB2HKhp8m7n3B
-         TDFKPggJDQ76BE3cHYUTv4aVCz/MaeGDomXKwXKCwxKgfUbENTBMXYKcMONXg/ovu3MG
-         yNBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jkp98q2ixpv2/VB9hqcJl2RHzO1J0JRn3M5buNc2nMU=;
-        b=N69ZpmPtiDVGm4Vb7varO68oWKQ+3MGvRjVZE8uU8H3LyqpP5x+ATztl4PG0AcMDAN
-         PcRDUKOYp9UfZ0EwSxxDZroAkEqKET6O/H8lSX5T4iOxRwWP1gMV/Kuye2ZfJ+jh+6lL
-         6WSjkoq2ysyd0ws5OZqlUovM5UVy/1Iq/rnBfKIk2ES7O/HZCD008ukAvEKDDP3lXhTB
-         ZPG6VK2fWlqDM7DLUuh1vslO9G3KNY6oeQ/BrI3bNyCIf0FRHCf1H2ZRPE9g2kKQxT0K
-         AGxqMYUIbqbIaEEjwVYDC3SHqL42v8Q1HOvoxPiFAhfpsXsm2K6aihGaRvfDX0wgaMhS
-         88wQ==
-X-Gm-Message-State: AOAM532YWON2HtjprF+EQ2UFsj6wLHGTGrEu7nIoI01GgZFn3KyOIz8Q
-        lf5Ti8nIdnhsHoNnF8cPw1+iEUpdc/WqhiRIdHY=
-X-Google-Smtp-Source: ABdhPJwsDYJ8byhhcHm8xfuPYA6x0kXOPmO17k4AVIKoWo6GLOjlH+ncR3nrdUmtJSLP2IN4CjxTj2yLH28aYG0nDqo=
-X-Received: by 2002:a17:906:3383:: with SMTP id v3mr3653540eja.213.1633059369746;
- Thu, 30 Sep 2021 20:36:09 -0700 (PDT)
+        Thu, 30 Sep 2021 23:39:08 -0400
+Date:   Fri, 01 Oct 2021 03:37:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1633059441;
+        bh=wbT/YxksNbpXIxygDUBBltEQxbsIjbL1dpqdJhyCWhs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=jQTOqCJ17snc2K7xVW85S02omw7lzG3eBod0NjAsxgOaH3tQO8UlUNC7EC3Zwj7d8
+         /xvI4dAc2co/C5eyA0poho2CXP1VWXXgeOIXLHBW1oAnAtdNLug6GHryyCVjpCP2Lh
+         jEWIH1fBr6zvEMZzK5EVXD4eG6HlH/Zgry01Udzc=
+To:     Marcel Holtmann <marcel@holtmann.org>
+From:   Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        regressions@lists.linux.dev, sonnysasaka@chromium.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
+Subject: Re: [PATCH] Bluetooth: add quirk disabling query LE tx power
+Message-ID: <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
+In-Reply-To: <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
+References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com> <20210930063106.19881-1-redecorating@protonmail.com> <20210930141256.19943-1-redecorating@protonmail.com> <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
 MIME-Version: 1.0
-References: <20210915213550.3696532-1-guro@fb.com> <20210916162451.709260-1-guro@fb.com>
- <20210916162451.709260-5-guro@fb.com>
-In-Reply-To: <20210916162451.709260-5-guro@fb.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 1 Oct 2021 16:35:58 +1300
-Message-ID: <CAGsJ_4xr0Xg3B1seT5_kcb26ZQgWaakR8QGOB-N62wehfXkt_Q@mail.gmail.com>
-Subject: Re: [PATCH rfc 4/6] sched: cfs: add bpf hooks to control wakeup and
- tick preemption
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed;
+ boundary="b1_QyD3q1wsYzPCN4Wpoew4UPb3trelXIZ8pQMlvRTglU"
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 4:36 AM Roman Gushchin <guro@fb.com> wrote:
->
-> This patch adds 3 hooks to control wakeup and tick preemption:
->   cfs_check_preempt_tick
->   cfs_check_preempt_wakeup
->   cfs_wakeup_preempt_entity
->
-> The first one allows to force or suppress a preemption from a tick
-> context. An obvious usage example is to minimize the number of
-> non-voluntary context switches and decrease an associated latency
-> penalty by (conditionally) providing tasks or task groups an extended
-> execution slice. It can be used instead of tweaking
-> sysctl_sched_min_granularity.
->
-> The second one is called from the wakeup preemption code and allows
-> to redefine whether a newly woken task should preempt the execution
-> of the current task. This is useful to minimize a number of
-> preemptions of latency sensitive tasks. To some extent it's a more
-> flexible analog of a sysctl_sched_wakeup_granularity.
+This is a multi-part message in MIME format.
 
-This reminds me of Mel's recent work which might be relevant:
-sched/fair: Scale wakeup granularity relative to nr_running
-https://lore.kernel.org/lkml/20210920142614.4891-3-mgorman@techsingularity.net/
+--b1_QyD3q1wsYzPCN4Wpoew4UPb3trelXIZ8pQMlvRTglU
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
->
-> The third one is similar, but it tweaks the wakeup_preempt_entity()
-> function, which is called not only from a wakeup context, but also
-> from pick_next_task(), which allows to influence the decision on which
-> task will be running next.
->
-> It's a place for a discussion whether we need both these hooks or only
-> one of them: the second is more powerful, but depends more on the
-> current implementation. In any case, bpf hooks are not an ABI, so it's
-> not a deal breaker.
+On 1/10/21 03:58, Marcel Holtmann wrote:
+> so I really need the btmon traces from the device init (so unload and rel=
+oad the module) and we need to see what commands are supported and what com=
+mands are failing.
+I'll attach the full file I got with btmon -w MacBookPro16,1.btsnoop, but t=
+hese seem
+like the important bits:
 
-I am also curious if similar hook can benefit
-newidle_balance/sched_migration_cost
-tuning things in this thread:
-https://lore.kernel.org/lkml/ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com/
+< HCI Command: Read Local Supported Commands (0x04|0x0002) plen 0=09#43 [hc=
+i0] 9.217379
 
-It seems those static values are not universal. different topology might need
-different settings.  but dynamically tuning them in the kernel seems to be
-extremely difficult.
+> HCI Event: Command Complete (0x0e) plen 68=09=09=09=09#44 [hci0] 9.218033
 
->
-> The idea of the wakeup_preempt_entity hook belongs to Rik van Riel. He
-> also contributed a lot to the whole patchset by proving his ideas,
-> recommendations and a feedback for earlier (non-public) versions.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  include/linux/bpf_sched.h       |  1 +
->  include/linux/sched_hook_defs.h |  4 +++-
->  kernel/sched/fair.c             | 27 +++++++++++++++++++++++++++
->  3 files changed, 31 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/bpf_sched.h b/include/linux/bpf_sched.h
-> index 6e773aecdff7..5c238aeb853c 100644
-> --- a/include/linux/bpf_sched.h
-> +++ b/include/linux/bpf_sched.h
-> @@ -40,6 +40,7 @@ static inline RET bpf_sched_##NAME(__VA_ARGS__)       \
->  {                                              \
->         return DEFAULT;                         \
->  }
-> +#include <linux/sched_hook_defs.h>
->  #undef BPF_SCHED_HOOK
->
->  static inline bool bpf_sched_enabled(void)
-> diff --git a/include/linux/sched_hook_defs.h b/include/linux/sched_hook_defs.h
-> index 14344004e335..f075b32698cd 100644
-> --- a/include/linux/sched_hook_defs.h
-> +++ b/include/linux/sched_hook_defs.h
-> @@ -1,2 +1,4 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -BPF_SCHED_HOOK(int, 0, dummy, void)
-> +BPF_SCHED_HOOK(int, 0, cfs_check_preempt_tick, struct sched_entity *curr, unsigned long delta_exec)
-> +BPF_SCHED_HOOK(int, 0, cfs_check_preempt_wakeup, struct task_struct *curr, struct task_struct *p)
-> +BPF_SCHED_HOOK(int, 0, cfs_wakeup_preempt_entity, struct sched_entity *curr, struct sched_entity *se)
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ff69f245b939..35ea8911b25c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -21,6 +21,7 @@
->   *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
->   */
->  #include "sched.h"
-> +#include <linux/bpf_sched.h>
->
->  /*
->   * Targeted preemption latency for CPU-bound tasks:
-> @@ -4447,6 +4448,16 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
->
->         ideal_runtime = sched_slice(cfs_rq, curr);
->         delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
-> +
-> +       if (bpf_sched_enabled()) {
-> +               int ret = bpf_sched_cfs_check_preempt_tick(curr, delta_exec);
-> +
-> +               if (ret < 0)
-> +                       return;
-> +               else if (ret > 0)
-> +                       resched_curr(rq_of(cfs_rq));
-> +       }
-> +
->         if (delta_exec > ideal_runtime) {
->                 resched_curr(rq_of(cfs_rq));
->                 /*
-> @@ -7083,6 +7094,13 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
->  {
->         s64 gran, vdiff = curr->vruntime - se->vruntime;
->
-> +       if (bpf_sched_enabled()) {
-> +               int ret = bpf_sched_cfs_wakeup_preempt_entity(curr, se);
-> +
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         if (vdiff <= 0)
->                 return -1;
->
-> @@ -7168,6 +7186,15 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
->             likely(!task_has_idle_policy(p)))
->                 goto preempt;
->
-> +       if (bpf_sched_enabled()) {
-> +               int ret = bpf_sched_cfs_check_preempt_wakeup(current, p);
-> +
-> +               if (ret < 0)
-> +                       return;
-> +               else if (ret > 0)
-> +                       goto preempt;
-> +       }
-> +
->         /*
->          * Batch and idle tasks do not preempt non-idle tasks (their preemption
->          * is driven by the tick):
-> --
-> 2.31.1
->
+      Read Local Supported Commands (0x04|0x0002) ncmd 1
 
-Thanks
-barry
+        Status: Success (0x00)
+
+        Commands: 223 entries
+=09## many many lines here ##
+=09LE Read Transmit Power (Octet 38 - Bit 7)
+=09LE Read RF Path Compensation (Octet 39 - Bit 0)
+
+=09LE Write RF Path Compensation (Octet 39 - Bit 1)
+
+=09LE Set Privacy Mode (Octet 39 - Bit 2)
+
+=09Read Local Simple Pairing Options (Octet 41 - Bit=20
+
+At the end of the trace:
+
+< HCI Command: LE Read Transmit Power (0x08|0x004b) plen 0=09=09#69 [hci0] =
+9.226953
+> HCI Event: Command Complete (0x0e) plen 4=09=09=09=09#70 [hci0] 9.227515
+      LE Read Transmit Power (0x08|0x004b) ncmd 1
+        Status: Unknown HCI Command (0x01)
+=3D Close Index: F8:FF:C2:06:46:63=09=09=09=09=09[hci0] 9.227666
+
+I'm guessing that this means it reports that it supports the command but it=
+ doesn't,
+so if this is the case, I'd have to change the description of the quirk to =
+clarify that.
+
+> Since you say this is on a MacBook, I assume this is an UART based Broadc=
+om chip. Sometimes Broadcom has been really flaky with their actually imple=
+mented commands. However in some cases firmware updates do fix this. So any=
+ chance you can boot OS X and check that the latest firmware is loaded.
+
+Bluetooth for this device is indeed through uart:
+
+# lspci -vvvnnd '8086:a328'
+00:1e.0 Communication controller [0780]: Intel Corporation Cannon Lake PCH =
+Serial IO UART Host Controller    [8086:a328] (rev 10)
+
+    Subsystem: Intel Corporation Device [8086:7270]
+
+    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Ste=
+pping- SERR- FastB2B- DisINTx-
+
+    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbor=
+t- <MAbort- >SERR- <PERR- INTx-
+
+    Latency: 0, Cache Line Size: 256 bytes
+
+    Interrupt: pin A routed to IRQ 20
+
+    IOMMU group: 8
+
+    Region 0: Memory at 4000000000 (64-bit, non-prefetchable) [size=3D4K]
+
+    Capabilities: [80] Power Management version 3
+
+        Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D0mA PME(D0-,D1-,D2-,D3hot-=
+,D3cold-)
+
+        Status: D0 NoSoftRst+ PME-Enable- DSel=3D0 DScale=3D0 PME-
+
+    Capabilities: [90] Vendor Specific Information: Len=3D14 <?>
+
+    Kernel driver in use: intel-lpss
+
+    Kernel modules: intel_lpss_pci
+
+$ cat /sys/bus/pci/devices/0000:00:1e.0/dw-apb-uart.0/serial0/serial0-0/mod=
+alias
+
+acpi:BCM2E7C:APPLE-UART-BLTH:
+
+I've just updated macOS to 11.6, which should have updated firmware. The is=
+sue is still present.
+--b1_QyD3q1wsYzPCN4Wpoew4UPb3trelXIZ8pQMlvRTglU
+Content-Type: application/octet-stream; name=MacBookPro161.btsnoop
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=MacBookPro161.btsnoop
+
+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
+
+--b1_QyD3q1wsYzPCN4Wpoew4UPb3trelXIZ8pQMlvRTglU--
+
