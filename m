@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CA341F245
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCDD41F24A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhJAQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:43:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232126AbhJAQmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:42:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C28361A08;
-        Fri,  1 Oct 2021 16:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633106440;
-        bh=+0oV5hICGzs20gfTIWOOlRzxQyWjfv0UKK6MtavSITw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YzCLJtHtz2ZspaMIV/0SpMWLmpjdQFXHeI4p6xgH4Dr8wN75k3loun9UoUGxn4dK9
-         ZKj//oKCd73kooE8d4DZtJNnXXbP/Y6EBkclzjwqF5NIKP0zoJsDHAndmvD+ULetnU
-         ShSYO3azGPFMEajf7PFfylIeZRUEicbWks1KyiCNr6wL2Va70OeAMvSTxVNyvsm0Wf
-         cD9hP7f12AYRaFZxcOBQsFeCFaOezMfir+iQlZyruyBwntVj/ahWn/M68iwIFv3Pxl
-         bio2syHGpE2PITqgiy30bkrLKPLgZK6ANlF8Q4wWAe2GVgQ5or3Y3vVv8CkHMkaFO2
-         cpfBYtJrpXvXg==
-Received: by mail-ed1-f48.google.com with SMTP id s17so36121464edd.8;
-        Fri, 01 Oct 2021 09:40:39 -0700 (PDT)
-X-Gm-Message-State: AOAM533bvMXI77HhP/SRZxxC3BRnJf2NlH5sk/SaIEgvxt9VM1SkJeFD
-        NNh8B7pCbZnVIN0brIQqfe6xsL3YNHRoS2pJ/g==
-X-Google-Smtp-Source: ABdhPJwuJO24pNWXkNj7tzY9aOJ1BlPYMZPP5B7w2BlxS8ZEVzKLRl3HHzZ8FnJYpzAuZFmg1Y3i6Ch8HqxkzHwPyD8=
-X-Received: by 2002:a05:6402:44c:: with SMTP id p12mr15986633edw.145.1633106438415;
- Fri, 01 Oct 2021 09:40:38 -0700 (PDT)
+        id S232164AbhJAQnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232126AbhJAQns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:43:48 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED050C06177F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:42:03 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c7so9757241qka.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aQbL8pXIXocxX9H8b/2nNpVZyCyOOEJ+2eX3f4bQsb0=;
+        b=wXbQCGjvp4GLHV24dvNcEoftO+b+jxKTmz0SX5x2HR0+WKCJvkioVyd5rDUb2pCsyj
+         o4MwxX88vRap3XoIMPH26Rln/IMU3v7eS9oXh7nMXv+ICLXwXcGBr6pwdAR2E1rH+e9G
+         KNiwnEpz/fBuGfOjg9/YJkFPWP0jIasbrHIi5xoe9Jmc2rwoK0LDzR/wU1wjZbeFmvdD
+         YEhrospe7J6JtzCADzrRF55UOLO4nVmGg2KvlI4Zwe+SSleJ/yccWHSdHTqccQETU7z8
+         JuQIl058Sfvctk3JRr/BoFuVNjJ4FsVaTDrdfRW23LqaJ1v9W9MoKhc5ea1v1Qa+zBz4
+         WCMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aQbL8pXIXocxX9H8b/2nNpVZyCyOOEJ+2eX3f4bQsb0=;
+        b=dGH5BpAdfjD85/+vcuF+QcsNCftpQP87h9rhKeSi2nh0u587FAd+UnnJggPdsc1lJE
+         T2nKYBew52Ed4K7UgOT1g6mjuGTODbIsbDNJdKK4qtc9F+FWtCUlbeaZOABuyvD3I2QW
+         mZ/JbsZux31lObfJlttiTg7Bg0xOHt4tDmbjQu8sNDz/62ch5et9unl5gxHhnF50gLcm
+         rFaI7HpE0Wk6QfZCG/AuvSEP/TTs49o7ZcHo+K86U7cBC4Er0pojcQNQEVqeVM+xbB6d
+         jCsybxbMA0GiDR/7RgyyqdGG1SW1nOBzgKu1UzHZotUjTe00mqPuq0EFDvwi18yGO/uc
+         Wbpw==
+X-Gm-Message-State: AOAM5315KGCQ4M6+/ypV3kqHgVSduUQvmtu3fQFKfbHpmCuez6E3+BL/
+        PyFZ8//bYR9e1BT2/nrqbutQMQ==
+X-Google-Smtp-Source: ABdhPJxEISaAeFeyVBnUq/DuWLEI7heMQCiSZdmm/c7At99cOYDg6yzkNykzMscChFIJiV2TCPFeTA==
+X-Received: by 2002:ae9:eb58:: with SMTP id b85mr10034928qkg.323.1633106522896;
+        Fri, 01 Oct 2021 09:42:02 -0700 (PDT)
+Received: from [192.168.3.43] (c-67-174-166-185.hsd1.ga.comcast.net. [67.174.166.185])
+        by smtp.gmail.com with ESMTPSA id p12sm3298438qkj.54.2021.10.01.09.42.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 09:42:02 -0700 (PDT)
+Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, qemu-devel@nongnu.org
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
+ <YVXmGTo5Uzp44QQq@stefanha-x1.localdomain>
+ <778d40fe-ad8e-fd7c-4caa-499910bb0925@intel.com>
+ <YVc47ohb4nxrBO5h@stefanha-x1.localdomain>
+From:   Richard Henderson <richard.henderson@linaro.org>
+Message-ID: <3abdadab-9b7e-7cc0-5ec5-17fa385ce7d4@linaro.org>
+Date:   Fri, 1 Oct 2021 12:41:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
- <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com> <YVTrbPC4/ir974xs@robh.at.kernel.org>
- <CAA+D8ANdQQFuPh_F8DZka+Y6hVDGuT8BvRfWdUFJxHd5JTQPNA@mail.gmail.com>
-In-Reply-To: <CAA+D8ANdQQFuPh_F8DZka+Y6hVDGuT8BvRfWdUFJxHd5JTQPNA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 1 Oct 2021 11:40:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK2KHfDisDXsuyWX0P99uY+nmEG72AsNUmqGRjJKHmg_Q@mail.gmail.com>
-Message-ID: <CAL_JsqK2KHfDisDXsuyWX0P99uY+nmEG72AsNUmqGRjJKHmg_Q@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] dt-bindings: dsp: fsl: update binding document for
- remote proc driver
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVc47ohb4nxrBO5h@stefanha-x1.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 9:34 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
->
-> Hi Rob
->
-> On Thu, Sep 30, 2021 at 6:40 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Sun, Sep 26, 2021 at 11:07:10AM +0800, Shengjiu Wang wrote:
-> > > As there are two drivers for DSP on i.MX, one is for sound open
-> > > firmware, another is for remote processor framework. In order to
-> > > distinguish two kinds of driver, defining different compatible strings.
-> > >
-> > > For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
-> > > are needed and the mailbox channel is different with SOF.
-> > >
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
-> > >  1 file changed, 75 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > index 7afc9f2be13a..51ea657f6d42 100644
-> > > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
-> > >
-> > >  maintainers:
-> > >    - Daniel Baluta <daniel.baluta@nxp.com>
-> > > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> > >
-> > >  description: |
-> > >    Some boards from i.MX8 family contain a DSP core used for
-> > > @@ -19,6 +20,10 @@ properties:
-> > >        - fsl,imx8qxp-dsp
-> > >        - fsl,imx8qm-dsp
-> > >        - fsl,imx8mp-dsp
-> > > +      - fsl,imx8qxp-hifi4
-> > > +      - fsl,imx8qm-hifi4
-> > > +      - fsl,imx8mp-hifi4
-> > > +      - fsl,imx8ulp-hifi4
-> > >
-> > >    reg:
-> > >      maxItems: 1
-> > > @@ -28,37 +33,63 @@ properties:
-> > >        - description: ipg clock
-> > >        - description: ocram clock
-> > >        - description: core clock
-> > > +      - description: debug interface clock
-> > > +      - description: message unit clock
-> > > +    minItems: 3
-> > > +    maxItems: 5
-> >
-> > Don't need maxItems.
->
-> Ok, I will update it.
->
-> >
-> > >
-> > >    clock-names:
-> > >      items:
-> > >        - const: ipg
-> > >        - const: ocram
-> > >        - const: core
-> > > +      - const: debug
-> > > +      - const: mu
-> > > +    minItems: 3
-> > > +    maxItems: 5
-> >
-> > ditto
->
-> Ok, I will update it.
->
-> >
-> > >
-> > >    power-domains:
-> > >      description:
-> > >        List of phandle and PM domain specifier as documented in
-> > >        Documentation/devicetree/bindings/power/power_domain.txt
-> > > +    minItems: 1
-> >
-> > This is curious. The h/w sometimes has fewer power domains?
->
-> On i.MX8QM/8QXP,  there are independent power domains for DSP core,
-> DSP's RAM and DSP's MU.
-> But on i.MX8MP, all these DSP components are in same audio subsystem
-> There is only one power domain for whole audio subsystem,  when
-> power on audio subsystem, the DSP's components are powered on also.
->
-> So the number of power domain depends on how the DSP component
-> integrated in SoC.
+On 10/1/21 12:35 PM, Stefan Hajnoczi wrote:
+> QEMU's TCG threads execute translated code. There are events that
+> require interrupting these threads. Today a check is performed at the
+> start of every translated block. Most of the time the check is false and
+> it's a waste of CPU.
+> 
+> User interrupts can eliminate the need for checks by interrupting TCG
+> threads when events occur.
 
-Sounds like you can write an if/then schema for this difference.
+We used to use interrupts, and stopped because we need to wait until the guest is in a 
+stable state.  The guest is always in a stable state at the beginning of each TB.
 
-Rob
+See 378df4b2375.
+
+
+r~
