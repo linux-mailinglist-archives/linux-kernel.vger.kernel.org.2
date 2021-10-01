@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78D641E55D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61F641E55F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351497AbhJAAHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 20:07:20 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42126 "EHLO vps0.lunn.ch"
+        id S1350200AbhJAALP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 20:11:15 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:41398 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351319AbhJAAHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:07:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=AYZ78MbKE7o+ckLapKuGnIkQLgJnUysGF/DpNN6Cl/M=; b=wCgNyofgxHVLiJOIpzWGKYIK4V
-        x3vc55G92ccdld/b1h1gR+bQ6E6SOYp5wql/RqmMMxmj2tbTnAie2vRFPxtvqmg1aQZ3Y0SKo856d
-        v3kefxLxBtw25YrQn9+Tv0TRPfBYqFiCx8ZLpq6SkpYMz84gsPq8h/TSTNul+XnRzJOw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mW636-0091Sh-7f; Fri, 01 Oct 2021 02:05:12 +0200
-Date:   Fri, 1 Oct 2021 02:05:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Steen Hegelund <steen.hegelund@microchip.com>
-Subject: Re: [PATCH 1/3] net: phy: mscc: Add possibilty to disable combined
- LED mode
-Message-ID: <YVZQuIr2poOfWvcO@lunn.ch>
-References: <20210930125747.2511954-1-frieder@fris.de>
+        id S230172AbhJAALO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 20:11:14 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D360F1A0D8B;
+        Fri,  1 Oct 2021 02:09:29 +0200 (CEST)
+Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 982411A0D7C;
+        Fri,  1 Oct 2021 02:09:29 +0200 (CEST)
+Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
+        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id C47CB40A55;
+        Thu, 30 Sep 2021 17:09:28 -0700 (MST)
+From:   Li Yang <leoyang.li@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Li Yang <leoyang.li@nxp.com>
+Subject: [PATCH 0/5] convert ifc binding to yaml and drop "simple-bus"
+Date:   Thu, 30 Sep 2021 19:09:19 -0500
+Message-Id: <20211001000924.15421-1-leoyang.li@nxp.com>
+X-Mailer: git-send-email 2.25.1.377.g2d2118b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930125747.2511954-1-frieder@fris.de>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 02:57:43PM +0200, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> By default the LED modes offer to combine two indicators like speed/link
-> and activity in one LED. In order to use a LED only for the first of the
-> two modes, the combined feature needs to be disabled.
-> 
-> In order to do this we introduce a boolean devicetree property
-> 'vsc8531,led-[N]-combine-disable' and wire it up to the matching
-> bits in the LED behavior register.
+Convert the ifc binding to yaml schema, in the mean while remove the
+"simple-bus" compatible from the binding to make sure ifc device probes
+before any of the child devices.  Update the driver and existing DTSes
+accordingly.
 
-Sorry, but no DT property. Each PHY has its own magic combination of
-DT properties, nothing shared, nothing common. This does not scale.
+DTS changes should be merged together with the driver/binding changes
+if DTS maintainer is ok with it or after the driver changes are applied.
 
-Please look at the work being done to control PHY LEDs using the Linux
-LED infrastructure. That should give us one uniform interface for all
-PHY LEDs.
+Li Yang (5):
+  dt-bindings: memory: fsl: convert ifc binding to yaml schema
+  memory: fsl_ifc: populate child devices without relying on simple-bus
+  ARM: dts: ls1021a: remove "simple-bus" compatible from ifc node
+  arm64: dts: remove "simple-bus" compatible from ifc node
+  powerpc/mpc85xx: remove "simple-bus" compatible from ifc node
 
-    Andrew
+ .../bindings/memory-controllers/fsl/ifc.txt   |  82 -----------
+ .../bindings/memory-controllers/fsl/ifc.yaml  | 137 ++++++++++++++++++
+ arch/arm/boot/dts/ls1021a.dtsi                |   2 +-
+ .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   2 +-
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   2 +-
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |   2 +-
+ .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi |   2 +-
+ arch/powerpc/boot/dts/fsl/b4si-post.dtsi      |   2 +-
+ arch/powerpc/boot/dts/fsl/bsc9131si-post.dtsi |   2 +-
+ arch/powerpc/boot/dts/fsl/bsc9132si-post.dtsi |   2 +-
+ arch/powerpc/boot/dts/fsl/c293si-post.dtsi    |   2 +-
+ arch/powerpc/boot/dts/fsl/p1010si-post.dtsi   |   2 +-
+ arch/powerpc/boot/dts/fsl/t1023si-post.dtsi   |   2 +-
+ arch/powerpc/boot/dts/fsl/t1040si-post.dtsi   |   2 +-
+ arch/powerpc/boot/dts/fsl/t2081si-post.dtsi   |   2 +-
+ arch/powerpc/boot/dts/fsl/t4240si-post.dtsi   |   2 +-
+ drivers/memory/fsl_ifc.c                      |   9 ++
+ 17 files changed, 160 insertions(+), 96 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+
+-- 
+2.25.1
+
