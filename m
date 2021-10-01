@@ -2,19 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB60241F179
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1D841F17D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355090AbhJAPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:50:27 -0400
-Received: from 8bytes.org ([81.169.241.247]:42912 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230162AbhJAPuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:50:12 -0400
+        id S1355132AbhJAPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353716AbhJAPuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:50:13 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5AEC061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:48:28 -0700 (PDT)
 Received: from cap.home.8bytes.org (p4ff2b5b0.dip0.t-ipconnect.de [79.242.181.176])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 291291A4;
+        by theia.8bytes.org (Postfix) with ESMTPSA id 8317D25C;
         Fri,  1 Oct 2021 17:48:26 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     x86@kernel.org
@@ -28,10 +32,12 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Brijesh Singh <brijesh.singh@amd.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/4] x86/mm: Fix some issues with using trampoline_pgd
-Date:   Fri,  1 Oct 2021 17:48:13 +0200
-Message-Id: <20211001154817.29225-1-joro@8bytes.org>
+Subject: [PATCH v3 1/4] x86/realmode: Add comment for Global bit usage in trampline_pgd
+Date:   Fri,  1 Oct 2021 17:48:14 +0200
+Message-Id: <20211001154817.29225-2-joro@8bytes.org>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211001154817.29225-1-joro@8bytes.org>
+References: <20211001154817.29225-1-joro@8bytes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -40,52 +46,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joerg Roedel <jroedel@suse.de>
 
-Hi,
+Document the fact that using the trampoline_pgd will result in the
+creation of global TLB entries in the user range of the address
+space.
 
-here are a couple of fixes and documentation improvements for the use
-of the trampoline_pgd in the kernel. Most importantly it fixes the
-issue that switching to the trampoline_pgd will unmap the kernel stack
-and real_mode_header, making crashes likely before the code can
-actually jump to real mode.
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ arch/x86/mm/init.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-The first patch adds a comment to document that the trampoline_pgd
-aliases kernel page-tables in the user address range, establishing
-global TLB entries for these addresses. The next two patches add
-global TLB flushes when switching to and from the trampoline_pgd.
-
-The last patch extends the trampoline_pgd to cover the whole kernel
-address range. This is needed to make sure the stack and the
-real_mode_header are still mapped after the switch and that the code
-flow can safely reach real-mode.
-
-Please review.
-
-Thanks,
-
-	Joerg
-
-Changes v2->v3:
-
-	- Addressed review comments from Dave Hansen
-
-Link to v2: https://lore.kernel.org/lkml/20210929145501.4612-1-joro@8bytes.org/
-
-Joerg Roedel (4):
-  x86/realmode: Add comment for Global bit usage in trampline_pgd
-  x86/mm/64: Flush global TLB on boot and AP bringup
-  x86/mm: Flush global TLB when switching to trampoline page-table
-  x86/64/mm: Map all kernel memory into trampoline_pgd
-
- arch/x86/include/asm/realmode.h |  1 +
- arch/x86/kernel/head64.c        | 15 ++++++++++++++
- arch/x86/kernel/head_64.S       | 19 +++++++++++++++++-
- arch/x86/kernel/reboot.c        | 12 ++---------
- arch/x86/mm/init.c              |  5 +++++
- arch/x86/realmode/init.c        | 35 ++++++++++++++++++++++++++++++++-
- 6 files changed, 75 insertions(+), 12 deletions(-)
-
-
-base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 23a14d82e783..accd702d4253 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -714,6 +714,11 @@ static void __init memory_map_bottom_up(unsigned long map_start,
+ static void __init init_trampoline(void)
+ {
+ #ifdef CONFIG_X86_64
++	/*
++	 * The code below will alias kernel page-tables in the user-range of the
++	 * address space, including the Global bit. So global TLB entries will
++	 * be created when using the trampoline page-table.
++	 */
+ 	if (!kaslr_memory_enabled())
+ 		trampoline_pgd_entry = init_top_pgt[pgd_index(__PAGE_OFFSET)];
+ 	else
 -- 
 2.33.0
 
