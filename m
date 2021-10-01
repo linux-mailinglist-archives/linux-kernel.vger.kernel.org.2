@@ -2,52 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C4341E7FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD9841E801
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352331AbhJAHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:08:07 -0400
-Received: from out2.migadu.com ([188.165.223.204]:23678 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352289AbhJAHIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 03:08:02 -0400
-Date:   Fri, 1 Oct 2021 16:06:11 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1633071978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ymD0se4e0gF69/42SfmiuruO6Ev4hFG0QF/xv+bO0Yw=;
-        b=eIDCy4NdPH3C7VW8G+FtOtnUjeJiefBclroB/5Ce1H8lKTi++ojwbJyxFocb2TD/Jursb7
-        klRDDB6RmFkmlYrwk6RPgefEixi9bll/El+V/VbOgnoB/YOuFN9X2xLlIg+TRxn1njDZll
-        0iKtUu0wZvE1Ytx+W3QP2pR9l32R/P0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        peterx@redhat.com, osalvador@suse.de, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v3 PATCH 5/5] mm: hwpoison: handle non-anonymous THP correctly
-Message-ID: <20211001070611.GB1364952@u2004>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-6-shy828301@gmail.com>
+        id S237578AbhJAHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 03:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230523AbhJAHKY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 03:10:24 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2BAC061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 00:08:40 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y23so551177lfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 00:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d+67dZI32wvtfT/woO5CfYBNyLEC+7GhwoOQwraT6EE=;
+        b=T+iko0ZvnOCFVOjzR/EupuBJ1DoSkQA0lgxYS0G9gP1D7hh54JuL9z7q3jnEKG7+mu
+         ktMUZjq7C8JRlPWIq6AdKMeF2vJHzpp70p3vb5nGKIGGuso4jQH6chWx/xqksryjwJLg
+         bTA7wn4Hn6B9ksg2CWU6KhXiAojJdsbHENBb+WVDMuN7GfLXztCN4/4hPKLYtPc66jdI
+         8y8EN174MysT80nAsSZB3/7VaTj//JVlqgkvX+WUaeX86lPKOJa27storU8lo5nDwPEf
+         UGxnfg3i4oDk3x9GxYBijePw49I8FLm3vM1tTetUSINxYXAz/DYIWqZHwDrdTu15ib/k
+         B64Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d+67dZI32wvtfT/woO5CfYBNyLEC+7GhwoOQwraT6EE=;
+        b=bfY1RLez3mutm5vplgDxxCV8nlrUMfZiIMmLXmYyZwsYrFmhigpULRWWi4wz2gHnWr
+         hz08XdbZhUdk8BYzznvifwNdgQrhYWDp0WOqdXNTfDm0z3q2ydzNSGc0e8vftKgV6Rhj
+         aqFnWzutmXATBcOZpZixsywCCt5ISM/2oYi2Hj6LApd6nHqLRZoYhWSlDKefruKF/THe
+         y7lKnrXWaSg+r10+WbASvx8Oup3M3kFZcd68aw3AOvV/N7jKHuc+wN8lHBF4Nzd/w7hd
+         bm/7UMIPbrXD2GZAAOWal+oBR9WW00FYR9EBwZ8uQMn0DTdd+QYTnKP0yrSPTYdM8Ujo
+         0c9g==
+X-Gm-Message-State: AOAM532xF26vpRQdbxDM4Z7o+AJEimy+/yNmx8O9nYCr6QCnY9CS0mUt
+        96SNhAUKcbMoyx9ip850fVAh6Q==
+X-Google-Smtp-Source: ABdhPJyEo2IdYkhhcZntpK5K9ICUfn44bkyHDyERU57Jj1fA5GS/v4aJNAE9wAEb0dWr7VXBmoGWHA==
+X-Received: by 2002:a2e:a54b:: with SMTP id e11mr10631275ljn.171.1633072118579;
+        Fri, 01 Oct 2021 00:08:38 -0700 (PDT)
+Received: from [192.168.10.17] (88-112-130-172.elisa-laajakaista.fi. [88.112.130.172])
+        by smtp.gmail.com with ESMTPSA id i19sm584769ljg.92.2021.10.01.00.08.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 00:08:38 -0700 (PDT)
+Subject: Re: [PATCH v2 3/4] soc: qcom: smem: Support reserved-memory
+ description
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Lew <clew@codeaurora.org>,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+References: <20210930182111.57353-1-bjorn.andersson@linaro.org>
+ <20210930182111.57353-4-bjorn.andersson@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <9a4ef69d-df15-0fbc-3735-6d7c861855ac@linaro.org>
+Date:   Fri, 1 Oct 2021 10:08:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210930215311.240774-6-shy828301@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+In-Reply-To: <20210930182111.57353-4-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 02:53:11PM -0700, Yang Shi wrote:
-> Currently hwpoison doesn't handle non-anonymous THP, but since v4.8 THP
-> support for tmpfs and read-only file cache has been added.  They could
-> be offlined by split THP, just like anonymous THP.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+Hi Bjorn,
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On 9/30/21 9:21 PM, Bjorn Andersson wrote:
+> Practically all modern Qualcomm platforms has a single reserved-memory
+> region for SMEM. So rather than having to describe SMEM in the form of a
+> node with a reference to a reserved-memory node, allow the SMEM device
+> to be instantiated directly from the reserved-memory node.
+> 
+> The current means of falling back to dereferencing the "memory-region"
+> is kept as a fallback, if it's determined that the SMEM node is a
+> reserved-memory node.
+> 
+> The "qcom,smem" compatible is added to the reserved_mem_matches list, to
+> allow the reserved-memory device to be probed.
+> 
+> In order to retain the readability of the code, the resolution of
+> resources is split from the actual ioremapping.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v1:
+> - None
+> 
+>   drivers/of/platform.c   |  1 +
+>   drivers/soc/qcom/smem.c | 57 ++++++++++++++++++++++++++++-------------
+>   2 files changed, 40 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> index 32d5ff8df747..07813fb1ef37 100644
+> --- a/drivers/of/platform.c
+> +++ b/drivers/of/platform.c
+> @@ -505,6 +505,7 @@ EXPORT_SYMBOL_GPL(of_platform_default_populate);
+>   static const struct of_device_id reserved_mem_matches[] = {
+>   	{ .compatible = "qcom,rmtfs-mem" },
+>   	{ .compatible = "qcom,cmd-db" },
+> +	{ .compatible = "qcom,smem" },
+>   	{ .compatible = "ramoops" },
+>   	{ .compatible = "nvmem-rmem" },
+>   	{}
+> diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
+> index 4fb5aeeb0843..c7e519bfdc8a 100644
+> --- a/drivers/soc/qcom/smem.c
+> +++ b/drivers/soc/qcom/smem.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/module.h>
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+> +#include <linux/of_reserved_mem.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+> @@ -240,7 +241,7 @@ static const u8 SMEM_INFO_MAGIC[] = { 0x53, 0x49, 0x49, 0x49 }; /* SIII */
+>    * @size:	size of the memory region
+>    */
+>   struct smem_region {
+> -	u32 aux_base;
+> +	phys_addr_t aux_base;
+>   	void __iomem *virt_base;
+>   	size_t size;
+>   };
+> @@ -499,7 +500,7 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
+>   	for (i = 0; i < smem->num_regions; i++) {
+>   		region = &smem->regions[i];
+>   
+> -		if (region->aux_base == aux_base || !aux_base) {
+> +		if ((u32)region->aux_base == aux_base || !aux_base) {
+>   			if (size != NULL)
+>   				*size = le32_to_cpu(entry->size);
+>   			return region->virt_base + le32_to_cpu(entry->offset);
+> @@ -664,7 +665,7 @@ phys_addr_t qcom_smem_virt_to_phys(void *p)
+>   		if (p < region->virt_base + region->size) {
+>   			u64 offset = p - region->virt_base;
+>   
+> -			return (phys_addr_t)region->aux_base + offset;
+> +			return region->aux_base + offset;
+>   		}
+>   	}
+>   
+> @@ -863,12 +864,12 @@ qcom_smem_enumerate_partitions(struct qcom_smem *smem, u16 local_host)
+>   	return 0;
+>   }
+>   
+> -static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
+> -				const char *name, int i)
+> +static int qcom_smem_resolve_mem(struct qcom_smem *smem, const char *name,
+> +				 struct smem_region *region)
+>   {
+> +	struct device *dev = smem->dev;
+>   	struct device_node *np;
+>   	struct resource r;
+> -	resource_size_t size;
+>   	int ret;
+>   
+>   	np = of_parse_phandle(dev->of_node, name, 0);
+> @@ -881,13 +882,9 @@ static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
+>   	of_node_put(np);
+>   	if (ret)
+>   		return ret;
+> -	size = resource_size(&r);
+>   
+> -	smem->regions[i].virt_base = devm_ioremap_wc(dev, r.start, size);
+> -	if (!smem->regions[i].virt_base)
+> -		return -ENOMEM;
+> -	smem->regions[i].aux_base = (u32)r.start;
+> -	smem->regions[i].size = size;
+> +	region->aux_base = r.start;
+> +	region->size = resource_size(&r);
+>   
+>   	return 0;
+>   }
+> @@ -895,12 +892,14 @@ static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
+>   static int qcom_smem_probe(struct platform_device *pdev)
+>   {
+>   	struct smem_header *header;
+> +	struct reserved_mem *rmem;
+>   	struct qcom_smem *smem;
+>   	size_t array_size;
+>   	int num_regions;
+>   	int hwlock_id;
+>   	u32 version;
+>   	int ret;
+> +	int i;
+
+Just a nitpicking, the index can be unsigned.
+
+>   
+>   	num_regions = 1;
+>   	if (of_find_property(pdev->dev.of_node, "qcom,rpm-msg-ram", NULL))
+> @@ -914,13 +913,35 @@ static int qcom_smem_probe(struct platform_device *pdev)
+>   	smem->dev = &pdev->dev;
+>   	smem->num_regions = num_regions;
+>   
+> -	ret = qcom_smem_map_memory(smem, &pdev->dev, "memory-region", 0);
+> -	if (ret)
+> -		return ret;
+> +	rmem = of_reserved_mem_lookup(pdev->dev.of_node);
+> +	if (rmem) {
+> +		smem->regions[0].aux_base = rmem->base;
+> +		smem->regions[0].size = rmem->size;
+> +	} else {
+> +		/*
+> +		 * Fall back to the memory-region reference, if we're not a
+> +		 * reserved-memory node.
+> +		 */
+> +		ret = qcom_smem_resolve_mem(smem, "memory-region", &smem->regions[0]);
+> +		if (ret)
+> +			return ret;
+> +	}
+>   
+> -	if (num_regions > 1 && (ret = qcom_smem_map_memory(smem, &pdev->dev,
+> -					"qcom,rpm-msg-ram", 1)))
+> -		return ret;
+> +	if (num_regions > 1) {
+> +		ret = qcom_smem_resolve_mem(smem, "qcom,rpm-msg-ram", &smem->regions[1]);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	for (i = 0; i < num_regions; i++) {
+> +		smem->regions[i].virt_base = devm_ioremap_wc(&pdev->dev,
+> +							     smem->regions[i].aux_base,
+> +							     smem->regions[i].size);
+> +		if (!smem->regions[i].virt_base) {
+> +			dev_err(&pdev->dev, "failed to remap %pa\n", &smem->regions[i].aux_base);
+> +			return -ENOMEM;
+> +		}
+> +	}
+>   
+>   	header = smem->regions[0].virt_base;
+>   	if (le32_to_cpu(header->initialized) != 1 ||
+> 
+
+--
+Best wishes,
+Vladimir
