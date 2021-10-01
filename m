@@ -2,121 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C6F41F50B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AEE41F511
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355954AbhJAShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:37:25 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48722 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355832AbhJAShW (ORCPT
+        id S1354452AbhJASiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355969AbhJASig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:37:22 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 63FE01F459BE
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH 1/2] fs: dcache: Handle case-exact lookup in
- d_alloc_parallel
-Organization: Collabora
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
-        <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
-Date:   Fri, 01 Oct 2021 14:35:32 -0400
-In-Reply-To: <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
-        (Shreeya Patel's message of "Wed, 29 Sep 2021 16:23:38 +0530")
-Message-ID: <87a6js61aj.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 1 Oct 2021 14:38:36 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6C9C061775;
+        Fri,  1 Oct 2021 11:36:44 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id p1so2647059pfh.8;
+        Fri, 01 Oct 2021 11:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U/jeo0cc4IS12fXu/3bym/iiyWz3QTfkGKyYijbo8pY=;
+        b=cPfJPl85flsr5d4GoEpVUbaPdgMoIQXFsKWqOJIawh2OktBJif4WDJTgJfCp+DZVLE
+         xWjav8cTfeSzwz6vvFgspe8IuaOqaPNp1QmAXMnLOJhWBr+i9jTOc6g0I++ZmPq70S2u
+         wz+gnit0JRnRxpEKSiaFE/4qg58Qj5poqu6BZscEk7exNp72iz2SVBawCsfF7bRb9kd4
+         WQHbaZ7lwO2hmVGRat0sOY4CbIqesw4bhvmbdOsncWv6mImb8vtBs90Az8MFfTQzaGqX
+         NLKwh1XOC6ZlMYoPzZDX2cqXJ7bDqFJFTjyJjRGAPHJ1urMr9+ZmccUHI/ZdKgggTBpL
+         HMCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U/jeo0cc4IS12fXu/3bym/iiyWz3QTfkGKyYijbo8pY=;
+        b=p3PHMLbvL10ZT7WKQ3MUmMalH4Xgz4SBRI5LFbymV3M7k00S65G7KB4Cc5qX7eQk8Q
+         JsUYMVfDDmHcqSb3EsnzmcyEh0nOBVqDgC0nbBHXyHERFZeOsZ6rP3iRaYFgPXlee0wf
+         vmJ3h5k7Bln7j3ZEk10xfxZPIvlEStDjdfvkoZeMaUIAapj73mdUpF2tYauS3DxeinCi
+         U8b443AhUC9FnkJcYJGkJSoWjcC7/TUC5ROE9NdPi7qUr4OfIB7kFzsBaR4M6wxDIV8H
+         A+fhxsqMoarDLgyMSd3iBXNV04Vhijq9/DWM0dAht5tMNf5q8cMAZkyHd2UGXD7RZTgB
+         rCiQ==
+X-Gm-Message-State: AOAM532SN6xnR6UcfWMoch6otfb7/kqlT7QRc6pY9CF0AXvCTys+t+ip
+        EgB4Oui4+Jl6jxpWlYnRVBs=
+X-Google-Smtp-Source: ABdhPJxpcN7h+xroaO4ziJJc8u4TcIRQF/ZupaBuavc2M/JBoGPwQoLCynTihJtuxc2oGWN1VfWgvw==
+X-Received: by 2002:a62:e210:0:b0:44b:ae4c:8c01 with SMTP id a16-20020a62e210000000b0044bae4c8c01mr11498160pfi.45.1633113403479;
+        Fri, 01 Oct 2021 11:36:43 -0700 (PDT)
+Received: from localhost (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id t23sm2310819pgn.25.2021.10.01.11.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 11:36:43 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 11:36:44 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
+Message-ID: <YVdVPGaF2Gq1PGpG@yury-ThinkPad>
+References: <20211001181226.228340-1-yury.norov@gmail.com>
+ <YVdSK4rFmLVFrKrD@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVdSK4rFmLVFrKrD@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
+On Fri, Oct 01, 2021 at 09:23:39PM +0300, Andy Shevchenko wrote:
+> On Fri, Oct 01, 2021 at 11:12:10AM -0700, Yury Norov wrote:
+> > Hi Stephen,
+> > 
+> > Can you please take this series into the next tree? It has been already
+> > in next-tree for 5.14:
+> > 
+> > https://lore.kernel.org/linux-mmc/YSeduU41Ef568xhS@alley/T/
+> > 
+> > But it was damaged and we decided to merge it in 5.15 cycle. No changes
+> > comparing to 5.14, except for Andy's patch that was already upstreamed
+> > and therefore removed from here.
+> > 
+> > The git tree is here:
+> > 	https://github.com/norov/linux/tree/bitmap-20210929
+> 
+> 
+> This is a dup with the same subject. Which one should we look into?
 
-> There is a soft hang caused by a deadlock in d_alloc_parallel which
-> waits up on lookups to finish for the dentries in the parent directory's
-> hash_table.
-> In case when d_add_ci is called from the fs layer's lookup functions,
-> the dentry being looked up is already in the hash table (created before
-> the fs lookup function gets called). We should not be processing the
-> same dentry that is being looked up, hence, in case of case-insensitive
-> filesystems we are making it a case-exact match to prevent this from
-> happening.
->
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
->  fs/dcache.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index cf871a81f4fd..2a28ab64a165 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -2565,6 +2565,15 @@ static void d_wait_lookup(struct dentry *dentry)
->  	}
->  }
->  
-> +static inline bool d_same_exact_name(const struct dentry *dentry,
-> +				     const struct dentry *parent,
-> +				     const struct qstr *name)
-> +{
-> +	if (dentry->d_name.len != name->len)
-> +		return false;
-> +	return dentry_cmp(dentry, name->name, name->len) == 0;
-> +}
+Please ignore this (short) series. It's a duplication, my connection
+was broken and I had to restart submitting.
 
-I don't like the idea of having a flavor of a dentry comparison function
-that doesn't invoke d_compare.  In particular because d_compare might be
-used for all sorts of things, and this fix is really specific to the
-case-insensitive case.
-
-Would it be possible to fold this change into generic_ci_d_compare?  If
-we could flag the dentry as part of a parallel lookup under the relevant
-condition, generic_ci_d_compare could simply return immediately in
-such case.
-
-> +
->  struct dentry *d_alloc_parallel(struct dentry *parent,
->  				const struct qstr *name,
->  				wait_queue_head_t *wq)
-> @@ -2575,6 +2584,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
->  	struct dentry *new = d_alloc(parent, name);
->  	struct dentry *dentry;
->  	unsigned seq, r_seq, d_seq;
-> +	int ci_dir = IS_CASEFOLDED(parent->d_inode);
->  
->  	if (unlikely(!new))
->  		return ERR_PTR(-ENOMEM);
-> @@ -2626,8 +2636,14 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
->  			continue;
->  		if (dentry->d_parent != parent)
->  			continue;
-> -		if (!d_same_name(dentry, parent, name))
-> -			continue;
-> +		if (ci_dir) {
-> +			if (!d_same_exact_name(dentry, parent, name))
-> +				continue;
-> +		} else {
-
-
-As is, this is problematic because d_alloc_parallel is also part of the
-lookup path (see lookup_open, lookup_slow).  In those cases, you want to
-do the CI comparison, to prevent racing two tasks creating a dentry
-differing only by case.
-
-
-> +			if (!d_same_name(dentry, parent, name))
-> +				continue;
-> +		}
-> +
->  		hlist_bl_unlock(b);
->  		/* now we can try to grab a reference */
->  		if (!lockref_get_not_dead(&dentry->d_lockref)) {
-
--- 
-Gabriel Krisman Bertazi
+Sorry for noise.
