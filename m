@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F1C41F697
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDE241F6A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354721AbhJAVCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 17:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
+        id S230112AbhJAVJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 17:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhJAVCX (ORCPT
+        with ESMTP id S229568AbhJAVJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:02:23 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6A4C06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 14:00:38 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso13067732otb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 14:00:38 -0700 (PDT)
+        Fri, 1 Oct 2021 17:09:57 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9E5C061775;
+        Fri,  1 Oct 2021 14:08:12 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id v10so39553319edj.10;
+        Fri, 01 Oct 2021 14:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NC9cmhLrHdckMuK/r28TvZNjmeIVCX8ECTisIPvM3VE=;
-        b=XimCMpcHPEIPcAavsLIBQ7e4UqLEpKZsP5a1nMGqsGf5ozPAwSgkjCn3bwUoBZRJKG
-         38ks49GU17lkYI2bUN0zLpXw9zF9ykNXYAGdQOR6LoXpO9e6e7Qk22Vt0qU7gX8ejinL
-         9vTstYflDVB0JcqkSbf+/tuaA1by6r7A2zhQkDqQdZyrw0wphZmwvBATHJcr7X6uHDtO
-         4e+5tVG7WGVxi3W7EEG8Sv/2kLYkWsUa3qMSPzEieSJ56Ux7OgiTsVd40kvXZvD1GFwA
-         yRKjcpF1mNHBtiF7/rZkhigpYnHR6SvtN76kF3sXuZKVzyg8PBs9ClyTcUmqq/SWXvAt
-         K4PA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xsjTuS01OWyAiv5jzPDJK7nI7OXAtfzB78KCIx/PZ2s=;
+        b=nmjVVVJUzIaGOMd2Ez9MncVBsQftTFkxVlmU81mHfpKglskE8/1IJ8cU4Rx9bvp1KH
+         APKmkczWks8+GdpU1gnbKg3qoY80lATu4fOvBksxGg/ZTlzo4I4svGKdC9aBfYYGXwER
+         ukWCBRkNXxe5f24KiUPXc15tBuEmh38tUJYn/0mnKKLk0wZ72ZrS1u1d8cObVGBsJH82
+         ZcYiXNfZAUnk1JZDObr+iH4YIlRsxJnzroIpelTIWtU7RWn+QNRHe2wgJ7Bd7chnsUv5
+         d+58J/52gRlQiAGPBvB5PTVY/7F4g+4ATUNYYOk+FrULDR9tO3tHQ6oHfM9JuuShGXNr
+         BScg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NC9cmhLrHdckMuK/r28TvZNjmeIVCX8ECTisIPvM3VE=;
-        b=dfyFPK3HvvdLZTCnyIlZYED6a4/aiK5ne9JYdv8Rj4m0mt4IpM1ZpXnz1FPaKsO7/b
-         gZ2+9GqSzy9PMEMyLPdzog3iWbDOUtpPfIpnj2SGmgScwdDV5CNax5KonjP0UsMXuv5U
-         FEQ+0p4yQnQohKe7GfG5BzVUCEy1E9hiw20t+Se2Qpew3xDwEvj+yVakzkzZ7iF6kMED
-         E9Ns1h2+HglLotJuOr5p+9jmQIz6fFYv3/P5pBeMvtxDDagtXUrX3Qxh8qt1YrKk3s2D
-         LZXq6X29u1fh+zLrQkTxL32426gm55JVBNGMKP/XlVZzDdR8R3/7aHJjFhD3u/hzJkEQ
-         ne6Q==
-X-Gm-Message-State: AOAM532ss2iuCjyVIAYuT/m7R9DMWpBGeB0BZDwd/dhWVUhJgqAwAoAi
-        fSavoUG587qx4HAI+j8Gxyua6A==
-X-Google-Smtp-Source: ABdhPJwoHN/UBWInkMgxVgelTcg9Ak/uofV+tp/je2/pG4B/t/W7LZ0cC6Rvth9aFQh6/JZINgrG/Q==
-X-Received: by 2002:a9d:6396:: with SMTP id w22mr18800otk.26.1633122038272;
-        Fri, 01 Oct 2021 14:00:38 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id j24sm539724otq.72.2021.10.01.14.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 14:00:37 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 14:02:25 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-Message-ID: <YVd3YdfgFVc0Br5T@ripper>
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
- <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xsjTuS01OWyAiv5jzPDJK7nI7OXAtfzB78KCIx/PZ2s=;
+        b=3JnpE2fHqkXrkqkhEP9ofIJ4MGZkMvCm5FacfuwPtqDXiOHWnHCuvetM2DoDH4lM7N
+         IR7dNeV98p6bab0lrCaNYpkUpKRdjCBleYLlECWDq/udplCb84xZJHGp8sva9pm14v/r
+         sSBTsG+TxFNhivFkyKDYjTRyL8YmuLp3WW4i9KbT5S4LvbeQ3GypW7fKppozlPgsPIZd
+         LEh4AcjHeP9XePKqOQ7aKgnYr6TwKX391gXZztw8824Qpu8o3i7xlmUSUHzXzO0RThLQ
+         ffUIkJs+20I4B+L1lh3az9I2zHdZk27OhoAqt4XBzHKFxrnwPJw81TLh8XgIWpk5c3eW
+         dx/A==
+X-Gm-Message-State: AOAM531I6wzuudJmFqXbckdcZAzz8fZq+cAkxYA58gM70OLiOE2HURJX
+        4K3TAZfwAXRWpwvg6HamH27m2iH1oy0J7/oor38=
+X-Google-Smtp-Source: ABdhPJzaxRyXbpY5V9tLY9TTm6Jg0RXZDwe28BXKRxqBijswVUPXv+dFb8IhcLIVyB9Bg/oQv+znrRMt50zGtM2djtw=
+X-Received: by 2002:a17:906:3854:: with SMTP id w20mr63006ejc.537.1633122489844;
+ Fri, 01 Oct 2021 14:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com>
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <20211001072300.GC1364952@u2004>
+In-Reply-To: <20211001072300.GC1364952@u2004>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 1 Oct 2021 14:07:56 -0700
+Message-ID: <CAHbLzko6E4HKCKoQefgaqb1aqBsJUevnAFDKpL+rHLuSXZSxSw@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 27 Aug 13:52 PDT 2021, Doug Anderson wrote:
-
-> Hi,
-> 
-> On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+On Fri, Oct 1, 2021 at 12:23 AM Naoya Horiguchi
+<naoya.horiguchi@linux.dev> wrote:
+>
+> On Thu, Sep 30, 2021 at 02:53:08PM -0700, Yang Shi wrote:
+> > When handling shmem page fault the THP with corrupted subpage could be PMD
+> > mapped if certain conditions are satisfied.  But kernel is supposed to
+> > send SIGBUS when trying to map hwpoisoned page.
 > >
-> > +static int dp_parser_find_panel(struct dp_parser *parser)
-> > +{
-> > +       struct device_node *np = parser->pdev->dev.of_node;
-> > +       int rc;
-> > +
-> > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
-> 
-> Why port 2? Shouldn't this just be port 1 always? The yaml says that
-> port 1 is "Output endpoint of the controller". We should just use port
-> 1 here, right?
-> 
+> > There are two paths which may do PMD map: fault around and regular fault.
+> >
+> > Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
+> > the thing was even worse in fault around path.  The THP could be PMD mapped as
+> > long as the VMA fits regardless what subpage is accessed and corrupted.  After
+> > this commit as long as head page is not corrupted the THP could be PMD mapped.
+> >
+> > In the regular fault path the THP could be PMD mapped as long as the corrupted
+> > page is not accessed and the VMA fits.
+> >
+> > This loophole could be fixed by iterating every subpage to check if any
+> > of them is hwpoisoned or not, but it is somewhat costly in page fault path.
+> >
+> > So introduce a new page flag called HasHWPoisoned on the first tail page.  It
+> > indicates the THP has hwpoisoned subpage(s).  It is set if any subpage of THP
+> > is found hwpoisoned by memory failure and cleared when the THP is freed or
+> > split.
+> >
+> > Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
+> > Cc: <stable@vger.kernel.org>
+> > Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ...
+> > @@ -668,6 +673,20 @@ PAGEFLAG_FALSE(DoubleMap)
+> >       TESTSCFLAG_FALSE(DoubleMap)
+> >  #endif
+> >
+> > +#if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+> > +/*
+> > + * PageHasPoisoned indicates that at least on subpage is hwpoisoned in the
+>
+> Maybe you meant as follow?
+>
+> + * PageHasHWPoisoned indicates that at least one subpage is hwpoisoned in the
 
-Finally got back to this, changed it to 1 and figured out why I left it
-at 2.
+Yeah, thanks for catching it. It is a typo because the flag was called
+PageHasPoisoned. But "poisoned" seems ambiguous for some cases since,
+for example, some memory sanitizers use "poisoned", so I renamed it to
+PageHasHWPoisoned to make it less ambiguous.
 
-drm_of_find_panel_or_bridge() on a DP controller will find the of_graph
-reference to the USB-C controller, scan through the registered panels
-and conclude that the of_node of the USB-C controller isn't a registered
-panel and return -EPROBE_DEFER.
-
-So I picked 2, because I'm not able to figure out a way to distinguish
-between a not yet probed panel and the USB-C controller...
-
-Any suggestions?
-
-Regards,
-Bjorn
+>
+> Thanks,
+> Naoya Horiguchi
