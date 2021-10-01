@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C47541EA20
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBDB41EA32
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353241AbhJAJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353236AbhJAJyV (ORCPT
+        id S1353262AbhJAJ5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:57:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23799 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353173AbhJAJ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:54:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A5BC061775;
-        Fri,  1 Oct 2021 02:52:37 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 09:52:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633081955;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LQF2GC7PP3ik/rdt9jcKV+yUP1P9cj4TUA2No4CVKmE=;
-        b=spRGud5Cqj4isxGr2ChanGYmhIzYiNF/c6grZW/U4/ChzHzNnc1Cnn4xJP+cUIC9hb/bup
-        Ft5SZ9CqDWQ27mcEAbovClWSaiAi3KkcFX+Wxa/o0qnynVqiDDQBWPXndYF78opY4jgkNd
-        qB2qNUY9Hg7+e67rdmTCZh2odXkF+s1w+NO2BA59w78z4GkAwq+DHn/0X+yJyrKPPXeysd
-        7T+H8x1TGG1u8pKI1JqW4pYR1UCKZQ82dsxJJlGGSk990Q215chtXTPltMZHLbNEJ38zAO
-        xMnCofEU5wKT+c8k0MwpRydetiozh48i56zRo50nsSmFEawrrE1h3zfa31EJ+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633081955;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LQF2GC7PP3ik/rdt9jcKV+yUP1P9cj4TUA2No4CVKmE=;
-        b=ZxbMg6YoLLvXx5kZazg9AtxjTNqID0WDKow+w3VXNGfmb7ZEf4ZsokO61x6e/JO5NFLJLR
-        eugzLVGHUdWsRVAQ==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/sev: Return an error on a returned non-zero
- SW_EXITINFO1[31:0]
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cefc772af831e9e7f517f0439b13b41f56bad8784=2E16330?=
- =?utf-8?q?63321=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3Cefc772af831e9e7f517f0439b13b41f56bad8784=2E163306?=
- =?utf-8?q?3321=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+        Fri, 1 Oct 2021 05:57:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633082153; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=tMw5Hzb3ztdNEHxY4bAev68n6seU8HT3Mf7aFuIt4P8=; b=rdHIMJnrygDT4HQsdbk1vGLisqmAwBPTqYwmEkK/eo4DZs24rq3Y7FLPZ4rVfV4FcM+8uPFT
+ wxL8Jvi1IA/EC0OHna65u/Q0ZQuYHJq1X1mJJgKM7U/2La590uUKIEo6PYrnORyxYgqUiF6j
+ 2nbo57CndejHwtvijRNT+UUOWQQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6156db1c605ecf100b49b60e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 09:55:40
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 910CFC43618; Fri,  1 Oct 2021 09:55:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8C99C4338F;
+        Fri,  1 Oct 2021 09:55:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E8C99C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 13/24] wfx: add hif_tx*.c/hif_tx*.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-14-Jerome.Pouiller@silabs.com>
+Date:   Fri, 01 Oct 2021 12:55:33 +0300
+In-Reply-To: <20210920161136.2398632-14-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Mon, 20 Sep 2021 18:11:25 +0200")
+Message-ID: <87fstlkr1m.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Message-ID: <163308195430.25758.9298065722458178197.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-Commit-ID:     06f2ac3d4219bbbfd93d79e01966a42053084f11
-Gitweb:        https://git.kernel.org/tip/06f2ac3d4219bbbfd93d79e01966a42053084f11
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Thu, 30 Sep 2021 23:42:01 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 01 Oct 2021 11:14:41 +02:00
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 
-x86/sev: Return an error on a returned non-zero SW_EXITINFO1[31:0]
+[...]
 
-After returning from a VMGEXIT NAE event, SW_EXITINFO1[31:0] is checked
-for a value of 1, which indicates an error and that SW_EXITINFO2
-contains exception information. However, future versions of the GHCB
-specification may define new values for SW_EXITINFO1[31:0], so really
-any non-zero value should be treated as an error.
+> --- /dev/null
+> +++ b/drivers/net/wireless/silabs/wfx/hif_tx_mib.h
+> @@ -0,0 +1,49 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Implementation of the host-to-chip MIBs of the hardware API.
+> + *
+> + * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
+> + * Copyright (c) 2010, ST-Ericsson
+> + * Copyright (C) 2010, ST-Ericsson SA
+> + */
+> +#ifndef WFX_HIF_TX_MIB_H
+> +#define WFX_HIF_TX_MIB_H
+> +
+> +struct wfx_vif;
+> +struct sk_buff;
+> +
+> +int hif_set_output_power(struct wfx_vif *wvif, int val);
+> +int hif_set_beacon_wakeup_period(struct wfx_vif *wvif,
+> +				 unsigned int dtim_interval,
+> +				 unsigned int listen_interval);
+> +int hif_set_rcpi_rssi_threshold(struct wfx_vif *wvif,
+> +				int rssi_thold, int rssi_hyst);
+> +int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
+> +			   struct hif_mib_extended_count_table *arg);
+> +int hif_set_macaddr(struct wfx_vif *wvif, u8 *mac);
+> +int hif_set_rx_filter(struct wfx_vif *wvif,
+> +		      bool filter_bssid, bool fwd_probe_req);
+> +int hif_set_beacon_filter_table(struct wfx_vif *wvif, int tbl_len,
+> +				const struct hif_ie_table_entry *tbl);
+> +int hif_beacon_filter_control(struct wfx_vif *wvif,
+> +			      int enable, int beacon_count);
+> +int hif_set_operational_mode(struct wfx_dev *wdev, enum hif_op_power_mod=
+e mode);
+> +int hif_set_template_frame(struct wfx_vif *wvif, struct sk_buff *skb,
+> +			   u8 frame_type, int init_rate);
+> +int hif_set_mfp(struct wfx_vif *wvif, bool capable, bool required);
+> +int hif_set_block_ack_policy(struct wfx_vif *wvif,
+> +			     u8 tx_tid_policy, u8 rx_tid_policy);
+> +int hif_set_association_mode(struct wfx_vif *wvif, int ampdu_density,
+> +			     bool greenfield, bool short_preamble);
+> +int hif_set_tx_rate_retry_policy(struct wfx_vif *wvif,
+> +				 int policy_index, u8 *rates);
+> +int hif_keep_alive_period(struct wfx_vif *wvif, int period);
+> +int hif_set_arp_ipv4_filter(struct wfx_vif *wvif, int idx, __be32 *addr);
+> +int hif_use_multi_tx_conf(struct wfx_dev *wdev, bool enable);
+> +int hif_set_uapsd_info(struct wfx_vif *wvif, unsigned long val);
+> +int hif_erp_use_protection(struct wfx_vif *wvif, bool enable);
+> +int hif_slot_time(struct wfx_vif *wvif, int val);
+> +int hif_wep_default_key_id(struct wfx_vif *wvif, int val);
+> +int hif_rts_threshold(struct wfx_vif *wvif, int val);
 
-Fixes: 597cfe48212a ("x86/boot/compressed/64: Setup a GHCB-based VC Exception handler")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org> # 5.10+
-Link: https://lkml.kernel.org/r/efc772af831e9e7f517f0439b13b41f56bad8784.1633063321.git.thomas.lendacky@amd.com
----
- arch/x86/kernel/sev-shared.c | 2 ++
- 1 file changed, 2 insertions(+)
+"wfx_" prefix missing from quite a few functions.
 
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index 9f90f46..bf1033a 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -130,6 +130,8 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
- 		} else {
- 			ret = ES_VMM_ERROR;
- 		}
-+	} else if (ghcb->save.sw_exit_info_1 & 0xffffffff) {
-+		ret = ES_VMM_ERROR;
- 	} else {
- 		ret = ES_OK;
- 	}
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
