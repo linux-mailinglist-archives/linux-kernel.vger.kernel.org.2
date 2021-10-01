@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D841E55A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78D641E55D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351715AbhJAAG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 20:06:57 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:51662 "EHLO inva021.nxp.com"
+        id S1351497AbhJAAHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 20:07:20 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42126 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351070AbhJAAGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:06:11 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 42502200C04;
-        Fri,  1 Oct 2021 02:04:27 +0200 (CEST)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 09B5B200A95;
-        Fri,  1 Oct 2021 02:04:27 +0200 (CEST)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id 7503440BCF;
-        Thu, 30 Sep 2021 17:04:26 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH v2 16/16] ARM: dts: ls1021a-tsn: use generic "jedec,spi-nor" compatible for flash
-Date:   Thu, 30 Sep 2021 19:04:17 -0500
-Message-Id: <20211001000417.15334-17-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
-In-Reply-To: <20211001000417.15334-1-leoyang.li@nxp.com>
-References: <20211001000417.15334-1-leoyang.li@nxp.com>
+        id S1351319AbhJAAHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 20:07:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=AYZ78MbKE7o+ckLapKuGnIkQLgJnUysGF/DpNN6Cl/M=; b=wCgNyofgxHVLiJOIpzWGKYIK4V
+        x3vc55G92ccdld/b1h1gR+bQ6E6SOYp5wql/RqmMMxmj2tbTnAie2vRFPxtvqmg1aQZ3Y0SKo856d
+        v3kefxLxBtw25YrQn9+Tv0TRPfBYqFiCx8ZLpq6SkpYMz84gsPq8h/TSTNul+XnRzJOw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mW636-0091Sh-7f; Fri, 01 Oct 2021 02:05:12 +0200
+Date:   Fri, 1 Oct 2021 02:05:12 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Frieder Schrempf <frieder@fris.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Steen Hegelund <steen.hegelund@microchip.com>
+Subject: Re: [PATCH 1/3] net: phy: mscc: Add possibilty to disable combined
+ LED mode
+Message-ID: <YVZQuIr2poOfWvcO@lunn.ch>
+References: <20210930125747.2511954-1-frieder@fris.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930125747.2511954-1-frieder@fris.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot list all the possible chips used in different board revisions,
-just use the generic "jedec,spi-nor" compatible instead.  This also
-fixes dtbs_check error:
-['s25fl256s1', 's25fl512s', 'jedec,spi-nor'] is too long
+On Thu, Sep 30, 2021 at 02:57:43PM +0200, Frieder Schrempf wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> 
+> By default the LED modes offer to combine two indicators like speed/link
+> and activity in one LED. In order to use a LED only for the first of the
+> two modes, the combined feature needs to be disabled.
+> 
+> In order to do this we introduce a boolean devicetree property
+> 'vsc8531,led-[N]-combine-disable' and wire it up to the matching
+> bits in the LED behavior register.
 
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
----
- arch/arm/boot/dts/ls1021a-tsn.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry, but no DT property. Each PHY has its own magic combination of
+DT properties, nothing shared, nothing common. This does not scale.
 
-diff --git a/arch/arm/boot/dts/ls1021a-tsn.dts b/arch/arm/boot/dts/ls1021a-tsn.dts
-index 8005efc5c812..ff0ffb22768b 100644
---- a/arch/arm/boot/dts/ls1021a-tsn.dts
-+++ b/arch/arm/boot/dts/ls1021a-tsn.dts
-@@ -251,7 +251,7 @@ &qspi {
- 
- 	flash@0 {
- 		/* Rev. A uses 64MB flash, Rev. B & C use 32MB flash */
--		compatible = "jedec,spi-nor", "s25fl256s1", "s25fl512s";
-+		compatible = "jedec,spi-nor";
- 		spi-max-frequency = <20000000>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--- 
-2.25.1
+Please look at the work being done to control PHY LEDs using the Linux
+LED infrastructure. That should give us one uniform interface for all
+PHY LEDs.
 
+    Andrew
