@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375F141F12F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190AF41F136
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbhJAP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
+        id S232235AbhJAP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbhJAP2j (ORCPT
+        with ESMTP id S232183AbhJAP27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:28:39 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBD3C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:26:54 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so11916600otb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:26:54 -0700 (PDT)
+        Fri, 1 Oct 2021 11:28:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ED8C06177F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:27:14 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so9543503pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=lixom-net.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ikLIfxYdFe+715vkjTYz2QcZQLPsMyfcRuwJRI4JmM4=;
-        b=aZ/I4ufvq/NcoW7ML0ypAcwIA1MGyGR0HEqX5iuKNwExlTwu2IdQCNEkeR+zDkSOQz
-         BAc+EEnp7lAlKvHdtFQCj/mLjXeGrYwA4ndXkbPsLUqUY410G/t45C3sR7pIGtIkMsQs
-         Ma5bgpnAhxOOeMyYg5vftvNNDucX4xwgZBPa+kXETSTpSIisgzdGN9H2iTNJcIJvJ+Kj
-         FicGrs2uIxcQzo2iovBMYf/oj78u/OcstbeaKMrkcAADkMF36PUFiHlI90AxFnS8TKMQ
-         HGcrDjJnSGGtKZSWGc6sv654TEvAiyhcv+/8cA/JRCOJ5hce5nryAKhtgtg4ehHya/h4
-         4nLw==
+         :cc;
+        bh=NDBF0d4bKXIj7mL5yYNHBXYAg7HQa1G1QOL0lrIIjuQ=;
+        b=vyCE1SjTyUO59YshqoxCZREYCGmX1MLlD2wPH86txBGh9li4OkL1kVFk49gHlm1VaD
+         ftZLw4tkzhpF5hlX2FiAddEp3MvH4L4Fg1Mu1TLOsaieKla+AmpvH5c4iQ3aOZdX7oJz
+         J/pGhZFBosmhuydsPFT3/19gQUVWyqr0eY8Ghyjckm8+STHJ+H6Q3LINLYMkm4Tb/VWo
+         NQFkzjZU7JhIkTJrzj0vuwTjz49j6dfiPPG5QsH1KGBsWpu6suruD2Zoqy6ujUV0mXRr
+         zpx/0+szWfgVfjxzN57nEoskVnF5Aq/8+LXxY5e8sLc4+/IuGcxQc+oC0D/0qQqUcHIX
+         l9ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ikLIfxYdFe+715vkjTYz2QcZQLPsMyfcRuwJRI4JmM4=;
-        b=Miu+6YsQS8UNGEiBswuakw+xiaWh2LulSA3uahwrvKGDEUAZcIgyKUsKOVgnXQwyIr
-         AjfWu9XW5dUmERbL23L43dQzcOilNiszrcjzx5MbnwoPCpPpjnLf0hJQYH1GMHc1xOkq
-         SSHEtdT9TOmZewj7WwVC6/uQ6f6jMQHxESoXzwssYrRmn9hENL+hfhq0IGqsCL9E+b48
-         mPW1PZ6LIAzA6bUDIWGBmmGxDV0S9W/K4fRQzaxKcrW3BMi+9V7t+Ysm/r0ZSXqtDvAY
-         f8TjPiiqboSIWQv6yI8ZI3QlX7oYB3s15pvcBgj90CPHqYt5FUZcYJ66WmEk1p2ttNn7
-         8VlQ==
-X-Gm-Message-State: AOAM5328lorNyqu9WkKAo4ZC8QeZZH/VIB+jvDw99554HJ3lHo1nh1iv
-        2CNxTIg7hodoaiWi6kfZD+9GkHuLiWu85qAjHGM=
-X-Google-Smtp-Source: ABdhPJxcNNo5JhH3EXbxL8nFCg9PFIAUpeD8fKVx+GFOx30gzwQaBibHmrxqi/VpT6SjMbNmJIvI3Q6p8469AxlsPnY=
-X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr10800848otd.200.1633102013972;
- Fri, 01 Oct 2021 08:26:53 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=NDBF0d4bKXIj7mL5yYNHBXYAg7HQa1G1QOL0lrIIjuQ=;
+        b=GLVHwnUkTUCXUtRwuYdqIhBTQ8/mJmWSpg9C5YabB+9UBn2h4eXrqeARhWqpA2OlJc
+         6tTMLJhCaQQicXsMm/HDXEouHeiSySit9CMVoAjG57yRIWt82980/Ue3r3iBVZNipI7f
+         Xp6y3uPDmnn31eQRbtMU7BRn6iabjArGQKLcAFNkH0GQNL3PMWAbNsxj/NNhB+fAjzEb
+         8fxr39sQySTgk0jnb3kBMVYftV+YF5lYXZNmoTBMpMJYno8ubFb4DpjBYlD9AMqgfFsj
+         bYp9HfSDGzewjgnrPNIau/kXEuFRDGk5bx6/JxUQa0imiROtm1kbUsDaJOLktr6rE3BO
+         Svsw==
+X-Gm-Message-State: AOAM533rpNDKEeM4KECpQ38xB0TDPLL3Uz8+1muOIYxl228JlDBtS/ld
+        9uPTbsalP1iCUzbyaHjCpUa0/0DGXDb4pog3rlQwHQ==
+X-Google-Smtp-Source: ABdhPJw+H/uBI4TBsasR8eBHLbgky559HD5gbdguuPNsq60YvUyVD3gt7UgsIT81kS73NIa4qmiR13/eOF+1CUlO760=
+X-Received: by 2002:a17:902:c193:b0:13e:8e77:6c82 with SMTP id
+ d19-20020a170902c19300b0013e8e776c82mr1802110pld.29.1633102033855; Fri, 01
+ Oct 2021 08:27:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001101348.1279-1-guozhengkui@vivo.com> <50430f11-5e95-18f4-7620-2233ef573853@amd.com>
-In-Reply-To: <50430f11-5e95-18f4-7620-2233ef573853@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 1 Oct 2021 11:26:42 -0400
-Message-ID: <CADnq5_PT+e8j=YEyAjzMQxF5wVzc+cCDbQ6j6FrdWdDWajco=Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: remove some repeated includings
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Guo Zhengkui <guozhengkui@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Peng Ju Zhou <PengJu.Zhou@amd.com>,
-        Bokun Zhang <Bokun.Zhang@amd.com>,
-        Likun GAO <Likun.Gao@amd.com>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>, kernel@vivo.com
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAMuHMdWhCB_zg6TwjYfz+=vc+_Wd5yzuAAzk=2ToZOQSAyaiJA@mail.gmail.com> <CAK8P3a10R-Q8hB-piH_QT0hzkaAZTczLbM=6WmgoMHYL8EhZ4g@mail.gmail.com>
+In-Reply-To: <CAK8P3a10R-Q8hB-piH_QT0hzkaAZTczLbM=6WmgoMHYL8EhZ4g@mail.gmail.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Fri, 1 Oct 2021 08:27:02 -0700
+Message-ID: <CAOesGMhHK7Z8Ki+UFRi24dXTdk4=YC6ExneOnfkVmG2HFiVMKw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Fri, Oct 1, 2021 at 2:01 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Oct 1, 2021 at 10:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Fri, Oct 1, 2021 at 7:24 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > GIC and arch timer. Basically the minimal kernel would need a timer
+> > > for the scheduler tick and IRQ controller to get the timer IRQ and the
+> > > fixed clock driver if the archtimer uses one to get its frequency and
+> > > the early UART console is pointless as a module (so build it in to
+> > > allow debugging/development).
+> > >
+> > > And then all new drivers, we should make sure are implemented as
+> > > tristate drivers. And we can go back and slowly work on converting
+> > > existing drivers to modules (community effort -- not one person or
+> > > entity) -- at least the ones where the author has hardware or ones
+> > > where the change is very likely to be correct and someone else is
+> > > willing to test it. We'll never be able to support some/all ARM32 (do
+> > > they even have a GIC/arch timer standard?), but at least for ARM64,
+> > > this seems like a viable goal.
+> >
+> > Cortex-A7/A15 and later have GIC and architectured timer, so it should
+> > work for contemporary systems.
+> > Cortex-A9 systems may have GIC, and TWD and/or Global Timer (but I've
+> > seen SoCs where the interrupt for the latter was not wired :-(.
+>
+> There are a number of well-known examples even with 64-bit chips or
+> Cortex-A7/A15 based SoCs that can't use the architected timer,
+> irqchip or iommu.
+>
+> Apple M1, Broadcom BCM283x, Samsung Exynos5 and
+> some Hisilicon server parts come to mind, I'm sure there
+> are more.
 
-Alex
+There's also more and more movement towards having coprocessors with
+standardized interfaces dealing with this functionality. We're
+currently at the point where they have coprocessors with
+non-standardized interfaces, and it's useful to keep encouraging
+convergence in this area to everybody's benefit. I don't find it
+particularly useful to make life easier for the custom solutions at
+the expense of others like this patchset does, when that's (just
+beyond? on?) the horizon.
 
-On Fri, Oct 1, 2021 at 6:16 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
+> > What are the plans for other architectures?
+> > I've seen similar patches being applied for e.g. MIPS.
 >
-> Am 01.10.21 um 12:13 schrieb Guo Zhengkui:
-> > Remove two repeated includings in line 46 and 47.
-> >
-> > Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
->
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gp=
-u/drm/amd/amdgpu/amdgpu_discovery.c
-> > index 291a47f7992a..daa798c5b882 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-> > @@ -30,34 +30,32 @@
-> >
-> >   #include "soc15.h"
-> >   #include "gfx_v9_0.h"
-> >   #include "gmc_v9_0.h"
-> >   #include "df_v1_7.h"
-> >   #include "df_v3_6.h"
-> >   #include "nbio_v6_1.h"
-> >   #include "nbio_v7_0.h"
-> >   #include "nbio_v7_4.h"
-> >   #include "hdp_v4_0.h"
-> >   #include "vega10_ih.h"
-> >   #include "vega20_ih.h"
-> >   #include "sdma_v4_0.h"
-> >   #include "uvd_v7_0.h"
-> >   #include "vce_v4_0.h"
-> >   #include "vcn_v1_0.h"
-> > -#include "vcn_v2_0.h"
-> > -#include "jpeg_v2_0.h"
-> >   #include "vcn_v2_5.h"
-> >   #include "jpeg_v2_5.h"
-> >   #include "smuio_v9_0.h"
-> >   #include "gmc_v10_0.h"
-> >   #include "gfxhub_v2_0.h"
-> >   #include "mmhub_v2_0.h"
-> >   #include "nbio_v2_3.h"
-> >   #include "nbio_v7_2.h"
-> >   #include "hdp_v5_0.h"
-> >   #include "nv.h"
-> >   #include "navi10_ih.h"
-> >   #include "gfx_v10_0.h"
-> >   #include "sdma_v5_0.h"
-> >   #include "sdma_v5_2.h"
-> >   #include "vcn_v2_0.h"
-> >   #include "jpeg_v2_0.h"
->
+> There is some work in the more actively maintained MIPS
+> platforms to make those behave more like Arm/powerpc/riscv/m68k
+> platforms, using a single image and moving drivers into modules.
+> Most MIPS platforms seem unlikely to get updated to this,
+> and will continue to require a SoC specific kernel binary forever,
+> similar to the renesas superh platforms. Most of the less
+> common architectures (arc, csky, hexagon, nios2, xtensa,
+> microblaze, nds32, openrisc, sparc/leon) are way behind that
+> though, and generally don't work at all without out-of-tree
+> code.
+
+One of the arguments for needing some of these core drivers in-kernel
+is that some platforms boot at very conservative DVFS operating
+points, to a degree that you really want to turn up the CPU clocks
+fairly early during boot.
+
+If you don't have the drivers built-in, you can't do that and/or you
+create possible fragile or awkward inter-module dependencies with
+deferred probing, etc. We do care about boot time enough to prefer to
+just build them in for this reason.
+
+If vmlinux binary size is a concern, maybe it's time to consider
+splitting the drivers into a bare-minimum piece that's not a module
+for early setup, and the rest that can be loaded post-boot.
+
+
+-Olof
