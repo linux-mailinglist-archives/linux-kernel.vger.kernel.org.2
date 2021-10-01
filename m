@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19F541E947
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA3E41E949
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352432AbhJAI7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:59:48 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54000 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhJAI7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:59:47 -0400
-Received: from zn.tnic (p200300ec2f0e8e00572b4e04e961fee2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:572b:4e04:e961:fee2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0FF1A1EC04F3;
-        Fri,  1 Oct 2021 10:58:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633078682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=cCn6ZMYQ9cKRpFK4Mmh1ozo2bAFBofEhqz4IBQINPzg=;
-        b=UOGtEWcY/i9uWsfbMmPUZsyrRZtr/1l4pllMa1qYXYROUsjkq3q4JqC2py9gaSq0Ynl9aM
-        s+8GmKhIoMqHE1nwcIOKoKQZlN8q3anZ5EeDI8MQq23/ZpSlyzEP213VgdNS95ZVDntEYf
-        pDbmo5EraFy9xSylY62J2Aw39lJfvHs=
-Date:   Fri, 1 Oct 2021 10:57:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
-Message-ID: <YVbNlXwiASQEsG+x@zn.tnic>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
+        id S1352687AbhJAJBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhJAJBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:01:20 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE076C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 01:59:35 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:5c32:c2e7:df7:3731])
+        by michel.telenet-ops.be with bizsmtp
+        id 0YzX2600c1ZoSwU06YzXAW; Fri, 01 Oct 2021 10:59:32 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mWEOB-000yoR-7U; Fri, 01 Oct 2021 10:59:31 +0200
+Date:   Fri, 1 Oct 2021 10:59:31 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liu Shixin <liushixin2@huawei.com>, linux-usb@vger.kernel.org,
+        =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <rafal@milecki.pl>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH fix] Revert "USB: bcma: Add a check for devm_gpiod_get"
+In-Reply-To: <20210831065419.18371-1-zajec5@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2110011054560.233543@ramsan.of.borg>
+References: <20210831065419.18371-1-zajec5@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
+Content-Type: multipart/mixed; boundary="8323329-341794510-1633078771=:233543"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:40:50PM -0500, Tom Lendacky wrote:
-> The size of the exception stacks was recently increased, resulting in
-> stack sizes greater than a page in size. The #VC exception handling was
-> only mapping the first (bottom) page, resulting in an SEV-ES guest failing
-> to boot.
-> 
-> Update setup_vc_stacks() to map all the pages of both the IST stack area
-> and the fallback stack area.
-> 
-> Fixes: 7fae4c24a2b8 ("x86: Increase exception stack sizes")
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/kernel/sev.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index a6895e440bc3..33e4704164cc 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -99,25 +99,33 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
->  /* Needed in vc_early_forward_exception */
->  void do_early_exception(struct pt_regs *regs, int trapnr);
->  
-> +static void __init map_vc_stack(unsigned long bot, unsigned long top,
-> +				phys_addr_t pa)
-> +{
-> +	while (bot < top) {
-> +		cea_set_pte((void *)bot, pa, PAGE_KERNEL);
-> +		bot += PAGE_SIZE;
-> +		pa += PAGE_SIZE;
-> +	}
-> +}
-> +
->  static void __init setup_vc_stacks(int cpu)
->  {
->  	struct sev_es_runtime_data *data;
->  	struct cpu_entry_area *cea;
-> -	unsigned long vaddr;
-> -	phys_addr_t pa;
->  
->  	data = per_cpu(runtime_data, cpu);
->  	cea  = get_cpu_entry_area(cpu);
->  
->  	/* Map #VC IST stack */
-> -	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
-> -	pa    = __pa(data->ist_stack);
-> -	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
-> +	map_vc_stack(CEA_ESTACK_BOT(&cea->estacks, VC),
-> +		     CEA_ESTACK_TOP(&cea->estacks, VC),
-> +		     __pa(data->ist_stack));
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-So this would not have broken if it would've used EXCEPTION_STKSZ or
-EXCEPTION_STACK_ORDER rather since we're mapping pages.
+--8323329-341794510-1633078771=:233543
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Please use those defines so that this keeps working when someone mad
-decides to increase those exception stack sizes again because everything
-*and* the kitchen sink wants to instrument the damn kernel. Nothing to
-see here people...
+ 	Hi Rafał,
 
--- 
-Regards/Gruss,
-    Boris.
+On Tue, 31 Aug 2021, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+>
+> This reverts commit f3de5d857bb2362b00e2a8d4bc886cd49dcb66db.
+>
+> That commit broke USB on all routers that have USB always powered on and
+> don't require toggling any GPIO. It's a majority of devices actually.
+>
+> The original code worked and seemed safe: vcc GPIO is optional and
+> bcma_hci_platform_power_gpio() takes care of checking the pointer before
+> using it.
+>
+> This revert fixes:
+> [   10.801127] bcma_hcd: probe of bcma0:11 failed with error -2
+>
+> Cc: Chuhong Yuan <hslester96@gmail.com>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for your patch, which is being backported to stable.
+
+> --- a/drivers/usb/host/bcma-hcd.c
+> +++ b/drivers/usb/host/bcma-hcd.c
+> @@ -406,12 +406,9 @@ static int bcma_hcd_probe(struct bcma_device *core)
+> 		return -ENOMEM;
+> 	usb_dev->core = core;
+>
+> -	if (core->dev.of_node) {
+> +	if (core->dev.of_node)
+> 		usb_dev->gpio_desc = devm_gpiod_get(&core->dev, "vcc",
+> 						    GPIOD_OUT_HIGH);
+
+
+> -		if (IS_ERR(usb_dev->gpio_desc))
+> -			return PTR_ERR(usb_dev->gpio_desc);
+> -	}
+
+This means real errors and probe deferral are no longer handled.
+What about using devm_gpiod_get_optional() instead?
+After that, the check in bcma_hci_platform_power_gpio() can be removed,
+as gpiod_set_value() handles NULL pointers fine.
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+--8323329-341794510-1633078771=:233543--
