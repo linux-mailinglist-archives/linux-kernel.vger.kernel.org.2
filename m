@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7A841F7AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CBF41F7A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356302AbhJAWsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:48:04 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38147 "EHLO mga17.intel.com"
+        id S1356216AbhJAWrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:47:35 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38094 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356046AbhJAWrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:47:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205756683"
+        id S1356046AbhJAWrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:47:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205756665"
 X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="205756683"
+   d="scan'208";a="205756665"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:44:24 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:44:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="565344007"
+   d="scan'208";a="565344009"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 15:44:18 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -28,9 +28,9 @@ Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
         thiago.macieira@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
         chang.seok.bae@intel.com
-Subject: [PATCH v11 18/29] x86/fpu/xstate: Disable XSTATE support if an inconsistent state is detected
-Date:   Fri,  1 Oct 2021 15:37:17 -0700
-Message-Id: <20211001223728.9309-19-chang.seok.bae@intel.com>
+Subject: [PATCH v11 19/29] x86/cpufeatures/amx: Enumerate Advanced Matrix Extension (AMX) feature bits
+Date:   Fri,  1 Oct 2021 15:37:18 -0700
+Message-Id: <20211001223728.9309-20-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211001223728.9309-1-chang.seok.bae@intel.com>
 References: <20211001223728.9309-1-chang.seok.bae@intel.com>
@@ -38,133 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel has a sanity check between two methods to calculate XSTATE size.
-In the unlikely event that they disagree, disable the use of XSTATE.
+Intel's Advanced Matrix Extension (AMX) is a new 64-bit extended feature
+consisting of two-dimensional registers and an accelerator unit. The first
+implementation of the latter is the tile matrix multiply unit (TMUL). TMUL
+performs SIMD dot-products on four bytes (INT8) or two bfloat16
+floating-point (BF16) elements.
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Here enumerate this hardware capability to be shown as 'amx_tile',
+'amx_bf16', and 'amx_int8' in /proc/cpuinfo.
+
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
 Changes from v4:
-* Added as a new patch. (Thomas Gleixner)
+* Massaged the changelog a bit.
 ---
- arch/x86/kernel/fpu/xstate.c | 40 ++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 13 deletions(-)
+ arch/x86/include/asm/cpufeatures.h | 3 +++
+ arch/x86/kernel/cpu/cpuid-deps.c   | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index b6bf32cb650d..e5a734d88660 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -608,11 +608,11 @@ static void __xstate_dump_leaves(void)
- } while (0)
- 
- #define XCHECK_SZ(sz, nr, nr_macro, __struct) do {			\
--	if ((nr == nr_macro) &&						\
--	    WARN_ONCE(sz != sizeof(__struct),				\
--		"%s: struct is %zu bytes, cpu state %d bytes\n",	\
--		__stringify(nr_macro), sizeof(__struct), sz)) {		\
-+	if ((nr == nr_macro) &&	(sz != sizeof(__struct))) {		\
-+		pr_err("%s: struct is %zu bytes, cpu state %d bytes\n",	\
-+		       __stringify(nr_macro), sizeof(__struct), sz);	\
- 		__xstate_dump_leaves();					\
-+		return -EINVAL;						\
- 	}								\
- } while (0)
- 
-@@ -621,7 +621,7 @@ static void __xstate_dump_leaves(void)
-  * that our software representation matches what the CPU
-  * tells us about the state's size.
-  */
--static void check_xstate_against_struct(int nr)
-+static int check_xstate_against_struct(int nr)
- {
- 	/*
- 	 * Ask the CPU for the size of the state.
-@@ -649,9 +649,12 @@ static void check_xstate_against_struct(int nr)
- 	    (nr >= XFEATURE_MAX) ||
- 	    (nr == XFEATURE_PT_UNIMPLEMENTED_SO_FAR) ||
- 	    ((nr >= XFEATURE_RSRVD_COMP_11) && (nr <= XFEATURE_LBR))) {
--		WARN_ONCE(1, "no structure for xstate: %d\n", nr);
-+		pr_err("no structure for xstate: %d\n", nr);
- 		XSTATE_WARN_ON(1);
-+		return -EINVAL;
- 	}
-+
-+	return 0;
- }
- 
- /**
-@@ -664,13 +667,14 @@ static void check_xstate_against_struct(int nr)
-  * excluded. Only the size of the buffer for task->fpu is checked here.
-  *
-  * @include_dynamic_states:	A knob to include dynamic states or not.
-+ * @size:			A pointer to record the size.
-  *
-- * Return:			The calculated xstate size.
-+ * Return:			0 if successful; otherwise, error code.
-  */
--static unsigned int calculate_xstate_size(bool include_dynamic_states)
-+static int calculate_xstate_size(bool include_dynamic_states, unsigned int *size)
- {
- 	unsigned int xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
--	int i;
-+	int i, err;
- 
- 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
- 		if (!xfeature_enabled(i))
-@@ -679,7 +683,10 @@ static unsigned int calculate_xstate_size(bool include_dynamic_states)
- 		if ((xfeatures_mask_user_dynamic & BIT_ULL(i)) && !include_dynamic_states)
- 			continue;
- 
--		check_xstate_against_struct(i);
-+		err = check_xstate_against_struct(i);
-+		if (err)
-+			return err;
-+
- 		/*
- 		 * Supervisor state components can be managed only by
- 		 * XSAVES.
-@@ -705,7 +712,9 @@ static unsigned int calculate_xstate_size(bool include_dynamic_states)
- 		xstate_size += xfeature_size(i);
- 	}
- 
--	return xstate_size;
-+	if (size)
-+		*size = xstate_size;
-+	return 0;
- }
- 
- /*
-@@ -791,6 +800,7 @@ static int __init init_xstate_size(void)
- 	/* Recompute the context size for enabled features: */
- 	unsigned int possible_xstate_size, xstate_size;
- 	unsigned int xsave_size;
-+	int err;
- 
- 	xsave_size = get_xsave_size();
- 
-@@ -803,14 +813,18 @@ static int __init init_xstate_size(void)
- 	 * Calculate the maximum xstate size, including the dynamic states.
- 	 */
- 	fpu_buf_cfg.max_size = possible_xstate_size;
--	xstate_size = calculate_xstate_size(true);
-+	err = calculate_xstate_size(true, &xstate_size);
-+	if (err)
-+		return err;
- 	XSTATE_WARN_ON(possible_xstate_size != xstate_size);
- 
- 	/*
- 	 * Calculate the minimum xstate size, i.e., excluding the dynamic
- 	 * xstates.
- 	 */
--	xstate_size = calculate_xstate_size(false);
-+	err = calculate_xstate_size(false, &xstate_size);
-+	if (err)
-+		return err;
- 	if (!is_supported_xstate_size(xstate_size))
- 		return -EINVAL;
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index ab7b3a2de85d..dc0fb04cce69 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -386,7 +386,10 @@
+ #define X86_FEATURE_TSXLDTRK		(18*32+16) /* TSX Suspend Load Address Tracking */
+ #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+ #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
++#define X86_FEATURE_AMX_BF16		(18*32+22) /* AMX BF16 Support */
+ #define X86_FEATURE_AVX512_FP16		(18*32+23) /* AVX512 FP16 */
++#define X86_FEATURE_AMX_TILE		(18*32+24) /* AMX tile Support */
++#define X86_FEATURE_AMX_INT8		(18*32+25) /* AMX INT8 Support */
+ #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+ #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+ #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index 7f891d2eb52e..9a520ab259ac 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -76,6 +76,9 @@ static const struct cpuid_dep cpuid_deps[] = {
+ 	{ X86_FEATURE_SGX1,			X86_FEATURE_SGX       },
+ 	{ X86_FEATURE_SGX2,			X86_FEATURE_SGX1      },
+ 	{ X86_FEATURE_XFD,			X86_FEATURE_XSAVE     },
++	{ X86_FEATURE_AMX_TILE,			X86_FEATURE_XSAVE     },
++	{ X86_FEATURE_AMX_INT8,			X86_FEATURE_AMX_TILE  },
++	{ X86_FEATURE_AMX_BF16,			X86_FEATURE_AMX_TILE  },
+ 	{}
+ };
  
 -- 
 2.17.1
