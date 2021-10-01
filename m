@@ -2,75 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8328541E752
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C565841E759
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352134AbhJAF7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 01:59:32 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55754 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhJAF7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 01:59:31 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mWBYI-0006Ag-FJ; Fri, 01 Oct 2021 13:57:46 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mWBYH-0007bI-6I; Fri, 01 Oct 2021 13:57:45 +0800
-Date:   Fri, 1 Oct 2021 13:57:45 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v2 2/6] crypto: hisilicon/sec - add ahash alg features
- for Kunpeng920
-Message-ID: <20211001055745.GA31918@gondor.apana.org.au>
-References: <20210924092716.12848-1-yekai13@huawei.com>
- <20210924092716.12848-3-yekai13@huawei.com>
+        id S1352139AbhJAGBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351885AbhJAGBF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 02:01:05 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7D9C061772
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:59:21 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g7so29917805edv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wrerzu0eOzULblqI6hcqBoW5s1gAeWyg1d4PDm0YiP0=;
+        b=A7NluRHIT9P6ll142j0SyO7hXaBZ3Wm3gFiEtcJj/ODZ7DbVvi6FQp8DHFl4uUWrKE
+         A2nXBJk6lYPW1woby8AUcNHisprHtXQlLNTLOA/WOTcfcZK80hQdpbmCqDBame/6jXEJ
+         FF0oHRuUpBlvguQGYS73PQGq/v+OreH/y9w1Sx3xPmE0p3yFLP+pKhHODbIEYJoFu/L8
+         K+2Cbayc3YOH1cR4X9ZtfjUfLYAhsAZ1XcyvoQrs3xBX1XSQdqPejrN1dslA6egxkQZQ
+         Odib8NKeADHaGhHlQME8ssMuM0DjYqVmF6n3BxbLDog3ZeG9JgblBdp8bidhHQKxuVq0
+         HadA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wrerzu0eOzULblqI6hcqBoW5s1gAeWyg1d4PDm0YiP0=;
+        b=tNr2Mvl38LOSaTnLnWnSjzjW3//0YoZdF7z3UUCV4kaKiHLob2ELSvmnLQqt6TP/kC
+         iZa0FxC2jculo5nklr53Zmf9QjtvDiEoA72yt430cmEeAlU2nlHM2u7+bMyN8VjUAQfF
+         fqe7+Rpi6SXuE9boRW2wYsdIhRMvBmzyEokSosHL7fbx4NIyjo2SiI/vLJpzvoc8DtcT
+         Eu0mXU1o1OePBoAFxDD4AlV5ymWW2XwSZ+kUZ3/wsONMDUPWhTV3bgOL7smtiagvKD3R
+         aiaSkcLz68u9xXSpR4Tt+0fUN7Sj+tjkhjeKAAfwb3Jxytap4SGC85GWj4K91TCUEdLh
+         +ZTQ==
+X-Gm-Message-State: AOAM531cI2WD2vlogYM33dd/sWuaiBlMhb+sXCU4DllDbnRn5LJajcnw
+        7MWqQA01o3Xdvnn7/lLe7lBr55M0YSO3tyoW7Gl17A==
+X-Google-Smtp-Source: ABdhPJzuvodcs8tct+DTVA009d4X4KLuUNmSIlwB3FnuvDUY8NEj4Xa/4ykTuUiOVGOVFV3KFGQS3R125A2/yrLz1SA=
+X-Received: by 2002:a50:8405:: with SMTP id 5mr12215046edp.228.1633067959935;
+ Thu, 30 Sep 2021 22:59:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924092716.12848-3-yekai13@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com> <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
+In-Reply-To: <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Thu, 30 Sep 2021 22:59:04 -0700
+Message-ID: <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 05:27:12PM +0800, Kai Ye wrote:
+On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
 >
-> +static int sec_ahash_import(struct ahash_request *req, const void *in)
-> +{
-> +	/*
-> +	 * Import partial state of the transformation. This function loads the
-> +	 * entire state of the ongoing transformation from a provided block of
-> +	 * data so the transformation can continue from this point onward.
-> +	 */
-> +	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
-> +	struct sec_req *sreq = ahash_request_ctx(req);
-> +	struct sec_ctx *ctx = crypto_ahash_ctx(tfm);
-> +	const struct sec_ahash_req *state = in;
-> +
-> +	sreq->ctx = ctx;
-> +	memcpy(&sreq->hash_req, state, sizeof(struct sec_ahash_req));
-> +
-> +	return 0;
-> +}
+> On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
+> > >
+> > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
+> > > >
+> > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
+> > > > <krzysztof.kozlowski@canonical.com> wrote:
+> > > > >
+> > > > > On 29/09/2021 01:56, Will McVicker wrote:
+> > > > > > This is v2 of the series of patches that modularizes a number of core
+> > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
+> > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
+> > > > > > series of "select XXX". This includes setting the following configs as
+> > > > > > tristate:
+> > > > > >
+> > > > > >  * COMMON_CLK_SAMSUNG
+> > > > > >  * EXYNOS_ARM64_COMMON_CLK
+> > > > > >  * PINCTRL_SAMSUNG
+> > > > > >  * PINCTRL_EXYNOS
+> > > > > >  * EXYNOS_PMU_ARM64
+> > > > > >  * EXYNOS_PM_DOMAINS
+> > > > > >
+> > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
+> > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
+> > > > > > The reason for these new configs is because we are not able to easily
+> > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
+> > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
+> > > > > > the ARM and ARM64 portions into two separate configs.
+> > > > > >
+> > > > > > Overall, these drivers didn't require much refactoring and converted to
+> > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
+> > > > > > was not able to boot test these changes. I'm mostly concerned about the
+> > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
+> > > > > > requesting help for testing these changes on the respective hardware.
+> > > > > >
+> > > > >
+> > > > > These are all not tested at all? In such case, since these are not
+> > > > > trivial changes, please mark the series as RFT.
+> > > > >
+> > > > > I will not be able to test these for some days, so it must wait.
+> > > > >
+> > > > >
+> > > > > Best regards,
+> > > > > Krzysztof
+> > > >
+> > > > +Cc Arnd and Olof,
+> > > >
+> > > > Hi Krzysztof,
+> > > >
+> > > > To avoid the scrambled conversation from the first patchset, I'm going
+> > > > to address all your general questions here in the cover letter thread
+> > > > so that it's easier for everyone to follow and reference in the
+> > > > future.
+> > >
+> > > This patchset shouldn't go in.
+> > >
+> > > GKI is a fantastic effort, since it finally seems like Google has the
+> > > backbone to put pressure on the vendors to upstream all their stuff.
+> > >
+> > > This patcheset dilutes and undermines all of that by opening up a
+> > > truck-size loophole, reducing the impact of GKI, and overall removes
+> > > leverage to get vendors to do the right thing.
+> > >
+> > > It's against our interest as a community to have this happen, since
+> > > there's no other reasonably justifiable reason to do this.
 
-It's still not clear how this function actually works.
+Are you saying that modularizing drivers is opening up a loophole? How
+is this different from Krysztof pushing changes to modularize the
+Exynos ChipId driver just last week [1].  I understand the push back
+on "these aren't tested yet" and I agree that we should not merge them
+until they are (I've re-iterated that multiple times and have
+requested for testing help multiple times since I can't get my hands
+on any Exynos arm64 hardware), but are you saying that if I gather the
+test data to prove that these drivers can actually be made into
+modules that you will still deny them out of the interest of the
+community?
 
-Could you please explain how can this work in the following scenario?
+[1] https://lore.kernel.org/linux-samsung-soc/4aee1b0d-91a1-75ac-d2b7-6dab3d7a301f@kernel.org/T/#t
 
-	x = export_state
+--Will
 
-	reboot_machine
-
-	import_state(x)
-
-How do you restore all the internal state so that further data
-can be hashed onto the existing hash state after a reboot?
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+>
+> >
+> > Oolf, Geert, Krzysztof, Arnd,
+>
+> So close.
+>
+> > I skimmed through the emails and you all make a lot of good points.
+>
+> I skimmed through this email and I think it adds a lot of new
+> complexity and fragility to solve a problem that doesn't really exist
+> for upstream, adding yet more config parameter combinations to build
+> and test for.
+>
+> A much more valuable approach would be to work towards being able to
+> free up memory by un-probed drivers at the end of boot. That would
+> possibly benefit all platforms on all architectures.
+>
+>
+> -Olof
