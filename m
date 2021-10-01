@@ -2,187 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E6541EABB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1300041EAC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353451AbhJAKOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:14:08 -0400
-Received: from mail-eopbgr30041.outbound.protection.outlook.com ([40.107.3.41]:47214
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230241AbhJAKOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:14:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oJwjOvpnfXMscX8xwOiKnEjuRCwBTdMVuZ2I/3039gRbgq9nFypwUgFhuBfFk062WymnfL1DXBJ8lOvFe63KZRACZokT6aZRCxoxbPGqXl6O3hpxQGZynxcsMVlUYFu95+BLqI2rp1uagzMTvd7HL2X+pjgRBvT+TydegmbMdOhY2v4C3xETe5KqmvI+5pO6KKt1VNBa5Gq6d4SVL/pfRHot48M1lqNszpjTQgkRZMjvDyaqaefoq3haynSTXCWujpHrL+YHbuQoiuJr9ATrXNtoEMebOawHm5By5kxIqTT8tjwchvhLSj16Px2wfcup6mh4ru+3TBFuW5giKEdL1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t2sEdsyZ6M19naueTd22maiSXWJFdwOYZ310UzXqQx8=;
- b=VK1eM4EsF/n8fhSKw6LMXCBOS6+g2XA1DdqcXmWcbGG1iwvDs7f8UDOSyaOysqFIVLhzdYpig/K9HWE8scId6MpUSIoheFD10yvIJqHM7Pb53vhePDAKK6lI6C1UWPG/YKpa8rizGylrbfCwJ1RnwwmEF409k/TgxgdkrdgOoqv3QmZoadmCl7c/QsNRQ4kf5lHyiIa4JEeh+ZLr7HAuh9kO1hk+MwC4iCRsJroKk6n6SjMq9PNZfA7Tw4QDr2+2VawY4peKWWNoK4gJfvs0RdC6hgfLLocRLVEFkkWmCTM2qUjAHausNmn5T0QXYTekv+5qI7HDmm/WFaXQIa2Fng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t2sEdsyZ6M19naueTd22maiSXWJFdwOYZ310UzXqQx8=;
- b=Y3MSX9igCflyhrQDHfFgj1GYxUs7jEB5V6C7BD+jr5sYqo9KnrpU3Li8YKmk5812SaK6hp6uvFbmbKzZUwxa899Tnpt91BtmFNJ8Ubakd+4ad/Q6n+wHD5Swo20ASkvVTUtK3D/zg41uHbIVKwv58bBtSF+bUioqjKThIslaizs=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0401MB2687.eurprd04.prod.outlook.com (2603:10a6:800:57::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.20; Fri, 1 Oct
- 2021 10:12:20 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4544.025; Fri, 1 Oct 2021
- 10:12:20 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Wong Vee Khee <veekhee@gmail.com>
-Subject: Re: [PATCH net v3 1/1] net: pcs: xpcs: fix incorrect CL37 AN sequence
-Thread-Topic: [PATCH net v3 1/1] net: pcs: xpcs: fix incorrect CL37 AN
- sequence
-Thread-Index: AQHXtbUKKyhIRXal/0mOmtJkI1WPdqu8TpGAgAD6HoCAAKFlAIAABCSA
-Date:   Fri, 1 Oct 2021 10:12:20 +0000
-Message-ID: <20211001101219.g5llt6biexzij7ev@skbuf>
-References: <20210930044421.1309538-1-vee.khee.wong@linux.intel.com>
- <YVWCV1Vaq5SAJflX@shell.armlinux.org.uk>
- <20211001001951.erebmghjsewuk3lh@skbuf>
- <YVbbitGJDZhd6eW/@shell.armlinux.org.uk>
-In-Reply-To: <YVbbitGJDZhd6eW/@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 892c746c-ecae-4e00-6076-08d984c3f455
-x-ms-traffictypediagnostic: VI1PR0401MB2687:
-x-microsoft-antispam-prvs: <VI1PR0401MB2687B834139CE02C94CA3D0EE0AB9@VI1PR0401MB2687.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tdPeRI/NUSDoVPzAFTaP7litMKGuWo3rDKOz1AXF11UzI47awUfLJOwtPWcjjcatk/6LRbKgWEureD9r5dokHv35iEOTjQuQfat0BE1t/7DoP9T4+0MpvTaKaHpZKY3zARb+PDF0Ialv2+b630hR003J432tOH3WsUz8FoSkzflg7/1MgyXuuIPakGFGt1oW7NOZy1uXs123WLmiegOJuNwZkqsu2Y3Y68O8rMAfffIHPJjgK/1E0p0hXdfhqPoLmxOZOldraWRlJ2B8Gh7uHpxp3rCxuyMzfZC/ZFNOytUcQyh7vtD3Qx7FZExE3NLI8nuTNUkLlpfH7biuBowhfgJeTDCPPYVbY8wOv62ArjdUEGenqhKEDSQPh/Q6FdIHtX+VlIwwA16Qna5bACeQGokn5Bv3pTtyzTYGxt/eyiOQuSY1qwIe1Sb929/eo/Icu2N/uyhQvG7aw9gUPXObkVKXtu8MPyfpa1km5snfBktxgvNxN5nQfBYYG+QLmCmsX0YMg9kJftU0fE7ioQwSLJHdutCrrLo/qIIHOzkGC4IzygzJyWysJkQbNjiNk6GqWhD9ojp1vHeh24Q8U7LrCzp2f7somLcWRbEa87OCgUzqlIrBUTNKtdjl2JiXqubEc8wdh3qzsIa/Gpj/UGfJqTsNnZgbwKYoUuQB4uQ/P5pWCg47ZTV788xeiNug2hxkyiJAG4JU5h24XguoRMdHBw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(76116006)(91956017)(4326008)(54906003)(66476007)(64756008)(8936002)(6486002)(86362001)(316002)(38100700002)(66446008)(2906002)(5660300002)(7416002)(66556008)(44832011)(83380400001)(8676002)(33716001)(1076003)(9686003)(6916009)(6512007)(38070700005)(122000001)(66946007)(71200400001)(508600001)(186003)(6506007)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5yUXYPQBmgXKeYCXsvgee5ax23Pi5GetPhQoCJrhLtIhDdZPBtxrBhTZ96IL?=
- =?us-ascii?Q?3bSi1e5ZvrrhrDFyTzrSJZ2hkkCu3n7LGcTVuvuXCzC+tQjHqCx8jt+W9diM?=
- =?us-ascii?Q?Hp1wAsJQOgd3sdf7UoLRcLSOzjaYfyQfB5m76ZotGrmh9hLuJJbuCEZ9dPd1?=
- =?us-ascii?Q?WGwMxBZ8aNN8G/nZVDDc8u3PdTodpKEppviPNX2tPrJZ2SPc8MniRBRkWuom?=
- =?us-ascii?Q?fK8+Dnfc61gYA0+6+N9EkUYQFi7QtR1nUlyrPE2XABJ2xxCbLrdRhhpkw5a3?=
- =?us-ascii?Q?JoTk7YoF/eFBf1u8P/HzC1/O478xRoiK45eFNnrPokqI84LfFOY538e0zVH8?=
- =?us-ascii?Q?nGExoV1YnDh014qxK4/K3Sw5qzapga+nOencsgkKoyRy9cRUSL/+3N71zRv9?=
- =?us-ascii?Q?VtrYJHfNKGqmmZrSiRb4Ak3JwJ50rmngTYvCJ38As/43ynqFH8W+uKc6uZJo?=
- =?us-ascii?Q?wpMg4FkIHD8noW12pxnNo6zPtmu1d18atGtQmXXTBQGAntDKVk5o3cUsalR5?=
- =?us-ascii?Q?Ee9G1QFa/C27yc0wWD71hTq7HL3XCjr6IOBddm2GtElUSjGNab16oN8aYtUc?=
- =?us-ascii?Q?dwQzt1xeyOSWRyAj6mg6KqHzXgyT3R8hc3juipdEKeaU9JX9c0ngv9GOC64O?=
- =?us-ascii?Q?KqJT1WhWHiLBVmV54GbIx2E/VV5ZHQ8u7GV57m/0fEVEJ3m8aXFlL7Z8LWcL?=
- =?us-ascii?Q?KrS3fQvOKPfPf2FbM3augpGV43FuIvwSxncUJ0i9hAtqZYWAExCUGPAt1fZi?=
- =?us-ascii?Q?ID+Nk0eLxeRqID7lA8tv/lRvYKp4vWxj+UaUjsfAGNqHCK5MRMdFb7ggcwO5?=
- =?us-ascii?Q?aQy9feOVPKgdYZVkRNRCd1K32ohayOZ1qIKX6GzD+qC2zpSUssvF9v58p+Ry?=
- =?us-ascii?Q?MNSM4Vjk2e09gxKZmVhogyz2I/Mft2ZsilCQWj0g3eZiI4AJ9ckdaCUw1n0C?=
- =?us-ascii?Q?iN1suoRE+9r5F4Qrb3rzzB5rC6ISwqeEYItkFtwJjPoFEk4FUs8VAkn0Sa3K?=
- =?us-ascii?Q?jLnZnaAdtUpBG3djxZkAvqzH9uXCO2hQUFj/EyDyhP/F0yx0PNUhgOLtgZtp?=
- =?us-ascii?Q?KVchYW6+OqVuoFJPwB+FeHfQZWGAPFCOJjZ1ZAjbxyv5fQowB5FHDCgndkbx?=
- =?us-ascii?Q?koZnbs0LqkpVKCzdz3LyLaeytjIvCi5gKaCAiJzTWf9hJIUWrXzuFSLCy1Dx?=
- =?us-ascii?Q?f57xCj2CcqipTUMRnJd7TgGAzt1Ue8iB7p5t1CoM/3wykTYNj3LPcLBrsaej?=
- =?us-ascii?Q?K+OMfo6WTehqIz5Au+4/URlKtSVh2jSC0+PePuOLCZAGrz6Ve8u2Y1OZVy/D?=
- =?us-ascii?Q?CPghB96KrEU2QhWtqXPWah2B?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1C36FCA2DCF2E74A819066A53223510B@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1353459AbhJAKOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:14:37 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45660 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353235AbhJAKOf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:14:35 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19187LnB030509;
+        Fri, 1 Oct 2021 12:12:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=/LjfXOmKXk+IaitYDOXv8APKqHjvEbNKq7xnKRqVamg=;
+ b=hsZe6d0YU8hqw710UUVLzsYb3ReGh7pfXKxiY5eOnjOk8JNj+Zsp6OyLfCUlXWRLSgG4
+ TapsD0E7XgiL789Jh40QyAyk8DBU+tgK2qgLt8taYnMSf5CFEYmXi/7shMPA5kv7LBYi
+ dyo7PE4XCOWJTJCGhCPdnMQ8Nzh4Tks8+MGeduSkAtGNCJSPkrXxFbUmczxTkwjsu9aY
+ keW6o1tm74qeG9OsHme2PGbkDYC3cBKVur4Dap7OpWoTFjQ83jLh8lMPLIEvkDImR31z
+ P2lRqBu2GjoxXOzsN/5+b7oJlrgS0lPYm+yUBMQEdSSjCULtfp22fNkIswNaENVAlR6H Fw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bds9njb4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 12:12:45 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 01A6410002A;
+        Fri,  1 Oct 2021 12:12:43 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E657F226FDD;
+        Fri,  1 Oct 2021 12:12:43 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 1 Oct 2021 12:12:43
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Bruce Ashfield <bruce.ashfield@xilinx.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [RFC PATCH 0/7] remoteproc: restructure the remoteproc VirtIO device
+Date:   Fri, 1 Oct 2021 12:12:27 +0200
+Message-ID: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 892c746c-ecae-4e00-6076-08d984c3f455
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 10:12:20.0791
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ms8BpaoCmH6VALZ9zEcKzS+C0GHIPNFRvJfYPN/sdlGJApz8QTzEHW2W4IZlm6su5hUe3YhQ08mb4Ov/RgdH9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2687
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-01_01,2021-09-30_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 10:57:30AM +0100, Russell King (Oracle) wrote:
-> On Fri, Oct 01, 2021 at 12:19:52AM +0000, Vladimir Oltean wrote:
-> > static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned in=
-t mode)
-> > {
-> > 	int ret, mdio_ctrl1, old_an_ctrl, an_ctrl, old_dig_ctrl1, dig_ctrl1;
-> >=20
-> > 	/* Disable SGMII AN in case it is already enabled */
-> > 	mdio_ctrl1 =3D xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
-> > 	if (mdio_ctrl1 < 0)
-> > 		return mdio_ctrl1;
-> >=20
-> > 	if (mdio_ctrl1 & AN_CL37_EN) {
-> > 		ret =3D xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
-> > 				 mdio_ctrl1 & ~AN_CL37_EN);
-> > 		if (ret < 0)
-> > 			return ret;
-> > 	}
->=20
-> This is fine...
->=20
-> > 	if (!(mdio_ctrl1 & AN_CL37_EN) && phylink_autoneg_inband(mode)) {
-> > 		ret =3D xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
-> > 				 mdio_ctrl1 | AN_CL37_EN);
-> > 		if (ret)
-> > 			return ret;
-> > 	}
->=20
-> This is not. If the control register had AN_CL37_EN set initially, then
-> in the first test above, we clear the bit. However, mdio_ctrl1 will
-> still contain the bit set. When we get here, we will skip setting the
-> register bit back to one even if in-band mode was requested.
->=20
-> As I said in a previous email, at this point there is no reason to check
-> the previous state, because if it was set on entry, we will have cleared
-> it, so the register state at this point has the bit clear no matter
-> what. If we need to set it, then we /always/ need to write it here - it
-> doesn't matter what the initial state was.
+This series is a part of the work initiate a long time ago in 
+the series "remoteproc: Decorelate virtio from core"[1]
 
-Correct, it should have been:
 
-	if (phylink_autoneg_inband(mode)) {
-		ret =3D xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
-				 mdio_ctrl1 | AN_CL37_EN);
-		if (ret)
-			return ret;
-	}
+Objective of the work:
+- Update the remoteproc VirtIO device creation (use platform device)
+- Allow to declare remoteproc VirtIO device in DT
+    - declare resources associated to a remote proc VirtIO
+    - declare a list of VirtIO supported by the platform.
+- Prepare the enhancement to more VirtIO devices (e.g audio, video, ...)
+- Keep the legacy working!
+- Try to improve the picture about concerns reported by Christoph Hellwing [2][3]
 
-For the record, just in case this code gets copied anywhere, there's
-another mistake in my placement of one of the comments.
+[1] https://lkml.org/lkml/2020/4/16/1817
+[2] https://lkml.org/lkml/2021/6/23/607
+[3] https://patchwork.kernel.org/project/linux-remoteproc/patch/AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch/
 
-	/* If using in-band autoneg, enable automatic speed/duplex mode change
-	 * by HW after SGMII AN complete.
-	 * 5) VR_MII_MMD_CTRL Bit(12) [AN_ENABLE] =3D 1b (Enable SGMII AN)        =
-    <- this part of the comment
-	 */
-	old_dig_ctrl1 =3D xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1);
-	if (old_dig_ctrl1 < 0)
-		return old_dig_ctrl1;
+In term of device tree this would result in such hiearchy (stm32mp1 example with 2 virtio RPMSG):
 
-really belongs here:
+	m4_rproc: m4@10000000 {
+		compatible = "st,stm32mp1-m4";
+		reg = <0x10000000 0x40000>,
+		      <0x30000000 0x40000>,
+		      <0x38000000 0x10000>;
+        memory-region = <&retram>, <&mcuram>,<&mcuram2>;
+        mboxes = <&ipcc 2>, <&ipcc 3>;
+        mbox-names = "shutdown", "detach";
+        status = "okay";
 
-	/* If using SGMII AN, enable it here */
-	if (phylink_autoneg_inband(mode)) {
-		ret =3D xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
-				 mdio_ctrl1 | AN_CL37_EN);
-		if (ret)
-			return ret;
-	}=
+        #address-cells = <1>;
+        #size-cells = <0>;
+        
+        vdev@0 {
+		compatible = "rproc-virtio";
+		reg = <0>;
+		virtio,id = <7>;  /* RPMSG */
+		memory-region = <&vdev0vring0>, <&vdev0vring1>, <&vdev0buffer>;
+		mboxes = <&ipcc 0>, <&ipcc 1>;
+		mbox-names = "vq0", "vq1";
+		status = "okay";
+        };
+
+        vdev@1 {
+		compatible = "rproc-virtio";
+		reg = <1>;
+		virtio,id = <7>;  /*RPMSG */
+		memory-region = <&vdev1vring0>, <&vdev1vring1>, <&vdev1buffer>;
+		mboxes = <&ipcc 4>, <&ipcc 5>;
+		mbox-names = "vq0", "vq1";
+		status = "okay";
+        };
+};
+
+I have divided the work in 4 steps to simplify the review, This series implements only
+the step 1:
+step 1:  redefine the remoteproc VirtIO device as a platform device
+  - migrate rvdev management in remoteproc virtio.c,
+  - create a remotproc virtio config ( can be disabled for platform that not use VirtIO IPC.
+step 2: add possibility to declare and prob a VirtIO sub node
+  - VirtIO bindings declaration,
+  - multi DT VirtIO devices support,
+  - introduction of a remote proc virtio bind device mechanism ,
+=> https://github.com/arnopo/linux/commits/step2-virtio-in-DT
+step 3: Add memory declaration in VirtIO subnode
+=> https://github.com/arnopo/linux/commits/step3-virtio-memories
+step 4: Add mailbox declaration in VirtIO subnode
+=> https://github.com/arnopo/linux/commits/step4-virtio-mailboxes
+
+Arnaud Pouliquen (7):
+  remoteproc: core: Introduce virtio device add/remove functions
+  remoteproc: Move rvdev management in rproc_virtio
+  remoteproc: Remove vdev_to_rvdev and vdev_to_rproc from remoteproc API
+  remoteproc: create the REMOTEPROC_VIRTIO config
+  remoteproc: virtio: Create platform device for the remoteproc_virtio
+  remoteproc: virtio: Add helper to create platform device
+  remoteproc: Instantiate the new remoteproc virtio platform device
+
+ drivers/remoteproc/Kconfig               |  11 +-
+ drivers/remoteproc/Makefile              |   2 +-
+ drivers/remoteproc/remoteproc_core.c     | 142 +++-------------
+ drivers/remoteproc/remoteproc_internal.h |  52 +++++-
+ drivers/remoteproc/remoteproc_virtio.c   | 207 +++++++++++++++++++++--
+ include/linux/remoteproc.h               |  18 +-
+ 6 files changed, 282 insertions(+), 150 deletions(-)
+
+-- 
+2.17.1
+
