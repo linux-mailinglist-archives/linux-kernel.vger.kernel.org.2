@@ -2,204 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302E041F31C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A79A41F332
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355417AbhJARaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355399AbhJARaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:30:16 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8070C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:28:31 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y26so41766898lfa.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SXD/dhTGRzLIJNIJHPxlcHALOO5cR+ta5YocZSpUDMc=;
-        b=W4C54TU577sWSJ4nGNktuMxuuxsYRp8tqsS48uEkCA5pm1bmo3NfwTsk9mm6eIJGcI
-         LsNB7btWyqE+fnMjAOVYKhS+Fd+nHLzHBwe/tBUqN9C7RdW8wkkL3FkDW9Hmj4DjQqda
-         6HD+7R2whwyv2/NwoWkaUw1o71ylC1v19gX8lnMGFbfUR08QVN+ilLPHnBH54MSda6Cs
-         CB1moVwccgEIJ21iZgoT1DytQD3YfqOpDXaMy036UGx46MhOHf/e1CmWIdyZCYHgIHQR
-         mOYbCmQT6tV6agrK04fVY70kJ/8STIY2udXnnMx8RDMgx5Gr+sP0Eb7b2ZlYc2oFm+d5
-         Loug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SXD/dhTGRzLIJNIJHPxlcHALOO5cR+ta5YocZSpUDMc=;
-        b=Mp0Hv8XmCEI/tEt90x0LiqmeeiiKk7izFvGkQG4wXe1uc+1Kj+v74qGIp2SSExZcNR
-         MCgtpE2R2YY227F82N1o0/x/1ALEK0feFbLI2hSuzOKHYKhguw99GDZfxj6Yqsa7CXEG
-         NEl8yl2Ignzgyt4xeQGVWd+jJQ1fMA7dNhP1RJJtNIVZUMbB0y8MyZ0IJ5EML4Yr1kC9
-         IvhUzTL49Eopo/dEmReVqHRzohEjjxxXt4R7pekvAF3tUUF0ISinDfsX+9ZP83/i44UL
-         bW0imt3X5ZLaUzJcHjqbUtsQSimwIocLijFomjQUY8fCUABLRKZlO1MGYEnAd8PuANbq
-         Kugg==
-X-Gm-Message-State: AOAM5306VxJcbAQ1Gb/f7bfOcJ8ltT6pf3GbZE5arbfNLQHyY7PL1012
-        +vmDAYZDFa5/EGV0m2nB7BTa/Ikp+SJIZmU9
-X-Google-Smtp-Source: ABdhPJxrmfprjqGO+7bREO2hzyzs5Eer1fEYYEYzh7OREwAsozmlMafhZTDhGm+ZNv7Z18fIrU2yIg==
-X-Received: by 2002:a05:6512:3f87:: with SMTP id x7mr6703806lfa.129.1633109309855;
-        Fri, 01 Oct 2021 10:28:29 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id m29sm793507lfj.236.2021.10.01.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 10:28:29 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] drm/msm/dsi: Support NO_CONNECTOR bridges
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210920225801.227211-1-robdclark@gmail.com>
- <20210920225801.227211-2-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <bbcf5361-32e7-a2db-ffcc-986e012f000d@linaro.org>
-Date:   Fri, 1 Oct 2021 20:28:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229632AbhJARig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:38:36 -0400
+Received: from mga01.intel.com ([192.55.52.88]:39803 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229532AbhJARif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:38:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="248074014"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="248074014"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:36:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="521245454"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2021 10:36:42 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1990BB8; Fri,  1 Oct 2021 20:36:48 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] mei: me: add Ice Lake-N device id.
+Date:   Fri,  1 Oct 2021 20:36:44 +0300
+Message-Id: <20211001173644.16068-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210920225801.227211-2-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 01:57, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> For now, since we have a mix of bridges which support this flag, which
-> which do *not* support this flag, or work both ways, try it once with
-> NO_CONNECTOR and then fall back to the old way if that doesn't work.
-> Eventually we can drop the fallback path.
-> 
-> v2: Add missing drm_connector_attach_encoder() so display actually comes
->      up when the bridge properly handles the NO_CONNECTOR flag
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Add Ice Lake-N device ID.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+The device can be found on MacBookPro16,2 [1].
 
-I think this patch can go through the drm/msm, while two other patches 
-would need to through the drm-misc. Is it correct?
+[1]: https://linux-hardware.org/?probe=f1c5cf0c43
 
-> ---
->   drivers/gpu/drm/msm/Kconfig           |  2 ++
->   drivers/gpu/drm/msm/dsi/dsi_manager.c | 50 ++++++++++++++++++++-------
->   2 files changed, 39 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-> index e9c6af78b1d7..36e5ba3ccc28 100644
-> --- a/drivers/gpu/drm/msm/Kconfig
-> +++ b/drivers/gpu/drm/msm/Kconfig
-> @@ -14,6 +14,8 @@ config DRM_MSM
->   	select REGULATOR
->   	select DRM_KMS_HELPER
->   	select DRM_PANEL
-> +	select DRM_BRIDGE
-> +	select DRM_PANEL_BRIDGE
->   	select DRM_SCHED
->   	select SHMEM
->   	select TMPFS
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> index c41d39f5b7cf..e25877073d31 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> @@ -3,6 +3,8 @@
->    * Copyright (c) 2015, The Linux Foundation. All rights reserved.
->    */
->   
-> +#include "drm/drm_bridge_connector.h"
-> +
->   #include "msm_kms.h"
->   #include "dsi.h"
->   
-> @@ -688,10 +690,10 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
->   {
->   	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
->   	struct drm_device *dev = msm_dsi->dev;
-> +	struct drm_connector *connector;
->   	struct drm_encoder *encoder;
->   	struct drm_bridge *int_bridge, *ext_bridge;
-> -	struct drm_connector *connector;
-> -	struct list_head *connector_list;
-> +	int ret;
->   
->   	int_bridge = msm_dsi->bridge;
->   	ext_bridge = msm_dsi->external_bridge =
-> @@ -699,22 +701,44 @@ struct drm_connector *msm_dsi_manager_ext_bridge_init(u8 id)
->   
->   	encoder = msm_dsi->encoder;
->   
-> -	/* link the internal dsi bridge to the external bridge */
-> -	drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
-> -
->   	/*
-> -	 * we need the drm_connector created by the external bridge
-> -	 * driver (or someone else) to feed it to our driver's
-> -	 * priv->connector[] list, mainly for msm_fbdev_init()
-> +	 * Try first to create the bridge without it creating its own
-> +	 * connector.. currently some bridges support this, and others
-> +	 * do not (and some support both modes)
->   	 */
-> -	connector_list = &dev->mode_config.connector_list;
-> +	ret = drm_bridge_attach(encoder, ext_bridge, int_bridge,
-> +			DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> +	if (ret == -EINVAL) {
-> +		struct drm_connector *connector;
-> +		struct list_head *connector_list;
-> +
-> +		/* link the internal dsi bridge to the external bridge */
-> +		drm_bridge_attach(encoder, ext_bridge, int_bridge, 0);
-> +
-> +		/*
-> +		 * we need the drm_connector created by the external bridge
-> +		 * driver (or someone else) to feed it to our driver's
-> +		 * priv->connector[] list, mainly for msm_fbdev_init()
-> +		 */
-> +		connector_list = &dev->mode_config.connector_list;
->   
-> -	list_for_each_entry(connector, connector_list, head) {
-> -		if (drm_connector_has_possible_encoder(connector, encoder))
-> -			return connector;
-> +		list_for_each_entry(connector, connector_list, head) {
-> +			if (drm_connector_has_possible_encoder(connector, encoder))
-> +				return connector;
-> +		}
-> +
-> +		return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	connector = drm_bridge_connector_init(dev, encoder);
-> +	if (IS_ERR(connector)) {
-> +		DRM_ERROR("Unable to create bridge connector\n");
-> +		return ERR_CAST(connector);
->   	}
->   
-> -	return ERR_PTR(-ENODEV);
-> +	drm_connector_attach_encoder(connector, encoder);
-> +
-> +	return connector;
->   }
->   
->   void msm_dsi_manager_bridge_destroy(struct drm_bridge *bridge)
-> 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/misc/mei/hw-me-regs.h | 1 +
+ drivers/misc/mei/pci-me.c     | 1 +
+ 2 files changed, 2 insertions(+)
 
-
+diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+index cb34925e10f1..67bb6a25fd0a 100644
+--- a/drivers/misc/mei/hw-me-regs.h
++++ b/drivers/misc/mei/hw-me-regs.h
+@@ -92,6 +92,7 @@
+ #define MEI_DEV_ID_CDF        0x18D3  /* Cedar Fork */
+ 
+ #define MEI_DEV_ID_ICP_LP     0x34E0  /* Ice Lake Point LP */
++#define MEI_DEV_ID_ICP_N      0x38E0  /* Ice Lake Point N */
+ 
+ #define MEI_DEV_ID_JSP_N      0x4DE0  /* Jasper Lake Point N */
+ 
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index c3393b383e59..3a45aaf002ac 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -96,6 +96,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_CMP_H_3, MEI_ME_PCH8_ITOUCH_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_LP, MEI_ME_PCH12_CFG)},
++	{MEI_PCI_DEVICE(MEI_DEV_ID_ICP_N, MEI_ME_PCH12_CFG)},
+ 
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_TGP_LP, MEI_ME_PCH15_CFG)},
+ 	{MEI_PCI_DEVICE(MEI_DEV_ID_TGP_H, MEI_ME_PCH15_SPS_CFG)},
 -- 
-With best wishes
-Dmitry
+2.33.0
+
