@@ -2,171 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDC341EFB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E2D41EFBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354576AbhJAOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhJAOkK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:40:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE73C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:38:26 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id b8so1084489edk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zmf5bHycEslzhJrqEtvPO4rl26bvdDHLmu6FXit3K00=;
-        b=xSdLcHEHstBCW0XwCmCZHKI0LmErqmy4xzApHOoeQsw9Ey/RmGbMEUcvrYLBJmxIqr
-         +sX+IWQ5cOZkLVs+KNItg5upOeDdti488Vl/k1xkmttk1DRFva0zM0lC5Hh+xh/yczpJ
-         jUy7qYVjme9Ox+2jkewzjKZJkU1jAelUPfvslZt9E1wqDJNt0UCXDJs1pNHt6vFyOy+S
-         tQNe7nB3aq67/gq6wluF6im3q/0Bt6lbl/IXfVa4Dke5YyrDcJoD9Ocz0vsNevuYs6qW
-         mMAHBqaACuTXEdXWpErZAxa3THQTzgyuqbq1KbD5Os1u6da1oh2zQy2SYrJ2trQ7x1Oo
-         YaxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zmf5bHycEslzhJrqEtvPO4rl26bvdDHLmu6FXit3K00=;
-        b=JVCC2dB8o/QSfHsAc5be14EvuY1ak8fpE6q8+W5s/Y62xqoBZbuGXaZXv8LD0pAj2I
-         mKUbSMP/PV/aElt8BwcNhNtDJM3dcMn63Hpc7Rr3IX276pBLnqkCa1s09DFQqL5uKQzV
-         BYy449EmEv5IP82cStw2EWfxSldlDrd8jAhoZxEymtXt7o+MVNUXR49G5jcJhLYAvrq7
-         BamkzlnXxdsRpPELn94soa4hDxstFBUvcQVzyWX4I1E0FjE63RqAqdswqTWJgF5/dj9J
-         PE8MOU80/InPOm/D7mgx1ekkI4gDb1cOzvXiu/anH3Bhz9/bUo9Q/uxKER+LFqYRnFeJ
-         R5bQ==
-X-Gm-Message-State: AOAM532dIRN33N9GvyoB6fgV5kgfCt3HUvH/e96Irzzloe80yfPd4sgz
-        sfmnPqgOw6ccjvlGs7Iu/hzfs/nBnIXo9dbZodde
-X-Google-Smtp-Source: ABdhPJzEvVvODu1yaZFSdK5tpYcIveXlY8zeFTPk2iUCD75467RBT4GINnz2yu22lrjdtA9Z7q7ifInwZsLH6/h5uac=
-X-Received: by 2002:a05:6402:142e:: with SMTP id c14mr14718759edx.209.1633099103840;
- Fri, 01 Oct 2021 07:38:23 -0700 (PDT)
+        id S1354585AbhJAOl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238636AbhJAOl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:41:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC8861507;
+        Fri,  1 Oct 2021 14:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633099213;
+        bh=ZahyhpPtQqhVvBHMnz421DpVrE2pzsHhdju9V2J7Gfg=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=Wik6Tep3WZyMeTAg1k3nvnl75EwOHoqRADJahFNGtIEk/MgpBvQ9XuTOawYEzOQuQ
+         9nJD2lxyiInmS1O49YzItToLKakabr76QOgbln5LEoGAaeyKZTmZ2mRn5Q7Pm4h5FB
+         bNaG+JvddFrNrHL1n1KgLPazLYS2tsIPOR8RH4IM8OaTrDkEpm4q3gsOntt3+buhln
+         jb+raArklpFltKNK4glSw/cXP4nfXYp2vGq4K7aiLHtvM2/nVbERjXi+9OLOy/tMPe
+         23VCAPzxvmy/g38Oy6i2VYVdoLJ9jfk9hLelMqt/gG/igMt9QEVPVoLPGPvADy969B
+         GsLuVfdZIP6QQ==
+Received: by mail-ot1-f50.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso11734101otu.9;
+        Fri, 01 Oct 2021 07:40:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533+Zk0vu8p808MNIslVm1xN02FGH1Wi1/kbw0siyZ7LBP3YNbrH
+        nV3by2xnbuyP9dC7ldjK+6aZqoSAyhvUAahIAkg=
+X-Google-Smtp-Source: ABdhPJy5/eaiRuG7rldYq3SgOdinICCXjY5DrIyS+YU7L88apLItGe1pLS9Gm2fTrYP5pb2+Y1e0rrcQF7pXPa2o8Uc=
+X-Received: by 2002:a9d:4705:: with SMTP id a5mr10542184otf.237.1633099212608;
+ Fri, 01 Oct 2021 07:40:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001024506.3762647-1-tkjos@google.com>
-In-Reply-To: <20211001024506.3762647-1-tkjos@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 1 Oct 2021 10:38:12 -0400
-Message-ID: <CAHC9VhQ-uziaYRYWaah=RMmz7HUVvxGs+4F=g2sizVXR0ZSWVw@mail.gmail.com>
-Subject: Re: [PATCH] binder: use cred instead of task for selinux checks
-To:     Todd Kjos <tkjos@google.com>
-Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
-        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        kernel-team@android.com, stable@vger.kernel.org
+Received: by 2002:a8a:1342:0:0:0:0:0 with HTTP; Fri, 1 Oct 2021 07:40:12 -0700 (PDT)
+In-Reply-To: <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
+References: <20210909065543.164329-1-cccheng@synology.com> <CGME20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd@epcas1p4.samsung.com>
+ <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com> <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Fri, 1 Oct 2021 23:40:12 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
+Message-ID: <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
+Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID isn't set
+To:     Sungjong Seo <sj1557.seo@samsung.com>
+Cc:     Chung-Chiang Cheng <cccheng@synology.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shepjeng@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:45 PM Todd Kjos <tkjos@google.com> wrote:
+2021-10-01 22:19 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
+> Hello, Namjae,
+Hi Sungjong,
 >
-> Save the struct cred associated with a binder process
-> at initial open to avoid potential race conditions
-> when converting to a security ID.
+> I found an important difference between the code we first wrote and the code
+> that has changed since our initial patch review. This difference seems to
+> cause compatibility issues when reading saved timestamps without timezone.
+> (In our initial patch review, there were concerns about possible
+> compatibility issues.)
+> I think the code that reads timestamps without timezone should go back to
+> the concept we wrote in the first place like reported patch.
+Are you talking about using sys_tz?
+
+> It could be an answer of another timestamp issue.
+What is another timestamp issue ?
+
 >
-> Since binder was integrated with selinux, it has passed
-> 'struct task_struct' associated with the binder_proc
-> to represent the source and target of transactions.
-> The conversion of task to SID was then done in the hook
-> implementations. It turns out that there are race conditions
-> which can result in an incorrect security context being used.
+> Could you please let me know what you think?
 >
-> Fix by saving the 'struct cred' during binder_open and pass
-> it to the selinux subsystem.
+> Thanks.
+>> -----Original Message-----
+>> From: Namjae Jeon [mailto:linkinjeon@kernel.org]
+>> Sent: Friday, September 10, 2021 10:01 AM
+>> To: Chung-Chiang Cheng <cccheng@synology.com>
+>> Cc: sj1557.seo@samsung.com; linux-fsdevel@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; shepjeng@gmail.com
+>> Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID
+>> isn't
+>> set
+>>
+>> 2021-09-09 15:55 GMT+09:00, Chung-Chiang Cheng <cccheng@synology.com>:
+>> > EXFAT_TZ_VALID is corresponding to OffsetValid field in exfat
+>> > specification [1]. If this bit isn't set, timestamps should be treated
+>> > as having the same UTC offset as the current local time.
+>> >
+>> > This patch uses the existing mount option 'time_offset' as fat does.
+>> > If time_offset isn't set, local UTC offset in sys_tz will be used as
+>> > the default value.
+>> >
+>> > Link: [1]
+>> > https://protect2.fireeye.com/v1/url?k=cba4edf5-943fd4c8-cba566ba-0cc47
+>> > a31309a-e70aa065be678729&q=1&e=225feff2-841f-404c-9a2e-c12064b232d0&u=
+>> > https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fwindows%2Fwin32%2Ffileio%2F
+>> > exfat-specification%2374102-offsetvalid-field
+>> > Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+>> Please read this discussion:
+>>  https://patchwork.kernel.org/project/linux-
+>> fsdevel/patch/20200115082447.19520-10-namjae.jeon@samsung.com/
+>>
+>> Thanks!
 >
-> Fixes: 79af73079d75 ("Add security hooks to binder and implement the
-> hooks for SELinux.")
-> Signed-off-by: Todd Kjos <tkjos@google.com>
-> Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
-> ---
->  drivers/android/binder.c          | 14 +++++----
->  drivers/android/binder_internal.h |  3 ++
->  include/linux/lsm_hook_defs.h     | 14 ++++-----
->  include/linux/security.h          | 28 +++++++++---------
->  security/security.c               | 14 ++++-----
->  security/selinux/hooks.c          | 48 +++++++++----------------------
->  6 files changed, 52 insertions(+), 69 deletions(-)
-
-Thanks Todd, I'm happy to see someone with a better understanding of
-binder than me pitch in to clean this up :)  A couple of quick
-comments/questions below ...
-
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index 9edacc8b9768..ca599ebdea4a 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -5055,6 +5056,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
->         spin_lock_init(&proc->outer_lock);
->         get_task_struct(current->group_leader);
->         proc->tsk = current->group_leader;
-> +       proc->cred = get_cred(filp->f_cred);
-
-Is it *always* true that filp->f_cred is going to be the same as
-current->group_leader->cred?  Or rather does this help resolve the
-issue of wanting the subjective creds but not being able to access
-them mentioned in the task_sid_binder() comment?  If the latter, it
-might be nice to add something to the related comment in struct
-binder_ref (below).
-
->         INIT_LIST_HEAD(&proc->todo);
->         init_waitqueue_head(&proc->freeze_wait);
->         proc->default_priority = task_nice(current);
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index 402c4d4362a8..886fc327a534 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -364,6 +364,8 @@ struct binder_ref {
->   *                        (invariant after initialized)
->   * @tsk                   task_struct for group_leader of process
->   *                        (invariant after initialized)
-> + * @cred                  struct cred for group_leader of process
-> + *                        (invariant after initialized)
-
-Related to the question above.  At the very least the comment should
-probably be changed to indicate to make it clear the creds are coming
-directly from the binder file/device and not always the group_leader.
-
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index e7ebd45ca345..c8bf3db90c8b 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const struct task_struct *task)
->         return sid;
->  }
 >
-> -/*
-> - * get the security ID of a task for use with binder
-> - */
-> -static inline u32 task_sid_binder(const struct task_struct *task)
-> -{
-> -       /*
-> -        * In many case where this function is used we should be using the
-> -        * task's subjective SID, but we can't reliably access the subjective
-> -        * creds of a task other than our own so we must use the objective
-> -        * creds/SID, which are safe to access.  The downside is that if a task
-> -        * is temporarily overriding it's creds it will not be reflected here;
-> -        * however, it isn't clear that binder would handle that case well
-> -        * anyway.
-> -        *
-> -        * If this ever changes and we can safely reference the subjective
-> -        * creds/SID of another task, this function will make it easier to
-> -        * identify the various places where we make use of the task SIDs in
-> -        * the binder code.  It is also likely that we will need to adjust
-> -        * the main drivers/android binder code as well.
-> -        */
-> -       return task_sid_obj(task);
-> -}
-
--- 
-paul moore
-www.paul-moore.com
