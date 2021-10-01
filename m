@@ -2,114 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BCA41EFAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDC341EFB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354572AbhJAOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:39:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354565AbhJAOjZ (ORCPT
+        id S1354576AbhJAOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231821AbhJAOkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:39:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633099060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/KKRYJFhv/QJA9FN2XncZtvBI8w9ECIMj6A6MWC7kv8=;
-        b=E1GXSKV1l1kG+OQL3eMBcZu5LfgxVu9Qavh27fyfCLyKRSoMa/W+hjvUNT+PFPjxiedIRW
-        PX/yIQjyf68xp74ltzPqrDPVHJmxBHC4GbdQKEgOVoRXk3Rw+yG7AvYnH7bHHuKvGzO5I0
-        ezifdEpeKjjIRCXs9PNm2GNsgA6xkNg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-_YyqmfaxPX2LTkbQkc9YAQ-1; Fri, 01 Oct 2021 10:37:39 -0400
-X-MC-Unique: _YyqmfaxPX2LTkbQkc9YAQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67F6F835DE0;
-        Fri,  1 Oct 2021 14:37:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C23A652A4;
-        Fri,  1 Oct 2021 14:37:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] cachefiles: Fix oops in trace_cachefiles_mark_buried due to
- NULL object
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Dave Wysochanski <dwysocha@redhat.com>, linux-cachefs@redhat.com,
-        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 01 Oct 2021 15:37:31 +0100
-Message-ID: <163309905120.80461.1932497502647013780.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 1 Oct 2021 10:40:10 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE73C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:38:26 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id b8so1084489edk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zmf5bHycEslzhJrqEtvPO4rl26bvdDHLmu6FXit3K00=;
+        b=xSdLcHEHstBCW0XwCmCZHKI0LmErqmy4xzApHOoeQsw9Ey/RmGbMEUcvrYLBJmxIqr
+         +sX+IWQ5cOZkLVs+KNItg5upOeDdti488Vl/k1xkmttk1DRFva0zM0lC5Hh+xh/yczpJ
+         jUy7qYVjme9Ox+2jkewzjKZJkU1jAelUPfvslZt9E1wqDJNt0UCXDJs1pNHt6vFyOy+S
+         tQNe7nB3aq67/gq6wluF6im3q/0Bt6lbl/IXfVa4Dke5YyrDcJoD9Ocz0vsNevuYs6qW
+         mMAHBqaACuTXEdXWpErZAxa3THQTzgyuqbq1KbD5Os1u6da1oh2zQy2SYrJ2trQ7x1Oo
+         YaxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zmf5bHycEslzhJrqEtvPO4rl26bvdDHLmu6FXit3K00=;
+        b=JVCC2dB8o/QSfHsAc5be14EvuY1ak8fpE6q8+W5s/Y62xqoBZbuGXaZXv8LD0pAj2I
+         mKUbSMP/PV/aElt8BwcNhNtDJM3dcMn63Hpc7Rr3IX276pBLnqkCa1s09DFQqL5uKQzV
+         BYy449EmEv5IP82cStw2EWfxSldlDrd8jAhoZxEymtXt7o+MVNUXR49G5jcJhLYAvrq7
+         BamkzlnXxdsRpPELn94soa4hDxstFBUvcQVzyWX4I1E0FjE63RqAqdswqTWJgF5/dj9J
+         PE8MOU80/InPOm/D7mgx1ekkI4gDb1cOzvXiu/anH3Bhz9/bUo9Q/uxKER+LFqYRnFeJ
+         R5bQ==
+X-Gm-Message-State: AOAM532dIRN33N9GvyoB6fgV5kgfCt3HUvH/e96Irzzloe80yfPd4sgz
+        sfmnPqgOw6ccjvlGs7Iu/hzfs/nBnIXo9dbZodde
+X-Google-Smtp-Source: ABdhPJzEvVvODu1yaZFSdK5tpYcIveXlY8zeFTPk2iUCD75467RBT4GINnz2yu22lrjdtA9Z7q7ifInwZsLH6/h5uac=
+X-Received: by 2002:a05:6402:142e:: with SMTP id c14mr14718759edx.209.1633099103840;
+ Fri, 01 Oct 2021 07:38:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211001024506.3762647-1-tkjos@google.com>
+In-Reply-To: <20211001024506.3762647-1-tkjos@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 1 Oct 2021 10:38:12 -0400
+Message-ID: <CAHC9VhQ-uziaYRYWaah=RMmz7HUVvxGs+4F=g2sizVXR0ZSWVw@mail.gmail.com>
+Subject: Re: [PATCH] binder: use cred instead of task for selinux checks
+To:     Todd Kjos <tkjos@google.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+On Thu, Sep 30, 2021 at 10:45 PM Todd Kjos <tkjos@google.com> wrote:
+>
+> Save the struct cred associated with a binder process
+> at initial open to avoid potential race conditions
+> when converting to a security ID.
+>
+> Since binder was integrated with selinux, it has passed
+> 'struct task_struct' associated with the binder_proc
+> to represent the source and target of transactions.
+> The conversion of task to SID was then done in the hook
+> implementations. It turns out that there are race conditions
+> which can result in an incorrect security context being used.
+>
+> Fix by saving the 'struct cred' during binder_open and pass
+> it to the selinux subsystem.
+>
+> Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+> hooks for SELinux.")
+> Signed-off-by: Todd Kjos <tkjos@google.com>
+> Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
+> ---
+>  drivers/android/binder.c          | 14 +++++----
+>  drivers/android/binder_internal.h |  3 ++
+>  include/linux/lsm_hook_defs.h     | 14 ++++-----
+>  include/linux/security.h          | 28 +++++++++---------
+>  security/security.c               | 14 ++++-----
+>  security/selinux/hooks.c          | 48 +++++++++----------------------
+>  6 files changed, 52 insertions(+), 69 deletions(-)
 
-In cachefiles_mark_object_buried, the dentry in question may
-not have an owner, and thus our cachefiles_object pointer
-may be NULL when calling the tracepoint, in which case we
-will also not have a valid debug_id to print in the tracepoint.
-Check for NULL object in the tracepoint and if so, just set
-debug_id to MAX_UINT as was done in 2908f5e101e3.
+Thanks Todd, I'm happy to see someone with a better understanding of
+binder than me pitch in to clean this up :)  A couple of quick
+comments/questions below ...
 
-This fixes the following oops:
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 9edacc8b9768..ca599ebdea4a 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -5055,6 +5056,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
+>         spin_lock_init(&proc->outer_lock);
+>         get_task_struct(current->group_leader);
+>         proc->tsk = current->group_leader;
+> +       proc->cred = get_cred(filp->f_cred);
 
-    FS-Cache: Cache "mycache" added (type cachefiles)
-    CacheFiles: File cache on vdc registered
-    ...
-    Workqueue: fscache_object fscache_object_work_func [fscache]
-    RIP: 0010:trace_event_raw_event_cachefiles_mark_buried+0x4e/0xa0 [cachefiles]
-    ....
-    Call Trace:
-     cachefiles_mark_object_buried+0xa5/0xb0 [cachefiles]
-     cachefiles_bury_object+0x270/0x430 [cachefiles]
-     ? kfree+0xaa/0x3a0
-     ? vfs_getxattr+0x15a/0x180
-     cachefiles_walk_to_object+0x195/0x9c0 [cachefiles]
-     ? trace_event_buffer_commit+0x61/0x220
-     cachefiles_lookup_object+0x5a/0xc0 [cachefiles]
-     fscache_look_up_object+0xd7/0x160 [fscache]
-     fscache_object_work_func+0xb2/0x340 [fscache]
-     process_one_work+0x1f1/0x390
-     worker_thread+0x53/0x3e0
-     ? process_one_work+0x390/0x390
-     kthread+0x127/0x150
-     ? set_kthread_struct+0x40/0x40
-     ret_from_fork+0x22/0x30
+Is it *always* true that filp->f_cred is going to be the same as
+current->group_leader->cred?  Or rather does this help resolve the
+issue of wanting the subjective creds but not being able to access
+them mentioned in the task_sid_binder() comment?  If the latter, it
+might be nice to add something to the related comment in struct
+binder_ref (below).
 
-Fixes: 2908f5e101e3 ("fscache: Add a cookie debug ID and use that in traces")
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-cachefs@redhat.com
----
+>         INIT_LIST_HEAD(&proc->todo);
+>         init_waitqueue_head(&proc->freeze_wait);
+>         proc->default_priority = task_nice(current);
+> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+> index 402c4d4362a8..886fc327a534 100644
+> --- a/drivers/android/binder_internal.h
+> +++ b/drivers/android/binder_internal.h
+> @@ -364,6 +364,8 @@ struct binder_ref {
+>   *                        (invariant after initialized)
+>   * @tsk                   task_struct for group_leader of process
+>   *                        (invariant after initialized)
+> + * @cred                  struct cred for group_leader of process
+> + *                        (invariant after initialized)
 
- include/trace/events/cachefiles.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Related to the question above.  At the very least the comment should
+probably be changed to indicate to make it clear the creds are coming
+directly from the binder file/device and not always the group_leader.
 
-diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
-index 9a448fe9355d..695bfdbfdcad 100644
---- a/include/trace/events/cachefiles.h
-+++ b/include/trace/events/cachefiles.h
-@@ -305,7 +305,7 @@ TRACE_EVENT(cachefiles_mark_buried,
- 			     ),
- 
- 	    TP_fast_assign(
--		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->obj	= obj ? obj->fscache.debug_id : UINT_MAX;
- 		    __entry->de		= de;
- 		    __entry->why	= why;
- 			   ),
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index e7ebd45ca345..c8bf3db90c8b 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const struct task_struct *task)
+>         return sid;
+>  }
+>
+> -/*
+> - * get the security ID of a task for use with binder
+> - */
+> -static inline u32 task_sid_binder(const struct task_struct *task)
+> -{
+> -       /*
+> -        * In many case where this function is used we should be using the
+> -        * task's subjective SID, but we can't reliably access the subjective
+> -        * creds of a task other than our own so we must use the objective
+> -        * creds/SID, which are safe to access.  The downside is that if a task
+> -        * is temporarily overriding it's creds it will not be reflected here;
+> -        * however, it isn't clear that binder would handle that case well
+> -        * anyway.
+> -        *
+> -        * If this ever changes and we can safely reference the subjective
+> -        * creds/SID of another task, this function will make it easier to
+> -        * identify the various places where we make use of the task SIDs in
+> -        * the binder code.  It is also likely that we will need to adjust
+> -        * the main drivers/android binder code as well.
+> -        */
+> -       return task_sid_obj(task);
+> -}
 
-
+-- 
+paul moore
+www.paul-moore.com
