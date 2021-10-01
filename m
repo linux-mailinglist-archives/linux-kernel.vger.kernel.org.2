@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F7A41E58A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF7141E58E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351220AbhJAAfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 20:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhJAAfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:35:20 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B36C06176A;
-        Thu, 30 Sep 2021 17:33:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HLB115KRTz4xbL;
-        Fri,  1 Oct 2021 10:33:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633048406;
-        bh=AkFkW4EcUD95VI813YSQNHGOvkw2/Vfjy1iyFridIDM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=If5zTFzMHWYLEB3z4iW8RV6d1bfyhcu7x3rlJRu4iv6zRAosa2vUoAJQTcPVvrpZv
-         s1NkKGYYWLvAC4BJSeEuE832BmmntKtjKi/mo9ol7Cmiiv8smj/JmxQQ44NEpw+ppT
-         TXcSGuSfQajQnWYGKCwzB1PBrfL5NCBkzhHbVVDodj1qgeoqF/kLC+WgF5T3gT2ty5
-         EMgPK58+ODfI/7oeRoE5qsW5byKkcXsiYNjFw6NKt/iSbl3DV4cy6/u44Q/UqEcScv
-         DvqeGWvmbXruIx+XX65YiOVnufZ/k4+FDqAsaJlKjU0SWbgSRYY2XNFZc2GeQm56zn
-         PJzC/d8AdhC7A==
-Date:   Fri, 1 Oct 2021 10:33:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sean Young <sean@mess.org>
-Subject: linux-next: manual merge of the v4l-dvb tree with Linus' tree
-Message-ID: <20211001103323.31a69d5d@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1GR2RiRG4HJo6E8sA/j6qcM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1351017AbhJAAhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 20:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230172AbhJAAhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 20:37:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3822460F4B;
+        Fri,  1 Oct 2021 00:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633048551;
+        bh=kRtqkqym1qSC39AF/krJ32PfdnZTRxM17LtG7jSCgK4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bvhqz1Up+B5Vy2pKAKxT3US42uCxaPmjVNZqV5leGeU2/V3txURh61CJJ4EtmPd14
+         f5jx9i1M3v2iT/cjQLbZ5hLV+V+xB53QILi7EHxuoFTV7hIQ38IwMHG6DVZqDqbqcB
+         eHclUApaj7f2YQ8yHq4Tp0Q3geuHQtXveytXBrPy+CjuRtZ5uTFr9yMLTHsU8bsTlg
+         3qpNHVyqQ+JNU+qPOyzCCrUnH8A07YYh50XMbOFAEKNud/scrcO0oGT6njIJF0I6uy
+         FRw612CrTw8SJrWXI4lQOBAo03+31F2ED4gsWibqAGqmuT0nZksBkM+6CmACrsj6TE
+         uxQwQtociDQoA==
+Date:   Fri, 1 Oct 2021 09:35:47 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20211001093547.f08d8b2477783d36c310b77a@kernel.org>
+In-Reply-To: <20210930193708.3b2caf23@oasis.local.home>
+References: <163163030719.489837.2236069935502195491.stgit@devnote2>
+        <20210929112408.35b0ffe06b372533455d890d@kernel.org>
+        <CAADnVQ+0v601toAz7wWPy2gxNtiJNZy6UpLmw_Dg+0G8ByJS6A@mail.gmail.com>
+        <874ka17t8s.ffs@tglx>
+        <20210930172206.1a34279b@oasis.local.home>
+        <87wnmx64mn.ffs@tglx>
+        <20211001082733.236bee605f506b2b62c055ef@kernel.org>
+        <20210930193708.3b2caf23@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1GR2RiRG4HJo6E8sA/j6qcM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 30 Sep 2021 19:37:08 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Hi all,
+> On Fri, 1 Oct 2021 08:27:33 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > Let me explain how the patches are usually merged.
+> > 
+> > - kernel/kprobes.c related patches go through the tip tree.
+> > - kernel/trace/* patches go through the tracing tree.
+> 
+> And arch/*/kprobe* usually goes through tip as well.
+> 
+> > 
+> > So traditionally(?) I think this series go through the tip tree,
+> > but since the biggest user of kprobes is tracing and the kprobes fix
+> > now involves tree-wide fixes as you can see in this series, I think
+> > it is a good timing to move kprobes to tracing tree.
+> 
+> I'll pick it up and take the burden off of Thomas.
 
-Today's linux-next merge of the v4l-dvb tree got a conflict in:
+Thank you very much!
 
-  drivers/media/rc/ir_toy.c
+> 
+> Just to confirm, this is for the next merge window, right?
 
-between commit:
+Yes, please push it to the next merge window.
 
-  f0c15b360fb6 ("media: ir_toy: prevent device from hanging during transmit=
-")
+Thanks,
 
-from Linus' tree and commit:
+> 
+> -- Steve
 
-  4114978dcd24 ("media: ir_toy: prevent device from hanging during transmit=
-")
 
-from the v4l-dvb tree.
-
-I fixed it up (I just used the latter) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1GR2RiRG4HJo6E8sA/j6qcM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWV1MACgkQAVBC80lX
-0GxZHwf/VAMPNG/tL/3JzGdWW/SQT6szzBmD22OWaHBasIjKpqmGg0JAAljV8Qca
-SpPIq8CnyBGmcA62S3QrHFFy2KNbZ6n6uDn5fWOBjSVqSuVUSlCzVZJrrpCPCHNg
-x4kgx9bN5OBjiuxCF//AXGzW7aUKCqWplcTU/cRTCQpttsryPxcuIlelCk7ltyRK
-Ty9RUeQdqNYTANZQhr5bvxY2kqMchDe2rNKF4msMmv5b/Xq7mmN+5LolwEZuL6aH
-A6n2m3k6vXMC4rDhVDDflmXbTrPdx+ZuDCKCuIZTm4p8R6ZOecPYSFF5alWdORhD
-eI4eNpr4aN/QVVZTwT+UbHmOUyXmcQ==
-=GiNi
------END PGP SIGNATURE-----
-
---Sig_/1GR2RiRG4HJo6E8sA/j6qcM--
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
