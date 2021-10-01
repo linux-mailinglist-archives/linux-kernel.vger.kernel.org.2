@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B3E41F4DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F8741F4E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355738AbhJAST1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:19:27 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50840 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355650AbhJAST0 (ORCPT
+        id S1355774AbhJASUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354947AbhJASUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:19:26 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id ff1e06f515a14179; Fri, 1 Oct 2021 20:17:40 +0200
-Received: from kreacher.localnet (unknown [213.134.175.164])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id CD53666A7A3;
-        Fri,  1 Oct 2021 20:17:39 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Bob Moore <robert.moore@intel.com>
-Subject: [PATCH 4/4] ACPICA: Update version to 20210930
-Date:   Fri, 01 Oct 2021 20:17:06 +0200
-Message-ID: <7993379.T7Z3S40VBb@kreacher>
-In-Reply-To: <2236872.ElGaqSPkdT@kreacher>
-References: <2236872.ElGaqSPkdT@kreacher>
+        Fri, 1 Oct 2021 14:20:44 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2CBC06177F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 11:18:58 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y23so7062149lfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UuvJOD3DzRGmVW6xcad8F/v9YB5VsSRjw/nzs5q47b4=;
+        b=MgDHcdJSmX13uyCrfEHU0FYoJQ1hXzA5UW2GY94/ufFm/9Qq3zH15vPjnENcyoArkK
+         FU67Ww/nLrIPvwuOcYozEGxrgnmYrE/xtwICCE/8r8Fq7gG7HGJlLyPDKnPGIQOpwv4h
+         TG9h2lpDce0CjWYasQzV5YqhInUJMedEFM9PM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UuvJOD3DzRGmVW6xcad8F/v9YB5VsSRjw/nzs5q47b4=;
+        b=dpBoOJHfaQS82iUMv84RTc2ch6L0We+yJwHdyFwLsBCdKgEB3Jd8epteqy6Katx2uh
+         PaO7MtcezQaQWPgGz4KzIWwtuK7PKzZnbFksjCwoKu28AYR/w/3qYGczYtTcUnpxX/Qv
+         ZFql7TipSKVPRepMJSZYyrb8RDNK4FMu/tuEKss3jKWizMrf2OblWF4m8X9PJj/firYo
+         HU5f7BHJvLvXpB+PI+adrSBeoI5fCLZl5f9nvCF868iaPADQvxPybClZ46qipqof8ywv
+         Np6JEkf/ekW9ShrVkTJH3WlRchP/ZPmAqnRgt8U7n3e2WwIHclBmjKuf2D9ygiyoe/ER
+         MvBw==
+X-Gm-Message-State: AOAM532/IuGQS1XslkRNJ6qnH9FrPyoO/lpmRFkdsJu8uAmzlE7MX6yp
+        d59+eqllV7zJA66IQaRkAFRvn4iFGOAoUuW/VDc=
+X-Google-Smtp-Source: ABdhPJxxVuB3jOoqlT/n+2/XjIRp6+e1MzvosSv57Pged6yj7ZiPtxcgu96qsGCMpqhRKTqkRxuIHA==
+X-Received: by 2002:a19:645c:: with SMTP id b28mr7036376lfj.60.1633112335646;
+        Fri, 01 Oct 2021 11:18:55 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id z12sm808101lfd.283.2021.10.01.11.18.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 11:18:54 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id x27so42096081lfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:18:53 -0700 (PDT)
+X-Received: by 2002:ac2:51a6:: with SMTP id f6mr147804lfk.150.1633112333146;
+ Fri, 01 Oct 2021 11:18:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+ <YVRWyq+rDeAFLx+X@elver.google.com> <1340204910.47919.1633103136293.JavaMail.zimbra@efficios.com>
+ <CAHk-=whcN4ACLFvst0THwwpUFK4DDSM4O_frSoUQJ1m+0ENWjw@mail.gmail.com> <1097444747.48074.1633109281556.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1097444747.48074.1633109281556.JavaMail.zimbra@efficios.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 1 Oct 2021 11:18:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whi_B36yw9Haw3sfSQhF7+Y1=bn_y2S=DwZ533yuF=izw@mail.gmail.com>
+Message-ID: <CAHk-=whi_B36yw9Haw3sfSQhF7+Y1=bn_y2S=DwZ533yuF=izw@mail.gmail.com>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>,
+        paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.164
-X-CLIENT-HOSTNAME: 213.134.175.164
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedguddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfektdehueehteffueelleehhfffgfejtdehvddtfeetjeffveetheehvdejgfdunecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepvddufedrudefgedrudejhedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrdduieegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Moore <robert.moore@intel.com>
+On Fri, Oct 1, 2021 at 10:28 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> I've spent some quality time staring at generated assembler diff in the past
+> days, and looking for code patterns of refcount_dec_and_test users, without
+> much success. There are some cases which end up working by chance, e.g. in
+> cases where the if leg has a smp_acquire__after_ctrl_dep and the else leg has
+> code that emits a barrier(), but I did not find any buggy generated
+> code per se. In order to observe those issues in real life, we would
+> really need to have identical then/else legs to the branch.
 
-ACPICA commit e01cc6b3d12b5f73f44d46fa15a7f569c793b328
+Yeah, that's been very much my feeling too during this whole
+discussion (including, very much, earlier threads).
 
-Version 20210930.
+All the examples about this being a problem are those kinds of
+"identical or near-identical if/else statements" and they just don't
+seem to be all that realistic.
 
-Link: https://github.com/acpica/acpica/commit/e01cc6b3
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- acpixf.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Because immediately when the if-statement actually does something
+_meaningful_, it just turns into a branch. And when people use atomics
+- even the weak READ/WRITE_ONCE() kinds of things, never mind anything
+stronger - it really doesn't give the compiler the option to move
+things around all that much.
 
-diff -Nurp linux.before_name/include/acpi/acpixf.h linux.after_name/include/acpi/acpixf.h
---- linux.before_name/include/acpi/acpixf.h	2021-10-01 19:33:19.411192223 +0200
-+++ linux.after_name/include/acpi/acpixf.h	2021-10-01 19:33:15.880251109 +0200
-@@ -12,7 +12,7 @@
- 
- /* Current ACPICA subsystem version in YYYYMMDD format */
- 
--#define ACPI_CA_VERSION                 0x20210730
-+#define ACPI_CA_VERSION                 0x20210930
- 
- #include <acpi/acconfig.h>
- #include <acpi/actypes.h>
+There's a reason the source code uses an if-statement, after all: that
+is literally the logical code flow, and people write a very particular
+dependency chain that is just very fundamental.
 
+Having essentially the same thing on both sides just isn't a realistic
+thing to do, and if it were - and you cared about performance in that
+case, which is what this is all about, after all - you'd write it very
+differently.
 
-
+                Linus
