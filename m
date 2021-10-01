@@ -2,163 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BB841ECDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B13B41ECDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354214AbhJAMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354146AbhJAMEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:04:45 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096E2C061775;
-        Fri,  1 Oct 2021 05:03:02 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so7055474pji.2;
-        Fri, 01 Oct 2021 05:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6X7OZ3yKyxWtxfNg1xFjeO1sjefTXPgV8TXGpkXtteM=;
-        b=kAcTJBh+fxfpM0kTNrGW5RufHhmq7BdV2ZCMTt/0dw5Hze4VSq0G4o/RNILN0DtXm3
-         Bf+gQrKUpFNLlqQJxXTnYsQRg5EgnIGCkKzH/McvfAhKriPDnWW1GKqPlvohzpwvoMs9
-         pCs6M34RQF9FN9Z8x9k02kte1oNeV2Y1/vVTnCuNZ5mhA0vi0Ss3QYh1zHoAX9Atd0gs
-         cxa6/KhPaCwxjJznv0aMd/QsLjHzfiLyDpi3Ydj6IdqWe3BzLyEWmOLYZiqcKcWJ2wYm
-         LWx6/B2mv85igK1km87GjDc+Q9+dveLPWXgYLX970sMrB1fQa9ykY0E4dZFZcVnNMz3V
-         JXGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6X7OZ3yKyxWtxfNg1xFjeO1sjefTXPgV8TXGpkXtteM=;
-        b=mWZncVqYKqMwyDQD9UL/48q3vfDM89nydpJwCuDvQlxKztk9YbbjBSRTThLWp0ygU6
-         k4q56yox5J5M/ulcbe8ob1+7WWF7sNFZlsfZ/eJ8MXLrA56z5CzYDmKVu7N1Wx/QA+22
-         z/tiHunT0MQrCd8sOuVrNgP5DoUvePchd4nOqU2YEI3uE4nyAdwF+aGk3xyDotMmFQ1d
-         4zVNfnZ3HnwZG9S1ynqHAbOZUg/V7vcEYUd/y4eZZfVaKrkYNqbuHC6VHqt5RF5ADNYW
-         Jx9hmn2e9dVVP7MIr6jNLv0WSufVGx4O5fv7WC42Cq/G49l3SbrWx7nqiiVZ33jxgPqB
-         LpEw==
-X-Gm-Message-State: AOAM5336/Ue6iItjw6dtVQpgaHZdHIO7AvaL8DmbE+TMQ5wSpx8Y3i29
-        Pid9OvOtz0nuHy2fqn4DJfMLRaxBCaJuWUOS
-X-Google-Smtp-Source: ABdhPJyLWqAkoE+6QLwi05GhH2Xyrd+Ps2OxTlXniNxHksEcUc/3WJb2dOopJUPgbw8CPpPgbwBbXA==
-X-Received: by 2002:a17:902:ab58:b0:13e:28bd:cd82 with SMTP id ij24-20020a170902ab5800b0013e28bdcd82mr10391559plb.58.1633089780068;
-        Fri, 01 Oct 2021 05:03:00 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6006:a148:b4a:28d4:38a0:4379])
-        by smtp.googlemail.com with ESMTPSA id u22sm3250146pje.10.2021.10.01.05.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 05:02:59 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] docs: checkpatch: add UNNECESSARY_ELSE message
-Date:   Fri,  1 Oct 2021 17:32:18 +0530
-Message-Id: <20211001120218.28751-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <06f4c72fefeedb5145a940e5a78d50e610acdcc4.camel@perches.com>
-References: <06f4c72fefeedb5145a940e5a78d50e610acdcc4.camel@perches.com>
+        id S1354229AbhJAMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:06:13 -0400
+Received: from www.zeus03.de ([194.117.254.33]:55078 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhJAMGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:06:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=sU1jHZ5AxD4VfGEdE0alKPxI1996
+        qYnc3sUVIk98xIA=; b=o2DkK4TEJ2MjNtxegdLBJeBjQFr16jn7wHO4G/EAQU1K
+        j1RK0i4oldYwujwtqM3GV/UGHQONbcgn6x9RtjmzfinIm+xq3fgXYuoL/LArmIRH
+        m2gGCz81yu6LMx18Kdm4IrvgKuRj9bp7gMlhcF+D7jWKpZmPbsyTgyNG7rNUaMw=
+Received: (qmail 2459946 invoked from network); 1 Oct 2021 14:04:22 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 Oct 2021 14:04:22 +0200
+X-UD-Smtp-Session: l3s3148p1@MLMZXUnNftIgAwDPXwmDAJN1R91E6vGQ
+Date:   Fri, 1 Oct 2021 14:04:21 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
+Message-ID: <YVb5RXvh9agIS7MG@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <YVXMc1A4D/y4kjim@shikoro>
+ <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
+ <YVbM3z7x+D0MCkTF@ninjato>
+ <CA+V-a8uyQmW3+4hAt4534spKeQHDoeZzuJJE4RY70KLZfYOXoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5QK+6x2YA2y8yiDI"
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8uyQmW3+4hAt4534spKeQHDoeZzuJJE4RY70KLZfYOXoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added and documented UNNECESSARY_ELSE message type.
 
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
- Documentation/dev-tools/checkpatch.rst | 77 ++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+--5QK+6x2YA2y8yiDI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index f0956e9ea2d8..e0f1ea1a0911 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -1166,3 +1166,80 @@ Others
- 
-   **TYPO_SPELLING**
-     Some words may have been misspelled.  Consider reviewing them.
-+
-+  **UNNECESSARY_ELSE**
-+    Using an else statement just after a return or a break statement is
-+    unnecessary. For example::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              else
-+                      usleep(1);
-+      }
-+
-+    is generally better written as::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              usleep(1);
-+      }
-+
-+    It helps to reduce the indentation and removes the unnecessary else
-+    statement. But note there can be some false positives because of the
-+    way it is implemented in the checkpatch script. The checkpatch script
-+    throws this warning message if it finds an else statement and the line
-+    above it is a break or return statement indented at one tab more than
-+    the else statement. So there can be some false positives like::
-+
-+      int n = 15;
-+      if (n > 10)
-+              n--;
-+      else if (n == 10)
-+              return 0;
-+      else
-+              n++;
-+
-+    Now the checkpatch will give a warning for the use of else after return
-+    statement. If the else statement is removed then::
-+
-+      int n = 15;
-+      if (n > 10)
-+              n--;
-+      else if (n == 10)
-+              return 0;
-+      n++;
-+
-+    Now both the n-- and n++ statements will be executed which is different
-+    from the logic in the first case. Because the if block doesn't have
-+    a return statement, so removing the else statement is wrong.
-+
-+    Always check the previous if/else if blocks, for break/return
-+    statements, and do not blindly follow the checkpatch advice. One
-+    patch https://lore.kernel.org/all/20200615155131.GA4563@sevic69/
-+    even made it to the mainline, which was again reverted and fixed.
-+    Commit 98fe05e21a6e ("staging: rtl8712: Remove unnecesary else
-+    after return statement.")
-+
-+    Also, do not change the code if there is only a single return/break
-+    statement inside if-else block, like::
-+
-+      if (a > b)
-+              return a;
-+      else
-+              return b;
-+
-+    now if the else statement is removed::
-+
-+      if (a > b)
-+              return a;
-+      return b;
-+
-+    there is no considerable increase in the readability and one can argue
-+    that the first form is more readable because of the indentation. So
-+    do not remove the else statement in case of a single return/break
-+    statements inside the if-else block.
-+    See: https://lore.kernel.org/lkml/20140925032215.GK7996@ZenIV.linux.org.uk/
--- 
-2.25.1
+Hi Prabhakar,
 
+I checked the G2L datasheet and reconsidered. It is better if your patch
+goes in first. That means...
+
+> > > > Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
+> > > > datasheets? I am asking because I have a patch pending to remove writing
+> > > > to undocumented locations. So, I was aboout to remove the IO3FV and
+> > > > IO2FV macros.
+> > > >
+> > > Yes they are documented, you should be able to download the HW manual from [1]
+> >
+> > Great, then I will keep them!
+
+... that you could change the comments here from "undocumented" to
+"documened for G2L" or similar.
+
+> > > > > +             regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
+> > > > > +             dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
+> > > > > +             dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
+> > > > > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
+> > > >
+> > > > regmap_update_bits?
+> > > >
+> > > Im a bit hesitant to use regmap_update_bits() here as some of the bits
+> > > are not documented.
+
+Here you can keep your code as is. I will change it afterwards if needed
+once I clarified all undocumented locations.
+
+Thanks and have a nice weekend,
+
+   Wolfram
+
+
+--5QK+6x2YA2y8yiDI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFW+UEACgkQFA3kzBSg
+Kbb9Nw//bCZjWZIYqwiSCfxBOafnLWkptccKRA/ccZ57W8k5zOSNRRPmx68uEr2+
+G6p3M5tlc9g9oqT0Yek9lce9f+7SIVrbOdHLONIpBpeEHEb4FfZUKqOiLzDB+JDf
+RlMF+IbEFNOwDAfhFCJdR9SY5GeobFjmLpTWyMfJlRnFvTFFe9S3NF7V1V9AQMHh
+KrTC2H67mMpgzVwT/iF7naTL4mHI7GaT9I1bm3U1meHYxDM7hDZB2uWvwErPzh1w
+plGrppDm02M6Bj+IllzZukxvC7ppzPDAjmuHMttjuurInrem5NrWCtTMT4mZdf/w
+0OIn2me7d40DI351em9tk5YL3tsqyIgTp+MpmrDGGi/9bs5FCQzPYh5RHtRVNwiZ
+XicfUYQzFXg5FxSwf2LcDOcuHu737TZxjjrr++cKC6e9uGnzfXUlAy+HNhzSce7M
+NqIZbnMNQD2t83mThggTvl+XgNQ/c4pMiJ11Je/fImfHkB/OV+ExZzhoTYqeRkjX
+STlHRriE+XIuotL+RFD/ImGqKXPauFhWJwCrQcJFmwMhV4vl8EkWdtZlNDiR9sR7
++ir4YTUv1s7FUEpRCozcHus1MiKtFdoxDgC+yNDLwbo/fDE21lBB7o/4nTm3P3Qd
+itXUJBUf8jxaSazpaURv1jiRCGSFZZEZCYmbnD2SDS3+y4J3PDM=
+=nApo
+-----END PGP SIGNATURE-----
+
+--5QK+6x2YA2y8yiDI--
