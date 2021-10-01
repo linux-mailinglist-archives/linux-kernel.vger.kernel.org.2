@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA24041E580
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459EC41E588
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 02:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351058AbhJAA3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 20:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
+        id S1351193AbhJAAeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 20:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhJAA3A (ORCPT
+        with ESMTP id S230172AbhJAAeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 20:29:00 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DD0C06176A;
-        Thu, 30 Sep 2021 17:27:17 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id k7so12629110wrd.13;
-        Thu, 30 Sep 2021 17:27:17 -0700 (PDT)
+        Thu, 30 Sep 2021 20:34:09 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E99C06176A;
+        Thu, 30 Sep 2021 17:32:26 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id p1so394679pfh.8;
+        Thu, 30 Sep 2021 17:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rFry4YMfnGtKO2BLHPEv7L7BiFvue1yJhDDVxeV1y/w=;
-        b=JVKdKHx6mJ3qN/uOvPiUaiazAvbWUHf+mps3HFHvKAqwwZoiF3XFoVaLYiSULbE04z
-         UBeCYrEjjrej6yLdnsq1mv8G+d2MHHbqOpJOQ1trME0tOuN4KDlJRLLcEg7hfzubKKtC
-         RRNp8NSth0PlxTh+a69SDkCjrFU7xhm8HZ9qbJXTXK6i7wsCZ/SyRCTJycYgW3ALWRPb
-         lVs59wuFbKuUxxyTplRxQlqHXZ/Q/cTOVznGHbHPVFrarG4RYK9w6QhoWHoFfLwqBAjw
-         uV0WZY+qZ/SB8hN3onPOPjpG0aPrt/tISwnxcfh3UUO6ow5kofmnrnlMgZciUz6hUOjd
-         f2Gw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vRDg5mQIB7ZkRlTt9NHHXUKd/NnUUj/ZwFb8QTzm2pI=;
+        b=bVJ8x1hle3yHhKqyWoKwJ3VcAW/gT80m7vhzFvyOjM8fckvgo7EtgtoXYh0LYECRtx
+         x9HYLQ2ypdrc2jiZGQCWTygaz8irpkRTEFgFMyOV/4PUjl4/P7apjH9XwD/BMMeomWqo
+         gvrki6VUbm/aRILs1MHssWnNcb+XyUXysP0kL05mCwHg65etyITmdfsHsqpySQXpPEpV
+         r4w9VV14xID2uMAjB779Yqkl3DL5IVMKANlED6FAlerFy6Nt+jhf/3oj/vSDACjf5BW6
+         dI1lAWiIjo15hBZJAsJ0HJj/Ak8zDDbiWDC1qf809rch1+n38MNBw0uLWCm6eQJ1QfLs
+         QprQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rFry4YMfnGtKO2BLHPEv7L7BiFvue1yJhDDVxeV1y/w=;
-        b=gp6NhRZ1i9y0MqLqY3iU9kl9LhOYn5zAS+dmyytLOQJXdLbOROdUa3cMbbR+6k7NHm
-         mwCOKD/rOW7vwo1i47C0fM/krsgkxbqqQCl/uHbT4RjCN8tn8EpZ146oLj5WUMlufbiQ
-         B2NiGGNK/sRvKpuxPgGfCiBMxygZXXB2un1XOkOtrtt4jfNx+QPUaX2dKKwtnOaT9pN3
-         DShZS4jy1eAcNvwwOUonmpQYWbAx8IjtRut5eXxmW3aRpYtgFEHJyptX6LujO7elsZVa
-         XcO/LIoBjQxjOmQm3M1h+HJs8t5RlYFxM+wflc9PQF1q8i2V4QO4V8AYdCfq6/bcCtqn
-         qc2Q==
-X-Gm-Message-State: AOAM532qfcH8rrW/xZwLw7mhj0sq5lvZUbc/6InphH21D7oSsFlv1t+F
-        LgiEHLgibzPIBdlA80FMaYKsLZpBLYbHYw==
-X-Google-Smtp-Source: ABdhPJyaRLm+2y1TV2V6G19tGVbOt+PBv+vgWWeZ8ZkHWuG3RtmhpcgTXrIiYwD0rpnbTc4bFgISww==
-X-Received: by 2002:adf:aa4e:: with SMTP id q14mr1806762wrd.100.1633048035259;
-        Thu, 30 Sep 2021 17:27:15 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.49.194])
-        by smtp.googlemail.com with ESMTPSA id o26sm6149801wmc.17.2021.09.30.17.27.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vRDg5mQIB7ZkRlTt9NHHXUKd/NnUUj/ZwFb8QTzm2pI=;
+        b=q0AoGmbtvBDQTLhZW+OQgI3wtHbYMd2n6eKQE56D12zV3rtkPiSJPJP5TvQMn4Nky3
+         Tod5EV2Dy6nivFKTgXzC2T8177WBaEcMQXcqDxUNCKoJiweegsGQnnFMRBzhyyzYhFlK
+         PjlZ4lsmMEEPgpIYpr+lr8dsolkpEw8pZzfZkPrC+34tGld+fpTp32FLS+5c/WInsCGE
+         Hk9BAMrIx4dnNL1lwrXALlIsqcKCmmocOlqlwgtTaWazmT+btr/vMQ35a+frUHLIGJb0
+         sfNf/IcY45uZBJL6bElhu2zoTG0Qy0iKPaiKyKWusCOI4Ws3hFAj9hQPUzgtshJV2lmG
+         HHcA==
+X-Gm-Message-State: AOAM533a8cH8gdJBRFmgsvz1VOluNhTTW2d5HGFZ4AmPncDPZ73X+tU2
+        I6M5s2s1zFz23xUf9fyWt0Y=
+X-Google-Smtp-Source: ABdhPJxM3nEsrkN+aXCGrXCmJM/MXQAksNTANwWDDOf+rFJW7wsqTSUAkUT9ZtASzSq2NXweULIYlA==
+X-Received: by 2002:a65:6554:: with SMTP id a20mr7313562pgw.107.1633048345725;
+        Thu, 30 Sep 2021 17:32:25 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id b142sm4271980pfb.17.2021.09.30.17.32.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 17:27:14 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/affs: fix minor indentation and codestyle
-Date:   Fri,  1 Oct 2021 02:27:01 +0200
-Message-Id: <20211001002702.151056-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Sep 2021 17:32:25 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 17:32:23 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>
+Cc:     djwong@kernel.org, linux-xfs@vger.kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Message-ID: <YVZXF3mbaW+Pe+Ji@nuc10>
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
+ <20210930044202.GP2361455@dread.disaster.area>
+ <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
+ <YVYGcLbu/aDKXkag@nuc10>
+ <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Errors found by checkpatch.pl
+On Thu, Sep 30, 2021 at 11:10:10PM +0200, Vlastimil Babka wrote:
+> On 9/30/21 8:48 PM, Rustam Kovhaev wrote:
+> > On Thu, Sep 30, 2021 at 10:13:40AM +0200, Vlastimil Babka wrote:
+> >>
+> >> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
+> >> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
+> >> two together last 5 years anyway.
+> > 
+> > +1 for adding Kconfig option, it seems like some things are not meant to
+> > be together.
+> 
+> But if we patch SLOB, we won't need it.
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- fs/affs/inode.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+OK, so we consider XFS on SLOB a supported configuration that might be
+used and should be tested.
+I'll look into maybe adding a config with CONFIG_SLOB and CONFIG_XFS_FS
+to syzbot.
 
-diff --git a/fs/affs/inode.c b/fs/affs/inode.c
-index 2352a75bd9d6..69dc98d07e41 100644
---- a/fs/affs/inode.c
-+++ b/fs/affs/inode.c
-@@ -41,7 +41,7 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
- 		goto bad_inode;
- 	}
- 	if (affs_checksum_block(sb, bh) || be32_to_cpu(AFFS_HEAD(bh)->ptype) != T_SHORT) {
--		affs_warning(sb,"read_inode",
-+		affs_warning(sb, "read_inode",
- 			   "Checksum or type (ptype=%d) error on inode %d",
- 			   AFFS_HEAD(bh)->ptype, block);
- 		goto bad_inode;
-@@ -151,7 +151,7 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
- 
- 	inode->i_mtime.tv_sec = inode->i_atime.tv_sec = inode->i_ctime.tv_sec
- 		       = (be32_to_cpu(tail->change.days) * 86400LL +
--		         be32_to_cpu(tail->change.mins) * 60 +
-+						 be32_to_cpu(tail->change.mins) * 60 +
- 			 be32_to_cpu(tail->change.ticks) / 50 +
- 			 AFFS_EPOCH_DELTA) +
- 			 sys_tz.tz_minuteswest * 60;
-@@ -182,7 +182,7 @@ affs_write_inode(struct inode *inode, struct writeback_control *wbc)
- 		return 0;
- 	bh = affs_bread(sb, inode->i_ino);
- 	if (!bh) {
--		affs_error(sb,"write_inode","Cannot read block %lu",inode->i_ino);
-+		affs_error(sb, "write_inode", "Cannot read block %lu", inode->i_ino);
- 		return -EIO;
- 	}
- 	tail = AFFS_TAIL(sb, bh);
-@@ -263,6 +263,7 @@ void
- affs_evict_inode(struct inode *inode)
- {
- 	unsigned long cache_page;
-+
- 	pr_debug("evict_inode(ino=%lu, nlink=%u)\n",
- 		 inode->i_ino, inode->i_nlink);
- 	truncate_inode_pages_final(&inode->i_data);
-@@ -298,10 +299,12 @@ affs_new_inode(struct inode *dir)
- 	u32			 block;
- 	struct buffer_head	*bh;
- 
--	if (!(inode = new_inode(sb)))
-+	inode = new_inode(sb);
-+	if (!inode)
- 		goto err_inode;
- 
--	if (!(block = affs_alloc_block(dir, dir->i_ino)))
-+	block = affs_alloc_block(dir, dir->i_ino);
-+	if (!block)
- 		goto err_block;
- 
- 	bh = affs_getzeroblk(sb, block);
-@@ -390,7 +393,8 @@ affs_add_entry(struct inode *dir, struct inode *inode, struct dentry *dentry, s3
- 
- 	if (inode_bh) {
- 		__be32 chain;
--	       	chain = AFFS_TAIL(sb, inode_bh)->link_chain;
-+
-+		chain = AFFS_TAIL(sb, inode_bh)->link_chain;
- 		AFFS_TAIL(sb, bh)->original = cpu_to_be32(inode->i_ino);
- 		AFFS_TAIL(sb, bh)->link_chain = chain;
- 		AFFS_TAIL(sb, inode_bh)->link_chain = cpu_to_be32(block);
--- 
-2.25.1
+It seems that we need to patch SLOB anyway, because any other code can
+hit the very same issue.
+
+> >> Maybe we could also just add the 4 bytes to all SLOB objects, declare
+> >> kfree() is always fine and be done with it. Yes, it will make SLOB footprint
+> >> somewhat less tiny, but even whan we added kmalloc power of two alignment
+> >> guarantees, the impact on SLOB was negligible.
+> > 
+> > I'll send a patch to add a 4-byte header for kmem_cache_alloc()
+> > allocations.
+> 
+> Thanks. Please report in the changelog slab usage from /proc/meminfo
+> before and after patch (at least a snapshot after a full boot).
+
+OK.
 
