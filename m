@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706FF41EDBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D686541EDC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354456AbhJAMrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:47:09 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57134 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354445AbhJAMrH (ORCPT
+        id S1354474AbhJAMr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353423AbhJAMr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:47:07 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633092323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fTgL7kIUE93Xymjv16zGETKagJ0TIPP/q5KcKMxrjSM=;
-        b=Jtj0w5Qb3JtEYFJDHS0GuwY7One/jOUkU5xQtvONnUfF5MFuDB2gHAOsOSo38A8SokyWF8
-        M7r+us69GAVO8YutjxVbTYGEZ9U3mnso3UJad3UXfLTcAUgvWkz/zBaSKb+se9twxaN28J
-        zmg6C27yYGNCIRNktWfDdzboOOSDvxtubt1b8l8C8ER91/B0lrisPtAy3Maa9Bo5QnLQbd
-        44EblVjtmFAvIDNx+cbe7VJOgyGwcD0iWPS8lW3GU50Qughn0Jybw0UjQ7C0BJI8xN7pNG
-        amNqtYS6/Bx8i5fKEJct8m6hMLAUiRb4s8kZlIcDe4T8RSrQ4I5PBVq7YJMvNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633092323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fTgL7kIUE93Xymjv16zGETKagJ0TIPP/q5KcKMxrjSM=;
-        b=9TFDbZX2xoGz1paBs1QM8K/OxxMUu9YGh2Q2CoFIimPMDDRgdKXJyTlJeOxALPtzw/ByzB
-        iuTM/wYiAWoDVJCw==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: Re: [PATCH v10 02/28] x86/fpu/xstate: Modify the initialization
- helper to handle both static and dynamic buffers
-In-Reply-To: <20210825155413.19673-3-chang.seok.bae@intel.com>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-3-chang.seok.bae@intel.com>
-Date:   Fri, 01 Oct 2021 14:45:22 +0200
-Message-ID: <87k0iw6hi5.ffs@tglx>
+        Fri, 1 Oct 2021 08:47:57 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA505C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:46:12 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id bd28so34251214edb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JA98+GIBaPHY6lzBmZ4Tvs/snpUhHoNpqwt61nTpkis=;
+        b=Is5IqeVMoXBsSYVNc+BFcM1OoT119+AkF8qL2/okCD58nmP6OhA3iQ4f5TMNyqrjoK
+         cb2+r1W2u4pyHVeqXBDFMdeNnRqec2bqCqRpXsfVEJ95ZOUESabZJVLBWm+5rhgdlHUv
+         b/ryU+BYOE6LEkxv0n83Nab6K3vvgwDIwWPW5i0jFtfaKH69YjR9S24feRgohcJQQHtB
+         g4ns6FIB7E0M2bKArcf/fXtJ5w0Roum8U/kDMjAsnl84CKLQ/ldLzZTNShmaAJikKVs4
+         zvZBe8R9Ts+G9JhY3gnUQ/6vvote/VYDxgAHFmSzlDKPmb1BG0p4iOmvfHnAvWWNO+LY
+         3AKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JA98+GIBaPHY6lzBmZ4Tvs/snpUhHoNpqwt61nTpkis=;
+        b=DbJeP7B5JW38LjIPjej1Bw3fealD80MBBvkMWMxFySLZAuqhV12n47AMa4aac3QpHL
+         tPjYQb0hROj0nXyx5yqR6/Wz57i+LP8HXffjib9IEzRpq7yVusmpdW9MQhlTN5VVbK9V
+         wHDxT7hPX9ZLM7C6mfMq3Dtbd2DxxIV7gMetNf4IaZPUxZJ5QtUYRApAOOcMBXy6VpTa
+         sRczo1eE/IGRxYj8G5QWGXv0PPHITO6GzvfStLc5dwVkg2K2M0CM1HjRkNjsp62w4Wza
+         eNYmIKR3tsnQ+1QTUwK5k3eXsYakFQcdIVNqjUZ1FeTo8JUClQoktqn15K2BXsCha1RR
+         jZdg==
+X-Gm-Message-State: AOAM530WVjCJDdHF5KUl6Z/nYtedjrJU08UeCN64zL1+K/Khb3fMX1tm
+        kbRhn0aU/r6kTGx3eypJbvpOUX6Re+TIC/Iseuv0eH56n5AJTA==
+X-Google-Smtp-Source: ABdhPJxWiAd7awY5FtJw8iqY2HDUYsVtRLzq0FFELa59+THVoAzC4qdbZLWi9qBDropgPYf+lhIrCIjpvxRQBPP+EW0=
+X-Received: by 2002:a17:906:280f:: with SMTP id r15mr5671342ejc.559.1633092371103;
+ Fri, 01 Oct 2021 05:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com> <20211001123623.GM964074@nvidia.com>
+In-Reply-To: <20211001123623.GM964074@nvidia.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Sat, 2 Oct 2021 01:45:59 +1300
+Message-ID: <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chang,
-
-On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
-> Have the function initializing the XSTATE buffer take a struct fpu *
-> pointer in preparation for dynamic state buffer support.
+On Sat, Oct 2, 2021 at 1:36 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> init_fpstate is a special case, which is indicated by a null pointer
-> parameter to fpstate_init().
+> On Sat, Oct 02, 2021 at 01:24:54AM +1300, Barry Song wrote:
 >
-> Also, fpstate_init_xstate() now accepts the state component bitmap to
-> customize the compacted format.
+> > I assume KVA mode can avoid this iotlb flush as the device is using
+> > the page table of the kernel and sharing the whole kernel space. But
+> > will users be glad to accept this mode?
+>
+> You can avoid the lock be identity mapping the physical address space
+> of the kernel and maping map/unmap a NOP.
+>
+> KVA is just a different way to achive this identity map with slightly
+> different security properties than the normal way, but it doesn't
+> reach to the same security level as proper map/unmap.
+>
+> I'm not sure anyone who cares about DMA security would see value in
+> the slight difference between KVA and a normal identity map.
 
-That's not a changelog. Changelogs have to explain the WHY not the WHAT.
+yes. This is an important question. if users want a high security level,
+kva might not their choice; if users don't want the security, they are using
+iommu passthrough. So when will users choose KVA?
 
-I can see the WHY when I look at the later changes, but that's not how
-it works.
+>
+> > which have been mapped in the current dma-map/unmap with IOMMU backend.
+> > some drivers are using bouncing buffer to overcome the performance loss of
+> > dma_map/unmap as copying is faster than unmapping:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=907676b130711fd1f
+>
+> It is pretty unforuntate that drivers are hard coding behaviors based
+> on assumptions of what the portable API is doing under the covers.
 
-Also the subject of this patch is just wrong. It does not make the
-functions handle dynamic buffers, it prepares them to add support for
-that later.
+not real when it has a tx_copybreak which can be set by ethtool or
+similar userspace
+tools . if users are using iommu passthrough, copying won't happen by
+the default
+tx_copybreak.  if users are using restrict iommu mode, socket buffers
+are copied into
+the buffers allocated and mapped in the driver. so this won't require
+mapping and
+unmapping socket buffers frequently.
 
-> +static inline void fpstate_init_xstate(struct xregs_state *xsave, u64 mask)
-> +{
-> +	/*
-> +	 * XRSTORS requires these bits set in xcomp_bv, or it will
-> +	 * trigger #GP:
-> +	 */
-> +	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | mask;
-> +}
+>
+> Jason
 
-This wants to be a separate cleanup patch which replaces the open coded
-variant here:
-
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index fc1d529547e6..0fed7fbcf2e8 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -395,8 +395,7 @@ static void __init setup_init_fpu_buf(void)
->  	print_xstate_features();
->  
->  	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		init_fpstate.xsave.header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
-> -						     xfeatures_mask_all;
-> +		fpstate_init_xstate(&init_fpstate.xsave, xfeatures_mask_all);
-
-Thanks,
-
-        tglx
+Thanks
+barry
