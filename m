@@ -2,255 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1789441F13B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2630641F13E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355019AbhJAPaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1355030AbhJAPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:30:54 -0400
+Received: from mga04.intel.com ([192.55.52.120]:1800 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355018AbhJAPaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Oct 2021 11:30:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53176 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbhJAPao (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:30:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9F6C8385C8F;
-        Fri,  1 Oct 2021 11:28:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id iHc6kFTMXPEw; Fri,  1 Oct 2021 11:28:59 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id ECFA3385D9A;
-        Fri,  1 Oct 2021 11:28:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com ECFA3385D9A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633102139;
-        bh=MJk6TyGTL2kc9ZNmuP/1t/KxLt95vHncbWEtGyndPAU=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=nSoGQY/dv99UCmKY66eT1DCB6fTan2zjb/0F8LnpFSk/+5fs9q/jId+YRRKciSzzJ
-         NJoTrEzvC1/54W1+hLFWdKKQGzNKc8zdvby7poHREFJT30FnTb9I6OSIwHPufBTANL
-         ErNaXzG5Td+TF4SlBm+BfOH/Zed02cbgXHlBMrScSAXWhIrgi6wEy8ij8ALDSUEKs8
-         GpN5dDLlUUe4mYDcS1kfKjqjE+c33w7WRFwftdriZjvqZxYhhkX1+KFGNAwPcEoNla
-         8xEpG/82CgJL7qAWuN/z7yCIuy+bPxtS4y7Xt9OeqxIg15nRuMBtKXpZ5TWMCW6d6L
-         EazsQ4QrIRxTA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 52shssYSAnC7; Fri,  1 Oct 2021 11:28:58 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id CA9ED3856FF;
-        Fri,  1 Oct 2021 11:28:58 -0400 (EDT)
-Date:   Fri, 1 Oct 2021 11:28:58 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Message-ID: <971151132.46974.1633102138685.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210929235700.GF880162@paulmck-ThinkPad-P17-Gen-1>
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <20210929214703.GG22689@gate.crashing.org> <20210929235700.GF880162@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="223566372"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="223566372"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 08:29:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="521153750"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2021 08:29:02 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:29:02 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:29:01 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 1 Oct 2021 08:29:01 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:29:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fk74wwIP1Xhd60Wea0MvUqnPR8i8E/mdi524eJk2wLEf9aSf9ZjnCTC0QlBKdb2GhlvMlgnsfOm4i1V6QlZSWfNUA3DWhMc1tO1/vKqYJaxsiRUxy0oonsk7FLzHbs3+sd/40vTchFyqY5XOMe3chwJwKuL9T3yEvbPoghz4AJa6MVZ3oNDqMMVVbhCJvuDBaHAm2GLSl+Sw7fGNK9G32J4mzABHTX4gild1ridTEvMHim+/cWg3NUkHKeugIz0+gKKnmCQsI04JkojKPPZfPcLF53f6xrbwgtLnKp5OuWqiSpT2AFuBeonHKOuZ9b1JAqv9MbinQcCBlA1nF2o1uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nBWbutntv8MZ71SnENCsXIIuZJREVOuvsTuuMFkqzrI=;
+ b=FrQ9Xy4818njEEOS0mMyCWHlR7Db4tc3r9FH0yeVQlK/1Pw6Zi3biRwun1NVX9rntClUk4FdOo4t1O8MvrpTTJ81ZH13E+A7DnhP/4wnYtkffThOaR7CD6CmDqBSRw/TYRCU6dHyCT6ER8OCODE5Tq2FiRIqiq7K5F1lsNp9pb+YbFtCH8VMS1hqRITK+fO0/99uz5oZj2sF9Bm4S7hkySw7mKZv8M4EOM02jXTu3QAA3dILHkUVi9yZpOCrLNx2UmkGaY+eGJDfzdgdMXRIxT/Vr1j5tNU2gmpvkagMSvk2lNbUSFsSy4kqmi8JMikJoe7SU0cE17vVGzV4gTSoxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nBWbutntv8MZ71SnENCsXIIuZJREVOuvsTuuMFkqzrI=;
+ b=K4sB7rVuK1ktpBhzzDAolwT8LclB5L3f68oyshY24SAX4GWjRR8H4g760I9FUiW4IMKiKbgewMs37xzt+cZ6YAMn0bQkKodbwx2ddmg/y3OQ9A8dpfTDDodt/4lfxN2VLVHpvMxM3WagR8k4NaqnoXkXx7i7GUA1bf+DkhL41aI=
+Received: from BYAPR11MB3367.namprd11.prod.outlook.com (2603:10b6:a03:79::29)
+ by BYAPR11MB3703.namprd11.prod.outlook.com (2603:10b6:a03:b2::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Fri, 1 Oct
+ 2021 15:29:00 +0000
+Received: from BYAPR11MB3367.namprd11.prod.outlook.com
+ ([fe80::90d0:abd2:bb85:56e2]) by BYAPR11MB3367.namprd11.prod.outlook.com
+ ([fe80::90d0:abd2:bb85:56e2%3]) with mapi id 15.20.4566.015; Fri, 1 Oct 2021
+ 15:29:00 +0000
+From:   "G, GurucharanX" <gurucharanx.g@intel.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: RE: [Intel-wired-lan] [PATCH] ice: Make use of the helper function
+ devm_add_action_or_reset()
+Thread-Topic: [Intel-wired-lan] [PATCH] ice: Make use of the helper function
+ devm_add_action_or_reset()
+Thread-Index: AQHXr7kAEFcgchZxTk6u+23VQnSSJqu+Uojg
+Date:   Fri, 1 Oct 2021 15:28:59 +0000
+Message-ID: <BYAPR11MB3367C4843DB61D410B095341FCAB9@BYAPR11MB3367.namprd11.prod.outlook.com>
+References: <20210922125947.480-1-caihuoqing@baidu.com>
+In-Reply-To: <20210922125947.480-1-caihuoqing@baidu.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: baidu.com; dkim=none (message not signed)
+ header.d=none;baidu.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b1be58da-5cdd-48bc-e5e3-08d984f0311f
+x-ms-traffictypediagnostic: BYAPR11MB3703:
+x-microsoft-antispam-prvs: <BYAPR11MB3703F3DACF4576BDE39CF738FCAB9@BYAPR11MB3703.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nlxo4s/DjRspHnCm9rJY1ty1Ahv4BIHYmTCF7r9CSpVzLErMX4NjMYsm7H5KSHocFWwa1pcs7Ix3E3DBObudp5Gk0W39a6t7kDHIZMywV3zM2C+Xh4ZJIBi+y89GmikZln2BC5OYM51xSNg9chSJMq/NnPcIF+EsJ9VeFTxI2XN5Srtm10miPfvlSDNyp5rHv4hBZ+G1liHLa0pEorYH7RXOhQKkxbOxbRVPi1gc+D/bAIA6VDKdAKmea4kp5CPajbFXzi4yKnUQbCSsm+bmJ3xCPGc/yyzK+hFeUwgk6yottfU8nJ06d+YEJpQ6agT5wNSwpyFiwP6sLPJWuJfS4CaLeoqAxO+PY27hbC4ZZIvu7KZUB0zf3gbDVIMUjocLtihD4gP/7FcaaCNL2O5IhH2sR6vb8Or4QDBPbLNLurhec0gzostA5vKreAG6L2r0qf1dsARLNX9cvpkNdUF+IxbcADq7teJC/GsAc+ieId+F3gSs86g5nSgaDYXxzfcOgSEvPZK3agWxeY8fV4Izwj9IAF0qvyikCxA8dG4x5bxmw4Jdk/sjYZDOngav8JJGKBjcqdwcnAemQZvaWxO2LBXNT6zC1OwduFM67LBmTg9/pQjluVMpqu5kj7eZZ+mEMGkaDS7BAtcgBWpaukp9BDRXzpXbKfbkcHaGMJSu+oBJYDcuIp6Z2e/24jrr4raaYQnAFSItdzOeIe8KrXDo+w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3367.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(316002)(55016002)(9686003)(8936002)(4326008)(33656002)(66556008)(26005)(4744005)(38070700005)(38100700002)(8676002)(66446008)(64756008)(66476007)(54906003)(7696005)(86362001)(83380400001)(2906002)(66946007)(53546011)(122000001)(6506007)(52536014)(5660300002)(186003)(76116006)(6916009)(508600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?2YX1xcTTSap4eY9je7N08ouPfBFCk199idxdDv5FxQDO83eiRcjgvRvYzc9y?=
+ =?us-ascii?Q?na8cZNYsL8hofwtCnKdar7Q/lUf6BXM9kQFMVDkIlxY6F+FWRZo6NzhCObW1?=
+ =?us-ascii?Q?Ce/J1TFyoWMV719m/S9YowucmxvMox0VVTEoTXngPz6MHZWXjMc30LM/IDkY?=
+ =?us-ascii?Q?OKh+1yeHca2oZgQ7Ov7kqtvLguvOyAsn4/uT2YvQxOV7eIhieLIAgHbRsu/z?=
+ =?us-ascii?Q?2pE5If2N8754rZChHru0m0t+62l7KBffoTEnqkdp7GnhRbG06YFo8P2FZZUW?=
+ =?us-ascii?Q?U5kgMHyiAZBVDhC6O0xZJvcVKiHM2vB11L/bGWLn1PIqQNO1/ek3RGl0iAyF?=
+ =?us-ascii?Q?j8CugR5CG9UYXgCmlnmlbu0FQ3FLusyVkgkf4EV1r/E7cX+W/lvO38tvUkaZ?=
+ =?us-ascii?Q?WPHJu5/aiQF8bt/7UvLaAL/tSTYn3TL33PKgkDkMiYrwF1Ap7P9f5X06j6XF?=
+ =?us-ascii?Q?Rit28w0CU/ngLsqaFvE7RossCnaCO0/SyIYoDODWk+yqDJpyEe78UmCtpb4j?=
+ =?us-ascii?Q?ss4z4fjcnSo+GRRAEHgPGrD7C2y1jubH/dFm3TmHTyLrTQ7wq5ibOxYulOOq?=
+ =?us-ascii?Q?s1LeFKSXWZID2mL8t1aaN0S40vCh6sz78fiF53UCZ7Adf0JtQpfFxb0Nsrq3?=
+ =?us-ascii?Q?7lV6R2s6KHyW4Qc0443hk2ak8tIYXpYVYVl53sc3M34S20F/9ShLx422z5hV?=
+ =?us-ascii?Q?wS1e+MpQgKjd36w+JWH47P0JymSf9f3OH1ZisJ5luCpzEbLbEt3yJhC0fB8S?=
+ =?us-ascii?Q?dwIuKrlVwjDXm1Bqvr4iBndhLcFgLUQ3H8HUiYK8VRhknuv9WqUO0JHoW8nL?=
+ =?us-ascii?Q?9bHAczSc/fOe4aoZYM7DlBetBdWTxivUjJHye9vZ+Bxe/EiBaNjyjlr2L6iM?=
+ =?us-ascii?Q?0Z4LncLanp93VNzG3UqhXqrejFqNayT5oiwFlN8Lbdc1hyVrr3ZSjFTcJ/Go?=
+ =?us-ascii?Q?o8J36zDuMqXhMfuFWvlic/b5t9L407rmdWC5hRuXu3XU4nQI5DVRNobke/v8?=
+ =?us-ascii?Q?RldxlWI3OXZoY6H4FZDUycyoiXoWXJ9AlmHfHARzdWAYZgVGgqsdFFJv44GG?=
+ =?us-ascii?Q?gvc+JaNPhplT+Gn2kkI7+klfppH6QxZBrWdqZXcF6pjCa3mtVmXKL2tsgkly?=
+ =?us-ascii?Q?/mECtqZr3rhOHSJqGQGc/w6SObQuwhoIur6bg5+MB/zrDtGxX6RdJvo5GvCa?=
+ =?us-ascii?Q?B7L9P9uJv2sHZaRxRR1q82Ci2glYXkQLBG9yUC+WK5RqWEV1q7ReMqS2sscS?=
+ =?us-ascii?Q?6+6DX4RaAcZ6BB2s6l+g4jucutcS8GO2K+DEq0KgIU8Q8KcCigE/LkDPpn+V?=
+ =?us-ascii?Q?Rzmfm6eFBJE5GtKuRzrpupnX?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
-Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
-Thread-Index: WygKS7AETGX0bjx0832c99xpkTc3Nw==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3367.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1be58da-5cdd-48bc-e5e3-08d984f0311f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 15:29:00.0127
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RHr7FCyA0m4FzH67OHYZO8ZsnRLkVdJ0Qw7dPqB5nxIkS3MoNKQMkH6KERQXLAGZ5ZqaaNCpLqEkTsw8SbTOIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3703
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 29, 2021, at 7:57 PM, paulmck paulmck@kernel.org wrote:
 
-> On Wed, Sep 29, 2021 at 04:47:03PM -0500, Segher Boessenkool wrote:
->> Hi!
->> 
->> On Tue, Sep 28, 2021 at 05:15:07PM -0400, Mathieu Desnoyers wrote:
->> > C99 describes that accessing volatile objects are side-effects, and that
->> > "at certain specified points in the execution sequence called sequence
->> > points, all side effects of previous evaluations shall be complete
->> > and no side effects of subsequent evaluations shall have taken
->> > place". [2]
->> 
->> But note that the kernel explicitly uses C89 (with GNU extensions).
->> Side effects are largely equal there though.
->> 
->> Also note that there may no place in the generated machine code that
->> corresponds exactly to some sequence point.  Sequence points are a
->> concept that applies to the source program and how that executes on the
->> abstract machine.
-> 
-> Plus the "as if" rule rears its ugly head in many of these situations.
-> 
->> > +Because ctrl_dep emits distinct asm volatile within each leg of the if
->> > +statement, the compiler cannot transform the two writes to 'b' into a
->> > +conditional-move (cmov) instruction, thus ensuring the presence of a
->> > +conditional branch.  Also because the ctrl_dep emits asm volatile within
->> > +each leg of the if statement, the compiler cannot move the write to 'c'
->> > +before the conditional branch.
->> 
->> I think your reasoning here misses some things.  So many that I don't
->> know where to start to list them, every "because" and "thus" here does
->> not follow, and even the statements of fact are not a given.
->> 
->> Why do you want a conditional branch insn at all, anyway?  You really
->> want something else as far as I can see.
-> 
-> Because at the assembly language level on some architectures, a
-> conditional branch instruction provides weak but very real and very
-> useful memory-ordering properties.  Such a branch orders all loads
-> whose return values feed into the branch condition before any stores
-> that execute after the branch does (regardless of whether or not the
-> branch was taken).  And this is all the ordering that is required for
-> the use cases that Mathieu is worried about.
-> 
-> Yes, you can use explicit memory-barrier or acquire-load instructions,
-> but those incur more overhead on some types of hardware.  The code in
-> question is on a hotpath and is thus performance-critical.
-> 
-> It would be nice to be able to somehow tell the compiler exactly
-> what the ordering constraints are ("this particular load must be
-> ordered before these particular stores") and then let it (1) figure
-> out that a conditional branch will do the trick and (2) generate the
-> code accordingly.  But last I checked, this was not going to happen any
-> time soon.  So for the time being, we have to live within the current
-> capability of the tools that are available to us.
-> 
-> Linus points out that in all the actual control-dependent code in
-> the Linux kernel, the compiler is going to be hard-pressed to fail
-> to emit the required branch.  (Or in the case of ARMv8, the required
-> conditional-move instruction.)
-> 
-> Mathieu, for his part, recently read the relevant portions of
-> memory-barriers.txt (reproduced below) and would like to simplify these
-> coding guidlines, which, speaking as the author of those guidelines,
-> would be an extremely good thing.  His patches are attempting to move
-> us in that direction.
-> 
-> Alternatives include: (1) Using acquire loads or memory barriers
-> and accepting the loss in performance, but giving the compiler much
-> less leeway, (2) Ripping all of the two-legged "if" examples from
-> memory-barriers.txt and restricting control dependencies to else-less
-> "if" statements, again giving the compiler less leeway, and (3) Your
-> ideas here.
-> 
-> Does that help, or am I missing your point?
 
-Thanks Paul, it does help explaining the motivation for relying on
-control dependencies for some fast-path memory ordering in the kernel.
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Cai Huoqing
+> Sent: Wednesday, September 22, 2021 6:30 PM
+> To: caihuoqing@baidu.com
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; intel-wired-
+> lan@lists.osuosl.org; Jakub Kicinski <kuba@kernel.org>; David S. Miller
+> <davem@davemloft.net>
+> Subject: [Intel-wired-lan] [PATCH] ice: Make use of the helper function
+> devm_add_action_or_reset()
+>=20
+> The helper function devm_add_action_or_reset() will internally call
+> devm_add_action(), and if devm_add_action() fails then it will execute th=
+e
+> action mentioned and return the error code. So use
+> devm_add_action_or_reset() instead of devm_add_action() to simplify the
+> error handling, reduce the code.
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_devlink.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>=20
 
-And yes, my main goal is to simplify the coding guide lines, but I have
-not found any example of bad generated code in the tree kernel at this
-point. In some cases (e.g. uses of smp_acquire__after_ctrl_dep()) it's
-mainly thanks to luck though.
-
-There is another alternative we could list here: implement ctrl_dep_true(),
-ctrl_dep_false() and ctrl_dep(), which would respectively ensure a
-control dependency on the then leg, on the else leg, or on both legs of
-a conditional expression evaluation.
-
-> 
->> It is essential here that there is a READ_ONCE and the WRITE_ONCE.
->> Those things might make it work the way you want, but as Linus says this
->> is all way too subtle.  Can you include the *_ONCE into the primitive
->> itself somehow?
-> 
-> Actually, if the store is not involved in a data race, the WRITE_ONCE()
-> is not needed.  And in that case, the compiler is much less able to
-> fail to provide the needed ordering.  (No, the current documentation
-> does not reflect this.)  But if there is a data race, then your point
-> is right on the mark -- that WRITE_ONCE() cannot be safely omitted.
-> 
-> But you are absolutely right that the READ_ONCE() or equivalent is not
-> at all optional.  An example of an acceptable equivalent is an atomic
-> read-modify-write operation such as atomic_xchg_relaxed().
-> 
-> The question about whether the READ_ONCE() and WRITE_ONCE() can be
-> incorporated into the macro I leave to Mathieu.  I can certainly see
-> serious benefits from this approach, at least from a compiler viewpoint.
-> I must reserve judgment on usability until I see a proposal.
-
-[...]
-
-After having audited thoroughly all obviously documented control dependencies
-in the kernel tree, I'm not sure that including the READ_ONCE() and WRITE_ONCE()
-with the ctrl_dep() macro is a good idea, because in some cases there is
-calculation to be done on the result of the READ_ONCE() (e.g. through
-a static inline) before handing it over to the conditional expression.
-In other cases many stores are being done after the control dependency, e.g.:
-
-kernel/events/ring_buffer.c:__perf_output_begin()
-
-        do {
-                tail = READ_ONCE(rb->user_page->data_tail);
-                offset = head = local_read(&rb->head);
-                if (!rb->overwrite) {
-                        if (unlikely(!ring_buffer_has_space(head, tail,
-                                                            perf_data_size(rb),
-                                                            size, backward)))
-                                goto fail;
-                }
-
-                /*
-                 * The above forms a control dependency barrier separating the
-                 * @tail load above from the data stores below. Since the @tail
-                 * load is required to compute the branch to fail below.
-                 *
-                 * A, matches D; the full memory barrier userspace SHOULD issue
-                 * after reading the data and before storing the new tail
-                 * position.
-                 *
-                 * See perf_output_put_handle().
-                 */
-
-                if (!backward)
-                        head += size;
-                else
-                        head -= size;
-        } while (local_cmpxchg(&rb->head, offset, head) != offset);
-
-        if (backward) {
-                offset = head;
-                head = (u64)(-head);
-        }
-
-        /*
-         * We rely on the implied barrier() by local_cmpxchg() to ensure
-         * none of the data stores below can be lifted up by the compiler.
-         */
-
-[...]
-
-Note that I suspect that this control dependency documentation could be
-improved to state that the first control dependency is with the following
-local_cmpxchg store, which itself has a control dependency (when it evaluates
-to false) with the following stores to the ring buffer. Those are not volatile
-stores, but the "memory" clobber with the local_cmpxchg should ensure that
-following stores are after the local_cmpxchg in program order.
-
-One other thing we could do to improve things slightly would be to turn
-smp_acquire__after_ctrl_dep() into something which really is an acquire
-in all cases, which may not currently be true if the compiler finds a
-matching barrier()/smp_rmb() in the other leg after the conditional
-expression.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Tested-by: Gurucharan G <gurucharanx.g@intel.com> (A Contingent worker at I=
+ntel)
