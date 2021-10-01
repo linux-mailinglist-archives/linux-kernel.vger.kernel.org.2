@@ -2,214 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DEE41F189
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D99A41F18C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355084AbhJAPxH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Oct 2021 11:53:07 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:37815 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbhJAPxE (ORCPT
+        id S232060AbhJAPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:53:30 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:46971 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231267AbhJAPx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:53:04 -0400
-Received: by mail-ua1-f51.google.com with SMTP id t36so7006468uad.4;
-        Fri, 01 Oct 2021 08:51:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=V6QG7RVsPgL4MT7taFNIN3h9Vdu7FgpTMDBW2+9dAy4=;
-        b=7BnA7/BKelXoYxWK8iaAnS6yK1zR/K2UeEcIieD0HuVZDzmmHpNWuWD0+p/WMQn5zO
-         0o3P2pYBxATEpAw0PsG/kcug113d8V8cvcpNKwh/tzcx/5wiRsSvZoiA9WziVNJxMDYk
-         XoZ6gmV/i6ppNwnjN4y2cAgmPppHcSw6fsC/J2sEdfDQVL6nx69wEPjVU2CDsf/ID6f9
-         5bWAC90hkywi3Wfi9q1Na9f6trFJ+PAenh6GgdsXn5W37kaDRKdbK0eb3653pvTvx0Em
-         lFiFs8gz9jElGNwc36+qxh7cbBBYXFmnAWEmv0PiQpEwaWL3piF43XG3feD6s1aeN4dC
-         8Ijg==
-X-Gm-Message-State: AOAM531+5owAxqxQU0/RlnGdH32liuXwueZ5mM92fMX93t5+MQNb2UoN
-        30t+y/RfS8CoXG7PKIHzhgTSmqNf2PpV4bF3+R0=
-X-Google-Smtp-Source: ABdhPJxSLKh9AvpGnMkJMf+4rL5ey13Duasr9b9pl5UUVIbEI9s1F181091Vc8CdXHhLM8BddUTmHotIzJX01V/YUxw=
-X-Received: by 2002:ab0:16d4:: with SMTP id g20mr10998662uaf.114.1633103479588;
- Fri, 01 Oct 2021 08:51:19 -0700 (PDT)
+        Fri, 1 Oct 2021 11:53:28 -0400
+Received: (qmail 507274 invoked by uid 1000); 1 Oct 2021 11:51:43 -0400
+Date:   Fri, 1 Oct 2021 11:51:43 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
+ un-authorized devices
+Message-ID: <20211001155143.GB505557@rowland.harvard.edu>
+References: <20210930065807-mutt-send-email-mst@kernel.org>
+ <YVXBNJ431YIWwZdQ@kroah.com>
+ <20210930103537-mutt-send-email-mst@kernel.org>
+ <YVXOc3IbcHsVXUxr@kroah.com>
+ <20210930105852-mutt-send-email-mst@kernel.org>
+ <YVXWIVZupeAzT6bO@kroah.com>
+ <f4b5a269-843f-6911-24fe-ebffb2bd4f9e@linux.intel.com>
+ <YVXyqBGa5Ix5MzmD@kroah.com>
+ <bb27af8d-d4ba-fa70-8893-5b9939f9280a@linux.intel.com>
+ <YVaq0Hm8WHVY46xX@kroah.com>
 MIME-Version: 1.0
-References: <20210914143835.511051-1-geert@linux-m68k.org> <20210914143835.511051-20-geert@linux-m68k.org>
- <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
-In-Reply-To: <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 1 Oct 2021 17:51:08 +0200
-Message-ID: <CAMuHMdVOa8DAGJQpJ8AotARxfh9PvpskJJa6k48jE92-P+GLRA@mail.gmail.com>
-Subject: Re: [PATCH v6 19/19] auxdisplay: ht16k33: Add LED support
-To:     Robin van der Gracht <robin@protonic.nl>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVaq0Hm8WHVY46xX@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoi Robin,
+On Fri, Oct 01, 2021 at 08:29:36AM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Sep 30, 2021 at 12:15:16PM -0700, Andi Kleen wrote:
+> > 
+> > On 9/30/2021 10:23 AM, Greg Kroah-Hartman wrote:
+> > > On Thu, Sep 30, 2021 at 10:17:09AM -0700, Andi Kleen wrote:
+> > > > The legacy drivers could be fixed, but nobody really wants to touch them
+> > > > anymore and they're impossible to test.
+> > > Pointers to them?
+> > 
+> > For example if you look over old SCSI drivers in drivers/scsi/*.c there is a
+> > substantial number that has a module init longer than just registering a
+> > driver. As a single example look at drivers/scsi/BusLogic.c
+> 
+> Great, send patches to fix them up instead of adding new infrastructure
+> to the kernel.  It is better to remove code than add it.  You can rip
+> the ISA code out of that driver and then you will not have the issue
+> anymore.
+> 
+> Or again, just add that module to the deny list and never load it from
+> userspace.
+> 
+> > There were also quite a few platform drivers like this.
+> 
+> Of course, platform drivers are horrible abusers of this.  Just like the
+> recent one submitted by Intel that would bind to any machine it was
+> loaded on and did not actually do any hardware detection assuming that
+> it owned the platform:
+> 	https://lore.kernel.org/r/20210924213157.3584061-2-david.e.box@linux.intel.com
+> 
+> So yes, some drivers are horrible, it is our job to catch that and fix
+> it.  If you don't want to load those drivers on your system, we have
+> userspace solutions for that (you can have allow/deny lists there.)
+> 
+> > > > The drivers that probe something that is not enumerated in a standard way
+> > > > have no choice, it cannot be implemented in a different way.
+> > > PCI devices are not enumerated in a standard way???
+> > 
+> > The pci devices are enumerated in a standard way, but typically the driver
+> > also needs something else outside PCI that needs some other probing
+> > mechanism.
+> 
+> Like what?  What PCI drivers need outside connections to control the
+> hardware?
+> 
+> > > > So instead we're using a "firewall" the prevents these drivers from doing
+> > > > bad things by not allowing ioremap access unless opted in, and also do some
+> > > > filtering on the IO ports The device filter is still the primary mechanism,
+> > > > the ioremap filtering is just belts and suspenders for those odd cases.
+> > > That's horrible, don't try to protect the kernel from itself.  Just fix
+> > > the drivers.
+> > 
+> > I thought we had already established this last time we discussed it.
+> > 
+> > That's completely impractical. We cannot harden thousands of drivers,
+> > especially since it would be all wasted work since nobody will ever need
+> > them in virtual guests. Even if we could harden them how would such a work
+> > be maintained long term? Using a firewall and filtering mechanism is much
+> > saner for everyone.
+> 
+> I agree, you can not "harden" anything here.  That is why I asked you to
+> use the existing process that explicitly moves the model to userspace
+> where a user can say "do I want this device to be controlled by the
+> kernel or not" which then allows you to pick and choose what drivers you
+> want to have in your system.
+> 
+> You need to trust devices, and not worry about trusting drivers as you
+> yourself admit :)
 
-On Thu, Sep 30, 2021 at 12:57 PM Robin van der Gracht <robin@protonic.nl> wrote:
-> On 2021-09-14 16:38, Geert Uytterhoeven wrote:
-> > Instantiate a single LED based on the "led" subnode in DT.
-> > This allows the user to control display brightness and blinking (backed
-> > by hardware support) through the LED class API and triggers, and exposes
-> > the display color.  The LED will be named
-> > "auxdisplay:<color>:<function>".
-> >
-> > When running in dot-matrix mode and if no "led" subnode is found, the
-> > driver falls back to the traditional backlight mode, to preserve
-> > backwards compatibility.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Reviewed-by: Marek Behún <kabel@kernel.org>
-> > ---
-> > v6:
-> >   - Add Reviewed-by,
-> >   - Reorder operations in ht16k33_led_probe() to ease future conversion
-> >     to device properties,
+That isn't the way they see it.  In their approach you can never 
+trust any devices at all.  Therefore devices can only be allowed to 
+bind to a very small set of "hardened" drivers.  Never mind how they 
+decide whether or not a driver is sufficiently "hardened".
 
-> > --- a/drivers/auxdisplay/ht16k33.c
-> > +++ b/drivers/auxdisplay/ht16k33.c
-> > @@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct
-> > *work)
-> >       i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
-> >  }
-> >
-> > +static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
-> > +                          unsigned int brightness)
-> > +{
-> > +     struct led_init_data init_data = {};
-> > +     struct device_node *node;
-> > +     int err;
-> > +
-> > +     /* The LED is optional */
-> > +     node = of_get_child_by_name(dev->of_node, "led");
-> > +     if (!node)
-> > +             return 0;
-> > +
-> > +     init_data.fwnode = of_fwnode_handle(node);
-> > +     init_data.devicename = "auxdisplay";
-> > +     init_data.devname_mandatory = true;
-> > +
-> > +     led->brightness_set_blocking = ht16k33_brightness_set_blocking;
-> > +     led->blink_set = ht16k33_blink_set;
-> > +     led->flags = LED_CORE_SUSPENDRESUME;
-> > +     led->brightness = brightness;
-> > +     led->max_brightness = MAX_BRIGHTNESS;
->
-> What do you think about adding a default trigger and making it 'backlight'?
->
-> led->default_trigger = "blacklight";
->
-> Or as an alternative, suggesting linux,default-trigger = "backlight" in the
-> docs? Since the led class won't respond to blank events by just making it's
-> function LED_FUNCTION_BACKLIGHT.
->
-> led {
->         function = LED_FUNCTION_BACKLIGHT;
->         color = <LED_COLOR_ID_GREEN>;
->         linux,default-trigger = "backlight";
-> };
+> The kernel's trust model is that once we bind to them, we trust almost
+> all device types almost explicitly.  If you wish to change that model,
+> that's great, but it is a much larger discussion than this tiny patchset
+> would require.
 
-The latter makes perfect sense to me.  Will do.
+Forget about trust for the moment.  Let's say the goal is to prevent 
+the kernel from creating any bindings other that those in some small 
+"allowed" set.  To fully specify one of the allowed bindings, you 
+would have to provide both a device ID and a driver name.  But in 
+practice this isn't necessary, since a device with a given ID will 
+bind to only one driver in almost all cases, and hence giving just 
+the device ID is enough.
 
-> I noticed blanking is broken. The backlight device (or LED device with
-> backlight trigger) doens't get notified when the framebuffer is blanked since
-> the driver doesn't implement fb_blank.
->
-> Right now:
->
-> echo 1 > /sys/class/graphics/fb0/blank
->                                                              |
-> sh: write error: Invalid argument
->
-> Due to:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/video/fbdev/core/fbmem.c?h=v5.15-rc3#n1078
+So to do what they want, all that's needed is to forbid any bindings 
+except where the device ID is "allowed".  Or to put it another way, 
+where the device's authorized flag (which can be initialized based on 
+the device ID) is set.
 
-That's a pre-existing problem, righ? ;-)
+(The opposite approach, in which the drivers are "allowed" rather 
+than the device IDs, apparently has already been discussed and 
+rejected.  I'm not convinced that was a good decision, but...)
 
-> Something like this fixes it.
->
-> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-> index 89ee5b4b3dfc..0883d5252c81 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -346,6 +346,15 @@ static int ht16k33_mmap(struct fb_info *info, struct
-> vm_area_struct *vma)
->          return vm_map_pages_zero(vma, &pages, 1);
->   }
->
-> +/*
-> + * Blank events will be passed to the backlight device (or the LED device if
-> + * it's trigger is 'backlight') when we return 0 here.
-> + */
-> +static int ht16k33_blank(int blank, struct fb_info *info)
-> +{
-> +       return 0;
-> +}
-> +
->   static const struct fb_ops ht16k33_fb_ops = {
->          .owner = THIS_MODULE,
->          .fb_read = fb_sys_read,
-> @@ -354,6 +363,7 @@ static const struct fb_ops ht16k33_fb_ops = {
->          .fb_copyarea = sys_copyarea,
->          .fb_imageblit = sys_imageblit,
->          .fb_mmap = ht16k33_mmap,
-> +       .fb_blank = ht16k33_blank,
->   };
->
->   /*
->
-> Feel free to include (something like) this in the patch stack.
+Does this seem like a fair description of the situation?
 
-Thanks, will do.
-
-> > +
-> > +     err = devm_led_classdev_register_ext(dev, led, &init_data);
-> > +     if (err)
-> > +             dev_err(dev, "Failed to register LED\n");
->
-> You might want to call ht16k33_brightness_set(priv, brightness) here to get a
-> know value into the display setup register (0x80).
->
-> Right now if I enable hardware blinking and (soft)reboot my board it keeps on
-> blinking even after a re-probe.
-
-I don't have that issue.
-Aha, ht16k33_seg_probe() calls ht16k33_brightness_set(), but
-ht16k33_fbdev_probe() doesn't.  The latter should do that, too,
-when not using backwards compatibility mode.
-
-> > @@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct
-> > ht16k33_priv *priv,
-> >       struct ht16k33_seg *seg = &priv->seg;
-> >       int err;
-> >
-> > -     err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
-> > +     err = ht16k33_brightness_set(priv, brightness);
->
-> This looks like a bugfix for patch 17, maybe move this change there?
-
-Indeed. Bad rebase. Will move.
-
-Thanks a lot for your comments!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Alan Stern
