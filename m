@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B93B41F64A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A3741F64D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355275AbhJAU1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhJAU1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:27:48 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE82C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:26:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v18so37990187edc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 13:26:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yOFCqjCsaIkGC0GztDDOH3O6ih5px6ECSue53rP82kU=;
-        b=NnJZafKHRYxx2UF8EtQz8KtZ+o/7ZURng4/muTjwBgZ8zD9dj7NlQ0JwAtSY/2VOvw
-         wM7Kw6eU16QuiCvmkGJaijk0lvLXmFA31i06/tgJ6L90DgPe4za5K+57nukhr7nKaLm7
-         vYWaRmJ/cuPGSonNiARKS0MeZ3tFuP4R29QFlIq/cpfnf+07kpnBMtP53mXIS0F4Me8T
-         nm89lfGCc61AmxT/izSC65Dp1Hb0Vej8MyAtaZKBcQAC4wZBdNCtJ2ogPEPAjJ2/geQG
-         gULyoutc8yO1IOhOY4StSZanr996MLZoz1Jkylm9rM7QuMLLUq3kGlk6+BHaojF/xXwA
-         KisA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yOFCqjCsaIkGC0GztDDOH3O6ih5px6ECSue53rP82kU=;
-        b=w6eNAIcykj7s5KY0cC82hHardEewXMzC4KDfOX2Ij+sbPZODTMyw8GtbDKnF8+brmZ
-         QB3GvRHFM1VJdDVqllvmr5/dqIhTJ13R3D6m/I5sGrArTyxzm99rAEUX/GBxuSQ5T1xq
-         BhyxdJ6OAR97gYr+S03mK+xnd7xilHuMxm2yw2Qd8ilBaQsgogIZPe8NwwYnn7YM0RrP
-         7xVSsHIr2P/el+ew/dV6BG0lbUmmgfjg6OKLNzjpLu0FWPRmGRD4RNwtvWhBwnoMiO75
-         GpqiyHY9NS7/7EdRSzyfTGvf24IeJCXe3QpGcm2FFqezuPEHwFP7qQV5ejGfHk9YZNek
-         h6gg==
-X-Gm-Message-State: AOAM533IKDjLIMaojTWKlfRZFWwam1ZyYtvTtqeV+ZV8Aa8BQ4TTqf5P
-        6BbMfXJD8Of7FZI0wD5xD3g=
-X-Google-Smtp-Source: ABdhPJwpRaSQY40ta/5LIKqezd8FR2LGmiFwLQg1NWYet4VWq6TUi1fqZObBubZ3rCIPPFU65swW4A==
-X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr8429247ejb.39.1633119961954;
-        Fri, 01 Oct 2021 13:26:01 -0700 (PDT)
-Received: from tom-desktop.station (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
-        by smtp.gmail.com with ESMTPSA id b13sm4800317ede.97.2021.10.01.13.26.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 13:26:01 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6655: fix camelcase in pbyCxtBuf
-Date:   Fri,  1 Oct 2021 22:25:01 +0200
-Message-Id: <20211001202504.410383-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1355239AbhJAU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:29:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230111AbhJAU2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:28:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B12D61A56;
+        Fri,  1 Oct 2021 20:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633119990;
+        bh=vXHfax9r9lddztIM164XFEM0kr2hoeoQ2/mwckZGDAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=meZ3RyYTPec73G07idC5IUTIyL9CBE5FHdWwR51raQdT6tH84HRfySGFUc6KU91rM
+         eqUTBvWCwNFl3o1dWseBwjfLpYFCLWF6IJubEg3LCRkqwhN6nnkj/tErFkbVOee8eC
+         RiHB49+kcCXeBqp5H3sC8S9U4vDBX1YrfC9l83I3Q151IjbBXjfSsV1ljCk8B2AmM3
+         yRII7FcYHNn0ZvkT8zUQeX5Sgiklo2JTuzaDqI2iOyQRerr2Au8b0+UL0GRxlMYMnx
+         H9mSyP8KufKGqoUS61wsByeyA7hSYOgMKS2keQwdHdx/V8TRgiHA+xQ4OlZsdt5KB/
+         N7F5wsRdSbr8Q==
+Date:   Fri, 1 Oct 2021 21:25:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, sboyd@kernel.org, mka@chromium.org
+Subject: Re: [PATCH V1 1/2] dt-bindings: spi: Add sc7180 support
+Message-ID: <20211001202539.GE5080@sirena.org.uk>
+References: <1632997450-32293-1-git-send-email-rajpat@codeaurora.org>
+ <1632997450-32293-2-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kA1LkgxZ0NN7Mz3A"
+Content-Disposition: inline
+In-Reply-To: <1632997450-32293-2-git-send-email-rajpat@codeaurora.org>
+X-Cookie: "Pok pok pok, P'kok!"
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace camel case variable name for variable pbyCxtBuf
-with snake case equivalent, in mac.h
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
- drivers/staging/vt6655/mac.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--kA1LkgxZ0NN7Mz3A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/staging/vt6655/mac.h b/drivers/staging/vt6655/mac.h
-index 9797eddaea01..3043d2813074 100644
---- a/drivers/staging/vt6655/mac.h
-+++ b/drivers/staging/vt6655/mac.h
-@@ -886,8 +886,8 @@ void MACvSetLongRetryLimit(struct vnt_private *priv, unsigned char byRetryLimit)
- 
- void MACvSetLoopbackMode(struct vnt_private *priv, unsigned char byLoopbackMode);
- 
--void MACvSaveContext(struct vnt_private *priv, unsigned char *pbyCxtBuf);
--void MACvRestoreContext(struct vnt_private *priv, unsigned char *pbyCxtBuf);
-+void MACvSaveContext(struct vnt_private *priv, unsigned char *cxt_buf);
-+void MACvRestoreContext(struct vnt_private *priv, unsigned char *cxt_buf);
- 
- bool MACbSoftwareReset(struct vnt_private *priv);
- bool MACbSafeSoftwareReset(struct vnt_private *priv);
--- 
-2.25.1
+On Thu, Sep 30, 2021 at 03:54:09PM +0530, Rajesh Patil wrote:
+> Add device tree compatible for sc7180 SoC.
 
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--kA1LkgxZ0NN7Mz3A
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFXbsIACgkQJNaLcl1U
+h9ASeAf+Ovebf56F1WWWWiQKFCWm6cBwITcjaeV7bhiWd297kBrRONtcJ16/h1b1
+Ao6YxQFw5LJF8JYr4LE/NlYeEsBXQ8ELzZaCfoiZow2v+GVKaqkpn/uzLCoVGYR1
+2miPdTc0dsuWwjjg6cCxWEjNXauSoFooSkyWtTW4C93OTvpdCjE01N+cVwFaEZW3
+uCEyQfkujOft6i+Bk59s3IZGFwOnMEHqOdcBskKmNoeNLoLL1SAuvKoq9pF6rdxh
+ImGd5MqnjbvS89Auw+1G5dkQB3wZ1ZLXJSBc8FGOFrKf7ke2UPLOIyX6L4p3U9+H
+Rz/2BhRFzoItt6xFeiyR2wwVL1s1Qg==
+=S3o7
+-----END PGP SIGNATURE-----
+
+--kA1LkgxZ0NN7Mz3A--
