@@ -2,214 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E833741F63A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149A541F63D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354493AbhJAUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1354891AbhJAUV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:21:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37422 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229879AbhJAUVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:21:55 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191KBwHj008856;
         Fri, 1 Oct 2021 16:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhJAUUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:20:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB5C61247;
-        Fri,  1 Oct 2021 20:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633119504;
-        bh=c46j00fAmuNM9GFAqS4+ixKscZuoTge9mONuCRSHgsI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nIhV2tJkthXGldr92MDC8V8Vd3hHGUc4XtcFJB3sNakNLzBiKsDlexSr0wgusKGso
-         Y0KTbKE9QhCt97FiRWA6Ma7fcyWYGYwERIN9G36Ks38Oq1dYOKOMUQ7SrSbvhTXXmT
-         qBKkUMCoEguMuMggNAd5YQnFcgX4yt+zlJd1I1eBKvDSVDeVXySBlFpzO398G8s4sH
-         U2OecUFb6EY4ysIt7ysp7AKMnIKrsSRRIEHjnUkZf9Ii0DH1xv7dmxGjOKB8RBqY9w
-         UVsXg1wNm+qOFbHoduW2hROH/+CRaPl5IhtjjVFVID0vQITJEXIV49PBhjqe/1QlEA
-         dlfGa6/77K52w==
-Date:   Fri, 1 Oct 2021 15:18:22 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     kelvin.cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, logang@deltatee.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kelvincao@outlook.com
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Message-ID: <20211001201822.GA962472@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=xedp/uXiqhajH0NC8aCTrSkRDadFR4Npcs2LI+Yqvws=;
+ b=jQexVVFEQ5fy1T7TSwAI1SH/uPS8rUojTTHQv1YAST/BnwRyMzCREqe8zYhrG124y+8H
+ +JrTfo+4/yAzBwyMvkb81qbWz1SMkJP2yXWjlv+Jrc0GxdiaVTaHl9rty6DGPXz9bsYi
+ gqpCvEQptA2AREammiI+RkQ4mjFFHiLiqBZPfBdAail+33yzzSG/TDfJlAZIvV15Wjtj
+ h3CXMd54RIPNaEwJV5KsRAo1Six7dF8kzk6f3FQ9yFQCQLr84VsogZH8bb/0HASAyAtm
+ cZzBBI1sM4/vgLE+/kqCCAEntVgfuJK/D9S1hhUj+kpcNK4ye/1eg54lTGtyf+pXdAML ZQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3be95c84qy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 16:20:09 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 191KCE09009006;
+        Fri, 1 Oct 2021 20:20:07 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3b9udanx9b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Oct 2021 20:20:07 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 191KK18742795380
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 1 Oct 2021 20:20:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38D35A405C;
+        Fri,  1 Oct 2021 20:20:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CBBE5A4054;
+        Fri,  1 Oct 2021 20:20:00 +0000 (GMT)
+Received: from localhost (unknown [9.171.7.59])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  1 Oct 2021 20:20:00 +0000 (GMT)
+Date:   Fri, 1 Oct 2021 22:19:59 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.15-rc4
+Message-ID: <your-ad-here.call-01633119599-ext-2970@work.hours>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210924110842.6323-2-kelvin.cao@microchip.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UsadFCD9EfNTpmNfAz7gjYXd1vM_Bf44
+X-Proofpoint-ORIG-GUID: UsadFCD9EfNTpmNfAz7gjYXd1vM_Bf44
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-01_05,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0
+ mlxscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=606 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110010141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 11:08:38AM +0000, kelvin.cao@microchip.com wrote:
-> From: Kelvin Cao <kelvin.cao@microchip.com>
-> 
-> After a firmware hard reset, MRPC command executions, which are based
-> on the PCI BAR (which Microchip refers to as GAS) read/write, will hang
-> indefinitely. This is because after a reset, the host will fail all GAS
-> reads (get all 1s), in which case the driver won't get a valid MRPC
-> status.
+Hello Linus,
 
-Trying to write a merge commit log for this, but having a hard time
-summarizing it.  It sounds like it covers both Switchtec-specific
-(firmware and MRPC commands) and generic PCIe behavior (MMIO read
-failures).
+please pull one fix for 5.15-rc4.
 
-This has something to do with a firmware hard reset.  What is that?
-Is that like a firmware reboot?  A device reset, e.g., FLR or
-secondary bus reset, that causes a firmware reboot?  A device reset
-initiated by firmware?
+Thank you,
+Vasily
 
-Anyway, apparently when that happens, MMIO reads to the switch fail
-(timeout or error completion on PCIe) for a while.  If a device reset
-is involved, that much is standard PCIe behavior.  And the driver sees
-~0 data from those failed reads.  That's not part of the PCIe spec,
-but is typical root complex behavior.
+The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
 
-But you said the MRPC commands hang indefinitely.  Presumably MMIO
-reads would start succeeding eventually when the device becomes ready,
-so I don't know how that translates to "indefinitely."
+  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
 
-Weird to refer to a PCI BAR as "GAS".  Maybe expanding the acronym
-would help it make sense.
+are available in the Git repository at:
 
-What does "host" refer to?  I guess it's the switch (the
-switchtec_dev), since you say it fails MMIO reads?
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-4
 
-Naming comment below.
+for you to fetch changes up to 172da89ed0eaf9d9348f5decb86ad04c624b39d1:
 
-> Add a read check to GAS access when a MRPC command execution doesn't
-> response timely, error out if the check fails.
-> 
-> Signed-off-by: Kelvin Cao <kelvin.cao@microchip.com>
-> ---
->  drivers/pci/switch/switchtec.c | 59 ++++++++++++++++++++++++++++++----
->  1 file changed, 52 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-> index 0b301f8be9ed..092653487021 100644
-> --- a/drivers/pci/switch/switchtec.c
-> +++ b/drivers/pci/switch/switchtec.c
-> @@ -45,6 +45,7 @@ enum mrpc_state {
->  	MRPC_QUEUED,
->  	MRPC_RUNNING,
->  	MRPC_DONE,
-> +	MRPC_IO_ERROR,
->  };
->  
->  struct switchtec_user {
-> @@ -66,6 +67,13 @@ struct switchtec_user {
->  	int event_cnt;
->  };
->  
-> +static int check_access(struct switchtec_dev *stdev)
-> +{
-> +	u32 device = ioread32(&stdev->mmio_sys_info->device_id);
-> +
-> +	return stdev->pdev->device == device;
-> +}
+  s390/cio: avoid excessive path-verification requests (2021-09-27 13:54:38 +0200)
 
-Didn't notice this before, but the "check_access()" name is not very
-helpful because it doesn't give a clue about what the return value
-means.  Does 0 mean no error?  Does 1 mean no error?  From reading the
-implementation, I can see that 0 is actually the error case, but I
-can't tell from the name.
+----------------------------------------------------------------
+s390 updates for 5.15-rc4
 
->  static struct switchtec_user *stuser_create(struct switchtec_dev *stdev)
->  {
->  	struct switchtec_user *stuser;
-> @@ -113,6 +121,7 @@ static void stuser_set_state(struct switchtec_user *stuser,
->  		[MRPC_QUEUED] = "QUEUED",
->  		[MRPC_RUNNING] = "RUNNING",
->  		[MRPC_DONE] = "DONE",
-> +		[MRPC_IO_ERROR] = "IO_ERROR",
->  	};
->  
->  	stuser->state = state;
-> @@ -184,6 +193,21 @@ static int mrpc_queue_cmd(struct switchtec_user *stuser)
->  	return 0;
->  }
->  
-> +static void mrpc_cleanup_cmd(struct switchtec_dev *stdev)
-> +{
-> +	/* requires the mrpc_mutex to already be held when called */
-> +	struct switchtec_user *stuser = list_entry(stdev->mrpc_queue.next,
-> +						   struct switchtec_user, list);
-> +
-> +	stuser->cmd_done = true;
-> +	wake_up_interruptible(&stuser->cmd_comp);
-> +	list_del_init(&stuser->list);
-> +	stuser_put(stuser);
-> +	stdev->mrpc_busy = 0;
-> +
-> +	mrpc_cmd_submit(stdev);
-> +}
-> +
->  static void mrpc_complete_cmd(struct switchtec_dev *stdev)
->  {
->  	/* requires the mrpc_mutex to already be held when called */
-> @@ -223,13 +247,7 @@ static void mrpc_complete_cmd(struct switchtec_dev *stdev)
->  		memcpy_fromio(stuser->data, &stdev->mmio_mrpc->output_data,
->  			      stuser->read_len);
->  out:
-> -	stuser->cmd_done = true;
-> -	wake_up_interruptible(&stuser->cmd_comp);
-> -	list_del_init(&stuser->list);
-> -	stuser_put(stuser);
-> -	stdev->mrpc_busy = 0;
-> -
-> -	mrpc_cmd_submit(stdev);
-> +	mrpc_cleanup_cmd(stdev);
->  }
->  
->  static void mrpc_event_work(struct work_struct *work)
-> @@ -246,6 +264,23 @@ static void mrpc_event_work(struct work_struct *work)
->  	mutex_unlock(&stdev->mrpc_mutex);
->  }
->  
-> +static void mrpc_error_complete_cmd(struct switchtec_dev *stdev)
-> +{
-> +	/* requires the mrpc_mutex to already be held when called */
-> +
-> +	struct switchtec_user *stuser;
-> +
-> +	if (list_empty(&stdev->mrpc_queue))
-> +		return;
-> +
-> +	stuser = list_entry(stdev->mrpc_queue.next,
-> +			    struct switchtec_user, list);
-> +
-> +	stuser_set_state(stuser, MRPC_IO_ERROR);
-> +
-> +	mrpc_cleanup_cmd(stdev);
-> +}
-> +
->  static void mrpc_timeout_work(struct work_struct *work)
->  {
->  	struct switchtec_dev *stdev;
-> @@ -257,6 +292,11 @@ static void mrpc_timeout_work(struct work_struct *work)
->  
->  	mutex_lock(&stdev->mrpc_mutex);
->  
-> +	if (!check_access(stdev)) {
-> +		mrpc_error_complete_cmd(stdev);
-> +		goto out;
-> +	}
-> +
->  	if (stdev->dma_mrpc)
->  		status = stdev->dma_mrpc->status;
->  	else
-> @@ -544,6 +584,11 @@ static ssize_t switchtec_dev_read(struct file *filp, char __user *data,
->  	if (rc)
->  		return rc;
->  
-> +	if (stuser->state == MRPC_IO_ERROR) {
-> +		mutex_unlock(&stdev->mrpc_mutex);
-> +		return -EIO;
-> +	}
-> +
->  	if (stuser->state != MRPC_DONE) {
->  		mutex_unlock(&stdev->mrpc_mutex);
->  		return -EBADE;
-> -- 
-> 2.25.1
-> 
+- Avoid CIO excessive path-verification requests, which might cause
+  unwanted delays.
+
+----------------------------------------------------------------
+Vineeth Vijayan (1):
+      s390/cio: avoid excessive path-verification requests
+
+ drivers/s390/cio/blacklist.c |  8 +++++---
+ drivers/s390/cio/css.c       | 40 +++++++++++++++++++++++++++++++---------
+ drivers/s390/cio/css.h       | 10 +++++++++-
+ 3 files changed, 45 insertions(+), 13 deletions(-)
