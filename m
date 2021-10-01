@@ -2,123 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5935841E718
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A9B41E723
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352010AbhJAFVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 01:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
+        id S1352038AbhJAF0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 01:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351982AbhJAFVg (ORCPT
+        with ESMTP id S1351982AbhJAF0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 01:21:36 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F575C06176D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id m21so8333923pgu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
+        Fri, 1 Oct 2021 01:26:12 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA68C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:24:28 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id g6so933898ybb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EyTaw5QtAJ4bW8Vm8xYfacGbohlYt9c/AnSihiB9j34=;
-        b=lHWczr+OPdwO6X6MxEziwiIYJTBe2iPHyLjFCYgLTl/SDrIXrQSS6vb7hnCYEx5bZs
-         d9rHB0J91KliCK2wBSHSVBMNFc5ozW8CIi+2CARgkV1a8mv4S6Xg1wwZ+hD6nn2xdNJE
-         qb+heFtlqPryXdSvgJZC8fLl3cg6iDg4rAcpQ=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kId/COeOhh/kAGgHulJk60MONB+eztrTX08okhKullo=;
+        b=cGy18vWBa0ueLqC6hy/hY+Gl8ugqs8nZ9HOgwS0q3vSxnubUwp9AKg16RlXsP//Zfn
+         biil/+kdD9wfBLn0BonGUxxwvlrTPBsn+KRF1IUSnRgINEoJODQwllQ+oSiNbIFWQpEg
+         HOVowzx8zz1wLgXRLZKQKLzmPeGryZ+mDkDZHWggA0Hfs/ErLY9u6vpppMH/17DckRpO
+         n0nropukwD7U8SnA4Dnk8lsTF3T0l+aqbIdNA5kJTRrB0GhvhbvRhptE0+QEVlD/VQ+T
+         Sv8KEGEJJwS1pwtWob/5N0Iuu3ONXQ/WDjxLtd0Ria+S4M0+sNoEFbfyf1lT/WqxIDMr
+         AG3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EyTaw5QtAJ4bW8Vm8xYfacGbohlYt9c/AnSihiB9j34=;
-        b=TFS5i6cJVs2UpkpuG3VsrHOfPo9JyrVJcZjz5wWX4y53nP49nl85kNtMwn83MqHV7+
-         BT+h5J6RurVV6WXwUoF18lp6DCYJhGTg3i85BdYot2mixXJt7kMyA6yOLPKhz5+bsL5q
-         1x2TctxHqvlxFrFHrYzZ9DKwD619QGmSMUy2Nl6UomS8xnWZhO3IZDqjy4OyNuuATlk6
-         iyzDjc6IjokHyCtMx3BEQojvFr0sm80T65m0XVpx0Fv0KqiYUugeaJOB56gCRnJhuoAr
-         n2km2q7RtXSo7N5cx/1GgPGkNTuBs5BHAE/lWIEvHhjs9DODxbdo+5NdVda/nnXf6rBI
-         QkBg==
-X-Gm-Message-State: AOAM532sf+pF856gdPNFV3L6gpJ32/j1kppTon9yytHbq4cKaYi0sljh
-        qQg+iDuc8iyxVkAaHPBhR9FgJg==
-X-Google-Smtp-Source: ABdhPJzprmCx1Nw75Isx1VIHD4op+s7oTt9KX5oRihjuhzp0VAPFJJOk8T2ufUoBr/6/fUvG1cvJ0g==
-X-Received: by 2002:a65:51c7:: with SMTP id i7mr8248588pgq.300.1633065592032;
-        Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k2sm6543077pjq.28.2021.09.30.22.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Sep 2021 22:19:51 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 22:19:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
- anonymous memory
-Message-ID: <202109302219.FF1F3E24@keescook>
-References: <20210902231813.3597709-1-surenb@google.com>
- <20210902231813.3597709-2-surenb@google.com>
- <202109031439.B58932AF0@keescook>
- <CAJuCfpEQAJqu2DLf5D5pCkv4nq+dtVOpiJSnsxwGrgb9H6inQA@mail.gmail.com>
- <202109031522.ACDF5BA8@keescook>
- <CAJuCfpGVgSpvW_oXaGVc3TiobaGaYUtu3WR_DhrhWnEr_V=7TQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kId/COeOhh/kAGgHulJk60MONB+eztrTX08okhKullo=;
+        b=b3ogCCdxPO5Az+pYJ5dU77V3yUlLemImOKOAvvehqSmXHXVrli+ScFal2axZnZ1CSI
+         InxrwUSw2nHJNnNegkT3b3JVkEX3Wt36wCGmjSTIpoX9cLKmbwETATGQ1UKLH18gN4yO
+         RsHxRxg7+qYeW0To5gnplp9cmqO9zOcfYZvdBdjI7PVC9O6dvn3ECM62ZFiW0n0ViDYW
+         jhFAQ9Z9nM2RgqdGVIIq7W3T7vpe77kefTXkxVcShF8dmPHhVrKdHXvKA3m0rzIBe6l9
+         mdajoO+M24JXcZzx5Zp+hcl0TS9A4XGOoF/8YYedod1y6UltyGsttlezB2Zc0WodakTO
+         3KWg==
+X-Gm-Message-State: AOAM533VU6s/5VZjR/8zpDnsNtu4zzqu8h1McJ9kqZK52CC8dQ+kMBaD
+        tjs+56CCRbWWQuJtjImTOy1O/qgzEmoP8qO5S7ruTQ==
+X-Google-Smtp-Source: ABdhPJwXeoiGNZ3EyKh4Kb1Ib3na33YQT3s/nrU4Sto2Ns9vh2rbSlg70jI3IQaf2mAUQ+MyOUuTqeUu9yES636/V3c=
+X-Received: by 2002:a25:db91:: with SMTP id g139mr3541031ybf.391.1633065867358;
+ Thu, 30 Sep 2021 22:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpGVgSpvW_oXaGVc3TiobaGaYUtu3WR_DhrhWnEr_V=7TQ@mail.gmail.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+In-Reply-To: <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 30 Sep 2021 22:23:50 -0700
+Message-ID: <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 08:44:25PM -0700, Suren Baghdasaryan wrote:
-> While testing v10 I found one case when () are used in the name
-> "dalvik-main space (region space)". So I can add ` and $ to the
-> restricted set but not ( and ). Kees, would you be happy with:
-> 
-> static inline bool is_valid_name_char(char ch)
-> {
->     return ch > 0x1f && ch < 0x7f && !strchr("\\`$[]", ch);
-> }
-> 
-> ?
+On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
+>
+> On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
+> >
+> > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> > >
+> > > On 29/09/2021 01:56, Will McVicker wrote:
+> > > > This is v2 of the series of patches that modularizes a number of core
+> > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
+> > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
+> > > > series of "select XXX". This includes setting the following configs as
+> > > > tristate:
+> > > >
+> > > >  * COMMON_CLK_SAMSUNG
+> > > >  * EXYNOS_ARM64_COMMON_CLK
+> > > >  * PINCTRL_SAMSUNG
+> > > >  * PINCTRL_EXYNOS
+> > > >  * EXYNOS_PMU_ARM64
+> > > >  * EXYNOS_PM_DOMAINS
+> > > >
+> > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
+> > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
+> > > > The reason for these new configs is because we are not able to easily
+> > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
+> > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
+> > > > the ARM and ARM64 portions into two separate configs.
+> > > >
+> > > > Overall, these drivers didn't require much refactoring and converted to
+> > > > modules relatively easily. However, due to my lack of exynos hardware, I
+> > > > was not able to boot test these changes. I'm mostly concerned about the
+> > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
+> > > > requesting help for testing these changes on the respective hardware.
+> > > >
+> > >
+> > > These are all not tested at all? In such case, since these are not
+> > > trivial changes, please mark the series as RFT.
+> > >
+> > > I will not be able to test these for some days, so it must wait.
+> > >
+> > >
+> > > Best regards,
+> > > Krzysztof
+> >
+> > +Cc Arnd and Olof,
+> >
+> > Hi Krzysztof,
+> >
+> > To avoid the scrambled conversation from the first patchset, I'm going
+> > to address all your general questions here in the cover letter thread
+> > so that it's easier for everyone to follow and reference in the
+> > future.
+>
+> This patchset shouldn't go in.
+>
+> GKI is a fantastic effort, since it finally seems like Google has the
+> backbone to put pressure on the vendors to upstream all their stuff.
+>
+> This patcheset dilutes and undermines all of that by opening up a
+> truck-size loophole, reducing the impact of GKI, and overall removes
+> leverage to get vendors to do the right thing.
+>
+> It's against our interest as a community to have this happen, since
+> there's no other reasonably justifiable reason to do this.
 
-That works for me! :)
+Oolf, Geert, Krzysztof, Arnd,
 
--- 
-Kees Cook
+I skimmed through the emails and you all make a lot of good points. It
+looks like you all at least like the idea of being able to have a
+minimal generic kernel where everything that can be a module is a
+module. Please correct me if I'm wrong on that.
+
+I was thinking about this patch series and I was wondering if it'd be
+good to come at it from the other end. Instead of taking the mostly
+builtin generic kernel and trying to rip out drivers as modules (and
+not having enough hardware to test them all) and hitting all these
+issues, we could come at it from the other end.
+
+A config like ARM64_MINIMAL_GENERIC_KERNEL that's off by default. But
+if it's selected, all the "selects" done by the various ARCH_XXX are
+not done any more. Something like:
+
+ARCH_XXX
+    select XXX_CLK1 if !ARM64_MINIMAL_GENERIC_KERNEL
+    select XXX_PINCTRL1 if !ARM64_MINIMAL_GENERIC_KERNEL
+
+ARCH_YYY
+    select YYY_CLK1 if !ARM64_MINIMAL_GENERIC_KERNEL
+    select YYY_PINCTRL1 if !ARM64_MINIMAL_GENERIC_KERNEL
+
+And ARM64_MINIMAL_GENERIC_KERNEL itself would select the absolutely
+mandatory stuff that can never be made into a module like the GIC,
+architectured timer (as Geert mentioned) and UART early console
+driver. I'm not sure if ARM32 has an equivalent to the standardized
+GIC and arch timer. Basically the minimal kernel would need a timer
+for the scheduler tick and IRQ controller to get the timer IRQ and the
+fixed clock driver if the archtimer uses one to get its frequency and
+the early UART console is pointless as a module (so build it in to
+allow debugging/development).
+
+And then all new drivers, we should make sure are implemented as
+tristate drivers. And we can go back and slowly work on converting
+existing drivers to modules (community effort -- not one person or
+entity) -- at least the ones where the author has hardware or ones
+where the change is very likely to be correct and someone else is
+willing to test it. We'll never be able to support some/all ARM32 (do
+they even have a GIC/arch timer standard?), but at least for ARM64,
+this seems like a viable goal.
+
+This way, we'll keep the existing model working, while working on a
+fully modular kernel from the other end.
+
+Thoughts?
+
+-Saravana
