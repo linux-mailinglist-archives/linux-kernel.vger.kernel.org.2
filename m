@@ -2,48 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCDA41ECE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CBE41ECEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354276AbhJAMHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:07:13 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:52796 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354260AbhJAMHK (ORCPT
+        id S1354284AbhJAMKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:10:10 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:39846 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354146AbhJAMKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:07:10 -0400
-Received: by mail-il1-f198.google.com with SMTP id n13-20020a92d9cd000000b0025872f0c828so7227441ilq.19
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
+        Fri, 1 Oct 2021 08:10:06 -0400
+Received: by mail-il1-f200.google.com with SMTP id x7-20020a920607000000b002302afca41bso7299280ilg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:08:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6XR7AcFwJGCAhR4U8M+rl8QBYvsM2ERoXA6/OjrO3zU=;
-        b=a8IrJMggYl8u7lYnU84MfNp48cuVDNMRgwlZPIJMSrR/2mxegI5aY/otEFjA4qi84l
-         m9f4Ryd9EGqxFQDNguI9aHNU5HQLKLhc1YHyKXGX0wEJzf6Ibp0QQ6TulpYetFjJ7fPp
-         dw03sMrhPDdZ2p3pCLlnJCkPAErRYXhtVO7DlW1PkPIOlax/7VNGLHFZMRzo7bIBINzl
-         712qK/fyuLCIYuqlDVuwBrlEaUTuIf3uozv+7VKP9NiYFAJrBTjVtPWXZOP7J9b//u3B
-         2G/Mn//44YENae99K7atXVdU7UKrn2krny/qef9ecd6hGaJ4IPARVRWo4MXnrXkuovL/
-         ZXtw==
-X-Gm-Message-State: AOAM532nh2NTuCpRgrDvlfMBHKog1xFgVn90mYbm38F4X0yw9VI8H/a3
-        XNpmiJ/0aiFFCUpb9/RrDcERFpnjPb/LYeHBhs9cvRm6PPUp
-X-Google-Smtp-Source: ABdhPJwZrhf9uro0TwU2UOZIoHBcW5RwGMHaI/lnR0Z6n+s/V1okJosAbQA4JH0TJt6dPG7/SbUbRK7nnzUVOKsuaZLFQp/Q5dMY
+        bh=BmTI3ElpkZdx5lGw2N4XR7ZckKKkNC5vFZJ3yCXtc8A=;
+        b=Q7IFSU3lERrB/3iFybBn0sOx9+LXc64GJCX8UxjUgSfZXlcy1as8jQww6dPPMJ/0BG
+         qjAOsE7bqyn21fbpkkLUQUagUT6f0OWwZfd9yCQDFK/+wodt1JnUmgGsv05/qIZgIC8x
+         wdEt5ccngiqGYl3Ie77S87bpzuep7W5rVTZr+Cy6GnL3sp3NKrsP9qgZ9p3AIY0OcOWl
+         vYHchvv5PQrd/7ltFtd5l+TuGhJQ+b8NSjiS9q1sQwu5Gz4f1quJfHR2vaeEzFM5shDm
+         2FzTP7oZEC5xfB4UbRgfi6qGTClrCI033McjODiVwBrZLJO2f/NaO4KYbT6fhLsVgpC2
+         M76w==
+X-Gm-Message-State: AOAM531NIVAjRuywmPe3uU49MZ3TwaSMsEh6IBMmjY2/oxVpL19lJ1ro
+        iaBI2cPAG5L5L7x2XX8EhJCIy4/Bn+eqyon6+VFm5qgzGtOI
+X-Google-Smtp-Source: ABdhPJzSmTHvx9WMGX+4RLfTsd9gUQmPzvoVppjO+tc3P27PgZXpcm9fefbxkWYRpCP7F7iT48AYhCRUT6Gf/Ld3Ao9b9WIhVVaY
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9f44:: with SMTP id u4mr3449828iot.155.1633089926290;
- Fri, 01 Oct 2021 05:05:26 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 05:05:26 -0700
+X-Received: by 2002:a05:6e02:1402:: with SMTP id n2mr3445479ilo.208.1633090102561;
+ Fri, 01 Oct 2021 05:08:22 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 05:08:22 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1645705cd496085@google.com>
-Subject: [syzbot] general protection fault in perf_tp_event (3)
-From:   syzbot <syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <00000000000073132c05cd496b83@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in addr_handler (5)
+From:   syzbot <syzbot+ae4de2b6e34e89637fc2@syzkaller.appspotmail.com>
+To:     avihaih@nvidia.com, dledford@redhat.com, haakon.bugge@oracle.com,
+        jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -53,98 +48,195 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a3debf177f21 libbpf: Fix segfault in static linker for obj..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=122fa35f300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=f27ed6d2b22fe3b92377
+HEAD commit:    5816b3e6577e Linux 5.15-rc3
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13519b5f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae4de2b6e34e89637fc2
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f27ed6d2b22fe3b92377@syzkaller.appspotmail.com
+Reported-by: syzbot+ae4de2b6e34e89637fc2@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xfe001bea7e002090: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0xf000ff53f0010480-0xf000ff53f0010487]
-CPU: 0 PID: 29889 Comm: syz-executor.4 Not tainted 5.14.0-syzkaller #0
+==================================================================
+BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:575 [inline]
+BUG: KASAN: use-after-free in __mutex_lock+0x105b/0x12f0 kernel/locking/mutex.c:729
+Read of size 8 at addr ffff88803045c3b0 by task kworker/u4:3/158
+
+CPU: 0 PID: 158 Comm: kworker/u4:3 Not tainted 5.15.0-rc3-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
-RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
-Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
-RSP: 0018:ffffc90002137540 EFLAGS: 00010806
-RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
-RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
-RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
-FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Workqueue: ib_addr process_one_req
 Call Trace:
- perf_trace_run_bpf_submit+0x11c/0x210 kernel/events/core.c:9657
- perf_trace_lock+0x2ef/0x4d0 include/trace/events/lock.h:39
- trace_lock_release include/trace/events/lock.h:58 [inline]
- lock_release+0x4a8/0x720 kernel/locking/lockdep.c:5636
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:158 [inline]
- _raw_spin_unlock_irqrestore+0x16/0x70 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:418 [inline]
- pcpu_alloc+0x848/0x1350 mm/percpu.c:1851
- bpf_prog_alloc+0x4b/0x1a0 kernel/bpf/core.c:125
- bpf_prog_load+0x651/0x21f0 kernel/bpf/syscall.c:2248
- __sys_bpf+0x67e/0x5df0 kernel/bpf/syscall.c:4587
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ __mutex_lock_common kernel/locking/mutex.c:575 [inline]
+ __mutex_lock+0x105b/0x12f0 kernel/locking/mutex.c:729
+ addr_handler+0xac/0x470 drivers/infiniband/core/cma.c:3247
+ process_one_req+0xfa/0x680 drivers/infiniband/core/addr.c:647
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Allocated by task 2219:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ __rdma_create_id+0x5b/0x550 drivers/infiniband/core/cma.c:839
+ rdma_create_user_id+0x79/0xd0 drivers/infiniband/core/cma.c:893
+ ucma_create_id+0x162/0x360 drivers/infiniband/core/ucma.c:461
+ ucma_write+0x25c/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xae0 fs/read_write.c:592
+ ksys_write+0x1ee/0x250 fs/read_write.c:647
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fb427a93709
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb42500a188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fb427b97f60 RCX: 00007fb427a93709
-RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
-RBP: 00007fb427aedcb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fffe8ec545f R14: 00007fb42500a300 R15: 0000000000022000
-Modules linked in:
----[ end trace 01ae9f661067bd97 ]---
-RIP: 0010:perf_tp_filter_match kernel/events/core.c:9622 [inline]
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9639 [inline]
-RIP: 0010:perf_tp_event_match kernel/events/core.c:9627 [inline]
-RIP: 0010:perf_tp_event+0x2af/0xb70 kernel/events/core.c:9682
-Code: 3c 20 00 0f 85 d7 07 00 00 4c 8b bb e8 02 00 00 4d 85 ff 4c 0f 44 fb e8 df 37 e1 ff 49 8d bf 30 05 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 22 00 0f 85 a1 07 00 00 4d 8b 87 30 05 00 00 4d 85 c0 0f
-RSP: 0018:ffffc90002137540 EFLAGS: 00010806
-RAX: 0000000000000a8c RBX: ffff887fffffffa0 RCX: ffffc90012317000
-RDX: 1e001fea7e002090 RSI: ffffffff8194d811 RDI: f000ff53f0010483
-RBP: ffffc900021377b0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8194d7ac R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff8880b9c2c800 R14: 0000000000000001 R15: f000ff53f000ff53
-FS:  00007fb42500a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb424fe9718 CR3: 0000000021c6d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	20 00                	and    %al,(%rax)
-   2:	0f 85 d7 07 00 00    	jne    0x7df
-   8:	4c 8b bb e8 02 00 00 	mov    0x2e8(%rbx),%r15
-   f:	4d 85 ff             	test   %r15,%r15
-  12:	4c 0f 44 fb          	cmove  %rbx,%r15
-  16:	e8 df 37 e1 ff       	callq  0xffe137fa
-  1b:	49 8d bf 30 05 00 00 	lea    0x530(%r15),%rdi
-  22:	48 89 fa             	mov    %rdi,%rdx
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	42 80 3c 22 00       	cmpb   $0x0,(%rdx,%r12,1) <-- trapping instruction
-  2e:	0f 85 a1 07 00 00    	jne    0x7d5
-  34:	4d 8b 87 30 05 00 00 	mov    0x530(%r15),%r8
-  3b:	4d 85 c0             	test   %r8,%r8
-  3e:	0f                   	.byte 0xf
+
+Freed by task 2215:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1700 [inline]
+ slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
+ slab_free mm/slub.c:3483 [inline]
+ kfree+0xe4/0x530 mm/slub.c:4543
+ ucma_close_id drivers/infiniband/core/ucma.c:185 [inline]
+ ucma_destroy_private_ctx+0x8b3/0xb70 drivers/infiniband/core/ucma.c:576
+ ucma_close+0x10a/0x180 drivers/infiniband/core/ucma.c:1797
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ kvfree_call_rcu+0x74/0x990 kernel/rcu/tree.c:3552
+ drop_sysctl_table+0x3c0/0x4e0 fs/proc/proc_sysctl.c:1647
+ unregister_sysctl_table fs/proc/proc_sysctl.c:1685 [inline]
+ unregister_sysctl_table+0xc2/0x190 fs/proc/proc_sysctl.c:1660
+ __addrconf_sysctl_unregister net/ipv6/addrconf.c:7045 [inline]
+ addrconf_exit_net+0x9f/0x2a0 net/ipv6/addrconf.c:7153
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ cleanup_net+0x4ea/0xb00 net/core/net_namespace.c:591
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88803045c000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 944 bytes inside of
+ 2048-byte region [ffff88803045c000, ffff88803045c800)
+The buggy address belongs to the page:
+page:ffffea0000c11600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x30458
+head:ffffea0000c11600 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 23309, ts 828421614337, free_ts 828403938080
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
+ alloc_slab_page mm/slub.c:1763 [inline]
+ allocate_slab mm/slub.c:1900 [inline]
+ new_slab+0x319/0x490 mm/slub.c:1963
+ ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
+ slab_alloc_node mm/slub.c:3172 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ __kmalloc_track_caller+0x2f1/0x310 mm/slub.c:4905
+ kmemdup+0x23/0x50 mm/util.c:128
+ kmemdup include/linux/fortify-string.h:270 [inline]
+ neigh_sysctl_register+0x9a/0x680 net/core/neighbour.c:3637
+ addrconf_sysctl_register+0xb6/0x1d0 net/ipv6/addrconf.c:7059
+ ipv6_add_dev+0x96e/0x1170 net/ipv6/addrconf.c:453
+ addrconf_notify+0x60e/0x1bb0 net/ipv6/addrconf.c:3505
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ register_netdevice+0x1075/0x1500 net/core/dev.c:10330
+ veth_newlink+0x58c/0xb20 drivers/net/veth.c:1726
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3315 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3394
+ __unfreeze_partials+0x340/0x360 mm/slub.c:2495
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:254 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3206 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ kmem_cache_alloc_trace+0x1f1/0x2b0 mm/slub.c:3231
+ kmalloc include/linux/slab.h:591 [inline]
+ netdevice_queue_work drivers/infiniband/core/roce_gid_mgmt.c:643 [inline]
+ netdevice_event+0x1a8/0x8a0 drivers/infiniband/core/roce_gid_mgmt.c:802
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ unregister_netdevice_many+0x951/0x1790 net/core/dev.c:11043
+ ieee80211_remove_interfaces+0x394/0x820 net/mac80211/iface.c:2140
+ ieee80211_unregister_hw+0x47/0x1f0 net/mac80211/main.c:1391
+ mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3457 [inline]
+ hwsim_exit_net+0x50e/0xca0 drivers/net/wireless/mac80211_hwsim.c:4217
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ cleanup_net+0x4ea/0xb00 net/core/net_namespace.c:591
+
+Memory state around the buggy address:
+ ffff88803045c280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88803045c300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88803045c380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff88803045c400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88803045c480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
