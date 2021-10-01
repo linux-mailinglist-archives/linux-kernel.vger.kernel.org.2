@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A59B41EFA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BCA41EFAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354531AbhJAOjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238636AbhJAOjH (ORCPT
+        id S1354572AbhJAOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:39:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30447 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354565AbhJAOjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:39:07 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC97C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:37:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id e15so39652089lfr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LVU9fXiM8g1pH7koqYPYX1n75qM66AiSkIRtsIE6Mik=;
-        b=rjdp3uSFyx/KPmILmOXA7zcMX2+9jvG1S5UIOIMptwVjPZDLmd2m2GUsZlCHaAW145
-         3MAbPK9byBkqxyqigd/bPNlnHnU5aQO3Sb9i4E0G6+8b4lShKSFQ6cOdQ4GBXEx3h4kR
-         RexBLqYY+OWrmoGwvKy3/kio2LVbujF88ta8dsAcdGTqnC7YCbpDYLlFYAct6DmFCt5G
-         crMGo4xuxnDknabvbiAq5xJJISgd/dp2iZ+4O8nuRqdo59bmmCKL7czZCbXAAQCfu/nd
-         GXUzqvgWtpYHJpzlm7ZpLul8ysD3f3vTc5ftQMqnENyFLhXoSleoB35xsL/rwShU4xsu
-         mAQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LVU9fXiM8g1pH7koqYPYX1n75qM66AiSkIRtsIE6Mik=;
-        b=SGnfYm4wwBJOXIaB61a8kDKFjBZOVpwjwxLqYkimTk56A5lTHwgjFf68c/Mfz7Ino4
-         sE0YXYFt0nDJfGQKIE7qLT7gXfaMwZmXabr1YEuMsQWThCXDPOdCDSoUgDig7z7CXdou
-         TQbElyUOxa+NTQbdsMWzuBm67Lr90QoYBqBMaJSIKL3IHXzeRe1XW9JimOe4IYjVonvz
-         j6s8ahD7XpaR4SoVluEMtLyDcCF301zVZd6ryZZGqR12WY0gFfGzcoHED0wYXFotwLjq
-         JsWVpLbzQa9oL78F5TYrw2oZaUBIvd9WYBLPqK2SW9rNUFM4Qx+sI3I+SFcoBMRzATUG
-         NueQ==
-X-Gm-Message-State: AOAM5332GuWoc++6DD38IsJe0gzMYQ6F+AtZBCjv5Gm2EstJOMHUFJQg
-        LoqpNjOWQF69aQ0LuW9Hh+/EerpwEmfvrguQCNJI+g==
-X-Google-Smtp-Source: ABdhPJzoa2d4NLaXfyZ7/92L/e88lFw9mt5p0hvXF87bHS92UJ1JIvsfDpz1WLHt81/6+mvdON7qC703SsoiVg2R0Mc=
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr5857247lfd.167.1633099040779;
- Fri, 01 Oct 2021 07:37:20 -0700 (PDT)
+        Fri, 1 Oct 2021 10:39:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633099060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/KKRYJFhv/QJA9FN2XncZtvBI8w9ECIMj6A6MWC7kv8=;
+        b=E1GXSKV1l1kG+OQL3eMBcZu5LfgxVu9Qavh27fyfCLyKRSoMa/W+hjvUNT+PFPjxiedIRW
+        PX/yIQjyf68xp74ltzPqrDPVHJmxBHC4GbdQKEgOVoRXk3Rw+yG7AvYnH7bHHuKvGzO5I0
+        ezifdEpeKjjIRCXs9PNm2GNsgA6xkNg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-_YyqmfaxPX2LTkbQkc9YAQ-1; Fri, 01 Oct 2021 10:37:39 -0400
+X-MC-Unique: _YyqmfaxPX2LTkbQkc9YAQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67F6F835DE0;
+        Fri,  1 Oct 2021 14:37:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C23A652A4;
+        Fri,  1 Oct 2021 14:37:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] cachefiles: Fix oops in trace_cachefiles_mark_buried due to
+ NULL object
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Dave Wysochanski <dwysocha@redhat.com>, linux-cachefs@redhat.com,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 01 Oct 2021 15:37:31 +0100
+Message-ID: <163309905120.80461.1932497502647013780.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com>
-In-Reply-To: <20210926224058.1252-1-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 16:36:44 +0200
-Message-ID: <CAPDyKFog31OatzU0fHUMfN5FRsX+8Thm8TfipA4QisgFepU+rA@mail.gmail.com>
-Subject: Re: [PATCH v13 00/35] NVIDIA Tegra power management patches for 5.16
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> This series adds runtime PM support to Tegra drivers and enables core
-> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
->
-> All patches in this series are interdependent and should go via Tegra tree.
->
-> Changelog:
->
-> v13: - Fixed compile-test error reported by build bot by reverting the
->        mmc/ patch to v11. The sdhci_suspend/resume_host() functions aren't
->        available with the disabled CONFIG_PM_SLEEP, some code needs the
->        ifdef.
->
->      - Added last r-b from Rob Herring for the DT patches.
->
->      - Corrected clk/ PM domain-support patch by not using the
->        devm_tegra_core_dev_init_opp_table_common() helper, which I
->        utilized in v12. The clk driver implements its own power domain
->        state syncing and common helper shouldn't be used. This fixes driver
->        probing for some clocks on some devices. It was reported by
->        Svyatoslav Ryhel for PLLE OPP error on T30 Asus Transformer tablet.
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-Dmitry, I have looked through the series and besides those comments
-that I have posted, I have nothing more to add. Overall it looks good
-to me.
+In cachefiles_mark_object_buried, the dentry in question may
+not have an owner, and thus our cachefiles_object pointer
+may be NULL when calling the tracepoint, in which case we
+will also not have a valid debug_id to print in the tracepoint.
+Check for NULL object in the tracepoint and if so, just set
+debug_id to MAX_UINT as was done in 2908f5e101e3.
 
-Kind regards
-Uffe
+This fixes the following oops:
+
+    FS-Cache: Cache "mycache" added (type cachefiles)
+    CacheFiles: File cache on vdc registered
+    ...
+    Workqueue: fscache_object fscache_object_work_func [fscache]
+    RIP: 0010:trace_event_raw_event_cachefiles_mark_buried+0x4e/0xa0 [cachefiles]
+    ....
+    Call Trace:
+     cachefiles_mark_object_buried+0xa5/0xb0 [cachefiles]
+     cachefiles_bury_object+0x270/0x430 [cachefiles]
+     ? kfree+0xaa/0x3a0
+     ? vfs_getxattr+0x15a/0x180
+     cachefiles_walk_to_object+0x195/0x9c0 [cachefiles]
+     ? trace_event_buffer_commit+0x61/0x220
+     cachefiles_lookup_object+0x5a/0xc0 [cachefiles]
+     fscache_look_up_object+0xd7/0x160 [fscache]
+     fscache_object_work_func+0xb2/0x340 [fscache]
+     process_one_work+0x1f1/0x390
+     worker_thread+0x53/0x3e0
+     ? process_one_work+0x390/0x390
+     kthread+0x127/0x150
+     ? set_kthread_struct+0x40/0x40
+     ret_from_fork+0x22/0x30
+
+Fixes: 2908f5e101e3 ("fscache: Add a cookie debug ID and use that in traces")
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-cachefs@redhat.com
+---
+
+ include/trace/events/cachefiles.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
+index 9a448fe9355d..695bfdbfdcad 100644
+--- a/include/trace/events/cachefiles.h
++++ b/include/trace/events/cachefiles.h
+@@ -305,7 +305,7 @@ TRACE_EVENT(cachefiles_mark_buried,
+ 			     ),
+ 
+ 	    TP_fast_assign(
+-		    __entry->obj	= obj->fscache.debug_id;
++		    __entry->obj	= obj ? obj->fscache.debug_id : UINT_MAX;
+ 		    __entry->de		= de;
+ 		    __entry->why	= why;
+ 			   ),
+
+
