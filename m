@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C053C41F56D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D6A41F572
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhJATGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:06:32 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:35397 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhJATGb (ORCPT
+        id S1355382AbhJATHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355173AbhJATHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:06:31 -0400
-Received: by mail-oi1-f174.google.com with SMTP id n64so12670585oih.2;
-        Fri, 01 Oct 2021 12:04:46 -0700 (PDT)
+        Fri, 1 Oct 2021 15:07:24 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CD4C06177F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:05:39 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y23so7505347lfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UIyzFyagBnHT8jP6LfBQs4hFyHSv/A2jIyX9+OpUkIE=;
+        b=nA4P9JdJGml1jm/hMC5wepVvR3aeNB4EBKNviekcJuiAXO1yBMXi+XAd/mgcCxlbl2
+         MkacKDtknLlEqgaVsRRR0HYVEBfgQxtM36Rb6C9w+X8v5ldMr3VQYkbFwRlf6hWoFMAs
+         OC/Ko3YbeaSJKK3Qxv/kxTCxFv7ktQQyvoq6E7gFKdHXouxkk7ieZ+EVh6OwoWKyROCt
+         dpLND0SWgIXUFCV3GKg2KGnXUfvl6rpPRDEBRtV8t0GnyEhT88YooGRvAIwEMkv62f2c
+         3cmVYpaR1RLmQ6bwX419Zi+wCFNJD2nSEJNel7NMxOAONBqUXgGp5vkPtkUenaaEJ8hx
+         vX9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6kWvsqS9wtvwiaERR1Va8UItEXxGSeZlzApY0N8G3rE=;
-        b=q94lhcFZLqGuzJpezvCiw8fS3mZssVIacMfRks9iZu7EhlaV52myfGaJEJs8wenHms
-         yAhIjtjL4GVWAyPQE67iMQXelm7eDT+C2urNhqWJ0Do+XzlU2C6hdvAkyH+62CbtBYDD
-         XwEFKTGQCuAFk+NcL5X+cMqyOC4f4mLLtESgfwZB/g1J4rtCNz3eBdSw8B//aLiK//It
-         ka5YWFMf7O3GJtT6n6T2GHyAkT9fxSi5KYGa72f3GKaxnemH+YUu6rV9rtfjxzgZ0frl
-         /X2QJIX9Ttjj2c/U+yOBOLwcqvDzFBVoPc58rD4VKaUO2EQxlNoaYreowNnY4aJHA2PS
-         XMBA==
-X-Gm-Message-State: AOAM533zK3hZnCHlG35ggnsJFBTZ78cliHEkPZk4+18koq6eNvkSYBk4
-        paf3r5MvsTdJzCq7+T2YfvdF0dZjbjkdJyPizC8=
-X-Google-Smtp-Source: ABdhPJwkJ1z1pZjMxWjmM/JFqZfk81xzq1QVWsHMICaYKew+bU3RpBJyonPfV4yRXS3vbFfo9JHBvc+qP2NyUlBFBLk=
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr4979269oib.69.1633115086415;
- Fri, 01 Oct 2021 12:04:46 -0700 (PDT)
+        bh=UIyzFyagBnHT8jP6LfBQs4hFyHSv/A2jIyX9+OpUkIE=;
+        b=SBp68X1VotxgRVOn7Hc8rDqfMAf2xrQY7WKPrHvX+tq3PALNYxVbFkcketnBSfbJNp
+         NYB7N/+wdU+wZBpxVz0AirUo4ChDk0TOMtmMsDZ4q5zZZ3xuXCf7M9Q5tSw/pMS1X65Y
+         2wsuqbmCsuvbKL0BOTGm3cZtxHxQ6XJgWPxwmbmybxuu31d4AXTp6sg7LzfsHR9HiOv6
+         Uc4GRSHrAicc527gzGcIEaOqcdKrFeFqNreHnwFmyk6dy2CZ+SqsrouasfXOGq1iVPbJ
+         3xiID8jXCmdEipMr4GXt1SHtwFKF/FmxXp7oj7cpLgZRgK0dZdeFz8qAjZvuAIUYFPXD
+         iHiw==
+X-Gm-Message-State: AOAM530FbkLs7RNdBKi3cD4eVpalge7R0vWzuXNDReaMSSyYba55Hu7a
+        JgkZNK7QGpYHhPss/cOEnnZviooDZ2OxQHLF3w5HKA==
+X-Google-Smtp-Source: ABdhPJw7k2Ejrd33oH7X93vPMhlcsMxINKoeiF3I5eE7NKcckSZiHU8x+5kOur6gKKpbidK9YUU9xE2a1k9qlWmWoec=
+X-Received: by 2002:a05:6512:3ba5:: with SMTP id g37mr6867797lfv.651.1633115137559;
+ Fri, 01 Oct 2021 12:05:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928164217.950960-1-srinivas.pandruvada@linux.intel.com>
- <CAJZ5v0jzbm5xnFSceQNmZjDQ0eU=i_f_WnDcoa05rEQ083mDkg@mail.gmail.com> <5b5f8adcf441494c5e17b9fb47dc42f345c737f2.camel@linux.intel.com>
-In-Reply-To: <5b5f8adcf441494c5e17b9fb47dc42f345c737f2.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 1 Oct 2021 21:04:35 +0200
-Message-ID: <CAJZ5v0iVMfz2joKiWK05FLpDyQTQj4RFAoE9Mc_RHbaUA1qRvw@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Process HWP Guaranteed change notification
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, pablomh@gmail.com
+References: <20210930235754.2635912-1-keescook@chromium.org>
+In-Reply-To: <20210930235754.2635912-1-keescook@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 1 Oct 2021 12:05:25 -0700
+Message-ID: <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
+Subject: Re: [PATCH v4] docs: Explain the desired position of function attributes
+To:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 9:01 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
+On Thu, Sep 30, 2021 at 4:58 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> On Fri, 2021-10-01 at 20:52 +0200, Rafael J. Wysocki wrote:
-> > On Tue, Sep 28, 2021 at 6:42 PM Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com> wrote:
-> > >
-> > > It is possible that HWP guaranteed ratio is changed in response to
-> > > change in power and thermal limits. For example when Intel Speed
-> > > Select
-> > > performance profile is changed or there is change in TDP, hardware
-> > > can
-> > > send notifications. It is possible that the guaranteed ratio is
-> > > increased. This creates an issue when turbo is disabled, as the old
-> > > limits set in MSR_HWP_REQUEST are still lower and hardware will
-> > > clip
-> > > to older limits.
-> > >
-> > > This change enables HWP interrupt and process HWP interrupts. When
-> > > guaranteed is changed, calls cpufreq_update_policy() so that driver
-> > > callbacks are called to update to new HWP limits. This callback
-> > > is called from a delayed workqueue of 10ms to avoid frequent
-> > > updates.
-> > >
-> > > Although the scope of IA32_HWP_INTERRUPT is per logical cpu, on
-> > > some
-> > > plaforms interrupt is generated on all CPUs. This is particularly a
-> > > problem during initialization, when the driver didn't allocated
-> > > data for other CPUs. So this change uses a cpumask of enabled CPUs
-> > > and
-> > > process interrupts on those CPUs only.
-> > >
-> > > When the cpufreq offline() or suspend()callback is called, HWP
-> > > interrupt
-> > > is disabled on those CPUs and also cancels any pending work item.
-> > >
-> > > Spin lock is used to protect data and processing shared with
-> > > interrupt
-> > > handler. Here READ_ONCE(), WRITE_ONCE() macros are used to
-> > > designate
-> > > shared data, even though spin lock act as an optmization barrier
-> > > here.
-> > >
-> > > Signed-off-by: Srinivas Pandruvada <
-> > > srinivas.pandruvada@linux.intel.com>
-> > > ---
-> > > This patch is a replacement from the patch submitted to 5.15 and
-> > > later
-> > > reverted.
-> >
-> > Applied as 5.16 material, thanks!
-> I got email that pablo (pablomh@gmail.com) tested this. So he can added
-> Tested-by also pointed out typo in "optmization".
-> Shall I send a patch with this change?
+> While discussing how to format the addition of various function
+> attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+> close as possible to Linus's preferences for future reference.
+>
+> (Though I note the dissent voiced by Joe Perches, Alexey Dobriyan, and
+> others that would prefer all attributes live on a separate leading line.)
+>
+> [1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-No need, I will update the commit in the tree.
+While I appreciate you getting the ball across the finish line (having
+_any_ documentation to point to in future bikesheds), I can't help but
+shake the feeling that the chosen policy will harm the ability of
+existing automated code formatting tools from being able to automate
+code formatting on the kernel.
+
+> ---
+> v4:
+> - fix another stray "void"! This is why code needs a compiler... (thx randy)
+> ---
+>  Documentation/process/coding-style.rst | 30 ++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 42969ab37b34..45b48510f5ec 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -487,6 +487,36 @@ because it is a simple way to add valuable information for the reader.
+>  Do not use the ``extern`` keyword with function prototypes as this makes
+>  lines longer and isn't strictly necessary.
+>
+> +When writing a function declarations, please keep the `order of elements regular
+> +<https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/>`_.
+> +For example::
+> +
+> + extern __init void * __must_check action(enum magic value, size_t size, u8 count,
+> +                                         char *fmt, ...) __printf(4, 5) __malloc;
+> +
+> +The preferred order of elements for a function prototype is:
+> +
+> +- storage class (here, ``extern``, and things like ``static __always_inline`` even though
+> +  ``__always_inline`` is technically an attribute, it is treated like ``inline``)
+> +- storage class attributes (here, ``__init`` -- i.e. section declarations, but also things like ``__cold``)
+> +- return type (here, ``void *``)
+> +- return type attributes (here, ``__must_check``)
+> +- function name (here, ``action``)
+> +- function parameters (here, ``(enum magic value, size_t size, u8 count, char *fmt, ...)``, noting that parameter names should always be included)
+> +- function parameter attributes (here, ``__printf(4, 5)``)
+> +- function behavior attributes (here, ``__malloc``)
+> +
+> +Note that for a function definition (e.g. ``static inline``), the compiler does
+> +not allow function parameter attributes after the function parameters. In these
+> +cases, they should go after the storage class attributes (e.g. note the changed
+> +position of ``__printf(4, 5)``)::
+> +
+> + static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
+> +               size_t size, u8 count, char *fmt, ...)
+> +               __malloc
+> + {
+> +       ...
+> + }
+>
+>  7) Centralized exiting of functions
+>  -----------------------------------
+> --
+> 2.30.2
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
