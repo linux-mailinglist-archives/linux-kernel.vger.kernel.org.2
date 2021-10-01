@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E259641F5CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542E341F5D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355403AbhJATiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:38:03 -0400
-Received: from mga14.intel.com ([192.55.52.115]:37511 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhJATiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:38:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="225209067"
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="225209067"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 12:36:17 -0700
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="708908639"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 12:36:14 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mWOKJ-007WjZ-IO;
-        Fri, 01 Oct 2021 22:36:11 +0300
-Date:   Fri, 1 Oct 2021 22:36:11 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v1 1/1] mtd: spi-nor: intel-spi: Add support for Intel
- Ice Lake-N SPI serial flash
-Message-ID: <YVdjKzD/SeNkfT5d@smile.fi.intel.com>
-References: <20211001171530.15283-1-andriy.shevchenko@linux.intel.com>
- <0D47CDDE-0F9E-4D5D-8524-1D911BF52CEF@walle.cc>
+        id S229820AbhJATmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhJATmU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 15:42:20 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C2C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:40:34 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso7490307wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=JPsepaKTNGJYOyWi4EBQ9HwQk2HA7oDVU+8hmkhnDQgPbw2pDR6osAqk3AixGc6LF0
+         9rdS0oW0HA30NtRfi2mew6DDTyZL3jFGXHhiMqtWmudTSk3LZb0efeRnBdXbE/OF6Mrf
+         0VutUGeP6ZQRUw1jKZMSlZKRXKyUA2IMYRUO7NwKyqgPVgmsL6UniygCQgbtlSD2Nkgi
+         ykd8uWBaCWpYQf32YC62XzKrvsVDyaZDTwhsfF2fgJiXCRtRGxxady4IyZiRWWROoZy5
+         yLrq0GKZYQxoQC4xD5eYzjTeL2N3EdRJ3FasjzJfXnYwNpVvHuVW8yIfGWB/7Vl9/1qy
+         9DQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=lCwsXMeiKJQLciuazX190Fy0VAavbFDr8iyw8U1yW9TaArwXYSciLc+citUE7YvbWm
+         bhZCORySl47Gt8qo7nYt6FAiy933shBYmFSMt5ej1XcAL+2to23F8EOhg0/ynOaJaX+R
+         pmpuRSLuOBDiedAX+3pCidigRFCsAf9GDXeu8tsEb1JkUDug3eshkZ3KQTLQ0SoSJhnd
+         fc50aT2OyYACdT1L2i6DkofwMk5ixCpVsMJ0eQjzbx8OSK4fGiaMsI5dKAvfZXyymEGO
+         pxRc3NKkfiepy85Zu2feHqMF7cS7DHwka3sa7OeyIe0jwHwElcFZouh04gZAsy6CRGkA
+         Bosg==
+X-Gm-Message-State: AOAM533JN1hhGAPx1diZECSKL47UDInRTeHb9CnYj3nWmvq788akiXuv
+        Aft17HkyDYFVYMlI7xoXWXaC3Uk7jYOuqB+Nhzw=
+X-Google-Smtp-Source: ABdhPJxd0cGjJknNqOJgi2LVb5WTbIbMKrjz3QQ/M8Rz5yosYvbPfued33zb5NyMSPCyWOrG/DO9FKipAjq+5m9HLPo=
+X-Received: by 2002:a1c:19c6:: with SMTP id 189mr6409675wmz.121.1633117232961;
+ Fri, 01 Oct 2021 12:40:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0D47CDDE-0F9E-4D5D-8524-1D911BF52CEF@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Received: by 2002:a5d:59a1:0:0:0:0:0 with HTTP; Fri, 1 Oct 2021 12:40:32 -0700 (PDT)
+Reply-To: kaylamanthey022@gmail.com
+From:   Kayla Manthey <mafiloslikem888@gmail.com>
+Date:   Fri, 1 Oct 2021 19:40:32 +0000
+Message-ID: <CAOhUZ=4tTqS52bfA1S6gpeDtY=aima_S6gsCCifDpNynFOx59w@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 07:21:08PM +0200, Michael Walle wrote:
-> Am 1. Oktober 2021 19:15:30 MESZ schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> >Intel Ice Lake-N has the same SPI serial flash controller as Ice Lake-LP.
-> >Add Ice Lake-N PCI ID to the driver list of supported devices.
-> >
-> >The device can be found on MacBookPro16,2 [1].
-> >
-> >[1]: https://linux-hardware.org/?probe=f1c5cf0c43
-> >
-> >Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Hi Andy, 
-> 
-> there is currently a rewrite of this driver (to use spi-mem)
-> in progress:
-> 
-> https://lore.kernel.org/linux-mtd/20210930100719.2176-1-mika.westerberg@linux.intel.com/
-> 
-> Could you try that series with your hardware? 
-
-It's not mine - can't test myself. I'm helping to enable Linux on it.
-But okay, I postpone this till the reworked version will be applied.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Greetings, My name is Kayla Manthey, please reply me back?
