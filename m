@@ -2,141 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4F541E7F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B136B41E7F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352534AbhJAHFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:05:02 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:53940 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237478AbhJAHEs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 03:04:48 -0400
-Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id 2DA5A44A0252;
-        Fri,  1 Oct 2021 09:02:59 +0200 (CEST)
-From:   Roan van Dijk <roan@protonic.nl>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Roan van Dijk <roan@protonic.nl>
-Subject: [PATCH v4 4/4] iio: documentation: Document scd4x calibration use
-Date:   Fri,  1 Oct 2021 09:02:54 +0200
-Message-Id: <20211001070254.3940795-5-roan@protonic.nl>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001070254.3940795-1-roan@protonic.nl>
-References: <20211001070254.3940795-1-roan@protonic.nl>
+        id S1352497AbhJAHGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 03:06:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352590AbhJAHFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 03:05:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 706EA60551;
+        Fri,  1 Oct 2021 07:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633071813;
+        bh=0W38PdEXHIVQIPll+lj+mk7xZAUxC8QpCqNUBGSB+/8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hgoTVKlDOzzRJAnGmyuCwIrPAJq3TBrkWxku6bsjIb9/ByohDLcD1EsZgSY7se0TI
+         CG6q4Q9ASHZQ1Ge5WQJ9cuWOdgkVpeIV8KWygEsbGCk3UM89UEA/GOzhDqsNKz+K58
+         Qhk0jK55DRI+q71MyjEfmxI23voJ/6FHW597Iwks=
+Date:   Fri, 1 Oct 2021 09:03:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+Message-ID: <YVaywQLAboZ6b36V@kroah.com>
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065953-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
+ <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
+ <YVXWaF73gcrlvpnf@kroah.com>
+ <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries from Documentation/ABI/testing/sysfs-bus-iio-scd30
-to Documentation/ABI/testing/sysfs-bus-iio. The attributes of the scd4x
-and scd30 are common.
+On Thu, Sep 30, 2021 at 12:04:05PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> 
+> 
+> On 9/30/21 8:23 AM, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 30, 2021 at 08:18:18AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> > > 
+> > > 
+> > > On 9/30/21 6:36 AM, Dan Williams wrote:
+> > > > > And in particular, not all virtio drivers are hardened -
+> > > > > I think at this point blk and scsi drivers have been hardened - so
+> > > > > treating them all the same looks wrong.
+> > > > My understanding was that they have been audited, Sathya?
+> > > 
+> > > Yes, AFAIK, it has been audited. Andi also submitted some patches
+> > > related to it. Andi, can you confirm.
+> > 
+> > What is the official definition of "audited"?
+> 
+> 
+> In our case (Confidential Computing platform), the host is an un-trusted
+> entity. So any interaction with host from the drivers will have to be
+> protected against the possible attack from the host. For example, if we
+> are accessing a memory based on index value received from host, we have
+> to make sure it does not lead to out of bound access or when sharing the
+> memory with the host, we need to make sure only the required region is
+> shared with the host and the memory is un-shared after use properly.
 
-Remove Documentation/ABI/testing/sysfs-bus-iio-scd30.
+You have not defined the term "audited" here at all in any way that can
+be reviewed or verified by anyone from what I can tell.
 
-Signed-off-by: Roan van Dijk <roan@protonic.nl>
----
- Documentation/ABI/testing/sysfs-bus-iio       | 41 +++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-iio-scd30 | 34 ---------------
- 2 files changed, 41 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+You have only described a new model that you wish the kernel to run in,
+one in which it does not trust the hardware at all.  That is explicitly
+NOT what the kernel has been designed for so far, and if you wish to
+change that, lots of things need to be done outside of simply running
+some fuzzers on a few random drivers.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index 6ad47a67521c..c27347d3608e 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1957,3 +1957,44 @@ Description:
- 		Specify the percent for light sensor relative to the channel
- 		absolute value that a data field should change before an event
- 		is generated. Units are a percentage of the prior reading.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Some sensors have the ability to apply auto calibration at
-+		runtime. For example, it may be necessary to compensate for
-+		contaminant build-up in a measurement chamber or optical
-+		element deterioration that would otherwise lead to sensor drift.
-+
-+		Writing 1 or 0 to this attribute will respectively activate or
-+		deactivate this auto calibration function.
-+
-+		Upon reading, the current status is returned.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Some sensors have the ability to apply a manual calibration using
-+		a known measurement value, perhaps obtained from an external
-+		reference device.
-+
-+		Writing a value to this function will force such a calibration
-+		change. For the scd30 the value should be from the range
-+		[400 1 2000].
-+
-+		Note for the scd30 that a valid value may only be obtained once
-+		it is has been written. Until then any read back of this value
-+		should be ignored. As for the scd4x an error will be returned
-+		immediately if the manual calibration has failed.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value_available
-+KernelVersion:  5.15
-+Contact:        linux-iio@vger.kernel.org
-+Description:
-+		Available range for the forced calibration value, expressed as:
-+
-+		- a range specified as "[min step max]"
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-scd30 b/Documentation/ABI/testing/sysfs-bus-iio-scd30
-deleted file mode 100644
-index b9712f390bec..000000000000
---- a/Documentation/ABI/testing/sysfs-bus-iio-scd30
-+++ /dev/null
-@@ -1,34 +0,0 @@
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using automatic self
--		calibration procedure (asc).
--
--		Writing 1 or 0 to this attribute will respectively activate or
--		deactivate asc.
--
--		Upon reading current asc status is returned.
--
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using forced
--		recalibration (frc). This is useful in case there's known
--		co2 reference available nearby the sensor.
--
--		Picking value from the range [400 1 2000] and writing it to the
--		sensor will set frc.
--
--		Upon reading current frc value is returned. Note that after
--		power cycling default value (i.e 400) is returned even though
--		internally sensor had recalibrated itself.
--- 
-2.30.2
+For one example, how do you ensure that the memory you are reading from
+hasn't been modified by the host between writing to it the last time you
+did?  Do you have a list of specific drivers and kernel options that you
+feel you now "trust"?  If so, how long does that trust last for?  Until
+someonen else modifies that code?  What about modifications to functions
+that your "audited" code touches?  Who is doing this auditing?  How do
+you know the auditing has been done correctly?  Who has reviewed and
+audited the tools that are doing the auditing?  Where is the
+specification that has been agreed on how the auditing must be done?
+And so on...
 
+I feel like there are a lot of different things all being mixed up here
+into one "oh we want this to happen!" type of thread.  Please let's just
+stick to the one request that I had here, which was to move the way that
+busses are allowed to authorize the devices they wish to control into a
+generic way instead of being bus-specific logic.
+
+Any requests outside of that type of functionality are just that,
+outside the scope of this patchset and should get their own patch series
+and discussion.
+
+thanks,
+
+greg k-h
