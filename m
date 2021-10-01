@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D6741F85E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50C541F863
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhJAXyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 19:54:41 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:37782 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhJAXyk (ORCPT
+        id S232177AbhJAXzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 19:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhJAXzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 19:54:40 -0400
+        Fri, 1 Oct 2021 19:55:19 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A77C061775;
+        Fri,  1 Oct 2021 16:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=0xMuAZxy7WjRqQL5sr6ELkPcGlP9OuCPr003kHqTfeU=; b=Rpjy0u2OvkSevH2fgSa1DstoGH
-        o2wJp5w42RBq2uenVuKW4DaC0Vkux3rrZjLwJcKk3LYAeiPFlWZHaGz8Pk79HoxlUCK38iS2CegOO
-        kfMJVMtJjE9IvdE/zxdXag1XWFUhSoZAc5k74Pq1wJGxFoCoDlHqdobZqKs0ztuSRj9L6J3IC/32y
-        fJHuXhrReLl0k0HxGTa3OUxEkca8z7d7IPpJgcn7g0UyVVenzmY+MqtOtgfMWp1YpouHw9032z/Ab
-        Es6yom90pWab8FqpEUFqG44R2zfoGFJT/pGlvov09iWN0qL/OCxi6qlnFwgzOf592mkrCZ/MMOV9U
-        W/oyms+w==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mWSKk-0002BT-El; Fri, 01 Oct 2021 17:52:55 -0600
-To:     Kelvin.Cao@microchip.com, helgaas@kernel.org
-Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
-        kelvincao@outlook.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-References: <20211001201822.GA962472@bhelgaas>
- <2f7b4e6debbf7156a4da26bad0373d9df9667e66.camel@microchip.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <1dfe4c62-63d2-e2e0-c7c0-e5cd2922176a@deltatee.com>
-Date:   Fri, 1 Oct 2021 17:52:53 -0600
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=5wv6+Frhzsf9ZnmXfBPxgpN4ah/vIcnKRwBiCvQp04A=; b=qERDYPBjPMhHVtObbuD90nXjqT
+        RYLeXP5T/UT0ArNmr4bzLPIJw/dGdWxQAIWzuZFwhWDPQsi42IMeRANWSKDN8JDwjsLc9UnUZupE7
+        8HFHGisNfDKnJfwq+R8ag1MWSEgcgUJXKVGalm/VlXXSnip8VFIpO+2D8gny4vQ6kawWRDDUMwHDL
+        F6XcGAqLpLtF9tTyeg+hDpTvuxDVZuKmAq9LKIAehGSDMQWgK+LFltyEh2GyPotVj7lny60LqmZSC
+        eNvYgABxCYBhLVzxRWJG7hNaPlEVTYcBScXfJm8kTL/zG3bw1a9oAjdpEdT6adTyBUCDsU3hHJN/N
+        noYy+RWA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWSLN-001Ull-9d; Fri, 01 Oct 2021 23:53:33 +0000
+Subject: Re: [RFC v2 02/11] drivers: Add hardware timestamp engine (HTE)
+To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        warthog618@gmail.com, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, robh+dt@kernel.org
+References: <20210930232617.6396-1-dipenp@nvidia.com>
+ <20210930232617.6396-3-dipenp@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <010426c7-74ed-33fb-0c06-c42408cffc0e@infradead.org>
+Date:   Fri, 1 Oct 2021 16:53:31 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <2f7b4e6debbf7156a4da26bad0373d9df9667e66.camel@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+In-Reply-To: <20210930232617.6396-3-dipenp@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, kelvincao@outlook.com, bhelgaas@google.com, kurt.schwemmer@microsemi.com, helgaas@kernel.org, Kelvin.Cao@microchip.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/30/21 4:26 PM, Dipen Patel wrote:
+> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
+> new file mode 100644
+> index 000000000000..6fdf243d281b
+> --- /dev/null
+> +++ b/drivers/hte/Kconfig
+> @@ -0,0 +1,22 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +menuconfig HTE
+> +	bool "Hardware Timestamping Engine (HTE) Support"
+> +	help
+> +	  Hardware Timestamping Engine (HTE) Support.
+> +
+> +	  Some devices provide hardware timestamping engine which can timestamp
+
+	               provide a hardware
+
+> +	  certain device lines/signals in realtime. This way to provide
+
+	                                            This provides a
+
+> +	  hardware assisted timestamp to generic signals like GPIOs, IRQs lines
+
+	  hardware-assisted                              like GPIOs or IRQ lines.
 
 
+> +	  comes with benefit for the applications like autonomous machines
 
-On 2021-10-01 4:58 p.m., Kelvin.Cao@microchip.com wrote:
-> On Fri, 2021-10-01 at 15:18 -0500, Bjorn Helgaas wrote:
->> Didn't notice this before, but the "check_access()" name is not very
->> helpful because it doesn't give a clue about what the return value
->> means.  Does 0 mean no error?  Does 1 mean no error?  From reading
->> the
->> implementation, I can see that 0 is actually the error case, but I
->> can't tell from the name.
-> 
-> Yes, will improve the naming, like change it to "has_gas_access()" in
-> v2 if a v2 patchset is preferred.
+	  It comes with a benefit for applications like
 
-I'd keep the GAS name out of the kernel. How about something along the
-lines of is_firmware_running()? Maybe a comment for the function would
-be good as well.
+> +	  needing accurate timestamping event with less jitter.
+> +
+> +	  This framework provides a generic interface to such HTE devices
+> +	  within the Linux kernel. It provides an API to register and
+> +	  unregister a HTE provider chip, configurable sw buffer to
 
-Logan
+	                                               software
+
+> +	  store the timestamps, push the timestamp from the HTE providers and
+> +	  retrieve timestamps for the consumers. It also provides means for the
+> +	  consumers to request signals it wishes to hardware timestamp and
+> +	  release them if not required.
+> +
+> +	  If unsure, say no.
+
+
+HTH.
+-- 
+~Randy
