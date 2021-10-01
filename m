@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AB641E942
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19F541E947
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352827AbhJAI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:56:53 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:48725 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352826AbhJAI4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:56:51 -0400
-Received: by mail-il1-f199.google.com with SMTP id x17-20020a927c11000000b0024da94ff1a6so6977210ilc.15
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:55:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=mYVNj7GUYQ3ONE/lwuTfVtZPuGTc99UdHlU4HzP4RMU=;
-        b=JdkpSg0uZDlYC0PVk4+OCg3CqZNMTr8VbvDRjtEY7xk7mOyFHboGBEabnmkf/SRi9r
-         5SwfjVePWqS0OSP4+BUOMTe+b1PoQjW1AZjwNPD6cy+e/7UrURAHkYXaEWJPM5wSv3mc
-         M80S0B/BvgWcJW4pd0zaBnmfqQxSLHv4JNXqi4fvSrs2Cg3kLaGpbJZINWGjJ9oOvRV4
-         ALjuPZCd0psuEZ/IDjXhrHBRAJQAqrwunHRL6hW4yOou17/mc320LO8s2sxSxx3dxKc8
-         Lu9wdBoDFny40lfUaiqOj+caohxim0wj1Ekr4mXiRnWnxZMKhbIIk5UJodwbbT21pzqX
-         QOGA==
-X-Gm-Message-State: AOAM531tCEmn+1Q9bTENAEDZy0v+53bKCSRJEz/DI0MYI4G9G60Hvevg
-        Fafk4xAUU9ur+w2+hSLo6jWK7A0Rb95VUWy6m8KgIsbzPV1F
-X-Google-Smtp-Source: ABdhPJwHjqhjMTIzJ+KD7re2/BvRja309HrPWUEceEN/YAnuUvrfDViaJV3ThPI7N/1fki4yZUmQcFv8x/XyxaaJ2RGEnxfueAgd
+        id S1352432AbhJAI7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:59:48 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54000 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhJAI7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 04:59:47 -0400
+Received: from zn.tnic (p200300ec2f0e8e00572b4e04e961fee2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:572b:4e04:e961:fee2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0FF1A1EC04F3;
+        Fri,  1 Oct 2021 10:58:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633078682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=cCn6ZMYQ9cKRpFK4Mmh1ozo2bAFBofEhqz4IBQINPzg=;
+        b=UOGtEWcY/i9uWsfbMmPUZsyrRZtr/1l4pllMa1qYXYROUsjkq3q4JqC2py9gaSq0Ynl9aM
+        s+8GmKhIoMqHE1nwcIOKoKQZlN8q3anZ5EeDI8MQq23/ZpSlyzEP213VgdNS95ZVDntEYf
+        pDbmo5EraFy9xSylY62J2Aw39lJfvHs=
+Date:   Fri, 1 Oct 2021 10:57:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
+Message-ID: <YVbNlXwiASQEsG+x@zn.tnic>
+References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3713:: with SMTP id k19mr8744051jav.44.1633078507394;
- Fri, 01 Oct 2021 01:55:07 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 01:55:07 -0700
-In-Reply-To: <000000000000d068cf05c716264c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052dbbf05cd46b81e@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in em28xx_close_extension
-From:   syzbot <syzbot+005037419ebdf14e1d87@syzkaller.appspotmail.com>
-To:     dan.carpenter@oracle.com, hdanton@sina.com,
-        hverkuil-cisco@xs4all.nl, igormtorrente@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        mudongliangabcd@gmail.com, stephen.s.brennan@oracle.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Sep 30, 2021 at 11:40:50PM -0500, Tom Lendacky wrote:
+> The size of the exception stacks was recently increased, resulting in
+> stack sizes greater than a page in size. The #VC exception handling was
+> only mapping the first (bottom) page, resulting in an SEV-ES guest failing
+> to boot.
+> 
+> Update setup_vc_stacks() to map all the pages of both the IST stack area
+> and the fallback stack area.
+> 
+> Fixes: 7fae4c24a2b8 ("x86: Increase exception stack sizes")
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/kernel/sev.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index a6895e440bc3..33e4704164cc 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -99,25 +99,33 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
+>  /* Needed in vc_early_forward_exception */
+>  void do_early_exception(struct pt_regs *regs, int trapnr);
+>  
+> +static void __init map_vc_stack(unsigned long bot, unsigned long top,
+> +				phys_addr_t pa)
+> +{
+> +	while (bot < top) {
+> +		cea_set_pte((void *)bot, pa, PAGE_KERNEL);
+> +		bot += PAGE_SIZE;
+> +		pa += PAGE_SIZE;
+> +	}
+> +}
+> +
+>  static void __init setup_vc_stacks(int cpu)
+>  {
+>  	struct sev_es_runtime_data *data;
+>  	struct cpu_entry_area *cea;
+> -	unsigned long vaddr;
+> -	phys_addr_t pa;
+>  
+>  	data = per_cpu(runtime_data, cpu);
+>  	cea  = get_cpu_entry_area(cpu);
+>  
+>  	/* Map #VC IST stack */
+> -	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
+> -	pa    = __pa(data->ist_stack);
+> -	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
+> +	map_vc_stack(CEA_ESTACK_BOT(&cea->estacks, VC),
+> +		     CEA_ESTACK_TOP(&cea->estacks, VC),
+> +		     __pa(data->ist_stack));
 
-commit 0766ec82e5fb26fc5dc6d592bc61865608bdc651
-Author: Stephen Brennan <stephen.s.brennan@oracle.com>
-Date:   Wed Sep 1 17:51:41 2021 +0000
+So this would not have broken if it would've used EXCEPTION_STKSZ or
+EXCEPTION_STACK_ORDER rather since we're mapping pages.
 
-    namei: Fix use after free in kern_path_locked
+Please use those defines so that this keeps working when someone mad
+decides to increase those exception stack sizes again because everything
+*and* the kitchen sink wants to instrument the damn kernel. Nothing to
+see here people...
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17bf2a03300000
-start commit:   fa54d366a6e4 Merge tag 'acpi-5.14-rc7' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
-dashboard link: https://syzkaller.appspot.com/bug?extid=005037419ebdf14e1d87
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c086c5300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12950bee300000
+-- 
+Regards/Gruss,
+    Boris.
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: namei: Fix use after free in kern_path_locked
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+https://people.kernel.org/tglx/notes-about-netiquette
