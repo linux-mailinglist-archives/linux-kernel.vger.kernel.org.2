@@ -2,160 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC23B41E711
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5935841E718
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351971AbhJAFQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 01:16:39 -0400
-Received: from mail-am6eur05on2068.outbound.protection.outlook.com ([40.107.22.68]:50908
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230397AbhJAFQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 01:16:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hC/FLhdVdge3gyhJLAwx15/96aKVWm5Fow23N9a/G84YomLBsR7zA/GaneFwKTiuoLG3pRJi51bQYjrheRTvZumudtCDtgcZq8MpArrvfmPwImG2CUFYmtLADFhErT8CoVhZZhdoMIlRq3n2ozhUlxhFXSGeb1hPQxY7xEb9vzfAjXot1yPJ0HGSLtZMkn2bg0gkN5l41yN+NWKhqpMUqFhH3I+TDimz9+xI9nVxEogVpbrDIbFfmJltvzKz6LewoBYGu2CiBkbCk+UiCdEeD3Wrc9p4MXPkELgvg+wmaSXc/n6wzHV78h6nIfD7PRu3utrhv1jKkEH2w0xDlgtCpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=58uZ3e26ZuyVJLfP64TR525brGKVYf1h1EjATxuJp/o=;
- b=UAYfi/Z+VpftXQdxZOiTPHZCb+FPz1J1gBK1HlOEPpF30Ztkbj1XIbBxAQLIXr1plKRVM7Tdrv9SYXRToI6no+fZs02b84D1bhGeYRYM+Z6DcjV7Efpd0341B517VzUApcAkiMZs2LXnf7+FN1xjicVqEDiZJzEr1nc8mAwqowwnfiu3HUUy2tEayJ8crq8p8tgIXo3mGoXa9KdIoMWytZt92ihUB0hOFvCyIk3zySI1rqNGlSwdwQ/xqFGtru13th/afo4wX4xxQmwsztPp/fLDNCXMzh8W4lRYSwDnMSkb3ZfjqUD+anq2J3lIfTLW0vVcHBSV/v2Clyupm3IaoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=58uZ3e26ZuyVJLfP64TR525brGKVYf1h1EjATxuJp/o=;
- b=D2hLR7sOrEyii9ZUcS8k613yDGGURjvO64XP8ghsPReGsrq8BMJKsOsFCjsZi0AUYinChkrF5DoW76gk9NZRkjdIP6SIcFVTDNng1AOE4reNRfV3VKoH88UoD7qqK9dwTe2bsy51ahICLejyJ4tWo2ueN4M7rnraxhQKXm+PrIg=
-Received: from AS8PR04MB8673.eurprd04.prod.outlook.com (2603:10a6:20b:428::9)
- by AS8PR04MB8820.eurprd04.prod.outlook.com (2603:10a6:20b:42f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Fri, 1 Oct
- 2021 05:14:52 +0000
-Received: from AS8PR04MB8673.eurprd04.prod.outlook.com
- ([fe80::d4f7:fe6:3e65:3c55]) by AS8PR04MB8673.eurprd04.prod.outlook.com
- ([fe80::d4f7:fe6:3e65:3c55%7]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
- 05:14:52 +0000
-From:   Kuldeep Singh <kuldeep.singh@nxp.com>
-To:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Leo Li <leoyang.li@nxp.com>
-Subject: RE: [EXT] [PATCH v2 16/16] ARM: dts: ls1021a-tsn: use generic
- "jedec,spi-nor" compatible for flash
-Thread-Topic: [EXT] [PATCH v2 16/16] ARM: dts: ls1021a-tsn: use generic
- "jedec,spi-nor" compatible for flash
-Thread-Index: AQHXtlfucauvEqx52Uqd8cxq3OuIqau9mKrA
-Date:   Fri, 1 Oct 2021 05:14:52 +0000
-Message-ID: <AS8PR04MB8673DB448952E9E36C323555E0AB9@AS8PR04MB8673.eurprd04.prod.outlook.com>
-References: <20211001000417.15334-1-leoyang.li@nxp.com>
- <20211001000417.15334-17-leoyang.li@nxp.com>
-In-Reply-To: <20211001000417.15334-17-leoyang.li@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f44c516-c0b7-4800-cd68-08d9849a6645
-x-ms-traffictypediagnostic: AS8PR04MB8820:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AS8PR04MB88206F66C50E7EF92896585BE0AB9@AS8PR04MB8820.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:983;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F/nqMAY87ZZttrxD8xfeFSwoi0aM+m376WbSUM/A33Br9cnXKQRPMLW/Q0Os6yuWxaM5zE3Ioi7HO1YzG7ASiEghL4Q8Cmw8BdmP8tS6viY1SdPm6E3LYoGNgCHtgdydLySzbALNTg+LF95ofXCJbmKLhd3VOIu1gyewe0v840oQ251emXwj1TMFaOUQ12ZA+wEasz30bWIrY78KzNff+Bjau+h2AN053DmLfEcy0byqwVb2Y8lSH4Ruva1MiLW3a4sUYlulxpKbhNQu+QnLxYE+f6LJshme99W+Gc6XKbeQxO8bmgLvk+VmFqjHC6LD/7Gt3RcEEsdBbzXLQFYpWHpO0ZcGgceG3erl1PdvhxpJHP0+UlaTta6dITMklefGholFYz26RFCJ+mCAN4C3WhmS0/VmSnlEtDom5YuciJ4WCIbf3o2k0Bhl92ljrS5KV+TsNca1iq8h+3YwKktUFJixf4MrSUOq8EU/JQER8p33PLBnmlVVw4SHw/lU4dxGmZeJ+3bN5hw3yRw1v51++MRwJseak7AG1RAHUZbuSDcRjUkUIkMpkSdtmCQ4O3cbg+H6oEKuCEcsOPVqrP9r7eSzBm4WmmbeFDTAbTtMcjl4HHzK9TO9c50lO55TFi1/G8FQzsoYnJH5BjvtYcM5oPFg5gCwCpv2rQxEju1VggggIhmiRC6O3lpnTKurqkmf2tP1FvIrbOw2upMCRUEaZX0OKTd7fH+5fwfdkaM0d+g=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8673.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(122000001)(33656002)(83380400001)(55236004)(26005)(53546011)(6506007)(2906002)(7696005)(38100700002)(9686003)(55016002)(44832011)(8936002)(5660300002)(508600001)(38070700005)(8676002)(86362001)(110136005)(71200400001)(316002)(52536014)(66946007)(66476007)(64756008)(66556008)(66446008)(76116006)(4326008)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UVw+NK0uWqezsU7XQe5TPI+5Kopwumvwp7hayQ/6fKP+xUt+GX6sb3Rp94ec?=
- =?us-ascii?Q?lbF+gGlHwfGCSatsrNVewoeBu9Ro9VoM0dvrJUlyLHJrHpE5M37eZkMCAadT?=
- =?us-ascii?Q?siJuahePE7hfc+WjszSDyJdrqzs2Ku5fqJrAd0eGFox/U5xwjgslpqzq7Yvp?=
- =?us-ascii?Q?RwVWfkHNUEniWfUfAmZRqYlcesxtiKDCtwbqR5ldt/PLqLS3BVOFvesUF0YL?=
- =?us-ascii?Q?9ORqIc+B9eYQPUMPBd84QdfvZe0AE8Gam1a0cuEnQdpq9M1nsFj+1TZTvZAe?=
- =?us-ascii?Q?zORvsC6FGXFAeTHTxug2+/cBslaCZtvL6czQyp5LUJqTK5vxPx5WhGHwYQWd?=
- =?us-ascii?Q?T7DGwmugqASVcs0c9kh5w+y/KubH7VGInSE6r7IDlEewgE8taKZ9V3MKbQyX?=
- =?us-ascii?Q?VzGQs2UPW19vSJgZoaojWSoe4Na3RuheeI09nNilO2vveDcCcJdEE7BNVka4?=
- =?us-ascii?Q?8TN3/xnisHo9v3eaEWuUq2PlOx6igRkEn/AdwrGgLLH2xD62tKXui90pEtnP?=
- =?us-ascii?Q?6kMQ6LfmEsbmcKDoGBh6mOTt5nnVSLU5g9VUJtqvX5liy2VMyUxqdVooM/ea?=
- =?us-ascii?Q?j3J0WswiMkjLFtly+rpGbyUL602zvrTxTX1EI5oJPbZrmbJ+WAdqiJGpRlH6?=
- =?us-ascii?Q?di/TlIQIOw224NNC9Sc2duRhNnNjzhzh4kLn9+Hy8wa3vT8KK15JNayCqbrN?=
- =?us-ascii?Q?m/Nz08CanJBxkT7Cj2sc3GEiuCk9xVNT3BABKN/MEIdwTko6gLmuw5R8EFFl?=
- =?us-ascii?Q?D0cciPtcOxM6MgPcZUglaetlYzuDKb+dAC05bvkazb/pNP56HnObPJWsRv/J?=
- =?us-ascii?Q?/aekdbWJ49GyDyaRYYc3IfZ4XaDPYTTYoLZd7ITR7m4rnEWDHCnvvqO9DQo4?=
- =?us-ascii?Q?7tJYmbwCIQVWTITPd/km3hjFJGHHxWQAJy+4CiByiIK73SCPXGHVnVliTMHW?=
- =?us-ascii?Q?LDjw06WcwJAp5CvPuYmOrQ2W2LvX8s1ZBbJDfkhQMX6Njri4SEXG+2X9gyP7?=
- =?us-ascii?Q?arPqLeihReyJcRy2GdBWC3MnFyjrSX3muWrpxQV1O7y878yhFRaW9hw9uYlv?=
- =?us-ascii?Q?uzqM5JwVjvM0md4bbIsh/wIlkwNvQuVyFB0ZHjMDkcbFWIj7W+K2DnX/1Vli?=
- =?us-ascii?Q?7qQEX9tvHwZq7mmeklvfyuq59H6znYfgVM3IWKDiuv9LBluiyDcvqJbfB2zp?=
- =?us-ascii?Q?YckrJyaUac+CnmBZTEs1PNuuA3NuBVM1KLsZcxpkkKPtW6hCQzjRijF6uYbO?=
- =?us-ascii?Q?iSYdpMyzH7Ox6IONp1zYz1IxvLvZI2uwm/mRNuk64uG70avw7K+Ud0H3ZT0A?=
- =?us-ascii?Q?XXE=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1352010AbhJAFVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 01:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351982AbhJAFVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 01:21:36 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F575C06176D
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id m21so8333923pgu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EyTaw5QtAJ4bW8Vm8xYfacGbohlYt9c/AnSihiB9j34=;
+        b=lHWczr+OPdwO6X6MxEziwiIYJTBe2iPHyLjFCYgLTl/SDrIXrQSS6vb7hnCYEx5bZs
+         d9rHB0J91KliCK2wBSHSVBMNFc5ozW8CIi+2CARgkV1a8mv4S6Xg1wwZ+hD6nn2xdNJE
+         qb+heFtlqPryXdSvgJZC8fLl3cg6iDg4rAcpQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EyTaw5QtAJ4bW8Vm8xYfacGbohlYt9c/AnSihiB9j34=;
+        b=TFS5i6cJVs2UpkpuG3VsrHOfPo9JyrVJcZjz5wWX4y53nP49nl85kNtMwn83MqHV7+
+         BT+h5J6RurVV6WXwUoF18lp6DCYJhGTg3i85BdYot2mixXJt7kMyA6yOLPKhz5+bsL5q
+         1x2TctxHqvlxFrFHrYzZ9DKwD619QGmSMUy2Nl6UomS8xnWZhO3IZDqjy4OyNuuATlk6
+         iyzDjc6IjokHyCtMx3BEQojvFr0sm80T65m0XVpx0Fv0KqiYUugeaJOB56gCRnJhuoAr
+         n2km2q7RtXSo7N5cx/1GgPGkNTuBs5BHAE/lWIEvHhjs9DODxbdo+5NdVda/nnXf6rBI
+         QkBg==
+X-Gm-Message-State: AOAM532sf+pF856gdPNFV3L6gpJ32/j1kppTon9yytHbq4cKaYi0sljh
+        qQg+iDuc8iyxVkAaHPBhR9FgJg==
+X-Google-Smtp-Source: ABdhPJzprmCx1Nw75Isx1VIHD4op+s7oTt9KX5oRihjuhzp0VAPFJJOk8T2ufUoBr/6/fUvG1cvJ0g==
+X-Received: by 2002:a65:51c7:: with SMTP id i7mr8248588pgq.300.1633065592032;
+        Thu, 30 Sep 2021 22:19:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k2sm6543077pjq.28.2021.09.30.22.19.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 22:19:51 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 22:19:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <202109302219.FF1F3E24@keescook>
+References: <20210902231813.3597709-1-surenb@google.com>
+ <20210902231813.3597709-2-surenb@google.com>
+ <202109031439.B58932AF0@keescook>
+ <CAJuCfpEQAJqu2DLf5D5pCkv4nq+dtVOpiJSnsxwGrgb9H6inQA@mail.gmail.com>
+ <202109031522.ACDF5BA8@keescook>
+ <CAJuCfpGVgSpvW_oXaGVc3TiobaGaYUtu3WR_DhrhWnEr_V=7TQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8673.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f44c516-c0b7-4800-cd68-08d9849a6645
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 05:14:52.3633
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3mx+NeL10EXEkpjIHi1USAEQqhA1GgMtVjcoPmLKPbhSWXJ9P5Z+QbFHz8R/4Rhek94279ov9wjjxpve7wvrSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8820
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpGVgSpvW_oXaGVc3TiobaGaYUtu3WR_DhrhWnEr_V=7TQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Li Yang <leoyang.li@nxp.com>
-> Sent: Friday, October 1, 2021 5:34 AM
-> To: Shawn Guo <shawnguo@kernel.org>; Rob Herring
-> <robh+dt@kernel.org>; devicetree@vger.kernel.org; Oleksij Rempel
-> <linux@rempel-privat.de>; linux-arm-kernel@lists.infradead.org; linux-
-> kernel@vger.kernel.org
-> Cc: Leo Li <leoyang.li@nxp.com>
-> Subject: [EXT] [PATCH v2 16/16] ARM: dts: ls1021a-tsn: use generic
-> "jedec,spi-nor" compatible for flash
->=20
-> Caution: EXT Email
->=20
-> We cannot list all the possible chips used in different board revisions, =
-just
-> use the generic "jedec,spi-nor" compatible instead.  This also fixes
-> dtbs_check error:
-> ['s25fl256s1', 's25fl512s', 'jedec,spi-nor'] is too long
->=20
-> Signed-off-by: Li Yang <leoyang.li@nxp.com>
+On Thu, Sep 30, 2021 at 08:44:25PM -0700, Suren Baghdasaryan wrote:
+> While testing v10 I found one case when () are used in the name
+> "dalvik-main space (region space)". So I can add ` and $ to the
+> restricted set but not ( and ). Kees, would you be happy with:
+> 
+> static inline bool is_valid_name_char(char ch)
+> {
+>     return ch > 0x1f && ch < 0x7f && !strchr("\\`$[]", ch);
+> }
+> 
+> ?
 
-Reviewed-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+That works for me! :)
 
-> ---
->  arch/arm/boot/dts/ls1021a-tsn.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm/boot/dts/ls1021a-tsn.dts b/arch/arm/boot/dts/ls1021=
-a-
-> tsn.dts
-> index 8005efc5c812..ff0ffb22768b 100644
-> --- a/arch/arm/boot/dts/ls1021a-tsn.dts
-> +++ b/arch/arm/boot/dts/ls1021a-tsn.dts
-> @@ -251,7 +251,7 @@ &qspi {
->=20
->         flash@0 {
->                 /* Rev. A uses 64MB flash, Rev. B & C use 32MB flash */
-> -               compatible =3D "jedec,spi-nor", "s25fl256s1", "s25fl512s"=
-;
-> +               compatible =3D "jedec,spi-nor";
->                 spi-max-frequency =3D <20000000>;
->                 #address-cells =3D <1>;
->                 #size-cells =3D <1>;
-> --
-> 2.25.1
-
+-- 
+Kees Cook
