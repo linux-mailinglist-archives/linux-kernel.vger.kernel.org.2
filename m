@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E104441F121
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED1E41F124
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhJAPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:23:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:45476 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232111AbhJAPXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:23:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8FE7101E;
-        Fri,  1 Oct 2021 08:22:05 -0700 (PDT)
-Received: from [10.57.72.173] (unknown [10.57.72.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D227A3F766;
-        Fri,  1 Oct 2021 08:22:03 -0700 (PDT)
-Subject: Re: [PATCH v2 03/17] coresight: trbe: Add a helper to calculate the
- trace generated
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-4-suzuki.poulose@arm.com>
- <20210930175421.GB3047827@p14s>
- <60037d18-9d0e-68ce-2a34-aa84e7876fb8@arm.com>
- <20211001151535.GA3148492@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <355cae15-9a57-c321-0680-d280b6dbe87e@arm.com>
-Date:   Fri, 1 Oct 2021 16:22:02 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S1355019AbhJAPYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:24:19 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:42471 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1354734AbhJAPYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:24:15 -0400
+Received: (qmail 506376 invoked by uid 1000); 1 Oct 2021 11:22:26 -0400
+Date:   Fri, 1 Oct 2021 11:22:26 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@google.com" <hsinyi@google.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
+Message-ID: <20211001152226.GA505557@rowland.harvard.edu>
+References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+ <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
+ <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+ <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
+ <20210930151819.GC464826@rowland.harvard.edu>
+ <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
+ <5f56b21575dd4f64a3b46aac21151667@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <20211001151535.GA3148492@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f56b21575dd4f64a3b46aac21151667@realtek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/2021 16:15, Mathieu Poirier wrote:
-> On Fri, Oct 01, 2021 at 09:36:24AM +0100, Suzuki K Poulose wrote:
->> On 30/09/2021 18:54, Mathieu Poirier wrote:
->>> Hi Suzuki,
->>>
->>> On Tue, Sep 21, 2021 at 02:41:07PM +0100, Suzuki K Poulose wrote:
->>>> We collect the trace from the TRBE on FILL event from IRQ context
->>>> and when via update_buffer(), when the event is stopped. Let us
->>>
->>> s/"and when via"/"and via"
->>>
->>>> consolidate how we calculate the trace generated into a helper.
->>>>
->>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>> Cc: Leo Yan <leo.yan@linaro.org>
->>>> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> ---
->>>>    drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++--------
->>>>    1 file changed, 30 insertions(+), 18 deletions(-)
->>>>
->>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->>>> index 63f7edd5fd1f..063c4505a203 100644
->>>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->>>> @@ -527,6 +527,30 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->>>>    	return TRBE_FAULT_ACT_SPURIOUS;
->>>>    }
->>>> +static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->>>> +					 struct trbe_buf *buf,
->>>> +					 bool wrap)
->>>
->>> Stacking
->>>
->>
->> Ack
->>
->>>> +{
->>>> +	u64 write;
->>>> +	u64 start_off, end_off;
->>>> +
->>>> +	/*
->>>> +	 * If the TRBE has wrapped around the write pointer has
->>>> +	 * wrapped and should be treated as limit.
->>>> +	 */
->>>> +	if (wrap)
->>>> +		write = get_trbe_limit_pointer();
->>>> +	else
->>>> +		write = get_trbe_write_pointer();
->>>> +
->>>> +	end_off = write - buf->trbe_base;
->>>
->>> In both arm_trbe_alloc_buffer() and trbe_handle_overflow() the base address is
->>> acquired using get_trbe_base_pointer() but here it is referenced directly - any
->>> reason for that?  It certainly makes reviewing this simple patch quite
->>> difficult because I keep wondering if I am missing something subtle...
->>
->> Very good observation. So far, we always prgrammed the TRBBASER with the
->> the VA(ring_buffer[0]). And thus reading the BASER and using the
->> buf->trbe_base is all fine.
->>
->> But going forward, we are going to use different values for the TRBBASER
->> to work around erratum. Thus to make the computation of the "offsets"
->> within the ring buffer, it is always correct to use this field. I could
->> move this to the patch where the work around is introduced, and put in
->> a comment there.
+On Fri, Oct 01, 2021 at 03:26:48AM +0000, Hayes Wang wrote:
+> > Alan Stern <stern@rowland.harvard.edu>
+> > [...]
+> > > There has been some discussion about this in the past.
+> > >
+> > > In general, -EPROTO is almost always a non-recoverable error.
+> > 
+> > Excuse me. I am confused about the above description.
+> > I got -EPROTO before, when I debugged another issue.
+> > However, the bulk transfer still worked after I resubmitted
+> > the transfer. I didn't do anything to recover it. That is why
+> > I do resubmission for -EPROTO.
 > 
-> That will be greatly appreciated.
+> I check the Linux driver and the xHCI spec.
+> The driver gets -EPROTO for bulk transfer, when the host
+> returns COMP_USB_TRANSACTION_ERROR.
+> According to the spec of xHCI, USB TRANSACTION ERROR
+> means the host did not receive a valid response from the
+> device (Timeout, CRC, Bad PID, unexpected NYET, etc.).
 
-I have moved this to the patch, which introduces the concept of "TRBE 
-using" a different BASE address than the beginning of the ring buffer.
+That's right.  If the device and cable are working properly, this 
+should never happen.  Or only extremely rarely (for example, caused 
+by external electromagnetic interference).
 
-Thanks
-Suzuki
+> It seems to be reasonable why resubmission sometimes works.
+
+Did you ever track down the reason why you got the -EPROTO error 
+while debugging that other issue?  Can you reproduce it?
+
+Alan Stern
