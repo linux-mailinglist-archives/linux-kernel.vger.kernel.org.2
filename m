@@ -2,228 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6963E41F7E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9FC41F7EA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356190AbhJAW6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:58:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61509 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356172AbhJAW57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:57:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="222401574"
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="222401574"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:56:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
-   d="scan'208";a="480775114"
-Received: from unknown (HELO vcostago-mobl3) ([10.134.46.83])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:56:12 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
-        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "jhs@mojatatu.com" <jhs@mojatatu.com>
-Subject: Re: [EXT] Re: [RFC, net-next] net: qos: introduce a frer action to
- implement 802.1CB
-In-Reply-To: <20211001175524.3sa2m3occzham5og@skbuf>
-References: <20210928114451.24956-1-xiaoliang.yang_1@nxp.com>
- <87czos9vnj.fsf@linux.intel.com>
- <DB8PR04MB5785F3128FEB1FB1B2F9AC0DF0A99@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <87lf3cfyfj.fsf@intel.com> <20211001175524.3sa2m3occzham5og@skbuf>
-Date:   Fri, 01 Oct 2021 15:56:12 -0700
-Message-ID: <87fstkfj77.fsf@intel.com>
+        id S231147AbhJAXAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 19:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230457AbhJAXAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 19:00:17 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A44C06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:58:32 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b20so44578264lfv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZQM3XM8xdLXddRKZW1XX+RPtGmZTJVt7CAVEe+7hVj0=;
+        b=HrPYP0UEVwuiTywHkbK3uNSlC5jNJRCt7l8EaoQMi0GpVMSFINwhrAt0s6xN2VsWnd
+         Myc5mNipqTNZcxOhUQEgTc+wNrFHHij90mG+lt2XElY+2NHha97StErPB8G12+Q/FdL7
+         kv/yBjF0tdcFFbh62Zzs85vTUFMkD27saQD001r+EBb1yzThD0/29HuX9TwewcOvoPID
+         6NmUoW0KSr6AgRtw5foBD1kqg7x7DEk0pD9byZrdGV8vM4cRAhBOa6eltRHMuoC79vmd
+         2qSPM4v3FgGl7AoaJFBY9KUW1L0pWlhtgS3WiXRLGRjfXTBWphGxNH6YWjpddXQ9JqG2
+         uaRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZQM3XM8xdLXddRKZW1XX+RPtGmZTJVt7CAVEe+7hVj0=;
+        b=NK4jiZBNYD291HvEKQEceG33Z/+aXVbEGDwFfQQfMAdTjpS60OcJKnYOOr181/PUjx
+         cFczFerCsQ/0MJTo4sTool1OQGRI+nMIDGszOx5JKeGyXW/aQPcUPbnI29mfsCMNzdPV
+         afLyCkgZ/eyvIsTRp96NpdnZND/KTllDewnnMs4OXwBm+GhlaXIVD67RwPoYa7jKeKAM
+         /YpNNCCU4jp9oEaXG+CX/74w7MYhRSabzjhE+bH2Bo+M/s06R77zVx5W4Sk8uV6Mxhk2
+         rM15Mpbz7QEEytxsND0frZ0zZg12KG5RaSyLerjjgyvBzhSK63otcP8Ky4NGeYWGrdpE
+         SBsA==
+X-Gm-Message-State: AOAM532KeY6kiE2Jf9DKsMFQjIqa+rBxm9xV/Xtc7kYU7ypQ6ljgIp1O
+        YqyRBzbUAnE0TiJtV8AdfG+WQel/sXUZnoRM3fy68Q==
+X-Google-Smtp-Source: ABdhPJxDRqKz8OAWDsnkLn4xH3d0hvk5cFN9OA2tx3QD1FlVd+hZKPEVe8R6GTnDW2zwiLwPxa2Ij4nuoD+ZhZ0oE9A=
+X-Received: by 2002:a05:6512:20cb:: with SMTP id u11mr633226lfr.237.1633129110528;
+ Fri, 01 Oct 2021 15:58:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+ <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com> <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com>
+In-Reply-To: <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Sat, 2 Oct 2021 00:58:04 +0200
+Message-ID: <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Vladimir Oltean <vladimir.oltean@nxp.com> writes:
-
-> On Fri, Oct 01, 2021 at 10:27:12AM -0700, Vinicius Costa Gomes wrote:
->> Xiaoliang Yang <xiaoliang.yang_1@nxp.com> writes:
->> 
->> > Hi Vinicius,
->> >
->> > On Sep 29, 2021 at 6:35:59 +0000, Vinicius Costa Gomes wrote:
->> >> > This patch introduce a frer action to implement frame replication and
->> >> > elimination for reliability, which is defined in IEEE P802.1CB.
->> >> >
->> >> 
->> >> An action seems, to me, a bit too limiting/fine grained for a frame replication
->> >> and elimination feature.
->> >> 
->> >> At least I want to hear the reasons that the current hsr/prp support cannot be
->> >> extended to support one more tag format/protocol.
->> >> 
->> >> And the current name for the spec is IEEE 802.1CB-2017.
->> >> 
->> > 802.1CB can be set on bridge ports, and need to use bridge forward
->> > Function as a relay system. It only works on identified streams,
->> > unrecognized flows still need to pass through the bridged network
->> > normally.
->> 
->> This ("only on identified streams") is the strongest argument so far to
->> have FRER also as an action, in adition to the current hsr netdevice
->> approach.
->> 
->> >
->> > But current hsr/prp seems only support two ports, and cannot use the
->> > ports in bridge. It's hard to implement FRER functions on current HSR
->> > driver.
->> 
->> That the hsr netdevice only support two ports, I think is more a bug
->> than a design issue. Which will need to get fixed at some point. 
+On Fri, Oct 1, 2021 at 10:10 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 10/1/2021 12:50 PM, Jann Horn wrote:
+> > On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
+> >> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>> On 10/1/2021 10:55 AM, Todd Kjos wrote:
+> >>>> Save the struct cred associated with a binder process
+> >>>> at initial open to avoid potential race conditions
+> >>>> when converting to a security ID.
+> >>>>
+> >>>> Since binder was integrated with selinux, it has passed
+> >>>> 'struct task_struct' associated with the binder_proc
+> >>>> to represent the source and target of transactions.
+> >>>> The conversion of task to SID was then done in the hook
+> >>>> implementations. It turns out that there are race conditions
+> >>>> which can result in an incorrect security context being used.
+> >>> In the LSM stacking patch set I've been posting for a while
+> >>> (on version 29 now) I use information from the task structure
+> >>> to ensure that the security information passed via the binder
+> >>> interface is agreeable to both sides. Passing the cred will
+> >>> make it impossible to do this check. The task information
+> >>> required is not appropriate to have in the cred.
+> >> Why not? Why can't you put the security identity of the task into the creds?
+> > Ah, I get it now, you're concerned about different processes wanting
+> > to see security contexts formatted differently (e.g. printing the
+> > SELinux label vs printing the AppArmor label), right?
 >
-> What do you mean 'a bug'? HSR and PRP, as protocols, use _two_ ports,
-> see IEC 62439-3, that's where the "D" (doubly attached node) in DANH and
-> DANP comes from. There's no TANH/TANH for "triply attached node".
-> It doesn't scale.
+> That is correct.
+>
+> > But still, I don't think you can pull that information from the
+> > receiving task. Maybe the easiest solution would be to also store that
+> > in the creds? Or you'd have to manually grab that information when
+> > /dev/binder is opened.
+>
+> I'm storing the information in the task security blob because that's
+> the appropriate scope. Today the LSM hook is given both task_struct's.
 
-First of all, thank you for taking the time to write such detailed
-answer, really helpful.
+Which is wrong, because you have no idea who the semantic "recipient
+task" is - any task that has a mapping of the binder fd can
+effectively receive transactions from it.
 
-Another spec that I should take some time and read if I want to keep
-commenting on this stuff.
+(And the current "sender task" is also wrong, because binder looks at
+the task that opened the binder device, not the task currently
+performing the action.)
 
->
->> Speaking of functions, one thing that might be interesting is trying to
->> see if it makes sense to make part of the current hsr functionality a
->> "library" so it can be used by tc-frer as well. (less duplication of
->> bugs).
->
-> You mean tc-frer should inherit from the get-go the plethora of bugs
-> from the unmaintained hsr driver? :)
->
-> That would be good for hsr, which is in a pretty poor state, but the
-> design of the 802.1CB spec isn't really in its favor sadly.
->
+> It's easy to compare to make sure the tasks are compatible.
 
-Fair enough.
+It would be, if you actually had a pair of tasks that accurately
+represent the sender and the recipient.
 
-So what I am going to suggest is for you folks to write in the RFC how
-to use tc-frer (the "toolbox" idea) in "IEC 62439-9 mode", not necessary
-to implement it, just to write it down. The idea is that we have a path
-forward to better maintained alternatives, as you said, if we stop
-recommending people to use/experiment with net/hsr.
+> Adding the
+> information to the cred would be yet another case where the scope of
+> security information is wrong.
 
->> >
->> > You can see chapter "D.2 Example 2: Various stack positions" in IEEE 802.1CB-2017,
->> > Protocol stack for relay system is like follows:
->> >
->> >              Stream Transfer Function
->> >                 |             |
->> >   				|    	Sequence generation
->> >                 |       	Sequence encode/decode
->> >   Stream identification		Active Stream identification
->> > 				|			  |
->> >   			    |		Internal LAN---- Relay system forwarding
->> > 				|						|		|
->> > 				MAC						MAC		MAC
->> >
->> > Use port actions to easily implement FRER tag add/delete, split, and
->> > recover functions.
->> >
->> > Current HSR/PRP driver can be used for port HSR/PRP set, and tc-frer
->> > Action to be used for stream RTAG/HSR/PRP set and recover.
->> 
->> I am still reading the spec and trying to imagine how things would fit
->> together:
->>   - for which use cases tc-frer would be useful;
->>   - for which use cases the hsr netdevice would be useful;
->>   - would it make sense to have them in the same system?
->
-> You could use FRER in networks where normally you'd use HSR (aka rings).
-> In fact the 802.1CB demonstration I have, which uses the NXP tsntool
-> program with the downstream genetlink tsn interface, does exactly that:
-> https://github.com/vladimiroltean/tsn-scripts
->
-
-After a very quick look, interesting stuff here. Will take a better
-look. (even more reading for the weekend)
-
-> Basically FRER is IEEE's take on redundancy protocols and more like a
-> generalization of HSR/PRP, the big changes are:
-> - not limited to two (or any number of) ports
-> - more than one type of stream/flow identification function: can look at
->   source/destination MAC, source/destination IP, VLAN, and most
->   importantly, there can be passive stream identification functions (don't
->   modify the packet) and active stream identification functions (do
->   modify the packet).
->
-> Please note that we've already started modeling IEEE 802.1CB stream
-> identification functions as tc flower filters, since those map nicely on top.
-> We use these for PSFP (former 802.1Qci) tc-police and tc-gate actions
-> (yes, tc-police is single-bucket and color-unaware, that needs to be improved).
->
-> Basically IEEE 802.1CB is a huge toolbox, the spec gives you the tools
-> but it doesn't tell you how to use them, that's why the stream
-> identification functions are so generic and decoupled from the
-> redundancy protocol itself.
->
-> In both HSR and PRP, sequence numbers are kept per source MAC address,
-> that is absolutely baken into the standard.
->
-> But think about this. When the sequence number is kept per source
-> station, frames sent from node A to multiple destinations (nodes B and C)
-> will be part of the same stream. So nodes B and C will see
-> discontinuities in the sequence numbers when node A talks to them.
->
-> The opposite is true as well. When sequence numbers are kept per
-> destination MAC address, then frames sent from multiple talkers (nodes A
-> and B) to the same destination (node C) will be interpreted as part of
-> the same stream by the listener. So there will be jumps in sequence
-> numbers seen by C when A and B are simultaneously transmitting to it.
->
-> Which type of stream identification you need depends on the traffic you
-> need to support, and the topology.
-
-Good insight here. Even if I can imagine those simple stream identification
-functions working on simple topologies, I totally get you point. 
-
->
-> So again, IEEE 802.1CB doesn't tell you what to do, but it gives you the
-> tools. You can do source MAC based stream identification, and you can
-> emulate HSR, or you can do something that encompasses both source node
-> information as well as destination node information.
->
-> It's one whole degree of freedom more flexible, plain and simple.
-> And the topologies are not limited to:
-> - the rings that HSR supports
-> - the disjoint IP networks that PRP supports
-> but are rather generic graphs.
->
-> I fully expect there to be hardware out there already that can convert
-> between the HSR/PRP frame format on one set of ports to 802.1CB frame
-> format on another set of ports. Maybe that's something that some thought
-> needs to be put into.
-
-In short, I am reasonably satisfied with the proposal that tc-frer
-offers a superset of net/hsr can do.
-
-Suggestions for the cover letter:
- - Expand a bit on the whole superset/toolbox idea;
- - Document how to use the toolbox to emulate HSR/PRP;
-
-
-Cheers,
--- 
-Vinicius
+Can you elaborate on why you think that?
