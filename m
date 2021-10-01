@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFA841EBD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DB341EBD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353796AbhJAL1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S1353876AbhJAL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353751AbhJAL1L (ORCPT
+        with ESMTP id S1353767AbhJAL1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Oct 2021 07:27:11 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373B7C06177B
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6585C06177C
         for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 04:25:27 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id j27so6997863wms.0
+Received: by mail-wr1-x42a.google.com with SMTP id w29so14948010wra.8
         for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 04:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3POZSfd3i3rRjFBmejsX8EHhkanjDD2SzvXm5wj7xu0=;
-        b=Lf4FLJqg3BajSlJoxu2QV1n7yHssEl/qRsfWd1c5h3WshXNw9lFtXjnRubG0B6Vzwr
-         mKXy0eGlKZfRrAxmCq1mQ3Qz/XQauR0Tiv1o0Vt+DtbDPN9O+NudL2pEft+fC36oKO7r
-         nU9v/QiYzjXg/QXm9AOX5pjBUOeCax2YsZaNE=
+        bh=CsIDAReufILY9VHFSQPnSoVNtKesEQVhGHmS/ZGk6bY=;
+        b=m92E2iaieXtNEzgumVB8qGx9lnexFJr6/tTdH01cdjZe4OAJNypKDGGvk5oi+zPkLT
+         Qhkqhp31Y5/eciGuA8fGat/X8YZURnJYGkWgbQcoD/fJNchmygovG6XMtQKOn01hAscQ
+         2U+k5J9p6eGmmfeLOnYpfTEkPGpm0gqFcYcXI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3POZSfd3i3rRjFBmejsX8EHhkanjDD2SzvXm5wj7xu0=;
-        b=1WfpI8dsMYBDov9w7AiuF6SYvrX6rclJkvHnJyg+9sJBV6JNS832yrd+NXx62iA2od
-         Yrpj5tYx3+zWaAJrhju8+ObO3m3NydSA8bUE8WrsRXgLSYKm0AF9NZajOfANjB8epCjS
-         5G9rHfz9kxQw6UdcMls566pNbg9PKNSe+T99pbnoLeKbAce04gtHvWMY6KufTDpHDDov
-         NXOQinsuJ/JOcBxW0uWAvg+PAp/HmGDElYjsdXCurjWoJJdnB//sgcnb4yHJ/D3E2yHV
-         ccknnoRe0dTkZp8dDNtH2lZrbckRaUT5/Po0KW0I69rtQsqxmFdVSAZJ8DSbx4b51JMG
-         tGRA==
-X-Gm-Message-State: AOAM530nA8N5iaqEyJIikg4nvnkHtsgGHx5NWGWCvI0AUKT56XzsOBTL
-        QkvI5Y2YkKoQbTv8Yq/d7pJWuw==
-X-Google-Smtp-Source: ABdhPJwlXdz6nFYFhkX+oeIRplHv8yyqSEfQ/zRYkO7apAjHVQmVmzlEGMCweSQB1YOSqTkz1qWpVg==
-X-Received: by 2002:a05:600c:1c93:: with SMTP id k19mr3955263wms.80.1633087525831;
-        Fri, 01 Oct 2021 04:25:25 -0700 (PDT)
+        bh=CsIDAReufILY9VHFSQPnSoVNtKesEQVhGHmS/ZGk6bY=;
+        b=i+y5bMZLWa87Q31fWYS4TFD8blNdE3P4K3JMikKSNtREq68tLhKJrHkI1bBooMSpS/
+         15TkE3ZhpUxH1NegnkyT/5U2WZtf6sonZlVsKMQIVp6BPOM3D75RRtMdbET25t0tknqC
+         D0ED0zuk4VXBzuhow2Dv3i6pokUMLfDjp9AGxWgcaBTydJIF3g5M+woADGn6W9+bhUFM
+         aUyCckwW+Kp7naQBghc/n5s7iXv2F6YzwXJKVxPzHQuFmtEGkz7XOHpKXYGZYjmQ028e
+         xCMLzAQw+D9f5IHkpp6P+ruUEYQjdCZErIVZQykdi52C9883a2Y+xWUpHNyDD2zNNsAb
+         0kCQ==
+X-Gm-Message-State: AOAM531PvESmjBtX3V+ztdvOsKKercEiNkfwmpuXL2NH/onByH2BxEeN
+        /lpAlKpsdmMPX5nGXUV2X3MMMQ==
+X-Google-Smtp-Source: ABdhPJxExrFN3nb57yGGRQ8TCWrkgCkapqXnn1OL2XI5mlFWa2eEvqff7MdNn3sqybBfXZwYjY0baA==
+X-Received: by 2002:a5d:6847:: with SMTP id o7mr11761494wrw.213.1633087526228;
+        Fri, 01 Oct 2021 04:25:26 -0700 (PDT)
 Received: from beni.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
         by smtp.gmail.com with ESMTPSA id x17sm5530958wrc.51.2021.10.01.04.25.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -53,9 +53,9 @@ To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
         Sakari Ailus <sakari.ailus@linux.intel.com>
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v3 2/8] media: ipu3-imgu: Refactor bytesperpixel calculation
-Date:   Fri,  1 Oct 2021 11:25:16 +0000
-Message-Id: <20211001112522.2839602-3-ribalda@chromium.org>
+Subject: [PATCH v3 3/8] media: ipu3-imgu: Set valid initial format
+Date:   Fri,  1 Oct 2021 11:25:17 +0000
+Message-Id: <20211001112522.2839602-4-ribalda@chromium.org>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 In-Reply-To: <20211001112522.2839602-1-ribalda@chromium.org>
 References: <20211001112522.2839602-1-ribalda@chromium.org>
@@ -65,121 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the calculation to an inline function, to it can be used by other
-parts of the driver.
+The initial format did not have a valid size.
+
+Fixes v4l2-compliance:
+
+fail: v4l2-test-formats.cpp(723): Video Output Multiplanar:
+				  TRY_FMT(G_FMT) != G_FMT
+test VIDIOC_TRY_FMT: FAIL
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/staging/media/ipu3/ipu3-css.c | 19 +++----------------
- drivers/staging/media/ipu3/ipu3-css.h |  1 -
- drivers/staging/media/ipu3/ipu3.h     | 12 ++++++++++++
- 3 files changed, 15 insertions(+), 17 deletions(-)
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/media/ipu3/ipu3-css.c b/drivers/staging/media/ipu3/ipu3-css.c
-index 608dcacf12b2c..8c70497d744c9 100644
---- a/drivers/staging/media/ipu3/ipu3-css.c
-+++ b/drivers/staging/media/ipu3/ipu3-css.c
-@@ -5,6 +5,7 @@
- #include <linux/iopoll.h>
- #include <linux/slab.h>
- 
-+#include "ipu3.h"
- #include "ipu3-css.h"
- #include "ipu3-css-fw.h"
- #include "ipu3-css-params.h"
-@@ -53,7 +54,6 @@ static const struct imgu_css_format imgu_css_formats[] = {
- 		.frame_format = IMGU_ABI_FRAME_FORMAT_NV12,
- 		.osys_format = IMGU_ABI_OSYS_FORMAT_NV12,
- 		.osys_tiling = IMGU_ABI_OSYS_TILING_NONE,
--		.bytesperpixel_num = 1 * IPU3_CSS_FORMAT_BPP_DEN,
- 		.chroma_decim = 4,
- 		.width_align = IPU3_UAPI_ISP_VEC_ELEMS,
- 		.flags = IPU3_CSS_FORMAT_FL_OUT | IPU3_CSS_FORMAT_FL_VF,
-@@ -64,7 +64,6 @@ static const struct imgu_css_format imgu_css_formats[] = {
- 		.frame_format = IMGU_ABI_FRAME_FORMAT_RAW_PACKED,
- 		.bayer_order = IMGU_ABI_BAYER_ORDER_BGGR,
- 		.bit_depth = 10,
--		.bytesperpixel_num = 64,
- 		.width_align = 2 * IPU3_UAPI_ISP_VEC_ELEMS,
- 		.flags = IPU3_CSS_FORMAT_FL_IN,
- 	}, {
-@@ -73,7 +72,6 @@ static const struct imgu_css_format imgu_css_formats[] = {
- 		.frame_format = IMGU_ABI_FRAME_FORMAT_RAW_PACKED,
- 		.bayer_order = IMGU_ABI_BAYER_ORDER_GBRG,
- 		.bit_depth = 10,
--		.bytesperpixel_num = 64,
- 		.width_align = 2 * IPU3_UAPI_ISP_VEC_ELEMS,
- 		.flags = IPU3_CSS_FORMAT_FL_IN,
- 	}, {
-@@ -82,7 +80,6 @@ static const struct imgu_css_format imgu_css_formats[] = {
- 		.frame_format = IMGU_ABI_FRAME_FORMAT_RAW_PACKED,
- 		.bayer_order = IMGU_ABI_BAYER_ORDER_GRBG,
- 		.bit_depth = 10,
--		.bytesperpixel_num = 64,
- 		.width_align = 2 * IPU3_UAPI_ISP_VEC_ELEMS,
- 		.flags = IPU3_CSS_FORMAT_FL_IN,
- 	}, {
-@@ -91,7 +88,6 @@ static const struct imgu_css_format imgu_css_formats[] = {
- 		.frame_format = IMGU_ABI_FRAME_FORMAT_RAW_PACKED,
- 		.bayer_order = IMGU_ABI_BAYER_ORDER_RGGB,
- 		.bit_depth = 10,
--		.bytesperpixel_num = 64,
- 		.width_align = 2 * IPU3_UAPI_ISP_VEC_ELEMS,
- 		.flags = IPU3_CSS_FORMAT_FL_IN,
- 	},
-@@ -150,17 +146,8 @@ static int imgu_css_queue_init(struct imgu_css_queue *queue,
- 	f->height = ALIGN(clamp_t(u32, f->height,
- 				  IPU3_CSS_MIN_RES, IPU3_CSS_MAX_H), 2);
- 	queue->width_pad = ALIGN(f->width, queue->css_fmt->width_align);
--	if (queue->css_fmt->frame_format != IMGU_ABI_FRAME_FORMAT_RAW_PACKED)
--		f->plane_fmt[0].bytesperline = DIV_ROUND_UP(queue->width_pad *
--					queue->css_fmt->bytesperpixel_num,
--					IPU3_CSS_FORMAT_BPP_DEN);
--	else
--		/* For packed raw, alignment for bpl is by 50 to the width */
--		f->plane_fmt[0].bytesperline =
--				DIV_ROUND_UP(f->width,
--					     IPU3_CSS_FORMAT_BPP_DEN) *
--					     queue->css_fmt->bytesperpixel_num;
--
-+	f->plane_fmt[0].bytesperline =
-+		imgu_bytesperline(f->width, queue->css_fmt->frame_format);
- 	sizeimage = f->height * f->plane_fmt[0].bytesperline;
- 	if (queue->css_fmt->chroma_decim)
- 		sizeimage += 2 * sizeimage / queue->css_fmt->chroma_decim;
-diff --git a/drivers/staging/media/ipu3/ipu3-css.h b/drivers/staging/media/ipu3/ipu3-css.h
-index 6108a068b228f..ab64e95212032 100644
---- a/drivers/staging/media/ipu3/ipu3-css.h
-+++ b/drivers/staging/media/ipu3/ipu3-css.h
-@@ -82,7 +82,6 @@ struct imgu_css_format {
- 	enum imgu_abi_bayer_order bayer_order;
- 	enum imgu_abi_osys_format osys_format;
- 	enum imgu_abi_osys_tiling osys_tiling;
--	u32 bytesperpixel_num;	/* Bytes per pixel in first plane * 50 */
- 	u8 bit_depth;		/* Effective bits per pixel */
- 	u8 chroma_decim;	/* Chroma plane decimation, 0=no chroma plane */
- 	u8 width_align;		/* Alignment requirement for width_pad */
-diff --git a/drivers/staging/media/ipu3/ipu3.h b/drivers/staging/media/ipu3/ipu3.h
-index eb46b527dd233..d2ad0a95c5aab 100644
---- a/drivers/staging/media/ipu3/ipu3.h
-+++ b/drivers/staging/media/ipu3/ipu3.h
-@@ -164,4 +164,16 @@ void imgu_v4l2_buffer_done(struct vb2_buffer *vb, enum vb2_buffer_state state);
- 
- int imgu_s_stream(struct imgu_device *imgu, int enable);
- 
-+static inline u32 imgu_bytesperline(const unsigned int width,
-+				    enum imgu_abi_frame_format frame_format)
-+{
-+	if (frame_format == IMGU_ABI_FRAME_FORMAT_NV12)
-+		return ALIGN(width, IPU3_UAPI_ISP_VEC_ELEMS);
-+	/*
-+	 * 64 bytes for every 50 pixels, the line length
-+	 * in bytes is multiple of 64 (line end alignment).
-+	 */
-+	return DIV_ROUND_UP(width, 50) * 64;
-+}
-+
- #endif
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 38a2407645096..1813bb29e362b 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -1136,7 +1136,9 @@ static int imgu_v4l2_node_setup(struct imgu_device *imgu, unsigned int pipe,
+ 	def_pix_fmt.height = def_bus_fmt.height;
+ 	def_pix_fmt.field = def_bus_fmt.field;
+ 	def_pix_fmt.num_planes = 1;
+-	def_pix_fmt.plane_fmt[0].bytesperline = def_pix_fmt.width * 2;
++	def_pix_fmt.plane_fmt[0].bytesperline =
++		imgu_bytesperline(def_pix_fmt.width,
++				  IMGU_ABI_FRAME_FORMAT_RAW_PACKED);
+ 	def_pix_fmt.plane_fmt[0].sizeimage =
+ 		def_pix_fmt.height * def_pix_fmt.plane_fmt[0].bytesperline;
+ 	def_pix_fmt.flags = 0;
 -- 
 2.33.0.800.g4c38ced690-goog
 
