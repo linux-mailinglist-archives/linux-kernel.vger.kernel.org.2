@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5047C41F06B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77FD41F065
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354862AbhJAPHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:07:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58008 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354815AbhJAPHV (ORCPT
+        id S1354800AbhJAPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354824AbhJAPHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Oct 2021 11:07:21 -0400
-Date:   Fri, 01 Oct 2021 15:05:31 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C18C0613E2;
+        Fri,  1 Oct 2021 08:05:34 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 15:05:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633100732;
+        s=2020; t=1633100733;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+6wMnNegYjk+pH/1SsOEUamVwoHjFUVnaqoZy+oFWmw=;
-        b=sO1i9W8sQMu7GRBOpXrLD1gyGw2wKV25YlrJkYqwo99SvqHeZfrW7ZnnWs8YBYaEzLPtPU
-        /fc2FsPRcsttDycw6dB/LCZWnx7E7ZHfRxKLgVt3YuoYTZvegDb2LUmvi/WovCKp7xojXX
-        gM5t92eivrZk2H2kOrEXD/9FvLISg5/1hoXmV2V7Gdt4q8fENJyqUT0rBaVVDtYhUFB6mv
-        ScbdD+Ilk0/tQnkEzVLwfnw2+nflLXZbKRD3jX299DWYRrbfGDGKv/8PaPyT5CNEC3pE06
-        i00x71hRwi3rRa57Fc9NtDBzgYfrG/hzKJHYIcSfRa12Ah7M9bg+0oO5wDoeeQ==
+        bh=v666qz0aF3dnHd2oy+coyfwplxK20VqGR7jP/Kjl/gE=;
+        b=Tn53R7NOfVaop+TuYoBe5GoKru2gyRlEdza2JZCTvNpAEDaxy+msOwMpL1Wu4UTZNkuwyG
+        RtQzqArVpfpXCmXRZXR7TSxQcFY6BJIeZSFMdymh7cpqAs5ND/0aH1Ykjp8nNPrNvsWnWZ
+        Wqib1pAuSJm5UhBkRiHihuRZUD3NgPBX1IM2x/zbztSe5myYYlBQkiGkQFecxHhGIU6IqY
+        ceOP+ZWGmzHjkX9WUbgzPcU2HBmNpsyuRlnOi9g9/ou0dCfujMmx412Q8TSUOOEW/7lGzI
+        5cPeI+pcw13IVKA6tQjCW2gMK/xdLCZ2esgIXB6AqRA1aaBxixKtXJILvCKefQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633100732;
+        s=2020e; t=1633100733;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+6wMnNegYjk+pH/1SsOEUamVwoHjFUVnaqoZy+oFWmw=;
-        b=8RsSOLD15OtIlYsRakSMbsAgP9LPEj28e7Q7M+XPtfIkcH3tmrF/uRUn9thUyDYJqEiJVh
-        4qO0BFaPeYzFcYCw==
+        bh=v666qz0aF3dnHd2oy+coyfwplxK20VqGR7jP/Kjl/gE=;
+        b=uHF6NYptxkfFWNTvjgB5DVxVipCLqKnrlB11xkAADufv39gWmFIAxdAYBCNskgY7roXNne
+        3VBT/wdKB0IYDUBg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] sched: Remove preempt_offset argument from
- __might_sleep()
+Subject: [tip: locking/core] sched: Make cond_resched_*lock() variants
+ consistent vs. might_sleep()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210923165358.054321586@linutronix.de>
-References: <20210923165358.054321586@linutronix.de>
+In-Reply-To: <20210923165357.991262778@linutronix.de>
+References: <20210923165357.991262778@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163310073178.25758.17978045334715755117.tip-bot2@tip-bot2>
+Message-ID: <163310073245.25758.4143185315282997401.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,90 +62,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     42a387566c567603bafa1ec0c5b71c35cba83e86
-Gitweb:        https://git.kernel.org/tip/42a387566c567603bafa1ec0c5b71c35cba83e86
+Commit-ID:     7b5ff4bb9adc53cfbf7ac9ba7820ccf0cd7c070a
+Gitweb:        https://git.kernel.org/tip/7b5ff4bb9adc53cfbf7ac9ba7820ccf0cd7c070a
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 23 Sep 2021 18:54:38 +02:00
+AuthorDate:    Thu, 23 Sep 2021 18:54:37 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 01 Oct 2021 13:57:50 +02:00
 
-sched: Remove preempt_offset argument from __might_sleep()
+sched: Make cond_resched_*lock() variants consistent vs. might_sleep()
 
-All callers hand in 0 and never will hand in anything else.
+Commit 3427445afd26 ("sched: Exclude cond_resched() from nested sleep
+test") removed the task state check of __might_sleep() for
+cond_resched_lock() because cond_resched_lock() is not a voluntary
+scheduling point which blocks. It's a preemption point which requires the
+lock holder to release the spin lock.
+
+The same rationale applies to cond_resched_rwlock_read/write(), but those
+were not touched.
+
+Make it consistent and use the non-state checking __might_resched() there
+as well.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210923165358.054321586@linutronix.de
+Link: https://lkml.kernel.org/r/20210923165357.991262778@linutronix.de
 ---
- include/linux/kernel.h | 7 +++----
- kernel/sched/core.c    | 4 ++--
- mm/memory.c            | 2 +-
- 3 files changed, 6 insertions(+), 7 deletions(-)
+ include/linux/sched.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 5e4ae54..f95ee78 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -112,7 +112,7 @@ static __always_inline void might_resched(void)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b38f002..7a989f2 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2051,14 +2051,14 @@ extern int __cond_resched_rwlock_write(rwlock_t *lock);
+ 	__cond_resched_lock(lock);					\
+ })
  
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
- extern void __might_resched(const char *file, int line, int preempt_offset);
--extern void __might_sleep(const char *file, int line, int preempt_offset);
-+extern void __might_sleep(const char *file, int line);
- extern void __cant_sleep(const char *file, int line, int preempt_offset);
- extern void __cant_migrate(const char *file, int line);
+-#define cond_resched_rwlock_read(lock) ({			\
+-	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
+-	__cond_resched_rwlock_read(lock);			\
++#define cond_resched_rwlock_read(lock) ({				\
++	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
++	__cond_resched_rwlock_read(lock);				\
+ })
  
-@@ -129,7 +129,7 @@ extern void __cant_migrate(const char *file, int line);
-  * supposed to.
-  */
- # define might_sleep() \
--	do { __might_sleep(__FILE__, __LINE__, 0); might_resched(); } while (0)
-+	do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
- /**
-  * cant_sleep - annotation for functions that cannot sleep
-  *
-@@ -170,8 +170,7 @@ extern void __cant_migrate(const char *file, int line);
- #else
-   static inline void __might_resched(const char *file, int line,
- 				     int preempt_offset) { }
--  static inline void __might_sleep(const char *file, int line,
--				   int preempt_offset) { }
-+static inline void __might_sleep(const char *file, int line) { }
- # define might_sleep() do { might_resched(); } while (0)
- # define cant_sleep() do { } while (0)
- # define cant_migrate()		do { } while (0)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c3943aa..2d790df 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9475,7 +9475,7 @@ static inline int preempt_count_equals(int preempt_offset)
- 	return (nested == preempt_offset);
- }
+-#define cond_resched_rwlock_write(lock) ({			\
+-	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
+-	__cond_resched_rwlock_write(lock);			\
++#define cond_resched_rwlock_write(lock) ({				\
++	__might_resched(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
++	__cond_resched_rwlock_write(lock);				\
+ })
  
--void __might_sleep(const char *file, int line, int preempt_offset)
-+void __might_sleep(const char *file, int line)
- {
- 	unsigned int state = get_current_state();
- 	/*
-@@ -9489,7 +9489,7 @@ void __might_sleep(const char *file, int line, int preempt_offset)
- 			(void *)current->task_state_change,
- 			(void *)current->task_state_change);
- 
--	__might_resched(file, line, preempt_offset);
-+	__might_resched(file, line, 0);
- }
- EXPORT_SYMBOL(__might_sleep);
- 
-diff --git a/mm/memory.c b/mm/memory.c
-index 25fc46e..1cd1792 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5255,7 +5255,7 @@ void __might_fault(const char *file, int line)
- 		return;
- 	if (pagefault_disabled())
- 		return;
--	__might_sleep(file, line, 0);
-+	__might_sleep(file, line);
- #if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
- 	if (current->mm)
- 		might_lock_read(&current->mm->mmap_lock);
+ static inline void cond_resched_rcu(void)
