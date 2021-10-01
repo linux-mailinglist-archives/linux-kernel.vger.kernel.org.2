@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDA741ECC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBA041ECC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354215AbhJAMCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhJAMCQ (ORCPT
+        id S1354211AbhJAMCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:02:13 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59252
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354205AbhJAMCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:02:16 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06040C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:00:32 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r75so11300672iod.7
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b8XkSaJHdb8NkUGJQ7GfACLIJY8P2VgxyTTtaVxl+CI=;
-        b=W9rMTIBowgmopFjQNGZCGX5uCOXrBstudVcFkadj8QkSIqZoMRO9D6JNts7TRo2WH1
-         YScg0myMY+w2++hrC91xtTUWD0+hpEkQbHMUB6RzduBdoHrBXsswN+ZaMSlMbHLEQ4hE
-         cF5591sFCRYt1RcwF+U7AWyB6sTea5INSZWkoXEDqCdzHfPVIbwxGFI1I1Nc39nrkr3c
-         OKMco5sOVcI3FXlAm4K12Y+QAO9GJCvPytZWKf5kcIRmyeNnq7ScqHo7Zq6vJ8SlsPu1
-         nvSpzWb5qaKfk/YLm5G6pXJrf9+QIiZECQc9XYTuDI1IqSvCa4gXo4SWMemiWI1AOGHB
-         UkRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b8XkSaJHdb8NkUGJQ7GfACLIJY8P2VgxyTTtaVxl+CI=;
-        b=BWpyOk2XG/kD6up/Q6T1MPoYPJizjH6ZqHw5LqV316XkYxk67UdQb4FQOsWwhxJW+9
-         ohg92MEWJAn1Dd8pLAdAjkbuwEnL1/i6a7JVeon8tH1QEuuAcvsqP0MNfJWl/G81Ww0Q
-         1jQwV5/OC676AhcCm7qNPHIz5Tkde1vsMjZ9sjAYrLb+XDgNEEMCyezQulOFHH90ri5Y
-         1YFHml/5EKx/1vgMuZ44IPptBAFpJ4PxI13nPtH5mURh/8pj//xeftu+pKXtFuhOv97C
-         JOUw1F0cqRV1JM/APyp5kCm5XXdnFoVfFheSrrIVxmNLU16qJDK8D/t+DjyshdxbfUiV
-         QRZQ==
-X-Gm-Message-State: AOAM530HLrL+Scn3Ma7cBNDqmdb4SMdYQyfGaMuNfuG23CDQkDHBFIlu
-        aylqpwqjVUT5HbIrWqyNiszPI5smW9BN6+GEopM=
-X-Google-Smtp-Source: ABdhPJwr5bZxQ4VzOlGDrvJF6ibM0n8GK+uqPgfHwxwzsGbyO9e5d3Anit2uoO4wvX4rR3SnZluA2nrsI1f/TIC01ZQ=
-X-Received: by 2002:a6b:b714:: with SMTP id h20mr8000055iof.9.1633089631442;
- Fri, 01 Oct 2021 05:00:31 -0700 (PDT)
+        Fri, 1 Oct 2021 08:02:11 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C559440186;
+        Fri,  1 Oct 2021 12:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633089618;
+        bh=xoVeBwEbq5yYbiC4MKK88HqPxlCFGkYEHA+6yK4TZTA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=p1BeaFQ3coUHtNeEOxSWXmLfJIOD2R8e8FtDlN3E4OAKig7Wd0rxW1Mhx1drNO9dX
+         w2rjQ/A32OQpuUe9lrBVfHweu7KZpUGqXto90jf0HrDEWLwK2PamMgJ1ww2eWp6Yrb
+         NK7ppO1l8n73F38kpKfYvqC7rBI/eqJgZFPFax2xWI+5ExE8KBYqQPIjLjhHezD17O
+         deBMeiL8VLAygvegr/ER3nWo9st/BgZfYnDEpKly73jSCo2Fp/71ZhdWDnY1pA5Wqj
+         V867cDEXBTLiDirFjE4hpUN8vmOrJymx7xtcpP3xL5Ir3mNRnV2SjLao5vHv2thlVc
+         J8rTqh+z6BiZg==
+From:   Colin King <colin.king@canonical.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Billy Tsai <billy_tsai@aspeedtech.com>,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] iio: adc: aspeed: Fix spelling mistake "battey" -> "battery"
+Date:   Fri,  1 Oct 2021 13:00:18 +0100
+Message-Id: <20211001120018.17570-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-6-laoar.shao@gmail.com>
- <YVXVBXSZ1m4ScvbX@alley>
-In-Reply-To: <YVXVBXSZ1m4ScvbX@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 1 Oct 2021 19:59:54 +0800
-Message-ID: <CALOAHbCQk0ksUmsL3ygaGJR9vfT8PsZDWGfBW8G8LYmZQhYcCA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] kernel/kthread: show a warning if kthread's comm is
- still trucated
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:17 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Wed 2021-09-29 11:50:36, Yafang Shao wrote:
-> > Show a warning if the ktrhead's comm is still trucated. Below is the
-> > result of my test case -
-> >
-> > __kthread_create_on_node:410: comm of pid 14 is truncated from "I-am-a-kthread-with-long-name" to "I-am-a-kthread-with-lon"
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/kthread.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > index 6def951c605a..aa093f1f423a 100644
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -404,7 +404,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> >                * task is already visible to other tasks, so updating
-> >                * COMM must be protected.
-> >                */
-> > -             vsnprintf(name, sizeof(name), namefmt, args);
-> > +             if (vsnprintf(name, KTHREAD_COMM_LEN, namefmt, args) >=
-> > +                 KTHREAD_COMM_LEN)
-> > +                     pr_warn("%s:%d: comm of pid %d is truncated from \"%s\" to \"%s\"\n",
-> > +                             __func__, __LINE__, task->pid, namefmt, name);
->
-> The warning makes sense. But the use of "namefmt" looks wrong. It is
-> format and not the name. Also __func__ and __LINE__ is overkill. It will
-> be always the same.
->
-> I would do something like:
->
->                 len = vsnprintf(name, sizeof(name), namefmt, args);
->                 if (len >= KTHREAD_COMM_LEN) {
->                         pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
->                                 name, task->pid, len - KTHREAD_COMM_LEN + 1);
->                 }
->
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for the suggestion. I will change it.
+There is a spelling mistake in a dev_warn message. Fix it.
 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/iio/adc/aspeed_adc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+index 3e9850a43372..a957cad1bfab 100644
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -581,7 +581,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+ 			}
+ 		} else
+ 			dev_warn(&pdev->dev,
+-				 "Failed to enable battey-sensing mode\n");
++				 "Failed to enable battery-sensing mode\n");
+ 	}
+ 
+ 	ret = clk_prepare_enable(data->clk_scaler->clk);
 -- 
-Thanks
-Yafang
+2.32.0
+
