@@ -2,95 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C18541EE5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E938A41EE64
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhJANTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:19:38 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:40894 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbhJANSp (ORCPT
+        id S1353310AbhJANUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352696AbhJANTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:18:45 -0400
-Received: by mail-ot1-f45.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so11417180otq.7;
-        Fri, 01 Oct 2021 06:17:01 -0700 (PDT)
+        Fri, 1 Oct 2021 09:19:49 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE87C0613EB;
+        Fri,  1 Oct 2021 06:17:45 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id w11so6262277plz.13;
+        Fri, 01 Oct 2021 06:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ylpl7fwcJ6dmn8OOkjpCoC6BQ0dUN3SoIftGjd4jR9U=;
+        b=jXNrEhRQ+XqK/MsLCBs+KJXQnxuYQ2yX2fUjSWwoGUrREJtyMpH0hGhkVJMSW1wLd1
+         QG/YWwpP9/HYnq/HsGiy0rsQXdViF2LhyHl20KL67shjcwzQb+r6Spe6JdGO57xbxAIb
+         gOKluJnZ+JrnIhxbd1z7MVSLZINqTYaToYH7z9tQnKhI3GUggfMdP3C+l3uhn5niPwD/
+         KNdDhOLicZnNfLsyH2DOOiMn5FXB5uSpqeEDAki+hKUEjLkS6p16gb9tUjokkdO1eYPS
+         xzxm4SVx+EUgVWK2LFtWAAWE4j3yrI9HDIes+q6qDkvmzz1/HvAx024kqsTy+GXRRnHC
+         QMiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=kDrX2c/KRTB5dwMosW5IHCcmE5+KyupQ3EuZXfGIPPc=;
-        b=vsH7vXKIL5c/eej0wLa3uQDlzlo+vkJD/QNo/ivloxFRgPqa32GX3uMywuWvizU+0W
-         TXqQ0IoPLi8fPQnDTD5daqFJ1A6MtjiI/gUiN21VZvBhaHPiDJ2VPQEXZsr9/OAxMXDl
-         y5LdtVOZBthjNVZvw1uuUs23kD0ubH9cfwKWMRejrbXsc03MPvyz/5QOVrMAt5jWQVcg
-         r/uWENSE32IxYapehr7qh1krwP8zhoL0GNPDlPe2v0lVqa8Ln5M3nbETsvPFQhP7oBpS
-         8svIYtJu7NhYItElKL1zJQMAygIv1sg6kp/a0nXpfzt93Fom8/llVb2FNqxGAN1Q7XSR
-         cDYg==
-X-Gm-Message-State: AOAM531bjOcD8MmRE+x3ySaQc3J4TCT9hw4waR6CGOGYrOk8AgKGC1nf
-        bvHOdukhggKyZmQnJkrd+Q==
-X-Google-Smtp-Source: ABdhPJx5MhVcT6KCJl1atVfLuyjJ4OFKEeB0PaPY8Ix4BZnjuY7hxo2kOYp0vh6j+cGiNXBYg8+hyg==
-X-Received: by 2002:a9d:3e04:: with SMTP id a4mr10422599otd.329.1633094221002;
-        Fri, 01 Oct 2021 06:17:01 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o8sm1161122oiw.39.2021.10.01.06.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 06:17:00 -0700 (PDT)
-Received: (nullmailer pid 3666444 invoked by uid 1000);
-        Fri, 01 Oct 2021 13:16:57 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Satya Priya <skakit@codeaurora.org>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, mka@chromium.org,
-        Liam Girdwood <lgirdwood@gmail.com>, swboyd@chromium.org,
-        collinsd@codeurora.org, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-kernel@vger.kernel.org, kgunda@codeaurora.org,
-        devicetree@vger.kernel.org, subbaram@codeaurora.org
-In-Reply-To: <1633060859-22969-3-git-send-email-skakit@codeaurora.org>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org> <1633060859-22969-3-git-send-email-skakit@codeaurora.org>
-Subject: Re: [PATCH V2 2/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
-Date:   Fri, 01 Oct 2021 08:16:57 -0500
-Message-Id: <1633094217.874896.3666443.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ylpl7fwcJ6dmn8OOkjpCoC6BQ0dUN3SoIftGjd4jR9U=;
+        b=heNPYB15lSVZPM+CoPjpGIX6ZrM/QzCbSLoQpmH39OVTmCRTIksf1FFwfUUTp6snHV
+         6tqWm9wLuNbm8yOjqaHBviF1OHHheBtd7GmfKDOUA7nW/tzrzn7HZuEkVeZk72aWwKAy
+         r8OLtubQ2msIWFBToasjeZRv4hnaB/MhEbd5eYCdBOsto49bGIqJci2kOg7lqPeYvKhc
+         AqHmqd1+n3kMcxcGD8uYcaBE/x/4DEPWX8qBbfAmANp5/FdP9sXxHZMyctnfvPAwccUn
+         NG0LqPR5IRuUuXOhBeP4o1w5SHvIjtENq+m8wPKem/zkbm2zEO7q8tiASbbefbvw0lkc
+         CKrg==
+X-Gm-Message-State: AOAM530FB8V6+76MeeESUb0S3Ifzk+rQ/RieIe8BOsnE9D8W005K3kMR
+        06L460lHRdW1bm5oDbQniBA=
+X-Google-Smtp-Source: ABdhPJzVVuw8Y9jVkevWrUuql70mrqqyUm154zOarGgS2WsExr7akQAa/DG3ZUsriL6WynJLxWvg/w==
+X-Received: by 2002:a17:902:c612:b0:13c:9801:a336 with SMTP id r18-20020a170902c61200b0013c9801a336mr9397654plr.27.1633094265436;
+        Fri, 01 Oct 2021 06:17:45 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id e11sm6404924pfm.28.2021.10.01.06.17.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 06:17:45 -0700 (PDT)
+Subject: Re: [PATCH V6 3/8] x86/hyperv: Add new hvcall guest address host
+ visibility support
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
+        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
+        pgonda@google.com, akpm@linux-foundation.org, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, saravanand@fb.com,
+        aneesh.kumar@linux.ibm.com, rientjes@google.com, tj@kernel.org,
+        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210930130545.1210298-1-ltykernel@gmail.com>
+ <20210930130545.1210298-4-ltykernel@gmail.com> <YVX7n4YM8ZirwTQu@zn.tnic>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <8a9a6753-d0b5-3c12-5a5c-17decae3548b@gmail.com>
+Date:   Fri, 1 Oct 2021 21:17:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YVX7n4YM8ZirwTQu@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Oct 2021 09:30:57 +0530, Satya Priya wrote:
-> Add pm8008-regulator node and example.
+Hi Boris:
+	Thanks for your review.
+
+On 10/1/2021 2:02 AM, Borislav Petkov wrote:
+> On Thu, Sep 30, 2021 at 09:05:39AM -0400, Tianyu Lan wrote:
+>> @@ -1980,15 +1982,11 @@ int set_memory_global(unsigned long addr, int numpages)
+>>   				    __pgprot(_PAGE_GLOBAL), 0);
+>>   }
+>>   
+>> -static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+>> +static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
 > 
-> Signed-off-by: Satya Priya <skakit@codeaurora.org>
-> ---
-> Changes in V2:
->  - As per Rob's comments changed "pm8008[a-z]?-regulator" to
->    "^pm8008[a-z]?-regulators".
-> 
->  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+> What exactly is that "pgtable" at the end of the name supposed to mean?
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+This was suggested by Dave Hansen. It gets used for the hypervisors
+that get informed about "encryption" status via page tables: SEV and TDX.
 
-yamllint warnings/errors:
+https://lore.kernel.org/linux-iommu/c00e269c-da4c-c703-0182-0221c73a76cc@intel.com/
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml: pm8008i@8: pm8008-regulators:regulator@4000: 'regulator-max-microvolt', 'regulator-min-microvolt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/qcom,pm8008.example.dt.yaml: pm8008-regulators: regulator@4000: 'regulator-max-microvolt', 'regulator-min-microvolt' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
+> So if you want to have different indirections here, I'd suggest you do
+> this:
+> 
+> set_memory_encrypted/decrypted() is the external API. It calls
+> 
+> _set_memory_enc_dec() which does your hv_* checks. Note the single
+> underscore "_" prefix.
+> 
+> Then, the workhorse remains __set_memory_enc_dec().
+> 
+> Ok?
+> 
+> Also, we're reworking the mem_encrypt_active() accessors:
+> 
+> https://lkml.kernel.org/r/20210928191009.32551-1-bp@alien8.de
+> 
+> so some synchronization when juggling patchsets will be needed. JFYI
+> anyway.
 
-doc reference errors (make refcheckdocs):
+Thanks for reminder. I know that patchset and suggested to decouple 
+dependency among SEV, TDX and Hyper=v patchset.
 
-See https://patchwork.ozlabs.org/patch/1535124
+> 
+> Also 2, building your set triggers this, dunno if I'm missing some
+> patches on my local branch for that.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Thanks for your test. Missing hv_set_register() when CONFIG_HYPERV is 
+not selected. I will fix it in the next version.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> 
+> In file included from ./arch/x86/include/asm/mshyperv.h:240,
+>                   from ./include/clocksource/hyperv_timer.h:18,
+>                   from ./arch/x86/include/asm/vdso/gettimeofday.h:21,
+>                   from ./include/vdso/datapage.h:137,
+>                   from ./arch/x86/include/asm/vgtod.h:12,
+>                   from arch/x86/entry/vdso/vma.c:20:
+> ./include/asm-generic/mshyperv.h: In function ‘vmbus_signal_eom’:
+> ./include/asm-generic/mshyperv.h:153:3: error: implicit declaration of function ‘hv_set_register’; did you mean ‘kset_register’? [-Werror=implicit-function-declaration]
+>    153 |   hv_set_register(HV_REGISTER_EOM, 0);
+>        |   ^~~~~~~~~~~~~~~
+>        |   kset_register
+> In file included from ./arch/x86/include/asm/mshyperv.h:240,
+>                   from arch/x86/mm/pat/set_memory.c:34:
+> ./include/asm-generic/mshyperv.h: In function ‘vmbus_signal_eom’:
+> ...
+> 
