@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C565841E759
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA4441E762
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352139AbhJAGBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S1352072AbhJAGFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351885AbhJAGBF (ORCPT
+        with ESMTP id S237478AbhJAGFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:01:05 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7D9C061772
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:59:21 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g7so29917805edv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:59:21 -0700 (PDT)
+        Fri, 1 Oct 2021 02:05:07 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ACCC061770
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:03:23 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id u32so18189119ybd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wrerzu0eOzULblqI6hcqBoW5s1gAeWyg1d4PDm0YiP0=;
-        b=A7NluRHIT9P6ll142j0SyO7hXaBZ3Wm3gFiEtcJj/ODZ7DbVvi6FQp8DHFl4uUWrKE
-         A2nXBJk6lYPW1woby8AUcNHisprHtXQlLNTLOA/WOTcfcZK80hQdpbmCqDBame/6jXEJ
-         FF0oHRuUpBlvguQGYS73PQGq/v+OreH/y9w1Sx3xPmE0p3yFLP+pKhHODbIEYJoFu/L8
-         K+2Cbayc3YOH1cR4X9ZtfjUfLYAhsAZ1XcyvoQrs3xBX1XSQdqPejrN1dslA6egxkQZQ
-         Odib8NKeADHaGhHlQME8ssMuM0DjYqVmF6n3BxbLDog3ZeG9JgblBdp8bidhHQKxuVq0
-         HadA==
+        bh=4XHFyIl24a8InBUxS3yTnWfbC5yODh0CS5vqQSj8r7g=;
+        b=gQb+46RHjbWREUXxN64U8JEMZdkik3KQ6z1iNq6hiwe3ia9IRlhK/cIzlRCm6yLI3j
+         Ov5JSv8j9zBf0hsJXFJuuKPE28Xt1yGKNrngUU1wW/ld2e1sbIqalKLlnWlQBJN5LrEz
+         pCRAR95DiSNnLkQ+GHifeJWamz9f6kzVs01jYGK2Tq/9c+fkKloFE/aAtHv1JP84z9pN
+         YOmEkZ9MgXjJVHoKJzhQ25qVxZbfCM8XuA4REKHKJ1Es6S9ZC5MFlxdTFWER6/aFZ1rM
+         xh2qq6tt5iC3NH2SYC7WKi9pPL06sFWYUKHD1C1ZvMSsdwLkPJgxlvkoE7K3X0oFVc9K
+         glPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wrerzu0eOzULblqI6hcqBoW5s1gAeWyg1d4PDm0YiP0=;
-        b=tNr2Mvl38LOSaTnLnWnSjzjW3//0YoZdF7z3UUCV4kaKiHLob2ELSvmnLQqt6TP/kC
-         iZa0FxC2jculo5nklr53Zmf9QjtvDiEoA72yt430cmEeAlU2nlHM2u7+bMyN8VjUAQfF
-         fqe7+Rpi6SXuE9boRW2wYsdIhRMvBmzyEokSosHL7fbx4NIyjo2SiI/vLJpzvoc8DtcT
-         Eu0mXU1o1OePBoAFxDD4AlV5ymWW2XwSZ+kUZ3/wsONMDUPWhTV3bgOL7smtiagvKD3R
-         aiaSkcLz68u9xXSpR4Tt+0fUN7Sj+tjkhjeKAAfwb3Jxytap4SGC85GWj4K91TCUEdLh
-         +ZTQ==
-X-Gm-Message-State: AOAM531cI2WD2vlogYM33dd/sWuaiBlMhb+sXCU4DllDbnRn5LJajcnw
-        7MWqQA01o3Xdvnn7/lLe7lBr55M0YSO3tyoW7Gl17A==
-X-Google-Smtp-Source: ABdhPJzuvodcs8tct+DTVA009d4X4KLuUNmSIlwB3FnuvDUY8NEj4Xa/4ykTuUiOVGOVFV3KFGQS3R125A2/yrLz1SA=
-X-Received: by 2002:a50:8405:: with SMTP id 5mr12215046edp.228.1633067959935;
- Thu, 30 Sep 2021 22:59:19 -0700 (PDT)
+        bh=4XHFyIl24a8InBUxS3yTnWfbC5yODh0CS5vqQSj8r7g=;
+        b=Kg93fxzJhVklM+MOeZeP+U2k5fL+bDglp+/U9K/Tpi/4iWfQ3vZID+Xo17WnbF5y5X
+         TIz0lHWlP6yQgNJah1zng9UxEHcQjrs1DZlv1azJN4t9UQEkXfo/e6pchfBmo3SUO2f7
+         oFc+8mKTtSWBpAgX/xNtBqGu/Pgo1zcW8BWOKbwDb0/2Srp294GVKAIZdzAY0AHL/64e
+         iBNlugMXrn1N+AegBCyFKcTGan4zAlJXmigoyKwoOPyiBy3DQ1Iz9BuGyAfPZA//qd2r
+         57F41FtDLuOub6MsZ+lIGI1ZTiAjBvimQkTHYeLRv5IGjmOTHEtFRA/N0ri2+hAFhi5X
+         f52Q==
+X-Gm-Message-State: AOAM5320XapeiViKbVfcRaURMP7nnfqUZs7qg+X4rEE8b4ziIEDZJ/uw
+        0Fg8rUR7FvSibhdJYLTY7nAdJzevWQXArDpdD0Fx1A==
+X-Google-Smtp-Source: ABdhPJx9japD4n+j+WHfnlr43J1D/KYK6bUrrEfX6nuXVSP7c4eyGu0nzECvXcHIoHBBuvGtgM2VdN5ovzRACmJk+Uc=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr3850649ybq.328.1633068202700;
+ Thu, 30 Sep 2021 23:03:22 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210928235635.1348330-1-willmcvicker@google.com>
  <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
  <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
  <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com> <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
 In-Reply-To: <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-From:   Will McVicker <willmcvicker@google.com>
-Date:   Thu, 30 Sep 2021 22:59:04 -0700
-Message-ID: <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 30 Sep 2021 23:02:46 -0700
+Message-ID: <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
 Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
 To:     Olof Johansson <olof@lixom.net>
-Cc:     Saravana Kannan <saravanak@google.com>,
+Cc:     Will McVicker <willmcvicker@google.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -152,27 +152,13 @@ On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
 > > >
 > > > It's against our interest as a community to have this happen, since
 > > > there's no other reasonably justifiable reason to do this.
-
-Are you saying that modularizing drivers is opening up a loophole? How
-is this different from Krysztof pushing changes to modularize the
-Exynos ChipId driver just last week [1].  I understand the push back
-on "these aren't tested yet" and I agree that we should not merge them
-until they are (I've re-iterated that multiple times and have
-requested for testing help multiple times since I can't get my hands
-on any Exynos arm64 hardware), but are you saying that if I gather the
-test data to prove that these drivers can actually be made into
-modules that you will still deny them out of the interest of the
-community?
-
-[1] https://lore.kernel.org/linux-samsung-soc/4aee1b0d-91a1-75ac-d2b7-6dab3d7a301f@kernel.org/T/#t
-
---Will
-
->
 > >
 > > Oolf, Geert, Krzysztof, Arnd,
 >
 > So close.
+
+I'm sorry, it's pretty late here and I'm sleepy and messed it up.
+
 >
 > > I skimmed through the emails and you all make a lot of good points.
 >
@@ -180,10 +166,20 @@ community?
 > complexity and fragility to solve a problem that doesn't really exist
 > for upstream, adding yet more config parameter combinations to build
 > and test for.
+
+How is this not an upstream problem? Having a minimal kernel with as
+many drivers as modules is of interest to upstream. And what's the
+complexity in having a config to easily disable a bunch of configs?
+The new config gives a clear config against which new
+platforms/systems should be developed against.
+
 >
 > A much more valuable approach would be to work towards being able to
 > free up memory by un-probed drivers at the end of boot. That would
 > possibly benefit all platforms on all architectures.
->
->
-> -Olof
+
+Sure it would help memory after boot, but it won't help with size on
+"disk", kernel load time, etc. And some of the devices have very tight
+boot requirements. Think battery operated outdoor cameras for example.
+
+-Saravana
