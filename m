@@ -2,137 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DD941E735
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA5D41E73C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352120AbhJAFfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 01:35:23 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:25299 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351892AbhJAFfG (ORCPT
+        id S1352115AbhJAFgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 01:36:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:60458 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351909AbhJAFgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 01:35:06 -0400
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 1915WwVc000646;
-        Fri, 1 Oct 2021 14:33:03 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 1915WwVc000646
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633066383;
-        bh=fDT5+bUlmH+NExGoDYLtSJAw+fxo+1QQtTvlcIJMHwA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXFbXehx1QWuFwCVzhp2mFbtwDDEQ7QqbvsoqRkGxjxvL0er5zGEG63RET1wr4KNs
-         n1MpfNnVedHTKK2HacwwlBJrIgBOBYgB6t/tulFqyN5Qd93ecgqsgoJXiim7u+pmzp
-         iPj/FctWVeF7/aKXrINK/ImPj3JmSHmSdR/Ha8W/LRBuQt0WNizZ8u0CAi4SlfKXN5
-         m6ZFFEOgDczaQvi8/l9iz89Q9oR/QqA9e8FuNJanzntLc2n0wTVEDRHhubTeZ6mDxc
-         bewuUnCHV8o1yw47yhaAoj9/1Xj5MOuOaPgENc83EGCNXOrd+dZ+ZsDUb/8c5+OMvb
-         IZB+LaH2pX2cw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] [for next only] kconfig: generate include/generated/rustc_cfg
-Date:   Fri,  1 Oct 2021 14:32:53 +0900
-Message-Id: <20211001053253.1223316-10-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001053253.1223316-1-masahiroy@kernel.org>
-References: <20211001053253.1223316-1-masahiroy@kernel.org>
+        Fri, 1 Oct 2021 01:36:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633066475; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Dg9UyJAGvh1utQRxDwx+mgOUXPzyBeM2J8AXutvknM0=; b=QngNJ9l69IfLMI4jPa8nQMltCOLN3EmgOK8s6KuTFdfnH/Kj6imjVRlkL6Llvpe9/izqv1l8
+ R5h6QZVfT2ebezYNZBUxJ7/jeqclYuYJsyd5c6LJcg8EjarwUvVIX6shmrI8IMOGPghrTS6C
+ 5UXkmxqZ4I+8TLBCbF5+0wQPXmo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 61569deb713d5d6f96e7aa5f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 05:34:35
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 82BABC4360C; Fri,  1 Oct 2021 05:34:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.222.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3F83CC4338F;
+        Fri,  1 Oct 2021 05:34:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3F83CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
+ <YUfZbsf3MX1aQJ2+@builder.lan>
+ <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
+ <YUoHr0F9qjr2Toeb@ripper>
+ <2d2891e2-0cdf-1938-f9a1-77135066f5de@codeaurora.org>
+ <YVXP46FvzmZ1xDvY@ripper>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <bc194561-d9f9-ed13-ead1-1a7252d7a5fe@codeaurora.org>
+Date:   Fri, 1 Oct 2021 11:04:28 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVXP46FvzmZ1xDvY@ripper>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is not intended for the mainline.
 
-I created this patch for Stephen Rothwell to resolve the merge
-conflicts more easily.
+On 9/30/2021 8:25 PM, Bjorn Andersson wrote:
+> On Thu 30 Sep 02:46 PDT 2021, Rajendra Nayak wrote:
+> 
+>>
+>>
+>> On 9/21/2021 9:56 PM, Bjorn Andersson wrote:
+>>> On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
+>>>
+>>>>
+>>>>
+>>>> On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
+>>>>> On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
+>>>>>
+>>>>>> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>>>>>>
+>>>>>> egpio is a scheme which allows special power Island Domain IOs
+>>>>>> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+>>>>>> TLMM functions with Island Domain functions.
+>>>>>> With this scheme, an IO can be controlled both by the cpu running
+>>>>>> linux and the Island processor. This provides great flexibility to
+>>>>>> re-purpose the Island IOs for regular TLMM usecases.
+>>>>>>
+>>>>>> 2 new bits are added to ctl_reg, egpio_present is a read only bit
+>>>>>> which shows if egpio feature is available or not on a given gpio.
+>>>>>> egpio_enable is the read/write bit and only effective if egpio_present
+>>>>>> is 1. Once its set, the Island IO is controlled from Chip TLMM.
+>>>>>> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+>>>>>>
+>>>>>> The support exists on most recent qcom SoCs, and we add support
+>>>>>> for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
+>>>>>>
+>>>>>
+>>>>> I was under the impression that this feature would allow you to
+>>>>> repurpose pins for use either by the remote island or by apps.
+>>>>
+>>>> thats right, you can repurpose the pins for usage by apps by setting
+>>>> the egpio_enable to 1, when set to 0 its owned by the island processor.
+>>>
+>>> Good.
+>>>
+>>>>>
+>>>>> But if I understand your proposal, you check to see if the pin is
+>>>>> "egpio capable" for a pin and if so just sets the bit - muxing it to
+>>>>> apps (or the island?).
+>>>>
+>>>> Right, so if there is a request for a egpio-capable pin, the driver
+>>>> flips the ownership. Are you suggesting having some kind of checks to determine
+>>>> who should own it?
+>>>>
+>>>
+>>> I see, I missed that nuance. So Linux will steal any pins that are
+>>> mentioned in DT. But that would mean that you're relying on someone else
+>>> to ensure that this bit is cleared for the other pins and you would not
+>>> be able to explicitly flip the state back to island mode in runtime.
+>>>
+>>> I would prefer that this was more explicit.
+>>>
+>>>>> It seems reasonable that this would be another pinmux state for these
+>>>>> pins, rather than just flipping them all in one or the other direction.
+>>>>
+>>>> hmm, I don't understand. This is not a pinmux state, its a switch to decide
+>>>> the ownership.
+>>>
+>>> But does it mux the pin to the island, or does it state that the island
+>>> is now in charge of the associated TLMM registers?
+>>
+>> The island processor does not access the APPS TLMM register space, it has its
+>> own TLMM register space that it configures. APPS TLMM registers control its
+>> mux/conf settings and Island TLMM registers controls its mux/conf. So essentially
+>> there are 2 sets of registers to control the same pin.
+>> This bit is more like a top level mux which decides what register settings
+>> take affect.
+>>
+> 
+> "One mux to rule them all" :)
+> 
+> When we switch this mux towards the Island TLMM, do we need to configure
+> the APPS TLMM in a particular way, or does the state of that not matter?
 
-The Rust tree is touching scripts/kconfig/confdata.c to generate
-include/generated/rustc_cfg, which would cause complicated conflicts
-with changes from the kbuild tree.
+No APPS TLMM settings should be needed, the state of that does not matter.
 
-I re-implemented it to produce the equaivalent rustc_cfg.
+> Would it be reasonable to say that when muxed towards the island the
+> apps should always be in gpio mux with some predetermined properties, to
+> save power?
 
-I also fixed the memory leak; the original code from the Rust tree
-did not free the malloc'ed pointer.
+No, the the register settings in APPS TLMM are nop/dont care when egpio_enable is 0.
 
-Stephen:
-When you resolve the conflicts in confdata.c, please take this one.
+> To reiterate, as proposed, mentioning a egpio-capable pin in the apps
+> DTS will cause it to be muxed to the APSS TLMM. But I'm not convinced
+> that we don't have scenarios where one might want to dynamically mux the
+> pin between island and apss tlmm.
+> 
+> My suggestion is that even that it's two independent muxes controlled in
+> the apps tlmm, we'd express them in the same pinmux, i.e. we'd have
+> something like:
+> 
+> some-local-state {
+> 	pins = "gpio1";
+> 	function = "gpio";
+> 	output-high;
+> };
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+so this would set the function to gpio in the APPS TLMM and set the egpio_enable = 1?
+which was also what the original $SUBJECT patch did.
 
- scripts/kconfig/confdata.c | 42 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+> some-remote-state {
+> 	pins = "gpio1";
+> 	function = "island"; /* or just egpio... ? */
+> };
 
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index 9ece2f3b61a6..4767f3810cf4 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -603,6 +603,9 @@ static const struct comment_style comment_style_c = {
- 
- static void conf_write_heading(FILE *fp, const struct comment_style *cs)
- {
-+	if (!cs) /* no heading for rustc_cfg? */
-+		return;
-+
- 	fprintf(fp, "%s\n", cs->comment_block_begin);
- 
- 	fprintf(fp, "%s Automatically generated file; DO NOT EDIT.\n",
-@@ -750,6 +753,39 @@ static void print_symbol_for_c(FILE *fp, struct symbol *sym)
- 	free(escaped);
- }
- 
-+/* rustc configuration */
-+static void print_symbol_for_rustc_cfg(FILE *fp, struct symbol *sym)
-+{
-+	const char *val;
-+	char *escaped;
-+
-+	if (sym->type == S_UNKNOWN)
-+		return;
-+
-+	val = sym_get_string_value(sym);
-+	escaped = escape_string_value(val);
-+
-+	if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
-+		if (*val == 'n')
-+			return;
-+
-+		/*
-+		 * To have similar functionality to the C macro `IS_ENABLED()`
-+		 * we provide an empty `--cfg CONFIG_X` here in both `y`
-+		 * and `m` cases.
-+		 *
-+		 * Then, the common `fprintf()` below will also give us
-+		 * a `--cfg CONFIG_X="y"` or `--cfg CONFIG_X="m"`, which can
-+		 * be used as the equivalent of `IS_BUILTIN()`/`IS_MODULE()`.
-+		 */
-+		fprintf(fp, "--cfg=%s%s\n", CONFIG_, sym->name);
-+	}
-+
-+	fprintf(fp, "--cfg=%s%s=%s\n", CONFIG_, sym->name, escaped);
-+
-+	free(escaped);
-+}
-+
- /*
-  * Write out a minimal config.
-  * All values that has default values are skipped as this is redundant.
-@@ -1129,6 +1165,12 @@ int conf_write_autoconf(int overwrite)
- 	if (ret)
- 		return ret;
- 
-+	ret = __conf_write_autoconf("include/generated/rustc_cfg",
-+				    print_symbol_for_rustc_cfg,
-+				    NULL);
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * Create include/config/auto.conf. This must be the last step because
- 	 * Kbuild has a dependency on auto.conf and this marks the successful
+Here we add a new function to the pin and that's used to set the egpio_enable to 0?
+
+> One case I imaging where this could be useful is to allow Linux to
+> configure a known state of pins when the island isn't running, from the
+> remoteproc driver and then flip it over to island mode before booting
+> the remote.
+
+So we save power during boot up until the island processor comes up?
+So fwik when we boot linux its either configured to boot the island processor
+or not. Are you talking about some scenario where the island processor comes
+up on demand and goes down when not used?
+
 -- 
-2.30.2
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
