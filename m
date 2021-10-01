@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B9E41F506
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C6F41F50B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355786AbhJASgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355680AbhJASgm (ORCPT
+        id S1355954AbhJAShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:37:25 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48722 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355832AbhJAShW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:36:42 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521E8C06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 11:34:57 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id z24so42253267lfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h17+SHB1hF/idn3CZToPuuO5Jqa52mgDL9LaLqNP76k=;
-        b=XvZPJRVapHhXbnvxBH+dcTzSWQUb8QLF1Nvs1pcRhCxBeMs5Xcc3SYxz0PJk9MSVwB
-         RO++xnwZyTvuSnUUevpLJg3QzOphbUQYQMzIEN8ZdDC/pBg7emCqlUyytJKci3smdWEz
-         PGKQDIfcwTqn5uHKORxQ95mAv2mamNG7R4cbKDhOgNlMOni5vMR6VfkgZNz3f+w9r6LP
-         RM5PrO44K4PTReIsJatKfc6ou546JK1Y/09aVpYq2fo16JNjbJ30np/Do4fvwBpz7Nls
-         NnJBkqXWOyTByxBLP2U0JC6UhBtJUhfb9XBQKV7BuC/NtZW4K+K44hAwVBC/VzyF8UqV
-         abdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h17+SHB1hF/idn3CZToPuuO5Jqa52mgDL9LaLqNP76k=;
-        b=7+X1H+wHQ/jcbpYg1IWaEGHEJAKjv2qa6YW+wByo/frjmcW8BePDsetGOZYQSaeftf
-         /GykdjBH8FI0MwE5Wcz7Ztqqv/ERPouRqVB62Ly0l/KMc+fdACJw0iYox6QufUN4JaS3
-         8zmZyPdo6WxQbuDDsc1P4RnX1z7YPl05t/wc0dJzobu7vuj1j/mEFX9FL4AIemL2BhkB
-         bUG/DnzPz66ZsH1sZi8vBupMQ4l2vleFRzNBVj6mcP2T+c+jFSiAH0gRkyhprUVqDNEN
-         U2GrER+/2ShTyq5352phF+rEhgUOqgTj4OCJaPcky2dt5Vzb+y+/WNE/xnT4l5GDY6Zy
-         nzhA==
-X-Gm-Message-State: AOAM5301/I8TYpuitFvh3UY9doQODhvfUe34z9zT9ViclJeIwRIsmOHx
-        xOG9Gv7oJYJqCmF4a/7RABSb8OnAQ+KsFuAn
-X-Google-Smtp-Source: ABdhPJxAGb0vHrSPSZ+MiRYmStYTxz0nB8m1aCFfXoEXCgOVViaEkeSdPPdoKSd77/QxRlbcQSx0UQ==
-X-Received: by 2002:a2e:a370:: with SMTP id i16mr12844230ljn.35.1633113295365;
-        Fri, 01 Oct 2021 11:34:55 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id p14sm809515lfa.299.2021.10.01.11.34.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 11:34:54 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm: Fix null pointer dereference on pointer edp
-To:     Colin King <colin.king@canonical.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210929121857.213922-1-colin.king@canonical.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <c9a68b02-d9b6-e779-7659-2f92639e55b0@linaro.org>
-Date:   Fri, 1 Oct 2021 21:34:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 1 Oct 2021 14:37:22 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 63FE01F459BE
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 1/2] fs: dcache: Handle case-exact lookup in
+ d_alloc_parallel
+Organization: Collabora
+References: <cover.1632909358.git.shreeya.patel@collabora.com>
+        <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
+Date:   Fri, 01 Oct 2021 14:35:32 -0400
+In-Reply-To: <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
+        (Shreeya Patel's message of "Wed, 29 Sep 2021 16:23:38 +0530")
+Message-ID: <87a6js61aj.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210929121857.213922-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2021 15:18, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The initialization of pointer dev dereferences pointer edp before
-> edp is null checked, so there is a potential null pointer deference
-> issue. Fix this by only dereferencing edp after edp has been null
-> checked.
-> 
-> Addresses-Coverity: ("Dereference before null check")
-> Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Shreeya Patel <shreeya.patel@collabora.com> writes:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
+> There is a soft hang caused by a deadlock in d_alloc_parallel which
+> waits up on lookups to finish for the dentries in the parent directory's
+> hash_table.
+> In case when d_add_ci is called from the fs layer's lookup functions,
+> the dentry being looked up is already in the hash table (created before
+> the fs lookup function gets called). We should not be processing the
+> same dentry that is being looked up, hence, in case of case-insensitive
+> filesystems we are making it a case-exact match to prevent this from
+> happening.
+>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 > ---
->   drivers/gpu/drm/msm/edp/edp_ctrl.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> index 4fb397ee7c84..fe1366b4c49f 100644
-> --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> @@ -1116,7 +1116,7 @@ void msm_edp_ctrl_power(struct edp_ctrl *ctrl, bool on)
->   int msm_edp_ctrl_init(struct msm_edp *edp)
->   {
->   	struct edp_ctrl *ctrl = NULL;
-> -	struct device *dev = &edp->pdev->dev;
-> +	struct device *dev;
->   	int ret;
->   
->   	if (!edp) {
-> @@ -1124,6 +1124,7 @@ int msm_edp_ctrl_init(struct msm_edp *edp)
->   		return -EINVAL;
->   	}
->   
-> +	dev = &edp->pdev->dev;
->   	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
->   	if (!ctrl)
->   		return -ENOMEM;
-> 
+>  fs/dcache.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index cf871a81f4fd..2a28ab64a165 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -2565,6 +2565,15 @@ static void d_wait_lookup(struct dentry *dentry)
+>  	}
+>  }
+>  
+> +static inline bool d_same_exact_name(const struct dentry *dentry,
+> +				     const struct dentry *parent,
+> +				     const struct qstr *name)
+> +{
+> +	if (dentry->d_name.len != name->len)
+> +		return false;
+> +	return dentry_cmp(dentry, name->name, name->len) == 0;
+> +}
 
+I don't like the idea of having a flavor of a dentry comparison function
+that doesn't invoke d_compare.  In particular because d_compare might be
+used for all sorts of things, and this fix is really specific to the
+case-insensitive case.
+
+Would it be possible to fold this change into generic_ci_d_compare?  If
+we could flag the dentry as part of a parallel lookup under the relevant
+condition, generic_ci_d_compare could simply return immediately in
+such case.
+
+> +
+>  struct dentry *d_alloc_parallel(struct dentry *parent,
+>  				const struct qstr *name,
+>  				wait_queue_head_t *wq)
+> @@ -2575,6 +2584,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+>  	struct dentry *new = d_alloc(parent, name);
+>  	struct dentry *dentry;
+>  	unsigned seq, r_seq, d_seq;
+> +	int ci_dir = IS_CASEFOLDED(parent->d_inode);
+>  
+>  	if (unlikely(!new))
+>  		return ERR_PTR(-ENOMEM);
+> @@ -2626,8 +2636,14 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+>  			continue;
+>  		if (dentry->d_parent != parent)
+>  			continue;
+> -		if (!d_same_name(dentry, parent, name))
+> -			continue;
+> +		if (ci_dir) {
+> +			if (!d_same_exact_name(dentry, parent, name))
+> +				continue;
+> +		} else {
+
+
+As is, this is problematic because d_alloc_parallel is also part of the
+lookup path (see lookup_open, lookup_slow).  In those cases, you want to
+do the CI comparison, to prevent racing two tasks creating a dentry
+differing only by case.
+
+
+> +			if (!d_same_name(dentry, parent, name))
+> +				continue;
+> +		}
+> +
+>  		hlist_bl_unlock(b);
+>  		/* now we can try to grab a reference */
+>  		if (!lockref_get_not_dead(&dentry->d_lockref)) {
 
 -- 
-With best wishes
-Dmitry
+Gabriel Krisman Bertazi
