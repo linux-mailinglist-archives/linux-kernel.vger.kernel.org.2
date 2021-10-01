@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505BF41E898
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA2A41E89F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352619AbhJAH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhJAH7d (ORCPT
+        id S1352642AbhJAIDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:03:40 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38874
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352631AbhJAIDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 03:59:33 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23A3C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 00:57:49 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id u7so7187126pfg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 00:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=RbYHo/mBBUJTVbakewm8fXHU6Jcb1pgLkx3oJErKmK0=;
-        b=H3pwA5WTgkijoexe7QnwCtXBMMcouTnZdGekKeBb3+2WILYP1HRm1bQ/07fLhdVOcg
-         qf10ycFupIvs2pPkR57PNsEbqK2FTgRTGAJg5QWVP3jg1s/zxVfkTu9GZK2Z0izJZl1w
-         ZSEsKIDVpjVI+JUmBHKFK1LuUq3vtgrY4cGIsD/Hmztk9PO+PWqTitg/pUg2EWONL8r/
-         0Tz6cEOZBqX0NEEBAo9sslqdxHAQKg6FNuYWrdfTsa5Zkt8i+Mp+hCsb9GUA/RvhI0A/
-         A58Q73eKPzVGf+wPQv837yg3ICY8d+TsvIsq8vhIp1SNb69jEov33ciXQ8SHTbG8fNce
-         WUtg==
+        Fri, 1 Oct 2021 04:03:32 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 47794402CC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633075294;
+        bh=uaaKTJ0cQrh7xMJybw70gv2lO5lfz55pljrjd+/j8E8=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=OVCUzV6fvhi0pUssEH2uHAvp8dx42eH1SZtDmC7CddYV3yMIaMyU0EFS8lq1P6tIw
+         Mvwhqot2NvZFJCsT0Sfkhs6jDSr8lotJ6rQSsh5Gd4SnBIx0/RYt7w5NaZ7DI0GRf8
+         6+ZvQOKCeWp3iMH1Nx4Cnw3whI6216Q4GmNzf9hb7oL02T479NBgEXP12H7ScWwykm
+         INslo2bu2PyuV4mJEWsVThOyyNkxdM0yVCEsa2ASkIMBCZxQPb9ZFZD/J7YFRcaKwU
+         ToS4vjIlYet3RC9SAxdgB41aZGaA+u6hV0et0nxXgVl8KWk+g1VtbxgUR2a7qf05oD
+         sYVH0UG474LWg==
+Received: by mail-lf1-f69.google.com with SMTP id f32-20020a0565123b2000b003fd19ba9acaso3132798lfv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:01:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=RbYHo/mBBUJTVbakewm8fXHU6Jcb1pgLkx3oJErKmK0=;
-        b=blzrkeVQsRiF7D1siezf12W3h3tpSYzOfcHKH8RSYFcavhmpP9UIw1Iv6IuABp69ha
-         xQkpxahw2JgBclbsWhWK0hIeUcDXGe3y0oOt/AO3gze9mjpS9ysXNcS6Tg7U/ntTYUyw
-         4XdBiRrr+fx5ktu0fiNtq5fx+xYUk4+g0RwSViciW60tslLHmCI+eU3rt9levhHf/q2W
-         +SPwqbDVFiRM05WNPFp5y7B47rI3OLRJdQ4fdGjHGV5U+sMy2Od6uL0u5/AQF2KgEHd7
-         xOGHRlOBT0NMpoknZGVXQUS36Hnh/KmdeFGEpB72s8SVPNfX9wboG5NPxnX/weW2MbhX
-         d6zQ==
-X-Gm-Message-State: AOAM531GBDoff+e3ZFHkeR8yXdyTO2H3ibmKRR6lTr16zCyW9U+3VAeo
-        2sLP0pTLKALA0A5VDfyHW5ndNRVb+owj2m/zGAk=
-X-Google-Smtp-Source: ABdhPJx1ps0FJJc/dw32oa5l4l7iM2Kc9lKH31AKSQmOSnQvLxkr/c//kJduIMjvzuUkNEeTOfmSZI+gHj7GU5wFHzM=
-X-Received: by 2002:a63:184a:: with SMTP id 10mr8640228pgy.149.1633075069320;
- Fri, 01 Oct 2021 00:57:49 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uaaKTJ0cQrh7xMJybw70gv2lO5lfz55pljrjd+/j8E8=;
+        b=pjSo9X3yAwyNaBoe/h7k+7VcO8ZotARXm7MRU03RoAB3nc8WgQSuRu0VnQ8B1NyfNa
+         wEL/WOY9Fi5hTFUQR73UnZ/hE2R/fcRduG1Of3VqVUb8EwbU4oTxmLYWJbqcb34DoPiF
+         aZVrdYBtlPjLwFhlrna4VDwAK7ODJ01wae/nLg0MHjsCVLvvsEe62eEMeneCK9X7Nmmm
+         C+GetoOI7SsxJNJp4CsXJHDYj3Kwa0kbyEzkTPqUEusw87Zj/5/BHCSWhoId+3EsqKis
+         B96lwfuXEV7p6ElvBW6Jt7vp38ZVDtnNatdxytE/Ec84NVclep4AJ4hXqNRFpnN/MFlB
+         2M9g==
+X-Gm-Message-State: AOAM531xjWyEnfWi7cPaRfdzhn1tuRLG+cB9VV7Z6XApXbvysFkZKNdc
+        CSk7z6lsbfKMgExxeqi0YweUFmtjwLrtSXnVCCHyuJ7bO0Ua3E5PfCyq9Lv2TehG022dOktgUMF
+        0/08L6106vnFMULyckFWFCWBc/udkW/ncQVAC5/4wTw==
+X-Received: by 2002:a05:6512:22c3:: with SMTP id g3mr3831327lfu.577.1633075283324;
+        Fri, 01 Oct 2021 01:01:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnC0TWRcbTXzIlivq6kGBHxv6PT9DERXp0Gp0NMumXyFOXyX+j61vGOxB9oQtxeW3iWZpGuA==
+X-Received: by 2002:a05:6512:22c3:: with SMTP id g3mr3831286lfu.577.1633075283077;
+        Fri, 01 Oct 2021 01:01:23 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id t17sm642232lft.296.2021.10.01.01.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 01:01:22 -0700 (PDT)
+To:     Will McVicker <willmcvicker@google.com>,
+        Olof Johansson <olof@lixom.net>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
+ <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
+ <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
+ configs
+Message-ID: <5d22846b-b2d8-e646-4b5c-732127e37f3a@canonical.com>
+Date:   Fri, 1 Oct 2021 10:01:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a17:90a:648:0:0:0:0 with HTTP; Fri, 1 Oct 2021 00:57:47
- -0700 (PDT)
-Reply-To: banqueatlantiquetogobranch@gmail.com
-In-Reply-To: <CADRB3KprHTqZE4xLBCZZ2kQ5R1mgRamOPFnv8ZQWfoaLspEVOg@mail.gmail.com>
-References: <CADRB3KprHTqZE4xLBCZZ2kQ5R1mgRamOPFnv8ZQWfoaLspEVOg@mail.gmail.com>
-From:   "Ms. Kristalina Georgieva" <tonywoodto@gmail.com>
-Date:   Fri, 1 Oct 2021 09:57:47 +0200
-Message-ID: <CADRB3Kq9=7JQyhYqDyufafX3ymZp0yQJwxfVbNkWF7mqE-U44Q@mail.gmail.com>
-Subject: 1/10/2021
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V=C3=A1=C5=BEen=C3=BD vlastn=C3=ADk e -mailu / pr=C3=ADjemca fondu,
-Som pani Kristalina Georgieva, v=C3=BDkonn=C3=A1 riadite=C4=BEka a preziden=
-tka
-Medzin=C3=A1rodn=C3=A9ho menov=C3=A9ho fondu. Skuto=C4=8Dne sme presk=C3=BA=
-mali v=C5=A1etky prek=C3=A1=C5=BEky
-a probl=C3=A9my, ktor=C3=A9 sprev=C3=A1dzali va=C5=A1u ne=C3=BApln=C3=BA tr=
-ansakciu a va=C5=A1u
-neschopnos=C5=A5 vyrovna=C5=A5 sa s poplatkami za prevody =C3=BA=C4=8Dtovan=
-=C3=BDmi za minul=C3=A9
-mo=C5=BEnosti prevodu, nav=C5=A1t=C3=ADvte na=C5=A1e potvrdenie. strana 38 =
-=C2=B0 53'56 "N 77 =C2=B0
-2" 39 =E2=80=B3 F.
+On 01/10/2021 07:59, Will McVicker wrote:
+> On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
+>>
+>>>>
+>>>> GKI is a fantastic effort, since it finally seems like Google has the
+>>>> backbone to put pressure on the vendors to upstream all their stuff.
+>>>>
+>>>> This patcheset dilutes and undermines all of that by opening up a
+>>>> truck-size loophole, reducing the impact of GKI, and overall removes
+>>>> leverage to get vendors to do the right thing.
+>>>>
+>>>> It's against our interest as a community to have this happen, since
+>>>> there's no other reasonably justifiable reason to do this.
+> 
+> Are you saying that modularizing drivers is opening up a loophole? How
+> is this different from Krysztof pushing changes to modularize the
+> Exynos ChipId driver just last week [1].  
 
-Predstavenstvo Svetov=C3=A1 banka a Medzin=C3=A1rodn=C3=BD menov=C3=BD fond=
- (MMF)
-Washington DC v spolupr=C3=A1ci s ministerstvom financi=C3=AD USA a niektor=
-=C3=BDmi
-=C4=8Fal=C5=A1=C3=ADmi relevantn=C3=BDmi vy=C5=A1etrovac=C3=ADmi agent=C3=
-=BArami v USA nariadili na=C5=A1ej
-zahrani=C4=8Dnej prevodnej jednotke BANQUE ATLANTIQUE INTERNATIONAL TOGO
-previes=C5=A5 kompenza=C4=8Dn=C3=BD fond v hodnote =E2=82=AC 761 000,00 na =
-hlavn=C3=BA kartu
-bankomatu a odo=C5=A1leme v=C3=A1m.
+Modularizing drivers, which can work as modules or even can be disabled
+because they are not essential for platform boot, is not opening
+loophole and is helping upstream platforms. Modularizing everything,
+even essential drivers, because downstream does not want to contribute
+rest of its drivers, is not beneficial to the upstream project. Since
+downstream does want to contribute its platforms and drivers, it decides
+to change mainline project to fits its needs. Only its needs, not others.
 
-Po=C4=8Das n=C3=A1=C5=A1ho vy=C5=A1etrovania sme s hr=C3=B4zou zistili, =C5=
-=BEe v=C3=A1=C5=A1 fond zbyto=C4=8Dne
-zdr=C5=BEiavali skorumpovan=C3=AD =C3=BAradn=C3=ADci b=C3=A1nk, ktor=C3=AD =
-sa pok=C3=BA=C5=A1ali presmerova=C5=A5
-va=C5=A1e prostriedky na svoje s=C3=BAkromn=C3=A9 =E2=80=8B=E2=80=8B=C3=BA=
-=C4=8Dty kv=C3=B4li svojim sebeck=C3=BDm
-z=C3=A1ujmom. Dnes by sme v=C3=A1s chceli informova=C5=A5, =C5=BEe v=C3=A1=
-=C5=A1 fond bol ulo=C5=BEen=C3=BD v
-BANQUEATLANTIQUE INTERNATIONAL TOGO je pripraven=C3=A9 aj na doru=C4=8Denie=
-,
-teraz kontaktujte prof. Susana Robinsona, riadite=C4=BEa zahrani=C4=8Dn=C3=
-=BDch
-poukazov, BANQUE ATLANTIQUE INTERNATIONAL TOGO, e-mail:
-banqueatlantiquetogobranch@gmail.com, po=C5=A1lite jej nasleduj=C3=BAce
-inform=C3=A1cie, aby mohla previes=C5=A5 v=C3=A1=C5=A1 celkov=C3=BD kompenz=
-a=C4=8Dn=C3=BD fond v hodnote
-761 000,00 EUR do bankomatu Master Card a po=C5=A1leme v=C3=A1m ju bez
-akejko=C4=BEvek chyby alebo oneskorenia.
+I was repeating this multiple times - there is no point, no incentive
+for the mainline to allow disabling essential SoC drivers. It's only
+downstream interest without any benefit to the upstream.
 
-(1) Va=C5=A1e =C3=BApln=C3=A9 meno ........................................=
-...
-(2) Va=C5=A1a adresa bydliska ..............................
-(3) K=C3=B3pia v=C3=A1=C5=A1ho ob=C4=8Dianskeho preukazu alebo pasu .......=
-....
-(4) Va=C5=A1a krajina ...........................................
-(5) PS=C4=8C =E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=
-=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.
-(6) Va=C5=A1e s=C3=BAkromn=C3=A9 =E2=80=8B=E2=80=8Btelef=C3=B3nne =C4=8D=C3=
-=ADslo ........................
 
-S pozdravom
-Pani Kristalina Georgieva
-Gener=C3=A1lny riadite=C4=BE a prezident Medzin=C3=A1rodn=C3=A9ho menov=C3=
-=A9ho fondu.
+Best regards,
+Krzysztof
