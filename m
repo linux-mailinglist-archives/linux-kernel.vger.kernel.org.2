@@ -2,137 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA2A41E89F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F1B41E8A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352642AbhJAIDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:03:40 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38874
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352631AbhJAIDc (ORCPT
+        id S1352631AbhJAIFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352629AbhJAIEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:03:32 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 47794402CC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633075294;
-        bh=uaaKTJ0cQrh7xMJybw70gv2lO5lfz55pljrjd+/j8E8=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=OVCUzV6fvhi0pUssEH2uHAvp8dx42eH1SZtDmC7CddYV3yMIaMyU0EFS8lq1P6tIw
-         Mvwhqot2NvZFJCsT0Sfkhs6jDSr8lotJ6rQSsh5Gd4SnBIx0/RYt7w5NaZ7DI0GRf8
-         6+ZvQOKCeWp3iMH1Nx4Cnw3whI6216Q4GmNzf9hb7oL02T479NBgEXP12H7ScWwykm
-         INslo2bu2PyuV4mJEWsVThOyyNkxdM0yVCEsa2ASkIMBCZxQPb9ZFZD/J7YFRcaKwU
-         ToS4vjIlYet3RC9SAxdgB41aZGaA+u6hV0et0nxXgVl8KWk+g1VtbxgUR2a7qf05oD
-         sYVH0UG474LWg==
-Received: by mail-lf1-f69.google.com with SMTP id f32-20020a0565123b2000b003fd19ba9acaso3132798lfv.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:01:34 -0700 (PDT)
+        Fri, 1 Oct 2021 04:04:25 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8681AC06177C;
+        Fri,  1 Oct 2021 01:02:33 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id u32so18718998ybd.9;
+        Fri, 01 Oct 2021 01:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=iXAtNm3MaeSAViv8FbXNKxnICMX5iqycQz5HxnThtRI=;
+        b=Zk4T+m66GYQ1CRsRurqkFu7lkvaEmg1wDknACxkzpMicIYhX8i/CoTUjX7i5OYVxIB
+         w8EM/pxHtXo81HWPjtvFAYK/qZ0cQ9ZTrrRZKK+d/cHAU2DPADLk3ns30aTr2YdOqVsm
+         8dJCyAzTiMiPixhJKgscB9X533yKU2N828H6y3Z9H/copWhcODhuNi3fEnRx+3xkLBiF
+         I0fGnsZSZ46fXTv7ClN53r1InJ7+gDLKhbEOXK0r5hbvSf9kWX4X7V3tyoGfkUgoPrgG
+         fub6hD7pc2wWHZuWQIHPU1a45EFCgV1nb9X3EPCKoby4nxmrAR2RdsEMwc9xPvSqn4xF
+         si1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uaaKTJ0cQrh7xMJybw70gv2lO5lfz55pljrjd+/j8E8=;
-        b=pjSo9X3yAwyNaBoe/h7k+7VcO8ZotARXm7MRU03RoAB3nc8WgQSuRu0VnQ8B1NyfNa
-         wEL/WOY9Fi5hTFUQR73UnZ/hE2R/fcRduG1Of3VqVUb8EwbU4oTxmLYWJbqcb34DoPiF
-         aZVrdYBtlPjLwFhlrna4VDwAK7ODJ01wae/nLg0MHjsCVLvvsEe62eEMeneCK9X7Nmmm
-         C+GetoOI7SsxJNJp4CsXJHDYj3Kwa0kbyEzkTPqUEusw87Zj/5/BHCSWhoId+3EsqKis
-         B96lwfuXEV7p6ElvBW6Jt7vp38ZVDtnNatdxytE/Ec84NVclep4AJ4hXqNRFpnN/MFlB
-         2M9g==
-X-Gm-Message-State: AOAM531xjWyEnfWi7cPaRfdzhn1tuRLG+cB9VV7Z6XApXbvysFkZKNdc
-        CSk7z6lsbfKMgExxeqi0YweUFmtjwLrtSXnVCCHyuJ7bO0Ua3E5PfCyq9Lv2TehG022dOktgUMF
-        0/08L6106vnFMULyckFWFCWBc/udkW/ncQVAC5/4wTw==
-X-Received: by 2002:a05:6512:22c3:: with SMTP id g3mr3831327lfu.577.1633075283324;
-        Fri, 01 Oct 2021 01:01:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnC0TWRcbTXzIlivq6kGBHxv6PT9DERXp0Gp0NMumXyFOXyX+j61vGOxB9oQtxeW3iWZpGuA==
-X-Received: by 2002:a05:6512:22c3:: with SMTP id g3mr3831286lfu.577.1633075283077;
-        Fri, 01 Oct 2021 01:01:23 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id t17sm642232lft.296.2021.10.01.01.01.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 01:01:22 -0700 (PDT)
-To:     Will McVicker <willmcvicker@google.com>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com>
- <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
- <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
- <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select
- configs
-Message-ID: <5d22846b-b2d8-e646-4b5c-732127e37f3a@canonical.com>
-Date:   Fri, 1 Oct 2021 10:01:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=iXAtNm3MaeSAViv8FbXNKxnICMX5iqycQz5HxnThtRI=;
+        b=l5bEC9yL1Lbxh5L03gEF41lL/bIqTaQltKIMcoXzN1LppJNUIkYGkp15l81PT8hqt/
+         lYXGqSr9uM3FwXxzZqpO7+yb5CzYKq427zmWzVImyfrf3eJxdE3R3p/FvqRUJ68td+LS
+         2JMplwSkrp+hSphKRk9o4kyYeo7fB3j4iC5WWmys0OMfGvt6VwWrGALIVU/EwcVzhHj/
+         oZmSfQZK33crMnTABIKxkNNs4L1B0AAlAEU8qMzZlg5SmPzSFEkgkJ2HUxE5QZoDwg0W
+         yrkiqclxTJJHMH/r6p4hhPo8wkVt2QOGn9AcfI3cVYMqGtJojc8wL8xrE1SAyibdrzbN
+         PsJg==
+X-Gm-Message-State: AOAM533vkNDtsjiB1B3d9QWFMEMfy0Ez5aL5vbGlzgy5VM6DLlf2eA8F
+        x8O6ogdbud+fF5Dri8bhvXBb9yJsizewEWVF73k=
+X-Google-Smtp-Source: ABdhPJyg5/kS7DOVYejKI/QD6YDrZTyTm0+TOQS+y7BnCHJaDMliZlHOtX/hL7s9U8TTquH5K2BwEkP86jcm3348YNo=
+X-Received: by 2002:a25:e044:: with SMTP id x65mr4446608ybg.131.1633075352741;
+ Fri, 01 Oct 2021 01:02:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CABYd82b7umA2h=b2NTMU7X0u8ABOjMcmh5cHOH_gyWr=QeFFTA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com> <YVXMc1A4D/y4kjim@shikoro>
+In-Reply-To: <YVXMc1A4D/y4kjim@shikoro>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 1 Oct 2021 09:02:06 +0100
+Message-ID: <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/2021 07:59, Will McVicker wrote:
-> On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
->>
->>>>
->>>> GKI is a fantastic effort, since it finally seems like Google has the
->>>> backbone to put pressure on the vendors to upstream all their stuff.
->>>>
->>>> This patcheset dilutes and undermines all of that by opening up a
->>>> truck-size loophole, reducing the impact of GKI, and overall removes
->>>> leverage to get vendors to do the right thing.
->>>>
->>>> It's against our interest as a community to have this happen, since
->>>> there's no other reasonably justifiable reason to do this.
-> 
-> Are you saying that modularizing drivers is opening up a loophole? How
-> is this different from Krysztof pushing changes to modularize the
-> Exynos ChipId driver just last week [1].  
+Hi Wolfram,
 
-Modularizing drivers, which can work as modules or even can be disabled
-because they are not essential for platform boot, is not opening
-loophole and is helping upstream platforms. Modularizing everything,
-even essential drivers, because downstream does not want to contribute
-rest of its drivers, is not beneficial to the upstream project. Since
-downstream does want to contribute its platforms and drivers, it decides
-to change mainline project to fits its needs. Only its needs, not others.
+Thank you for the review.
 
-I was repeating this multiple times - there is no point, no incentive
-for the mainline to allow disabling essential SoC drivers. It's only
-downstream interest without any benefit to the upstream.
+On Thu, Sep 30, 2021 at 3:40 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Hi,
+>
+> >  #define RPCIF_CMNCR_IO3FV(val)       (((val) & 0x3) << 14) /* undocumented */
+> >  #define RPCIF_CMNCR_IO2FV(val)       (((val) & 0x3) << 12) /* undocumented */
+> >  #define RPCIF_CMNCR_IO0FV(val)       (((val) & 0x3) << 8)
+> > -#define RPCIF_CMNCR_IOFV_HIZ (RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
+> > -                              RPCIF_CMNCR_IO3FV(3))
+> > +#define RPCIF_CMNCR_IOFV_HIZ(val) (RPCIF_CMNCR_IO0FV(val) | RPCIF_CMNCR_IO2FV(val) | \
+> > +                              RPCIF_CMNCR_IO3FV(val))
+>
+> Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
+> datasheets? I am asking because I have a patch pending to remove writing
+> to undocumented locations. So, I was aboout to remove the IO3FV and
+> IO2FV macros.
+>
+Yes they are documented, you should be able to download the HW manual from [1]
 
+> > +#define RPCIF_PHYADJ1                0x0070  /* R/W */
+> > +#define RPCIF_PHYADJ2                0x0074  /* R/W */
+>
+> Those are named 'PHYADD' and 'PHYWR' in the Gen3 documentation. They are
+> only available on a few of the Gen3 SoCs. I think the Gen3 namings make
+> more sense because then it becomes easily understandable that the
+> registers are used to write something to the PHY.
+>
+Agreed, will re-name it as per Gen3.
 
-Best regards,
-Krzysztof
+> > +#define RPCIF_PHYCNT_CKSEL(v)        (((v) & 0x3) << 16)
+>
+> We should add a comment here that these bits are only valid for G2L...
+>
+Will do.
+
+> >  #define RPCIF_PHYCNT_STRTIM(v)       (((v) & 0x7) << 15)
+>
+> and these only for Gen3.
+>
+ditto.
+
+>
+> > +static void rpcif_timing_adjust_sdr(struct rpcif *rpc)
+> > +{
+> > +     u32 data;
+> > +
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0xA5390000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000022);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000024);
+>
+> Can't we have defines for these magic values? At least in my latest Gen3
+> documentation, these values are explained.
+>
+RZ/G2L manual doesn't explain these bits. Let me refer to R-Car Gen3
+and define them as macros.
+
+> > +
+> > +     regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
+>
+> regmap_update_bits?
+>
+will do.
+
+> > +     if (rpc->type == RPCIF_RCAR_GEN3) {
+> > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
+> > +                          RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
+> > +     } else {
+> > +             regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
+> > +             dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
+> > +             dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
+> > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
+>
+> regmap_update_bits?
+>
+Im a bit hesitant to use regmap_update_bits() here as some of the bits
+are not documented.
+
+[1] https://www.renesas.com/us/en/products/microcontrollers-microprocessors/rz-arm-based-high-end-32-64-bit-mpus/rzg2l-general-purpose-microprocessors-dual-core-arm-cortex-a55-12-ghz-cpus-3d-graphics-and-video-codec
+
+Cheers,
+Prabhakar
+
+> Rest looks good.
+>
+> Thanks and happy hacking!
+>
+>    Wolfram
+>
