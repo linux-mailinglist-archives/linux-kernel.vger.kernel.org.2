@@ -2,250 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21CB41E797
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A725941E79D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352360AbhJAGcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:32:41 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:50065 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352223AbhJAGc3 (ORCPT
+        id S1352420AbhJAGcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352311AbhJAGce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:32:29 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HLKxG63RSz4xbZ; Fri,  1 Oct 2021 16:30:42 +1000 (AEST)
+        Fri, 1 Oct 2021 02:32:34 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E686CC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id r7so5826554pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633069842;
-        bh=lR34utpaPRCNI/perdpBGfzIkAS0BNV6Vs/MdnmoqpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gy+VlReRYd8SAM46lfmZR/ktoSy73PwBURgZBuyyfb16MyPR9LgF8g9STm4/0hZ0f
-         KGVknRjzdBFqFsgzUp3mMhTDJhJkUvofB6SPqKUd6BEOrMGGumiZmuGWLJPUNS6Suu
-         EMOJ2zGcOhnkF++aTF2sf1PuuGSi6CNYVJh8QKBA=
-Date:   Fri, 1 Oct 2021 16:30:05 +1000
-From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YVaq7a5uzUMd9vVL@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com>
- <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922140911.GT327412@nvidia.com>
- <BN9PR11MB5433A47FFA0A8C51643AA33C8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210923120653.GK964074@nvidia.com>
- <BN9PR11MB543309C4D55D628278B95E008CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+        d=lixom-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFaWGqP2C9gymM7/xIsnUKhVwQDKbxB31NvGBdiYcLA=;
+        b=4ocJW6VsE5Ak+SaEWbMlGHnwUTU9mu716bs6zxu6tAUfmGk7yE5iplL38jYh3kA/KL
+         eeMU7inGCL3k2iHWHOINlMkO3QWTPaoP/nXdQf3VOnRvbkZ+PDCaZrDWCQpx8BsttabS
+         CK3d8lKluQkN02sVYw/hGwF/tpcBSvr8qxqIk4zhaudgU111Dl93oeyNYddynt+zKLai
+         ICYJOyZMKmY8kOpFOuaGbUylu09CBNQ6PlLnvdtXpWCGSFh5Nu+K08COIIptOvrPuUlM
+         zIPgWdgCE7LICZKVNF+RklvjO6335j2YDh9XvAdcavHfeZ6SHHP54wV/uEVdnzLHAyhG
+         TGug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFaWGqP2C9gymM7/xIsnUKhVwQDKbxB31NvGBdiYcLA=;
+        b=3cJB6AsvrfR55L8RDcq0NaQUkurLLOptV6FI6C4FbuGjrCk+Ao5EILNlAxgDuPcYCQ
+         RcDnXv1rJzskJ0u1FV8/2bbnZzo54b37KQKyUzO00tqgtooAcwWJP3hrUSCXFi2b6aGk
+         DHn/bbHX08l7fB5T4h0jxKGRS3A6uacPSvmIs6vbYHYuBq95SsbNJQjKYGb/l9cMfDvT
+         1LexoC+Qo7MyQDw+VTnpBNupSpKiy0xh+BbaVfTqogXMyEYSebXjnCP+lIMy7D2CpTsZ
+         MIr07yPXWyYQ51IBqYMH16P42HR3/2bDAFhH7fWjxhdvhRIchB97R1R62FYJBZgaQjKl
+         uqdQ==
+X-Gm-Message-State: AOAM532/g6yQc9R1+UhCwmBfIt6m8s0DBetnPAZc7vb+LmOD0VN3ZzID
+        6xVguS/8aogpPqm2mYyf/mQpKpou3dcVFZ1OjCjLajmvFMw=
+X-Google-Smtp-Source: ABdhPJzugW2gRpjUhIx7TVpMheVS0CqLw1m8cGY1dM+98GPdSokT3IcybwpvmxO8Q8v7apOWVV89E0+k35pmEy/if2M=
+X-Received: by 2002:a17:90a:5ac2:: with SMTP id n60mr11297133pji.184.1633069850324;
+ Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lzq0sKp3RnTlTiJP"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB543309C4D55D628278B95E008CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
+ <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com> <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
+In-Reply-To: <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Thu, 30 Sep 2021 23:30:38 -0700
+Message-ID: <CAOesGMhGaS+jcAc_AcHX0AG+X5WEo2+83rFi_LcnfHAimO+CYg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---lzq0sKp3RnTlTiJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 23, 2021 at 12:22:23PM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Thursday, September 23, 2021 8:07 PM
-> >=20
-> > On Thu, Sep 23, 2021 at 09:14:58AM +0000, Tian, Kevin wrote:
-> >=20
-> > > currently the type is aimed to differentiate three usages:
+On Thu, Sep 30, 2021 at 11:27 PM Olof Johansson <olof@lixom.net> wrote:
+>
+> On Thu, Sep 30, 2021 at 11:03 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
 > > >
-> > > - kernel-managed I/O page table
-> > > - user-managed I/O page table
-> > > - shared I/O page table (e.g. with mm, or ept)
-> >=20
-> > Creating a shared ios is something that should probably be a different
-> > command.
->=20
-> why? I didn't understand the criteria here...
->=20
-> >=20
-> > > we can remove 'type', but is FORMAT_KENREL/USER/SHARED a good
-> > > indicator? their difference is not about format.
-> >=20
-> > Format should be
-> >=20
-> > FORMAT_KERNEL/FORMAT_INTEL_PTE_V1/FORMAT_INTEL_PTE_V2/etc
->=20
-> INTEL_PTE_V1/V2 are formats. Why is kernel-managed called a format?
->=20
-> >=20
-> > > Dave's links didn't answer one puzzle from me. Does PPC needs accurate
-> > > range information or be ok with a large range including holes (then l=
-et
-> > > the kernel to figure out where the holes locate)?
-> >=20
-> > My impression was it only needed a way to select between the two
-> > different cases as they are exclusive. I'd see this API as being a
-> > hint and userspace should query the exact ranges to learn what was
-> > actually created.
->=20
-> yes, the user can query the permitted range using DEVICE_GET_INFO.
-> But in the end if the user wants two separate regions, I'm afraid that=20
-> the underlying iommu driver wants to know the exact info. iirc PPC
-> has one global system address space shared by all devices.
-
-I think certain POWER models do this, yes, there's *protection*
-between DMAs from different devices, but you can't translate the same
-address to different places for different devices.  I *think* that's a
-firmware/hypervisor convention rather than a hardware limitation, but
-I'm not entirely sure.  We don't do things this way when emulating the
-POWER vIOMMU in POWER, but PowerVM might and we still have to deal
-with that when running as a POWERVM guest.
-
-> It is possible
-> that the user may want to claim range-A and range-C, with range-B
-> in-between but claimed by another user. Then simply using one hint
-> range [A-lowend, C-highend] might not work.
->=20
-> >=20
-> > > > device-specific escape if more specific customization is needed and=
- is
-> > > > needed to specify user space page tables anyhow.
-> > >
-> > > and I didn't understand the 2nd link. How does user-managed page
-> > > table jump into this range claim problem? I'm getting confused...
-> >=20
-> > PPC could also model it using a FORMAT_KERNEL_PPC_X,
-> > FORMAT_KERNEL_PPC_Y
-> > though it is less nice..
->=20
-> yes PPC can use different format, but I didn't understand why it is=20
-> related user-managed page table which further requires nesting. sound
-> disconnected topics here...
->=20
-> >=20
-> > > > Yes, ioas_id should always be the xarray index.
+> > > On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
 > > > >
-> > > > PASID needs to be called out as PASID or as a generic "hw descripti=
-on"
-> > > > blob.
+> > > > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
+> > > > >
+> > > > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
+> > > > > >
+> > > > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
+> > > > > > <krzysztof.kozlowski@canonical.com> wrote:
+> > > > > > >
+> > > > > > > On 29/09/2021 01:56, Will McVicker wrote:
+> > > > > > > > This is v2 of the series of patches that modularizes a number of core
+> > > > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
+> > > > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
+> > > > > > > > series of "select XXX". This includes setting the following configs as
+> > > > > > > > tristate:
+> > > > > > > >
+> > > > > > > >  * COMMON_CLK_SAMSUNG
+> > > > > > > >  * EXYNOS_ARM64_COMMON_CLK
+> > > > > > > >  * PINCTRL_SAMSUNG
+> > > > > > > >  * PINCTRL_EXYNOS
+> > > > > > > >  * EXYNOS_PMU_ARM64
+> > > > > > > >  * EXYNOS_PM_DOMAINS
+> > > > > > > >
+> > > > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
+> > > > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
+> > > > > > > > The reason for these new configs is because we are not able to easily
+> > > > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
+> > > > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
+> > > > > > > > the ARM and ARM64 portions into two separate configs.
+> > > > > > > >
+> > > > > > > > Overall, these drivers didn't require much refactoring and converted to
+> > > > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
+> > > > > > > > was not able to boot test these changes. I'm mostly concerned about the
+> > > > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
+> > > > > > > > requesting help for testing these changes on the respective hardware.
+> > > > > > > >
+> > > > > > >
+> > > > > > > These are all not tested at all? In such case, since these are not
+> > > > > > > trivial changes, please mark the series as RFT.
+> > > > > > >
+> > > > > > > I will not be able to test these for some days, so it must wait.
+> > > > > > >
+> > > > > > >
+> > > > > > > Best regards,
+> > > > > > > Krzysztof
+> > > > > >
+> > > > > > +Cc Arnd and Olof,
+> > > > > >
+> > > > > > Hi Krzysztof,
+> > > > > >
+> > > > > > To avoid the scrambled conversation from the first patchset, I'm going
+> > > > > > to address all your general questions here in the cover letter thread
+> > > > > > so that it's easier for everyone to follow and reference in the
+> > > > > > future.
+> > > > >
+> > > > > This patchset shouldn't go in.
+> > > > >
+> > > > > GKI is a fantastic effort, since it finally seems like Google has the
+> > > > > backbone to put pressure on the vendors to upstream all their stuff.
+> > > > >
+> > > > > This patcheset dilutes and undermines all of that by opening up a
+> > > > > truck-size loophole, reducing the impact of GKI, and overall removes
+> > > > > leverage to get vendors to do the right thing.
+> > > > >
+> > > > > It's against our interest as a community to have this happen, since
+> > > > > there's no other reasonably justifiable reason to do this.
+> > > >
+> > > > Oolf, Geert, Krzysztof, Arnd,
 > > >
-> > > ARM doesn't use PASID. So we need a generic blob, e.g. ioas_hwid?
-> >=20
-> > ARM *does* need PASID! PASID is the label of the DMA on the PCI bus,
-> > and it MUST be exposed in that format to be programmed into the PCI
-> > device itself.
->=20
-> In the entire discussion in previous design RFC, I kept an impression that
-> ARM-equivalent PASID is called SSID. If we can use PASID as a general
-> term in iommufd context, definitely it's much better!
->=20
-> >=20
-> > All of this should be able to support a userspace, like DPDK, creating
-> > a PASID on its own without any special VFIO drivers.
-> >=20
-> > - Open iommufd
-> > - Attach the vfio device FD
-> > - Request a PASID device id
-> > - Create an ios against the pasid device id
-> > - Query the ios for the PCI PASID #
-> > - Program the HW to issue TLPs with the PASID
->=20
-> this all makes me very confused, and completely different from what
-> we agreed in previous v2 design proposal:
->=20
-> - open iommufd
-> - create an ioas
-> - attach vfio device to ioasid, with vPASID info
-> 	* vfio converts vPASID to pPASID and then call iommufd_device_attach_ioa=
-sid()
-> 	* the latter then installs ioas to the IOMMU with RID/PASID
->=20
-> >=20
-> > > and still we have both ioas_id (iommufd) and ioasid (ioasid.c) in the
-> > > kernel. Do we want to clear this confusion? Or possibly it's fine bec=
-ause
-> > > ioas_id is never used outside of iommufd and iommufd doesn't directly
-> > > call ioasid_alloc() from ioasid.c?
-> >=20
-> > As long as it is ioas_id and ioasid it is probably fine..
->=20
-> let's align with others in a few hours.
->=20
-> >=20
-> > > > kvm's API to program the vPASID translation table should probably t=
-ake
-> > > > in a (iommufd,ioas_id,device_id) tuple and extract the IOMMU side
-> > > > information using an in-kernel API. Userspace shouldn't have to
-> > > > shuttle it around.
+> > > So close.
+> >
+> > I'm sorry, it's pretty late here and I'm sleepy and messed it up.
+>
+> This email thread will be here in the morning too, this is the last
+> reply I will make tonight myself.
+>
+> > > > I skimmed through the emails and you all make a lot of good points.
 > > >
-> > > the vPASID info is carried in VFIO_DEVICE_ATTACH_IOASID uAPI.
-> > > when kvm calls iommufd with above tuple, vPASID->pPASID is
-> > > returned to kvm. So we still need a generic blob to represent
-> > > vPASID in the uAPI.
-> >=20
-> > I think you have to be clear about what the value is being used
-> > for. Is it an IOMMU page table handle or is it a PCI PASID value?
-> >=20
-> > AFAICT I think it is the former in the Intel scheme as the "vPASID" is
-> > really about presenting a consistent IOMMU handle to the guest across
-> > migration, it is not the value that shows up on the PCI bus.
-> >=20
->=20
-> It's the former. But vfio driver needs to maintain vPASID->pPASID
-> translation in the mediation path, since what guest programs is vPASID.
->=20
-> Thanks
-> Kevin
->=20
+> > > I skimmed through this email and I think it adds a lot of new
+> > > complexity and fragility to solve a problem that doesn't really exist
+> > > for upstream, adding yet more config parameter combinations to build
+> > > and test for.
+> >
+> > How is this not an upstream problem? Having a minimal kernel with as
+> > many drivers as modules is of interest to upstream. And what's the
+> > complexity in having a config to easily disable a bunch of configs?
+> > The new config gives a clear config against which new
+> > platforms/systems should be developed against.
+>
+> The approach for general kernel upstream has been to have the built-in
+> drivers needed to reach rootfs and runtime load the rest from there.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Correction: The intent for our own multiconfigs have been this. If
+people want to go more granular and allow for modules of their core
+drivers, we have never pushed back (but the rest of the argument still
+stands).
 
---lzq0sKp3RnTlTiJP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWqu0ACgkQbDjKyiDZ
-s5L/4A/8Cn9Xa+7dGRlje4LCugxjf/YGtuwbSe+gdeSt0mR/aMa7c67dyHPzYg4y
-fJNNQo/1Tzi6IdeBVY4edZ8zr52ovu+A59SlBISCM85AUe/vx3fD6obImquWsaFW
-QXME9WCEIouqfP0p50UVeIl9Xp3mTrElPyMbA36B0QKl7t3kgMx3PFqlQiiiXktR
-T9GPce+4GWSLL1aZKDDbMADpmd9+RwD97ZXtcJ+BmlXURFiYnkid+ZYHY3mJ7gFD
-y4QFBZIeBxB/VHbAYXsXzEuEtAXKeiPXzf1nQMUdtmyM989H6FxwsPqgWs6mE8gt
-FvklyPSmNeq78WeiU/DlTwXCzgbuAvhiNFpmXQMmGZn7X1+p2Bexv6rbCh9Dj9MU
-5mKNcz/7g8mp+i5Ka08EHEqv1BKBPpn9TY6ftVRURg5XY5ZsPKWNzJCpRShs281l
-xjjz8DAV9kkm8CGJtFkxFY55/xh3cz/xmwxMq8D1bMRTH5OqYizBsKVf1N2NgOF7
-HKM80qtfTQi3QvaPJSaBlidR0CJR5o3ZvHj/XyL4Dogpa2+67q1BLWuIm1+gCuPZ
-ghR1jaAtOazvIesBJWKR7XLxMDuV2lAU5yu3uh9ezQlGrdWP+j7mf6LKwplZeib4
-o0hcfmwMtnmvLCWoF4w7Q7hCx9VVRTkFRbjo4mbWBZ1sH8HrAlQ=
-=uDs1
------END PGP SIGNATURE-----
-
---lzq0sKp3RnTlTiJP--
+> For downstream embedded kernels, the right answer is to just exclude
+> the drivers you don't need.
+>
+> I agree, some of this is probably useful work but
+> 1) It was posted as a burden on the maintainers of the legacy
+> platforms to test and make sure it's not broken
+> 2) It regresses distro configs, which we do care about
+> 3) Based on the above, it's unclear whether the people pushing for
+> this patchset cares about the existing platforms, they're looking to
+> solve a different problem
+>
+> I didn't go back and look at who and where, but the person who started
+> justifying this work with making it easier for out-of-tree vendors to
+> integrate their non-contributed code killed this patchset.
+>
+> Would the out-of-tree argument on its own kill it? No, but the above
+> complexities/cost, plus the actual intent behind the patchset did.
+>
+> > > A much more valuable approach would be to work towards being able to
+> > > free up memory by un-probed drivers at the end of boot. That would
+> > > possibly benefit all platforms on all architectures.
+> >
+> > Sure it would help memory after boot, but it won't help with size on
+> > "disk", kernel load time, etc. And some of the devices have very tight
+> > boot requirements. Think battery operated outdoor cameras for example.
+>
+> I would question the choices made if someone ships a camera with a
+> generic kernel (without a generic filesystem which at that point also
+> needs sufficient storage such that the kernel image size becomes a
+> secondary consideration). Once your storage is that constrained the
+> balance shifts towards a custom minimal config.
+>
+>
+> -Olof
