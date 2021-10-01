@@ -2,114 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6867441F296
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C502541F29D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353953AbhJARBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:01:33 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:40768 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhJARBc (ORCPT
+        id S232060AbhJARDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhJARDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:01:32 -0400
-Received: by mail-pj1-f52.google.com with SMTP id d4-20020a17090ad98400b0019ece228690so9744884pjv.5;
-        Fri, 01 Oct 2021 09:59:47 -0700 (PDT)
+        Fri, 1 Oct 2021 13:03:01 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5056C06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:01:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x27so41332166lfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6V1sgB8xFr3XkM1mp3PJ3AXlar399UUua4e4vTPpcZQ=;
+        b=R1nYDvfDnDxqq9+zLbJvawWEwsFQ1qCwxhw1s0eRSXtDSUV0P+5ratb6sLWXWxpeGT
+         mTkkVcx29cvm50SyXuQg475PdK3XVU0Fn+p+KKFlwADyUQ1BTPLRtkhGd26rhc85f3DT
+         lJA1sllpuu6vHw8GAQsgSP3UFbyT5q57Pk9oBouKOnF/KF1V1PUf0eCmzcvk3AWmZDxE
+         yR/Pu+pFKeWbJoaiwrYOX4aiYi7C/XpkbCglPsdb14Bc7fM/GCFCcsLbsTHuIFBGcgs7
+         lwswcl9ose9N52hQ3/GlkZmTmRo4Mp2QECENFLVKthbqi6hqC0+ANo8qbJf54u+BjUCJ
+         NXqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+3oLNMm/Hv0NXPCfbk836CuI5x4bjnJJBJAzNWzu28M=;
-        b=bqpPm+A5bv7cQWFKTEF5ivFk5M7QpaiPAw/6vOR5OaeuTYblRAsFIvC38SPkSfE6gH
-         dG7mLFcJJYUk3W19Ewcb4Gu9dUtVEQJUMZbUc4p0DQeBkDkGp9FCTCc9pudTxeVIVkCx
-         V6kwUncceBZhM80cVttq+RWxLNr8gToLAo03WXuWT0RY1IeQCYyhxHZ5j3Ti+Eo7gUaC
-         GCoNp8RH2ORGsVIKOwWo2gct8QhwQTAXPiZHM/FqhhWXYzH0YagUXyD4g5G5q00v55g6
-         cJonO95gM8/WCYKwAp9vtcnqvWsiK4IFwmlcd/zP2At7GuHPs8mZHOz6QTD1o6HpaJl0
-         EGgw==
-X-Gm-Message-State: AOAM532QRk2ZXfJWdHHONshciE+Ub8oKqrKGqQpI0gJEEyB6IAR5oGR6
-        sQVMcOYDZznoiTgQn+LpvB0=
-X-Google-Smtp-Source: ABdhPJwqEybzzb6OqjE3AGzUorgCKHtawMTjGpECZqCU7baHP9Iou3BHUdBCCIjXnq9G1qaVTa+FFA==
-X-Received: by 2002:a17:902:b08f:b0:13e:67df:9fa9 with SMTP id p15-20020a170902b08f00b0013e67df9fa9mr10464205plr.85.1633107587476;
-        Fri, 01 Oct 2021 09:59:47 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:82b7:f0a2:c63d:c44e])
-        by smtp.gmail.com with ESMTPSA id 3sm6159348pjk.18.2021.10.01.09.59.46
+        bh=6V1sgB8xFr3XkM1mp3PJ3AXlar399UUua4e4vTPpcZQ=;
+        b=YOQWWYqJcRdIWQyjdusELT+ZAQQVb6Vb/AM1gJMxTheIEfzqhBJeKvGrvAoPIDf2hb
+         inAO6F221uV7O3JTAMHjGdWrPzkJOS+drkyi13f0jpmo+2di5n5jRAaUEIejQA/hhEkO
+         IKt55z0D5/hhhD7me0zMgNTLst1EFaQNXDdd2zncaI64nqXImVRtGSpPHwUK1Qk4Ftdj
+         NajAIQdKjRhAnfExLJwjKFAtxJ5EZ8n33ZndFIGFNo38JhHl9+KSQomQknnhQtLhFsF+
+         MN0fWuSU3ZJBoNSQdkbFQ2X1Mq/Y9Uam+pborGxtzgP4xmFFdKCXn+GtP0cku9bIOPAU
+         KfRw==
+X-Gm-Message-State: AOAM531SC62cCqr/KLEtSwTFC4BBHbOQ4xddMkWGaBjpivqMCMY+gW3d
+        eMTjwHDPXSXXpe5UJn3SWetTCF6vkiPzS1yK
+X-Google-Smtp-Source: ABdhPJwVsPJf/bidsSzZsTPdoUDvBipwmsUBJsjM/aGi4H28uBlyedpYfY6yBtQvp9XJAd83UJY/JA==
+X-Received: by 2002:a2e:92d5:: with SMTP id k21mr13021912ljh.83.1633107674899;
+        Fri, 01 Oct 2021 10:01:14 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id h12sm693509ljc.65.2021.10.01.10.01.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 09:59:46 -0700 (PDT)
-Subject: Re: [PATCH 2/2] scsi: ufs: Stop clearing unit attentions
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com
-Cc:     Bart Van Assche <bvanassche@google.com>
-References: <20210930195237.1521436-1-jaegeuk@kernel.org>
- <20210930195237.1521436-2-jaegeuk@kernel.org>
- <12ba3462-ac6b-ef35-4b5e-e0de6086ab51@intel.com>
- <f2436720-16d5-58da-abcc-20fa1ed01fb9@intel.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
-Date:   Fri, 1 Oct 2021 09:59:45 -0700
+        Fri, 01 Oct 2021 10:01:14 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/dsi: dsi_phy_14nm: Take ready-bit into account in
+ poll_for_ready
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Archit Taneja <architt@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210906202552.824598-1-marijn.suijten@somainline.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <92d901c6-88e1-778d-dcef-39e460693237@linaro.org>
+Date:   Fri, 1 Oct 2021 20:01:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <f2436720-16d5-58da-abcc-20fa1ed01fb9@intel.com>
+In-Reply-To: <20210906202552.824598-1-marijn.suijten@somainline.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 11:52 PM, Adrian Hunter wrote:
-> Finally, there is another thing to change.  The reason
-> ufshcd_suspend_prepare() does a runtime resume of sdev_rpmb is because the
-> UAC clear would wait for an async runtime resume, which will never happen
-> during system suspend because the PM workqueue gets frozen.  So with the
-> removal of UAC clear, ufshcd_suspend_prepare() and ufshcd_resume_complete()
-> should be updated also, to leave rpmb alone.
+On 06/09/2021 23:25, Marijn Suijten wrote:
+> The downstream driver models this PLL lock check as an if-elseif-else.
+> The only way to reach the else case where pll_locked=true [1] is by
+> succeeding both readl_poll_timeout_atomic calls (which return zero on
+> success) in the if _and_ elseif condition.  Hence both the "lock" and
+> "ready" bit need to be tested in the SM_READY_STATUS register before
+> considering the PLL locked and ready to go.
+> 
+> Tested on the Sony Xperia XA2 Ultra (nile-discovery, sdm630).
+> 
+> [1]: https://source.codeaurora.org/quic/la/kernel/msm-4.19/tree/drivers/clk/qcom/mdss/mdss-dsi-pll-14nm-util.c?h=LA.UM.9.2.1.r1-08000-sdm660.0#n302
+> 
+> Fixes: f079f6d999cb ("drm/msm/dsi: Add PHY/PLL for 8x96")
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 
-Is the following change what you have in mind?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 30 +++++++++++-----------
+>   1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> index 8905f365c932..789b08c24d25 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> @@ -110,14 +110,13 @@ static struct dsi_pll_14nm *pll_14nm_list[DSI_MAX];
+>   static bool pll_14nm_poll_for_ready(struct dsi_pll_14nm *pll_14nm,
+>   				    u32 nb_tries, u32 timeout_us)
+>   {
+> -	bool pll_locked = false;
+> +	bool pll_locked = false, pll_ready = false;
+>   	void __iomem *base = pll_14nm->phy->pll_base;
+>   	u32 tries, val;
+>   
+>   	tries = nb_tries;
+>   	while (tries--) {
+> -		val = dsi_phy_read(base +
+> -			       REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
+> +		val = dsi_phy_read(base + REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
+>   		pll_locked = !!(val & BIT(5));
+>   
+>   		if (pll_locked)
+> @@ -126,23 +125,24 @@ static bool pll_14nm_poll_for_ready(struct dsi_pll_14nm *pll_14nm,
+>   		udelay(timeout_us);
+>   	}
+>   
+> -	if (!pll_locked) {
+> -		tries = nb_tries;
+> -		while (tries--) {
+> -			val = dsi_phy_read(base +
+> -				REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
+> -			pll_locked = !!(val & BIT(0));
+> +	if (!pll_locked)
+> +		goto out;
+>   
+> -			if (pll_locked)
+> -				break;
+> +	tries = nb_tries;
+> +	while (tries--) {
+> +		val = dsi_phy_read(base + REG_DSI_14nm_PHY_PLL_RESET_SM_READY_STATUS);
+> +		pll_ready = !!(val & BIT(0));
+>   
+> -			udelay(timeout_us);
+> -		}
+> +		if (pll_ready)
+> +			break;
+> +
+> +		udelay(timeout_us);
+>   	}
+>   
+> -	DBG("DSI PLL is %slocked", pll_locked ? "" : "*not* ");
+> +out:
+> +	DBG("DSI PLL is %slocked, %sready", pll_locked ? "" : "*not* ", pll_ready ? "" : "*not* ");
+>   
+> -	return pll_locked;
+> +	return pll_locked && pll_ready;
+>   }
+>   
+>   static void dsi_pll_14nm_config_init(struct dsi_pll_config *pconf)
+> 
 
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0a28cc4c09d8..0743f54e55f9 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9648,10 +9648,6 @@ void ufshcd_resume_complete(struct device *dev)
-  		ufshcd_rpm_put(hba);
-  		hba->complete_put = false;
-  	}
--	if (hba->rpmb_complete_put) {
--		ufshcd_rpmb_rpm_put(hba);
--		hba->rpmb_complete_put = false;
--	}
-  }
-  EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
-
-@@ -9674,10 +9670,6 @@ int ufshcd_suspend_prepare(struct device *dev)
-  		}
-  		hba->complete_put = true;
-  	}
--	if (hba->sdev_rpmb) {
--		ufshcd_rpmb_rpm_get_sync(hba);
--		hba->rpmb_complete_put = true;
--	}
-  	return 0;
-  }
-  EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 86b615023ecb..5ecfcd8cae0a 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -921,7 +921,6 @@ struct ufs_hba {
-  #endif
-  	u32 luns_avail;
-  	bool complete_put;
--	bool rpmb_complete_put;
-  };
-
-  /* Returns true if clocks can be gated. Otherwise false */
-
-
-
-Thanks,
-
-Bart.
+-- 
+With best wishes
+Dmitry
