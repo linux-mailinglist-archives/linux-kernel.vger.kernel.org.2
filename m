@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A3741F64D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D01241F64F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355239AbhJAU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230111AbhJAU2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:28:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B12D61A56;
-        Fri,  1 Oct 2021 20:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633119990;
-        bh=vXHfax9r9lddztIM164XFEM0kr2hoeoQ2/mwckZGDAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=meZ3RyYTPec73G07idC5IUTIyL9CBE5FHdWwR51raQdT6tH84HRfySGFUc6KU91rM
-         eqUTBvWCwNFl3o1dWseBwjfLpYFCLWF6IJubEg3LCRkqwhN6nnkj/tErFkbVOee8eC
-         RiHB49+kcCXeBqp5H3sC8S9U4vDBX1YrfC9l83I3Q151IjbBXjfSsV1ljCk8B2AmM3
-         yRII7FcYHNn0ZvkT8zUQeX5Sgiklo2JTuzaDqI2iOyQRerr2Au8b0+UL0GRxlMYMnx
-         H9mSyP8KufKGqoUS61wsByeyA7hSYOgMKS2keQwdHdx/V8TRgiHA+xQ4OlZsdt5KB/
-         N7F5wsRdSbr8Q==
-Date:   Fri, 1 Oct 2021 21:25:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, sboyd@kernel.org, mka@chromium.org
-Subject: Re: [PATCH V1 1/2] dt-bindings: spi: Add sc7180 support
-Message-ID: <20211001202539.GE5080@sirena.org.uk>
-References: <1632997450-32293-1-git-send-email-rajpat@codeaurora.org>
- <1632997450-32293-2-git-send-email-rajpat@codeaurora.org>
+        id S1355281AbhJAUa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:30:58 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:35490 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhJAUa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:30:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=b69xBm+pTV8dYezsHJGDEqBysaYH6RziquJDPE33kv0=; b=YLVkivGIGRHypimDKWg8/gBClc
+        38Ism2ZNuv+0zp0o4QhXQzgEC4i9IIksX6mGL2Gf41fFFRWWnl+5gY9tRE3eCGfZTlewd4qiVOnp3
+        WDkz6fyRQ0hlUWLT5msVWw4DHxjPdBoIGsUwKH2jn7QfiwyqDqMJFQpWJZvxmqg7zBW6Ebhv8E9af
+        epezHhhmcZawkGBZrCrcVoSZY2yY+QT/3Itm+L3Ffp5uurAMgbP4NfndSkv1DRxEmDq1QEtKC/Jfn
+        BuWmRz4b3HVQTgS8U6qmqw+QibvSRdEINZFm1jWeLUVw/fRd7rfcWwLBi1YqNOGikpKu3M/NRS9u3
+        8o6xdV4A==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1mWP9a-0006QQ-Bg; Fri, 01 Oct 2021 14:29:11 -0600
+To:     Bjorn Helgaas <helgaas@kernel.org>, kelvin.cao@microchip.com
+Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kelvincao@outlook.com
+References: <20211001201822.GA962472@bhelgaas>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <21326395-6d4b-07aa-f445-ecc5dc189d17@deltatee.com>
+Date:   Fri, 1 Oct 2021 14:29:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kA1LkgxZ0NN7Mz3A"
-Content-Disposition: inline
-In-Reply-To: <1632997450-32293-2-git-send-email-rajpat@codeaurora.org>
-X-Cookie: "Pok pok pok, P'kok!"
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211001201822.GA962472@bhelgaas>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: kelvincao@outlook.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, kurt.schwemmer@microsemi.com, kelvin.cao@microchip.com, helgaas@kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-10.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
+ access
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---kA1LkgxZ0NN7Mz3A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Sep 30, 2021 at 03:54:09PM +0530, Rajesh Patil wrote:
-> Add device tree compatible for sc7180 SoC.
+On 2021-10-01 2:18 p.m., Bjorn Helgaas wrote:
+> On Fri, Sep 24, 2021 at 11:08:38AM +0000, kelvin.cao@microchip.com wrote:
+>> From: Kelvin Cao <kelvin.cao@microchip.com>
+>>
+>> After a firmware hard reset, MRPC command executions, which are based
+>> on the PCI BAR (which Microchip refers to as GAS) read/write, will hang
+>> indefinitely. This is because after a reset, the host will fail all GAS
+>> reads (get all 1s), in which case the driver won't get a valid MRPC
+>> status.
+> 
+> Trying to write a merge commit log for this, but having a hard time
+> summarizing it.  It sounds like it covers both Switchtec-specific
+> (firmware and MRPC commands) and generic PCIe behavior (MMIO read
+> failures).
+> 
+> This has something to do with a firmware hard reset.  What is that?
+> Is that like a firmware reboot?  A device reset, e.g., FLR or
+> secondary bus reset, that causes a firmware reboot?  A device reset
+> initiated by firmware?
+> 
+> Anyway, apparently when that happens, MMIO reads to the switch fail
+> (timeout or error completion on PCIe) for a while.  If a device reset
+> is involved, that much is standard PCIe behavior.  And the driver sees
+> ~0 data from those failed reads.  That's not part of the PCIe spec,
+> but is typical root complex behavior.
+> 
+> But you said the MRPC commands hang indefinitely.  Presumably MMIO
+> reads would start succeeding eventually when the device becomes ready,
+> so I don't know how that translates to "indefinitely."
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+I suspect Kelvin can expand on this and fix the issue below. But in my
+experience, the MMIO will read ~0 forever after a firmware reset, until
+the system is rebooted. Presumably on systems that have good hot plug
+support they are supposed to recover. Though I've never seen that.
 
---kA1LkgxZ0NN7Mz3A
-Content-Type: application/pgp-signature; name="signature.asc"
+The MMIO read that signals the MRPC status always returns ~0 and the
+userspace request will eventually time out.
 
------BEGIN PGP SIGNATURE-----
+> Weird to refer to a PCI BAR as "GAS".  Maybe expanding the acronym
+> would help it make sense.
+GAS is the term used by the firmware developers and is in all their
+documentation. It stands for Global Address Space.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFXbsIACgkQJNaLcl1U
-h9ASeAf+Ovebf56F1WWWWiQKFCWm6cBwITcjaeV7bhiWd297kBrRONtcJ16/h1b1
-Ao6YxQFw5LJF8JYr4LE/NlYeEsBXQ8ELzZaCfoiZow2v+GVKaqkpn/uzLCoVGYR1
-2miPdTc0dsuWwjjg6cCxWEjNXauSoFooSkyWtTW4C93OTvpdCjE01N+cVwFaEZW3
-uCEyQfkujOft6i+Bk59s3IZGFwOnMEHqOdcBskKmNoeNLoLL1SAuvKoq9pF6rdxh
-ImGd5MqnjbvS89Auw+1G5dkQB3wZ1ZLXJSBc8FGOFrKf7ke2UPLOIyX6L4p3U9+H
-Rz/2BhRFzoItt6xFeiyR2wwVL1s1Qg==
-=S3o7
------END PGP SIGNATURE-----
+> What does "host" refer to?  I guess it's the switch (the
+> switchtec_dev), since you say it fails MMIO reads?
 
---kA1LkgxZ0NN7Mz3A--
+Yes, a bit confusing. The firmware is dead or not setup right so MMIO
+reads are not succeeding and the root complex is returning ~0 to the
+driver on reads.
+
+Logan
