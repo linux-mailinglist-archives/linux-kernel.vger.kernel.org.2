@@ -2,73 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E82641E610
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D40041E614
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351606AbhJACod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 22:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        id S1351674AbhJACq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 22:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhJACob (ORCPT
+        with ESMTP id S1351589AbhJACq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 22:44:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB5EC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=9b7Y2D8y+bwLRWgPDl2sed9F2MPffsUsdfPD7nrHpcA=; b=L8hPFr3Z7+3SrGqtbww3txa5GZ
-        u98C5rrfId8pWL+7SmgDI09ZodTyAVpx6TMAYILDJh1EHnsAcjLkMODKSzbqxHktWvEf29HQdtdqQ
-        A/+7uexrV8VjYIo40pIZZymyEPiqx0vLCZCBvNJ0f+1Qwowno2VeD65ofDRzDc2dAFXmu3RFRJHe+
-        gYrHtAA4lo/LPeNu9qLMqZG6mE6ZaB27LpfwqzLI14oR7QzB/AdHTR3k4OUpnOLzqIGRSQ9C5bZHN
-        wLHAWE1y98zP1ZtFVieZ8QagKjQU9rINydtVJH1DcHEWEClYxlD+q1xtml70cw45RFCjKr4pj/GCO
-        6ZAtNLbg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mW8U8-00DV2b-6j; Fri, 01 Oct 2021 02:41:37 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Thu, 30 Sep 2021 22:46:57 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9531C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:45:13 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id m1-20020a05620a290100b0045e5e0b11e6so15468741qkp.23
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=G6Dd4fU8g9huNz1dWEdvWgTqiDe5ms3HW/qSB0NVe+o=;
+        b=n6elO3Bc5TGwgkMmuAUCBn8HnVWttDeVKtQ/p4HBROaTUeM2t2Ifit05G/UeGA4Rnb
+         G30etjPlPZIma6GcrS3wws2bB6GksuGqPO4mz9LZO4JAf/3td3MSD7X6RYuTT39aH2mN
+         Wl+lDZ+Cl4ch4i5/X1vtjPeqU8Vm8uXBpuBjlw7QSPaOoWr1gO9AwG4Dci1sOzhMYJTx
+         t29WYszrZSh58xBukibyYlRBThyKid2NOafVnZwvtAy50qaYUqnP2JNJAkMqdouX0qw3
+         d482eLLSHaKicRUi0lzZoeJx+COMl6HmffrYQj3OGAeFm1CRUjyK9JkmuLaAsTUTRATS
+         FgMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=G6Dd4fU8g9huNz1dWEdvWgTqiDe5ms3HW/qSB0NVe+o=;
+        b=jqaild8AhLfipXfwzVDUnM+QfLzO1igR43iPJBoYcrayvHuE2u31anMpg0Ch6loGnE
+         pWrm9SBQy0U72tgnXQZCdXH1VXoZTBW6RO+aN8vbdcagHwWlKmEinbKi9AeNaWLHd8Y9
+         /RdHKhaY5WeC0d/gfK5dLw9oeU+GL7w7eollXUrw7w7T1hO9fNTEiMtR9dAi6hfch0xV
+         GmjwKmkEKRsEIzr/40HySVzvwCyq6Lpm7nnJ5Zy1uaq5zi4ZnzlFirhkMJgFVK934rPB
+         oM7sV28NT0sLVOECxLmQtce542fKlLpq2BKt8f0OhRqNvTlVkf2GMzC0SdbQ+ViK4b9z
+         93Hg==
+X-Gm-Message-State: AOAM5327d9wg+pbZFhrpHIABYThxLiyz84n272YWU/nV122SYdZs4XqD
+        /1YE6dGUFOV4/bV53vMRVMveHmUfbA==
+X-Google-Smtp-Source: ABdhPJyH3tpl88+f2XkK4k1ciI2A73eGmsJKXEJRn0QYhDsbd6e22B49ve2+9vpoulRsr4pwImBw56/a4A==
+X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:200:628d:14b1:db70:715b])
+ (user=tkjos job=sendgmr) by 2002:a05:6214:1046:: with SMTP id
+ l6mr7013069qvr.6.1633056312784; Thu, 30 Sep 2021 19:45:12 -0700 (PDT)
+Date:   Thu, 30 Sep 2021 19:45:06 -0700
+Message-Id: <20211001024506.3762647-1-tkjos@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] binder: use cred instead of task for selinux checks
+From:   Todd Kjos <tkjos@google.com>
+To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io, jmorris@namei.org,
+        serge@hallyn.com, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        keescook@chromium.org, jannh@google.com, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH] kasan: Fix tag for large allocations when using CONFIG_SLAB
-Date:   Fri,  1 Oct 2021 03:41:05 +0100
-Message-Id: <20211001024105.3217339-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     joel@joelfernandes.org, kernel-team@android.com,
+        Todd Kjos <tkjos@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an object is allocated on a tail page of a multi-page slab, kasan
-will get the wrong tag because page->s_mem is NULL for tail pages.
-I'm not quite sure what the user-visible effect of this might be.
+Save the struct cred associated with a binder process
+at initial open to avoid potential race conditions
+when converting to a security ID.
 
-Fixes: 7f94ffbc4c6a ("kasan: add hooks implementation for tag-based mode")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Since binder was integrated with selinux, it has passed
+'struct task_struct' associated with the binder_proc
+to represent the source and target of transactions.
+The conversion of task to SID was then done in the hook
+implementations. It turns out that there are race conditions
+which can result in an incorrect security context being used.
+
+Fix by saving the 'struct cred' during binder_open and pass
+it to the selinux subsystem.
+
+Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+hooks for SELinux.")
+Signed-off-by: Todd Kjos <tkjos@google.com>
+Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
 ---
- mm/kasan/common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/android/binder.c          | 14 +++++----
+ drivers/android/binder_internal.h |  3 ++
+ include/linux/lsm_hook_defs.h     | 14 ++++-----
+ include/linux/security.h          | 28 +++++++++---------
+ security/security.c               | 14 ++++-----
+ security/selinux/hooks.c          | 48 +++++++++----------------------
+ 6 files changed, 52 insertions(+), 69 deletions(-)
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 2baf121fb8c5..41779ad109cd 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -298,7 +298,7 @@ static inline u8 assign_tag(struct kmem_cache *cache,
- 	/* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
- #ifdef CONFIG_SLAB
- 	/* For SLAB assign tags based on the object index in the freelist. */
--	return (u8)obj_to_index(cache, virt_to_page(object), (void *)object);
-+	return (u8)obj_to_index(cache, virt_to_head_page(object), (void *)object);
- #else
- 	/*
- 	 * For SLUB assign a random tag during slab creation, otherwise reuse
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 9edacc8b9768..ca599ebdea4a 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -2056,7 +2056,7 @@ static int binder_translate_binder(struct flat_binder_object *fp,
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+-	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
++	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
+ 		ret = -EPERM;
+ 		goto done;
+ 	}
+@@ -2102,7 +2102,7 @@ static int binder_translate_handle(struct flat_binder_object *fp,
+ 				  proc->pid, thread->pid, fp->handle);
+ 		return -EINVAL;
+ 	}
+-	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
++	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
+ 		ret = -EPERM;
+ 		goto done;
+ 	}
+@@ -2190,7 +2190,7 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
+ 		ret = -EBADF;
+ 		goto err_fget;
+ 	}
+-	ret = security_binder_transfer_file(proc->tsk, target_proc->tsk, file);
++	ret = security_binder_transfer_file(proc->cred, target_proc->cred, file);
+ 	if (ret < 0) {
+ 		ret = -EPERM;
+ 		goto err_security;
+@@ -2595,8 +2595,8 @@ static void binder_transaction(struct binder_proc *proc,
+ 			return_error_line = __LINE__;
+ 			goto err_invalid_target_handle;
+ 		}
+-		if (security_binder_transaction(proc->tsk,
+-						target_proc->tsk) < 0) {
++		if (security_binder_transaction(proc->cred,
++						target_proc->cred) < 0) {
+ 			return_error = BR_FAILED_REPLY;
+ 			return_error_param = -EPERM;
+ 			return_error_line = __LINE__;
+@@ -4353,6 +4353,7 @@ static void binder_free_proc(struct binder_proc *proc)
+ 	}
+ 	binder_alloc_deferred_release(&proc->alloc);
+ 	put_task_struct(proc->tsk);
++	put_cred(proc->cred);
+ 	binder_stats_deleted(BINDER_STAT_PROC);
+ 	kfree(proc);
+ }
+@@ -4564,7 +4565,7 @@ static int binder_ioctl_set_ctx_mgr(struct file *filp,
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+-	ret = security_binder_set_context_mgr(proc->tsk);
++	ret = security_binder_set_context_mgr(proc->cred);
+ 	if (ret < 0)
+ 		goto out;
+ 	if (uid_valid(context->binder_context_mgr_uid)) {
+@@ -5055,6 +5056,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
+ 	spin_lock_init(&proc->outer_lock);
+ 	get_task_struct(current->group_leader);
+ 	proc->tsk = current->group_leader;
++	proc->cred = get_cred(filp->f_cred);
+ 	INIT_LIST_HEAD(&proc->todo);
+ 	init_waitqueue_head(&proc->freeze_wait);
+ 	proc->default_priority = task_nice(current);
+diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+index 402c4d4362a8..886fc327a534 100644
+--- a/drivers/android/binder_internal.h
++++ b/drivers/android/binder_internal.h
+@@ -364,6 +364,8 @@ struct binder_ref {
+  *                        (invariant after initialized)
+  * @tsk                   task_struct for group_leader of process
+  *                        (invariant after initialized)
++ * @cred                  struct cred for group_leader of process
++ *                        (invariant after initialized)
+  * @deferred_work_node:   element for binder_deferred_list
+  *                        (protected by binder_deferred_lock)
+  * @deferred_work:        bitmap of deferred work to perform
+@@ -426,6 +428,7 @@ struct binder_proc {
+ 	struct list_head waiting_threads;
+ 	int pid;
+ 	struct task_struct *tsk;
++	const struct cred *cred;
+ 	struct hlist_node deferred_work_node;
+ 	int deferred_work;
+ 	int outstanding_txns;
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 2adeea44c0d5..61590c1f2d33 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -26,13 +26,13 @@
+  *   #undef LSM_HOOK
+  * };
+  */
+-LSM_HOOK(int, 0, binder_set_context_mgr, struct task_struct *mgr)
+-LSM_HOOK(int, 0, binder_transaction, struct task_struct *from,
+-	 struct task_struct *to)
+-LSM_HOOK(int, 0, binder_transfer_binder, struct task_struct *from,
+-	 struct task_struct *to)
+-LSM_HOOK(int, 0, binder_transfer_file, struct task_struct *from,
+-	 struct task_struct *to, struct file *file)
++LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
++LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
++	 const struct cred *to)
++LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
++	 const struct cred *to)
++LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
++	 const struct cred *to, struct file *file)
+ LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
+ 	 unsigned int mode)
+ LSM_HOOK(int, 0, ptrace_traceme, struct task_struct *parent)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 5b7288521300..6344d3362df7 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -258,13 +258,13 @@ extern int security_init(void);
+ extern int early_security_init(void);
+ 
+ /* Security operations */
+-int security_binder_set_context_mgr(struct task_struct *mgr);
+-int security_binder_transaction(struct task_struct *from,
+-				struct task_struct *to);
+-int security_binder_transfer_binder(struct task_struct *from,
+-				    struct task_struct *to);
+-int security_binder_transfer_file(struct task_struct *from,
+-				  struct task_struct *to, struct file *file);
++int security_binder_set_context_mgr(const struct cred *mgr);
++int security_binder_transaction(const struct cred *from,
++				const struct cred *to);
++int security_binder_transfer_binder(const struct cred *from,
++				    const struct cred *to);
++int security_binder_transfer_file(const struct cred *from,
++				  const struct cred *to, struct file *file);
+ int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
+ int security_ptrace_traceme(struct task_struct *parent);
+ int security_capget(struct task_struct *target,
+@@ -508,25 +508,25 @@ static inline int early_security_init(void)
+ 	return 0;
+ }
+ 
+-static inline int security_binder_set_context_mgr(struct task_struct *mgr)
++static inline int security_binder_set_context_mgr(const struct cred *mgr)
+ {
+ 	return 0;
+ }
+ 
+-static inline int security_binder_transaction(struct task_struct *from,
+-					      struct task_struct *to)
++static inline int security_binder_transaction(const struct cred *from,
++					      const struct cred *to)
+ {
+ 	return 0;
+ }
+ 
+-static inline int security_binder_transfer_binder(struct task_struct *from,
+-						  struct task_struct *to)
++static inline int security_binder_transfer_binder(const struct cred *from,
++						  const struct cred *to)
+ {
+ 	return 0;
+ }
+ 
+-static inline int security_binder_transfer_file(struct task_struct *from,
+-						struct task_struct *to,
++static inline int security_binder_transfer_file(const struct cred *from,
++						const struct cred *to,
+ 						struct file *file)
+ {
+ 	return 0;
+diff --git a/security/security.c b/security/security.c
+index 9ffa9e9c5c55..67264cb08fb3 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -747,25 +747,25 @@ static int lsm_superblock_alloc(struct super_block *sb)
+ 
+ /* Security operations */
+ 
+-int security_binder_set_context_mgr(struct task_struct *mgr)
++int security_binder_set_context_mgr(const struct cred *mgr)
+ {
+ 	return call_int_hook(binder_set_context_mgr, 0, mgr);
+ }
+ 
+-int security_binder_transaction(struct task_struct *from,
+-				struct task_struct *to)
++int security_binder_transaction(const struct cred *from,
++				const struct cred *to)
+ {
+ 	return call_int_hook(binder_transaction, 0, from, to);
+ }
+ 
+-int security_binder_transfer_binder(struct task_struct *from,
+-				    struct task_struct *to)
++int security_binder_transfer_binder(const struct cred *from,
++				    const struct cred *to)
+ {
+ 	return call_int_hook(binder_transfer_binder, 0, from, to);
+ }
+ 
+-int security_binder_transfer_file(struct task_struct *from,
+-				  struct task_struct *to, struct file *file)
++int security_binder_transfer_file(const struct cred *from,
++				  const struct cred *to, struct file *file)
+ {
+ 	return call_int_hook(binder_transfer_file, 0, from, to, file);
+ }
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index e7ebd45ca345..c8bf3db90c8b 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const struct task_struct *task)
+ 	return sid;
+ }
+ 
+-/*
+- * get the security ID of a task for use with binder
+- */
+-static inline u32 task_sid_binder(const struct task_struct *task)
+-{
+-	/*
+-	 * In many case where this function is used we should be using the
+-	 * task's subjective SID, but we can't reliably access the subjective
+-	 * creds of a task other than our own so we must use the objective
+-	 * creds/SID, which are safe to access.  The downside is that if a task
+-	 * is temporarily overriding it's creds it will not be reflected here;
+-	 * however, it isn't clear that binder would handle that case well
+-	 * anyway.
+-	 *
+-	 * If this ever changes and we can safely reference the subjective
+-	 * creds/SID of another task, this function will make it easier to
+-	 * identify the various places where we make use of the task SIDs in
+-	 * the binder code.  It is also likely that we will need to adjust
+-	 * the main drivers/android binder code as well.
+-	 */
+-	return task_sid_obj(task);
+-}
+-
+ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dentry);
+ 
+ /*
+@@ -2066,18 +2043,19 @@ static inline u32 open_file_to_av(struct file *file)
+ 
+ /* Hook functions begin here. */
+ 
+-static int selinux_binder_set_context_mgr(struct task_struct *mgr)
++static int selinux_binder_set_context_mgr(const struct cred *mgr)
+ {
+ 	return avc_has_perm(&selinux_state,
+-			    current_sid(), task_sid_binder(mgr), SECCLASS_BINDER,
++			    current_sid(), cred_sid(mgr), SECCLASS_BINDER,
+ 			    BINDER__SET_CONTEXT_MGR, NULL);
+ }
+ 
+-static int selinux_binder_transaction(struct task_struct *from,
+-				      struct task_struct *to)
++static int selinux_binder_transaction(const struct cred *from,
++				      const struct cred *to)
+ {
+ 	u32 mysid = current_sid();
+-	u32 fromsid = task_sid_binder(from);
++	u32 fromsid = cred_sid(from);
++	u32 tosid = cred_sid(to);
+ 	int rc;
+ 
+ 	if (mysid != fromsid) {
+@@ -2088,24 +2066,24 @@ static int selinux_binder_transaction(struct task_struct *from,
+ 			return rc;
+ 	}
+ 
+-	return avc_has_perm(&selinux_state, fromsid, task_sid_binder(to),
++	return avc_has_perm(&selinux_state, fromsid, tosid,
+ 			    SECCLASS_BINDER, BINDER__CALL, NULL);
+ }
+ 
+-static int selinux_binder_transfer_binder(struct task_struct *from,
+-					  struct task_struct *to)
++static int selinux_binder_transfer_binder(const struct cred *from,
++					  const struct cred *to)
+ {
+ 	return avc_has_perm(&selinux_state,
+-			    task_sid_binder(from), task_sid_binder(to),
++			    cred_sid(from), cred_sid(to),
+ 			    SECCLASS_BINDER, BINDER__TRANSFER,
+ 			    NULL);
+ }
+ 
+-static int selinux_binder_transfer_file(struct task_struct *from,
+-					struct task_struct *to,
++static int selinux_binder_transfer_file(const struct cred *from,
++					const struct cred *to,
+ 					struct file *file)
+ {
+-	u32 sid = task_sid_binder(to);
++	u32 sid = cred_sid(to);
+ 	struct file_security_struct *fsec = selinux_file(file);
+ 	struct dentry *dentry = file->f_path.dentry;
+ 	struct inode_security_struct *isec;
 -- 
-2.32.0
+2.33.0.800.g4c38ced690-goog
 
