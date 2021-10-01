@@ -2,106 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9C341F1FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A1E41F201
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354855AbhJAQTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354813AbhJAQTY (ORCPT
+        id S1354937AbhJAQTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:19:39 -0400
+Received: from mail-qt1-f178.google.com ([209.85.160.178]:35593 "EHLO
+        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231992AbhJAQTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:19:24 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9896EC06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:17:39 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id u18so16325945wrg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EzWy2nvLFCIuBba5ki21B6r/rdWPB3y7nLXxAimeS4w=;
-        b=b2lLhCxu6V++Sis/mzcbImRUwTxDNoulIsuf3Sczqqkb3P62Hf51DBU/V8Y3dCY3HN
-         rAmHWI7x8HxoS1AXDAOFpohrtioMc5sxKrjF2RRS21tl0Q0LxeED13VDEl3Vvo8frIai
-         BlIbUZwOO//b4X2b+byOgLkAukKJtKa9Xk1MxDXLHsdr/Zo06R772bxPkEq3aF9qGBuR
-         4pbDWJPO3Z6OXFcI3PV0P7g6fjuamXz0lGxqjXqyeqIukxKfoWOPY77DiZPPnRTiNDQS
-         EFEaiN1U2lXaefXvFwMwxYdcTAJpXGyK8Xr0B+VmMShKQwaHAu2fP2MGxb8Et8Lq2m4R
-         56WQ==
+        Fri, 1 Oct 2021 12:19:37 -0400
+Received: by mail-qt1-f178.google.com with SMTP id c20so9462226qtb.2;
+        Fri, 01 Oct 2021 09:17:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EzWy2nvLFCIuBba5ki21B6r/rdWPB3y7nLXxAimeS4w=;
-        b=bMq8+wpeF4fQ74gTaoQAe0cLv0WB5uV/udFVBgu9GbpliNHuaGfWJKvw9enghMUjKS
-         yCLI1bB93Zd9Gmp6Sv98XqAvIbFIwbD0RflFhXt6hCSzMu0cDgW4JSVR8kBb5nYl+I19
-         6H7zWWn7cLYKiNMnN/WkoGf8Dw0Z/Hdj3yh5mSeQX/ilQ+Yhflwr6Jf/kx5ZttmYRl4U
-         2u6TMVqDIM7WPyA8AaeWRRlg0dy26Va8Q0B0ZTt8/ltX5VgTAZS0CwYnYrfP/KjYUgf0
-         uEs9Xl1kjU6QX4+xSu1V4UpVVKMDwJv7aAU0u/r70jI6Gb+l9iIxn1GrQllQdqLxd9v2
-         R/Kg==
-X-Gm-Message-State: AOAM5319CPgOOulNOrkwNKQsNVeja/oavXTn4WvsMORa9iiQob9W8jY3
-        z3dQAQX6CpBWIbGn/tMKMh89XiK0rewcgg==
-X-Google-Smtp-Source: ABdhPJwgdmNt4q6CM1GJcIjHlayiUH7mjwfnFg2ReVmLQ9E++96gykDFNpXlrlKThqqyafXizNYSsg==
-X-Received: by 2002:adf:a3c7:: with SMTP id m7mr13417466wrb.339.1633105057911;
-        Fri, 01 Oct 2021 09:17:37 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.20.44])
-        by smtp.gmail.com with ESMTPSA id d7sm6168206wrh.13.2021.10.01.09.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 09:17:37 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: Add idle cooling devices
-Date:   Fri,  1 Oct 2021 18:17:28 +0200
-Message-Id: <20211001161728.1729664-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tKg9mgF1rfjAjrXayimdKxGF/3vx77dbe9y4qadsSBo=;
+        b=1gUGaYLxlraOXeNXD3H1pE9r+L1QrRlCCI+f7ysn58EgQRcOBBGAoMhi0nrqO3WP4s
+         Y9kQFHlGyBc2HUzsKr9G9+L8sCrYe1Osz6NooTAhRBYjkO91Sf+i5h4l1MfZGaZf3Kx2
+         czjI4OLLCyf4MC6VH4pehNfvuYzjLWToaUCDkJLv1eghKirec9KOgos+gLHHNgjXnHFK
+         79iRpA78CSTIujt7MPP4kYoZJLjAz5N6XLuMu9OkXVOhDDQ6RuOb92jP5DomQ1wf2eG8
+         iFs60GEzDy8QyLyS55SbIEAt2eKKA3YvszzGkDo4cydkuGB6oyCXcesqvIkf9XgKYscA
+         lyGw==
+X-Gm-Message-State: AOAM532Ww3e2pCKjWakJI2rlBIr1z3IF2rZh2e2X3Js97RndWYZEkBnT
+        mLVDrRSt0r5kPVDWueoTyKs8z+wtnkI=
+X-Google-Smtp-Source: ABdhPJwwmdNJ8cSAQ3rL0+dq6ULxndc0wybqoH/+G7OFoXG4AUOUO6vW+fjwkfvk6wtU48GaF9blpg==
+X-Received: by 2002:ac8:4547:: with SMTP id z7mr13835420qtn.131.1633105071862;
+        Fri, 01 Oct 2021 09:17:51 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id o15sm3116569qkk.129.2021.10.01.09.17.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 09:17:51 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id m26so9474521qtn.1;
+        Fri, 01 Oct 2021 09:17:50 -0700 (PDT)
+X-Received: by 2002:a05:622a:1341:: with SMTP id w1mr14334812qtk.127.1633105070007;
+ Fri, 01 Oct 2021 09:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211001000924.15421-1-leoyang.li@nxp.com> <20211001000924.15421-2-leoyang.li@nxp.com>
+ <db751cb1-9107-3857-7576-644bde4c28e5@canonical.com>
+In-Reply-To: <db751cb1-9107-3857-7576-644bde4c28e5@canonical.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Fri, 1 Oct 2021 11:17:38 -0500
+X-Gmail-Original-Message-ID: <CADRPPNROVBp_QB=6XEgk8WF5fnEPFTSko4Nn+mm8oLM3iGTuuw@mail.gmail.com>
+Message-ID: <CADRPPNROVBp_QB=6XEgk8WF5fnEPFTSko4Nn+mm8oLM3iGTuuw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: memory: fsl: convert ifc binding to yaml schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The thermal framework accepts now the cpu idle cooling device as an
-alternative when the cpufreq cooling device fails.
+On Fri, Oct 1, 2021 at 5:01 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 01/10/2021 02:09, Li Yang wrote:
+> > Convert the txt binding to yaml format and add description.  Drop the
+> > "simple-bus" compatible string from the example and not allowed by the
+> > binding any more.  This will help to enforce the correct probe order
+> > between parent device and child devices, but will require the ifc driver
+> > to probe the child devices to work properly.
+> >
+> > Signed-off-by: Li Yang <leoyang.li@nxp.com>
+> > ---
+> > updates from previous submission:
+> > - Drop "simple-bus" from binding and only "fsl,ifc" as compatible
+> > - Fix one identiation problem of "reg"
+> > - Add type restriction to "little-endian" property
+> >
+> >  .../bindings/memory-controllers/fsl/ifc.txt   |  82 -----------
+> >  .../bindings/memory-controllers/fsl/ifc.yaml  | 137 ++++++++++++++++++
+> >  2 files changed, 137 insertions(+), 82 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+> >  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+> > deleted file mode 100644
+> > index 89427b018ba7..000000000000
+> > --- a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+> > +++ /dev/null
+> > @@ -1,82 +0,0 @@
+> > -Integrated Flash Controller
+> > -
+> > -Properties:
+> > -- name : Should be ifc
+> > -- compatible : should contain "fsl,ifc". The version of the integrated
+> > -               flash controller can be found in the IFC_REV register at
+> > -               offset zero.
+> > -
+> > -- #address-cells : Should be either two or three.  The first cell is the
+> > -                   chipselect number, and the remaining cells are the
+> > -                   offset into the chipselect.
+> > -- #size-cells : Either one or two, depending on how large each chipselect
+> > -                can be.
+> > -- reg : Offset and length of the register set for the device
+> > -- interrupts: IFC may have one or two interrupts.  If two interrupt
+> > -              specifiers are present, the first is the "common"
+> > -              interrupt (CM_EVTER_STAT), and the second is the NAND
+> > -              interrupt (NAND_EVTER_STAT).  If there is only one,
+> > -              that interrupt reports both types of event.
+> > -
+> > -- little-endian : If this property is absent, the big-endian mode will
+> > -                  be in use as default for registers.
+> > -
+> > -- ranges : Each range corresponds to a single chipselect, and covers
+> > -           the entire access window as configured.
+> > -
+> > -Child device nodes describe the devices connected to IFC such as NOR (e.g.
+> > -cfi-flash) and NAND (fsl,ifc-nand). There might be board specific devices
+> > -like FPGAs, CPLDs, etc.
+> > -
+> > -Example:
+> > -
+> > -     ifc@ffe1e000 {
+> > -             compatible = "fsl,ifc", "simple-bus";
+> > -             #address-cells = <2>;
+> > -             #size-cells = <1>;
+> > -             reg = <0x0 0xffe1e000 0 0x2000>;
+> > -             interrupts = <16 2 19 2>;
+> > -             little-endian;
+> > -
+> > -             /* NOR, NAND Flashes and CPLD on board */
+> > -             ranges = <0x0 0x0 0x0 0xee000000 0x02000000
+> > -                       0x1 0x0 0x0 0xffa00000 0x00010000
+> > -                       0x3 0x0 0x0 0xffb00000 0x00020000>;
+> > -
+> > -             flash@0,0 {
+> > -                     #address-cells = <1>;
+> > -                     #size-cells = <1>;
+> > -                     compatible = "cfi-flash";
+> > -                     reg = <0x0 0x0 0x2000000>;
+> > -                     bank-width = <2>;
+> > -                     device-width = <1>;
+> > -
+> > -                     partition@0 {
+> > -                             /* 32MB for user data */
+> > -                             reg = <0x0 0x02000000>;
+> > -                             label = "NOR Data";
+> > -                     };
+> > -             };
+> > -
+> > -             flash@1,0 {
+> > -                     #address-cells = <1>;
+> > -                     #size-cells = <1>;
+> > -                     compatible = "fsl,ifc-nand";
+> > -                     reg = <0x1 0x0 0x10000>;
+> > -
+> > -                     partition@0 {
+> > -                             /* This location must not be altered  */
+> > -                             /* 1MB for u-boot Bootloader Image */
+> > -                             reg = <0x0 0x00100000>;
+> > -                             label = "NAND U-Boot Image";
+> > -                             read-only;
+> > -                     };
+> > -             };
+> > -
+> > -             cpld@3,0 {
+> > -                     #address-cells = <1>;
+> > -                     #size-cells = <1>;
+> > -                     compatible = "fsl,p1010rdb-cpld";
+> > -                     reg = <0x3 0x0 0x000001f>;
+> > -             };
+> > -     };
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> > new file mode 100644
+> > index 000000000000..19871ce39fe3
+>
+> Thanks for the patch.
+>
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> > @@ -0,0 +1,137 @@
+> > +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>
+> Checkpatch should scream here. If it doesn't, maybe you work on some old
+> tree, which would also explain why you send it to my old address (not
+> the one from get_maintainers). Please use both checkpatch and
+> get_maintainers.
+>
+> You basically relicense bindings from GPL-2.0 only to new license,
+> including GPL-3.0.
 
-Add the node in the DT so the cooling devices will be present and the
-platforms can extend the thermal zone definition to add them.
+Ok.  Will update the license.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+>
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/memory-controllers/fsl/ifc.yaml#
+>
+> File name should be "fsl,ifc.yaml"
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 3871c7fd83b0..9ac232ffd284 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -124,6 +124,11 @@ cpu_b0: cpu@100 {
- 			#cooling-cells = <2>; /* min followed by max */
- 			dynamic-power-coefficient = <436>;
- 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP>;
-+			thermal-idle {
-+				#cooling-cells = <2>;
-+				duration-us = <10000>;
-+				exit-latency-us = <500>;
-+			};
- 		};
- 
- 		cpu_b1: cpu@101 {
-@@ -136,6 +141,11 @@ cpu_b1: cpu@101 {
- 			#cooling-cells = <2>; /* min followed by max */
- 			dynamic-power-coefficient = <436>;
- 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP>;
-+			thermal-idle {
-+				#cooling-cells = <2>;
-+				duration-us = <10000>;
-+				exit-latency-us = <500>;
-+			};
- 		};
- 
- 		idle-states {
--- 
-2.25.1
+Ok.  But probably it is a little bit redundant as the upper level
+folder also has fsl.
 
+>
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: FSL/NXP Integrated Flash Controller
+> > +
+> > +maintainers:
+> > +  - Li Yang <leoyang.li@nxp.com>
+> > +
+> > +description: |
+> > +  NXP's integrated flash controller (IFC) is an advanced version of the
+> > +  enhanced local bus controller which includes similar programming and signal
+> > +  interfaces with an extended feature set. The IFC provides access to multiple
+> > +  external memory types, such as NAND flash (SLC and MLC), NOR flash, EPROM,
+> > +  SRAM and other memories where address and data are shared on a bus.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "^ifc@[0-9a-f]+$"
+>
+> Nodes should be generic, so this looks like "memory-controller".
+
+Ok.
+
+>
+> > +
+> > +  compatible:
+> > +    const: fsl,ifc
+> > +
+> > +  "#address-cells":
+> > +    enum: [2, 3]
+> > +    description: |
+> > +      Should be either two or three.  The first cell is the chipselect
+> > +      number, and the remaining cells are the offset into the chipselect.
+> > +
+> > +  "#size-cells":
+> > +    enum: [1, 2]
+> > +    description: |
+> > +      Either one or two, depending on how large each chipselect can be.
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: |
+> > +      Offset and length of the register set for the device.
+>
+> Skip the description, it's obvious.
+
+Ok.
+
+>
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +    description: |
+> > +      IFC may have one or two interrupts.  If two interrupt specifiers are
+> > +      present, the first is the "common" interrupt (CM_EVTER_STAT), and the
+> > +      second is the NAND interrupt (NAND_EVTER_STAT).  If there is only one,
+> > +      that interrupt reports both types of event.
+> > +
+> > +  little-endian:
+> > +    $ref: '/schemas/types.yaml#/definitions/flag'
+>
+> type: boolean
+
+It will not have a true or false value, but only present or not.  Is
+the boolean type taking care of this too?
+
+>
+>
+> Best regards,
+> Krzysztof
