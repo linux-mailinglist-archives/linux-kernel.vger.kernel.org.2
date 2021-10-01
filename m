@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAA241E649
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6197341E64F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351826AbhJADqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 23:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhJADqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 23:46:39 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2B9C06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 20:44:55 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y1so5420484plk.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 20:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=1H+Ds9beudwOdnRalGA+xX+v/Nq+jxIN7jF+Tvnv5SY=;
-        b=PHqxvSJnaQkEasXyq7pZ7tchwFAv8xxQkho6CVhCkUPWQJO7nE26g/Lhrro+ODLLLU
-         KBJDlGJYAmbz1TfnS+bT4tMn/5/lCxwoSrEPur/BR4PKP90CRRjQSQ31gt7tSgtsOsaJ
-         N2hsqiiWKm+XNivK4hd6HLYhm1arb6Uqo8ShoFXvrz87hrpBkjxxrPJzOX+J3T3pOToN
-         ABQDt0hp/m/XiW6XcriTaCJ3raDEeWBsafAgnDmfW7z3wlsVek/iqDrh2v9zZOfe1YLX
-         3rZnJixi09+bylVM+kQREloRDJRXbJ7meIKodeykkgmyS/rG3feH1Rzcmo1mHvfe9ekW
-         nzNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=1H+Ds9beudwOdnRalGA+xX+v/Nq+jxIN7jF+Tvnv5SY=;
-        b=MVUmKD8KowfBBGBIfY55QXqpDsKfJ1e3q3UGR55AYTnSbLUTdPVxvIzgVEXoMKRNkk
-         Z0WqI1jL/+LBY6aT6KX6orwu/vs28627axJGyfGAeOZOBnjnEzYDTPrvFcST0yfouU2D
-         e9iTxZArc3Nkg2sS0vM2O+9eUiFdiT+WcMQZdSVHYqE0aY/rkQvhesLxq8R2Lfe7oair
-         ckU4R7jcNZDRuPPor7ooEMLw/GOzyrYsXujnzZx9Wlw2GIoBZhV5hAF+bPZa+OiIbbYv
-         rIBJLR3C6sddFeQPp5gaxKKvexsiVMkjinlERTfnESSsRNtOTNNddJ4ft/mVEehOyb4p
-         uqBg==
-X-Gm-Message-State: AOAM5335fq7cMC5eQVy4tLNLw5ODKJ+qXdUChgKdQ1snPRQ4VFOHslAi
-        agJ3sIE4tm2V+owEGAszOP8LXQYQpfoDgTbdspc=
-X-Google-Smtp-Source: ABdhPJyLSZf55cz2rspfCQhNC1ruukBk8BQLaiGc2Gu4rlppzZ6UNL/ljI8r+mWM+iEyq2j1vTs1ruw2XQkFsWhnm2k=
-X-Received: by 2002:a17:902:8f8a:b0:13d:abff:19cf with SMTP id
- z10-20020a1709028f8a00b0013dabff19cfmr7629605plo.15.1633059894909; Thu, 30
- Sep 2021 20:44:54 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6a10:9154:0:0:0:0 with HTTP; Thu, 30 Sep 2021 20:44:53
- -0700 (PDT)
-Reply-To: klaus.peterschuster07@gmail.com
-From:   klaus Peter Schuster <vidal.charpentier@gmail.com>
-Date:   Fri, 1 Oct 2021 04:44:53 +0100
-Message-ID: <CAN7qQvStFPpAbKS5U5QkwhGjHw9=d7NAL5b36h1kFnKXZKjx9Q@mail.gmail.com>
-Subject: =?UTF-8?Q?Darlehen_Geld_f=C3=BCr_Einzelpersonen_und_Fachleute_in_w?=
-        =?UTF-8?Q?eniger_als_72_Stunden?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1351838AbhJAD5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 23:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230374AbhJAD5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Sep 2021 23:57:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57EC16187D;
+        Fri,  1 Oct 2021 03:55:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633060516;
+        bh=21soSlt93X3yO9I2bU30OaXXEIOAnp4hrIPktZiO9Xc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M+E225WOpeEoKoAMhf1ya47EOH2wF6Euv+oM1Jl51kX3aez93lAhR2qgdtIyO696a
+         Yd8vvlnezIrzOwLYPf/dIzW45Fgcq7MJl5ZY3OBExb/QYlJyGLVbQLKrtjNhppV4fT
+         USzm51Sb+2iD4ibhI7H6krnaxKRJQV5bTB5XQUgxY6YuBphyoxNO1YNMIQx2ebL2UB
+         9mBGMmfiyKjVRiiOiiCWrF9M/2yfd5lJhinhx+ZMuJ1IH24WuLq4tl4CmHuqv/G6en
+         5IJsFJu0elWjtUZotp9pKRUJMdQvXqPzEaB1TjV4b4tjzQDFC6w9TxVRwoXCsUgpSS
+         ezO8Q4OYGGsFQ==
+Date:   Fri, 1 Oct 2021 12:55:13 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     linux-trace-devel@VGER.KERNEL.ORG, rostedt@goodmis.org,
+        zanussi@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] synth_events: Do not block other dyn_event systems
+ during create
+Message-Id: <20211001125513.cf40fa1a3188416582666f66@kernel.org>
+In-Reply-To: <20210930223821.11025-1-beaub@linux.microsoft.com>
+References: <20210930223821.11025-1-beaub@linux.microsoft.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo,
+Hi Beau,
 
-Sind Sie in einer schwierigen Situation, f=C3=BCr die Sie sich f=C3=BCr ein
-Darlehen suchen? Ben=C3=B6tigen Sie eine Finanzierung, um eine Schuld zu
-begleichen oder eine Aktivit=C3=A4t zu finanzieren? Haben Sie einen
-Verbraucherkredit, eine Hypothek, einen pers=C3=B6nlichen Kredit, eine
-Hypothek, Investition Darlehen, Schuldenkonsolidierung Darlehen oder
-andere braucht?
+On Thu, 30 Sep 2021 15:38:21 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Ich bin ein einzelner Investor. I zur Verf=C3=BCgung stellen die Kredit
-kurz-, mittel- und langfristige. Ihr Finanzierungsbedingungen sind
-sehr einfach und meine Zinssatz betr=C3=A4gt 3% pro Jahr.
+> synth_events is returning -EINVAL if the dyn_event create command does
+> not contain ' \t'. This prevents other systems from getting called back.
+> synth_events needs to return -ECANCELED in these cases when the command
+> is not targeting the synth_event system.
 
-F=C3=BCr alle Anfragen, bleibe ich zur Verf=C3=BCgung, um Ihre Fragen zu be=
-antworten.
+Thanks for clean up the synthetic event!
+This looks good to me.
 
-Danke, dass Sie mir per E-Mail an Sie von  :
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-klaus.peterschuster07@gmail.com
+So now are you trying to reuse synth event for user event?
+Then I think you need to register a new dyn_event ops so
+that histogram will not submit the event.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen.
+BTW, how do you filter an event written by a user process?
+Will you add an array of event id for the file data structure?
 
-Klaus Peter Schuster
+Thank you,
+
+> 
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  kernel/trace/trace_events_synth.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index 9315fc03e303..08b7ea639cea 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -2051,6 +2051,13 @@ static int create_synth_event(const char *raw_command)
+>  
+>  	last_cmd_set(raw_command);
+>  
+> +	name = raw_command;
+> +
+> +	/* Don't try to process if not our system */
+> +	if (name[0] != 's' || name[1] != ':')
+> +		return -ECANCELED;
+> +	name += 2;
+> +
+>  	p = strpbrk(raw_command, " \t");
+>  	if (!p) {
+>  		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+> @@ -2059,12 +2066,6 @@ static int create_synth_event(const char *raw_command)
+>  
+>  	fields = skip_spaces(p);
+>  
+> -	name = raw_command;
+> -
+> -	if (name[0] != 's' || name[1] != ':')
+> -		return -ECANCELED;
+> -	name += 2;
+> -
+>  	/* This interface accepts group name prefix */
+>  	if (strchr(name, '/')) {
+>  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
+> -- 
+> 2.17.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
