@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E341E858
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0788941E865
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352521AbhJAHbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:31:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231431AbhJAHbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 03:31:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2E861A51;
-        Fri,  1 Oct 2021 07:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633073388;
-        bh=6ZrgR9l0FJZySMqf3l7bNeL0L7lIFADsOxvQCQs3h6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hVvERRioo1zewV9pxBkLVVH/zGi2gt/e4e5utnqjxS8xqMh3CwTYLbEo64kGaNIqC
-         LunCtGlNHJct0eyKQLLxTBtd3exVs6PUmTrJwps8962fg94M0+u5P22+hdrtdSTBJk
-         svh6HKuj0dO2zp/tXQrY+wty2V+MtStOZcuVsxxQ=
-Date:   Fri, 1 Oct 2021 09:29:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
-        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
- driver
-Message-ID: <YVa46eU1VX7CM+Xd@kroah.com>
-References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
- <20211001012815.1999501-6-david.e.box@linux.intel.com>
+        id S1352553AbhJAHgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 03:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352497AbhJAHgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 03:36:17 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D839CC06177A;
+        Fri,  1 Oct 2021 00:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/KNbdMFoOKxu0lGyFPrV7jwi5kRSdH7fdSWGknBxn4c=; b=hlJ4++4nqjH7wJjFg1Bu1Krhh2
+        xxnCJJWg7qML7/JbuIGJy2gJCXl0Yk5LAZxgKyan7mRPSO4g/0+H1Zlrtd1WC9UqadV8pmue1fxpM
+        txJKUEndHDcnVt4IrhFRyUfFPeHGqbljIYBu2KOLZZBbtA625LQoR6a/QO/K71MECKr4=;
+Received: from p200300ccff0b42001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0b:4200:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mWD3s-00012f-1t; Fri, 01 Oct 2021 09:34:28 +0200
+Received: from andi by aktux with local (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mWD3q-00CBfP-HK; Fri, 01 Oct 2021 09:34:26 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
+        hns@goldelico.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH 0/5] arm: dts: omap3-gta04: dtbs_check fixes
+Date:   Fri,  1 Oct 2021 09:34:11 +0200
+Message-Id: <20211001073416.2904733-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001012815.1999501-6-david.e.box@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
-> +static long sdsi_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +	struct miscdevice *miscdev = file->private_data;
-> +	struct sdsi_priv *priv = to_sdsi_priv(miscdev);
-> +	void __user *argp = (void __user *)arg;
-> +	long ret = -EINVAL;
-> +
-> +	if (!priv->dev_present)
-> +		return -ENODEV;
-> +
-> +	if (!priv->sdsi_enabled)
-> +		return -EPERM;
-> +
-> +	if (cmd == SDSI_IF_READ_STATE)
-> +		return sdsi_if_read_state_cert(priv, argp);
-> +
-> +	mutex_lock(&priv->akc_lock);
-> +	switch (cmd) {
-> +	case SDSI_IF_PROVISION_AKC:
-> +		/*
-> +		 * While writing an authentication certificate disallow other openers
-> +		 * from using AKC or CAP.
-> +		 */
-> +		if (!priv->akc_owner)
-> +			priv->akc_owner = file;
-> +
-> +		if (priv->akc_owner != file) {
+This series fixes some errors found by make dtbs_check. Most
+do not fix functional issues, just syntax but one typo was
+unveiled by make dtbs_check which only caused no problems by
+luck.
 
-Please explain how this test would ever trigger and how you tested it?
+Andreas Kemnade (5):
+  arm: dts: omap3-gta04: cleanup LCD definition
+  arm: dts: omap3-gta04: fix missing sensor supply
+  arm: dts: omap3-gta04a5: fix missing sensor supply
+  arm: dts: omap3-gta04a4: accelerometer irq fix
+  arm: dts: omap3-gta04: cleanup led node names
 
-What exactly are you trying to protect from here?  If userspace has your
-file descriptor, it can do whatever it wants, don't try to be smarter
-than it as you will never win.
+ arch/arm/boot/dts/omap3-gta04.dtsi  | 23 +++++++++++++----------
+ arch/arm/boot/dts/omap3-gta04a5.dts |  2 ++
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-And why are you using ioctls at all here?  As you are just
-reading/writing to the hardware directly, why not just use a binary
-sysfs file to be that pipe?  What requires an ioctl at all?
+-- 
+2.30.2
 
-thanks,
-
-greg k-h
