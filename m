@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589CB41F01A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBA441EFFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354697AbhJAO5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:57:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:65084 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354686AbhJAO5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:57:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="225113128"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="225113128"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 07:50:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="565045013"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 07:50:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 31A2729D; Fri,  1 Oct 2021 17:50:57 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        "Jose M. Guisado Gomez" <guigom@riseup.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 net-next 1/1] net: Mark possible unused variables on stack with __maybe_unused
-Date:   Fri,  1 Oct 2021 17:50:56 +0300
-Message-Id: <20211001145056.12184-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S1354655AbhJAOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354644AbhJAOxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:53:55 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352A5C06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:52:11 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id m7so9349654qke.8
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RI3Un3whqlEWtr4aJFgQHeUC54CuvGWs6w3DnHGUv/4=;
+        b=K55qbiVvd5XkUgYdEETZqf6R/YzC/428DzaLW2tQ1ko0WgHk0e5GqeISXC4mTcYwqh
+         UFd6C9JUxe2nybzAsP25tvptN+Y6RaQ+NCnffnNO49sqE1hLj3z5Uw6w0YQFAd4nbEea
+         oDOyJIqrPZDj/AC1nGV8aCIYfqOCBF3JErO6HP47SyFJ//VI1Q0Yoi9wz8NCz/yiN6Be
+         spTum4L76krjx74lLmNv4MalFbk7YAYa1C9jH8DSsl59JyqT0d0nhZ9R8+D2ubHV7LUG
+         7FtkXFWhqpEw2sHwMKMtp3v2vxCejLHIGS9AO5iY+0yD9mrJkQIINWWsLKd+4B7HFvWX
+         xDvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RI3Un3whqlEWtr4aJFgQHeUC54CuvGWs6w3DnHGUv/4=;
+        b=Kh/63Y1Eyf1m9DOzU7C3XHlINjizGPOOPUBmYeF2PmL9h+croPB+7nOdWfuRpNh3jk
+         c09nAqcRESyrXT5XDCKf8+d0p6aKrs34kje98JuREyulvWB1qP7xmkUYeVB3aCj/WRCv
+         gvCjwZdX2kNhesDOgqupkuOMrieQKy3hfS3R7eDIY+g1uF5GIV2KCTEsW5nfHHNoWaot
+         FsLWRON+a6XYs+fSbHt0YYeGoBjBo7/OTRgFCd/Q1gaTAKhxP0LxyCDbz8Ie6juoQngj
+         PfzETRv7raHjc8/9twcW1DzaSHIU8JHr7bP8Wnk7E2SWZiBHFPJo85jylDTFuXMrfYYd
+         DXug==
+X-Gm-Message-State: AOAM531/zr0nACYzk3o/TuMm78Ph8B3X7Q/Im7Y1BxV3ewKU7kI1V3cF
+        1Zr1Vp70f7scvfb4bb/U+zPNWw==
+X-Google-Smtp-Source: ABdhPJzm/G5kJIBn6QfIwm7CMo9R8IxodH1fBoPXgsTIw67OxVDlKvoB7FSYpgEZCvPs9m2+kSO18w==
+X-Received: by 2002:a37:a391:: with SMTP id m139mr9826820qke.186.1633099930416;
+        Fri, 01 Oct 2021 07:52:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id q14sm3633839qtw.82.2021.10.01.07.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 07:52:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mWJtR-008cux-FC; Fri, 01 Oct 2021 11:52:09 -0300
+Date:   Fri, 1 Oct 2021 11:52:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Tomer Tayar <ttayar@habana.ai>
+Subject: Re: [PATCH v6 2/2] habanalabs: add support for dma-buf exporter
+Message-ID: <20211001145209.GP3544071@ziepe.ca>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <20210912165309.98695-3-ogabbay@kernel.org>
+ <20210928173621.GG3544071@ziepe.ca>
+ <CAFCwf10z-baRm8c-UD_=jcZYD0VAGrMiNo7Q5Fm-2txYmVWGcQ@mail.gmail.com>
+ <CAFCwf110SPfqpjKO7e2W-MSs6iSdecCwS6CwKx4cL-DjqriT2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf110SPfqpjKO7e2W-MSs6iSdecCwS6CwKx4cL-DjqriT2Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compile with COMPILE_TEST=y the -Werror is implied.
-If we run `make W=1` the first level warnings will become
-the build errors. Some of them related to possible unused
-variables. Hence, to allow clean build in such case, mark
-them with __maybe_unused.
+On Thu, Sep 30, 2021 at 03:46:35PM +0300, Oded Gabbay wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- net/ipv4/netfilter/nf_reject_ipv4.c | 2 +-
- net/ipv6/ip6_fib.c                  | 3 ++-
- net/ipv6/netfilter/nf_reject_ipv6.c | 2 +-
- net/socket.c                        | 2 +-
- 4 files changed, 5 insertions(+), 4 deletions(-)
+> After reading the kernel iommu code, I think this is not relevant
+> here, and I'll add a comment appropriately but I'll also write it
+> here, and please correct me if my understanding is wrong.
+> 
+> The memory behind this specific dma-buf has *always* resided on the
+> device itself, i.e. it lives only in the 'device' domain (after all,
+> it maps a PCI bar address which points to the device memory).
+> Therefore, it was never in the 'CPU' domain and hence, there is no
+> need to perform a sync of the memory to the CPU's cache, as it was
+> never inside that cache to begin with.
+> 
+> This is not the same case as with regular memory which is dma-mapped
+> and then copied into the device using a dma engine. In that case,
+> the memory started in the 'CPU' domain and moved to the 'device'
+> domain. When it is unmapped it will indeed be recycled to be used
+> for another purpose and therefore we need to sync the CPU cache.
+> 
+> Is my understanding correct ?
 
-diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
-index 4eed5afca392..52d943426705 100644
---- a/net/ipv4/netfilter/nf_reject_ipv4.c
-+++ b/net/ipv4/netfilter/nf_reject_ipv4.c
-@@ -239,7 +239,7 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- {
- 	struct net_device *br_indev __maybe_unused;
- 	struct sk_buff *nskb;
--	struct iphdr *niph;
-+	struct iphdr __maybe_unused *niph;
- 	const struct tcphdr *oth;
- 	struct tcphdr _oth;
- 
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 0371d2c14145..8783e49a5465 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -1374,7 +1374,8 @@ int fib6_add(struct fib6_node *root, struct fib6_info *rt,
- 	     struct nl_info *info, struct netlink_ext_ack *extack)
- {
- 	struct fib6_table *table = rt->fib6_table;
--	struct fib6_node *fn, *pn = NULL;
-+	struct fib6_node *fn;
-+	struct fib6_node __maybe_unused *pn = NULL;
- 	int err = -ENOMEM;
- 	int allow_create = 1;
- 	int replace_required = 0;
-diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
-index dffeaaaadcde..69b98a6183b3 100644
---- a/net/ipv6/netfilter/nf_reject_ipv6.c
-+++ b/net/ipv6/netfilter/nf_reject_ipv6.c
-@@ -284,7 +284,7 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- 	const struct tcphdr *otcph;
- 	unsigned int otcplen, hh_len;
- 	const struct ipv6hdr *oip6h = ipv6_hdr(oldskb);
--	struct ipv6hdr *ip6h;
-+	struct ipv6hdr __maybe_unused *ip6h;
- 	struct dst_entry *dst = NULL;
- 	struct flowi6 fl6;
- 
-diff --git a/net/socket.c b/net/socket.c
-index 7f64a6eccf63..fbb442adf27f 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2199,7 +2199,7 @@ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
- {
- 	int err, fput_needed;
- 	struct socket *sock;
--	int max_optlen;
-+	int __maybe_unused max_optlen;
- 
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
--- 
-2.33.0
+It makes sense to me
 
+Jason
