@@ -2,142 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E2541E9A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EFA41E9A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352979AbhJAJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:36:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:38798 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhJAJgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:36:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9491101E;
-        Fri,  1 Oct 2021 02:35:00 -0700 (PDT)
-Received: from bogus (unknown [10.57.26.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FFEC3F70D;
-        Fri,  1 Oct 2021 02:34:58 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 10:34:24 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        sughosh.ganu@linaro.org
-Subject: Re: [PATCH v5 5/5] optee: add FF-A support
-Message-ID: <20211001093424.n4x34qp3ewbbijmc@bogus>
-References: <20210831072412.887565-1-jens.wiklander@linaro.org>
- <20210831072412.887565-6-jens.wiklander@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831072412.887565-6-jens.wiklander@linaro.org>
+        id S1353041AbhJAJhD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Oct 2021 05:37:03 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:56932 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhJAJhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:37:02 -0400
+Received: from smtpclient.apple (62-134-92-74.business.static.de.bt.net [62.134.92.74])
+        by mail.holtmann.org (Postfix) with ESMTPSA id D0BFBCED29;
+        Fri,  1 Oct 2021 11:35:16 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211001083412.3078-1-redecorating@protonmail.com>
+Date:   Fri, 1 Oct 2021 11:35:16 +0200
+Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev, sonnysasaka@chromium.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <1D2217A9-EA73-4D93-8D0B-5BC2718D4788@holtmann.org>
+References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
+ <20210930063106.19881-1-redecorating@protonmail.com>
+ <20210930141256.19943-1-redecorating@protonmail.com>
+ <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
+ <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
+ <20211001083412.3078-1-redecorating@protonmail.com>
+To:     Orlando Chamberlain <redecorating@protonmail.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 09:24:12AM +0200, Jens Wiklander wrote:
-> Adds support for using FF-A [1] as transport to the OP-TEE driver.
+Hi Orlando,
+
+> The LE Read Transmit Power command is Advertised on some Broadcom
+> controlers, but not supported. Using this command breaks Bluetooth
+> on the MacBookPro16,1 and iMac20,1. Added a quirk disabling LE Read
+> Transmit Power for these devices, based off their common chip id 150.
 > 
-> Introduces struct optee_msg_param_fmem which carries all information
-> needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
-> memory reference mapped by the hypervisor in S-EL2. Register usage is
-> also updated to include the information needed.
-> 
-> The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
-> enabled.
-> 
-> [1] https://developer.arm.com/documentation/den0077/latest
-> Acked-by: Sumit Garg <sumit.garg@linaro.org>
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Link: https://lore.kernel.org/r/4970a940-211b-25d6-edab-21a815313954@protonmail.com
+> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
 > ---
->  drivers/tee/optee/Makefile        |   3 +-
->  drivers/tee/optee/call.c          |  13 +-
->  drivers/tee/optee/core.c          |  16 +-
->  drivers/tee/optee/ffa_abi.c       | 907 ++++++++++++++++++++++++++++++
->  drivers/tee/optee/optee_ffa.h     | 153 +++++
->  drivers/tee/optee/optee_msg.h     |  27 +-
->  drivers/tee/optee/optee_private.h |  43 +-
->  7 files changed, 1148 insertions(+), 14 deletions(-)
->  create mode 100644 drivers/tee/optee/ffa_abi.c
->  create mode 100644 drivers/tee/optee/optee_ffa.h
+> v1->v2: Clarified quirk description
 > 
-> diff --git a/drivers/tee/optee/Makefile b/drivers/tee/optee/Makefile
-> index d4e4776d2dec..dbfd83d3c4ae 100644
-> --- a/drivers/tee/optee/Makefile
-> +++ b/drivers/tee/optee/Makefile
-> @@ -7,7 +7,8 @@ optee-objs += supp.o
->  optee-objs += device.o
->  
->  optee-smc-abi-y = smc_abi.o
-> -optee-objs += $(optee-smc-abi-y)
-> +optee-ffa-abi-$(CONFIG_ARM_FFA_TRANSPORT) = ffa_abi.o
-> +optee-objs += $(optee-smc-abi-y) $(optee-ffa-abi-y)
->
+> drivers/bluetooth/btbcm.c   |  4 ++++
+> include/net/bluetooth/hci.h | 11 +++++++++++
+> net/bluetooth/hci_core.c    |  3 ++-
+> 3 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
+> index e4182acee488..4ecc50d93107 100644
+> --- a/drivers/bluetooth/btbcm.c
+> +++ b/drivers/bluetooth/btbcm.c
+> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
+> 		return PTR_ERR(skb);
+> 
+> 	bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
+> +
+> +	if (skb->data[1] == 150)
+> +		set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
+> +
+> 	kfree_skb(skb);
 
-This may not work when CONFIG_ARM_FFA_TRANSPORT=m, I don't have cleaner
-solution apart from having if else.
+I would really prefer to do that via the ACPI table matching in hci_bcm.c and not via some magic chip id check. We actually don’t know how Broadcom assigns their chip ids.
 
+Regards
 
-[...]
+Marcel
 
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index ca0213e330b5..2593742364da 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-
-[...]
-
-> @@ -116,11 +127,13 @@ struct optee_ops {
->   *			world
->   * @teedev:		client device
->   * @smc:		specific to SMC ABI
-> + * @ffa:		specific to FF-A ABI
->   * @call_queue:		queue of threads waiting to call @invoke_fn
->   * @wait_queue:		queue of threads from secure world waiting for a
->   *			secure world sync object
->   * @supp:		supplicant synchronization struct for RPC to supplicant
->   * @pool:		shared memory pool
-> + * @rpc_arg_count:	If > 0 number of RPC parameters to make room for
->   * @scan_bus_done	flag if device registation was already done.
->   * @scan_bus_wq		workqueue to scan optee bus and register optee drivers
->   * @scan_bus_work	workq to scan optee bus and register optee drivers
-> @@ -129,11 +142,17 @@ struct optee {
->  	struct tee_device *supp_teedev;
->  	struct tee_device *teedev;
->  	const struct optee_ops *ops;
-> -	struct optee_smc smc;
-> +	union {
-> +		struct optee_smc smc;
-> +#ifdef CONFIG_ARM_FFA_TRANSPORT
-
-I don't see a point in saving this especially that the definition is
-available always. Also helps the case when FFA is module.
-
-> +		struct optee_ffa ffa;
-> +#endif
-> +	};
->  	struct optee_call_queue call_queue;
->  	struct optee_wait_queue wait_queue;
->  	struct optee_supp supp;
->  	struct tee_shm_pool *pool;
-> +	unsigned int rpc_arg_count;
->  	bool   scan_bus_done;
->  	struct workqueue_struct *scan_bus_wq;
->  	struct work_struct scan_bus_work;
-> @@ -266,4 +285,12 @@ static inline void reg_pair_from_64(u32 *reg0, u32 *reg1, u64 val)
->  int optee_smc_abi_register(void);
->  void optee_smc_abi_unregister(void);
->  
-> +#ifdef CONFIG_ARM_FFA_TRANSPORT
-
-To support CONFIG_ARM_FFA_TRANSPORT=m this must be,
-
-#if IS_REACHABLE(CONFIG_ARM_FFA_TRANSPORT)
-
--- 
-Regards,
-Sudeep
