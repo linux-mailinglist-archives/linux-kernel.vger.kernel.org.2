@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB2441ECBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDA741ECC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354146AbhJAMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:01:42 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:37424 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhJAMBl (ORCPT
+        id S1354215AbhJAMCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhJAMCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:01:41 -0400
-Received: by mail-vs1-f42.google.com with SMTP id f2so10080626vsj.4;
-        Fri, 01 Oct 2021 04:59:57 -0700 (PDT)
+        Fri, 1 Oct 2021 08:02:16 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06040C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:00:32 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id r75so11300672iod.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8XkSaJHdb8NkUGJQ7GfACLIJY8P2VgxyTTtaVxl+CI=;
+        b=W9rMTIBowgmopFjQNGZCGX5uCOXrBstudVcFkadj8QkSIqZoMRO9D6JNts7TRo2WH1
+         YScg0myMY+w2++hrC91xtTUWD0+hpEkQbHMUB6RzduBdoHrBXsswN+ZaMSlMbHLEQ4hE
+         cF5591sFCRYt1RcwF+U7AWyB6sTea5INSZWkoXEDqCdzHfPVIbwxGFI1I1Nc39nrkr3c
+         OKMco5sOVcI3FXlAm4K12Y+QAO9GJCvPytZWKf5kcIRmyeNnq7ScqHo7Zq6vJ8SlsPu1
+         nvSpzWb5qaKfk/YLm5G6pXJrf9+QIiZECQc9XYTuDI1IqSvCa4gXo4SWMemiWI1AOGHB
+         UkRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WR3+MFp1ibU3x0ZkDpZ824RbuuABr+gcaM86vEqsRNo=;
-        b=BRh0WV659CFjH7+kssWg1sAcI9VqDTEcTsFY/uFEZGBqu8/7+TuPXPinTIa1/wJrnS
-         iaiez80AjRm92GWRM12qn63IJbZWUGT0/w3QUZfF/LoPpHlu7AptnSbeGqx7+OzRfDiq
-         vd84ZzWCt2JSrUYQI8GfWXfJmeDIGDU/2c8+qhAd6UvHDFFhz6Jv3ylVr9znvDop++J5
-         NOOuGU2OGRtbpPd/1ZPSaW6WlpmNkjzv9sAZ2y37s4b5seSmb3yqu9nyJAt/GVjhXjI2
-         xOvbBq4ekPSAQbKG3E2xUx5wbbdIkzlhmhLs39t4PKwsdamsWbcUDmlYomyKH1M6cYou
-         UR3w==
-X-Gm-Message-State: AOAM532SJsWlWQWH3XCjBJyJ+ckkJqC43di0zIo8UqKsqo5CnnhP+44f
-        Q0rjRhKskBdTAkGHK7jnL2gFKcvhb/Vn2R1VGIeDsmsBGiY=
-X-Google-Smtp-Source: ABdhPJyx7zg5kQJYsNSRRoL0YNyux79qxJGzafd5NYmhZJ2xCJLygfQPVXUiK/lmOsYXRavGy+aJ1Mf8eL4lb+ZaszY=
-X-Received: by 2002:a67:c295:: with SMTP id k21mr790199vsj.37.1633089597139;
- Fri, 01 Oct 2021 04:59:57 -0700 (PDT)
+        bh=b8XkSaJHdb8NkUGJQ7GfACLIJY8P2VgxyTTtaVxl+CI=;
+        b=BWpyOk2XG/kD6up/Q6T1MPoYPJizjH6ZqHw5LqV316XkYxk67UdQb4FQOsWwhxJW+9
+         ohg92MEWJAn1Dd8pLAdAjkbuwEnL1/i6a7JVeon8tH1QEuuAcvsqP0MNfJWl/G81Ww0Q
+         1jQwV5/OC676AhcCm7qNPHIz5Tkde1vsMjZ9sjAYrLb+XDgNEEMCyezQulOFHH90ri5Y
+         1YFHml/5EKx/1vgMuZ44IPptBAFpJ4PxI13nPtH5mURh/8pj//xeftu+pKXtFuhOv97C
+         JOUw1F0cqRV1JM/APyp5kCm5XXdnFoVfFheSrrIVxmNLU16qJDK8D/t+DjyshdxbfUiV
+         QRZQ==
+X-Gm-Message-State: AOAM530HLrL+Scn3Ma7cBNDqmdb4SMdYQyfGaMuNfuG23CDQkDHBFIlu
+        aylqpwqjVUT5HbIrWqyNiszPI5smW9BN6+GEopM=
+X-Google-Smtp-Source: ABdhPJwr5bZxQ4VzOlGDrvJF6ibM0n8GK+uqPgfHwxwzsGbyO9e5d3Anit2uoO4wvX4rR3SnZluA2nrsI1f/TIC01ZQ=
+X-Received: by 2002:a6b:b714:: with SMTP id h20mr8000055iof.9.1633089631442;
+ Fri, 01 Oct 2021 05:00:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com> <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-In-Reply-To: <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 1 Oct 2021 13:59:45 +0200
-Message-ID: <CAMuHMdUkMwyA-bk7hfr7S7TE-_S9eBUxKWKmpj0rDCUvHL+fxw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-6-laoar.shao@gmail.com>
+ <YVXVBXSZ1m4ScvbX@alley>
+In-Reply-To: <YVXVBXSZ1m4ScvbX@alley>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 1 Oct 2021 19:59:54 +0800
+Message-ID: <CALOAHbCQk0ksUmsL3ygaGJR9vfT8PsZDWGfBW8G8LYmZQhYcCA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] kernel/kthread: show a warning if kthread's comm is
+ still trucated
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Olof,
+On Thu, Sep 30, 2021 at 11:17 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Wed 2021-09-29 11:50:36, Yafang Shao wrote:
+> > Show a warning if the ktrhead's comm is still trucated. Below is the
+> > result of my test case -
+> >
+> > __kthread_create_on_node:410: comm of pid 14 is truncated from "I-am-a-kthread-with-long-name" to "I-am-a-kthread-with-lon"
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  kernel/kthread.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > index 6def951c605a..aa093f1f423a 100644
+> > --- a/kernel/kthread.c
+> > +++ b/kernel/kthread.c
+> > @@ -404,7 +404,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> >                * task is already visible to other tasks, so updating
+> >                * COMM must be protected.
+> >                */
+> > -             vsnprintf(name, sizeof(name), namefmt, args);
+> > +             if (vsnprintf(name, KTHREAD_COMM_LEN, namefmt, args) >=
+> > +                 KTHREAD_COMM_LEN)
+> > +                     pr_warn("%s:%d: comm of pid %d is truncated from \"%s\" to \"%s\"\n",
+> > +                             __func__, __LINE__, task->pid, namefmt, name);
+>
+> The warning makes sense. But the use of "namefmt" looks wrong. It is
+> format and not the name. Also __func__ and __LINE__ is overkill. It will
+> be always the same.
+>
+> I would do something like:
+>
+>                 len = vsnprintf(name, sizeof(name), namefmt, args);
+>                 if (len >= KTHREAD_COMM_LEN) {
+>                         pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
+>                                 name, task->pid, len - KTHREAD_COMM_LEN + 1);
+>                 }
+>
 
-On Fri, Oct 1, 2021 at 7:36 AM Olof Johansson <olof@lixom.net> wrote:
-> A much more valuable approach would be to work towards being able to
-> free up memory by un-probed drivers at the end of boot. That would
-> possibly benefit all platforms on all architectures.
-
-We used to have such a functionality in arch/ppc (not arch/powerpc!),
-where code/data could be tagged __prep, __chrp, or __pmac, to put it
-in a special section, and to be freed with initdata when unused.  It
-was removed in v2.6.15[1], as the savings weren't worth the hassle.
-In a more fragmented space like arm the memory lost due to alignment
-of the sections would be even more substantial.
-
-Another problem is to know when is the end of the boot, especially
-with deferred probing.
-
-[1] 6c45ab992e4299c8 ("[PATCH] powerpc: Remove section free() and
-linker script bits")
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Thanks for the suggestion. I will change it.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks
+Yafang
