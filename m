@@ -2,162 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1B641E98E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D41341E991
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352948AbhJAJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:24:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12501 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhJAJYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:24:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633080159; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=iYvrZUrKg77KiOcHuyT/fMvLDJyxg91TZsc59MuYT9s=; b=W/JykS4hBgyfHdXSQRl7w+MfS81slIr9zJTCrIhI4lGs3tg/tSl6LQbPBIwk/oXRmRKO5lDe
- MUC98LW0Y9sE64KPZIM5FjT5UNg9VwoUSB6dii58WSodQ+qXRPMl8UW2JPxYTGfeTaxgeuEG
- UKsQh9+dg2qL1meVcreKcq5nT9Y=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6156d3498578ef11edf7775b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 09:22:17
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4710CC43617; Fri,  1 Oct 2021 09:22:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        id S1353013AbhJAJYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230026AbhJAJYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:24:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4765DC4338F;
-        Fri,  1 Oct 2021 09:22:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4765DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-6-Jerome.Pouiller@silabs.com>
-Date:   Fri, 01 Oct 2021 12:22:08 +0300
-In-Reply-To: <20210920161136.2398632-6-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Mon, 20 Sep 2021 18:11:17 +0200")
-Message-ID: <87y27dkslb.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E71F61350;
+        Fri,  1 Oct 2021 09:22:53 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mWEkk-00E9xv-SU; Fri, 01 Oct 2021 10:22:51 +0100
+Date:   Fri, 01 Oct 2021 10:22:50 +0100
+Message-ID: <87pmsprted.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 3/3] arm64/entry-common: supplement irq accounting
+In-Reply-To: <20210930135314.GC18258@lakrids.cambridge.arm.com>
+References: <20210930131708.35328-1-kernelfans@gmail.com>
+        <20210930131708.35328-4-kernelfans@gmail.com>
+        <20210930135314.GC18258@lakrids.cambridge.arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, paulmck@kernel.org, catalin.marinas@arm.com, will@kernel.org, joey.gouly@arm.com, samitolvanen@google.com, julien.thierry@arm.com, tglx@linutronix.de, ito-yuichi@fujitsu.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+On Thu, 30 Sep 2021 14:53:14 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> On Thu, Sep 30, 2021 at 09:17:08PM +0800, Pingfan Liu wrote:
+> > At present, the irq entry/exit accounting, which is performed by
+> > handle_domain_irq(), overlaps with arm64 exception entry code somehow.
+> > 
+> > By supplementing irq accounting on arm64 exception entry code, the
+> > accounting in handle_domain_irq() can be dropped totally by selecting
+> > the macro HAVE_ARCH_IRQENTRY.
+> 
+> I think we need to be more thorough and explain the specific problem and
+> solution. How about we crib some wording from patch 1, and say:
+> 
+>   arm64: entry: avoid double-accounting IRQ RCU entry
+> 
+>   When an IRQ is taken, some accounting needs to be performed to enter
+>   and exit IRQ context around the IRQ handler. On arm64 some of this
+>   accounting is performed by both the architecture code and the IRQ
+>   domain code, resulting in calling rcu_irq_enter() twice per exception
+>   entry, violating the expectations of the core RCU code, and resulting
+>   in failing to identify quiescent periods correctly (e.g. in
+>   rcu_is_cpu_rrupt_from_idle()).
+> 
+>   To fix this, we must perform all the accounting from the architecture
+>   code. We prevent the IRQ domain code from performing any accounting by
+>   selecting HAVE_ARCH_IRQENTRY, and must call irq_enter_rcu() and
+>   irq_exit_rcu() around invoking the root IRQ handler.
+> 
+>   When we take a pNMI from a context with IRQs disabled, we'll perform
+>   the necessary accounting as part of arm64_enter_nmi() and
+>   arm64_exit_nmi(), and should only call irq_enter_rcu() and
+>   irq_exit_rcu() when we may have taken a regular interrupt.
+> 
+> That way it's clear what specifically the overlap is and the problem(s)
+> it results in. The bit at the end explains why we don't call
+> irq_{enter,exit}_rcu() when we're certain we've taken a pNMI.
+> 
+> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Joey Gouly <joey.gouly@arm.com>
+> > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > Cc: Julien Thierry <julien.thierry@arm.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > To: linux-arm-kernel@lists.infradead.org
+> > ---
+> >  arch/arm64/Kconfig               | 1 +
+> >  arch/arm64/kernel/entry-common.c | 4 ++++
+> >  2 files changed, 5 insertions(+)
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 5c7ae4c3954b..d29bae38a951 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -98,6 +98,7 @@ config ARM64
+> >  	select ARCH_HAS_UBSAN_SANITIZE_ALL
+> >  	select ARM_AMBA
+> >  	select ARM_ARCH_TIMER
+> > +	select HAVE_ARCH_IRQENTRY
+> 
+> Please put this with the other HAVE_ARCH_* entries in
+> arch/arm64/Kconfig -- it should be between HAVE_ARCH_HUGE_VMAP and
+> HAVE_ARCH_JUMP_LABEL to keep that in alphabetical order.
+> 
+> With that and the title and commit message above:
+> 
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+With the above changes,
 
-[...]
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-> +/* The device needs data about the antenna configuration. This informati=
-on in
-> + * provided by PDS (Platform Data Set, this is the wording used in WF200
-> + * documentation) files. For hardware integrators, the full process to c=
-reate
-> + * PDS files is described here:
-> + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/README.md
-> + *
-> + * So this function aims to send PDS to the device. However, the PDS fil=
-e is
-> + * often bigger than Rx buffers of the chip, so it has to be sent in mul=
-tiple
-> + * parts.
-> + *
-> + * In add, the PDS data cannot be split anywhere. The PDS files contains=
- tree
-> + * structures. Braces are used to enter/leave a level of the tree (in a =
-JSON
-> + * fashion). PDS files can only been split between root nodes.
-> + */
-> +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
-> +{
-> +	int ret;
-> +	int start, brace_level, i;
-> +
-> +	start =3D 0;
-> +	brace_level =3D 0;
-> +	if (buf[0] !=3D '{') {
-> + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
-> compress it?\n");
-> +		return -EINVAL;
-> +	}
-> +	for (i =3D 1; i < len - 1; i++) {
-> +		if (buf[i] =3D=3D '{')
-> +			brace_level++;
-> +		if (buf[i] =3D=3D '}')
-> +			brace_level--;
-> +		if (buf[i] =3D=3D '}' && !brace_level) {
-> +			i++;
-> +			if (i - start + 1 > WFX_PDS_MAX_SIZE)
-> +				return -EFBIG;
-> +			buf[start] =3D '{';
-> +			buf[i] =3D 0;
-> +			dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + start);
-> +			buf[i] =3D '}';
-> +			ret =3D hif_configuration(wdev, buf + start,
-> +						i - start + 1);
-> +			if (ret > 0) {
-> + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
-> options?)\n",
-> +					start, i);
-> +				return -EINVAL;
-> +			}
-> +			if (ret =3D=3D -ETIMEDOUT) {
-> + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupted
-> file?)\n",
-> +					start, i);
-> +				return ret;
-> +			}
-> +			if (ret) {
-> + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
-> error\n",
-> +					start, i);
-> +				return -EIO;
-> +			}
-> +			buf[i] =3D ',';
-> +			start =3D i;
-> +		}
-> +	}
-> +	return 0;
-> +}
+	M.
 
-I'm not really fond of having this kind of ASCII based parser in the
-kernel. Do you have an example compressed file somewhere?
-
-Does the device still work without these PDS files? I ask because my
-suggestion is to remove this part altogether and revisit after the
-initial driver is moved to drivers/net/wireless. A lot simpler to review
-complex features separately.
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+-- 
+Without deviation from the norm, progress is not possible.
