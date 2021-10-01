@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195A941EBDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA6F41EBE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353896AbhJAL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353853AbhJAL1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:27:14 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F07C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 04:25:29 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id r11-20020a1c440b000000b0030cf0f01fbaso3404690wma.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 04:25:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VNaI9C5/qcGt+6XKfL8dD53jkaX+jHT8gS0DI0vOhMk=;
-        b=fZ3cK5y8CtUA2QTCkJD4v42HS0fhzRpRuUiw0yPW50W42q6IZ558y2xg/OaJfu8Sz1
-         5YXvROMkosDpzW4GE+Vrv6Sx7gb5Wr+0lpi005IfCHj0DRAJKyM6uB78ueSFgDJURdBb
-         seSsEUjULHw4S+mQC66XvlKURIisXxBQQ6Gig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VNaI9C5/qcGt+6XKfL8dD53jkaX+jHT8gS0DI0vOhMk=;
-        b=eeQrfAkZGzs2JDnUhnxDvd/TzFcAHUqfxzGQxMAP6oN7/oF8w7454miWmKW6nzz7hu
-         UgGD4Bg48WWGI8RC4xI3l2heNc6/sbxJt6hGoe+bjo5ZPYKtWd9zP1w7vFryKVWKY81l
-         6gY2aU/LgJiXMNj+/+0zVW/Q9LWEu7PqSjW4YrmDV65Tt+Y8a97ANFM8m5f9SAF1zbhs
-         +0+LuEYOIxy9NruDMw4aEAiSAIkn1+kG2KkxJ61NXq+eJjeUcktU76soUdCR2u4dN9XM
-         rW/cruYlcRg/hgXBvl+LskcgQZSweIkKWoyMZn6kl+Ts9pWMehyBO1OeJx1AR4MicbVB
-         mTEg==
-X-Gm-Message-State: AOAM531bVxACqHtDlXptcMKAXXcC3lTCUAxYZe9oJu7cJnUJIzND9uy4
-        FhW/Iy8myTteEQ9CpT7/04972g==
-X-Google-Smtp-Source: ABdhPJx3k528VbAOecSOVvxuMk/z+vJiK8J9dkH8vF3yiWTPPLsn7nH6xcSNRl6G3gBbbFP9HpKdZw==
-X-Received: by 2002:a05:600c:4ed3:: with SMTP id g19mr3815631wmq.195.1633087528626;
-        Fri, 01 Oct 2021 04:25:28 -0700 (PDT)
-Received: from beni.c.googlers.com.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id x17sm5530958wrc.51.2021.10.01.04.25.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 04:25:28 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v3 8/8] media: ov5670: Add implementation for events
-Date:   Fri,  1 Oct 2021 11:25:22 +0000
-Message-Id: <20211001112522.2839602-9-ribalda@chromium.org>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-In-Reply-To: <20211001112522.2839602-1-ribalda@chromium.org>
-References: <20211001112522.2839602-1-ribalda@chromium.org>
+        id S1353841AbhJAL2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230257AbhJAL2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:28:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31CBC60EBD;
+        Fri,  1 Oct 2021 11:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633087622;
+        bh=snll772tuAXi5Uw2v4DZzndnf/mewVu8LU/QYyBpTbs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G3sWq6kh/kXiWsiGj8xsHASKIDmnuHfADfcckTx5IrnX1IcZVcc7D1Y2EKzersl5i
+         KoDudRAXq8doVyrHYMPDsUdDlJoed5QjXKHI87DhWg5N5hZOxqGHUBvyd0D0AOFjqQ
+         5DwoY1X51MYoXThzzMUq7JKzaZ8YTKolsReTN5r4=
+Date:   Fri, 1 Oct 2021 13:26:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
+ driver
+Message-ID: <YVbwgkncsQtWuh/k@kroah.com>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+ <20211001012815.1999501-6-david.e.box@linux.intel.com>
+ <YVa46eU1VX7CM+Xd@kroah.com>
+ <45b6454a3421ac064dff3ba159e02985d3e55440.camel@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <45b6454a3421ac064dff3ba159e02985d3e55440.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use v4l2 control API helpers to support the events.
+On Fri, Oct 01, 2021 at 04:13:58AM -0700, David E. Box wrote:
+> On Fri, 2021-10-01 at 09:29 +0200, Greg KH wrote:
+> > On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
+> > > +static long sdsi_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > > +{
+> > > +       struct miscdevice *miscdev = file->private_data;
+> > > +       struct sdsi_priv *priv = to_sdsi_priv(miscdev);
+> > > +       void __user *argp = (void __user *)arg;
+> > > +       long ret = -EINVAL;
+> > > +
+> > > +       if (!priv->dev_present)
+> > > +               return -ENODEV;
+> > > +
+> > > +       if (!priv->sdsi_enabled)
+> > > +               return -EPERM;
+> > > +
+> > > +       if (cmd == SDSI_IF_READ_STATE)
+> > > +               return sdsi_if_read_state_cert(priv, argp);
+> > > +
+> > > +       mutex_lock(&priv->akc_lock);
+> > > +       switch (cmd) {
+> > > +       case SDSI_IF_PROVISION_AKC:
+> > > +               /*
+> > > +                * While writing an authentication certificate disallow other openers
+> > > +                * from using AKC or CAP.
+> > > +                */
+> > > +               if (!priv->akc_owner)
+> > > +                       priv->akc_owner = file;
+> > > +
+> > > +               if (priv->akc_owner != file) {
+> > 
+> > Please explain how this test would ever trigger and how you tested it?
+> > 
+> > What exactly are you trying to protect from here?  If userspace has your
+> > file descriptor, it can do whatever it wants, don't try to be smarter
+> > than it as you will never win.
+> > 
+> > And why are you using ioctls at all here?  As you are just
+> > reading/writing to the hardware directly, why not just use a binary
+> > sysfs file to be that pipe?  What requires an ioctl at all?
+> 
+> So an original internal version of this did use binary attributes. But there was concern during
+> review that a flow, particularly when doing the two write operations, could not be handled
+> atomically while exposed as separate files. Above is the attempt to handle the situation in the
+> ioctl. That is, whichever opener performs AKC write first would lock out all other openers from
+> performing any write until that file is closed. This is to avoid interfering with that process,
+> should the opener also decide to perform a CAP operation.
 
-Fixes v4l2-compliance:
+Unfortunately, your code here does not prevent that at all, so your
+moving off of a binary sysfs attribute changed nothing.
 
-test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: FAIL
+You can "prevent" this from happening just as easily through a sysfs
+attribute as you can a character device node.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/i2c/ov5670.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+> There may be future commands requiring RW ioctls as well.
 
-diff --git a/drivers/media/i2c/ov5670.c b/drivers/media/i2c/ov5670.c
-index 49189926afd67..251f459ab484a 100644
---- a/drivers/media/i2c/ov5670.c
-+++ b/drivers/media/i2c/ov5670.c
-@@ -7,6 +7,7 @@
- #include <linux/pm_runtime.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-device.h>
-+#include <media/v4l2-event.h>
- #include <media/v4l2-fwnode.h>
- 
- #define OV5670_REG_CHIP_ID		0x300a
-@@ -2420,6 +2421,12 @@ static int ov5670_identify_module(struct ov5670 *ov5670)
- 	return 0;
- }
- 
-+static const struct v4l2_subdev_core_ops ov5670_core_ops = {
-+	.log_status = v4l2_ctrl_subdev_log_status,
-+	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-+	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-+};
-+
- static const struct v4l2_subdev_video_ops ov5670_video_ops = {
- 	.s_stream = ov5670_set_stream,
- };
-@@ -2436,6 +2443,7 @@ static const struct v4l2_subdev_sensor_ops ov5670_sensor_ops = {
- };
- 
- static const struct v4l2_subdev_ops ov5670_subdev_ops = {
-+	.core = &ov5670_core_ops,
- 	.video = &ov5670_video_ops,
- 	.pad = &ov5670_pad_ops,
- 	.sensor = &ov5670_sensor_ops,
-@@ -2489,7 +2497,8 @@ static int ov5670_probe(struct i2c_client *client)
- 	}
- 
- 	ov5670->sd.internal_ops = &ov5670_internal_ops;
--	ov5670->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-+	ov5670->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
-+			    V4L2_SUBDEV_FL_HAS_EVENTS;
- 	ov5670->sd.entity.ops = &ov5670_subdev_entity_ops;
- 	ov5670->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
- 
--- 
-2.33.0.800.g4c38ced690-goog
+How am I or anyone else supposed to know that?  We write code and review
+it for _today_, not what might be sometime in the future someday.  As
+that will be dealt with when it actually happens.
 
+greg k-h
