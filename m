@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FBA41EDF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D75C41EDF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353638AbhJAM61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:58:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32980 "EHLO mail.kernel.org"
+        id S1353833AbhJAM63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:58:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353643AbhJAM6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:58:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6013461AA3;
-        Fri,  1 Oct 2021 12:56:25 +0000 (UTC)
+        id S1353644AbhJAM6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:58:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36B5B61AAD;
+        Fri,  1 Oct 2021 12:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633092986;
-        bh=1ATdhZsxWhmvzB+r0NjfiRC5hN0hYb7Co9LA/Pyu0MA=;
+        s=k20201202; t=1633092989;
+        bh=BZepMOmxnbzsYrCr+omcsm5Nr1F8FXZedhdKBsgW9qA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hNkwmgH20M+Qs7Z5A0CdzYcnk5dzbMFslfGro4C7fPXepDbIEa79F7vUuvFKfdGYC
-         NMlRJun5yBBUknnPkyDFTxts6TjLyzqsq0I5pwhlAWXR3qX3q7lLPH3V9CGwJLAMA1
-         zA6PEBEZH+a26PobM1my4ZMksXQGZNxW9d79OXqIjVIELkn6Ugu/JN6TzMY0rACZM+
-         /BIPTjEIia90fnJMPs2Y6cwbW5dfnO8wFd7Ft+RPytyAjOt3ex9tsaGdBv0rJTiz+F
-         h8x4gSofD5Vg/O0hzM0hH1+cPle11LjOwoAr1/1J5Pv0uv3A3/5FYKHRzW+WoCozKY
-         Rc9swdaiodjgA==
+        b=qgiUwbTuesDk9LEA8buYAaCKZdEpMWofBmz3eGhknn4qQ/lOC/nocrFGfOAHbMsom
+         IgdrhcRAPYUfKsSGWa3q6JKf0clHz37gvnWi1BSa5DsOFynbEjwy6kbvSP/ttz/vc7
+         hOlcXF4jbntXsp7kDmCPhVjRRyJoLxq1f+FK1GnHzOdb9N8qgXUZJFK9kWj99SAnBy
+         bxRzvj90Qp2HAuBps1SvkVh5zayP+yWoas2jIZf2hFhG1HSwOEYfxHQPQYUnC3g3uM
+         RMm0BCOj2kNYN9A7Puozak3XuOPIqsUBgAgw+cg0aVAwmcZoh4gPqi01nToBavXPxI
+         L+g1IecWpxMHA==
 From:   SeongJae Park <sj@kernel.org>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
@@ -32,9 +32,9 @@ Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
         rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/7] mm/damon/dbgfs: Support DAMON-based Operation Schemes
-Date:   Fri,  1 Oct 2021 12:56:01 +0000
-Message-Id: <20211001125604.29660-5-sj@kernel.org>
+Subject: [PATCH 5/7] mm/damon/schemes: Implement statistics feature
+Date:   Fri,  1 Oct 2021 12:56:02 +0000
+Message-Id: <20211001125604.29660-6-sj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211001125604.29660-1-sj@kernel.org>
 References: <20211001125604.29660-1-sj@kernel.org>
@@ -42,208 +42,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit makes 'damon-dbgfs' to support the data access monitoring
-oriented memory management schemes.  Users can read and update the
-schemes using ``<debugfs>/damon/schemes`` file.  The format is::
+To tune the DAMON-based operation schemes, knowing how many and how
+large regions are affected by each of the schemes will be helful.  Those
+stats could be used for not only the tuning, but also monitoring of the
+working set size and the number of regions, if the scheme does not
+change the program behavior too much.
 
-    <min/max size> <min/max access frequency> <min/max age> <action>
+For the reason, this commit implements the statistics for the schemes.
+The total number and size of the regions that each scheme is applied are
+exported to users via '->stat_count' and '->stat_sz' of 'struct damos'.
+Admins can also check the number by reading 'schemes' debugfs file.  The
+last two integers now represents the stats.  To allow collecting the
+stats without changing the program behavior, this commit also adds new
+scheme action, 'DAMOS_STAT'.  Note that 'DAMOS_STAT' is not only making
+no memory operation actions, but also does not reset the age of regions.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/dbgfs.c | 165 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 162 insertions(+), 3 deletions(-)
+ include/linux/damon.h | 10 +++++++++-
+ mm/damon/core.c       |  7 ++++++-
+ mm/damon/dbgfs.c      |  5 +++--
+ mm/damon/vaddr.c      |  2 ++
+ 4 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index faee070977d8..78b7a04490c5 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -98,6 +98,159 @@ static ssize_t dbgfs_attrs_write(struct file *file,
- 	return ret;
- }
- 
-+static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
-+{
-+	struct damos *s;
-+	int written = 0;
-+	int rc;
-+
-+	damon_for_each_scheme(s, c) {
-+		rc = scnprintf(&buf[written], len - written,
-+				"%lu %lu %u %u %u %u %d\n",
-+				s->min_sz_region, s->max_sz_region,
-+				s->min_nr_accesses, s->max_nr_accesses,
-+				s->min_age_region, s->max_age_region,
-+				s->action);
-+		if (!rc)
-+			return -ENOMEM;
-+
-+		written += rc;
-+	}
-+	return written;
-+}
-+
-+static ssize_t dbgfs_schemes_read(struct file *file, char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = file->private_data;
-+	char *kbuf;
-+	ssize_t len;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	len = sprint_schemes(ctx, kbuf, count);
-+	mutex_unlock(&ctx->kdamond_lock);
-+	if (len < 0)
-+		goto out;
-+	len = simple_read_from_buffer(buf, count, ppos, kbuf, len);
-+
-+out:
-+	kfree(kbuf);
-+	return len;
-+}
-+
-+static void free_schemes_arr(struct damos **schemes, ssize_t nr_schemes)
-+{
-+	ssize_t i;
-+
-+	for (i = 0; i < nr_schemes; i++)
-+		kfree(schemes[i]);
-+	kfree(schemes);
-+}
-+
-+static bool damos_action_valid(int action)
-+{
-+	switch (action) {
-+	case DAMOS_WILLNEED:
-+	case DAMOS_COLD:
-+	case DAMOS_PAGEOUT:
-+	case DAMOS_HUGEPAGE:
-+	case DAMOS_NOHUGEPAGE:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+/*
-+ * Converts a string into an array of struct damos pointers
-+ *
-+ * Returns an array of struct damos pointers that converted if the conversion
-+ * success, or NULL otherwise.
-+ */
-+static struct damos **str_to_schemes(const char *str, ssize_t len,
-+				ssize_t *nr_schemes)
-+{
-+	struct damos *scheme, **schemes;
-+	const int max_nr_schemes = 256;
-+	int pos = 0, parsed, ret;
-+	unsigned long min_sz, max_sz;
-+	unsigned int min_nr_a, max_nr_a, min_age, max_age;
-+	unsigned int action;
-+
-+	schemes = kmalloc_array(max_nr_schemes, sizeof(scheme),
-+			GFP_KERNEL);
-+	if (!schemes)
-+		return NULL;
-+
-+	*nr_schemes = 0;
-+	while (pos < len && *nr_schemes < max_nr_schemes) {
-+		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u%n",
-+				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
-+				&min_age, &max_age, &action, &parsed);
-+		if (ret != 7)
-+			break;
-+		if (!damos_action_valid(action)) {
-+			pr_err("wrong action %d\n", action);
-+			goto fail;
-+		}
-+
-+		pos += parsed;
-+		scheme = damon_new_scheme(min_sz, max_sz, min_nr_a, max_nr_a,
-+				min_age, max_age, action);
-+		if (!scheme)
-+			goto fail;
-+
-+		schemes[*nr_schemes] = scheme;
-+		*nr_schemes += 1;
-+	}
-+	return schemes;
-+fail:
-+	free_schemes_arr(schemes, *nr_schemes);
-+	return NULL;
-+}
-+
-+static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = file->private_data;
-+	char *kbuf;
-+	struct damos **schemes;
-+	ssize_t nr_schemes = 0, ret = count;
-+	int err;
-+
-+	kbuf = user_input_str(buf, count, ppos);
-+	if (IS_ERR(kbuf))
-+		return PTR_ERR(kbuf);
-+
-+	schemes = str_to_schemes(kbuf, ret, &nr_schemes);
-+	if (!schemes) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	err = damon_set_schemes(ctx, schemes, nr_schemes);
-+	if (err)
-+		ret = err;
-+	else
-+		nr_schemes = 0;
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+	free_schemes_arr(schemes, nr_schemes);
-+out:
-+	kfree(kbuf);
-+	return ret;
-+}
-+
- static inline bool targetid_is_pid(const struct damon_ctx *ctx)
- {
- 	return ctx->primitive.target_valid == damon_va_target_valid;
-@@ -279,6 +432,12 @@ static const struct file_operations attrs_fops = {
- 	.write = dbgfs_attrs_write,
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index be6b6e81e8ee..f301bb53381c 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -78,6 +78,7 @@ struct damon_target {
+  * @DAMOS_PAGEOUT:	Call ``madvise()`` for the region with MADV_PAGEOUT.
+  * @DAMOS_HUGEPAGE:	Call ``madvise()`` for the region with MADV_HUGEPAGE.
+  * @DAMOS_NOHUGEPAGE:	Call ``madvise()`` for the region with MADV_NOHUGEPAGE.
++ * @DAMOS_STAT:		Do nothing but count the stat.
+  */
+ enum damos_action {
+ 	DAMOS_WILLNEED,
+@@ -85,6 +86,7 @@ enum damos_action {
+ 	DAMOS_PAGEOUT,
+ 	DAMOS_HUGEPAGE,
+ 	DAMOS_NOHUGEPAGE,
++	DAMOS_STAT,		/* Do nothing but only record the stat */
  };
  
-+static const struct file_operations schemes_fops = {
-+	.open = damon_dbgfs_open,
-+	.read = dbgfs_schemes_read,
-+	.write = dbgfs_schemes_write,
-+};
-+
- static const struct file_operations target_ids_fops = {
- 	.open = damon_dbgfs_open,
- 	.read = dbgfs_target_ids_read,
-@@ -292,10 +451,10 @@ static const struct file_operations kdamond_pid_fops = {
+ /**
+@@ -96,9 +98,13 @@ enum damos_action {
+  * @min_age_region:	Minimum age of target regions.
+  * @max_age_region:	Maximum age of target regions.
+  * @action:		&damo_action to be applied to the target regions.
++ * @stat_count:		Total number of regions that this scheme is applied.
++ * @stat_sz:		Total size of regions that this scheme is applied.
+  * @list:		List head for siblings.
+  *
+- * Note that both the minimums and the maximums are inclusive.
++ * For each aggregation interval, DAMON applies @action to monitoring target
++ * regions fit in the condition and updates the statistics.  Note that both
++ * the minimums and the maximums are inclusive.
+  */
+ struct damos {
+ 	unsigned long min_sz_region;
+@@ -108,6 +114,8 @@ struct damos {
+ 	unsigned int min_age_region;
+ 	unsigned int max_age_region;
+ 	enum damos_action action;
++	unsigned long stat_count;
++	unsigned long stat_sz;
+ 	struct list_head list;
+ };
  
- static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
- {
--	const char * const file_names[] = {"attrs", "target_ids",
-+	const char * const file_names[] = {"attrs", "schemes", "target_ids",
- 		"kdamond_pid"};
--	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops,
--		&kdamond_pid_fops};
-+	const struct file_operations *fops[] = {&attrs_fops, &schemes_fops,
-+		&target_ids_fops, &kdamond_pid_fops};
- 	int i;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 0ed97b21cbb6..2f6785737902 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -103,6 +103,8 @@ struct damos *damon_new_scheme(
+ 	scheme->min_age_region = min_age_region;
+ 	scheme->max_age_region = max_age_region;
+ 	scheme->action = action;
++	scheme->stat_count = 0;
++	scheme->stat_sz = 0;
+ 	INIT_LIST_HEAD(&scheme->list);
  
- 	for (i = 0; i < ARRAY_SIZE(file_names); i++)
+ 	return scheme;
+@@ -544,9 +546,12 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 			continue;
+ 		if (r->age < s->min_age_region || s->max_age_region < r->age)
+ 			continue;
++		s->stat_count++;
++		s->stat_sz += sz;
+ 		if (c->primitive.apply_scheme)
+ 			c->primitive.apply_scheme(c, t, r, s);
+-		r->age = 0;
++		if (s->action != DAMOS_STAT)
++			r->age = 0;
+ 	}
+ }
+ 
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 78b7a04490c5..28d6abf27763 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -106,11 +106,11 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+ 
+ 	damon_for_each_scheme(s, c) {
+ 		rc = scnprintf(&buf[written], len - written,
+-				"%lu %lu %u %u %u %u %d\n",
++				"%lu %lu %u %u %u %u %d %lu %lu\n",
+ 				s->min_sz_region, s->max_sz_region,
+ 				s->min_nr_accesses, s->max_nr_accesses,
+ 				s->min_age_region, s->max_age_region,
+-				s->action);
++				s->action, s->stat_count, s->stat_sz);
+ 		if (!rc)
+ 			return -ENOMEM;
+ 
+@@ -159,6 +159,7 @@ static bool damos_action_valid(int action)
+ 	case DAMOS_PAGEOUT:
+ 	case DAMOS_HUGEPAGE:
+ 	case DAMOS_NOHUGEPAGE:
++	case DAMOS_STAT:
+ 		return true;
+ 	default:
+ 		return false;
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index 3e1c74d36bab..953c145b4f08 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -705,6 +705,8 @@ int damon_va_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
+ 	case DAMOS_NOHUGEPAGE:
+ 		madv_action = MADV_NOHUGEPAGE;
+ 		break;
++	case DAMOS_STAT:
++		return 0;
+ 	default:
+ 		pr_warn("Wrong action %d\n", scheme->action);
+ 		return -EINVAL;
 -- 
 2.17.1
 
