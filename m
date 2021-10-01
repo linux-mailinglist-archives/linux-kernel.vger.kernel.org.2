@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2C141EAE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B941EAEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353519AbhJAKXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:23:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56330 "EHLO mail.kernel.org"
+        id S1353524AbhJAK0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230008AbhJAKXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:23:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50CB360EBB;
-        Fri,  1 Oct 2021 10:21:34 +0000 (UTC)
+        id S230008AbhJAK0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:26:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61D5A6103D;
+        Fri,  1 Oct 2021 10:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633083695;
+        s=k20201202; t=1633083874;
         bh=d2B3aqMqCeg19jkk4r/VHqci8GXUvcnxdV2Hf+/w4Og=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tcwP5be5+nwV5FseSUBzoToVNqRxZS26bxIJy6ygu28A2exECohriqIpdwE92FL9b
-         Dacj0A3wbRfFUnV8+GrXIX4p8pddwFiTPzDFI/zoQj+RRWOO1/+OCfH03VNPykWfLA
-         kfjX8Qhnb4WDqawnpGhCsIGVKuu2qQoEuCR5hL1hK1hLqkSw9G2Y8STACVEudtdl4Y
-         eIGd7FKAlv6Rwrl2u+OMDd2LmyTP2zvEVgNgz2enCBO3Wq5bQsivGyjkkT1NlN7t9z
-         efBPuZXli3/8CI8s9uDAprvhiC16eKZTzc8vz1UFZELE7qOjDMAJQBapiyr4tAwcAn
-         trrUof2Es48Bw==
-Date:   Fri, 1 Oct 2021 15:51:30 +0530
+        b=Oq0EJTGmH24SIL3sllAtZp7cphGmYZyf40/foG2HbPnUXk/plxpKAGr/YaiCcfOiF
+         TRKJWDcOtQ+ziqW6RhhLTD2V6yqe/oLEsZqYjSfDHJyvEE7rXKEB0esqK8Hvv7mMeI
+         TGd3F6hTPp/8DhoUDoi9veNWHyHBLijbkcDRtvdjM9ZD4j61+qUAtTNYKjHnN8LHnu
+         +yVsdC2VnAVRHRqS88R27Xwrrv2hPFhxWLyBqSixR3m4ry3zerYCgb/CD6MsN/It4N
+         o7J2ROHkwGASNURqiuqiWUPNMD1uodpKhwOhuKbqheyfTdpSR7zKUqbQSEoPkTJdzH
+         jjBjbRs3GUsrQ==
+Date:   Fri, 1 Oct 2021 15:54:30 +0530
 From:   Vinod Koul <vkoul@kernel.org>
 To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: qcom-qmp: Make use of the helper function
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: rockchip-inno-usb2: Make use of the helper function
  devm_add_action_or_reset()
-Message-ID: <YVbhKluONs9NKCoh@matsya>
-References: <20210922130017.692-1-caihuoqing@baidu.com>
+Message-ID: <YVbh3gRziCXf1iAk@matsya>
+References: <20210922130024.745-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922130017.692-1-caihuoqing@baidu.com>
+In-Reply-To: <20210922130024.745-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
