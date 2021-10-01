@@ -2,176 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D292141ECAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C0D41ECB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354161AbhJAMAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354153AbhJAMAp (ORCPT
+        id S1354179AbhJAMAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:00:51 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63443 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354159AbhJAMAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:00:45 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC3DC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 04:59:01 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p80so11274133iod.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 04:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/aOMTE1CqXH2vambpaRWGG2/ICwA8xyh0LOnA2Jcahc=;
-        b=cHggjHQJOWaNWuCUG9m7Q9n1kbSjuAfuoCNfMu0UMfTYEZob5nTch2Q2Swo6CDbTeA
-         3wD+tTWgtaE66J9upPhiqkvIOzJknPZPEI9BOG2BzT6x5Ck83c9ulf5JeBFzXAYn+wD7
-         OOVO8tGkqdDYC5Qadg9GMfiF3IUUjD2r2UD7q3aZ5CQYGK5ST6STBhKTRjRF0bE7Apof
-         Kpf51w/bQQFkMUwSUljcida7XU3L0mT0hA2lIo0CFBdKHwIN4QOGmXQyYbji29LXDOnr
-         0zJjvVl6Y+JlFeCCkyYr0fEFvjiYgS/WA2/BFZV0nRjwIvIIbW1zOlv2maOlIWI69A6J
-         NZjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/aOMTE1CqXH2vambpaRWGG2/ICwA8xyh0LOnA2Jcahc=;
-        b=vmpTQOFuXHbGp4Scr1Wh6q+kAEuJPMNbMBUw6gPlvq4QHWlvv+A72Er21zNeGvruI1
-         ApWTZ+ZecuH2idw+pX0GyHeMYuzDOHoLZ49m3WuvdJEGq6Jxx2HAC2CaHNqL5IgSAAJX
-         misaIk0qwcmzz++uq1x9/SHuKMkYo0hUSl1pYuTZBZyC9MeBnAl1F8lUtihubsnzvOqw
-         JVdrQ3htQHNjbmUGAPdtxgbDAuzwtm0S4bzmLLHGSqnICJJKkXyPyx8DtEnGE2yv//2d
-         d0xSqUAd4SK/TT/34O6Ed+lklHBxLasREx4v+xbetdTLQFpFRQgZzpq3KN7RIRt6Fem2
-         /MWA==
-X-Gm-Message-State: AOAM533UQH55RCq0QFkp8VCHg0mrIaGeUIensU4rABTfp/b2KyMyMaDF
-        S99HwASv41/NlBJwJCvkLw9p+sI49MzR0WV92jU=
-X-Google-Smtp-Source: ABdhPJw0VYTN+YKIaLh2QRhuWnRO/Ori32NZfmtK3CuztvzJgwXuFahC50D/cVdSB/fJ4SvrqoW6GFE2RkI0g2LMVec=
-X-Received: by 2002:a5d:9493:: with SMTP id v19mr7670233ioj.34.1633089540625;
- Fri, 01 Oct 2021 04:59:00 -0700 (PDT)
+        Fri, 1 Oct 2021 08:00:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633089544; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=gh+rxO6W9CGfXjbfCmIpOQMXtVKYgt25V055BZp/pL8=; b=HtoI/ey54rY3mHn5jAQUf11jQI1EO4g19oy+zxmDZ692Eu+EmlJDuUMgntzl2V1cmlOCvTI3
+ oD6ehdG7yhmGvhwwxw6ilpWyswW8BJEVczF5kP1k9Bwil+UC8gwQroV+4ho9NhDNdJfHsJ/G
+ 3xaH+HJPmRAeOYFGJ5ha+/DUthc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6156f7f4a3e8d3c640dd85b0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:58:44
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E6B88C43619; Fri,  1 Oct 2021 11:58:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32663C4338F;
+        Fri,  1 Oct 2021 11:58:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 32663C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 10/24] wfx: add fwio.c/fwio.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-11-Jerome.Pouiller@silabs.com>
+Date:   Fri, 01 Oct 2021 14:58:38 +0300
+In-Reply-To: <20210920161136.2398632-11-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Mon, 20 Sep 2021 18:11:22 +0200")
+Message-ID: <87sfxlj6s1.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210929115036.4851-1-laoar.shao@gmail.com> <20210929115036.4851-3-laoar.shao@gmail.com>
- <202109291109.FAF3F47BA@keescook> <CALOAHbB3_q0stoUyqZdScZR3_edJE5ncmys6HNiQrBZTEgGVMw@mail.gmail.com>
- <YVXO/hsDJQh1FOgy@alley>
-In-Reply-To: <YVXO/hsDJQh1FOgy@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 1 Oct 2021 19:58:24 +0800
-Message-ID: <CALOAHbA0t6XTvTX2b=1JZY-QBx-Ji9A6r05-y07T0e962iHdNw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] kernel/fork: allocate task->comm dynamicly
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        Al Viro <viro@zeniv.linux.org.uk>, christian@brauner.io,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:51 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Thu 2021-09-30 20:41:40, Yafang Shao wrote:
-> > On Thu, Sep 30, 2021 at 2:11 AM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > On Wed, Sep 29, 2021 at 11:50:33AM +0000, Yafang Shao wrote:
-> > > > task->comm is defined as an array embedded in struct task_struct before.
-> > > > This patch changes it to a char pointer. It will be allocated in the fork
-> > > > and freed when the task is freed.
-> > > >
-> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > ---
-> > > >  include/linux/sched.h |  2 +-
-> > > >  kernel/fork.c         | 19 +++++++++++++++++++
-> > > >  2 files changed, 20 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > > > index e12b524426b0..b387b5943db4 100644
-> > > > --- a/include/linux/sched.h
-> > > > +++ b/include/linux/sched.h
-> > > > @@ -1051,7 +1051,7 @@ struct task_struct {
-> > > >        * - access it with [gs]et_task_comm()
-> > > >        * - lock it with task_lock()
-> > > >        */
-> > > > -     char                            comm[TASK_COMM_LEN];
-> > > > +     char                            *comm;
-> > >
-> > > This, I think, is basically a non-starter. It adds another kmalloc to
-> > > the fork path without a well-justified reason. TASK_COMM_LEN is small,
-> > > yes, but why is growing it valuable enough to slow things down?
-> > >
-> > > (Or, can you prove that this does NOT slow things down? It seems like
-> > > it would.)
-> > >
-> >
-> > Right, the new kmalloc would take some extra latency.
-> > Seems it is not easy to measure which one is more valuable.
->
-> Honestly, I do not think that this exercise is worth it. The patchset
-> adds a lot of complexity and potential problems just to extend
-> comm from 16 to 24 for kthreads.
->
-> Is the problem real or just cosmetic?
->
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-It is a problem, but not a critical problem.
-
-Take the "cfs_migration/%u" for example.
-It will be truncated to "cfs_migration/1" for CPU 10~19, which will
-make the user confused.  But as it is a per-cpu thread, the user can
-get its CPU information from its cpu mask.  And we can also shorten
-its name to work around this issue.
-
-But for kthreads corresponding to some other hardware devices, it may
-not be easy to get the detailed information from the task's comm. For
-example,
-    jbd2/nvme0n1p2-
-    nvidia-modeset/
-
-
-> If you really want it then it would be much easier to increase
-> TASK_COMM_LEN. task_struct is growing rather regularly. Extra
-> 8 bytes should be acceptable.
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 >
-> If you want to make it more acceptable then keep 16 for
-> CONFIG_BASE_SMALL.
->
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 
-That seems to be a possible solution.
+[...]
 
->
-> > > > diff --git a/kernel/fork.c b/kernel/fork.c
-> > > > index 38681ad44c76..227aec240501 100644
-> > > > --- a/kernel/fork.c
-> > > > +++ b/kernel/fork.c
-> > > > @@ -753,6 +767,7 @@ void __put_task_struct(struct task_struct *tsk)
-> > > >       bpf_task_storage_free(tsk);
-> > > >       exit_creds(tsk);
-> > > >       delayacct_tsk_free(tsk);
-> > > > +     task_comm_free(tsk);
->
-> Just one example of the potential problems. Are you sure that nobody
-> will access tsk->comm after this point?
->
+> +static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
+> +			const struct firmware **fw, int *file_offset)
+> +{
+> +	int keyset_file;
+> +	char filename[256];
+> +	const char *data;
+> +	int ret;
+> +
+> +	snprintf(filename, sizeof(filename), "%s_%02X.sec",
+> +		 wdev->pdata.file_fw, keyset_chip);
+> +	ret =3D firmware_request_nowarn(fw, filename, wdev->dev);
+> +	if (ret) {
+> +		dev_info(wdev->dev, "can't load %s, falling back to %s.sec\n",
+> +			 filename, wdev->pdata.file_fw);
+> +		snprintf(filename, sizeof(filename), "%s.sec",
+> +			 wdev->pdata.file_fw);
+> +		ret =3D request_firmware(fw, filename, wdev->dev);
+> +		if (ret) {
+> +			dev_err(wdev->dev, "can't load %s\n", filename);
+> +			*fw =3D NULL;
+> +			return ret;
+> +		}
+> +	}
 
-That is a risk.
-Should free it in free_task(), just before free_task_struct().
+How is this firmware file loading supposed to work? If I'm reading the
+code right, the driver tries to load file "wfm_wf200_??.sec" but in
+linux-firmware the file is silabs/wfm_wf200_C0.sec:
 
-> task->comm is widely used to describe the affected task_struct because
-> it is user friendly.
->
-> Also __put_task_struct() later calls also profile_handoff_task() that might
-> get registered even by some external module.
->
-> Best Regards,
-> Petr
->
-> PS: I think that the fork performance is important. It is tested by
-> benchmarks, for example, lmbench. But for me, the reliability is even
-> more important and any pointer/alloc/free just adds another weak
-> point.
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git=
+/tree/silabs
 
-Many thanks for the explanation.
+That can't work automatically, unless I'm missing something of course.
 
--- 
-Thanks
-Yafang
+Also I would prefer to use directory name as the driver name wfx, but I
+guess silabs is also doable.
+
+Also I'm not seeing the PDS files in linux-firmware. The idea is that
+when user installs an upstream kernel and the linux-firmware everything
+will work automatically, without any manual file installations.
+
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
