@@ -2,913 +2,627 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA35B41EB1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AE641EB1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353615AbhJAKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352999AbhJAKnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:43:06 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AF5C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 03:41:22 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id v127so6855818wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 03:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=igYvG3jKxx1GJ77cjz/9gfqeRzqBxjpi1jAfEuEXPSE=;
-        b=V7rDC4uVTACh9SzCAbsxvPndlU6ec8bu4kt7THzlXwIGy7kZxEi0Ht71sGMBKfRzne
-         j4Z1znIyuAa+QvqQJVQedTr53zSHABkjjrweqyGlrtAW3463z2Yz22LZqU9KMlnCWQir
-         uC/MoSCBc94pTynegNh0+TyAh8AxWcoaLo1W72raWEHfVwHO306uXibPMwVveRnKxRqw
-         v/xAU9FL8NT9BGwWfJcd1oXDUR/sH4KRzSvDoATv2mrUnq0Aan/FJ9qvwdmoMN1ZkvO9
-         9xxaoQwZesDn2GxszY+92UvELYH7YqbSUexXjqlqp1EYFfWfia90j/1Z1WcRSoB3PmjB
-         qR/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=igYvG3jKxx1GJ77cjz/9gfqeRzqBxjpi1jAfEuEXPSE=;
-        b=0MO47XlaZE1hS8EG9lVeDynW1MlYmlFL1Wx3fU2Nr27772QFStZTH91HqtEhIAWN5l
-         xv1hexqaYlJe5cEXOMSob+hWKRiWKl5duMY+TMpR7hpiccYiZnfwHmjIqbVqb6xQUiyT
-         oJmtKbYkbgaU2Lw1BbzXt+UjEvdM5NhM5F63l1n3PTl7rN1ZiYG0OPZm9dGp4E2qfC7F
-         kYYDdRgyQr7CGwtDotcM/+6lO8/+qgmwHGrYf7Lfp3FObovlm4MsYx7G412fUo32bJKe
-         hh/XSQYaDTXnwEaHOyPvjz3fgp6fFPRPaWCsZWp0PUE4DyOEhzq40MD5NpeMUzNsGtTr
-         rjww==
-X-Gm-Message-State: AOAM5303l23WXB/200tdYRf90pFMd+hwYHiyKJ7fyzc8SDNG6U+tePex
-        59zmHF5FcgxF+1zDkDjVBcD6+ecDIGZKp5PwercKzg==
-X-Google-Smtp-Source: ABdhPJyeJtjAP6LFEtJOTnF4IU+BnDsRcwhyOrPoqQgipf7O52x2YM8Tfl+6zY4NnnToLgvTZDWYXjrU4wcKV0WFIPo=
-X-Received: by 2002:a7b:cc14:: with SMTP id f20mr3550841wmh.137.1633084880395;
- Fri, 01 Oct 2021 03:41:20 -0700 (PDT)
+        id S1353638AbhJAKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:44:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:42461 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352999AbhJAKos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:44:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222197281"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="gz'50?scan'50,208,50";a="222197281"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 03:43:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="gz'50?scan'50,208,50";a="556237696"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2021 03:42:58 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mWG0H-000158-By; Fri, 01 Oct 2021 10:42:57 +0000
+Date:   Fri, 1 Oct 2021 18:42:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [sbates130272-p2pmem:p2pdma_user_cmb_v4 19/24]
+ lib/scatterlist.c:417:7: error: implicit declaration of function
+ 'zone_device_pages_are_mergeable'
+Message-ID: <202110011830.ntDkn6Dx-lkp@intel.com>
 MIME-Version: 1.0
-References: <20210927114016.1089328-1-anup.patel@wdc.com> <CAAhSdy1yZ11L=A3g06GXM8tFtonBX0Cj5NDyGHQ1v44vJ8MqSA@mail.gmail.com>
- <CAFiDJ5_--KsNd3aH1gT_cgU32C+wzunzXeSKtn8HTNj_La7n5A@mail.gmail.com>
-In-Reply-To: <CAFiDJ5_--KsNd3aH1gT_cgU32C+wzunzXeSKtn8HTNj_La7n5A@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 1 Oct 2021 16:11:08 +0530
-Message-ID: <CAAhSdy1un6ab62LN-0ihV=oku8EH3fZ5YzbX1zzUFAEbatVAuQ@mail.gmail.com>
-Subject: Re: [PATCH v20 00/17] KVM RISC-V Support
-To:     Ley Foon Tan <lftan.linux@gmail.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 2:33 PM Ley Foon Tan <lftan.linux@gmail.com> wrote:
->
-> On Mon, Sep 27, 2021 at 8:01 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > Hi Palmer, Hi Paolo,
-> >
-> > On Mon, Sep 27, 2021 at 5:10 PM Anup Patel <anup.patel@wdc.com> wrote:
-> > >
-> > > This series adds initial KVM RISC-V support. Currently, we are able to boot
-> > > Linux on RV64/RV32 Guest with multiple VCPUs.
-> > >
-> > > Key aspects of KVM RISC-V added by this series are:
-> > > 1. No RISC-V specific KVM IOCTL
-> > > 2. Loadable KVM RISC-V module supported
-> > > 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
-> > > 4. Both RV64 and RV32 host supported
-> > > 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
-> > > 6. KVM ONE_REG interface for VCPU register access from user-space
-> > > 7. PLIC emulation is done in user-space
-> > > 8. Timer and IPI emuation is done in-kernel
-> > > 9. Both Sv39x4 and Sv48x4 supported for RV64 host
-> > > 10. MMU notifiers supported
-> > > 11. Generic dirtylog supported
-> > > 12. FP lazy save/restore supported
-> > > 13. SBI v0.1 emulation for KVM Guest available
-> > > 14. Forward unhandled SBI calls to KVM userspace
-> > > 15. Hugepage support for Guest/VM
-> > > 16. IOEVENTFD support for Vhost
-> > >
-> > > Here's a brief TODO list which we will work upon after this series:
-> > > 1. KVM unit test support
-> > > 2. KVM selftest support
-> > > 3. SBI v0.3 emulation in-kernel
-> > > 4. In-kernel PMU virtualization
-> > > 5. In-kernel AIA irqchip support
-> > > 6. Nested virtualizaiton
-> > > 7. ..... and more .....
-> > >
-> > > This series can be found in riscv_kvm_v20 branch at:
-> > > https//github.com/avpatel/linux.git
-> > >
-> > > Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v9 branch
-> > > at: https//github.com/avpatel/kvmtool.git
-> > >
-> > > The QEMU RISC-V hypervisor emulation is done by Alistair and is available
-> > > in master branch at: https://git.qemu.org/git/qemu.git
-> > >
-> > > To play around with KVM RISC-V, refer KVM RISC-V wiki at:
-> > > https://github.com/kvm-riscv/howto/wiki
-> > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
-> > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
-> > >
-> > > Changes since v19:
-> > >  - Rebased on Linux-5.15-rc3
-> > >  - Converted kvm_err() to kvm_debug() in kvm_set_spte_gfn() function
-> > >    added by PATCH11
-> > >
-> > > Changes since v18:
-> > >  - Rebased on Linux-5.14-rc3
-> > >  - Moved to new KVM debugfs interface
-> > >  - Dropped PATCH17 of v18 series for having KVM RISC-V in drivers/staging
-> > >
-> > > Changes since v17:
-> > >  - Rebased on Linux-5.13-rc2
-> > >  - Moved to new KVM MMU notifier APIs
-> > >  - Removed redundant kvm_arch_vcpu_uninit()
-> > >  - Moved KVM RISC-V sources to drivers/staging for compliance with
-> > >    Linux RISC-V patch acceptance policy
-> > >
-> > > Changes since v16:
-> > >  - Rebased on Linux-5.12-rc5
-> > >  - Remove redundant kvm_arch_create_memslot(), kvm_arch_vcpu_setup(),
-> > >    kvm_arch_vcpu_init(), kvm_arch_has_vcpu_debugfs(), and
-> > >    kvm_arch_create_vcpu_debugfs() from PATCH5
-> > >  - Make stage2_wp_memory_region() and stage2_ioremap() as static
-> > >    in PATCH13
-> > >
-> > > Changes since v15:
-> > >  - Rebased on Linux-5.11-rc3
-> > >  - Fixed kvm_stage2_map() to use gfn_to_pfn_prot() for determing
-> > >    writeability of a host pfn.
-> > >  - Use "__u64" in-place of "u64" and "__u32" in-place of "u32" for
-> > >    uapi/asm/kvm.h
-> > >
-> > > Changes since v14:
-> > >  - Rebased on Linux-5.10-rc3
-> > >  - Fixed Stage2 (G-stage) PDG allocation to ensure it is 16KB aligned
-> > >
-> > > Changes since v13:
-> > >  - Rebased on Linux-5.9-rc3
-> > >  - Fixed kvm_riscv_vcpu_set_reg_csr() for SIP updation in PATCH5
-> > >  - Fixed instruction length computation in PATCH7
-> > >  - Added ioeventfd support in PATCH7
-> > >  - Ensure HSTATUS.SPVP is set to correct value before using HLV/HSV
-> > >    intructions in PATCH7
-> > >  - Fixed stage2_map_page() to set PTE 'A' and 'D' bits correctly
-> > >    in PATCH10
-> > >  - Added stage2 dirty page logging in PATCH10
-> > >  - Allow KVM user-space to SET/GET SCOUNTER CSR in PATCH5
-> > >  - Save/restore SCOUNTEREN in PATCH6
-> > >  - Reduced quite a few instructions for __kvm_riscv_switch_to() by
-> > >    using CSR swap instruction in PATCH6
-> > >  - Detect and use Sv48x4 when available in PATCH10
-> > >
-> > > Changes since v12:
-> > >  - Rebased patches on Linux-5.8-rc4
-> > >  - By default enable all counters in HCOUNTEREN
-> > >  - RISC-V H-Extension v0.6.1 spec support
-> > >
-> > > Changes since v11:
-> > >  - Rebased patches on Linux-5.7-rc3
-> > >  - Fixed typo in typecast of stage2_map_size define
-> > >  - Introduced struct kvm_cpu_trap to represent trap details and
-> > >    use it as function parameter wherever applicable
-> > >  - Pass memslot to kvm_riscv_stage2_map() for supporing dirty page
-> > >    logging in future
-> > >  - RISC-V H-Extension v0.6 spec support
-> > >  - Send-out first three patches as separate series so that it can
-> > >    be taken by Palmer for Linux RISC-V
-> > >
-> > > Changes since v10:
-> > >  - Rebased patches on Linux-5.6-rc5
-> > >  - Reduce RISCV_ISA_EXT_MAX from 256 to 64
-> > >  - Separate PATCH for removing N-extension related defines
-> > >  - Added comments as requested by Palmer
-> > >  - Fixed HIDELEG CSR programming
-> > >
-> > > Changes since v9:
-> > >  - Rebased patches on Linux-5.5-rc3
-> > >  - Squash PATCH19 and PATCH20 into PATCH5
-> > >  - Squash PATCH18 into PATCH11
-> > >  - Squash PATCH17 into PATCH16
-> > >  - Added ONE_REG interface for VCPU timer in PATCH13
-> > >  - Use HTIMEDELTA for VCPU timer in PATCH13
-> > >  - Updated KVM RISC-V mailing list in MAINTAINERS entry
-> > >  - Update KVM kconfig option to depend on RISCV_SBI and MMU
-> > >  - Check for SBI v0.2 and SBI v0.2 RFENCE extension at boot-time
-> > >  - Use SBI v0.2 RFENCE extension in VMID implementation
-> > >  - Use SBI v0.2 RFENCE extension in Stage2 MMU implementation
-> > >  - Use SBI v0.2 RFENCE extension in SBI implementation
-> > >  - Moved to RISC-V Hypervisor v0.5 draft spec
-> > >  - Updated Documentation/virt/kvm/api.txt for timer ONE_REG interface
-> > >
-> > > Changes since v8:
-> > >  - Rebased series on Linux-5.4-rc3 and Atish's SBI v0.2 patches
-> > >  - Use HRTIMER_MODE_REL instead of HRTIMER_MODE_ABS in timer emulation
-> > >  - Fixed kvm_riscv_stage2_map() to handle hugepages
-> > >  - Added patch to forward unhandled SBI calls to user-space
-> > >  - Added patch for iterative/recursive stage2 page table programming
-> > >  - Added patch to remove per-CPU vsip_shadow variable
-> > >  - Added patch to fix race-condition in kvm_riscv_vcpu_sync_interrupts()
-> > >
-> > > Changes since v7:
-> > >  - Rebased series on Linux-5.4-rc1 and Atish's SBI v0.2 patches
-> > >  - Removed PATCH1, PATCH3, and PATCH20 because these already merged
-> > >  - Use kernel doc style comments for ISA bitmap functions
-> > >  - Don't parse X, Y, and Z extension in riscv_fill_hwcap() because it will
-> > >    be added in-future
-> > >  - Mark KVM RISC-V kconfig option as EXPERIMENTAL
-> > >  - Typo fix in commit description of PATCH6 of v7 series
-> > >  - Use separate structs for CORE and CSR registers of ONE_REG interface
-> > >  - Explicitly include asm/sbi.h in kvm/vcpu_sbi.c
-> > >  - Removed implicit switch-case fall-through in kvm_riscv_vcpu_exit()
-> > >  - No need to set VSSTATUS.MXR bit in kvm_riscv_vcpu_unpriv_read()
-> > >  - Removed register for instruction length in kvm_riscv_vcpu_unpriv_read()
-> > >  - Added defines for checking/decoding instruction length
-> > >  - Added separate patch to forward unhandled SBI calls to userspace tool
-> > >
-> > > Changes since v6:
-> > >  - Rebased patches on Linux-5.3-rc7
-> > >  - Added "return_handled" in struct kvm_mmio_decode to ensure that
-> > >    kvm_riscv_vcpu_mmio_return() updates SEPC only once
-> > >  - Removed trap_stval parameter from kvm_riscv_vcpu_unpriv_read()
-> > >  - Updated git repo URL in MAINTAINERS entry
-> > >
-> > > Changes since v5:
-> > >  - Renamed KVM_REG_RISCV_CONFIG_TIMEBASE register to
-> > >    KVM_REG_RISCV_CONFIG_TBFREQ register in ONE_REG interface
-> > >  - Update SPEC in kvm_riscv_vcpu_mmio_return() for MMIO exits
-> > >  - Use switch case instead of illegal instruction opcode table for simplicity
-> > >  - Improve comments in stage2_remote_tlb_flush() for a potential remote TLB
-> > >   flush optimization
-> > >  - Handle all unsupported SBI calls in default case of
-> > >    kvm_riscv_vcpu_sbi_ecall() function
-> > >  - Fixed kvm_riscv_vcpu_sync_interrupts() for software interrupts
-> > >  - Improved unprivilege reads to handle traps due to Guest stage1 page table
-> > >  - Added separate patch to document RISC-V specific things in
-> > >    Documentation/virt/kvm/api.txt
-> > >
-> > > Changes since v4:
-> > >  - Rebased patches on Linux-5.3-rc5
-> > >  - Added Paolo's Acked-by and Reviewed-by
-> > >  - Updated mailing list in MAINTAINERS entry
-> > >
-> > > Changes since v3:
-> > >  - Moved patch for ISA bitmap from KVM prep series to this series
-> > >  - Make vsip_shadow as run-time percpu variable instead of compile-time
-> > >  - Flush Guest TLBs on all Host CPUs whenever we run-out of VMIDs
-> > >
-> > > Changes since v2:
-> > >  - Removed references of KVM_REQ_IRQ_PENDING from all patches
-> > >  - Use kvm->srcu within in-kernel KVM run loop
-> > >  - Added percpu vsip_shadow to track last value programmed in VSIP CSR
-> > >  - Added comments about irqs_pending and irqs_pending_mask
-> > >  - Used kvm_arch_vcpu_runnable() in-place-of kvm_riscv_vcpu_has_interrupt()
-> > >    in system_opcode_insn()
-> > >  - Removed unwanted smp_wmb() in kvm_riscv_stage2_vmid_update()
-> > >  - Use kvm_flush_remote_tlbs() in kvm_riscv_stage2_vmid_update()
-> > >  - Use READ_ONCE() in kvm_riscv_stage2_update_hgatp() for vmid
-> > >
-> > > Changes since v1:
-> > >  - Fixed compile errors in building KVM RISC-V as module
-> > >  - Removed unused kvm_riscv_halt_guest() and kvm_riscv_resume_guest()
-> > >  - Set KVM_CAP_SYNC_MMU capability only after MMU notifiers are implemented
-> > >  - Made vmid_version as unsigned long instead of atomic
-> > >  - Renamed KVM_REQ_UPDATE_PGTBL to KVM_REQ_UPDATE_HGATP
-> > >  - Renamed kvm_riscv_stage2_update_pgtbl() to kvm_riscv_stage2_update_hgatp()
-> > >  - Configure HIDELEG and HEDELEG in kvm_arch_hardware_enable()
-> > >  - Updated ONE_REG interface for CSR access to user-space
-> > >  - Removed irqs_pending_lock and use atomic bitops instead
-> > >  - Added separate patch for FP ONE_REG interface
-> > >  - Added separate patch for updating MAINTAINERS file
-> > >
-> > > Anup Patel (13):
-> > >   RISC-V: Add hypervisor extension related CSR defines
-> > >   RISC-V: Add initial skeletal KVM support
-> > >   RISC-V: KVM: Implement VCPU create, init and destroy functions
-> > >   RISC-V: KVM: Implement VCPU interrupts and requests handling
-> > >   RISC-V: KVM: Implement KVM_GET_ONE_REG/KVM_SET_ONE_REG ioctls
-> > >   RISC-V: KVM: Implement VCPU world-switch
-> > >   RISC-V: KVM: Handle MMIO exits for VCPU
-> > >   RISC-V: KVM: Handle WFI exits for VCPU
-> > >   RISC-V: KVM: Implement VMID allocator
-> > >   RISC-V: KVM: Implement stage2 page table programming
-> > >   RISC-V: KVM: Implement MMU notifiers
-> > >   RISC-V: KVM: Document RISC-V specific parts of KVM API
-> > >   RISC-V: KVM: Add MAINTAINERS entry
-> > >
-> > > Atish Patra (4):
-> > >   RISC-V: KVM: Add timer functionality
-> > >   RISC-V: KVM: FP lazy save/restore
-> > >   RISC-V: KVM: Implement ONE REG interface for FP registers
-> > >   RISC-V: KVM: Add SBI v0.1 support
-> > >
-> > >  Documentation/virt/kvm/api.rst          | 193 ++++-
-> > >  MAINTAINERS                             |  12 +
-> > >  arch/riscv/Kconfig                      |   1 +
-> > >  arch/riscv/Makefile                     |   1 +
-> > >  arch/riscv/include/asm/csr.h            |  87 +++
-> > >  arch/riscv/include/asm/kvm_host.h       | 266 +++++++
-> > >  arch/riscv/include/asm/kvm_types.h      |   7 +
-> > >  arch/riscv/include/asm/kvm_vcpu_timer.h |  44 ++
-> > >  arch/riscv/include/uapi/asm/kvm.h       | 128 +++
-> > >  arch/riscv/kernel/asm-offsets.c         | 156 ++++
-> > >  arch/riscv/kvm/Kconfig                  |  36 +
-> > >  arch/riscv/kvm/Makefile                 |  25 +
-> > >  arch/riscv/kvm/main.c                   | 118 +++
-> > >  arch/riscv/kvm/mmu.c                    | 802 +++++++++++++++++++
-> > >  arch/riscv/kvm/tlb.S                    |  74 ++
-> > >  arch/riscv/kvm/vcpu.c                   | 997 ++++++++++++++++++++++++
-> > >  arch/riscv/kvm/vcpu_exit.c              | 701 +++++++++++++++++
-> > >  arch/riscv/kvm/vcpu_sbi.c               | 185 +++++
-> > >  arch/riscv/kvm/vcpu_switch.S            | 400 ++++++++++
-> > >  arch/riscv/kvm/vcpu_timer.c             | 225 ++++++
-> > >  arch/riscv/kvm/vm.c                     |  97 +++
-> > >  arch/riscv/kvm/vmid.c                   | 120 +++
-> > >  drivers/clocksource/timer-riscv.c       |   9 +
-> > >  include/clocksource/timer-riscv.h       |  16 +
-> > >  include/uapi/linux/kvm.h                |   8 +
-> > >  25 files changed, 4699 insertions(+), 9 deletions(-)
-> > >  create mode 100644 arch/riscv/include/asm/kvm_host.h
-> > >  create mode 100644 arch/riscv/include/asm/kvm_types.h
-> > >  create mode 100644 arch/riscv/include/asm/kvm_vcpu_timer.h
-> > >  create mode 100644 arch/riscv/include/uapi/asm/kvm.h
-> > >  create mode 100644 arch/riscv/kvm/Kconfig
-> > >  create mode 100644 arch/riscv/kvm/Makefile
-> > >  create mode 100644 arch/riscv/kvm/main.c
-> > >  create mode 100644 arch/riscv/kvm/mmu.c
-> > >  create mode 100644 arch/riscv/kvm/tlb.S
-> > >  create mode 100644 arch/riscv/kvm/vcpu.c
-> > >  create mode 100644 arch/riscv/kvm/vcpu_exit.c
-> > >  create mode 100644 arch/riscv/kvm/vcpu_sbi.c
-> > >  create mode 100644 arch/riscv/kvm/vcpu_switch.S
-> > >  create mode 100644 arch/riscv/kvm/vcpu_timer.c
-> > >  create mode 100644 arch/riscv/kvm/vm.c
-> > >  create mode 100644 arch/riscv/kvm/vmid.c
-> > >  create mode 100644 include/clocksource/timer-riscv.h
-> > >
-> > > --
-> > > 2.25.1
-> > >
-> >
-> > The RISC-V H-extension is now frozen. Please refer to the latest
-> > RISC-V privilege specification v1.12 which is in public review.
-> > https://github.com/riscv/riscv-isa-manual/releases/download/riscv-privileged-20210915-public-review/riscv-privileged-20210915-public-review.pdf
-> >
-> > Currently, the RISC-V H-extension is on it's way to being ratified.
-> > https://wiki.riscv.org/display/TECH/ISA+Extensions+On+Deck+for+Freeze+Milestone
-> > https://wiki.riscv.org/display/TECH/ISA+Extensions+On+Deck+-+Ready+for+Ratification+Milestone
-> >
-> > Here's the announcement on twitter from Mark (CTO, RISC-V International)
-> > https://twitter.com/mark_riscv/status/1441375977624375296
-> >
-> > This means the KVM RISC-V series now satisfies the
-> > requirements of the Linux RISC-V patch acceptance policy.
-> >
-> > Can we consider the KVM RISC-V series for Linux-5.16 ?
-> >
-> > Regards,
-> > Anup
->
-> Hi Anup
->
-> I have tried this patchset, but have problems starting the kvm on host linux.
-> Both Qemu and Spike are unable to run kvm.
->
-> 1. Qemu: have the following error when starting kvm.
->
-> [   17.877101] Run /init as init process
-> [  217.908013] kvm [61]: VCPU exit error -14
-> [  217.908577] kvm [61]: SEPC=0x7e86a SSTATUS=0x4020 HSTATUS=0x200200080
-> [  217.909626] kvm [61]: SCAUSE=0x2 STVAL=0x20866633 HTVAL=0x0 HTINST=0x0
-> KVM_RUN failed: Bad address
->
-> 2. Spike: Stop at this line when starting kvm.
->
-> [    1.116675] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-> [    1.120875] NET: Registered PF_PACKET protocol family
-> [    1.123830] 9pnet: Installing 9P2000 support
-> [    1.127935] Key type dns_resolver registered
-> [    1.130390] debug_vm_pgtable: [debug_vm_pgtable         ]:
-> Validating architecture page table helpers
 
-It's strange everything works for me on QEMU at least. Although, I did
-not have time to try on Spike.
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> These are the git repo that I'm using:
-> Linux: https://github.com/avpatel/linux/tree/riscv_kvm_v20
-> Qemu: https://gitlab.com/qemu-project/qemu.git  (master branch)
-> Spike: https://github.com/riscv/riscv-isa-sim.git (master branch)
-> kvm-tool: https//github.com/avpatel/kvmtool.git
+tree:   https://github.com/sbates130272/linux-p2pmem.git p2pdma_user_cmb_v4
+head:   fafffd8dc69edfad4ffca8e67bd6520f3a1a004f
+commit: 6b808aa3a2e1b9d8d822db34fda24c4505add09b [19/24] lib/scatterlist: add check when merging zone device pages
+config: hexagon-randconfig-r045-20211001 (attached as .config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 962e503cc8bc411f7523cc393acae8aae425b1c4)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/sbates130272/linux-p2pmem/commit/6b808aa3a2e1b9d8d822db34fda24c4505add09b
+        git remote add sbates130272-p2pmem https://github.com/sbates130272/linux-p2pmem.git
+        git fetch --no-tags sbates130272-p2pmem p2pdma_user_cmb_v4
+        git checkout 6b808aa3a2e1b9d8d822db34fda24c4505add09b
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
 
-You should be using riscv_v9 branch of
-https//github.com/avpatel/kvmtool.git
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
->
-> Any other things that need to be updated to make it work?
+All errors (new ones prefixed by >>):
 
-If you want to use exact same QEMU which I am using then
-PULL riscv_aia_v2 branch of
-https://github.com/avpatel/qemu.git
+>> lib/scatterlist.c:417:7: error: implicit declaration of function 'zone_device_pages_are_mergeable' [-Werror,-Wimplicit-function-declaration]
+           if (!zone_device_pages_are_mergeable(a, b))
+                ^
+   lib/scatterlist.c:417:7: note: did you mean 'zone_device_pages_are_mergable'?
+   include/linux/mm.h:1164:20: note: 'zone_device_pages_are_mergable' declared here
+   static inline bool zone_device_pages_are_mergable(const struct page *a,
+                      ^
+   1 error generated.
 
-I have provided my QEMU log below as well.
 
-Regards,
-Anup
+vim +/zone_device_pages_are_mergeable +417 lib/scatterlist.c
 
->
-> Note, previous v19 patchset is okay.
->
-> Regards
-> Ley Foon
+   412	
+   413	static bool pages_are_mergeable(struct page *a, struct page *b)
+   414	{
+   415		if (page_to_pfn(a) != page_to_pfn(b) + 1)
+   416			return false;
+ > 417		if (!zone_device_pages_are_mergeable(a, b))
+   418			return false;
+   419		return true;
+   420	}
+   421	
 
-anup@anup-ubuntu64-vm:~/Work/riscv-test$ qemu-system-riscv64 -cpu
-rv64,x-h=true -M virt -m 512M -nographic -bios
-opensbi/build/platform/generic/firmware/fw_jump.bin -kernel
-./build-riscv64/arch/riscv/boot/Image -initrd ./rootfs_kvm_riscv64.img
--append "root=/dev/ram rw console=ttyS0 earlycon=sbi" -smp 6
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-OpenSBI v0.9-165-g4478809
-   ____                    _____ ____ _____
-  / __ \                  / ____|  _ \_   _|
- | |  | |_ __   ___ _ __ | (___ | |_) || |
- | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
- | |__| | |_) |  __/ | | |____) | |_) || |_
-  \____/| .__/ \___|_| |_|_____/|____/_____|
-        | |
-        |_|
+--azLHFNyN32YCQGCU
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-Platform Name             : riscv-virtio,qemu
-Platform Features         : medeleg
-Platform HART Count       : 6
-Platform IPI Device       : aclint-mswi
-Platform Timer Device     : aclint-mtimer @ 10000000Hz
-Platform Console Device   : uart8250
-Platform HSM Device       : ---
-Platform SysReset Device  : sifive_test
-Firmware Base             : 0x80000000
-Firmware Size             : 304 KB
-Runtime SBI Version       : 0.3
+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
 
-Domain0 Name              : root
-Domain0 Boot HART         : 2
-Domain0 HARTs             : 0*,1*,2*,3*,4*,5*
-Domain0 Region00          : 0x0000000002000000-0x000000000200ffff (I)
-Domain0 Region01          : 0x0000000080000000-0x000000008007ffff ()
-Domain0 Region02          : 0x0000000000000000-0xffffffffffffffff (R,W,X)
-Domain0 Next Address      : 0x0000000080200000
-Domain0 Next Arg1         : 0x0000000082200000
-Domain0 Next Mode         : S-mode
-Domain0 SysReset          : yes
-
-Boot HART ID              : 2
-Boot HART Domain          : root
-Boot HART ISA             : rv64imafdcsuh
-Boot HART Features        : scounteren,mcounteren,time
-Boot HART PMP Count       : 16
-Boot HART PMP Granularity : 4
-Boot HART PMP Address Bits: 54
-Boot HART MHPM Count      : 0
-Boot HART MIDELEG         : 0x0000000000001666
-Boot HART MEDELEG         : 0x0000000000f0b509
-[    0.000000] Linux version 5.15.0-rc3-00020-g3940bf8c7e02
-(anup@anup-ubuntu64-vm) (riscv64-unknown-linux-gnu-gcc (GCC) 9.2.0,
-GNU ld (GNU Binutils) 2.34) #3 SMP Mon Sep 27 11:55:05 IST 2021
-[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
-[    0.000000] Machine model: riscv-virtio,qemu
-[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-[    0.000000] printk: bootconsole [sbi0] enabled
-[    0.000000] efi: UEFI not found.
-[    0.000000] Zone ranges:
-[    0.000000]   DMA32    [mem 0x0000000080200000-0x000000009fffffff]
-[    0.000000]   Normal   empty
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x0000000080200000-0x000000009fffffff]
-[    0.000000] Initmem setup node 0 [mem 0x0000000080200000-0x000000009fffffff]
-[    0.000000] SBI specification v0.3 detected
-[    0.000000] SBI implementation ID=0x1 Version=0x9
-[    0.000000] SBI TIME extension detected
-[    0.000000] SBI IPI extension detected
-[    0.000000] SBI RFENCE extension detected
-[    0.000000] SBI SRST extension detected
-[    0.000000] SBI v0.2 HSM extension detected
-[    0.000000] riscv: ISA extensions acdfhimsu
-[    0.000000] riscv: ELF capabilities acdfim
-[    0.000000] percpu: Embedded 17 pages/cpu s31080 r8192 d30360 u69632
-[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 128775
-[    0.000000] Kernel command line: root=/dev/ram rw console=ttyS0 earlycon=sbi
-[    0.000000] Dentry cache hash table entries: 65536 (order: 7,
-524288 bytes, linear)
-[    0.000000] Inode-cache hash table entries: 32768 (order: 6, 262144
-bytes, linear)
-[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-[    0.000000] Virtual kernel memory layout:
-[    0.000000]       fixmap : 0xffffffcefee00000 - 0xffffffceff000000
- (2048 kB)
-[    0.000000]       pci io : 0xffffffceff000000 - 0xffffffcf00000000
- (  16 MB)
-[    0.000000]      vmemmap : 0xffffffcf00000000 - 0xffffffcfffffffff
- (4095 MB)
-[    0.000000]      vmalloc : 0xffffffd000000000 - 0xffffffdfffffffff
- (65535 MB)
-[    0.000000]       lowmem : 0xffffffe000000000 - 0xffffffe01fe00000
- ( 510 MB)
-[    0.000000]       kernel : 0xffffffff80000000 - 0xffffffffffffffff
- (2047 MB)
-[    0.000000] Memory: 461472K/522240K available (7348K kernel code,
-4928K rwdata, 4096K rodata, 2147K init, 299K bss, 60768K reserved, 0K
-cma-reserved)
-[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=6, Nodes=1
-[    0.000000] rcu: Hierarchical RCU implementation.
-[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=6.
-[    0.000000] rcu:     RCU debug extended QS entry/exit.
-[    0.000000]     Tracing variant of Tasks RCU enabled.
-[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
-is 25 jiffies.
-[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=6
-[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-[    0.000000] riscv-intc: 64 local interrupts mapped
-[    0.000000] plic: plic@c000000: mapped 53 interrupts with 6
-handlers for 12 contexts.
-[    0.000000] random: get_random_bytes called from
-start_kernel+0x4be/0x6d0 with crng_init=0
-[    0.000000] riscv_timer_init_dt: Registering clocksource cpuid [0] hartid [2]
-[    0.000000] clocksource: riscv_clocksource: mask:
-0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120
-ns
-[    0.000098] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps
-every 4398046511100ns
-[    0.007687] Console: colour dummy device 80x25
-[    0.022506] Calibrating delay loop (skipped), value calculated
-using timer frequency.. 20.00 BogoMIPS (lpj=40000)
-[    0.024665] pid_max: default: 32768 minimum: 301
-[    0.028336] Mount-cache hash table entries: 1024 (order: 1, 8192
-bytes, linear)
-[    0.037197] Mountpoint-cache hash table entries: 1024 (order: 1,
-8192 bytes, linear)
-[    0.099528] ASID allocator disabled
-[    0.102334] rcu: Hierarchical SRCU implementation.
-[    0.105587] EFI services will not be available.
-[    0.111331] smp: Bringing up secondary CPUs ...
-[    0.142352] smp: Brought up 1 node, 6 CPUs
-[    0.169452] devtmpfs: initialized
-[    0.188459] clocksource: jiffies: mask: 0xffffffff max_cycles:
-0xffffffff, max_idle_ns: 7645041785100000 ns
-[    0.191145] futex hash table entries: 2048 (order: 5, 131072 bytes, linear)
-[    0.203626] NET: Registered PF_NETLINK/PF_ROUTE protocol family
-[    0.274557] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
-[    0.287213] vgaarb: loaded
-[    0.289575] SCSI subsystem initialized
-[    0.296764] usbcore: registered new interface driver usbfs
-[    0.297502] usbcore: registered new interface driver hub
-[    0.299242] usbcore: registered new device driver usb
-[    0.331551] clocksource: Switched to clocksource riscv_clocksource
-[    0.392658] NET: Registered PF_INET protocol family
-[    0.394693] IP idents hash table entries: 8192 (order: 4, 65536
-bytes, linear)
-[    0.400489] tcp_listen_portaddr_hash hash table entries: 256
-(order: 1, 10240 bytes, linear)
-[    0.401236] TCP established hash table entries: 4096 (order: 3,
-32768 bytes, linear)
-[    0.402002] TCP bind hash table entries: 4096 (order: 5, 131072
-bytes, linear)
-[    0.402824] TCP: Hash tables configured (established 4096 bind 4096)
-[    0.405079] UDP hash table entries: 256 (order: 2, 24576 bytes, linear)
-[    0.406084] UDP-Lite hash table entries: 256 (order: 2, 24576 bytes, linear)
-[    0.409396] NET: Registered PF_UNIX/PF_LOCAL protocol family
-[    0.417946] RPC: Registered named UNIX socket transport module.
-[    0.418574] RPC: Registered udp transport module.
-[    0.418907] RPC: Registered tcp transport module.
-[    0.419565] RPC: Registered tcp NFSv4.1 backchannel transport module.
-[    0.420333] PCI: CLS 0 bytes, default 64
-[    0.421657] kvm [1]: hypervisor extension available
-[    0.422370] kvm [1]: using Sv48x4 G-stage page table format
-[    0.422849] kvm [1]: VMID 14 bits available
-[    0.430261] workingset: timestamp_bits=62 max_order=17 bucket_order=0
-[    0.433208] Unpacking initramfs...
-[    0.453698] NFS: Registering the id_resolver key type
-[    0.455536] Key type id_resolver registered
-[    0.455945] Key type id_legacy registered
-[    0.456826] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
-[    0.457448] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver
-Registering...
-[    0.460062] 9p: Installing v9fs 9p2000 file system support
-[    0.464474] NET: Registered PF_ALG protocol family
-[    0.472960] Block layer SCSI generic (bsg) driver version 0.4
-loaded (major 251)
-[    0.473738] io scheduler mq-deadline registered
-[    0.474674] io scheduler kyber registered
-[    0.500235] pci-host-generic 30000000.pci: host bridge
-/soc/pci@30000000 ranges:
-[    0.501816] pci-host-generic 30000000.pci:       IO
-0x0003000000..0x000300ffff -> 0x0000000000
-[    0.504308] pci-host-generic 30000000.pci:      MEM
-0x0040000000..0x007fffffff -> 0x0040000000
-[    0.504957] pci-host-generic 30000000.pci:      MEM
-0x0400000000..0x07ffffffff -> 0x0400000000
-[    0.506348] pci-host-generic 30000000.pci: Memory resource size
-exceeds max for 32 bits
-[    0.510652] pci-host-generic 30000000.pci: ECAM at [mem
-0x30000000-0x3fffffff] for [bus 00-ff]
-[    0.517617] pci-host-generic 30000000.pci: PCI host bridge to bus 0000:00
-[    0.519442] pci_bus 0000:00: root bus resource [bus 00-ff]
-[    0.520018] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-[    0.520772] pci_bus 0000:00: root bus resource [mem 0x40000000-0x7fffffff]
-[    0.521355] pci_bus 0000:00: root bus resource [mem 0x400000000-0x7ffffffff]
-[    0.524395] pci 0000:00:00.0: [1b36:0008] type 00 class 0x060000
-[    0.679883] Freeing initrd memory: 31888K
-[    0.815789] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-[    0.825590] printk: console [ttyS0] disabled
-[    0.829565] 10000000.uart: ttyS0 at MMIO 0x10000000 (irq = 2,
-base_baud = 230400) is a 16550A
-[    0.833171] printk: console [ttyS0] enabled
-[    0.833171] printk: console [ttyS0] enabled
-[    0.834330] printk: bootconsole [sbi0] disabled
-[    0.834330] printk: bootconsole [sbi0] disabled
-[    0.838103] [drm] radeon kernel modesetting enabled.
-[    0.866158] loop: module loaded
-[    0.872649] libphy: Fixed MDIO Bus: probed
-[    0.874646] tun: Universal TUN/TAP device driver, 1.6
-[    0.877187] e1000e: Intel(R) PRO/1000 Network Driver
-[    0.877444] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[    0.878396] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-[    0.878808] ehci-pci: EHCI PCI platform driver
-[    0.879603] ehci-platform: EHCI generic platform driver
-[    0.880429] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-[    0.880848] ohci-pci: OHCI PCI platform driver
-[    0.881460] ohci-platform: OHCI generic platform driver
-[    0.883955] usbcore: registered new interface driver uas
-[    0.884628] usbcore: registered new interface driver usb-storage
-[    0.886314] mousedev: PS/2 mouse device common for all mice
-[    0.890923] goldfish_rtc 101000.rtc: registered as rtc0
-[    0.892046] goldfish_rtc 101000.rtc: setting system clock to
-2021-10-01T10:33:38 UTC (1633084418)
-[    0.899464] syscon-poweroff soc:poweroff: pm_power_off already
-claimed for sbi_srst_power_off
-[    0.900071] syscon-poweroff: probe of soc:poweroff failed with error -16
-[    0.901020] sdhci: Secure Digital Host Controller Interface driver
-[    0.901287] sdhci: Copyright(c) Pierre Ossman
-[    0.901751] sdhci-pltfm: SDHCI platform and OF driver helper
-[    0.904482] usbcore: registered new interface driver usbhid
-[    0.904790] usbhid: USB HID core driver
-[    0.908639] NET: Registered PF_INET6 protocol family
-[    0.927664] Segment Routing with IPv6
-[    0.928044] In-situ OAM (IOAM) with IPv6
-[    0.928708] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[    0.932629] NET: Registered PF_PACKET protocol family
-[    0.934783] 9pnet: Installing 9P2000 support
-[    0.935834] Key type dns_resolver registered
-[    0.939287] debug_vm_pgtable: [debug_vm_pgtable         ]:
-Validating architecture page table helpers
-[    0.997012] Freeing unused kernel image (initmem) memory: 2144K
-[    1.009790] Run /init as init process
-           _  _
-          | ||_|
-          | | _ ____  _   _  _  _
-          | || |  _ \| | | |\ \/ /
-          | || | | | | |_| |/    \
-          |_||_|_| |_|\____|\_/\_/
-
-               Busybox Rootfs
-
-Please press Enter to activate this console.
-/ #
-/ #
-/ #
-/ #
-/ # ./apps/lkvm-static run -m 256 -c2 --console serial -p "console=ttyS0 earlyco
-n=sbi" -k ./apps/Image --debug
-  # lkvm run -k ./apps/Image -m 256 -c 2 --name guest-73
-  Info: (riscv/kvm.c) kvm__arch_load_kernel_image:115: Loaded kernel
-to 0x80200000 (19828224 bytes)
-  Info: (riscv/kvm.c) kvm__arch_load_kernel_image:126: Placing fdt at
-0x81c00000 - 0x8fffffff
-  Info: (virtio/mmio.c) virtio_mmio_init:325:
-virtio-mmio.devices=0x200@0x10000000:5
-  Info: (virtio/mmio.c) virtio_mmio_init:325:
-virtio-mmio.devices=0x200@0x10000200:6
-  Info: (virtio/mmio.c) virtio_mmio_init:325:
-virtio-mmio.devices=0x200@0x10000400:7
-[    0.000000] Linux version 5.15.0-rc3-00020-g3940bf8c7e02
-(anup@anup-ubuntu64-vm) (riscv64[   18.277856] random: fast init done
--unknown-linux-gnu-gcc (GCC) 9.2.0, GNU ld (GNU Binutils) 2.34) #3 SMP
-Mon Sep 27 11:55:05 IST 2021
-[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
-[    0.000000] Machine model: linux,dummy-virt
-[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-[    0.000000] printk: bootconsole [sbi0] enabled
-[    0.000000] efi: UEFI not found.
-[    0.000000] Zone ranges:
-[    0.000000]   DMA32    [mem 0x0000000080200000-0x000000008fffffff]
-[    0.000000]   Normal   empty
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x0000000080200000-0x000000008fffffff]
-[    0.000000] Initmem setup node 0 [mem 0x0000000080200000-0x000000008fffffff]
-[    0.000000] SBI specification v0.1 detected
-[    0.000000] riscv: ISA extensions acdfimsu
-[    0.000000] riscv: ELF capabilities acdfim
-[    0.000000] percpu: Embedded 17 pages/cpu s31080 r8192 d30360 u69632
-[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 64135
-[    0.000000] Kernel command line:  console=ttyS0 rw
-rootflags=trans=virtio,version=9p2000.L,cache=loose rootfstype=9p
-init=/virt/init  ip=dhcp console=ttyS0 earlycon=sbi
-[    0.000000] Dentry cache hash table entries: 32768 (order: 6,
-262144 bytes, linear)
-[    0.000000] Inode-cache hash table entries: 16384 (order: 5, 131072
-bytes, linear)
-[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-[    0.000000] Virtual kernel memory layout:
-[    0.000000]       fixmap : 0xffffffcefee00000 - 0xffffffceff000000
- (2048 kB)
-[    0.000000]       pci io : 0xffffffceff000000 - 0xffffffcf00000000
- (  16 MB)
-[    0.000000]      vmemmap : 0xffffffcf00000000 - 0xffffffcfffffffff
- (4095 MB)
-[    0.000000]      vmalloc : 0xffffffd000000000 - 0xffffffdfffffffff
- (65535 MB)
-[    0.000000]       lowmem : 0xffffffe000000000 - 0xffffffe00fe00000
- ( 254 MB)
-[    0.000000]       kernel : 0xffffffff80000000 - 0xffffffffffffffff
- (2047 MB)
-[    0.000000] Memory: 235480K/260096K available (7348K kernel code,
-4928K rwdata, 4096K rodata, 2147K init, 299K bss, 24616K reserved, 0K
-cma-reserved)
-[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
-[    0.000000] rcu: Hierarchical RCU implementation.
-[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=2.
-[    0.000000] rcu:     RCU debug extended QS entry/exit.
-[    0.000000]     Tracing variant of Tasks RCU enabled.
-[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
-is 25 jiffies.
-[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
-[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-[    0.000000] riscv-intc: 64 local interrupts mapped
-[    0.000000] plic: interrupt-controller@0c000000: mapped 1023
-interrupts with 2 handlers for 4 contexts.
-[    0.000000] random: get_random_bytes called from
-start_kernel+0x4be/0x6d0 with crng_init=0
-[    0.000000] riscv_timer_init_dt: Registering clocksource cpuid [0] hartid [0]
-[    0.000000] clocksource: riscv_clocksource: mask:
-0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120
-ns
-[    0.000105] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps
-every 4398046511100ns
-[    0.047895] Console: colour dummy device 80x25
-[    0.070813] Calibrating delay loop (skipped), value calculated
-using timer frequency.. 20.00 BogoMIPS (lpj=40000)
-[    0.097962] pid_max: default: 32768 minimum: 301
-[    0.120511] Mount-cache hash table entries: 512 (order: 0, 4096
-bytes, linear)
-[    0.139480] Mountpoint-cache hash table entries: 512 (order: 0,
-4096 bytes, linear)
-[    0.317809] ASID allocator disabled
-[    0.327541] rcu: Hierarchical SRCU implementation.
-[    0.356508] EFI services will not be available.
-[    0.403586] smp: Bringing up secondary CPUs ...
-[    0.458170] smp: Brought up 1 node, 2 CPUs
-[    0.529462] devtmpfs: initialized
-[    0.603517] clocksource: jiffies: mask: 0xffffffff max_cycles:
-0xffffffff, max_idle_ns: 7645041785100000 ns
-[    0.627416] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
-[    0.691307] NET: Registered PF_NETLINK/PF_ROUTE protocol family
-[    0.857061] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
-[    0.903144] vgaarb: loaded
-[    0.930196] SCSI subsystem initialized
-[    0.971577] usbcore: registered new interface driver usbfs
-[    0.992211] usbcore: registered new interface driver hub
-[    1.014991] usbcore: registered new device driver usb
-[    1.089570] clocksource: Switched to clocksource riscv_clocksource
-[    1.312442] NET: Registered PF_INET protocol family
-[    1.332297] IP idents hash table entries: 4096 (order: 3, 32768
-bytes, linear)
-[    1.368581] tcp_listen_portaddr_hash hash table entries: 128
-(order: 0, 5120 bytes, linear)
-[    1.389779] TCP established hash table entries: 2048 (order: 2,
-16384 bytes, linear)
-[    1.415814] TCP bind hash table entries: 2048 (order: 4, 65536 bytes, linear)
-[    1.451789] TCP: Hash tables configured (established 2048 bind 2048)
-[    1.492552] UDP hash table entries: 256 (order: 2, 24576 bytes, linear)
-[    1.516653] UDP-Lite hash table entries: 256 (order: 2, 24576 bytes, linear)
-[    1.551271] NET: Registered PF_UNIX/PF_LOCAL protocol family
-[    1.644965] RPC: Registered named UNIX socket transport module.
-[    1.662890] RPC: Registered udp transport module.
-[    1.672738] RPC: Registered tcp transport module.
-[    1.684608] RPC: Registered tcp NFSv4.1 backchannel transport module.
-[    1.699605] PCI: CLS 0 bytes, default 64
-[    1.712981] kvm [1]: hypervisor extension not available
-[    1.751290] workingset: timestamp_bits=62 max_order=16 bucket_order=0
-[    1.900334] NFS: Registering the id_resolver key type
-[    1.911896] Key type id_resolver registered
-[    1.920084] Key type id_legacy registered
-[    1.936737] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
-[    1.958536] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver
-Registering...
-[    1.984251] 9p: Installing v9fs 9p2000 file system support
-[    2.018560] NET: Registered PF_ALG protocol family
-[    2.031591] Block layer SCSI generic (bsg) driver version 0.4
-loaded (major 251)
-[    2.054728] io scheduler mq-deadline registered
-[    2.066140] io scheduler kyber registered
-[    2.123648] pci-host-generic 30000000.pci: host bridge /smb/pci ranges:
-[    2.140214] pci-host-generic 30000000.pci:       IO
-0x0000000000..0x000000ffff -> 0x0000000000
-[    2.159639] pci-host-generic 30000000.pci:      MEM
-0x0040000000..0x007fffffff -> 0x0040000000
-[    2.186223] pci-host-generic 30000000.pci: ECAM at [mem
-0x30000000-0x3fffffff] for [bus 00-01]
-[    2.212533] pci-host-generic 30000000.pci: PCI host bridge to bus 0000:00
-[    2.230607] pci_bus 0000:00: root bus resource [bus 00-01]
-[    2.244304] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
-[    2.261587] pci_bus 0000:00: root bus resource [mem 0x40000000-0x7fffffff]
-[    3.247473] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
-[    3.287475] printk: console [ttyS0] disabled
-[    3.301067] 3f8.U6_16550A: ttyS0 at MMIO 0x3f8 (irq = 4, base_baud
-= 115200) is a 16550A
-[    3.339067] printk: console [ttyS0] enabled
-[    3.339067] printk: console [ttyS0] enabled
-[    3.379379] printk: bootconsole [sbi0] disabled
-[    3.379379] printk: bootconsole [sbi0] disabled
-[    3.424926] 2f8.U6_16550A: ttyS1 at MMIO 0x2f8 (irq = 6, base_baud
-= 115200) is a 16550A
-[    3.474126] 3e8.U6_16550A: ttyS2 at MMIO 0x3e8 (irq = 7, base_baud
-= 115200) is a 16550A
-[    3.518645] 2e8.U6_16550A: ttyS3 at MMIO 0x2e8 (irq = 8, base_baud
-= 115200) is a 16550A
-[    3.569005] [drm] radeon kernel modesetting enabled.
-[    3.764244] loop: module loaded
-[    3.823261] libphy: Fixed MDIO Bus: probed
-[    3.874746] tun: Universal TUN/TAP device driver, 1.6
-[    3.955899] net eth0: Fail to set guest offload.
-[    3.974623] virtio_net virtio2 eth0: set_features() failed (-22);
-wanted 0x0000000000134829, left 0x0080000000134829
-[    4.039551] e1000e: Intel(R) PRO/1000 Network Driver
-[    4.066605] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[    4.094301] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-[    4.121598] ehci-pci: EHCI PCI platform driver
-[    4.139321] ehci-platform: EHCI generic platform driver
-[    4.163482] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-[    4.190231] ohci-pci: OHCI PCI platform driver
-[    4.211914] ohci-platform: OHCI generic platform driver
-[    4.262796] usbcore: registered new interface driver uas
-[    4.291123] usbcore: registered new interface driver usb-storage
-[    4.315228] mousedev: PS/2 mouse device common for all mice
-[    4.344139] sdhci: Secure Digital Host Controller Interface driver
-[    4.377006] sdhci: Copyright(c) Pierre Ossman
-[    4.400437] sdhci-pltfm: SDHCI platform and OF driver helper
-[    4.438821] usbcore: registered new interface driver usbhid
-[    4.464857] usbhid: USB HID core driver
-[    4.513075] NET: Registered PF_INET6 protocol family
-[    4.607772] Segment Routing with IPv6
-[    4.620961] In-situ OAM (IOAM) with IPv6
-[    4.647281] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[    4.689995] NET: Registered PF_PACKET protocol family
-[    4.722695] 9pnet: Installing 9P2000 support
-[    4.763733] Key type dns_resolver registered
-[    4.795638] debug_vm_pgtable: [debug_vm_pgtable         ]:
-Validating architecture page table helpers
-[    4.926827] Sending DHCP requests ., OK
-[    4.966566] IP-Config: Got DHCP answer from 192.168.33.1, my
-address is 192.168.33.15
-[    4.994534] IP-Config: Complete:
-[    5.006236]      device=eth0, hwaddr=02:15:15:15:15:15,
-ipaddr=192.168.33.15, mask=255.255.255.0, gw=192.168.33.1
-[    5.042790]      host=192.168.33.15, domain=, nis-domain=(none)
-[    5.065080]      bootserver=192.168.33.1, rootserver=0.0.0.0, rootpath=
-[    5.065399]      nameserver0=192.168.33.1
-[    5.183771] VFS: Mounted root (9p filesystem) on device 0:15.
-[    5.223392] devtmpfs: mounted
-[    5.470393] Freeing unused kernel image (initmem) memory: 2144K
-[    5.503256] Run /virt/init as init process
-Mounting...
-/ #
-/ # [    6.766025] random: fast init done
-/ # cat /proc/interrupts
-           CPU0       CPU1
-  1:        129          0  SiFive PLIC   5 Edge      virtio0
-  2:        175          0  SiFive PLIC   6 Edge      virtio1
-  3:         11          0  SiFive PLIC   7 Edge      virtio2
-  4:         57          0  SiFive PLIC   1 Edge      ttyS0
-  5:        765        884  RISC-V INTC   5 Edge      riscv-timer
-IPI0:         3         19  Rescheduling interrupts
-IPI1:       792        845  Function call interrupts
-IPI2:         0          0  CPU stop interrupts
-IPI3:         0          0  IRQ work interrupts
-IPI4:         0          0  Timer broadcast interrupts
-/ #
+--azLHFNyN32YCQGCU--
