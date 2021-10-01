@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C82441F017
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859C741F01D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354669AbhJAO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353560AbhJAO5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:57:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50231C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:55:49 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i25so39796306lfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:55:49 -0700 (PDT)
+        id S1354689AbhJAO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:58:05 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:46771 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231712AbhJAO6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:58:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HF8DBMItzWWxaU367RAPSYKUXH5BnlS9jAZczRe4ePU=;
-        b=aqXBI8UqLDWeTuVHGIBErjDsxio9yrdPfisehV9T9mJJk+ppF2b/RSy8QKzqoblHaJ
-         hktrYJaeXtvLqskrzNnGhVJzexc6aEdc98fBbQvK69Gb12EAMd3ESJqlkrS5oD7OvNgG
-         P97muReS34kLGu9NjHY+j5dwj2WyCWNHYTaed7xbvTrI2JzTGDs8qi8N0Qw7LkdjcWZX
-         LXXkcViUSEK9vm+haTULi+cNSHJvU7ahpKWlcRMN7cX+R5RpA0/f3OUd7Bkg7+NCE+Fi
-         1p1K49QgqzjgYEL1VL7M/h/E3btzs6Z5y5Av95Pp0dtJLF67v2p4aNsixGXoHBfrryKU
-         UTgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HF8DBMItzWWxaU367RAPSYKUXH5BnlS9jAZczRe4ePU=;
-        b=UOh+on5RI+b3TmDNf+2+sioGIrQagsskvNvkwFXrjku9c6MzSvyNMo2bBQemkXzkzl
-         4yjVEbYk3rQCy48tHKZKR/YeS+EGmJC+Mn1Fhzdn7yWq7w51YESYDmHXEnIp9epNjI/f
-         dVqrFF5CB28tJlpefzlkRZ6zHcBMuWrORrf9TnOJNvOhKTVTe2FLefQTo+WXzA4ytzNz
-         tMv+LCPNNSPTPvzAI1fE6pkYpIzg65qRUIK3GRnYXF+WyvJLhW2zFzhLX0ugwsN8U0xB
-         rrfaI2dUgxr9TnAe64i8V7U1dF32hUeurraAfFHoNg6GmBiiX3u3+kXh3CE61ehSC6ES
-         9uCw==
-X-Gm-Message-State: AOAM533vyVmRnhhIBUauvpQPtQIcA1U24hfH4PqXDXTKb6/NpUHELeqK
-        VsDKeegwJhB4z170y2PpvYLMlBYUQf2NDah0PBL0mA==
-X-Google-Smtp-Source: ABdhPJy2ug8Cm3POxLOQxU+SWQ8ZDieYeZsYoVZxo62Idbb6vc9hck4xUmbalsRsefa0nQdQjDMqTs5I8HVxPDG4gAE=
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr5935006lfd.167.1633100147608;
- Fri, 01 Oct 2021 07:55:47 -0700 (PDT)
+  d=axis.com; q=dns/txt; s=axis-central1; t=1633100180;
+  x=1664636180;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nneyMtZGtx34ePHZsYIxkoE60h6gX36qpZm5kXUIvxQ=;
+  b=bDpQDw+TyxB8GKFw9xOG+Ns7QA3oKbR7ooNQmkq20lLMDzvdCWA94StH
+   fTc30btirfSuRjECMNN7aibXxOE/Uw5kTBMrmJ+10IFQrqLB1QcGzT8Lc
+   +c1K9pevwV0qgpb7+PQgXisH+MVsZfcphSUYEbHZDD6QSWbemixl+UiSc
+   KnucmuDZ4IIgmuNE3SGqVHGR6QJjEeJkv8+MPbfH30aWeQRbxGQ/iwNWR
+   /3jY6hFuChKyyDddgRimfcdygAgaLpZxWd/I9mmRiUxOa5QwrE/TmDOD0
+   zcCP94F0WCJDN8jr2duWOJg2GWFGdtI1iYqSLyZvzY/A6N+eBY+hnQ+MM
+   Q==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: ptdump: Allow dumping user page tables
+Date:   Fri, 1 Oct 2021 16:56:03 +0200
+Message-ID: <20211001145603.22024-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-14-digetx@gmail.com>
- <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com> <aad7a508-7fb5-3418-f902-def80c365094@gmail.com>
-In-Reply-To: <aad7a508-7fb5-3418-f902-def80c365094@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 16:55:11 +0200
-Message-ID: <CAPDyKFppSuP6FfaBaGn3o+8WvTT=vJ8XMzZ47WPQ1JKiUYyEpw@mail.gmail.com>
-Subject: Re: [PATCH v13 13/35] drm/tegra: gr2d: Support generic power domain
- and runtime PM
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 at 16:29, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 01.10.2021 16:39, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote=
-:
-> >>
-> >> Add runtime power management and support generic power domains.
-> >>
-> >> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> >> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T12=
-4
-> >> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  drivers/gpu/drm/tegra/gr2d.c | 155 +++++++++++++++++++++++++++++++++-=
--
-> >
-> > [...]
-> >
-> >>  static int gr2d_remove(struct platform_device *pdev)
-> >> @@ -259,15 +312,101 @@ static int gr2d_remove(struct platform_device *=
-pdev)
-> >>                 return err;
-> >>         }
-> >>
-> >> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
-> >> +       pm_runtime_disable(&pdev->dev);
-> >
-> > There is no guarantee that the ->runtime_suspend() has been invoked
-> > here, which means that clock may be left prepared/enabled beyond this
-> > point.
-> >
-> > I suggest you call pm_runtime_force_suspend(), instead of
-> > pm_runtime_disable(), to make sure that gets done.
->
-> The pm_runtime_disable() performs the final synchronization, please see [=
-1].
->
-> [1]
-> https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/base/power/runt=
-ime.c#L1412
+Add a user_page_tables debugfs file (similar to kernel_page_tables) to
+dump out the userspace page tables for the current process.  This
+provides details which are not available via pagemap (such as the memory
+type) and is useful when, for example, debugging ->mmap()
+implementations.
 
-pm_runtime_disable() end up calling _pm_runtime_barrier(), which calls
-cancel_work_sync() if dev->power.request_pending has been set.
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ arch/arm64/mm/ptdump.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-If the work that was punted to the pm_wq in rpm_idle() has not been
-started yet, we end up just canceling it. In other words, there are no
-guarantees it runs to completion.
+diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+index 1c403536c9bb..91a62f07eae2 100644
+--- a/arch/arm64/mm/ptdump.c
++++ b/arch/arm64/mm/ptdump.c
+@@ -309,6 +309,7 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
+ 
+ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
+ {
++	struct mm_struct *mm = info->mm ?: current->mm;
+ 	unsigned long end = ~0UL;
+ 	struct pg_state st;
+ 
+@@ -328,7 +329,7 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
+ 		}
+ 	};
+ 
+-	ptdump_walk_pgd(&st.ptdump, info->mm, NULL);
++	ptdump_walk_pgd(&st.ptdump, mm, NULL);
+ }
+ 
+ static void __init ptdump_initialize(void)
+@@ -347,6 +348,16 @@ static struct ptdump_info kernel_ptdump_info = {
+ 	.base_addr	= PAGE_OFFSET,
+ };
+ 
++static struct addr_marker user_address_markers[] = {
++	{ 0,				"Userspace memory start" },
++	{ 0 /* TASK_SIZE_64 */,		"Userspace memory end" },
++	{ -1,				NULL },
++};
++
++static struct ptdump_info user_ptdump_info = {
++	.markers	= user_address_markers,
++};
++
+ void ptdump_check_wx(void)
+ {
+ 	struct pg_state st = {
+@@ -381,8 +392,10 @@ static int __init ptdump_init(void)
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	address_markers[KASAN_START_NR].start_address = KASAN_SHADOW_START;
+ #endif
++	user_address_markers[1].start_address = TASK_SIZE_64;
+ 	ptdump_initialize();
+ 	ptdump_debugfs_register(&kernel_ptdump_info, "kernel_page_tables");
++	ptdump_debugfs_register(&user_ptdump_info, "user_page_tables");
+ 	return 0;
+ }
+ device_initcall(ptdump_init);
+-- 
+2.28.0
 
-Moreover, use space may have bumped the usage count via sysfs for the
-device (pm_runtime_forbid()) to keep the device runtime resumed.
-
->
-> Calling pm_runtime_force_suspend() isn't correct because each 'enable'
-> must have the corresponding 'disable'. Hence there is no problem here.
-
-pm_runtime_force_suspend() calls pm_runtime_disable(), so I think that
-should be fine. No?
-
-Kind regards
-Uffe
