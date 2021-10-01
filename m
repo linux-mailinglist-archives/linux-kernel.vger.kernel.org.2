@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1060A41F0A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D81541F0EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354909AbhJAPML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:12:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58142 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354784AbhJAPMJ (ORCPT
+        id S1354934AbhJAPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354865AbhJAPPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:12:09 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633101024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b+a23XRD7uU4p22X7KfXj5YQzPH/GT531H4urCIWAV8=;
-        b=AePmzBoAYC3d2ni2OpWApffymvGLK2oEVm1mT1xaVzLo1Gcf4QvnxA8rA+MhxIqOpQ/ik3
-        UY/DTJAby70M3qp6LThmN0fViE+IrdlI/lTUoZAhV+kH1pXKRPsy9oEIJAPwRwOcYHM9IL
-        A3ORstNS/e11koReXZG8TLh67GkQvBv/ojLS9HWcUITM5biVKIZf553YBm0i7KxkL8vbDO
-        3Rywh0uoqABmNKukjhALtgraJEnHE53ixnZE1fc4f8DgOu5f8YL6H6zgUnTzxm3ib+BnM5
-        EYoGXaLSzTyOj7RH+70+Qo5W7QteTRW1nweA9DDi3kJgVFv3ImgNiOz5/p+BBQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633101024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b+a23XRD7uU4p22X7KfXj5YQzPH/GT531H4urCIWAV8=;
-        b=u3LSiu/rBuzrlGVbL7NXpPWKcOdN8Z3fWlOsvGePvR4t0+/xRPSMu6FXhlO6DR9FJLmtpy
-        wJ3iyBFlv2YD4lBw==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v10 13/28] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-In-Reply-To: <871r546b52.ffs@tglx>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-14-chang.seok.bae@intel.com> <871r546b52.ffs@tglx>
-Date:   Fri, 01 Oct 2021 17:10:23 +0200
-Message-ID: <87wnmw4w80.ffs@tglx>
+        Fri, 1 Oct 2021 11:15:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2AEC06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:13:19 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k23-20020a17090a591700b001976d2db364so7420458pji.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=epqGvL2xwASJxQVBW1Iu4NCeLliUpYCfDqhNCQQ6Qu4=;
+        b=RmL9twmGl1cux62in5hgYRWjsjWQRTNuCw+2HHC11ZPLnWbcNtrkeKO6qsTnVf+AQI
+         VOHQZCPXkfGqGtl5egoUHs0ILgIe2nryR/iHwonKaQCQvp4wXQ7b5dGcNp6j8Hc7F2p5
+         lF2wIk+KpQaBVIFo4HvybjQ5oAjVigRE6s2a7on8nAjU5NSqQ7ZxFvqeBgiw6FqjLH7Q
+         Tm2VM9gpKyNNiHlUPe7GanCql6KYPqZp3w3N+wwbu/Im+t270KnjjhVY8SUrLdKcoaaK
+         dk7IGEx9L9po679KQv6O2726NPU3pcl0iQmZGhHy9TcM9+xBtxeRPDelGVQqPTkJHoQT
+         D2JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=epqGvL2xwASJxQVBW1Iu4NCeLliUpYCfDqhNCQQ6Qu4=;
+        b=I62UNNovaTEFIGu1gcd9fmeqa41nSi+19omTsJZTTe9b0crGjno/f0QwFV04UOV23K
+         EricZrCjFgKQYzErwFpJRgNpyP6syx5452yWmvbWteMRk+cmJtRIgVwmgAATWacwHmza
+         8c+GoFnGYp+83G/ggS87n0qLygfqe0SqUpc2DKwFo97JPGJRnDpGIj7vFncx+EnVtv33
+         ZBVAi1aGhLPWdgW2OGw85dbpDQaokmZfPpMb5sEpwx8WakCQRNm5czRJvXUWILlicxKB
+         6AnzHEAruoaoP2UUmzkesWAF8sQ4OCBmlEpokupFyTuR4LgMRyLFnon5GELR1Y9s2JAw
+         jiVA==
+X-Gm-Message-State: AOAM533uNv7AI3YFAd2E42H0PXOQLPtSw60qjUY4sY8ALiB+sZEcMZjp
+        wcW58rkyDNfTBGDmGkPikkJAhw==
+X-Google-Smtp-Source: ABdhPJwayzCtSnysz+R4jnKXc7dOdpaqRQaloWu6UZiyZVUaDl75+fhEkUoWnJ6S2FZUlI8UcciF6Q==
+X-Received: by 2002:a17:902:aa91:b0:13e:292f:266a with SMTP id d17-20020a170902aa9100b0013e292f266amr10000865plr.10.1633101198760;
+        Fri, 01 Oct 2021 08:13:18 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v2sm5991593pje.15.2021.10.01.08.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 08:13:18 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 15:13:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     syzbot <syzbot+d6d011bc17bb751d4aa2@syzkaller.appspotmail.com>
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, glider@google.com,
+        hpa@zytor.com, jarkko@kernel.org, jmattson@google.com,
+        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Subject: Re: [syzbot] KMSAN: uninit-value in kvm_cpuid
+Message-ID: <YVclio5ny4ziKQer@google.com>
+References: <00000000000048342f05cd44efc0@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000048342f05cd44efc0@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01 2021 at 17:02, Thomas Gleixner wrote:
-> On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
->>  DEFINE_IDTENTRY(exc_device_not_available)
->>  {
->>  	unsigned long cr0 = read_cr0();
->
->> +	if (handle_xfd_event(&current->thread.fpu, regs))
->> +		return;
->
-> As I said before, this is wrong because at that point interrupts are disabled.
+On Thu, Sep 30, 2021, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    cd2c05533838 DO-NOT-SUBMIT: kmsan: suppress a report in ke..
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11373b17300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=978f1b2d7a5aad3e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d6d011bc17bb751d4aa2
+> compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b6c4cb300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fdb00f300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d6d011bc17bb751d4aa2@syzkaller.appspotmail.com
 
-So you want something like this:
-
-static bool handle_xfd_event(struct pt_regs *regs)
-{
-	u64 xfd_err, xfd_event, xfd, mask;
-	struct fpu *fpu;
-
-	if (!cpu_feature_enabled(X86_FEATURE_XFD))
-		return false;
-
-	rdmsrl_safe(MSR_IA32_XFD_ERR, &xfd_err);
-	if (!xfd_err)
-		return false;
-
-	wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
-
-	xfd_event = xfd_err & xfeatures_mask_user_dynamic;
-
-	/* Die if a non-handled feature raised the exception */
-	if (WARN_ON(!xfd_event))
-		return true;
-
-	/* Die if that happens in kernel space */
-	if (WARN_ON(!user_mode(regs)))
-		return false;
-
-	local_irq_enable();
-
-	/* Make sure that dynamic buffer expansion is permitted. */
-	if (dynamic_state_permitted(current, xfd_event) &&
-	    !realloc_xstate_buffer(current, xfd_event)) {
-		mask = xfeatures_mask_user_dynamic;
-                fpu = &current->thread.fpu;
-		xfd_write((fpu->state_mask & mask) ^ mask);
-	} else {
-		force_sig_fault(SIGILL, ILL_ILLOPC, error_get_trap_addr(regs));
-	}
-
-	local_irq_disable();
-	return true;
-}
-
-Along with a correct implementation of realloc_xstate_buffer().
-
-Thanks,
-
-        tglx
+#syz fix: KVM: x86: Swap order of CPUID entry "index" vs. "significant flag" checks
