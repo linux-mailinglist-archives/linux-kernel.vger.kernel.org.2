@@ -2,224 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A725941E79D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEFB41E7A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352420AbhJAGcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352311AbhJAGce (ORCPT
+        id S1352171AbhJAGks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:40:48 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:13836 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230397AbhJAGkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:32:34 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E686CC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id r7so5826554pjo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cFaWGqP2C9gymM7/xIsnUKhVwQDKbxB31NvGBdiYcLA=;
-        b=4ocJW6VsE5Ak+SaEWbMlGHnwUTU9mu716bs6zxu6tAUfmGk7yE5iplL38jYh3kA/KL
-         eeMU7inGCL3k2iHWHOINlMkO3QWTPaoP/nXdQf3VOnRvbkZ+PDCaZrDWCQpx8BsttabS
-         CK3d8lKluQkN02sVYw/hGwF/tpcBSvr8qxqIk4zhaudgU111Dl93oeyNYddynt+zKLai
-         ICYJOyZMKmY8kOpFOuaGbUylu09CBNQ6PlLnvdtXpWCGSFh5Nu+K08COIIptOvrPuUlM
-         zIPgWdgCE7LICZKVNF+RklvjO6335j2YDh9XvAdcavHfeZ6SHHP54wV/uEVdnzLHAyhG
-         TGug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cFaWGqP2C9gymM7/xIsnUKhVwQDKbxB31NvGBdiYcLA=;
-        b=3cJB6AsvrfR55L8RDcq0NaQUkurLLOptV6FI6C4FbuGjrCk+Ao5EILNlAxgDuPcYCQ
-         RcDnXv1rJzskJ0u1FV8/2bbnZzo54b37KQKyUzO00tqgtooAcwWJP3hrUSCXFi2b6aGk
-         DHn/bbHX08l7fB5T4h0jxKGRS3A6uacPSvmIs6vbYHYuBq95SsbNJQjKYGb/l9cMfDvT
-         1LexoC+Qo7MyQDw+VTnpBNupSpKiy0xh+BbaVfTqogXMyEYSebXjnCP+lIMy7D2CpTsZ
-         MIr07yPXWyYQ51IBqYMH16P42HR3/2bDAFhH7fWjxhdvhRIchB97R1R62FYJBZgaQjKl
-         uqdQ==
-X-Gm-Message-State: AOAM532/g6yQc9R1+UhCwmBfIt6m8s0DBetnPAZc7vb+LmOD0VN3ZzID
-        6xVguS/8aogpPqm2mYyf/mQpKpou3dcVFZ1OjCjLajmvFMw=
-X-Google-Smtp-Source: ABdhPJzugW2gRpjUhIx7TVpMheVS0CqLw1m8cGY1dM+98GPdSokT3IcybwpvmxO8Q8v7apOWVV89E0+k35pmEy/if2M=
-X-Received: by 2002:a17:90a:5ac2:: with SMTP id n60mr11297133pji.184.1633069850324;
- Thu, 30 Sep 2021 23:30:50 -0700 (PDT)
+        Fri, 1 Oct 2021 02:40:46 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1916Ht6c088858;
+        Fri, 1 Oct 2021 14:17:56 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 1 Oct
+ 2021 14:38:45 +0800
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [PATCH v3] media: aspeed: add debugfs
+Date:   Fri, 1 Oct 2021 14:34:32 +0800
+Message-ID: <20211001063431.8446-1-jammy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
- <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
- <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com> <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
-In-Reply-To: <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Thu, 30 Sep 2021 23:30:38 -0700
-Message-ID: <CAOesGMhGaS+jcAc_AcHX0AG+X5WEo2+83rFi_LcnfHAimO+CYg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1916Ht6c088858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:27 PM Olof Johansson <olof@lixom.net> wrote:
->
-> On Thu, Sep 30, 2021 at 11:03 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
-> > >
-> > > On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
-> > > > >
-> > > > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
-> > > > > >
-> > > > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
-> > > > > > <krzysztof.kozlowski@canonical.com> wrote:
-> > > > > > >
-> > > > > > > On 29/09/2021 01:56, Will McVicker wrote:
-> > > > > > > > This is v2 of the series of patches that modularizes a number of core
-> > > > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
-> > > > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
-> > > > > > > > series of "select XXX". This includes setting the following configs as
-> > > > > > > > tristate:
-> > > > > > > >
-> > > > > > > >  * COMMON_CLK_SAMSUNG
-> > > > > > > >  * EXYNOS_ARM64_COMMON_CLK
-> > > > > > > >  * PINCTRL_SAMSUNG
-> > > > > > > >  * PINCTRL_EXYNOS
-> > > > > > > >  * EXYNOS_PMU_ARM64
-> > > > > > > >  * EXYNOS_PM_DOMAINS
-> > > > > > > >
-> > > > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
-> > > > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
-> > > > > > > > The reason for these new configs is because we are not able to easily
-> > > > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
-> > > > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
-> > > > > > > > the ARM and ARM64 portions into two separate configs.
-> > > > > > > >
-> > > > > > > > Overall, these drivers didn't require much refactoring and converted to
-> > > > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
-> > > > > > > > was not able to boot test these changes. I'm mostly concerned about the
-> > > > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
-> > > > > > > > requesting help for testing these changes on the respective hardware.
-> > > > > > > >
-> > > > > > >
-> > > > > > > These are all not tested at all? In such case, since these are not
-> > > > > > > trivial changes, please mark the series as RFT.
-> > > > > > >
-> > > > > > > I will not be able to test these for some days, so it must wait.
-> > > > > > >
-> > > > > > >
-> > > > > > > Best regards,
-> > > > > > > Krzysztof
-> > > > > >
-> > > > > > +Cc Arnd and Olof,
-> > > > > >
-> > > > > > Hi Krzysztof,
-> > > > > >
-> > > > > > To avoid the scrambled conversation from the first patchset, I'm going
-> > > > > > to address all your general questions here in the cover letter thread
-> > > > > > so that it's easier for everyone to follow and reference in the
-> > > > > > future.
-> > > > >
-> > > > > This patchset shouldn't go in.
-> > > > >
-> > > > > GKI is a fantastic effort, since it finally seems like Google has the
-> > > > > backbone to put pressure on the vendors to upstream all their stuff.
-> > > > >
-> > > > > This patcheset dilutes and undermines all of that by opening up a
-> > > > > truck-size loophole, reducing the impact of GKI, and overall removes
-> > > > > leverage to get vendors to do the right thing.
-> > > > >
-> > > > > It's against our interest as a community to have this happen, since
-> > > > > there's no other reasonably justifiable reason to do this.
-> > > >
-> > > > Oolf, Geert, Krzysztof, Arnd,
-> > >
-> > > So close.
-> >
-> > I'm sorry, it's pretty late here and I'm sleepy and messed it up.
->
-> This email thread will be here in the morning too, this is the last
-> reply I will make tonight myself.
->
-> > > > I skimmed through the emails and you all make a lot of good points.
-> > >
-> > > I skimmed through this email and I think it adds a lot of new
-> > > complexity and fragility to solve a problem that doesn't really exist
-> > > for upstream, adding yet more config parameter combinations to build
-> > > and test for.
-> >
-> > How is this not an upstream problem? Having a minimal kernel with as
-> > many drivers as modules is of interest to upstream. And what's the
-> > complexity in having a config to easily disable a bunch of configs?
-> > The new config gives a clear config against which new
-> > platforms/systems should be developed against.
->
-> The approach for general kernel upstream has been to have the built-in
-> drivers needed to reach rootfs and runtime load the rest from there.
+To show video real-time information as below:
 
-Correction: The intent for our own multiconfigs have been this. If
-people want to go more granular and allow for modules of their core
-drivers, we have never pushed back (but the rest of the argument still
-stands).
+Caputre:
+  Signal              : Unlock
+  Width               : 1920
+  Height              : 1080
+  FRC                 : 30
 
-> For downstream embedded kernels, the right answer is to just exclude
-> the drivers you don't need.
->
-> I agree, some of this is probably useful work but
-> 1) It was posted as a burden on the maintainers of the legacy
-> platforms to test and make sure it's not broken
-> 2) It regresses distro configs, which we do care about
-> 3) Based on the above, it's unclear whether the people pushing for
-> this patchset cares about the existing platforms, they're looking to
-> solve a different problem
->
-> I didn't go back and look at who and where, but the person who started
-> justifying this work with making it easier for out-of-tree vendors to
-> integrate their non-contributed code killed this patchset.
->
-> Would the out-of-tree argument on its own kill it? No, but the above
-> complexities/cost, plus the actual intent behind the patchset did.
->
-> > > A much more valuable approach would be to work towards being able to
-> > > free up memory by un-probed drivers at the end of boot. That would
-> > > possibly benefit all platforms on all architectures.
-> >
-> > Sure it would help memory after boot, but it won't help with size on
-> > "disk", kernel load time, etc. And some of the devices have very tight
-> > boot requirements. Think battery operated outdoor cameras for example.
->
-> I would question the choices made if someone ships a camera with a
-> generic kernel (without a generic filesystem which at that point also
-> needs sufficient storage such that the kernel image size becomes a
-> secondary consideration). Once your storage is that constrained the
-> balance shifts towards a custom minimal config.
->
->
-> -Olof
+Performance:
+  Frame#              : 0
+  Frame Duration(ms)  :
+    Now               : 0
+    Min               : 0
+    Max               : 0
+  FPS                 : 0
+
+Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+---
+v3:
+ - let struct, aspeed_video_debugfs_ops, be const
+v2:
+ - Change the style of debugfs information
+ - Use Min/Max to remove test and branch cases
+---
+ drivers/media/platform/aspeed-video.c | 101 ++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+
+diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+index 8b3939b8052d..c5c413844441 100644
+--- a/drivers/media/platform/aspeed-video.c
++++ b/drivers/media/platform/aspeed-video.c
+@@ -21,6 +21,8 @@
+ #include <linux/videodev2.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
++#include <linux/debugfs.h>
++#include <linux/ktime.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-dev.h>
+ #include <media/v4l2-device.h>
+@@ -203,6 +205,14 @@ struct aspeed_video_buffer {
+ 	struct list_head link;
+ };
+ 
++struct aspeed_video_perf {
++	ktime_t last_sample;
++	u32 totaltime;
++	u32 duration;
++	u32 duration_min;
++	u32 duration_max;
++};
++
+ #define to_aspeed_video_buffer(x) \
+ 	container_of((x), struct aspeed_video_buffer, vb)
+ 
+@@ -241,6 +251,8 @@ struct aspeed_video {
+ 	unsigned int frame_left;
+ 	unsigned int frame_right;
+ 	unsigned int frame_top;
++
++	struct aspeed_video_perf perf;
+ };
+ 
+ #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
+@@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+ 		readl(video->base + reg));
+ }
+ 
++static void update_perf(struct aspeed_video_perf *p)
++{
++	p->duration =
++		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
++	p->totaltime += p->duration;
++
++	p->duration_max = max(p->duration, p->duration_max);
++	p->duration_min = min(p->duration, p->duration_min);
++}
++
+ static int aspeed_video_start_frame(struct aspeed_video *video)
+ {
+ 	dma_addr_t addr;
+@@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+ 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+ 			    VE_INTERRUPT_COMP_COMPLETE);
+ 
++	video->perf.last_sample = ktime_get();
++
+ 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+ 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
+ 
+@@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+ 		u32 frame_size = aspeed_video_read(video,
+ 						   VE_JPEG_COMP_SIZE_READ_BACK);
+ 
++		update_perf(&video->perf);
++
+ 		spin_lock(&video->lock);
+ 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+ 		buf = list_first_entry_or_null(&video->buffers,
+@@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+ 	det->width = MIN_WIDTH;
+ 	det->height = MIN_HEIGHT;
+ 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
++	memset(&video->perf, 0, sizeof(video->perf));
+ 
+ 	do {
+ 		if (tries) {
+@@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
+ 	struct aspeed_video *video = vb2_get_drv_priv(q);
+ 
+ 	video->sequence = 0;
++	video->perf.duration_max = 0;
++	video->perf.duration_min = 0xffffffff;
+ 
+ 	rc = aspeed_video_start_frame(video);
+ 	if (rc) {
+@@ -1517,6 +1546,72 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+ 	.buf_queue =  aspeed_video_buf_queue,
+ };
+ 
++#ifdef CONFIG_DEBUG_FS
++static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
++{
++	struct aspeed_video *v = s->private;
++
++	seq_puts(s, "\n");
++
++	seq_printf(s, "  %-20s:\t%s\n", "Signal",
++		   v->v4l2_input_status ? "Unlock" : "Lock");
++	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
++	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
++	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
++
++	seq_puts(s, "\n");
++
++	seq_puts(s, "Performance:\n");
++	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
++	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
++	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
++	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
++	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
++	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
++
++
++	return 0;
++}
++
++int aspeed_video_proc_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
++}
++
++static const struct file_operations aspeed_video_debugfs_ops = {
++	.owner   = THIS_MODULE,
++	.open    = aspeed_video_proc_open,
++	.read    = seq_read,
++	.llseek  = seq_lseek,
++	.release = single_release,
++};
++
++static struct dentry *debugfs_entry;
++
++static void aspeed_video_debugfs_remove(struct aspeed_video *video)
++{
++	debugfs_remove_recursive(debugfs_entry);
++	debugfs_entry = NULL;
++}
++
++static int aspeed_video_debugfs_create(struct aspeed_video *video)
++{
++	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL,
++						   video,
++						   &aspeed_video_debugfs_ops);
++	if (!debugfs_entry)
++		aspeed_video_debugfs_remove(video);
++
++	return debugfs_entry == NULL ? -EIO : 0;
++}
++#else
++static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
++static int aspeed_video_debugfs_create(struct aspeed_video *video)
++{
++	return 0;
++}
++#endif /* CONFIG_DEBUG_FS */
++
+ static int aspeed_video_setup_video(struct aspeed_video *video)
+ {
+ 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
+@@ -1708,6 +1803,10 @@ static int aspeed_video_probe(struct platform_device *pdev)
+ 		return rc;
+ 	}
+ 
++	rc = aspeed_video_debugfs_create(video);
++	if (rc)
++		dev_err(video->dev, "debugfs create failed\n");
++
+ 	return 0;
+ }
+ 
+@@ -1719,6 +1818,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
+ 
+ 	aspeed_video_off(video);
+ 
++	aspeed_video_debugfs_remove(video);
++
+ 	clk_unprepare(video->vclk);
+ 	clk_unprepare(video->eclk);
+ 
+-- 
+2.25.1
+
