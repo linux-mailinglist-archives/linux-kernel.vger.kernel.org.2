@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCDD41F24A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1D841F261
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhJAQnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        id S1355264AbhJAQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhJAQns (ORCPT
+        with ESMTP id S232109AbhJAQpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:43:48 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED050C06177F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:42:03 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id c7so9757241qka.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:42:03 -0700 (PDT)
+        Fri, 1 Oct 2021 12:45:43 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC82C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:43:59 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id q81so9762445qke.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:43:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aQbL8pXIXocxX9H8b/2nNpVZyCyOOEJ+2eX3f4bQsb0=;
-        b=wXbQCGjvp4GLHV24dvNcEoftO+b+jxKTmz0SX5x2HR0+WKCJvkioVyd5rDUb2pCsyj
-         o4MwxX88vRap3XoIMPH26Rln/IMU3v7eS9oXh7nMXv+ICLXwXcGBr6pwdAR2E1rH+e9G
-         KNiwnEpz/fBuGfOjg9/YJkFPWP0jIasbrHIi5xoe9Jmc2rwoK0LDzR/wU1wjZbeFmvdD
-         YEhrospe7J6JtzCADzrRF55UOLO4nVmGg2KvlI4Zwe+SSleJ/yccWHSdHTqccQETU7z8
-         JuQIl058Sfvctk3JRr/BoFuVNjJ4FsVaTDrdfRW23LqaJ1v9W9MoKhc5ea1v1Qa+zBz4
-         WCMA==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZkHivh3bEbZLhMTq7Ut+NDmzS9gwp+oTkR/9YPzzJdY=;
+        b=qgS6vyKL6kLFNLZNWng76Wz1ZCgI5yCPY1ptM5FkCkkzeKR9bCcYZrmKYSyLG6zXnS
+         5A6XyBlZo2yhX1Rwh6ZWvX3ETOVpFxY3G1i4IGuC/VXfO3XD2pIeyubl7Mc1PSNPBKpf
+         RoS6nDFT5/q2zTAod+VGZM1N+docYgtPmtd6mlTBSsi5TNX4EVmMHzcGQS/jS7zrAA/J
+         vwestgWBaoTJIwneEQMOv8NQQrrJZ3aosIAC69Hy6zmR6rCgeOUCpxEA849NBuL/yE0p
+         XZrKmoAtu3QDNYRqKWAZQib+wTT48yfeQZyBur79kF+z77EKBZD/KBxkyH/T93wEg3py
+         MuQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aQbL8pXIXocxX9H8b/2nNpVZyCyOOEJ+2eX3f4bQsb0=;
-        b=dGH5BpAdfjD85/+vcuF+QcsNCftpQP87h9rhKeSi2nh0u587FAd+UnnJggPdsc1lJE
-         T2nKYBew52Ed4K7UgOT1g6mjuGTODbIsbDNJdKK4qtc9F+FWtCUlbeaZOABuyvD3I2QW
-         mZ/JbsZux31lObfJlttiTg7Bg0xOHt4tDmbjQu8sNDz/62ch5et9unl5gxHhnF50gLcm
-         rFaI7HpE0Wk6QfZCG/AuvSEP/TTs49o7ZcHo+K86U7cBC4Er0pojcQNQEVqeVM+xbB6d
-         jCsybxbMA0GiDR/7RgyyqdGG1SW1nOBzgKu1UzHZotUjTe00mqPuq0EFDvwi18yGO/uc
-         Wbpw==
-X-Gm-Message-State: AOAM5315KGCQ4M6+/ypV3kqHgVSduUQvmtu3fQFKfbHpmCuez6E3+BL/
-        PyFZ8//bYR9e1BT2/nrqbutQMQ==
-X-Google-Smtp-Source: ABdhPJxEISaAeFeyVBnUq/DuWLEI7heMQCiSZdmm/c7At99cOYDg6yzkNykzMscChFIJiV2TCPFeTA==
-X-Received: by 2002:ae9:eb58:: with SMTP id b85mr10034928qkg.323.1633106522896;
-        Fri, 01 Oct 2021 09:42:02 -0700 (PDT)
-Received: from [192.168.3.43] (c-67-174-166-185.hsd1.ga.comcast.net. [67.174.166.185])
-        by smtp.gmail.com with ESMTPSA id p12sm3298438qkj.54.2021.10.01.09.42.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 09:42:02 -0700 (PDT)
-Subject: Re: [RFC PATCH 00/13] x86 User Interrupts support
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, qemu-devel@nongnu.org
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <456bf9cf-87b8-4c3d-ac0c-7e392bcf26de@www.fastmail.com>
- <YVXmGTo5Uzp44QQq@stefanha-x1.localdomain>
- <778d40fe-ad8e-fd7c-4caa-499910bb0925@intel.com>
- <YVc47ohb4nxrBO5h@stefanha-x1.localdomain>
-From:   Richard Henderson <richard.henderson@linaro.org>
-Message-ID: <3abdadab-9b7e-7cc0-5ec5-17fa385ce7d4@linaro.org>
-Date:   Fri, 1 Oct 2021 12:41:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZkHivh3bEbZLhMTq7Ut+NDmzS9gwp+oTkR/9YPzzJdY=;
+        b=cCM5o7t2wQRIUlGS9kXBFZ8kCGvtz1RiHQSf1/6/1u5gFbxwt9ZiRTeYj/dgmWnbVK
+         IP9bnJP1TDx8OYC1/2SPqSqN9dSf87sWHt1tVuGClHGSezqJFeVVnnSMWYa6l5JP5AhZ
+         QF4U5r8qnykLkFsRFNMPPQIWDqiE2RSvREsODksOe//TOrOYaXLbwU8uEh7ptVKAJidV
+         0J8jZuMjTQkShUSMVyXbDkq5JcrUnU5nSm0lt4LlCsBoFaCXHzOKfP+aN7llr3tqWsFN
+         Xt2nIYc4p4+55Eodaxu2dCTCbkX9G3bGvXE4Qk4ZivpvQRMXeAueU+1V1mazu7hHmiHp
+         QEMg==
+X-Gm-Message-State: AOAM5328dsG/uU8VNjVQpYOToqwffSnozeeItJokey3XpnA5PseyZUP1
+        NpMNt3c+TQYVC6XiTPDg6TNbdQ==
+X-Google-Smtp-Source: ABdhPJx9jAT1FbSD62wMql0yoUa1KdOwj8mED7wKfNAaarrNlESlHbQmkdDPUmEyIS3rHawgOy42OQ==
+X-Received: by 2002:a37:9f88:: with SMTP id i130mr10230773qke.478.1633106638551;
+        Fri, 01 Oct 2021 09:43:58 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id z19sm3544192qts.96.2021.10.01.09.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 09:43:57 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 12:43:56 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     =?utf-8?B?6KejIOWSj+aihQ==?= <yongmeixie@hotmail.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIG1tOnZt?=
+ =?utf-8?Q?scan=3A_fix_extra_adjustmen?= =?utf-8?Q?t?= for lruvec's
+ nonresident_age in case of reactivation
+Message-ID: <YVc6zOy51aaRgw2y@cmpxchg.org>
+References: <TYCP286MB1108D012DA436CA72029ACA7C5DF9@TYCP286MB1108.JPNP286.PROD.OUTLOOK.COM>
+ <YUnwsyE87TViMNMz@cmpxchg.org>
+ <TYYP286MB11150330E283CC23CB16E40CC5A29@TYYP286MB1115.JPNP286.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <YVc47ohb4nxrBO5h@stefanha-x1.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <TYYP286MB11150330E283CC23CB16E40CC5A29@TYYP286MB1115.JPNP286.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/21 12:35 PM, Stefan Hajnoczi wrote:
-> QEMU's TCG threads execute translated code. There are events that
-> require interrupting these threads. Today a check is performed at the
-> start of every translated block. Most of the time the check is false and
-> it's a waste of CPU.
+On Wed, Sep 22, 2021 at 02:27:24PM +0000, 解 咏梅 wrote:
+> But now, move_pages_to_lru didn't increase nonresident age for active rotation.
+> Back toinactive age, VM ONLY care about the pages left inactive lru, AKA activation and reclaiming.
+> Anyway reactivation is rare case, so whatever it contributes to nonresident age or not is ok to me.
 > 
-> User interrupts can eliminate the need for checks by interrupting TCG
-> threads when events occur.
+> But I am interested the logic how to guess the pages will be referenced again in the future.
+> If active reactivation does matter to nonresident age. why not active rotation? But, currently it doesn't.
 
-We used to use interrupts, and stopped because we need to wait until the guest is in a 
-stable state.  The guest is always in a stable state at the beginning of each TB.
+Can you point me to the code you're referring to? Looking at
+move_pages_to_lru(), any pages with PageActive() set count toward the
+non-resident age. That means activations from the inactive list, as
+well as rotations on the active list, increase the nonresident age.
 
-See 378df4b2375.
+As to your question which one is right: the original workingset patch
+was wrong not to count activations and reactivations. If we see a page
+referenced in memory, it means it's hotter than the page that's not
+refaulting -> nonresident age increses.
 
+So the code as it is now looks correct to me.
 
-r~
+Thanks
