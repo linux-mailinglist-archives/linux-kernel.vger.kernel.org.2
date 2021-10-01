@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B08141F6E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE1A41F6ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhJAV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 17:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbhJAV3U (ORCPT
+        id S1354861AbhJAVa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 17:30:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59858 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhJAVay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:29:20 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8A5C061775;
-        Fri,  1 Oct 2021 14:27:36 -0700 (PDT)
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id EDCFD22234;
-        Fri,  1 Oct 2021 23:27:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1633123653;
+        Fri, 1 Oct 2021 17:30:54 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633123748;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Hs1kuhtnkFaEUv7FOtmkbn3il4fEyf/TubyN0s51Qjs=;
-        b=pY8czqpPVJDZp88B7bjcqtt/r683duydVxmmZkByi2uSi32S31xjFE+UkddFCo3cXZhbnt
-        3z5xNjGI67Q9WWaKyr6AtW4bq2/u6j5qdGEPl6fwTTMYomICeMEfEFREXDcSM/gSDU+mT5
-        Xc0jrMvGo/Izvm+ySanQp1ahvTfboN4=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH] spi: spi-nxp-fspi: don't depend on a specific node name erratum workaround
-Date:   Fri,  1 Oct 2021 23:27:26 +0200
-Message-Id: <20211001212726.159437-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVh65H2Fp5ijtkJEhRPg4UVo19RUyKFUjPzFX2ov0uk=;
+        b=y8YhK2p3xqDnbz3PXfLBx/isyD7z2c/RlgGuOoLzyg077RwbT+p6IINOBUH4bI+nh9tnfx
+        vD1dWiFGoxqhYpBO12KbpPRVUJIvEwj9hfy7lUksnqd3HNIGYkTUbbxr1D+40jpdBL8Wdt
+        ek6MpA1lv5vfxCGJHqjMVjreYEDQO55GDlO5q0cf62L1/uR03gILXZkFj/Rb/0mhUePTVC
+        alts5PtCmS4ZGs1GMqXwynAQc0ZeQ8uNCPvh0Kx9cwU44ySemsmre0aPij/A4ZJrcRHUD/
+        a13iBnIpLXaVWRXOZB6Ob4pVlB5iCBRUDTq8QzHbE7HNb/IzXNwhbuoNyOYCfw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633123748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVh65H2Fp5ijtkJEhRPg4UVo19RUyKFUjPzFX2ov0uk=;
+        b=XO7TyMsBSh50qLM3BMaabrrwikLWLxoZtkPtuva7JEVZ4/1LK5CdQaUFP/YT1bQ7ZpN6zN
+        GWbMV8jfecxCoeBQ==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Randy E Witt <randy.e.witt@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ramesh Thomas <ramesh.thomas@intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
+In-Reply-To: <0364c572-4bc2-4538-8d65-485dbfa81f0d@www.fastmail.com>
+References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+ <20210913200132.3396598-12-sohil.mehta@intel.com>
+ <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
+ <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
+ <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com>
+ <877dex7tgj.ffs@tglx>
+ <b537a890-4b9f-462e-8c17-5c7aa9b60138@www.fastmail.com>
+ <87tui162am.ffs@tglx>
+ <25ba1e1f-c05b-4b67-b547-6b5dbc958a2f@www.fastmail.com>
+ <87pmsp5aqx.ffs@tglx>
+ <0364c572-4bc2-4538-8d65-485dbfa81f0d@www.fastmail.com>
+Date:   Fri, 01 Oct 2021 23:29:07 +0200
+Message-ID: <875yug4eos.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 7e71b85473f8 ("arm64: dts: ls1028a: fix node name for the
-sysclk") the sysclk node name was renamed and broke the erratum
-workaround because it tries to fetch a device tree node by its name,
-which is very fragile in general. We don't even need the sysclk node
-because the only possible sysclk frequency input is 100MHz. In fact, the
-erratum says it applies if SYS_PLL_RAT is 3, not that the platform clock
-is 300 MHz. Make the workaround more reliable and just drop the unneeded
-sysclk lookup.
+On Fri, Oct 01 2021 at 08:13, Andy Lutomirski wrote:
 
-For reference, the error during the bootup is the following:
-[    4.898400] nxp-fspi 20c0000.spi: Errata cannot be executed. Read via IP bus may not work
+> On Fri, Oct 1, 2021, at 2:56 AM, Thomas Gleixner wrote:
+>> On Thu, Sep 30 2021 at 21:41, Andy Lutomirski wrote:
+>>> On Thu, Sep 30, 2021, at 5:01 PM, Thomas Gleixner wrote:
+>>
+>>> Now that I read the docs some more, I'm seriously concerned about this
+>>> XSAVE design.  XSAVES with UINTR is destructive -- it clears UINV.  If
+>>> we actually use this, then the whole last_cpu "preserve the state in
+>>> registers" optimization goes out the window.  So does anything that
+>>> happens to assume that merely saving the state doesn't destroy it on
+>>> respectable modern CPUs XRSTORS will #GP if you XRSTORS twice, which
+>>> makes me nervous and would need a serious audit of our XRSTORS paths.
+>>
+>> I have no idea what you are fantasizing about. You can XRSTORS five
+>> times in a row as long as your XSTATE memory image is correct.
+>
+> I'm just reading TFM, which is some kind of dystopian fantasy.
+>
+> 11.8.2.4 XRSTORS
+>
+> Before restoring the user-interrupt state component, XRSTORS verifies
+> that UINV is 0. If it is not, XRSTORS causes a general-protection
+> fault (#GP) before loading any part of the user-interrupt state
+> component. (UINV is IA32_UINTR_MISC[39:32]; XRSTORS does not check the
+> contents of the remainder of that MSR.)
 
-Fixes: 82ce7d0e74b6 ("spi: spi-nxp-fspi: Implement errata workaround for LS1028A")
-Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/spi/spi-nxp-fspi.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+Duh. I was staring at the SDM and searching for a hint. Stupid me!
 
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index a66fa97046ee..2b0301fc971c 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -33,6 +33,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/bitops.h>
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/delay.h>
-@@ -315,6 +316,7 @@
- #define NXP_FSPI_MIN_IOMAP	SZ_4M
- 
- #define DCFG_RCWSR1		0x100
-+#define SYS_PLL_RAT		GENMASK(6, 2)
- 
- /* Access flash memory using IP bus only */
- #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
-@@ -926,9 +928,8 @@ static void erratum_err050568(struct nxp_fspi *f)
- 		{ .family = "QorIQ LS1028A" },
- 		{ /* sentinel */ }
- 	};
--	struct device_node *np;
- 	struct regmap *map;
--	u32 val = 0, sysclk = 0;
-+	u32 val, sys_pll_ratio;
- 	int ret;
- 
- 	/* Check for LS1028A family */
-@@ -937,7 +938,6 @@ static void erratum_err050568(struct nxp_fspi *f)
- 		return;
- 	}
- 
--	/* Compute system clock frequency multiplier ratio */
- 	map = syscon_regmap_lookup_by_compatible("fsl,ls1028a-dcfg");
- 	if (IS_ERR(map)) {
- 		dev_err(f->dev, "No syscon regmap\n");
-@@ -948,23 +948,11 @@ static void erratum_err050568(struct nxp_fspi *f)
- 	if (ret < 0)
- 		goto err;
- 
--	/* Strap bits 6:2 define SYS_PLL_RAT i.e frequency multiplier ratio */
--	val = (val >> 2) & 0x1F;
--	WARN(val == 0, "Strapping is zero: Cannot determine ratio");
-+	sys_pll_ratio = FIELD_GET(SYS_PLL_RAT, val);
-+	dev_dbg(f->dev, "val: 0x%08x, sys_pll_ratio: %d\n", val, sys_pll_ratio);
- 
--	/* Compute system clock frequency */
--	np = of_find_node_by_name(NULL, "clock-sysclk");
--	if (!np)
--		goto err;
--
--	if (of_property_read_u32(np, "clock-frequency", &sysclk))
--		goto err;
--
--	sysclk = (sysclk * val) / 1000000; /* Convert sysclk to Mhz */
--	dev_dbg(f->dev, "val: 0x%08x, sysclk: %dMhz\n", val, sysclk);
--
--	/* Use IP bus only if PLL is 300MHz */
--	if (sysclk == 300)
-+	/* Use IP bus only if platform clock is 300MHz */
-+	if (sys_pll_ratio == 3)
- 		f->devtype_data->quirks |= FSPI_QUIRK_USE_IP_ONLY;
- 
- 	return;
--- 
-2.30.2
+> So if UINV is set in the memory image and you XRSTORS five times in a
+> row, the first one will work assuming UINV was zero.  The second one
+> will #GP.
 
+Yes. I can see what you mean now :)
+
+> 11.8.2.3 XSAVES
+> After saving the user-interrupt state component, XSAVES clears UINV. (UINV is IA32_UINTR_MISC[39:32];
+> XSAVES does not modify the remainder of that MSR.)
+>
+> So if we're running a UPID-enabled user task and we switch to a kernel
+> thread, we do XSAVES and UINV is cleared.  Then we switch back to the
+> same task and don't do XRSTORS (or otherwise write IA32_UINTR_MISC)
+> and UINV is still clear.
+
+Yes, that has to be mopped up on the way to user space.
+
+> And we had better clear UINV when running a kernel thread because the
+> UPID might get freed or the kernel thread might do some CPL3
+> shenanigans (via EFI, perhaps? I don't know if any firmwares actually
+> do this).
+
+Right. That's what happens already with the current pile.
+
+> So all this seems to put UINV into the "independent" category of
+> feature along with LBR.  And the 512-byte wastes from extra copies of
+> the legacy area and the loss of the XMODIFIED optimization will just
+> be collateral damage.
+
+So we'd end up with two XSAVES on context switch. We can simply do:
+
+        XSAVES();
+        fpu.state.xtsate.uintr.uinv = 0;
+
+which allows to do as many XRSTORS in a row as we want. Only the final
+one on the way to user space will have to restore the real vector if the
+register state is not valid:
+
+       if (fpu_state_valid()) {
+            if (needs_uinv(current)
+               wrmsrl(UINV, vector);
+       } else {
+            if (needs_uinv(current)
+               fpu.state.xtsate.uintr.uinv = vector;
+            XRSTORS();
+       }
+
+Hmm?
+
+Thanks,
+
+        tglx
