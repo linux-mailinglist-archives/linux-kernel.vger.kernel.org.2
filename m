@@ -2,318 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883241E99F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFC741E9A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352943AbhJAJf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhJAJfZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:35:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30419C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 02:33:41 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id BBE1C1F4539F
-Subject: Re: [PATCH v5 6/6] sched/fair: Consider SMT in ASYM_PACKING load
- balance
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com>
- <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <78608a82-93b8-8036-2bf0-65f53f2f5120@collabora.com>
-Date:   Fri, 1 Oct 2021 11:33:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1353013AbhJAJfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:35:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59914 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352995AbhJAJfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:35:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="310926100"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="310926100"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 02:33:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="556212054"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2021 02:33:47 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mWEvL-00010i-9i; Fri, 01 Oct 2021 09:33:47 +0000
+Date:   Fri, 01 Oct 2021 17:33:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/kspp-fixes] BUILD SUCCESS
+ 3831a0d40886a227dfa6ce85819f50acb634ab41
+Message-ID: <6156d5f2.1tO5vtoZEPVYe4qO%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-fixes
+branch HEAD: 3831a0d40886a227dfa6ce85819f50acb634ab41  firewire: Remove function callback casts
 
-Please see the bisection report below about a boot failure on
-rk3288-rock64.
+elapsed time: 1420m
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+configs tested: 287
+configs skipped: 3
 
-Some more details can be found here:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-  https://linux.kernelci.org/test/case/id/6155a4b0836c79a98f99a31d/
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20210930
+i386                 randconfig-c001-20211001
+powerpc              randconfig-c003-20210930
+arm                         s3c6400_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                   secureedge5410_defconfig
+m68k                         amcore_defconfig
+sh                            shmin_defconfig
+powerpc                   motionpro_defconfig
+sh                           se7750_defconfig
+arm                       imx_v6_v7_defconfig
+mips                           xway_defconfig
+csky                             alldefconfig
+mips                        workpad_defconfig
+arc                        vdk_hs38_defconfig
+mips                        maltaup_defconfig
+arm                        vexpress_defconfig
+arm                       multi_v4t_defconfig
+powerpc                        cell_defconfig
+mips                     loongson2k_defconfig
+mips                         mpc30x_defconfig
+mips                          rb532_defconfig
+arm                     eseries_pxa_defconfig
+sh                   sh7770_generic_defconfig
+x86_64                              defconfig
+mips                        vocore2_defconfig
+arm                        spear3xx_defconfig
+sh                           se7722_defconfig
+alpha                            alldefconfig
+arm                           h3600_defconfig
+arm                          ep93xx_defconfig
+arc                              allyesconfig
+powerpc                    amigaone_defconfig
+sparc                       sparc64_defconfig
+mips                            gpr_defconfig
+sh                           se7721_defconfig
+sh                   sh7724_generic_defconfig
+mips                         db1xxx_defconfig
+powerpc                       eiger_defconfig
+powerpc                          allmodconfig
+sh                           se7619_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                                  defconfig
+riscv                            alldefconfig
+powerpc                      cm5200_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     kilauea_defconfig
+sh                               alldefconfig
+mips                           mtx1_defconfig
+arm                       aspeed_g5_defconfig
+sh                        sh7763rdp_defconfig
+ia64                          tiger_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                          gemini_defconfig
+powerpc                       ebony_defconfig
+arm                            mmp2_defconfig
+arc                        nsim_700_defconfig
+arm                       netwinder_defconfig
+riscv             nommu_k210_sdcard_defconfig
+xtensa                              defconfig
+mips                          ath79_defconfig
+microblaze                          defconfig
+powerpc                     tqm8541_defconfig
+powerpc                      mgcoge_defconfig
+mips                          rm200_defconfig
+powerpc                     mpc83xx_defconfig
+arm                       mainstone_defconfig
+mips                     loongson1b_defconfig
+powerpc                      ppc64e_defconfig
+sh                           se7780_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      ppc40x_defconfig
+arm                           viper_defconfig
+arm                       imx_v4_v5_defconfig
+arm                           corgi_defconfig
+arm                        magician_defconfig
+mips                          ath25_defconfig
+powerpc                     stx_gp3_defconfig
+mips                         tb0287_defconfig
+powerpc                     powernv_defconfig
+arm                        oxnas_v6_defconfig
+arm                        spear6xx_defconfig
+sh                            titan_defconfig
+sh                             espt_defconfig
+powerpc                        icon_defconfig
+arm                            zeus_defconfig
+sh                           se7724_defconfig
+sparc                            allyesconfig
+arm                   milbeaut_m10v_defconfig
+arm                          iop32x_defconfig
+mips                         cobalt_defconfig
+sh                          sdk7786_defconfig
+powerpc                     ksi8560_defconfig
+h8300                       h8s-sim_defconfig
+arm                         bcm2835_defconfig
+arm                            lart_defconfig
+sparc64                             defconfig
+arm                           tegra_defconfig
+m68k                         apollo_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                     cu1000-neo_defconfig
+mips                        qi_lb60_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                    klondike_defconfig
+powerpc                     taishan_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                      pcm030_defconfig
+powerpc                 linkstation_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      tqm8xx_defconfig
+m68k                            q40_defconfig
+arm                  colibri_pxa270_defconfig
+sh                        edosk7705_defconfig
+arm                  colibri_pxa300_defconfig
+arm                         at91_dt_defconfig
+sh                ecovec24-romimage_defconfig
+arm                             ezx_defconfig
+arm                         assabet_defconfig
+m68k                       m5475evb_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+m68k                        m5272c3_defconfig
+sh                              ul2_defconfig
+sh                     magicpanelr2_defconfig
+openrisc                            defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8540_defconfig
+arm                        multi_v7_defconfig
+m68k                        m5307c3_defconfig
+sh                           se7751_defconfig
+arm                          simpad_defconfig
+powerpc                     ep8248e_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     pseries_defconfig
+m68k                        stmark2_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                           u8500_defconfig
+xtensa                       common_defconfig
+arc                        nsimosci_defconfig
+arm                              alldefconfig
+mips                          malta_defconfig
+riscv                          rv32_defconfig
+s390                          debug_defconfig
+csky                                defconfig
+ia64                             alldefconfig
+ia64                             allyesconfig
+powerpc                    socrates_defconfig
+um                             i386_defconfig
+sh                        apsh4ad0a_defconfig
+mips                       bmips_be_defconfig
+mips                       lemote2f_defconfig
+powerpc                     tqm5200_defconfig
+powerpc64                           defconfig
+x86_64                           alldefconfig
+mips                            e55_defconfig
+mips                      malta_kvm_defconfig
+arm                         palmz72_defconfig
+arm                          ixp4xx_defconfig
+powerpc                     mpc512x_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                       aspeed_g4_defconfig
+arm                            qcom_defconfig
+arm                           sama7_defconfig
+powerpc                   microwatt_defconfig
+powerpc                      obs600_defconfig
+ia64                        generic_defconfig
+sh                            hp6xx_defconfig
+powerpc                     redwood_defconfig
+arm                       omap2plus_defconfig
+sh                          r7780mp_defconfig
+powerpc                         ps3_defconfig
+arc                          axs101_defconfig
+powerpc                 mpc834x_itx_defconfig
+mips                       capcella_defconfig
+arm                          pxa168_defconfig
+xtensa                    xip_kc705_defconfig
+arc                         haps_hs_defconfig
+arc                           tb10x_defconfig
+arm                  randconfig-c002-20210930
+x86_64               randconfig-c001-20210930
+x86_64               randconfig-c001-20211001
+arm                  randconfig-c002-20211001
+ia64                                defconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a003-20211001
+x86_64               randconfig-a005-20211001
+x86_64               randconfig-a001-20211001
+x86_64               randconfig-a002-20211001
+x86_64               randconfig-a004-20211001
+x86_64               randconfig-a006-20211001
+x86_64               randconfig-a004-20210930
+x86_64               randconfig-a001-20210930
+x86_64               randconfig-a002-20210930
+x86_64               randconfig-a005-20210930
+x86_64               randconfig-a006-20210930
+x86_64               randconfig-a003-20210930
+i386                 randconfig-a003-20210930
+i386                 randconfig-a001-20210930
+i386                 randconfig-a004-20210930
+i386                 randconfig-a002-20210930
+i386                 randconfig-a006-20210930
+i386                 randconfig-a005-20210930
+i386                 randconfig-a001-20211001
+i386                 randconfig-a003-20211001
+i386                 randconfig-a005-20211001
+i386                 randconfig-a002-20211001
+i386                 randconfig-a004-20211001
+i386                 randconfig-a006-20211001
+arc                  randconfig-r043-20210930
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-It looks like some i.MX arm64 platforms also regressed with
-next-20210920 although it hasn't been verified yet whether that's
-due to the same commit:
+clang tested configs:
+i386                 randconfig-c001-20210930
+arm                  randconfig-c002-20210930
+powerpc              randconfig-c003-20210930
+mips                 randconfig-c004-20210930
+s390                 randconfig-c005-20210930
+riscv                randconfig-c006-20210930
+x86_64               randconfig-c007-20210930
+x86_64               randconfig-c007-20211001
+i386                 randconfig-c001-20211001
+arm                  randconfig-c002-20211001
+s390                 randconfig-c005-20211001
+powerpc              randconfig-c003-20211001
+riscv                randconfig-c006-20211001
+mips                 randconfig-c004-20211001
+x86_64               randconfig-a015-20210930
+x86_64               randconfig-a011-20210930
+x86_64               randconfig-a012-20210930
+x86_64               randconfig-a013-20210930
+x86_64               randconfig-a016-20210930
+x86_64               randconfig-a014-20210930
+x86_64               randconfig-a015-20211001
+x86_64               randconfig-a012-20211001
+x86_64               randconfig-a016-20211001
+x86_64               randconfig-a014-20211001
+x86_64               randconfig-a013-20211001
+x86_64               randconfig-a011-20211001
+i386                 randconfig-a014-20210930
+i386                 randconfig-a013-20210930
+i386                 randconfig-a011-20210930
+i386                 randconfig-a015-20210930
+i386                 randconfig-a016-20210930
+i386                 randconfig-a012-20210930
+riscv                randconfig-r042-20210930
+hexagon              randconfig-r041-20210930
+s390                 randconfig-r044-20210930
+hexagon              randconfig-r045-20210930
+hexagon              randconfig-r045-20211001
+hexagon              randconfig-r041-20211001
+s390                 randconfig-r044-20211001
+riscv                randconfig-r042-20211001
 
-  https://linux.kernelci.org/test/job/next/branch/master/kernel/next-20210930/plan/baseline/
-
-The x86 platforms don't seem to be impacted though.
-
-Please let us know if you need help debugging the issue or if you
-have a fix to try.
-
-Best wishes,
-Guillaume
-
-
-GitHub: https://github.com/kernelci/kernelci-project/issues/65
-
--------------------------------------------------------------------------------
-
-
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* This automated bisection report was sent to you on the basis  *
-* that you may be involved with the breaking commit it has      *
-* found.  No manual investigation has been done to verify it,   *
-* and the root cause of the problem may be somewhere else.      *
-*                                                               *
-* If you do send a fix, please include this trailer:            *
-*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-*                                                               *
-* Hope this helps!                                              *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-next/master bisection: baseline.login on rk3328-rock64
-
-Summary:
-  Start:      2d02a18f75fc Add linux-next specific files for 20210929
-  Plain log:  https://storage.kernelci.org/next/master/next-20210929/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-rk3328-rock64.txt
-  HTML log:   https://storage.kernelci.org/next/master/next-20210929/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-rk3328-rock64.html
-  Result:     eac6f3841f1d sched/fair: Consider SMT in ASYM_PACKING load balance
-
-Checks:
-  revert:     PASS
-  verify:     PASS
-
-Parameters:
-  Tree:       next
-  URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-  Branch:     master
-  Target:     rk3328-rock64
-  CPU arch:   arm64
-  Lab:        lab-baylibre
-  Compiler:   gcc-8
-  Config:     defconfig+CONFIG_RANDOMIZE_BASE=y
-  Test case:  baseline.login
-
-Breaking commit found:
-
--------------------------------------------------------------------------------
-commit eac6f3841f1dac7b6f43002056b63f44cc1f1543
-Author: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Date:   Fri Sep 10 18:18:19 2021 -0700
-
-    sched/fair: Consider SMT in ASYM_PACKING load balance
-
-
-On 11/09/2021 03:18, Ricardo Neri wrote:
-> When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
-> check for the idle state of the destination CPU, dst_cpu, but also of
-> its SMT siblings.
-> 
-> If dst_cpu is idle but its SMT siblings are busy, performance suffers
-> if it pulls tasks from a medium priority CPU that does not have SMT
-> siblings.
-> 
-> Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
-> siblings of both dst_cpu and the CPUs in the candidate busiest group.
-> 
-> Cc: Aubrey Li <aubrey.li@intel.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> ---
-> Changes since v4:
->   * Use sg_lb_stats::sum_nr_running the idle state of a scheduling group.
->     (Vincent, Peter)
->   * Do not even idle CPUs in asym_smt_can_pull_tasks(). (Vincent)
->   * Updated function documentation and corrected a typo.
-> 
-> Changes since v3:
->   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
->     powerpc folks showed that this patch should not impact them. Also, more
->     recent powerpc processor no longer use asym_packing. (PeterZ)
->   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
->   * Removed unnecessary check for local CPUs when the local group has zero
->     utilization. (Joel)
->   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
->     the fact that it deals with SMT cases.
->   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
->     that callers can deal with non-SMT cases.
-> 
-> Changes since v2:
->   * Reworded the commit message to reflect updates in code.
->   * Corrected misrepresentation of dst_cpu as the CPU doing the load
->     balancing. (PeterZ)
->   * Removed call to arch_asym_check_smt_siblings() as it is now called in
->     sched_asym().
-> 
-> Changes since v1:
->   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
->     tasks. Instead, reclassify the candidate busiest group, as it
->     may still be selected. (PeterZ)
->   * Avoid an expensive and unnecessary call to cpumask_weight() when
->     determining if a sched_group is comprised of SMT siblings.
->     (PeterZ).
-> ---
->  kernel/sched/fair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 94 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 26db017c14a3..8d763dd0174b 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8597,10 +8597,98 @@ group_type group_classify(unsigned int imbalance_pct,
->  	return group_has_spare;
->  }
->  
-> +/**
-> + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> + * @dst_cpu:	Destination CPU of the load balancing
-> + * @sds:	Load-balancing data with statistics of the local group
-> + * @sgs:	Load-balancing statistics of the candidate busiest group
-> + * @sg:		The candidate busiest group
-> + *
-> + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> + * if @dst_cpu can pull tasks.
-> + *
-> + * If @dst_cpu does not have SMT siblings, it can pull tasks if two or more of
-> + * the SMT siblings of @sg are busy. If only one CPU in @sg is busy, pull tasks
-> + * only if @dst_cpu has higher priority.
-> + *
-> + * If both @dst_cpu and @sg have SMT siblings, and @sg has exactly one more
-> + * busy CPU than @sds::local, let @dst_cpu pull tasks if it has higher priority.
-> + * Bigger imbalances in the number of busy CPUs will be dealt with in
-> + * update_sd_pick_busiest().
-> + *
-> + * If @sg does not have SMT siblings, only pull tasks if all of the SMT siblings
-> + * of @dst_cpu are idle and @sg has lower priority.
-> + */
-> +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> +				    struct sg_lb_stats *sgs,
-> +				    struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +	bool local_is_smt, sg_is_smt;
-> +	int sg_busy_cpus;
-> +
-> +	local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-> +	sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-> +
-> +	sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-> +
-> +	if (!local_is_smt) {
-> +		/*
-> +		 * If we are here, @dst_cpu is idle and does not have SMT
-> +		 * siblings. Pull tasks if candidate group has two or more
-> +		 * busy CPUs.
-> +		 */
-> +		if (sg_is_smt && sg_busy_cpus >= 2)
-> +			return true;
-> +
-> +		/*
-> +		 * @dst_cpu does not have SMT siblings. @sg may have SMT
-> +		 * siblings and only one is busy. In such case, @dst_cpu
-> +		 * can help if it has higher priority and is idle (i.e.,
-> +		 * it has no running tasks).
-> +		 */
-> +		return !sds->local_stat.sum_nr_running &&
-> +		       sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +	}
-> +
-> +	/* @dst_cpu has SMT siblings. */
-> +
-> +	if (sg_is_smt) {
-> +		int local_busy_cpus = sds->local->group_weight -
-> +				      sds->local_stat.idle_cpus;
-> +		int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
-> +
-> +		if (busy_cpus_delta == 1)
-> +			return sched_asym_prefer(dst_cpu,
-> +						 sg->asym_prefer_cpu);
-> +
-> +		return false;
-> +	}
-> +
-> +	/*
-> +	 * @sg does not have SMT siblings. Ensure that @sds::local does not end
-> +	 * up with more than one busy SMT sibling and only pull tasks if there
-> +	 * are not busy CPUs (i.e., no CPU has running tasks).
-> +	 */
-> +	if (!sds->local_stat.sum_nr_running)
-> +		return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +
-> +	return false;
-> +#else
-> +	/* Always return false so that callers deal with non-SMT cases. */
-> +	return false;
-> +#endif
-> +}
-> +
->  static inline bool
->  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
->  	   struct sched_group *group)
->  {
-> +	/* Only do SMT checks if either local or candidate have SMT siblings */
-> +	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
-> +	    (group->flags & SD_SHARE_CPUCAPACITY))
-> +		return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
-> +
->  	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
->  }
->  
-> @@ -9606,6 +9694,12 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->  		    nr_running == 1)
->  			continue;
->  
-> +		/* Make sure we only pull tasks from a CPU of lower priority */
-> +		if ((env->sd->flags & SD_ASYM_PACKING) &&
-> +		    sched_asym_prefer(i, env->dst_cpu) &&
-> +		    nr_running == 1)
-> +			continue;
-> +
->  		switch (env->migration_type) {
->  		case migrate_load:
->  			/*
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
