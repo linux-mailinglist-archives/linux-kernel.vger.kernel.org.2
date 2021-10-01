@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E2D41EFBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA18041EFC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354585AbhJAOl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238636AbhJAOl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:41:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC8861507;
-        Fri,  1 Oct 2021 14:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633099213;
-        bh=ZahyhpPtQqhVvBHMnz421DpVrE2pzsHhdju9V2J7Gfg=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=Wik6Tep3WZyMeTAg1k3nvnl75EwOHoqRADJahFNGtIEk/MgpBvQ9XuTOawYEzOQuQ
-         9nJD2lxyiInmS1O49YzItToLKakabr76QOgbln5LEoGAaeyKZTmZ2mRn5Q7Pm4h5FB
-         bNaG+JvddFrNrHL1n1KgLPazLYS2tsIPOR8RH4IM8OaTrDkEpm4q3gsOntt3+buhln
-         jb+raArklpFltKNK4glSw/cXP4nfXYp2vGq4K7aiLHtvM2/nVbERjXi+9OLOy/tMPe
-         23VCAPzxvmy/g38Oy6i2VYVdoLJ9jfk9hLelMqt/gG/igMt9QEVPVoLPGPvADy969B
-         GsLuVfdZIP6QQ==
-Received: by mail-ot1-f50.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso11734101otu.9;
-        Fri, 01 Oct 2021 07:40:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533+Zk0vu8p808MNIslVm1xN02FGH1Wi1/kbw0siyZ7LBP3YNbrH
-        nV3by2xnbuyP9dC7ldjK+6aZqoSAyhvUAahIAkg=
-X-Google-Smtp-Source: ABdhPJy5/eaiRuG7rldYq3SgOdinICCXjY5DrIyS+YU7L88apLItGe1pLS9Gm2fTrYP5pb2+Y1e0rrcQF7pXPa2o8Uc=
-X-Received: by 2002:a9d:4705:: with SMTP id a5mr10542184otf.237.1633099212608;
- Fri, 01 Oct 2021 07:40:12 -0700 (PDT)
+        id S1354599AbhJAOmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231840AbhJAOmr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:42:47 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400B7C061775;
+        Fri,  1 Oct 2021 07:41:03 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x27so39250760lfa.9;
+        Fri, 01 Oct 2021 07:41:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UwoFVO+dO6njxeQ0bgYN0BE5nPQzR3DQc5Vpm1mPWnk=;
+        b=bB/u42AJ2XXQN1gkrv2XrgFEHLsC9tr/msHwyleZGinleVLXGT0sIc7aRIobWDsdwK
+         rYmP4xYIZrNx7FEjW8gkOF8XTaA28F6hB3+xTDBkrNXJOvKvSI21l/YBsLJfAMXkio4C
+         7NBXTCI3sn5+W+w+KtLJbYC5LP/97qksxgR3TZpUuIT9/yB0xDHeE0X8HrFFuSBN5wey
+         fT+imhtqpDUqwLIYCsyUuYHelYzGIbIc8IYVegIWx4SYR+EJqWy+zvJfTDe+HvKK5tRH
+         rVcL57VEZmSs3NnnC1O6JVmftNWEqb6OgGHKsrZ00QxGboCARiFAeuOAtKXvFG/eeYSH
+         tzBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UwoFVO+dO6njxeQ0bgYN0BE5nPQzR3DQc5Vpm1mPWnk=;
+        b=vEJ7MwdE5dXA0t66NiB/tEc1Ovud/4g6cp7ZN9KIdCJz03Zs9Mvi5LJ8Dwn40LuWB/
+         ivfduglBSHqAZ8mhAcGoKdcAxBFOFakpb9ED9DZKnGJyljUObgaEFzGMxeMR0WN6eumO
+         EAKSNAiJgZgXbmXaPyFtbxLhLUf02v8jNxBuUcgt3b3a1GHuPUkh98SN92PZ2TbRCY00
+         cmaeLfWswqfIqZ7VZWiVkAT017AaPIgyfy8cE5HHLSUtWDjs53ug65tQ/v9+yAlXJO2n
+         eVwVjlWLUOe5XW7cruSbx9QXCBkFBQ8mnLNE570LwODLLCBN6skKx7hgKX+I08sOcCcH
+         FW0Q==
+X-Gm-Message-State: AOAM532p82QGfyD66lLhWulsw3QVS/c5La89F7ujl33jf7lTF0jD+KoL
+        y1kxatsB9+ayirls8AZT0tA=
+X-Google-Smtp-Source: ABdhPJxN+K58baeAMtHludWtY5/aoUpfpV69UhD5D2HxeBWOVS2Xyit1TAYk0S1tQsqKv+wvTGH+kA==
+X-Received: by 2002:a19:4802:: with SMTP id v2mr5884316lfa.12.1633099261566;
+        Fri, 01 Oct 2021 07:41:01 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
+        by smtp.googlemail.com with ESMTPSA id z12sm754221lfd.283.2021.10.01.07.41.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 07:41:01 -0700 (PDT)
+Subject: Re: [PATCH v13 00/35] NVIDIA Tegra power management patches for 5.16
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <CAPDyKFog31OatzU0fHUMfN5FRsX+8Thm8TfipA4QisgFepU+rA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <662251e0-d1e4-97ce-16f9-703521cc2600@gmail.com>
+Date:   Fri, 1 Oct 2021 17:40:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a8a:1342:0:0:0:0:0 with HTTP; Fri, 1 Oct 2021 07:40:12 -0700 (PDT)
-In-Reply-To: <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
-References: <20210909065543.164329-1-cccheng@synology.com> <CGME20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd@epcas1p4.samsung.com>
- <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com> <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Fri, 1 Oct 2021 23:40:12 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
-Message-ID: <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
-Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID isn't set
-To:     Sungjong Seo <sj1557.seo@samsung.com>
-Cc:     Chung-Chiang Cheng <cccheng@synology.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shepjeng@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPDyKFog31OatzU0fHUMfN5FRsX+8Thm8TfipA4QisgFepU+rA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-10-01 22:19 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
-> Hello, Namjae,
-Hi Sungjong,
->
-> I found an important difference between the code we first wrote and the code
-> that has changed since our initial patch review. This difference seems to
-> cause compatibility issues when reading saved timestamps without timezone.
-> (In our initial patch review, there were concerns about possible
-> compatibility issues.)
-> I think the code that reads timestamps without timezone should go back to
-> the concept we wrote in the first place like reported patch.
-Are you talking about using sys_tz?
-
-> It could be an answer of another timestamp issue.
-What is another timestamp issue ?
-
->
-> Could you please let me know what you think?
->
-> Thanks.
->> -----Original Message-----
->> From: Namjae Jeon [mailto:linkinjeon@kernel.org]
->> Sent: Friday, September 10, 2021 10:01 AM
->> To: Chung-Chiang Cheng <cccheng@synology.com>
->> Cc: sj1557.seo@samsung.com; linux-fsdevel@vger.kernel.org; linux-
->> kernel@vger.kernel.org; shepjeng@gmail.com
->> Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID
->> isn't
->> set
+01.10.2021 17:36, Ulf Hansson пишет:
+> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
 >>
->> 2021-09-09 15:55 GMT+09:00, Chung-Chiang Cheng <cccheng@synology.com>:
->> > EXFAT_TZ_VALID is corresponding to OffsetValid field in exfat
->> > specification [1]. If this bit isn't set, timestamps should be treated
->> > as having the same UTC offset as the current local time.
->> >
->> > This patch uses the existing mount option 'time_offset' as fat does.
->> > If time_offset isn't set, local UTC offset in sys_tz will be used as
->> > the default value.
->> >
->> > Link: [1]
->> > https://protect2.fireeye.com/v1/url?k=cba4edf5-943fd4c8-cba566ba-0cc47
->> > a31309a-e70aa065be678729&q=1&e=225feff2-841f-404c-9a2e-c12064b232d0&u=
->> > https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fwindows%2Fwin32%2Ffileio%2F
->> > exfat-specification%2374102-offsetvalid-field
->> > Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
->> Please read this discussion:
->>  https://patchwork.kernel.org/project/linux-
->> fsdevel/patch/20200115082447.19520-10-namjae.jeon@samsung.com/
+>> This series adds runtime PM support to Tegra drivers and enables core
+>> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
 >>
->> Thanks!
->
->
+>> All patches in this series are interdependent and should go via Tegra tree.
+>>
+>> Changelog:
+>>
+>> v13: - Fixed compile-test error reported by build bot by reverting the
+>>        mmc/ patch to v11. The sdhci_suspend/resume_host() functions aren't
+>>        available with the disabled CONFIG_PM_SLEEP, some code needs the
+>>        ifdef.
+>>
+>>      - Added last r-b from Rob Herring for the DT patches.
+>>
+>>      - Corrected clk/ PM domain-support patch by not using the
+>>        devm_tegra_core_dev_init_opp_table_common() helper, which I
+>>        utilized in v12. The clk driver implements its own power domain
+>>        state syncing and common helper shouldn't be used. This fixes driver
+>>        probing for some clocks on some devices. It was reported by
+>>        Svyatoslav Ryhel for PLLE OPP error on T30 Asus Transformer tablet.
+> 
+> Dmitry, I have looked through the series and besides those comments
+> that I have posted, I have nothing more to add. Overall it looks good
+> to me.
+
+Ulf, thank you very much! Yours input is invaluable. I'm happy that this
+series moving steadily to the final stage.
