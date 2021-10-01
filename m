@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6430241EB7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C4F41EB91
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353612AbhJALNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:13:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:40486 "EHLO foss.arm.com"
+        id S1353740AbhJALPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:15:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24723 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352896AbhJALNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:13:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F548106F;
-        Fri,  1 Oct 2021 04:11:53 -0700 (PDT)
-Received: from [10.57.23.247] (unknown [10.57.23.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 034B43F70D;
-        Fri,  1 Oct 2021 04:11:51 -0700 (PDT)
-Subject: Re: [RFD] Remove the userspace governor and the cooling device set
- state sysfs entry
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>
-References: <d46b5007-428b-5f31-52d9-a964cc60ad92@linaro.org>
- <39728f24-7781-543c-ad28-fd1c7552d96a@arm.com>
- <2b8300b2-4678-3e3c-71e3-6d276b99eb07@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <a3f2807b-0d67-b159-430b-33be22409179@arm.com>
-Date:   Fri, 1 Oct 2021 12:11:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230257AbhJALPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:15:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="205557753"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="205557753"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:13:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="520990040"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2021 04:13:58 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
+        by linux.intel.com (Postfix) with ESMTP id DF307580689;
+        Fri,  1 Oct 2021 04:13:58 -0700 (PDT)
+Message-ID: <45b6454a3421ac064dff3ba159e02985d3e55440.camel@linux.intel.com>
+Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
+ driver
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Date:   Fri, 01 Oct 2021 04:13:58 -0700
+In-Reply-To: <YVa46eU1VX7CM+Xd@kroah.com>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+         <20211001012815.1999501-6-david.e.box@linux.intel.com>
+         <YVa46eU1VX7CM+Xd@kroah.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <2b8300b2-4678-3e3c-71e3-6d276b99eb07@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-10-01 at 09:29 +0200, Greg KH wrote:
+> On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
+> > +static long sdsi_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > +{
+> > +       struct miscdevice *miscdev = file->private_data;
+> > +       struct sdsi_priv *priv = to_sdsi_priv(miscdev);
+> > +       void __user *argp = (void __user *)arg;
+> > +       long ret = -EINVAL;
+> > +
+> > +       if (!priv->dev_present)
+> > +               return -ENODEV;
+> > +
+> > +       if (!priv->sdsi_enabled)
+> > +               return -EPERM;
+> > +
+> > +       if (cmd == SDSI_IF_READ_STATE)
+> > +               return sdsi_if_read_state_cert(priv, argp);
+> > +
+> > +       mutex_lock(&priv->akc_lock);
+> > +       switch (cmd) {
+> > +       case SDSI_IF_PROVISION_AKC:
+> > +               /*
+> > +                * While writing an authentication certificate disallow other openers
+> > +                * from using AKC or CAP.
+> > +                */
+> > +               if (!priv->akc_owner)
+> > +                       priv->akc_owner = file;
+> > +
+> > +               if (priv->akc_owner != file) {
+> 
+> Please explain how this test would ever trigger and how you tested it?
+> 
+> What exactly are you trying to protect from here?  If userspace has your
+> file descriptor, it can do whatever it wants, don't try to be smarter
+> than it as you will never win.
+> 
+> And why are you using ioctls at all here?  As you are just
+> reading/writing to the hardware directly, why not just use a binary
+> sysfs file to be that pipe?  What requires an ioctl at all?
+
+So an original internal version of this did use binary attributes. But there was concern during
+review that a flow, particularly when doing the two write operations, could not be handled
+atomically while exposed as separate files. Above is the attempt to handle the situation in the
+ioctl. That is, whichever opener performs AKC write first would lock out all other openers from
+performing any write until that file is closed. This is to avoid interfering with that process,
+should the opener also decide to perform a CAP operation.
+
+There may be future commands requiring RW ioctls as well.
+
+David
+
+> 
+> thanks,
+> 
+> greg k-h
 
 
-On 10/1/21 11:30 AM, Daniel Lezcano wrote:
-> 
-> Hi Lukasz,
-> 
-> On 30/09/2021 12:10, Lukasz Luba wrote:
->> Hi Daniel,
->>
->> On 9/22/21 10:59 AM, Daniel Lezcano wrote:
->>>
->>> Hi,
->>>
->>> the userspace governor is sending temperature when polling is active and
->>> trip point crossed events. Nothing else.
->>>
->>> In the other side, the cooling device have their cooling device
->>> set_cur_state read-writable all the time.
->>>
->>> The thermal framework is wrongly used by userspace as a power capping
->>> framework by acting on the cooling device opaque state. This one then
->>> competes with the in-kernel governor decision.
->>>
->>> As the new netlink thermal notification is able to provide the same
->>> information than the userspace governor.
->>>
->>> I propose to remove the userspace governor and the cur_state entry in
->>> the sysfs exported file.
->>>
->>> The DTPM framework is the right framework to do power capping and
->>> moreover it deals with the aggregation via the dev pm qos.
->>>
->>> Does it make sense ?
->>
->> It sounds that we should be OK with the information from netlink.
->> I don't see objections. We can also extend the netlink packet when
->> needed. I'm fine with removing the user-space governor.
-> 
-> thank you for your answer. I'll propose a patch with a warn when the
-> userspace governor is registered in order to let know people the
-> governor is deprecated.
-> 
-> Probably, it would make sense to emit a warning also when the cooling
-> device state is set from userspace.
-> 
-> For the next release, we should be able to drop the userspace governor
-> and make the cooling device state read-only.
-> 
-> Does it make sense ?
-> 
-> 
-
-Yes, it makes sense.
