@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD14F41F58C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A362941F596
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356048AbhJATNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:13:20 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48924 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356015AbhJATNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:13:19 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 4056A1F4594F
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH 2/2] fs: ext4: Fix the inconsistent name exposed by
- /proc/self/cwd
-Organization: Collabora
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
-        <8402d1c99877a4fcb152de71005fa9cfb25d86a8.1632909358.git.shreeya.patel@collabora.com>
-        <YVdWW0uyRqYWSgVP@mit.edu>
-Date:   Fri, 01 Oct 2021 15:11:30 -0400
-In-Reply-To: <YVdWW0uyRqYWSgVP@mit.edu> (Theodore Ts'o's message of "Fri, 1
-        Oct 2021 14:41:31 -0400")
-Message-ID: <8735pk5zml.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1355887AbhJATOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:14:47 -0400
+Received: from mout.gmx.net ([212.227.15.19]:48913 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhJATOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 15:14:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633115573;
+        bh=1/tD9+i6K79wJvk6mIUgFY5BXkVQQ7kg9CSnpwZJmy4=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=FXt3MCG81EhlBPWLYL2tltIxPJPCK3WXrbF7cNtj9+pInkpHo7bejF1wwI4pO2hbA
+         nkB4wZ4ilE4jLfGuSg50D+eudNNMCKAdjLMOwHXg97C5YngEhLKDMubfxBM10vLOtA
+         nmaw2eZQM1qODJco+oJNV7lgCYXffC2ASxM0UJ7s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.147.253]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtOKi-1moalu3HJ8-00uoGT; Fri, 01
+ Oct 2021 21:12:52 +0200
+Message-ID: <2ef5185a-9a0f-5ee0-23fc-37e0b1dd1099@gmx.de>
+Date:   Fri, 1 Oct 2021 21:12:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: parisc/unwind: call callback with toplevel address
+Content-Language: en-US
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-parisc@vger.kernel.org
+Cc:     Sven Schnelle <svens@stackframe.org>,
+        James.Bottomley@hansenpartnership.com,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        lkft-triage@lists.linaro.org
+References: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:m4bcQkSWj0lpLhyoxxSrxte4MHqoI3/QJ8CtZN1qb4ts3rsZxhw
+ fSGMRLTYdCWL/xEY+sp2T6P1Fy9VKcJ1M9E5trpBZXTEaWzn+LE74awyOEqrbnYml/bFMw6
+ BgIbLbMb/hNGs3lIA37JktxozVnDqFzjRj4qrWc0Jpyd7Km4I86pzCF+PFZz8TJIuqmvqMT
+ DG7j4d/ShOWhMe5BF7Z5w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vZJTgfu7RVY=:iI7xQry8ZZODMpie1mGAC4
+ XL3Bh8CR9G5vNYd/8UlHHsw8W6HRUD3kL5Bl4JceR8KoNmCT8HoObzOH0+Wq7uGFRd4cdxVK1
+ NfAlKQzhYJcLSc+fWzF5t3POV3MyWPwVDxKq2pVt8bDrOvQb+oupFBsghKxRa/3KhF5koknLG
+ mi+/IKyU41UJA6tS6Cfsq1U5qHO0Zlwv0duPPBbO+QV3YIz98JDiHNYX6Gpt+Tl4VwknSjCc/
+ 6ISLNbqBWQtGXAw5M3SWzGIT9h2vhGcOaNNLnY2fmLRxmj3b97Z41nDdTQ6Vq1c8Aj50QDh39
+ Uyf+9dVvmxA5pHGg9dVBJ/EXrhZ9aNd9tCMEDSptYUsnlURejf3DIMFnyN2ayYr/oxuWbC5Xw
+ l9mspghsO5qio2S6anPQS0UFnhQn6Dei68Hrspc1qLKnQ5kkAmyw6QFwwuGRoLU7sAuOJRAwx
+ Iu3rBmF6+g22JC6G4e6O0fWpwLhg4lrqUb2M6yHzyncDAUOTVrHFMTQ+BJUiMNNoGt9IrHqqR
+ g7TgVk+Fy/q1qvmYWd7LBKZbMSLDiuDcvvqevsgq62PrckyhUBDUWbm/k3tihQhGbewl7W9c2
+ 8ObKLAUYsZD8oDJ8bzeNrUzALphLu3RpJznoVojhdjLrmyas/Zif7Nhi2FgtRfqrlsBcbLUe2
+ x39eAZ1jKkiiD9qjV51+RxImlV/C/nNUr2zktAbd5EjJWCl5GCnrGoUuRiteyfkxAoXzL+Lvy
+ qW6V9IyOCyjG7FhOxF8qmLMi43GXUSu0ZAV69Bi8nwww1KfVK5ISAId7PaExnjmjuIZ2QVHVw
+ jCkh8wd6Ej0++tXJFYaEX6OTbxXUGRVivQtz3sq4NxkkN1SlLCab46akRBIb49iEynZPu55nw
+ G0aenmRMOEeoQ8dvJo7+n4PRgxmHiDC8mREkdo6wUohm097qaMj3BnvvF37ogCUIZSwlpLTyX
+ rzZgzB6btgLu85pG4OGe1FpxIFVKJ4AXRqJsGMgqNSOWZWe6+hXzR1pez9AHXfA4Hc7WrV8gL
+ EXoZ5L1idGmGJHfFLQgJWq91SdOqpPXpl71uDuUed3zMexa7O9u64fGApUvYHNeMpJ2HIGtiu
+ pNbm87LxSy6cmY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
-
-> On Wed, Sep 29, 2021 at 04:23:39PM +0530, Shreeya Patel wrote:
->> /proc/self/cwd is a symlink created by the kernel that uses whatever
->> name the dentry has in the dcache. Since the dcache is populated only
->> on the first lookup, with the string used in that lookup, cwd will
->> have an unexpected case, depending on how the data was first looked-up
->> in a case-insesitive filesystem.
->> 
->> Steps to reproduce :-
->> 
->> root@test-box:/src# mkdir insensitive/foo
->> root@test-box:/src# cd insensitive/FOO
->> root@test-box:/src/insensitive/FOO# ls -l /proc/self/cwd
->> lrwxrwxrwx 1 root root /proc/self/cwd -> /src/insensitive/FOO
->> 
->> root@test-box:/src/insensitive/FOO# cd ../fOo
->> root@test-box:/src/insensitive/fOo# ls -l /proc/self/cwd
->> lrwxrwxrwx 1 root root /proc/self/cwd -> /src/insensitive/FOO
->> 
->> Above example shows that 'FOO' was the name used on first lookup here and
->> it is stored in dcache instead of the original name 'foo'. This results
->> in inconsistent name exposed by /proc/self/cwd since it uses the name
->> stored in dcache.
->> 
->> To avoid the above inconsistent name issue, handle the inexact-match string
->> ( a string which is not a byte to byte match, but is an equivalent
->> unicode string ) case in ext4_lookup which would store the original name
->> in dcache using d_add_ci instead of the inexact-match string name.
+On 10/1/21 12:30, Naresh Kamboju wrote:
+> Following build errors noticed while building Linux next 20211001
+> with gcc-11 for parisc architecture.
 >
-> I'm not sure this is a problem.  /proc/<pid>/cwd just needs to point
-> at the current working directory for the process.  Why do we care
-> whether it matches the case that was stored on disk?  Whether we use
-> /src/insensitive/FOO, or /src/insensitive/Foo, or
-> /src/insensitive/foo, all of these will reach the cwd for that
-> process.
+> arch/parisc/kernel/stacktrace.c: In function 'dump_trace':
+> arch/parisc/kernel/stacktrace.c:20:13: error: 'regs' undeclared (first
+> use in this function)
+>    20 |         if (regs)
+>       |             ^~~~
+> arch/parisc/kernel/stacktrace.c:20:13: note: each undeclared
+> identifier is reported only once for each function it appears in
+> arch/parisc/kernel/stacktrace.c:21:22: error: implicit declaration of
+> function 'fn' [-Werror=3Dimplicit-function-declaration]
+>    21 |                 if (!fn(cookie, regs->iaoq[0]))
+>       |                      ^~
+> arch/parisc/kernel/stacktrace.c:21:25: error: 'cookie' undeclared
+> (first use in this function)
+>    21 |                 if (!fn(cookie, regs->iaoq[0]))
+>       |                         ^~~~~~
+> cc1: some warnings being treated as errors
+> make[3]: *** [scripts/Makefile.build:288:
+> arch/parisc/kernel/stacktrace.o] Error 1
+>
+> Build config:
+> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/config
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Hi Ted,
+I've dropped that patch.
 
-The dcache name is exposed in more places, like /proc/mounts.  We have a
-bug reported against flatpak where its initialization code bind mounts a
-directory that was previously touched with a different case combination,
-and then checks /proc/mounts in a case-sensitive way to see if the mount
-succeeded.  This code now regresses on CI directories because the name
-it asked to bind mount is not found in /proc/mounts.
+Thanks!
+Helge
 
-Sure, we could figure out the dcache name and pass the current case
-spelling of the directory to flatpak, but that could go away at any
-time.  We could also make flatpak CI aware, but that problem will just
-appear elsewhere.
 
-I think the more reasonable approach is to save the disk exact name on
-the dcache, because that is the only version that doesn't change based
-on who won the race for the first lookup.
 
--- 
-Gabriel Krisman Bertazi
+> meta data:
+> -----------
+>     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>     git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
+>     git_short_log: a25006a77348 (\"Add linux-next specific files for 202=
+11001\")
+>     kconfig:  defconfig
+>     kernel_version: 5.15.0-rc3
+>     target_arch: parisc
+>     toolchain: gcc-11
+>
+> steps to reproduce:
+> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/tuxmake_reproduc=
+er.sh
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+>
+
