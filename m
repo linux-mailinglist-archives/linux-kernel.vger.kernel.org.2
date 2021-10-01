@@ -2,140 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24BA41EEE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8177A41EEEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhJANut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S231679AbhJANxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhJANun (ORCPT
+        with ESMTP id S231543AbhJANxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:50:43 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3A7C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:48:59 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 73so9152131qki.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 06:48:59 -0700 (PDT)
+        Fri, 1 Oct 2021 09:53:11 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B21C06177C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:51:26 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id s4so4241507ybs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 06:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LG5nuVM12UKCUvMUz/H7oZ+JnPtb7xeOrg+cdikjdUw=;
-        b=i2nZSJalGl2HFR2lljteQga9LLzznj1VY4sKfMFrOuI5TPw+9fxa9Y7VF6ORCDu6gf
-         s1VZcbmu8prmAySSW0muDV9sPFy+ocsOAHMu7czDjdTka8/r9gDirvuLv+DjNcMP+yu2
-         2vpgG0jpIzFJO3o2EESr3Knc9sAVcu/3zrGpfyryk0rXsa3CM7UVEgJZI2lyiRkkfNpM
-         06X0/la9ZF1/JOw1nIH1hT6QVKTk7TJuv33hiHw5ih9p7MWcfmzNHEd0oxDuij3diKPb
-         ruwnbMTM1vlfPcAVocSCOhTaVtV1FJ3tIhW47hPjbC6RUYlSTDx8/p4BvGKL4lQu/579
-         YBXQ==
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5OYmL8JsTh62JE1sZQP92Eb1+8ePanIs7P1lJmaXQ50=;
+        b=Zv5e0gqChaS9QuJ0veasmSAsT16UyrrpHwt6/VrYPjNAvUnUOu8R6T5cWeVbLb2DtV
+         DGBlh/SbBS51eOTIuQy+RdYE2TX7sI0OOUM0MJ9+aLqGmEq+Oajo5xbJXCmnSvvO4lOU
+         cVwN2IoNHLDFj3S1dFhaVv35on+R7IYDpoCbNrwvK6p8lLDI27S3lZFqhqkDX65WPpSD
+         ZuZfH8sCTOOa2UXVO+CuxsNnVRDd7hi6Mp5q+LuHnr8KwDU9aQmNnu77fe1BmpOWD5j9
+         G2bPwmq6kvE98m3VsiWfZFcQgyvHd3DfBL3hX3J2iIhEHGXIN2q7aFG075kVo1Qhm1Rz
+         JVSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LG5nuVM12UKCUvMUz/H7oZ+JnPtb7xeOrg+cdikjdUw=;
-        b=Z3t8qeLpF9KyNFYmJyoKybN60cSxAwNM2auZrjqAuAai1EVKcXuSKQZ3Lw4E403KgJ
-         mS2wUxLnzi66nKihAvYC6RHFG0394hoJclfOs18ve8ne6D8lCxC/Ct+CvbDk2dgQcAwi
-         NGjYPSEUORrBC8T6rsyDJYux7A1DxbJhoXvoZzRP0P1Qa756l0Xp6I7IB0ir4WJ7JdUs
-         nGa5ux6htIGL+eNsm226cV7ZUYl6ldEifl26WIaq1nZkwKFcYAQ0GQK6iiB8tL8J+Z59
-         A2205iKiVgXMzxPzqhAJaqsO0akiwmiORiN8c/vd263utys6GDLSEf5jK/AXQVeGNHrO
-         ZmCA==
-X-Gm-Message-State: AOAM532PXCj65c3m8ypRzuU8quU+6aGrx63Y2xnLyZmnmNEbvHipA7sz
-        o6HT8u8zHxhBJfLhFDzLv7GUbQ==
-X-Google-Smtp-Source: ABdhPJxAWiRAix1MOnP+fusB3RWFs4aefuUjIqiau0+pjC7MwPUEHTq7EjNfCISJpSPUQC5qQMYTaw==
-X-Received: by 2002:a37:65d6:: with SMTP id z205mr9907719qkb.522.1633096138367;
-        Fri, 01 Oct 2021 06:48:58 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id u19sm3747206qtx.40.2021.10.01.06.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 06:48:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mWIuG-008R2P-Oj; Fri, 01 Oct 2021 10:48:56 -0300
-Date:   Fri, 1 Oct 2021 10:48:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20211001134856.GN3544071@ziepe.ca>
-References: <20210916234100.122368-1-logang@deltatee.com>
- <20210916234100.122368-20-logang@deltatee.com>
- <20210928195518.GV3544071@ziepe.ca>
- <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
- <20210929230543.GB3544071@ziepe.ca>
- <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
- <20210929233540.GF3544071@ziepe.ca>
- <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
- <20210930003652.GH3544071@ziepe.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5OYmL8JsTh62JE1sZQP92Eb1+8ePanIs7P1lJmaXQ50=;
+        b=yugzO/U8XS04xJ0KUEPAm0FydoFen+vb9C/CLEOz9muPGAhxYwurS2pTh2g5gwghN4
+         tcwtSPVvRl0/B+Kph+VuK3qPFYyIcd/msno4HwNjRHqgUuUAfLGvedBoVdnIWrb/6s+v
+         ROxLa9MCLCtrh/WfM0wpsJl+zJQ3Us6HbftJayuy/OewIuPoCsZkdawNEpRG8hbMy8E9
+         eXXLKrQwipUvYH7oofVVTnWbsNoK1suDmaQJ0MIKupeaJD3Tfh/HybEeA7XrsJZEgFks
+         Tg53Msc3WcKwGBWK5tOk1uBFt488M+hoNOkhZiJTcwN7BuLhEJ+POMrpkHQZRveR02JP
+         wTPA==
+X-Gm-Message-State: AOAM533IWHfVt6DU7CGi3xB0E7ejyL+7O0bRXARPza8SYPggXukBxlnk
+        F9MgqwJhx9YgB2i/C9rzwS77q0Zvkq9U9YqkHG1dNA==
+X-Google-Smtp-Source: ABdhPJw/rtObxCo4kCza2w+WXFPHdxDNPvacsTKgpBXEOsdZ16FZLh7lUgjNTJm3pnvPFqq5B2vddCVwkR1kDSSeqQs=
+X-Received: by 2002:a25:520b:: with SMTP id g11mr6485423ybb.268.1633096286107;
+ Fri, 01 Oct 2021 06:51:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930003652.GH3544071@ziepe.ca>
+References: <1632999672-10757-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1632999672-10757-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Fri, 1 Oct 2021 15:51:14 +0200
+Message-ID: <CAM1=_QTb8zejZTqnAaobhTErkowBm=p-fuiLYwDFtWYoUuNGXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] test_bpf: add module parameter test_type
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:36:52PM -0300, Jason Gunthorpe wrote:
+Hi Tiezhu,
 
-> Why would DAX want to do this in the first place?? This means the
-> address space zap is much more important that just speeding up
-> destruction, it is essential for correctness since the PTEs are not
-> holding refcounts naturally...
+Your v2 is base64-encoded. Please use plain-text for patch submissions.
 
-It is not really for this series to fix, but I think the whole thing
-is probably racy once you start allowing pte_special pages to be
-accessed by GUP.
+On Thu, Sep 30, 2021 at 1:01 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+> After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+> operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+> there exists segment fault due to fhe following reason:
+>
+> test_bpf: #616 ALU64_MOV_X: all register value magnitudes jited:1
+> Break instruction in kernel code[#1]
+>
+> It seems that the related jit implementations of some test cases
+> in test_bpf() have problems. At this moment, I do not care about
+> the segment fault while I just want to verify the test cases of
+> tail calls.
 
-If we look at unmapping the PTE relative to GUP fast the important
-sequence is how the TLB flushing doesn't decrement the page refcount
-until after it knows any concurrent GUP fast is completed. This is
-arch specific, eg it could be done async through a call_rcu handler.
+Don't put too much effort into the current MIPS64 JIT. I have been
+working on a significant upgrade of the MIPS JIT, which adds MIPS32
+support and full eBPF ISA support, among other things. All the new JIT
+tests in test_bpf.ko I submitted are essentially a side effect of that
+work.
 
-This ensures that pages can't cross back into the free pool and be
-reallocated until we know for certain that nobody is walking the PTEs
-and could potentially take an additional reference on it. The scheme
-cannot rely on the page refcount being 0 because oce it goes into the
-free pool it could be immeidately reallocated back to a non-zero
-refcount.
+I am currently testing the new JIT on different setups, and I hope to
+be able to submit the patch set next week. A side note, as you seem to
+work at Loongson. It would be great if you could verify the CPU errata
+workarounds I implemented for Loongson-2F and 3, once I get the patch
+set out for review.
 
-A DAX user that simply does an address space invalidation doesn't
-sequence itself with any of this mechanism. So we can race with a
-thread doing GUP fast and another thread re-cycling the page into
-another use - creating a leakage of the page from one security context
-to another.
+>
+> Based on the above background and motivation, add the following
+> module parameter test_type to the test_bpf.ko:
+> test_type=<string>: only the specified type will be run, the string
+> can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+>
+> This is useful to only test the corresponding test type when specify
+> the valid test_type string.
 
-This seems to be made worse for the pgmap stuff due to the wonky
-refcount usage - at least if the refcount had dropped to zero gup fast
-would be blocked for a time, but even that doesn't happen.
+I agree that it is good to be able to choose a particular test suite
+to run. There are also the test_id and test_range parameters. If we
+add a test suite selector, it would be nice if the test range/id
+selection applied to that test suite, instead of being ignored for all
+suites except test_bpf.
 
-In short, I think using pg special for anything that can be returned
-by gup fast (and maybe even gup!) is racy/wrong. We must have the
-normal refcount mechanism work for correctness of the recycling flow.
-
-I don't know why DAX did this, I think we should be talking about
-udoing it all of it, not just the wonky refcounting Alistair and Felix
-are working on, but also the use of MIXEDMAP and pte special for
-struct page backed memory.
-
-Jason
+>
+> Any invalid test type will result in -EINVAL being returned and no
+> tests being run. If the test_type is not specified or specified as
+> empty string, it does not change the current logic, all of the test
+> cases will be run.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  lib/test_bpf.c | 48 +++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 33 insertions(+), 15 deletions(-)
+>
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index 21ea1ab..9428fec 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -11866,6 +11866,9 @@ module_param(test_id, int, 0);
+>  static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
+>  module_param_array(test_range, int, NULL, 0);
+>
+> +static char test_type[32];
+> +module_param_string(test_type, test_type, sizeof(test_type), 0);
+> +
+>  static __init int find_test_index(const char *test_name)
+>  {
+>         int i;
+> @@ -12518,24 +12521,39 @@ static int __init test_bpf_init(void)
+>         struct bpf_array *progs = NULL;
+>         int ret;
+>
+> -       ret = prepare_bpf_tests();
+> -       if (ret < 0)
+> -               return ret;
+> +       if (strlen(test_type) &&
+> +           strcmp(test_type, "test_bpf") &&
+> +           strcmp(test_type, "test_tail_calls") &&
+> +           strcmp(test_type, "test_skb_segment")) {
+> +               pr_err("test_bpf: invalid test_type '%s' specified.\n", test_type);
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!strlen(test_type) || !strcmp(test_type, "test_bpf")) {
+> +               ret = prepare_bpf_tests();
+> +               if (ret < 0)
+> +                       return ret;
+> +
+> +               ret = test_bpf();
+> +               destroy_bpf_tests();
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+> -       ret = test_bpf();
+> -       destroy_bpf_tests();
+> -       if (ret)
+> -               return ret;
+> +       if (!strlen(test_type) || !strcmp(test_type, "test_tail_calls")) {
+> +               ret = prepare_tail_call_tests(&progs);
+> +               if (ret)
+> +                       return ret;
+> +               ret = test_tail_calls(progs);
+> +               destroy_tail_call_tests(progs);
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+> -       ret = prepare_tail_call_tests(&progs);
+> -       if (ret)
+> -               return ret;
+> -       ret = test_tail_calls(progs);
+> -       destroy_tail_call_tests(progs);
+> -       if (ret)
+> -               return ret;
+> +       if (!strlen(test_type) || !strcmp(test_type, "test_skb_segment"))
+> +               return test_skb_segment();
+>
+> -       return test_skb_segment();
+> +       return 0;
+>  }
+>
+>  static void __exit test_bpf_exit(void)
+> --
+> 2.1.0
+>
