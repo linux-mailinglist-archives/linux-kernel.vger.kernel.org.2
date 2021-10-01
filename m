@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEB141F6DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1843141F6E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 23:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355313AbhJAVZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 17:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S1355395AbhJAV1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 17:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhJAVZ1 (ORCPT
+        with ESMTP id S229820AbhJAV1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 17:25:27 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04662C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 14:23:43 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id y201so13072848oie.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 14:23:42 -0700 (PDT)
+        Fri, 1 Oct 2021 17:27:19 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF876C061775;
+        Fri,  1 Oct 2021 14:25:34 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x27so43719879lfu.5;
+        Fri, 01 Oct 2021 14:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rQO+lMXU6VmqpbbuMNNIj4s/iSRqxxtzgzbizBnbLmk=;
-        b=iSh459FN5Z6Hqy9OYQZTytx3xm7vgeROeRrUA3KkjbSpJr6gHBeJtPg+IG1UktWtKi
-         j0nWzggnhcvpJsq6Oc90kySnuaUsE8mLUC3eHw503Ya41vqpbvJSsWuEN9YKwUQQAQ2f
-         ku+ZlpxCosstDPHAfe22bGGCKuGlOe0VgHbA4=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PCx+Mv1g2fXDWZ1yxKCufXcb8CGDrVVRus80Eavv7Ms=;
+        b=AoOrU/vzFMh0SeboIlXMtpNDGkYKn1nagDBoSx7YjB/QehXjY148G9jNUrxWmj+VLS
+         thqf3WTWyv2KgzuCKJgAZtvLfuVTKHVZvxZ6W/v3MpnV1knnxoAKmsgMXbYc8hQX6L4m
+         27bTEIknYqodxO1P46g5y8th3QuIbfdgGpCEWEBjBEI0bRGm4qAhzegrULVaAiivY+Mh
+         x+t6HwqOhcQgQuTMWHPo+FtI3bPeA65O68izCkj0O0dmOktC4XPdYvSp/C5mg+rlwHvZ
+         baqhRxdt1w4rGWw9l8GTpQxhVXx3W19ivPNG/b+kFePi3tvLX4ZgYZ2jb6Li8kajTdY4
+         hAdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rQO+lMXU6VmqpbbuMNNIj4s/iSRqxxtzgzbizBnbLmk=;
-        b=R/Nzw/uT/h1Pk6uOKoWjKo0z6uWKNvvTGqkP67Zdutclmux/l/+k8APBxsfWexzEHW
-         nd+e0smqUksVaLqAKGYrGMh+lfpuhTlXXu5u82PaYbFmkIGida5isdklbxZaGPZIIR7u
-         PuGlO5wbyrpWbJHc0rgYldVMn+K19KEgCmN0Wor886UUl+JVqP07hlWcnTXHu2eZpAcw
-         0QrhzfhaMMG9gr4wpMxu3GXDQ7Y32W7bIwRm8YZS1jSu9Cs4UIH2BcVZyWzi2Lo1IBtd
-         9GNKRNMCeGbSLcMv3ErkA/w69LwTJwk935BwQMOb/0dy/dkNLVAWQv/Latvg5w3bKSGz
-         tObw==
-X-Gm-Message-State: AOAM53279aX51HkPmPw2Il8jIcgldn17hoOyGq/zfy73FlJ0d/n1zhf4
-        5qk4Bi87b1iUTPXBKW+7B0idMf1YfT2vqw==
-X-Google-Smtp-Source: ABdhPJzoXKSD7GnXNwekmzN1vF9nzp5Fn7gk8Yq+LNe5IsdT/t4pXeUpEgtwGBRsTSQxfyqgLKjNlg==
-X-Received: by 2002:aca:d988:: with SMTP id q130mr5423773oig.148.1633123421883;
-        Fri, 01 Oct 2021 14:23:41 -0700 (PDT)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
-        by smtp.gmail.com with ESMTPSA id w2sm1370690oof.23.2021.10.01.14.23.41
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PCx+Mv1g2fXDWZ1yxKCufXcb8CGDrVVRus80Eavv7Ms=;
+        b=NIlFTU4KZtSGaa9ROP2zLnktTBr/rp2DmU0rRs8E2DLYGP7aVREEAbriZ6E9t6lTZ1
+         6zNPFZWVm0/FtRLDec3rSSNpMWWualS2/faz/qB2919hfgTkhqCSIwLMvwOaRt52rZrp
+         sMfgy1RJHaJnj7lax3lUqh49zOYvS+5tp3tYeoCxgkMxRiSpLFAzeUP/3R7IGdll9bR8
+         EzubxedCGYwHZTyp9htLuGjNHVH/GrbE9gYWiwzD6TtT5Y1qcZdjdV8me1bABMEVtE6c
+         /hQWiK4mSefPTSt4WJ3hVgitFEVs8oW0xg1l526zgVrlrIeScfnLPSY08poGu1cxHXhY
+         jLpg==
+X-Gm-Message-State: AOAM531/ORymA41U1r9ewl+QvHpG02Kv2l1zgCJaO9vvlWHioi7r7Ycp
+        k4jxrjMnxcxiOsJ6dHIuURk=
+X-Google-Smtp-Source: ABdhPJyBKnVQGEy++56pE3HiXi9tWCycvRfw9hdTpeQ3zwv+9sj//Y/axLqWUGErfO2svv3m5cLJIA==
+X-Received: by 2002:ac2:51a6:: with SMTP id f6mr310738lfk.150.1633123533086;
+        Fri, 01 Oct 2021 14:25:33 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
+        by smtp.googlemail.com with ESMTPSA id u4sm927755lfu.200.2021.10.01.14.25.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 14:23:41 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so13121511otb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 14:23:41 -0700 (PDT)
-X-Received: by 2002:a05:6830:112:: with SMTP id i18mr82821otp.186.1633123420525;
- Fri, 01 Oct 2021 14:23:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929144010.1.I773a08785666ebb236917b0c8e6c05e3de471e75@changeid>
- <20211001203722.GZ2515@art_vandelay>
-In-Reply-To: <20211001203722.GZ2515@art_vandelay>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Fri, 1 Oct 2021 14:23:29 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXNqwGWLHV5sPeUebd1AzPzLJva5hWm-385A+5vgQYMvVQ@mail.gmail.com>
-Message-ID: <CA+ASDXNqwGWLHV5sPeUebd1AzPzLJva5hWm-385A+5vgQYMvVQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/brdige: analogix_dp: Grab runtime PM reference for DP-AUX
-To:     Sean Paul <sean@poorly.run>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
+        Fri, 01 Oct 2021 14:25:32 -0700 (PDT)
+Subject: Re: [PATCH v13 14/35] drm/tegra: gr3d: Support generic power domain
+ and runtime PM
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-15-digetx@gmail.com>
+ <CAPDyKFoZdmnmcdoWsD36uQesSjz8KJOq0JxY5tNbHgO_xMy+_g@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4281a6db-9875-7266-268a-a1639e7d01ff@gmail.com>
+Date:   Sat, 2 Oct 2021 00:25:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAPDyKFoZdmnmcdoWsD36uQesSjz8KJOq0JxY5tNbHgO_xMy+_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 1:37 PM Sean Paul <sean@poorly.run> wrote:
-> On Wed, Sep 29, 2021 at 02:41:03PM -0700, Brian Norris wrote:
-> > --- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-> > +++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-> > @@ -1632,8 +1632,23 @@ static ssize_t analogix_dpaux_transfer(struct drm_dp_aux *aux,
-> >                                      struct drm_dp_aux_msg *msg)
-> >  {
-> >       struct analogix_dp_device *dp = to_dp(aux);
-> > +     int ret, ret2;
-> >
-> > -     return analogix_dp_transfer(dp, msg);
-> > +     ret = analogix_dp_prepare_panel(dp, true, false);
-> > +     if (ret) {
-> > +             DRM_DEV_ERROR(dp->dev, "Failed to prepare panel (%d)\n", ret);
->
-> s/DRM_DEV_ERROR/drm_err/
+01.10.2021 17:06, Ulf Hansson пишет:
+> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
+>> Add runtime power management and support generic power domains.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/gpu/drm/tegra/gr3d.c | 388 ++++++++++++++++++++++++++++++-----
+> [...]
 
-Sure. Now that I'm looking a second time, I see the header recommends this.
+> 
+> I was looking for a call to dev_pm_opp_set_rate(), but couldn't find
+> it. Isn't that needed when changing the rate of the clock?
 
-> > +             return ret;
-> > +     }
-> > +
-> > +     pm_runtime_get_sync(dp->dev);
-> > +     ret = analogix_dp_transfer(dp, msg);
-> > +     pm_runtime_put(dp->dev);
-> > +
-> > +     ret2 = analogix_dp_prepare_panel(dp, false, false);
-> > +     if (ret2)
-> > +             DRM_DEV_ERROR(dp->dev, "Failed to unprepare panel (%d)\n", ret2);
->
-> What's the reasoning for not propagating unprepare failures? I feel like that
-> should be fair game.
-
-I suppose the underlying reason is laziness, sorry. But a related
-reason is the we probably should prefer propagating the
-analogix_dp_transfer() error, if it's non-zero, rather than the
-unprepare error. That's not too hard to do though, even if it's
-slightly more awkward.
-
-> > +
-> > +     return ret;
-> >  }
-> >
-> >  struct analogix_dp_device *
-
-v2 coming.
-
-Regards,
-Brian
+That is another good catch! Previous versions of this patch were
+changing the rate, while the current version not. So the
+set_opp_helper() isn't needed for this patch anymore. It may become
+needed sometime later, but not for this series. I'll remove it in the
+next version, thanks!
