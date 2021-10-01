@@ -2,162 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E263A41F2D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FB541F2D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354507AbhJARRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354071AbhJARRm (ORCPT
+        id S1354896AbhJARSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:18:08 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:59442 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353953AbhJARSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:17:42 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AC3C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:15:58 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id u7so8481792pfg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jueFac70vsdugMKzw/1hrymuPlNnU6vlBs2drd9HRZ0=;
-        b=MxbNLGQCCbig5Uhw0R3MYcSN0quir7cSgwrasXVMo1eRFqOmSCQ7r4TYG2FC3ixZy4
-         jBMcrNynGmQdWbhSVyLVXa2EpSjplxv+iYzO/8PXOti0dHSC8qLJf/a1GBprUAxzvjCO
-         JqNqT1gdnTpQltTFXvTpSb6bWuYNpcbE9f11eittnUpS3OOrISFq4a2qP88HNlvBe6+O
-         Rd5WDArlZ92bdAl5jz2Se9zIJQwmh3DOe1aZPb1ipBHjTpx5a5AR4EXIPjk1Lu2RgzKk
-         6hGU7dFst5zk9EdUEnAhHO8EqFAUD0GIzsnAQWCvj3xVZBFtFdI6Ie/oJjhw81gHok71
-         3S2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jueFac70vsdugMKzw/1hrymuPlNnU6vlBs2drd9HRZ0=;
-        b=ff4f4RbvGfnQcGyXtYggQenFVtmMEkrs2PxR55jSHRaN65/ROeitS4qzZJoj0gKD/n
-         UjT5YTOzSDkwuH38N+0Xw7rH9biJ1Qhy1afArw11HKFZCLcp9F4EGW45RkWeaVsLv+ZN
-         tDcgcQQjS5/7iQJR2MKXpIpUDpMMB9UsebwOInsZIO2GLxJbYMqIucaC78MIZjs/TVWr
-         Dkx4PSAHgWpCWeqFYLutWrI0qBl3GbdjccHzyBls7l+FLAOP25VTjzgJNhcSaTNQ1q3w
-         3VlIRDl5fsS0E5DQLnFj3UM/vt2RC2rg9zeLRsczy3nQ2orJlAT7Bs300Vp6GQx4L9kX
-         1zdg==
-X-Gm-Message-State: AOAM530Nl8gHVyDElgv6BhsrwVclROht4RHHjMdyyEJi5oEERanN0+st
-        RPK9jGR0zZEQkZt+gv71XM5Pyr5bcIWh87yvzvn2QA==
-X-Google-Smtp-Source: ABdhPJzIURC1ilSo/RDRJtK9qrgQDFjOMuiaHQU4uBaUufPCNARajRkk+XZvnHmfCrnQDb6mpRHlKcoo93g+Wny3hJY=
-X-Received: by 2002:aa7:959a:0:b0:43b:adeb:ef58 with SMTP id
- z26-20020aa7959a000000b0043badebef58mr11278939pfj.19.1633108557566; Fri, 01
- Oct 2021 10:15:57 -0700 (PDT)
+        Fri, 1 Oct 2021 13:18:07 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 1b1ad961ff2d9acf; Fri, 1 Oct 2021 19:16:21 +0200
+Received: from kreacher.localnet (unknown [213.134.175.164])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C773966A686;
+        Fri,  1 Oct 2021 19:16:20 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH] ACPI: Update information in MAINTAINERS
+Date:   Fri, 01 Oct 2021 19:16:20 +0200
+Message-ID: <5776239.lOV4Wx5bFT@kreacher>
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
- <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
- <CAMuHMdUkMwyA-bk7hfr7S7TE-_S9eBUxKWKmpj0rDCUvHL+fxw@mail.gmail.com>
- <CAOesGMg_eA5PNzsL76xv6kDQ2QUZeCwC04BNeucfGXkFSOE=Tw@mail.gmail.com> <CABYd82YSh=q-QrUN+nbzMZ7Z9SKq8V7eAL1=m1mg-j-f8BCbDg@mail.gmail.com>
-In-Reply-To: <CABYd82YSh=q-QrUN+nbzMZ7Z9SKq8V7eAL1=m1mg-j-f8BCbDg@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Fri, 1 Oct 2021 10:15:45 -0700
-Message-ID: <CAOesGMiubqENbGSuQ_FQA59vA897R5nkgq5vu5Tg6kqbEVdz0A@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.164
+X-CLIENT-HOSTNAME: 213.134.175.164
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfdvueeigeffgfdvueehkeffjefhkeefgfektddvuddvlefgudfgudejhfevkeegnecuffhomhgrihhnpedtuddrohhrghdpkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddujeehrdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrudeigedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghnrdgsrhhofihnsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtgho
+ mhdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 9:51 AM Will McVicker <willmcvicker@google.com> wrote:
->
-> On Fri, Oct 1, 2021 at 9:00 AM Olof Johansson <olof@lixom.net> wrote:
-> >
-> > On Fri, Oct 1, 2021 at 4:59 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > >
-> > > Hi Olof,
-> > >
-> > > On Fri, Oct 1, 2021 at 7:36 AM Olof Johansson <olof@lixom.net> wrote:
-> > > > A much more valuable approach would be to work towards being able to
-> > > > free up memory by un-probed drivers at the end of boot. That would
-> > > > possibly benefit all platforms on all architectures.
-> > >
-> > > We used to have such a functionality in arch/ppc (not arch/powerpc!),
-> > > where code/data could be tagged __prep, __chrp, or __pmac, to put it
-> > > in a special section, and to be freed with initdata when unused.  It
-> > > was removed in v2.6.15[1], as the savings weren't worth the hassle.
-> > > In a more fragmented space like arm the memory lost due to alignment
-> > > of the sections would be even more substantial.
-> >
-> > Yeah, the balance between per-platform code size and overall kernel
-> > code size shifted over time to a point where it wasn't as meaningful
-> > on ppc.
-> >
-> > > Another problem is to know when is the end of the boot, especially
-> > > with deferred probing.
-> >
-> > Most of this code either has a module_init() or an initcall that
-> > actually registers the drivers and/or probes for the platform and does
-> > the work.
-> >
-> > This means you can have a late equivalent hook/initcall that
-> > determines whether this path ended up being probed/used. If it wasn't,
-> > you can then unregister and flag the corresponding memory to be freed
-> > at the end, and would take out the heuristics and guessing on needing
-> > to do it automatically from the code path that's doing said freeing.
-> >
-> >
-> > -Olof
->
-> First off, I appreciate the constructive conversations and I
-> understand the ask here. So I'd like to close the "we don't want this"
-> and "this isn't possible" conversation. We have already proven
-> downstream that it is in fact possible to modularize these drivers on
-> other SoCs (mentioned earlier if you missed it) and I'd like to direct
-> the conversation towards verifying/testing here instead of negatively
-> arguing about how SoC vendors aren't upstreaming their drivers. I
-> think everyone understands that, but unfortunately I have no control
-> over that even though I would love everyone to work upstream directly.
->
-> I am fine with forcing these drivers to always be enabled in some form
-> upstream even though it doesn't really make much sense for a generic
-> kernel that will run on Qualcomm, Exynos, Mediatek, (you name it) SoC
-> devices. I thought about how to do this yesterday and wasn't able to
-> come up with a proper solution that didn't always force this driver to
-> be a module when CONFIG_MODULES is enabled.
+From: Rafael J. Wysocki <rafael@kernel.org>
 
-This line of reasoning: "I couldn't think of a better option" made us
-merge a userspace ABI some time ago that within a few months was
-replaced with a better solution. In that case it was the kernel
-headers bundling with a build (extending the vmlinux size by a lot),
-that seemed to have no concerns about binary growth. Not all that far
-after that went in, the BPF folks came up with a solid solution for
-CO-RE by introducing BTF, etc.
+Because Rui is now going to focus on work that is not related to the
+maintenance of kernel code, drop the MAINTAINERS records for the
+ACPI fan and video drivers that will be maintained by Rafael along
+with the rest of the ACPI subsystem.
 
-So, the argument "I can't think of a better solution" is a local
-maxima that we shouldn't settle for if there's a likely better global
-maxima available with a bit more time/effort. If we say "this problem
-is worth solving but this doesn't seem to be the solution we want to
-go for" we might actually be better off long-term.
+While at it, change the information regarding the Len Brown's role in
+the ACPI subsystem to "reviewer" to reflect the current status.
+
+Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+ MAINTAINERS |   20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
+
+Index: linux-pm/MAINTAINERS
+===================================================================
+--- linux-pm.orig/MAINTAINERS
++++ linux-pm/MAINTAINERS
+@@ -334,7 +334,7 @@ F:	drivers/platform/x86/acer-wmi.c
+ 
+ ACPI
+ M:	"Rafael J. Wysocki" <rafael@kernel.org>
+-M:	Len Brown <lenb@kernel.org>
++R:	Len Brown <lenb@kernel.org>
+ L:	linux-acpi@vger.kernel.org
+ S:	Supported
+ W:	https://01.org/linux-acpi
+@@ -355,7 +355,7 @@ F:	tools/power/acpi/
+ 
+ ACPI APEI
+ M:	"Rafael J. Wysocki" <rafael@kernel.org>
+-M:	Len Brown <lenb@kernel.org>
++R:	Len Brown <lenb@kernel.org>
+ R:	James Morse <james.morse@arm.com>
+ R:	Tony Luck <tony.luck@intel.com>
+ R:	Borislav Petkov <bp@alien8.de>
+@@ -378,14 +378,6 @@ F:	drivers/acpi/acpica/
+ F:	include/acpi/
+ F:	tools/power/acpi/
+ 
+-ACPI FAN DRIVER
+-M:	Zhang Rui <rui.zhang@intel.com>
+-L:	linux-acpi@vger.kernel.org
+-S:	Supported
+-W:	https://01.org/linux-acpi
+-B:	https://bugzilla.kernel.org
+-F:	drivers/acpi/fan.c
+-
+ ACPI FOR ARM64 (ACPI/arm64)
+ M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+ M:	Hanjun Guo <guohanjun@huawei.com>
+@@ -422,14 +414,6 @@ W:	https://01.org/linux-acpi
+ B:	https://bugzilla.kernel.org
+ F:	drivers/acpi/*thermal*
+ 
+-ACPI VIDEO DRIVER
+-M:	Zhang Rui <rui.zhang@intel.com>
+-L:	linux-acpi@vger.kernel.org
+-S:	Supported
+-W:	https://01.org/linux-acpi
+-B:	https://bugzilla.kernel.org
+-F:	drivers/acpi/acpi_video.c
+-
+ ACPI VIOT DRIVER
+ M:	Jean-Philippe Brucker <jean-philippe@linaro.org>
+ L:	linux-acpi@vger.kernel.org
 
 
--Olof
+
