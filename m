@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D1E41EBE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3637F41EBE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353843AbhJALar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:30:47 -0400
-Received: from mga17.intel.com ([192.55.52.151]:26106 "EHLO mga17.intel.com"
+        id S1353877AbhJALat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:30:49 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7901 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353446AbhJALaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:30:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="205560950"
+        id S1353852AbhJALas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:30:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="204889922"
 X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="205560950"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:29:02 -0700
+   d="scan'208";a="204889922"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:29:03 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="619029740"
+   d="scan'208";a="708570886"
 Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2021 04:29:01 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 01 Oct 2021 04:29:01 -0700
 Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mWGiq-00017S-DE; Fri, 01 Oct 2021 11:29:00 +0000
-Date:   Fri, 01 Oct 2021 19:28:17 +0800
+        id 1mWGiq-00017a-Fb; Fri, 01 Oct 2021 11:29:00 +0000
+Date:   Fri, 01 Oct 2021 19:28:23 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.09.22b] BUILD SUCCESS
- de5f4668677e3137676f1e83b94a6cdefa82ed29
-Message-ID: <6156f0d1.84vX7nc9AxOp3suf%lkp@intel.com>
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 718ecc280a842d5fcf9a855a665f7a6945519ce2
+Message-ID: <6156f0d7.VYN+OrEE37QWpPEa%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.09.22b
-branch HEAD: de5f4668677e3137676f1e83b94a6cdefa82ed29  rcutorture: Suppress pi-lock-across read-unlock testing for Tiny SRCU
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 718ecc280a842d5fcf9a855a665f7a6945519ce2  rcu: Make idle entry report expedited quiescent states
 
-elapsed time: 1394m
+elapsed time: 1378m
 
-configs tested: 236
+configs tested: 229
 configs skipped: 4
 
 The following configs have been built successfully.
@@ -56,8 +56,8 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allmodconfig
 arm                              allyesconfig
-i386                 randconfig-c001-20210930
 powerpc              randconfig-c003-20210930
+i386                 randconfig-c001-20210930
 i386                 randconfig-c001-20211001
 arm                         s3c6400_defconfig
 mips                malta_qemu_32r6_defconfig
@@ -68,11 +68,9 @@ sh                           se7722_defconfig
 alpha                            alldefconfig
 arm                           h3600_defconfig
 arm                          ep93xx_defconfig
-arc                              allyesconfig
-powerpc                    amigaone_defconfig
-sparc                       sparc64_defconfig
-mips                            gpr_defconfig
-sh                           se7721_defconfig
+powerpc                    ge_imp3a_defconfig
+m68k                       m5275evb_defconfig
+arm                           tegra_defconfig
 arm                       aspeed_g4_defconfig
 powerpc                     tqm8541_defconfig
 sh                 kfr2r09-romimage_defconfig
@@ -88,11 +86,6 @@ ia64                                defconfig
 mips                           xway_defconfig
 mips                      bmips_stb_defconfig
 arm                          exynos_defconfig
-sh                               alldefconfig
-mips                           mtx1_defconfig
-arm                       aspeed_g5_defconfig
-sh                        sh7763rdp_defconfig
-ia64                          tiger_defconfig
 powerpc                 linkstation_defconfig
 i386                                defconfig
 riscv             nommu_k210_sdcard_defconfig
@@ -124,7 +117,6 @@ h8300                       h8s-sim_defconfig
 arm                         bcm2835_defconfig
 arm                            lart_defconfig
 sparc64                             defconfig
-arm                           tegra_defconfig
 s390                       zfcpdump_defconfig
 powerpc                      tqm8xx_defconfig
 m68k                            q40_defconfig
@@ -187,6 +179,7 @@ m68k                                defconfig
 m68k                             allmodconfig
 m68k                             allyesconfig
 nios2                               defconfig
+arc                              allyesconfig
 nds32                             allnoconfig
 nds32                               defconfig
 alpha                               defconfig
@@ -196,11 +189,11 @@ h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
 s390                             allyesconfig
 s390                             allmodconfig
 parisc                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
 sparc                               defconfig
 i386                             allyesconfig
 mips                             allyesconfig
@@ -248,13 +241,6 @@ x86_64                                  kexec
 x86_64                           allyesconfig
 
 clang tested configs:
-i386                 randconfig-c001-20210930
-arm                  randconfig-c002-20210930
-powerpc              randconfig-c003-20210930
-mips                 randconfig-c004-20210930
-s390                 randconfig-c005-20210930
-riscv                randconfig-c006-20210930
-x86_64               randconfig-c007-20210930
 x86_64               randconfig-c007-20211001
 i386                 randconfig-c001-20211001
 arm                  randconfig-c002-20211001
@@ -262,6 +248,13 @@ s390                 randconfig-c005-20211001
 powerpc              randconfig-c003-20211001
 riscv                randconfig-c006-20211001
 mips                 randconfig-c004-20211001
+i386                 randconfig-c001-20210930
+arm                  randconfig-c002-20210930
+powerpc              randconfig-c003-20210930
+mips                 randconfig-c004-20210930
+s390                 randconfig-c005-20210930
+riscv                randconfig-c006-20210930
+x86_64               randconfig-c007-20210930
 x86_64               randconfig-a015-20210930
 x86_64               randconfig-a011-20210930
 x86_64               randconfig-a012-20210930
