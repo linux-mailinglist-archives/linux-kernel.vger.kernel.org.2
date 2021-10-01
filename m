@@ -2,119 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E587C41F044
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D09741F045
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354753AbhJAPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354696AbhJAPER (ORCPT
+        id S1354768AbhJAPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:04:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57930 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354765AbhJAPEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:04:17 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB2EC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:02:30 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id b78so12018230iof.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=NaTmLQHutOXSYvks1euo385cJGTEqbXqI4mBttmOtvg=;
-        b=Z8PQZy2fPVLka1su7mx6sXp/mDWSSTWeuMeVVVq8o7U7s9m9/60dQoaYR5ZDmPh44S
-         ejJIXTpVEdwZMH+92h/qg6nngVARrV/sGm5z1FUqkSq67I1X3dc1sOPq7r1dF52t0A2c
-         4bGmUNS81U5bL4WAXoaiQjKycdoWdq2ofev+loDjKCJ8fn23X6vWNhod3K7tA5hkEuM1
-         PRM4gT+oSQTdW4Lc3w5oH1swOEhtq/a6BL7d63DZ9jq+py70E6aX8otlSZoecjHVYF1Q
-         xK5xtk0y/HTA2wnGxyZolvcTc0uCiq28F/G2AKXnYh+c+CClxMj5tLzsIRAUCtJzoj0d
-         fjKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NaTmLQHutOXSYvks1euo385cJGTEqbXqI4mBttmOtvg=;
-        b=tZ/7haV+MR+dkTZUXkplVvE0FXxBvBKQBnHzYqawtjlapcW2seiJjHHu41g5puDYLT
-         GhBGaaqjD/QfYnzOqmgeY5zThSTjUR6txK8HulOD1Ca8poKeaMtfOxP/B0DLHM+3gk00
-         9NyHsN+pGxHluoWPS98Ts+UK1/Tkz/FgaMK6KYG9+bX5Ow1TKgEkb2g4he/m+oATFm9H
-         ZfP4+fa8xB6o7Zrl6MnBoU7CIOwV5AKiE6yarXl7Yjkmzcjx6sfV2wcncGexVi3iyW15
-         GSapbDE6EmApGdOj9ZWIscm46banpTbhbqKJLqf1fzWW7t71zA6Az0NChr/jxLgzbBmF
-         m+Pg==
-X-Gm-Message-State: AOAM530Xh5NHzoFAPWdWFwQjtmn+j6i61h/5HUlZsGiVLvYZbXrRqFSN
-        LqWfOzG03WAfklWSBzIe1OthVg==
-X-Google-Smtp-Source: ABdhPJy8UlhmOPUHsoI8FAXWb/rucZsNMvv2SmhthlVHBgCgpxHOdlNOsVMRQr3U/JPu/j2M4vVOXw==
-X-Received: by 2002:a6b:6302:: with SMTP id p2mr8524609iog.105.1633100549748;
-        Fri, 01 Oct 2021 08:02:29 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id p11sm3937686ilh.38.2021.10.01.08.02.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 08:02:29 -0700 (PDT)
-Subject: Re: [BUG] kernel BUG at mm/slub.c - possible BFQ issue?
-To:     torvic9@mailbox.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-References: <1624640454.149631.1632987871186@office.mailbox.org>
- <1889051823.161943.1633100469857@office.mailbox.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2abec603-cad9-d87e-356c-9fe49dbbb3a3@kernel.dk>
-Date:   Fri, 1 Oct 2021 09:02:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 1 Oct 2021 11:04:35 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633100570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tkahMb00/2ZOB3OTBy1INbxnjaoRkIMrPGAeMzpZqq4=;
+        b=VvAbATfHtKYOGYETTF4NyAZJH0nLm539yYltnLygMzbsW/tEjTosnqw19MbnXdR/rnK7YR
+        2gfMFdiGhpFaZ5tQC82CVyMj+qAI10owVUzsEUEEZyAL10FpSozE/JFriZBhwGiDmB8R8h
+        hKkBEsJ8RK+UzTT2tMRGhAUMJsnqut+uN3bt7Ttb3X2YAZWvrH9/xuPYlTVo2KmQlMLJcz
+        n53R48hp2BPxnaQLKBszUkVeTtGDdKofjtZixfvRV2GnLJLHmSZ6atwcZpXjXUcsGANWI5
+        Tqiwj49RQxsZBqLoWCHz2VOJ1ty98w6Pnl5AyyJVGmOH/IbdoZPNE0PToIAVjQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633100570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tkahMb00/2ZOB3OTBy1INbxnjaoRkIMrPGAeMzpZqq4=;
+        b=pcOb3Ej2c2nCvd9kpicGl6rnch6vwgCq0kClnm6XbkHUugUqvyUgR4DW0P1KvBr85CVRS7
+        71RB9rhBWBi3sYDw==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v10 13/28] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+In-Reply-To: <20210825155413.19673-14-chang.seok.bae@intel.com>
+References: <20210825155413.19673-1-chang.seok.bae@intel.com>
+ <20210825155413.19673-14-chang.seok.bae@intel.com>
+Date:   Fri, 01 Oct 2021 17:02:49 +0200
+Message-ID: <871r546b52.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <1889051823.161943.1633100469857@office.mailbox.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/21 9:01 AM, torvic9@mailbox.org wrote:
->> torvic9@mailbox.org hat am 30.09.2021 09:44 geschrieben:
->>
->>  
->> Hello,
->>
->> I encounter a hard freeze on both 5.14 and 5.15 when using BFQ.
->> Unfortunately, I do not have a full error log, because the computer
->> totally freezes and slightly corrupts the display, so it's
->> impossible to read the entire message.
->>
->> However, what I could get is the following:
->>
->>   kernel BUG at mm/slub.c:379
->>   invalid opcode: 0000 [#1]
->>   RIP: 0010:__slab_free
->>   [...]
->>   Call Trace:
->>   bfq_set_next_ioprio_data
->>   [...]
->>   bfq_put_queue
->>   bfq_insert_requests
->>   [...]
->>
->> This issue appears more or less randomly and it sometimes takes a
->> little while to reproduce it (running fio helps).
->> The call trace always contains references to BFQ, but they are not
->> always the exact same. Once, I could see on the corrupted display
->> the message "general protection fault".
->> I could reproduce this issue on two computers.
->>
->> Not quite sure but I *think* the issue first appeared somewhere around
->> 5.14.5 or 5.14.6, during which time BFQ only got the following commit:
->>
->>   (88013a0c5d99) block, bfq: honor already-setup queue merges
-> 
-> I have now reverted the above commit and launched some heavy I/O like
-> e.g. git kernel, fio, xz compression, and so far, no freezes anymore!
-> Too early to say that this commit really is the cause though.
-> Would be great if someone could have a look at it.
+On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+> +/**
+> + * xfd_switch - Switches the MSR IA32_XFD context if needed.
+> + * @prev:	The previous task's struct fpu pointer
+> + * @next:	The next task's struct fpu pointer
+> + */
+> +static inline void xfd_switch(struct fpu *prev, struct fpu *next)
+> +{
+> +	u64 prev_xfd_mask, next_xfd_mask;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_XFD) || !xfeatures_mask_user_dynamic)
+> +		return;
 
-It's known buggy, and a revert has been queued up since earlier this
-week. It'll go to Linus for 5.15-rc4, and will hit 5.14 stable shortly
-thereafter.
+This is context switch, so this wants to be a static key which is turned
+on during init when the CPU supports XFD and user dynamic features are
+available.
 
--- 
-Jens Axboe
+> +
+> +	prev_xfd_mask = prev->state_mask & xfeatures_mask_user_dynamic;
+> +	next_xfd_mask = next->state_mask & xfeatures_mask_user_dynamic;
+> +
+> +	if (unlikely(prev_xfd_mask != next_xfd_mask))
+> +		wrmsrl_safe(MSR_IA32_XFD, xfeatures_mask_user_dynamic ^ next_xfd_mask);
+> +}
+> +
+>  /*
+>   * Delay loading of the complete FPU state until the return to userland.
+>   * PKRU is handled separately.
+>   */
+> -static inline void switch_fpu_finish(struct fpu *new_fpu)
+> +static inline void switch_fpu_finish(struct fpu *old_fpu, struct fpu *new_fpu)
+>  {
+> -	if (cpu_feature_enabled(X86_FEATURE_FPU))
+> +	if (cpu_feature_enabled(X86_FEATURE_FPU)) {
+>  		set_thread_flag(TIF_NEED_FPU_LOAD);
+> +		xfd_switch(old_fpu, new_fpu);
 
+Why has this to be done on context switch? Zero explanation provided.
+
+Why can't this be done in exit_to_user() where the FPU state restore is
+handled?
+
+>  	}
+> +
+> +	if (boot_cpu_has(X86_FEATURE_XFD))
+
+s/boot_cpu_has/cpu_feature_enabled/g
+
+> +		wrmsrl(MSR_IA32_XFD, xfeatures_mask_user_dynamic);
+>  }
+> +
+> +	if (cpu_feature_enabled(X86_FEATURE_XFD))
+> +		wrmsrl_safe(MSR_IA32_XFD, (current->thread.fpu.state_mask &
+> +					   xfeatures_mask_user_dynamic) ^
+> +					  xfeatures_mask_user_dynamic);
+
+Lacks curly braces as it's not a single line of code.
+
+>  }
+>  
+>  /**
+> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> index 33f5d8d07367..6cd4fb098f8f 100644
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -97,6 +97,16 @@ void arch_thread_struct_whitelist(unsigned long *offset, unsigned long *size)
+>  	*size = fpu_buf_cfg.min_size;
+>  }
+>  
+> +void arch_release_task_struct(struct task_struct *task)
+> +{
+> +	if (!cpu_feature_enabled(X86_FEATURE_FPU))
+> +		return;
+> +
+> +	/* Free up only the dynamically-allocated memory. */
+> +	if (task->thread.fpu.state != &task->thread.fpu.__default_state)
+
+Sigh.
+
+> +		free_xstate_buffer(&task->thread.fpu);
+>  
+> +static __always_inline bool handle_xfd_event(struct fpu *fpu, struct pt_regs *regs)
+> +{
+> +	bool handled = false;
+> +	u64 xfd_err;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_XFD))
+> +		return handled;
+> +
+> +	rdmsrl_safe(MSR_IA32_XFD_ERR, &xfd_err);
+> +	wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
+> +
+> +	if (xfd_err) {
+
+What's wrong with
+
+       if (!xfd_err)
+       		return false;
+
+an spare the full indentation levels below
+
+> +		u64 xfd_event = xfd_err & xfeatures_mask_user_dynamic;
+> +		u64 value;
+> +
+> +		if (WARN_ON(!xfd_event)) {
+> +			/*
+> +			 * Unexpected event is raised. But update XFD state to
+> +			 * unblock the task.
+> +			 */
+> +			rdmsrl_safe(MSR_IA32_XFD, &value);
+> +			wrmsrl_safe(MSR_IA32_XFD, value & ~xfd_err);
+
+Ditto. But returning false here will not unblock the task as
+exc_device_not_available() will simply reach "die()".
+
+> +		} else {
+> +			struct fpu *fpu = &current->thread.fpu;
+
+You need this because the fpu argument above is invalid?
+
+> +			int err = -1;
+> +
+> +			/*
+> +			 * Make sure not in interrupt context as handling a
+> +			 * trap from userspace.
+> +			 */
+> +			if (!WARN_ON(in_interrupt())) {
+
+Why would in_interrupt() be necessarily true when the trap comes from
+kernel space? The proper check is user_mode(regs) as done anywhere else.
+
+> +				err = realloc_xstate_buffer(fpu, xfd_event);
+> +				if (!err)
+> +					wrmsrl_safe(MSR_IA32_XFD, (fpu->state_mask &
+> +								   xfeatures_mask_user_dynamic) ^
+> +								  xfeatures_mask_user_dynamic);
+> +			}
+> +
+> +			/* Raise a signal when it failed to handle. */
+> +			if (err)
+> +				force_sig_fault(SIGILL, ILL_ILLOPC, error_get_trap_addr(regs));
+> +		}
+> +		handled = true;
+> +	}
+> +	return handled;
+> +}
+> +
+>  DEFINE_IDTENTRY(exc_device_not_available)
+>  {
+>  	unsigned long cr0 = read_cr0();
+
+> +	if (handle_xfd_event(&current->thread.fpu, regs))
+> +		return;
+
+As I said before, this is wrong because at that point interrupts are disabled.
+
+Thanks,
+
+        tglx
