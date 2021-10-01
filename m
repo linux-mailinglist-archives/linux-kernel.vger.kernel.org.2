@@ -2,222 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359EB41E6E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B2F41E6DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351885AbhJAEqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhJAEqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:46:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85CE61A51;
-        Fri,  1 Oct 2021 04:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633063501;
-        bh=nOYu6VGiA3i8vYIYqOGagXBTJt6u+kei0x1A8SWhhng=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=jmqBu5BQnMy1T7zlK97rr+koPVq4uGoHFILiPGTr9K1sdc7CftdKR5keb0V7sTYwC
-         3O4ZSHI1jNhm8o6KHA8q7SQKALCsq+x6XDbzgNUvLuGHnaV3CkH5vx+6vk+vbqhBrO
-         qtUihZTe+MoJ4djG8DuJqKSFh+qc6Nw+SkgxQ81LxPVPGmCkiUkoQ1qD3CMgXW4PWz
-         tweNnIcf1hD42U/7i2VeX8sWz7qhSlyNK4XRQ/rVztjvouiN2eoY+Cr0YntkN6m+9e
-         T2292+n5NMHvRayA0gzxSRrvKCzDCeodGfZ9yebyIXHW6VCeY00V3zL0lLT1NQjrMN
-         HBD4E/lXFTpdA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id B1D1527C0054;
-        Fri,  1 Oct 2021 00:44:58 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Fri, 01 Oct 2021 00:44:58 -0400
-X-ME-Sender: <xms:SZJWYR8Kjjy-Jc37EChIePfsO6EbfeNurBOjUPTzVaKCV8BGMqwbow>
-    <xme:SZJWYVtFHOSYPEtRJQ4k5ENHFHtJLyb-I1BXTQ6c-yejclt32h52HRJk3yTh1i_B8
-    vVbknEvvGSjlnmPumQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekhedgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
-    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:SZJWYfChnVfW8iJ4AigG65Z-baDxhyAzZIeCxHpThJEIIxv0fcGSag>
-    <xmx:SZJWYVf_vpusaHcws_PBtSYwqd6siKlGgaTESgxTGUKViliAnzRkGw>
-    <xmx:SZJWYWOmMvzuYQS1yeqzJQKoJXG6hB8Ry7-5XhSK2NBGiaePk6pJZg>
-    <xmx:SpJWYdP-rS-7lLxBS0kLo8aL_JIMect6t0FXTbj9zMGM95ZVk2BH6TzsyN8>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C362021E0063; Fri,  1 Oct 2021 00:44:57 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1322-g921842b88a-fm-20210929.001-g921842b8
-Mime-Version: 1.0
-Message-Id: <25ba1e1f-c05b-4b67-b547-6b5dbc958a2f@www.fastmail.com>
-In-Reply-To: <87tui162am.ffs@tglx>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
- <20210913200132.3396598-12-sohil.mehta@intel.com>
- <f5a971e4-6b0d-477f-992c-89110a2ceb03@www.fastmail.com>
- <c6e83d0e-6551-4e16-0822-0abbc4d656c4@intel.com>
- <fd54f257-fa02-4ec3-a81b-b5e60f24bf94@www.fastmail.com> <877dex7tgj.ffs@tglx>
- <b537a890-4b9f-462e-8c17-5c7aa9b60138@www.fastmail.com> <87tui162am.ffs@tglx>
-Date:   Thu, 30 Sep 2021 21:41:52 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Sohil Mehta" <sohil.mehta@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Cc:     "Tony Luck" <tony.luck@intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, "Jens Axboe" <axboe@kernel.dk>,
-        "Christian Brauner" <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Shuah Khan" <shuah@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Raj Ashok" <ashok.raj@intel.com>,
-        "Jacob Pan" <jacob.jun.pan@linux.intel.com>,
-        "Gayatri Kammela" <gayatri.kammela@intel.com>,
-        "Zeng Guang" <guang.zeng@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Randy E Witt" <randy.e.witt@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Ramesh Thomas" <ramesh.thomas@intel.com>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 11/13] x86/uintr: Introduce uintr_wait() syscall
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1351862AbhJAEn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:43:56 -0400
+Received: from mail-dm6nam10on2048.outbound.protection.outlook.com ([40.107.93.48]:43287
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230477AbhJAEnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 00:43:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K50YGau1VYTtmEgIYlCu2/ttzYfnDotzopeBBuoCNe1YlHC1d/UrtsAqO2Y1G//pIYHO87kDO5hc7NgulCIte2QdHdDw/XoBB0Nl37qPK7Iqpb5+txq3HpZR+dilhmT7HV2gX+COspukuBu1ZItOQYMRtTOze03WxXZeg9DFCdDIpe0/kyM2MgUiTProkVUXVubGulw9y3bLJHBP1h3y2I9OJEJsBqVVkqwD9hJboH66FvbQTvwsdqjr05X3NQO6RKwene1KTPuw/A3Oow7HhpsXZV1bQKietVChfhdSl+q6HG+ymuKbVSiHLKEnLWy/ekJHAdFsLsoAuIV3waqbEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5aSIRvMfaRsNjy+ZOvu3++/rvF++EgsC6LnlkREbP5g=;
+ b=V4niSoemJgichj16KU7KrTWtv7XBtVxk7vrVAfsPceT+PuLlcfLbe/TW7vA7pDLsL1iONPRpfjbiupJbEaXL+KFXjPzp2H2DqRlcyLwt1vZje4MuMElSuvOr85jzNNvgKxKJLlvTtuTrPp9F8Dmke+sJ9unigc154Vq8+HqQTa7PSQYOL2Gx8Kg0Ru6bEaqU3GbjtxgJUjVyQskxKQRnH2yd1lXtKB2ujd/Vmsu+g3I0iZARexMfj68xc6qrsvRiJ5gwaOgY3d19mXu5YpLoYhU57f6+rTkC4+GR+F/qFbtmeZMERu/jA+Jfk8dMHuaTGxsdq1CVL00+PP3f8C7xEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5aSIRvMfaRsNjy+ZOvu3++/rvF++EgsC6LnlkREbP5g=;
+ b=ZhdLlL0aJuG3Wt/JXWrTXXbi0KtlaUKI6onn7G9WWkpTkfCX/5Ystw1FER4UypXe8JthVYDcaajAC04JoG6r43G7hyoQDg38GTqgeFR530lcYdOfm5UuHlfObe5mLx81Ac4xkyjB4sOKHT3EdrOT9DQaztOgLu+EfrnLQbLxw0w=
+Received: from BN9PR03CA0416.namprd03.prod.outlook.com (2603:10b6:408:111::31)
+ by BL0PR12MB2449.namprd12.prod.outlook.com (2603:10b6:207:40::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 1 Oct
+ 2021 04:42:09 +0000
+Received: from BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:111:cafe::90) by BN9PR03CA0416.outlook.office365.com
+ (2603:10b6:408:111::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16 via Frontend
+ Transport; Fri, 1 Oct 2021 04:42:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT039.mail.protection.outlook.com (10.13.177.169) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4566.14 via Frontend Transport; Fri, 1 Oct 2021 04:42:09 +0000
+Received: from tlendack-t1.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 30 Sep
+ 2021 23:42:07 -0500
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, "Joerg Roedel" <jroedel@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>, <stable@vger.kernel.org>
+Subject: [PATCH] x86/sev: Return an error on a returned non-zero SW_EXITINFO1[31:0]
+Date:   Thu, 30 Sep 2021 23:42:01 -0500
+Message-ID: <efc772af831e9e7f517f0439b13b41f56bad8784.1633063321.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60ac023a-53eb-4397-bd2c-08d98495d3f9
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2449:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB2449DAAF25B6402C4578208BECAB9@BL0PR12MB2449.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eC3RJXcv8Hc2EMHRJa1vo/6UwlYfP+38nf6obEkkiNMhteeqwUJdRihnoqjD+/FC/deQ9+OQMxDSXatUQzil9GDpD2ZT8nvahnlZ0mw7LwTBMylpeP4vTqexv4xiHgstI8qDuz6Vc15EsNuc/+hP54tt4drMXVef+lxroV0hpjfH3gUoj5n6VdJy/2tJS6P+C/QRQm6qUgjcwvLyBDzHUPbBe/xrpnzn+uqVcU1C25luMzvs+jSYgyOj5z6UsNjqP5I3OsaOWqFQy/AXdHiRu6JRBPWGcYwNAEURgrcleH6iQDHm0GWKdQIej2+UzRmFlTAoSUs8iCi3FJS+3zapwHi46mrNVc4viN1gqJZ4ZmC1jITsbSHy3FnNHYP4e1Hbcy35gv8CFmSKyE3A+8MMIKKGnm0ozRSBHJSkS/FhtViYAInznWTdQ2JqEmaIR+1necD7aEZxTYva12WbMBgmt3FsOTXmi/jb1Ayry8FLtXmUM40KA5tFL5cB7ep/tYWCvXhXWmVKI80IoCoBdFOZUpqulNCeJVY1gyLsTaeZKJaPB+x2S5Q6lNlPo3XzWFjGcIxx3KqPnaOZ72u4yTaIllLDdOV1d97Deo6ol9CC5X6jzgCELCABoPV/Nw6tVT+QC5nNYUw+fVMJQ+pgknMIGLiiOKHi25djMElPTuuaBUBFOTAEULXrVTfM8YjfhZkzynp0j89WhutOtID7zlzaFSEYG3KGEoE/7VyQ2ww2tEc=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(508600001)(336012)(2616005)(2906002)(82310400003)(186003)(4326008)(86362001)(70586007)(36860700001)(70206006)(47076005)(4744005)(16526019)(36756003)(110136005)(81166007)(426003)(5660300002)(26005)(6666004)(7696005)(8676002)(316002)(54906003)(356005)(8936002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 04:42:09.0549
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60ac023a-53eb-4397-bd2c-08d98495d3f9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2449
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After returning from a VMGEXIT NAE event, SW_EXITINFO1[31:0] is checked
+for a value of 1, which indicates an error and that SW_EXITINFO2 contains
+exception information. However, future versions of the GHCB specification
+may define new values for SW_EXITINFO1[31:0], so really any non-zero value
+should be treated as an error.
 
+Fixes: 597cfe48212a ("x86/boot/compressed/64: Setup a GHCB-based VC Exception handler")
+Cc: <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+ arch/x86/kernel/sev-shared.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Thu, Sep 30, 2021, at 5:01 PM, Thomas Gleixner wrote:
-> On Thu, Sep 30 2021 at 15:01, Andy Lutomirski wrote:
->> On Thu, Sep 30, 2021, at 12:29 PM, Thomas Gleixner wrote:
->>>
->>> But even with that we still need to keep track of the armed ones per=
- CPU
->>> so we can handle CPU hotunplug correctly. Sigh...
->>
->> I don=E2=80=99t think any real work is needed. We will only ever have=
- armed
->> UPIDs (with notification interrupts enabled) for running tasks, and
->> hot-unplugged CPUs don=E2=80=99t have running tasks.
->
-> That's not the problem. The problem is the wait for uintr case where t=
-he
-> task is obviously not running:
->
-> CPU 1
->      upid =3D T1->upid;
->      upid->vector =3D UINTR_WAIT_VECTOR;
->      upid->ndst =3D local_apic_id();
->      ...
->      do {
->          ....
->          schedule();
->      }
->
-> CPU 0
->     unplug CPU 1
->
->     SENDUPI(index)
->         // Hardware does:
->         tblentry =3D &ttable[index];
->         upid =3D tblentry->upid;
->         upid->pir |=3D tblentry->uv;
->         send_IPI(upid->vector, upid->ndst);
->
-> So SENDUPI will send the IPI to the APIC ID provided by T1->upid.ndst
-> which points to the offlined CPU 1 and therefore is obviously going to
-> /dev/null. IOW, lost wakeup...
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 34f20e08dc46..ff1e82ff52d9 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -130,6 +130,8 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+ 		} else {
+ 			ret = ES_VMM_ERROR;
+ 		}
++	} else if (ghcb->save.sw_exit_info_1 & 0xffffffff) {
++		ret = ES_VMM_ERROR;
+ 	} else {
+ 		ret = ES_OK;
+ 	}
+-- 
+2.33.0
 
-Yes, but I don't think this is how we should structure this.
-
-CPU 1
- upid->vector =3D UINV;
- upid->ndst =3D local_apic_id()
- exit to usermode;
- return from usermode;
- ...
-
- schedule();
- fpu__save_crap [see below]:
-   if (this task is waiting for a uintr) {
-     upid->resv0 =3D 1;  /* arm #GP */
-   } else {
-     upid->sn =3D 1;
-   }
-
-
->
->> We do need a way to drain pending IPIs before we offline a CPU, but
->> that=E2=80=99s a separate problem and may be unsolvable for all I kno=
-w. Is
->> there a magic APIC operation to wait until all initiated IPIs
->> targeting the local CPU arrive?  I guess we can also just mask the
->> notification vector so that it won=E2=80=99t crash us if we get a sta=
-le IPI
->> after going offline.
->
-> All of this is solved already otherwise CPU hot unplug would explode in
-> your face every time. The software IPI send side is carefully
-> synchronized vs. hotplug (at least in theory). May I ask you politely =
-to
-> make yourself familiar with all that before touting "We do need..." ba=
-sed
-> on random assumptions?
-
-I'm aware that the software send IPI side is synchronized against hotplu=
-g.  But SENDUIPI is not unless we're going to have the CPU offline code =
-IPI every other CPU to make sure that their SENDUIPIs have completed -- =
-we don't control the SENDUIPI code.
-
-After reading the ISE docs again, I think it might be possible to use th=
-e ON bit to synchronize.  In the schedule-out path, if we discover that =
-ON =3D 1, then there is an IPI in flight to us.  In theory, we could wai=
-t for it, although actually doing so could be a mess.  That's why I'm as=
-king whether there's a way to tell the APIC to literally wait for all IP=
-Is that are *already sent* to be delivered.
-
->
-> The above SENDUIPI vs. CPU hotplug scenario is the same problem as we
-> have with regular device interrupts which are targeted at an outgoing
-> CPU. We have magic mechanisms in place to handle that to the extent
-> possible, but due to the insanity of X86 interrupt handling mechanics
-> that still leaves a very tiny hole which might cause a lost and
-> subsequently stale interrupt. Nothing we can fix in software.
->
-> So on CPU offline the hotplug code walks through all device interrupts
-> and checks whether they are targeted at the outgoing CPU. If so they a=
-re
-> rerouted to an online CPU with lots of care to make the possible race
-> window as small as it gets. That's nowadays only a problem on systems
-> where interrupt remapping is not available or disabled via commandline.
->
-> For tasks which just have the user interrupt armed there is no problem
-> because SENDUPI modifies UPID->PIR which is reevaluated when the task
-> which got migrated to an online CPU is going back to user space.
->
-> The uintr_wait() syscall creates the very same problem as we have with
-> device interrupts. Which means we need to make that wait thing:
->
->      upid =3D T1->upid;
->      upid->vector =3D UINTR_WAIT_VECTOR;
-
-This is exactly what I'm suggesting we *don't* do.  Instead we set a res=
-erved bit, we decode SENDUIPI in the #GP handler, and we emulate, in-ker=
-nel, the notification process for non-running tasks.
-
-Now that I read the docs some more, I'm seriously concerned about this X=
-SAVE design.  XSAVES with UINTR is destructive -- it clears UINV.  If we=
- actually use this, then the whole last_cpu "preserve the state in regis=
-ters" optimization goes out the window.  So does anything that happens t=
-o assume that merely saving the state doesn't destroy it on respectable =
-modern CPUs  XRSTORS will #GP if you XRSTORS twice, which makes me nervo=
-us and would need a serious audit of our XRSTORS paths.
-
-This is gross.
-
---Andy
