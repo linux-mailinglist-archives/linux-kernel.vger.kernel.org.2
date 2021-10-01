@@ -2,283 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C08041F341
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E20341F349
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355335AbhJARk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355213AbhJARk4 (ORCPT
+        id S1355367AbhJARmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:42:12 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:43655 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhJARmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:40:56 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65414C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:39:11 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y26so41870606lfa.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IVvmXkzdqqsJWfRDKp2pUYxJw8/s8UhPi23VBkP7rL4=;
-        b=qjyN0JeTZaYzcZm+GsbyZAErQn/QN7K5eRXnL9i14K78hbRbfNsj4jehrpylyDZOEt
-         ML2qwvnpe9kjQmuDHXD0ZIHjdwpVITI3r53x0GcBdF5nKRS3+bwRJKP1qPSx/EJMx/S6
-         qiZUMvHwtNR4sX96Y/PuMlI8l9aLqAxoy6mvd+p4xgTql64XPzelLPTQ43m2qBH6jEVa
-         vgCGweRKW1eLuqvb4HQ7q177WAsG8MGy9h7DAZF20+wtrqDEw6DxinuIDhFMNTn4HSY2
-         QARq16xPzAQpzYi2g7XbAjrJeofzIeYvZXP7ymRZNHI25PoAbrrUwzsLeXoXm5V9sk+7
-         gzGw==
+        Fri, 1 Oct 2021 13:42:10 -0400
+Received: by mail-pf1-f171.google.com with SMTP id 187so4159281pfc.10;
+        Fri, 01 Oct 2021 10:40:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IVvmXkzdqqsJWfRDKp2pUYxJw8/s8UhPi23VBkP7rL4=;
-        b=R+NZVXy0dOZHihguapbGSJelE96Or2DRBwNeEJSHQXBFD9hvTfKT4UBL5BXdzz/c2p
-         o1uPBh8aPaJpVxDWT9rr33WC0npnKEzCjN2qMys3sg+t4DFjsGUgYdaC0BEO8B8CSPUF
-         aAABBO5Z+wX6LQEZ35Ili4JZr6RzBpcvj4As9Hej82p2m2Nmf+s5wIlMXd7kYIixF/A3
-         0F3IV4JmAfZtL3FW0Gg6SqQstdR2x1wcoZb70RqQFFdFmhApd2trHbq0t2CTdVZQ8xc4
-         bYhvEcNhfTzjRLfuvjiTaPTnkE4qhIMKSauPdmdY2bwWUmP0HSfRR997L8u5R4ElioH9
-         mhMw==
-X-Gm-Message-State: AOAM532XQLj2hEHQ9N4MldLTqvCzFaP8BrzrD16QUOgPHMbnGZYSm6FA
-        UgX1HtV8wdL0RWKy2DeDlLiR4CX5L1/PDU2E
-X-Google-Smtp-Source: ABdhPJx4XpQy1mMQ0K9hKr5qfEu03Pkz/GHI4xDpzxTeCLm2R2rV769qz71GDdVnwuWZKCnP03TFZg==
-X-Received: by 2002:a2e:5806:: with SMTP id m6mr13283109ljb.162.1633109949453;
-        Fri, 01 Oct 2021 10:39:09 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d9sm799148lfl.175.2021.10.01.10.39.08
+        bh=Klo/AK1qPnu25VUQLxQ3XFtBKTNjbNeMN76P/55SWkE=;
+        b=2Y8XnJinEfOC1OfvFfLM8/59EI7eHFi3DpdKM4jfHs5txz+nz1wBa9MqavmXF+aKvL
+         WbFVRbwtsItImQzrNZ1nLIZOBOf1xkr/W2G6jbG1/CcuOkiQVCXNHZaM06hBls85xTRO
+         w8nPmdJCvPkAZVa91HdXAxp91Movyk37cgSDySYJNpdu628GaBgERekxwzIwMGRgsGtW
+         6IE2QHwtGNDQzX+RW/iTA2RiedvGCX6BX0CflEFrWw6NJMOnuV5NZnPNdJs1ERF2b+Ws
+         kICSMGbDodp5Lu+lhl4SjALJ8X5R6mKxCZI8ohxHmgOzXPoFDKtkDfTJ25YCxo2FJGVU
+         f/mQ==
+X-Gm-Message-State: AOAM532ZW5GURetOiF9InA4tST56O/eVNni8nAyClXmS2j0mnOfJRREN
+        UW/jdFwSbgiaQl9QALSr2KY=
+X-Google-Smtp-Source: ABdhPJwAQYznZlerGKXQISzRhZecfWoUKK1+pnGNVBwYHZP1WsaMo57IZzoLhTwc9sFwei3wEdbA4Q==
+X-Received: by 2002:a63:6981:: with SMTP id e123mr10729139pgc.419.1633110025906;
+        Fri, 01 Oct 2021 10:40:25 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:82b7:f0a2:c63d:c44e])
+        by smtp.gmail.com with ESMTPSA id t6sm7020570pfh.63.2021.10.01.10.40.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 10:39:08 -0700 (PDT)
-Subject: Re: [RFC] drm/msm/a6xx: Serialize GMU communication
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Eric Anholt <eric@anholt.net>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210927180345.878859-1-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <9b3a8067-79d6-e4c2-8025-96f2ebe7fd6a@linaro.org>
-Date:   Fri, 1 Oct 2021 20:39:07 +0300
+        Fri, 01 Oct 2021 10:40:25 -0700 (PDT)
+Subject: Re: [PATCH 2/2] scsi: ufs: Stop clearing unit attentions
+To:     dgilbert@interlog.com, Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com
+Cc:     Bart Van Assche <bvanassche@google.com>
+References: <20210930195237.1521436-1-jaegeuk@kernel.org>
+ <20210930195237.1521436-2-jaegeuk@kernel.org>
+ <12ba3462-ac6b-ef35-4b5e-e0de6086ab51@intel.com>
+ <f2436720-16d5-58da-abcc-20fa1ed01fb9@intel.com>
+ <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
+ <f4f81b75-9b0b-7734-ebfa-14bd1b935c54@interlog.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <07821a06-0b51-8f11-868c-913726ee393a@acm.org>
+Date:   Fri, 1 Oct 2021 10:40:24 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20210927180345.878859-1-robdclark@gmail.com>
+In-Reply-To: <f4f81b75-9b0b-7734-ebfa-14bd1b935c54@interlog.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2021 21:03, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On 10/1/21 10:21 AM, Douglas Gilbert wrote:
+> On 2021-10-01 12:59 p.m., Bart Van Assche wrote:
+>> On 9/30/21 11:52 PM, Adrian Hunter wrote:
+>>> Finally, there is another thing to change.  The reason
+>>> ufshcd_suspend_prepare() does a runtime resume of sdev_rpmb is because the
+>>> UAC clear would wait for an async runtime resume, which will never happen
+>>> during system suspend because the PM workqueue gets frozen.  So with the
+>>> removal of UAC clear, ufshcd_suspend_prepare() and ufshcd_resume_complete()
+>>> should be updated also, to leave rpmb alone.
 > 
-> I've seen some crashes in our crash reporting that *look* like multiple
-> threads stomping on each other while communicating with GMU.  So wrap
-> all those paths in a lock.
+> Somewhat related ...
 > 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
-> Are we allowed to use c99/gnu99 yet?
+> Since there was some confusion among the members of T10 of what precisely
+> the RPM bit meant, in SPC-6 revision (draft), a new "HOT PLUGGABLE" two
+> bit field was introduced into the standard INQUIRY response:
 > 
->   drivers/gpu/drm/msm/Makefile          |  2 +-
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.c |  6 ++++
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.h |  9 +++++
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 50 ++++++++++++++++++++-------
->   4 files changed, 54 insertions(+), 13 deletions(-)
+>                  Table 151 — HOT PLUGGABLE field
 > 
-> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> index 904535eda0c4..57283bbad3f0 100644
-> --- a/drivers/gpu/drm/msm/Makefile
-> +++ b/drivers/gpu/drm/msm/Makefile
-> @@ -1,5 +1,5 @@
->   # SPDX-License-Identifier: GPL-2.0
-> -ccflags-y := -I $(srctree)/$(src)
-> +ccflags-y := -I $(srctree)/$(src) -std=gnu99
->   ccflags-y += -I $(srctree)/$(src)/disp/dpu1
->   ccflags-$(CONFIG_DRM_MSM_DSI) += -I $(srctree)/$(src)/dsi
->   ccflags-$(CONFIG_DRM_MSM_DP) += -I $(srctree)/$(src)/dp
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index a7c58018959f..8b73f70766a4 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -296,6 +296,8 @@ int a6xx_gmu_set_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
->   	u32 val;
->   	int request, ack;
->   
-> +	WARN_ON_ONCE(!mutex_is_locked(&gmu->lock));
-> +
->   	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
->   		return -EINVAL;
->   
-> @@ -337,6 +339,8 @@ void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
->   {
->   	int bit;
->   
-> +	WARN_ON_ONCE(!mutex_is_locked(&gmu->lock));
-> +
->   	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
->   		return;
->   
-> @@ -1482,6 +1486,8 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
->   	if (!pdev)
->   		return -ENODEV;
->   
-> +	mutex_init(&gmu->lock);
-> +
->   	gmu->dev = &pdev->dev;
->   
->   	of_dma_configure(gmu->dev, node, true);
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> index 3c74f64e3126..f05a00c0afd0 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-> @@ -44,6 +44,9 @@ struct a6xx_gmu_bo {
->   struct a6xx_gmu {
->   	struct device *dev;
->   
-> +	/* For serializing communication with the GMU: */
-> +	struct mutex lock;
-> +
->   	struct msm_gem_address_space *aspace;
->   
->   	void * __iomem mmio;
-> @@ -88,6 +91,12 @@ struct a6xx_gmu {
->   	bool legacy; /* a618 or a630 */
->   };
->   
-> +/* Helper macro for serializing GMU access: */
-> +#define with_gmu_lock(gmu) \
-> +	for (bool done = ({ mutex_lock(&(gmu)->lock); false; }); \
-> +		!done; \
-> +		done = ({ mutex_unlock(&(gmu)->lock); true; }))
+> Code   Description
+> 00b    No information is provided regarding whether SCSI target device is hot
+>         pluggable.
+> 01b    The SCSI target device is designed to be removed from a SCSI domain as
+>         a single object (i.e., concurrent removal of the SCSI target ports,
+>         logical units, and all other objects contained in that SCSI target
+>         device (see SAM-6)) while that SCSI domain continues to operate for
+>         all other SCSI target devices, if any, in that SCSI domain.
+> 10b    The SCSI target device is not designed to be removed from a SCSI
+>         domain while that SCSI domain continues to operate.
+> 11b    Reserved
+> 
+> That field is bits 5 and 4 of byte 1 of the response.
+> 
+> Perhaps we should be adding provision for this new field.
 
-The intent is good, but I'm not sure this kind of syntax sugar would be 
-a good approach. What about calling lock/unlock explicitly, like we 
-typically do? Then we won't have to use c99.
+Hi Doug,
 
-> +
->   static inline u32 gmu_read(struct a6xx_gmu *gmu, u32 offset)
->   {
->   	return msm_readl(gmu->mmio + (offset << 2));
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index f6a4dbef796b..5e1ae3df42ba 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -881,7 +881,7 @@ static int a6xx_zap_shader_init(struct msm_gpu *gpu)
->   	  A6XX_RBBM_INT_0_MASK_UCHE_OOB_ACCESS | \
->   	  A6XX_RBBM_INT_0_MASK_UCHE_TRAP_INTR)
->   
-> -static int a6xx_hw_init(struct msm_gpu *gpu)
-> +static int hw_init(struct msm_gpu *gpu)
->   {
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> @@ -1135,6 +1135,19 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
->   	return ret;
->   }
->   
-> +static int a6xx_hw_init(struct msm_gpu *gpu)
-> +{
-> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> +	int ret;
-> +
-> +	with_gmu_lock(&a6xx_gpu->gmu) {
-> +		ret = hw_init(gpu);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   static void a6xx_dump(struct msm_gpu *gpu)
->   {
->   	DRM_DEV_INFO(&gpu->pdev->dev, "status:   %08x\n",
-> @@ -1509,7 +1522,9 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
->   
->   	trace_msm_gpu_resume(0);
->   
-> -	ret = a6xx_gmu_resume(a6xx_gpu);
-> +	with_gmu_lock(&a6xx_gpu->gmu) {
-> +		ret = a6xx_gmu_resume(a6xx_gpu);
-> +	}
->   	if (ret)
->   		return ret;
->   
-> @@ -1532,7 +1547,9 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
->   
->   	msm_devfreq_suspend(gpu);
->   
-> -	ret = a6xx_gmu_stop(a6xx_gpu);
-> +	with_gmu_lock(&a6xx_gpu->gmu) {
-> +		ret = a6xx_gmu_stop(a6xx_gpu);
-> +	}
->   	if (ret)
->   		return ret;
->   
-> @@ -1547,18 +1564,17 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
->   {
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> -	static DEFINE_MUTEX(perfcounter_oob);
->   
-> -	mutex_lock(&perfcounter_oob);
-> +	with_gmu_lock(&a6xx_gpu->gmu) {
-> +		/* Force the GPU power on so we can read this register */
-> +		a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
->   
-> -	/* Force the GPU power on so we can read this register */
-> -	a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
-> +		*value = gpu_read64(gpu, REG_A6XX_CP_ALWAYS_ON_COUNTER_LO,
-> +				    REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
->   
-> -	*value = gpu_read64(gpu, REG_A6XX_CP_ALWAYS_ON_COUNTER_LO,
-> -		REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
-> +		a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
-> +	}
->   
-> -	a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
-> -	mutex_unlock(&perfcounter_oob);
->   	return 0;
->   }
->   
-> @@ -1622,6 +1638,16 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
->   	return (unsigned long)busy_time;
->   }
->   
-> +void a6xx_gpu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
-> +{
-> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> +
-> +	with_gmu_lock(&a6xx_gpu->gmu) {
-> +		a6xx_gmu_set_freq(gpu, opp);
-> +	}
-> +}
-> +
->   static struct msm_gem_address_space *
->   a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
->   {
-> @@ -1766,7 +1792,7 @@ static const struct adreno_gpu_funcs funcs = {
->   #endif
->   		.gpu_busy = a6xx_gpu_busy,
->   		.gpu_get_freq = a6xx_gmu_get_freq,
-> -		.gpu_set_freq = a6xx_gmu_set_freq,
-> +		.gpu_set_freq = a6xx_gpu_set_freq,
->   #if defined(CONFIG_DRM_MSM_GPU_STATE)
->   		.gpu_state_get = a6xx_gpu_state_get,
->   		.gpu_state_put = a6xx_gpu_state_put,
-> 
+It is not clear to me how hot-plugging is related to UFS devices? I am not aware
+of any support for hot-plugging in the UFS driver. RPMB = Replay Protected Memory
+Block. The definition of RPMB according to Wikipedia is "a means for a system to
+store data to the specific memory area in an authenticated and replay protected
+manner, and can only be read and written via successfully authenticated read and
+write accesses". It is not clear to me how hot-plugging and RPMB are related? What
+am I missing?
 
+Thanks,
 
--- 
-With best wishes
-Dmitry
+Bart.
+
