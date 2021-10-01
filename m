@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E876241F2FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCD241F2FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355137AbhJARX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:23:29 -0400
-Received: from mail-1.ca.inter.net ([208.85.220.69]:47196 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354507AbhJARXO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:23:14 -0400
-Received: from mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id BB4A82EA9EC;
-        Fri,  1 Oct 2021 13:21:26 -0400 (EDT)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19]) (amavisd-new, port 10024)
-        with ESMTP id LjGWOt4lj-jX; Fri,  1 Oct 2021 13:21:26 -0400 (EDT)
-Received: from [192.168.48.23] (host-23-91-187-47.dyn.295.ca [23.91.187.47])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id EA0922EA7B3;
-        Fri,  1 Oct 2021 13:21:25 -0400 (EDT)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH 2/2] scsi: ufs: Stop clearing unit attentions
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com
-Cc:     Bart Van Assche <bvanassche@google.com>
-References: <20210930195237.1521436-1-jaegeuk@kernel.org>
- <20210930195237.1521436-2-jaegeuk@kernel.org>
- <12ba3462-ac6b-ef35-4b5e-e0de6086ab51@intel.com>
- <f2436720-16d5-58da-abcc-20fa1ed01fb9@intel.com>
- <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <f4f81b75-9b0b-7734-ebfa-14bd1b935c54@interlog.com>
-Date:   Fri, 1 Oct 2021 13:21:39 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1355223AbhJARXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:23:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:50384 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355121AbhJARXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:23:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="204989883"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="204989883"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:21:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="565162607"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 10:21:54 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 754B8B8; Fri,  1 Oct 2021 20:22:00 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] i2c: i801: Add support for Intel Ice Lake PCH-N
+Date:   Fri,  1 Oct 2021 20:21:54 +0300
+Message-Id: <20211001172154.15660-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <5e087a0f-7ae0-41d1-c1f1-e5cc0ad2d38f@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-01 12:59 p.m., Bart Van Assche wrote:
-> On 9/30/21 11:52 PM, Adrian Hunter wrote:
->> Finally, there is another thing to change.  The reason
->> ufshcd_suspend_prepare() does a runtime resume of sdev_rpmb is because the
->> UAC clear would wait for an async runtime resume, which will never happen
->> during system suspend because the PM workqueue gets frozen.  So with the
->> removal of UAC clear, ufshcd_suspend_prepare() and ufshcd_resume_complete()
->> should be updated also, to leave rpmb alone.
+Add PCI ID of SMBus controller on Intel Ice Lake PCH-N.
 
-Somewhat related ...
+The device can be found on MacBookPro16,2 [1].
 
-Since there was some confusion among the members of T10 of what precisely
-the RPM bit meant, in SPC-6 revision (draft), a new "HOT PLUGGABLE" two
-bit field was introduced into the standard INQUIRY response:
+[1]: https://linux-hardware.org/?probe=f1c5cf0c43
 
-                 Table 151 — HOT PLUGGABLE field
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/i2c/busses/i2c-i801.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Code   Description
-00b    No information is provided regarding whether SCSI target device is hot
-        pluggable.
-01b    The SCSI target device is designed to be removed from a SCSI domain as
-        a single object (i.e., concurrent removal of the SCSI target ports,
-        logical units, and all other objects contained in that SCSI target
-        device (see SAM-6)) while that SCSI domain continues to operate for
-        all other SCSI target devices, if any, in that SCSI domain.
-10b    The SCSI target device is not designed to be removed from a SCSI
-        domain while that SCSI domain continues to operate.
-11b    Reserved
-
-That field is bits 5 and 4 of byte 1 of the response.
-
-Perhaps we should be adding provision for this new field.
-
-Doug Gilbert
-
-> 
-> Is the following change what you have in mind?
-> 
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 0a28cc4c09d8..0743f54e55f9 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -9648,10 +9648,6 @@ void ufshcd_resume_complete(struct device *dev)
->           ufshcd_rpm_put(hba);
->           hba->complete_put = false;
->       }
-> -    if (hba->rpmb_complete_put) {
-> -        ufshcd_rpmb_rpm_put(hba);
-> -        hba->rpmb_complete_put = false;
-> -    }
->   }
->   EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
-> 
-> @@ -9674,10 +9670,6 @@ int ufshcd_suspend_prepare(struct device *dev)
->           }
->           hba->complete_put = true;
->       }
-> -    if (hba->sdev_rpmb) {
-> -        ufshcd_rpmb_rpm_get_sync(hba);
-> -        hba->rpmb_complete_put = true;
-> -    }
->       return 0;
->   }
->   EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 86b615023ecb..5ecfcd8cae0a 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -921,7 +921,6 @@ struct ufs_hba {
->   #endif
->       u32 luns_avail;
->       bool complete_put;
-> -    bool rpmb_complete_put;
->   };
-> 
->   /* Returns true if clocks can be gated. Otherwise false */
-> 
-> 
-> 
-> Thanks,
-> 
-> Bart.
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index 7f3ec68397c0..14c359536fca 100644
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -64,6 +64,7 @@
+  * Cannon Lake-LP (PCH)		0x9da3	32	hard	yes	yes	yes
+  * Cedar Fork (PCH)		0x18df	32	hard	yes	yes	yes
+  * Ice Lake-LP (PCH)		0x34a3	32	hard	yes	yes	yes
++ * Ice Lake-N (PCH)		0x38a3	32	hard	yes	yes	yes
+  * Comet Lake (PCH)		0x02a3	32	hard	yes	yes	yes
+  * Comet Lake-H (PCH)		0x06a3	32	hard	yes	yes	yes
+  * Elkhart Lake (PCH)		0x4b23	32	hard	yes	yes	yes
+@@ -218,6 +219,7 @@
+ #define PCI_DEVICE_ID_INTEL_COLETOCREEK_SMBUS		0x23b0
+ #define PCI_DEVICE_ID_INTEL_GEMINILAKE_SMBUS		0x31d4
+ #define PCI_DEVICE_ID_INTEL_ICELAKE_LP_SMBUS		0x34a3
++#define PCI_DEVICE_ID_INTEL_ICELAKE_N_SMBUS		0x38a3
+ #define PCI_DEVICE_ID_INTEL_5_3400_SERIES_SMBUS		0x3b30
+ #define PCI_DEVICE_ID_INTEL_TIGERLAKE_H_SMBUS		0x43a3
+ #define PCI_DEVICE_ID_INTEL_ELKHART_LAKE_SMBUS		0x4b23
+@@ -1042,6 +1044,7 @@ static const struct pci_device_id i801_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CANNONLAKE_H_SMBUS) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CANNONLAKE_LP_SMBUS) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICELAKE_LP_SMBUS) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICELAKE_N_SMBUS) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_COMETLAKE_SMBUS) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_COMETLAKE_H_SMBUS) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_COMETLAKE_V_SMBUS) },
+@@ -1702,6 +1705,7 @@ static int i801_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	case PCI_DEVICE_ID_INTEL_CANNONLAKE_LP_SMBUS:
+ 	case PCI_DEVICE_ID_INTEL_CDF_SMBUS:
+ 	case PCI_DEVICE_ID_INTEL_ICELAKE_LP_SMBUS:
++	case PCI_DEVICE_ID_INTEL_ICELAKE_N_SMBUS:
+ 	case PCI_DEVICE_ID_INTEL_COMETLAKE_SMBUS:
+ 	case PCI_DEVICE_ID_INTEL_COMETLAKE_H_SMBUS:
+ 	case PCI_DEVICE_ID_INTEL_ELKHART_LAKE_SMBUS:
+-- 
+2.33.0
 
