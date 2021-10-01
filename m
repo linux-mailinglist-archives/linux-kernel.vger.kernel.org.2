@@ -2,363 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8001841F2CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7061641F2D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353827AbhJARRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S1354669AbhJARR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhJARRL (ORCPT
+        with ESMTP id S1353953AbhJARR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:17:11 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6890C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:15:26 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id x4so6731303pln.5
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:15:26 -0700 (PDT)
+        Fri, 1 Oct 2021 13:17:56 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FAFC061775;
+        Fri,  1 Oct 2021 10:16:11 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id ba1so37289939edb.4;
+        Fri, 01 Oct 2021 10:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mt1rOG1V86T6/zx2t2YpynN3bZairnXj/5yya+nCXS8=;
-        b=JW1O1z1wD81hcNugNIyoMms6vAaN5OtnU8oklrI4PPTusCRLjkptrqIs1vfrvZyoXw
-         px9tqztz4aTMqTMDdgjOYa0jsoc5YRPHx1fHkkB2iPxb/YZH5bcp4uggv9atdsCyA4mT
-         6M8WgRxG81WWkxjqGByHa5cqr+8Skv+FIgEy5Ugy4Nzq2v1dcVhDaiOVFVEedtElBRS6
-         NQuE47tVRKuYjm3UK3+MjXtya6gCUE6j8rgnQHj0fh7GgCwPMrROjljURv+KJe85EKPN
-         0uFizD4WjqGu/kic6vGH40wHWrTeqdfAnPxNVjuZ2tUEbRGDN4OpvmXcEBglriogTqd4
-         nczQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YfCu/nNwO7AGzA8uGp45U8eywpx0lfbMyI4anCyuLtI=;
+        b=LyeRdr3V+ofrVQMoJDopsWuq+NNZNykiMUcYdt6S+eoTlab74HmZfz8t0RoEoPPil4
+         vQC4MEDevmmiY0gxmlFT81eQNnoBhiZr878YhZPYF4mjWO5N2Mi+L4I9zSag3z7Fg0pC
+         J54fsY2C6OgdNhH6LxH46aB/xxG+uIDyzaoD6xZDajrmNFJ3VNnA+viL3G4nYxXoTxZz
+         /kOH5sninpvb/4ttLBcJzPRWLza2NDamVkPmDgApuyC2+/XZCKRc3Yo6zV/w/nrE9OZO
+         U8E46qUcpus+2rvvvJqZZIJwZFiEauVl/Z4l1IwTSCG0zQBTbPKdMZNsYdFjC0Erkxk3
+         wljw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mt1rOG1V86T6/zx2t2YpynN3bZairnXj/5yya+nCXS8=;
-        b=DL9lj5I16a4x8zuuQf79wzQVZypdqod2gmtIdhS8C+P7669HnDOyzrJcZHhf382Xfw
-         AJidDc6u1GBvkHy0p8bKA/P1q6P8rng9mNTUXhX8cag4fo2C2Ypq3GkMpDqrDvnBjq2/
-         EaoTCeMdutteO2AG6hkyoRgmm3VO921r+XTh27Q7FWru5HkdKVKlXI/fKNhXyUezWqzb
-         uDj/9N6sNv1IqrApA89bNuc3xn/ONk8jtHP5nG2VYh7yMHqxQn3ywG//9aeQbjziF0+B
-         eN7EacqZ/DJl4y+2tPMaEfY3j6dxN+Ne701/B4rNri0Lx3k8SAIKJIJ8pF5MPAd9jYHw
-         8H+g==
-X-Gm-Message-State: AOAM531ABJqh6a4zS/RKaXwdd4iixww+TIh93UrPKaJExPW/pjYcbwHk
-        pMuuN7hdLgh7y7K+Q3eRG30fFtgw6fdO2A==
-X-Google-Smtp-Source: ABdhPJzwaFGdEWjD5O5rwuYJ3IKDxcgSMaZNZe3IwxAQMaqfaB7d7a4UBTMdPOwTTWXaSW3h47ZpGQ==
-X-Received: by 2002:a17:90b:1291:: with SMTP id fw17mr14390049pjb.135.1633108526222;
-        Fri, 01 Oct 2021 10:15:26 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d8sm7049826pfu.139.2021.10.01.10.15.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YfCu/nNwO7AGzA8uGp45U8eywpx0lfbMyI4anCyuLtI=;
+        b=IHUz9gxo6yMupH5QZ93CVszrnYCicJgl4El1MYUIhycaZzJuILmszM+QsMldHc0ey/
+         yjIncCljrGC0Qpo+7moodhQaNBFNb6VWAatkgl9e12JJDL0qsAX+E/FSMpbngnGOwbv+
+         IkxX8wgZ0flgQFEMVXy2M/r0obdt4tly54XD8fnvx/ejMVqRNWWObG+IY5VqFnHb8lEp
+         b+7fDpl3SYyxSJwkDrXv4KRycKF2VG5TeRKAwlPoI4N2KDMFETmjJhzYvs3dokBbXVa3
+         QHrCNiTMfAEzdtaUJIIXRNf2FV4cdLgEi6tRosCnFO4B7+PviChR5BpMGkpOtWKQWMqF
+         dGqw==
+X-Gm-Message-State: AOAM531ECF0qIXkhcZnL7ODl+/Xf20FshR+qIEfRtkmF6kjGi0elU4wi
+        mE07uVota9jJcKVdU81Lb9M=
+X-Google-Smtp-Source: ABdhPJxA92NBJBLyMapmOz4v0fbfmiaX7QSS24orSuF3nZDF9oaOr8tQQkhTejP9C6G1X5Djap2gww==
+X-Received: by 2002:a17:906:2cc9:: with SMTP id r9mr7744000ejr.138.1633108570339;
+        Fri, 01 Oct 2021 10:16:10 -0700 (PDT)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id h10sm3588130edf.85.2021.10.01.10.16.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 10:15:24 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 11:15:22 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-Subject: Re: [PATCH v2 09/17] coresight: trbe: Workaround TRBE errata
- overwrite in FILL mode
-Message-ID: <20211001171522.GB3148492@p14s>
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-10-suzuki.poulose@arm.com>
+        Fri, 01 Oct 2021 10:16:09 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/4] Rockchip I2S/TDM controller
+Date:   Fri,  1 Oct 2021 19:15:27 +0200
+Message-Id: <20211001171531.178775-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921134121.2423546-10-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 02:41:13PM +0100, Suzuki K Poulose wrote:
-> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
-> an erratum, which when triggered, might cause the TRBE to overwrite
-> the trace data already collected in FILL mode, in the event of a WRAP.
-> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
-> and could write upto 3 cache line size worth trace. Thus, this could
-> corrupt the trace at the "BASE" pointer.
-> 
-> The workaround is to program the write pointer 256bytes from the
-> base, such that if the erratum is triggered, it doesn't overwrite
-> the trace data that was captured. This skipped region could be
-> padded with ignore packets at the end of the session, so that
-> the decoder sees a continuous buffer with some padding at the
-> beginning. The trace data written at the base is considered
-> lost as the limit could have been in the middle of the perf
-> ring buffer, and jumping to the "base" is not acceptable.
-> We set the flags already to indicate that some amount of trace
-> was lost during the FILL event IRQ. So this is fine.
-> 
-> One important change with the work around is, we program the
-> TRBBASER_EL1 to current page where we are allowed to write.
-> Otherwise, it could overwrite a region that may be consumed
-> by the perf. Towards this, we always make sure that the
-> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
-> so that we can set the BASE to the PAGE base and move the
-> TRBPTR to the 256bytes offset.
-> 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Change since v1:
->  - Updated comment with ASCII art
->  - Add _BYTES suffix for the space to skip for the work around.
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 144 +++++++++++++++++--
->  1 file changed, 132 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index f569010c672b..983dd5039e52 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -16,6 +16,7 @@
->  #define pr_fmt(fmt) DRVNAME ": " fmt
->  
->  #include <asm/barrier.h>
-> +#include <asm/cpufeature.h>
->  #include <asm/cputype.h>
->  
->  #include "coresight-self-hosted-trace.h"
-> @@ -84,9 +85,17 @@ struct trbe_buf {
->   * per TRBE instance, we keep track of the list of errata that
->   * affects the given instance of the TRBE.
->   */
-> -#define TRBE_ERRATA_MAX			0
-> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
-> +#define TRBE_ERRATA_MAX				1
-> +
-> +/*
-> + * Safe limit for the number of bytes that may be overwritten
-> + * when the erratum is triggered.
-> + */
-> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES	256
->  
->  static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
-> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
->  };
->  
->  /*
-> @@ -519,10 +528,13 @@ static void trbe_enable_hw(struct trbe_buf *buf)
->  	set_trbe_limit_pointer_enabled(buf->trbe_limit);
->  }
->  
-> -static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
-> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle,
-> +						 u64 trbsr)
->  {
->  	int ec = get_trbe_ec(trbsr);
->  	int bsc = get_trbe_bsc(trbsr);
-> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
-> +	struct trbe_cpudata *cpudata = buf->cpudata;
->  
->  	WARN_ON(is_trbe_running(trbsr));
->  	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
-> @@ -531,10 +543,16 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->  	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
->  		return TRBE_FAULT_ACT_FATAL;
->  
-> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
-> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
-> -			return TRBE_FAULT_ACT_WRAP;
-> -	}
-> +	/*
-> +	 * If the trbe is affected by TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
-> +	 * it might write data after a WRAP event in the fill mode.
-> +	 * Thus the check TRBPTR == TRBBASER will not be honored.
-> +	 */
-> +	if ((is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) &&
-> +	    (trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) ||
-> +	     get_trbe_write_pointer() == get_trbe_base_pointer()))
-> +		return TRBE_FAULT_ACT_WRAP;
-> +
+Hello,
 
-I'm very perplexed by the trbe_has_erratum() infrastructure... Since this is a
-TRBE the code will always run on the CPU it is associated with, and if
-I'm correct here we could call this_cpu_has_cap() directly with the same
-outcome.  I doubt that all divers using the cpucaps subsystem carry a shadow
-structure to keep the same information. 
+this is version 5 of the I2S/TDM driver patchset. A big thanks
+to everyone who has provided their valuable feedback so far.
 
-I have to stop here for today.  Although small in size this patchset demands a
-fair amount of involvement - I will continue next week but I may not go through
-the whole thing for this revision.
+Changes in v5:
+ driver:
+ - change comment style of the first comment to C++ style
+ - make refcount non-atomic, as it's only ever used inside
+   a spinlock
+ - use newer SND_SOC_DAIFMT_CB* defines
+ - change ternary statements to if/else conditions
+ - make _clk_compensation_put return 1 if clock changed
+ - implement set_bclk_ratio callback
+ - always set half frame sync mode in TDM mode
+ - automatically enable mclk-calibrate mode when the clocks for
+   it are specified in the device tree
+ bindings:
+ - add Reviewed-by: Rob Herring
+ - drop rockchip,frame-width property (done by set_bclk_ratio)
+ - drop rockchip,fsync-half-frame property
+ - drop rockchip,mclk-calibrate property
+ dts:
+ - drop empty codec block from Quartz64 device tree
 
-Thanks,
-Mathieu
+Changes in v4:
+ driver:
+ - factor TDE/RDE enable/disable into their own inlined functions
+ - add an RDE disable in a location where it looks like it was
+   forgotten (rxctrl else), judging by corresponding TDE code
+ - remove parentheses around CLK_PPM_MIN/MAX values
+ - wording + titlecasing in the clock compensation control
+ - use if statement in precious_reg instead
+ - refactor rockchip_i2s_io_multiplex to have the switch statements
+   in a function call to make the function less unwieldy
+ - get rid of IS_ERR checks around clk enable/disable calls where
+   already checked before by the probe
+ - reworded some error message strings
+ - fix potential deadlock in txrxctrl found by Sugar Zhang
+   using spin_lock_irqsave
+ - fix potential deadlock in trcm_mode found by Sugar Zhang
+   using spin_lock_irqsave
+ - use devm_platform_get_and_ioremap_resource in probe
+ - only set DMA things if controller has capture/playback ability.
+   Did not move this into init_dai because I'd then need to pass in
+   the res and probe it earlier in the function, and it's also used
+   elsewhere in the probe function
+ - use _get_optional_exclusive for reset controls, as some controllers
+   only have capture or playback capability
+ bindings:
+ - remove status = "okay" since that's the default
+ - change the path configs to be an enum
+ - rename "foo" to "bus"
+ - make resets optional as controller may lack either playback or
+   capture capability, and therefore also doesn't have a reset.
+   At least one reset is still required, because a controller with
+   no playback and no capture is not very useful
 
->  	return TRBE_FAULT_ACT_SPURIOUS;
->  }
->  
-> @@ -544,6 +562,8 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->  {
->  	u64 write;
->  	u64 start_off, end_off;
-> +	u64 size;
-> +	u64 overwrite_skip = TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES;
->  
->  	/*
->  	 * If the TRBE has wrapped around the write pointer has
-> @@ -559,7 +579,18 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->  
->  	if (WARN_ON_ONCE(end_off < start_off))
->  		return 0;
-> -	return (end_off - start_off);
-> +
-> +	size = end_off - start_off;
-> +	/*
-> +	 * If the TRBE is affected by the following erratum, we must fill
-> +	 * the space we skipped with IGNORE packets. And we are always
-> +	 * guaranteed to have at least a PAGE_SIZE space in the buffer.
-> +	 */
-> +	if (trbe_has_erratum(buf->cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) &&
-> +	    !WARN_ON(size < overwrite_skip))
-> +		__trbe_pad_buf(buf, start_off, overwrite_skip);
-> +
-> +	return size;
->  }
->  
->  static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
-> @@ -678,7 +709,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  		clr_trbe_irq();
->  		isb();
->  
-> -		act = trbe_get_fault_act(status);
-> +		act = trbe_get_fault_act(handle, status);
->  		/*
->  		 * If this was not due to a WRAP event, we have some
->  		 * errors and as such buffer is empty.
-> @@ -702,21 +733,95 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->  	return size;
->  }
->  
-> +
-> +static int trbe_apply_work_around_before_enable(struct trbe_buf *buf)
-> +{
-> +	/*
-> +	 * TRBE_WORKAROUND_OVERWRITE_FILL_MODE causes the TRBE to overwrite a few cache
-> +	 * line size from the "TRBBASER_EL1" in the event of a "FILL".
-> +	 * Thus, we could loose some amount of the trace at the base.
-> +	 *
-> +	 * Before Fix:
-> +	 *
-> +	 *  normal-BASE     head  normal-PTR              tail normal-LIMIT
-> +	 *  |                   \/                       /
-> +	 *   -------------------------------------------------------------
-> +	 *  |         |          |xyzdefghij..|...  tuvw|                |
-> +	 *   -------------------------------------------------------------
-> +	 *                      /    |                   \
-> +	 * After Fix->  TRBBASER     TRBPTR              TRBLIMITR.LIMIT
-> +	 *
-> +	 * In the normal course of action, we would set the TRBBASER to the
-> +	 * beginning of the ring-buffer (normal-BASE). But with the erratum,
-> +	 * the TRBE could overwrite the contents at the "normal-BASE", after
-> +	 * hitting the "normal-LIMIT", since it doesn't stop as expected. And
-> +	 * this is wrong. So we must always make sure that the TRBBASER is
-> +	 * within the region [head, head+size].
-> +	 *
-> +	 * Also, we would set the TRBPTR to head (after adjusting for
-> +	 * alignment) at normal-PTR. This would mean that the last few bytes
-> +	 * of the trace (say, "xyz") might overwrite the first few bytes of
-> +	 * trace written ("abc"). More importantly they will appear in what\
-> +	 * userspace sees as the beginning of the trace, which is wrong. We may
-> +	 * not always have space to move the latest trace "xyz" to the correct
-> +	 * order as it must appear beyond the LIMIT. (i.e, [head..head+size].
-> +	 * Thus it is easier to ignore those bytes than to complicate the
-> +	 * driver to move it, assuming that the erratum was triggered and doing
-> +	 * additional checks to see if there is indeed allowed space at
-> +	 * TRBLIMITR.LIMIT.
-> +	 *
-> +	 * To summarize, with the work around:
-> +	 *
-> +	 *  - We always align the offset for the next session to PAGE_SIZE
-> +	 *    (This is to ensure we can program the TRBBASER to this offset
-> +	 *    within the region [head...head+size]).
-> +	 *
-> +	 *  - At TRBE enable:
-> +	 *     - Set the TRBBASER to the page aligned offset of the current
-> +	 *       proposed write offset. (which is guaranteed to be aligned
-> +	 *       as above)
-> +	 *     - Move the TRBPTR to skip first 256bytes (that might be
-> +	 *       overwritten with the erratum). This ensures that the trace
-> +	 *       generated in the session is not re-written.
-> +	 *
-> +	 *  - At trace collection:
-> +	 *     - Pad the 256bytes skipped above again with IGNORE packets.
-> +	 */
-> +	if (trbe_has_erratum(buf->cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE)) {
-> +		if (WARN_ON(!IS_ALIGNED(buf->trbe_write, PAGE_SIZE)))
-> +			return -EINVAL;
-> +		buf->trbe_hw_base = buf->trbe_write;
-> +		buf->trbe_write += TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int __arm_trbe_enable(struct trbe_buf *buf,
->  			     struct perf_output_handle *handle)
->  {
-> +	int ret = 0;
-> +
->  	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
->  	buf->trbe_limit = compute_trbe_buffer_limit(handle);
->  	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->  	if (buf->trbe_limit == buf->trbe_base) {
-> -		trbe_stop_and_truncate_event(handle);
-> -		return -ENOSPC;
-> +		ret = -ENOSPC;
-> +		goto err;
->  	}
->  	/* Set the base of the TRBE to the buffer base */
->  	buf->trbe_hw_base = buf->trbe_base;
-> +
-> +	ret = trbe_apply_work_around_before_enable(buf);
-> +	if (ret)
-> +		goto err;
-> +
->  	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
->  	trbe_enable_hw(buf);
->  	return 0;
-> +err:
-> +	trbe_stop_and_truncate_event(handle);
-> +	return ret;
->  }
->  
->  static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
-> @@ -860,7 +965,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	if (!is_perf_trbe(handle))
->  		return IRQ_NONE;
->  
-> -	act = trbe_get_fault_act(status);
-> +	act = trbe_get_fault_act(handle, status);
->  	switch (act) {
->  	case TRBE_FAULT_ACT_WRAP:
->  		truncated = !!trbe_handle_overflow(handle);
-> @@ -1000,7 +1105,22 @@ static void arm_trbe_probe_cpu(void *info)
->  	}
->  
->  	trbe_check_errata(cpudata);
-> -	cpudata->trbe_align = cpudata->trbe_hw_align;
-> +	/*
-> +	 * If the TRBE is affected by erratum TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
-> +	 * we must always program the TBRPTR_EL1, 256bytes from a page
-> +	 * boundary, with TRBBASER_EL1 set to the page, to prevent
-> +	 * TRBE over-writing 256bytes at TRBBASER_EL1 on FILL event.
-> +	 *
-> +	 * Thus make sure we always align our write pointer to a PAGE_SIZE,
-> +	 * which also guarantees that we have at least a PAGE_SIZE space in
-> +	 * the buffer (TRBLIMITR is PAGE aligned) and thus we can skip
-> +	 * the required bytes at the base.
-> +	 */
-> +	if (trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE))
-> +		cpudata->trbe_align = PAGE_SIZE;
-> +	else
-> +		cpudata->trbe_align = cpudata->trbe_hw_align;
-> +
->  	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
->  	cpudata->cpu = cpu;
->  	cpudata->drvdata = drvdata;
-> -- 
-> 2.24.1
-> 
+Changes in v3:
+ driver:
+ - alphabetically sort includes
+ - check pm_runtime_get_sync return value, act on it
+ - remove unnecessary initialisers in set_fmt
+ - use udelay(15) in retry code: 10 retries * 15 = 150, so at worst
+   we wait the full i2s register access delay
+ - fix some weird returns to return directly
+ - use __maybe_unused instead of #ifdef CONFIG_PM_SLEEP, also put
+   __maybe_unused on the runtime callbacks
+ - use (foo) instead of foo in header macros for precedence reasons
+ - when using mclk-calibrate, also turn off/on those clocks during
+   suspend and resume operations
+ - remove mclk_tx and mclk_rx reenablement code in remove
+ - move hclk enablement further down the probe, and disable it
+   on probe failure
+ - make reset controls mandatory, since the bindings state this too
+ - use _exclusive for getting the reset controls
+ - change reset assert/deassert delays to both be 10 usec
+   (thank you Sugar Zhang!)
+ - properly prepare and enable all mclks in probe, especially before
+   calling clk_get_rate on them
+ - if registering PCM fails, also use the cleanup error path instead of
+   returning directly
+ - bring back playback and capture only but in the way Sugar Zhang
+   suggested it: set those modes depending on dma-names
+ - rework clock enablement in general. Probe now always enables these,
+   instead of relying on the pm resume thing
+ - add myself to MAINTAINERS for this driver
+ dt bindings:
+ - fix a description still mentioning clk-trcm in the schema
+ - document rockchip,io-multiplex, a property that describes the
+   hardware as having multiplexed I2S GPIOs so direction needs to
+   be changed dynamically
+ - document rockchip,mclk-calibrate, which allows specifying
+   different clocks for the two sample rate bases and switch between
+   them as needed
+ - dma-names now doesn't have a set order and items can be absent to
+   indicate that the controller doesn't support this mode
+ - add myself to MAINTAINERS for these bindings
+
+Changes in v2:
+ - remove ad-hoc writeq and needless (and broken) optimisation in
+   reset assert/deassert. This wouldn't have worked on Big Endian,
+   and would've been pointless on any other platform, as the
+   overhead for saving one write was comparatively big
+ - fix various checkpatch issues
+ - get rid of leftover clk-trcm in schema
+ - set status = "okay" in example in schema instead of "disabled"
+ - change dma-names so rx is first, adjust device trees as necessary
+ - properly reference uint32-array for rx-route and tx-route
+   instead of uint32
+ - replace trcm-sync with two boolean properties, adjust DT changes
+   accordingly and also get rid of the header file
+ - get rid of rockchip,no-dmaengine. This was only needed for
+   some downstream driver and shouldn't be in the DT
+ - get rid of rockchip,capture-only/playback-only. Rationale being
+   that I have no way to test whether they're needed, and
+   unconditionally setting channels_min to 0 breaks everything
+ - change hclk description in "clocks"
+
+Nicolas Frattaroli (4):
+  ASoC: rockchip: add support for i2s-tdm controller
+  ASoC: dt-bindings: rockchip: add i2s-tdm bindings
+  arm64: dts: rockchip: add i2s1 on rk356x
+  arm64: dts: rockchip: add analog audio on Quartz64
+
+ .../bindings/sound/rockchip,i2s-tdm.yaml      |  198 ++
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |   31 +-
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   26 +
+ sound/soc/rockchip/Kconfig                    |   11 +
+ sound/soc/rockchip/Makefile                   |    2 +
+ sound/soc/rockchip/rockchip_i2s_tdm.c         | 1848 +++++++++++++++++
+ sound/soc/rockchip/rockchip_i2s_tdm.h         |  398 ++++
+ 8 files changed, 2520 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+ create mode 100644 sound/soc/rockchip/rockchip_i2s_tdm.c
+ create mode 100644 sound/soc/rockchip/rockchip_i2s_tdm.h
+
+-- 
+2.33.0
+
