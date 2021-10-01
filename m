@@ -2,214 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F38941E8AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0C641E8AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352682AbhJAIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:06:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352695AbhJAIGN (ORCPT
+        id S1352687AbhJAIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:08:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38997 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352642AbhJAIIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:06:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633075469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RgbMOii1S0zNC4XfQSp0PtfslNwqAcBT4JkfYppI8hA=;
-        b=OZ6Odsr6/Ou3OkNozU8+KOTyK3nS0Ixrk9QX6f0E/girQLne3Z+Is9xiDp5fBS64UJ2QJJ
-        J4OiR8XSuD8Ofhr/lztxeuhyEpafS27NrC/m8PGg0/CKDxzMRvbGmAk6yFhT398jbFG9aF
-        ivsCi/lBKUrmOC2Mfqkvs81CXDQABHw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-LsB2kXYOMtuj8bnNgIv-Wg-1; Fri, 01 Oct 2021 04:04:28 -0400
-X-MC-Unique: LsB2kXYOMtuj8bnNgIv-Wg-1
-Received: by mail-wr1-f71.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so2533692wrt.9
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:04:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RgbMOii1S0zNC4XfQSp0PtfslNwqAcBT4JkfYppI8hA=;
-        b=iA42Jf09mdYYImt6AQv/zcWGfq9zmLO04gQjbZuVPEs5Jar5BQIRLzcuCvhRsW+/L4
-         rk2DXsWm8pvwY2dfGqYHuIro/WAA1PRvqRz3r2lg/7BhuZnZfERlu9yPjGWsnB0850CX
-         bIRjTfdClr6K3GN2obkMufGehVRvx4qzKnJjQGi8ksL5NpxPgArOLRu4fXnb9p2tlXbs
-         F8XAYkzyVyQSgW2QPfS12B+YnPJCHQ2FTTIB+42Joe4LW2JvsU1dr+Xps1r47eEVEHDb
-         BVDjcWD6FcB6KizBmd/TCt7F28gGhZ/LIt6v2KAC7i3+jdoW09rMf7XQQLpAeKK7QgCs
-         Pnbg==
-X-Gm-Message-State: AOAM533mJOMVakz4M4PpKU43SlsTCiCVZ7IomWXxOIB0yNWOoqG+ScaO
-        cD9ww+rUteNZNT3G4RyTV9QRuP5rHt4jbP001nf+7NhLzaKfEoOW390gn1du4ZHtXXW9jpt2UKO
-        VaXwJgdEfBXxvi5sfKIcRpor0
-X-Received: by 2002:a1c:f310:: with SMTP id q16mr3156055wmq.145.1633075467036;
-        Fri, 01 Oct 2021 01:04:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy09IiCKfFi33tOU52HzJrT7VrbqrMf/P7p34oNrrEfUQJ/n90uGLajbxmxEo4tDXieDpGReQ==
-X-Received: by 2002:a1c:f310:: with SMTP id q16mr3156030wmq.145.1633075466790;
-        Fri, 01 Oct 2021 01:04:26 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64da.dip0.t-ipconnect.de. [91.12.100.218])
-        by smtp.gmail.com with ESMTPSA id z17sm5132732wrr.49.2021.10.01.01.04.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 01:04:26 -0700 (PDT)
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-References: <20210927150518.8607-1-david@redhat.com>
- <20210927150518.8607-4-david@redhat.com> <YVSW3uuu7mIcJMm3@kernel.org>
- <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
- <YVYqdN7MFdzBlCVm@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 3/4] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
- IORESOURCE_SYSRAM_DRIVER_MANAGED
-Message-ID: <0d6c86ba-076b-5d4b-33a8-da267f951a85@redhat.com>
-Date:   Fri, 1 Oct 2021 10:04:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 1 Oct 2021 04:08:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-34-W05ZMRukNYqLxn2NGHWQgw-1; Fri, 01 Oct 2021 09:06:14 +0100
+X-MC-Unique: W05ZMRukNYqLxn2NGHWQgw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 1 Oct 2021 09:06:13 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 1 Oct 2021 09:06:13 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Vineet Gupta' <vgupta@kernel.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Guo Ren <guoren@kernel.org>
+CC:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>
+Subject: RE: [PATCH v5 1/3] riscv: optimized memcpy
+Thread-Topic: [PATCH v5 1/3] riscv: optimized memcpy
+Thread-Index: AQHXtjOD+7ayCntxxUO0SHdTnQy2G6u9yEmA
+Date:   Fri, 1 Oct 2021 08:06:13 +0000
+Message-ID: <63ab9e73cb58404c99e271b11b2b5bf5@AcuMS.aculab.com>
+References: <20210929172234.31620-1-mcroce@linux.microsoft.com>
+ <20210929172234.31620-2-mcroce@linux.microsoft.com>
+ <CAJF2gTRSVeUOwmaUcpMJL+jOofvX5iWLRLCfMajQcut_T409qA@mail.gmail.com>
+ <CAFnufp1wHVY-yoUUDxT1mhv8HV=cmHZSwMP+8r-2CzNAYEn4DQ@mail.gmail.com>
+ <a9ce9ea2-9e5d-0e56-d980-5dedd087f62d@kernel.org>
+In-Reply-To: <a9ce9ea2-9e5d-0e56-d980-5dedd087f62d@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <YVYqdN7MFdzBlCVm@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.09.21 23:21, Mike Rapoport wrote:
-> On Wed, Sep 29, 2021 at 06:54:01PM +0200, David Hildenbrand wrote:
->> On 29.09.21 18:39, Mike Rapoport wrote:
->>> Hi,
->>>
->>> On Mon, Sep 27, 2021 at 05:05:17PM +0200, David Hildenbrand wrote:
->>>> Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED.
->>>> Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
->>>> like ordinary MEMBLOCK_NONE memory -- for example, when selecting memory
->>>> regions to add to the vmcore for dumping in the crashkernel via
->>>> for_each_mem_range().
->>> Can you please elaborate on the difference in semantics of MEMBLOCK_HOTPLUG
->>> and MEMBLOCK_DRIVER_MANAGED?
->>> Unless I'm missing something they both mark memory that can be unplugged
->>> anytime and so it should not be used in certain cases. Why is there a need
->>> for a new flag?
->>
->> In the cover letter I have "Alternative B: Reuse MEMBLOCK_HOTPLUG.
->> MEMBLOCK_HOTPLUG serves a different purpose, though.", but looking into the
->> details it won't work as is.
->>
->> MEMBLOCK_HOTPLUG is used to mark memory early during boot that can later get
->> hotunplugged again and should be placed into ZONE_MOVABLE if the
->> "movable_node" kernel parameter is set.
->>
->> The confusing part is that we talk about "hotpluggable" but really mean
->> "hotunpluggable": the reason is that HW flags DIMM slots that can later be
->> hotplugged as "hotpluggable" even though there is already something
->> hotplugged.
-> 
-> MEMBLOCK_HOTPLUG name is indeed somewhat confusing, but still it's core
-> meaning "this memory may be removed" which does not differ from what
-> IORESOURCE_SYSRAM_DRIVER_MANAGED means.
-> 
-> MEMBLOCK_HOTPLUG regions are indeed placed into ZONE_MOVABLE, but more
-> importantly, they are avoided when we allocate memory from memblock.
-> 
-> So, in my view, both flags mean that the memory may be removed and it
-> should not be used for certain types of allocations.
-
-The semantics are different:
-
-MEMBLOCK_HOTPLUG: memory is indicated as "System RAM" in the 
-firmware-provided memory map and added to the system early during boot; 
-we want this memory to be managed by ZONE_MOVABLE with "movable_node" 
-set on the kernel command line, because only then we want it to be 
-hotpluggable again. kexec *has to* indicate this memory to the second 
-kernel and can place kexec-images on this memory. After memory 
-hotunplug, kexec has to be re-armed.
-
-MEMBLOCK_DRIVER_MANAGED: memory is not indicated as System RAM" in the 
-firmware-provided memory map; this memory is always detected and added 
-to the system by a driver; memory might not actually be physically 
-hotunpluggable and the ZONE selection does not depend on "movable_core". 
-kexec *must not* indicate this memory to the second kernel and *must 
-not* place kexec-images on this memory.
-
-
-I would really advise against mixing concepts here.
-
-
-What we could do is indicate *all* hotplugged memory (not just 
-IORESOURCE_SYSRAM_DRIVER_MANAGED memory) as MEMBLOCK_HOTPLUG and make 
-MEMBLOCK_HOTPLUG less dependent on "movable_node".
-
-MEMBLOCK_HOTPLUG for early boot memory: with "movable_core", place it in 
-ZONE_MOVABLE. Even without "movable_core", don't place early kernel 
-allocations on this memory.
-MEMBLOCK_HOTPLUG for all memory: don't place kexec images or on this 
-memory, independent of "movable_core".
-
-
-memblock would then not contain the information "contained in 
-firmware-provided memory map" vs. "not contained in firmware-provided 
-memory map"; but I think right now it's not strictly required to have 
-that information if we'd go down that path.
-
->   
->> For example, ranges in the ACPI SRAT that are marked as
->> ACPI_SRAT_MEM_HOT_PLUGGABLE will be marked MEMBLOCK_HOTPLUG early during
->> boot (drivers/acpi/numa/srat.c:acpi_numa_memory_affinity_init()). Later, we
->> use that information to size ZONE_MOVABLE
->> (mm/page_alloc.c:find_zone_movable_pfns_for_nodes()). This will make sure
->> that these "hotpluggable" DIMMs can later get hotunplugged.
->>
->> Also, see should_skip_region() how this relates to the "movable_node" kernel
->> parameter:
->>
->> 	/* skip hotpluggable memory regions if needed */
->> 	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
->> 	    (flags & MEMBLOCK_HOTPLUG))
->> 		return true;
-> 
-> Hmm, I think that the movable_node_is_enabled() check here is excessive,
-> but I suspect we cannot simply remove it without breaking anything.
-
-The reasoning is: without "movable_core" we don't want this memory to be 
-hotunpluggable; consequently, we don't care if we place kexec-images on 
-this memory. MEMBLOCK_HOTPLUG is currently only active with "movable_core".
-
-If we remove that check, we will always not place early kernel 
-allocations on that memory, even if we don't care about ZONE_MOVABLE.
-
-> 
-> I'll take a deeper look on the potential consequences.
-> 
-> BTW, is there anything that prevents putting kexec to hot-unplugable memory
-> that was cold-plugged on boot?
-
-I think it depends on how the platform handles hotunpluggable DIMMs or 
-hotunpluggable NUMA nodes. If the platform ends up indicates such memory 
-via MEMBLOCK_HOTPLUG, and "movable_core" is set, memory would be put 
-into ZONE_MOVABLE and kexec would not place kexec-images on that memory.
-
--- 
-Thanks,
-
-David / dhildenb
+Li4uDQo+IEJUVyBvZmYgdG9waWMgKGJ1dCByZWxldmFudCB0byB0aGlzIHBhdGNoc2V0KSwgSSBz
+dHJvbmdseSBmZWVsIHRoYXQNCj4gcm91dGluZXMgbGlrZSBtZW1zZXQvbWVtY3B5IGFyZSBiZXR0
+ZXIgY29kZWQgaW4gYXNzZW1ibHkgZm9yIHJlYWxseQ0KPiB3YXRlciB0aWdodCBpbnN0cnVjdGlv
+biBzY2hlZHVsaW5nIGFuZCBlYXNlIG9mIGZ1cnRoZXIgb3B0aW1pemluZyAoZS5nLg0KPiB1c2Ug
+b2YgQ01PLnplcm8gZXRjIGFzIGV4cGVyaW1lbnRlZCBieSBQaGlsaXBwKS4gV2hhdCBpcyBibG9j
+a2luZyB5b3UNCj4gZnJvbSBvcHRpbWl6aW5nIHRoZSBhc20gdmVyc2lvbiA/IFlvdSBhcmUgbGVh
+dmluZyB0aGUgZmF0ZSBvZiB0aGVzZQ0KPiBjcml0aWNhbCByb3V0aW5lcyBpbiB0aGUgaGFuZCBv
+ZiBjb21waWxlciAtIHRoaXMgY2FuIGxlYWQgdG8gcGVyZm9ybWFuY2UNCj4gc2hlbmFuaWdhbnMg
+b24gYSBiaWcgZ2NjIHVwZ3JhZGUuDQoNCllvdSBhbHNvIG5lZWQgdG8gd29ycnkgYWJvdXQgdGhl
+IGNvc3Qgb2Ygc2hvcnQgdHJhbnNmZXJzLg0KQSBmZXcgY3ljbGVzIHRoZXJlIGNvdWxkIGhhdmUg
+YSBtdWNoIGJpZ2dlciBkaWZmZXJlbmNlDQp0aGF0IHNvbWV0aGluZyB0aGF0IHNwZWVkcyB1cCBs
+b25nIHRyYW5zZmVycy4NClNob3J0IG9uZXMgYXJlIGxpa2VseSB0byBiZSBmYWlybHkgY29tbW9u
+Lg0KSSBkb3VidCB0aGUgbG9vcCB1bnJvbGxpbmcgb3B0aW1pc2F0aW9uIGluIGdjYyBpcyBhY3R1
+YWxseQ0KYW55IGdvb2QgZm9yIGxvb3BzIHRoYXQgbWlnaHQgYmUgZG9uZSBhIGZldyB0aW1lcy4N
+Cg0KRm9ydHVuYXRlbHkgdGhlIGtlcm5lbCBkb2Vzbid0IGdldCAnaGl0IGJ5JyBnY2MgdW5yb2xs
+aW5nDQpsb29wcyBpbnRvIHRoZSBBVlggaW5zdHJ1Y3Rpb25zLg0KVGhlIHNldHVwIGNvc3RzIGZv
+ciB0aGF0IChhbmQgSS1jYWNoZSBmb290cHJpbnQpIGFyZSBob3JyaWQuDQpBbHRob3VnaCBJIHN1
+c3BlY3QgaXQgaXMgdGhhdCBvcHRpbWlzYXRpb24gdGhhdCAnYnJva2UnDQpjb2RlIHRoYXQgdXNl
+ZCBtaXNhbGlnbmVkIHBvaW50ZXJzIG9uIG92ZXJsYXBwaW5nIGRhdGEuDQoNCkl0IGlzIGEgZ2Vu
+ZXJhbCBwcm9ibGVtIHdpdGggdGhlICdvbmUgc2l6ZSBmaXRzIGFsbCcgbWVtY3B5KCkuDQoNCglE
+YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
+bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
+NzM4NiAoV2FsZXMpDQo=
 
