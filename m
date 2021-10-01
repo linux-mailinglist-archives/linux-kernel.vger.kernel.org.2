@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F0541EC8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1CE41EC89
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354072AbhJALvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:51:39 -0400
-Received: from mga01.intel.com ([192.55.52.88]:60070 "EHLO mga01.intel.com"
+        id S1354064AbhJALu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:50:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31238 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353912AbhJALvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:51:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="247968436"
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="247968436"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:49:54 -0700
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="540047578"
-Received: from pwhela2-mobl1.ger.corp.intel.com (HELO [10.213.160.166]) ([10.213.160.166])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:49:54 -0700
-Subject: Re: [PATCH] soundwire: qcom: add debugfs entry for soundwire register
- dump
-To:     Vinod Koul <vkoul@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210907105636.3171-1-srinivas.kandagatla@linaro.org>
- <YVaMlSbmFnrQyb0u@matsya>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ada6763f-7821-6388-2c7a-3a771450c7bf@linux.intel.com>
-Date:   Fri, 1 Oct 2021 06:45:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1353948AbhJALur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:50:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633088944; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=bttwt/gBeucZtbTJvrBvHIv/d1PTWoUeIF2t4CtWbIY=; b=lpcRtqRO96OaynFZWipPDD4nLgP2/1qoIO/XpcHTVbzbEWFqBVNba2GJZAl6lPSoMVPzQTSp
+ YCB6jmBtGmGpjrsEtvyoUGxSAyP5HznfcZC7ReoUpNzU0AEH9/tTpnXUH7mNPTHMwDPSklfX
+ a8MfIpZgVdHQbAq0CMHcqLcVurY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6156f599605ecf100bb8c1a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:48:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A20D9C43460; Fri,  1 Oct 2021 11:48:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22C83C4338F;
+        Fri,  1 Oct 2021 11:48:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 22C83C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 12/24] wfx: add hif_api_*.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-13-Jerome.Pouiller@silabs.com>
+Date:   Fri, 01 Oct 2021 14:48:36 +0300
+In-Reply-To: <20210920161136.2398632-13-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Mon, 20 Sep 2021 18:11:24 +0200")
+Message-ID: <87wnmxj78r.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YVaMlSbmFnrQyb0u@matsya>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 
-On 9/30/21 11:20 PM, Vinod Koul wrote:
-> HI Srini,
-> 
-> On 07-09-21, 11:56, Srinivas Kandagatla wrote:
->> +#ifdef CONFIG_DEBUG_FS
->> +static int swrm_reg_show(struct seq_file *s_file, void *data)
->> +{
->> +	struct qcom_swrm_ctrl *swrm = s_file->private;
->> +	int reg, reg_val;
->> +
->> +	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
->> +		swrm->reg_read(swrm, reg, &reg_val);
-> 
-> Why not use regmap_read here, that would avoid reading from the bus when
-> we already have the values...
+[...]
 
-It's an indirect read based on regmap.
+> --- /dev/null
+> +++ b/drivers/net/wireless/silabs/wfx/hif_api_general.h
+> @@ -0,0 +1,256 @@
+> +/* SPDX-License-Identifier: Apache-2.0 */
+> +/*
+> + * WF200 hardware interface definitions
+> + *
+> + * Copyright (c) 2018-2020, Silicon Laboratories Inc.
+> + */
+> +
+> +#ifndef WFX_HIF_API_GENERAL_H
+> +#define WFX_HIF_API_GENERAL_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/if_ether.h>
 
-	ctrl->reg_read = qcom_swrm_ahb_reg_read;
-	ctrl->reg_write = qcom_swrm_ahb_reg_write;
+I'm looking at staging-next (commit 42ce32b1ae54) while reviewing the
+driver and there I see:
 
-static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
-				  u32 *val)
-{
-	struct regmap *wcd_regmap = ctrl->regmap;
-	int ret;
+#ifndef WFX_HIF_API_GENERAL_H
+#define WFX_HIF_API_GENERAL_H
 
-	/* pg register + offset */
-	ret = regmap_bulk_write(wcd_regmap, SWRM_AHB_BRIDGE_RD_ADDR_0,
-			  (u8 *)&reg, 4);
-	if (ret < 0)
-		return SDW_CMD_FAIL;
+#ifdef __KERNEL__
+#include <linux/types.h>
+#include <linux/if_ether.h>
+#else
+#include <net/ethernet.h>
+#include <stdint.h>
+#define __packed __attribute__((__packed__))
+#endif
 
-	ret = regmap_bulk_read(wcd_regmap, SWRM_AHB_BRIDGE_RD_DATA_0,
-			       val, 4);
-	if (ret < 0)
-		return SDW_CMD_FAIL;
+I don't know what's causing the difference, but that ifdef __KERNEL__
+looks useless.
 
-	return SDW_CMD_OK;
-}
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> Second make sure later when pm_runtime support is added, this take a
-> reference ..
-
-Yes indeed, the SoundWire regmap doesn't change the pm_runtime status.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
