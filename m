@@ -2,394 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D40041E614
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D698941E616
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 04:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351674AbhJACq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 22:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S1351589AbhJACsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 22:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351589AbhJACq5 (ORCPT
+        with ESMTP id S1351696AbhJACsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 22:46:57 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9531C06176C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:45:13 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id m1-20020a05620a290100b0045e5e0b11e6so15468741qkp.23
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:45:13 -0700 (PDT)
+        Thu, 30 Sep 2021 22:48:17 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A882C06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:46:33 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id s137so3800046vke.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 19:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=G6Dd4fU8g9huNz1dWEdvWgTqiDe5ms3HW/qSB0NVe+o=;
-        b=n6elO3Bc5TGwgkMmuAUCBn8HnVWttDeVKtQ/p4HBROaTUeM2t2Ifit05G/UeGA4Rnb
-         G30etjPlPZIma6GcrS3wws2bB6GksuGqPO4mz9LZO4JAf/3td3MSD7X6RYuTT39aH2mN
-         Wl+lDZ+Cl4ch4i5/X1vtjPeqU8Vm8uXBpuBjlw7QSPaOoWr1gO9AwG4Dci1sOzhMYJTx
-         t29WYszrZSh58xBukibyYlRBThyKid2NOafVnZwvtAy50qaYUqnP2JNJAkMqdouX0qw3
-         d482eLLSHaKicRUi0lzZoeJx+COMl6HmffrYQj3OGAeFm1CRUjyK9JkmuLaAsTUTRATS
-         FgMQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XoyMPl9iviVi70RUV1Le0P7nhVHqnZBTf+jRQi0lW4k=;
+        b=nfYqUbP5Y4aNEJHI/T1u/C7xfhX7tAnd/DPWqJ1jrcmW8GbAxyPHcC8EcIERGTNlix
+         RsE7gDw7bufYrZzYNPcS+/S7j0CiEeo2NJ+3zwa50koWlz4TAw35oDKzwzoIZ6Fux2Ha
+         clHWsguTqzOqONNro5mml1dNdmlwN0vwPdxPfe8D3IkDY3CuFYmvv1OF6oxCgLNFipWf
+         V4fSFMgSG3rIkTyrPXeBaYRrZuHCUr/2vntCjY5VJbQjxjTfWS3cb9gcZ8QTg2uMvhyX
+         r5Fu8mneojQhzEfWKstuyqtjm8nVPGFxcT3/t3tPv9fWDe2uSOy/uXTlV0OIDEDs040d
+         /Y9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=G6Dd4fU8g9huNz1dWEdvWgTqiDe5ms3HW/qSB0NVe+o=;
-        b=jqaild8AhLfipXfwzVDUnM+QfLzO1igR43iPJBoYcrayvHuE2u31anMpg0Ch6loGnE
-         pWrm9SBQy0U72tgnXQZCdXH1VXoZTBW6RO+aN8vbdcagHwWlKmEinbKi9AeNaWLHd8Y9
-         /RdHKhaY5WeC0d/gfK5dLw9oeU+GL7w7eollXUrw7w7T1hO9fNTEiMtR9dAi6hfch0xV
-         GmjwKmkEKRsEIzr/40HySVzvwCyq6Lpm7nnJ5Zy1uaq5zi4ZnzlFirhkMJgFVK934rPB
-         oM7sV28NT0sLVOECxLmQtce542fKlLpq2BKt8f0OhRqNvTlVkf2GMzC0SdbQ+ViK4b9z
-         93Hg==
-X-Gm-Message-State: AOAM5327d9wg+pbZFhrpHIABYThxLiyz84n272YWU/nV122SYdZs4XqD
-        /1YE6dGUFOV4/bV53vMRVMveHmUfbA==
-X-Google-Smtp-Source: ABdhPJyH3tpl88+f2XkK4k1ciI2A73eGmsJKXEJRn0QYhDsbd6e22B49ve2+9vpoulRsr4pwImBw56/a4A==
-X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:200:628d:14b1:db70:715b])
- (user=tkjos job=sendgmr) by 2002:a05:6214:1046:: with SMTP id
- l6mr7013069qvr.6.1633056312784; Thu, 30 Sep 2021 19:45:12 -0700 (PDT)
-Date:   Thu, 30 Sep 2021 19:45:06 -0700
-Message-Id: <20211001024506.3762647-1-tkjos@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH] binder: use cred instead of task for selinux checks
-From:   Todd Kjos <tkjos@google.com>
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io, jmorris@namei.org,
-        serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, jannh@google.com, jeffv@google.com,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     joel@joelfernandes.org, kernel-team@android.com,
-        Todd Kjos <tkjos@google.com>, stable@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XoyMPl9iviVi70RUV1Le0P7nhVHqnZBTf+jRQi0lW4k=;
+        b=h/MapZoDG+SYbUZlZQJdyEYr8FojwJzbwksyeeqlOpQa+rDmkcwSs59Ulha2xN7ErO
+         6mkCPbH+KF0hzctQ0xaXDsePWHno/ndC5Su4q941K4z3ZCTs5IpGbrQ9cUmqTfiIqozb
+         1Q2C2sLG2L/QLgeqCBR3Do2nfGc5fVBO125f54t1dsxUpMpEDOcR04fyeuj3+rAfjVVD
+         jusXBeihDKtFVwyA6h8lFyOUBpeQgnlP+GV9TdXr1B8C25uMVChetZ/KVnsZU+fuabDy
+         dsQuoRPHYxK88/MSiS/J1/SpGApYnqAZK6ssQYVo8Cy3En35uFZPrfaL9jXhA0gG+ZQV
+         oBZg==
+X-Gm-Message-State: AOAM532XGYnwBX7RlhpDFKNq9sEa186x1N2a9lH49sJevFpAlI+QMLE+
+        kYnjEdfc7OZxrO9IFrRj4LIBShSwzV2jl/qStoOP5+GrkO26UA==
+X-Google-Smtp-Source: ABdhPJy5dQcdBWotlzvTpU3N7v+zqziVMBwO21aMkY/oAB19nh+HNfM0obBGZ+UwMP1OLSQKRnvYAOb3Enhm4IK6fJ4=
+X-Received: by 2002:a1f:5f4d:: with SMTP id t74mr6031975vkb.5.1633056392543;
+ Thu, 30 Sep 2021 19:46:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1631121222.git.greentime.hu@sifive.com> <0e65c165e3d54a38cbba01603f325dca727274de.1631121222.git.greentime.hu@sifive.com>
+ <c81267bc-4c91-3978-8c1f-78925c46c78b@bluespec.com> <CAHCEehJ1uuSFqFWreS1kh+fR5GFfnEycdLMe+4FHXpFsHrRUvA@mail.gmail.com>
+ <YVRp5uWFGQrwBpgf@bruce.bluespec.com>
+In-Reply-To: <YVRp5uWFGQrwBpgf@bruce.bluespec.com>
+From:   Ley Foon Tan <lftan.linux@gmail.com>
+Date:   Fri, 1 Oct 2021 10:46:20 +0800
+Message-ID: <CAFiDJ5_eoUNjQbCcwgHtXHfykeD7MiSw3xJzx83+bXOFHv-dQQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 09/21] riscv: Add task switch support for vector
+To:     Darius Rad <darius@bluespec.com>
+Cc:     Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Save the struct cred associated with a binder process
-at initial open to avoid potential race conditions
-when converting to a security ID.
+On Wed, Sep 29, 2021 at 11:54 PM Darius Rad <darius@bluespec.com> wrote:
+>
+> On Tue, Sep 28, 2021 at 10:56:52PM +0800, Greentime Hu wrote:
+> > Darius Rad <darius@bluespec.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=8813=E6=
+=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:21=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > On 9/8/21 1:45 PM, Greentime Hu wrote:
+> > > > This patch adds task switch support for vector. It supports partial=
+ lazy
+> > > > save and restore mechanism. It also supports all lengths of vlen.
+> > > >
+> > > > [guoren@linux.alibaba.com: First available porting to support vecto=
+r
+> > > > context switching]
+> > > > [nick.knight@sifive.com: Rewrite vector.S to support dynamic vlen, =
+xlen and
+> > > > code refine]
+> > > > [vincent.chen@sifive.co: Fix the might_sleep issue in vstate_save,
+> > > > vstate_restore]
+> > > > Co-developed-by: Nick Knight <nick.knight@sifive.com>
+> > > > Signed-off-by: Nick Knight <nick.knight@sifive.com>
+> > > > Co-developed-by: Guo Ren <guoren@linux.alibaba.com>
+> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > > Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+> > > > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> > > > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> > > > ---
+> > > >   arch/riscv/include/asm/switch_to.h | 66 +++++++++++++++++++++++
+> > > >   arch/riscv/kernel/Makefile         |  1 +
+> > > >   arch/riscv/kernel/process.c        | 38 ++++++++++++++
+> > > >   arch/riscv/kernel/vector.S         | 84 +++++++++++++++++++++++++=
++++++
+> > > >   4 files changed, 189 insertions(+)
+> > > >   create mode 100644 arch/riscv/kernel/vector.S
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/includ=
+e/asm/switch_to.h
+> > > > index ec83770b3d98..de0573dad78f 100644
+> > > > --- a/arch/riscv/include/asm/switch_to.h
+> > > > +++ b/arch/riscv/include/asm/switch_to.h
+> > > > @@ -7,10 +7,12 @@
+> > > >   #define _ASM_RISCV_SWITCH_TO_H
+> > > >
+> > > >   #include <linux/jump_label.h>
+> > > > +#include <linux/slab.h>
+> > > >   #include <linux/sched/task_stack.h>
+> > > >   #include <asm/processor.h>
+> > > >   #include <asm/ptrace.h>
+> > > >   #include <asm/csr.h>
+> > > > +#include <asm/asm-offsets.h>
+> > > >
+> > > >   #ifdef CONFIG_FPU
+> > > >   extern void __fstate_save(struct task_struct *save_to);
+> > > > @@ -68,6 +70,68 @@ static __always_inline bool has_fpu(void) { retu=
+rn false; }
+> > > >   #define __switch_to_fpu(__prev, __next) do { } while (0)
+> > > >   #endif
+> > > >
+> > > > +#ifdef CONFIG_VECTOR
+> > > > +extern bool has_vector;
+> > > > +extern unsigned long riscv_vsize;
+> > > > +extern void __vstate_save(struct __riscv_v_state *save_to, void *d=
+atap);
+> > > > +extern void __vstate_restore(struct __riscv_v_state *restore_from,=
+ void *datap);
+> > > > +
+> > > > +static inline void __vstate_clean(struct pt_regs *regs)
+> > > > +{
+> > > > +     regs->status =3D (regs->status & ~(SR_VS)) | SR_VS_CLEAN;
+> > > > +}
+> > > > +
+> > > > +static inline void vstate_off(struct task_struct *task,
+> > > > +                           struct pt_regs *regs)
+> > > > +{
+> > > > +     regs->status =3D (regs->status & ~SR_VS) | SR_VS_OFF;
+> > > > +}
+> > > > +
+> > > > +static inline void vstate_save(struct task_struct *task,
+> > > > +                            struct pt_regs *regs)
+> > > > +{
+> > > > +     if ((regs->status & SR_VS) =3D=3D SR_VS_DIRTY) {
+> > > > +             struct __riscv_v_state *vstate =3D &(task->thread.vst=
+ate);
+> > > > +
+> > > > +             __vstate_save(vstate, vstate->datap);
+> > > > +             __vstate_clean(regs);
+> > > > +     }
+> > > > +}
+> > > > +
+> > > > +static inline void vstate_restore(struct task_struct *task,
+> > > > +                               struct pt_regs *regs)
+> > > > +{
+> > > > +     if ((regs->status & SR_VS) !=3D SR_VS_OFF) {
+> > > > +             struct __riscv_v_state *vstate =3D &(task->thread.vst=
+ate);
+> > > > +
+> > > > +             /* Allocate space for vector registers. */
+> > > > +             if (!vstate->datap) {
+> > > > +                     vstate->datap =3D kzalloc(riscv_vsize, GFP_AT=
+OMIC);
+> > > > +                     vstate->size =3D riscv_vsize;
+> > > > +             }
+> > > > +             __vstate_restore(vstate, vstate->datap);
+> > > > +             __vstate_clean(regs);
+> > > > +     }
+> > > > +}
+> > > > +
+> > > > +static inline void __switch_to_vector(struct task_struct *prev,
+> > > > +                                struct task_struct *next)
+> > > > +{
+> > > > +     struct pt_regs *regs;
+> > > > +
+> > > > +     regs =3D task_pt_regs(prev);
+> > > > +     if (unlikely(regs->status & SR_SD))
+> > > > +             vstate_save(prev, regs);
+> > > > +     vstate_restore(next, task_pt_regs(next));
+> > > > +}
+> > > > +
+> > > > +#else
+> > > > +#define has_vector false
+> > > > +#define vstate_save(task, regs) do { } while (0)
+> > > > +#define vstate_restore(task, regs) do { } while (0)
+> > > > +#define __switch_to_vector(__prev, __next) do { } while (0)
+> > > > +#endif
+> > > > +
+> > > >   extern struct task_struct *__switch_to(struct task_struct *,
+> > > >                                      struct task_struct *);
+> > > >
+> > > > @@ -77,6 +141,8 @@ do {                                            =
+           \
+> > > >       struct task_struct *__next =3D (next);            \
+> > > >       if (has_fpu())                                  \
+> > > >               __switch_to_fpu(__prev, __next);        \
+> > > > +     if (has_vector)                                 \
+> > > > +             __switch_to_vector(__prev, __next);     \
+> > > >       ((last) =3D __switch_to(__prev, __next));         \
+> > > >   } while (0)
+> > > >
+> > > > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefil=
+e
+> > > > index 3397ddac1a30..344078080839 100644
+> > > > --- a/arch/riscv/kernel/Makefile
+> > > > +++ b/arch/riscv/kernel/Makefile
+> > > > @@ -40,6 +40,7 @@ obj-$(CONFIG_MMU) +=3D vdso.o vdso/
+> > > >
+> > > >   obj-$(CONFIG_RISCV_M_MODE)  +=3D traps_misaligned.o
+> > > >   obj-$(CONFIG_FPU)           +=3D fpu.o
+> > > > +obj-$(CONFIG_VECTOR)         +=3D vector.o
+> > > >   obj-$(CONFIG_SMP)           +=3D smpboot.o
+> > > >   obj-$(CONFIG_SMP)           +=3D smp.o
+> > > >   obj-$(CONFIG_SMP)           +=3D cpu_ops.o
+> > > > diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/proces=
+s.c
+> > > > index 03ac3aa611f5..0b86e9e531c9 100644
+> > > > --- a/arch/riscv/kernel/process.c
+> > > > +++ b/arch/riscv/kernel/process.c
+> > > > @@ -95,6 +95,16 @@ void start_thread(struct pt_regs *regs, unsigned=
+ long pc,
+> > > >                */
+> > > >               fstate_restore(current, regs);
+> > > >       }
+> > > > +
+> > > > +     if (has_vector) {
+> > > > +             regs->status |=3D SR_VS_INITIAL;
+> > > > +             /*
+> > > > +              * Restore the initial value to the vector register
+> > > > +              * before starting the user program.
+> > > > +              */
+> > > > +             vstate_restore(current, regs);
+> > > > +     }
+> > > > +
+> > >
+> > > So this will unconditionally enable vector instructions, and allocate
+> > > memory for vector state, for all processes, regardless of whether vec=
+tor
+> > > instructions are used?
+> > >
+> >
+> > Hi Darius,
+> >
+> > Yes, it will enable vector if has_vector() is true. The reason that we
+> > choose to enable and allocate memory for user space program is because
+> > we also implement some common functions in the glibc such as memcpy
+> > vector version and it is called very often by every process. So that
+> > we assume if the user program is running in a CPU with vector ISA
+> > would like to use vector by default. If we disable it by default and
+> > make it trigger the illegal instruction, that might be a burden since
+> > almost every process will use vector glibc memcpy or something like
+> > that.
+>
+> Do you have any evidence to support the assertion that almost every proce=
+ss
+> would use vector operations?  One could easily argue that the converse is
+> true: no existing software uses the vector extension now, so most likely =
+a
+> process will not be using it.
+>
+> >
+> > > Given the size of the vector state and potential power and performanc=
+e
+> > > implications of enabling the vector engine, it seems like this should
+> > > treated similarly to Intel AMX on x86.  The full discussion of that i=
+s
+> > > here:
+> > >
+> > > https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSA=
+GcbG8N+gtdQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org/
+> > >
+> > > The cover letter for recent Intel AMX patches has a summary of the x8=
+6
+> > > implementation:
+> > >
+> > > https://lore.kernel.org/lkml/20210825155413.19673-1-chang.seok.bae@in=
+tel.com/
+> > >
+> > > If RISC-V were to adopt a similar approach, I think the significant
+> > > points are:
+> > >
+> > >   1. A process (or thread) must specifically request the desire to us=
+e
+> > > vector extensions (perhaps with some new arch_prctl() API),
+> > >
+> > >   2. The kernel is free to deny permission, perhaps based on
+> > > administrative rules or for other reasons, and
+> > >
+> > >   3. If a process attempts to use vector extensions before doing the
+> > > above, the process will die due to an illegal instruction.
+> >
+> > Thank you for sharing this, but I am not sure if we should treat
+> > vector like AMX on x86. IMHO, compiler might generate code with vector
+> > instructions automatically someday, maybe we should treat vector
+> > extensions like other extensions.
+> > If user knows the vector extension is supported in this CPU and he
+> > would like to use it, it seems we should let user use it directly just
+> > like other extensions.
+> > If user don't know it exists or not, user should use the library API
+> > transparently and let glibc or other library deal with it. The glibc
+> > ifunc feature or multi-lib should be able to choose the correct
+> > implementation.
+>
+> What makes me think that the vector extension should be treated like AMX =
+is
+> that they both (1) have a significant amount of architectural state, and
+> (2) likely have a significant power and/or area impact on (non-emulated)
+> designs.
+>
+> For example, I think it is possible, maybe even likely, that vector
+> implementations will have one or more of the following behaviors:
+>
+>   1. A single vector unit shared among two or more harts,
+>
+>   2. Additional power consumption when the vector unit is enabled and idl=
+e
+> versus not being enabled at all,
+>
+>   3. For a system which supports variable operating frequency, a reductio=
+n
+> in the maximum frequency when the vector unit is enabled, and/or
+>
+>   4. The inability to enter low power states and/or delays to low power
+> states transitions when the vector unit is enabled.
+>
+> None of the above constraints apply to more ordinary extensions like
+> compressed or the various bit manipulation extensions.
+>
+> The discussion I linked to has some well reasoned arguments on why
+> substantial extensions should have a mechanism to request using them by
+> user space.  The discussion was in the context of Intel AMX, but applies =
+to
+> further x86 extensions, and I think should also apply to similar extensio=
+ns
+> on RISC-V, like vector here.
+>
+There is possible use case where not all cores support vector
+extension due to size, area and power.
+Perhaps can have the mechanism or flow to determine the
+application/thread require vector extension or it specifically request
+the desire to use
+vector extensions. Then this app/thread run on cpu with vector
+extension capability only.
 
-Since binder was integrated with selinux, it has passed
-'struct task_struct' associated with the binder_proc
-to represent the source and target of transactions.
-The conversion of task to SID was then done in the hook
-implementations. It turns out that there are race conditions
-which can result in an incorrect security context being used.
+Thanks.
 
-Fix by saving the 'struct cred' during binder_open and pass
-it to the selinux subsystem.
-
-Fixes: 79af73079d75 ("Add security hooks to binder and implement the
-hooks for SELinux.")
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Cc: stable@vger.kernel.org # 5.14 (need backport for earlier stables)
----
- drivers/android/binder.c          | 14 +++++----
- drivers/android/binder_internal.h |  3 ++
- include/linux/lsm_hook_defs.h     | 14 ++++-----
- include/linux/security.h          | 28 +++++++++---------
- security/security.c               | 14 ++++-----
- security/selinux/hooks.c          | 48 +++++++++----------------------
- 6 files changed, 52 insertions(+), 69 deletions(-)
-
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 9edacc8b9768..ca599ebdea4a 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2056,7 +2056,7 @@ static int binder_translate_binder(struct flat_binder_object *fp,
- 		ret = -EINVAL;
- 		goto done;
- 	}
--	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-+	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
- 		ret = -EPERM;
- 		goto done;
- 	}
-@@ -2102,7 +2102,7 @@ static int binder_translate_handle(struct flat_binder_object *fp,
- 				  proc->pid, thread->pid, fp->handle);
- 		return -EINVAL;
- 	}
--	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-+	if (security_binder_transfer_binder(proc->cred, target_proc->cred)) {
- 		ret = -EPERM;
- 		goto done;
- 	}
-@@ -2190,7 +2190,7 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
- 		ret = -EBADF;
- 		goto err_fget;
- 	}
--	ret = security_binder_transfer_file(proc->tsk, target_proc->tsk, file);
-+	ret = security_binder_transfer_file(proc->cred, target_proc->cred, file);
- 	if (ret < 0) {
- 		ret = -EPERM;
- 		goto err_security;
-@@ -2595,8 +2595,8 @@ static void binder_transaction(struct binder_proc *proc,
- 			return_error_line = __LINE__;
- 			goto err_invalid_target_handle;
- 		}
--		if (security_binder_transaction(proc->tsk,
--						target_proc->tsk) < 0) {
-+		if (security_binder_transaction(proc->cred,
-+						target_proc->cred) < 0) {
- 			return_error = BR_FAILED_REPLY;
- 			return_error_param = -EPERM;
- 			return_error_line = __LINE__;
-@@ -4353,6 +4353,7 @@ static void binder_free_proc(struct binder_proc *proc)
- 	}
- 	binder_alloc_deferred_release(&proc->alloc);
- 	put_task_struct(proc->tsk);
-+	put_cred(proc->cred);
- 	binder_stats_deleted(BINDER_STAT_PROC);
- 	kfree(proc);
- }
-@@ -4564,7 +4565,7 @@ static int binder_ioctl_set_ctx_mgr(struct file *filp,
- 		ret = -EBUSY;
- 		goto out;
- 	}
--	ret = security_binder_set_context_mgr(proc->tsk);
-+	ret = security_binder_set_context_mgr(proc->cred);
- 	if (ret < 0)
- 		goto out;
- 	if (uid_valid(context->binder_context_mgr_uid)) {
-@@ -5055,6 +5056,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
- 	spin_lock_init(&proc->outer_lock);
- 	get_task_struct(current->group_leader);
- 	proc->tsk = current->group_leader;
-+	proc->cred = get_cred(filp->f_cred);
- 	INIT_LIST_HEAD(&proc->todo);
- 	init_waitqueue_head(&proc->freeze_wait);
- 	proc->default_priority = task_nice(current);
-diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-index 402c4d4362a8..886fc327a534 100644
---- a/drivers/android/binder_internal.h
-+++ b/drivers/android/binder_internal.h
-@@ -364,6 +364,8 @@ struct binder_ref {
-  *                        (invariant after initialized)
-  * @tsk                   task_struct for group_leader of process
-  *                        (invariant after initialized)
-+ * @cred                  struct cred for group_leader of process
-+ *                        (invariant after initialized)
-  * @deferred_work_node:   element for binder_deferred_list
-  *                        (protected by binder_deferred_lock)
-  * @deferred_work:        bitmap of deferred work to perform
-@@ -426,6 +428,7 @@ struct binder_proc {
- 	struct list_head waiting_threads;
- 	int pid;
- 	struct task_struct *tsk;
-+	const struct cred *cred;
- 	struct hlist_node deferred_work_node;
- 	int deferred_work;
- 	int outstanding_txns;
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 2adeea44c0d5..61590c1f2d33 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -26,13 +26,13 @@
-  *   #undef LSM_HOOK
-  * };
-  */
--LSM_HOOK(int, 0, binder_set_context_mgr, struct task_struct *mgr)
--LSM_HOOK(int, 0, binder_transaction, struct task_struct *from,
--	 struct task_struct *to)
--LSM_HOOK(int, 0, binder_transfer_binder, struct task_struct *from,
--	 struct task_struct *to)
--LSM_HOOK(int, 0, binder_transfer_file, struct task_struct *from,
--	 struct task_struct *to, struct file *file)
-+LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
-+LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
-+	 const struct cred *to)
-+LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
-+	 const struct cred *to)
-+LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
-+	 const struct cred *to, struct file *file)
- LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
- 	 unsigned int mode)
- LSM_HOOK(int, 0, ptrace_traceme, struct task_struct *parent)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5b7288521300..6344d3362df7 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -258,13 +258,13 @@ extern int security_init(void);
- extern int early_security_init(void);
- 
- /* Security operations */
--int security_binder_set_context_mgr(struct task_struct *mgr);
--int security_binder_transaction(struct task_struct *from,
--				struct task_struct *to);
--int security_binder_transfer_binder(struct task_struct *from,
--				    struct task_struct *to);
--int security_binder_transfer_file(struct task_struct *from,
--				  struct task_struct *to, struct file *file);
-+int security_binder_set_context_mgr(const struct cred *mgr);
-+int security_binder_transaction(const struct cred *from,
-+				const struct cred *to);
-+int security_binder_transfer_binder(const struct cred *from,
-+				    const struct cred *to);
-+int security_binder_transfer_file(const struct cred *from,
-+				  const struct cred *to, struct file *file);
- int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
- int security_ptrace_traceme(struct task_struct *parent);
- int security_capget(struct task_struct *target,
-@@ -508,25 +508,25 @@ static inline int early_security_init(void)
- 	return 0;
- }
- 
--static inline int security_binder_set_context_mgr(struct task_struct *mgr)
-+static inline int security_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transaction(struct task_struct *from,
--					      struct task_struct *to)
-+static inline int security_binder_transaction(const struct cred *from,
-+					      const struct cred *to)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transfer_binder(struct task_struct *from,
--						  struct task_struct *to)
-+static inline int security_binder_transfer_binder(const struct cred *from,
-+						  const struct cred *to)
- {
- 	return 0;
- }
- 
--static inline int security_binder_transfer_file(struct task_struct *from,
--						struct task_struct *to,
-+static inline int security_binder_transfer_file(const struct cred *from,
-+						const struct cred *to,
- 						struct file *file)
- {
- 	return 0;
-diff --git a/security/security.c b/security/security.c
-index 9ffa9e9c5c55..67264cb08fb3 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -747,25 +747,25 @@ static int lsm_superblock_alloc(struct super_block *sb)
- 
- /* Security operations */
- 
--int security_binder_set_context_mgr(struct task_struct *mgr)
-+int security_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return call_int_hook(binder_set_context_mgr, 0, mgr);
- }
- 
--int security_binder_transaction(struct task_struct *from,
--				struct task_struct *to)
-+int security_binder_transaction(const struct cred *from,
-+				const struct cred *to)
- {
- 	return call_int_hook(binder_transaction, 0, from, to);
- }
- 
--int security_binder_transfer_binder(struct task_struct *from,
--				    struct task_struct *to)
-+int security_binder_transfer_binder(const struct cred *from,
-+				    const struct cred *to)
- {
- 	return call_int_hook(binder_transfer_binder, 0, from, to);
- }
- 
--int security_binder_transfer_file(struct task_struct *from,
--				  struct task_struct *to, struct file *file)
-+int security_binder_transfer_file(const struct cred *from,
-+				  const struct cred *to, struct file *file)
- {
- 	return call_int_hook(binder_transfer_file, 0, from, to, file);
- }
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index e7ebd45ca345..c8bf3db90c8b 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -255,29 +255,6 @@ static inline u32 task_sid_obj(const struct task_struct *task)
- 	return sid;
- }
- 
--/*
-- * get the security ID of a task for use with binder
-- */
--static inline u32 task_sid_binder(const struct task_struct *task)
--{
--	/*
--	 * In many case where this function is used we should be using the
--	 * task's subjective SID, but we can't reliably access the subjective
--	 * creds of a task other than our own so we must use the objective
--	 * creds/SID, which are safe to access.  The downside is that if a task
--	 * is temporarily overriding it's creds it will not be reflected here;
--	 * however, it isn't clear that binder would handle that case well
--	 * anyway.
--	 *
--	 * If this ever changes and we can safely reference the subjective
--	 * creds/SID of another task, this function will make it easier to
--	 * identify the various places where we make use of the task SIDs in
--	 * the binder code.  It is also likely that we will need to adjust
--	 * the main drivers/android binder code as well.
--	 */
--	return task_sid_obj(task);
--}
--
- static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dentry);
- 
- /*
-@@ -2066,18 +2043,19 @@ static inline u32 open_file_to_av(struct file *file)
- 
- /* Hook functions begin here. */
- 
--static int selinux_binder_set_context_mgr(struct task_struct *mgr)
-+static int selinux_binder_set_context_mgr(const struct cred *mgr)
- {
- 	return avc_has_perm(&selinux_state,
--			    current_sid(), task_sid_binder(mgr), SECCLASS_BINDER,
-+			    current_sid(), cred_sid(mgr), SECCLASS_BINDER,
- 			    BINDER__SET_CONTEXT_MGR, NULL);
- }
- 
--static int selinux_binder_transaction(struct task_struct *from,
--				      struct task_struct *to)
-+static int selinux_binder_transaction(const struct cred *from,
-+				      const struct cred *to)
- {
- 	u32 mysid = current_sid();
--	u32 fromsid = task_sid_binder(from);
-+	u32 fromsid = cred_sid(from);
-+	u32 tosid = cred_sid(to);
- 	int rc;
- 
- 	if (mysid != fromsid) {
-@@ -2088,24 +2066,24 @@ static int selinux_binder_transaction(struct task_struct *from,
- 			return rc;
- 	}
- 
--	return avc_has_perm(&selinux_state, fromsid, task_sid_binder(to),
-+	return avc_has_perm(&selinux_state, fromsid, tosid,
- 			    SECCLASS_BINDER, BINDER__CALL, NULL);
- }
- 
--static int selinux_binder_transfer_binder(struct task_struct *from,
--					  struct task_struct *to)
-+static int selinux_binder_transfer_binder(const struct cred *from,
-+					  const struct cred *to)
- {
- 	return avc_has_perm(&selinux_state,
--			    task_sid_binder(from), task_sid_binder(to),
-+			    cred_sid(from), cred_sid(to),
- 			    SECCLASS_BINDER, BINDER__TRANSFER,
- 			    NULL);
- }
- 
--static int selinux_binder_transfer_file(struct task_struct *from,
--					struct task_struct *to,
-+static int selinux_binder_transfer_file(const struct cred *from,
-+					const struct cred *to,
- 					struct file *file)
- {
--	u32 sid = task_sid_binder(to);
-+	u32 sid = cred_sid(to);
- 	struct file_security_struct *fsec = selinux_file(file);
- 	struct dentry *dentry = file->f_path.dentry;
- 	struct inode_security_struct *isec;
--- 
-2.33.0.800.g4c38ced690-goog
-
+Regards
+Ley Foon
