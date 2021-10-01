@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA8541F4D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B3E41F4DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355703AbhJASSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:18:35 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48506 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhJASSe (ORCPT
+        id S1355738AbhJAST1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:19:27 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50840 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355650AbhJAST0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:18:34 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 4FC621F42460
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH 0/2] Handle a soft hang and the inconsistent name issue
-Organization: Collabora
-References: <cover.1632909358.git.shreeya.patel@collabora.com>
-Date:   Fri, 01 Oct 2021 14:16:45 -0400
-In-Reply-To: <cover.1632909358.git.shreeya.patel@collabora.com> (Shreeya
-        Patel's message of "Wed, 29 Sep 2021 16:23:37 +0530")
-Message-ID: <87ee94625u.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 1 Oct 2021 14:19:26 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id ff1e06f515a14179; Fri, 1 Oct 2021 20:17:40 +0200
+Received: from kreacher.localnet (unknown [213.134.175.164])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id CD53666A7A3;
+        Fri,  1 Oct 2021 20:17:39 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bob Moore <robert.moore@intel.com>
+Subject: [PATCH 4/4] ACPICA: Update version to 20210930
+Date:   Fri, 01 Oct 2021 20:17:06 +0200
+Message-ID: <7993379.T7Z3S40VBb@kreacher>
+In-Reply-To: <2236872.ElGaqSPkdT@kreacher>
+References: <2236872.ElGaqSPkdT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.164
+X-CLIENT-HOSTNAME: 213.134.175.164
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedguddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfektdehueehteffueelleehhfffgfejtdehvddtfeetjeffveetheehvdejgfdunecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepvddufedrudefgedrudejhedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrdduieegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
+From: Bob Moore <robert.moore@intel.com>
 
-> When d_add_ci is called from the fs layer, we face a soft hang which is
-> caused by the deadlock in d_alloc_parallel. First patch in the series
-> tries to resolve it by doing a case-exact match instead of the
-> case-inexact match done by d_same_name function.
+ACPICA commit e01cc6b3d12b5f73f44d46fa15a7f569c793b328
 
-Hi Shreeya,
+Version 20210930.
 
-I understand what you are trying to solve here, but this could use some
-clarification.
+Link: https://github.com/acpica/acpica/commit/e01cc6b3
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ acpixf.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There is no such deadlock in the upstream code base, since d_add_ci is
-never called by a file system with a d_compare hook that causes the
-issue.  Patch 02/02 will be the first to include such path, to address
-the /proc/self/cwd leakage, therefore, Patch 01/02 is done in
-preparation of that patch.  That needs to be clearly stated here.
+diff -Nurp linux.before_name/include/acpi/acpixf.h linux.after_name/include/acpi/acpixf.h
+--- linux.before_name/include/acpi/acpixf.h	2021-10-01 19:33:19.411192223 +0200
++++ linux.after_name/include/acpi/acpixf.h	2021-10-01 19:33:15.880251109 +0200
+@@ -12,7 +12,7 @@
+ 
+ /* Current ACPICA subsystem version in YYYYMMDD format */
+ 
+-#define ACPI_CA_VERSION                 0x20210730
++#define ACPI_CA_VERSION                 0x20210930
+ 
+ #include <acpi/acconfig.h>
+ #include <acpi/actypes.h>
 
-Originally, the 'native', per-directory case-insensitive implementation
-merged in ext4/f2fs stores the case of the first lookup on the dcache,
-regardless of the disk exact file name case.  This is intended as an
-internal implementation detail, that shouldn't be leaked to
-userspace. Whenever the kernel returns a name to userspace it should be
-the exact name, as written on disk.  But, on /proc/self/cwd, the
-internal name is leaked to userspace.  The goal of the series is
-*solely* to fix the leakage of this implementation detail to userspace.
 
-I think the solution is in the right direction, but I see some
-issues on the implementation I'm discussing inline.
 
-> The second patch resolves the inconsistent name that is exposed by
->/proc/self/cwd in case of a case-insensitive filesystem.
->/proc/self/cwd uses the dentry name stored in dcache. Since the dcache
->is populated only on the first lookup, with the string used in that
->lookup, cwd will have an unexpected case, depending on how the data was
->first looked-up in a case-insesitive filesystem.
->
->
-> Shreeya Patel (2):
->   fs: dcache: Handle case-exact lookup in d_alloc_parallel
->   fs: ext4: Fix the inconsistent name exposed by /proc/self/cwd
->
->  fs/dcache.c     | 20 ++++++++++++++++++--
->  fs/ext4/namei.c | 13 +++++++++++++
->  2 files changed, 31 insertions(+), 2 deletions(-)
-
--- 
-Gabriel Krisman Bertazi
