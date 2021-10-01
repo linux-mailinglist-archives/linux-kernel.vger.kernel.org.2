@@ -2,82 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627A541EB50
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100DD41EB5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353757AbhJALDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:03:35 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44008
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353712AbhJALCw (ORCPT
+        id S1353235AbhJALHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353687AbhJALHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:02:52 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        Fri, 1 Oct 2021 07:07:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4574CC06177B;
+        Fri,  1 Oct 2021 04:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Kqf+SxOZxysQrD9yVCK3XWKIZqTOrvElMEJcFnO6Sdw=; b=NH+urkeLlLDHqorPL0dmYhRVBy
+        zI+yi/vuaSwngNiiOU/5Dik2rse2sbDHHh6HkPYiELiaqynxSH3jFRlj+Xc+NqvEbg1NgDlwL3nCz
+        +XQu0BaMnkaW2tBqx1tM/OH6Yi1xGG5pwCdgMzT5Mnz4/9VmszvpHvMM/sBLnM+/XrCI++buEZvI9
+        NVIjWFOCkg6+/43jzNJm4+nqTebqP+M7NdzlL2sSw71krMHqHE1Rs1e/msnc0z9z+WyGYoJokJgVt
+        VidlCZ2FqNX8m6mUrF8A/sI7VxEkB+1hrpuJqqCv9RtIkcG4WSxBnYckFzndFWi3dIFGR9PCqYJrr
+        W1Ufy2Wg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWGK7-00DnCk-J1; Fri, 01 Oct 2021 11:03:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E430F41979;
-        Fri,  1 Oct 2021 11:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633086066;
-        bh=dn4OGJN7yHitmsR+lQU1cTUP+QKK1iKnmxAV8VlJ3E4=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=B0bJbg34EwDnjlaPhWwcmqQPjpQfOWCJL/Rj23RKnP3CGG6aHsnYTwQXi0intnf+j
-         oz+XONCYLcWbXq3r0eqCeWdkb0qo+YgK9JeurUYiQChx7Rkxn0Of1/eKe0RIS6aV8V
-         +NH8/3LdkPkdjuFTPyCjGy/7tqbeNPH/AIVwTGi9Bee0NPO0pM0p5PWL7rizR1pKzZ
-         1TVQqrSsmFVhgb94K6PrQNX7CrBmy3YxbbFoHgepiU+VvjFWauQOUJbG6P9EnYw14l
-         okFVBzQ1nQHMJoUub95njDBo0XgEqXVYLF46jLTYJ3g5zzFbJywjYsZm/jsU8pq84L
-         SHRp+fuZC1s3w==
-From:   Colin King <colin.king@canonical.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73DD7300299;
+        Fri,  1 Oct 2021 13:03:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5B1B726717AC7; Fri,  1 Oct 2021 13:03:26 +0200 (CEST)
+Date:   Fri, 1 Oct 2021 13:03:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        David Stevens <stevensd@chromium.org>, kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] KVM: x86: Fix allocation sizeof argument
-Date:   Fri,  1 Oct 2021 12:01:06 +0100
-Message-Id: <20211001110106.15056-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V4 16/22] LoongArch: Add misc common routines
+Message-ID: <YVbq/kAZQimL3Vpc@hirez.programming.kicks-ass.net>
+References: <20210927064300.624279-1-chenhuacai@loongson.cn>
+ <20210927064300.624279-17-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927064300.624279-17-chenhuacai@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Sep 27, 2021 at 02:42:53PM +0800, Huacai Chen wrote:
+>  arch/loongarch/include/asm/cmpxchg.h     | 137 ++++++++++++
+>  arch/loongarch/kernel/cmpxchg.c          | 107 ++++++++++
 
-The allocation for *gfn_track should be for a slot->npages lot of
-short integers, however the current allocation is using sizeof(*gfn_track)
-and that is the size of a pointer, which is too large. Fix this by
-using sizeof(**gfn_track) instead.
+This really should have gone into the atomics/locking patch.
 
-Addresses-Coverity: ("Wrong sizeof argument")
-Fixes: 35b330bba6a7 ("KVM: x86: only allocate gfn_track when necessary")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/x86/kvm/mmu/page_track.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/arch/loongarch/include/asm/cmpxchg.h b/arch/loongarch/include/asm/cmpxchg.h
+> new file mode 100644
+> index 000000000000..13ee1b62dc12
+> --- /dev/null
+> +++ b/arch/loongarch/include/asm/cmpxchg.h
+> @@ -0,0 +1,137 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + */
+> +#ifndef __ASM_CMPXCHG_H
+> +#define __ASM_CMPXCHG_H
+> +
+> +#include <linux/bug.h>
+> +#include <asm/barrier.h>
+> +#include <asm/compiler.h>
+> +
+> +#define __xchg_asm(amswap_db, m, val)		\
+> +({						\
+> +		__typeof(val) __ret;		\
+> +						\
+> +		__asm__ __volatile__ (		\
+> +		" "amswap_db" %1, %z2, %0 \n"	\
+> +		: "+ZB" (*m), "=&r" (__ret)	\
+> +		: "Jr" (val)			\
+> +		: "memory");			\
+> +						\
+> +		__ret;				\
+> +})
+> +
+> +extern unsigned long __xchg_small(volatile void *ptr, unsigned long x,
+> +				  unsigned int size);
+> +
+> +static inline unsigned long __xchg(volatile void *ptr, unsigned long x,
+> +				   int size)
+> +{
+> +	switch (size) {
+> +	case 1:
+> +	case 2:
+> +		return __xchg_small(ptr, x, size);
+> +
+> +	case 4:
+> +		return __xchg_asm("amswap_db.w", (volatile u32 *)ptr, (u32)x);
+> +
+> +	case 8:
+> +		return __xchg_asm("amswap_db.d", (volatile u64 *)ptr, (u64)x);
+> +
+> +	default:
+> +		BUILD_BUG();
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +#define arch_xchg(ptr, x)						\
+> +({									\
+> +	__typeof__(*(ptr)) __res;					\
+> +									\
+> +	__res = (__typeof__(*(ptr)))					\
+> +		__xchg((ptr), (unsigned long)(x), sizeof(*(ptr)));	\
+> +									\
+> +	__res;								\
+> +})
+> +
+> +#define __cmpxchg_asm(ld, st, m, old, new)				\
+> +({									\
+> +	__typeof(old) __ret;						\
+> +									\
+> +	__asm__ __volatile__(						\
+> +	"1:	" ld "	%0, %2		# __cmpxchg_asm \n"		\
+> +	"	bne	%0, %z3, 2f			\n"		\
+> +	"	or	$t0, %z4, $zero			\n"		\
+> +	"	" st "	$t0, %1				\n"		\
+> +	"	beq	$zero, $t0, 1b			\n"		\
+> +	"2:						\n"		\
+> +	: "=&r" (__ret), "=ZB"(*m)					\
+> +	: "ZB"(*m), "Jr" (old), "Jr" (new)				\
+> +	: "t0", "memory");						\
+> +									\
+> +	__ret;								\
+> +})
+> +
+> +extern unsigned long __cmpxchg_small(volatile void *ptr, unsigned long old,
+> +				     unsigned long new, unsigned int size);
+> +
+> +static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+> +				      unsigned long new, unsigned int size)
+> +{
+> +	switch (size) {
+> +	case 1:
+> +	case 2:
+> +		return __cmpxchg_small(ptr, old, new, size);
+> +
+> +	case 4:
+> +		return __cmpxchg_asm("ll.w", "sc.w", (volatile u32 *)ptr,
+> +				     (u32)old, new);
+> +
+> +	case 8:
+> +		return __cmpxchg_asm("ll.d", "sc.d", (volatile u64 *)ptr,
+> +				     (u64)old, new);
+> +
+> +	default:
+> +		BUILD_BUG();
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +#define arch_cmpxchg_local(ptr, old, new)				\
+> +	((__typeof__(*(ptr)))						\
+> +		__cmpxchg((ptr),					\
+> +			  (unsigned long)(__typeof__(*(ptr)))(old),	\
+> +			  (unsigned long)(__typeof__(*(ptr)))(new),	\
+> +			  sizeof(*(ptr))))
+> +
+> +#define arch_cmpxchg(ptr, old, new)					\
+> +({									\
+> +	__typeof__(*(ptr)) __res;					\
+> +									\
+> +	__res = arch_cmpxchg_local((ptr), (old), (new));		\
+> +									\
+> +	__res;								\
+> +})
+> +
+> +#ifdef CONFIG_64BIT
+> +#define arch_cmpxchg64_local(ptr, o, n)					\
+> +  ({									\
+> +	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> +	arch_cmpxchg_local((ptr), (o), (n));				\
+> +  })
+> +
+> +#define arch_cmpxchg64(ptr, o, n)					\
+> +  ({									\
+> +	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+> +	arch_cmpxchg((ptr), (o), (n));					\
+> +  })
+> +#else
+> +#include <asm-generic/cmpxchg-local.h>
+> +#define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+> +#define arch_cmpxchg64(ptr, o, n) arch_cmpxchg64_local((ptr), (o), (n))
+> +#endif
+> +
+> +#endif /* __ASM_CMPXCHG_H */
 
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index bb5d60bd4dbf..5b785a5f7dc9 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -92,7 +92,7 @@ int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
- 		slots = __kvm_memslots(kvm, i);
- 		kvm_for_each_memslot(slot, slots) {
- 			gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
--			*gfn_track = kvcalloc(slot->npages, sizeof(*gfn_track),
-+			*gfn_track = kvcalloc(slot->npages, sizeof(**gfn_track),
- 					      GFP_KERNEL_ACCOUNT);
- 			if (*gfn_track == NULL) {
- 				mutex_unlock(&kvm->slots_arch_lock);
--- 
-2.32.0
+> diff --git a/arch/loongarch/kernel/cmpxchg.c b/arch/loongarch/kernel/cmpxchg.c
+> new file mode 100644
+> index 000000000000..81bb9d01a3b5
+> --- /dev/null
+> +++ b/arch/loongarch/kernel/cmpxchg.c
+> @@ -0,0 +1,107 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Author: Huacai Chen <chenhuacai@loongson.cn>
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + *
+> + * Derived from MIPS:
+> + * Copyright (C) 2017 Imagination Technologies
+> + * Author: Paul Burton <paul.burton@mips.com>
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <asm/cmpxchg.h>
+> +
+> +unsigned long __xchg_small(volatile void *ptr, unsigned long val, unsigned int size)
+> +{
+> +	u32 old32, mask, temp;
+> +	volatile u32 *ptr32;
+> +	unsigned int shift;
+> +
+> +	/* Check that ptr is naturally aligned */
+> +	WARN_ON((unsigned long)ptr & (size - 1));
+> +
+> +	/* Mask value to the correct size. */
+> +	mask = GENMASK((size * BITS_PER_BYTE) - 1, 0);
+> +	val &= mask;
+> +
+> +	/*
+> +	 * Calculate a shift & mask that correspond to the value we wish to
+> +	 * exchange within the naturally aligned 4 byte integerthat includes
+> +	 * it.
+> +	 */
+> +	shift = (unsigned long)ptr & 0x3;
+> +	shift *= BITS_PER_BYTE;
+> +	mask <<= shift;
+> +
+> +	/*
+> +	 * Calculate a pointer to the naturally aligned 4 byte integer that
+> +	 * includes our byte of interest, and load its value.
+> +	 */
+> +	ptr32 = (volatile u32 *)((unsigned long)ptr & ~0x3);
+> +
+> +	asm volatile (
+> +	"1:	ll.w		%0, %3		\n"
+> +	"	and		%1, %0, %4	\n"
+> +	"	or		%1, %1, %5	\n"
+> +	"	sc.w		%1, %2		\n"
+> +	"	beqz		%1, 1b		\n"
+> +	: "=&r" (old32), "=&r" (temp), "=" GCC_OFF_SMALL_ASM() (*ptr32)
+> +	: GCC_OFF_SMALL_ASM() (*ptr32), "Jr" (~mask), "Jr" (val << shift)
+> +	: "memory");
+> +
+> +	return (old32 & mask) >> shift;
+> +}
+> +
+> +unsigned long __cmpxchg_small(volatile void *ptr, unsigned long old,
+> +			      unsigned long new, unsigned int size)
+> +{
+> +	u32 mask, old32, new32, load32, load;
+> +	volatile u32 *ptr32;
+> +	unsigned int shift;
+> +
+> +	/* Check that ptr is naturally aligned */
+> +	WARN_ON((unsigned long)ptr & (size - 1));
+> +
+> +	/* Mask inputs to the correct size. */
+> +	mask = GENMASK((size * BITS_PER_BYTE) - 1, 0);
+> +	old &= mask;
+> +	new &= mask;
+> +
+> +	/*
+> +	 * Calculate a shift & mask that correspond to the value we wish to
+> +	 * compare & exchange within the naturally aligned 4 byte integer
+> +	 * that includes it.
+> +	 */
+> +	shift = (unsigned long)ptr & 0x3;
+> +	shift *= BITS_PER_BYTE;
+> +	mask <<= shift;
+> +
+> +	/*
+> +	 * Calculate a pointer to the naturally aligned 4 byte integer that
+> +	 * includes our byte of interest, and load its value.
+> +	 */
+> +	ptr32 = (volatile u32 *)((unsigned long)ptr & ~0x3);
+> +	load32 = *ptr32;
+> +
+> +	while (true) {
+> +		/*
+> +		 * Ensure the byte we want to exchange matches the expected
+> +		 * old value, and if not then bail.
+> +		 */
+> +		load = (load32 & mask) >> shift;
+> +		if (load != old)
+> +			return load;
+> +
+> +		/*
+> +		 * Calculate the old & new values of the naturally aligned
+> +		 * 4 byte integer that include the byte we want to exchange.
+> +		 * Attempt to exchange the old value for the new value, and
+> +		 * return if we succeed.
+> +		 */
+> +		old32 = (load32 & ~mask) | (old << shift);
+> +		new32 = (load32 & ~mask) | (new << shift);
+> +		load32 = arch_cmpxchg(ptr32, old32, new32);
+> +		if (load32 == old32)
+> +			return old;
+> +	}
 
+This is absolutely terrible, that really wants to be a single ll/sc
+loop.
+
+> +}
