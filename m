@@ -2,407 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D504941ED8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC81541ED98
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353785AbhJAMer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352901AbhJAMeo (ORCPT
+        id S1353815AbhJAMhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:37:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59076 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231352AbhJAMhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:34:44 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C60DC06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:33:00 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id e15so38235069lfr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 05:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MxegWTUqAg1wAtIssrheLi+x+LfQCMxJV5C3e9zY/So=;
-        b=vcJ2g2ALAm0IVx2Fp7EMGVafelLUrjG16muU1pmyzR8hwXe/c7kdMENPYG2cKj/WKw
-         BS+ZaaO+G4Uj5tvnRpwbititOE3WauKhPQkREVycG/Hvn9PHucIwhkZ/YUGB6qkv1U7f
-         1ae2JiP2HDu+Leu75eZhP4gJWxxvYNIu0f5oDf3KGrt2A4kayT/47nyueEjFDqAxQPI0
-         iTzo6lbag1DiAzbQ9jnlxf6WV5LlF4BTHECcT3A4vBoHPDuEldBEhV/YpniL1bV6yy2m
-         l7uOA4/tbztxL4Zph+77Sg+DntIuch0Ry+Gguy/mz8lrNGeYY+1Vyk1/7itYYlfM8hOX
-         BDkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MxegWTUqAg1wAtIssrheLi+x+LfQCMxJV5C3e9zY/So=;
-        b=f7r8ISB5Fl6eTlhFcsTQ0ZF9HDVaWCcV9vYgJ/cjfAXnXMZHvioFjTv8NQ3QXt1wUk
-         hy0jC9KXS8HLLF7026IEnZflnwWsYUkNpIjfTwf1fzyyALZQzrgtR1wefJpwFiiMSauf
-         mWtEbnfZJIJRXgII13nJI9iqDtugITJ8reLuJWusE8QO33+OHI0HmNM/NQVR1e7SZp6e
-         EUmaMEb/+dpWsgs0qPHjgtBCHKWE02YcLHIIKqJ+mQzzoEQ5x6dxiZqmjFr7aAy7T1Ax
-         m4/OPjJ+0FUaeT/0rT/iKa2ZwOObJmetNH0TTE0LlTRbffm2kpwhF8fyTJlZ6AMt4hk6
-         B94A==
-X-Gm-Message-State: AOAM530Hm9xZ4JMeA/LEPGNESpAQL9HTBUEUXWZUJ4tUPLOhFXWV1BcJ
-        3c/oCQ0S5MH6kkd5NZQ6vteMYPRFvJu6I/nd8ob5UA==
-X-Google-Smtp-Source: ABdhPJyfBm1RgU4LIN5CLjaq/tOmRfulY+xvfoc1wBqdFGGV+40L5VEoXJW9NfDQ0sTovAsPIzZgtcS+Jd2OZrom1nQ=
-X-Received: by 2002:a05:6512:3fa5:: with SMTP id x37mr5557500lfa.233.1633091578379;
- Fri, 01 Oct 2021 05:32:58 -0700 (PDT)
+        Fri, 1 Oct 2021 08:37:09 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 340602267E;
+        Fri,  1 Oct 2021 12:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633091724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4IZyw0HKjpWG8FpWoJ5olxESNe0wgvOob+Uvoay5gA=;
+        b=aR9pa16jIdPI4SJEmMtogi9KXxKOPLqXq+jfnK5hyBno/SkiLHr+mKWiFso/6WQUSkZm9U
+        5UyM77BGzDnuEIUBcDTmV7eRYmQwOVZ3KG44Ma+gTeA0lTaWAFI9/GlRGGORiWJv/k/GD/
+        gcXA+dwR4ORMi0rULPStgJyVD3YhhtY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633091724;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4IZyw0HKjpWG8FpWoJ5olxESNe0wgvOob+Uvoay5gA=;
+        b=ZS3SDJSlBX0zXwDSe0NqNgvpOJUQHwxe9jAaUVGroyaueV022TY2o193sRfPBEkpa23iWb
+        VMNM+4Lwnr8vqjCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C21B13C59;
+        Fri,  1 Oct 2021 12:35:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QDXDAYwAV2EaYAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 01 Oct 2021 12:35:24 +0000
+Message-ID: <6803f51e-69ea-fed0-112c-e40417836951@suse.cz>
+Date:   Fri, 1 Oct 2021 14:35:23 +0200
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-7-digetx@gmail.com>
-In-Reply-To: <20210926224058.1252-7-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 14:32:21 +0200
-Message-ID: <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
-Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [RFC PATCH] mm, slub: change percpu partial accounting from
+ objects to pages
+Content-Language: en-US
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20210913170148.10992-1-vbabka@suse.cz>
+ <c167ab10-f970-15c-b0e-fd4484ddc637@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <c167ab10-f970-15c-b0e-fd4484ddc637@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> The Clock-and-Reset controller resides in a core power domain on NVIDIA
-> Tegra SoCs.  In order to support voltage scaling of the core power domain,
-> we hook up DVFS-capable clocks to the core GENPD for managing of the
-> GENPD's performance state based on the clock changes.
->
-> Some clocks don't have any specific physical hardware unit that backs
-> them, like root PLLs and system clock and they have theirs own voltage
-> requirements.  This patch adds new clk-device driver that backs the clocks
-> and provides runtime PM functionality for them.  A virtual clk-device is
-> created for each such DVFS-capable clock at the clock's registration time
-> by the new tegra_clk_register() helper.  Driver changes clock's device
-> GENPD performance state based on clk-rate notifications.
->
-> In result we have this sequence of events:
->
->   1. Clock driver creates virtual device for selective clocks, enables
->      runtime PM for the created device and registers the clock.
->   2. Clk-device driver starts to listen to clock rate changes.
->   3. Something changes clk rate or enables/disables clk.
->   4. CCF core propagates the change through the clk tree.
->   5. Clk-device driver gets clock rate-change notification or GENPD core
->      handles prepare/unprepare of the clock.
->   6. Clk-device driver changes GENPD performance state on clock rate
->      change.
->   7. GENPD driver changes voltage regulator state change.
->   8. The regulator state is committed to hardware via I2C.
->
-> We rely on fact that DVFS is not needed for Tegra I2C and that Tegra I2C
-> driver already keeps clock always-prepared.  Hence I2C subsystem stays
-> independent from the clk power management and there are no deadlock spots
-> in the sequence.
->
-> Currently all clocks are registered very early during kernel boot when the
-> device driver core isn't available yet.  The clk-device can't be created
-> at that time.  This patch splits the registration of the clocks in two
-> phases:
->
->   1. Register all essential clocks which don't use RPM and are needed
->      during early boot.
->
->   2. Register at a later boot time the rest of clocks.
->
-> This patch adds power management support for Tegra20 and Tegra30 clocks.
->
-> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/clk/tegra/Makefile      |   1 +
->  drivers/clk/tegra/clk-device.c  | 230 ++++++++++++++++++++++++++++++++
->  drivers/clk/tegra/clk-pll.c     |   2 +-
->  drivers/clk/tegra/clk-super.c   |   2 +-
->  drivers/clk/tegra/clk-tegra20.c |  77 ++++++++---
->  drivers/clk/tegra/clk-tegra30.c | 116 +++++++++++-----
->  drivers/clk/tegra/clk.c         |  75 ++++++++++-
->  drivers/clk/tegra/clk.h         |   2 +
->  8 files changed, 451 insertions(+), 54 deletions(-)
->  create mode 100644 drivers/clk/tegra/clk-device.c
->
-> diff --git a/drivers/clk/tegra/Makefile b/drivers/clk/tegra/Makefile
-> index 7b1816856eb5..a0715cdfc1a4 100644
-> --- a/drivers/clk/tegra/Makefile
-> +++ b/drivers/clk/tegra/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-y                                  += clk.o
->  obj-y                                  += clk-audio-sync.o
-> +obj-y                                  += clk-device.o
->  obj-y                                  += clk-dfll.o
->  obj-y                                  += clk-divider.o
->  obj-y                                  += clk-periph.o
-> diff --git a/drivers/clk/tegra/clk-device.c b/drivers/clk/tegra/clk-device.c
-> new file mode 100644
-> index 000000000000..830bc0ba25d3
-> --- /dev/null
-> +++ b/drivers/clk/tegra/clk-device.c
-> @@ -0,0 +1,230 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_opp.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/slab.h>
-> +
-> +#include <soc/tegra/common.h>
-> +
-> +#include "clk.h"
-> +
-> +/*
-> + * This driver manages performance state of the core power domain for the
-> + * independent PLLs and system clocks.  We created a virtual clock device
-> + * for such clocks, see tegra_clk_dev_register().
-> + */
-> +
-> +struct tegra_clk_device {
-> +       struct notifier_block clk_nb;
-> +       struct device *dev;
-> +       struct clk_hw *hw;
-> +       struct mutex lock;
-> +};
-> +
-> +static int tegra_clock_set_pd_state(struct tegra_clk_device *clk_dev,
-> +                                   unsigned long rate)
-> +{
-> +       struct device *dev = clk_dev->dev;
-> +       struct dev_pm_opp *opp;
-> +       unsigned int pstate;
-> +
-> +       opp = dev_pm_opp_find_freq_ceil(dev, &rate);
-> +       if (opp == ERR_PTR(-ERANGE)) {
-> +               dev_dbg(dev, "failed to find ceil OPP for %luHz\n", rate);
-> +               opp = dev_pm_opp_find_freq_floor(dev, &rate);
-> +       }
-> +
-> +       if (IS_ERR(opp)) {
-> +               dev_err(dev, "failed to find OPP for %luHz: %pe\n", rate, opp);
-> +               return PTR_ERR(opp);
-> +       }
-> +
-> +       pstate = dev_pm_opp_get_required_pstate(opp, 0);
-> +       dev_pm_opp_put(opp);
-> +
-> +       return dev_pm_genpd_set_performance_state(dev, pstate);
+On 9/15/21 07:32, David Rientjes wrote:
+> On Mon, 13 Sep 2021, Vlastimil Babka wrote:
+>> We could also skip the intermediate step with target number of objects and
+>> rewrite the heuristic in terms of pages. However we still have the sysfs file
+>> cpu_partial which uses number of objects and could break existing users if it
+>> suddenly becomes number of pages, so this patch doesn't do that.
+>>
+>> In practice, after this patch the heuristics limit the size of percpu partial
+>> list up to 2 pages. In case of a reported regression (which would mean some
+>> workload has benefited from the previous imprecise object based counting), we
+>> can tune the heuristics to get a better compromise within the new scheme, while
+>> still avoid the unexpectedly long percpu partial lists.
+>>
+> 
+> Curious if you've tried netperf TCP_RR with this change?  This benchmark 
+> was the most significantly improved benchmark that I recall with the 
+> introduction of per-cpu partial slabs for SLUB.  If there are any 
+> regressions to be introduced by such an approach, I'm willing to bet that 
+> it would be surfaced with that benchmark.
+> 
+> Let me know if we can help in benchmarking.
 
-The above code certainly looks like it can be made generic through a
-common opp helper. I know we have discussed this before, so I am not
-saying you should change right now.
+Mel was kind enough to run it through mmtests machinery for netperf
+(localhost) and hackbench and I finally processed the results, see
+below. So there are some apparent regressions, especially with
+hackbench, which I think ultimately boils down to having shorter percpu
+partial lists on average and some benchmarks benefiting from longer
+ones. Monitoring slab usage also indicated less memory usage by slab. So
+maybe I could try bumping the defaults somewhat as part of the patch,
+but certainly not such that we would limit the percpu partial lists to
+30 pages just because previously a specific alloc/free pattern could
+lead to the limit of 30 objects translate to a limit to 30 pages - that
+would make little sense. This is a correctness patch, and if a workload
+benefits from larger lists, the sysfs tuning knobs are still there to use.
 
-Let's instead see what I think (and Viresh), when I have reviewed the
-entire series.
+Netperf
 
-> +}
-> +
-> +static int tegra_clock_change_notify(struct notifier_block *nb,
-> +                                    unsigned long msg, void *data)
-> +{
-> +       struct clk_notifier_data *cnd = data;
-> +       struct tegra_clk_device *clk_dev;
-> +       int err = 0;
-> +
-> +       clk_dev = container_of(nb, struct tegra_clk_device, clk_nb);
-> +
-> +       mutex_lock(&clk_dev->lock);
-> +       switch (msg) {
-> +       case PRE_RATE_CHANGE:
-> +               if (cnd->new_rate > cnd->old_rate)
-> +                       err = tegra_clock_set_pd_state(clk_dev, cnd->new_rate);
-> +               break;
-> +
-> +       case ABORT_RATE_CHANGE:
-> +               err = tegra_clock_set_pd_state(clk_dev, cnd->old_rate);
-> +               break;
-> +
-> +       case POST_RATE_CHANGE:
-> +               if (cnd->new_rate < cnd->old_rate)
-> +                       err = tegra_clock_set_pd_state(clk_dev, cnd->new_rate);
-> +               break;
-> +
-> +       default:
-> +               break;
-> +       }
-> +       mutex_unlock(&clk_dev->lock);
-> +
-> +       return notifier_from_errno(err);
-> +}
-> +
-> +static int tegra_clock_sync_pd_state(struct tegra_clk_device *clk_dev)
-> +{
-> +       unsigned long rate;
-> +       int ret = 0;
-> +
-> +       mutex_lock(&clk_dev->lock);
-> +
-> +       if (!pm_runtime_status_suspended(clk_dev->dev)) {
-> +               rate = clk_hw_get_rate(clk_dev->hw);
-> +               ret = tegra_clock_set_pd_state(clk_dev, rate);
+2-socket Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz (20 cores, 40 threads
+per socket), 384GB RAM
+TCP-RR:
+hmean before 127045.79 after 121092.94 (-4.69%, worse)
+stddev before  2634.37 after   1254.08
+UDP-RR:
+hmean before 166985.45 after 160668.94 ( -3.78%, worse)
+stddev before 4059.69 after 1943.63
 
-Don't we need to sync the performance state even when the device is
-runtime suspended?
+2-socket Intel(R) Xeon(R) CPU E5-2698 v4 @ 2.20GHz (20 cores, 40 threads
+per socket), 512GB RAM
+TCP-RR:
+hmean before 84173.25 after 76914.72 ( -8.62%, worse)
+UDP-RR:
+hmean before 93571.12 after 96428.69 ( 3.05%, better)
+stddev before 23118.54 after 16828.14
 
-Perhaps the clock, via a child-clock for example, can get
-prepared/enabled (hence its device gets runtime resumed) before there
-is a clock rate update for it. Then there is no performance state set
-for it, right? Or maybe that isn't a problem?
+2-socket Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz (12 cores, 24 threads
+per socket), 64GB RAM
+TCP-RR:
+hmean before 49984.92 after 48922.27 ( -2.13%, worse)
+stddev before 6248.15 after 4740.51
+UDP-RR:
+hmean before 61854.31 after 68761.81 ( 11.17%, better)
+stddev before 4093.54 after 5898.91
 
-> +       }
-> +
-> +       mutex_unlock(&clk_dev->lock);
-> +
-> +       return ret;
-> +}
-> +
-> +static int tegra_clock_probe(struct platform_device *pdev)
-> +{
-> +       struct tegra_core_opp_params opp_params = {};
-> +       struct tegra_clk_device *clk_dev;
-> +       struct device *dev = &pdev->dev;
-> +       struct clk *clk;
-> +       int err;
-> +
-> +       if (!dev->pm_domain)
-> +               return -EINVAL;
-> +
-> +       clk_dev = devm_kzalloc(dev, sizeof(*clk_dev), GFP_KERNEL);
-> +       if (!clk_dev)
-> +               return -ENOMEM;
-> +
-> +       clk = devm_clk_get(dev, NULL);
-> +       if (IS_ERR(clk))
-> +               return PTR_ERR(clk);
-> +
-> +       clk_dev->dev = dev;
-> +       clk_dev->hw = __clk_get_hw(clk);
-> +       clk_dev->clk_nb.notifier_call = tegra_clock_change_notify;
-> +       mutex_init(&clk_dev->lock);
-> +
-> +       platform_set_drvdata(pdev, clk_dev);
-> +
-> +       /*
-> +        * Runtime PM was already enabled for this device by the parent clk
-> +        * driver and power domain state should be synced under clk_dev lock,
-> +        * hence we don't use the common OPP helper that initializes OPP
-> +        * state. For some clocks common OPP helper may fail to find ceil
-> +        * rate, it's handled by this driver.
-> +        */
-> +       err = devm_tegra_core_dev_init_opp_table(dev, &opp_params);
-> +       if (err)
-> +               return err;
-> +
-> +       err = clk_notifier_register(clk, &clk_dev->clk_nb);
-> +       if (err) {
-> +               dev_err(dev, "failed to register clk notifier: %d\n", err);
-> +               return err;
-> +       }
-> +
-> +       /*
-> +        * The driver is attaching to a potentially active/resumed clock, hence
-> +        * we need to sync the power domain performance state in a accordance to
-> +        * the clock rate if clock is resumed.
-> +        */
-> +       err = tegra_clock_sync_pd_state(clk_dev);
-> +       if (err)
-> +               goto unreg_clk;
-> +
-> +       return 0;
-> +
-> +unreg_clk:
-> +       clk_notifier_unregister(clk, &clk_dev->clk_nb);
-> +
-> +       return err;
-> +}
-> +
-> +static __maybe_unused int tegra_clock_pm_suspend(struct device *dev)
-> +{
-> +       struct tegra_clk_device *clk_dev = dev_get_drvdata(dev);
-> +
-> +       /*
-> +        * Power management of the clock is entangled with the Tegra PMC
-> +        * GENPD because PMC driver enables/disables clocks for toggling
-> +        * of the PD's on/off state.
-> +        *
-> +        * The PMC GENPD is resumed in NOIRQ phase, before RPM of the clocks
-> +        * becomes available, hence PMC can't use clocks at the early resume
-> +        * phase if RPM is involved. For example when 3d clock is enabled,
-> +        * it may enable the parent PLL clock that needs to be RPM-resumed.
-> +        *
-> +        * Secondly, the PLL clocks may be enabled by the low level suspend
-> +        * code, so we need to assume that PLL is in enabled state during
-> +        * suspend.
-> +        *
-> +        * We will keep PLLs and system clock resumed during suspend time.
-> +        * All PLLs on all SoCs are low power and system clock is always-on,
-> +        * so practically not much is changed here.
-> +        */
-> +
-> +       return clk_prepare(clk_dev->hw->clk);
+other machines - within 2%
 
-I am trying to understand, more exactly, what you intend to achieve
-with the clk_prepare() here. It looks a bit weird, to me. Can you try
-to elaborate a bit more on the use case?
+Hackbench
 
-Is this rather about making sure that the clock's corresponding PM
-domain stays powered on during system suspend? In that case, I think
-there may be an alternative option....
+2-socket AMD EPYC 7713 (64 cores, 128 threads per core), 256GB RAM
+hackbench-process-sockets (less is worse)
+Amean 	1 	0.5380	0.5583	( -3.78%)
+Amean 	4 	0.7510	0.8150	( -8.52%)
+Amean 	7 	0.7930	0.9533	( -20.22%)
+Amean 	12 	0.7853	1.1313	( -44.06%)
+Amean 	21 	1.1520	1.4993	( -30.15%)
+Amean 	30 	1.6223	1.9237	( -18.57%)
+Amean 	48 	2.6767	2.9903	( -11.72%)
+Amean 	79 	4.0257	5.1150	( -27.06%)
+Amean 	110	5.5193	7.4720	( -35.38%)
+Amean 	141	7.2207	9.9840	( -38.27%)
+Amean 	172	8.4770	12.1963	( -43.88%)
+Amean 	203	9.6473	14.3137	( -48.37%)
+Amean 	234	11.3960	18.7917	( -64.90%)
+Amean 	265	13.9627	22.4607	( -60.86%)
+Amean 	296	14.9163	26.0483	( -74.63%)
 
-> +}
-> +
-> +static __maybe_unused int tegra_clock_pm_resume(struct device *dev)
-> +{
-> +       struct tegra_clk_device *clk_dev = dev_get_drvdata(dev);
-> +
-> +       clk_unprepare(clk_dev->hw->clk);
-> +
-> +       return 0;
-> +}
-> +
-> +static void tegra_clock_shutdown(struct platform_device *pdev)
-> +{
-> +       struct tegra_clk_device *clk_dev = platform_get_drvdata(pdev);
-> +
-> +       clk_prepare(clk_dev->hw->clk);
-> +}
-> +
-> +static const struct dev_pm_ops tegra_clock_pm = {
-> +       SET_SYSTEM_SLEEP_PM_OPS(tegra_clock_pm_suspend,
-> +                               tegra_clock_pm_resume)
-> +};
+hackbench-thread-sockets (less is worse)
+Amean 	1 	0.5597	0.5877	( -5.00%)
+Amean 	4 	0.7913	0.8960	( -13.23%)
+Amean 	7 	0.8190	1.0017	( -22.30%)
+Amean 	12 	0.9560	1.1727	( -22.66%)
+Amean 	21 	1.7587	1.5660	( 10.96%)
+Amean 	30 	2.4477	1.9807	( 19.08%)
+Amean 	48 	3.4573	3.0630	( 11.41%)
+Amean 	79 	4.7903	5.1733	( -8.00%)
+Amean 	110	6.1370	7.4220	( -20.94%)
+Amean 	141	7.5777	9.2617	( -22.22%)
+Amean 	172	9.2280	11.0907	( -20.18%)
+Amean 	203	10.2793	13.3470	( -29.84%)
+Amean 	234	11.2410	17.1070	( -52.18%)
+Amean 	265	12.5970	23.3323	( -85.22%)
+Amean 	296	17.1540	24.2857	( -41.57%)
 
-[...]
+2-socket Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz (20 cores, 40 threads
+per socket), 384GB RAM
+hackbench-process-sockets (less is worse)
+Amean 	1 	0.5760	0.4793	( 16.78%)
+Amean 	4 	0.9430	0.9707	( -2.93%)
+Amean 	7 	1.5517	1.8843	( -21.44%)
+Amean 	12 	2.4903	2.7267	( -9.49%)
+Amean 	21 	3.9560	4.2877	( -8.38%)
+Amean 	30 	5.4613	5.8343	( -6.83%)
+Amean 	48 	8.5337	9.2937	( -8.91%)
+Amean 	79 	14.0670	15.2630	( -8.50%)
+Amean 	110	19.2253	21.2467	( -10.51%)
+Amean 	141	23.7557	25.8550	( -8.84%)
+Amean 	172	28.4407	29.7603	( -4.64%)
+Amean 	203	33.3407	33.9927	( -1.96%)
+Amean 	234	38.3633	39.1150	( -1.96%)
+Amean 	265	43.4420	43.8470	( -0.93%)
+Amean 	296	48.3680	48.9300	( -1.16%)
 
-Kind regards
-Uffe
+hackbench-thread-sockets (less is worse)
+Amean 	1 	0.6080	0.6493	( -6.80%)
+Amean 	4 	1.0000	1.0513	( -5.13%)
+Amean 	7 	1.6607	2.0260	( -22.00%)
+Amean 	12 	2.7637	2.9273	( -5.92%)
+Amean 	21 	5.0613	4.5153	( 10.79%)
+Amean 	30 	6.3340	6.1140	( 3.47%)
+Amean 	48 	9.0567	9.5577	( -5.53%)
+Amean 	79 	14.5657	15.7983	( -8.46%)
+Amean 	110	19.6213	21.6333	( -10.25%)
+Amean 	141	24.1563	26.2697	( -8.75%)
+Amean 	172	28.9687	30.2187	( -4.32%)
+Amean 	203	33.9763	34.6970	( -2.12%)
+Amean 	234	38.8647	39.3207	( -1.17%)
+Amean 	265	44.0813	44.1507	( -0.16%)
+Amean 	296	49.2040	49.4330	( -0.47%)
+
+2-socket Intel(R) Xeon(R) CPU E5-2698 v4 @ 2.20GHz (20 cores, 40 threads
+per socket), 512GB RAM
+hackbench-process-sockets (less is worse)
+Amean 	1 	0.5027	0.5017	( 0.20%)
+Amean 	4 	1.1053	1.2033	( -8.87%)
+Amean 	7 	1.8760	2.1820	( -16.31%)
+Amean 	12 	2.9053	3.1810	( -9.49%)
+Amean 	21 	4.6777	4.9920	( -6.72%)
+Amean 	30 	6.5180	6.7827	( -4.06%)
+Amean 	48 	10.0710	10.5227	( -4.48%)
+Amean 	79 	16.4250	17.5053	( -6.58%)
+Amean 	110	22.6203	24.4617	( -8.14%)
+Amean 	141	28.0967	31.0363	( -10.46%)
+Amean 	172	34.4030	36.9233	( -7.33%)
+Amean 	203	40.5933	43.0850	( -6.14%)
+Amean 	234	46.6477	48.7220	( -4.45%)
+Amean 	265	53.0530	53.9597	( -1.71%)
+Amean 	296	59.2760	59.9213	( -1.09%)
+
+hackbench-thread-sockets (less is worse)
+Amean 	1 	0.5363	0.5330	( 0.62%)
+Amean 	4 	1.1647	1.2157	( -4.38%)
+Amean 	7 	1.9237	2.2833	( -18.70%)
+Amean 	12 	2.9943	3.3110	( -10.58%)
+Amean 	21 	4.9987	5.1880	( -3.79%)
+Amean 	30 	6.7583	7.0043	( -3.64%)
+Amean 	48 	10.4547	10.8353	( -3.64%)
+Amean 	79 	16.6707	17.6790	( -6.05%)
+Amean 	110	22.8207	24.4403	( -7.10%)
+Amean 	141	28.7090	31.0533	( -8.17%)
+Amean 	172	34.9387	36.8260	( -5.40%)
+Amean 	203	41.1567	43.0450	( -4.59%)
+Amean 	234	47.3790	48.5307	( -2.43%)
+Amean 	265	53.9543	54.6987	( -1.38%)
+Amean 	296	60.0820	60.2163	( -0.22%)
+
+1-socket Intel(R) Xeon(R) CPU E3-1240 v5 @ 3.50GHz (4 cores, 8 threads),
+32 GB RAM
+hackbench-process-sockets (less is worse)
+Amean 	1 	1.4760	1.5773	( -6.87%)
+Amean 	3 	3.9370	4.0910	( -3.91%)
+Amean 	5 	6.6797	6.9357	( -3.83%)
+Amean 	7 	9.3367	9.7150	( -4.05%)
+Amean 	12	15.7627	16.1400	( -2.39%)
+Amean 	18	23.5360	23.6890	( -0.65%)
+Amean 	24	31.0663	31.3137	( -0.80%)
+Amean 	30	38.7283	39.0037	( -0.71%)
+Amean 	32	41.3417	41.6097	( -0.65%)
+
+hackbench-thread-sockets (less is worse)
+Amean 	1 	1.5250	1.6043	( -5.20%)
+Amean 	3 	4.0897	4.2603	( -4.17%)
+Amean 	5 	6.7760	7.0933	( -4.68%)
+Amean 	7 	9.4817	9.9157	( -4.58%)
+Amean 	12	15.9610	16.3937	( -2.71%)
+Amean 	18	23.9543	24.3417	( -1.62%)
+Amean 	24	31.4400	31.7217	( -0.90%)
+Amean 	30	39.2457	39.5467	( -0.77%)
+Amean 	32	41.8267	42.1230	( -0.71%)
+
+2-socket Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz (12 cores, 24 threads
+per socket), 64GB RAM
+hackbench-process-sockets (less is worse)
+Amean 	1 	1.0347	1.0880	( -5.15%)
+Amean 	4 	1.7267	1.8527	( -7.30%)
+Amean 	7 	2.6707	2.8110	( -5.25%)
+Amean 	12 	4.1617	4.3383	( -4.25%)
+Amean 	21 	7.0070	7.2600	( -3.61%)
+Amean 	30 	9.9187	10.2397	( -3.24%)
+Amean 	48 	15.6710	16.3923	( -4.60%)
+Amean 	79 	24.7743	26.1247	( -5.45%)
+Amean 	110	34.3000	35.9307	( -4.75%)
+Amean 	141	44.2043	44.8010	( -1.35%)
+Amean 	172	54.2430	54.7260	( -0.89%)
+Amean 	192	60.6557	60.9777	( -0.53%)
+
+hackbench-thread-sockets (less is worse)
+Amean 	1 	1.0610	1.1353	( -7.01%)
+Amean 	4 	1.7543	1.9140	( -9.10%)
+Amean 	7 	2.7840	2.9573	( -6.23%)
+Amean 	12 	4.3813	4.4937	( -2.56%)
+Amean 	21 	7.3460	7.5350	( -2.57%)
+Amean 	30 	10.2313	10.5190	( -2.81%)
+Amean 	48 	15.9700	16.5940	( -3.91%)
+Amean 	79 	25.3973	26.6637	( -4.99%)
+Amean 	110	35.1087	36.4797	( -3.91%)
+Amean 	141	45.8220	46.3053	( -1.05%)
+Amean 	172	55.4917	55.7320	( -0.43%)
+Amean 	192	62.7490	62.5410	( 0.33%)
