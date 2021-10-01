@@ -2,191 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8177A41EEEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D226141EEEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhJANxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbhJANxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:53:11 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B21C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:51:26 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id s4so4241507ybs.8
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 06:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5OYmL8JsTh62JE1sZQP92Eb1+8ePanIs7P1lJmaXQ50=;
-        b=Zv5e0gqChaS9QuJ0veasmSAsT16UyrrpHwt6/VrYPjNAvUnUOu8R6T5cWeVbLb2DtV
-         DGBlh/SbBS51eOTIuQy+RdYE2TX7sI0OOUM0MJ9+aLqGmEq+Oajo5xbJXCmnSvvO4lOU
-         cVwN2IoNHLDFj3S1dFhaVv35on+R7IYDpoCbNrwvK6p8lLDI27S3lZFqhqkDX65WPpSD
-         ZuZfH8sCTOOa2UXVO+CuxsNnVRDd7hi6Mp5q+LuHnr8KwDU9aQmNnu77fe1BmpOWD5j9
-         G2bPwmq6kvE98m3VsiWfZFcQgyvHd3DfBL3hX3J2iIhEHGXIN2q7aFG075kVo1Qhm1Rz
-         JVSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5OYmL8JsTh62JE1sZQP92Eb1+8ePanIs7P1lJmaXQ50=;
-        b=yugzO/U8XS04xJ0KUEPAm0FydoFen+vb9C/CLEOz9muPGAhxYwurS2pTh2g5gwghN4
-         tcwtSPVvRl0/B+Kph+VuK3qPFYyIcd/msno4HwNjRHqgUuUAfLGvedBoVdnIWrb/6s+v
-         ROxLa9MCLCtrh/WfM0wpsJl+zJQ3Us6HbftJayuy/OewIuPoCsZkdawNEpRG8hbMy8E9
-         eXXLKrQwipUvYH7oofVVTnWbsNoK1suDmaQJ0MIKupeaJD3Tfh/HybEeA7XrsJZEgFks
-         Tg53Msc3WcKwGBWK5tOk1uBFt488M+hoNOkhZiJTcwN7BuLhEJ+POMrpkHQZRveR02JP
-         wTPA==
-X-Gm-Message-State: AOAM533IWHfVt6DU7CGi3xB0E7ejyL+7O0bRXARPza8SYPggXukBxlnk
-        F9MgqwJhx9YgB2i/C9rzwS77q0Zvkq9U9YqkHG1dNA==
-X-Google-Smtp-Source: ABdhPJw/rtObxCo4kCza2w+WXFPHdxDNPvacsTKgpBXEOsdZ16FZLh7lUgjNTJm3pnvPFqq5B2vddCVwkR1kDSSeqQs=
-X-Received: by 2002:a25:520b:: with SMTP id g11mr6485423ybb.268.1633096286107;
- Fri, 01 Oct 2021 06:51:26 -0700 (PDT)
+        id S231712AbhJANyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:54:02 -0400
+Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:58209
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231513AbhJANyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:54:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ht//vnNgvYg/LyyP6vtNDQR0WaaZ/X2ynsf8doMx6kAaUGeuNazrznFaBYTa+FJL+mNSgbsEW29yQVH1IqDuLTOeDzXdbM/1NCFhuExqvkWowl/ZbC1Xz2dDTsFY/+EFdPzOqK1ewSmnx6aIehM5dqQ/cvBsMiq3WxCe+N9w0u3phe+5+l0h5l4z0fl7kuRPcz1vH8yS0KXPkWHOqejTWijTRgwn8STkM8ETTd15u6xTObVTlCFZoX9EzQLT8lXweB/l4c+93623U8QB3lCqyvKNHkQfzgKHh0qVcVsW25e9+wrgwJkRjcrloN608E+y0xFxEOac1SVHFAQVl6Ci2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yrPIlZb8ZlwSwo6syBvT9tNRyT1k/hlOEfZUsJgCSCU=;
+ b=Qh0d2kUPHLHTebWEcj4NJhpMjy15qQ2G8TlQiuAV6vqfX0EeYG3wCNErQ/Oaxsnnm+q6KnGDWEN2gxePdtGHQPBLx1X0iiK+fDY8GEhva92pE3hd4r35CDikKWwrKztLxAdGj3MZJtbfGVuhNQMuSYBGd8rzI1LbnUOnTw+6En2x5dlRu9NnUYNKacZeTyLhSReaV+50u2FHrnzxWqANhEpigCRwZEX9nscP2vsAKC0ZGhIcbBG1k+AZAqdU19TY1K+VAZ85BrlMddtXnwZfuLFwS3M1uoy9PsIRQ/+TLr1Xu8pZ2eq7DkUkV4a6ngdcq2RI6oQ4WEcAkUXP1Q4+8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yrPIlZb8ZlwSwo6syBvT9tNRyT1k/hlOEfZUsJgCSCU=;
+ b=Q5CK7uoeT5SC6DZP8/8YUZt/LkCl/Yh8sO3gGAGSxbjMpZQLCAyLNE6iG4iZqhN8topyatO43QV5hCcMTx7F++g5Th+UdSEhKWXc/4GC/ZsdFzTQiwtLLfXw5QAI53unhV4yl/P0tJuy4dhk3o/s0VqrMvrjLD+4EYNgT4M94BQxrqz2Pe54uQ11b7ZsavJB07TUFpe4IejLxO6c1QT3E/mvQgXcJ9b1L7p56F6WSQWFRY4ZROO3WCyq2vqp3wjdJ7er/o4lFFra1AXS0n0Qin2G1TUNJGcgFZin/c6EEGIkHbq8Y+tMYwCZyeeyrslyDTFFhcHDoG7bAQ5FE+7UQA==
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5208.namprd12.prod.outlook.com (2603:10b6:208:311::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Fri, 1 Oct
+ 2021 13:52:14 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
+ 13:52:13 +0000
+Date:   Fri, 1 Oct 2021 10:52:12 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: Re: linux-next: manual merge of the rdma tree with the rdma-fixes
+ tree
+Message-ID: <20211001135212.GR964074@nvidia.com>
+References: <20210930113518.4b9f55e6@canb.auug.org.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930113518.4b9f55e6@canb.auug.org.au>
+X-ClientProxiedBy: MN2PR06CA0024.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::29) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <1632999672-10757-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1632999672-10757-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Fri, 1 Oct 2021 15:51:14 +0200
-Message-ID: <CAM1=_QTb8zejZTqnAaobhTErkowBm=p-fuiLYwDFtWYoUuNGXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] test_bpf: add module parameter test_type
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR06CA0024.namprd06.prod.outlook.com (2603:10b6:208:23d::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend Transport; Fri, 1 Oct 2021 13:52:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mWIxQ-008R6T-I7; Fri, 01 Oct 2021 10:52:12 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d7059cc3-89fa-41ef-e27c-08d984e2ac2d
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5208:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5208F32E0CFAB87CE4F494F6C2AB9@BL1PR12MB5208.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EoxUCY9mNvHIjlZOATCvE7I+HBtjmmO1CRqCyyeiZ0tSJYlpFmPvOqdFw7NU1cOdebCNsnONVKqw6eBezaUj3X1DJhZVf9c3KD81r8Hk/v/XRjJ0vxMJ818JdVsRJSylxqPOouK059jEY6uQ9g+ahFLBAAOSIk/Id/HKK5a1hjzntDuSL74XnSSvpOzZb+IZRJKMUmUoRkRheewAZZmZtf4dPqHUG1q/cNP+BIEi4APmwSATfRSVtYICw5UIXTNN7Nc8i/aw1CWteIMXecAzFoCm/7KRmyULIdhGCgn/opd4lMZg/fiWMeHV0Xd3xKfrKN3b92Ro35ahPPeB6jaWY54DscNbjLrVlNs1ujucZE9gI8d3q0TyVuazk0OBXxBQAMAp7mVpOqO6QADFTGhz6EJ59hPHxrq8oBUu1TSvgpSdopIU3MsIz2PCsTxyW/nOlOSRGr8jbZ093r+c0NrLLSPDrUA8N4P2Wc695RIpye5jV3qfS38liF/kO4y8jVQSXyDkm90oR1EL6FvdYBOwLrK77o/jwsUtv/u/R+6oYwmYjLOvp8z/XVKptorbQFS1mZd8KpOEQ/qc2K7zRHhGcW/cVdCJmlmB43oDkhCHSANyM6G7Wtmq98Bt0CcFs0yo3aJI7YgT57ORep1kW3v+9RezHESHJFDP+W00XvJIGDo7c7jj2yXbDxEYOBuyr/HErzx7VVKmMKDGShcUd0dMhQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(54906003)(1076003)(4326008)(38100700002)(66946007)(508600001)(4744005)(26005)(9746002)(9786002)(186003)(426003)(86362001)(33656002)(36756003)(6916009)(2616005)(5660300002)(2906002)(8936002)(8676002)(316002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?g2wfI7TgQQlibPVoznCd8NUIrMBimvJUUg8pZoVQTA8bNhRouSfRaC7r4vSR?=
+ =?us-ascii?Q?eZEqwGm1y6YRb0gXbfITbiH6c7qrqgergmIPwh9BUbYsG6TpMDDoi+b1E+D/?=
+ =?us-ascii?Q?tdbFD95e14kAL3EK89xdhJLaKydNNdo4xDAtJmco3C8eXnzj8uSZsMJnxTVL?=
+ =?us-ascii?Q?p+kEIO1LVItcqF2Ysm9bgtC7pVhm1RYqdccoR+fDg2W3Tva+bxDEBfHXn21l?=
+ =?us-ascii?Q?ePZWduHUU6FqFU2onpmaBJBx6yRg9WMXSSrWGezZue3iPR69vYCarODN87Q8?=
+ =?us-ascii?Q?VITVD1od4U9TXVLbt6SKVvV+dlAeybDVj3HveZMWkJ7zDZbZpjNJKpefnKhF?=
+ =?us-ascii?Q?bRyxIilBuU7YRepVAvE04rwWCpnDTBnt4PYn+cH8qiaZVXQ5mTJ2vwylZlcG?=
+ =?us-ascii?Q?OsK4gTjJxWqHc35eavifGND3+9O363WYBp/z5TmBFG77I7wqjW9joQSg2BCJ?=
+ =?us-ascii?Q?WGNy9LD+oharFofOwvAKvuKSIrAXj/a8H++lrAt2D0TgsA9RksJvTM+j1vKY?=
+ =?us-ascii?Q?3AMu3cGmSg2Osn9vsoEjAqJ/r9tQosTmZG4l34QlYU7lK0NjjfzjxKiBtE8n?=
+ =?us-ascii?Q?JdWIvxKu95Tj/n3eIGpqbLZP43GosTfhQUv8bMKjjRA40JuH8tOZRMfouo4B?=
+ =?us-ascii?Q?KrgZPqAaEm2KBUccY5AYhpXkFVRFxmsIdmhScIn27wzURMxfKyG7c+lXQ3dT?=
+ =?us-ascii?Q?zcwOIzPS+1bz+e8s68s3dPHotY8qrsLuK6RR68MSyb7dqg7apTuK/TWx+EbK?=
+ =?us-ascii?Q?J2SAJbe1UoyvsQKY97l8Jnuv84Iok4G0yHSXO+e3cID5W/gbpixMaUzghb5r?=
+ =?us-ascii?Q?zYK1W2zgRgRjXIDVhQ/ZGy24rQKWwhIQr16vwRoOlCPjN1xtuWU2upSMcLFs?=
+ =?us-ascii?Q?iz4yChV3Ty3wKJgznW+rQpqnaWjKitmGPJrJVCxldooAB65Lh42DPxCs9H2n?=
+ =?us-ascii?Q?JZnzh03bV+6wWaxWyphwgO1en+neOKYKTS7xYUR7rVFSabFjBRd0I5NMycI0?=
+ =?us-ascii?Q?O/qpwxHzjR8LHfgBzFCY1pXe60PIrYk7XtukuwtK04y5DVy14gfXv+2mL/cF?=
+ =?us-ascii?Q?1r5KEw42FshGvMqDHZCIz6vkslV+IBvJL86X5OOTvpndxy4n9r3kUL98AbHL?=
+ =?us-ascii?Q?ENCRdzxnMMYvuP4zGpCF00GkHdjL1iulnLKk02YQAYdjO/ALq3DCjsVCRpiR?=
+ =?us-ascii?Q?KaaZFCeBnqdnt4/e5QFTe/LBQBQ90NC563964MA4OoTXXaVQ6i0GW+vZY5fC?=
+ =?us-ascii?Q?yIYm0Jmc5p83SQp0bic9H8/OAdM/7xzvF2nbi7FG6TbMtWPIUR6n9y8kwDAz?=
+ =?us-ascii?Q?3umNzvR7LwA0LO/iUSrxz27OgNxeEpbWnDQQo+rKgKJhYQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7059cc3-89fa-41ef-e27c-08d984e2ac2d
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 13:52:13.7711
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 11+3INmB9tE6FS8kqcae6kuJqOQAr+AdAjYmww5cOgy5OfYMS1reLkaxwEyhgFlc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tiezhu,
+On Thu, Sep 30, 2021 at 11:35:18AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the rdma tree got a conflict in:
+> 
+>   drivers/infiniband/hw/hfi1/ipoib_tx.c
+> 
+> between commit:
+> 
+>   7d5cfafe8b40 ("RDMA/hfi1: Fix kernel pointer leak")
+> 
+> from the rdma-fixes tree and commit:
+> 
+>   f5dc70a0e142 ("IB/hfi1: Tune netdev xmit cachelines")
+> 
+> from the rdma tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Your v2 is base64-encoded. Please use plain-text for patch submissions.
+It looks OK, thanks
 
-On Thu, Sep 30, 2021 at 1:01 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-> operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-> there exists segment fault due to fhe following reason:
->
-> test_bpf: #616 ALU64_MOV_X: all register value magnitudes jited:1
-> Break instruction in kernel code[#1]
->
-> It seems that the related jit implementations of some test cases
-> in test_bpf() have problems. At this moment, I do not care about
-> the segment fault while I just want to verify the test cases of
-> tail calls.
-
-Don't put too much effort into the current MIPS64 JIT. I have been
-working on a significant upgrade of the MIPS JIT, which adds MIPS32
-support and full eBPF ISA support, among other things. All the new JIT
-tests in test_bpf.ko I submitted are essentially a side effect of that
-work.
-
-I am currently testing the new JIT on different setups, and I hope to
-be able to submit the patch set next week. A side note, as you seem to
-work at Loongson. It would be great if you could verify the CPU errata
-workarounds I implemented for Loongson-2F and 3, once I get the patch
-set out for review.
-
->
-> Based on the above background and motivation, add the following
-> module parameter test_type to the test_bpf.ko:
-> test_type=<string>: only the specified type will be run, the string
-> can be "test_bpf", "test_tail_calls" or "test_skb_segment".
->
-> This is useful to only test the corresponding test type when specify
-> the valid test_type string.
-
-I agree that it is good to be able to choose a particular test suite
-to run. There are also the test_id and test_range parameters. If we
-add a test suite selector, it would be nice if the test range/id
-selection applied to that test suite, instead of being ignored for all
-suites except test_bpf.
-
->
-> Any invalid test type will result in -EINVAL being returned and no
-> tests being run. If the test_type is not specified or specified as
-> empty string, it does not change the current logic, all of the test
-> cases will be run.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  lib/test_bpf.c | 48 +++++++++++++++++++++++++++++++++---------------
->  1 file changed, 33 insertions(+), 15 deletions(-)
->
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 21ea1ab..9428fec 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -11866,6 +11866,9 @@ module_param(test_id, int, 0);
->  static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
->  module_param_array(test_range, int, NULL, 0);
->
-> +static char test_type[32];
-> +module_param_string(test_type, test_type, sizeof(test_type), 0);
-> +
->  static __init int find_test_index(const char *test_name)
->  {
->         int i;
-> @@ -12518,24 +12521,39 @@ static int __init test_bpf_init(void)
->         struct bpf_array *progs = NULL;
->         int ret;
->
-> -       ret = prepare_bpf_tests();
-> -       if (ret < 0)
-> -               return ret;
-> +       if (strlen(test_type) &&
-> +           strcmp(test_type, "test_bpf") &&
-> +           strcmp(test_type, "test_tail_calls") &&
-> +           strcmp(test_type, "test_skb_segment")) {
-> +               pr_err("test_bpf: invalid test_type '%s' specified.\n", test_type);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (!strlen(test_type) || !strcmp(test_type, "test_bpf")) {
-> +               ret = prepare_bpf_tests();
-> +               if (ret < 0)
-> +                       return ret;
-> +
-> +               ret = test_bpf();
-> +               destroy_bpf_tests();
-> +               if (ret)
-> +                       return ret;
-> +       }
->
-> -       ret = test_bpf();
-> -       destroy_bpf_tests();
-> -       if (ret)
-> -               return ret;
-> +       if (!strlen(test_type) || !strcmp(test_type, "test_tail_calls")) {
-> +               ret = prepare_tail_call_tests(&progs);
-> +               if (ret)
-> +                       return ret;
-> +               ret = test_tail_calls(progs);
-> +               destroy_tail_call_tests(progs);
-> +               if (ret)
-> +                       return ret;
-> +       }
->
-> -       ret = prepare_tail_call_tests(&progs);
-> -       if (ret)
-> -               return ret;
-> -       ret = test_tail_calls(progs);
-> -       destroy_tail_call_tests(progs);
-> -       if (ret)
-> -               return ret;
-> +       if (!strlen(test_type) || !strcmp(test_type, "test_skb_segment"))
-> +               return test_skb_segment();
->
-> -       return test_skb_segment();
-> +       return 0;
->  }
->
->  static void __exit test_bpf_exit(void)
-> --
-> 2.1.0
->
+Jason
