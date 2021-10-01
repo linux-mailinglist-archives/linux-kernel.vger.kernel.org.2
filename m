@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BECB41F30F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8AA41F30C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355307AbhJAR2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        id S1355303AbhJAR1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhJAR2B (ORCPT
+        with ESMTP id S229532AbhJAR1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:28:01 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C17C061775;
-        Fri,  1 Oct 2021 10:26:16 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id t16-20020a1c7710000000b003049690d882so11792651wmi.5;
-        Fri, 01 Oct 2021 10:26:16 -0700 (PDT)
+        Fri, 1 Oct 2021 13:27:09 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E018FC06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:25:24 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id u18so41747635lfd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lBVGTkTXgNf+I009NGAKNedlsjlVh/R09z0MATWKFB0=;
-        b=caXeazUXd5njPHi5ApOTJv3irww/GZMFnrIm/rDcJSRL94w8mEhS+kTqPVmqhjem6k
-         gLihBl41eB05+TYF5VwKhjRM+HH+UbA6HW5Ehq4IIjkG455/sE0tsTblyNXR+DeGKRIe
-         F732lTfvYnhq2Cur+s+yzy0yXIolsl34osgWmVuFGlfeSY6iI//leHKdNtiphp6b8xhh
-         JzbX6ElivGLqIh+TCScb/flJ4dOClgTMhIHV5cAqx9ppVCpyYjXwYW+5i0buwsaabKgt
-         I9K0Yn4OyEkslrWYplGqGgwojwUJyJAiAhM4buoZSK+Wb2npaqfRZB74KQf6z9ayIf7s
-         A09g==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9nlprdDjKhZk+Io06k2/qaSebLAZUpDSI5ZQtfrSfFg=;
+        b=I2mfpjE4lJi8vWiLrsdvjrZAZeA+6AtoulIGs0LqXRUet3ernh7Jg5b+wUb2JcCliC
+         eTckG5Tr/VNQ/gMXz88clQnF940a/LnuLhqMMQc/e29+cITde/1+LUW0MM0Sg0kDQYrm
+         fW4kwd8Gr1InLRHI7JDBZdzfjdimWiNeBgWxffmMUnCRuE1uBtzZNCfIz48ejxKlXHf5
+         LKWQszn4ftRtWpwzONbbCtiuSiq0nKAVsT3Z+NmfyX39v+RU3pgjCfZnpqy4DnjlYd1Y
+         EWVKMuC1JMIb3cok5QtIkH3j4iDIBhZk/llPZmbmxIrVDkLdzto0kljx7ZqeRN/xuU2i
+         oxkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=lBVGTkTXgNf+I009NGAKNedlsjlVh/R09z0MATWKFB0=;
-        b=FgQ35YFLRscml1m7b9/uSHw7Dsjtj4i0AjgfMp6of6oYe4elmlWz7K6IEa3wILuwVa
-         np/VRx+4Nvs+i/pol81XLjm5Xv5wIKELpl4CcXVdhjHEAhTVS10DIRG3S2jpOWiuTqgh
-         w/23SK3xM5uk2ceZEH0hD+vUNrizntaqt8BOSWbaTCz0H6mRloRHRW4mTniUQKtpqeS4
-         ejRXlM0df7xiJiEwLkhiS12VSR1DA6Px4SmAVw6iynvXaFYNO20/6nmoXfggr1ml/TnE
-         viAT0isqKnJT3L2EZl9sf/tN6VEpol4hAPWntPczHPK1oSeSdZzZ9J2fOtxFla9irfoP
-         11Rw==
-X-Gm-Message-State: AOAM530uy8qae0fvvE2kiZAYPObgpocOAoPF5qbNnXxmHPBSmS9WHYQ6
-        SjVa2b0X/chaIgxBFKQeo5E=
-X-Google-Smtp-Source: ABdhPJwuJtw2Ki8S/xlvOe3wP6Y8Td1md7CHW13js6JTcIiQVpmRrrerba3S2CVDW13XQjlYigyZTQ==
-X-Received: by 2002:a1c:4455:: with SMTP id r82mr2930053wma.100.1633109174985;
-        Fri, 01 Oct 2021 10:26:14 -0700 (PDT)
-Received: from localhost.localdomain ([94.73.37.210])
-        by smtp.gmail.com with ESMTPSA id x10sm4861974wmk.42.2021.10.01.10.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 10:26:14 -0700 (PDT)
-From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-To:     benjamin.tissoires@redhat.com
-Cc:     jikos@kernel.org, rydberg@bitmath.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH] HID: multitouch: disable sticky fingers for UPERFECT Y
-Date:   Fri,  1 Oct 2021 19:25:14 +0200
-Message-Id: <20211001172513.27822-1-jose.exposito89@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=9nlprdDjKhZk+Io06k2/qaSebLAZUpDSI5ZQtfrSfFg=;
+        b=KRPF2GRv61ge7aZWTaJ7M5sq3/xSLK6uCxnghKDn2WDzF4g1z0DzyWj79vmOQh9knC
+         Etc3n1kFoFhmkjDWOR1uSI3UPTFJxNREUpsD1cGIUwSDJ9ONDY+QTXliYnDligAOp1Xz
+         e/pMpNrcNei8/khgx7pzWHkK1aGjxtWzwCXyogGxQfR8IzquNCOFNbKc9aP0ayQuiXFi
+         TqN40dvvcsgNOrK7mtOGJtEXf5BjKrufZ0LlFE3hrYjM7/1LMmCKYLIkSde6l1T6oWmU
+         gzr1VhgHeLLt710otx1ei6i64AfJXBv87wJYVsi9jxXk658tsjpPdPYeLcqBT0JsGRk0
+         qseA==
+X-Gm-Message-State: AOAM531Oy6jQp23V8nn3duXgN4tuZ5LwIRkDqGNCM6tAZHrjSfGEF2VH
+        FWpPFkDY6BZkZ/A+YoS18tUNyYWWJrCdiJQy
+X-Google-Smtp-Source: ABdhPJyUqOBhGpHw6dRT3MwCMEAjtj9svKASrprGteO8UneHjz58Fv/TfDELPSqBBydaxbNvLJ3rQw==
+X-Received: by 2002:a05:6512:158a:: with SMTP id bp10mr6711563lfb.122.1633109123011;
+        Fri, 01 Oct 2021 10:25:23 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id g5sm796856lfc.98.2021.10.01.10.25.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 10:25:22 -0700 (PDT)
+Subject: Re: [PATCH] drm: msm: hdmi: Constify static structs
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210920212014.40520-1-rikard.falkeborn@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <cf3442eb-ae42-4203-fbea-49ca3a45bdd5@linaro.org>
+Date:   Fri, 1 Oct 2021 20:25:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920212014.40520-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a finger is on the screen, the UPERFECT Y portable touchscreen
-monitor reports a contact in the first place. However, after this
-initial report, contacts are not reported at the refresh rate of the
-screen as required by the Windows 8 specs.
+On 21/09/2021 00:20, Rikard Falkeborn wrote:
+> The only usage of hdmi_8996_pll_ops is to assign its address to the ops
+> field in the clk_init_data struct, and the only usage of pll_init is to
+> assign its address to the init field in the clk_hw struct, both which
+> are pointers to const. Make them const to allow the compiler to put them
+> in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-This behaviour triggers the release_timer, removing the fingers even
-though they are still present.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-To avoid it, add a new class, similar to MT_CLS_WIN_8 but without the
-MT_QUIRK_STICKY_FINGERS quirk for this device.
+> ---
+>   drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> index a8f3b2cbfdc5..99c7853353fd 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
+> @@ -682,7 +682,7 @@ static int hdmi_8996_pll_is_enabled(struct clk_hw *hw)
+>   	return pll_locked;
+>   }
+>   
+> -static struct clk_ops hdmi_8996_pll_ops = {
+> +static const struct clk_ops hdmi_8996_pll_ops = {
+>   	.set_rate = hdmi_8996_pll_set_clk_rate,
+>   	.round_rate = hdmi_8996_pll_round_rate,
+>   	.recalc_rate = hdmi_8996_pll_recalc_rate,
+> @@ -695,7 +695,7 @@ static const char * const hdmi_pll_parents[] = {
+>   	"xo",
+>   };
+>   
+> -static struct clk_init_data pll_init = {
+> +static const struct clk_init_data pll_init = {
+>   	.name = "hdmipll",
+>   	.ops = &hdmi_8996_pll_ops,
+>   	.parent_names = hdmi_pll_parents,
+> 
 
-Suggested-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
----
- drivers/hid/hid-ids.h        |  3 +++
- drivers/hid/hid-multitouch.c | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 29564b370341..3706c635b12e 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1276,6 +1276,9 @@
- #define	USB_DEVICE_ID_WEIDA_8752	0xC300
- #define	USB_DEVICE_ID_WEIDA_8755	0xC301
- 
-+#define USB_VENDOR_ID_WINBOND		0x0416
-+#define USB_DEVICE_ID_TSTP_MTOUCH	0xc168
-+
- #define USB_VENDOR_ID_WISEGROUP		0x0925
- #define USB_DEVICE_ID_SMARTJOY_PLUS	0x0005
- #define USB_DEVICE_ID_SUPER_JOY_BOX_3	0x8888
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index 3ea7cb1cda84..e1afddb7b33d 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -193,6 +193,7 @@ static void mt_post_parse(struct mt_device *td, struct mt_application *app);
- /* reserved					0x0014 */
- #define MT_CLS_WIN_8_FORCE_MULTI_INPUT		0x0015
- #define MT_CLS_WIN_8_DISABLE_WAKEUP		0x0016
-+#define MT_CLS_WIN_8_NO_STICKY_FINGERS		0x0017
- 
- /* vendor specific classes */
- #define MT_CLS_3M				0x0101
-@@ -294,6 +295,13 @@ static const struct mt_class mt_classes[] = {
- 			MT_QUIRK_WIN8_PTP_BUTTONS |
- 			MT_QUIRK_DISABLE_WAKEUP,
- 		.export_all_inputs = true },
-+	{ .name = MT_CLS_WIN_8_NO_STICKY_FINGERS,
-+		.quirks = MT_QUIRK_ALWAYS_VALID |
-+			MT_QUIRK_IGNORE_DUPLICATES |
-+			MT_QUIRK_HOVERING |
-+			MT_QUIRK_CONTACT_CNT_ACCURATE |
-+			MT_QUIRK_WIN8_PTP_BUTTONS,
-+		.export_all_inputs = true },
- 
- 	/*
- 	 * vendor specific classes
-@@ -2120,6 +2128,11 @@ static const struct hid_device_id mt_devices[] = {
- 		MT_USB_DEVICE(USB_VENDOR_ID_VTL,
- 			USB_DEVICE_ID_VTL_MULTITOUCH_FF3F) },
- 
-+	/* Winbond Electronics Corp. */
-+	{ .driver_data = MT_CLS_WIN_8_NO_STICKY_FINGERS,
-+		HID_DEVICE(HID_BUS_ANY, HID_GROUP_MULTITOUCH_WIN_8,
-+			   USB_VENDOR_ID_WINBOND, USB_DEVICE_ID_TSTP_MTOUCH) },
-+
- 	/* Wistron panels */
- 	{ .driver_data = MT_CLS_NSMU,
- 		MT_USB_DEVICE(USB_VENDOR_ID_WISTRON,
 -- 
-2.25.1
-
+With best wishes
+Dmitry
