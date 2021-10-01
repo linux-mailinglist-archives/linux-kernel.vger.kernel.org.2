@@ -2,102 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE2C41EF5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3665B41EF6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354459AbhJAOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S1354434AbhJAO04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbhJAOX3 (ORCPT
+        with ESMTP id S1353768AbhJAO0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:23:29 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A960FC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:21:45 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so11708053otb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:21:45 -0700 (PDT)
+        Fri, 1 Oct 2021 10:26:54 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6DCC06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:25:10 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id z24so39558727lfu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RyljskWxEIj64E0/JKXsfCLMykqvOmjKdzQgJe75r2U=;
-        b=yQsH27dcsAfYNORAm1R6gUODOKo31/SdiCD/fT+dVfWd+sVz8HZDJoZm5NQGe7i2gY
-         7VEmSxQvd9JqFOs6Sn+Gt587qhhhHXJgHdsnpLDEbFzTzQwax/SmF0sU6pqbi2d3I7dS
-         n9G1hzvK13Lv75ThsNaRlHLZre2/xOk7NZ5Lpo5LCwXo28H8jIcMbg403AN5MlIWY5L4
-         Eo6QERZ8uyrjeBiBgTzKrP1frovpqd7Dr/33FhGzU9EYPh8vxoEIlmCHQSy731S6ljf4
-         0fjJ4tWuuuuRBYwiHYg5MP6mP2vPNqlWeIc/vqCcXkBwh11vH+YUvWjDRzbZfIdtdLXN
-         tZSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uoTsMILdh2iae8vlYA/uD6rXVrqQcXGr4rKOWNIrfP4=;
+        b=ZX/zp88Hzbtc6VumtwtOf/Oh+OaJ0chzGkXC5wf4sPS8EnMadE1LYVMn+oQGU+kHb8
+         R+gyJ0Wgd6EZVoHYlNsYzRsUaZ5Rp/cdsIRgMegZH1fxe5M9LdMHvWaVupGppgdYzZDW
+         TD5Kr9uQc875LMcukvjCblVlHVTBOl7gxHxMLD9oTeyGDqmxuy531Ve1dY7h60MRyk+C
+         V8sDsQ9/XhH26KEHzkzm/kuAtjxeW7JVdmQ74ybXucxQOcK8nSOutATp4BamK5izx3m/
+         P4rAUs6vctnmnFw0UhIdyFrrMh5OhPkSyPf5wfcKi9tqeuxiNdqmo/N2ZPtT7kOoHYhb
+         jrrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RyljskWxEIj64E0/JKXsfCLMykqvOmjKdzQgJe75r2U=;
-        b=Rtft5Ka7DSSCqIRVctu+4D4phWfh1cvtsrghMAdqS7HxsyoMdZqm1YYtK7YW0jXqlh
-         iQakHxwIBjLFwK4CJW+F2hQqFdJcxohsyNAQvzRdbBivBD2exbMojYNsrLiFS8mYQ8sU
-         qWexT1ADwtWIqNTNUIOtNLVRHIqmS5FJWkoKmDmTuf2VJQ2ie0rfuDe8yUGyhrmpDyHc
-         Vq1nekoZtAkfxsaT6y6KknIWyTqV8GK2aTy862yG6cfOD8ROJ1RwSFGsOqzs7iZamJSU
-         BTRLZFog93CchdqVRcYYeELHSQb80Sn6Pt6PriJB/T0JEmdlXcc+mYu/guBkCHjUupjp
-         1yYw==
-X-Gm-Message-State: AOAM532mV3mNNo9lbXb5CYgYzUv59dG+458HnrDjef4DeS1guMJ9fQ6D
-        NfPYdnBIl+RaBPosmXXJJ7jZeA==
-X-Google-Smtp-Source: ABdhPJx4IXNLQp5mpOgHA767G+AngUBs0pCRIIbB0v5aaUOGgR/hVSObk7E9KZiGC2CkqwZ9AfFg3A==
-X-Received: by 2002:a9d:5f9b:: with SMTP id g27mr11101284oti.217.1633098104962;
-        Fri, 01 Oct 2021 07:21:44 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id i24sm1176746oie.42.2021.10.01.07.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 07:21:44 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 07:23:32 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris Lew <clew@codeaurora.org>,
-        Deepak Kumar Singh <deesin@codeaurora.org>
-Subject: Re: [PATCH v2 3/4] soc: qcom: smem: Support reserved-memory
- description
-Message-ID: <YVcZ5FsM2u+3uoK4@ripper>
-References: <20210930182111.57353-1-bjorn.andersson@linaro.org>
- <20210930182111.57353-4-bjorn.andersson@linaro.org>
- <9a4ef69d-df15-0fbc-3735-6d7c861855ac@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uoTsMILdh2iae8vlYA/uD6rXVrqQcXGr4rKOWNIrfP4=;
+        b=7BPzVnSKnrD3xbkvrQEmh/B81l+mZWtrkTxpZ/8zylHWbVioxww0XPNOLfd7ayiRRN
+         a8qhm+CnjKZ4yQNXHnHgsJ1bGYDN9xZZUgSU4NYsXv/pwOfLuEOC3UdK8vYCL7+fpZHl
+         2oK/b5ZWrQaKzz8HCPD1vFgKdun5M9T5TGLfPzbji3PHa2K0MboUnCBideKK+cF6hs/N
+         o0E11xeOdyprip8M3dgJcgCesfusN92xD+IbqGist0LztoO9cFT/zwEfWk2i3PO9k7Y9
+         v6LsGvAoLOaObczs3C8jjflu38cF1yd26BFG3V9FRLT3lLtBdpi4HIG+x086LjZtbFXd
+         4vvQ==
+X-Gm-Message-State: AOAM531j4rxmh52bZ23fYSs9wCXYLE6jgIHE/+ZbNdsaolYeqTAG7+hF
+        ayPjtES6bycHAJu2mANlvHisidupwUogLyBNJqOqvA==
+X-Google-Smtp-Source: ABdhPJwSMtJvxBnj9uWeRpU/b3LkJtcHpGm07/8fvonUj3xZI1CXy/1e+tkG9PmEu6jyQxbbL99Gq2H6ljI3UAmND1M=
+X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr5584384lfv.358.1633098308316;
+ Fri, 01 Oct 2021 07:25:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a4ef69d-df15-0fbc-3735-6d7c861855ac@linaro.org>
+References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-21-digetx@gmail.com>
+In-Reply-To: <20210926224058.1252-21-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 1 Oct 2021 16:24:32 +0200
+Message-ID: <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
+Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP support
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01 Oct 00:08 PDT 2021, Vladimir Zapolskiy wrote:
-> On 9/30/21 9:21 PM, Bjorn Andersson wrote:
-[..]
-> > diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
-[..]
-> > @@ -895,12 +892,14 @@ static int qcom_smem_map_memory(struct qcom_smem *smem, struct device *dev,
-> >   static int qcom_smem_probe(struct platform_device *pdev)
-> >   {
-> >   	struct smem_header *header;
-> > +	struct reserved_mem *rmem;
-> >   	struct qcom_smem *smem;
-> >   	size_t array_size;
-> >   	int num_regions;
-> >   	int hwlock_id;
-> >   	u32 version;
-> >   	int ret;
-> > +	int i;
-> 
-> Just a nitpicking, the index can be unsigned.
-> 
+On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> The NAND on Tegra belongs to the core power domain and we're going to
+> enable GENPD support for the core domain. Now NAND must be resumed using
+> runtime PM API in order to initialize the NAND power state. Add runtime PM
+> and OPP support to the NAND driver.
+>
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++-----
+>  1 file changed, 47 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+> index 32431bbe69b8..098fcc9cb9df 100644
+> --- a/drivers/mtd/nand/raw/tegra_nand.c
+> +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> @@ -17,8 +17,11 @@
+>  #include <linux/mtd/rawnand.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>
+> +#include <soc/tegra/common.h>
+> +
+>  #define COMMAND                                        0x00
+>  #define   COMMAND_GO                           BIT(31)
+>  #define   COMMAND_CLE                          BIT(30)
+> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>                 return -ENOMEM;
+>
+>         ctrl->dev = &pdev->dev;
+> +       platform_set_drvdata(pdev, ctrl);
+>         nand_controller_init(&ctrl->controller);
+>         ctrl->controller.ops = &tegra_nand_controller_ops;
+>
+> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>         if (IS_ERR(ctrl->clk))
+>                 return PTR_ERR(ctrl->clk);
+>
+> -       err = clk_prepare_enable(ctrl->clk);
+> +       err = devm_pm_runtime_enable(&pdev->dev);
+> +       if (err)
+> +               return err;
+> +
+> +       err = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
+> +       if (err)
+> +               return err;
+> +
+> +       err = pm_runtime_resume_and_get(&pdev->dev);
+>         if (err)
+>                 return err;
+>
+>         err = reset_control_reset(rst);
+>         if (err) {
+>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
+> -               goto err_disable_clk;
+> +               goto err_put_pm;
+>         }
+>
+>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_CMD);
+> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>                                dev_name(&pdev->dev), ctrl);
+>         if (err) {
+>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
+> -               goto err_disable_clk;
+> +               goto err_put_pm;
+>         }
+>
+>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CTRL);
+>
+>         err = tegra_nand_chips_init(ctrl->dev, ctrl);
+>         if (err)
+> -               goto err_disable_clk;
+> -
+> -       platform_set_drvdata(pdev, ctrl);
+> +               goto err_put_pm;
+>
 
-It's compared against the "num_regions", which is also signed. So I
-think it should be signed.
+There is no corresponding call pm_runtime_put() here. Is it
+intentional to always leave the device runtime resumed after ->probe()
+has succeeded?
 
-[..]
-> > +	for (i = 0; i < num_regions; i++) {
+I noticed you included some comments about this for some other
+drivers, as those needed more tweaks. Is that also the case for this
+driver?
 
-Thanks for the review!
+>         return 0;
+>
+> -err_disable_clk:
+> -       clk_disable_unprepare(ctrl->clk);
+> +err_put_pm:
+> +       pm_runtime_put(ctrl->dev);
+>         return err;
+>  }
+>
 
-Regards,
-Bjorn
+[...]
+
+Kind regards
+Uffe
