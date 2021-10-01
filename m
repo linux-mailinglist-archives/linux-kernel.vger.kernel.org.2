@@ -2,63 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC1F41ED2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875BB41ED32
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354356AbhJAMOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354311AbhJAMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:14:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 510EA619E7;
-        Fri,  1 Oct 2021 12:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633090387;
-        bh=pPgxMq0U5wKnAG+FvvoW1f4xApRT3cLSGCNvlB0Q2Vw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UW0PeLVxBtyLP/Of2EeRhoDDR8j2UJC1qm1k6K1cbz3ADTitIcLNoPaZp3mS5HyGS
-         bzbHoWgunGorrpT/jIx/iUJQoPmcd3lYeSp16Q7+GpXrYlsEvGjNV1CaafQF8e5Qqg
-         GPxB6HX8/29sf+UNt0IiqieEuxuLLmm0Uh+XotG/9ofHqVfv8Jko19iUhtJkPCoYL/
-         T78iNViMM6+UIEQ03jh9oAsWKLF8DsGfjKnjmt+rNOYbAvFy2kf29zu9xxwHEJc782
-         w6+7ccrFYFvyM7cn7ucDRS+o8t/WiSs6mIDkD2CmOhWKb8WEmS5Dgs3kZdA3+njtRZ
-         wC0uj2tJaIqeg==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     linux-man@vger.kernel.org
-Cc:     alx.manpages@gmail.com, mtk.manpages@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH] fcntl.2: note that mandatory locking is fully deprecated as of v5.15
-Date:   Fri,  1 Oct 2021 08:13:06 -0400
-Message-Id: <20211001121306.17339-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S231313AbhJAMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231388AbhJAMRM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:17:12 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF61C061775;
+        Fri,  1 Oct 2021 05:15:26 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id x124so11163576oix.9;
+        Fri, 01 Oct 2021 05:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TjUVHTJjAzGJMmv8jrIbahfJghLiBpbmkBoQ41RcfXk=;
+        b=cIk8P8Q5SliLeEO+YVlkoDVHv0nUGkSMFLyyfRIZtICkdHP6VEX47pgNk6fJWCzRVn
+         f3ZhDOPQp+B8/WFdxqxJV9kmlSFkmjvxqmwh33tAylTndgz6DWXdAx6CzAfW82auoe7h
+         AJp+XR6TShc27ZABZsc7tena62g1rEwcOFFPVszrY85DuyMrHWxUDd+ug/qFVcCc1OyF
+         3PitOdY7PAhRQUJVc8+p9uJxTEWnzwyNYMgufdpZ4DgZiq0GeGx5vLQSHC23Js+3CKtB
+         3B1nP8nGLduT81FrJ3qYSOORY6lfkIXPV4URDSG34TQSDVGeSogdfdmlOkLSJWfgbnK2
+         qBig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=TjUVHTJjAzGJMmv8jrIbahfJghLiBpbmkBoQ41RcfXk=;
+        b=GuR7LBK+zTfdkVzXoct8xUHCAiWh1vvdajR3HTzQyFb3r4wXuGF765c/hcjIw7F+U9
+         VayU8rG3V9DuVQjfWV9HjbKEFhG000yWFgxy11044hpmMe3DfNt0AdHtU7rKx+j+MxHc
+         g9sSQbTgEao8aQZLagQF7s9fyTZv4EkY1aP0Ldf6K4ySP9d2hw1keF6p1JCMVX5ajQxT
+         Q4mMHwFAkp/F25k+3bsPH+nhNahwNrva42si0TVpDPirHQZ+8HzEVzo9/gvEUj0g4cxJ
+         BB/gSc/rgIOfrQ2YPUq+MKCBnFfSuDJ9S3eN4GZBzyaa1bt3DwSshyB7Ybp9WnGimP+V
+         wdkQ==
+X-Gm-Message-State: AOAM532bmUU3S5eTy7FTRa/eThIxI0a1Gui6TpCEbaIJOSdNFP0HUn2X
+        6ddftiw62FO/CX/PRXgTLL3Lcf4hpw==
+X-Google-Smtp-Source: ABdhPJwlRTl/hZyr75BIi48UKqOsdWLpP2HpniDc44cZAoz2jDLHrGqStrVC1OLRZSqx1yZVxr3vMQ==
+X-Received: by 2002:a05:6808:17a4:: with SMTP id bg36mr3729514oib.49.1633090525804;
+        Fri, 01 Oct 2021 05:15:25 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id k3sm243224otn.16.2021.10.01.05.15.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 05:15:23 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:dcd4:c733:b801:5a91])
+        by serve.minyard.net (Postfix) with ESMTPSA id 3CA6E1800EF;
+        Fri,  1 Oct 2021 12:15:22 +0000 (UTC)
+Date:   Fri, 1 Oct 2021 07:15:21 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Corey Minyard <cminyard@mvista.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the ipmi tree
+Message-ID: <20211001121521.GP5419@minyard.net>
+Reply-To: minyard@acm.org
+References: <20211001125248.30adbdf3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001125248.30adbdf3@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Jan Kara <jack@suse.cz>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- man2/fcntl.2 | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Oct 01, 2021 at 12:52:48PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the ipmi tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/char/ipmi/ipmi_msghandler.c: In function 'bmc_device_id_handler':
+> drivers/char/ipmi/ipmi_msghandler.c:2376:3: error: label 'out' used but not defined
+>  2376 |   goto out;
+>       |   ^~~~
 
-diff --git a/man2/fcntl.2 b/man2/fcntl.2
-index 7b5604e3a699..90e4c4a9f379 100644
---- a/man2/fcntl.2
-+++ b/man2/fcntl.2
-@@ -619,8 +619,8 @@ Because of these bugs,
- and the fact that the feature is believed to be little used,
- since Linux 4.5, mandatory locking has been made an optional feature,
- governed by a configuration option
--.RB ( CONFIG_MANDATORY_FILE_LOCKING ).
--This is an initial step toward removing this feature completely.
-+.RB ( CONFIG_MANDATORY_FILE_LOCKING ). This feature is no longer
-+supported at all in Linux 5.15 and above.
- .PP
- By default, both traditional (process-associated) and open file description
- record locks are advisory.
--- 
-2.31.1
+I botched a cherry pick, it should be fixed now.  Sorry about that.
+
+Thanks for the work you do.
+
+-corey
+
+> 
+> Caused by commit
+> 
+>   2d7a6d8467f9 ("ipmi: Check error code before processing BMC response")
+> 
+> I have used the ipmi tree from next-20210930 for today.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
 
