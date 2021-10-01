@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D421F41EB58
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0034241EB59
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 13:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353433AbhJALG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 07:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353235AbhJALG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 07:06:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8566C061775;
-        Fri,  1 Oct 2021 04:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nAxGSz+sw/DtojqdX9FUJgt3bJ218IVOzIPvBEAJSXA=; b=DLSiRm/pWw1pc5DQf8PMkaLZka
-        zz4NpjYwOMu1HdN3WHbPDdlmZ7eFmn2Ma4aTh+PHXwI28o2x0tFpUvNA1Qn4Spp49sHin+vOHO/kJ
-        nOBBEayEr3SXhoZ/Km5A/dbishdpH8/ySu/q+CBwPqfS9kxHc3OEI795PNtADLi6VQ+1zdj1OUnI5
-        AEtjiNy8WQ4RVOjlq0GzFwCEhZSs7ZDhccvki3xDdzqpMUrtjsA5h/xTQmTSdqHKbhhZI44WTey9C
-        ankxqdb/S3YYh7FpKM1yLLceuiXwS72j4N2scmybEcefIZnHhuVlDdgKzlebX7zVB7EODYu7GTRMt
-        TVIIgF1w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWGL7-00790w-48; Fri, 01 Oct 2021 11:04:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8521A300299;
-        Fri,  1 Oct 2021 13:04:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73A9526717AC7; Fri,  1 Oct 2021 13:04:28 +0200 (CEST)
-Date:   Fri, 1 Oct 2021 13:04:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH V4 07/22] LoongArch: Add atomic/locking headers
-Message-ID: <YVbrPHsDkhTl4FTA@hirez.programming.kicks-ass.net>
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
- <20210927064300.624279-8-chenhuacai@loongson.cn>
+        id S1353722AbhJALGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 07:06:31 -0400
+Received: from mga01.intel.com ([192.55.52.88]:55989 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353235AbhJALG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 07:06:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="247958974"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="247958974"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:04:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
+   d="scan'208";a="708552234"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 04:04:44 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mWGLJ-007QCW-Up;
+        Fri, 01 Oct 2021 14:04:41 +0300
+Date:   Fri, 1 Oct 2021 14:04:41 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] mfd: intel-lpss: Add support for MacBookPro16,2 UART
+Message-ID: <YVbrSXeaMUzxbWys@smile.fi.intel.com>
+References: <20211001084905.4133-1-redecorating@protonmail.com>
+ <YVbf9J3jgAmBY+ch@smile.fi.intel.com>
+ <20211001103845.21976-1-redecorating@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927064300.624279-8-chenhuacai@loongson.cn>
+In-Reply-To: <20211001103845.21976-1-redecorating@protonmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:42:44PM +0800, Huacai Chen wrote:
-> diff --git a/arch/loongarch/include/asm/spinlock.h b/arch/loongarch/include/asm/spinlock.h
-> new file mode 100644
-> index 000000000000..2544ee546596
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/spinlock.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_SPINLOCK_H
-> +#define _ASM_SPINLOCK_H
-> +
-> +#include <asm/processor.h>
-> +#include <asm/qspinlock.h>
-> +#include <asm/qrwlock.h>
-> +
-> +#endif /* _ASM_SPINLOCK_H */
-> diff --git a/arch/loongarch/include/asm/spinlock_types.h b/arch/loongarch/include/asm/spinlock_types.h
-> new file mode 100644
-> index 000000000000..91f258401ef9
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/spinlock_types.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_SPINLOCK_TYPES_H
-> +#define _ASM_SPINLOCK_TYPES_H
-> +
-> +#include <asm-generic/qspinlock_types.h>
-> +#include <asm-generic/qrwlock_types.h>
-> +
-> +#endif
+On Fri, Oct 01, 2021 at 10:40:09AM +0000, Orlando Chamberlain wrote:
+> Added 8086:38a8 to the intel_lpss_pci driver. It is a UART controler
+> present on the MacBookPro16,2.
 
-Also see the many lkml threads on this, is there big enough loongson to
-justify qspinlock? Have you tried a ticket lock?
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
+> ---
+> v1->v2: Use "ICL-N" and shorten commit message.
+>  drivers/mfd/intel-lpss-pci.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+> index c54d19fb184c..a872b4485eac 100644
+> --- a/drivers/mfd/intel-lpss-pci.c
+> +++ b/drivers/mfd/intel-lpss-pci.c
+> @@ -253,6 +253,8 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+>  	{ PCI_VDEVICE(INTEL, 0x34ea), (kernel_ulong_t)&bxt_i2c_info },
+>  	{ PCI_VDEVICE(INTEL, 0x34eb), (kernel_ulong_t)&bxt_i2c_info },
+>  	{ PCI_VDEVICE(INTEL, 0x34fb), (kernel_ulong_t)&spt_info },
+> +	/* ICL-N */
+> +	{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&bxt_uart_info },
+>  	/* TGL-H */
+>  	{ PCI_VDEVICE(INTEL, 0x43a7), (kernel_ulong_t)&bxt_uart_info },
+>  	{ PCI_VDEVICE(INTEL, 0x43a8), (kernel_ulong_t)&bxt_uart_info },
+> -- 
+> 2.33.0
+> 
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
