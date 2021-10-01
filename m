@@ -2,141 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C7341F079
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1975F41F0A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355035AbhJAPIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354937AbhJAPHs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:07:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03471C061780;
-        Fri,  1 Oct 2021 08:05:55 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 15:05:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633100753;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=++gsgfHb1k6iXnO5o9hFJ9fiU2rkh2gTW1nfaNjEkjs=;
-        b=iO/SL/SE78gVxci6kAYkRQJqL6TGNDYp7iT9sfI/81+QDhzwPKjoADNWjmz0KQG1xVVAOy
-        q+J2EZa2EObUkVL887Avik88+RdrmiJrJW6Xtk5GV+ynTUJ/QT6INtXesCMdm2Cv40R5sx
-        /+ui1eC8jES1j5oCLhtfrNC13nZrRh6TDLioDhYA3nazbb9g3P7yCycjppxdfdsvuzDwXX
-        LMORDE+DghFQeQXlxLVOv/eOdo8ZO8uICyg4e/dhq9FveA5X95ut6X+4he9V0Zfk+dZU+1
-        miyccl0s2l/GLHjexdW8XiFO4i6f0y2vCw80KrtRS/MYALCbtZbaRAy55KO7Og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633100753;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=++gsgfHb1k6iXnO5o9hFJ9fiU2rkh2gTW1nfaNjEkjs=;
-        b=GNHslFfvpoeJruEgYJLqfDzMLBEl+gr3K4kbaib/bjJpzUMsrdS4RpzfvBV6G3FzGhpdN8
-        YBQXPBXRQSmYGODA==
-From:   "tip-bot2 for Shaokun Zhang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Make cookie functions static
-Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
-References: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
+        id S1354920AbhJAPLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:11:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:63673 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354868AbhJAPLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:11:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="223560009"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="223560009"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 08:07:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="709918299"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Oct 2021 08:07:46 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:07:46 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:07:46 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 1 Oct 2021 08:07:45 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 1 Oct 2021 08:07:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Su9VbwS+LjQT1r59k5vFI95PhIZL512bGleEjWbRV9Y62FHukdux4C+ZLAP6spnMkufv0g0bhK9PCQU6Fa/yuwW6kj2Mh+Z/gHucwcMDxoGOFaACDEbrqq87moF8MDRmK4mx4z7KkEo8dGOR/KEuoJjxUOOBPR4VksL0gpi+moUXYDHIaJOM7gCAntqpuQioiAJSrcIXS92ZdUu0mwpCZYRhWQnD1FlDExk8d5UR5Eo9TnvPyjIWJATUzICIwI1KUU5ILgKNn/faNRW9iZKaVvrM7vo/uN9vHZJqjSkvwecpJpid4D/lKYp+taF78MkvNFJ6qgR8Ly593wQBcBeGAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8U2IIWKgNuc9WKPPzGTCsO02d4eMoHRXdaJemzHYrrE=;
+ b=K/U3+OT+SDH0l2tWtj7FyaOSVW42FGgsndbg4r6hXiSH8Vd+zxKKnB2Yhn7N81nVr7k0T9BvhQTKr3NTeCqA2XI4XUOxwGzcSelEUBkEsfJd2+Aog4nJXEkz8pOwNQRmvWWZszLd+qvqS0hOIiYJXJxP8ssYd7YgDDlZIb9YHsCSNZYq8jhRqbkExdFgbZZXL70tpy/QLBlCCgufP4hjM52j5zdP1eIYZyLNOrnlcMVHBz+aDclPSClbxTED8PX/UTlEW7UBvSjzFTBIJKCb6eBNui4XvwQh6id3ALuHOz7dHZL/AxEKIeNpTLMft+8t3N91PmLVKi2OnBu8ZhzKrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8U2IIWKgNuc9WKPPzGTCsO02d4eMoHRXdaJemzHYrrE=;
+ b=syTqyE0dXVVUQ230Wroc7xug5QBhMv+g7/y+hnwMdH4EuCdBzb355+JVvOuL7a/ZlAPja0qEgYU0ednqbLTL3eqUugsJ4/hOXd/eHUlVepBQvZy1cf+dUuiN0uUXcsT3H0SxQLyTIsnBHecmGNS2bBxoaoEo0KhsH3cf3FquY/8=
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com (2603:10b6:300:106::22)
+ by MWHPR11MB1967.namprd11.prod.outlook.com (2603:10b6:300:111::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17; Fri, 1 Oct
+ 2021 15:07:43 +0000
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727]) by MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727%6]) with mapi id 15.20.4566.016; Fri, 1 Oct 2021
+ 15:07:43 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        "Mark Brown" <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        "Guennadi Liakhovetski" <guennadi.liakhovetski@linux.intel.com>,
+        "Zhi, Yong" <yong.zhi@intel.com>,
+        "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "Liao, Bard" <bard.liao@intel.com>,
+        "Wang, Rander" <rander.wang@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        "Yang, Libin" <libin.yang@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ASoC: Intel: sof_rt5682: Add support for max98360a
+ speaker amp
+Thread-Topic: [PATCH] ASoC: Intel: sof_rt5682: Add support for max98360a
+ speaker amp
+Thread-Index: AQHXttW1Yt6zhKfa8UCr9F31h3V8Gau+Pdyw
+Date:   Fri, 1 Oct 2021 15:07:43 +0000
+Message-ID: <MWHPR11MB1919F695979F9AAED31B27E297AB9@MWHPR11MB1919.namprd11.prod.outlook.com>
+References: <20211001150316.414141-1-brent.lu@intel.com>
+In-Reply-To: <20211001150316.414141-1-brent.lu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: alsa-project.org; dkim=none (message not signed)
+ header.d=none;alsa-project.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d020f9ec-1440-4432-6d41-08d984ed3864
+x-ms-traffictypediagnostic: MWHPR11MB1967:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB19673E1924E4971D4A9015AE97AB9@MWHPR11MB1967.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QogU+OO25Yjvt4Q4qD8Jjxno2ipZhnV5MYj/1vtJ0pmd6RG2dZmhdLrJIH9jLKt160VMJWO5WzDXr6BzQy1au7JhBoTrE8ldQ+8Gepzx73mytfHz/v/y56Mm1GKmA926K8f+tXYmBldZ6qTKMty3trU57/v9U1CzUJUWxdJ+njK8XeD76K7mkbZr/N34HKowcqOgBfLyWfgMvjFLNhSDUEGVGD5FYNUZ8Pa0cHttCZZeIZ2a1Y91STgqwpqgo0Rg5QKv/wSIoExch16Hem0OJb2PjO0n7KS1V2uFBzwK7xAGN4Jdb7bMKEokZIHPsZiQeWui+Lox64TVdyjRMN196xHF9uPSObK42ftjQxPEQ/7lzWdnjFHwxays2Ez+PU+gXwS7IQ+jc66oVGARVHSUaNW4UjRZbhdrrR92Hwl2Hu1xPgv4zfPNkkG+lCxzHlQvGFUVTgcfx+tWYv0EZcE0nIP5+09bE4ErZpacSAjRttO68wbsUNqMkm7rRCd2BOvD4Avo2AfJx5xxmpTw0lJqZEMcpBHQQD4wczFpPCNaEm8IV9+eUp0WVSlIRdBBkXrYju/DsGCULiCouOqYnq1prwqswQw1b7qpRkhdgd5CP+ryHaVH3WlMkMnkEf3opoZSQ5TWSePzxiv8vMRFuFhSTE3lu4egWlQgvulLzHvRx8EdrkLt5hVoEyF5Umy2KDTh1V3rxNy2jyxpcEs0YDDyNLzaEyNupeiXNJKEs+AWRvE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1919.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(5660300002)(6506007)(9686003)(4326008)(71200400001)(8676002)(54906003)(33656002)(52536014)(7696005)(76116006)(8936002)(4744005)(66556008)(7416002)(122000001)(38070700005)(86362001)(316002)(64756008)(66446008)(66476007)(66946007)(186003)(38100700002)(2906002)(26005)(55016002)(508600001)(11716005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?hwV1qbJr8f0TnNA/DLBLRNIImaNq94/nOlrjqgD/jR/IiWTTTwYZnkyPhnqV?=
+ =?us-ascii?Q?mjg4R9vxqJHFjDy6l8cKoHYEO7dVZqFPB0D4h6iB9KALsG7DLe19x7HNl+Jl?=
+ =?us-ascii?Q?4hWF8pEZ5oAClYhqxJIO99oKIpxdvs8+3nqslEHtE/xYd1zG8x8EHNgqIBoi?=
+ =?us-ascii?Q?CBcgCJ113FI4CyNKmvMfTITOrP3BXBov+pdYvx274MLia8Ua+VGc+RTo0AoX?=
+ =?us-ascii?Q?vPyQ486v1prAPPmf4FlU86Uf9iZJUyK6l/HeST9T4RllgocQu8VcCGHKhmnh?=
+ =?us-ascii?Q?xv1Kgcrc1tyuGTjbgS2WU0rct6UGAIILYCE4QX3VJ8SrQis2pzLrI4xKQTzQ?=
+ =?us-ascii?Q?dAW9xMTlYeRjc7KkStoUTKYFsFFI7sjbRrP4G0aVt48FvzeAEkWF7CYIa2/k?=
+ =?us-ascii?Q?/pDcIi+l6tn27DK1UI2Y18C2nsPRu17doMTbryGLU7lRZ1LEemoZiXlUo1jP?=
+ =?us-ascii?Q?84rUr4BCKtWni/0HK3bgc918WZkraflR2b5r8G8jLq2Fl4Hj9Z8VWTkte7vG?=
+ =?us-ascii?Q?hjZsvl1Oq2u3mjDSoj6oJJCiR1f1iEH9heIO9JP1dH5BwQngquOcm7rsW1rk?=
+ =?us-ascii?Q?K2xJ2YCU+N66k+G4P0TGja63NyUOs0SiOhpvzVQRqA7srpUEzG2Djdo9+Vyp?=
+ =?us-ascii?Q?Bu+0rjX0eBUR4lseOL6ori4mjyqJJCdTbXgqPkHxhfe6mYqWtOWlk/LqCAUf?=
+ =?us-ascii?Q?VwyMsxWgHQ6JErVzcOsiq1ew0aZk9s5+w7BATNxNa452d57hmjuopSRrMMfg?=
+ =?us-ascii?Q?Ugc7bMacGWyd4eTqsPbze7hXujrgShOuEfhW1HlDyKC7TlPGKqbJPe//2pKj?=
+ =?us-ascii?Q?0VlNR/OwkoNG/vigEJUOL/LtEgVEdm76CSkIe5Rg0XP+hpaDiKADOPYnD3HB?=
+ =?us-ascii?Q?g2BZg9ifw/M2vI4fmLwKh+jQwiUglRrkDTpYU+qTV4HO5ixFhrt+MkCuFmNM?=
+ =?us-ascii?Q?2d4f1TjgsuWjePLqyX6Xev2Wjf8/AV4krrg6d+Q/bOhMl0Xk8kAARcyuAN8i?=
+ =?us-ascii?Q?yNUu4ySeJZowL9rprwNR/Id3RyiI9IaAQmC/SWSu76ZqLbkqOx/Dv20ddK65?=
+ =?us-ascii?Q?+p/pqWW6SSdZVm6Aj/TymtO6jugReORj/RZXaszKmG0lbO+zZMUKuGaDt1YG?=
+ =?us-ascii?Q?URdIScZrddKtgXBmsxjhTtM2eNePhNZF+iG4EKKs1JEuMya8LPQKGx8RsCEh?=
+ =?us-ascii?Q?PGB0QkhhTvEE2zR5H6wMb2iY2K5DCXZwbZZOehdckzag3ACNJYAdBt7mbXry?=
+ =?us-ascii?Q?+k06VOy20sc58AkjOPCS8GAYAwtOfxptnuWx7XZehDFr+PbF36CAYdfHqSRw?=
+ =?us-ascii?Q?Obc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Message-ID: <163310075281.25758.4311232499537861275.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1919.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d020f9ec-1440-4432-6d41-08d984ed3864
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 15:07:43.3639
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LTyvKB8+p6yJ54knvk+/udZTm6CjnAKSrBUZR5YS28qcnP5mmRX4vX8IZn+6L9bfEaQzvGlZQBbUC2KjASMs5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1967
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+>=20
+> From: Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>
+>=20
+> Add a board config adl_mx98360a_rt5682 to support alc5682 headset codec
+> and max98360a speaker amplifier. Follow Intel BT offload design by
+> connecting alc5682 to SSP0 and max98360a to SSP1.
+>=20
+> Signed-off-by: Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 
-Commit-ID:     1bc687b27bac7fabcc2b0a1a8efad5cf875ac769
-Gitweb:        https://git.kernel.org/tip/1bc687b27bac7fabcc2b0a1a8efad5cf875ac769
-Author:        Shaokun Zhang <zhangshaokun@hisilicon.com>
-AuthorDate:    Wed, 22 Sep 2021 16:57:35 +08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 01 Oct 2021 13:58:06 +02:00
+Already accepted on SOF github. Merged with another fixup patch for the
+platform device name.
 
-sched: Make cookie functions static
-
-Make cookie functions static as these are no longer invoked directly
-by other code.
-
-No functional change intended.
-
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210922085735.52812-1-zhangshaokun@hisilicon.com
----
- kernel/sched/core_sched.c |  9 +++++----
- kernel/sched/sched.h      |  5 -----
- 2 files changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-index 9a80e9a..48ac726 100644
---- a/kernel/sched/core_sched.c
-+++ b/kernel/sched/core_sched.c
-@@ -11,7 +11,7 @@ struct sched_core_cookie {
- 	refcount_t refcnt;
- };
- 
--unsigned long sched_core_alloc_cookie(void)
-+static unsigned long sched_core_alloc_cookie(void)
- {
- 	struct sched_core_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
- 	if (!ck)
-@@ -23,7 +23,7 @@ unsigned long sched_core_alloc_cookie(void)
- 	return (unsigned long)ck;
- }
- 
--void sched_core_put_cookie(unsigned long cookie)
-+static void sched_core_put_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
- 
-@@ -33,7 +33,7 @@ void sched_core_put_cookie(unsigned long cookie)
- 	}
- }
- 
--unsigned long sched_core_get_cookie(unsigned long cookie)
-+static unsigned long sched_core_get_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
- 
-@@ -53,7 +53,8 @@ unsigned long sched_core_get_cookie(unsigned long cookie)
-  *
-  * Returns: the old cookie
-  */
--unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie)
-+static unsigned long sched_core_update_cookie(struct task_struct *p,
-+					      unsigned long cookie)
- {
- 	unsigned long old_cookie;
- 	struct rq_flags rf;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 71bc710..3213e23 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1258,11 +1258,6 @@ extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
- extern void sched_core_get(void);
- extern void sched_core_put(void);
- 
--extern unsigned long sched_core_alloc_cookie(void);
--extern void sched_core_put_cookie(unsigned long cookie);
--extern unsigned long sched_core_get_cookie(unsigned long cookie);
--extern unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie);
--
- #else /* !CONFIG_SCHED_CORE */
- 
- static inline bool sched_core_enabled(struct rq *rq)
