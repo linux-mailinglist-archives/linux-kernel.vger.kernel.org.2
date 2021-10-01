@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A348241EEF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA6A41EEFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhJAN67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:58:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61582 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhJAN67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:58:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222238877"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="222238877"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:57:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="565017598"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 06:57:11 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E76941AD; Fri,  1 Oct 2021 16:57:17 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuo Liu <shuo.a.liu@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Fei Li <fei1.li@intel.com>
-Subject: [PATCH v1 1/1] virt: acrn: Drop internal kernel type from ABI
-Date:   Fri,  1 Oct 2021 16:56:44 +0300
-Message-Id: <20211001135644.1884-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S238080AbhJAN76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:59:58 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50168 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231530AbhJAN75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:59:57 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id b330d1a140d17332; Fri, 1 Oct 2021 15:58:11 +0200
+Received: from kreacher.localnet (unknown [213.134.175.164])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id BFC5E66A79A;
+        Fri,  1 Oct 2021 15:58:10 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH] PCI: ACPI: Check parent pointer in acpi_pci_find_companion()
+Date:   Fri, 01 Oct 2021 15:58:10 +0200
+Message-ID: <5523582.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.164
+X-CLIENT-HOSTNAME: 213.134.175.164
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudekiedgieejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvvefgteeuteehkeduuedvudetleevffdtffdtjeejueekffetieekgfeigfehudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddujeehrdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrudeigedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhr
+ tghpthhtohepshgthhhnvghllhgvsehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtohepjhgvshhsvgdrsghrrghnuggvsghurhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshguohhnthhhihhnvghnihesnhhvihguihgrrdgtohhmpdhrtghpthhtoheprghlvgigrdifihhllhhirghmshhonhesrhgvughhrghtrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-guid_t is internal type of the kernel which is mistakenly had been exposed
-to the user space. Replace it with raw buffers.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Besides that it's obvious from the link in the sample code, that the real
-use is of uuid_t type, but because uuid_t hasn't exposed, so should guid_t,
-the code includes and uses wrong type.
+If acpi_pci_find_companion() is called for a device whose parent
+pointer is NULL, it will crash when attempting to get the ACPI
+companion of the parent due to a NULL pointer dereference in
+the ACPI_COMPANION() macro.
 
-Fixes: 5b06931d7f8b ("sample/acrn: Introduce a sample of HSM ioctl interface usage")
-Fixes: 9c5137aedd11 ("virt: acrn: Introduce VM management interfaces")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This was not a problem before commit 375553a93201 ("PCI: Setup ACPI
+fwnode early and at the same time with OF") that made pci_setup_device()
+call pci_set_acpi_fwnode() and so it allowed devices with NULL parent
+pointers to be passed to acpi_pci_find_companion() which is the case
+in pci_iov_add_virtfn(), for instance.
+
+Fix this issue by making acpi_pci_find_companion() check the device's
+parent pointer upfront and bail out if it is NULL.
+
+While pci_iov_add_virtfn() can be changed to set the device's parent
+pointer before calling pci_setup_device() for it, checking pointers
+against NULL before dereferencing them is prudent anyway and looking
+for ACPI companions of virtual functions isn't really useful.
+
+Fixes: 375553a93201 ("PCI: Setup ACPI fwnode early and at the same time with OF")
+Link: https://lore.kernel.org/linux-acpi/8e4bbd5c59de31db71f718556654c0aa077df03d.camel@linux.ibm.com/
+Reported-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- include/uapi/linux/acrn.h | 3 +--
- samples/acrn/vm-sample.c  | 5 ++++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/pci/pci-acpi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 353b2a2e4536..4312af1b8013 100644
---- a/include/uapi/linux/acrn.h
-+++ b/include/uapi/linux/acrn.h
-@@ -12,7 +12,6 @@
- #define _UAPI_ACRN_H
+Index: linux-pm/drivers/pci/pci-acpi.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-acpi.c
++++ linux-pm/drivers/pci/pci-acpi.c
+@@ -1243,6 +1243,9 @@ static struct acpi_device *acpi_pci_find
+ 	bool check_children;
+ 	u64 addr;
  
- #include <linux/types.h>
--#include <linux/uuid.h>
++	if (!dev->parent)
++		return NULL;
++
+ 	down_read(&pci_acpi_companion_lookup_sem);
  
- #define ACRN_IO_REQUEST_MAX		16
- 
-@@ -198,7 +197,7 @@ struct acrn_vm_creation {
- 	__u16	reserved0;
- 	__u16	vcpu_num;
- 	__u16	reserved1;
--	guid_t	uuid;
-+	__u8	uuid[16];
- 	__u64	vm_flag;
- 	__u64	ioreq_buf;
- 	__u64	cpu_affinity;
-diff --git a/samples/acrn/vm-sample.c b/samples/acrn/vm-sample.c
-index b2dad47a77a0..1639fcadc766 100644
---- a/samples/acrn/vm-sample.c
-+++ b/samples/acrn/vm-sample.c
-@@ -30,7 +30,10 @@ static struct acrn_io_request *io_req_buf = (struct acrn_io_request *)io_request
- __u16 vcpu_num;
- __u16 vmid;
- /* POST_STANDARD_VM_UUID1, refer to https://github.com/projectacrn/acrn-hypervisor/blob/master/hypervisor/include/common/vm_uuids.h */
--guid_t vm_uuid = GUID_INIT(0x385479d2, 0xd625, 0xe811, 0x86, 0x4e, 0xcb, 0x7a, 0x18, 0xb3, 0x46, 0x43);
-+__u8 vm_uuid[16] = {
-+	0xd2, 0x79, 0x54, 0x38, 0x25, 0xd6, 0x11, 0xe8,
-+	0x86, 0x4e, 0xcb, 0x7a, 0x18, 0xb3, 0x46, 0x43,
-+};
- 
- int hsm_fd;
- int is_running = 1;
--- 
-2.33.0
+ 	adev = pci_acpi_find_companion_hook ?
+
+
 
