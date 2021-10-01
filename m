@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50BA41F077
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B15141F078
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354936AbhJAPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S1355015AbhJAPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354910AbhJAPHr (ORCPT
+        with ESMTP id S1354827AbhJAPHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Oct 2021 11:07:47 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB170C0613EC;
-        Fri,  1 Oct 2021 08:05:53 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 15:05:51 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF8C0613EF;
+        Fri,  1 Oct 2021 08:05:54 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 15:05:52 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633100752;
+        s=2020; t=1633100753;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zLrJ8oBhRoOGHAvO/vfr78vQiyZkSw3otCkPOsi1/nk=;
-        b=vTfeMdoAshiQl7fPDlYkdwauNA9+QMynacCjOXLqgjB8Eh+pG6fb2zu+kzZE11+a33BXQp
-        PSTeXXdmWqgGmn+VjxbB4JYvHIRd64OSkHgWekiHNx6HxR2bmcWtA91P6ublpzFKyQF8Kh
-        cXxO9rd+eF8UdBnaHKe+I0sAyGrwOTLpSsXrCNUe/Pd1Th1ij1ASET3U2RKup28T1MsndQ
-        HCmUyTnj7WIYlGqrQeEieIVAzNwrjbipuli36LiUUq7IFjnrifYhxt9VFxzVWoQw4HqXAE
-        yHWgxCWEumTxrdQkpMiuo0/spqLyQJdNMS0PmXTPwFkGgVNGb6fK87jMvDlhwA==
+        bh=oMiFaOrHFdAHVk6/KSvbWti0t/N9hGP9astLlEVf6TE=;
+        b=187XaQLqpumAVNOIol4C/L3A2R/XYibjz+fvoUDoE90H/oA26vNx2CKqZFFFFcME4/koyr
+        gOx6vSvzMOiH8DYQVNnt/ibn7ia2Yi9sLIRmdvA/xgekFOG+2dFOwWnWTmjkp7+SobZKoe
+        r9/pTwOYVFFSZ1zrdM/+vXgu/4UTzXzvtEOEBMuyyC45GJeds8rE/GsL8DJ9PR4aaFk3/s
+        gzgdvU5fHmdVAM9H57gpIZkCqbPgIb93UgeWcTenuCwOKygfvkvhTqMbUzQ89cE5vEE2bD
+        EyDG2R2gVbTNU3b7iKO+7Aq1V/TXzeKmBijEsHs7dSettaqCK4DUnFGlK4vW0w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633100752;
+        s=2020e; t=1633100753;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zLrJ8oBhRoOGHAvO/vfr78vQiyZkSw3otCkPOsi1/nk=;
-        b=KWbael7laDvQI3FC2VQu4tGZedL3NJPM/w+AZDrgvptkAXjYFVvm2ELGCYcbezzO4WTQ9j
-        FbBG7Uoj7CzeIhCA==
+        bh=oMiFaOrHFdAHVk6/KSvbWti0t/N9hGP9astLlEVf6TE=;
+        b=IHFY8WxnKibpJIogE/ahlRZ1SVFIWDf0yJnj7JziHOb8ft8n6yKcb4a4PGvmI+sp/ZYgXB
+        Sw8mVqe0CnGOUVAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Limit the number of task migrations per batch on RT
+Subject: [tip: sched/core] sched: Move mmdrop to RCU on RT
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210928122411.425097596@linutronix.de>
-References: <20210928122411.425097596@linutronix.de>
+In-Reply-To: <20210928122411.648582026@linutronix.de>
+References: <20210928122411.648582026@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163310075145.25758.10821100401474045244.tip-bot2@tip-bot2>
+Message-ID: <163310075215.25758.14922478291631583561.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,41 +61,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     92add3a897e9e923acde0f2c5e69705818076d69
-Gitweb:        https://git.kernel.org/tip/92add3a897e9e923acde0f2c5e69705818076d69
+Commit-ID:     df89544263cd98ffcef1318b3bf18509b9420c8a
+Gitweb:        https://git.kernel.org/tip/df89544263cd98ffcef1318b3bf18509b9420c8a
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 28 Sep 2021 14:24:25 +02:00
+AuthorDate:    Tue, 28 Sep 2021 14:24:32 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 01 Oct 2021 13:58:07 +02:00
+CommitterDate: Fri, 01 Oct 2021 13:58:06 +02:00
 
-sched: Limit the number of task migrations per batch on RT
+sched: Move mmdrop to RCU on RT
 
-Batched task migrations are a source for large latencies as they keep the
-scheduler from running while processing the migrations.
+mmdrop() is invoked from finish_task_switch() by the incoming task to drop
+the mm which was handed over by the previous task. mmdrop() can be quite
+expensive which prevents an incoming real-time task from getting useful
+work done.
 
-Limit the batch size to 8 instead of 32 when running on a RT enabled
-kernel.
+Provide mmdrop_sched() which maps to mmdrop() on !RT kernels. On RT kernels
+it delagates the eventually required invocation of __mmdrop() to RCU.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210928122411.425097596@linutronix.de
+Link: https://lkml.kernel.org/r/20210928122411.648582026@linutronix.de
 ---
- kernel/sched/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/mm_types.h |  4 ++++
+ include/linux/sched/mm.h | 29 +++++++++++++++++++++++++++++
+ kernel/sched/core.c      |  2 +-
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 8f0fb62..09a2885 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -12,6 +12,7 @@
+ #include <linux/completion.h>
+ #include <linux/cpumask.h>
+ #include <linux/uprobes.h>
++#include <linux/rcupdate.h>
+ #include <linux/page-flags-layout.h>
+ #include <linux/workqueue.h>
+ #include <linux/seqlock.h>
+@@ -567,6 +568,9 @@ struct mm_struct {
+ 		bool tlb_flush_batched;
+ #endif
+ 		struct uprobes_state uprobes_state;
++#ifdef CONFIG_PREEMPT_RT
++		struct rcu_head delayed_drop;
++#endif
+ #ifdef CONFIG_HUGETLB_PAGE
+ 		atomic_long_t hugetlb_usage;
+ #endif
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index e24b1fe..0d81060 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -49,6 +49,35 @@ static inline void mmdrop(struct mm_struct *mm)
+ 		__mmdrop(mm);
+ }
+ 
++#ifdef CONFIG_PREEMPT_RT
++/*
++ * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
++ * by far the least expensive way to do that.
++ */
++static inline void __mmdrop_delayed(struct rcu_head *rhp)
++{
++	struct mm_struct *mm = container_of(rhp, struct mm_struct, delayed_drop);
++
++	__mmdrop(mm);
++}
++
++/*
++ * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
++ * kernels via RCU.
++ */
++static inline void mmdrop_sched(struct mm_struct *mm)
++{
++	/* Provides a full memory barrier. See mmdrop() */
++	if (atomic_dec_and_test(&mm->mm_count))
++		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
++}
++#else
++static inline void mmdrop_sched(struct mm_struct *mm)
++{
++	mmdrop(mm);
++}
++#endif
++
+ /**
+  * mmget() - Pin the address space associated with a &struct mm_struct.
+  * @mm: The address space to pin.
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index bb70a07..8d844d0 100644
+index b36b5d7..bb70a07 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -74,7 +74,11 @@ __read_mostly int sysctl_resched_latency_warn_once = 1;
-  * Number of tasks to iterate in a single balance run.
-  * Limited because this is done with IRQs disabled.
-  */
-+#ifdef CONFIG_PREEMPT_RT
-+const_debug unsigned int sysctl_sched_nr_migrate = 8;
-+#else
- const_debug unsigned int sysctl_sched_nr_migrate = 32;
-+#endif
- 
- /*
-  * period over which we measure -rt task CPU usage in us.
+@@ -4773,7 +4773,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+ 	 */
+ 	if (mm) {
+ 		membarrier_mm_sync_core_before_usermode(mm);
+-		mmdrop(mm);
++		mmdrop_sched(mm);
+ 	}
+ 	if (unlikely(prev_state == TASK_DEAD)) {
+ 		if (prev->sched_class->task_dead)
