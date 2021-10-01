@@ -2,149 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B04541EB38
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A950D41EB42
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353603AbhJAKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:54:53 -0400
-Received: from mail.fris.de ([116.203.77.234]:43232 "EHLO mail.fris.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352922AbhJAKye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:54:34 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 363A0BFC32;
-        Fri,  1 Oct 2021 12:52:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-        t=1633085567; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=6pYBgI+8NKm6cyLCUDJZUxM0MC4KtCLVKARxH3IY6YI=;
-        b=M34EetMd2A5fYceHKi9nBMFj8eGcgra/MGvCQfMERj4Z5QnBX0dWDT389Qm7xjJ+Vmp9tM
-        znCbQlnNxfBuGI0x1pQlGe/3fhFEIOx9XuiOAwkepLrrQG6Sg/iaLfi8AFLExiFqiNJzwM
-        9Q7DoZcGcKo8cd2vjAsSlvdPcUO6EJz3KlxeenB7DBeSFdJz+0qDCyH/vY9UU/+x77Rvni
-        zgCNzrFe2zYnGB7PEysknu/M7lmdCJIx6lk63DgSwiq/P2NX2IpC+0Vms9DAMHKdz85j00
-        FA35Gdq532c7H4X7nJTjoyElqcSbDYNTHjqvO0Y+XIB5p4POk+dY/5VmVWabhQ==
-Message-ID: <25f24602-e3b4-197f-338b-167b67308f2c@fris.de>
-Date:   Fri, 1 Oct 2021 12:52:45 +0200
+        id S1353683AbhJAK5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353638AbhJAK5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:57:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A199C061775;
+        Fri,  1 Oct 2021 03:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FttHKMTVGyyZPi4Jt0sv3xNaWOnGQdWbdqCHGfqQouQ=; b=TT+sxVM4XpJSscjBpvUdqUryAS
+        03PJVNo8feago5dc2kzACRWXmvgpHivnweO8ab76ZWvv0LhgrDm0G6LTuavZQIiJXTMuVZhEMURNx
+        kNwGy8ELbMEAleQr19XnVjZXzhNpm2pHVcaxFPl5n2VHgXVVHqUvDjnUZ+q9PEL2QEt/FsIgyYJJy
+        m5/bC4Asrz/y6p4KIXMLy5nS/+tm4Aa/BIDe2lbuOEF7GbvxtLND2rbxW2kWF4qDUD3AuWLzRxWEe
+        EdW4hftCDlzP4JVt5x8swVwmdyitw+mUVxkoWpbJsD/bLw7tQrlqyvvx+ODFI+SJMaYqHpGwVv0TB
+        9UyLHgcg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWG9s-00Dmoc-A5; Fri, 01 Oct 2021 10:53:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C94D7300299;
+        Fri,  1 Oct 2021 12:52:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6ACD626717AC6; Fri,  1 Oct 2021 12:52:49 +0200 (CEST)
+Date:   Fri, 1 Oct 2021 12:52:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V4 07/22] LoongArch: Add atomic/locking headers
+Message-ID: <YVbogd2gihouyWJd@hirez.programming.kicks-ass.net>
+References: <20210927064300.624279-1-chenhuacai@loongson.cn>
+ <20210927064300.624279-8-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 1/3] net: phy: mscc: Add possibilty to disable combined
- LED mode
-Content-Language: en-GB
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-leds@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Steen Hegelund <steen.hegelund@microchip.com>
-References: <20210930125747.2511954-1-frieder@fris.de>
- <YVZQuIr2poOfWvcO@lunn.ch> <18de5e10-f41f-0790-89c8-3a70d48539be@kontron.de>
- <20211001120952.6be6bb36@thinkpad>
-From:   Frieder Schrempf <frieder@fris.de>
-In-Reply-To: <20211001120952.6be6bb36@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927064300.624279-8-chenhuacai@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+On Mon, Sep 27, 2021 at 02:42:44PM +0800, Huacai Chen wrote:
+> diff --git a/arch/loongarch/include/asm/bitops.h b/arch/loongarch/include/asm/bitops.h
+> new file mode 100644
+> index 000000000000..8b05d9683571
+> --- /dev/null
+> +++ b/arch/loongarch/include/asm/bitops.h
+> @@ -0,0 +1,220 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + */
+> +#ifndef _ASM_BITOPS_H
+> +#define _ASM_BITOPS_H
+> +
+> +#ifndef _LINUX_BITOPS_H
+> +#error only <linux/bitops.h> can be included directly
+> +#endif
+> +
+> +#include <linux/compiler.h>
+> +#include <linux/types.h>
+> +#include <asm/barrier.h>
+> +#include <asm/byteorder.h>
+> +#include <asm/compiler.h>
+> +#include <asm/cpu-features.h>
+> +
+> +#if _LOONGARCH_SZLONG == 32
+> +#define __LL		"ll.w	"
+> +#define __SC		"sc.w	"
+> +#define __AMADD		"amadd.w	"
+> +#define __AMAND_SYNC	"amand_db.w	"
+> +#define __AMOR_SYNC	"amor_db.w	"
+> +#define __AMXOR_SYNC	"amxor_db.w	"
+> +#elif _LOONGARCH_SZLONG == 64
+> +#define __LL		"ll.d	"
+> +#define __SC		"sc.d	"
+> +#define __AMADD		"amadd.d	"
+> +#define __AMAND_SYNC	"amand_db.d	"
+> +#define __AMOR_SYNC	"amor_db.d	"
+> +#define __AMXOR_SYNC	"amxor_db.d	"
+> +#endif
+> +
+> +/*
+> + * set_bit - Atomically set a bit in memory
+> + * @nr: the bit to set
+> + * @addr: the address to start counting from
+> + */
+> +static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMOR_SYNC "$zero, %1, %0        \n"
+> +	: "+ZB" (*m)
+> +	: "r" (1UL << bit)
+> +	: "memory");
+> +}
+> +
+> +/*
+> + * clear_bit - Clears a bit in memory
+> + * @nr: Bit to clear
+> + * @addr: Address to start counting from
+> + */
+> +static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMAND_SYNC "$zero, %1, %0       \n"
+> +	: "+ZB" (*m)
+> +	: "r" (~(1UL << bit))
+> +	: "memory");
+> +}
+> +
+> +/*
+> + * clear_bit_unlock - Clears a bit in memory
+> + * @nr: Bit to clear
+> + * @addr: Address to start counting from
+> + */
+> +static inline void clear_bit_unlock(unsigned long nr, volatile unsigned long *addr)
+> +{
+> +	clear_bit(nr, addr);
+> +}
+> +
+> +/*
+> + * change_bit - Toggle a bit in memory
+> + * @nr: Bit to change
+> + * @addr: Address to start counting from
+> + */
+> +static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMXOR_SYNC "$zero, %1, %0       \n"
+> +	: "+ZB" (*m)
+> +	: "r" (1UL << bit)
+> +	: "memory");
+> +}
+> +
+> +/*
+> + * test_and_set_bit - Set a bit and return its old value
+> + * @nr: Bit to set
+> + * @addr: Address to count from
+> + */
+> +static inline int test_and_set_bit(unsigned long nr,
+> +	volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	unsigned long res;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMOR_SYNC "%1, %2, %0       \n"
+> +	: "+ZB" (*m), "=&r" (res)
+> +	: "r" (1UL << bit)
+> +	: "memory");
+> +
+> +	res = res & (1UL << bit);
+> +
+> +	return res != 0;
+> +}
+> +
+> +/*
+> + * test_and_set_bit_lock - Set a bit and return its old value
+> + * @nr: Bit to set
+> + * @addr: Address to count from
+> + */
+> +static inline int test_and_set_bit_lock(unsigned long nr,
+> +	volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	unsigned long res;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMOR_SYNC "%1, %2, %0       \n"
+> +	: "+ZB" (*m), "=&r" (res)
+> +	: "r" (1UL << bit)
+> +	: "memory");
+> +
+> +	res = res & (1UL << bit);
+> +
+> +	return res != 0;
+> +}
+> +/*
+> + * test_and_clear_bit - Clear a bit and return its old value
+> + * @nr: Bit to clear
+> + * @addr: Address to count from
+> + */
+> +static inline int test_and_clear_bit(unsigned long nr,
+> +	volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	unsigned long res, temp;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMAND_SYNC "%1, %2, %0      \n"
+> +	: "+ZB" (*m), "=&r" (temp)
+> +	: "r" (~(1UL << bit))
+> +	: "memory");
+> +
+> +	res = temp & (1UL << bit);
+> +
+> +	return res != 0;
+> +}
+> +
+> +/*
+> + * test_and_change_bit - Change a bit and return its old value
+> + * @nr: Bit to change
+> + * @addr: Address to count from
+> + */
+> +static inline int test_and_change_bit(unsigned long nr,
+> +	volatile unsigned long *addr)
+> +{
+> +	int bit = nr % BITS_PER_LONG;
+> +	unsigned long res;
+> +	volatile unsigned long *m = &addr[BIT_WORD(nr)];
+> +
+> +	__asm__ __volatile__(
+> +	"   " __AMXOR_SYNC "%1, %2, %0      \n"
+> +	: "+ZB" (*m), "=&r" (res)
+> +	: "r" (1UL << bit)
+> +	: "memory");
+> +
+> +	res = res & (1UL << bit);
+> +
+> +	return res != 0;
+> +}
 
-On 01.10.21 12:09, Marek Behún wrote:
-> On Fri, 1 Oct 2021 11:20:36 +0200
-> Frieder Schrempf <frieder.schrempf@kontron.de> wrote:
-> 
->> On 01.10.21 02:05, Andrew Lunn wrote:
->>> On Thu, Sep 30, 2021 at 02:57:43PM +0200, Frieder Schrempf wrote:
->>>> From: Frieder Schrempf <frieder.schrempf@kontron.de>
->>>>
->>>> By default the LED modes offer to combine two indicators like speed/link
->>>> and activity in one LED. In order to use a LED only for the first of the
->>>> two modes, the combined feature needs to be disabled.
->>>>
->>>> In order to do this we introduce a boolean devicetree property
->>>> 'vsc8531,led-[N]-combine-disable' and wire it up to the matching
->>>> bits in the LED behavior register.
->>>
->>> Sorry, but no DT property. Each PHY has its own magic combination of
->>> DT properties, nothing shared, nothing common. This does not scale.
->>>
->>> Please look at the work being done to control PHY LEDs using the Linux
->>> LED infrastructure. That should give us one uniform interface for all
->>> PHY LEDs.
->>
->> +Cc: Marek
->>
->> I guess you are referring to this: [1]?
->>
->> If so, the last version I could find is a year old now. Is anyone still
->> working on this?
-> 
-> Yes, I am still working on this.
-> 
-> Anyway the last version is not one year old, the last version to add
-> this support is 4 months old:
-> https://lore.kernel.org/netdev/20210602144439.4d20b295@dellmb/T/
+Why is asm-generic/bitops/atomic.h not working for you?
 
-Thanks for pointing out the latest patches. Good to know that you are 
-still working on this.
-
-> 
-> This version does not add the code for ethernet PHYs, instead it just
-> tries to touch only the LED subsystem by adding the API for offloading
-> LED triggers and an example implementation for Turris Omnia LED
-> controller.
-> 
-> I will probably send another version this weekend. Sorry this takes
-> this long.
-
-No worries, and thanks for the work!
-
-> 
-> 
->> I understand, that the generic approach is the one we want to have, but
->> does this really mean adding PHY led configuration via DT to existing
->> drivers (that already use DT properties for LED modes) is not accepted
->> anymore, even if the new API is not yet in place?
-> 
-> I don't know about Rob, but I would be against it.
-> 
-> But if you need to have your PHY LED configured with via devicetree
-> ASAP, instead of proposing the vendor specific property, you can
-> propose LED subnodes and properties that will be generic and compatible
-> with the LED subsystem API, i.e. something like:
-> 
->    ethernet-phy@1 {
->      .... eth phy properties;
-> 
->      leds {
->        led@0 {
->          reg = <0>;
->          color = <LED_COLOR_ID_GREEN>;
->          /* this LED should indicate link/speed */
->          function = LED_FUNCTION_LINK;
->        };
->      };
->    }
-> 
-> Then make your PHY driver parse this, and make it so that if
-> function is LED_FUNCTION_LINK or LED_FUNCTION_ACTIVITY, the driver will
-> disable combined mode.
-> 
-> Afterwards, when LED subsystem has support for trigger offloading, you
-> can update mscc driver so that instead of just disabling combined mode,
-> it will register the LEDs via LED subsystem...
-
-Good idea, but I'm not really in a hurry. Now knowing that work on the 
-trigger offloading is still active, I guess I will just wait a bit until 
-the dust has settled and maybe the bindings have been defined. Then I 
-can try to implement this in the PHY driver.
-
-Thanks
-Frieder
