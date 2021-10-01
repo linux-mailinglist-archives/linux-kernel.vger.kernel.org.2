@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A0641F1E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD82141F1EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353675AbhJAQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232047AbhJAQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:15:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C46619E7;
-        Fri,  1 Oct 2021 16:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633104799;
-        bh=mMEfl2DznOLS6As2JE8WI2CMTaAzNlFeLwPjlOMFh+M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qtGKYpJVkWBpyfyIyf10q2LSp6HasZDVzScNFobfxXXMug+wL9eZareCzYk+rZb9q
-         Bp31Pex6eOAkyzHPX38/nYND0zavBfBuQLf5X9pR5y+icTLrveqPNhRfrkZb8ZooIy
-         /GTrNaYJiAxzqVgrk2dLPgxp1qkD1n+MiEWkz86PNnnm1Nod5545kqh8TzCw1pT547
-         wyIwuckD3T+tChy8asdoEfjyBw0Eu6Q/JJEE+KZNz+n9SrB93B+iHQWSLLXQYcPJzj
-         SL6prBx77BEXuIGdSRsDzZusFqGJFTqCSVyMR7/Pi4GIUPXm88fjSm0HJ1kcj8vGLD
-         kcEeoJ2NLE7tQ==
-Received: by pali.im (Postfix)
-        id 4384A821; Fri,  1 Oct 2021 18:13:16 +0200 (CEST)
-Date:   Fri, 1 Oct 2021 18:13:16 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 13/24] wfx: add hif_tx*.c/hif_tx*.h
-Message-ID: <20211001161316.w3cwsigacznjbowl@pali>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20210920161136.2398632-14-Jerome.Pouiller@silabs.com>
- <87fstlkr1m.fsf@codeaurora.org>
- <2873071.CAOYYqaKbK@pc-42>
+        id S232047AbhJAQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:15:16 -0400
+Received: from mail.efficios.com ([167.114.26.124]:39316 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354559AbhJAQPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:15:14 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8A84638632E;
+        Fri,  1 Oct 2021 12:13:29 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZM3AFaLuOgDH; Fri,  1 Oct 2021 12:13:28 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 6AE5338632D;
+        Fri,  1 Oct 2021 12:13:28 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6AE5338632D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1633104808;
+        bh=7eKt/v8SRlysskI2agkVhAwiyRJ/IGvqsXIGEt7mukY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=HRsS/V+HG6HeqpGV/J40K3XHvj85ZIHCsQDyPMZt0iKMe8LYstlk/ZCVe27ET19dw
+         4W8Rmdmd/6roX9HfjStkwHdNdQOKpTgyL4ttT7pPX4MlzlkdU4Dco26etLSm9GUiA3
+         FYFa0oANbcYESYQgFS4wEaRCNtBQTiryMomellBouzWPvlySk6qYa0jfocImP2Q2qr
+         4/mPLb+ejUagbbihCOrntfFhOy3yZhey1dZcduBZLWa9OkEC9Y3sC84TVz6kYN914F
+         R5++N0SKQuOfkf3RPbQfZG3Mg2Ji3zY0Zy0b9PxCPqKCrP0tuyC9qANqhTOgMyZKyG
+         MzZC+utydT4XQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4hr9GWQ1uzEd; Fri,  1 Oct 2021 12:13:28 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 52B303867A0;
+        Fri,  1 Oct 2021 12:13:28 -0400 (EDT)
+Date:   Fri, 1 Oct 2021 12:13:28 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Florian Weimer <fweimer@redhat.com>, Will Deacon <will@kernel.org>,
+        paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Message-ID: <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210929174146.GF22689@gate.crashing.org>
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com> <87lf3f7eh6.fsf@oldenburg.str.redhat.com> <20210929174146.GF22689@gate.crashing.org>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2873071.CAOYYqaKbK@pc-42>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4059)
+Thread-Topic: LKMM: Add ctrl_dep() macro for control dependency
+Thread-Index: vReMbXYKiUNSWYkS0HYbTozqU0HTpw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 01 October 2021 17:17:52 Jérôme Pouiller wrote:
-> On Friday 1 October 2021 11:55:33 CEST Kalle Valo wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
-> > 
-> > 
-> > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-> > 
-> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > >
-> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > 
-> > [...]
-> > 
-> > > --- /dev/null
-> > > +++ b/drivers/net/wireless/silabs/wfx/hif_tx_mib.h
-> > > @@ -0,0 +1,49 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > +/*
-> > > + * Implementation of the host-to-chip MIBs of the hardware API.
-> > > + *
-> > > + * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-> > > + * Copyright (c) 2010, ST-Ericsson
-> > > + * Copyright (C) 2010, ST-Ericsson SA
-> > > + */
-> > > +#ifndef WFX_HIF_TX_MIB_H
-> > > +#define WFX_HIF_TX_MIB_H
-> > > +
-> > > +struct wfx_vif;
-> > > +struct sk_buff;
-> > > +
-> > > +int hif_set_output_power(struct wfx_vif *wvif, int val);
-> > > +int hif_set_beacon_wakeup_period(struct wfx_vif *wvif,
-> > > +                              unsigned int dtim_interval,
-> > > +                              unsigned int listen_interval);
-> > > +int hif_set_rcpi_rssi_threshold(struct wfx_vif *wvif,
-> > > +                             int rssi_thold, int rssi_hyst);
-> > > +int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
-> > > +                        struct hif_mib_extended_count_table *arg);
-> > > +int hif_set_macaddr(struct wfx_vif *wvif, u8 *mac);
-> > > +int hif_set_rx_filter(struct wfx_vif *wvif,
-> > > +                   bool filter_bssid, bool fwd_probe_req);
-> > > +int hif_set_beacon_filter_table(struct wfx_vif *wvif, int tbl_len,
-> > > +                             const struct hif_ie_table_entry *tbl);
-> > > +int hif_beacon_filter_control(struct wfx_vif *wvif,
-> > > +                           int enable, int beacon_count);
-> > > +int hif_set_operational_mode(struct wfx_dev *wdev, enum hif_op_power_mode mode);
-> > > +int hif_set_template_frame(struct wfx_vif *wvif, struct sk_buff *skb,
-> > > +                        u8 frame_type, int init_rate);
-> > > +int hif_set_mfp(struct wfx_vif *wvif, bool capable, bool required);
-> > > +int hif_set_block_ack_policy(struct wfx_vif *wvif,
-> > > +                          u8 tx_tid_policy, u8 rx_tid_policy);
-> > > +int hif_set_association_mode(struct wfx_vif *wvif, int ampdu_density,
-> > > +                          bool greenfield, bool short_preamble);
-> > > +int hif_set_tx_rate_retry_policy(struct wfx_vif *wvif,
-> > > +                              int policy_index, u8 *rates);
-> > > +int hif_keep_alive_period(struct wfx_vif *wvif, int period);
-> > > +int hif_set_arp_ipv4_filter(struct wfx_vif *wvif, int idx, __be32 *addr);
-> > > +int hif_use_multi_tx_conf(struct wfx_dev *wdev, bool enable);
-> > > +int hif_set_uapsd_info(struct wfx_vif *wvif, unsigned long val);
-> > > +int hif_erp_use_protection(struct wfx_vif *wvif, bool enable);
-> > > +int hif_slot_time(struct wfx_vif *wvif, int val);
-> > > +int hif_wep_default_key_id(struct wfx_vif *wvif, int val);
-> > > +int hif_rts_threshold(struct wfx_vif *wvif, int val);
-> > 
-> > "wfx_" prefix missing from quite a few functions.
-> 
-> I didn't know it was mandatory to prefix all the functions with the
-> same prefix. With the rule of 80-columns, I think I will have to change
-> a bunch of code :( .
+----- On Sep 29, 2021, at 1:41 PM, Segher Boessenkool segher@kernel.crashing.org wrote:
 
-I think that new drivers can use 100 characters per line.
+> Hi!
+> 
+> On Wed, Sep 29, 2021 at 02:28:37PM +0200, Florian Weimer wrote:
+>> If you need a specific instruction emitted, you need a compiler
+>> intrinsic or inline assembly.
+> 
+> Not an intrinsic.  Builtins (like almost all other code) do not say
+> "generate this particular machine code", they say "generate code that
+> does <this>".  That is one reason why builtins are more powerful than
+> inline assembler (another related reason is that they tell the compiler
+> exactly what behaviour is expected).
+> 
+>> I don't think it's possible to piggy-back this on something else.
+> 
+> Unless we get a description of what this does in term of language
+> semantics (instead of generated machine code), there is no hope, even.
+
+Hi Segher,
+
+Let me try a slightly improved attempt at describing what I am looking
+for in terms of language semantics.
+
+First, let's suppose we define two new compiler builtins, e.g.
+__sync_ctrl_dep_rw() and __sync_ctrl_dep_acquire().
+
+Their task would be to ensure that a R->W or R->RW (acquire) dependency between the
+volatile loads used as input of the evaluated expression and following volatile
+stores, volatile loads for R->RW, volatile asm, memory clobbers, is present in the
+following situations:
+
+When the builtin is used around evaluation of the left operand of the && (logical
+AND) and || (logical OR) expression, the R->W or R->RW dependency should be
+present before evaluating the right operand.
+
+When the builtin is used around evaluation of the first operand of the ternary
+"question-mark" operator, the R->W or R->RW dependency should be present before
+evaluating the second or third operands.
+
+When the builtin is used around evaluation of the controlling expressions of
+if, switch, while, and do-while statements, as well as of the second operand of
+the for statement, the R->W or R->RW dependency should be present before the
+next sequence point is evaluated.
+
+One cheap way to achieve said R->W dependency (as well as R->RW on architectures which
+to not reorder R->R) is to ensure that the generated assembly contains a conditional
+branch. Other ways to ensure this include more heavy-weight approaches such as explicit
+barriers.
+
+Hopefully my description above is slightly closer to the expected language
+semantics.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
