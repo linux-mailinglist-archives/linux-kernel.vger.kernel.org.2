@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9772B41F312
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3D341F314
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355378AbhJAR27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:28:59 -0400
-Received: from mga05.intel.com ([192.55.52.43]:50616 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355262AbhJAR26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:28:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="311051743"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="311051743"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:27:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="521239016"
-Received: from unknown (HELO vcostago-mobl3) ([10.134.46.83])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 10:27:12 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
-        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "jhs@mojatatu.com" <jhs@mojatatu.com>
-Subject: RE: [EXT] Re: [RFC, net-next] net: qos: introduce a frer action to
- implement 802.1CB
-In-Reply-To: <DB8PR04MB5785F3128FEB1FB1B2F9AC0DF0A99@DB8PR04MB5785.eurprd04.prod.outlook.com>
-References: <20210928114451.24956-1-xiaoliang.yang_1@nxp.com>
- <87czos9vnj.fsf@linux.intel.com>
- <DB8PR04MB5785F3128FEB1FB1B2F9AC0DF0A99@DB8PR04MB5785.eurprd04.prod.outlook.com>
-Date:   Fri, 01 Oct 2021 10:27:12 -0700
-Message-ID: <87lf3cfyfj.fsf@intel.com>
+        id S1355382AbhJAR3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355325AbhJAR3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 13:29:13 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87575C06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:27:29 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id v19so7018977pjh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hRBnsHOhY3RkJJ55kOa8agH19+hjBWLoI6XvdfNnFos=;
+        b=Xs8sPOBzwVsKgvPcUPiIaBbVcEdNF4tbxTxnktn84mfih9aV47w/so/YleDQRpQAJC
+         /CnQ0q8FsP8iuXeeKHZvCHmNYJ1elS0RvFHMO8qFCQ2+Wvvob7KstVA6mNdT56h2JxQO
+         2EQ/LxBYwe24CZb5TPhKBLeMueOniJs8UV69c6BTFU8s23AD18pgmko8c6Aq39EvG1Sx
+         9qoV6CK4gt9OCuM/Gijdmi7B+fdWZm5GjA3DD+LQdb18/jwHp2o4fWASpcgMJsnWzbRH
+         s3HqbwISyAlkqWvdSK4/34OC4fhzSGf9i0XpDnWOArFsLEFG1Yp9trTJiXLsOKDBo186
+         dOeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hRBnsHOhY3RkJJ55kOa8agH19+hjBWLoI6XvdfNnFos=;
+        b=5InU0YCWjf/3fQeOYaNsQSyOMfLPBxA/S0Bc9zVLC6YgJDq2AzMU/BMz7qVSEiKpfx
+         nY40FeV3SvsJlvVtzN+6Xw5gSaCHcLhVq1im3i6VmS7MjuaAyHqGbw99DA3PQplS2/lY
+         yF6vmYc0riaW8IegaRa/TT1cGXH42613XmGun0/leP28WmLunxEQ0m4Qr400S3dZiqvW
+         MrVM+f8MuTuXkycZ2vWKj7QkNA5zjQ4DV82DHYApH5nj77SYP0ejj4L9FvGChK3MACpf
+         UIxCxkZThqZk8l128u+PhwhB2UxPrDpEZAdY7NAn1bf5484R1ChBvDLB3E6/OdEBhcr0
+         zt/Q==
+X-Gm-Message-State: AOAM530vT8bveu57Tygr+YQCMbz1Tc0Mi178sy40IPCpsRpIr25AbEQ0
+        tKGr2oFEsdrhbcLvcjVUiEM=
+X-Google-Smtp-Source: ABdhPJyyXeSOdt74N1gvq+sNdXSJlSUV655jdthXg4d5APRzI8ZT5khDmtWhi+G1pdDi+1VxrxM4qQ==
+X-Received: by 2002:a17:90a:e7ca:: with SMTP id kb10mr21097288pjb.33.1633109249113;
+        Fri, 01 Oct 2021 10:27:29 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:63c:b112:55c:f7f4])
+        by smtp.gmail.com with ESMTPSA id w6sm7243589pfj.179.2021.10.01.10.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 10:27:28 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Subject: [PATCH] mm/vmalloc: make show_numa_info() aware of hugepage mappings
+Date:   Fri,  1 Oct 2021 10:27:25 -0700
+Message-Id: <20211001172725.105824-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiaoliang Yang <xiaoliang.yang_1@nxp.com> writes:
+From: Eric Dumazet <edumazet@google.com>
 
-> Hi Vinicius,
->
-> On Sep 29, 2021 at 6:35:59 +0000, Vinicius Costa Gomes wrote:
->> > This patch introduce a frer action to implement frame replication and
->> > elimination for reliability, which is defined in IEEE P802.1CB.
->> >
->> 
->> An action seems, to me, a bit too limiting/fine grained for a frame replication
->> and elimination feature.
->> 
->> At least I want to hear the reasons that the current hsr/prp support cannot be
->> extended to support one more tag format/protocol.
->> 
->> And the current name for the spec is IEEE 802.1CB-2017.
->> 
-> 802.1CB can be set on bridge ports, and need to use bridge forward
-> Function as a relay system. It only works on identified streams,
-> unrecognized flows still need to pass through the bridged network
-> normally.
+show_numa_info() can be slightly faster, by skipping
+over hugepages directly.
 
-This ("only on identified streams") is the strongest argument so far to
-have FRER also as an action, in adition to the current hsr netdevice
-approach.
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+---
+ mm/vmalloc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->
-> But current hsr/prp seems only support two ports, and cannot use the
-> ports in bridge. It's hard to implement FRER functions on current HSR
-> driver.
-
-That the hsr netdevice only support two ports, I think is more a bug
-than a design issue. Which will need to get fixed at some point. 
-
-Speaking of functions, one thing that might be interesting is trying to
-see if it makes sense to make part of the current hsr functionality a
-"library" so it can be used by tc-frer as well. (less duplication of
-bugs).
-
->
-> You can see chapter "D.2 Example 2: Various stack positions" in IEEE 802.1CB-2017,
-> Protocol stack for relay system is like follows:
->
->              Stream Transfer Function
->                 |             |
->   				|    	Sequence generation
->                 |       	Sequence encode/decode
->   Stream identification		Active Stream identification
-> 				|			  |
->   			    |		Internal LAN---- Relay system forwarding
-> 				|						|		|
-> 				MAC						MAC		MAC
->
-> Use port actions to easily implement FRER tag add/delete, split, and
-> recover functions.
->
-> Current HSR/PRP driver can be used for port HSR/PRP set, and tc-frer
-> Action to be used for stream RTAG/HSR/PRP set and recover.
-
-I am still reading the spec and trying to imagine how things would fit
-together:
-  - for which use cases tc-frer would be useful;
-  - for which use cases the hsr netdevice would be useful;
-  - would it make sense to have them in the same system?
-  
->
-> Thanks,
-> Xiaoliang
-
-Cheers,
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 42219f3d12b567fc64f54cd3e2f1e3398e261a2c..d51f5e1c95b4e01add8b952b6c5e2de2a1139e46 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3853,6 +3853,7 @@ static void show_numa_info(struct seq_file *m, struct vm_struct *v)
+ {
+ 	if (IS_ENABLED(CONFIG_NUMA)) {
+ 		unsigned int nr, *counters = m->private;
++		unsigned int step = 1U << vm_area_page_order(v);
+ 
+ 		if (!counters)
+ 			return;
+@@ -3864,9 +3865,8 @@ static void show_numa_info(struct seq_file *m, struct vm_struct *v)
+ 
+ 		memset(counters, 0, nr_node_ids * sizeof(unsigned int));
+ 
+-		for (nr = 0; nr < v->nr_pages; nr++)
+-			counters[page_to_nid(v->pages[nr])]++;
+-
++		for (nr = 0; nr < v->nr_pages; nr += step)
++			counters[page_to_nid(v->pages[nr])] += step;
+ 		for_each_node_state(nr, N_HIGH_MEMORY)
+ 			if (counters[nr])
+ 				seq_printf(m, " N%u=%u", nr, counters[nr]);
 -- 
-Vinicius
+2.33.0.800.g4c38ced690-goog
+
