@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D80B41F663
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1AC41F666
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355403AbhJAUjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhJAUjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:39:12 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C5DC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:37:27 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id m7so10403722qke.8
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 13:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zkZRE1eEAZyryz39bCaestf9STy5sTzg/yvpAeBoKL4=;
-        b=CCfbyOwfd0P5t+5ZRImMnUUskPj72rArktg6RNaaUNyqXUeSgwpM0rbAcBAkglWGIq
-         Ay6J1tK3tzZyS4rNAL4Ie+5m+CxzGQLqODv44oIGUpXsXPPErFtsUvyi1Ih5aIRK06jS
-         keLPV3t/hH5HZ09dSBgthqijzUkoR9Z9U2xEZYGbrxp8yxMiltt7cYgV8CRb3z1N13is
-         X/V1h6W7+jmpVATxfjdn5QbUBJ4FZV+O5R7shhJJj3Yc4pi04JGiICRUcPpMDr24Yv6U
-         JQmu27ksNY9r75HUGveFA/TQIniku8vM8xLV89+TRl3DdYOt7mYt5pmsStjLkbN2Fgcd
-         fbYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zkZRE1eEAZyryz39bCaestf9STy5sTzg/yvpAeBoKL4=;
-        b=XWqlWTL9sd+Qow0gAVaKnEe3I+zhgvh0gnhuUOcKU9L1b/+wO0VxrPwarXTEuHFRD+
-         MUJ8hHy5IYR4lIa/wHnwCxRwtheVAZJqRNSQPZoN+UsmWRo+S+ddJizJQ3BgJzc7Qel8
-         lalEII2R48AjmAlc3IfEPHJRknY2z65LXSyPiFCWEfj6i2hVI+s7nGCIxst7tRF6hPGG
-         slILQzlsO4gJu4V08GftewA0p3+S8usbs8kQVqGOwu0DyRcp2WWo94tkb339CZgaZXbl
-         LESciNkczMldozMNai6JIpZ0B4R+14uHo4xCwIn6fK4HKVjqGTxpdh4pH1Xoqs+pIaAJ
-         VcuA==
-X-Gm-Message-State: AOAM532175eWRWnoyrlehkNf52jLcgrmOZW2AZ41i44Ijkam+vL+iJAU
-        m0VugidvonBb27S21MNPEYSTmg==
-X-Google-Smtp-Source: ABdhPJyanMpqt2duCpwpvAmH2PwIWFc4RUPjx+nuDVdS38gdaqmbFEoZOY+04aefRITy3t9qRTOsoA==
-X-Received: by 2002:ae9:e895:: with SMTP id a143mr55119qkg.113.1633120646890;
-        Fri, 01 Oct 2021 13:37:26 -0700 (PDT)
-Received: from localhost ([167.100.64.199])
-        by smtp.gmail.com with ESMTPSA id i8sm3957487qtp.55.2021.10.01.13.37.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 Oct 2021 13:37:26 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 16:37:22 -0400
-From:   Sean Paul <sean@poorly.run>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        stable@vger.kernel.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: Re: [PATCH] drm/brdige: analogix_dp: Grab runtime PM reference for
- DP-AUX
-Message-ID: <20211001203722.GZ2515@art_vandelay>
-References: <20210929144010.1.I773a08785666ebb236917b0c8e6c05e3de471e75@changeid>
+        id S1355442AbhJAUlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:41:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57916 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355332AbhJAUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:41:15 -0400
+Received: from zn.tnic (p200300ec2f0e8e008cd8fcde3ecc481f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:8cd8:fcde:3ecc:481f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E10001EC05DE;
+        Fri,  1 Oct 2021 22:39:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633120769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Nx12u0cB1s3RsxRSfxjFtysx8A9z2kvicyKJknGp5i4=;
+        b=QXYPwXLiwkYiXk85g0gRv5E0xzRqmPapSW3XPk9wdv7llQVr3hlir2tPQtbMBbunIjJT48
+        kxDx+7tBMI/XOsG4OIQkjHhZnQUEyHrwoPpCL7/29FEQ45E+FIHfNJYI40zuhnmfRJmLmi
+        tpVpmBfmz9u+lqasle08IumwAedRhvY=
+Date:   Fri, 1 Oct 2021 22:39:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
+Message-ID: <YVdx/SRNkeRFnIuX@zn.tnic>
+References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
+ <YVbNlXwiASQEsG+x@zn.tnic>
+ <YVb2AGXAwYx/OI6J@suse.de>
+ <YVcF9ENTfLAGaLec@zn.tnic>
+ <YVcGdpVuSsieFL8W@suse.de>
+ <YVcSuVqmTPiw4YLk@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210929144010.1.I773a08785666ebb236917b0c8e6c05e3de471e75@changeid>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YVcSuVqmTPiw4YLk@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 02:41:03PM -0700, Brian Norris wrote:
-> If the display is not enable()d, then we aren't holding a runtime PM
-> reference here. Thus, it's easy to accidentally cause a hang, if user
-> space is poking around at /dev/drm_dp_aux0 at the "wrong" time.
-> 
-> Let's get the panel and PM state right before trying to talk AUX.
-> 
-> Fixes: 0d97ad03f422 ("drm/bridge: analogix_dp: Remove duplicated code")
-> Cc: <stable@vger.kernel.org>
-> Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
-> 
->  .../gpu/drm/bridge/analogix/analogix_dp_core.c  | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-> index b7d2e4449cfa..a1b553904b85 100644
-> --- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-> +++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
-> @@ -1632,8 +1632,23 @@ static ssize_t analogix_dpaux_transfer(struct drm_dp_aux *aux,
->  				       struct drm_dp_aux_msg *msg)
->  {
->  	struct analogix_dp_device *dp = to_dp(aux);
-> +	int ret, ret2;
->  
-> -	return analogix_dp_transfer(dp, msg);
-> +	ret = analogix_dp_prepare_panel(dp, true, false);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dp->dev, "Failed to prepare panel (%d)\n", ret);
+It doesn't get any more straight-forward than this.
 
-s/DRM_DEV_ERROR/drm_err/
+We can ifdef around the ESTACKS_MEMBERS VC and VC2 arrays so that those
+things do get allocated only on a CONFIG_AMD_MEM_ENCRYPT kernel so that
+we don't waste 4 pages per CPU on machines which don't do SEV but meh.
 
-> +		return ret;
-> +	}
-> +
-> +	pm_runtime_get_sync(dp->dev);
-> +	ret = analogix_dp_transfer(dp, msg);
-> +	pm_runtime_put(dp->dev);
-> +
-> +	ret2 = analogix_dp_prepare_panel(dp, false, false);
-> +	if (ret2)
-> +		DRM_DEV_ERROR(dp->dev, "Failed to unprepare panel (%d)\n", ret2);
+Thoughts?
 
-What's the reasoning for not propagating unprepare failures? I feel like that
-should be fair game.
-
-> +
-> +	return ret;
->  }
->  
->  struct analogix_dp_device *
-> -- 
-> 2.33.0.685.g46640cef36-goog
-> 
+---
+diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
+index 3d52b094850a..13a3e8510c33 100644
+--- a/arch/x86/include/asm/cpu_entry_area.h
++++ b/arch/x86/include/asm/cpu_entry_area.h
+@@ -21,9 +21,9 @@
+ 	char	MCE_stack_guard[guardsize];			\
+ 	char	MCE_stack[EXCEPTION_STKSZ];			\
+ 	char	VC_stack_guard[guardsize];			\
+-	char	VC_stack[optional_stack_size];			\
++	char	VC_stack[EXCEPTION_STKSZ];			\
+ 	char	VC2_stack_guard[guardsize];			\
+-	char	VC2_stack[optional_stack_size];			\
++	char	VC2_stack[EXCEPTION_STKSZ];			\
+ 	char	IST_top_guard[guardsize];			\
+ 
+ /* The exception stacks' physical storage. No guard pages required */
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index a6895e440bc3..88401675dabb 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -46,16 +46,6 @@ static struct ghcb __initdata *boot_ghcb;
+ struct sev_es_runtime_data {
+ 	struct ghcb ghcb_page;
+ 
+-	/* Physical storage for the per-CPU IST stack of the #VC handler */
+-	char ist_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
+-
+-	/*
+-	 * Physical storage for the per-CPU fall-back stack of the #VC handler.
+-	 * The fall-back stack is used when it is not safe to switch back to the
+-	 * interrupted stack in the #VC entry code.
+-	 */
+-	char fallback_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
+-
+ 	/*
+ 	 * Reserve one page per CPU as backup storage for the unencrypted GHCB.
+ 	 * It is needed when an NMI happens while the #VC handler uses the real
+@@ -99,27 +89,6 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
+ /* Needed in vc_early_forward_exception */
+ void do_early_exception(struct pt_regs *regs, int trapnr);
+ 
+-static void __init setup_vc_stacks(int cpu)
+-{
+-	struct sev_es_runtime_data *data;
+-	struct cpu_entry_area *cea;
+-	unsigned long vaddr;
+-	phys_addr_t pa;
+-
+-	data = per_cpu(runtime_data, cpu);
+-	cea  = get_cpu_entry_area(cpu);
+-
+-	/* Map #VC IST stack */
+-	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
+-	pa    = __pa(data->ist_stack);
+-	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
+-
+-	/* Map VC fall-back stack */
+-	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC2);
+-	pa    = __pa(data->fallback_stack);
+-	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
+-}
+-
+ static __always_inline bool on_vc_stack(struct pt_regs *regs)
+ {
+ 	unsigned long sp = regs->sp;
+@@ -787,7 +756,6 @@ void __init sev_es_init_vc_handling(void)
+ 	for_each_possible_cpu(cpu) {
+ 		alloc_runtime_data(cpu);
+ 		init_ghcb(cpu);
+-		setup_vc_stacks(cpu);
+ 	}
+ 
+ 	sev_es_setup_play_dead();
+diff --git a/arch/x86/mm/cpu_entry_area.c b/arch/x86/mm/cpu_entry_area.c
+index f5e1e60c9095..82d062414f19 100644
+--- a/arch/x86/mm/cpu_entry_area.c
++++ b/arch/x86/mm/cpu_entry_area.c
+@@ -110,6 +110,13 @@ static void __init percpu_setup_exception_stacks(unsigned int cpu)
+ 	cea_map_stack(NMI);
+ 	cea_map_stack(DB);
+ 	cea_map_stack(MCE);
++
++	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
++		if (sev_es_active()) {
++			cea_map_stack(VC);
++			cea_map_stack(VC2);
++		}
++	}
+ }
+ #else
+ static inline void percpu_setup_exception_stacks(unsigned int cpu)
 
 -- 
-Sean Paul, Software Engineer, Google / Chromium OS
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
