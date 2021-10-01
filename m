@@ -2,144 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560B141ECF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F321641ECFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354294AbhJAMLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:11:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53186 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354146AbhJAMLm (ORCPT
+        id S1354308AbhJAMMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:12:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56860 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354146AbhJAMMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:11:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D7D55223FF;
-        Fri,  1 Oct 2021 12:09:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633090196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 1 Oct 2021 08:12:12 -0400
+Date:   Fri, 01 Oct 2021 12:10:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633090227;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZMNtJrbC0GnzRHpRVHcvpxd5r5byMIwvTLIh1FKx91I=;
-        b=sXm0w2uUnG8p6tiV2Z1mK1CVCNFn3B50GQ0XrAGn2QOR5GIUB+/8cEE6DSKYRJgsyCmxev
-        PSwoqv6ESRnPMVUC+IJNmxsyjyv7E2S2IoGx/0BdkhUcz41PQ7cHBX/YAbnJgobD9cAFk4
-        vUr0IHQweYKklazQJmidOEv16+HHW1s=
-Received: from suse.cz (pathway.suse.cz [10.100.12.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C1854A3B81;
-        Fri,  1 Oct 2021 12:09:55 +0000 (UTC)
-Date:   Fri, 1 Oct 2021 14:09:55 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Popov <alex.popov@linux.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Laura Abbott <labbott@redhat.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, notify@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-Message-ID: <20211001120955.GA965@pathway.suse.cz>
-References: <20210929185823.499268-1-alex.popov@linux.com>
- <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
- <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
- <YVWAPXSzFNbHz6+U@alley>
- <20210930125903.0783b06e@oasis.local.home>
+        bh=qgSO1gYP6OdxHsaHKv1ocaPwS7z63I+4pVPOHUhHFT4=;
+        b=3d4WKCR02OE9V2nIMBUafisjzbznntcyq9n6eMELTpP48TO1tAVQiK2NbToLzWhP8gIgDX
+        eHZ2KYypTnf76ZDki+hSK9Fy+ezLTpOZD3Zaq3mL6v4w5jR3H0O0jZtlNDp7up75JQHvbL
+        E1jL4I6fZu0FkM3ixvQjL0g9gY2i+/BUZB/8jAed5SJVn9mZBQ+HFwOzLGJH1lLLasWDk9
+        fHoHySySlU+ViPKqeQ7BkHCrp9BNX0wpGH8QGTqrJ5JqRz76Y6ti+3v16mxZrD7qsQmQuI
+        l7xz7ysWOvWBUXPdolbrdWaLHThhIBtPxu18LmEu4dOzrs+J4aMBCej0sz3shg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633090227;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qgSO1gYP6OdxHsaHKv1ocaPwS7z63I+4pVPOHUhHFT4=;
+        b=PQW3hX93Em3C2XgKeG3rZLKwa5AS2qG3xDhVYGH++Gf3PBF2v/787RjlGLPm3qoq9DFMcS
+        M6SKu49xLKIcu7DA==
+From:   "tip-bot2 for Song Liu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf/core: fix userpage->time_enabled of inactive events
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lucian Grijincu <lucian@fb.com>,
+        Song Liu <songliubraving@fb.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210929194313.2398474-1-songliubraving@fb.com>
+References: <20210929194313.2398474-1-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930125903.0783b06e@oasis.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <163309022618.25758.13887730467609744977.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-09-30 12:59:03, Steven Rostedt wrote:
-> On Thu, 30 Sep 2021 11:15:41 +0200
-> Petr Mladek <pmladek@suse.com> wrote:
-> 
-> > On Wed 2021-09-29 12:49:24, Paul E. McKenney wrote:
-> > > On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:  
-> > > > On 29.09.2021 21:58, Alexander Popov wrote:  
-> > > > > Currently, the Linux kernel provides two types of reaction to kernel
-> > > > > warnings:
-> > > > >  1. Do nothing (by default),
-> > > > >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
-> > > > >     so panic_on_warn is usually disabled on production systems.  
-> > 
-> > Honestly, I am not sure if panic_on_warn() or the new pkill_on_warn()
-> > work as expected. I wonder who uses it in practice and what is
-> > the experience.
-> 
-> Several people use it, as I see reports all the time when someone can
-> trigger a warn on from user space, and it's listed as a DOS of the
-> system.
+The following commit has been merged into the perf/urgent branch of tip:
 
-Good to know.
+Commit-ID:     f792565326825ed806626da50c6f9a928f1079c1
+Gitweb:        https://git.kernel.org/tip/f792565326825ed806626da50c6f9a928f1079c1
+Author:        Song Liu <songliubraving@fb.com>
+AuthorDate:    Wed, 29 Sep 2021 12:43:13 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 01 Oct 2021 13:57:54 +02:00
 
-> > The problem is that many developers do not know about this behavior.
-> > They use WARN() when they are lazy to write more useful message or when
-> > they want to see all the provided details: task, registry, backtrace.
-> 
-> WARN() Should never be used just because of laziness. If it is, then
-> that's a bug. Let's not use that as an excuse to shoot down this
-> proposal. WARN() should only be used to test assumptions where you do
-> not believe something can happen. I use it all the time when the logic
-> prevents some state, and have the WARN() enabled if that state is hit.
-> Because to me, it shows something that shouldn't happen happened, and I
-> need to fix the code.
+perf/core: fix userpage->time_enabled of inactive events
 
-I have just double checked code written or reviewed by me and it
-mostly follow the rules. But it is partly just by chance. I did not
-have these rather clear rules in my head.
+Users of rdpmc rely on the mmapped user page to calculate accurate
+time_enabled. Currently, userpage->time_enabled is only updated when the
+event is added to the pmu. As a result, inactive event (due to counter
+multiplexing) does not have accurate userpage->time_enabled. This can
+be reproduced with something like:
 
-But for example, the following older WARN() in format_decode() in
-lib/vsprintf.c is questionable:
+   /* open 20 task perf_event "cycles", to create multiplexing */
 
-	WARN_ONCE(1, "Please remove unsupported %%%c in format string\n", *fmt);
+   fd = perf_event_open();  /* open task perf_event "cycles" */
+   userpage = mmap(fd);     /* use mmap and rdmpc */
 
-I guess that the WARN() was used to easily locate the caller. But it
-is not a reason the reboot the system or kill the process, definitely.
+   while (true) {
+     time_enabled_mmap = xxx; /* use logic in perf_event_mmap_page */
+     time_enabled_read = read(fd).time_enabled;
+     if (time_enabled_mmap > time_enabled_read)
+         BUG();
+   }
 
-Maybe, we could implement an alternative macro for these situations,
-e.g. DEBUG() or warn().
+Fix this by updating userpage for inactive events in merge_sched_in.
 
-> > Well, this might be different. Developers might learn this the hard
-> > way from bug reports. But there will be bug reports only when
-> > anyone really enables this behavior. They will enable it only
-> > when it works the right way most of the time.
-> 
-> The panic_on_warn() has been used for years now. I do not think this is
-> an issue.
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reported-and-tested-by: Lucian Grijincu <lucian@fb.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210929194313.2398474-1-songliubraving@fb.com
+---
+ include/linux/perf_event.h |  4 +++-
+ kernel/events/core.c       | 34 ++++++++++++++++++++++++++++++----
+ 2 files changed, 33 insertions(+), 5 deletions(-)
 
-If panic_on_warn() is widely used then pkill_on_warn() is fine as well.
-
-Best Regards,
-Petr
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index fe156a8..9b60bb8 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -683,7 +683,9 @@ struct perf_event {
+ 	/*
+ 	 * timestamp shadows the actual context timing but it can
+ 	 * be safely used in NMI interrupt context. It reflects the
+-	 * context time as it was when the event was last scheduled in.
++	 * context time as it was when the event was last scheduled in,
++	 * or when ctx_sched_in failed to schedule the event because we
++	 * run out of PMC.
+ 	 *
+ 	 * ctx_time already accounts for ctx->timestamp. Therefore to
+ 	 * compute ctx_time for a sample, simply add perf_clock().
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0c000cb..f23ca26 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3707,6 +3707,29 @@ static noinline int visit_groups_merge(struct perf_cpu_context *cpuctx,
+ 	return 0;
+ }
+ 
++static inline bool event_update_userpage(struct perf_event *event)
++{
++	if (likely(!atomic_read(&event->mmap_count)))
++		return false;
++
++	perf_event_update_time(event);
++	perf_set_shadow_time(event, event->ctx);
++	perf_event_update_userpage(event);
++
++	return true;
++}
++
++static inline void group_update_userpage(struct perf_event *group_event)
++{
++	struct perf_event *event;
++
++	if (!event_update_userpage(group_event))
++		return;
++
++	for_each_sibling_event(event, group_event)
++		event_update_userpage(event);
++}
++
+ static int merge_sched_in(struct perf_event *event, void *data)
+ {
+ 	struct perf_event_context *ctx = event->ctx;
+@@ -3725,14 +3748,15 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 	}
+ 
+ 	if (event->state == PERF_EVENT_STATE_INACTIVE) {
++		*can_add_hw = 0;
+ 		if (event->attr.pinned) {
+ 			perf_cgroup_event_disable(event, ctx);
+ 			perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
++		} else {
++			ctx->rotate_necessary = 1;
++			perf_mux_hrtimer_restart(cpuctx);
++			group_update_userpage(event);
+ 		}
+-
+-		*can_add_hw = 0;
+-		ctx->rotate_necessary = 1;
+-		perf_mux_hrtimer_restart(cpuctx);
+ 	}
+ 
+ 	return 0;
+@@ -6324,6 +6348,8 @@ accounting:
+ 
+ 		ring_buffer_attach(event, rb);
+ 
++		perf_event_update_time(event);
++		perf_set_shadow_time(event, event->ctx);
+ 		perf_event_init_userpage(event);
+ 		perf_event_update_userpage(event);
+ 	} else {
