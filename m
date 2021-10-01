@@ -2,164 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D5141E794
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB7F41E774
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352325AbhJAGcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352216AbhJAGc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:32:28 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B3DC06176A;
-        Thu, 30 Sep 2021 23:30:44 -0700 (PDT)
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HLKxG5ddcz4xbX; Fri,  1 Oct 2021 16:30:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633069842;
-        bh=8e3p6TcMHyRkYPl5aL0IcT9hwWBWAm1eByV6Ex3QjQU=;
+        id S1352134AbhJAGZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230478AbhJAGZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 02:25:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C61061A57;
+        Fri,  1 Oct 2021 06:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633069400;
+        bh=vWqqxr539aef2V+4cScV97lUuywByujLgziy43fXUnw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fmrCL9FoSlEpgqzzMuHtEIFJ5ELrO+YhZR+RUiPOoN2hvXbQz0WEIhHkT5wOOQMHf
-         AMP4c0w0aAH6duPu0eVAeaN5GIxXJbC+Q0PtSYr4r+DNB4masVwneN6GxilQUPlcRq
-         Hi6zgD6uJwYkjtypqC0k5G5BQzQU5BOKLm8IsAEM=
-Date:   Fri, 1 Oct 2021 16:19:22 +1000
-From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YVaoamAaqayk1Hja@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com>
- <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922140911.GT327412@nvidia.com>
+        b=qMcp2Tf4CCPiR0iR8tQvpVTgTKJ0K6YMxk/WLiah32A5njx5E2jeiNE7a+Km4sxY7
+         BgNvTBSavBv1ys/RKaTC4hHv+zmf42aPhaQOmjgBa1m0k9KHQF7OVojqBsVj7iKTXT
+         /pWwzTKyWF/IyS6X2lM95AUeWkvL6ZVQsYrTLs5SHVYqnWC1Sq3EzfdrspRD8Fe9Um
+         dBq8KRyQElBVD4h1Vt+CQ+5JbV/8JQ94tFF5PVzFxRBG+d1FeIK2C8DdPOFiHnz6Qy
+         CVrLrzKlO/Jce7yVdvTVryFM6NRX/02oLe2RuNEA+6RdXv7FKYXBbT73bkD7MXLRka
+         aNDMXUrHift5Q==
+Date:   Fri, 1 Oct 2021 11:53:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <YVapVLnGfSBZCDTY@matsya>
+References: <20210902185543.18875-1-p.yadav@ti.com>
+ <20210902185543.18875-3-p.yadav@ti.com>
+ <YUMa/ocoQ9l3JDe6@aptenodytes>
+ <20210917172809.rjtf7ww7vjcfvey5@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lHnk0tj9oYSt/rWa"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922140911.GT327412@nvidia.com>
+In-Reply-To: <20210917172809.rjtf7ww7vjcfvey5@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pratyush,
 
---lHnk0tj9oYSt/rWa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 17-09-21, 22:58, Pratyush Yadav wrote:
+> +Rob
+> 
+> On 16/09/21 12:22PM, Paul Kocialkowski wrote:
+> > Hi,
+> > 
+> > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
+> > > The Cadence DPHY can be used to receive image data over the CSI-2
+> > > protocol. Add support for Rx mode. The programming sequence differs from
+> > > the Tx mode so it is added as a separate set of hooks to isolate the two
+> > > paths. The mode in which the DPHY has to be used is selected based on
+> > > the compatible.
+> > 
+> > I just realized that I didn't follow-up on a previous revision on the debate
+> > about using the phy sub-mode to distinguish between rx/tx.
+> > 
+> > I see that you've been using a dedicated compatible, but I'm not sure this is a
+> > good fit either. My understanding is that the compatible should describe a group
+> > of register-compatible revisions of a hardware component, not how the hardware
+> > is used specifically. I guess the distinction between rx/tx falls under
+> > the latter rather than the former.
+> 
+> I am not sure if that is the case. For example, we use "ti,am654-ospi" 
+> for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
+> only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
+> supports Octal SPI (8 lines).
 
-On Wed, Sep 22, 2021 at 11:09:11AM -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 22, 2021 at 03:40:25AM +0000, Tian, Kevin wrote:
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Wednesday, September 22, 2021 1:45 AM
-> > >=20
-> > > On Sun, Sep 19, 2021 at 02:38:39PM +0800, Liu Yi L wrote:
-> > > > This patch adds IOASID allocation/free interface per iommufd. When
-> > > > allocating an IOASID, userspace is expected to specify the type and
-> > > > format information for the target I/O page table.
-> > > >
-> > > > This RFC supports only one type (IOMMU_IOASID_TYPE_KERNEL_TYPE1V2),
-> > > > implying a kernel-managed I/O page table with vfio type1v2 mapping
-> > > > semantics. For this type the user should specify the addr_width of
-> > > > the I/O address space and whether the I/O page table is created in
-> > > > an iommu enfore_snoop format. enforce_snoop must be true at this po=
-int,
-> > > > as the false setting requires additional contract with KVM on handl=
-ing
-> > > > WBINVD emulation, which can be added later.
-> > > >
-> > > > Userspace is expected to call IOMMU_CHECK_EXTENSION (see next patch)
-> > > > for what formats can be specified when allocating an IOASID.
-> > > >
-> > > > Open:
-> > > > - Devices on PPC platform currently use a different iommu driver in=
- vfio.
-> > > >   Per previous discussion they can also use vfio type1v2 as long as=
- there
-> > > >   is a way to claim a specific iova range from a system-wide addres=
-s space.
-> > > >   This requirement doesn't sound PPC specific, as addr_width for pci
-> > > devices
-> > > >   can be also represented by a range [0, 2^addr_width-1]. This RFC =
-hasn't
-> > > >   adopted this design yet. We hope to have formal alignment in v1
-> > > discussion
-> > > >   and then decide how to incorporate it in v2.
-> > >=20
-> > > I think the request was to include a start/end IO address hint when
-> > > creating the ios. When the kernel creates it then it can return the
-> >=20
-> > is the hint single-range or could be multiple-ranges?
->=20
-> David explained it here:
->=20
-> https://lore.kernel.org/kvm/YMrKksUeNW%2FPEGPM@yekko/
+Those are hardware defaults right?
 
-Apparently not well enough.  I've attempted again in this thread.
+> In addition, I feel like the Rx DPHY is almost a different type of 
+> device from a Tx DPHY. The programming sequence is completely different, 
 
-> qeumu needs to be able to chooose if it gets the 32 bit range or 64
-> bit range.
+Is that due to direction or something else..?
 
-No. qemu needs to supply *both* the 32-bit and 64-bit range to its
-guest, and therefore needs to request both from the host.
+> the clocks required are different, etc. So I think using a different 
+> compatible for Rx mode makes sense.
 
-Or rather, it *might* need to supply both.  It will supply just the
-32-bit range by default, but the guest can request the 64-bit range
-and/or remove and resize the 32-bit range via hypercall interfaces.
-Vaguely recent Linux guests certainly will request the 64-bit range in
-addition to the default 32-bit range.
+Is the underlaying IP not capable of both TX and RX and in the specific
+situations you are using it as TX and RX.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+I am okay that default being TX but you can use Paul's approach of
+direction with this to make it better proposal
 
---lHnk0tj9oYSt/rWa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWqGoACgkQbDjKyiDZ
-s5L8tw//YY7tiUXvMIAGIXm61TIv66CLrMTg/3GyGWaYPOk+/BAQDLy5JD1g3v8n
-BFTejm6zx860jQwAkybZ9lBfZQrON5AwvUt75TGwjtMIgbHFJNfbicP9exYDtmrO
-p8ioJcXNUG1+lxpkNZwqHr7w65TMTpGdkxFPw4ndpMB6fnyr9nLMFq29XoH8P21A
-ksBSwHNAMnAffDWSo4f5WkOzn0lpr+wSJrdR300eHLpE7kAFxIsL89lse/q2t/RT
-eXxKn3+wh049SR7Hs/EMNemJZlgLy2+7HQxR0jBBBBFuTCDlv5TCRKdqBQbdamMc
-KJhaZLMub9D88YFof5rLYZ6VUfSQpcrtsJe7wmzjKvErjjYwRc/YhoQE+Ny+nWZh
-Ufvin7QR2SUFT2DvWkntoqjP16gNn6F4ojvs9XJzvFrV5UWSK9O080pBRhlilshK
-skD2BjpzeTGkSJyfVaK3JjV11Ng/JoJqE4jWddzDZlE3vcd1QYABuMhj0U/v9Nc3
-urDaZ08q9eu3Bvmn7gVMeApH5S4H0NDl2MTQeaayz9gn1/AZGMOi8ai3qT2I/iWS
-3OooRYVajkdqiMwsHhOF75UOHk38XYrrGp+NuQ6/vn3G7gMh0I5fADbCNKIP4LJJ
-oU544hDEtGp+2mUL8ljjnZVjmsYwJ3TMI6icSSfL+sZ3eI9JVAo=
-=iO+M
------END PGP SIGNATURE-----
-
---lHnk0tj9oYSt/rWa--
+-- 
+~Vinod
