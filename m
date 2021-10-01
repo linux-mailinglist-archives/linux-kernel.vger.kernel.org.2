@@ -2,403 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EEB41F7C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3B941F7C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356050AbhJAWwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35354 "EHLO mail.kernel.org"
+        id S1356078AbhJAWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:52:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:21327 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230433AbhJAWwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:52:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D93F61AEF;
-        Fri,  1 Oct 2021 22:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633128619;
-        bh=neiS5RL4tou68PR+miXcG5ixGmTIXgpFoEoZOCGLk0g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=j8fft8Jefx/+4zgZfW1WxX9L9H5DDKu02LGtCd3Vmy5SUBg8nqClJwSvpc6TQd44r
-         6CraXu5Tj0/qiMSdqo6WKrzk/DrpazQERlRXUWviida5TZDin6r5As+4zTHD2jmkI2
-         KukEQteAtIeioO/LvnNdfz2l5AEF6BWiIBfmczxlvvt+enUv0AuY97Terhf5ZXVY2P
-         PKUH9stMK+mMb+gfgJgPrTwEO3Ryh2hQjgbSUgY2Y+1gsH7L8DXuU587rYvIawtqSr
-         ysGxOLUClrNUwRBpWp9tEpJktdXaQaW0Sqyf0vWhnFpxFR3EtCDDJEjjVuYep3vCfh
-         rRnVyjQsdzQPw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 33B785C12B1; Fri,  1 Oct 2021 15:50:19 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 15:50:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        will@kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
-Message-ID: <20211001225019.GM880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
- <20210929214703.GG22689@gate.crashing.org>
- <20210929235700.GF880162@paulmck-ThinkPad-P17-Gen-1>
- <20211001191008.GA16711@gate.crashing.org>
+        id S230433AbhJAWwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:52:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205091611"
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="205091611"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:50:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="619457986"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2021 15:50:34 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 1 Oct 2021 15:50:34 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 1 Oct 2021 15:50:34 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 1 Oct 2021 15:50:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=frDjWsDM+dCW7VGTw0QjvQydy8wERmfHcYxCiZ489TC6edFdIJMca0bciJasiGQhFhRhVVaIKMH+thXNEL1CU0WSDs/0auEXwV08ADppF0FaLyv1WdD/LQAidqjMBxO5U9Xo8f70CuR018tIkWIeXYCOOCP1jhh+junRdk0Rs/gPR8yk1Ott9rlHVoXCAg9L7r/0Tyg8M+h3pAQQ32rX/numCJCmxoRyuNxtY2RzN09qnMgdQlRDVKp3Q3jAOW+c3j/r3NuO4dFJX2PshOUCJvFtlEc2a8lvVqj1GTRSMBgAwPq05B7WgwdIiRNcdnoyD+bGoGmnUINziZND9T4VDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YizzuhGXPPNKmr8wS0aZp7Z2ZcOKDsF77s6GsRqFs6U=;
+ b=dO3TE/Z73L9KdpN3at3h3JeaPQmoTjBgcsAqJnUWEvYVfVKJhZWDbcapQEQz4iY6W2Nr5VxCKEitI+g5tMRn1tb/+3NaWsjZYLGK90l2NlHxw1XBD2k+2InlYgHlfZSJ4QAJ28wijCB+URo34v+e0EjPsXFXz0TwxEInZS1b/RMVVrgZyk12lcNmzmSBaNUUbspTdHn8vorgGERvP0AonFLhPrlw6GIPYJq2m/KJkZ2k2OKezRGHm7xh1OtNTHa82dNfxIC/tnp31kk/mQlq0JptrvtfgrYYzm+5eIpFNmnh0WZ1RJbEpT0JO3HqOG1eI8j3xeYYE0iv+vyUQDFd0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YizzuhGXPPNKmr8wS0aZp7Z2ZcOKDsF77s6GsRqFs6U=;
+ b=QAHXijtK6+XPlJWDKfgV2Mc9g9kvvmGWYAlN4Tqxl2p2lP2+nVp4DDavbJ2gnMPnqQoCU31puARNhNPa+LYcHTN1SNv2qdjjI0nb6RrcPbGmAe2xmOU/+4QXdluOPTSYBjFQAS4WzlC9IILaWBEgav2MfCheTty6NlL7mFfFVrY=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB5079.namprd11.prod.outlook.com (2603:10b6:510:3d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Fri, 1 Oct
+ 2021 22:50:32 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983%3]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
+ 22:50:32 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+Thread-Topic: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+Thread-Index: AQHXtxXjpXjC3Qk5Sky+qg9KSaDYk6u+v02A
+Date:   Fri, 1 Oct 2021 22:50:32 +0000
+Message-ID: <89BFDA7D-C27F-4527-B494-1397876CA6F2@intel.com>
+References: <20211001223728.9309-1-chang.seok.bae@intel.com>
+In-Reply-To: <20211001223728.9309-1-chang.seok.bae@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.7)
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c3068baf-2613-4038-118d-08d9852ddfb2
+x-ms-traffictypediagnostic: PH0PR11MB5079:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB5079757701D0E239D113706DD8AB9@PH0PR11MB5079.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5Y1TiWuNVF/LU6adjdXEcgc2xaYC6vfzNQ5T8rtBHzrNBRH/vBeo97TyfzOjMOIX9SGsrQFcNbtgP5xkk+XCfE/IdO8EJ8lx6VXd5D4NjFVnfHv4CNErjqvevOgBlPIqfQT/K6Zsvipc0c+HXvAql3osEC53eIjMT+flQBnNTG9I4VTQSbi017/8Xmc7p5CvFkLSkoKfvwULj285J6G+aHnTJEZokLdLSUGZvCpm76oKWnAmW/tWI5VfKtW1zFIzdBUUZZ1c+8tAhDaL8eqzA1SDwJYac77L2LHXAz+LWJ9cOTmMWngzMMC/g+ZFvgAVmi8zjIYlo7GWiYiS6P7oPTXIUyF1ax0fx/Muo/P9M6BNmpcfVUuH1/E7BjbJnaF4BPSCU+V86eN6EVXJk8VOQFKlb/QsMr0DAdSbO2UJQ3eaMaEKihnk7RjMdT5V4yD0fjHKwDXb+WYcM63g82+iMAi28UA7tXWkWIDs3U5j6jfIvkoQ3VqMOVpirbNCq9auG4Z/Z12D1zOb7G0GHUedUfwCKcirIyOjMLGrMvDZpXmhlKbzHTzN+mhS3ZAGtpc/RLKnmpiv/hRnUPdKxJ79F8ekuGJ1oE90EOZk0sGXJcp4kdRCrIeQxrlWN5EL8Dxm9I3Hv4IV7ly61gBKBBeZHB6gy5g02+vqSSEKcVYd9jDsE/k92yCrxSeP0z9p7YlZsT9HtjQhsDkdRjFXDAKJlm9+evG2/yqBy5HlXYx1qTacquJo/dmVm7hl7hi1VjOg4fnmsljBG1pouKFm7gOsheD24/qqRdZkkaGZ4TBOJyxaYGQRz4+IlYqD2x55O2E+8irBgG2q6BzBjmu91RjJJQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4744005)(76116006)(122000001)(54906003)(86362001)(316002)(6916009)(38100700002)(508600001)(33656002)(8936002)(966005)(4326008)(6486002)(26005)(71200400001)(64756008)(8676002)(38070700005)(186003)(66446008)(6512007)(2616005)(36756003)(5660300002)(6506007)(66946007)(2906002)(66556008)(66476007)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?G/NagheF0seBVUczgjycErCOLublUZ0oYKol5xF8C4iwib7Xk3/Q1j52Fb8J?=
+ =?us-ascii?Q?YeShWamySNmbdC3XuJ3eJ5En+X6X6u1BFA7SNM9RXR32Dc3Ns8CiTzcIVD5k?=
+ =?us-ascii?Q?ilxdVX31q4IT+PIYAvHzziVBbbGOge9jVDVkUu8bfNUO8P0MD1HwzOaAoxUE?=
+ =?us-ascii?Q?ArV1Q0TmpbTvigju6vFtvkE1jSMJ86apjUaD8G2j2Prwv5zdoeZOQar4oL01?=
+ =?us-ascii?Q?JuAa+ioIvMWL3QlK2HZ8fKPqhtWndwSuF/TRwsI7/l7vQQE92R2xjOm8wqBP?=
+ =?us-ascii?Q?I2bK5M8LDuCDPBEnu+ynjRlidYWnZTcPQV5qx+wrd2pV95N2v/lN6/LYKFxp?=
+ =?us-ascii?Q?onWvbVQu6nF9dJaZSihPmdkNWiuSg8DHI0hDpDHowSc/J+8nbq0PWojcMJeY?=
+ =?us-ascii?Q?+BkMkj565TMrXSIEmQGr6BrAYpYnp1CCyfgLrjq6R8yg+UdzlUKN7kNRpKnc?=
+ =?us-ascii?Q?blE42BRDJh+14QGWQhHu7gHu9xsHUdt9UjFZcXFKEt9MnuoWvVDLAy7B4ulQ?=
+ =?us-ascii?Q?vRuEZWTebP0VPpV9S4VRo35tsr1NKOPGbK6TWhv1lt7PBKPognToU9EgDGoC?=
+ =?us-ascii?Q?xZn6znKuhBJb0jevmBSyNsOIuLvO1q/eG1z6JclHVJr2TLpmxuJu2rO6khEs?=
+ =?us-ascii?Q?rPVAT+rkhD9r7VZDRDSsarHLw3nxQH3iIwfQ7Ez/MjL8ZPVONJgt5Vejg4z7?=
+ =?us-ascii?Q?zL/z5ceiaYFwrWy/sWfdSXbfCmcEtMw1IaFdsfnrKOY/5a7FaSCe98oyd7pc?=
+ =?us-ascii?Q?zPLNAKJOCaovLtt5VDY4pWmlux00BGaI2M8bY4oMVRM06mY3Q5qSSq27QKj5?=
+ =?us-ascii?Q?+ymYjZm0M7Qh1GcpuESfkJYpqhqq5fdZ3lJxnVXK5MfrFpwc2QTqE4Wm4HEV?=
+ =?us-ascii?Q?UQBs4s9jslHX6+Ms3C47JoSLkBwAgF+sHUXgIUHzkZhAippdZVotiFr8dPU6?=
+ =?us-ascii?Q?TAUb0jGdHc9EpVQaYKX0Xtl9bWx8MFF/XWbnU690fkT2BQzWy4aRaA+tfxaW?=
+ =?us-ascii?Q?zweGhxj9NgSdf0oXBPTC1rHCrl488Y+fcgvIVfKAHqLO5wNyUOGchLPigP1b?=
+ =?us-ascii?Q?yF3LS5G2t0Dsft7jHg2h0ELXQjqs/BJpdTSJd4VU+RBgyGL/xbwmwDnP33ra?=
+ =?us-ascii?Q?mlmmkuLNwnv3SLoPXMEZrNNXLFTunbrQ0vlDe5yItLJLBJJegjnrFvr0MtpR?=
+ =?us-ascii?Q?Vv/qM9phUu+NuFZbEp7D3Pyi711pZh7gKBZY2ow427iKuyYT7Ha+WRhC7vdU?=
+ =?us-ascii?Q?0gPxttbcfZO23AYKl1MZr0K230fLU5PJ9FqrgaS7kHbxrAWFDDr4UsKnGFuX?=
+ =?us-ascii?Q?COJA4ED72tIbOhW35K1NzxUO?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <37D343E848E8254D9709E70FAE23703D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001191008.GA16711@gate.crashing.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3068baf-2613-4038-118d-08d9852ddfb2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2021 22:50:32.0934
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AOlWWZVgD8rYvQ23t5XKbpdzj5dFFyl/QCWbumE4q9e8FXHurphPxoj1VogYme5IaGCb5QEP9VvdfyXzncyGge8VYd7hfsDhylLlAER7P7A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5079
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 02:10:08PM -0500, Segher Boessenkool wrote:
-> Hi Paul,
-> 
-> On Wed, Sep 29, 2021 at 04:57:00PM -0700, Paul E. McKenney wrote:
-> > On Wed, Sep 29, 2021 at 04:47:03PM -0500, Segher Boessenkool wrote:
-> > > On Tue, Sep 28, 2021 at 05:15:07PM -0400, Mathieu Desnoyers wrote:
-> > > > C99 describes that accessing volatile objects are side-effects, and that
-> > > > "at certain specified points in the execution sequence called sequence
-> > > > points, all side effects of previous evaluations shall be complete
-> > > > and no side effects of subsequent evaluations shall have taken
-> > > > place". [2]
-> > > 
-> > > But note that the kernel explicitly uses C89 (with GNU extensions).
-> > > Side effects are largely equal there though.
-> > > 
-> > > Also note that there may no place in the generated machine code that
-> > > corresponds exactly to some sequence point.  Sequence points are a
-> > > concept that applies to the source program and how that executes on the
-> > > abstract machine.
-> > 
-> > Plus the "as if" rule rears its ugly head in many of these situations.
-> 
-> Do you mean 5.1.2.3 (especially /4 and /6) here, or something more?
+Hi Thomas,
 
-Oddly enough, my C standard was open to exactly these paragraphs.  ;-)
+Sending this version as it follows up the discussion [1] with some code
+changes from v10. This is not intended to ignore your comment on v10 at all=
+.
+Appreciate your points on my oversights that I will address in v12 soon.
 
-I won't claim that /4 and /6 cover everything that I am worried about
-(I do not have the standard committed to memory), but those are big ones.
+[1] https://lore.kernel.org/lkml/CAJvTdKkK=3D_pp1PrWdh1_GN73VifuAkivnErgK+b=
+o2h34Vd_55w@mail.gmail.com/#t
 
-> People are easily fooled into thinking that your C code somehow
-> corresponds directly to the generated machine code.  Partly that is
-> because very old compilers did work that way (they did for every
-> language, not just C, certainly for all imperative languages -- but
-> people do think C is a one-to-one translation, more than for other
-> languages).
-
-I remember those very old days well, and lost my C-assembler innocence
-in the early 1990s.  ;-)
-
-> > > > +Because ctrl_dep emits distinct asm volatile within each leg of the if
-> > > > +statement, the compiler cannot transform the two writes to 'b' into a
-> > > > +conditional-move (cmov) instruction, thus ensuring the presence of a
-> > > > +conditional branch.  Also because the ctrl_dep emits asm volatile within
-> > > > +each leg of the if statement, the compiler cannot move the write to 'c'
-> > > > +before the conditional branch.
-> > > 
-> > > I think your reasoning here misses some things.  So many that I don't
-> > > know where to start to list them, every "because" and "thus" here does
-> > > not follow, and even the statements of fact are not a given.
-> > > 
-> > > Why do you want a conditional branch insn at all, anyway?  You really
-> > > want something else as far as I can see.
-> > 
-> > Because at the assembly language level on some architectures, a
-> > conditional branch instruction provides weak but very real and very
-> > useful memory-ordering properties.
-> 
-> On some archs, yes.  So what you really want is that effect, not a
-> conditional branch itself, right?
-
-Yes.
-
-> > Such a branch orders all loads
-> > whose return values feed into the branch condition before any stores
-> > that execute after the branch does (regardless of whether or not the
-> > branch was taken).  And this is all the ordering that is required for
-> > the use cases that Mathieu is worried about.
-> 
-> Okay.  So you want to order some set of loads A before some stores B,
-> with a conditional expression C, where A dominates C, and C dominates B.
-> 
-> Is that exactly what is wanted here?  (You can also take B to be all
-> stores dominated by C, which may be the only case we care about).
-
-If I understand your nomenclature, pretty much, but I suspect that
-"dominates" does not necessarily say "the values from loads in A are
-used to compute C".  Yes, the compiler can kick out a memory-barrier
-instruction to make things work otherwise, but our performance-sensitive
-developer would want to know about that performance bug.
-
-> > Yes, you can use explicit memory-barrier or acquire-load instructions,
-> > but those incur more overhead on some types of hardware.  The code in
-> > question is on a hotpath and is thus performance-critical.
-> 
-> Yes.
-> 
-> > It would be nice to be able to somehow tell the compiler exactly
-> > what the ordering constraints are ("this particular load must be
-> > ordered before these particular stores") and then let it (1) figure
-> > out that a conditional branch will do the trick and (2) generate the
-> > code accordingly.  But last I checked, this was not going to happen any
-> > time soon.  So for the time being, we have to live within the current
-> > capability of the tools that are available to us.
-> 
-> But a conditional branch is not enough for all architectures (most
-> architectures even!), and for all implementations of the architectures.
-
-For the architectures that the Linux kernel supports, it does suffice.
-For at-least-TSO architectures, load-store ordering suffices.  ARM,
-PowerPC, Alpha, and Itanium respect control dependencies, that is,
-conditional branches act as lightweight memory-barrier instructions on
-those architectures.
-
-If a weaker-than-TSO architecture appeared and wanted to run Linux, it
-would need to provide stronger ordering, either with its own version of
-something like the volatile_if() macro or with some compiler feature
-knowing that an explicit memory-barrier instruction was required in
-that case.
-
-Or am I missing your point?
-
-> > Linus points out that in all the actual control-dependent code in
-> > the Linux kernel, the compiler is going to be hard-pressed to fail
-> > to emit the required branch.  (Or in the case of ARMv8, the required
-> > conditional-move instruction.)
-> 
-> Yes.  But as a compiler person I read all "the compiler is hard-pressed
-> to do X" as "the compiler will certainly do X in some cases, maybe once
-> in a million only, but still; and the compiler is perfectly free to do
-> so, and that may even be a good decision as well".
-> 
-> Wishy-washy code is fine in some places, if you cannot do better, and
-> you can verify the machine code generated executes as wanted.  This is
-> not really feasible for a more generic building block that is used in
-> many disparate places.
-
-Agreed, which is why Mathieu would like to come up with something better.
-
-And for my part, I wrote the control-dependencies section of the infamous
-memory-barriers.txt document to discourage their use.
-
-> > Mathieu, for his part, recently read the relevant portions of
-> > memory-barriers.txt (reproduced below) and would like to simplify these
-> > coding guidlines, which, speaking as the author of those guidelines,
-> > would be an extremely good thing.  His patches are attempting to move
-> > us in that direction.
-> 
-> Yes.
-> 
-> In general, rules and guidelines should make it easy to use some
-> feature, and hard to make mistakes in how you use it.  Ideally the
-> design lf the feature gets you 90% there already.
-
-Agreed.  And the kernel does have to play fast and loose with the
-compiler in a number of places, and likely always will.  (Context
-switches, anyone?)
-
-> > Alternatives include: (1) Using acquire loads or memory barriers
-> > and accepting the loss in performance, but giving the compiler much
-> > less leeway,
-> 
-> Yes, that is very expensive.  So expensive that it isn't an option for
-> any case where you would think about using a control dependency, imo.
-
-Agreed, and thus there are a few places in the Linux kernel that do
-use control dependencies, despite all the scary words in memory-barriers.txt.
-
-> > (2) Ripping all of the two-legged "if" examples from
-> > memory-barriers.txt and restricting control dependencies to else-less
-> > "if" statements, again giving the compiler less leeway, and (3) Your
-> > ideas here.
-> 
-> In my opinion we should not define this barrier in terms of "if" (and/or
-> "else") at all.
-
-It certainly would be nice to be living in a world where we didn't
-have to.  ;-)
-
-> > Does that help, or am I missing your point?
-> 
-> See just above.
-> 
-> Your comments help reduce impedance mismatch, thanks :-)
-
-Glad it helped!  ;-)
-
-> > > It is essential here that there is a READ_ONCE and the WRITE_ONCE.
-> > > Those things might make it work the way you want, but as Linus says this
-> > > is all way too subtle.  Can you include the *_ONCE into the primitive
-> > > itself somehow?
-> > 
-> > Actually, if the store is not involved in a data race, the WRITE_ONCE()
-> > is not needed.
-> 
-> True.
-> 
-> > And in that case, the compiler is much less able to
-> > fail to provide the needed ordering.
-> 
-> GCC will always do stores only where the source code said it should.
-> This is needed to make anything asynchronous (threads, signals) work.
-
-Good to know!  I have been worried about the compiler using a variable
-as temporary storage just before that variable is stored to.  :-/
-
-> > (No, the current documentation
-> > does not reflect this.)  But if there is a data race, then your point
-> > is right on the mark -- that WRITE_ONCE() cannot be safely omitted.
-> 
-> But the store you care about might not be right there, it may be in some
-> called function for example, so haing the WRITE_ONCE as part of the
-> macro is maybe not a good idea.
-
-The Linux kernel does have address and data dependencies that span many
-functions and even multiple translation units.  But I believe that all
-of the control dependencies are local.  That said, I get your point --
-it would be annoying to have a compiler memory-ordering feature that
-worked only within the confines of a single function.
-
-Which was why I have been pessimistic about being able to specify
-all this to the compiler.
-
-> > But you are absolutely right that the READ_ONCE() or equivalent is not
-> > at all optional.  An example of an acceptable equivalent is an atomic
-> > read-modify-write operation such as atomic_xchg_relaxed().
-> > 
-> > The question about whether the READ_ONCE() and WRITE_ONCE() can be
-> > incorporated into the macro I leave to Mathieu.  I can certainly see
-> > serious benefits from this approach, at least from a compiler viewpoint.
-> > I must reserve judgment on usability until I see a proposal.
-> 
-> Yeah.  And easy of use (and that means *correct* use) is key.
-
-Agreed.
-
-> > However, stores are not speculated.  This means that ordering -is- provided
-> > for load-store control dependencies, as in the following example:
-> > 
-> > 	q = READ_ONCE(a);
-> > 	if (q) {
-> > 		WRITE_ONCE(b, 1);
-> > 	}
-> 
-> Yes, and you do not need a conditional branch (in the generated machine
-> code) to have such a dependency -- if the READ_ONCE itself is part of
-> the condition (it is a read of a volatile object after all).
-
-Agreed, for example, ARMv8 carries control dependencies through the
-CSEL instruction.
-
-> > Control dependencies pair normally with other types of barriers.
-> > That said, please note that neither READ_ONCE() nor WRITE_ONCE()
-> > are optional! Without the READ_ONCE(), the compiler might combine the
-> > load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(),
-> > the compiler might combine the store to 'b' with other stores to 'b'.
-> 
-> This part only shows some things that could go wrong.  It also assumes
-> things that aren't true in general, like, the compiler cannot combine
-> a WRITE_ONCE with another store.
-
-Please give me an example of a situation where the compiler can combine
-a WRITE_ONCE() volatile store with some other store.
-
-> > Either can result in highly counterintuitive effects on ordering.
-> 
-> Yes, and part of that is that the expectations are wrong, are based on
-> fundamental untruths.
-
-Yes, as used in the Linux kernel, control dependencies are tricky
-and fragile.  They depend on adhering to strict coding standards and
-they also depend on particular compiler implementations.  Not exactly
-an optimal situation, but it is sadly the world we currently live in.
-
-> > Worse yet, if the compiler is able to prove (say) that the value of
-> > variable 'a' is always non-zero, it would be well within its rights
-> > to optimize the original example by eliminating the "if" statement
-> > as follows:
-> > 
-> > 	q = a;
-> > 	b = 1;  /* BUG: Compiler and CPU can both reorder!!! */
-> > 
-> > So don't leave out the READ_ONCE().
-> 
-> If you do have the READ_ONCE, the compiler has to do the read -- but if
-> the compiler still knows "a" contains a non-zero value (yes, this can
-> still happen, if a zero would lead to undefined behaviour for example),
-> you do not get the dependency between the read and write you may want.
-
-Good point, and I should add that.  Maybe something as silly as the
-following?
-
-	q = READ_ONCE(a);
-	if (q)
-		WRITE_ONCE(b, 1);
-	c = 5 / q;
-
-Then the divide tells the compiler that q is non-zero, so it is within
-its rights to transform to the following:
-
-	q = READ_ONCE(a);
-	WRITE_ONCE(b, 1);  // Which the hardware might reorder.
-	c = 5 / q;
-
-Or is there a better example?
-
-> If you *do* want that dependency.  Often that WRITE_ONCE is all you want
-> in such a case.
-
-I may have lost you on this one.
-
-> [ snip a lot ]
-> 
-> > More generally, although READ_ONCE() does force
-> > the compiler to actually emit code for a given load, it does not force
-> > the compiler to use the results.
-> 
-> Exactly.  And it does tell the compiler the result could be anything
-> (because it is a read of volatile memory), but other things in the
-> program, or caused by compiler transforms, can change this.
-> 
-> If your program says
-> 
-> 	X;
-> 
-> somewhere, the compiler is perfectly within its right to change that to
-> 
-> 	if (q)
-> 		X;
-> 	else
-> 		X;
-> 
-> and then optimise the two occurences of X separately.  Now if X contains
-> some conditional based on "q" itself (which btw makes such a compiler
-> transform more likely!), things you may not want or expect can happen.
-
-Agreed, and this sort of thing is one of the reasons why I discourage
-carrying address/data dependencies through integers.  (Yes, you
-can construct similar things for pointers, but you have to work a
-bit harder.  And I am pushing for ways to tell the compiler about the
-carried dependency, though this is going quite a bit more slowly than
-I would like.)
-
-> Lastly:
-> 
-> >   (*) Compilers do not understand control dependencies.  It is therefore
-> >       your job to ensure that they do not break your code.
-> 
-> Compilers understand you want exactly what you wrote.  If you write
-> something other than what you want, you only will get what you want by
-> pure luck.
-
-But we have to make things work with the tools that we have.  It would
-be nice to have a compiler that could be told about control dependencies,
-but in the meantime, we have what we have.
-
-But with the increasing leveraging of undefined behavior to enable
-optimizations in advance of the undefined behavior, compilers are less
-and less likely to give you exactly what you wrote.  Which certainly
-does not ease the task of debugging!  ;-)
-
-							Thanx, Paul
+Thanks,
+Chang=
