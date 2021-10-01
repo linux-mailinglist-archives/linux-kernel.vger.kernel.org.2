@@ -2,64 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15E541F223
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6BA41F218
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354977AbhJAQaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:30:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9908 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhJAQaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:30:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="223582517"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="223582517"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 09:20:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="710009740"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Oct 2021 09:20:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1E12BB8; Fri,  1 Oct 2021 19:20:35 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 net 1/1] ptp_pch: Load module automatically if ID matches
-Date:   Fri,  1 Oct 2021 19:20:33 +0300
-Message-Id: <20211001162033.13578-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232081AbhJAQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:27:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61401 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232027AbhJAQ1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 12:27:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633105518; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=kgyr6ftDMLI6z7X7YJR7MLOn6ed6XuuKLfvpzM9caV0=; b=AvGg8dd30oeehWmcYkxRkH48hxQBQJouAb+KockHTmsBC9ve053V+3Fakpi17tgXNSG3Ma5F
+ CSAs1sk+gWfrwzRvVkosvZ1r1e8CeL8ojCXCiWB9uPS7Zju83PZZLkNfIlFYDzTviICH965n
+ uEpZ6VxZ5S+rKferMKan7LD5pwc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61573658a5a9bab6e8697cd7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 16:24:56
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 15228C43460; Fri,  1 Oct 2021 16:24:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8B01C4338F;
+        Fri,  1 Oct 2021 16:24:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E8B01C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for version 1.6
+Date:   Fri,  1 Oct 2021 21:54:31 +0530
+Message-Id: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can't be loaded automatically because it misses
-module alias to be provided. Add corresponding MODULE_DEVICE_TABLE()
-call to the driver.
+Add support for soundwire 1.6 version to gate RX/TX bus clock.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- drivers/ptp/ptp_pch.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/qcom.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ptp/ptp_pch.c b/drivers/ptp/ptp_pch.c
-index a17e8cc642c5..8070f3fd98f0 100644
---- a/drivers/ptp/ptp_pch.c
-+++ b/drivers/ptp/ptp_pch.c
-@@ -644,6 +644,7 @@ static const struct pci_device_id pch_ieee1588_pcidev_id[] = {
- 	 },
- 	{0}
- };
-+MODULE_DEVICE_TABLE(pci, pch_ieee1588_pcidev_id);
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 0ef79d6..599b3ed 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -127,6 +127,7 @@ struct qcom_swrm_ctrl {
+ 	struct device *dev;
+ 	struct regmap *regmap;
+ 	void __iomem *mmio;
++	char __iomem *swrm_hctl_reg;
+ 	struct completion broadcast;
+ 	struct completion enumeration;
+ 	struct work_struct slave_work;
+@@ -610,6 +611,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
+ 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
  
- static SIMPLE_DEV_PM_OPS(pch_pm_ops, pch_suspend, pch_resume);
++	if (ctrl->swrm_hctl_reg) {
++		val = ioread32(ctrl->swrm_hctl_reg);
++		val &= 0xFFFFFFFD;
++		iowrite32(val, ctrl->swrm_hctl_reg);
++	}
++
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
  
+ 	/* Enable Auto enumeration */
+@@ -1200,7 +1207,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	struct qcom_swrm_ctrl *ctrl;
+ 	const struct qcom_swrm_data *data;
+ 	int ret;
+-	u32 val;
++	int val, swrm_hctl_reg = 0;
+ 
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+@@ -1251,6 +1258,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+ 	ctrl->bus.compute_params = &qcom_swrm_compute_params;
+ 
++	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg))
++		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
++
+ 	ret = qcom_swrm_get_port_config(ctrl);
+ 	if (ret)
+ 		goto err_clk;
 -- 
-2.33.0
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
