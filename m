@@ -2,130 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA05341F756
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838D741F75F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355791AbhJAWPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354768AbhJAWPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:15:52 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0556C06177F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:14:07 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id n6so6453496qvp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dlj3GwcHZB/hfgpWys67iaiDnLMMEzD7BT0/JUJOZSA=;
-        b=EYJBCgdxRWFQwama5Ss0sx2D4qnIU/NFx7XF8E6GPLVVfNfvYaFMHC2BJIcCXsVoIF
-         iCVvjpeBI3ImpoxruP60EpxdKHxMF088MpggWRWO7IYnFWYmW7H6nN3tO2gp7dE0tPcr
-         PZxWZiHqQ0kOXeNKhD0DGvipG0AB/RuuNPtsQvgGuq0gEvYHfaW0BPvSOUVVBNQSYbh9
-         0YWWGW3L+w61nc7KMA8GAJec757jPzc4w6+ESAcdFTN5R3q4fIgS/oiFDTnJz8JfMv7h
-         ts1ZBK4JepAEgYw1PQejU7GFCd4skwXqph1TdAhgLH6c2/iHJ7h16XxYT4AhYwcn5M99
-         FT8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dlj3GwcHZB/hfgpWys67iaiDnLMMEzD7BT0/JUJOZSA=;
-        b=DX4K8NUbBo7/AdCAwzy/GRBugXbtsZIZ0pHlU58B4Ul0YjLoxQRh631CnzHQv8jMBn
-         NFDFgx0wT+DV2yxuNu6VtaQ/QfsulMBDCR0Iv7mL7OrN8d5wONmtkhVXF4tyebj0ufwW
-         RwrfhKgPMD84bC3lebe5hM/rI6sR37N3qLOV7CyrKvrCwJM/BS12YQMP9WR20D/23vQs
-         MKQMxFgEdDL0Xl1KwBTj/DVNOGGpAIMMS/9npLM3itdYQj3odJK4BwVRPlAuTYqLiNFs
-         B5nSwRVVWeAbjWDWzDVuPdXQgcqc01QGxqpSfUkQIN9o1OVYbsmpn67Nycd/X78lFBD4
-         J2GQ==
-X-Gm-Message-State: AOAM533AcoAIp2BTOV0ZEg1iC57NwqYZb0zPEq3PrX6n7snLqK1b8SSV
-        2uMWyCriqujeiCImrivcliGcjw==
-X-Google-Smtp-Source: ABdhPJxstfy2KGuFAOeM51qITA8tU2CEYk8H/V5BgLnRDG7386cROIjg8GYfgca/wk61maljwb6gxg==
-X-Received: by 2002:a05:6214:dac:: with SMTP id h12mr7351043qvh.39.1633126446714;
-        Fri, 01 Oct 2021 15:14:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p9sm3635312qkm.23.2021.10.01.15.14.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 15:14:05 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mWQn7-009XgW-9E; Fri, 01 Oct 2021 19:14:05 -0300
-Date:   Fri, 1 Oct 2021 19:14:05 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20211001221405.GR3544071@ziepe.ca>
-References: <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
- <20210929230543.GB3544071@ziepe.ca>
- <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
- <20210929233540.GF3544071@ziepe.ca>
- <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
- <20210930003652.GH3544071@ziepe.ca>
- <20211001134856.GN3544071@ziepe.ca>
- <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
- <20211001174511.GQ3544071@ziepe.ca>
- <95ada0ac-08cc-5b77-8675-b955b1b6d488@deltatee.com>
+        id S1355829AbhJAWVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:21:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230171AbhJAWVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:21:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3E10B61A8E;
+        Fri,  1 Oct 2021 22:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633126807;
+        bh=YbdgR2br21vkb23aznK4+NOSi64mqjNQxW+FIHL+M0s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iChqU2l2T2CmgW+6cLyOFC59hiRQGPeqSSXxV8mxfkLmm1yo+g6ayo1h7Kev8f3Od
+         U9gPIBm43Fvk7nGMS8VOcY8w9S1CDLt3a+IFbQg/sqHS72C+FoN5BZB9iCfKHP48uH
+         Fvndx14BWlWhZHGpFlffDbvPbaCdDkXHg3eUdC3Cunx9AIx/RpvUWIMyWOXlqTHIwv
+         3FEb1iqzge6PlbjnfBzpXX7fwoBF2YqsSaEwCfpzl1UgjMotlFu6Ife82pGxafyRbz
+         tL6POglZogfjvJn8KSZ8zAQDaADXZDrMqk5zzImtjAt1Y1rW0MMYiqH4WKDFmQxXQ2
+         SI9wpo1yxSDhw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2FF3660A3C;
+        Fri,  1 Oct 2021 22:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95ada0ac-08cc-5b77-8675-b955b1b6d488@deltatee.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] MAINTAINERS: Remove Bin Luo as his email bounces
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163312680719.6540.12150777799410591414.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Oct 2021 22:20:07 +0000
+References: <045a32ccf394de66b7899c8b732f44dc5f4a1154.1632978665.git.leonro@nvidia.com>
+In-Reply-To: <045a32ccf394de66b7899c8b732f44dc5f4a1154.1632978665.git.leonro@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, leonro@nvidia.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 02:13:14PM -0600, Logan Gunthorpe wrote:
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Thu, 30 Sep 2021 08:12:43 +0300 you wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
+> The emails sent to luobin9@huawei.com bounce with error:
+>  "Recipient address rejected: Failed recipient validation check."
 > 
-> On 2021-10-01 11:45 a.m., Jason Gunthorpe wrote:
-> >> Before the invalidation, an active flag is cleared to ensure no new
-> >> mappings can be created while the unmap is proceeding.
-> >> unmap_mapping_range() should sequence itself with the TLB flush and
-> > 
-> > AFIAK unmap_mapping_range() kicks off the TLB flush and then
-> > returns. It doesn't always wait for the flush to fully finish. Ie some
-> > cases use RCU to lock the page table against GUP fast and so the
-> > put_page() doesn't happen until the call_rcu completes - after a grace
-> > period. The unmap_mapping_range() does not wait for grace periods.
+> So let's remove his entry and change the status of hinic driver till
+> someone in Huawei will step-in to maintain it again.
 > 
-> Admittedly, the tlb flush code isn't the easiest code to understand.
-> But, yes it seems at least on some arches the pages are freed by
-> call_rcu(). But can't this be fixed easily by adding a synchronize_rcu()
-> call after calling unmap_mapping_range()? Certainly after a
-> synchronize_rcu(), the TLB has been flushed and it is safe to free those
-> pages.
+> [...]
 
-It would close this issue, however synchronize_rcu() is very slow
-(think > 1second) in some cases and thus cannot be inserted here.
+Here is the summary with links:
+  - [net] MAINTAINERS: Remove Bin Luo as his email bounces
+    https://git.kernel.org/netdev/net/c/5cfe5109a1d7
 
-I'm also not completely sure that rcu is the only case, I don't know
-how every arch handles its gather structure.. I have a feeling the
-general intention was for this to be asynchronous
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-My preferences are to either remove devmap from gup_fast, or fix it to
-not use special pages - the latter being obviously better.
 
-Jason
