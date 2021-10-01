@@ -2,200 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1FE41E915
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661B141E916
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352822AbhJAI2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:28:42 -0400
-Received: from mga12.intel.com ([192.55.52.136]:57344 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352645AbhJAI2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:28:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="204856569"
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="204856569"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 01:26:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="539940425"
-Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Oct 2021 01:26:17 -0700
-Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mWDs1-0000x2-5X; Fri, 01 Oct 2021 08:26:17 +0000
-Date:   Fri, 01 Oct 2021 16:25:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2021.09.20a] BUILD SUCCESS
- eb302f45fb328c65af2d8bef935105d53f6050b0
-Message-ID: <6156c5ff.mTh4fn2OfXadJip4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1352216AbhJAI26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:28:58 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:35647 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1352723AbhJAI20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 04:28:26 -0400
+Received: from [192.168.0.3] (ip5f5aef40.dynamic.kabel-deutschland.de [95.90.239.64])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E843E61E64846;
+        Fri,  1 Oct 2021 10:26:20 +0200 (CEST)
+Subject: Re: [smartpqi updates PATCH V2 09/11] smartpqi: fix duplicate device
+ nodes for tape changers
+To:     Don Brace <don.brace@microchip.com>
+Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
+        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
+        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
+        mike.mcgowen@microchip.com, murthy.bhat@microchip.com,
+        balsundar.p@microchip.com, joseph.szczypek@hpe.com,
+        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
+        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
+        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        linux-scsi@vger.kernel.org
+References: <20210928235442.201875-1-don.brace@microchip.com>
+ <20210928235442.201875-10-don.brace@microchip.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <1351a25f-5310-cae3-ae47-01c842e0a185@molgen.mpg.de>
+Date:   Fri, 1 Oct 2021 10:26:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210928235442.201875-10-don.brace@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.09.20a
-branch HEAD: eb302f45fb328c65af2d8bef935105d53f6050b0  EXP rcutorture: Nest readers
+Dear Kevin, dear Don,
 
-elapsed time: 1190m
 
-configs tested: 140
-configs skipped: 3
+Am 29.09.21 um 01:54 schrieb Don Brace:
+> From: Kevin Barnett <kevin.barnett@microchip.com>
+> 
+> Stop the OS from re-discovering multiple LUNs for
+> tape drive and medium changer.
+> 
+> Duplicate device nodes for Ultrium tape drive and
+> medium changer are being created.
+> 
+> The Ultrium tape drive is a multi-LUN SCSI target.
+> It presents a LUN for the tape drive and a 2nd
+> LUN for the medium changer.
+> Our controller FW lists both LUNs in the RPL
+> results.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Please document the firmware version (and controller) you tested with in 
+the commit message.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210930
-mips                     loongson2k_defconfig
-arm                       imx_v6_v7_defconfig
-mips                         mpc30x_defconfig
-mips                          rb532_defconfig
-arm                     eseries_pxa_defconfig
-sh                   sh7770_generic_defconfig
-x86_64                              defconfig
-mips                        vocore2_defconfig
-arm                        spear3xx_defconfig
-sh                           se7722_defconfig
-alpha                            alldefconfig
-arm                           h3600_defconfig
-arm                          ep93xx_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      ppc40x_defconfig
-arm                           viper_defconfig
-arm                       imx_v4_v5_defconfig
-arm                           corgi_defconfig
-sh                        sh7763rdp_defconfig
-arm                        magician_defconfig
-mips                          ath25_defconfig
-powerpc                     stx_gp3_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         at91_dt_defconfig
-sh                ecovec24-romimage_defconfig
-arm                             ezx_defconfig
-arm                         assabet_defconfig
-powerpc                     ep8248e_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     pseries_defconfig
-arm                          simpad_defconfig
-m68k                        stmark2_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   motionpro_defconfig
-powerpc                     tqm5200_defconfig
-powerpc64                           defconfig
-x86_64                           alldefconfig
-powerpc                      ppc64e_defconfig
-mips                            e55_defconfig
-powerpc                      obs600_defconfig
-ia64                        generic_defconfig
-sh                            hp6xx_defconfig
-powerpc                     redwood_defconfig
-mips                            gpr_defconfig
-xtensa                    xip_kc705_defconfig
-arc                         haps_hs_defconfig
-arm                   milbeaut_m10v_defconfig
-arc                           tb10x_defconfig
-arm                  randconfig-c002-20210930
-x86_64               randconfig-c001-20210930
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210930
-x86_64               randconfig-a001-20210930
-x86_64               randconfig-a002-20210930
-x86_64               randconfig-a005-20210930
-x86_64               randconfig-a006-20210930
-x86_64               randconfig-a003-20210930
-i386                 randconfig-a003-20210930
-i386                 randconfig-a001-20210930
-i386                 randconfig-a004-20210930
-i386                 randconfig-a002-20210930
-i386                 randconfig-a006-20210930
-i386                 randconfig-a005-20210930
-arc                  randconfig-r043-20210930
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+> As a result, the smartpqi driver exposes both
+> devices to the OS. Then the OS does its normal
+> device discovery via the SCSI REPORT LUNS command,
+> which causes it to re-discover both devices a 2nd time,
+> which results in the duplicate device nodes.
 
-clang tested configs:
-i386                 randconfig-c001-20210930
-arm                  randconfig-c002-20210930
-powerpc              randconfig-c003-20210930
-mips                 randconfig-c004-20210930
-s390                 randconfig-c005-20210930
-riscv                randconfig-c006-20210930
-x86_64               randconfig-c007-20210930
-x86_64               randconfig-a015-20210930
-x86_64               randconfig-a011-20210930
-x86_64               randconfig-a012-20210930
-x86_64               randconfig-a013-20210930
-x86_64               randconfig-a016-20210930
-x86_64               randconfig-a014-20210930
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-hexagon              randconfig-r045-20211001
-hexagon              randconfig-r041-20211001
-s390                 randconfig-r044-20211001
-riscv                randconfig-r042-20211001
-riscv                randconfig-r042-20210930
-hexagon              randconfig-r041-20210930
-s390                 randconfig-r044-20210930
-hexagon              randconfig-r045-20210930
+Shortly describing the implementation (new struct member ignore_device) 
+would be nice.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+> Reviewed-by: Scott Teel <scott.teel@microchip.com>
+> Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
+> Signed-off-by: Kevin Barnett <kevin.barnett@microchip.com>
+> Signed-off-by: Don Brace <don.brace@microchip.com>
+> ---
+>   drivers/scsi/smartpqi/smartpqi.h      |  1 +
+>   drivers/scsi/smartpqi/smartpqi_init.c | 23 +++++++++++++++++++----
+>   2 files changed, 20 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/smartpqi/smartpqi.h b/drivers/scsi/smartpqi/smartpqi.h
+> index c439583a4ca5..aac88ac0a0b7 100644
+> --- a/drivers/scsi/smartpqi/smartpqi.h
+> +++ b/drivers/scsi/smartpqi/smartpqi.h
+> @@ -1106,6 +1106,7 @@ struct pqi_scsi_dev {
+>   	u8	keep_device : 1;
+>   	u8	volume_offline : 1;
+>   	u8	rescan : 1;
+> +	u8	ignore_device : 1;
+
+Why not type bool?
+
+>   	bool	aio_enabled;		/* only valid for physical disks */
+>   	bool	in_remove;
+>   	bool	device_offline;
+> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+> index c28eb7ea4a24..8be116992cb0 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_init.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
+> @@ -6297,9 +6297,13 @@ static int pqi_slave_alloc(struct scsi_device *sdev)
+>   		rphy = target_to_rphy(starget);
+>   		device = pqi_find_device_by_sas_rphy(ctrl_info, rphy);
+>   		if (device) {
+> -			device->target = sdev_id(sdev);
+> -			device->lun = sdev->lun;
+> -			device->target_lun_valid = true;
+
+Off topic, with `u8 target_lun_valid : 1`, why is `true` used.
+
+> +			if (device->target_lun_valid) {
+> +				device->ignore_device = true;
+> +			} else {
+> +				device->target = sdev_id(sdev);
+> +				device->lun = sdev->lun;
+> +				device->target_lun_valid = true;
+> +			}
+
+If the LUN should be ignored, is it actually valid? Why not extend 
+target_lun_valid and add a third option (enums?) to ignore it?
+
+>   		}
+>   	} else {
+>   		device = pqi_find_scsi_dev(ctrl_info, sdev_channel(sdev),
+> @@ -6336,14 +6340,25 @@ static int pqi_map_queues(struct Scsi_Host *shost)
+>   					ctrl_info->pci_dev, 0);
+>   }
+>   
+> +static inline bool pqi_is_tape_changer_device(struct pqi_scsi_dev *device)
+> +{
+> +	return device->devtype == TYPE_TAPE || device->devtype == TYPE_MEDIUM_CHANGER;
+
+Why also check for TYPE_TAPE? The function name should be updated then?
+
+> +}
+> +
+>   static int pqi_slave_configure(struct scsi_device *sdev)
+>   {
+> +	int rc = 0;
+>   	struct pqi_scsi_dev *device;
+>   
+>   	device = sdev->hostdata;
+>   	device->devtype = sdev->type;
+>   
+> -	return 0;
+> +	if (pqi_is_tape_changer_device(device) && device->ignore_device) {
+> +		rc = -ENXIO;
+> +		device->ignore_device = false;
+
+I’d add a `return -ENXIO` here, and remove the variable.
+
+> +	}
+> +
+> +	return rc;
+>   }
+>   
+>   static int pqi_getpciinfo_ioctl(struct pqi_ctrl_info *ctrl_info, void __user *arg)
+> 
+
+
+Kind regards,
+
+Paul
