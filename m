@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A799241F120
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E104441F121
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhJAPXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbhJAPXq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:23:46 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EBDC061775;
-        Fri,  1 Oct 2021 08:22:02 -0700 (PDT)
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:dd31:3048:d332:54e2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E35C21F457D1;
-        Fri,  1 Oct 2021 16:21:59 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     broonie@kernel.org
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        kernel@collabora.com, linux-spi@vger.kernel.org,
-        enric.balletbo@collabora.com, dafna3@gmail.com,
-        Mason Zhang <Mason.Zhang@mediatek.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH v2] spi: mediatek: skip delays if they are 0
-Date:   Fri,  1 Oct 2021 17:21:53 +0200
-Message-Id: <20211001152153.4604-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        id S231869AbhJAPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:23:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:45476 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232111AbhJAPXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:23:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8FE7101E;
+        Fri,  1 Oct 2021 08:22:05 -0700 (PDT)
+Received: from [10.57.72.173] (unknown [10.57.72.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D227A3F766;
+        Fri,  1 Oct 2021 08:22:03 -0700 (PDT)
+Subject: Re: [PATCH v2 03/17] coresight: trbe: Add a helper to calculate the
+ trace generated
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-4-suzuki.poulose@arm.com>
+ <20210930175421.GB3047827@p14s>
+ <60037d18-9d0e-68ce-2a34-aa84e7876fb8@arm.com>
+ <20211001151535.GA3148492@p14s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <355cae15-9a57-c321-0680-d280b6dbe87e@arm.com>
+Date:   Fri, 1 Oct 2021 16:22:02 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211001151535.GA3148492@p14s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function 'mtk_spi_set_hw_cs_timing'
-the 'setup', 'hold' and 'inactive' delays are configured.
-In case those values are 0 it causes errors on mt8173:
+On 01/10/2021 16:15, Mathieu Poirier wrote:
+> On Fri, Oct 01, 2021 at 09:36:24AM +0100, Suzuki K Poulose wrote:
+>> On 30/09/2021 18:54, Mathieu Poirier wrote:
+>>> Hi Suzuki,
+>>>
+>>> On Tue, Sep 21, 2021 at 02:41:07PM +0100, Suzuki K Poulose wrote:
+>>>> We collect the trace from the TRBE on FILL event from IRQ context
+>>>> and when via update_buffer(), when the event is stopped. Let us
+>>>
+>>> s/"and when via"/"and via"
+>>>
+>>>> consolidate how we calculate the trace generated into a helper.
+>>>>
+>>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>>> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> ---
+>>>>    drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++--------
+>>>>    1 file changed, 30 insertions(+), 18 deletions(-)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> index 63f7edd5fd1f..063c4505a203 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> @@ -527,6 +527,30 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>>>>    	return TRBE_FAULT_ACT_SPURIOUS;
+>>>>    }
+>>>> +static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+>>>> +					 struct trbe_buf *buf,
+>>>> +					 bool wrap)
+>>>
+>>> Stacking
+>>>
+>>
+>> Ack
+>>
+>>>> +{
+>>>> +	u64 write;
+>>>> +	u64 start_off, end_off;
+>>>> +
+>>>> +	/*
+>>>> +	 * If the TRBE has wrapped around the write pointer has
+>>>> +	 * wrapped and should be treated as limit.
+>>>> +	 */
+>>>> +	if (wrap)
+>>>> +		write = get_trbe_limit_pointer();
+>>>> +	else
+>>>> +		write = get_trbe_write_pointer();
+>>>> +
+>>>> +	end_off = write - buf->trbe_base;
+>>>
+>>> In both arm_trbe_alloc_buffer() and trbe_handle_overflow() the base address is
+>>> acquired using get_trbe_base_pointer() but here it is referenced directly - any
+>>> reason for that?  It certainly makes reviewing this simple patch quite
+>>> difficult because I keep wondering if I am missing something subtle...
+>>
+>> Very good observation. So far, we always prgrammed the TRBBASER with the
+>> the VA(ring_buffer[0]). And thus reading the BASER and using the
+>> buf->trbe_base is all fine.
+>>
+>> But going forward, we are going to use different values for the TRBBASER
+>> to work around erratum. Thus to make the computation of the "offsets"
+>> within the ring buffer, it is always correct to use this field. I could
+>> move this to the patch where the work around is introduced, and put in
+>> a comment there.
+> 
+> That will be greatly appreciated.
 
-cros-ec-i2c-tunnel 1100a000.spi:ec@0:i2c-tunnel0:
-	Error transferring EC i2c message -71
-cros-ec-spi spi0.0: EC failed to respond in time.
+I have moved this to the patch, which introduces the concept of "TRBE 
+using" a different BASE address than the beginning of the ring buffer.
 
-This patch fixes that issues by setting only the values
-that are not 0.
-
-Fixes: 04e6bb0d6bb1 ("spi: modify set_cs_timing parameter")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
-Changes since v1: v1 was a revert of the commits
-04e6bb0d6bb1 ("spi: modify set_cs_timing parameter")
-5c842e51ac63 ("spi: mediatek: fix build warnning in set cs timing")
-
-this version fixes the erros instead of reverting
-
- drivers/spi/spi-mt65xx.c | 64 ++++++++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 386e8c84be0a..a15de10ee286 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -233,36 +233,44 @@ static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
- 		return delay;
- 	inactive = (delay * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000)) / 1000;
- 
--	setup    = setup ? setup : 1;
--	hold     = hold ? hold : 1;
--	inactive = inactive ? inactive : 1;
--
--	reg_val = readl(mdata->base + SPI_CFG0_REG);
--	if (mdata->dev_comp->enhance_timing) {
--		hold = min_t(u32, hold, 0x10000);
--		setup = min_t(u32, setup, 0x10000);
--		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
--		reg_val |= (((hold - 1) & 0xffff)
--			   << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
--		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
--		reg_val |= (((setup - 1) & 0xffff)
--			   << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
--	} else {
--		hold = min_t(u32, hold, 0x100);
--		setup = min_t(u32, setup, 0x100);
--		reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
--		reg_val |= (((hold - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
--		reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
--		reg_val |= (((setup - 1) & 0xff)
--			    << SPI_CFG0_CS_SETUP_OFFSET);
-+	if (hold || setup) {
-+		reg_val = readl(mdata->base + SPI_CFG0_REG);
-+		if (mdata->dev_comp->enhance_timing) {
-+			if (hold) {
-+				hold = min_t(u32, hold, 0x10000);
-+				reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
-+				reg_val |= (((hold - 1) & 0xffff)
-+					<< SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
-+			}
-+			if (setup) {
-+				setup = min_t(u32, setup, 0x10000);
-+				reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
-+				reg_val |= (((setup - 1) & 0xffff)
-+					<< SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
-+			}
-+		} else {
-+			if (hold) {
-+				hold = min_t(u32, hold, 0x100);
-+				reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
-+				reg_val |= (((hold - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
-+			}
-+			if (setup) {
-+				setup = min_t(u32, setup, 0x100);
-+				reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
-+				reg_val |= (((setup - 1) & 0xff)
-+					<< SPI_CFG0_CS_SETUP_OFFSET);
-+			}
-+		}
-+		writel(reg_val, mdata->base + SPI_CFG0_REG);
- 	}
--	writel(reg_val, mdata->base + SPI_CFG0_REG);
- 
--	inactive = min_t(u32, inactive, 0x100);
--	reg_val = readl(mdata->base + SPI_CFG1_REG);
--	reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
--	reg_val |= (((inactive - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
--	writel(reg_val, mdata->base + SPI_CFG1_REG);
-+	if (inactive) {
-+		inactive = min_t(u32, inactive, 0x100);
-+		reg_val = readl(mdata->base + SPI_CFG1_REG);
-+		reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
-+		reg_val |= (((inactive - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
-+		writel(reg_val, mdata->base + SPI_CFG1_REG);
-+	}
- 
- 	return 0;
- }
--- 
-2.17.1
-
+Thanks
+Suzuki
