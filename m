@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADFE41EEA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4E341EEA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352754AbhJANdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhJANdv (ORCPT
+        id S1353502AbhJANeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:34:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57408 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352901AbhJANeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:33:51 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47819C061775;
-        Fri,  1 Oct 2021 06:32:07 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id q23so7928045pfs.9;
-        Fri, 01 Oct 2021 06:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EkX8N/foQh79zdmHXhT/3vt7GknIsH61jaJs2i8JOH0=;
-        b=JVi2qlLW64stMaJ6M+MDj9e59Y++JoKgQwTX3P1JN5gtKv9XQurQTcovFy2QkDLLUj
-         iKp7AScsFt/meALx0S0cg8Hs4HL+bp0zcDg0STWnr6DEV/YOsEXUWnsiFtgzOMef9C1C
-         mCd0VujVTSqQWv/h92xBrUUfUO07IjJwugPluKEZrX0sIIpQfslEoXNWjbh88IrR57oN
-         ieIIKYbuXF52iwtovIK2HHl9wiE1wNt5phaxiBpj6wOktz9WpGit6gzslRea4GW6ab+U
-         J03nuCjmPBoyc4nslGg+y9cldUV8KS3Qr32LRxruHRAczF43xf5BbiyYyvlGnM9VzaGx
-         oJlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EkX8N/foQh79zdmHXhT/3vt7GknIsH61jaJs2i8JOH0=;
-        b=cf/8M9JOe/MGhuRyJPCAwoSkD8o7taNloh0EgvsPzchcdhmJYiLYqWRuKNt4kX08Dr
-         YQFEfv0UPM/lqR85Ujqir1od0+OZBcetBAdERfnXr7RWSIFf4RVoKVAUAzo1s60LZ49k
-         rseJIvLP2JMB1QejTHhuAlXNbd/+B7p4Z5bk7fwZpT+qZo9VIOIBmcHJ2hGE2jKQHg2H
-         nb40T/RVa9gSHlJw/cNolvEycPVSMa789DIcGtKMVbc6O0wm8+qR0MCNFnH0CJeh/hkm
-         tiumMLKL9LwDnEkjF+0aO10eaRuRmrTscJ6WCLWRfl8pG8jC7DlERZnw7e8DctuWLD/E
-         kOWg==
-X-Gm-Message-State: AOAM533+qbr3hazg85bnS6SRSsIDLiltxJzjMZ172obDGDMvhi1NNtH/
-        qCpV0/twE9yDlLHfB0hques=
-X-Google-Smtp-Source: ABdhPJzQwMRguOEcxGL4zKu5NEXMHgfCmxG0ebgGYybD2K/CLVKC8fY2G/X91ZQ/EIJIkmT9jSkW4g==
-X-Received: by 2002:a05:6a00:1891:b0:446:c141:7d2a with SMTP id x17-20020a056a00189100b00446c1417d2amr11540913pfh.36.1633095126764;
-        Fri, 01 Oct 2021 06:32:06 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id i5sm7687684pjk.47.2021.10.01.06.31.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 06:32:06 -0700 (PDT)
-Subject: Re: [PATCH V6 5/8] x86/hyperv: Add Write/Read MSR registers via ghcb
- page
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, brijesh.singh@amd.com, jroedel@suse.de,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        pgonda@google.com, akpm@linux-foundation.org, rppt@kernel.org,
-        kirill.shutemov@linux.intel.com, saravanand@fb.com,
-        aneesh.kumar@linux.ibm.com, rientjes@google.com, tj@kernel.org,
-        michael.h.kelley@microsoft.com, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
-        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210930130545.1210298-1-ltykernel@gmail.com>
- <20210930130545.1210298-6-ltykernel@gmail.com> <YVX/9Xxxgy5D/Cvo@zn.tnic>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <6525a915-fd4f-5875-cddd-06aeac5df896@gmail.com>
-Date:   Fri, 1 Oct 2021 21:31:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 1 Oct 2021 09:34:19 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633095149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HXoyc4jRDQBnUGo2gIo6eI8vmDogfCVzmxMMg8jeyVk=;
+        b=UTGTL+XZwMStbn79e3Ovx+epJ7xoXD0wVPPamqHwJLXO+jS5kUR1wD87+HrAilMGElEuNQ
+        PAwRgHs8i/DvKbeYr/LUVE9zuhwSgsnHCo8OEmLyLxUyr2cIIdl5ipwHyKg/VA31l1y3Pa
+        d2GipeRnDLt73TdTpKYzjqIKWENPVvYxKdkoqhTWWwqrJyYnPma7tbtQ9nrOzxGReJyCgL
+        BTX48mEDAdEeYYRCa+RgFP7xbLZvhrv+0ZMC9BD6ENNDDcuAOy83P5/n71HnPFE2eA3JGs
+        0LtsdTQGmm/+ZSbpPRGqE5lpEdYMMn8SlqDH/03Ffyhs7nUR5gEgg4KPJuC2CQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633095149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HXoyc4jRDQBnUGo2gIo6eI8vmDogfCVzmxMMg8jeyVk=;
+        b=StyaMW5j05uqR4WdXO07lpqqZoxUXbSXsGSEdErMUygddj6Td9VGxXzTnjsUHsz4vOvGEa
+        qlkq9HeZ4h3qV5Dw==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com, kvm@vger.kernel.org
+Subject: Re: [PATCH v10 06/28] x86/fpu/xstate: Add new variables to indicate
+ dynamic XSTATE buffer size
+In-Reply-To: <20210825155413.19673-7-chang.seok.bae@intel.com>
+References: <20210825155413.19673-1-chang.seok.bae@intel.com>
+ <20210825155413.19673-7-chang.seok.bae@intel.com>
+Date:   Fri, 01 Oct 2021 15:32:23 +0200
+Message-ID: <878rzc6fbs.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <YVX/9Xxxgy5D/Cvo@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+> +/**
+> + * struct fpu_xstate_buffer_config - xstate buffer configuration
+> + * @max_size:			The CPUID-enumerated all-feature "maximum" size
+> + *				for xstate per-task buffer.
+> + * @min_size:			The size to fit into the statically-allocated
+> + *				buffer. With dynamic states, this buffer no longer
+> + *				contains all the enabled state components.
+> + * @user_size:			The size of user-space buffer for signal and
+> + *				ptrace frames, in the non-compacted format.
+> + */
 
+>  void fpstate_init(struct fpu *fpu)
+>  {
+>  	union fpregs_state *state;
+> +	unsigned int size;
+> +	u64 mask;
+>  
+> -	if (likely(fpu))
+> +	if (likely(fpu)) {
+>  		state = &fpu->state;
+> -	else
+> +		/* The dynamic user states are not prepared yet. */
+> +		mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
 
-On 10/1/2021 2:20 AM, Borislav Petkov wrote:
-> On Thu, Sep 30, 2021 at 09:05:41AM -0400, Tianyu Lan wrote:
->> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
->> index 9f90f460a28c..dd7f37de640b 100644
->> --- a/arch/x86/kernel/sev-shared.c
->> +++ b/arch/x86/kernel/sev-shared.c
->> @@ -94,10 +94,9 @@ static void vc_finish_insn(struct es_em_ctxt *ctxt)
->>   	ctxt->regs->ip += ctxt->insn.length;
->>   }
->>   
->> -static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->> -					  struct es_em_ctxt *ctxt,
->> -					  u64 exit_code, u64 exit_info_1,
->> -					  u64 exit_info_2)
->> +enum es_result sev_es_ghcb_hv_call_simple(struct ghcb *ghcb,
->> +				   u64 exit_code, u64 exit_info_1,
->> +				   u64 exit_info_2)
-> Align arguments on the opening brace.
-> 
-> Also, there's nothing "simple" about it - what you've carved out does
-> the actual HV call and the trailing part is verifying the HV info. So
-> that function should be called
-> 
-> __sev_es_ghcb_hv_call()
-> 
-> and the outer one without the "__".
-> 
+The patch ordering is really odd. Why aren't you adding
 
-Good suggestion. Will fix it in the next version.
+     fpu->state_mask
+and
+     fpu->state_size
 
-Thanks.
+first and initialize state_mask and state_size to the fixed mode and
+then add the dynamic sizing on top?
+
+>  	/*
+>  	 * If the target FPU state is not resident in the CPU registers, just
+>  	 * memcpy() from current, else save CPU state directly to the target.
+> +	 *
+> +	 * KVM does not support dynamic user states yet. Assume the buffer
+> +	 * always has the minimum size.
+>  	 */
+>  	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+>  		memcpy(&fpu->state, &current->thread.fpu.state,
+> -		       fpu_kernel_xstate_size);
+> +		       fpu_buf_cfg.min_size);
+
+Which completely avoids the export of fpu_buf_cfg for KVM because the
+information is just available via struc fpu. As a bonus the export of
+fpu_kernel_xstate_size can be removed as well.
+
+Hmm?
+
+Thanks,
+
+        tglx
