@@ -2,179 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD79D41F180
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DEE41F189
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353716AbhJAPvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:51:16 -0400
-Received: from mga12.intel.com ([192.55.52.136]:38465 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231649AbhJAPvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:51:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="204958167"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="204958167"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 08:49:30 -0700
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="619225739"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.135.37.9]) ([10.135.37.9])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 08:49:29 -0700
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065953-mutt-send-email-mst@kernel.org>
- <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
- <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
- <YVaywQLAboZ6b36V@kroah.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com>
-Date:   Fri, 1 Oct 2021 08:49:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1355084AbhJAPxH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Oct 2021 11:53:07 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:37815 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231649AbhJAPxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:53:04 -0400
+Received: by mail-ua1-f51.google.com with SMTP id t36so7006468uad.4;
+        Fri, 01 Oct 2021 08:51:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=V6QG7RVsPgL4MT7taFNIN3h9Vdu7FgpTMDBW2+9dAy4=;
+        b=7BnA7/BKelXoYxWK8iaAnS6yK1zR/K2UeEcIieD0HuVZDzmmHpNWuWD0+p/WMQn5zO
+         0o3P2pYBxATEpAw0PsG/kcug113d8V8cvcpNKwh/tzcx/5wiRsSvZoiA9WziVNJxMDYk
+         XoZ6gmV/i6ppNwnjN4y2cAgmPppHcSw6fsC/J2sEdfDQVL6nx69wEPjVU2CDsf/ID6f9
+         5bWAC90hkywi3Wfi9q1Na9f6trFJ+PAenh6GgdsXn5W37kaDRKdbK0eb3653pvTvx0Em
+         lFiFs8gz9jElGNwc36+qxh7cbBBYXFmnAWEmv0PiQpEwaWL3piF43XG3feD6s1aeN4dC
+         8Ijg==
+X-Gm-Message-State: AOAM531+5owAxqxQU0/RlnGdH32liuXwueZ5mM92fMX93t5+MQNb2UoN
+        30t+y/RfS8CoXG7PKIHzhgTSmqNf2PpV4bF3+R0=
+X-Google-Smtp-Source: ABdhPJxSLKh9AvpGnMkJMf+4rL5ey13Duasr9b9pl5UUVIbEI9s1F181091Vc8CdXHhLM8BddUTmHotIzJX01V/YUxw=
+X-Received: by 2002:ab0:16d4:: with SMTP id g20mr10998662uaf.114.1633103479588;
+ Fri, 01 Oct 2021 08:51:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YVaywQLAboZ6b36V@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210914143835.511051-1-geert@linux-m68k.org> <20210914143835.511051-20-geert@linux-m68k.org>
+ <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
+In-Reply-To: <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Oct 2021 17:51:08 +0200
+Message-ID: <CAMuHMdVOa8DAGJQpJ8AotARxfh9PvpskJJa6k48jE92-P+GLRA@mail.gmail.com>
+Subject: Re: [PATCH v6 19/19] auxdisplay: ht16k33: Add LED support
+To:     Robin van der Gracht <robin@protonic.nl>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hoi Robin,
 
-On 10/1/2021 12:03 AM, Greg Kroah-Hartman wrote:
-> On Thu, Sep 30, 2021 at 12:04:05PM -0700, Kuppuswamy, Sathyanarayanan wrote:
->>
->> On 9/30/21 8:23 AM, Greg Kroah-Hartman wrote:
->>> On Thu, Sep 30, 2021 at 08:18:18AM -0700, Kuppuswamy, Sathyanarayanan wrote:
->>>>
->>>> On 9/30/21 6:36 AM, Dan Williams wrote:
->>>>>> And in particular, not all virtio drivers are hardened -
->>>>>> I think at this point blk and scsi drivers have been hardened - so
->>>>>> treating them all the same looks wrong.
->>>>> My understanding was that they have been audited, Sathya?
->>>> Yes, AFAIK, it has been audited. Andi also submitted some patches
->>>> related to it. Andi, can you confirm.
->>> What is the official definition of "audited"?
->>
->> In our case (Confidential Computing platform), the host is an un-trusted
->> entity. So any interaction with host from the drivers will have to be
->> protected against the possible attack from the host. For example, if we
->> are accessing a memory based on index value received from host, we have
->> to make sure it does not lead to out of bound access or when sharing the
->> memory with the host, we need to make sure only the required region is
->> shared with the host and the memory is un-shared after use properly.
-> You have not defined the term "audited" here at all in any way that can
-> be reviewed or verified by anyone from what I can tell.
+On Thu, Sep 30, 2021 at 12:57 PM Robin van der Gracht <robin@protonic.nl> wrote:
+> On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+> > Instantiate a single LED based on the "led" subnode in DT.
+> > This allows the user to control display brightness and blinking (backed
+> > by hardware support) through the LED class API and triggers, and exposes
+> > the display color.  The LED will be named
+> > "auxdisplay:<color>:<function>".
+> >
+> > When running in dot-matrix mode and if no "led" subnode is found, the
+> > driver falls back to the traditional backlight mode, to preserve
+> > backwards compatibility.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > ---
+> > v6:
+> >   - Add Reviewed-by,
+> >   - Reorder operations in ht16k33_led_probe() to ease future conversion
+> >     to device properties,
+
+> > --- a/drivers/auxdisplay/ht16k33.c
+> > +++ b/drivers/auxdisplay/ht16k33.c
+> > @@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct
+> > *work)
+> >       i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
+> >  }
+> >
+> > +static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
+> > +                          unsigned int brightness)
+> > +{
+> > +     struct led_init_data init_data = {};
+> > +     struct device_node *node;
+> > +     int err;
+> > +
+> > +     /* The LED is optional */
+> > +     node = of_get_child_by_name(dev->of_node, "led");
+> > +     if (!node)
+> > +             return 0;
+> > +
+> > +     init_data.fwnode = of_fwnode_handle(node);
+> > +     init_data.devicename = "auxdisplay";
+> > +     init_data.devname_mandatory = true;
+> > +
+> > +     led->brightness_set_blocking = ht16k33_brightness_set_blocking;
+> > +     led->blink_set = ht16k33_blink_set;
+> > +     led->flags = LED_CORE_SUSPENDRESUME;
+> > +     led->brightness = brightness;
+> > +     led->max_brightness = MAX_BRIGHTNESS;
 >
-> You have only described a new model that you wish the kernel to run in,
-> one in which it does not trust the hardware at all.  That is explicitly
-> NOT what the kernel has been designed for so far,
-
-It has been already done for a few USB/TB drivers, but yes not for the 
-majority of the kernel.
-
->   and if you wish to
-> change that, lots of things need to be done outside of simply running
-> some fuzzers on a few random drivers.
-
-The goal is to do similar work as USB/TB did, but do it for a small set 
-of virtio drivers and use a custom allow list for those for the specific 
-secure guest cases.
-
-(there are some other goals, but let's not discuss them here for now)
-
-
+> What do you think about adding a default trigger and making it 'backlight'?
 >
-> For one example, how do you ensure that the memory you are reading from
-> hasn't been modified by the host between writing to it the last time you
-> did?
-
-It's similar techniques as we do on user space accesses. For example if 
-you bound check some value the code needs to ensure it is cached in 
-private memory, not reread from MMIO or shared memory. Of course that's 
-a good idea anyways for performance because MMIO is slow.
-
-In the concrete cases of virtio the main problem was the free list in 
-shared memory, but that has been addressed now.
-
-
-
->   Do you have a list of specific drivers and kernel options that you
-> feel you now "trust"?
-
-For TDX it's currently only virtio net/block/console
-
-But we expect this list to grow slightly over time, but not at a high 
-rate (so hopefully <10)
-
-
-> If so, how long does that trust last for?  Until
-> someonen else modifies that code?  What about modifications to functions
-> that your "audited" code touches?  Who is doing this auditing?  How do
-> you know the auditing has been done correctly?  Who has reviewed and
-> audited the tools that are doing the auditing?  Where is the
-> specification that has been agreed on how the auditing must be done?
-> And so on...
-
-Well, I mean we already have a similar situation with user space APIs. 
-So it's not a new problem. For those we've done it for many years, with 
-audits and extra fuzzing.
-
-There are people working on the audit and fuzzing today. How exactly it 
-will be ensured long term is still be worked out, but I expect we can 
-work out something.
-
+> led->default_trigger = "blacklight";
 >
-> I feel like there are a lot of different things all being mixed up here
-> into one "oh we want this to happen!" type of thread.
-
-
-
-Agreed. The thread ended up about a lot of stuff which is outside the 
-scope of the patches.
-
->    Please let's just
-> stick to the one request that I had here, which was to move the way that
-> busses are allowed to authorize the devices they wish to control into a
-> generic way instead of being bus-specific logic.
+> Or as an alternative, suggesting linux,default-trigger = "backlight" in the
+> docs? Since the led class won't respond to blank events by just making it's
+> function LED_FUNCTION_BACKLIGHT.
 >
-> Any requests outside of that type of functionality are just that,
-> outside the scope of this patchset and should get their own patch series
-> and discussion.
+> led {
+>         function = LED_FUNCTION_BACKLIGHT;
+>         color = <LED_COLOR_ID_GREEN>;
+>         linux,default-trigger = "backlight";
+> };
 
+The latter makes perfect sense to me.  Will do.
 
-Yes that's the intention. This patch kit is only about controlling what 
-devices can enumerate.
+> I noticed blanking is broken. The backlight device (or LED device with
+> backlight trigger) doens't get notified when the framebuffer is blanked since
+> the driver doesn't implement fb_blank.
+>
+> Right now:
+>
+> echo 1 > /sys/class/graphics/fb0/blank
+>                                                              |
+> sh: write error: Invalid argument
+>
+> Due to:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/video/fbdev/core/fbmem.c?h=v5.15-rc3#n1078
 
-Also please let's avoid the "trusted" term. It's really misleading and 
-confusing in the context of confidential computing.
+That's a pre-existing problem, righ? ;-)
 
+> Something like this fixes it.
+>
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index 89ee5b4b3dfc..0883d5252c81 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -346,6 +346,15 @@ static int ht16k33_mmap(struct fb_info *info, struct
+> vm_area_struct *vma)
+>          return vm_map_pages_zero(vma, &pages, 1);
+>   }
+>
+> +/*
+> + * Blank events will be passed to the backlight device (or the LED device if
+> + * it's trigger is 'backlight') when we return 0 here.
+> + */
+> +static int ht16k33_blank(int blank, struct fb_info *info)
+> +{
+> +       return 0;
+> +}
+> +
+>   static const struct fb_ops ht16k33_fb_ops = {
+>          .owner = THIS_MODULE,
+>          .fb_read = fb_sys_read,
+> @@ -354,6 +363,7 @@ static const struct fb_ops ht16k33_fb_ops = {
+>          .fb_copyarea = sys_copyarea,
+>          .fb_imageblit = sys_imageblit,
+>          .fb_mmap = ht16k33_mmap,
+> +       .fb_blank = ht16k33_blank,
+>   };
+>
+>   /*
+>
+> Feel free to include (something like) this in the patch stack.
 
--Andi
+Thanks, will do.
 
+> > +
+> > +     err = devm_led_classdev_register_ext(dev, led, &init_data);
+> > +     if (err)
+> > +             dev_err(dev, "Failed to register LED\n");
+>
+> You might want to call ht16k33_brightness_set(priv, brightness) here to get a
+> know value into the display setup register (0x80).
+>
+> Right now if I enable hardware blinking and (soft)reboot my board it keeps on
+> blinking even after a re-probe.
+
+I don't have that issue.
+Aha, ht16k33_seg_probe() calls ht16k33_brightness_set(), but
+ht16k33_fbdev_probe() doesn't.  The latter should do that, too,
+when not using backwards compatibility mode.
+
+> > @@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct
+> > ht16k33_priv *priv,
+> >       struct ht16k33_seg *seg = &priv->seg;
+> >       int err;
+> >
+> > -     err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+> > +     err = ht16k33_brightness_set(priv, brightness);
+>
+> This looks like a bugfix for patch 17, maybe move this change there?
+
+Indeed. Bad rebase. Will move.
+
+Thanks a lot for your comments!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
