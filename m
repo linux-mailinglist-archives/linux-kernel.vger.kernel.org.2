@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149A541F63D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8F341F63F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354891AbhJAUV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:21:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37422 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229879AbhJAUVz (ORCPT
+        id S1354985AbhJAUWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354977AbhJAUWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:21:55 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191KBwHj008856;
-        Fri, 1 Oct 2021 16:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=xedp/uXiqhajH0NC8aCTrSkRDadFR4Npcs2LI+Yqvws=;
- b=jQexVVFEQ5fy1T7TSwAI1SH/uPS8rUojTTHQv1YAST/BnwRyMzCREqe8zYhrG124y+8H
- +JrTfo+4/yAzBwyMvkb81qbWz1SMkJP2yXWjlv+Jrc0GxdiaVTaHl9rty6DGPXz9bsYi
- gqpCvEQptA2AREammiI+RkQ4mjFFHiLiqBZPfBdAail+33yzzSG/TDfJlAZIvV15Wjtj
- h3CXMd54RIPNaEwJV5KsRAo1Six7dF8kzk6f3FQ9yFQCQLr84VsogZH8bb/0HASAyAtm
- cZzBBI1sM4/vgLE+/kqCCAEntVgfuJK/D9S1hhUj+kpcNK4ye/1eg54lTGtyf+pXdAML ZQ== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3be95c84qy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Oct 2021 16:20:09 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 191KCE09009006;
-        Fri, 1 Oct 2021 20:20:07 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 3b9udanx9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Oct 2021 20:20:07 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 191KK18742795380
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Oct 2021 20:20:01 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38D35A405C;
-        Fri,  1 Oct 2021 20:20:01 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBBE5A4054;
-        Fri,  1 Oct 2021 20:20:00 +0000 (GMT)
-Received: from localhost (unknown [9.171.7.59])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  1 Oct 2021 20:20:00 +0000 (GMT)
-Date:   Fri, 1 Oct 2021 22:19:59 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.15-rc4
-Message-ID: <your-ad-here.call-01633119599-ext-2970@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UsadFCD9EfNTpmNfAz7gjYXd1vM_Bf44
-X-Proofpoint-ORIG-GUID: UsadFCD9EfNTpmNfAz7gjYXd1vM_Bf44
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 1 Oct 2021 16:22:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93974C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:20:18 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633119617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xx4boFsP3j2k61TbRcsBY08l76GCU2YApMFEFazc/b8=;
+        b=3huvxp1ULI1F5KDIirxWGKYVZI+r804cpdn15gfLm5z7TsytgFKNEv3L53Gf0x+ZNOjs4y
+        RIhkx8CSk3NFrI9tz5D2r3MTQw/whbpOTLgdTtFVY9IJ+te2wwavlx45DQDI5WkI0hQzQI
+        ELBcJHmmpOlTOUE816A0QusGSNu30JAAP4cTYqLWVuEPLKtk9ujrMi3DiQJ1lYjO6km4rs
+        DbqJ/SjWsQr1AasWJCEQTPvz434YWx1HUZ6UD/mKRdkDTw+E+NC92HUhg6HmhhcT01Pmrq
+        7K6hE0pMaudObX6wL2WLG3rnBJC3gYnpJpoa4C7lUzZwbFmQo+DUlqIojAOsiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633119617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xx4boFsP3j2k61TbRcsBY08l76GCU2YApMFEFazc/b8=;
+        b=ERgozT4JHKXwZjmJrusbt9JluuK/+VgCIjVc1uysNUYKPhxTg8WkMUne5QjQrxbnQAsnjt
+        fJc85HjQtMo+b0Dg==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v10 13/28] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+In-Reply-To: <871r546b52.ffs@tglx>
+References: <20210825155413.19673-1-chang.seok.bae@intel.com>
+ <20210825155413.19673-14-chang.seok.bae@intel.com> <871r546b52.ffs@tglx>
+Date:   Fri, 01 Oct 2021 22:20:16 +0200
+Message-ID: <87ee944hvj.ffs@tglx>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-01_05,2021-10-01_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0
- mlxscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=606 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110010141
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Chang,
 
-please pull one fix for 5.15-rc4.
+On Fri, Oct 01 2021 at 17:02, Thomas Gleixner wrote:
+> On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+>> +/**
+>> + * xfd_switch - Switches the MSR IA32_XFD context if needed.
+>> + * @prev:	The previous task's struct fpu pointer
+>> + * @next:	The next task's struct fpu pointer
+>> + */
+>> +static inline void xfd_switch(struct fpu *prev, struct fpu *next)
+>> +{
+>> +	u64 prev_xfd_mask, next_xfd_mask;
+>> +
+>> +	if (!cpu_feature_enabled(X86_FEATURE_XFD) || !xfeatures_mask_user_dynamic)
+>> +		return;
+>
+> This is context switch, so this wants to be a static key which is turned
+> on during init when the CPU supports XFD and user dynamic features are
+> available.
+>
+>> +
+>> +	prev_xfd_mask = prev->state_mask & xfeatures_mask_user_dynamic;
+>> +	next_xfd_mask = next->state_mask & xfeatures_mask_user_dynamic;
+>> +
+>> +	if (unlikely(prev_xfd_mask != next_xfd_mask))
+>> +		wrmsrl_safe(MSR_IA32_XFD, xfeatures_mask_user_dynamic ^ next_xfd_mask);
+>> +}
+>> +
+>>  /*
+>>   * Delay loading of the complete FPU state until the return to userland.
+>>   * PKRU is handled separately.
+>>   */
+>> -static inline void switch_fpu_finish(struct fpu *new_fpu)
+>> +static inline void switch_fpu_finish(struct fpu *old_fpu, struct fpu *new_fpu)
+>>  {
+>> -	if (cpu_feature_enabled(X86_FEATURE_FPU))
+>> +	if (cpu_feature_enabled(X86_FEATURE_FPU)) {
+>>  		set_thread_flag(TIF_NEED_FPU_LOAD);
+>> +		xfd_switch(old_fpu, new_fpu);
+>
+> Why has this to be done on context switch? Zero explanation provided.
+>
+> Why can't this be done in exit_to_user() where the FPU state restore is
+> handled?
 
-Thank you,
-Vasily
+DEFINE_PER_CPU(xfd_state);
 
-The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+update_xfd(fpu)
+{
+	if (__this_cpu_read(xfd_state) != fpu->xfd_state) {
+		wrmsrl(XFD, fpu->xfd_state);
+		__this_cpu_write(xfd_state, fpu->xfd_state);
+	}
+}
 
-  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+fpregs_restore_userregs()
+{
+	if (!fpregs_state_valid(fpu, cpu)) {
+        	if (static_branch_unlikely(xfd_switching_enabled))
+                	update_xfd(fpu);
+	...
+	}
+}
 
-are available in the Git repository at:
+Hmm?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-4
+Thanks,
 
-for you to fetch changes up to 172da89ed0eaf9d9348f5decb86ad04c624b39d1:
-
-  s390/cio: avoid excessive path-verification requests (2021-09-27 13:54:38 +0200)
-
-----------------------------------------------------------------
-s390 updates for 5.15-rc4
-
-- Avoid CIO excessive path-verification requests, which might cause
-  unwanted delays.
-
-----------------------------------------------------------------
-Vineeth Vijayan (1):
-      s390/cio: avoid excessive path-verification requests
-
- drivers/s390/cio/blacklist.c |  8 +++++---
- drivers/s390/cio/css.c       | 40 +++++++++++++++++++++++++++++++---------
- drivers/s390/cio/css.h       | 10 +++++++++-
- 3 files changed, 45 insertions(+), 13 deletions(-)
+        tglx
