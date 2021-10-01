@@ -2,168 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC72541E741
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C867141E744
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 07:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241958AbhJAFh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 01:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S1352088AbhJAFjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 01:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhJAFhx (ORCPT
+        with ESMTP id S230483AbhJAFjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 01:37:53 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4DCC06176A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:36:09 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id l6so5572763plh.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 22:36:09 -0700 (PDT)
+        Fri, 1 Oct 2021 01:39:19 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28746C06176A;
+        Thu, 30 Sep 2021 22:37:36 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d21so13516942wra.12;
+        Thu, 30 Sep 2021 22:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lwPyxDqaGBhT92QACUI/bh+VkUYF5Oo/5CIkAxgdtZ0=;
-        b=x4+eS/mPHFSaWAR3xsBgO23T1i0mXQSg5zBlZyUWrRmossN4sDE/RgApQuGNJSyKlx
-         LRsdEA+fHhNG7b37ubODdSxT8Bf61fc21oJV4cGXpJkBnDvVg9UMLor5aANUxLMedr2U
-         +4HtKL/belqPrhzcWZUz40RVVQaz/86inqcF15fBdN0ujQStvUBFnBY3/Z9OOntVQa+5
-         BbeZX0aEr6/mohhEefytrMODC7pyF+qHZR1t4VPvZGC75jGvIy9pllZ1e1zV6aIbzo8P
-         ED8gZPdtk/O1HyOl+alpfG38L+LhsnZN6H74QHGaNOZIdj3Bu+r/bbX89ffqFthfzbgn
-         6A6w==
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ICvakysTnIcMlsFl1CajmrW7XSMIhF0mtzyN0yeCPvo=;
+        b=NJpPde/VyrekEvNAM8op1urjweEjPHrjH5CR8QfKDwsFev6sl7t5yes/7W24Wu2Tld
+         WLXmR7mGy9t9xTPN43xpuBLuREVQErKyRBCin6ylKAbap30p/zzIEBry2sG+Fyo40ajE
+         GzVcW6A+G2N08JCjxP3ufzcarD41Ta1g2BB42mD3QjjJ1zAoTFgQUmLJdkv2KZ5a/VuG
+         Ynns4JDo1XtypTX4jAHqLAMI+BZ6FLTD6GZLk8gSzOEa71+5hdOtxhqPgtHSbam7mSeT
+         G0S10heB4TA2TwpC6Jh5pIo7s8679uersk289IeiPW8YSFTityTKUt+ZkKbKhx00tsy0
+         qedw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lwPyxDqaGBhT92QACUI/bh+VkUYF5Oo/5CIkAxgdtZ0=;
-        b=RpLWkhhpzQkvLhvlCFf6hXun259DtwpUNXG1r2SXw/3TVonqM59nGRWljpMjwkp7vy
-         dq2k298ZRMDRjysPUl+XsQxIIToPxzEUJtZsvxrXxKWhdzOGU5ggUX49xXuCp2YpMWkc
-         AM4zI3VcHl9nnWxEk4vJsTCpaP6NWUzDtLfpN6ITWGRtBIIrmRG4Ct9ufcHwCY42p7kO
-         T5mqv9oul44sO9h+mjC/d3Z0R5ie0DPJo7nJ9s9HXHctsWFUjf58yUnNnVWeGBodA0/2
-         cY9po9TyGUf8BGAqdOnGtOQi44OgtReaDmIvzTRD8zPOM5kIC+5pA3jcb9esPdnJGbb6
-         qQsQ==
-X-Gm-Message-State: AOAM532/+S+FWeRuOlJ3TBzklgNzZbb9sTcrOncCClFxeHoyNZHmyzo7
-        V3vKEOsdxof5Z8CutV8aGC9VLXc8z/BXVJHZf6Ft8w==
-X-Google-Smtp-Source: ABdhPJyXrHEjSRsbvGuDy1U26vszb5TEBTH/srDHAuSr9YR7iT8IG7gbwvXgl1d4rlALNdae0jk7Dkp7FchFO9bSadM=
-X-Received: by 2002:a17:90a:9317:: with SMTP id p23mr11101909pjo.151.1633066567459;
- Thu, 30 Sep 2021 22:36:07 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ICvakysTnIcMlsFl1CajmrW7XSMIhF0mtzyN0yeCPvo=;
+        b=VhcbkxlxmkJOnOhaZk72X7OgJeSVqnJwL7jd1V0hDQwjGu8y6Xl5JxDBWPRbhng1th
+         57paU2tCMPaUpyKxShtwne/ejaL8/3Lahv0HZ9GTqq1jzmRdZ7QtCrpea8fVwHLRAyTw
+         nKbt0bdaXxkWp43aHTqjKW9tadT/GOj9QRXV5Ub3VUprhcKO+X+uF6UhBM0cYWgsvbHS
+         EbQ492MDeLAiiFwclOdF1d266o0Jx0p8XyW2pNL5P+37b5l067JbrB4kDoMrOpk7fVP3
+         K474r6BLmvDD37ueGNRLaSFTcqenWSxlQumDF/XkpzkPcaNT+AMN4h3Q3DfDyYuPmggz
+         pygA==
+X-Gm-Message-State: AOAM530wULnHYZa3qEXY2d/3yxdCYsHa8vuzSzY6HJzvqoMeRe6m557H
+        7ty1yipy50Jh/uHTeihoa6QobSY9V2nZ0Q==
+X-Google-Smtp-Source: ABdhPJzCSpC43uIo4eNv23X7URdylmJhUbPDB+mdxVs4my1Bk1BoKfSEXlgv6lVwF5SrvvtVmiRcvA==
+X-Received: by 2002:a5d:6d8e:: with SMTP id l14mr9988365wrs.270.1633066654667;
+        Thu, 30 Sep 2021 22:37:34 -0700 (PDT)
+Received: from [192.168.4.32] ([85.184.170.180])
+        by smtp.gmail.com with ESMTPSA id g13sm4587316wmh.20.2021.09.30.22.37.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Sep 2021 22:37:34 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+Subject: Re: [PATCH v2] rtl8xxxu: Use lower tx rates for the ack packet
+To:     Chris Chiu <chris.chiu@canonical.com>, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211001040044.1028708-1-chris.chiu@canonical.com>
+Message-ID: <e64de376-f765-fc55-0e82-84e269c4dc43@gmail.com>
+Date:   Fri, 1 Oct 2021 01:37:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com> <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
-In-Reply-To: <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Thu, 30 Sep 2021 22:35:55 -0700
-Message-ID: <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211001040044.1028708-1-chris.chiu@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
-> >
-> > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
-> > >
-> > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
-> > > <krzysztof.kozlowski@canonical.com> wrote:
-> > > >
-> > > > On 29/09/2021 01:56, Will McVicker wrote:
-> > > > > This is v2 of the series of patches that modularizes a number of core
-> > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
-> > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
-> > > > > series of "select XXX". This includes setting the following configs as
-> > > > > tristate:
-> > > > >
-> > > > >  * COMMON_CLK_SAMSUNG
-> > > > >  * EXYNOS_ARM64_COMMON_CLK
-> > > > >  * PINCTRL_SAMSUNG
-> > > > >  * PINCTRL_EXYNOS
-> > > > >  * EXYNOS_PMU_ARM64
-> > > > >  * EXYNOS_PM_DOMAINS
-> > > > >
-> > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
-> > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
-> > > > > The reason for these new configs is because we are not able to easily
-> > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
-> > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
-> > > > > the ARM and ARM64 portions into two separate configs.
-> > > > >
-> > > > > Overall, these drivers didn't require much refactoring and converted to
-> > > > > modules relatively easily. However, due to my lack of exynos hardware, I
-> > > > > was not able to boot test these changes. I'm mostly concerned about the
-> > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
-> > > > > requesting help for testing these changes on the respective hardware.
-> > > > >
-> > > >
-> > > > These are all not tested at all? In such case, since these are not
-> > > > trivial changes, please mark the series as RFT.
-> > > >
-> > > > I will not be able to test these for some days, so it must wait.
-> > > >
-> > > >
-> > > > Best regards,
-> > > > Krzysztof
-> > >
-> > > +Cc Arnd and Olof,
-> > >
-> > > Hi Krzysztof,
-> > >
-> > > To avoid the scrambled conversation from the first patchset, I'm going
-> > > to address all your general questions here in the cover letter thread
-> > > so that it's easier for everyone to follow and reference in the
-> > > future.
-> >
-> > This patchset shouldn't go in.
-> >
-> > GKI is a fantastic effort, since it finally seems like Google has the
-> > backbone to put pressure on the vendors to upstream all their stuff.
-> >
-> > This patcheset dilutes and undermines all of that by opening up a
-> > truck-size loophole, reducing the impact of GKI, and overall removes
-> > leverage to get vendors to do the right thing.
-> >
-> > It's against our interest as a community to have this happen, since
-> > there's no other reasonably justifiable reason to do this.
->
-> Oolf, Geert, Krzysztof, Arnd,
+On 10/1/21 12:00 AM, Chris Chiu wrote:
+> According to the Realtek propritary driver and the rtw88 driver, the
+> tx rates of the ack (includes block ack) are initialized with lower
+> tx rates (no HT rates) which is set by the RRSR register value. In
+> real cases, ack rate higher than current tx rate could lead to
+> difficulty for the receiving end to receive management/control frames.
+> The retransmission rate would be higher then expected when the driver
+> is acting as receiver and the RSSI is not good.
+> 
+> Cross out higer rates for ack packet before implementing dynamic rrsr
+> configuration like the commit 4830872685f8 ("rtw88: add dynamic rrsr
+> configuration").
+> 
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> ---
+> 
+> Changelog:
+>   v2:
+>    - Specify the dynamic rrsr commit for reference
+>    - Remove the unintentional twice reading of REG_RESPONSE_RATE_SET
+> 
+>  drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 6 +++++-
+>  drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h | 2 ++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
 
-So close.
-
-> I skimmed through the emails and you all make a lot of good points.
-
-I skimmed through this email and I think it adds a lot of new
-complexity and fragility to solve a problem that doesn't really exist
-for upstream, adding yet more config parameter combinations to build
-and test for.
-
-A much more valuable approach would be to work towards being able to
-free up memory by un-probed drivers at the end of boot. That would
-possibly benefit all platforms on all architectures.
-
-
--Olof
+Acked-by: Jes Sorensen <Jes.Sorensen@gmail.com>
