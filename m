@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383C741F1A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B716741F1A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhJAP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:59:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37122 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhJAP7f (ORCPT
+        id S1355124AbhJAP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:59:51 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:59210 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231434AbhJAP7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:59:35 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 04A8B20B8008;
-        Fri,  1 Oct 2021 08:57:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04A8B20B8008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1633103871;
-        bh=L+hTirf2j5Nmu4ftJs5tmkbZpphyA9Gv2h6o4DaLNCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YOOIg2G2JUKz8vunSF/eCpzCgpiMQwZBTcgaCBNm7+3Q2MF+6XH2kFr2mj/Bb0R4e
-         CgOCFHQngtMbE9LEvoUMQt+k6+tpJGYDMBg4R+/dyaU66Mib6pn4rpTq/BaBuhHXKI
-         quDH+rLcQ2NPT5ywcijiYomn8gVEY85IyUFWV2Qk=
-Date:   Fri, 1 Oct 2021 08:57:46 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-trace-devel@VGER.KERNEL.ORG, rostedt@goodmis.org,
-        zanussi@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] synth_events: Do not block other dyn_event systems
- during create
-Message-ID: <20211001155746.GA16348@kbox>
-References: <20210930223821.11025-1-beaub@linux.microsoft.com>
- <20211001125513.cf40fa1a3188416582666f66@kernel.org>
+        Fri, 1 Oct 2021 11:59:50 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 21DBC82280;
+        Fri,  1 Oct 2021 18:58:04 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1633103884;
+        bh=DNTYtzXgGG2CWCgnGW0WORFxGEpOjjA5E0H0qnPvd9Q=;
+        h=Date:To:CC:From:Subject;
+        b=kN++9Z3xxZtk3byMArUKcLixvTnaorTDbqVm8pKAnEXojbHBj66TKH3NQxo8fTBEv
+         Nyp+qqwhMZ1szEKyZluNYq9wFfH6b9yURnPdkEdd9uLUqJMKJpDW3Afxo6FV/7KhDe
+         RSotnStKDAmyDLDKWnE+GukYdXtkQFRwQwZcpnx0=
+Received: from [192.168.211.98] (192.168.211.98) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 1 Oct 2021 18:58:03 +0300
+Message-ID: <ed3dc0b6-2fd4-5be0-2815-9f2504d8e1b5@paragon-software.com>
+Date:   Fri, 1 Oct 2021 18:58:03 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001125513.cf40fa1a3188416582666f66@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH] fs/ntfs3: Keep prealloc for all types of files
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.98]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Thanks for clean up the synthetic event!
-> This looks good to me.
-> 
-> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-No problem, thanks for the review!
+Fixes: xfstest generic/274
 
-> So now are you trying to reuse synth event for user event?
-> Then I think you need to register a new dyn_event ops so
-> that histogram will not submit the event.
-A user events patch will get sent out soon, I'm finalizing some testing.
-User events will register it's own dyn_event ops and allow users the
-option to create, delete and view status of user events via the
-dynamic_events tracefs file (in addition to the user mode IOCTL/ABI).
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/attrib.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-As probes attach to the user events the status of this is reflected in
-dynamic_events, which makes it easy for admins to see why one is busy,
-etc. It also makes it easy to verifying the system is working as
-expected with just a terminal.
+diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+index 8a00fa978f5f..e8c00dda42ad 100644
+--- a/fs/ntfs3/attrib.c
++++ b/fs/ntfs3/attrib.c
+@@ -447,11 +447,8 @@ int attr_set_size(struct ntfs_inode *ni, enum ATTR_TYPE type,
+ again_1:
+ 	align = sbi->cluster_size;
+ 
+-	if (is_ext) {
++	if (is_ext)
+ 		align <<= attr_b->nres.c_unit;
+-		if (is_attr_sparsed(attr_b))
+-			keep_prealloc = false;
+-	}
+ 
+ 	old_valid = le64_to_cpu(attr_b->nres.valid_size);
+ 	old_size = le64_to_cpu(attr_b->nres.data_size);
+@@ -461,9 +458,6 @@ int attr_set_size(struct ntfs_inode *ni, enum ATTR_TYPE type,
+ 	new_alloc = (new_size + align - 1) & ~(u64)(align - 1);
+ 	new_alen = new_alloc >> cluster_bits;
+ 
+-	if (keep_prealloc && is_ext)
+-		keep_prealloc = false;
+-
+ 	if (keep_prealloc && new_size < old_size) {
+ 		attr_b->nres.data_size = cpu_to_le64(new_size);
+ 		mi_b->dirty = true;
+-- 
+2.33.0
 
-> BTW, how do you filter an event written by a user process?
-> Will you add an array of event id for the file data structure?
-The filtering would happen at the trace_event level, the only filtering
-at the user event level is if a probe has been enabled on the underlying
-trace_event or not. That is done via the shared page bits being cleared
-or set. Bits are updated as probe un/registrations occur.
-
-Users can advertise field values, offsets, etc as well as the print_fmt
-in the newer ABI/patch based on the feedback from LPC2021. These land in
-the trace_event fields and are viewable via tracefs like any other
-evnet. I hope that is enough to light up the history feature of trace_event.
-I am not familiar with it as much as you all.
-
-Thanks,
--Beau
