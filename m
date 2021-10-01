@@ -2,106 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C2241E644
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3D741E648
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 05:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351794AbhJADk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 23:40:29 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:51669 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhJADk2 (ORCPT
+        id S1351812AbhJADqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 23:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhJADqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 23:40:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HLG6q1v7Tz4xb9;
-        Fri,  1 Oct 2021 13:38:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633059524;
-        bh=zER17jwT/nPYJQiW2vUTIMlPaO2AajjFVc6PJANpva8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MV5cxLsr1jXRSjU4CqozDwyFk3vUCg8HM2UmkDoPZCNYEqfhCgQGTq03Yt+PH8OPA
-         1wAVU/heHMYWwjgKMGGZnkyNBXHWjAFucJhXoF+K2SLLc7zGgKGu/uhNHI5wvgG+U9
-         g3jeuetnnQhRP5MHbEO2ilY2GyDM6S6KLy4BWDLioaPIoaCunwp3qc0F5RBGz0T+A/
-         +70G7D/iXvinglFKQgbX6cXPniejl8b+8ub2FKSHlTsnFcQETsomhiL+muRicI2//d
-         uksyaef3a4jqDM8sbeAHu5whzj3gYvOiN5X5AIbv40LlVIxaLVnbDLCIK3brzWa8mk
-         nUcky099ct4Wg==
-Date:   Fri, 1 Oct 2021 13:38:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Billy Tsai <billy_tsai@aspeedtech.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the iio tree with the iio-fixes tree
-Message-ID: <20211001133841.2b46b779@canb.auug.org.au>
+        Thu, 30 Sep 2021 23:46:22 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC93C06176C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 20:44:38 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z5so17749983ybj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 20:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nUyg5XpqEcjYRAILgiFJJzvxtqym2vAvVPMoISCLLDM=;
+        b=WSQqQNNaNU6sKZN/vcVig76MwzWnqgyH3Y4g0q3bhSkAt+RLn8RiLo9wYfPmdxHEwj
+         Ng8YvHClCtVSVSAlLJD7bFcHsn+Mw6Qh5uOBvYc84llJZCKuAdCRumGL9aV7ROzSVNoX
+         zirkUMQUH0UsWfjfwIIuFEvQ5VJvlPVKeUYG791Ing+efx25wLB+Id73SD2iHg2OvmTz
+         Du7tMGJLrwlhyzbwCZxrUiHX+uGM3N+Uq+mX6x8CcaSZaSQ/9ckaZzVNWy7/m5xwlPfO
+         Ji+FZCzzvSsOgww9JvFT2qwCaP3NlgC1vAVpZ1vnahhCM7JpRWh6MSStXgxBI+Rfb4u7
+         /awA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nUyg5XpqEcjYRAILgiFJJzvxtqym2vAvVPMoISCLLDM=;
+        b=shKn5j7xhfiJVZ+ZkfzMLffSE5ioScIh0e9XzB6484rMj1MzVTOAS8g4zPVlFZnwdM
+         FnvSjFpLBbo7f559hCSuAk8iDWWDXE68Dvq6wZh5IWfyr4mwdIT7byiSwpHbiRHl0JRO
+         LGV3qRlmHYWrrNsyfS+/8eUzVAF/nmfrSW37ZQaqk3Y2nmp7XAoxrRFo2V8LdqX3ZIp5
+         N76YuHtH5jhhJrgQCY2+bMgJBNIO5x2SYVZ9Z0956SEjYDE+WFw4wxFewXuXWuyD2Jcx
+         2ici6/v9mRQPEc1Qkl9qRO5T7Y21mLdk+Lf7a0Ds+JsK/GQiWhWJErtHEDIVrDwrbyMJ
+         9cdQ==
+X-Gm-Message-State: AOAM530ko4VqYS1Pr0PjgMYyz708ExRZ8EnnAq2LzG2kZ0GUuF48XX8U
+        2lKbfqBM/NmeT7/BCLUmKw2WOwrZvNo8OoMz/fDMcA==
+X-Google-Smtp-Source: ABdhPJwc5YLWIpcCTp3KGzbsilLzZduRPuL3k5mA3LZsQk/Ms1ALPyxgKMWk6t/kOh+hE/j2nM/pGCogCW7YMRK3JKs=
+X-Received: by 2002:a25:8411:: with SMTP id u17mr3282073ybk.376.1633059876528;
+ Thu, 30 Sep 2021 20:44:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZXIusq7ayoW1+cgDXZq=td=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210902231813.3597709-1-surenb@google.com> <20210902231813.3597709-2-surenb@google.com>
+ <202109031439.B58932AF0@keescook> <CAJuCfpEQAJqu2DLf5D5pCkv4nq+dtVOpiJSnsxwGrgb9H6inQA@mail.gmail.com>
+ <202109031522.ACDF5BA8@keescook>
+In-Reply-To: <202109031522.ACDF5BA8@keescook>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 30 Sep 2021 20:44:25 -0700
+Message-ID: <CAJuCfpGVgSpvW_oXaGVc3TiobaGaYUtu3WR_DhrhWnEr_V=7TQ@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZXIusq7ayoW1+cgDXZq=td=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 3, 2021 at 3:28 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Sep 03, 2021 at 02:56:21PM -0700, Suren Baghdasaryan wrote:
+> > On Fri, Sep 3, 2021 at 2:47 PM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > (Sorry, a few more things jumped out at me when I looked again...)
+> > >
+> > > On Thu, Sep 02, 2021 at 04:18:12PM -0700, Suren Baghdasaryan wrote:
+> > > > [...]
+> > > > diff --git a/kernel/sys.c b/kernel/sys.c
+> > > > index 72c7639e3c98..25118902a376 100644
+> > > > --- a/kernel/sys.c
+> > > > +++ b/kernel/sys.c
+> > > > @@ -2299,6 +2299,64 @@ int __weak arch_prctl_spec_ctrl_set(struct task_struct *t, unsigned long which,
+> > > >
+> > > >  #define PR_IO_FLUSHER (PF_MEMALLOC_NOIO | PF_LOCAL_THROTTLE)
+> > > >
+> > > > +#ifdef CONFIG_MMU
+> > > > +
+> > > > +#define ANON_VMA_NAME_MAX_LEN        256
+> > > > +
+> > > > +static inline bool is_valid_name_char(char ch)
+> > > > +{
+> > > > +     /* printable ascii characters, except [ \ ] */
+> > > > +     return (ch > 0x1f && ch < 0x5b) || (ch > 0x5d && ch < 0x7f);
+> > > > +}
+> > >
+> > > In the back of my mind, I feel like disallowing backtick would be nice,
+> > > but then if $, (, and ) are allowed, it doesn't matter, and that seems
+> > > too limiting. :)
+> >
+> > It's not used by the only current user (Android) and we can always
+> > allow more chars later. However going the other direction and
+> > disallowing some of them I think would be harder (need to make sure
+> > nobody uses them). WDYT if we keep it stricter and relax if needed?
+>
+> I'd say, if we can also drop each of: ` $ ( )
+> then let's do it. Better to keep the obvious shell meta-characters out
+> of this, although I don't feel strongly about it. Anything that might
+> get confused by this would be similarly confused by binary names too:
+>
+> $ cat /proc/3407216/maps
+> 560bdafd4000-560bdafd6000 r--p 00000000 fd:02 2621909 /tmp/yay`wat
+>
+> And it's probably easier to change a binary name than to call prctl. :P
+>
+> I'm good either way. What you have now is great, but if we wanted to be
+> extra extra strict, we can add the other 4 above.
 
-Hi all,
+While testing v10 I found one case when () are used in the name
+"dalvik-main space (region space)". So I can add ` and $ to the
+restricted set but not ( and ). Kees, would you be happy with:
 
-Today's linux-next merge of the iio tree got a conflict in:
+static inline bool is_valid_name_char(char ch)
+{
+    return ch > 0x1f && ch < 0x7f && !strchr("\\`$[]", ch);
+}
 
-  drivers/iio/adc/aspeed_adc.c
+?
 
-between commit:
-
-  eb795cd97365 ("iio: adc: aspeed: set driver data when adc probe.")
-
-from the iio-fixes tree and commit:
-
-  e96b152c6cc2 ("iio: adc: aspeed: Keep model data to driver data.")
-
-from the iio tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/iio/adc/aspeed_adc.c
-index 34ec0c28b2df,9e2c85c3cbe9..000000000000
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@@ -183,7 -492,7 +492,8 @@@ static int aspeed_adc_probe(struct plat
- =20
-  	data =3D iio_priv(indio_dev);
-  	data->dev =3D &pdev->dev;
- +	platform_set_drvdata(pdev, indio_dev);
-+ 	data->model_data =3D of_device_get_match_data(&pdev->dev);
- =20
-  	data->base =3D devm_platform_ioremap_resource(pdev, 0);
-  	if (IS_ERR(data->base))
-
---Sig_/ZXIusq7ayoW1+cgDXZq=td=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFWgsEACgkQAVBC80lX
-0GybWwgAh6uDE34bntpaHsM2F/5qkThMNIOYRXRqFPgBXAJfO8sdMpggY0Dc8eQs
-Ou/8wF+qI5wtOEcGK8ssy7Sq+PbSiMvOvzS3DB3w9P2xj+OqBJJbqTS9YggRp1EQ
-kxAZmQtW9y2dG8t1yIhJyJhfyskQYwOzKxzZAAT102kdsYHsUuezOZkaVXBmBi6w
-p7FfxGH43sHKs+jz1vdRUCSAL7AOE5dEQMn4GVi0viWKKPFo0pVgSnujeB8KDCUJ
-QhwCqhRMebwg2YVv/wYqFYZdH0Ix+4GhUZsJzuIGqpDV3C7YZSiY0eJd1o8TtfYB
-iIo1rJKXD2gxyF1OIe4qrL4cnJUwbQ==
-=3lUu
------END PGP SIGNATURE-----
-
---Sig_/ZXIusq7ayoW1+cgDXZq=td=--
+>
+> --
+> Kees Cook
