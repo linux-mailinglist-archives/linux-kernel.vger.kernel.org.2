@@ -2,146 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB87E41F778
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B81241F789
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 00:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhJAWhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 18:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhJAWhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 18:37:50 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBB1C06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 15:36:05 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id m3so43656394lfu.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 15:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XXgMIfOKyq97KypYEc7j/J6+r5ZXueX7YTNTMv8Ua2k=;
-        b=GP6c6KY/Hlx3hOXso9m3i2E+F1E0V2AdrpKUg8AEQxKtOaY+FO58/XnO0SKfPDMHr8
-         iw+SY3OJmPMlUpQXaXWLKiprCx1hAZotQVTx82SdjQzQ1yy3jU1k/2bKNoSGNCVcQxoy
-         zX3f1jIyTnXX4WW7L7D5qoP/YqCjZuo2ZbkpENj+Mdj9pZRgxgSMKMNNoaqVB8gXNXkZ
-         FgwyFwAowACaKNNE6fyqzDpJVfaxn3AZzdA6K1pyzmFYNvu04m6Kev5k2MR/Uny1e/AW
-         8u2TBcePVhtki9Qk+gsuNFQ/r7pvLwuDMOEfJxdrovAdX7y9QMlcntbhven5PDXzvbtk
-         7yyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XXgMIfOKyq97KypYEc7j/J6+r5ZXueX7YTNTMv8Ua2k=;
-        b=6/SkI96veXmOLg0cyjFQ+j8jzeE5cWP9S6E5/EdzuIEdYj7i/lcF4AUdkuefhy3cmd
-         srT0CeSLcd4LAgklF+mJQlc9qsSXeaKt9L3fpE3TOh8jaYN4Cr11GhkcVr9UYdWg4BSe
-         VGehdYIT9EA7ldCjHUatkV6CaMT3cuWF+T2ASXLkCLIZRE6YeZv+M3CgKQvsxx9oxkkl
-         /qpIyg4fcfG8/mzeFT7nuBfxbNC1oCByhHc+Gnum+MPELWTGcfmptiE5eCthLyMeH5F6
-         rL6NTUkOPk4hMYjROLgnbzeO6lbqXsIM+76C0AAIupHcQTM0Pcycnmeja52dqoTAgAgM
-         SoxQ==
-X-Gm-Message-State: AOAM532MurxgORBMOYMUaH/GXHxbD81hWyj9RV4vwLa9IntM0eKywjlb
-        Q1xONrVkLLLs9SsdEexscnmwlNxURbT8lQ==
-X-Google-Smtp-Source: ABdhPJxb7u6Y72mC3hsrEjK2CqiCaMW9Htd0Rk6JXyKdn/qJV4B/VmKbc09lODoXSU7xTEWIygYjXw==
-X-Received: by 2002:a05:651c:150b:: with SMTP id e11mr509102ljf.289.1633127763821;
-        Fri, 01 Oct 2021 15:36:03 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id x15sm584308lfe.129.2021.10.01.15.36.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 15:36:03 -0700 (PDT)
-Subject: Re: [PATCH v2] drm: msm: adreno_gpu.c: Add and use pr_fmt(fmt)
-To:     zhaoxiao <zhaoxiao@uniontech.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch
-Cc:     jordan@cosmicpenguin.net, saiprakash.ranjan@codeaurora.org,
-        jonathan@marek.ca, airlied@redhat.com, smasetty@codeaurora.org,
-        konrad.dybcio@somainline.org, akhilpo@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210826022316.9559-1-zhaoxiao@uniontech.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <d41c34c1-cb22-25a0-2bd1-49f1ea177c21@linaro.org>
-Date:   Sat, 2 Oct 2021 01:36:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210826022316.9559-1-zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1355862AbhJAWp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 18:45:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57178 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355898AbhJAWpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 18:45:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="225258555"
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="225258555"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 15:44:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="565343810"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Oct 2021 15:44:07 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+Date:   Fri,  1 Oct 2021 15:36:59 -0700
+Message-Id: <20211001223728.9309-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2021 05:23, zhaoxiao wrote:
-> Use a more common logging style.
-> 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+Intel Advanced Matrix Extensions (AMX)[1][2] will be shipping on servers
+soon (Intel Sapphire Rapids).  AMX consists of configurable TMM "TILE"
+registers plus new CPU instructions that operate on them.  TMUL (Tile
+matrix MULtiply) is the first operator to take advantage of the new
+registers, and we anticipate additional instructions in the future.
 
-Your subject tells about pr_fmt(), while the patch itself changs 
-printk()s to pr_info(). Could you please fix the commit subject and 
-expand/correct commit message?
+Neither AMX state nor TMUL instructions depend on AVX.  However, AMX and
+AVX do share common challenges.  The TMM registers are 8KB today, and
+architecturally as large as 64KB, which merit updates to hardware and
+software state management.
 
-> ---
-> v2:Remove the line: #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->     drivers/gpu/drm/msm/adreno/adreno_gpu.c:23:9: warning: 'pr_fmt' macro redefined [-Wmacro-redefined]
->     #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->             ^
->     include/linux/printk.h:348:9: note: previous definition is here
->     #define pr_fmt(fmt) fmt
-> 
->   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index 9f5a30234b33..f10e9e04c13b 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -753,7 +753,7 @@ void adreno_dump_info(struct msm_gpu *gpu)
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->   	int i;
->   
-> -	printk("revision: %d (%d.%d.%d.%d)\n",
-> +	pr_info("revision: %d (%d.%d.%d.%d)\n",
->   			adreno_gpu->info->revn, adreno_gpu->rev.core,
->   			adreno_gpu->rev.major, adreno_gpu->rev.minor,
->   			adreno_gpu->rev.patchid);
-> @@ -761,12 +761,12 @@ void adreno_dump_info(struct msm_gpu *gpu)
->   	for (i = 0; i < gpu->nr_rings; i++) {
->   		struct msm_ringbuffer *ring = gpu->rb[i];
->   
-> -		printk("rb %d: fence:    %d/%d\n", i,
-> +		pr_info("rb %d: fence:    %d/%d\n", i,
->   			ring->memptrs->fence,
->   			ring->seqno);
->   
-> -		printk("rptr:     %d\n", get_rptr(adreno_gpu, ring));
-> -		printk("rb wptr:  %d\n", get_wptr(ring));
-> +		pr_info("rptr:     %d\n", get_rptr(adreno_gpu, ring));
-> +		pr_info("rb wptr:  %d\n", get_wptr(ring));
->   	}
->   }
->   
-> @@ -780,7 +780,7 @@ void adreno_dump(struct msm_gpu *gpu)
->   		return;
->   
->   	/* dump these out in a form that can be parsed by demsm: */
-> -	printk("IO:region %s 00000000 00020000\n", gpu->name);
-> +	pr_info("IO:region %s 00000000 00020000\n", gpu->name);
->   	for (i = 0; adreno_gpu->registers[i] != ~0; i += 2) {
->   		uint32_t start = adreno_gpu->registers[i];
->   		uint32_t end   = adreno_gpu->registers[i+1];
-> @@ -788,7 +788,7 @@ void adreno_dump(struct msm_gpu *gpu)
->   
->   		for (addr = start; addr <= end; addr++) {
->   			uint32_t val = gpu_read(gpu, addr);
-> -			printk("IO:R %08x %08x\n", addr<<2, val);
-> +			pr_info("IO:R %08x %08x\n", addr<<2, val);
->   		}
->   	}
->   }
-> 
+Further, both technologies run faster when they are not simultaneously
+running on SMT siblings, and both technologies use of power and bandwidth
+impact the power and performance available to neighboring cores.  (This
+impact has measurably improved in recent hardware.)
+
+If the existing kernel approach for managing XSAVE state was employed to
+handle AMX, 8KB space would be added to every task, but possibly rarely
+used.  Thus, Linux implements on-demand expansion of per-task context
+switch buffers using an XSAVE feature: eXtended Feature Disabling (XFD).
+The kernel arms XFD to provide an #NM exception upon a tasks' first access
+to TILE state. The kernel exception handler allocates and installs the
+appropriate XSAVE context switch buffer.  User space is unaware of the
+kernel's contexts switch buffer optimization.
+
+AMX is accessible only to applications that invoke a new system call to
+request access.  When a user invokes this system call, they agree that if
+they use an alternate signal stack, that they are providing an alternative
+signal stack of sufficient size.  The simplest way to do that is to use the
+updated ABI in glibc 2.34 or later [8][9], though they could Also use their
+own calculation or ask the kernel directly [3].
+
+The patches are built on top of the recent upstream x86 FPU changes [13].
+
+This series has three parts:
+* Patch 01-16: Foundation to support dynamic user states
+* Patch 17-22: AMX enablement
+* Patch 23-29: Additional supplementary changes for optimization, test,
+  debug and new syscalls.
+
+Note that the per-process system call in PATCH14 reflects the latest
+discussion on LKML, [10][12].
+
+The following points summarize the latest discussion, and this
+implementation:
+
+1. Kernel sets XCR0.AMX=1 at boot, and leaves it set, always.
+
+    XCR0 is NOT context switched by Linux.
+    (If it were, every change would provoke VMEXIT if in VM.)
+
+    (KVM context switches XCR0.   If KVM exports XFD for use by a guest OS,
+    it must also context switch XFD.  KVM can not use XFD for its own
+    purposes.)
+
+2. Kernel arms XFD for all tasks.
+
+    XFD is context switched per Linux task.
+
+3. Apps invoke new system call to request feature access (AMX).
+
+    Implemented as a flag to arch_prctl(2), permission granted to any task
+    will grant that permission to all tasks in the process.
+
+    It is sufficient to invoke this syscall at process or library
+    init-time.
+
+    There is no concept of removing or revoking permission, once granted to
+    a process.  (Permission is cleared upon exec of a new process.)
+
+    There is a companion system call to return the current permission.
+
+    Analogous to AVX-512 and other stateful features, applications probe
+    for AMX support by checking CPUID for the instructions and checking
+    XGETBV(XCR0) for the OS support.
+
+    However, stateful features from AMX onward also require the system call
+    above to be invoked before tasks in that process may use the feature.
+
+4. Applications touching AMX without permission results in process exit.
+
+    Armed XFD results in #NM, results in SIGILL with si_code ILL_ILLOPC,
+    typically resulting in process exit.
+
+5. Applications touching AMX with permission allocate context switch buffer
+   on-demand.
+
+    Armed XFD results in #NM.
+    Kernel allocates large context switch kernel buffer.
+    Kernel dis-arms XFD for that task.
+
+6. NM handler allocation failure results in process exit.
+
+    If the #NM handler can not allocate the 8KB buffer, the task will
+    receive a SIGILL with si_code ILL_ILLOPC at the instruction that took
+    the #NM fault, typically resulting in process exit.
+
+7. Legacy app signal stack XSTATE support includes AVX-512, and stops
+   before AMX.
+
+    Legacy apps are those which do not request AMX (or subsequent feature)
+    access.The signal stack ABI continues to be uncompacted XSTATE for both
+    legacy and new apps.
+
+    Existing code to find offsets in XSTATE still work.
+    Existing code doing XRSTOR/XSAVE on signal stack buffer will still
+    work.*
+
+    * XSTATE size calculation using CPUID will include
+    AMX and other supported features, even if the process did not invoke
+    the new system call.    However, the kernel will not XSAVE AMX or later
+    features onto the signal stack of a legacy process.**
+
+   ** User-space XSAVE/XRSTOR should size buffers according to CPUID
+   if they include the bits of xgetbv(XCR0) in RFBM, because XSAVE will
+   write data (including zeros for INIT state) for all features included in
+   RFBM.
+
+8. New opt-in apps must agree to provide large enough sigaltstack
+
+    1. must invoke permission system call before touching AMX TMM
+    2. must guarantee if using sigaltstack(2), that they have
+       allocated signal stack of sufficient size, e.g., by utilizing
+       glibc signal.h 2.34 or later.
+
+    (glibc 2.34 changed MINSIGSTKSZ and SIGSTKSZ from 2KB/8KB constants
+    into run-time routines. [8])
+
+    Linux will continue to XSAVE/XRSTOR directly to/from the signal stack,
+    and the stack will always include the 8KB *space* for AMX TMM and
+    subsequent features.
+
+    Linux has an optimization in for all XFD-supported features in the INIT
+    state so that XSAVE will skip writing zeros.
+
+9. intel_idle for SPR will clear AMX TMM state
+
+    This guarantees that AMX use will not prevent the CPU from entering the
+    idle C6 state, which can be beneficial for power savings, and thus
+    turbo frequency.
+
+Reviewed-by: Len Brown <len.brown@intel.com>
+
+Changes from v10 [18]:
+* Expand permission-required states to include XTILECFG and later, rather
+  than just XFD-protected states (Patch15, Patch16, and Patch20).
+* Add static allocation feature flag: ARCH_SET_STATE_ENABLE_ALLOC
+  (Patch29).
+* Add sanity checks to sigaltstack() and ARCH_SET_STATE_ENABLE syscalls
+  (Patch16). (Thomas Glexiner)
+* Update comment and a variable name for XSTATE calculation function
+  (Patch9). (Dave Hansen)
+* Raise SIGSEGV rather than SIGILL when XSTATE buffer reallocation fails
+  (Patch13). (Thiago Macieira)
+* Simplify the sigframe XSAVE code: replace check for XFD STATE with
+  XTILECFG and later STATE (Patch23).
+* Simplify syscall implementation - no functional change (Patch15).
+* Fix the changelog and the comment for ARCH_SET_STATE_ENABLE (Patch15).
+* Fix to access fpu->state_mask via the helper (Patch16).
+* Update the selftest for v11 (Path24).
+
+Changes from v9 [17]:
+* Simplify and rename helpers for managing XSTATE buffer (Patch9,11).
+  (Borislav Petkov)
+* Simplify and use permission check helpers (Patch15,16).
+* Remove access helpers (Patch6). (Borislav Petkov)
+* Rename XSTATE address finder helper (Patch11). (Borislav Petkov)
+* Simplify ptrace path code (Patch14). (Borislav Petkov)
+* Use cpu_feature_enabled() whenever possible (Patch9,13,15,23,26,27).
+  (Borislav Petkov)
+* Add comment for tile_release() use (Patch26). (Dave Hansen)
+* Update code comment and/or changelog (Patch6,7). (Borislav Petkov)
+* Update the cover letter to indicate SPR explicitly (Patch0). (Dave
+  Hansen)
+* Update XFD enabling code (Patch13). (Borislav Petkov)
+* Move the state copy function changes. (Patch1,9,12). (Borislav
+  Petkov)
+
+Changes from v8 [16]:
+* Update arch_prctl prototype for consistency with other arch_prctl's.  It
+  now takes an address of return bitmask as a parameter (Patch14).  Update
+  self-tests to reflect this (Patch23).
+* bugfix: Fix off-by-one-error in check_xstate_against_struct() feature
+  number argument (Patch19).
+
+Changes from v7 [15]:
+* Update #NM handler to raise SIGILL rather than SIGSEGV (Patch 12).
+  (Thiago Macieira)
+* Rename the syscalls (Patch 14). (Thiago Macieira and Dave Hansen)
+* If XSAVE is disabled, assure that syscall correctly indicates legacy
+  states (Patch14). (Thiago Macieira and Dave Hansen)
+* Update existing self-test to expect SIGILL (Patch23).
+
+Changes from v6 [14]:
+* Add state bitmap param to proposed syscall. (Thiago Macieira)
+* Add companion syscall to return the current permission bitmap.
+* Update the ptrace path to return EFAULT when no permission to write
+  XTILEDATA.
+* Simplify xstate size calculation code. (Dave Hansen)
+* Update comments for TILERELEASE code. (Rafael J. Wysocki)
+
+Changes from v5 [11]:
+* Updated to require per-process permission for dynamic states (v5 was
+  per-task).
+* Support both legacy and expanded sigframe xstate buffer sizes.
+* Moved the TILERELEASE code to intel_idle driver. (Peter Zijlstra)
+* Fixed to deactivate fpregs with TILERELEASE. (Andy Lutomirski and Dave
+  Hansen)
+* Rebased on Thomas Gleixner's recent x86 FPU code changes.
+* Added XFD sanity check. (Dave Hansen)
+* Future proofed __raw_xsave_addr().
+* Tighten up task size calculation (previously, it could over-calculate).
+* Cleaned invocation memset() for init_fpstate (no functional change).
+* Updated selftest to handle latest syscall semantics, plus minor updates.
+* Dropped the change for XSTATE restore helper.
+
+Changes from v4 [7]:
+* Changed the buffer expansion policy to the access-request based approach
+  from the transparent #NM-based approach. (Andy Lutomirski, Thomas
+  Gleixner, and et al)
+* Removed the boot parameter patch. (Thomas Gleixner)
+* Included code to explicitly initialize AMX state during a context switch.
+  (Thomas Gleixner)
+* Added a new arch_prctl to pre-allocate a buffer for dynamic state. (Andy
+  Lutomirski)
+* Updated the fork() path to initialize all the AMX state.
+* Improved ptracer's dynamic user state injection path.
+* Add optimization to skip tile data in sigframe when an AMX thread
+  initialized the state.
+* Updated to treat the mismatched state size as an error. (Thomas Gleixner)
+* Simplified the xstate feature check routine. (Thomas Gleixner)
+* Simplified and updated the selftest.
+* Updated some changelog. (Thomas Gleixner)
+* Updated a function description. (Borislav Petkov)
+
+Changes from v3 [6]:
+* Updated some commit messages and code comments. (Borislav Petkov)
+* Added and removed some helpers. (Borislav Petkov)
+* Revised the buffer allocation function. (Borislav Petkov)
+* Simplified in accessing buffers. (Borislav Petkov)
+* Re-organized some code change more reviewable. (PATCH9/10)
+* Reverted unnecessary changes. (PATCH4)
+* Fixed typo in the documentation. (Randy Dunlap)
+
+Changes from v2 [5]:
+* Removed the patch for the tile data inheritance. Also, updated the
+  selftest patch. (Andy Lutomirski)
+* Changed the kernel tainted when any unknown state is enabled. (Andy
+  Lutomirski)
+* Changed to use the XFD feature only when the compacted format in use.
+* Improved the test code.
+* Simplified the cmdline handling.
+* Removed 'task->fpu' in changelogs. (Boris Petkov)
+* Updated the variable name / comments / changelogs for clarification.
+
+Changes from v1 [4]:
+* Added vmalloc() error tracing (Dave Hansen, PeterZ, and Andy Lutomirski)
+* Inlined the #NM handling code (Andy Lutomirski)
+* Made signal handling optimization revertible
+* Revised the new parameter handling code (Andy Lutomirski and Dave Hansen)
+* Rebased on the upstream kernel
+
+[1]: Intel Architecture Instruction Set Extension Programming Reference
+     May 2021, https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf
+[2]: https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/intrinsics/intrinsics-for-intel-advanced-matrix-extensions-intel-amx-instructions.html
+[3]: https://lore.kernel.org/lkml/20210518200320.17239-1-chang.seok.bae@intel.com/
+[4]: https://lore.kernel.org/lkml/20201001203913.9125-1-chang.seok.bae@intel.com/
+[5]: https://lore.kernel.org/lkml/20201119233257.2939-1-chang.seok.bae@intel.com/
+[6]: https://lore.kernel.org/lkml/20201223155717.19556-1-chang.seok.bae@intel.com/
+[7]: https://lore.kernel.org/lkml/20210221185637.19281-1-chang.seok.bae@intel.com/
+[8]: https://sourceware.org/git/?p=glibc.git;a=commit;h=6c57d320484988e87e446e2e60ce42816bf51d53
+[9]: https://sourceware.org/git/?p=glibc.git;a=blob;f=NEWS;h=aa0f10a891f8f9b4e6f0f6d25b6a307898c07d82;hb=HEAD#l12
+[10]: https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com/
+[11]: https://lore.kernel.org/lkml/20210523193259.26200-1-chang.seok.bae@intel.com/
+[12]: https://lore.kernel.org/lkml/CAJvTdKmzN0VMyH8VU_fdzn2UZqmR=_aNrJW01a65BhyLm6YRPg@mail.gmail.com/
+[13]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1423e2660cf134a8f21f2451865a04792013e49e
+[14]: https://lore.kernel.org/lkml/20210630060226.24652-1-chang.seok.bae@intel.com/
+[15]: https://lore.kernel.org/lkml/20210710130313.5072-1-chang.seok.bae@intel.com/
+[16]: https://lore.kernel.org/lkml/20210717152903.7651-1-chang.seok.bae@intel.com/
+[17]: https://lore.kernel.org/lkml/20210730145957.7927-1-chang.seok.bae@intel.com/
+[18]: https://lore.kernel.org/lkml/20210825155413.19673-1-chang.seok.bae@intel.com/
+
+Chang S. Bae (29):
+  x86/fpu/xstate: Fix the state copy function to the XSTATE buffer
+  x86/fpu/xstate: Modify the initialization helper to handle both static
+    and dynamic buffers
+  x86/fpu/xstate: Modify state copy helpers to handle both static and
+    dynamic buffers
+  x86/fpu/xstate: Modify address finders to handle both static and
+    dynamic buffers
+  x86/fpu/xstate: Add a new variable to indicate dynamic user states
+  x86/fpu/xstate: Add new variables to indicate dynamic XSTATE buffer
+    size
+  x86/fpu/xstate: Calculate and remember dynamic XSTATE buffer sizes
+  x86/fpu/xstate: Convert the struct fpu 'state' field to a pointer
+  x86/fpu/xstate: Introduce helpers to manage the XSTATE buffer
+    dynamically
+  x86/fpu/xstate: Update the XSTATE save function to support dynamic
+    states
+  x86/fpu/xstate: Update the XSTATE buffer address finder to support
+    dynamic states
+  x86/fpu/xstate: Update the XSTATE context copy function to support
+    dynamic states
+  x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user
+    state
+  x86/fpu/xstate: Support ptracer-induced XSTATE buffer expansion
+  x86/arch_prctl: Create ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
+  x86/fpu/xstate: Support both legacy and expanded signal XSTATE size
+  x86/fpu/xstate: Adjust the XSAVE feature table to address gaps in
+    state component numbers
+  x86/fpu/xstate: Disable XSTATE support if an inconsistent state is
+    detected
+  x86/cpufeatures/amx: Enumerate Advanced Matrix Extension (AMX) feature
+    bits
+  x86/fpu/amx: Define AMX state components and have it used for
+    boot-time checks
+  x86/fpu/amx: Initialize child's AMX state
+  x86/fpu/amx: Enable the AMX feature in 64-bit mode
+  x86/fpu/xstate: Skip writing zeros to signal frame for dynamic user
+    states if in INIT-state
+  selftest/x86/amx: Test cases for the AMX state management
+  x86/insn/amx: Add TILERELEASE instruction to the opcode map
+  intel_idle/amx: Add SPR support with XTILEDATA capability
+  x86/fpu/xstate: Add a sanity check for XFD state when saving XSTATE
+  x86/arch_prctl: ARCH_GET_FEATURES_WITH_KERNEL_ASSISTANCE
+  x86/arch_prctl: ARCH_SET_STATE_ENABLE_ALLOC
+
+ arch/x86/include/asm/cpufeatures.h    |    4 +
+ arch/x86/include/asm/fpu/internal.h   |   92 ++-
+ arch/x86/include/asm/fpu/types.h      |   99 ++-
+ arch/x86/include/asm/fpu/xstate.h     |   95 ++-
+ arch/x86/include/asm/msr-index.h      |    2 +
+ arch/x86/include/asm/processor.h      |   10 +-
+ arch/x86/include/asm/proto.h          |    2 +-
+ arch/x86/include/asm/special_insns.h  |    6 +
+ arch/x86/include/asm/thread_info.h    |    3 +
+ arch/x86/include/asm/trace/fpu.h      |    4 +-
+ arch/x86/include/uapi/asm/prctl.h     |   23 +-
+ arch/x86/kernel/cpu/cpuid-deps.c      |    4 +
+ arch/x86/kernel/fpu/core.c            |  113 ++-
+ arch/x86/kernel/fpu/init.c            |   37 +-
+ arch/x86/kernel/fpu/regset.c          |   55 +-
+ arch/x86/kernel/fpu/signal.c          |   98 ++-
+ arch/x86/kernel/fpu/xstate.c          |  741 +++++++++++++++--
+ arch/x86/kernel/process.c             |   26 +-
+ arch/x86/kernel/process_32.c          |    7 +-
+ arch/x86/kernel/process_64.c          |   16 +-
+ arch/x86/kernel/traps.c               |   60 ++
+ arch/x86/kvm/x86.c                    |   48 +-
+ arch/x86/lib/x86-opcode-map.txt       |    8 +-
+ arch/x86/math-emu/fpu_aux.c           |    2 +-
+ arch/x86/math-emu/fpu_entry.c         |    4 +-
+ arch/x86/math-emu/fpu_system.h        |    2 +-
+ drivers/idle/intel_idle.c             |   82 ++
+ kernel/signal.c                       |    8 +
+ tools/arch/x86/lib/x86-opcode-map.txt |    8 +-
+ tools/testing/selftests/x86/Makefile  |    2 +-
+ tools/testing/selftests/x86/amx.c     | 1048 +++++++++++++++++++++++++
+ 31 files changed, 2456 insertions(+), 253 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/amx.c
 
 
--- 
-With best wishes
-Dmitry
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
+--
+2.17.1
+
