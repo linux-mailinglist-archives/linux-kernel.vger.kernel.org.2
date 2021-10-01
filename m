@@ -2,163 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F29E41E6CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD541E6D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 06:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344067AbhJAEgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 00:36:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:34524 "EHLO foss.arm.com"
+        id S237841AbhJAEiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 00:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235967AbhJAEgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 00:36:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58560106F;
-        Thu, 30 Sep 2021 21:34:29 -0700 (PDT)
-Received: from [10.163.74.5] (unknown [10.163.74.5])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 410203F70D;
-        Thu, 30 Sep 2021 21:34:24 -0700 (PDT)
-Subject: Re: [PATCH v2 10/17] arm64: Enable workaround for TRBE overwrite in
- FILL mode
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-11-suzuki.poulose@arm.com>
- <8b23470b-da5c-c624-dc98-d30ab7c1be5d@arm.com>
- <4bc00aff-0562-bafd-b31a-d7f9af6651fa@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <9e76e7a8-3cbe-62c2-4cd6-130b3e3784c5@arm.com>
-Date:   Fri, 1 Oct 2021 10:05:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230477AbhJAEh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 00:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D4961A38;
+        Fri,  1 Oct 2021 04:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633062976;
+        bh=o7W1TWKuuUspAw3IemuWpxXTM4VfuLgUo2O3Ksw9J00=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ylx4QoGbMO0nWymDopNL2clFS0/KWpaxzYmulpGUoQFcW3Y0ZpaHswhtkriHkFv06
+         O0cGlpHdAoEaljl2rt5iLkLARuHLlxcHSMnhlaG/SFEX7zvc2jMcM4VHsRMnJ4jzRz
+         Hjocy/SqYtKBi6+IcWHdJFnv+yAqm8Xw6a3uUL/3Vzoiemb3OxiTsGxGFUfbqW295Q
+         mBFsBAjsqRuu2wVZw/6+n+z2QwK+01OorWokyDggUIXM7W0ruimDjtfyTGlpa9PcPf
+         sFEZYzhWcmNUKlhTgNm5OZwg6Uei9eQ/I80VNP/XhDnmjQXMfGbl9jQlJ129h5ZIR4
+         FkQRQW2YOfNgA==
+Date:   Fri, 1 Oct 2021 10:06:11 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 16/30] ABI: sysfs-bus-soundwire-slave: use wildcards
+ on What definitions
+Message-ID: <YVaQO2VUEtnMi91m@matsya>
+References: <cover.1631782432.git.mchehab+huawei@kernel.org>
+ <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <4bc00aff-0562-bafd-b31a-d7f9af6651fa@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <416f4a746c116147abb08fb0155a6a4ed065dfd7.1631782432.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16-09-21, 10:59, Mauro Carvalho Chehab wrote:
+> An "N" upper letter is not a wildcard, nor can easily be identified
+> by script, specially since the USB sysfs define things like.
+> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
+> to convert it into a Regex.
 
+Applied, thanks
 
-On 9/22/21 1:41 PM, Suzuki K Poulose wrote:
-> On 22/09/2021 08:23, Anshuman Khandual wrote:
->>
->>
->> On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
->>> Now that we have the work around implmented in the TRBE
->>> driver, add the Kconfig entries and document the errata.
->>>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: Leo Yan <leo.yan@linaro.org>
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> ---
->>>   Documentation/arm64/silicon-errata.rst |  4 +++
->>>   arch/arm64/Kconfig                     | 39 ++++++++++++++++++++++++++
->>>   2 files changed, 43 insertions(+)
->>>
->>> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
->>> index d410a47ffa57..2f99229d993c 100644
->>> --- a/Documentation/arm64/silicon-errata.rst
->>> +++ b/Documentation/arm64/silicon-errata.rst
->>> @@ -92,12 +92,16 @@ stable kernels.
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>>   | ARM            | Cortex-A77      | #1508412        | ARM64_ERRATUM_1508412       |
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>> +| ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
->>> ++----------------+-----------------+-----------------+-----------------------------+
->>>   | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>>   | ARM            | Neoverse-N1     | #1349291        | N/A                         |
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>>   | ARM            | Neoverse-N1     | #1542419        | ARM64_ERRATUM_1542419       |
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>> +| ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
->>> ++----------------+-----------------+-----------------+-----------------------------+
->>>   | ARM            | MMU-500         | #841119,826419  | N/A                         |
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>>   +----------------+-----------------+-----------------+-----------------------------+
->>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>> index 077f2ec4eeb2..eac4030322df 100644
->>> --- a/arch/arm64/Kconfig
->>> +++ b/arch/arm64/Kconfig
->>> @@ -666,6 +666,45 @@ config ARM64_ERRATUM_1508412
->>>           If unsure, say Y.
->>>   +config ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->>> +    bool
->>> +
->>> +config ARM64_ERRATUM_2119858
->>> +    bool "Cortex-A710: 2119858: workaround TRBE overwriting trace data in FILL mode"
->>> +    default y
->>> +    depends on CORESIGHT_TRBE
->>> +    select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->>> +    help
->>> +      This option adds the workaround for ARM Cortex-A710 erratum 2119858.
->>> +
->>> +      Affected Cortex-A710 cores could overwrite upto 3 cache lines of trace
->>> +      data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
->>> +      the event of a WRAP event.
->>> +
->>> +      Work around the issue by always making sure we move the TRBPTR_EL1 by
->>> +      256bytes before enabling the buffer and filling the first 256bytes of
->>> +      the buffer with ETM ignore packets upon disabling.
->>> +
->>> +      If unsure, say Y.
->>> +
->>> +config ARM64_ERRATUM_2139208
->>> +    bool "Neoverse-N2: 2139208: workaround TRBE overwriting trace data in FILL mode"
->>> +    default y
->>> +    depends on CORESIGHT_TRBE
->>> +    select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->>> +    help
->>> +      This option adds the workaround for ARM Neoverse-N2 erratum 2139208.
->>> +
->>> +      Affected Neoverse-N2 cores could overwrite upto 3 cache lines of trace
->>> +      data at the base of the buffer (ponited by TRBASER_EL1) in FILL mode in
->>
->> s/ponited/pointed
->>
->>> +      the event of a WRAP event.
->>> +
->>> +      Work around the issue by always making sure we move the TRBPTR_EL1 by
->>> +      256bytes before enabling the buffer and filling the first 256bytes of
->>> +      the buffer with ETM ignore packets upon disabling.
->>> +
->>> +      If unsure, say Y.
->>> +
->>>   config CAVIUM_ERRATUM_22375
->>>       bool "Cavium erratum 22375, 24313"
->>>       default y
->>>
->>
->> The real errata problem description for both these erratums are exactly
->> the same. Rather a more generalized description should be included for
->> the ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE, which abstracts out the
->> problem and a corresponding solution that is implemented in the driver.
->> This should also help us reduce current redundancy.
->>
-> 
-> The issue is what a user wants to see. A user who wants to configure the
-> kernel specifically for a given CPU (think embedded systems), they would
-> want to hand pick the errata for the particular CPU. So, moving the help
-> text to an implicitly selected Kconfig symbol. I would rather keep this
-> as it is to keep it user friendly. This doesn't affect the code size
-> anyways.
-
-Understood.
-
-> 
-> The other option is to remove all the CPU specific Kconfig symbols and
-> update the "title" to reflect both the CPU/erratum numbers.
-
-Hmm, but I guess the current proposal is better instead.
+-- 
+~Vinod
