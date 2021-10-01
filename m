@@ -2,164 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B41B41F59F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E805841F5B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354847AbhJATRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
+        id S231996AbhJAT2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbhJATRR (ORCPT
+        with ESMTP id S229515AbhJAT2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:17:17 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBDEC061775;
-        Fri,  1 Oct 2021 12:15:32 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g41so42283748lfv.1;
-        Fri, 01 Oct 2021 12:15:32 -0700 (PDT)
+        Fri, 1 Oct 2021 15:28:43 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01787C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 12:26:57 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id s4so6349004ybs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 12:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=niNmxAk0ssHAm3Elvv3RJuw0kSncCioQpK+Dv1hLMfQ=;
-        b=ompAaqfUP2nwflwfZymbIWdbQcFcOFoC+2uqB/pw0Y1WeA0ZFgZBrXXroc1D9iZE/3
-         r+IPUa14hP8aLxdvlyxUGLG/sRpD1eVdY6HINGphhODSA8qi/WKmBF/Y4qJmjtqG9i5c
-         QteCTEwJ3FXZQIQOvZg/gr4YarMpWJqOQByuYB3PUiBYUJEXrfcuahtdb4hIBH9fyTNN
-         mNv1yfewQHiWqoHrX0awqEd0Tl6wD/YvrU5uk1BErj6tECORNnLLUEEmHb+sWMY3uVV3
-         Di3gYCH1EFMU7aOskMvk2sJ93QZxwOrUh/JeZf7kFffGHX478Gg8fj5Vh9nZ5d15M/9/
-         cQ9w==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+I3d1su/KvdHqod/jvZj4lVFL3MuIPfZCays9g7CN7k=;
+        b=EneX9Nz+akqriwHswlfP+5z4mszZUBt5tejoF6pkNPF4ct3GPQNHTy1gLNzJq7fhV5
+         Q3tNAAhnrbl2HAPqbX8HMMmI1D4l2VwdFNQK1rW1Lu+WxG36WHsJLmeRJ13tN85QPbR6
+         cyiOz85aw1l/YHU1853UOnyKSoEmVMMIHawKdQUekUrMJZRrAEykcvYaROArZIcTq1uF
+         ptpZKieD7AvZ/dcJtDOtylXMuHp0m7OWsyjH4WX1poQZPbals+M4U4iVxckbt+J3JcjR
+         k1NWIDAsCe9KtV59TJkdQs4MFoiN25XNYfxr1X3qGzMXRl550k6H94RilzZ/fJhr8lE6
+         5b2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=niNmxAk0ssHAm3Elvv3RJuw0kSncCioQpK+Dv1hLMfQ=;
-        b=jgiltYdEn9VV6EpxeD3Cc9Ww0mRwmqcceWht5OiYSwz2br8hlK+/uiFnDGiVpx+bEg
-         bbmUrJO7YWE6BSyyDCkBn5uovhjOuiN1v0GYhTDOONcGrH7ZD4Rp0LZdwPJra9BY2bAj
-         tF8trH6Ut8GDSRJ+Uf/TES9vHatzHZRGCEgH7RVo/kiPLt+u7J15hD3esmma2BOCoWSo
-         Kura87ogU+bWGoqJxeqixAOcMowu25ZSt8y9saAknWf8vwq9nYYv9kkvykoffv9U6nDf
-         RlqZn8NKHcIw2jb+eRroFsfDiPEnt76oOeXA3AXucTjZ32GPFDrtaeSx15TWAms83L3R
-         uk+w==
-X-Gm-Message-State: AOAM531yEm8Wt7gzw65anzwhic/CpnA5wvmhYwNH4rdhLFTSNZrCwmfq
-        d92qTPMYHjolrwHJbqjny6o=
-X-Google-Smtp-Source: ABdhPJy3ghoTNAi0Jb2SiS3hsWYw15h3Vk93zN4ib7q8hKhDd5DWUUMwX4Q7U3/o0nn9oofd85xS+Q==
-X-Received: by 2002:a2e:4e11:: with SMTP id c17mr13093513ljb.19.1633115730771;
-        Fri, 01 Oct 2021 12:15:30 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
-        by smtp.googlemail.com with ESMTPSA id d6sm820684lfi.137.2021.10.01.12.15.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 12:15:30 -0700 (PDT)
-Subject: Re: [PATCH v13 02/35] soc/tegra: Add
- devm_tegra_core_dev_init_opp_table_common()
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-3-digetx@gmail.com>
- <CAPDyKFrtE75Tf-vefM0isj52PJ5_v525AjqU2TMUpc4__rYLhA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ab874e0c-903a-fc3b-d33b-54a7a9f0e109@gmail.com>
-Date:   Fri, 1 Oct 2021 22:15:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+I3d1su/KvdHqod/jvZj4lVFL3MuIPfZCays9g7CN7k=;
+        b=XMkEZYRmP1Y96bX5/66u6+KUtBQY5M6Ww+kIpH6o8U3P6fC9OpYbmSiYciuiQVCTyw
+         hHUwPCzWgoL14jIrEv7MxUj6s/fJX56O9JH63yxwoNPsNk1KiMJ5SKCQzW+CXFiiJr7y
+         mVdIR6IqoFZjiBQ5gV4iphUjuCbJzECUsD4vSnWgoU8jLp7V2Vw3tbMw3eUaR7KSZFDO
+         euv/TsV4Yn5h0F4Zj178bATxTF6W19DDhmatoRGawVRmPRQvERym3MTzjYprQ1gIUUSj
+         aydT7g8gVeShF3BJ+zMLX0dX7PxiKC4bSkzB3hADMUd+Q+vdEwRnrqse/+dbT+gUFLa7
+         3h9w==
+X-Gm-Message-State: AOAM5301ylKcP4he1lzU/IhFfaD3Ap/4bG4clHgaIgC2E2reZ+HktW3h
+        L4/MDh7xQqCowSpQ/wmHrT7jyftqbZnzGrVhPkL5GA==
+X-Google-Smtp-Source: ABdhPJzEY4QNq5SWV1QbRoyFZtAgKfhNOJD2XXMlINUwQzL6veYPMvaJGswNlhCCzflMkhboQW0Q6R+GxM38wqKTb/A=
+X-Received: by 2002:a25:1dd7:: with SMTP id d206mr5271610ybd.486.1633116416960;
+ Fri, 01 Oct 2021 12:26:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrtE75Tf-vefM0isj52PJ5_v525AjqU2TMUpc4__rYLhA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAMuHMdWhCB_zg6TwjYfz+=vc+_Wd5yzuAAzk=2ToZOQSAyaiJA@mail.gmail.com>
+ <CAK8P3a10R-Q8hB-piH_QT0hzkaAZTczLbM=6WmgoMHYL8EhZ4g@mail.gmail.com> <CAOesGMhHK7Z8Ki+UFRi24dXTdk4=YC6ExneOnfkVmG2HFiVMKw@mail.gmail.com>
+In-Reply-To: <CAOesGMhHK7Z8Ki+UFRi24dXTdk4=YC6ExneOnfkVmG2HFiVMKw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 1 Oct 2021 12:26:20 -0700
+Message-ID: <CAGETcx_UFLCwmqs_d5c8JY8Je9r=jy=KnELz1h91Qbrw9z+kaw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 15:50, Ulf Hansson пишет:
-> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Only couple drivers need to get the -ENODEV error code and majority of
->> drivers need to explicitly initialize the performance state. Add new
->> common helper which sets up OPP table for these drivers.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  include/soc/tegra/common.h | 24 ++++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
->> index af41ad80ec21..5b4a042f60fb 100644
->> --- a/include/soc/tegra/common.h
->> +++ b/include/soc/tegra/common.h
->> @@ -39,4 +39,28 @@ devm_tegra_core_dev_init_opp_table(struct device *dev,
->>  }
->>  #endif
->>
->> +/*
->> + * This function should be invoked with the enabled runtime PM of the device
->> + * in order to initialize performance state properly. Most of Tegra devices
->> + * are assumed to be suspended at a probe time and GENPD require RPM to be
->> + * enabled to set up the rpm-resume state, otherwise device is active and
->> + * performance state is applied immediately. Note that it will initialize
->> + * OPP bandwidth if it's wired in a device-tree for this device, which is
->> + * undesirable for a suspended device.
->> + */
->> +static inline int
->> +devm_tegra_core_dev_init_opp_table_common(struct device *dev)
->> +{
->> +       struct tegra_core_opp_params opp_params = {};
->> +       int err;
->> +
->> +       opp_params.init_state = true;
->> +
->> +       err = devm_tegra_core_dev_init_opp_table(dev, &opp_params);
->> +       if (err != -ENODEV)
->> +               return err;
->> +
->> +       return 0;
->> +}
-> 
-> Just want to share a few thoughts around these functions.
-> 
-> So, I assume it's fine to call
-> devm_tegra_core_dev_init_opp_table_common() or
-> devm_tegra_core_dev_init_opp_table() from consumer drivers during
-> ->probe(), as long as those drivers are tegra specific, which I assume
-> all are in the series!?
+On Fri, Oct 1, 2021 at 8:27 AM Olof Johansson <olof@lixom.net> wrote:
+>
+> On Fri, Oct 1, 2021 at 2:01 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Fri, Oct 1, 2021 at 10:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, Oct 1, 2021 at 7:24 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > GIC and arch timer. Basically the minimal kernel would need a timer
+> > > > for the scheduler tick and IRQ controller to get the timer IRQ and the
+> > > > fixed clock driver if the archtimer uses one to get its frequency and
+> > > > the early UART console is pointless as a module (so build it in to
+> > > > allow debugging/development).
+> > > >
+> > > > And then all new drivers, we should make sure are implemented as
+> > > > tristate drivers. And we can go back and slowly work on converting
+> > > > existing drivers to modules (community effort -- not one person or
+> > > > entity) -- at least the ones where the author has hardware or ones
+> > > > where the change is very likely to be correct and someone else is
+> > > > willing to test it. We'll never be able to support some/all ARM32 (do
+> > > > they even have a GIC/arch timer standard?), but at least for ARM64,
+> > > > this seems like a viable goal.
+> > >
+> > > Cortex-A7/A15 and later have GIC and architectured timer, so it should
+> > > work for contemporary systems.
+> > > Cortex-A9 systems may have GIC, and TWD and/or Global Timer (but I've
+> > > seen SoCs where the interrupt for the latter was not wired :-(.
+> >
+> > There are a number of well-known examples even with 64-bit chips or
+> > Cortex-A7/A15 based SoCs that can't use the architected timer,
+> > irqchip or iommu.
+> >
+> > Apple M1, Broadcom BCM283x, Samsung Exynos5 and
+> > some Hisilicon server parts come to mind, I'm sure there
+> > are more.
+>
+> There's also more and more movement towards having coprocessors with
+> standardized interfaces dealing with this functionality. We're
+> currently at the point where they have coprocessors with
+> non-standardized interfaces, and it's useful to keep encouraging
+> convergence in this area to everybody's benefit. I don't find it
+> particularly useful to make life easier for the custom solutions at
+> the expense of others like this patchset does, when that's (just
+> beyond? on?) the horizon.
+>
+> > > What are the plans for other architectures?
+> > > I've seen similar patches being applied for e.g. MIPS.
+> >
+> > There is some work in the more actively maintained MIPS
+> > platforms to make those behave more like Arm/powerpc/riscv/m68k
+> > platforms, using a single image and moving drivers into modules.
+> > Most MIPS platforms seem unlikely to get updated to this,
+> > and will continue to require a SoC specific kernel binary forever,
+> > similar to the renesas superh platforms. Most of the less
+> > common architectures (arc, csky, hexagon, nios2, xtensa,
+> > microblaze, nds32, openrisc, sparc/leon) are way behind that
+> > though, and generally don't work at all without out-of-tree
+> > code.
+>
+> One of the arguments for needing some of these core drivers in-kernel
+> is that some platforms boot at very conservative DVFS operating
+> points, to a degree that you really want to turn up the CPU clocks
+> fairly early during boot.
+>
+> If you don't have the drivers built-in, you can't do that and/or you
+> create possible fragile or awkward inter-module dependencies with
+> deferred probing, etc. We do care about boot time enough to prefer to
+> just build them in for this reason.
 
-That is correct, all drivers are tegra-specific in this series. External
-devices are attached to the internal SoC devices and this series is
-about the SoC power management.
+Go look at a Pixel 5, we got this working just fine with all these
+drivers as modules and we definitely care about boot time. You just
+need to load your CPU freq driver and the other ones it needs early
+on. And with fw_devlink=on (default in upstream), there's hardly any
+deferred probing.
 
-> My point is, a cross SoC consumer driver that needs to initiate OPP
-> tables can get rather messy, if it would need to make one specific
-> function call per SoC.
-> 
-> That said, I hope we can tackle this as a separate/future problem, so
-> the series can get merged as is.
+> If vmlinux binary size is a concern, maybe it's time to consider
+> splitting the drivers into a bare-minimum piece that's not a module
+> for early setup, and the rest that can be loaded post-boot.
 
-Yes, as we already have seen, it's not an easy problem to make PD core
-to handle it in a generic way. If there will be a similar demand from
-other SoCs, then we may try to solve that problem again.
+Isn't this literally what I was suggesting with my
+ARM64_MINIMAL_GENERIC_KERNEL suggestion? Build in all the bare minimum
+drivers that are needed before module loading can happen? You'd just
+select them all under that config. And any existing platform that
+wants to use it would break up their drivers into modules and switch
+to it.
+
+-Saravana
