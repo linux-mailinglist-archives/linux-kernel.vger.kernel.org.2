@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852BC41F857
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE67641F851
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 01:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhJAXt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 19:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhJAXtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 19:49:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ECBC061775;
-        Fri,  1 Oct 2021 16:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=D+j+WybPtmBEnVTBgvwYlUNDCxR06I1ekoF/x1QDvas=; b=AmhgeVmYCjSkxdLFxYHMoNieYV
-        yqxGhkhYuoivjTkmG7jNJA36wvfSn4ZM7SBLQTM3lMJUI+KTD0BncIL1YF6QStnzYqGjQEr6WFWQe
-        J6cOZ4qcj7TMURyYpEjdRlk4WZD2VuzOpVW/T3vRShQpYklX2A6HjrKsjzEUAaWSXQQMEukMTjp7p
-        KRaObp+XQzxJX7H1FOTVOZ5XiJzzD7Oo8kLColr8qqTCsozrPjSQgzZhVxE1Qgn/e5DcJR2ogVgEi
-        Je08v+zWOyk7b90UHHLmxenMMTJTv4IrLRquFPdgmVNXnoXfIg/Yb79JQhM3dg66VOuaTvHKC13yn
-        u0GAd79g==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWSFg-001UUH-3k; Fri, 01 Oct 2021 23:47:40 +0000
-Subject: Re: [RFC v2 10/11] hte: Add tegra GPIO HTE test driver
-To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        warthog618@gmail.com, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, robh+dt@kernel.org
-References: <20210930232617.6396-1-dipenp@nvidia.com>
- <20210930232617.6396-11-dipenp@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <466cf944-4eae-ad4c-dcf5-42e2e043b754@infradead.org>
-Date:   Fri, 1 Oct 2021 16:47:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232010AbhJAXqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 19:46:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhJAXqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 19:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65EAF61A8D;
+        Fri,  1 Oct 2021 23:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633131902;
+        bh=AKHrIZMYuBVUUCrpaF2xXGBGsiDT4PbE1eXqYrs9BVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dZgUlNjw1uaqj48ezhzTaBCoA7KtZWxJNsfUTm9tCuoBb4cC85ZQzzOpTbGf35LWR
+         lCXwD+kEgBNXSSrLXNHYhau+PCdYRRPS3qW5ka9JIwzp2aGYFYYW1KMnUbNY7Zv8+L
+         NxAWB4/G6XYSDu4Csf2Jk/v+nyLCy3IkKOOsQ0j1emGzMqhCI4VvJRh94d3ZJz1Eit
+         Brg06P3AYcDM71nBp6CV0X74momfYABuD8RzcuCHU5lTgm74qyieSs4Cjd5zQjLuCm
+         Vgh/xB+HV37AeMDkGStnRdNZPk9Sosw65HZPHCVuS3AYex4QmVHCgGnNsmIR8Bda6D
+         UE3JlpjjYRPxw==
+Date:   Fri, 1 Oct 2021 18:49:12 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     John Johansen <john.johansen@canonical.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] apparmor: Use struct_size() helper in kzalloc()
+Message-ID: <20211001234912.GA1055815@embeddedor>
+References: <20210929220526.GA355783@embeddedor>
+ <4c851990-45d7-a0ff-e398-92ecb2454242@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210930232617.6396-11-dipenp@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c851990-45d7-a0ff-e398-92ecb2454242@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 01, 2021 at 04:37:08PM -0700, John Johansen wrote:
+> On 9/29/21 3:05 PM, Gustavo A. R. Silva wrote:
+> > Make use of the struct_size() helper instead of an open-coded version,
+> > in order to avoid any potential type mistakes or integer overflows that,
+> > in the worse scenario, could lead to heap overflows.
+> >> Link: https://github.com/KSPP/linux/issues/160
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> nice
+> 
+> I will pull this into my tree
+> Acked-by: John Johansen <john.johansen@canonical.com>
 
-On 9/30/21 4:26 PM, Dipen Patel wrote:
-> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
-> index eb339526f141..57c97034d187 100644
-> --- a/drivers/hte/Kconfig
-> +++ b/drivers/hte/Kconfig
-> @@ -38,4 +38,13 @@ config HTE_TEGRA194_IRQ_TEST
->   	  The NVIDIA Tegra194 GTE IRQ test driver demonstrates HTE subsystem
->   	  usage for the LIC IRQ hardware timestamp.
->   
-> +config HTE_TEGRA194_GPIO_TEST
-> +        tristate "NVIDIA Tegra194 HTE GPIO Test"
-> +        depends on HTE_TEGRA194
-> +        help
-> +	  The NVIDIA Tegra194 GTE GPIO test driver demonstrates how to use HTE
+Thanks, John.
 
-	                                                            to use the HTE
-
-> +	  subsystem indirectly through gpiolib API calls for GPIO line for the
-
-	                                                          lines
-
-> +	  hardware assisted timestamping.
-
-	  hardware-assisted
-
-> +
->   endif
-
-Also:
-
-Please follow coding-style for Kconfig files:
-
-(from Documentation/process/coding-style.rst, section 10):
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-
-Some of the lines above are indented with spaces instead of one tab.
-
-
-thanks.
--- 
-~Randy
+--
+Gustavo
