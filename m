@@ -2,147 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DADA41E93F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AB641E942
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 10:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352707AbhJAI4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 04:56:46 -0400
-Received: from www.zeus03.de ([194.117.254.33]:42260 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhJAI4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 04:56:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=U0XYrY7BfpzXUDaE53ryLcZq8bbX
-        xEwB4ugx+HOYEAM=; b=Y0dkP3YbmXab6WI/QAVhlO/cRwgLvXfKY5aQuEWMP9zi
-        PIKv+vSUuxsBC3jPZ9vP1yWk6m7nO06Hk5J8S6+fL3tY0CUAD2Og/YocuD1ApjAG
-        gc1vSVyFKORA8TwoVMkl+4ia5KluFN/Sj1ix4syqNvBJyUa8qby/WFR1+qPUX/8=
-Received: (qmail 2400745 invoked from network); 1 Oct 2021 10:54:58 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 Oct 2021 10:54:58 +0200
-X-UD-Smtp-Session: l3s3148p1@mSSZt0bNQtAgAwDPXwmDAJN1R91E6vGQ
-Date:   Fri, 1 Oct 2021 10:54:55 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YVbM3z7x+D0MCkTF@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <YVXMc1A4D/y4kjim@shikoro>
- <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
+        id S1352827AbhJAI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 04:56:53 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:48725 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352826AbhJAI4v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 04:56:51 -0400
+Received: by mail-il1-f199.google.com with SMTP id x17-20020a927c11000000b0024da94ff1a6so6977210ilc.15
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 01:55:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=mYVNj7GUYQ3ONE/lwuTfVtZPuGTc99UdHlU4HzP4RMU=;
+        b=JdkpSg0uZDlYC0PVk4+OCg3CqZNMTr8VbvDRjtEY7xk7mOyFHboGBEabnmkf/SRi9r
+         5SwfjVePWqS0OSP4+BUOMTe+b1PoQjW1AZjwNPD6cy+e/7UrURAHkYXaEWJPM5wSv3mc
+         M80S0B/BvgWcJW4pd0zaBnmfqQxSLHv4JNXqi4fvSrs2Cg3kLaGpbJZINWGjJ9oOvRV4
+         ALjuPZCd0psuEZ/IDjXhrHBRAJQAqrwunHRL6hW4yOou17/mc320LO8s2sxSxx3dxKc8
+         Lu9wdBoDFny40lfUaiqOj+caohxim0wj1Ekr4mXiRnWnxZMKhbIIk5UJodwbbT21pzqX
+         QOGA==
+X-Gm-Message-State: AOAM531tCEmn+1Q9bTENAEDZy0v+53bKCSRJEz/DI0MYI4G9G60Hvevg
+        Fafk4xAUU9ur+w2+hSLo6jWK7A0Rb95VUWy6m8KgIsbzPV1F
+X-Google-Smtp-Source: ABdhPJwHjqhjMTIzJ+KD7re2/BvRja309HrPWUEceEN/YAnuUvrfDViaJV3ThPI7N/1fki4yZUmQcFv8x/XyxaaJ2RGEnxfueAgd
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="POeIfeKI2d2tOV4O"
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8sDSsyTGfTeQfG_ZhfrJHCm+2kBTEDWaoFMTgsMOmxEgQ@mail.gmail.com>
+X-Received: by 2002:a05:6638:3713:: with SMTP id k19mr8744051jav.44.1633078507394;
+ Fri, 01 Oct 2021 01:55:07 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 01:55:07 -0700
+In-Reply-To: <000000000000d068cf05c716264c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000052dbbf05cd46b81e@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in em28xx_close_extension
+From:   syzbot <syzbot+005037419ebdf14e1d87@syzkaller.appspotmail.com>
+To:     dan.carpenter@oracle.com, hdanton@sina.com,
+        hverkuil-cisco@xs4all.nl, igormtorrente@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        mudongliangabcd@gmail.com, stephen.s.brennan@oracle.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
---POeIfeKI2d2tOV4O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+commit 0766ec82e5fb26fc5dc6d592bc61865608bdc651
+Author: Stephen Brennan <stephen.s.brennan@oracle.com>
+Date:   Wed Sep 1 17:51:41 2021 +0000
 
-Hi Prabhakar,
+    namei: Fix use after free in kern_path_locked
 
-> > Is RPCIF_CMNCR_IO3FV and RPCIF_CMNCR_IO2FV actually documented in your
-> > datasheets? I am asking because I have a patch pending to remove writing
-> > to undocumented locations. So, I was aboout to remove the IO3FV and
-> > IO2FV macros.
-> >
-> Yes they are documented, you should be able to download the HW manual from [1]
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17bf2a03300000
+start commit:   fa54d366a6e4 Merge tag 'acpi-5.14-rc7' of git://git.kernel..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+dashboard link: https://syzkaller.appspot.com/bug?extid=005037419ebdf14e1d87
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c086c5300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12950bee300000
 
-Great, then I will keep them!
+If the result looks correct, please mark the issue as fixed by replying with:
 
-> > > +     regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
-> > > +     regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000024);
-> >
-> > Can't we have defines for these magic values? At least in my latest Gen3
-> > documentation, these values are explained.
-> >
-> RZ/G2L manual doesn't explain these bits. Let me refer to R-Car Gen3
-> and define them as macros.
+#syz fix: namei: Fix use after free in kern_path_locked
 
-Seems like we have the best of both worlds then with the documentation
-;)
-
-> > > +     if (rpc->type == RPCIF_RCAR_GEN3) {
-> > > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
-> > > +                          RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
-> > > +     } else {
-> > > +             regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
-> > > +             dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
-> > > +             dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
-> > > +             regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
-> >
-> > regmap_update_bits?
-> >
-> Im a bit hesitant to use regmap_update_bits() here as some of the bits
-> are not documented.
-
-Hmm, maybe I should then update the patch avoiding undocumented register
-access beforehand? I will download your docs and see what remains and
-send that out for you to check. Somewhen later today.
-
-Sounds good?
-
-Happy hacking,
-
-   Wolfram
-
-
---POeIfeKI2d2tOV4O
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFWzNsACgkQFA3kzBSg
-KbYpCw/+IFCm4M9GxL7MN1VHz4q6kfkDKhe8TfEXrR2uOdjopf1//OvCjtch/I2F
-VmI7EvVLoXUb8fadtW5pYbJtaASC4PBTyhyOJR05YfH6DT3czamx0S95CFoi2b6c
-ZAeZ4V6uCyN97jBuAia2rFxuu+yIoavlrp/+VFGmP7O2dyw2MOTinezfIJMZnvhm
-RGEW79XjZ9zEvecBuyBNRnnkK+XwUsRFgod5dnxmoXb6VMsGlAEtiX607VqvfLI9
-xrtIdtx6HLf/LqLLjzSBfmtF8V3rnaXJ2o3xNQLmVxMPtLs5JsQ0U1Ra7kYc9kaJ
-wN60H5LJ1jV5fn79oMp4HsxAAYuAhWjcTtnXwet3LnnMhB2dwcycjF+sqOt4oODH
-diVh9X3CV8OO821jouKtIOKw4aC998J4qgVsklyrP6fXQf+BUBVF0S6l3am9Zazw
-QBkSGc6wdzJjB3hLg66KZP8OuP/vim9KM2diuYvXptIGDzeD3AXTsvgKvtlfaW1v
-Xby3E0kQoNkg0WLfYfH5N5pt60Qtj32Y6ewXRntWqZ8HeSaDyLM00n6GMfyRV50I
-4fdvwejos4Ub3j37pNeK8f14Ltd4jEQO/dsVX6IAOiMcxaZMLe4a1DN/45l+s3sk
-bz7FDrS7YldjhJMYv8TcI3MQJ0B+TW8pagl3j27ma19x/xtDKvo=
-=KZfF
------END PGP SIGNATURE-----
-
---POeIfeKI2d2tOV4O--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
