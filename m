@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EFA41E9A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56841E9AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353041AbhJAJhD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Oct 2021 05:37:03 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:56932 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhJAJhC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:37:02 -0400
-Received: from smtpclient.apple (62-134-92-74.business.static.de.bt.net [62.134.92.74])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D0BFBCED29;
-        Fri,  1 Oct 2021 11:35:16 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20211001083412.3078-1-redecorating@protonmail.com>
-Date:   Fri, 1 Oct 2021 11:35:16 +0200
-Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, sonnysasaka@chromium.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1D2217A9-EA73-4D93-8D0B-5BC2718D4788@holtmann.org>
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
- <20210930063106.19881-1-redecorating@protonmail.com>
- <20210930141256.19943-1-redecorating@protonmail.com>
- <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
- <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
- <20211001083412.3078-1-redecorating@protonmail.com>
-To:     Orlando Chamberlain <redecorating@protonmail.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S1353076AbhJAJhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:37:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43401 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353031AbhJAJhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:37:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633080966; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=BeCtPj+gAx1yb+qr7Piiqq97L5UNvZlh+6GnVLGIR9Q=; b=llTsoZcxrLrurcUw0FfXxByC9KhKJ+bb4ne2Nhp5SwgO01bpFCEkq/gHHL368UVVuDIPXadv
+ TAL/HZbyANlo3sKdxjx1MpMd5fuM6/wnQYfsFs47CONBZ8ImDBpNBKHywrE5FQFMUT/zEF7O
+ WaGo+KlD9XpXASEqStNJ58HIOnk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6156d66947d64efb6dd25f1e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 09:35:37
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 399F7C4338F; Fri,  1 Oct 2021 09:35:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B05F2C4338F;
+        Fri,  1 Oct 2021 09:35:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B05F2C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 20/24] wfx: add scan.c/scan.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <20210920161136.2398632-21-Jerome.Pouiller@silabs.com>
+Date:   Fri, 01 Oct 2021 12:35:28 +0300
+In-Reply-To: <20210920161136.2398632-21-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Mon, 20 Sep 2021 18:11:32 +0200")
+Message-ID: <87r1d5krz3.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Orlando,
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-> The LE Read Transmit Power command is Advertised on some Broadcom
-> controlers, but not supported. Using this command breaks Bluetooth
-> on the MacBookPro16,1 and iMac20,1. Added a quirk disabling LE Read
-> Transmit Power for these devices, based off their common chip id 150.
-> 
-> Link: https://lore.kernel.org/r/4970a940-211b-25d6-edab-21a815313954@protonmail.com
-> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
-> ---
-> v1->v2: Clarified quirk description
-> 
-> drivers/bluetooth/btbcm.c   |  4 ++++
-> include/net/bluetooth/hci.h | 11 +++++++++++
-> net/bluetooth/hci_core.c    |  3 ++-
-> 3 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-> index e4182acee488..4ecc50d93107 100644
-> --- a/drivers/bluetooth/btbcm.c
-> +++ b/drivers/bluetooth/btbcm.c
-> @@ -353,6 +353,10 @@ static int btbcm_read_info(struct hci_dev *hdev)
-> 		return PTR_ERR(skb);
-> 
-> 	bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+
+[...]
+
+> +/* It is not really necessary to run scan request asynchronously. Howeve=
+r,
+> + * there is a bug in "iw scan" when ieee80211_scan_completed() is called=
+ before
+> + * wfx_hw_scan() return
+> + */
+> +void wfx_hw_scan_work(struct work_struct *work)
+> +{
+> +	struct wfx_vif *wvif =3D container_of(work, struct wfx_vif, scan_work);
+> +	struct ieee80211_scan_request *hw_req =3D wvif->scan_req;
+> +	int chan_cur, ret, err;
 > +
-> +	if (skb->data[1] == 150)
-> +		set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
+> +	mutex_lock(&wvif->wdev->conf_mutex);
+> +	mutex_lock(&wvif->scan_lock);
+> +	if (wvif->join_in_progress) {
+> +		dev_info(wvif->wdev->dev, "abort in-progress REQ_JOIN");
+> +		wfx_reset(wvif);
+> +	}
+> +	update_probe_tmpl(wvif, &hw_req->req);
+> +	chan_cur =3D 0;
+> +	err =3D 0;
+> +	do {
+> +		ret =3D send_scan_req(wvif, &hw_req->req, chan_cur);
+> +		if (ret > 0) {
+> +			chan_cur +=3D ret;
+> +			err =3D 0;
+> +		}
+> +		if (!ret)
+> +			err++;
+> +		if (err > 2) {
+> +			dev_err(wvif->wdev->dev, "scan has not been able to start\n");
+> +			ret =3D -ETIMEDOUT;
+> +		}
+> +	} while (ret >=3D 0 && chan_cur < hw_req->req.n_channels);
+> +	mutex_unlock(&wvif->scan_lock);
+> +	mutex_unlock(&wvif->wdev->conf_mutex);
+> +	__ieee80211_scan_completed_compat(wvif->wdev->hw, ret < 0);
+> +}
 > +
-> 	kfree_skb(skb);
+> +int wfx_hw_scan(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+> +		struct ieee80211_scan_request *hw_req)
+> +{
+> +	struct wfx_vif *wvif =3D (struct wfx_vif *)vif->drv_priv;
+> +
+> +	WARN_ON(hw_req->req.n_channels > HIF_API_MAX_NB_CHANNELS);
+> +	wvif->scan_req =3D hw_req;
+> +	schedule_work(&wvif->scan_work);
+> +	return 0;
+> +}
 
-I would really prefer to do that via the ACPI table matching in hci_bcm.c and not via some magic chip id check. We actually don’t know how Broadcom assigns their chip ids.
+This scan logic looks fishy to me, but no time to investigate in detail.
+Though not a blocker.
 
-Regards
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Marcel
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
