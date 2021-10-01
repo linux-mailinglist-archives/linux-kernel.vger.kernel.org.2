@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBEB41ECEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560B141ECF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354286AbhJAMKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354146AbhJAMKm (ORCPT
+        id S1354294AbhJAMLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:11:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53186 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354146AbhJAMLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:10:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A61C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 05:08:58 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 14:08:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633090137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 1 Oct 2021 08:11:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D7D55223FF;
+        Fri,  1 Oct 2021 12:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633090196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YRadpnlF9IdXzsOeCYMcs6XaQP+QKfoESUanVMWqulU=;
-        b=4g8Fr3rNz1ZUZiKXcuvx2gdRODxVoBBjDRC+enAdQsHXrgNCh2AFLTR3ATdvBojb+9spOc
-        2v3EbqkHcS+0SQif9eSP9i9Tmwvdpv1LB361lEp9omO7Q3dTpaRKqz2eJ9JCmHBQ0+2Fhh
-        oU3bZCkwuxj1Dzp7atlPDpUqKFEW9pNdKw7IcL42o8Xz1ayG402KZkPFcPZSPxgGXaRJmy
-        tTNrLtE0hqiVelWCsztDDatZA+8sVviqsbYD+QVM46JI8Srwjr0pLpBCwN4eV/I+WVL2uA
-        +fu60NL3CmHjsx8q85ZyFFE28zCyVz8Z0M/jpQWsoswiy8zGmhx4rrjMQIVA8A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633090137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YRadpnlF9IdXzsOeCYMcs6XaQP+QKfoESUanVMWqulU=;
-        b=/klqx7sRYnwuv1sDUYkvK4/qwJb4hAMQRqbPw548h/SlCGSPGAi0/b440YUaJwtr4xY9Pu
-        T4Iz3Fbo7BOZtGAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH 4/5] irq_work: Handle some irq_work in SOFTIRQ on
- PREEMPT_RT
-Message-ID: <20211001120855.hjjaqt5bpowit2r7@linutronix.de>
-References: <20210927211919.310855-1-bigeasy@linutronix.de>
- <20210927211919.310855-5-bigeasy@linutronix.de>
- <YVV+RklIlsG6N2ic@hirez.programming.kicks-ass.net>
- <20210930095348.tud6jdcenfkfzugz@linutronix.de>
- <YVXMN5YzUmpX20ET@hirez.programming.kicks-ass.net>
- <20210930163858.orndmu5xfxue3zck@linutronix.de>
- <YVbjxjzVM5Dx4Mv4@hirez.programming.kicks-ass.net>
+        bh=ZMNtJrbC0GnzRHpRVHcvpxd5r5byMIwvTLIh1FKx91I=;
+        b=sXm0w2uUnG8p6tiV2Z1mK1CVCNFn3B50GQ0XrAGn2QOR5GIUB+/8cEE6DSKYRJgsyCmxev
+        PSwoqv6ESRnPMVUC+IJNmxsyjyv7E2S2IoGx/0BdkhUcz41PQ7cHBX/YAbnJgobD9cAFk4
+        vUr0IHQweYKklazQJmidOEv16+HHW1s=
+Received: from suse.cz (pathway.suse.cz [10.100.12.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C1854A3B81;
+        Fri,  1 Oct 2021 12:09:55 +0000 (UTC)
+Date:   Fri, 1 Oct 2021 14:09:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Popov <alex.popov@linux.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Laura Abbott <labbott@redhat.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, notify@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+Message-ID: <20211001120955.GA965@pathway.suse.cz>
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+ <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
+ <YVWAPXSzFNbHz6+U@alley>
+ <20210930125903.0783b06e@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVbjxjzVM5Dx4Mv4@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210930125903.0783b06e@oasis.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-01 12:32:38 [+0200], Peter Zijlstra wrote:
-> On Thu, Sep 30, 2021 at 06:38:58PM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2021-09-30 16:39:51 [+0200], Peter Zijlstra wrote:
+On Thu 2021-09-30 12:59:03, Steven Rostedt wrote:
+> On Thu, 30 Sep 2021 11:15:41 +0200
+> Petr Mladek <pmladek@suse.com> wrote:
 > 
-> > > Runing them all at the same prio still sucks (much like the single
-> > > net-RX thing), but at least a kthread is somewhat controllable.
+> > On Wed 2021-09-29 12:49:24, Paul E. McKenney wrote:
+> > > On Wed, Sep 29, 2021 at 10:01:33PM +0300, Alexander Popov wrote:  
+> > > > On 29.09.2021 21:58, Alexander Popov wrote:  
+> > > > > Currently, the Linux kernel provides two types of reaction to kernel
+> > > > > warnings:
+> > > > >  1. Do nothing (by default),
+> > > > >  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
+> > > > >     so panic_on_warn is usually disabled on production systems.  
 > > 
-> > I could replace the softirq processing with a per-CPU thread. This
-> > should work. But I would have to (still) delay the wake-up of the thread
-> > to the timer tick - or - we try the wake from the irqwork-self-IPI.
+> > Honestly, I am not sure if panic_on_warn() or the new pkill_on_warn()
+> > work as expected. I wonder who uses it in practice and what is
+> > the experience.
 > 
-> That, just wake the thread from the hardirq.
+> Several people use it, as I see reports all the time when someone can
+> trigger a warn on from user space, and it's listed as a DOS of the
+> system.
 
-"just". Let me do that and see how bad it gets ;)
+Good to know.
 
-> > I
-> > just don't know how many will arrive back-to-back. The RCU callback
-> > (rcu_preempt_deferred_qs_handler()) pops up a lot. By my naive guesswork
-> > I would say that the irqwork is not needed since preempt-enable
-> > somewhere should do needed scheduling. But then commit
-> >   0864f057b050b ("rcu: Use irq_work to get scheduler's attention in clean context")
-> > 
-> > claims it is not enough.
+> > The problem is that many developers do not know about this behavior.
+> > They use WARN() when they are lazy to write more useful message or when
+> > they want to see all the provided details: task, registry, backtrace.
 > 
-> Oh gawd, that was something really nasty. I'm not sure that Changelog
-> captures all (at least I'm not sure I fully understand the problem again
-> reading it).
-> 
-> But basically that thing wants to reschedule, but suffers the same
-> problem as:
-> 
-> 	preempt_disable();
-> 
-> 	<TIF_NEED_RESCHED gets set>
-> 
-> 	local_irq_disable();
-> 	preempt_enable();
-> 	  // cannea schedule because IRQs are disabled
-> 	local_irq_enable();
-> 	// lost a reschedule
-> 
-> 
-> Yes, that will _eventually_ reschedule, but violates the PREEMPT rules
-> because there is an unspecified amount of time until it does actually do
-> reschedule.
+> WARN() Should never be used just because of laziness. If it is, then
+> that's a bug. Let's not use that as an excuse to shoot down this
+> proposal. WARN() should only be used to test assumptions where you do
+> not believe something can happen. I use it all the time when the logic
+> prevents some state, and have the WARN() enabled if that state is hit.
+> Because to me, it shows something that shouldn't happen happened, and I
+> need to fix the code.
 
-Yeah but buh. We could let local_irq_enable/restore() check that
-need-resched bit if the above is considered pretty and supported _or_
-start to yell if it is not. A middle way would be to trigger that
-self-IPI in such a case. I mean everyone suffers from that lost
-reschedule and, if I'm not mistaken, you don't receive a remote wakeup
-because the remote CPU notices need-resched bit and assumes that it is
-about to be handled. So RCU isn't special here.
+I have just double checked code written or reviewed by me and it
+mostly follow the rules. But it is partly just by chance. I did not
+have these rather clear rules in my head.
 
-> So what RCU does there is basically trigger a self-IPI, which guarantees
-> that we reschedule after IRQs are finally enabled, which then triggers a
-> resched.
+But for example, the following older WARN() in format_decode() in
+lib/vsprintf.c is questionable:
+
+	WARN_ONCE(1, "Please remove unsupported %%%c in format string\n", *fmt);
+
+I guess that the WARN() was used to easily locate the caller. But it
+is not a reason the reboot the system or kill the process, definitely.
+
+Maybe, we could implement an alternative macro for these situations,
+e.g. DEBUG() or warn().
+
+> > Well, this might be different. Developers might learn this the hard
+> > way from bug reports. But there will be bug reports only when
+> > anyone really enables this behavior. They will enable it only
+> > when it works the right way most of the time.
 > 
-> I see no problem marking that particular irq_work as HARD tho, it really
-> doesn't do anything (other than tell RCU the GP is no longer blocked)
-> and triggering the return-from-interrupt path.
+> The panic_on_warn() has been used for years now. I do not think this is
+> an issue.
 
-Hmm. Your Highness. I'm going back to my peasant village to build the
-thread you asked for. I will look into this. I see two of those irq-work
-things that is the scheduler thingy and this.
+If panic_on_warn() is widely used then pkill_on_warn() is fine as well.
 
-Thanks.
-
-> There's also a fun comment in perf_lock_task_context() that possibly
-> predates the above RCU fix.
-
-Sebastian
+Best Regards,
+Petr
