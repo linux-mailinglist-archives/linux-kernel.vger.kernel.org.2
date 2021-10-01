@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECEB41F431
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366C941F442
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 20:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355706AbhJASBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 14:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
+        id S1355601AbhJASDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 14:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355632AbhJASBB (ORCPT
+        with ESMTP id S1355596AbhJASDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 14:01:01 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC28C06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:59:17 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id w206so12432127oiw.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:59:17 -0700 (PDT)
+        Fri, 1 Oct 2021 14:03:48 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3334FC061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 11:02:04 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id p80so12615812iod.10
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JI+sywciYnZbmZEgEJHRDL/J7+jew9UCDT1hip8NvrU=;
-        b=FyoEbdW2FqsPcEhkuzRiqeAZHw3KxbHbOcE66Ei50UA+S5jXlr/d7sRdoPXj0zrPM/
-         76r6rt7i+ccdj+mTerjrunN45spBenJDBib2hBvA6rhfnWpjHqmkNK5z5wJgO+jXn4p0
-         h8raVVABtgEso+pTjYoll7GzjNoJgFGPIE/Q/rcwKVRadh1jHI48y9214q0FbwcNp5WJ
-         M0pg+/b8khuqIFspFtwtwhAfa+JcRwQ+TBmb6BrtuIUOUSEYZ1bb5ZiQFC4p5TnMblcg
-         zSxLtACQTor8eVznN8PPWSFJWfAADp52R487S2riQYeeqU7BpyvBkm9YvYD7Txy3HbMS
-         Q8+Q==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SGWtQ8weImqQpPz3//oFTgRTO/g29HsvOa/9MfOVgZs=;
+        b=dvH7fniNsvzTWgdm7rBSCJ2hGBhYLqkOJuwZpogrL2WwQjldz2SM84+KJPm9IGDaKC
+         /fvGIgKYkZfK9mwMVG9MxIVdMEMPQiXkGWgSEFKgbYjrjiQa3pBFhqtIJD2H/wynGrr2
+         qAQ6k9PAMebL4+moFHi/AnEUTMy1BQOCG1g1s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JI+sywciYnZbmZEgEJHRDL/J7+jew9UCDT1hip8NvrU=;
-        b=TSDEgK3ExcsMROWNansB05pKGhbX8QwooH0yU7bLrdLvxxeqEMMaH4eJ3juByAwAHE
-         4AiSmGBGJ3FBCQ6s4aaK2OB6DPFArvrXgep5yUDoKeRAhs7mCQoCTi1OnLnptRsEnsnU
-         r9ZupA1P1ixv9719VK9oS/L4dQK3PrNyTzkmCrWbYsFJDYznTVNf3fFpAlbUwzxqi+XK
-         PQCukhyFPcRN9Y++ZCJI1JYqztWshrglzr1G/kiuimWmn9KmGNocRPxGOpHTXQhT8BMD
-         wk57/Uke67zUDzvGpYITwg9W95MyirhKcDRBzwOpl3MJJtF2Z6MboHmbniMfeHYk2Bb1
-         k8Ew==
-X-Gm-Message-State: AOAM531jXJ3ltb0hdrPwh8kdWCgXuXYT9CpeezEF9d2KIbVBgPuryr1L
-        vs79M2oRohS4JkDl4IhUqqxb5Q==
-X-Google-Smtp-Source: ABdhPJy4WkvL2DtpKyrAXS99LAVSyxpiYi/tK7s8P4u/fX707mFCaQdncul2tax8VCgac4O/k7y/dQ==
-X-Received: by 2002:aca:f189:: with SMTP id p131mr4906839oih.128.1633111156385;
-        Fri, 01 Oct 2021 10:59:16 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id w2sm1284798oof.23.2021.10.01.10.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 10:59:16 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SGWtQ8weImqQpPz3//oFTgRTO/g29HsvOa/9MfOVgZs=;
+        b=tkpZnJSQUbrQjILQbeMBJpuHk2hmAW0S7ym8bOzedYZ0DXbif4oT/QiAyiEufRdb1b
+         jUUM7hwPWz+IfnDtGRYNJTWCNaYb+y7XaTHY7FpRHUAFBdf/DZwqu8eZW/FIam3z0Lwe
+         eOCALNKPXg8Nq5Z803sZUL4wNnqRjvv/raP1zP8iuLxRFTfjF9WFN/eSqQ2Rxhc7B0ZX
+         FuGyx6+13Pwi6iqZlw7CoVghXOPiUlFs0g9aW+XbUQEaDgCadankBJOMlUV3iLA83V3E
+         vKHPhviR9ZwIn2/M9mezkwHLqNT3jnadlxd1qvkmJGJRC0EQ/Mo5sOdWEHh0M2VZ39Uh
+         i6Aw==
+X-Gm-Message-State: AOAM5338BBSfvcqvnJbISTXPb/zUZS9k7VfneG9MfHvBGiL8stx5LxYX
+        St3kX4OiOZCmbqAMCe4KUMGXDBJpAtSjPg==
+X-Google-Smtp-Source: ABdhPJzDA1Uv5S7ubXpkoxq4j/T+WETriaelP/LqavBzkcJjZDh1RSwvK2z6FYnnQqplg8fghlKSFA==
+X-Received: by 2002:a05:6602:2bd4:: with SMTP id s20mr9282664iov.63.1633111323489;
+        Fri, 01 Oct 2021 11:02:03 -0700 (PDT)
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
+        by smtp.gmail.com with ESMTPSA id f6sm3990567ilj.16.2021.10.01.11.02.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 11:02:02 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id z184so12664635iof.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 11:02:02 -0700 (PDT)
+X-Received: by 2002:a02:c7d2:: with SMTP id s18mr2939004jao.68.1633111321643;
+ Fri, 01 Oct 2021 11:02:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210920225801.227211-1-robdclark@gmail.com> <20210920225801.227211-3-robdclark@gmail.com>
+ <YUvKwsNS0LQf9PfO@pendragon.ideasonboard.com>
+In-Reply-To: <YUvKwsNS0LQf9PfO@pendragon.ideasonboard.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 1 Oct 2021 11:01:50 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VwORJ65v_JgXqXkUKg+Kbb-q6mrbnuEL3VG8v552SRzQ@mail.gmail.com>
+Message-ID: <CAD=FV=VwORJ65v_JgXqXkUKg+Kbb-q6mrbnuEL3VG8v552SRzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] drm/bridge: ti-sn65dsi86: Implement bridge->mode_valid()
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] drm/msm/dp: Add sc8180x DP controllers
-Date:   Fri,  1 Oct 2021 11:00:58 -0700
-Message-Id: <20211001180058.1021913-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
-References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-DP driver.
+Hi,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+On Wed, Sep 22, 2021 at 5:31 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Rob,
+>
+> Thank you for the patch.
+>
+> On Mon, Sep 20, 2021 at 03:57:59PM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > For the brave new world of bridges not creating their own connectors, we
+> > need to implement the max clock limitation via bridge->mode_valid()
+> > instead of connector->mode_valid().
+> >
+> > v2: Drop unneeded connector->mode_valid()
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > ---
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 25 +++++++++++++------------
+> >  1 file changed, 13 insertions(+), 12 deletions(-)
 
-Changes since v2:
-- None
+There's no reason to wait on this patch. Landed to drm-misc-next.
 
- drivers/gpu/drm/msm/dp/dp_display.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+77d40e0176a5 drm/bridge: ti-sn65dsi86: Implement bridge->mode_valid()
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index ff3477474c5d..56a79aeffed4 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -127,8 +127,15 @@ static const struct msm_dp_config sc7180_dp_cfg = {
- 	.num_descs = 1,
- };
- 
-+static const struct msm_dp_config sc8180x_dp_cfg = {
-+	.io_start = { 0xae90000, 0xae98000, 0xae9a000 },
-+	.num_descs = 3,
-+};
-+
- static const struct of_device_id dp_dt_match[] = {
- 	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
-+	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
-+	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
- 	{}
- };
- 
--- 
-2.29.2
-
+-Doug
