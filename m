@@ -2,340 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A67941EAF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70E241EAF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352654AbhJAKaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:30:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:41308 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhJAKaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:30:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222194846"
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="222194846"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 03:27:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; 
-   d="scan'208";a="619003126"
-Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2021 03:27:49 -0700
-Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mWFlc-000145-CH; Fri, 01 Oct 2021 10:27:48 +0000
-Date:   Fri, 01 Oct 2021 18:26:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp] BUILD SUCCESS
- 6409e7102a9bbd1a27a74fd6bd12693f6bd92c16
-Message-ID: <6156e270.UfxB45CKakSjUT+s%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1352491AbhJAKcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231311AbhJAKcI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 06:32:08 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C1DC06177B
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 03:30:24 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id t8so14757930wri.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 03:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qhH1uVfrvA2WMKNAisYCIIjOhTu11VObwXrq+F6JWoY=;
+        b=P6JEFsTFLGREaNWoZ7tQZKnuYYLQggrHSOfLMUJD+RMfmeiVwS9Ov/agP0Bwhvs4jP
+         ViHW1kW2zb8smbPMeQaMBQ1TQoHg8u/hWvE6K3zgtj7useUCfQHjxz75xepIWXflXQBu
+         D9y8oLc8dFONkCwNM/aEE2TiJM4d2uMWCHv7vfE2tF60mMCSD4AbtV9RhZROJdwSgkgs
+         7t7VlA8ReW/F8hCfrxqgMr+n4I45ZzRCvV5bIttS0hxWOpQxVqmxo2+/hVUdb75dJAOD
+         frjrKuQbkRKfhGAeXp/MXeP/HY3l6HyPweyuoclDvq+IblRKbNaXdQEimHLn3VcbufED
+         92Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qhH1uVfrvA2WMKNAisYCIIjOhTu11VObwXrq+F6JWoY=;
+        b=VDhe02E7Ni6kqA39fC773Q12kyfZn90SA3PXwDoBHYoGkagVOu6LmSKZAjDN7j6BGr
+         AJqNVhWuJWOQi6a3du07AYJ4aunbkCyHGr9tUVgZZdeSB3U6HZK7nX1ue4Z8Aejw7Jf9
+         PgMyjSTTpVbJJn4T4UgpYcVr+B/9QudVsbyfYoRU9d0HBoY/8nG9WFZgL3U8LSPPy9wC
+         V4DEO10GmDbYXubrNghXGsO5Y6Uts/yQ14eXlsjSAufQydNGoKrj70h4lY6rfC+hUYwH
+         gK4WmAFTErOs5l/7TbWURmaV2sN69meOAI8jnnihfOJPNdFYj8agPPD610q/gFK5a34L
+         kC6A==
+X-Gm-Message-State: AOAM530wny+t7gCb1pQM9tBBD5OV0/pl6W7rCbKOuz2zCP952vYkIG48
+        UzZfes1V91lmPwWiY8+ouUcTDQ==
+X-Google-Smtp-Source: ABdhPJwxL3qiDUm00jRN9entmpu9ZMZJ1j7if6JeWZ2AIBUzK+gvXLSC0Oo4boqTjshMAa8Mx+iBOQ==
+X-Received: by 2002:a5d:544c:: with SMTP id w12mr11612586wrv.398.1633084222508;
+        Fri, 01 Oct 2021 03:30:22 -0700 (PDT)
+Received: from [192.168.0.46] ([82.142.20.44])
+        by smtp.googlemail.com with ESMTPSA id o19sm5698172wrg.60.2021.10.01.03.30.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 03:30:21 -0700 (PDT)
+Subject: Re: [RFD] Remove the userspace governor and the cooling device set
+ state sysfs entry
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>
+References: <d46b5007-428b-5f31-52d9-a964cc60ad92@linaro.org>
+ <39728f24-7781-543c-ad28-fd1c7552d96a@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2b8300b2-4678-3e3c-71e3-6d276b99eb07@linaro.org>
+Date:   Fri, 1 Oct 2021 12:30:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <39728f24-7781-543c-ad28-fd1c7552d96a@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 6409e7102a9bbd1a27a74fd6bd12693f6bd92c16  Merge branch 'for-next/kspp-fixes' into for-next/kspp
 
-elapsed time: 1428m
+Hi Lukasz,
 
-configs tested: 277
-configs skipped: 3
+On 30/09/2021 12:10, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> On 9/22/21 10:59 AM, Daniel Lezcano wrote:
+>>
+>> Hi,
+>>
+>> the userspace governor is sending temperature when polling is active and
+>> trip point crossed events. Nothing else.
+>>
+>> In the other side, the cooling device have their cooling device
+>> set_cur_state read-writable all the time.
+>>
+>> The thermal framework is wrongly used by userspace as a power capping
+>> framework by acting on the cooling device opaque state. This one then
+>> competes with the in-kernel governor decision.
+>>
+>> As the new netlink thermal notification is able to provide the same
+>> information than the userspace governor.
+>>
+>> I propose to remove the userspace governor and the cur_state entry in
+>> the sysfs exported file.
+>>
+>> The DTPM framework is the right framework to do power capping and
+>> moreover it deals with the aggregation via the dev pm qos.
+>>
+>> Does it make sense ?
+> 
+> It sounds that we should be OK with the information from netlink.
+> I don't see objections. We can also extend the netlink packet when
+> needed. I'm fine with removing the user-space governor.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+thank you for your answer. I'll propose a patch with a warn when the
+userspace governor is registered in order to let know people the
+governor is deprecated.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20210930
-i386                 randconfig-c001-20211001
-powerpc              randconfig-c003-20210930
-arm                         s3c6400_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                   secureedge5410_defconfig
-m68k                         amcore_defconfig
-sh                            shmin_defconfig
-powerpc                   motionpro_defconfig
-sh                           se7750_defconfig
-arm                       imx_v6_v7_defconfig
-mips                           xway_defconfig
-csky                             alldefconfig
-mips                     loongson2k_defconfig
-mips                         mpc30x_defconfig
-mips                          rb532_defconfig
-arm                     eseries_pxa_defconfig
-sh                   sh7770_generic_defconfig
-x86_64                              defconfig
-mips                        vocore2_defconfig
-arm                        spear3xx_defconfig
-sh                           se7722_defconfig
-alpha                            alldefconfig
-arm                           h3600_defconfig
-arm                          ep93xx_defconfig
-arc                              allyesconfig
-powerpc                    amigaone_defconfig
-sparc                       sparc64_defconfig
-riscv                               defconfig
-mips                            gpr_defconfig
-sh                           se7721_defconfig
-sh                                  defconfig
-riscv                            alldefconfig
-powerpc                      cm5200_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                     kilauea_defconfig
-sh                               alldefconfig
-mips                           mtx1_defconfig
-arm                       aspeed_g5_defconfig
-sh                        sh7763rdp_defconfig
-ia64                          tiger_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                          gemini_defconfig
-powerpc                       ebony_defconfig
-arm                            mmp2_defconfig
-arc                        nsim_700_defconfig
-arm                       netwinder_defconfig
-riscv             nommu_k210_sdcard_defconfig
-xtensa                              defconfig
-mips                          ath79_defconfig
-microblaze                          defconfig
-powerpc                     tqm8541_defconfig
-powerpc                      mgcoge_defconfig
-mips                          rm200_defconfig
-powerpc                     mpc83xx_defconfig
-arm                       mainstone_defconfig
-mips                     loongson1b_defconfig
-powerpc                      ppc64e_defconfig
-sh                           se7780_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      ppc40x_defconfig
-arm                           viper_defconfig
-arm                       imx_v4_v5_defconfig
-arm                           corgi_defconfig
-arm                        magician_defconfig
-mips                          ath25_defconfig
-powerpc                     stx_gp3_defconfig
-mips                         tb0287_defconfig
-powerpc                     powernv_defconfig
-arm                        oxnas_v6_defconfig
-arm                        spear6xx_defconfig
-sh                            titan_defconfig
-sh                             espt_defconfig
-powerpc                        icon_defconfig
-arm                            zeus_defconfig
-sh                           se7724_defconfig
-sparc                            allyesconfig
-arm                   milbeaut_m10v_defconfig
-arm                          iop32x_defconfig
-mips                         cobalt_defconfig
-sh                          sdk7786_defconfig
-powerpc                     ksi8560_defconfig
-h8300                       h8s-sim_defconfig
-arm                         bcm2835_defconfig
-arm                            lart_defconfig
-sparc64                             defconfig
-arm                           tegra_defconfig
-m68k                         apollo_defconfig
-powerpc                 mpc8560_ads_defconfig
-mips                     cu1000-neo_defconfig
-mips                        qi_lb60_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                    klondike_defconfig
-powerpc                     taishan_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 linkstation_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      tqm8xx_defconfig
-m68k                            q40_defconfig
-arm                  colibri_pxa270_defconfig
-sh                        edosk7705_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         at91_dt_defconfig
-sh                ecovec24-romimage_defconfig
-arm                             ezx_defconfig
-arm                         assabet_defconfig
-m68k                       m5475evb_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     skiroot_defconfig
-ia64                             allmodconfig
-m68k                        m5272c3_defconfig
-sh                              ul2_defconfig
-sh                     magicpanelr2_defconfig
-openrisc                            defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                     tqm8540_defconfig
-arm                        multi_v7_defconfig
-m68k                        m5307c3_defconfig
-sh                           se7751_defconfig
-arm                          simpad_defconfig
-powerpc                     ep8248e_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     pseries_defconfig
-m68k                        stmark2_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                           u8500_defconfig
-xtensa                       common_defconfig
-arc                        nsimosci_defconfig
-arm                              alldefconfig
-mips                          malta_defconfig
-riscv                          rv32_defconfig
-arm                        mvebu_v5_defconfig
-arm                        mvebu_v7_defconfig
-s390                          debug_defconfig
-csky                                defconfig
-ia64                             alldefconfig
-mips                        workpad_defconfig
-ia64                             allyesconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                    socrates_defconfig
-um                             i386_defconfig
-sh                        apsh4ad0a_defconfig
-mips                       bmips_be_defconfig
-mips                       lemote2f_defconfig
-powerpc                     tqm5200_defconfig
-powerpc64                           defconfig
-x86_64                           alldefconfig
-mips                            e55_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                       aspeed_g4_defconfig
-arm                            qcom_defconfig
-arm                           sama7_defconfig
-powerpc                   microwatt_defconfig
-powerpc                      obs600_defconfig
-ia64                        generic_defconfig
-sh                            hp6xx_defconfig
-powerpc                     redwood_defconfig
-arm                       omap2plus_defconfig
-sh                          r7780mp_defconfig
-xtensa                    xip_kc705_defconfig
-arc                         haps_hs_defconfig
-arc                           tb10x_defconfig
-arm                  randconfig-c002-20210930
-x86_64               randconfig-c001-20210930
-x86_64               randconfig-c001-20211001
-arm                  randconfig-c002-20211001
-ia64                                defconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a003-20211001
-x86_64               randconfig-a005-20211001
-x86_64               randconfig-a001-20211001
-x86_64               randconfig-a002-20211001
-x86_64               randconfig-a004-20211001
-x86_64               randconfig-a006-20211001
-x86_64               randconfig-a004-20210930
-x86_64               randconfig-a001-20210930
-x86_64               randconfig-a002-20210930
-x86_64               randconfig-a005-20210930
-x86_64               randconfig-a006-20210930
-x86_64               randconfig-a003-20210930
-i386                 randconfig-a003-20210930
-i386                 randconfig-a001-20210930
-i386                 randconfig-a004-20210930
-i386                 randconfig-a002-20210930
-i386                 randconfig-a006-20210930
-i386                 randconfig-a005-20210930
-i386                 randconfig-a001-20211001
-i386                 randconfig-a003-20211001
-i386                 randconfig-a005-20211001
-i386                 randconfig-a002-20211001
-i386                 randconfig-a004-20211001
-i386                 randconfig-a006-20211001
-arc                  randconfig-r043-20210930
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Probably, it would make sense to emit a warning also when the cooling
+device state is set from userspace.
 
-clang tested configs:
-i386                 randconfig-c001-20210930
-arm                  randconfig-c002-20210930
-powerpc              randconfig-c003-20210930
-mips                 randconfig-c004-20210930
-s390                 randconfig-c005-20210930
-riscv                randconfig-c006-20210930
-x86_64               randconfig-c007-20210930
-x86_64               randconfig-c007-20211001
-i386                 randconfig-c001-20211001
-arm                  randconfig-c002-20211001
-s390                 randconfig-c005-20211001
-powerpc              randconfig-c003-20211001
-riscv                randconfig-c006-20211001
-mips                 randconfig-c004-20211001
-x86_64               randconfig-a015-20210930
-x86_64               randconfig-a011-20210930
-x86_64               randconfig-a012-20210930
-x86_64               randconfig-a013-20210930
-x86_64               randconfig-a016-20210930
-x86_64               randconfig-a014-20210930
-x86_64               randconfig-a015-20211001
-x86_64               randconfig-a012-20211001
-x86_64               randconfig-a016-20211001
-x86_64               randconfig-a014-20211001
-x86_64               randconfig-a013-20211001
-x86_64               randconfig-a011-20211001
-i386                 randconfig-a014-20210930
-i386                 randconfig-a013-20210930
-i386                 randconfig-a011-20210930
-i386                 randconfig-a015-20210930
-i386                 randconfig-a016-20210930
-i386                 randconfig-a012-20210930
-i386                 randconfig-a013-20211001
-i386                 randconfig-a016-20211001
-i386                 randconfig-a014-20211001
-i386                 randconfig-a012-20211001
-i386                 randconfig-a011-20211001
-i386                 randconfig-a015-20211001
-riscv                randconfig-r042-20210930
-hexagon              randconfig-r041-20210930
-s390                 randconfig-r044-20210930
-hexagon              randconfig-r045-20210930
-hexagon              randconfig-r045-20211001
-hexagon              randconfig-r041-20211001
-s390                 randconfig-r044-20211001
-riscv                randconfig-r042-20211001
+For the next release, we should be able to drop the userspace governor
+and make the cooling device state read-only.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Does it make sense ?
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
