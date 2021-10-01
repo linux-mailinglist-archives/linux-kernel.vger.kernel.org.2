@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBB741E895
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505BF41E898
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 09:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352614AbhJAHzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 03:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        id S1352619AbhJAH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 03:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhJAHzy (ORCPT
+        with ESMTP id S231237AbhJAH7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 03:55:54 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AECFC061775;
-        Fri,  1 Oct 2021 00:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SxUmounGinMNilTQt+DXMiiGyxdV7HSpUjMfEeksWVI=; b=BrJ+V/30bw5YPYDUuRst5faD81
-        Z9vpBQdjZh6raD5DuJPsZmBoHtEbuT1pPSlRYCfGdJJBDy4mKr59m4cIGNRgWaKhWP6opmTE7y/X5
-        vcBzllSw4KlgyE+qpjdUfKQ5r9qCC++RXnGpkRNx3+5p1LNOAl7JRvZ62qw7kJcAYW5M=;
-Received: from p200300ccff0b42001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0b:4200:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mWDMq-0001XY-RY; Fri, 01 Oct 2021 09:54:05 +0200
-Date:   Fri, 1 Oct 2021 09:54:04 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-omap@vger.kernel.org, hns@goldelico.com,
-        aford@beaconembedded.com,
-        =?UTF-8?B?QmVub8OudA==?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] ARM: dts: omap36xx: Remove turbo mode for 1GHz
- variants
-Message-ID: <20211001095404.41f73d88@aktux>
-In-Reply-To: <20210109170103.1249838-1-aford173@gmail.com>
-References: <20210109170103.1249838-1-aford173@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 1 Oct 2021 03:59:33 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23A3C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 00:57:49 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id u7so7187126pfg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 00:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=RbYHo/mBBUJTVbakewm8fXHU6Jcb1pgLkx3oJErKmK0=;
+        b=H3pwA5WTgkijoexe7QnwCtXBMMcouTnZdGekKeBb3+2WILYP1HRm1bQ/07fLhdVOcg
+         qf10ycFupIvs2pPkR57PNsEbqK2FTgRTGAJg5QWVP3jg1s/zxVfkTu9GZK2Z0izJZl1w
+         ZSEsKIDVpjVI+JUmBHKFK1LuUq3vtgrY4cGIsD/Hmztk9PO+PWqTitg/pUg2EWONL8r/
+         0Tz6cEOZBqX0NEEBAo9sslqdxHAQKg6FNuYWrdfTsa5Zkt8i+Mp+hCsb9GUA/RvhI0A/
+         A58Q73eKPzVGf+wPQv837yg3ICY8d+TsvIsq8vhIp1SNb69jEov33ciXQ8SHTbG8fNce
+         WUtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=RbYHo/mBBUJTVbakewm8fXHU6Jcb1pgLkx3oJErKmK0=;
+        b=blzrkeVQsRiF7D1siezf12W3h3tpSYzOfcHKH8RSYFcavhmpP9UIw1Iv6IuABp69ha
+         xQkpxahw2JgBclbsWhWK0hIeUcDXGe3y0oOt/AO3gze9mjpS9ysXNcS6Tg7U/ntTYUyw
+         4XdBiRrr+fx5ktu0fiNtq5fx+xYUk4+g0RwSViciW60tslLHmCI+eU3rt9levhHf/q2W
+         +SPwqbDVFiRM05WNPFp5y7B47rI3OLRJdQ4fdGjHGV5U+sMy2Od6uL0u5/AQF2KgEHd7
+         xOGHRlOBT0NMpoknZGVXQUS36Hnh/KmdeFGEpB72s8SVPNfX9wboG5NPxnX/weW2MbhX
+         d6zQ==
+X-Gm-Message-State: AOAM531GBDoff+e3ZFHkeR8yXdyTO2H3ibmKRR6lTr16zCyW9U+3VAeo
+        2sLP0pTLKALA0A5VDfyHW5ndNRVb+owj2m/zGAk=
+X-Google-Smtp-Source: ABdhPJx1ps0FJJc/dw32oa5l4l7iM2Kc9lKH31AKSQmOSnQvLxkr/c//kJduIMjvzuUkNEeTOfmSZI+gHj7GU5wFHzM=
+X-Received: by 2002:a63:184a:: with SMTP id 10mr8640228pgy.149.1633075069320;
+ Fri, 01 Oct 2021 00:57:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+Received: by 2002:a17:90a:648:0:0:0:0 with HTTP; Fri, 1 Oct 2021 00:57:47
+ -0700 (PDT)
+Reply-To: banqueatlantiquetogobranch@gmail.com
+In-Reply-To: <CADRB3KprHTqZE4xLBCZZ2kQ5R1mgRamOPFnv8ZQWfoaLspEVOg@mail.gmail.com>
+References: <CADRB3KprHTqZE4xLBCZZ2kQ5R1mgRamOPFnv8ZQWfoaLspEVOg@mail.gmail.com>
+From:   "Ms. Kristalina Georgieva" <tonywoodto@gmail.com>
+Date:   Fri, 1 Oct 2021 09:57:47 +0200
+Message-ID: <CADRB3Kq9=7JQyhYqDyufafX3ymZp0yQJwxfVbNkWF7mqE-U44Q@mail.gmail.com>
+Subject: 1/10/2021
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 Jan 2021 11:01:03 -0600
-Adam Ford <aford173@gmail.com> wrote:
+V=C3=A1=C5=BEen=C3=BD vlastn=C3=ADk e -mailu / pr=C3=ADjemca fondu,
+Som pani Kristalina Georgieva, v=C3=BDkonn=C3=A1 riadite=C4=BEka a preziden=
+tka
+Medzin=C3=A1rodn=C3=A9ho menov=C3=A9ho fondu. Skuto=C4=8Dne sme presk=C3=BA=
+mali v=C5=A1etky prek=C3=A1=C5=BEky
+a probl=C3=A9my, ktor=C3=A9 sprev=C3=A1dzali va=C5=A1u ne=C3=BApln=C3=BA tr=
+ansakciu a va=C5=A1u
+neschopnos=C5=A5 vyrovna=C5=A5 sa s poplatkami za prevody =C3=BA=C4=8Dtovan=
+=C3=BDmi za minul=C3=A9
+mo=C5=BEnosti prevodu, nav=C5=A1t=C3=ADvte na=C5=A1e potvrdenie. strana 38 =
+=C2=B0 53'56 "N 77 =C2=B0
+2" 39 =E2=80=B3 F.
 
-> Previously, the 1GHz variants were marked as a turbo,
-> because that variant has reduced thermal operating range.
-> 
-> Now that the thermal throttling is in place, it should be
-> safe to remove the turbo-mode from the 1GHz variants, because
-> the CPU will automatically slow if the thermal limit is reached.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> V2:  The orignal patch had the wrong file added. Add the omap36xx.dtsi
-> 
-hmm, I somehow expected that there is a revert of this thing going
-through. But now, the turbo-mode is still missing and I understood the
-revert is only in Nikolaus' trees. The 1Ghz mode was working for some
-time but does not anymore. Is it just me or do others also have the
-same problems?
+Predstavenstvo Svetov=C3=A1 banka a Medzin=C3=A1rodn=C3=BD menov=C3=BD fond=
+ (MMF)
+Washington DC v spolupr=C3=A1ci s ministerstvom financi=C3=AD USA a niektor=
+=C3=BDmi
+=C4=8Fal=C5=A1=C3=ADmi relevantn=C3=BDmi vy=C5=A1etrovac=C3=ADmi agent=C3=
+=BArami v USA nariadili na=C5=A1ej
+zahrani=C4=8Dnej prevodnej jednotke BANQUE ATLANTIQUE INTERNATIONAL TOGO
+previes=C5=A5 kompenza=C4=8Dn=C3=BD fond v hodnote =E2=82=AC 761 000,00 na =
+hlavn=C3=BA kartu
+bankomatu a odo=C5=A1leme v=C3=A1m.
 
-Regards,
-Andreas
+Po=C4=8Das n=C3=A1=C5=A1ho vy=C5=A1etrovania sme s hr=C3=B4zou zistili, =C5=
+=BEe v=C3=A1=C5=A1 fond zbyto=C4=8Dne
+zdr=C5=BEiavali skorumpovan=C3=AD =C3=BAradn=C3=ADci b=C3=A1nk, ktor=C3=AD =
+sa pok=C3=BA=C5=A1ali presmerova=C5=A5
+va=C5=A1e prostriedky na svoje s=C3=BAkromn=C3=A9 =E2=80=8B=E2=80=8B=C3=BA=
+=C4=8Dty kv=C3=B4li svojim sebeck=C3=BDm
+z=C3=A1ujmom. Dnes by sme v=C3=A1s chceli informova=C5=A5, =C5=BEe v=C3=A1=
+=C5=A1 fond bol ulo=C5=BEen=C3=BD v
+BANQUEATLANTIQUE INTERNATIONAL TOGO je pripraven=C3=A9 aj na doru=C4=8Denie=
+,
+teraz kontaktujte prof. Susana Robinsona, riadite=C4=BEa zahrani=C4=8Dn=C3=
+=BDch
+poukazov, BANQUE ATLANTIQUE INTERNATIONAL TOGO, e-mail:
+banqueatlantiquetogobranch@gmail.com, po=C5=A1lite jej nasleduj=C3=BAce
+inform=C3=A1cie, aby mohla previes=C5=A5 v=C3=A1=C5=A1 celkov=C3=BD kompenz=
+a=C4=8Dn=C3=BD fond v hodnote
+761 000,00 EUR do bankomatu Master Card a po=C5=A1leme v=C3=A1m ju bez
+akejko=C4=BEvek chyby alebo oneskorenia.
 
-> diff --git a/arch/arm/boot/dts/omap36xx.dtsi b/arch/arm/boot/dts/omap36xx.dtsi
-> index 05fe5ed127b0..20844dbc002e 100644
-> --- a/arch/arm/boot/dts/omap36xx.dtsi
-> +++ b/arch/arm/boot/dts/omap36xx.dtsi
-> @@ -72,7 +72,6 @@ opp1g-1000000000 {
->  					 <1375000 1375000 1375000>;
->  			/* only on am/dm37x with speed-binned bit set */
->  			opp-supported-hw = <0xffffffff 2>;
-> -			turbo-mode;
->  		};
->  	};
->  
+(1) Va=C5=A1e =C3=BApln=C3=A9 meno ........................................=
+...
+(2) Va=C5=A1a adresa bydliska ..............................
+(3) K=C3=B3pia v=C3=A1=C5=A1ho ob=C4=8Dianskeho preukazu alebo pasu .......=
+....
+(4) Va=C5=A1a krajina ...........................................
+(5) PS=C4=8C =E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=
+=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.
+(6) Va=C5=A1e s=C3=BAkromn=C3=A9 =E2=80=8B=E2=80=8Btelef=C3=B3nne =C4=8D=C3=
+=ADslo ........................
 
+S pozdravom
+Pani Kristalina Georgieva
+Gener=C3=A1lny riadite=C4=BE a prezident Medzin=C3=A1rodn=C3=A9ho menov=C3=
+=A9ho fondu.
