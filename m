@@ -2,119 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2985341E5E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 03:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042ED41E5E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 03:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351352AbhJABm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Sep 2021 21:42:59 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45903 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230224AbhJABm6 (ORCPT
+        id S1351445AbhJABr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Sep 2021 21:47:28 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:34825 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351220AbhJABr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Sep 2021 21:42:58 -0400
-Received: (qmail 489289 invoked by uid 1000); 30 Sep 2021 21:41:14 -0400
-Date:   Thu, 30 Sep 2021 21:41:14 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v2 2/6] driver core: Add common support to skip probe for
- un-authorized devices
-Message-ID: <20211001014114.GB489012@rowland.harvard.edu>
-References: <20210930010511.3387967-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065807-mutt-send-email-mst@kernel.org>
- <YVXBNJ431YIWwZdQ@kroah.com>
- <20210930144305.GA464826@rowland.harvard.edu>
- <20210930104924-mutt-send-email-mst@kernel.org>
- <20210930153509.GF464826@rowland.harvard.edu>
- <20210930115243-mutt-send-email-mst@kernel.org>
- <00156941-300d-a34a-772b-17f0a9aad885@linux.intel.com>
- <20210930204447.GA482974@rowland.harvard.edu>
- <CAPcyv4j8DvsMYppRtm=+JQWc7nJGoXeAGGz9U150x0p_KekqcA@mail.gmail.com>
+        Thu, 30 Sep 2021 21:47:27 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id E17062B00262;
+        Thu, 30 Sep 2021 21:45:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 30 Sep 2021 21:45:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=v
+        Odoat0J6oK40pz/pIFwU3UMSzNN+QQ5EnZGqlGFHak=; b=gQmCA3rjtz3PfoW/C
+        hQUSW3jnbYvySDgW/Ltfhsf2zmDcf7sbSkGHDLOnHgd8CNRKe7Q5/MOV48arJvfZ
+        bnmnOolkxCVlSoWvGgi7hldvleOjJWxqbBb9FlQYbWp+dLPQcAwuIuSgyyaEQ7HU
+        Omzbl65IxjvsT/lm0jt3KK3tGcTK2ZDVMIouCq1Q1pa4LVRnOYfgB2AcHGmY7F06
+        4QcvlcrYFi2mDmBlMSKtEmAB7BN+p6DhRBdwl3KhZiA0bWDwWYcu8rMpIUIklptf
+        Lzk8YD0Kwhl5oEXBEbOFq/o781In3cw6DXV+tc4FD1Pjx4pTgn10Qh6SayOrcHq7
+        qcK8A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=vOdoat0J6oK40pz/pIFwU3UMSzNN+QQ5EnZGqlGFH
+        ak=; b=HEdTYRJg1zvGFpz6zaSCEe6OCgmzV/sA1VVSbHtFk+YJkPNcGVDSnzv/D
+        yNU5UvgKCIVH7XMpnRReUFK09bSv2HD6eT153H/Ch8p5lO5wyWIHGNFIe3kUaW3A
+        DenQF9S5xZvpkYLPKCsfIdLWIsLr4h34b6A9DtBGgk1tFfJseU70k4kAMS3TdZGc
+        i3gzGfuAQl1IjvQdGY2br5s7c5INeyhQHLa70yChBjpbnq3Dc6oLZxg66YmobVFb
+        Bwxe31mozgSTUBiWZVDNm++iVzBS5FoT+YGtr6jIYlNaT4OgqZpctWrohfWw+ekv
+        q6PrwYQ71fjxUCzqiCfg2PqMMJs9w==
+X-ME-Sender: <xms:PmhWYW9OJw--v2S7uTeaW79I5cR7EPEvhXtRRG7aF1hUTTX28HNs6Q>
+    <xme:PmhWYWs7fpyTfn6y6nVzcm-KXRRSC94ceD5dzhMKq4Dxs3zVSIBdY2pVQ3RvvUwq7
+    DEuBzEAymUzQWCkUw>
+X-ME-Received: <xmr:PmhWYcDGJZO1U5jFhTGD8xmuoMBYMrnWxJlOQpP46gWffRHx3TD75gePirtl3blegvMYCEuWBEcs9tKsDMzHX4wm5CuOQh9AksqGM7tbaosmnChzPlp7mnun1Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekhedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:PmhWYeeLiZXNuVD2lpq0yxKJ8J9uLWC355Fsph91MlOMjtvnqQ4B2g>
+    <xmx:PmhWYbPfecYLCy0nl1sbKttiYZuw9nXgavNjQQzJhx6574fT2ZiqHA>
+    <xmx:PmhWYYmtyfQMLcLKbY9CAXQ-e4urY1ei955rIM9usKtSMih-lZMgPA>
+    <xmx:P2hWYfn3EWh6bdaEVD3VXdoJSDwos5r0cgtapU5ip4qzynLI4zjIHrWTo44>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Sep 2021 21:45:33 -0400 (EDT)
+Subject: Re: [PATCH 02/10] PM / devfreq: Do not require devices to have OPPs
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210929044254.38301-1-samuel@sholland.org>
+ <CGME20210929044301epcas1p4d69083b46ca38d610981db6f01cfe9e4@epcas1p4.samsung.com>
+ <20210929044254.38301-3-samuel@sholland.org>
+ <114afa7e-6218-6b1f-f87e-84690f10029c@samsung.com>
+ <d0a2c36b-4019-2f52-13f0-be76db5a48ec@sholland.org>
+ <7d404f89-6567-61e6-7964-d2ca578ed652@samsung.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <7107eea6-f2ca-fb7c-5975-569066ba21a7@sholland.org>
+Date:   Thu, 30 Sep 2021 20:45:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4j8DvsMYppRtm=+JQWc7nJGoXeAGGz9U150x0p_KekqcA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7d404f89-6567-61e6-7964-d2ca578ed652@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:52:59PM -0700, Dan Williams wrote:
-> On Thu, Sep 30, 2021 at 1:44 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 12:23:36PM -0700, Andi Kleen wrote:
-> > >
-> > > > I don't think the current mitigations under discussion here are about
-> > > > keeping the system working. In fact most encrypted VM configs tend to
-> > > > stop booting as a preferred way to handle security issues.
-> > >
-> > > Maybe we should avoid the "trusted" term here. We're only really using it
-> > > because USB is using it and we're now using a common framework like Greg
-> > > requested. But I don't think it's the right way to think about it.
-> > >
-> > > We usually call the drivers "hardened". The requirement for a hardened
-> > > driver is that all interactions through MMIO/port/config space IO/MSRs are
-> > > sanitized and do not cause memory safety issues or other information leaks.
-> > > Other than that there is no requirement on the functionality. In particular
-> > > DOS is ok since a malicious hypervisor can decide to not run the guest at
-> > > any time anyways.
-> > >
-> > > Someone loading an malicious driver inside the guest would be out of scope.
-> > > If an attacker can do that inside the guest you already violated the
-> > > security mechanisms and there are likely easier ways to take over the guest
-> > > or leak data.
-> > >
-> > > The goal of the device filter mechanism is to prevent loading unhardened
-> > > drivers that could be exploited without them being themselves malicious.
-> >
-> > If all you want to do is prevent someone from loading a bunch of
-> > drivers that you have identified as unhardened, why not just use a
-> > modprobe blacklist?  Am I missing something?
+On 9/30/21 8:59 PM, Chanwoo Choi wrote:
+> On 9/30/21 8:37 PM, Samuel Holland wrote:
+>> On 9/29/21 11:19 PM, Chanwoo Choi wrote:
+>>> Hi Samuel,
+>>>
+>>>
+>>> On 9/29/21 1:42 PM, Samuel Holland wrote:
+>>>> Since commit ea572f816032 ("PM / devfreq: Change return type of
+>>>> devfreq_set_freq_table()"), all devfreq devices are required to have a
+>>>> valid freq_table. If freq_table is not provided by the driver, it will
+>>>> be filled in by set_freq_table() from the OPPs; if that fails,
+>>>> devfreq_add_device() will return an error.
+>>>>
+>>>> However, since commit ab8f58ad72c4 ("PM / devfreq: Set min/max_freq when
+>>>> adding the devfreq device"), devfreq devices are _also_ required to have
+>>>> an OPP table, even if they provide freq_table. devfreq_add_device()
+>>>> requires dev_pm_opp_find_freq_ceil() and dev_pm_opp_find_freq_floor() to
+>>>> return successfully, specifically to initialize scaling_min/max_freq.
+>>>>
+>>>> Not all drivers need an OPP table. For example, a driver where all
+>>>> frequencies are determined dynamically could work by filling out only
+>>>> freq_table. But with the current code it must call dev_pm_opp_add() on
+>>>> every freq_table entry to probe successfully.
+>>>
+>>> As you commented, if device has no opp table, it should call dev_pm_opp_add().
+>>> The devfreq have to use OPP for controlling the frequency/regulator.
+>>>
+>>> Actually, I want that all devfreq driver uses the OPP as default way.
+>>
+>> The current code/documentation implies that an OPP table is intended to
+>> be optional. For example:
+>>
+>>  * struct devfreq - Device devfreq structure
+>> ...
+>>  * @opp_table:  Reference to OPP table of dev.parent, if one exists.
+>>
+>> So this should be updated if an OPP table is no longer optional.
 > 
-> modules != drivers (i.e. multi-driver modules are a thing) and builtin
-> modules do not adhere to modprobe policy.
+> Right. Need to update it.
 > 
-> There is also a desire to be able to support a single kernel image
-> across hosts and guests. So, if you were going to say, "just compile
-> all unnecessary drivers as modules" that defeats the common kernel
-> image goal. For confidential computing the expectation is that the
-> necessary device set is small. As you can see in the patches in this
-> case it's just a few lines of PCI ids and a hack to the virtio bus to
-> achieve the goal of disabling all extraneous devices by default.
+>>
+>>> Are there any reason why don't use the OPP table?
+>>
+>> dev_pm_opp_add() takes a voltage, and assumes the existence of some
+>> voltage regulator, but there is none involved here. The only way to have
+>> an OPP table without regulators is to use a static table in the
+>> devicetree. But that also doesn't make much sense, because the OPPs
+>> aren't actually customizable; they are integer dividers from a fixed
+>> base clock.
+> 
+> You can use OPP for only clock control without regulator. OPP already
+> provides them. OPP already provides the helpful function which
+> implement the functions to handle the clock/regulator or power doamin.
+> It is useful framework to control clock/regulator. 
+> 
+> If the standard framework in Linux kernel, it is best to use
+> this framework in order to remove the duplicate codes on multiple
+> device drivers. It is one of advantage of Linux kernel. 
+> 
+> Also, if OPP doesn't support the some requirement of you,
+> you can contribute and update the OPP.
+> 
+>  And adding a fixed OPP table to each board would be a lot of
+>> work to replace a trivial loop in the driver. So it seems to be the
+>> wrong abstraction.
+> 
+> I don't understand. As I commented for patch 10, you can add
+> the OPP entry of the clock without the fixed OPP table in devicetree.
+> 
+>>
+>> Using an OPP table adds extra complexity (memory allocations, error
+>> cases), just to duplicate the list of frequencies that already has to
+>> exist in freq_table. And the driver works fine without any of that.
+> 
+> 'freq_table' of devfreq was developed before of adding OPP interface to Linux kernel as I knew. Actually, I prefer to use the OPP interface
+> instead of initializing the freq_table directly by device driver.
+> I just keep the 'freq_table' for preventing the build/working issue
+> for older device driver. I think OPP is enough to control frequency/voltage
+> and it provides the various helper funcitons for user of OPP.
 
+Thanks for the explanation. I will convert the driver to use
+dev_pm_opp_add(), and I will drop patches 2 and 4. I think patch 3 is
+still worth considering.
 
-
-If your goal is to prevent some unwanted _drivers_ from operating -- 
-or all but a few desired drivers, as the case may be -- why extend 
-the "authorized" API to all _devices_?  Why not instead develop a 
-separate API (but of similar form) for drivers?
-
-Wouldn't that make more sense?  It corresponds a lot more directly 
-with what you say you want to accomplish.
-
-What would you do in the theoretical case where two separate drivers 
-can manage the same device, but one of them is desired (or hardened) 
-and the other isn't?
-
-Alan Stern
+Regards,
+Samuel
