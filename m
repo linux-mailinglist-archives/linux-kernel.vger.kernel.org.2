@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A876341F626
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622CF41F628
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354690AbhJAUKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:10:05 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]:38870 "EHLO
-        mail-qk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhJAUKE (ORCPT
+        id S1354833AbhJAUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhJAUKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:10:04 -0400
-Received: by mail-qk1-f170.google.com with SMTP id q81so10367378qke.5;
-        Fri, 01 Oct 2021 13:08:19 -0700 (PDT)
+        Fri, 1 Oct 2021 16:10:43 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0D9C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:08:59 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id z5so23019198ybj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 13:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wKG27X/tAaz6ZgSm5PLct1wo5H6VtWzGqhVRfSbCJeM=;
+        b=K/EZX9fC9ZUuzFI6jrZypY1zTFUDt/PU70tLbqJHmQR1qUSX74ZaJgv2NcYZgAKyxp
+         IGav/zFpLLCH001ejV1vMObkwX0wGHb+UKwQ6kSvjtnd8WWRAXyBC1NiC7MxyV9iJvcy
+         rsCUB4L+pz5p17cwq7H2NsYsiU2vmQlHJ0Tcrq5gjSQbM8w8xZKBMin7C5Qzc1rpXYdz
+         HKHH+DsRMvAYh8BOZSJFRxikufOUyCDSOOapRM7+NoJRPhev7XGLUTfGVqW8HkZcf0k2
+         gZEuAouaG/VT/oHp5nPOEqDTxWb+ThYNaiR0o6i8VOaeFBhsVrUATAE4tcbhHOnazbOp
+         7W+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KQlSEZZ+M9EHNYuoq+CO7QYaIkckaY1yCBN43D3/TuI=;
-        b=34X1tSlk6SQVCRvE7SybF7rgdvJK/HitNO9wefDV4AoKE3OeY19ntuwiYUdbdrCaFg
-         PNyifzcqTZPtUeM4Zuhw72JeK8JrHxryhYhXrrv4BmVZqiL65zauPqekSKIisQsyyqL4
-         FC83wLlag4ZnhDH99Wilb4iEaCykiy7fJquGNX0YmEwW+XJPG0zAoAB8ZqQWec/IgmCz
-         OnsgcuYOdRbHlgFvA2rWLxvSfGVp2VZh8JcRAFfcPmkzQ0zpBhHtPmin5h3NLpPc/gMV
-         quy6pglz0egmevPMLJQ6uI4ckTWzhflLE6boHSABAjy27eHqua+lpBof0Yz2SBgKSVdF
-         UEPA==
-X-Gm-Message-State: AOAM531ZPUW9M2rwdi+vaaPccfHCV5on7+dOBV6MmmKlXCKbxPTIqCpN
-        50Ko1jsKSbPkUj83DIJy+6R2u/qATFw=
-X-Google-Smtp-Source: ABdhPJy96jyiQUtuC4jk63wYlX0eX6mVYq9VG3nkjLeeipINWSIYDzjgH2oVpfrWPTsyRPjLuZlfCQ==
-X-Received: by 2002:a37:66d6:: with SMTP id a205mr11275641qkc.138.1633118898545;
-        Fri, 01 Oct 2021 13:08:18 -0700 (PDT)
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
-        by smtp.gmail.com with ESMTPSA id k19sm3884284qko.115.2021.10.01.13.08.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 13:08:17 -0700 (PDT)
-Received: by mail-qv1-f44.google.com with SMTP id a14so6287010qvb.6;
-        Fri, 01 Oct 2021 13:08:17 -0700 (PDT)
-X-Received: by 2002:a05:6214:36d:: with SMTP id t13mr11022398qvu.50.1633118897756;
- Fri, 01 Oct 2021 13:08:17 -0700 (PDT)
+        bh=wKG27X/tAaz6ZgSm5PLct1wo5H6VtWzGqhVRfSbCJeM=;
+        b=yzUPyKvhI38DTFe90A87m3f77CDtbdhtj1VZWgICrZWlr1nNZz+mY7eliKui8JxhRz
+         7S+xLEbdC+9Tu261DfpinHdxLuoh1ql2aDT7ibCdof3YszZzVkJr6ivMMtAkH+x0rG9G
+         CviLE8sbrOnWm7DhXsITh1vZJkaviSDo50tAZ2n8gbVC8F5tL149FSTlVN1PablJ+0QH
+         4F/UYMB7/xIXGmjjA+smAzxtCQj8nVVERKgeVH4ZN9AwQpGmnzDhTCLqImh5b0tswRBa
+         I1KUAmB38SZQEaj0fmM4oUgQiyHre5qlVIacXeK3FZK/pGYNkgGsPkznutax7rt8JZiK
+         GsKg==
+X-Gm-Message-State: AOAM532bVZYpGnbMZ6w0BOdcHxR6cHiBNQ5PUeSaGi7cuPEZQtW70VbB
+        OZ4MmuLqv9PJmZrebuT2lT6QjWRlho3tG2ZFynwR8g==
+X-Google-Smtp-Source: ABdhPJwOtf4LpoL1TJ/IJSfZorBhBurQK2kH41u3Fyo5ujc2AgTfHjWisxqRuQ+5FkxK3/PBitfSFea2DlJ3i0S6fX4=
+X-Received: by 2002:a25:e6d0:: with SMTP id d199mr8208144ybh.527.1633118938474;
+ Fri, 01 Oct 2021 13:08:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001000417.15334-1-leoyang.li@nxp.com> <20211001000417.15334-5-leoyang.li@nxp.com>
- <AS8PR04MB86734729E9E08F70FF7E5AEEE0AB9@AS8PR04MB8673.eurprd04.prod.outlook.com>
-In-Reply-To: <AS8PR04MB86734729E9E08F70FF7E5AEEE0AB9@AS8PR04MB8673.eurprd04.prod.outlook.com>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Fri, 1 Oct 2021 15:08:05 -0500
-X-Gmail-Original-Message-ID: <CADRPPNTKsO7MYoUUXLgC+XnPPsrzjeBggvRnKvaB=3HUJy9-1A@mail.gmail.com>
-Message-ID: <CADRPPNTKsO7MYoUUXLgC+XnPPsrzjeBggvRnKvaB=3HUJy9-1A@mail.gmail.com>
-Subject: Re: [EXT] [PATCH v2 04/16] ARM: dts: ls1021a-qds: Add node for QSPI flash
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20210930180531.1190642-6-samitolvanen@google.com> <CAKwvOdnJ6EPPd5UbhZhdggPRzCXmdrnxg_tO=Bq_+Gcgarvw1g@mail.gmail.com>
+In-Reply-To: <CAKwvOdnJ6EPPd5UbhZhdggPRzCXmdrnxg_tO=Bq_+Gcgarvw1g@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 1 Oct 2021 13:08:47 -0700
+Message-ID: <CABCJKue1dDYe9aL0ExU8NMORxJN-7qhF=D+=sSKr0d2Quhb3YA@mail.gmail.com>
+Subject: Re: [PATCH v4 05/15] tracepoint: Exclude tp_stub_func from CFI checking
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 12:30 AM Kuldeep Singh <kuldeep.singh@nxp.com> wrote:
+On Thu, Sep 30, 2021 at 11:51 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> Hi Leo,
->
-> > -----Original Message-----
-> > From: Li Yang <leoyang.li@nxp.com>
-> > Sent: Friday, October 1, 2021 5:34 AM
-> > To: Shawn Guo <shawnguo@kernel.org>; Rob Herring
-> > <robh+dt@kernel.org>; devicetree@vger.kernel.org; Oleksij Rempel
-> > <linux@rempel-privat.de>; linux-arm-kernel@lists.infradead.org; linux-
-> > kernel@vger.kernel.org
-> > Cc: Leo Li <leoyang.li@nxp.com>
-> > Subject: [EXT] [PATCH v2 04/16] ARM: dts: ls1021a-qds: Add node for QSPI
-> > flash
+> On Thu, Sep 30, 2021 at 11:05 AM Sami Tolvanen <samitolvanen@google.com> wrote:
 > >
-> > Caution: EXT Email
+> > If allocate_probes fails, func_remove replaces the old function
+> > with a pointer to tp_stub_func, which is called using a mismatching
+> > function pointer that will always trip indirect call checks with
+> > CONFIG_CFI_CLANG. Use DEFINE_CFI_IMMEDATE_RETURN_STUB to define
+> > tp_stub_func to allow it to pass CFI checking.
 > >
-> > Add the missing node for qspi flash.
-> >
-> > Signed-off-by: Li Yang <leoyang.li@nxp.com>
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 > > ---
-> >  arch/arm/boot/dts/ls1021a-qds.dts | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
+> >  kernel/tracepoint.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
 > >
-> > diff --git a/arch/arm/boot/dts/ls1021a-qds.dts
-> > b/arch/arm/boot/dts/ls1021a-qds.dts
-> > index e2aa569ff404..522e1dc51059 100644
-> > --- a/arch/arm/boot/dts/ls1021a-qds.dts
-> > +++ b/arch/arm/boot/dts/ls1021a-qds.dts
-> > @@ -286,6 +286,21 @@ tbi0: tbi-phy@8 {
-> >         };
-> >  };
-> >
-> > +&qspi {
-> > +       num-cs = <2>;
+> > diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> > index 64ea283f2f86..58acc7d86c3f 100644
+> > --- a/kernel/tracepoint.c
+> > +++ b/kernel/tracepoint.c
 >
-> Please drop "num-cs" property as it is not used by qspi driver.
->
-> > +       status = "okay";
-> > +
-> > +       qflash0: flash@0 {
->
-> Can we have flash chip name instead of qflash?
-> There is no hard requirement, it will help in aligning node properties with other board properties such as LX2160A-RDB, LS1046A-RDB etc.
+> looking at 4+5/15 together, I wonder if this TU should explicitly
+> include linux/cfi.h?
 
-Thanks for the review.  I find that there is no reference to the label
-at all.  I don't know why we added it in the first place.  Probably we
-can just remove it?
+Good point. Currently cfi.h is included in module.h, but including it
+explicitly makes this less likely to break in future. I'll add an
+explicit include in v5. Thanks for taking a look!
 
->
-> With above fixed,
-> Reviewed-by: Kuldeep Singh <kuldeep.singh@nxp.com>
->
-> > +               compatible = "jedec,spi-nor";
-> > +               #address-cells = <1>;
-> > +               #size-cells = <1>;
-> > +               spi-max-frequency = <20000000>;
-> > +               reg = <0>;
-> > +               spi-rx-bus-width = <4>;
-> > +               spi-tx-bus-width = <4>;
-> > +       };
-> > +};
-> > +
-> >  &sai2 {
-> >         status = "okay";
-> >  };
-> > --
-> > 2.25.1
->
+Sami
