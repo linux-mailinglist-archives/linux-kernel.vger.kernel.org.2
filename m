@@ -2,211 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D09741F045
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B541F054
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354768AbhJAPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:04:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57930 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354765AbhJAPEf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:04:35 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633100570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tkahMb00/2ZOB3OTBy1INbxnjaoRkIMrPGAeMzpZqq4=;
-        b=VvAbATfHtKYOGYETTF4NyAZJH0nLm539yYltnLygMzbsW/tEjTosnqw19MbnXdR/rnK7YR
-        2gfMFdiGhpFaZ5tQC82CVyMj+qAI10owVUzsEUEEZyAL10FpSozE/JFriZBhwGiDmB8R8h
-        hKkBEsJ8RK+UzTT2tMRGhAUMJsnqut+uN3bt7Ttb3X2YAZWvrH9/xuPYlTVo2KmQlMLJcz
-        n53R48hp2BPxnaQLKBszUkVeTtGDdKofjtZixfvRV2GnLJLHmSZ6atwcZpXjXUcsGANWI5
-        Tqiwj49RQxsZBqLoWCHz2VOJ1ty98w6Pnl5AyyJVGmOH/IbdoZPNE0PToIAVjQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633100570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tkahMb00/2ZOB3OTBy1INbxnjaoRkIMrPGAeMzpZqq4=;
-        b=pcOb3Ej2c2nCvd9kpicGl6rnch6vwgCq0kClnm6XbkHUugUqvyUgR4DW0P1KvBr85CVRS7
-        71RB9rhBWBi3sYDw==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v10 13/28] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-In-Reply-To: <20210825155413.19673-14-chang.seok.bae@intel.com>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-14-chang.seok.bae@intel.com>
-Date:   Fri, 01 Oct 2021 17:02:49 +0200
-Message-ID: <871r546b52.ffs@tglx>
+        id S1354795AbhJAPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:06:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49686 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354706AbhJAPGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 11:06:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205614103"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="205614103"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 08:03:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="521138546"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2021 08:03:13 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8C79E29D; Fri,  1 Oct 2021 18:03:18 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Rodolfo Giometti <giometti@enneenne.com>,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
+Subject: [PATCH v2 1/1] pps: generators: pps_gen_parport: Switch to use module_parport_driver()
+Date:   Fri,  1 Oct 2021 18:03:16 +0300
+Message-Id: <20211001150316.12545-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
-> +/**
-> + * xfd_switch - Switches the MSR IA32_XFD context if needed.
-> + * @prev:	The previous task's struct fpu pointer
-> + * @next:	The next task's struct fpu pointer
-> + */
-> +static inline void xfd_switch(struct fpu *prev, struct fpu *next)
-> +{
-> +	u64 prev_xfd_mask, next_xfd_mask;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_XFD) || !xfeatures_mask_user_dynamic)
-> +		return;
+Switch to use module_parport_driver() to reduce boilerplate code.
 
-This is context switch, so this wants to be a static key which is turned
-on during init when the CPU supports XFD and user dynamic features are
-available.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: remove useless message (Greg), Cc to the original (hopefully) author
+ drivers/pps/generators/pps_gen_parport.c | 42 ++++--------------------
+ 1 file changed, 7 insertions(+), 35 deletions(-)
 
-> +
-> +	prev_xfd_mask = prev->state_mask & xfeatures_mask_user_dynamic;
-> +	next_xfd_mask = next->state_mask & xfeatures_mask_user_dynamic;
-> +
-> +	if (unlikely(prev_xfd_mask != next_xfd_mask))
-> +		wrmsrl_safe(MSR_IA32_XFD, xfeatures_mask_user_dynamic ^ next_xfd_mask);
-> +}
-> +
->  /*
->   * Delay loading of the complete FPU state until the return to userland.
->   * PKRU is handled separately.
->   */
-> -static inline void switch_fpu_finish(struct fpu *new_fpu)
-> +static inline void switch_fpu_finish(struct fpu *old_fpu, struct fpu *new_fpu)
->  {
-> -	if (cpu_feature_enabled(X86_FEATURE_FPU))
-> +	if (cpu_feature_enabled(X86_FEATURE_FPU)) {
->  		set_thread_flag(TIF_NEED_FPU_LOAD);
-> +		xfd_switch(old_fpu, new_fpu);
+diff --git a/drivers/pps/generators/pps_gen_parport.c b/drivers/pps/generators/pps_gen_parport.c
+index 6a1af7664f3b..fba6c490977c 100644
+--- a/drivers/pps/generators/pps_gen_parport.c
++++ b/drivers/pps/generators/pps_gen_parport.c
+@@ -20,8 +20,6 @@
+ #include <linux/hrtimer.h>
+ #include <linux/parport.h>
+ 
+-#define DRVDESC "parallel port PPS signal generator"
+-
+ #define SIGNAL		0
+ #define NO_SIGNAL	PARPORT_CONTROL_STROBE
+ 
+@@ -180,6 +178,11 @@ static void parport_attach(struct parport *port)
+ {
+ 	struct pardev_cb pps_cb;
+ 
++	if (send_delay > SEND_DELAY_MAX) {
++		pr_err("delay value should be not greater then %d\n", SEND_DELAY_MAX);
++		return -EINVAL;
++	}
++
+ 	if (attached) {
+ 		/* we already have a port */
+ 		return;
+@@ -231,39 +234,8 @@ static struct parport_driver pps_gen_parport_driver = {
+ 	.detach = parport_detach,
+ 	.devmodel = true,
+ };
+-
+-/* module staff */
+-
+-static int __init pps_gen_parport_init(void)
+-{
+-	int ret;
+-
+-	pr_info(DRVDESC "\n");
+-
+-	if (send_delay > SEND_DELAY_MAX) {
+-		pr_err("delay value should be not greater"
+-				" then %d\n", SEND_DELAY_MAX);
+-		return -EINVAL;
+-	}
+-
+-	ret = parport_register_driver(&pps_gen_parport_driver);
+-	if (ret) {
+-		pr_err("unable to register with parport\n");
+-		return ret;
+-	}
+-
+-	return  0;
+-}
+-
+-static void __exit pps_gen_parport_exit(void)
+-{
+-	parport_unregister_driver(&pps_gen_parport_driver);
+-	pr_info("hrtimer avg error is %ldns\n", hrtimer_error);
+-}
+-
+-module_init(pps_gen_parport_init);
+-module_exit(pps_gen_parport_exit);
++module_parport_driver(pps_gen_parport_driver);
+ 
+ MODULE_AUTHOR("Alexander Gordeev <lasaine@lvk.cs.msu.su>");
+-MODULE_DESCRIPTION(DRVDESC);
++MODULE_DESCRIPTION("parallel port PPS signal generator");
+ MODULE_LICENSE("GPL");
+-- 
+2.33.0
 
-Why has this to be done on context switch? Zero explanation provided.
-
-Why can't this be done in exit_to_user() where the FPU state restore is
-handled?
-
->  	}
-> +
-> +	if (boot_cpu_has(X86_FEATURE_XFD))
-
-s/boot_cpu_has/cpu_feature_enabled/g
-
-> +		wrmsrl(MSR_IA32_XFD, xfeatures_mask_user_dynamic);
->  }
-> +
-> +	if (cpu_feature_enabled(X86_FEATURE_XFD))
-> +		wrmsrl_safe(MSR_IA32_XFD, (current->thread.fpu.state_mask &
-> +					   xfeatures_mask_user_dynamic) ^
-> +					  xfeatures_mask_user_dynamic);
-
-Lacks curly braces as it's not a single line of code.
-
->  }
->  
->  /**
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index 33f5d8d07367..6cd4fb098f8f 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -97,6 +97,16 @@ void arch_thread_struct_whitelist(unsigned long *offset, unsigned long *size)
->  	*size = fpu_buf_cfg.min_size;
->  }
->  
-> +void arch_release_task_struct(struct task_struct *task)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_FPU))
-> +		return;
-> +
-> +	/* Free up only the dynamically-allocated memory. */
-> +	if (task->thread.fpu.state != &task->thread.fpu.__default_state)
-
-Sigh.
-
-> +		free_xstate_buffer(&task->thread.fpu);
->  
-> +static __always_inline bool handle_xfd_event(struct fpu *fpu, struct pt_regs *regs)
-> +{
-> +	bool handled = false;
-> +	u64 xfd_err;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_XFD))
-> +		return handled;
-> +
-> +	rdmsrl_safe(MSR_IA32_XFD_ERR, &xfd_err);
-> +	wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
-> +
-> +	if (xfd_err) {
-
-What's wrong with
-
-       if (!xfd_err)
-       		return false;
-
-an spare the full indentation levels below
-
-> +		u64 xfd_event = xfd_err & xfeatures_mask_user_dynamic;
-> +		u64 value;
-> +
-> +		if (WARN_ON(!xfd_event)) {
-> +			/*
-> +			 * Unexpected event is raised. But update XFD state to
-> +			 * unblock the task.
-> +			 */
-> +			rdmsrl_safe(MSR_IA32_XFD, &value);
-> +			wrmsrl_safe(MSR_IA32_XFD, value & ~xfd_err);
-
-Ditto. But returning false here will not unblock the task as
-exc_device_not_available() will simply reach "die()".
-
-> +		} else {
-> +			struct fpu *fpu = &current->thread.fpu;
-
-You need this because the fpu argument above is invalid?
-
-> +			int err = -1;
-> +
-> +			/*
-> +			 * Make sure not in interrupt context as handling a
-> +			 * trap from userspace.
-> +			 */
-> +			if (!WARN_ON(in_interrupt())) {
-
-Why would in_interrupt() be necessarily true when the trap comes from
-kernel space? The proper check is user_mode(regs) as done anywhere else.
-
-> +				err = realloc_xstate_buffer(fpu, xfd_event);
-> +				if (!err)
-> +					wrmsrl_safe(MSR_IA32_XFD, (fpu->state_mask &
-> +								   xfeatures_mask_user_dynamic) ^
-> +								  xfeatures_mask_user_dynamic);
-> +			}
-> +
-> +			/* Raise a signal when it failed to handle. */
-> +			if (err)
-> +				force_sig_fault(SIGILL, ILL_ILLOPC, error_get_trap_addr(regs));
-> +		}
-> +		handled = true;
-> +	}
-> +	return handled;
-> +}
-> +
->  DEFINE_IDTENTRY(exc_device_not_available)
->  {
->  	unsigned long cr0 = read_cr0();
-
-> +	if (handle_xfd_event(&current->thread.fpu, regs))
-> +		return;
-
-As I said before, this is wrong because at that point interrupts are disabled.
-
-Thanks,
-
-        tglx
