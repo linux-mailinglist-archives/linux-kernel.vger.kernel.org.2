@@ -2,62 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8048B41EEB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6342A41EE9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353768AbhJANmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:42:13 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:47156 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhJANl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:41:58 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 672B8C800C7;
-        Fri,  1 Oct 2021 15:31:29 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id bjizmq9Y1oSW; Fri,  1 Oct 2021 15:31:29 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (host-212-18-30-247.customer.m-online.net [212.18.30.247])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 0674AC800C9;
-        Fri,  1 Oct 2021 15:31:28 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ALSA: hda/realtek: Add quirk for Clevo X170KM-G
-Date:   Fri,  1 Oct 2021 15:31:11 +0200
-Message-Id: <20211001133111.428249-3-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211001133111.428249-1-wse@tuxedocomputers.com>
-References: <20211001133111.428249-1-wse@tuxedocomputers.com>
+        id S231725AbhJANdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:33:10 -0400
+Received: from smtprelay0171.hostedemail.com ([216.40.44.171]:37356 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231416AbhJANdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:33:09 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 0674D181CC40F;
+        Fri,  1 Oct 2021 13:31:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id A9644315D7D;
+        Fri,  1 Oct 2021 13:31:22 +0000 (UTC)
+Message-ID: <256e577b57eb21555de96846d1ac4cfa3b8ee238.camel@perches.com>
+Subject: Re: [PATCH v2 1/1] infiniband: hf1: Use string_upper() instead of
+ open coded variant
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cai Huoqing <caihuoqing@baidu.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vadim Pasternak <vadimp@mellanox.com>
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Fri, 01 Oct 2021 06:31:21 -0700
+In-Reply-To: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
+References: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: A9644315D7D
+X-Spam-Status: No, score=-1.81
+X-Stat-Signature: g9ygsf6tgcr1r6sycycn3e33ide4qgm8
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19xWmYIescM5VhJLkm8KXhZgeIgpmZJRoI=
+X-HE-Tag: 1633095082-359233
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This applies a SND_PCI_QUIRK(...) to the Clevo X170KM-G barebone. This
-fixes the issue of the devices internal Speaker not working.
+On Fri, 2021-10-01 at 15:31 +0300, Andy Shevchenko wrote:
+> Use string_upper() from string helper module instead of open coded variant.
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
+Perhaps these string_upper and string_lower utility functions
+should return dst not void so these functions could be used in
+output calls.
+
+So instead of:
+
++		string_upper(prefix_name, prefix_name);
+ 		snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+
+this could be consolidated:
+
+		snprintf(name, sizeof(name), "%s-%s", string_upper(prefix_name), kind);
+
+Perhaps:
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/string_helpers.h | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 706acbcff472..6cb542905dc6 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2538,6 +2538,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x7715, "Clevo X170KM-G", ALC1220_FIXUP_CLEVO_PB51ED),
- 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x9506, "Clevo P955HQ", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x950a, "Clevo P955H[PR]", ALC1220_FIXUP_CLEVO_P950),
--- 
-2.25.1
+diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
+index 68189c4a2eb11..ef92a9471f2a9 100644
+--- a/include/linux/string_helpers.h
++++ b/include/linux/string_helpers.h
+@@ -81,18 +81,26 @@ static inline int string_escape_str_any_np(const char *src, char *dst,
+ 	return string_escape_str(src, dst, sz, ESCAPE_ANY_NP, only);
+ }
+ 
+-static inline void string_upper(char *dst, const char *src)
++static inline char *string_upper(char *dst, const char *src)
+ {
++	char *rtn = dst;
++
+ 	do {
+ 		*dst++ = toupper(*src);
+ 	} while (*src++);
++
++	return rtn;
+ }
+ 
+-static inline void string_lower(char *dst, const char *src)
++static inline char *string_lower(char *dst, const char *src)
+ {
++	char *rtn = dst;
++
+ 	do {
+ 		*dst++ = tolower(*src);
+ 	} while (*src++);
++
++	return rtn;
+ }
+ 
+ char *kstrdup_quotable(const char *src, gfp_t gfp);
+
 
