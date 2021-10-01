@@ -2,184 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA4441E762
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE2E41E763
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352072AbhJAGFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
+        id S1352084AbhJAGGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237478AbhJAGFH (ORCPT
+        with ESMTP id S237478AbhJAGGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:05:07 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ACCC061770
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:03:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id u32so18189119ybd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:03:23 -0700 (PDT)
+        Fri, 1 Oct 2021 02:06:07 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668BAC06176A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:04:24 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id y17so1127913ilb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4XHFyIl24a8InBUxS3yTnWfbC5yODh0CS5vqQSj8r7g=;
-        b=gQb+46RHjbWREUXxN64U8JEMZdkik3KQ6z1iNq6hiwe3ia9IRlhK/cIzlRCm6yLI3j
-         Ov5JSv8j9zBf0hsJXFJuuKPE28Xt1yGKNrngUU1wW/ld2e1sbIqalKLlnWlQBJN5LrEz
-         pCRAR95DiSNnLkQ+GHifeJWamz9f6kzVs01jYGK2Tq/9c+fkKloFE/aAtHv1JP84z9pN
-         YOmEkZ9MgXjJVHoKJzhQ25qVxZbfCM8XuA4REKHKJ1Es6S9ZC5MFlxdTFWER6/aFZ1rM
-         xh2qq6tt5iC3NH2SYC7WKi9pPL06sFWYUKHD1C1ZvMSsdwLkPJgxlvkoE7K3X0oFVc9K
-         glPA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rwySDSKRRsXslYbKXYJa76oaTvMhveH8tikguFBiHvY=;
+        b=jBCw0IV5em7m+jkf3uXMg8qlulGpsCKRgxxmh5SSG58uz4eGSqHcP0t9eCbB+MiqSB
+         7ixH02iEw4phN4nXr1VybWTwmyIctcQV8cF6hcUyG5s4jwLwLHxwJEhpjbfxr0CBtDv4
+         5488znKDkNBgzteJU/05iDoafsPQ2M/UeWyXZ3+GMOGOpq2rAjMdjXVxy1PpPTgR4kDw
+         TAchRGDCvrEzx8aEktGgrV4nYUrNFW932Asg9iNmr6rPgxBEqqvzbAoS8BmP2iO9Fhb7
+         NczLlBe4gMp0ePHhW6ZySsXsOBSC9hrawjlmJmY7gANXjmu1TvCW6+IYXn6fpuWl3JjW
+         uWrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4XHFyIl24a8InBUxS3yTnWfbC5yODh0CS5vqQSj8r7g=;
-        b=Kg93fxzJhVklM+MOeZeP+U2k5fL+bDglp+/U9K/Tpi/4iWfQ3vZID+Xo17WnbF5y5X
-         TIz0lHWlP6yQgNJah1zng9UxEHcQjrs1DZlv1azJN4t9UQEkXfo/e6pchfBmo3SUO2f7
-         oFc+8mKTtSWBpAgX/xNtBqGu/Pgo1zcW8BWOKbwDb0/2Srp294GVKAIZdzAY0AHL/64e
-         iBNlugMXrn1N+AegBCyFKcTGan4zAlJXmigoyKwoOPyiBy3DQ1Iz9BuGyAfPZA//qd2r
-         57F41FtDLuOub6MsZ+lIGI1ZTiAjBvimQkTHYeLRv5IGjmOTHEtFRA/N0ri2+hAFhi5X
-         f52Q==
-X-Gm-Message-State: AOAM5320XapeiViKbVfcRaURMP7nnfqUZs7qg+X4rEE8b4ziIEDZJ/uw
-        0Fg8rUR7FvSibhdJYLTY7nAdJzevWQXArDpdD0Fx1A==
-X-Google-Smtp-Source: ABdhPJx9japD4n+j+WHfnlr43J1D/KYK6bUrrEfX6nuXVSP7c4eyGu0nzECvXcHIoHBBuvGtgM2VdN5ovzRACmJk+Uc=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr3850649ybq.328.1633068202700;
- Thu, 30 Sep 2021 23:03:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com> <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-In-Reply-To: <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 30 Sep 2021 23:02:46 -0700
-Message-ID: <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rwySDSKRRsXslYbKXYJa76oaTvMhveH8tikguFBiHvY=;
+        b=qJNmEKhL8szp0CU1bylKD9A5gDRvSIhnS1TqnXVVTv9kIF6Zvfcf11o05CBcxMOMw5
+         hhlcHaqrAEaw3cAxMrRSMGDYryGm5GASHfGoxRqknevpDOUf1YsxI5GzEeljaM9ULWxJ
+         wNwcpCk4E0HDoTKyKsaCzYsSk4ZiYOuxiLlreoFQGcIT7psSbdCWYuiIe9fnGqQrqeED
+         aZZw9yNu4CGXia0LetS0HVrOEEq8r9PXxUxRH9XAx2nQTNoyA6MiK8ou1Y8uFKWnBY8A
+         3fPPIwTpP8x7Mky8uPs3gnaGkCPKqNx8wpce3Bg0IiRBeEIi74elM/I6Q3E5JVca/F/q
+         60iA==
+X-Gm-Message-State: AOAM532F9nSiSSjs8GLztf5xxlmVZTQz9iWFSCyNUjR+tsM1P69qu2Ca
+        wB7Z/DmKOJlE/8amJH/0gu8=
+X-Google-Smtp-Source: ABdhPJy5GWMXpyo7i3E81FoNj02lC558KOBunhBrBrRh/JI2yRKmuTrvg0W2kTVWb1NrMXfGuW0RJA==
+X-Received: by 2002:a05:6e02:1807:: with SMTP id a7mr6062144ilv.310.1633068263860;
+        Thu, 30 Sep 2021 23:04:23 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id e9sm2824190iob.52.2021.09.30.23.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Sep 2021 23:04:23 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 75C1127C0054;
+        Fri,  1 Oct 2021 02:04:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 01 Oct 2021 02:04:21 -0400
+X-ME-Sender: <xms:4qRWYfbPMh5IcPzDZQuyaf-oNKZb21meYZT25ZiK-cYRVW3IGQaXlg>
+    <xme:4qRWYearN9UtsFrChBksQHUk3bifaF-R0s0KM6D-WS-Wpj8GDbIDLsb8z6nyNbo7Q
+    nfAKsPCpD2gi34T4A>
+X-ME-Received: <xmr:4qRWYR8tjbA2UJvojVMed-iF9k0--vOx2s5LEmjAASGWyn5UoYObKBiRdriIOQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekhedguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeeggedutefhkeeludetleefveffudehjeelhfffgfefgfekueeiieevjedu
+    gffhffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:4qRWYVp8HcLPEEr3r4Q40W7triYfzbNMA9sXIKOCYrxdUV5qUDRoeA>
+    <xmx:4qRWYaqSgg-5lxV-gWLgYYBMG4POK3brE7CNY_gAHFqZQ5RFRv-v4A>
+    <xmx:4qRWYbTK-wvLWyFszKr9mytpJQxRZR0i3BHzdWgykyLdYio3xozD5Q>
+    <xmx:46RWYfgLRFY9c3iRfIb0Vya0bab9ssLIgzSJ6HiVG5kBa4ZvdwAMnESeLZU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Oct 2021 02:04:18 -0400 (EDT)
+Date:   Fri, 1 Oct 2021 14:03:30 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au
+Subject: Re: [PATCH] tools/memory-model: Provide extra ordering for
+ unlock+lock pair on the same CPU
+Message-ID: <YVakskMQGrnOUHsa@boqun-archlinux>
+References: <20210930130823.2103688-1-boqun.feng@gmail.com>
+ <20210930152033.GD464826@rowland.harvard.edu>
+ <20210930181753.GH880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210930204634.GB482974@rowland.harvard.edu>
+ <YVZSiCFAc2RdmeD9@boqun-archlinux>
+ <20211001013055.GA489012@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001013055.GA489012@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
->
-> On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
-> > >
-> > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
-> > > >
-> > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
-> > > > <krzysztof.kozlowski@canonical.com> wrote:
-> > > > >
-> > > > > On 29/09/2021 01:56, Will McVicker wrote:
-> > > > > > This is v2 of the series of patches that modularizes a number of core
-> > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
-> > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
-> > > > > > series of "select XXX". This includes setting the following configs as
-> > > > > > tristate:
-> > > > > >
-> > > > > >  * COMMON_CLK_SAMSUNG
-> > > > > >  * EXYNOS_ARM64_COMMON_CLK
-> > > > > >  * PINCTRL_SAMSUNG
-> > > > > >  * PINCTRL_EXYNOS
-> > > > > >  * EXYNOS_PMU_ARM64
-> > > > > >  * EXYNOS_PM_DOMAINS
-> > > > > >
-> > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
-> > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
-> > > > > > The reason for these new configs is because we are not able to easily
-> > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
-> > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
-> > > > > > the ARM and ARM64 portions into two separate configs.
-> > > > > >
-> > > > > > Overall, these drivers didn't require much refactoring and converted to
-> > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
-> > > > > > was not able to boot test these changes. I'm mostly concerned about the
-> > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
-> > > > > > requesting help for testing these changes on the respective hardware.
-> > > > > >
-> > > > >
-> > > > > These are all not tested at all? In such case, since these are not
-> > > > > trivial changes, please mark the series as RFT.
-> > > > >
-> > > > > I will not be able to test these for some days, so it must wait.
-> > > > >
-> > > > >
-> > > > > Best regards,
-> > > > > Krzysztof
-> > > >
-> > > > +Cc Arnd and Olof,
-> > > >
-> > > > Hi Krzysztof,
-> > > >
-> > > > To avoid the scrambled conversation from the first patchset, I'm going
-> > > > to address all your general questions here in the cover letter thread
-> > > > so that it's easier for everyone to follow and reference in the
-> > > > future.
-> > >
-> > > This patchset shouldn't go in.
-> > >
-> > > GKI is a fantastic effort, since it finally seems like Google has the
-> > > backbone to put pressure on the vendors to upstream all their stuff.
-> > >
-> > > This patcheset dilutes and undermines all of that by opening up a
-> > > truck-size loophole, reducing the impact of GKI, and overall removes
-> > > leverage to get vendors to do the right thing.
-> > >
-> > > It's against our interest as a community to have this happen, since
-> > > there's no other reasonably justifiable reason to do this.
-> >
-> > Oolf, Geert, Krzysztof, Arnd,
->
-> So close.
+On Thu, Sep 30, 2021 at 09:30:55PM -0400, Alan Stern wrote:
+> On Fri, Oct 01, 2021 at 08:12:56AM +0800, Boqun Feng wrote:
+> > On Thu, Sep 30, 2021 at 04:46:34PM -0400, Alan Stern wrote:
+> > > On Thu, Sep 30, 2021 at 11:17:53AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Sep 30, 2021 at 11:20:33AM -0400, Alan Stern wrote:
+> > > > > On Thu, Sep 30, 2021 at 09:08:23PM +0800, Boqun Feng wrote:
+> > > > > > A recent discussion[1] shows that we are in favor of strengthening the
+> > > > > > ordering of unlock + lock on the same CPU: a unlock and a po-after lock
+> > > > > > should provide the so-called RCtso ordering, that is a memory access S
+> > > > > > po-before the unlock should be ordered against a memory access R
+> > > > > > po-after the lock, unless S is a store and R is a load.
+> > > > > > 
+> > > > > > The strengthening meets programmers' expection that "sequence of two
+> > > > > > locked regions to be ordered wrt each other" (from Linus), and can
+> > > > > > reduce the mental burden when using locks. Therefore add it in LKMM.
+> > > > > > 
+> > > > > > [1]: https://lore.kernel.org/lkml/20210909185937.GA12379@rowland.harvard.edu/
+> > > > > > 
+> > > > > > Co-developed-by: Alan Stern <stern@rowland.harvard.edu>
+> > > > > > Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> > > > > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > > > > ---
+> > > > > > Alan,
+> > > > > > 
+> > > > > > I added the "Co-developed-by" and "Signed-off-by" tags since most of the
+> > > > > > work is done by you. Feel free to let me know if you want to change
+> > > > > > anything.
+> > > > > 
+> > > > > It looks good to me.  However, do we really want to add these litmus
+> > > > > tests to the kernel source, or would it be better to keep them with
+> > > > > the thousands of other tests in Paul's archives?
+> > > > 
+> > > > Either way works for me.  But if they are referred to from within the
+> > > > kernel, it is best to have them in the kernel source.  Which might be seen
+> > > > as a reason to minimize referring to litmus tests from the kernel.  ;-)
+> > > 
+> > > In this case the litmus tests are not referred to within the kernel 
+> > > source.
+> > > 
+> > 
+> > I'm OK to drop the litmus tests, but the reason I add the two litmus
+> > tests is that they directly describe one of our memory model rules. The
+> > two litmus tests tells developers "you can use unlock+lock on the same
+> > CPU to order READ->WRITE or WRITE->WRITE", so they are kind of part of
+> > the manual of our memory model. Thoughts?
+> 
+> The explanation.txt file already contains example litmus tests (not 
+> in a form acceptable to herd7, though) for these things.
+> 
 
-I'm sorry, it's pretty late here and I'm sleepy and messed it up.
+Agreed. I just think that runnable litmus tests may be more accurate
+than words. But again, I'm OK to drop them.
 
->
-> > I skimmed through the emails and you all make a lot of good points.
->
-> I skimmed through this email and I think it adds a lot of new
-> complexity and fragility to solve a problem that doesn't really exist
-> for upstream, adding yet more config parameter combinations to build
-> and test for.
+While we are at it, maybe it's worthwhile to discuss what kind of litmus
+tests should be put in tools/memory-model/litmus-tests. Selftests for
+.cat changes? Documented patterns for developers to follow? Or something
+else?
 
-How is this not an upstream problem? Having a minimal kernel with as
-many drivers as modules is of interest to upstream. And what's the
-complexity in having a config to easily disable a bunch of configs?
-The new config gives a clear config against which new
-platforms/systems should be developed against.
+Regards,
+Boqun
 
->
-> A much more valuable approach would be to work towards being able to
-> free up memory by un-probed drivers at the end of boot. That would
-> possibly benefit all platforms on all architectures.
-
-Sure it would help memory after boot, but it won't help with size on
-"disk", kernel load time, etc. And some of the devices have very tight
-boot requirements. Think battery operated outdoor cameras for example.
-
--Saravana
+> Alan
