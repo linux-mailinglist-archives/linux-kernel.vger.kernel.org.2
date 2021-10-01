@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6B441EE6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF21141EE77
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhJANWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:22:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57773 "EHLO mga11.intel.com"
+        id S231511AbhJANZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231484AbhJANWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:22:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="222230946"
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="222230946"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:20:45 -0700
-X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
-   d="scan'208";a="708614512"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:20:42 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mWISs-007Rxr-TQ;
-        Fri, 01 Oct 2021 16:20:38 +0300
-Date:   Fri, 1 Oct 2021 16:20:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Tomas Winkler <tomas.winkler@intel.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v3 2/4] uuid: Make guid_t completely internal type to the
- kernel
-Message-ID: <YVcLJmb4h7ZRBmoh@smile.fi.intel.com>
-References: <20211001113747.64040-1-andriy.shevchenko@linux.intel.com>
- <20211001113747.64040-2-andriy.shevchenko@linux.intel.com>
- <YVb4i330sXrvHLWa@kroah.com>
- <YVcKAH6C/dAZqoAw@smile.fi.intel.com>
+        id S230422AbhJANZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:25:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5781261A56;
+        Fri,  1 Oct 2021 13:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633094638;
+        bh=IHOjkdVtHr2yn2iCrROhSf2HxbCcAxZK/4COzwhHzIw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=unXdz/wJXGk+bSpUBBHwS0H3ZZVcRtvJJ2jX0tLM4QKk+NWahmITvgPDCQrtKBGiM
+         rELVURysOfg+aUPHteQUI3OTU9m6lD1W3PjTPYZ2ZswD+XAHbLjBNI/X4d26E0uDiE
+         3aIxqr1N4i/OQdH67TgKfvxP7NyiZECIDr1RSY6sG/yFTHcZshi+m2FyuFc4UIPH7R
+         fGaLY3Uk0PWmryKRSOBjjaBlqrIGVaJe8EmlD8GkaTHHzkXTbj73sRQjTl8lHT8lV6
+         pS1rYB3dna7Q96cMrMOG5v4S9VIMyyUbrU7EFqQex30pzw0E5O0dM5RQVZ0CCib2f0
+         zeU7/jw27Q+pA==
+Received: by mail-ed1-f43.google.com with SMTP id dn26so34641592edb.13;
+        Fri, 01 Oct 2021 06:23:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530bAnbOrvzCcX7GbVti4iW3TkZVli195Tyh+gHEtf7EKuJ8yasy
+        h605H9+tw5bpEpW6sy3hdq5/+SzPbSyY+z3hkg==
+X-Google-Smtp-Source: ABdhPJyaFtOdvdu1jDBsReWOZlu6Nc90LmFcggJNEBhi34cyAEOb2rYsccqHLMB30HObk67AQmWvV7OtO7ZYHT04LD0=
+X-Received: by 2002:a17:906:7250:: with SMTP id n16mr6063476ejk.147.1633094636833;
+ Fri, 01 Oct 2021 06:23:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVcKAH6C/dAZqoAw@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211001000417.15334-1-leoyang.li@nxp.com> <20211001000417.15334-3-leoyang.li@nxp.com>
+In-Reply-To: <20211001000417.15334-3-leoyang.li@nxp.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 1 Oct 2021 08:23:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJShTL4zf2Bh=fYHfsujKu1rtuduxp7EKYsRqEXdkLCEA@mail.gmail.com>
+Message-ID: <CAL_JsqJShTL4zf2Bh=fYHfsujKu1rtuduxp7EKYsRqEXdkLCEA@mail.gmail.com>
+Subject: Re: [PATCH v2 02/16] dt-bindings: i2c: imx: update schema to align
+ with original txt binding
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 04:15:44PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 01, 2021 at 02:01:15PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Oct 01, 2021 at 02:37:45PM +0300, Andy Shevchenko wrote:
-> > > The guid_t type was defined in UAPI by mistake.
-> > > Keep it an internal type and leave uuid_le UAPI
-> > > for it's only user, i.e. MEI.
-> > 
-> > It's used in they hyper-v drivers as a uapi between the kernel and the
-> > hypervisor, so isn't that something valid here?
-> 
-> I'm not sure I see that interface defined in the kernel. As far as I remember
-> the guid_t is used solely inside kernel by Hyper-V code and the rest is using
-> raw buffers. Can you point out to the specific place(s)?
+On Thu, Sep 30, 2021 at 7:04 PM Li Yang <leoyang.li@nxp.com> wrote:
+>
+> When the binding was converted from txt to yaml, it actually added more
+> constrains than the original txt binding which was already used in many
+> in-tree DTSes.  Some of the newly added constrains are either not valid
+> or not neccessary.
 
-Ah, it's a leftover inclusion in the uapi! Thanks for noticing.
-I will add a patch to replace it.
+IMO, both of these should be fixed in the dts files.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Not all SoCs use ipg as the clock name for i2c.  There is no point in
+> having SoC integration information defined in i2c binding.  Remove the
+> clock name requirement in the schema.
 
+Any name you want is not fine. Your choices are remove clock-names,
+add all the names used, or change everyone to use 'ipg'.
 
+> The original txt binding didn't require the order of tx and rx for
+> dmas/dma-names.  Many in tree DTSes are already using the other order.
+> Both orders should just work fine.  Update the schema to allow both.
+
+Doesn't sound like a case where defining the order is challenging.
+
+Rob
