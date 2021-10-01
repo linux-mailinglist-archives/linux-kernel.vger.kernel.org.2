@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A7E41F66A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996F641F671
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355470AbhJAUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355332AbhJAUo3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:44:29 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2636BC061775;
-        Fri,  1 Oct 2021 13:42:45 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j5so38471985lfg.8;
-        Fri, 01 Oct 2021 13:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VaEB82g66moSG49ibSQm4DaIHpTLHO/JhyYD6WTE38E=;
-        b=WT8tOvXoMB55QTeKzRCKfDDees9R7IsFTEjbNDM7JRfSa7C0vAXxtXKNYIj+zr9Zu+
-         KUa8MjXjG1pNe0dOCW/yqpVM8T7WmqHk7tBHtTcxB4p7Z3aBkNvmSYeb5PlnJg6Tl82Q
-         5HGo4ZIl9irAmOCGJJYfUyh4WJJP99Qgj0lMPZXyYpphgBFE19VF/8yd9+Ivc6V7UZcj
-         wNhA1wq8YKBLUtNe+pAbripBAKtsgYZD2QwdVzj0ETmpl1+4ECOLtGIavmMflJ5420ZU
-         a9HpFVggIV528qqWJ5nZWuozx/zlxo7WcIerGvq7Bp+4SPpGd4/Rhom9F9bB0sf9Nw0j
-         SLjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VaEB82g66moSG49ibSQm4DaIHpTLHO/JhyYD6WTE38E=;
-        b=pD0hliMBzWeeQm/WoJnGyzPvBvhElvOxYeTH6cLaCU6g+4kCbn2GYz8mGrFQ4g/aSu
-         s2GwIDJxjfDenK9WorwKvfqK7uBlFfATLb24KfeLhj26tLonE0Uy4FJBDUmwZ9O4cm2+
-         5c1SXbWhFssvfT0p/JiQCpBS8owOf+aCWyLMB7mZ+tgvLAZWQSribeOXKXnNlJ+wZ79r
-         5zqfoUudHfaQHTsb4/woDxCiCylJeOHvXek9ueMnvE+wXbJz7Qb6IjP7rX4ds04BGnl/
-         xPO/BUdnx508kFwzLjXNEqy975L3IdE9rVMlm5ULbVI3UOWY3yTk3nG1GZpIo/3KiumY
-         9Y/A==
-X-Gm-Message-State: AOAM530+YVjSgRzLDBXOlZQ7Q6Rl/p5bLSFX0yrQ06o/2tw2vWpNiTHF
-        wfiXOeaQSi2FpRfJ5Kf/EHxiKcYbB1oPIkwwWNo=
-X-Google-Smtp-Source: ABdhPJy9TwRcdV4sMm8TgMLXEZJfac+zanXG7g7DsutApUoAt1WpMctRE7+tJWPf4akrToetBj1AgpRLy0chKORI6OE=
-X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr92771lfb.161.1633120963250;
- Fri, 01 Oct 2021 13:42:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
- <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <d1e5b178-47f5-9791-73e9-0c1f805b0fca@6wind.com> <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAASuNyVe8z1R6xyCfSAxZbcrL3dej1n8TXXkqS-e8QvA6eWd+w@mail.gmail.com> <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
-In-Reply-To: <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
-From:   Cpp Code <cpp.code.lv@gmail.com>
-Date:   Fri, 1 Oct 2021 13:42:32 -0700
-Message-ID: <CAASuNyW81zpSu+FGSDuUrOsyqJj7SokZtvX081BbeXi0ARBaYg@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        pshelar@ovn.org, "David S. Miller" <davem@davemloft.net>,
-        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
+        id S1355480AbhJAUpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:45:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8613 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355475AbhJAUpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 16:45:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205059066"
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="205059066"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 13:43:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,340,1624345200"; 
+   d="scan'208";a="619392045"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2021 13:43:24 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
+        by linux.intel.com (Postfix) with ESMTP id 846A6580689;
+        Fri,  1 Oct 2021 13:43:24 -0700 (PDT)
+Message-ID: <f559b543ce28a3333e6690ba217758a08ffadf15.camel@linux.intel.com>
+Subject: Re: [PATCH 5/5] platform/x86: Add Intel Software Defined Silicon
+ driver
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, andriy.shevchenko@linux.intel.com,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Date:   Fri, 01 Oct 2021 13:43:24 -0700
+In-Reply-To: <YVbwgkncsQtWuh/k@kroah.com>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+         <20211001012815.1999501-6-david.e.box@linux.intel.com>
+         <YVa46eU1VX7CM+Xd@kroah.com>
+         <45b6454a3421ac064dff3ba159e02985d3e55440.camel@linux.intel.com>
+         <YVbwgkncsQtWuh/k@kroah.com>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 12:21 AM Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
->
-> Le 30/09/2021 =C3=A0 18:11, Cpp Code a =C3=A9crit :
-> > On Wed, Sep 29, 2021 at 6:19 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> >>
-> >> On Wed, 29 Sep 2021 08:19:05 +0200 Nicolas Dichtel wrote:
-> >>>> /* Insert a kernel only KEY_ATTR */
-> >>>> #define OVS_KEY_ATTR_TUNNEL_INFO    __OVS_KEY_ATTR_MAX
-> >>>> #undef OVS_KEY_ATTR_MAX
-> >>>> #define OVS_KEY_ATTR_MAX            __OVS_KEY_ATTR_MAX
-> >>> Following the other thread [1], this will break if a new app runs ove=
-r an old
-> >>> kernel.
-> >>
-> >> Good point.
-> >>
-> >>> Why not simply expose this attribute to userspace and throw an error =
-if a
-> >>> userspace app uses it?
-> >>
-> >> Does it matter if it's exposed or not? Either way the parsing policy
-> >> for attrs coming from user space should have a reject for the value.
-> >> (I say that not having looked at the code, so maybe I shouldn't...)
-> >
-> > To remove some confusion, there are some architectural nuances if we
-> > want to extend code without large refactor.
-> > The ovs_key_attr is defined only in kernel side. Userspace side is
-> > generated from this file. As well the code can be built without kernel
-> > modules.
-> > The code inside OVS repository and net-next is not identical, but I
-> > try to keep some consistency.
-> I didn't get why OVS_KEY_ATTR_TUNNEL_INFO cannot be exposed to userspace.
+On Fri, 2021-10-01 at 13:26 +0200, Greg KH wrote:
+> On Fri, Oct 01, 2021 at 04:13:58AM -0700, David E. Box wrote:
+> > On Fri, 2021-10-01 at 09:29 +0200, Greg KH wrote:
+> > > On Thu, Sep 30, 2021 at 06:28:15PM -0700, David E. Box wrote:
+> > > > +static long sdsi_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > > > +{
+> > > > +       struct miscdevice *miscdev = file->private_data;
+> > > > +       struct sdsi_priv *priv = to_sdsi_priv(miscdev);
+> > > > +       void __user *argp = (void __user *)arg;
+> > > > +       long ret = -EINVAL;
+> > > > +
+> > > > +       if (!priv->dev_present)
+> > > > +               return -ENODEV;
+> > > > +
+> > > > +       if (!priv->sdsi_enabled)
+> > > > +               return -EPERM;
+> > > > +
+> > > > +       if (cmd == SDSI_IF_READ_STATE)
+> > > > +               return sdsi_if_read_state_cert(priv, argp);
+> > > > +
+> > > > +       mutex_lock(&priv->akc_lock);
+> > > > +       switch (cmd) {
+> > > > +       case SDSI_IF_PROVISION_AKC:
+> > > > +               /*
+> > > > +                * While writing an authentication certificate disallow other openers
+> > > > +                * from using AKC or CAP.
+> > > > +                */
+> > > > +               if (!priv->akc_owner)
+> > > > +                       priv->akc_owner = file;
+> > > > +
+> > > > +               if (priv->akc_owner != file) {
+> > > 
+> > > Please explain how this test would ever trigger and how you tested it?
+> > > 
+> > > What exactly are you trying to protect from here?  If userspace has your
+> > > file descriptor, it can do whatever it wants, don't try to be smarter
+> > > than it as you will never win.
+> > > 
+> > > And why are you using ioctls at all here?  As you are just
+> > > reading/writing to the hardware directly, why not just use a binary
+> > > sysfs file to be that pipe?  What requires an ioctl at all?
+> > 
+> > So an original internal version of this did use binary attributes. But there was concern during
+> > review that a flow, particularly when doing the two write operations, could not be handled
+> > atomically while exposed as separate files. Above is the attempt to handle the situation in the
+> > ioctl. That is, whichever opener performs AKC write first would lock out all other openers from
+> > performing any write until that file is closed. This is to avoid interfering with that process,
+> > should the opener also decide to perform a CAP operation.
+> 
+> Unfortunately, your code here does not prevent that at all, so your
+> moving off of a binary sysfs attribute changed nothing.
+> 
+> You can "prevent" this from happening just as easily through a sysfs
+> attribute as you can a character device node.
+> 
+> > There may be future commands requiring RW ioctls as well.
+> 
+> How am I or anyone else supposed to know that?  We write code and review
+> it for _today_, not what might be sometime in the future someday.  As
+> that will be dealt with when it actually happens.
 
-OVS_KEY_ATTR_TUNNEL_INFO is compressed version of OVS_KEY_ATTR_TUNNEL
-and for clarity purposes its not exposed to userspace as it will never
-use it.
-I would say it's a coding style as it would not brake anything if exposed.
+Sure. Thanks for the insightful review. I'll take your comments back and submit with the reviewed-by
+tag. Will probably switch back to sysfs.
 
->
-> >
-> > JFYI This is the file responsible for generating userspace part:
-> > https://github.com/openvswitch/ovs/blob/master/build-aux/extract-odp-ne=
-tlink-h
-> > This is the how corresponding file for ovs_key_attr looks inside OVS:
-> > https://github.com/openvswitch/ovs/blob/master/datapath/linux/compat/in=
-clude/linux/openvswitch.h
-> > one can see there are more values than in net-next version.
-> There are still some '#ifdef __KERNEL__'. The standard 'make headers_inst=
-all'
-> filters them. Why not using this standard mechanism?
+David
 
-Could you elaborate on this, I don't quite understand the idea!? Which
-ifdef you are referring, the one along OVS_KEY_ATTR_TUNNEL_INFO or
-some other?
+> 
+> greg k-h
 
->
-> In this file, there are two attributes (OVS_KEY_ATTR_PACKET_TYPE and
-> OVS_KEY_ATTR_ND_EXTENSIONS) that doesn't exist in the kernel.
-> This will also breaks if an old app runs over a new kernel. I don't see h=
-ow it
-> is possible to keep the compat between {old|new} {kernel|app}.
 
-Looks like this most likely is a bug while working on multiple
-versions of code.  Need to do add more padding.
-
->
->
-> Regards,
-> Nicolas
