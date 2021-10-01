@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DC941EE4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27D241EE4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhJANRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbhJANRI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:17:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE28CC061775;
-        Fri,  1 Oct 2021 06:15:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633094123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RgNzazZZZU00oypcQsc+q9dNMqyuBTQu7dV4Uj4peo8=;
-        b=kAghlOBmNBYKZ7yFt1D8HvA53eknujC2apli+DcHptTDUOwPX4Tvd+MgfLCl/5CcfqAH/u
-        s18YxBZ3v0mPOW4VkF9X2jgeej1bO834QKg2bLJgz9v5qgZfiYOmIXqydUn6il9XpID6FE
-        Ile+YsncSvMQU91GcEi3QIH2IKjywYQNCcJJMqOd2UTLlFFTCidmI3sS4eAVElDvfafqRY
-        igBOMIPisUgOX4yqmOHf6Gvwe3D2H5OMikACS3JqkpSmiHxr1ZI/CHsTTtrnbnq/hk+coI
-        nTDHWiRef+Zr5NnGBajgImcGIHqseFrFgU3xP7qneSPkK1erEvhz8/cVjPCXgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633094123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RgNzazZZZU00oypcQsc+q9dNMqyuBTQu7dV4Uj4peo8=;
-        b=6SW5cTo2kSOzfHpxRq731VA9XPWyT8G0m2m5BdP2GhPdl/D/uMEeSsJ01pwdA9YrdH1eZb
-        YjeoaI+4ANVn1uAg==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: Re: [PATCH v10 04/28] x86/fpu/xstate: Modify address finders to
- handle both static and dynamic buffers
-In-Reply-To: <20210825155413.19673-5-chang.seok.bae@intel.com>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-5-chang.seok.bae@intel.com>
-Date:   Fri, 01 Oct 2021 15:15:22 +0200
-Message-ID: <87ee946g45.ffs@tglx>
+        id S231556AbhJANRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:17:37 -0400
+Received: from mga12.intel.com ([192.55.52.136]:18894 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230422AbhJANRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:17:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="204914574"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="204914574"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:15:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; 
+   d="scan'208";a="480445958"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 06:15:47 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mWIO8-007Ru3-G6;
+        Fri, 01 Oct 2021 16:15:44 +0300
+Date:   Fri, 1 Oct 2021 16:15:44 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3 2/4] uuid: Make guid_t completely internal type to the
+ kernel
+Message-ID: <YVcKAH6C/dAZqoAw@smile.fi.intel.com>
+References: <20211001113747.64040-1-andriy.shevchenko@linux.intel.com>
+ <20211001113747.64040-2-andriy.shevchenko@linux.intel.com>
+ <YVb4i330sXrvHLWa@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVb4i330sXrvHLWa@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chang,
+On Fri, Oct 01, 2021 at 02:01:15PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Oct 01, 2021 at 02:37:45PM +0300, Andy Shevchenko wrote:
+> > The guid_t type was defined in UAPI by mistake.
+> > Keep it an internal type and leave uuid_le UAPI
+> > for it's only user, i.e. MEI.
+> 
+> It's used in they hyper-v drivers as a uapi between the kernel and the
+> hypervisor, so isn't that something valid here?
 
-On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
+I'm not sure I see that interface defined in the kernel. As far as I remember
+the guid_t is used solely inside kernel by Hyper-V code and the rest is using
+raw buffers. Can you point out to the specific place(s)?
 
-> Have all the functions finding XSTATE address take a struct fpu * pointer
-> in preparation for dynamic state buffer support.
->
-> init_fpstate is a special case, which is indicated by a null pointer
-> parameter to get_xsave_addr() and __raw_xsave_addr().
+> As I didn't see a 0/4 for this series, I'm confused as to your end-goal
+> here.  What are you trying to do with this series?
 
-Same comment vs. subject. Prepare ...
+End goal is to decouple internal type, which is guid_t, from ABI, where should
+be something else in use, like __u8[16] or so.
 
-> +	if (fpu)
-> +		xsave = &fpu->state.xsave;
-> +	else
-> +		xsave = &init_fpstate.xsave;
-> +
-> +	return xsave + xstate_comp_offsets[xfeature_nr];
+We have two internal types, i.e. uuid_t and guid_t that are differs by byte
+ordering (when represented as human-readable string). uuid_t is provided by
+libuuid in the user space and its definition may be quite different to what we
+have inside kernel. Kernel already hide that one. guid_t is a leftover.
 
-So you have the same conditionals and the same comments vs. that NULL
-pointer oddity how many times now all over the place?
+I will create a cover letter for next version.
 
-That can be completely avoided:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Patch 1:
 
--union fpregs_state init_fpstate __ro_after_init;
-+static union fpregs_state init_fpstate __ro_after_init;
-+struct fpu init_fpu = { .state = &init_fpstate } __ro_after_init;
-
-and make all users of init_fpstate access it through init_fpu.
-
-Patches 2..N which change arguments from fpregs_state to fpu:
-
--	fun(init_fpu->state);
-+	fun(&init_fpu);
-
-Patch M which adds state_mask:
-
-@fpu__init_system_xstate()
-+	init_fpu.state_mask = xfeatures_mask_all;
-
-Hmm?
-
-Thanks,
-
-        tglx
