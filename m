@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AA841EB30
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549E741EB33
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352922AbhJAKv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 06:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352728AbhJAKv5 (ORCPT
+        id S1353081AbhJAKwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 06:52:31 -0400
+Received: from mail.nearlyone.de ([46.163.114.145]:60284 "EHLO
+        mail.nearlyone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353212AbhJAKwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 06:51:57 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94017C06177C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 03:50:12 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id x7so32143786edd.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 03:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Q0Ww4rdF93vuhLA9EB8gy8zyZFUhPSXKcFE+ISMqwg0=;
-        b=wcZvcDO43h0zIQAIwDovuHJoDyirgyV5cYvW5x/H2yCkDuPswY2OXVOEu2D6AO34fY
-         ANbbxnLfGpBpoFxboRHaYI6de6ydIWbE9N/zqKULfh62kUJseMiS6lXYkZhCq1l3MPYe
-         vV/m835fq8UqpAUioTWa1xBfwLmCMRRHHGD32+KqCy1io9pahXpjxvmraJcDHpafrg6S
-         7fwzn/I7Dnx6kukl7wxM0JCKQGwgXRkn0f3MywMCJJSo0hpDiiGLO19qaMuSTab4GlXx
-         pDdDxXeyS9MRNBmBB4u6kydOaUCPQ0rhs/5kvQkB/ChD/LGPuggPgFz7aE2PmmGJjJWi
-         ZVMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Q0Ww4rdF93vuhLA9EB8gy8zyZFUhPSXKcFE+ISMqwg0=;
-        b=MFP1QYxdq4Ew4oLWunElIki+eCar2afWgbM6MBc4RVm1Vtg+WzdSAZ8CJPcdb/Mptv
-         1cAvWzg2jMZbjKp+dcMXyq56qGjfdn2N4i1o1P4r4xCG2QYZJH26u8q3SkDeFjqYXZls
-         3Hw9lRHgQp+XuNd7j/WTU5B1n5VhLNkWYYawRWcCNzVnkYXO6+2xJPJUCcuzRIgTSG8t
-         lWmEhk1W2uWxTmsIWZZuWZ4Bs3yF/L9Wr2EP5M9UVDq3TAsIh5kbBGxZ+MLZHoCeQN5E
-         eTVGIn/uVBk3HzaPorD6M/0fEQfd+Da+lVg6v2dvoJID5QzltKfT8pjcDW/5J1qEyVIQ
-         jIAw==
-X-Gm-Message-State: AOAM533f54WsOQWZqN7lXxgfWuaUOGeP/hESKu89zsyKDJ2n0G45Uc4d
-        3Fo59MT3tQd2cRxvqqSA9dceaFKSDGuZlXZGhLIszHmRWgvfyA==
-X-Google-Smtp-Source: ABdhPJwC3mpxAp+yFDP18LlzEJJAxEi6YO60QJjagz4jHMt+1+jwJGVWTjZvA/aTzdbygkEXB/7hehkVUmcIc20uTW8=
-X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr13776581edb.398.1633085409734;
- Fri, 01 Oct 2021 03:50:09 -0700 (PDT)
+        Fri, 1 Oct 2021 06:52:13 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F209C5E368;
+        Fri,  1 Oct 2021 12:50:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
+        t=1633085416; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         content-transfer-encoding:content-language:in-reply-to:references;
+        bh=FDfzp9LOOb9JVoa9kOAu0GSjBzbTxiybXsypOlrOw6c=;
+        b=eJEsxbTI9NkqOUVvKH5M5w2rfvfH17D5arP00nL5zXjft4O3OW4y5IhX8Hhl9xF8/ac+zk
+        KUh72u1dr13+GxiETnJSdMjUIOj/6hac91PuHICTdtDaBV54qF2A4PVQiXD08fQNtAl7AO
+        VdPCo/eI4sX80vqee6BG0gnCeUUTipWDj8sUhcd5iRJhhzLBODexjUZSV95lijSTwNbw06
+        daBl7OB6oeA10HgpmOuy8KvjDt3ciHdRVx/8c63wA8s2if8qD77KkZCmTm3fk39MICEQ/o
+        0A2yUVS9g2wI+s2ZsJHLymrkzPj7ffOPWgWSNCKjUVQYtuqa2s6BXn32LJXc3g==
+Message-ID: <d799b41b-1ed8-75c2-6b4e-bb6f0f06eef2@monom.org>
+Date:   Fri, 1 Oct 2021 12:50:12 +0200
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 1 Oct 2021 16:19:58 +0530
-Message-ID: <CA+G9fYsKjyOL1xj+GFC=Ab7Yw+b0Tg9jf8uvnN2tOc6OdupA-Q@mail.gmail.com>
-Subject: swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first use in this function)
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [ANNOUNCE] 4.4.285-rt226
+Content-Language: en-US
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
+References: <163307726840.24858.2277036113555626320@beryllium.lan>
+ <20211001093927.d4q26bqyeh4s2iik@linutronix.de>
+From:   Daniel Wagner <wagi@monom.org>
+In-Reply-To: <20211001093927.d4q26bqyeh4s2iik@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build errors noticed while building Linux next 20211001
-with gcc-11 for powerpc architecture.
+On 01.10.21 11:39, Sebastian Andrzej Siewior wrote:
+> Did you update keyring on korg's side?
+>     https://korg.docs.kernel.org/pgpkeys.html
 
-kernel/sched/debug.c: In function 'print_cfs_group_stats':
-kernel/sched/debug.c:460:41: warning: unused variable 'stats'
-[-Wunused-variable]
-  460 |                struct sched_statistics *stats =
-__schedstats_from_se(se);
-      |                                         ^~~~~
-In file included from include/linux/blkdev.h:6,
-                 from include/linux/blk-mq.h:5,
-                 from drivers/block/swim3.c:24:
-drivers/block/swim3.c: In function 'swim3_attach':
-drivers/block/swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first
-use in this function)
- 1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
-      |                                      ^~~~~~~~~~~~
-include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
-  276 |         __register_blkdev(major, name, NULL)
-      |                           ^~~~~
-drivers/block/swim3.c:1200:38: note: each undeclared identifier is
-reported only once for each function it appears in
- 1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
-      |                                      ^~~~~~~~~~~~
-include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
-  276 |         __register_blkdev(major, name, NULL)
-      |                           ^~~~~
-make[3]: *** [scripts/Makefile.build:288: drivers/block/swim3.o] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [scripts/Makefile.build:571: drivers/block] Error 2
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [Makefile:2034: drivers] Error 2
-
-Build config:
-https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/config
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-meta data:
------------
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
-    git_short_log: a25006a77348 (\"Add linux-next specific files for 20211001\")
-    kconfig:  ppc6xx_defconfig
-    kernel_version: 5.15.0-rc3
-    target_arch: powerpc
-    toolchain: gcc-11
-
-steps to reproduce:
-https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/tuxmake_reproducer.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org
+D'oh! No, I didn't. Thanks for the tip.
