@@ -2,181 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B6641EF4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD7E41EF4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354377AbhJAOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354368AbhJAOVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:21:21 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B5DC06177E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:19:37 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id m3so38942254lfu.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TmYkpMVtb1uSKsqX5euv7WOyLfzbmtOSlOndqVN+8j0=;
-        b=duQY39xT4Fb3Hr1PnbXTs56tkaQqjpQAgYJH7QSZorCPxuVu1w1xjBo4K+zxv2eT/i
-         Gv8vFaPicQua766hZYd2Z4sFxKAhudSPsUf76DMai8U3Fw5bbvcx7fO5WW1P2A848bGM
-         ZQq9OG2u50UNu3Jjx5+mQA6VDCrE6ml8Fh35xGIGRw6EE6eRYolYKa9p+8rWD2ZvBilp
-         uWVK4oDlCgf7DxNBdPej6J24qlMnSVWJnHXL2sfU57hu2pnNnIEFwtPnFm56+42awhNu
-         cSD+lRwaEeSCzPyePp37ympdEiAHaEdnn7LGs+wYp5tVdUW4CxRCTuk1HbDpdUV4ipuJ
-         BGrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TmYkpMVtb1uSKsqX5euv7WOyLfzbmtOSlOndqVN+8j0=;
-        b=EMw196avon90bY1vpXMGlcu5oW5wCQs90WKEokI6VVEqIKxuXhkmAkeTXOcQqnMf9R
-         zJbvh1QRdFfVcxAcc9w/9dBu98z+FPJm2hWsrJA84jStuSPDGviSq8PVQ8cplHZLlGMT
-         1PoHSkovyAC1a+kObyyKP95H0DN1uZXkDX8t/TxmSz3j7hazb9ItefDyrUWxNgQjzaOF
-         vFFu1Xst37QbkmhtWy3IHaFx3GxXML9ftIo71F8L/WpjMjuPVvgAiaclmMEtTxTjgggC
-         anPHSxeHK0xPKD8CzVirzNK4+cC86KU/8WdLw1oR1/g1zEokQtd53EN7EGgvL/EDEOZP
-         UaLw==
-X-Gm-Message-State: AOAM533p+F69N98zqQ5cP18WpMki/5ucPkI/Ep/t0ELaljoRy5NzKTX5
-        ZXYMDzv6UZyTAV8TWnbSGZT2H/0V3Msg6aIIhRQ00w==
-X-Google-Smtp-Source: ABdhPJykzVLbDQqRsm8qwArsDUIjqMsOFjOioC0Mnou3m3mAAqwDg9NoSSc7iCu+AIdRWsUjvdPXt+LHd7gC+IctUuw=
-X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr5560648lfv.358.1633097975362;
- Fri, 01 Oct 2021 07:19:35 -0700 (PDT)
+        id S1354470AbhJAOVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:21:49 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50992 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354434AbhJAOVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 10:21:46 -0400
+Received: from zn.tnic (p200300ec2f0e8e001f2e791e6d4c2984.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:1f2e:791e:6d4c:2984])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D67531EC05BF;
+        Fri,  1 Oct 2021 16:19:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633097999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Zal9+szdk4o8OsVxkTlc7oZ9vkyimfo+1p/FVTC7tTI=;
+        b=ccTZo99+oep4NozO2dEFbGzDeOc4/L/UmUp67ITtJGJNPwDQdOi6oqo/VV79n77wnv8zSn
+        GfPH14ug+rakHR3WHp3zaJymATBOcHX/Cv3FdyCReLIL4eRMXIw0pr/3zhvPjdbLZ8IwAs
+        mRQF1lWeE+nr6g0HCrk6WtoNqgmPcNk=
+Date:   Fri, 1 Oct 2021 16:19:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jane Malalane <jane.malalane@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YVcZCgOVkCPz1kwO@zn.tnic>
+References: <20211001133349.9825-1-jane.malalane@citrix.com>
 MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-18-digetx@gmail.com>
-In-Reply-To: <20210926224058.1252-18-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 1 Oct 2021 16:18:59 +0200
-Message-ID: <CAPDyKFoC7Kn9FPjAZLisSKWyYaXr1j2GnyQGNTVg_Dsuku-muA@mail.gmail.com>
-Subject: Re: [PATCH v13 17/35] bus: tegra-gmi: Add runtime PM and OPP support
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211001133349.9825-1-jane.malalane@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> The GMI bus on Tegra belongs to the core power domain and we're going to
-> enable GENPD support for the core domain. Now GMI must be resumed using
-> runtime PM API in order to initialize the GMI power state. Add runtime PM
-> and OPP support to the GMI driver.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Fri, Oct 01, 2021 at 02:33:49PM +0100, Jane Malalane wrote:
+> Subject: Re: [PATCH] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+> ...
+> Currently, Linux probes for X86_BUG_NULL_SEL unconditionally which
+> makes it unsafe to migrate in a virtualised environment as the
+> properties across the migration pool might differ.
+
+Sorry but you need to explain "migration safety" in greater detail -
+we're not all virtualizers.
+
+> Zen3 adds the NullSelectorClearsBase bit to indicate that loading
+> a NULL segment selector zeroes the base and limit fields, as well as
+> just attributes. Zen2 also has this behaviour but doesn't have the
+> NSCB bit.
+
+I'm guessing you can detect Zen2 too, without the CPUID bit?
+
+> When virtualised, NSCB might be cleared for migration safety,
+> therefore we must not probe. Always honour the NSCB bit in this case,
+
+Who is "we"?
+
+> as the hypervisor is expected to synthesize it in the Zen2 case.
+> 
+> Signed-off-by: Jane Malalane <jane.malalane@citrix.com>
 > ---
->  drivers/bus/tegra-gmi.c | 52 ++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 46 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/bus/tegra-gmi.c b/drivers/bus/tegra-gmi.c
-> index a6570789f7af..72ef8a8c236b 100644
-> --- a/drivers/bus/tegra-gmi.c
-> +++ b/drivers/bus/tegra-gmi.c
-> @@ -13,8 +13,11 @@
->  #include <linux/io.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->
-> +#include <soc/tegra/common.h>
-> +
->  #define TEGRA_GMI_CONFIG               0x00
->  #define TEGRA_GMI_CONFIG_GO            BIT(31)
->  #define TEGRA_GMI_BUS_WIDTH_32BIT      BIT(30)
-> @@ -54,9 +57,9 @@ static int tegra_gmi_enable(struct tegra_gmi *gmi)
->  {
->         int err;
->
-> -       err = clk_prepare_enable(gmi->clk);
-> -       if (err < 0) {
-> -               dev_err(gmi->dev, "failed to enable clock: %d\n", err);
-> +       err = pm_runtime_resume_and_get(gmi->dev);
-> +       if (err) {
-> +               pm_runtime_disable(gmi->dev);
->                 return err;
->         }
->
-> @@ -83,7 +86,8 @@ static void tegra_gmi_disable(struct tegra_gmi *gmi)
->         writel(config, gmi->base + TEGRA_GMI_CONFIG);
->
->         reset_control_assert(gmi->rst);
-> -       clk_disable_unprepare(gmi->clk);
-> +
-> +       pm_runtime_put(gmi->dev);
->  }
->
->  static int tegra_gmi_parse_dt(struct tegra_gmi *gmi)
-> @@ -213,6 +217,7 @@ static int tegra_gmi_probe(struct platform_device *pdev)
->         if (!gmi)
->                 return -ENOMEM;
->
-> +       platform_set_drvdata(pdev, gmi);
->         gmi->dev = dev;
->
->         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> @@ -232,6 +237,14 @@ static int tegra_gmi_probe(struct platform_device *pdev)
->                 return PTR_ERR(gmi->rst);
->         }
->
-> +       err = devm_pm_runtime_enable(gmi->dev);
-> +       if (err)
-> +               return err;
-> +
-> +       err = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
-> +       if (err)
-> +               return err;
-> +
->         err = tegra_gmi_parse_dt(gmi);
->         if (err)
->                 return err;
-> @@ -247,8 +260,6 @@ static int tegra_gmi_probe(struct platform_device *pdev)
->                 return err;
->         }
->
-> -       platform_set_drvdata(pdev, gmi);
-> -
->         return 0;
->  }
->
-> @@ -262,6 +273,34 @@ static int tegra_gmi_remove(struct platform_device *pdev)
+> CC: <x86@kernel.org>
+> CC: Thomas Gleixner <tglx@linutronix.de>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Borislav Petkov <bp@alien8.de>
+> CC: "H. Peter Anvin" <hpa@zytor.com>
+> CC: Pu Wen <puwen@hygon.cn>
+> CC: Paolo Bonzini <pbonzini@redhat.com>
+> CC: Sean Christopherson <seanjc@google.com>
+> CC: Peter Zijlstra <peterz@infradead.org>
+> CC: Andrew Cooper <andrew.cooper3@citrix.com>
+> CC: Yazen Ghannam <Yazen.Ghannam@amd.com>
+> CC: Brijesh Singh <brijesh.singh@amd.com>
+> CC: Huang Rui <ray.huang@amd.com>
+> CC: Andy Lutomirski <luto@kernel.org>
+> CC: Kim Phillips <kim.phillips@amd.com>
+> CC: <stable@vger.kernel.org>
+> ---
+>  arch/x86/include/asm/cpufeatures.h |  2 +-
+>  arch/x86/kernel/cpu/amd.c          | 23 +++++++++++++++++++++++
+>  arch/x86/kernel/cpu/common.c       |  6 ++----
+>  arch/x86/kernel/cpu/cpu.h          |  1 +
+>  arch/x86/kernel/cpu/hygon.c        | 23 +++++++++++++++++++++++
+>  5 files changed, 50 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index d0ce5cfd3ac1..f571e4f6fe83 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -96,7 +96,7 @@
+>  #define X86_FEATURE_SYSCALL32		( 3*32+14) /* "" syscall in IA32 userspace */
+>  #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+>  #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+> -/* FREE!                                ( 3*32+17) */
+> +#define X86_FEATURE_NSCB		( 3*32+17) /* Null Selector Clears Base */
 
-Similar comment as for patch13, for the ->remove() callback.
+You don't really need that bit definition - you check CPUID in the
+early_init_amd/hygon() functions and that is enough. IOW, based on that
+CPUID bit, you can call detect_null_seg_behavior() and set (or not)
+X86_BUG_NULL_SEG.
 
-This problem, which sometimes also exists in the error path in
-->probe() (according to my comments in patch13), seems to be a common
-issue in the series. I will therefore not continue to repeat my
-comment on this for the remaining patches in the series, I think I
-have made my point. :-)
+...
 
-Kind regards
-Uffe
+> diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+> index 6d50136f7ab9..765f1556d964 100644
+> --- a/arch/x86/kernel/cpu/hygon.c
+> +++ b/arch/x86/kernel/cpu/hygon.c
+> @@ -264,6 +264,29 @@ static void early_init_hygon(struct cpuinfo_x86 *c)
+>  	if (c->x86_power & BIT(14))
+>  		set_cpu_cap(c, X86_FEATURE_RAPL);
+>  
+> +	/*
+> +	 * Zen1 and earlier CPUs don't clear segment base/limits when
+> +	 * loading a NULL selector.  This has been designated
+> +	 * X86_BUG_NULL_SEG.
+> +	 *
+> +	 * Zen3 CPUs advertise Null Selector Clears Base in CPUID.
+> +	 * Zen2 CPUs also have this behaviour, but no CPUID bit.
+> +	 *
+> +	 * A hypervisor may sythesize the bit, but may also hide it
+> +	 * for migration safety, so we must not probe for model
+> +	 * specific behaviour when virtualised.
+> +	 */
+> +	if (c->extended_cpuid_level >= 0x80000021 &&
+> +	    cpuid_eax(0x80000021) & BIT(6))
+> +	        set_cpu_cap(c, X86_FEATURE_NSCB);
+> +
+> +	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) && !cpu_has(c, X86_FEATURE_NSCB) &&
+> +	    c->x86 == 0x18)
+> +                detect_null_seg_behavior(c);
+> +
+> +	if (!cpu_has(c, X86_FEATURE_NSCB))
+> +		set_cpu_bug(c, X86_BUG_NULL_SEG);
+
+Please integrate scripts/checkpatch.pl into your patch creation
+workflow. Some of the warnings/errors *actually* make sense.
+
+I'll show you that there's whitespace damage here:
+
+ERROR: code indent should use tabs where possible
+#238: FILE: arch/x86/kernel/cpu/hygon.c:281:
++^I        set_cpu_cap(c, X86_FEATURE_NSCB);$
+
+ERROR: code indent should use tabs where possible
+#242: FILE: arch/x86/kernel/cpu/hygon.c:285:
++                detect_null_seg_behavior(c);$
+
+WARNING: please, no spaces at the start of a line
+#242: FILE: arch/x86/kernel/cpu/hygon.c:285:
++                detect_null_seg_behavior(c);$
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
