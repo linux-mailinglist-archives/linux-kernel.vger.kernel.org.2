@@ -2,126 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AAA41F67B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B4E41F678
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355544AbhJAUuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S1355510AbhJAUuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355537AbhJAUuG (ORCPT
+        with ESMTP id S230043AbhJAUuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:50:06 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30093C061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:48:21 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id g6so6029131ybb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 13:48:21 -0700 (PDT)
+        Fri, 1 Oct 2021 16:50:02 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D59C06177E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 13:48:18 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id l13so10232314qtv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 13:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3sCpjKGQkaEMg1uSoIVvCfGHALm/i1fzSFSvlQulsY0=;
-        b=bukPY1QYNVX0sBxqjZ3JHjE2pidCTzXDeMncGdjBiIkwzzNSFVZ8jz6mW4YshfI5Hg
-         PL9IqHZ0x8yqqYYTSWw9tN6EXKxC2kdSS31CT966jDxFg49smBN7jILOIhoILJK6WmHw
-         8nc33JxCTExGn2mhQCNGdQ5J4nU7YRdUgeH/IVrsaaIR043NkOyYj9fMoI/sqJuJNmEw
-         z5y4DOr5ei2eRdxbova84nmELAUzG3HdlzCkpHigdH6EZtyvSTJDPN3YORaN7cQ2lWL2
-         MEn+wfQEA/tEKYShSX9nbz/j3+XIN9XvdMyOkrONg/vQbYxlmslQsQVmdOL+v5nVM8EN
-         GBCg==
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=fTwGjqOo2qpFUBnSVDlFyolMyzUY3P07s+PYc+sfnxY=;
+        b=DoDhvCYRyP3bI52k2WCEwtOJHIoz8ay9LklCmI5z0nlSjdj2gKo5hP9c/Xbp0MpgYa
+         QkDbjNuGI1fN3ObZzMb/IffcrHuMfDl1JqpDiziGrymys0Mj0bpC18FoM/SQRJ2yhh+H
+         mokkTqv/ZnP32g0hiEA/BcCjek8ynV3GjR40GtWy0/S2DA10ernlOVr5p65Kb0An0xqp
+         ZaOOZjGcZtf04Mml416DbxGvTXbpoK3UueGTN5Jdjky0/3POHDtxBxU2PKWtUz0cjVCU
+         D9jMXomhHB/OKNZVK51aa82CckJviyHHBn4r+QId2nGXfkZzAme7XSAZs0jtbiyCVQ2n
+         AokQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3sCpjKGQkaEMg1uSoIVvCfGHALm/i1fzSFSvlQulsY0=;
-        b=c9SQO/vcUK3KukLoOzemLLY3fi7FRBOASQDo213pCF7E1VmsMiO61sjzTTFtksgQhL
-         fdEADxUmnJ53eOtdAdpfbjjDG7L6yICE4Y88x3FAnk76ZMWmeTScaoXs3Ka+nNDMb95g
-         19ndlb29rRMcOlwB6MUxk1UrG+u/M4lYe9N1VWWjCTy348hMNvsRsr2nF8XiFZmtU0XA
-         2Mm4RDcRJrAxmj2985fM22c/yGu+x7WAscrVGh+/BqL8h4RsVMTeCD62PNbeiHT0UiaB
-         HN02LxLTb4M2kCvg8zAtUbEffZRhIZaGM+syx2/+y7+bxCtjV1VtvBsNec5Xahs8Dhhv
-         0SJQ==
-X-Gm-Message-State: AOAM532Kw5Y+0WbgSmm5OHjw2Ant5y9llZvfEKsuC4nNU1f7emf5SvjT
-        0gN9jQX9TZ9A4+tVKZTtrXFyxUye2V0xvURvTAAwbZIZ65nG2Q==
-X-Google-Smtp-Source: ABdhPJxZDfAQALE870igQE1UXi2L5Dx5bbmDkHdR8SdZzduO5C0oT52BMvp2xo81r7Afd6bPJ2JdvVgL1LpCMFrD2EY=
-X-Received: by 2002:a25:2610:: with SMTP id m16mr8051322ybm.508.1633121300223;
- Fri, 01 Oct 2021 13:48:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fTwGjqOo2qpFUBnSVDlFyolMyzUY3P07s+PYc+sfnxY=;
+        b=EryLv0T7huKGl7DpWuQhFcdvP4qKtkbHH7tsFKBM6O6SaO6zYz7yeuc84G5zuyANcS
+         X11rHqwFnH77XDxuHGY5yFpln0KJVKCyc5wLsaXU5+RTsFXG3BMnLcbjPNKjjw8hsAxt
+         5t/RUxgcT3JNLki3RlJUg3Xk9RqmAiG8BXSdzI7rfQmwxQlJ23inWPgUNDHLEjHOe5GP
+         DYG81SVFDvU8FnlpAIEH1alAHM32+c2XjoHJ8wFrbHQqSJJPFY0Ky0JbAYbflbsBGMvq
+         b2S0VUivnjjdwxy8ZlcVLYjiJ8qRnjTigeYj4/OmL2kQ5rffRgZPAB5QNIS6fpM5Ut0t
+         lL5w==
+X-Gm-Message-State: AOAM531o9rgPnd35q3cqduRt3UrP5dtKgeMHB5+Fnxo+khZztvTHCVgT
+        qKO8rbJBot2Dp/FdpAcUmP/sKGTe3UpnBg==
+X-Google-Smtp-Source: ABdhPJxa6tbnxCBVxCCTZMZ2tB2zzEWn+wtu5XraFB8rYcu4iq9lSU2A8XqbxRaJTOI7W1N9S6DK7A==
+X-Received: by 2002:a05:622a:1206:: with SMTP id y6mr82618qtx.68.1633121297387;
+        Fri, 01 Oct 2021 13:48:17 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id d16sm3951352qtw.14.2021.10.01.13.48.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 01 Oct 2021 13:48:17 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 16:48:15 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     Sean Paul <sean@poorly.run>, Fernando Ramos <greenfoo@u92.eu>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] drm: cleanup: Use DRM_MODESET_LOCK_ALL_*
+ helpers where possible
+Message-ID: <20211001204815.GA2515@art_vandelay>
+References: <20210924064324.229457-1-greenfoo@u92.eu>
+ <20211001183655.GW2515@art_vandelay>
+ <YVda4jNSGuQf50JV@intel.com>
 MIME-Version: 1.0
-References: <20210930085714.2057460-1-yangyingliang@huawei.com>
-In-Reply-To: <20210930085714.2057460-1-yangyingliang@huawei.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 1 Oct 2021 13:47:44 -0700
-Message-ID: <CAGETcx_5bheQH_702zNawkHKW=5_aAmFckck0D6HfuHFY2oo9g@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix possible memory leak in device_link_add()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVda4jNSGuQf50JV@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 1:52 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->
-> I got memory leak as follows:
->
-> unreferenced object 0xffff88801f0b2200 (size 64):
->   comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
->   hex dump (first 32 bytes):
->     72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
->     74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
->   backtrace:
->     [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
->     [<0000000050da42d9>] kvasprintf+0xb5/0x150
->     [<000000004bbbed13>] kvasprintf_const+0x60/0x190
->     [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
->     [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
->     [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
->     [<000000009db9faed>] _regulator_get+0x297/0x680
->     [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
->     [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
->     [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
->     [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
->     [<0000000070fb977b>] really_probe+0x299/0xc30
->     [<0000000088e226ce>] __driver_probe_device+0x357/0x500
->     [<00000000c21dda32>] driver_probe_device+0x4e/0x140
->     [<000000004e650441>] __device_attach_driver+0x257/0x340
->     [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
->
-> When device_register() returns an error, the name allocated in dev_set_name()
-> will be leaked, the put_device() should be used instead of kfree() to give up
-> the device reference, then the name will be freed in kobject_cleanup() and the
-> references of consumer and supplier will be decreased in device_link_release_fn().
->
-> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/base/core.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index e65dd803a453..4a123e58711f 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -809,9 +809,7 @@ struct device_link *device_link_add(struct device *consumer,
->                      dev_bus_name(supplier), dev_name(supplier),
->                      dev_bus_name(consumer), dev_name(consumer));
->         if (device_register(&link->link_dev)) {
-> -               put_device(consumer);
-> -               put_device(supplier);
-> -               kfree(link);
-> +               put_device(&link->link_dev);
->                 link = NULL;
->                 goto out;
->         }
-> --
-> 2.25.1
->
+On Fri, Oct 01, 2021 at 10:00:50PM +0300, Ville Syrjälä wrote:
+> On Fri, Oct 01, 2021 at 02:36:55PM -0400, Sean Paul wrote:
+> > On Fri, Sep 24, 2021 at 08:43:07AM +0200, Fernando Ramos wrote:
+> > > Hi all,
+> > > 
+> > > One of the things in the DRM TODO list ("Documentation/gpu/todo.rst") was to
+> > > "use DRM_MODESET_LOCAL_ALL_* helpers instead of boilerplate". That's what this
+> > > patch series is about.
+> > > 
+> > > You will find two types of changes here:
+> > > 
+> > >   - Replacing "drm_modeset_lock_all_ctx()" (and surrounding boilerplate) with
+> > >     "DRM_MODESET_LOCK_ALL_BEGIN()/END()" in the remaining places (as it has
+> > >     already been done in previous commits such as b7ea04d2)
+> > > 
+> > >   - Replacing "drm_modeset_lock_all()" with "DRM_MODESET_LOCK_ALL_BEGIN()/END()"
+> > >     in the remaining places (as it has already been done in previous commits
+> > >     such as 57037094)
+> > >     
+> > > Most of the changes are straight forward, except for a few cases in the "amd"
+> > > and "i915" drivers where some extra dancing was needed to overcome the
+> > > limitation that the DRM_MODESET_LOCK_ALL_BEGIN()/END() macros can only be used
+> > > once inside the same function (the reason being that the macro expansion
+> > > includes *labels*, and you can not have two labels named the same inside one
+> > > function)
+> > > 
+> > > Notice that, even after this patch series, some places remain where
+> > > "drm_modeset_lock_all()" and "drm_modeset_lock_all_ctx()" are still present,
+> > > all inside drm core (which makes sense), except for two (in "amd" and "i915")
+> > > which cannot be replaced due to the way they are being used.
+> > > 
+> > > Changes in v2:
+> > > 
+> > >   - Fix commit message typo
+> > >   - Use the value returned by DRM_MODESET_LOCK_ALL_END when possible
+> > >   - Split drm/i915 patch into two simpler ones
+> > >   - Remove drm_modeset_(un)lock_all()
+> > >   - Fix build problems in non-x86 platforms
+> > > 
+> > > Fernando Ramos (17):
+> > >   drm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/i915: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/msm: cleanup: drm_modeset_lock_all_ctx() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN() drm/vmwgfx: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/tegra: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/shmobile: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/radeon: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/omapdrm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/nouveau: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/msm: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/i915: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN() part 2
+> > >   drm/gma500: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm/amd: cleanup: drm_modeset_lock_all() --> DRM_MODESET_LOCK_ALL_BEGIN()
+> > >   drm: cleanup: remove drm_modeset_(un)lock_all()
+> > >   doc: drm: remove TODO entry regarding DRM_MODSET_LOCK_ALL cleanup
+> > > 
+> > 
+> > Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
+> > with the necessary drm-tip conflict resolutions).
+> 
+> Ugh. Did anyone actually review the locking changes this does?
+> I shot the previous i915 stuff down because the commit messages
+> did not address any of it.
 
-Thanks for the fix!
+I reviewed the set on 9/17, I didn't see your feedback on that thread.
 
-Reviewed-by: Saravana Kannan <saravanak@google.com>
+Sean
 
-Btw, can you also let us know why the device_register() is failing? It
-really shouldn't be failing.
+> 
+> -- 
+> Ville Syrjälä
+> Intel
 
--Saravana
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
