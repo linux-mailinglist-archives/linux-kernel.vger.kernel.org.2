@@ -2,103 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87BE41E99D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5883241E99F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 11:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352931AbhJAJcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 05:32:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:38692 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhJAJcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 05:32:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D7AAC101E;
-        Fri,  1 Oct 2021 02:30:15 -0700 (PDT)
-Received: from bogus (unknown [10.57.26.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CE7D3F70D;
-        Fri,  1 Oct 2021 02:30:13 -0700 (PDT)
-Date:   Fri, 1 Oct 2021 10:29:39 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        sughosh.ganu@linaro.org
-Subject: Re: [PATCH v5 0/5] Add FF-A support in OP-TEE driver
-Message-ID: <20211001092939.heiskb5gqzx3nd7p@bogus>
-References: <20210831072412.887565-1-jens.wiklander@linaro.org>
+        id S1352943AbhJAJf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 05:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhJAJfZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 05:35:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30419C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 02:33:41 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id BBE1C1F4539F
+Subject: Re: [PATCH v5 6/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com>
+ <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <78608a82-93b8-8036-2bf0-65f53f2f5120@collabora.com>
+Date:   Fri, 1 Oct 2021 11:33:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831072412.887565-1-jens.wiklander@linaro.org>
+In-Reply-To: <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 09:24:07AM +0200, Jens Wiklander wrote:
-> Hi all,
+Hi Ricardo,
+
+Please see the bisection report below about a boot failure on
+rk3288-rock64.
+
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
+
+Some more details can be found here:
+
+  https://linux.kernelci.org/test/case/id/6155a4b0836c79a98f99a31d/
+
+It looks like some i.MX arm64 platforms also regressed with
+next-20210920 although it hasn't been verified yet whether that's
+due to the same commit:
+
+  https://linux.kernelci.org/test/job/next/branch/master/kernel/next-20210930/plan/baseline/
+
+The x86 platforms don't seem to be impacted though.
+
+Please let us know if you need help debugging the issue or if you
+have a fix to try.
+
+Best wishes,
+Guillaume
+
+
+GitHub: https://github.com/kernelci/kernelci-project/issues/65
+
+-------------------------------------------------------------------------------
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* This automated bisection report was sent to you on the basis  *
+* that you may be involved with the breaking commit it has      *
+* found.  No manual investigation has been done to verify it,   *
+* and the root cause of the problem may be somewhere else.      *
+*                                                               *
+* If you do send a fix, please include this trailer:            *
+*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+*                                                               *
+* Hope this helps!                                              *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+next/master bisection: baseline.login on rk3328-rock64
+
+Summary:
+  Start:      2d02a18f75fc Add linux-next specific files for 20210929
+  Plain log:  https://storage.kernelci.org/next/master/next-20210929/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-rk3328-rock64.txt
+  HTML log:   https://storage.kernelci.org/next/master/next-20210929/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-rk3328-rock64.html
+  Result:     eac6f3841f1d sched/fair: Consider SMT in ASYM_PACKING load balance
+
+Checks:
+  revert:     PASS
+  verify:     PASS
+
+Parameters:
+  Tree:       next
+  URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  Branch:     master
+  Target:     rk3328-rock64
+  CPU arch:   arm64
+  Lab:        lab-baylibre
+  Compiler:   gcc-8
+  Config:     defconfig+CONFIG_RANDOMIZE_BASE=y
+  Test case:  baseline.login
+
+Breaking commit found:
+
+-------------------------------------------------------------------------------
+commit eac6f3841f1dac7b6f43002056b63f44cc1f1543
+Author: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Date:   Fri Sep 10 18:18:19 2021 -0700
+
+    sched/fair: Consider SMT in ASYM_PACKING load balance
+
+
+On 11/09/2021 03:18, Ricardo Neri wrote:
+> When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
+> check for the idle state of the destination CPU, dst_cpu, but also of
+> its SMT siblings.
 > 
-> This adds supports for the OP-TEE driver to communicate with secure world
-> using FF-A [1] as transport.
+> If dst_cpu is idle but its SMT siblings are busy, performance suffers
+> if it pulls tasks from a medium priority CPU that does not have SMT
+> siblings.
 > 
-> There is one change to the TEE subsystem with "tee: add sec_world_id to
-> struct tee_shm" to add support for holding globally unique handle assigned
-> by the FF-A. This is a field that I believe could useful for the AMDTEE
-> driver too.
+> Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
+> siblings of both dst_cpu and the CPUs in the candidate busiest group.
 > 
-> For communication the OP-TEE message protocol is still used, but with a new
-> type of memory reference, struct optee_msg_param_fmem, to carry the
-> information needed by FF-A. The OP-TEE driver is refactored internally with
-> to sets of callbacks, one for the old SMC based communication and another
-> set with FF-A as transport. The functions relating to the SMC based ABI
-> are moved to smc_abi.c while the FF-A based ABI is added in a ffa_abi.c.
+> Cc: Aubrey Li <aubrey.li@intel.com>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Quentin Perret <qperret@google.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> ---
+> Changes since v4:
+>   * Use sg_lb_stats::sum_nr_running the idle state of a scheduling group.
+>     (Vincent, Peter)
+>   * Do not even idle CPUs in asym_smt_can_pull_tasks(). (Vincent)
+>   * Updated function documentation and corrected a typo.
 > 
-> There is also a difference in how the drivers are instantiated. With the
-> SMC based transport we have a platform driver, module_platform_driver(),
-> today which we're keeping as is for this configuration. In a FF-A system we
-> have a FF-A driver, module_ffa_driver(), instead.
+> Changes since v3:
+>   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
+>     powerpc folks showed that this patch should not impact them. Also, more
+>     recent powerpc processor no longer use asym_packing. (PeterZ)
+>   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
+>   * Removed unnecessary check for local CPUs when the local group has zero
+>     utilization. (Joel)
+>   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
+>     the fact that it deals with SMT cases.
+>   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
+>     that callers can deal with non-SMT cases.
 > 
-> The OP-TEE driver can be compiled for both targets at the same time and
-> it's up to runtime configuration (device tree or ACPI) to decide how it's
-> initialized. Note that it's only the old SMC based driver instance that
-> need device tree or ACPI to initialize. The FF-A based driver relies on the
-> FF-A bus instead.
+> Changes since v2:
+>   * Reworded the commit message to reflect updates in code.
+>   * Corrected misrepresentation of dst_cpu as the CPU doing the load
+>     balancing. (PeterZ)
+>   * Removed call to arch_asym_check_smt_siblings() as it is now called in
+>     sched_asym().
 > 
-> This can be tested QEMU
-> The repo for SPMC at S-EL1 retrieved by
-> repo init -u https://github.com/jenswi-linaro/manifest.git -m
-> qemu_v8.xml -b ffav4_spmc
-> repo sync
-> # Then checkout the branch optee_ffa_v5 from
-> # git://git.linaro.org/people/jens.wiklander/linux-tee.git
-> # in the linux directory
+> Changes since v1:
+>   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
+>     tasks. Instead, reclassify the candidate busiest group, as it
+>     may still be selected. (PeterZ)
+>   * Avoid an expensive and unnecessary call to cpumask_weight() when
+>     determining if a sched_group is comprised of SMT siblings.
+>     (PeterZ).
+> ---
+>  kernel/sched/fair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 94 insertions(+)
 > 
-> To build do:
-> cd build
-> make toolchains
-> make all
-> 
-> To boot:
-> make run-only
-> 
-> Test with xtest, perhaps only with the command "xtest 1004" in case you're
-> not interested in too many tests.
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 26db017c14a3..8d763dd0174b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8597,10 +8597,98 @@ group_type group_classify(unsigned int imbalance_pct,
+>  	return group_has_spare;
+>  }
+>  
+> +/**
+> + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> + * @dst_cpu:	Destination CPU of the load balancing
+> + * @sds:	Load-balancing data with statistics of the local group
+> + * @sgs:	Load-balancing statistics of the candidate busiest group
+> + * @sg:		The candidate busiest group
+> + *
+> + * Check the state of the SMT siblings of both @sds::local and @sg and decide
+> + * if @dst_cpu can pull tasks.
+> + *
+> + * If @dst_cpu does not have SMT siblings, it can pull tasks if two or more of
+> + * the SMT siblings of @sg are busy. If only one CPU in @sg is busy, pull tasks
+> + * only if @dst_cpu has higher priority.
+> + *
+> + * If both @dst_cpu and @sg have SMT siblings, and @sg has exactly one more
+> + * busy CPU than @sds::local, let @dst_cpu pull tasks if it has higher priority.
+> + * Bigger imbalances in the number of busy CPUs will be dealt with in
+> + * update_sd_pick_busiest().
+> + *
+> + * If @sg does not have SMT siblings, only pull tasks if all of the SMT siblings
+> + * of @dst_cpu are idle and @sg has lower priority.
+> + */
+> +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
+> +				    struct sg_lb_stats *sgs,
+> +				    struct sched_group *sg)
+> +{
+> +#ifdef CONFIG_SCHED_SMT
+> +	bool local_is_smt, sg_is_smt;
+> +	int sg_busy_cpus;
+> +
+> +	local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
+> +	sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
+> +
+> +	sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
+> +
+> +	if (!local_is_smt) {
+> +		/*
+> +		 * If we are here, @dst_cpu is idle and does not have SMT
+> +		 * siblings. Pull tasks if candidate group has two or more
+> +		 * busy CPUs.
+> +		 */
+> +		if (sg_is_smt && sg_busy_cpus >= 2)
+> +			return true;
+> +
+> +		/*
+> +		 * @dst_cpu does not have SMT siblings. @sg may have SMT
+> +		 * siblings and only one is busy. In such case, @dst_cpu
+> +		 * can help if it has higher priority and is idle (i.e.,
+> +		 * it has no running tasks).
+> +		 */
+> +		return !sds->local_stat.sum_nr_running &&
+> +		       sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
+> +	}
+> +
+> +	/* @dst_cpu has SMT siblings. */
+> +
+> +	if (sg_is_smt) {
+> +		int local_busy_cpus = sds->local->group_weight -
+> +				      sds->local_stat.idle_cpus;
+> +		int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
+> +
+> +		if (busy_cpus_delta == 1)
+> +			return sched_asym_prefer(dst_cpu,
+> +						 sg->asym_prefer_cpu);
+> +
+> +		return false;
+> +	}
+> +
+> +	/*
+> +	 * @sg does not have SMT siblings. Ensure that @sds::local does not end
+> +	 * up with more than one busy SMT sibling and only pull tasks if there
+> +	 * are not busy CPUs (i.e., no CPU has running tasks).
+> +	 */
+> +	if (!sds->local_stat.sum_nr_running)
+> +		return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
+> +
+> +	return false;
+> +#else
+> +	/* Always return false so that callers deal with non-SMT cases. */
+> +	return false;
+> +#endif
+> +}
+> +
+>  static inline bool
+>  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
+>  	   struct sched_group *group)
+>  {
+> +	/* Only do SMT checks if either local or candidate have SMT siblings */
+> +	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
+> +	    (group->flags & SD_SHARE_CPUCAPACITY))
+> +		return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+> +
+>  	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+>  }
+>  
+> @@ -9606,6 +9694,12 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>  		    nr_running == 1)
+>  			continue;
+>  
+> +		/* Make sure we only pull tasks from a CPU of lower priority */
+> +		if ((env->sd->flags & SD_ASYM_PACKING) &&
+> +		    sched_asym_prefer(i, env->dst_cpu) &&
+> +		    nr_running == 1)
+> +			continue;
+> +
+>  		switch (env->migration_type) {
+>  		case migrate_load:
+>  			/*
 > 
 
-Ran entire xtest test suite with latest TF-A, hafinum and OPTEE.
-So for the series,
-
-Tested-by:  Sudeep Holla <sudeep.holla@arm.com>
-
-Minor comments to address OPTEE as module when FFA is also built as module.
-FFA as a module couple of bugs(thanks for reporting one of them). I have the
-fixes here[1], please test and provide feedback.
-
--- 
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/linux-arm-kernel/20210924092859.3057562-1-sudeep.holla@arm.com/
