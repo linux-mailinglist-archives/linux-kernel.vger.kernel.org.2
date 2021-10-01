@@ -2,76 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FEF41F22D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49EE41F230
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 18:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354896AbhJAQfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 12:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S1354992AbhJAQgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 12:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354713AbhJAQfn (ORCPT
+        with ESMTP id S232072AbhJAQgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 12:35:43 -0400
+        Fri, 1 Oct 2021 12:36:04 -0400
 Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D854EC06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:33:58 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id r1so21704282ybo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:33:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA24C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 09:34:20 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id v10so21747663ybq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 09:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AxBkrEppzydL210mtHWMUESMTp84ObWX/0Vf0yddPjU=;
-        b=JgoPJYU8gzLKBEorGnZaC8itHJ+Kr5HICaxYAecF1g+gcDGHoS9OZBme/pYtyQijuw
-         Si9mnyOfupciXd3pD34K1GB0JPDg5Ukk1/BmOBL+/Nry/tl62PS4a1y8HcBrDxEEDTqe
-         BS1Na8oNnFVn57TXHpfmjfPe7N4JomaYVVBud+SurIWKwR7TYbq6jK/h9YL5+8w+h+ry
-         sSc4pcKJESG1MFVUwgZYtbl98Wzts5LOWyl94lf8xxgIwmoE4/6ggjNK/nwLYqryCEIB
-         3opJoIo+f4mjqE4mckBQfH5Abe2X1fc2tAaX/RwTDVdMwhXjpTWPbQ/Rmls7ef2KLDBj
-         bUMQ==
+        bh=Ng6JDVwxCaQ8Od84ybUMD2tq3euaLTCb3M9qHCPLiRk=;
+        b=pWMrJuJhvcJ8kr7fX2piDmdGOeTPIu6T7Ho6tdDljq/6BkXtPtkfuXNxbt+VAqT0yx
+         qxH/KnQhNeeeJUh0T0GkC6QwHIxhqylRWcgJyXMU+D6CEa1A2xn3JkoGhw6s1Gc+6MsL
+         ldOkQXXl1f/J28Sh7R0D3OzTkx/zoHPdUWAcXgmv7vIlZJmvWyWWLCtMASYrqv0cHOIu
+         xCiqq/L6s1VtjDKAFFZ4nN/n1H5YNknX/iIT7eaOoy5vqUnPIkcIofbg2CwaVcWRlIgh
+         eIrXGyMuXaA4shxX3MN9QTuMdzpFe/4ddYSukhdrsyyKn3FJSo2U9wi3edKON9VPPnaw
+         zZog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AxBkrEppzydL210mtHWMUESMTp84ObWX/0Vf0yddPjU=;
-        b=GiPsj1e/GChLDTFRmvHkNEVucWmBZXppQ++SC507BgP2p/9OFJu4ki7H885Gf/S1eZ
-         fjYoueeKNxNbNaakHhwn1BhpcDUZS3q0jf2SP/pDufM2kktXbXNFvRU1AKx83KElHgor
-         zJnc9uTa03BO1CKQDZy5fZoOhQFRuaNIlIYV5wRh9y391ZWxRAMfL6M3p1+JWzJiUqir
-         bn1DXaWI6dPDwAKAijmdB1dTQsd5QdD6nOpCSDDpVj00oa2w5jps8/hbp0CvJWAp/V/U
-         VHfog4B615CsMTK/Qb6CwF1DcyeUPMZJfTCTLakoLbQ/rKuH04YR9nuKGa9hwpu6cNiQ
-         ArNA==
-X-Gm-Message-State: AOAM532zn67K9PU/lBcjmsO08u/hJd+C0cpdQKPCiOwjUxt6hWEGarua
-        QxrTZ8FNVZJjrmWH4gLokc9yPep+prxYuRY9/EqLcd7g5tU=
-X-Google-Smtp-Source: ABdhPJyVSZ7Gl2qu4VLLdN6Snrjo8+LMCte9xV3fsvsNKx32GVyIvvxbhrLS7SQ00RcpzY/4/kWQzzwaO6YCPZGcx7Q=
-X-Received: by 2002:a25:2b07:: with SMTP id r7mr6338025ybr.296.1633106037560;
- Fri, 01 Oct 2021 09:33:57 -0700 (PDT)
+        bh=Ng6JDVwxCaQ8Od84ybUMD2tq3euaLTCb3M9qHCPLiRk=;
+        b=xxfmmgNFOF30TNf8O9/7OxvYg9waeU5qn55y0J/6kL79ttbnQiK2C7JoTMkufpUH7X
+         K9PWRdM8kU2l3dj4crGYW0yJ3OFasSqaMhiKoQdtaNtcQu3T+YvqUkFo4t9k+BDzuoQG
+         1I/OAQVZscmXjPYrevBKuZTNEGshs5HzatF+Cm4CK7KPTqzJEmC+aH5cjlZgcOrLKUn+
+         mG4ljs4bNaiRPhXijH4xiGNRi0k+U0lT34RXXopDh9qUdJqLk2D2P0ts6vOtM0zJNw90
+         j0SOvaZ1KJDS3ZJEDulAdqaFBHC7npYBNyQUmc4b5X68M3PsJkCGKfyLHbwQ0QauNchM
+         hbUA==
+X-Gm-Message-State: AOAM533Nat5npoGo/yhXEpuWtbdU2uYqFE3A+cC+G2iXNxiW/EaCoQsm
+        9zn7czUeqqft0jvDRpG1rPsHhYeMl82U/QGqYcA7Ig==
+X-Google-Smtp-Source: ABdhPJy4E0vJOJpFn2dtFuJvIo31XqxsO2A2l/zIgkxN2EgX2oY+90UDMspe6mET/djpD5FLURGDgJHVOkdXu1D6ku4=
+X-Received: by 2002:a05:6902:124f:: with SMTP id t15mr8144006ybu.161.1633106059244;
+ Fri, 01 Oct 2021 09:34:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001171842.7c9482a7@canb.auug.org.au>
-In-Reply-To: <20211001171842.7c9482a7@canb.auug.org.au>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 1 Oct 2021 09:33:46 -0700
-Message-ID: <CANn89iJ-ufDKs_msNSHYOUtPGwXAiHxtkgStCadSqhD8GZJZ_w@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210902231813.3597709-1-surenb@google.com> <20210902231813.3597709-2-surenb@google.com>
+ <d8619a98-2380-ca96-001e-60fe9c6204a6@rasmusvillemoes.dk>
+In-Reply-To: <d8619a98-2380-ca96-001e-60fe9c6204a6@rasmusvillemoes.dk>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 1 Oct 2021 09:34:08 -0700
+Message-ID: <CAJuCfpH1csz6ghiQ+oHQ6qcs8hUp6qXEVknm3kRpZuUvwB7pRA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 12:18 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Fri, Oct 1, 2021 at 12:01 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
 >
-> Hi all,
+> On 03/09/2021 01.18, Suren Baghdasaryan wrote:
+> > From: Colin Cross <ccross@google.com>
+> >
+> >
+> > changes in v9
+> > - Changed max anon vma name length from 64 to 256 (as in the original patch)
+> > because I found one case of the name length being 139 bytes. If anyone is
+> > curious, here it is:
+> > dalvik-/data/dalvik-cache/arm64/apex@com.android.permission@priv-app@GooglePermissionController@GooglePermissionController.apk@classes.art
 >
-> Building Linus' tree, today's linux-next build (htmldocs) produced
-> this warning:
+> I'm not sure that's a very convincing argument. We don't add code
+> arbitrarily just because some userspace code running on some custom
+> kernel (ab)uses something in that kernel. Surely that user can come up
+> with a name that doesn't contain GooglePermissionController twice.
 >
-> include/net/sock.h:533: warning: Function parameter or member 'sk_peer_lock' not described in 'sock'
->
-> Introduced by commit
->
->   35306eb23814 ("af_unix: fix races in sk_peer_pid and sk_peer_cred accesses")
+> The argument for using strings and not just a 128 bit uuid was that it
+> should (also) be human readable, and 250-byte strings are not that.
+> Also, there's no natural law forcing this to be some power-of-two, and
+> in fact the implementation means that it's actually somewhat harmful
+> (give it a 256 char name, and we'll do a 260 byte alloc, which becomes a
+> 512 byte alloc). So just make the limit 80, the kernel's definition of a
+> sane line length.
 
+Sounds reasonable. I'll set the limit to 80 and will look into the
+userspace part if we can trim the names to abide by this limit.
 
-OK, I will fix this, thank you.
+> As for the allowed chars, it can be relaxed later if convincing arguments can be made.
+
+For the disallowed chars, I would like to go with "\\`$[]" set because
+of the example I presented in my last reply. Since we disallow $, the
+parsers should be able to process parentheses with no issues I think.
+
+>
+>
+> > +/* mmap_lock should be read-locked */
+> > +static inline bool is_same_vma_anon_name(struct vm_area_struct *vma,
+> > +                                      const char *name)
+> > +{
+> > +     const char *vma_name = vma_anon_name(vma);
+> > +
+> > +     if (likely(!vma_name))
+> > +             return name == NULL;
+> > +
+> > +     return name && !strcmp(name, vma_name);
+>
+> It's probably preferable to spell this
+>
+>   /* either both NULL, or pointers to same refcounted string */
+>   if (vma_name == name)
+>       return true;
+>
+>   return name && vma_name && !strcmp(name, vma_name);
+>
+> so you have one less conditional in the common case.
+
+Ack.
+
+>
+> Rasmus
+
+Thanks for the review!
+Suren.
