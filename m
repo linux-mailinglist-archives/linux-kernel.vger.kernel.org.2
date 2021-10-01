@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54B641F641
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C52341F645
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 22:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354891AbhJAUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 16:24:10 -0400
-Received: from smtprelay0193.hostedemail.com ([216.40.44.193]:52488 "EHLO
+        id S1355148AbhJAUZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 16:25:20 -0400
+Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:38578 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229888AbhJAUYJ (ORCPT
+        by vger.kernel.org with ESMTP id S229888AbhJAUZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 16:24:09 -0400
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id D3D661802B415;
-        Fri,  1 Oct 2021 20:22:23 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id EC6441D42F6;
-        Fri,  1 Oct 2021 20:22:22 +0000 (UTC)
-Message-ID: <91569a87ac55da392fa894e8ad55292b98c558f3.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add check for continue statement in
- UNNECESSARY_ELSE
+        Fri, 1 Oct 2021 16:25:15 -0400
+Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 5DD4D837F253;
+        Fri,  1 Oct 2021 20:23:30 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id BCFCE17275;
+        Fri,  1 Oct 2021 20:23:12 +0000 (UTC)
+Message-ID: <605ae631bccba303aac01edd6702cb28d8940fef.camel@perches.com>
+Subject: Re: [PATCH v4] docs: Explain the desired position of function
+ attributes
 From:   Joe Perches <joe@perches.com>
-To:     Utkarsh Verma <utkarshverma294@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 01 Oct 2021 13:22:13 -0700
-In-Reply-To: <20211001192628.19179-1-utkarshverma294@gmail.com>
-References: <20211001190927.GA18097@uver-machine>
-         <20211001192628.19179-1-utkarshverma294@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Date:   Fri, 01 Oct 2021 13:23:03 -0700
+In-Reply-To: <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
+References: <20210930235754.2635912-1-keescook@chromium.org>
+         <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: EC6441D42F6
-X-Spam-Status: No, score=1.67
-X-Stat-Signature: m6bekyi3afgc46tzyz46y4jygydzi1ba
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: BCFCE17275
+X-Spam-Status: No, score=-2.47
+X-Stat-Signature: 4if55k4tcta9e5bown1wphntxuab5oh3
+X-Rspamd-Server: rspamout02
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18wKpUgeD3fuGtE65P1O3GH+WpzJXivWjU=
-X-HE-Tag: 1633119742-206079
+X-Session-ID: U2FsdGVkX19m1dGEi+rBCxpurAezNaeZmaBSEaNh+GI=
+X-HE-Tag: 1633119792-417192
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-02 at 00:56 +0530, Utkarsh Verma wrote:
-> UNNECESSARY_ELSE only checks for the usage of else after a return or
-> break. But the same logic is also true for continue statement.
+On Fri, 2021-10-01 at 12:05 -0700, Nick Desaulniers wrote:
+> On Thu, Sep 30, 2021 at 4:58 PM Kees Cook <keescook@chromium.org> wrote:
+> > 
+> > While discussing how to format the addition of various function
+> > attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+> > close as possible to Linus's preferences for future reference.
+> > 
+> > (Though I note the dissent voiced by Joe Perches, Alexey Dobriyan, and
+> > others that would prefer all attributes live on a separate leading line.)
+> > 
+> > [1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> else used after a continue statement is unnecessary. So add a test
-> for continue statement also.
-> 
-> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> ---
->  scripts/checkpatch.pl | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index c27d2312cfc3..f5a911aa6b64 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -4011,15 +4011,16 @@ sub process {
->  
-> 
->  # check indentation of any line with a bare else
->  # (but not if it is a multiple line "if (foo) return bar; else return baz;")
-> -# if the previous line is a break or return and is indented 1 tab more...
-> +# if the previous line is a break or continue or return and is indented 1 tab more...
->  		if ($sline =~ /^\+([\t]+)(?:}[ \t]*)?else(?:[ \t]*{)?\s*$/) {
->  			my $tabs = length($1) + 1;
->  			if ($prevline =~ /^\+\t{$tabs,$tabs}break\b/ ||
-> +			    $prevline =~ /^\+\t{$tabs,$tabs}continue\b/ ||
+> While I appreciate you getting the ball across the finish line (having
+> _any_ documentation to point to in future bikesheds), I can't help but
+> shake the feeling that the chosen policy will harm the ability of
+> existing automated code formatting tools from being able to automate
+> code formatting on the kernel.
 
-I suppose this is ok.  I'd generally write this on one line.
-
-			if ($prevline =~ /^\+\t{$tabs,$tabs}(?:break|continue)\b/ ||
+yup.
 
 
