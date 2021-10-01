@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCB541EF7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5368441EF74
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 16:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhJAOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 10:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S1354511AbhJAO2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 10:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbhJAOau (ORCPT
+        with ESMTP id S1354297AbhJAO2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 10:30:50 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4FBC061775;
-        Fri,  1 Oct 2021 07:29:06 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i25so39490471lfg.6;
-        Fri, 01 Oct 2021 07:29:05 -0700 (PDT)
+        Fri, 1 Oct 2021 10:28:50 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45F3C06177C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 07:27:05 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id i132so9307771qke.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 07:27:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=voZIz100U/rjLMiNA1FpTbRV2fZQ2pzisFPYPZZCXl4=;
-        b=puJwlS7Ax9ZCd/PJhu+WdFh+5z84FjaIWTVsmWD1Qwh1uKmgTiUhuHKxkF0Gu48fOZ
-         OmmgTJTxsj8yxxfm2+4CZAhjMbsDfKZdc6yRssTzU4esY7Xa8MKShjjaS8gcEbHh8mXf
-         nWJEL9AA3IxU3Ie3lX5vSm4BiEV7ASsz2OB+js0RGg9SCcT6M55T/fHMfXAcYKHPVALn
-         oV+jQGrIBJikcnTi7WxtE5m3QB+KY5DOAV+hxWeGZlLDxf4prPfWO4dU1//9h+/h5P0f
-         c0gyoZfRmjWkagh2KhhwC35t4hMvJVhO0dovxBL5Zc9kgmF2mRGIWjdLwznAGeyroKlF
-         ONLQ==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DJs75BQaCW/g7pooRRj+6YO0ULlwMz3u2sNV5tiA/bM=;
+        b=12f9ZN14mCgZ+mea7F6AapeGsomq5b/qDbcNfxZe76D96JIWEGlDkLQclucjiNxCER
+         Pykd8tU79SFQM8L6xrigX5TEUjdEKChTRdTwmB6OPH6gCCIU9NVtzIzu0eZLv3xkLHCV
+         uNuuIADIN040sWB1WYlgO5d4s+YLUIqo0SfGu/I4iP50M63j6rHIsaNJn4PFAwznaq1C
+         oa60iWCS7UzYVFhUk0swK39HZ94r8v6wFNilzivbnZoyQhJ6or+govTF2UC3OIbYVsts
+         AiZN/0uso7kEG44pjbDzm/rw6Kkd0agK1pN7/arZvdjziYQwcNlNvR0PqWpFKylS7sco
+         0Ygw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=voZIz100U/rjLMiNA1FpTbRV2fZQ2pzisFPYPZZCXl4=;
-        b=rxqQxTswjyW5in9b6S7LyvESVHpfbBIvHNb9iHT/cpII10o1mIo0ImeAYo2GZWdH27
-         N2ByhlRHTHz5qoK3aFNCOOvVYFAFKwg2ZC8pvI20V6a59P3sh4NZQZrpKZriX2NWnwER
-         yInFyqa2JqlnQynSKnjhfF56NIr5ahBzkrevI6NFQ4zQumjHy97RFzk7SCgExUwO2PNU
-         fklsssDYmUsyS8lTAo6ZfChlExv8o7gWfGPURPr+7zR3qMC4HRjh+eIEPN0Lf3ADwwy7
-         5Vh5blBt0gP05aKU4WaPJmvlMOZ2rmhGVFi9raVbn7WV6YsE95QzEfXiik/0tWAjme5X
-         fDmg==
-X-Gm-Message-State: AOAM5309KUaLiiW9uY54VIccQfPHTehV5YcKv7uvoS3y4X3Fcuj3OS0y
-        qjsIrssvzv36MxGrABQyc5k=
-X-Google-Smtp-Source: ABdhPJxdoYeHl150nq4P9/HcT8jY9Ic6nmqt/PNmcuw9Oo+qY30jKDqCXTR3KuH7LEiZ0Aed3e2FSw==
-X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr5600324lfv.358.1633098542877;
-        Fri, 01 Oct 2021 07:29:02 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-198.dynamic.spd-mgts.ru. [79.139.163.198])
-        by smtp.googlemail.com with ESMTPSA id b12sm751816lfe.253.2021.10.01.07.29.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 07:29:02 -0700 (PDT)
-Subject: Re: [PATCH v13 13/35] drm/tegra: gr2d: Support generic power domain
- and runtime PM
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-14-digetx@gmail.com>
- <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <aad7a508-7fb5-3418-f902-def80c365094@gmail.com>
-Date:   Fri, 1 Oct 2021 17:29:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DJs75BQaCW/g7pooRRj+6YO0ULlwMz3u2sNV5tiA/bM=;
+        b=Km1ooKb6ZwqBvrQdiNu/J8CtFQvOH1AC6iKJxPPnvXK8/RDwAGSgUdd4b5df/gsKau
+         1F5cmI5H8TFbhtTc3cannWmX/995Rl3zckW9I/Shs51MsrCiPP8HEx/EJBm3ArSu8g/Y
+         pLnE6dD9zbtKgFB3j+W/duq35w4kvIFZcNptujMrrhzUO7+6+6zuWyVvt6/f2G0OJDE8
+         Vbv/ubTutl7mN//ja4gfQSe2JrKceS4YIOq2WibCEtHfSzVWOHft8REJwYPEWd8h2U8o
+         rWTGiM33NhNlk0XdC25wVu6Za+5GIgDIy6NYgKgcYh4FJznmS04hXQlNtvZATPdBSPsD
+         8+Dg==
+X-Gm-Message-State: AOAM532VHWUbW/q84gKE6iA/CnOwFaVFJi9h5G2BD8sm3hXvf4hfeQLB
+        VGsdVovHxdV8ThkVhXDVOljBOg==
+X-Google-Smtp-Source: ABdhPJziQP96l0Jg2qQu8oA5s6SKXjOsig27Z/sQ8/zMDsRX8qxd3kRy/BxnffoUk1+5psaMOzNUYA==
+X-Received: by 2002:a37:8a47:: with SMTP id m68mr1684979qkd.452.1633098425018;
+        Fri, 01 Oct 2021 07:27:05 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id w17sm3085594qkf.97.2021.10.01.07.27.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Oct 2021 07:27:04 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 10:29:13 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] memcg: unify memcg stat flushing
+Message-ID: <YVcbOZTQOTAKXzol@cmpxchg.org>
+References: <20210930044711.2892660-1-shakeelb@google.com>
+ <20210930044711.2892660-2-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930044711.2892660-2-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 16:39, Ulf Hansson пишет:
-> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Add runtime power management and support generic power domains.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/gpu/drm/tegra/gr2d.c | 155 +++++++++++++++++++++++++++++++++--
+On Wed, Sep 29, 2021 at 09:47:11PM -0700, Shakeel Butt wrote:
+> The memcg stats can be flushed in multiple context and potentially in
+> parallel too. For example multiple parallel user space readers for memcg
+> stats will contend on the rstat locks with each other. There is no need
+> for that. We just need one flusher and everyone else can benefit. In
+> addition after aa48e47e3906 ("memcg: infrastructure to flush memcg
+> stats") the kernel periodically flush the memcg stats from the root, so,
+> the other flushers will potentially have much less work to do.
 > 
-> [...]
-> 
->>  static int gr2d_remove(struct platform_device *pdev)
->> @@ -259,15 +312,101 @@ static int gr2d_remove(struct platform_device *pdev)
->>                 return err;
->>         }
->>
->> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
->> +       pm_runtime_disable(&pdev->dev);
-> 
-> There is no guarantee that the ->runtime_suspend() has been invoked
-> here, which means that clock may be left prepared/enabled beyond this
-> point.
-> 
-> I suggest you call pm_runtime_force_suspend(), instead of
-> pm_runtime_disable(), to make sure that gets done.
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-The pm_runtime_disable() performs the final synchronization, please see [1].
-
-[1]
-https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/base/power/runtime.c#L1412
-
-Calling pm_runtime_force_suspend() isn't correct because each 'enable'
-must have the corresponding 'disable'. Hence there is no problem here.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
