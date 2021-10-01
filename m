@@ -2,196 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E7141ED3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF2741ED44
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354311AbhJAMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 08:20:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10336 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230498AbhJAMUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:20:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633090718; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=f/2eL919u3xkJmcRONnoLnVQIj2Az0TQ9zKpjUlTIQM=; b=R3tEch6uxXQEbDsKb25ULVG3vxOF+GrszssFOkXgpUDVqmOg1UwXDfEKZdMt24jofgdCBJcn
- MetufVImxTmKj+RPv5nyc36hn99CowBtfvQmXZ6hS4No19rIQzIJx/MpOAdug09rORxIIuI0
- 5AtRSXUJ3PrBOaGP0+0lqNu0eW4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6156fc8447d64efb6d54ab4c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 12:18:12
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 96070C4361C; Fri,  1 Oct 2021 12:18:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0C26C43460;
-        Fri,  1 Oct 2021 12:18:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B0C26C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-6-Jerome.Pouiller@silabs.com>
-        <87y27dkslb.fsf@codeaurora.org> <2723787.uDASXpoAWK@pc-42>
-Date:   Fri, 01 Oct 2021 15:18:04 +0300
-In-Reply-To: <2723787.uDASXpoAWK@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
- Pouiller"'s message of "Fri,
-        01 Oct 2021 11:44:17 +0200")
-Message-ID: <87k0ixj5vn.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1354317AbhJAMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 08:24:13 -0400
+Received: from mail-bn8nam12on2081.outbound.protection.outlook.com ([40.107.237.81]:50240
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230498AbhJAMYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 08:24:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rccj+PHeaAFCxg3nNrl9c86rJYSRPXqqMt5Y2Ve9P9w4n+p+4orEtD2ELxo54H/cNu8RoMBaQC1mPu1UiPNKJnWsLAjPlqN4A6RwldLCIgnnH9nT1Sn1gIeSEnBlezB4dN7/7ClyrL3F3sWhw6Z36Bl0fM4tZiGJU3qg1suiSUu9vR8R/oziKl34pQe0cBCXOGr7f+FU0uWdntUuLp8yxus3qqN4UrT0Mf9gkR4d7Ql/cd1wVFTuyZph89W62jJmR7WhU7+wrqOSXj6O/oFTDjVjfLN/GoICFzy7BiZrXIfMmmLcjIlsZp7vBo4LY8gd2RmLA0+ytUYgBAl8nZIznw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u42DleCkTtJJfoHGEgEjQjktEqi/dlqvt8kSdy9ReIY=;
+ b=gEM5uLPsrk9zWqy4JeQy9llvQDUAghMn/ve60wzib3Hz7AGB6xrPMRWH7GRcC8Lw3N6m3go7OCCvWdNwACgY7d6xOSiCLcS2k0rd53kI52dN55f9RcuQe3DgLRkZganZd2cQKCaPQJaVRJprOW6lIb+UUKUEH008BiUiQFEgw/rzC+jKATo2kaFi3wVUDkWHbbsbM8QbsHYyYuAQhir8ayw9h+1/Dwxr6RZ95Kw56m9ix4gqsMoOPidmhS+jIuqxXpxnydy+UKAqNHcm5EwfmdDkh7XJDmgVbIccCZwKM4ApOuA5S5Vyjma/beYio7NCZIGcbmDIW8kzrQ7L8CPsNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u42DleCkTtJJfoHGEgEjQjktEqi/dlqvt8kSdy9ReIY=;
+ b=mlpO8kTiOVtn0DRWiKLXYObVQomjnRHDSbC8ZpEynXXZ60nIKq59WcCCbNT5Guybgwy3MUL+cWkvsLCJScPrSckGEqNTDDfv4pyBvHTJb5duxqDt3BLAD2C6L5CasvszDfC62uk7n6d3dRn50Y5xnKqNg8lwfFcLbegYrj7BUHn0DFqX0Pb9qjRfo01fWAtkXH0LHbVip0yc9YDYOuGRLBgXB6hke4SljxToYWYqHuPWvIZysiBGn8ExXpUm5CJp1GEPxDGb8CtF7ojbgig7P3zdNmgGWpB85pYJcbS8hsfjACpA63XaUzN2ywf8tZgrl+UiyFjd24xnFq4i/dI+Hg==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Fri, 1 Oct
+ 2021 12:22:26 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.019; Fri, 1 Oct 2021
+ 12:22:26 +0000
+Date:   Fri, 1 Oct 2021 09:22:25 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
+        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
+        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
+        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
+        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
+        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
+        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        nicolinc@nvidia.com
+Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Message-ID: <20211001122225.GK964074@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <YVanJqG2pt6g+ROL@yekko>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVanJqG2pt6g+ROL@yekko>
+X-ClientProxiedBy: BLAPR03CA0120.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::35) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0120.namprd03.prod.outlook.com (2603:10b6:208:32a::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Fri, 1 Oct 2021 12:22:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mWHYX-008PM8-5U; Fri, 01 Oct 2021 09:22:25 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 30582f79-fcd5-43fb-2d95-08d984d620e6
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5377:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5377F7C4E64EC81BE56BED89C2AB9@BL1PR12MB5377.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZDE7vFXZWj/WNIr6vf0XWOWX+l11Yg6jr1UGbF/FbQk7mtqtl+kNDKT6wf7/WA1rQwLOeB4VmMohqBus02BvOcGJDXBH/0ltvg/o8d5+GhKKLwsKqATT9ufvKhqSKBYJJTCKShzYuXppO5Cjwr+8MuepD1lopfnUCbU+2BpsXRWlkWHGQTvNcDvcQY980Nb/8PzZ7CK37wZ7hZMgurjxyvKZqkZ2+j4UdFqSDAKWcsToGlVAEHpz9nSPuA6f4YxXWSm7+qFOuxHXLWqonLT5WPeho9LqdV5BN6hoYNhamc4ghMuGFTOKGwQnuGK8holOk7sj1LB6pZv+3NZMP7fhws7DrSSCY3BBBKx0ilROludgvnHKCrEa5fhYKSoT12E4NBFOdN1UCcV8t9AGQEN4sGsg2Squ/dwnarEzT+bbAb1Z8Tz1ktUOsljNm9uNPwLYQX34dvmwcqJmdyr/Ao0d/cOOYhtiqRbP0Be0xnRHvyhI/M3ah50M3fka3i1aTTNXGw0+FMggooh4aaQCzrVYs6rVUS96AU4wo5751/vkU47DEh3N550jyFVTWXvmLK0gzi5sbDL+1/Cl69kjpgRMvEP2m0tetctRt7DTGMUxZ4PXShkhwuNCGq18jX0hvkYOOMHceo6IEhQDVh+7EuuYQRC/XytlAxoEl6jnQdpdTE5EdUt82iFKJgS3JhfQ4sQlPEUl0KOuTrSmLcWnFFFXnJBzjKXefQeZAynmv5A6Ftc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(2906002)(83380400001)(66946007)(8936002)(9746002)(7416002)(38100700002)(66476007)(9786002)(426003)(66556008)(186003)(2616005)(26005)(33656002)(6916009)(1076003)(508600001)(8676002)(316002)(107886003)(86362001)(5660300002)(4326008)(27376004)(84603001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sHnF7Zm5h4u9kJMyX7bSDUB9ZpAeGRwa7ncE/PP2qNt32TZhE22SnewTq7Lx?=
+ =?us-ascii?Q?gECysAVBppbN8dy/DjWAoUgWfes2pDbqZXgfCnPJkUt33RxIVstXIgwwHKOn?=
+ =?us-ascii?Q?b2bVvBCdp5JbiuJdMsDtegeFqJtHvH+cYICYL9hzE70YciWNZPuZ7lILQtEy?=
+ =?us-ascii?Q?J5JFwO1LnvqwXP7QOViaWIL5i+0OOcQ81x//f+ImGhRACM5n9TFdJfsUlftn?=
+ =?us-ascii?Q?iXNLOUoU6S+U2UkKWryVeJO0c68OGfYMw0r7U73wNABCd+3V0s3fgycfOc4g?=
+ =?us-ascii?Q?LCe14MLH0nZaVv6/ftnEmKaxe7ILDV+m4sukO1OAnpCFC2yzoDN1HHJVSrXg?=
+ =?us-ascii?Q?u1R5nfEyESBIWfQLhPlKfXUtRzEI7A5Rxv+75tFl939glzoueNVseGP0WYwu?=
+ =?us-ascii?Q?FxDBPlmY3V6HYa0pJ4dFEEqFh1kFG+XTzIkpQv21QUsIIA6Ru5rtKIwY6qQf?=
+ =?us-ascii?Q?dPZ/ZTfcGTbkWZ+/e22NjhbjBVJcmLHbkYRmBVR2BwjPK3BnKZkpWCVugWVe?=
+ =?us-ascii?Q?wBSJm3wKND7z/IZ58y8QcAIfuJabL9xpP6uIOu+o68tBaUF7AAwcAhKJMlk+?=
+ =?us-ascii?Q?QhZvjUtiAuJUUvvLWvtgLtYNyshG9hpY9JTA303ylEBuuJ7NGkM8PiZmClhH?=
+ =?us-ascii?Q?OLWZgfjrgXDn7G7e3Hst5u3MqoihtiYwWIOeBFpUlKN2Ch190urPC2keox/3?=
+ =?us-ascii?Q?bDurKBytKnhDwY8Jw2byzyYBxOcIdEz1b9LGZFjkZCUqtKZT4tC8hvGf6SfR?=
+ =?us-ascii?Q?KIPmzicZhXziOmpNF0pO7UpQjUeZkrUob5N4uQzyq0pueeMf2ToCd5CdnmRO?=
+ =?us-ascii?Q?RIHkxGr+z7d/mX0ZqxytJTkecP+dvIV4MaGr94WQPSB9b/twSje0b7se1KYu?=
+ =?us-ascii?Q?pLMRxnzVndmUmguM2fATyxzEzKjc6Dwir6OIsuvEoukvA3W+QY9U6oG2V1zo?=
+ =?us-ascii?Q?0vOeTJMNDzNNWYzovZzCec/7iTUE5F/Zis7CKyKiVFHqQt3kXY62osq/GGlq?=
+ =?us-ascii?Q?ujJXxdt2Q0UliU26AT8SY7Z/44BcS1ieFiwBdsZ74WZ9Lx/sOqm+uTDO5z6y?=
+ =?us-ascii?Q?YOFnhDLMjMN+vcNzmKBHknPtqfx9TXphkvfHe0HDTefuxKGtVxTTsWQHjqAl?=
+ =?us-ascii?Q?c1PWXGk/lQZDxgZuIcEDw0ia3ecEu8/epTi2UkSMHjeq28eEbEqPM81Stt6I?=
+ =?us-ascii?Q?e0zfz3xru+GWJyNk8ebJn1POwmSQA7bky/9iDKl3N8TL1tLQ4SIII1lIwr8o?=
+ =?us-ascii?Q?G78gHTEMwHOsai2/Kxyy0mp1wciUq37bYmFKn87NBiFZ7KdgPjQ6lF+rT4WH?=
+ =?us-ascii?Q?WAP/vhgYAkkqdNqfciXuDcWL?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30582f79-fcd5-43fb-2d95-08d984d620e6
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2021 12:22:26.2725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S3B4K5Mh25UvMWAFdm8UD6gqa8pQxI8o9J+aQsRN9+qXvV6WK2+EBvd9Kssnb6vp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+On Fri, Oct 01, 2021 at 04:13:58PM +1000, David Gibson wrote:
+> On Tue, Sep 21, 2021 at 02:44:38PM -0300, Jason Gunthorpe wrote:
+> > On Sun, Sep 19, 2021 at 02:38:39PM +0800, Liu Yi L wrote:
+> > > This patch adds IOASID allocation/free interface per iommufd. When
+> > > allocating an IOASID, userspace is expected to specify the type and
+> > > format information for the target I/O page table.
+> > > 
+> > > This RFC supports only one type (IOMMU_IOASID_TYPE_KERNEL_TYPE1V2),
+> > > implying a kernel-managed I/O page table with vfio type1v2 mapping
+> > > semantics. For this type the user should specify the addr_width of
+> > > the I/O address space and whether the I/O page table is created in
+> > > an iommu enfore_snoop format. enforce_snoop must be true at this point,
+> > > as the false setting requires additional contract with KVM on handling
+> > > WBINVD emulation, which can be added later.
+> > > 
+> > > Userspace is expected to call IOMMU_CHECK_EXTENSION (see next patch)
+> > > for what formats can be specified when allocating an IOASID.
+> > > 
+> > > Open:
+> > > - Devices on PPC platform currently use a different iommu driver in vfio.
+> > >   Per previous discussion they can also use vfio type1v2 as long as there
+> > >   is a way to claim a specific iova range from a system-wide address space.
+> > >   This requirement doesn't sound PPC specific, as addr_width for pci devices
+> > >   can be also represented by a range [0, 2^addr_width-1]. This RFC hasn't
+> > >   adopted this design yet. We hope to have formal alignment in v1 discussion
+> > >   and then decide how to incorporate it in v2.
+> > 
+> > I think the request was to include a start/end IO address hint when
+> > creating the ios. When the kernel creates it then it can return the
+> > actual geometry including any holes via a query.
+> 
+> So part of the point of specifying start/end addresses is that
+> explicitly querying holes shouldn't be necessary: if the requested
+> range crosses a hole, it should fail.  If you didn't really need all
+> that range, you shouldn't have asked for it.
+> 
+> Which means these aren't really "hints" but optionally supplied
+> constraints.
 
-> On Friday 1 October 2021 11:22:08 CEST Kalle Valo wrote:
->> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
->>=20
->> > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->> >
->> > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->>=20
->> [...]
->>=20
->> > +/* The device needs data about the antenna configuration. This inform=
-ation in
->> > + * provided by PDS (Platform Data Set, this is the wording used in WF=
-200
->> > + * documentation) files. For hardware integrators, the full process t=
-o create
->> > + * PDS files is described here:
->> > + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/README=
-.md
->> > + *
->> > + * So this function aims to send PDS to the device. However, the PDS =
-file is
->> > + * often bigger than Rx buffers of the chip, so it has to be sent in =
-multiple
->> > + * parts.
->> > + *
->> > + * In add, the PDS data cannot be split anywhere. The PDS files conta=
-ins tree
->> > + * structures. Braces are used to enter/leave a level of the tree (in=
- a JSON
->> > + * fashion). PDS files can only been split between root nodes.
->> > + */
->> > +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
->> > +{
->> > +     int ret;
->> > +     int start, brace_level, i;
->> > +
->> > +     start =3D 0;
->> > +     brace_level =3D 0;
->> > +     if (buf[0] !=3D '{') {
->> > + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
->> > compress it?\n");
->> > +             return -EINVAL;
->> > +     }
->> > +     for (i =3D 1; i < len - 1; i++) {
->> > +             if (buf[i] =3D=3D '{')
->> > +                     brace_level++;
->> > +             if (buf[i] =3D=3D '}')
->> > +                     brace_level--;
->> > +             if (buf[i] =3D=3D '}' && !brace_level) {
->> > +                     i++;
->> > +                     if (i - start + 1 > WFX_PDS_MAX_SIZE)
->> > +                             return -EFBIG;
->> > +                     buf[start] =3D '{';
->> > +                     buf[i] =3D 0;
->> > +                     dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + sta=
-rt);
->> > +                     buf[i] =3D '}';
->> > +                     ret =3D hif_configuration(wdev, buf + start,
->> > +                                             i - start + 1);
->> > +                     if (ret > 0) {
->> > + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
->> > options?)\n",
->> > +                                     start, i);
->> > +                             return -EINVAL;
->> > +                     }
->> > +                     if (ret =3D=3D -ETIMEDOUT) {
->> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupted
->> > file?)\n",
->> > +                                     start, i);
->> > +                             return ret;
->> > +                     }
->> > +                     if (ret) {
->> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
->> > error\n",
->> > +                                     start, i);
->> > +                             return -EIO;
->> > +                     }
->> > +                     buf[i] =3D ',';
->> > +                     start =3D i;
->> > +             }
->> > +     }
->> > +     return 0;
->> > +}
->>=20
->> I'm not really fond of having this kind of ASCII based parser in the
->> kernel. Do you have an example compressed file somewhere?
->
-> An example of uncompressed configuration file can be found here[1]. Once
-> compressed with [2], you get:
->
->     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B},c:{a:=
-4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f:{a:4,b=
-:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a:4,b:0,=
-c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,b:0,c:0=
-,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:{a:6},e=
-:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0,0]},{a=
-:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},{a:B,b:=
-[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{a:0,b:0=
-}}
+We have to be very careful here, there are two very different use
+cases. When we are talking about the generic API I am mostly
+interested to see that applications like DPDK can use this API and be
+portable to any IOMMU HW the kernel supports. I view the fact that
+there is VFIO PPC specific code in DPDK as a failing of the kernel to
+provide a HW abstraction.
 
-So what's the grand idea with this braces format? I'm not getting it.
+This means we cannot define an input that has a magic HW specific
+value. DPDK can never provide that portably. Thus all these kinds of
+inputs in the generic API need to be hints, if they exist at all.
 
-Usually the drivers just consider this kind of firmware configuration
-data as a binary blob and dump it to the firmware, without knowing what
-the data contains. Can't you do the same?
+As 'address space size hint'/'address space start hint' is both
+generic, useful, and providable by DPDK I think it is OK. PPC can use
+it to pick which of the two page table formats to use for this IOAS if
+it wants.
 
->> Does the device still work without these PDS files? I ask because my
->> suggestion is to remove this part altogether and revisit after the
->> initial driver is moved to drivers/net/wireless. A lot simpler to review
->> complex features separately.
->
-> I think we will be able to communicate with the chip. However, the chip w=
-on't
-> have any antenna parameters. Thus, I think the RF won't work properly.
+The second use case is when we have a userspace driver for a specific
+HW IOMMU. Eg a vIOMMU in qemu doing specific PPC/ARM/x86 acceleration.
+We can look here for things to make general, but I would expect a
+fairly high bar. Instead, I would rather see the userspace driver
+communicate with the kernel driver in its own private language, so
+that the entire functionality of the unique HW can be used.
 
-RF not working properly is bad, so we can't drop PDS files for now. Too
-bad, it would have been so much faster if we would not need to worry
-about PDS files during review.
+So, when it comes to providing exact ranges as an input parameter we
+have to decide if that is done as some additional general data, or if
+it should be part of a IOAS_FORMAT_KERNEL_PPC. In this case I suggest
+the guiding factor should be if every single IOMMU implementation can
+be updated to support the value.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Jason
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+
