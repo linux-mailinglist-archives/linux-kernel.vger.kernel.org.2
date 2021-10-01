@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B1541E7A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEC841E7B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352273AbhJAGkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:40:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48723 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352260AbhJAGkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:40:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633070349; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DH07yRNxfLIbPow4oMCMJkb9io5D23Aj6DAM87OKB7w=;
- b=L/NJ3XbBL01HIPsQP+E6HgzAZAtK8WZZsSbhl07rAAIaB4b3IZROz+25us7aNWfcd2uOTpf5
- zmzp0c3skaeeYjN/fFVnVf2i4MAt7aw0tv9/GJWhbhygu6VgqmDJjzOKLYiqOS5uv1Obi3Xb
- aG2OTvQvClyeiFIcKDrqHCVUML0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6156ad0d63b1f186582f8e8e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 06:39:09
- GMT
-Sender: mkrishn=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9D9B1C43618; Fri,  1 Oct 2021 06:39:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkrishn)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 356EEC43460;
-        Fri,  1 Oct 2021 06:39:07 +0000 (UTC)
+        id S1352291AbhJAGnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231165AbhJAGm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 02:42:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D18EC06176A;
+        Thu, 30 Sep 2021 23:41:14 -0700 (PDT)
+Date:   Fri, 1 Oct 2021 08:41:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633070472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xK00ctqiWFiU5nGteYW9PbRD7IJFRMc23+AFIc4vmQc=;
+        b=uDNKSqqgL2ktUiJ3xLdIFIBN0zoNRk7sEhoRMIvg1Ovaswt+6mphiYsXLyvHCMey472SFj
+        RAAie+/TScs+MgAHk/nGGzaO2NYr+PXCZ5elb15FW2w3FH4trs8EPZv++NxUjyH4Mv7KmR
+        ajbH0Xu48F1mCVuP9Gqu3qzWGrhyn/mXq237PVZzbF2EB6kGxniNXaZN9WY7qj1BPChGgG
+        n5Abh2vKaIEbOrRqfyQJyWUZ6TG42mSH0/2nvK/Wg68djx8S7NPiqzmj1SX/Y9S/WitpW2
+        Be0zzAX/wgfJqrxcKRqGlz9MljrKlPsum+/9HI/TgGdsZqtcsKXKuIorEYgpCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633070472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xK00ctqiWFiU5nGteYW9PbRD7IJFRMc23+AFIc4vmQc=;
+        b=eo3244AX3puJEk21YgXyAHizLRxD1mKqWpdZkNJmfPUa2SOyBj4MkGqqqxTl+LkEm1xiaG
+        KjoMMmh+QlP6XiAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Manoj N. Kumar" <manoj@linux.ibm.com>,
+        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
+        Uma Krishnan <ukrishn@linux.ibm.com>,
+        Brian King <brking@us.ibm.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        megaraidlinux.pdl@broadcom.com,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com
+Subject: Re: [RFC] Is lib/irq_poll still considered useful?
+Message-ID: <20211001064110.anckzkd5ymnxvczc@linutronix.de>
+References: <20210930103754.2128949-1-bigeasy@linutronix.de>
+ <20210930105605.ofyayf3uwk75u25s@linutronix.de>
+ <YVaNkVXYUt6tIYvS@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 01 Oct 2021 12:09:07 +0530
-From:   mkrishn@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
-        sbillaka@codeaurora.org, abhinavk@codeaurora.org,
-        robdclark@gmail.com, bjorn.andersson@linaro.org,
-        khsieh@codeaurora.org, rajeevny@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v1 2/4] arm64: dts: qcom: sc7280: add display dt nodes
-In-Reply-To: <CAE-0n53kQU=8pdcWR0OZap1wDgxxwed0qvfaGruc71YT5Cj1iA@mail.gmail.com>
-References: <1629282424-4070-1-git-send-email-mkrishn@codeaurora.org>
- <1629282424-4070-2-git-send-email-mkrishn@codeaurora.org>
- <CAE-0n50b=pX=1MFwGPDvDR=O03tUAkAgyMonGm2+SXBft=16KQ@mail.gmail.com>
- <5adf2ab2c2a162272509d253bd797721@codeaurora.org>
- <CAE-0n53kQU=8pdcWR0OZap1wDgxxwed0qvfaGruc71YT5Cj1iA@mail.gmail.com>
-Message-ID: <8f344213978f31c04e80b804a931db56@codeaurora.org>
-X-Sender: mkrishn@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVaNkVXYUt6tIYvS@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-30 23:28, Stephen Boyd wrote:
-> Quoting mkrishn@codeaurora.org (2021-09-30 04:56:59)
->> On 2021-08-19 01:27, Stephen Boyd wrote:
->> > Quoting Krishna Manikandan (2021-08-18 03:27:02)
->> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> index 53a21d0..fd7ff1c 100644
->> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> >> +
->> >> +                       status = "disabled";
->> >> +
->> >> +                       mdp: mdp@ae01000 {
->> >
->> > display-controller@ae01000
->> 
->> Stephen,
->>     In the current driver code, there is a substring comparison for 
->> "mdp"
->> in device node name as part of probe sequence. If "mdp" is not present
->> in the node name, it will
->>     return an error resulting in probe failure. Can we continue using 
->> mdp
->> as nodename instead of display controller?
->> 
+On 2021-10-01 05:24:49 [+0100], Christoph Hellwig wrote:
+> On Thu, Sep 30, 2021 at 12:56:05PM +0200, Sebastian Andrzej Siewior wrote:
+> > Is there a reason for the remaining user of irq_poll to keep using it?
 > 
-> Can we fix the driver to not look for node names and look for 
-> compatible
-> strings instead? It took me a minute to find compare_name_mdp() in
-> drivers/gpu/drm/msm/msm_drv.c to understand what you're talking about.
-> Perhaps looking for qcom,mdp5 in there will be sufficient instead of
-> looking at the node name.
+> At least for RDMA there are workloads where the latency difference
+> matters.  That's why we added both the irq_poll and workqueue mode
+> to thew new CQ API a few years ago.
 
-Sure Stephen. I will make the necessary changes in msm_drv.c to look for 
-compatible string instead of node name.
-Can I include these two changes (changing mdp--> display controller and 
-msm_drv.c changes) in a separate series ?
+Would it work for them to move to threaded interrupts or is the NAPI
+like behaviour (delay after a while to the next jiffy) the killer
+feature?
 
-Thanks,
-Krishna
+Sebastian
