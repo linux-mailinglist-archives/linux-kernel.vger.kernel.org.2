@@ -2,237 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360B541E79C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FEF41E780
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 08:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352317AbhJAGco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 02:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        id S1352148AbhJAG3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 02:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352221AbhJAGc2 (ORCPT
+        with ESMTP id S1352141AbhJAG3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 02:32:28 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41ECC061774;
-        Thu, 30 Sep 2021 23:30:44 -0700 (PDT)
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HLKxG5rp3z4xbY; Fri,  1 Oct 2021 16:30:42 +1000 (AEST)
+        Fri, 1 Oct 2021 02:29:39 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9100CC061775
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:27:55 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so2725247pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Sep 2021 23:27:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633069842;
-        bh=H1uXsEPf+n9R7M0SONIXcs2ex2FVuo8AJvH1kuhi3RQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U+0RYR17CCwg3X+PvJ6mnOgjsbc/Cn215Ym83b9EjFnj86kh0GidiDYNvkyFKXUHK
-         0Wezo/RYB4iu7Uh58pgrYNJugg5lwAdVoRUwgMhZ7IXGax5sqDNbNXjjqZZYD3T58Q
-         AddmiHAeqql9BilGLnJCrUjudEaiQIqjp31/F0AA=
-Date:   Fri, 1 Oct 2021 16:26:40 +1000
-From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YVaqIB32MzppOcxl@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com>
- <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922140911.GT327412@nvidia.com>
- <BN9PR11MB5433A47FFA0A8C51643AA33C8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+        d=lixom-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MvZn7AesUks9d97kUkTzFpGFd394pZVY+vzK7UrpvMc=;
+        b=CxYwS62rmXRLPrmbM1Udr5F7yvHoCoqP+3aFF1JKHxMdFjINagvDLNsMu9UIPqUrDB
+         t6u80kl9j+/iD2YjZpmCqjt3U2ItlhOIenB0XK6dUiaWhpA6R2Tm1t/pBiPtu7ryrZmQ
+         VEm0glWKUmIwyIthgmR2r2U/oCvTW2V6xnB2xftLOIYAPEjt7FvPFnskcUYarmGWVHlj
+         bnGhmStPW8IPgxgdkyOVUOo4Wrz9J6u+/BOQ4nn83CISikMWox4mK+nN/VWiycObWbp2
+         2kcBz6IV5hwq6Dq4DeGHHG7AUUR/cDreJc5cRTeRephvaz7A/E0aTp/w2pJtKxYpChuG
+         AjYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MvZn7AesUks9d97kUkTzFpGFd394pZVY+vzK7UrpvMc=;
+        b=sA02hBq/SVezNJ23MmyY6fYiUw1BkL/wdspY13hZv+YRfPwloF3p8rUIYfiii+OlBG
+         khYjgqFVRkE1nJSr2y5AJIGI6oMd2F2mTb5XKvFMBOpF8SDDdFee5MhJHqCP7AoGtXxz
+         wCQiyR3xcF6kfXN31MYEpjN+aaRURcQPLpDOg546SRqvHZIHN4JUuIRB32fHTI+TF6l4
+         xjKthRBIVD0pZcig8eEsJTNdGbK+LAaLtcjm0qX8bvjp5yO7gArEglZz5L+pFsOfSqAj
+         0kHXrmrBLvDvEI2+dpuk/YdI0PpT7DJeRNXG2b4UTDvPIOlyZcd794YTMyID5J5phypC
+         Tecg==
+X-Gm-Message-State: AOAM533yC3KCD+T+ly3st8e/GxqpPsKDjiJURHdKMyVMs0pKJX2vajxx
+        JbpAQi/Szq2RgZYGgAkvnkHVq7Dgn7+P5uPeDH7qFA==
+X-Google-Smtp-Source: ABdhPJzF/bNLMOGXHCLWZPGUzdyAlhfNYt7masDw5O96Xj/PCO2GX6b69viZ98gYcmlz1uo4cGbw0TI3QA1SBZQKrs8=
+X-Received: by 2002:a17:90a:7301:: with SMTP id m1mr11368037pjk.34.1633069674838;
+ Thu, 30 Sep 2021 23:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RaIhWQFJkl9r3qKT"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5433A47FFA0A8C51643AA33C8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210928235635.1348330-1-willmcvicker@google.com>
+ <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
+ <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
+ <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
+ <CAOesGMhQ3YsLJeQ7aUfb=0oNa3uPCx42wO1U7-ArqJTAUq1G3Q@mail.gmail.com> <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
+In-Reply-To: <CAGETcx_k2-mo9oUcYhsXhhsazLdwbifjP7ZT8pvyEbWB5k_qQg@mail.gmail.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Thu, 30 Sep 2021 23:27:43 -0700
+Message-ID: <CAOesGMhe3MC2LehGrOAaROjwzFGAubxnnC1oTXkkLVVmyTn31A@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---RaIhWQFJkl9r3qKT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 23, 2021 at 09:14:58AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, September 22, 2021 10:09 PM
-> >=20
-> > On Wed, Sep 22, 2021 at 03:40:25AM +0000, Tian, Kevin wrote:
-> > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > Sent: Wednesday, September 22, 2021 1:45 AM
-> > > >
-> > > > On Sun, Sep 19, 2021 at 02:38:39PM +0800, Liu Yi L wrote:
-> > > > > This patch adds IOASID allocation/free interface per iommufd. When
-> > > > > allocating an IOASID, userspace is expected to specify the type a=
-nd
-> > > > > format information for the target I/O page table.
-> > > > >
-> > > > > This RFC supports only one type
-> > (IOMMU_IOASID_TYPE_KERNEL_TYPE1V2),
-> > > > > implying a kernel-managed I/O page table with vfio type1v2 mapping
-> > > > > semantics. For this type the user should specify the addr_width of
-> > > > > the I/O address space and whether the I/O page table is created in
-> > > > > an iommu enfore_snoop format. enforce_snoop must be true at this
-> > point,
-> > > > > as the false setting requires additional contract with KVM on han=
-dling
-> > > > > WBINVD emulation, which can be added later.
-> > > > >
-> > > > > Userspace is expected to call IOMMU_CHECK_EXTENSION (see next
-> > patch)
-> > > > > for what formats can be specified when allocating an IOASID.
-> > > > >
-> > > > > Open:
-> > > > > - Devices on PPC platform currently use a different iommu driver =
-in vfio.
-> > > > >   Per previous discussion they can also use vfio type1v2 as long =
-as there
-> > > > >   is a way to claim a specific iova range from a system-wide addr=
-ess
-> > space.
-> > > > >   This requirement doesn't sound PPC specific, as addr_width for =
-pci
-> > > > devices
-> > > > >   can be also represented by a range [0, 2^addr_width-1]. This RFC
-> > hasn't
-> > > > >   adopted this design yet. We hope to have formal alignment in v1
-> > > > discussion
-> > > > >   and then decide how to incorporate it in v2.
-> > > >
-> > > > I think the request was to include a start/end IO address hint when
-> > > > creating the ios. When the kernel creates it then it can return the
+On Thu, Sep 30, 2021 at 11:03 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 10:36 PM Olof Johansson <olof@lixom.net> wrote:
+> >
+> > On Thu, Sep 30, 2021 at 10:24 PM Saravana Kannan <saravanak@google.com> wrote:
 > > >
-> > > is the hint single-range or could be multiple-ranges?
-> >=20
-> > David explained it here:
-> >=20
-> > https://lore.kernel.org/kvm/YMrKksUeNW%2FPEGPM@yekko/
-> >=20
-> > qeumu needs to be able to chooose if it gets the 32 bit range or 64
-> > bit range.
-> >=20
-> > So a 'range hint' will do the job
-> >=20
-> > David also suggested this:
-> >=20
-> > https://lore.kernel.org/kvm/YL6%2FbjHyuHJTn4Rd@yekko/
-> >=20
-> > So I like this better:
-> >=20
-> > struct iommu_ioasid_alloc {
-> > 	__u32	argsz;
-> >=20
-> > 	__u32	flags;
-> > #define IOMMU_IOASID_ENFORCE_SNOOP	(1 << 0)
-> > #define IOMMU_IOASID_HINT_BASE_IOVA	(1 << 1)
-> >=20
-> > 	__aligned_u64 max_iova_hint;
-> > 	__aligned_u64 base_iova_hint; // Used only if
-> > IOMMU_IOASID_HINT_BASE_IOVA
-> >=20
-> > 	// For creating nested page tables
-> > 	__u32 parent_ios_id;
-> > 	__u32 format;
-> > #define IOMMU_FORMAT_KERNEL 0
-> > #define IOMMU_FORMAT_PPC_XXX 2
-> > #define IOMMU_FORMAT_[..]
-> > 	u32 format_flags; // Layout depends on format above
-> >=20
-> > 	__aligned_u64 user_page_directory;  // Used if parent_ios_id !=3D 0
-> > };
-> >=20
-> > Again 'type' as an overall API indicator should not exist, feature
-> > flags need to have clear narrow meanings.
->=20
-> currently the type is aimed to differentiate three usages:
->=20
-> - kernel-managed I/O page table
-> - user-managed I/O page table
-> - shared I/O page table (e.g. with mm, or ept)
->=20
-> we can remove 'type', but is FORMAT_KENREL/USER/SHARED a good
-> indicator? their difference is not about format.
+> > > On Thu, Sep 30, 2021 at 9:52 PM Olof Johansson <olof@lixom.net> wrote:
+> > > >
+> > > > On Wed, Sep 29, 2021 at 12:48 PM Will McVicker <willmcvicker@google.com> wrote:
+> > > > >
+> > > > > On Wed, Sep 29, 2021 at 6:02 AM Krzysztof Kozlowski
+> > > > > <krzysztof.kozlowski@canonical.com> wrote:
+> > > > > >
+> > > > > > On 29/09/2021 01:56, Will McVicker wrote:
+> > > > > > > This is v2 of the series of patches that modularizes a number of core
+> > > > > > > ARCH_EXYNOS drivers. Based off of the feedback from the v1 series, I have
+> > > > > > > modularized all of the drivers that are removed from the ARCH_EXYNOS
+> > > > > > > series of "select XXX". This includes setting the following configs as
+> > > > > > > tristate:
+> > > > > > >
+> > > > > > >  * COMMON_CLK_SAMSUNG
+> > > > > > >  * EXYNOS_ARM64_COMMON_CLK
+> > > > > > >  * PINCTRL_SAMSUNG
+> > > > > > >  * PINCTRL_EXYNOS
+> > > > > > >  * EXYNOS_PMU_ARM64
+> > > > > > >  * EXYNOS_PM_DOMAINS
+> > > > > > >
+> > > > > > > Additionally, it introduces the config EXYNOS_PMU_ARM64 and EXYNOS_PMU_ARM
+> > > > > > > which was previously EXYNOS_PMU and EXYNOS_PMU_ARM_DRIVERS respectively.
+> > > > > > > The reason for these new configs is because we are not able to easily
+> > > > > > > modularize the ARMv7 PMU driver due to built-in arch dependencies on
+> > > > > > > pmu_base_addr under arch/arm/mach-exynos/*. So the new configs split up
+> > > > > > > the ARM and ARM64 portions into two separate configs.
+> > > > > > >
+> > > > > > > Overall, these drivers didn't require much refactoring and converted to
+> > > > > > > modules relatively easily. However, due to my lack of exynos hardware, I
+> > > > > > > was not able to boot test these changes. I'm mostly concerned about the
+> > > > > > > CLK_OF_DECLARE() changes having dependencies on early timers. So I'm
+> > > > > > > requesting help for testing these changes on the respective hardware.
+> > > > > > >
+> > > > > >
+> > > > > > These are all not tested at all? In such case, since these are not
+> > > > > > trivial changes, please mark the series as RFT.
+> > > > > >
+> > > > > > I will not be able to test these for some days, so it must wait.
+> > > > > >
+> > > > > >
+> > > > > > Best regards,
+> > > > > > Krzysztof
+> > > > >
+> > > > > +Cc Arnd and Olof,
+> > > > >
+> > > > > Hi Krzysztof,
+> > > > >
+> > > > > To avoid the scrambled conversation from the first patchset, I'm going
+> > > > > to address all your general questions here in the cover letter thread
+> > > > > so that it's easier for everyone to follow and reference in the
+> > > > > future.
+> > > >
+> > > > This patchset shouldn't go in.
+> > > >
+> > > > GKI is a fantastic effort, since it finally seems like Google has the
+> > > > backbone to put pressure on the vendors to upstream all their stuff.
+> > > >
+> > > > This patcheset dilutes and undermines all of that by opening up a
+> > > > truck-size loophole, reducing the impact of GKI, and overall removes
+> > > > leverage to get vendors to do the right thing.
+> > > >
+> > > > It's against our interest as a community to have this happen, since
+> > > > there's no other reasonably justifiable reason to do this.
+> > >
+> > > Oolf, Geert, Krzysztof, Arnd,
+> >
+> > So close.
+>
+> I'm sorry, it's pretty late here and I'm sleepy and messed it up.
 
-To me "format" indicates how the IO translation information is
-encoded.  We potentially have two different encodings: from userspace
-to the kernel and from the kernel to the hardware.  But since this is
-the userspace API, it's only the userspace to kernel one that matters
-here.
+This email thread will be here in the morning too, this is the last
+reply I will make tonight myself.
 
-In that sense, KERNEL, is a "format": we encode the translation
-information as a series of IOMAP operations to the kernel, rather than
-as an in-memory structure.
+> > > I skimmed through the emails and you all make a lot of good points.
+> >
+> > I skimmed through this email and I think it adds a lot of new
+> > complexity and fragility to solve a problem that doesn't really exist
+> > for upstream, adding yet more config parameter combinations to build
+> > and test for.
+>
+> How is this not an upstream problem? Having a minimal kernel with as
+> many drivers as modules is of interest to upstream. And what's the
+> complexity in having a config to easily disable a bunch of configs?
+> The new config gives a clear config against which new
+> platforms/systems should be developed against.
 
-> > This does both of David's suggestions at once. If quemu wants the 1G
-> > limited region it could specify max_iova_hint =3D 1G, if it wants the
-> > extend 64bit region with the hole it can give either the high base or
-> > a large max_iova_hint. format/format_flags allows a further
->=20
-> Dave's links didn't answer one puzzle from me. Does PPC needs accurate
-> range information or be ok with a large range including holes (then let
-> the kernel to figure out where the holes locate)?
+The approach for general kernel upstream has been to have the built-in
+drivers needed to reach rootfs and runtime load the rest from there.
+For downstream embedded kernels, the right answer is to just exclude
+the drivers you don't need.
 
-I need more specifics to answer that.  Are you talking from a
-userspace PoV, a guest kernel's or the host kernel's?  In general I
-think requiring userspace to locate and work aronud holes is a bad
-idea.  If userspace requests a range, it should get *all* of that
-range.
+I agree, some of this is probably useful work but
+1) It was posted as a burden on the maintainers of the legacy
+platforms to test and make sure it's not broken
+2) It regresses distro configs, which we do care about
+3) Based on the above, it's unclear whether the people pushing for
+this patchset cares about the existing platforms, they're looking to
+solve a different problem
 
-The ppc case is further complicated because there are multiple ranges
-and each range could have separate IO page tables.  In practice
-non-kernel managed IO pagetables are likely to be hard on ppc (or at
-least rely on firmware/hypervisor interfaces which don't exist yet,
-AFAIK).  But even then, the underlying hardware page table format can
-affect the minimum pagesize of each range, which could be different.
+I didn't go back and look at who and where, but the person who started
+justifying this work with making it easier for out-of-tree vendors to
+integrate their non-contributed code killed this patchset.
 
-How all of this interacts with PASIDs I really haven't figured out.
+Would the out-of-tree argument on its own kill it? No, but the above
+complexities/cost, plus the actual intent behind the patchset did.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+> > A much more valuable approach would be to work towards being able to
+> > free up memory by un-probed drivers at the end of boot. That would
+> > possibly benefit all platforms on all architectures.
+>
+> Sure it would help memory after boot, but it won't help with size on
+> "disk", kernel load time, etc. And some of the devices have very tight
+> boot requirements. Think battery operated outdoor cameras for example.
 
---RaIhWQFJkl9r3qKT
-Content-Type: application/pgp-signature; name="signature.asc"
+I would question the choices made if someone ships a camera with a
+generic kernel (without a generic filesystem which at that point also
+needs sufficient storage such that the kernel image size becomes a
+secondary consideration). Once your storage is that constrained the
+balance shifts towards a custom minimal config.
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFWqiAACgkQbDjKyiDZ
-s5L2nQ//QApXdxbmnKil2cF2UXibTus/87OZ+VoAVNEbp1ISlhEr5bme2TadAT2w
-ufENtYSNpqO5pcPahh0ZqefYpAEa07sZEUsx2JaZ7WsrHO2hfHIwiH5H1wuQDVYn
-CEK4yxUnzNv1YRWBEuh2FoLgOSeOFsGoCO/75YmMQcI4qeYtaecVVHdzjoec56hn
-L34QCRo3IbalHLvzdRMBq51x9grNPEzE0JN3V1ElT3d0K7JFExNF7+OW7P7TmbnN
-23B0SWZOmAP6IGIECGWbRm+2iCrLDKEfalvSrU4uLFi0/GxRRCQl9kLd0AChRvmk
-bJdbKddyokZgDNX2937o3YzOZW14zZdQZtv0Culakr5n+T85Uqj3e7NzC/J+pd/F
-0DgbHq92xOkBTS1qZfGL+s9NBCj8m0tZaya2aZfxRlU0RTh5B6yqzPgNwRDTqjDe
-9JyyZPoR8HZ2jv9cOSKVpYSBRsDddyILdvZO6gp2/R8CPfRjnx90y0iIPuucAar6
-+gXZP5c+3ooNt0iT5xHvO60s8i74fbXa8wAnkeWI3r/8I2b+uN+6po79Npgv3ks5
-oLPoj/8tE+f3q1iQ+4NGkvov0ChQKpz1F+/gWPlccRmwnaUsfs5qaoheUM6HS204
-qZ+8/XTdiwv0qBCsYMn8YQ0Im7OkhypIzXdfQaxPpZuekeHIJ1k=
-=J9jC
------END PGP SIGNATURE-----
-
---RaIhWQFJkl9r3qKT--
+-Olof
