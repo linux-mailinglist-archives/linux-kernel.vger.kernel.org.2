@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384FC41F026
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A3841F02A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhJAPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:02:26 -0400
-Received: from mail-m17638.qiye.163.com ([59.111.176.38]:45016 "EHLO
-        mail-m17638.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhJAPCY (ORCPT
+        id S1354709AbhJAPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:02:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59956 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354692AbhJAPCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:02:24 -0400
-X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 Oct 2021 11:02:23 EDT
-Received: from localhost.localdomain (unknown [112.48.80.210])
-        by mail-m17638.qiye.163.com (Hmail) with ESMTPA id BEA7A1C0085;
-        Fri,  1 Oct 2021 23:00:37 +0800 (CST)
-From:   Chukun Pan <amadeus@jmu.edu.cn>
-To:     Lin Huang <hl@rock-chips.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Subject: [PATCH] dt-bindings: devfreq: rk3399_dmc: fix clocks in example
-Date:   Fri,  1 Oct 2021 23:00:24 +0800
-Message-Id: <20211001150024.18672-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlNQh5WQ0xJHk9NTR1JSR
-        pLVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBw6Eyo*Tj4KFTgpOEhPNi9K
-        PgEaCxdVSlVKTUhISktLT0hDT0hLVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUpK
-        SVVPQ1VDS1VJSktZV1kIAVlBSUpOSTcG
-X-HM-Tid: 0a7c3c5f1a49d993kuwsbea7a1c0085
+        Fri, 1 Oct 2021 11:02:31 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F0B441FEDA;
+        Fri,  1 Oct 2021 15:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633100445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=6xWZoy2a5K0CyrmBK/cVhYbX7E69zDWhy7ff7dORPUU=;
+        b=ZMIuyG/UzkBdS4Z6/2OmD79XnIC6522CSe/v7FuBL+11XhxC+pU2Kv698BPIAMRvkWZfXJ
+        lGQWS9Zac+HWBPC9/YSSWYrGfHS1zao6wfPFT3a9fad1LZ8wGJvRt6URdvy83xhCyXy29X
+        8YK1VaTp5Tm3ehoBjQJWa6o9+w/tv+o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEA8013C6D;
+        Fri,  1 Oct 2021 15:00:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id k+lWKJ0iV2G5OgAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 01 Oct 2021 15:00:45 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v5 0/3] xen, usb: support pvUSB frontend driver
+Date:   Fri,  1 Oct 2021 17:00:36 +0200
+Message-Id: <20211001150039.15921-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clocks in the example use 'SCLK_DDRCLK', which does not exist in
-the rk3399-cru.h, correct it to 'SCLK_DDRC'.
+This series adds XEN guest pvUSB support. With pvUSB it is possible to
+use physical USB devices from a XEN domain.
 
-Ref: commit 7fbdfcd68783 ("clk: rockchip: add SCLK_DDRC id for rk3399 ddrc")
-Fixes: c1ceb8f7c167 ("Documentation: bindings: add dt documentation for rk3399 dmc")
-Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
----
- Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Since V4 a lot of time (several years) has passed. This is a revived
+attempt to get the frontend into the kernel.
 
-diff --git a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
-index 3fbeb3733c48..58fc8a6cebc7 100644
---- a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
-+++ b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
-@@ -174,7 +174,7 @@ Example:
- 		compatible = "rockchip,rk3399-dmc";
- 		devfreq-events = <&dfi>;
- 		interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&cru SCLK_DDRCLK>;
-+		clocks = <&cru SCLK_DDRC>;
- 		clock-names = "dmc_clk";
- 		operating-points-v2 = <&dmc_opp_table>;
- 		center-supply = <&ppvar_centerlogic>;
+The support consists of a frontend in form of a virtual hcd driver in
+the unprivileged domU passing I/O-requests to the backend in a driver
+domain (usually Dom0). The backend is not part of this patch series,
+as it is supported via qemu.
+
+The code is taken (and adapted) from the original pvUSB implementation
+done for Linux 2.6 in 2008 by Fujitsu.
+
+Normal operation of USB devices by adding and removing them dynamically
+to/from a domain has been tested using various USB devices (USB 1.1,
+2.0 and 3.0) using the qemu based backend.
+
+Changes in V5:
+- added interface documentation to patch 1
+- frontend no longer trusts backend to return only sane values
+
+Changes in V4:
+- remove sysfs file from frontend, as it violated the "one value per file"
+  rule and didn't serve any real purpose.
+
+Changes in V3:
+- move frontend to drivers/usb/host and rename it to xen-hcd.
+- changed name prefixes in patch 1 to "xenusb" as requested by Greg
+- use __u<n> types rather than uint<n>_t as requested by Greg
+
+Changes in V2:
+- removed backend, as it can be implemented in user land
+- added some access macros and definitions to the pvUSB interface
+  description to make it independant from linux kernel USB internals
+- adapted frontend to newer kernel version and use new pvUSB
+  interface macros
+- set port status in one chunk as suggested by Oliver Neukum
+
+Juergen Gross (3):
+  usb: Add Xen pvUSB protocol description
+  usb: Introduce Xen pvUSB frontend (xen hcd)
+  xen: add Xen pvUSB maintainer
+
+ MAINTAINERS                      |    8 +
+ drivers/usb/host/Kconfig         |   11 +
+ drivers/usb/host/Makefile        |    1 +
+ drivers/usb/host/xen-hcd.c       | 1641 ++++++++++++++++++++++++++++++
+ include/xen/interface/io/usbif.h |  421 ++++++++
+ 5 files changed, 2082 insertions(+)
+ create mode 100644 drivers/usb/host/xen-hcd.c
+ create mode 100644 include/xen/interface/io/usbif.h
+
 -- 
-2.17.1
+2.26.2
 
