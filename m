@@ -2,113 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A497D41F030
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C576A41F03F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354722AbhJAPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 11:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33190 "EHLO
+        id S1354776AbhJAPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 11:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhJAPDA (ORCPT
+        with ESMTP id S1354747AbhJAPDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 11:03:00 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067B5C061775;
-        Fri,  1 Oct 2021 08:01:16 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4HLYGK2ddSzQjhJ;
-        Fri,  1 Oct 2021 17:01:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:references:in-reply-to:message-id:from:from
-        :date:date:received; s=mail20150812; t=1633100470; bh=4J5HpEj9PI
-        gaNqH8sYcJ7kaGnNR9PO2w7go2s+EnliU=; b=Z29wguy+F6ITVnLKidGmdz5XFj
-        /daaHpKkhE/hZ1u6jv1rHoI5V65KVk32vWPZ9aTJ0JkKpSAtkMFOVmqQhgYqV35I
-        1hGpxA4FqVSFWgjcRTnypKOjeB0TCGoOSmdB7OH8KMPDXbgsnnvtOeR/SbGibJ2v
-        /P1NRtMKQfQe+ZtfmY2wVntajQgEXczLNM9D6jLUaj44Yk/fD9tGtAY3BTwby8Mv
-        FEBffJ3glRZLs7EzplhmrNazG2HzTxF+3uCoCN3P0pTXtFgdRcf5Zdym9PvfYQPP
-        YNXur94pedkOwAMVVUsHutrRsjAGPLw+Qb3NBa7s6bL4RL0FrncZrVwAmmWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1633100471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gC8lZCt63UyxoZI5uFbYTSMp7MC0RJhh8HtvLj0uzcE=;
-        b=wXs0HTMdzrenM41bwhyM/dG6JRMCyDAUnXVdp5h/F703F58/Prebonq2o27w8ZJ5Z/zz1G
-        lE/efA26342uaoee4e+eH4hMatsPtoclq553GgIRM+LBNwSoGcn/N2Sq6LYD+orryLUiOa
-        cNoocbmYUOdf4CFZzieR3A21v8y+D63BBg0vZ2vXrBwOhq4IGG6pniLR4JIDArX0Tlo7pf
-        g+Qjq3eIupGkYKxSzjOT0m4wLXkAOrQmhbTF0bTyzUbO1DY5tWX7xIk+Bf3voVJTMf1yAl
-        itYX/AqlCa0rwy+PusuPtFdYwHQoF7rC9n3JFJqUelw3w+cGoOLZHXXjbfm2TA==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Date:   Fri, 1 Oct 2021 17:01:09 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paolo.valente@linaro.org" <paolo.valente@linaro.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Message-ID: <1889051823.161943.1633100469857@office.mailbox.org>
-In-Reply-To: <1624640454.149631.1632987871186@office.mailbox.org>
-References: <1624640454.149631.1632987871186@office.mailbox.org>
-Subject: Re: [BUG] kernel BUG at mm/slub.c - possible BFQ issue?
+        Fri, 1 Oct 2021 11:03:35 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20A6C06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 08:01:50 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i4so40379931lfv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 08:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Wl3ZMyIoq68XUN9ZysEDdbNyOTOcWVKDq09iuCEsZmc=;
+        b=nc/wRiOyNThsvZAoZqrqxfcMp5xM4+z3v5LBnRr7cDxfQB3CuDz+w9I+DrmCVjWOKl
+         np27NqLQZ/GN1BOsQnTqAa2UnIwF19eGxu64prAseFDGzGs8fstw8HcPfShlYRQ0qE1c
+         WBjvqHBepPh7/S1osWRA5oJkTk2LMoL8V+Rr/1CAVQRt+OOzX2VJn6rhiBggeGf0jaLd
+         I5s3lo9wgue1e92EUCmCI977jDYPuMA5YYpLfqE1ZPhrxcH8sAmJV+ED8ef6hVn8S0D5
+         bD46sji6e0iHnnK6F4WHN2ijZ4ehxPr5Lmm8HNBreW4wKt5dklt3O1Dh0kW0EnVCwAx4
+         w7NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Wl3ZMyIoq68XUN9ZysEDdbNyOTOcWVKDq09iuCEsZmc=;
+        b=XvGqqmcH7vzLZybuPDEGLKZmukybRealZIu/mcmp6BJ0/a1zmYQQ0wYUeYWW5fU34y
+         jh4Mr+ybj0DUWqZ0Jyq9mxNlqri00JATbGWV9RRWnsDhdAKuxoEdjaj6zFbON0KllaE5
+         P5DQecQVfQQmyXk5+5Za8JsaW6ysTV/1LN7UBRxBoIy0URndfv9zqeP+K4xUL4+SiyA8
+         CYXQineWVJCUK2+9a/+euG6KhHHnSr5EzUt1mvt+JmDBErRNeAx37JpQHTlcS/WgxDPy
+         72mwCn58ukSqqYeE/bPs3mScFlv+rtsfLJn+9X8V9zPWpYWbuMqgUiXC2QsvNy0BaISZ
+         y5ug==
+X-Gm-Message-State: AOAM533lyj7kkhoJmj3iY8D9mmi8fXj5B+CQj9/e4iSlyZODYlrmW3q8
+        gTBe4mIipCMr/BiFz64Gl+D1fuAI3BezXVJLk9Dh2g==
+X-Google-Smtp-Source: ABdhPJzMALxdSFVvKbncpXSAkoeLVU4WvZ1aDrH/nsBIXY0lecURQDTr7J6h8lUkTNpeSwp11syRcpWCl/bNnJtDs94=
+X-Received: by 2002:a05:6512:2397:: with SMTP id c23mr5737854lfv.358.1633100509099;
+ Fri, 01 Oct 2021 08:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: 8DFBA272
+References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-21-digetx@gmail.com>
+ <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com> <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com>
+In-Reply-To: <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 1 Oct 2021 17:01:12 +0200
+Message-ID: <CAPDyKFohA9iu2UQfwoc0pCrCGupdwnUTWjKOtP09_C2KaFSo8w@mail.gmail.com>
+Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP support
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> torvic9@mailbox.org hat am 30.09.2021 09:44 geschrieben:
-> 
->  
-> Hello,
-> 
-> I encounter a hard freeze on both 5.14 and 5.15 when using BFQ.
-> Unfortunately, I do not have a full error log, because the computer
-> totally freezes and slightly corrupts the display, so it's
-> impossible to read the entire message.
-> 
-> However, what I could get is the following:
-> 
->   kernel BUG at mm/slub.c:379
->   invalid opcode: 0000 [#1]
->   RIP: 0010:__slab_free
->   [...]
->   Call Trace:
->   bfq_set_next_ioprio_data
->   [...]
->   bfq_put_queue
->   bfq_insert_requests
->   [...]
-> 
-> This issue appears more or less randomly and it sometimes takes a
-> little while to reproduce it (running fio helps).
-> The call trace always contains references to BFQ, but they are not
-> always the exact same. Once, I could see on the corrupted display
-> the message "general protection fault".
-> I could reproduce this issue on two computers.
-> 
-> Not quite sure but I *think* the issue first appeared somewhere around
-> 5.14.5 or 5.14.6, during which time BFQ only got the following commit:
-> 
->   (88013a0c5d99) block, bfq: honor already-setup queue merges
+On Fri, 1 Oct 2021 at 16:35, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 01.10.2021 17:24, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote=
+:
+> >>
+> >> The NAND on Tegra belongs to the core power domain and we're going to
+> >> enable GENPD support for the core domain. Now NAND must be resumed usi=
+ng
+> >> runtime PM API in order to initialize the NAND power state. Add runtim=
+e PM
+> >> and OPP support to the NAND driver.
+> >>
+> >> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++----=
+-
+> >>  1 file changed, 47 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/=
+tegra_nand.c
+> >> index 32431bbe69b8..098fcc9cb9df 100644
+> >> --- a/drivers/mtd/nand/raw/tegra_nand.c
+> >> +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> >> @@ -17,8 +17,11 @@
+> >>  #include <linux/mtd/rawnand.h>
+> >>  #include <linux/of.h>
+> >>  #include <linux/platform_device.h>
+> >> +#include <linux/pm_runtime.h>
+> >>  #include <linux/reset.h>
+> >>
+> >> +#include <soc/tegra/common.h>
+> >> +
+> >>  #define COMMAND                                        0x00
+> >>  #define   COMMAND_GO                           BIT(31)
+> >>  #define   COMMAND_CLE                          BIT(30)
+> >> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_devi=
+ce *pdev)
+> >>                 return -ENOMEM;
+> >>
+> >>         ctrl->dev =3D &pdev->dev;
+> >> +       platform_set_drvdata(pdev, ctrl);
+> >>         nand_controller_init(&ctrl->controller);
+> >>         ctrl->controller.ops =3D &tegra_nand_controller_ops;
+> >>
+> >> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_de=
+vice *pdev)
+> >>         if (IS_ERR(ctrl->clk))
+> >>                 return PTR_ERR(ctrl->clk);
+> >>
+> >> -       err =3D clk_prepare_enable(ctrl->clk);
+> >> +       err =3D devm_pm_runtime_enable(&pdev->dev);
+> >> +       if (err)
+> >> +               return err;
+> >> +
+> >> +       err =3D devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
+> >> +       if (err)
+> >> +               return err;
+> >> +
+> >> +       err =3D pm_runtime_resume_and_get(&pdev->dev);
+> >>         if (err)
+> >>                 return err;
+> >>
+> >>         err =3D reset_control_reset(rst);
+> >>         if (err) {
+> >>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
+> >> -               goto err_disable_clk;
+> >> +               goto err_put_pm;
+> >>         }
+> >>
+> >>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_CMD=
+);
+> >> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_de=
+vice *pdev)
+> >>                                dev_name(&pdev->dev), ctrl);
+> >>         if (err) {
+> >>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
+> >> -               goto err_disable_clk;
+> >> +               goto err_put_pm;
+> >>         }
+> >>
+> >>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CTRL=
+);
+> >>
+> >>         err =3D tegra_nand_chips_init(ctrl->dev, ctrl);
+> >>         if (err)
+> >> -               goto err_disable_clk;
+> >> -
+> >> -       platform_set_drvdata(pdev, ctrl);
+> >> +               goto err_put_pm;
+> >>
+> >
+> > There is no corresponding call pm_runtime_put() here. Is it
+> > intentional to always leave the device runtime resumed after ->probe()
+> > has succeeded?
+> >
+> > I noticed you included some comments about this for some other
+> > drivers, as those needed more tweaks. Is that also the case for this
+> > driver?
+>
+> Could you please clarify? There is pm_runtime_put() in both probe-error
+> and remove() code paths here.
 
-I have now reverted the above commit and launched some heavy I/O like
-e.g. git kernel, fio, xz compression, and so far, no freezes anymore!
-Too early to say that this commit really is the cause though.
-Would be great if someone could have a look at it.
+I was not considering the error path of ->probe() (or ->remove()), but
+was rather thinking about when ->probe() completes successfully. Then
+you keep the device runtime resumed, because you have called
+pm_runtime_resume_and_get() for it.
 
-> 
-> 5.13 doesn't seem to be affected AFAICS.
-> 
-> Does anyone have an idea what is going on?
-> I will now revert the above commit and see if that helps...
-> 
-> Thanks,
-> Tor
+Shouldn't you have a corresponding pm_runtime_put() in ->probe(),
+allowing it to be runtime suspended, until the device is really needed
+later on. No?
+
+>
+> I assume you're meaning pm_runtime_disable(), but this patch uses
+> resource-managed devm_pm_runtime_enable(), and thus, explicit disable
+> isn't needed.
+>
+> >>         return 0;
+> >>
+> >> -err_disable_clk:
+> >> -       clk_disable_unprepare(ctrl->clk);
+> >> +err_put_pm:
+> >> +       pm_runtime_put(ctrl->dev);
+> >>         return err;
+> >>  }
+> >>
+
+[...]
+
+Kind regards
+Uffe
