@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDA041EE07
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 14:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C52D41EE08
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353536AbhJANBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:01:39 -0400
-Received: from smtprelay0083.hostedemail.com ([216.40.44.83]:59912 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1352814AbhJANBh (ORCPT
+        id S1353687AbhJANC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:02:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35506 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353502AbhJANCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:01:37 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1EEB5182CED28;
-        Fri,  1 Oct 2021 12:59:53 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 11017B2797;
-        Fri,  1 Oct 2021 12:59:51 +0000 (UTC)
-Message-ID: <061762c85ea54ff7ebaaa1b2468f1c8c5cc84eb9.camel@perches.com>
-Subject: Re: [PATCH] fs/9p: fix warnings found by checkpatch.pl
-From:   Joe Perches <joe@perches.com>
-To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Date:   Fri, 01 Oct 2021 05:59:50 -0700
-In-Reply-To: <20211001063444.102330-1-sohaib.amhmd@gmail.com>
-References: <20211001063444.102330-1-sohaib.amhmd@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 1 Oct 2021 09:02:25 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 98AE222675;
+        Fri,  1 Oct 2021 13:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633093240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KM+xbda/WIoRg9sPEGIZlEe401mZyQLLM/2ulb4YBQ=;
+        b=p+F5M+3Mim8vVwUoc4pVPv9FD+vwt25tYG3I1KrNLmCvg1ic8howqbCE72Yr2UKjkkDjd4
+        Qy0ekpRSVaULREpGTLlLj4hYliu7epqHdpe1BXKsxXF6eBkPtZk6ck868mlU6w532mrNPa
+        3haxDsWjnQaJ/zqf96fLfk3LIsyUB4I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633093240;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KM+xbda/WIoRg9sPEGIZlEe401mZyQLLM/2ulb4YBQ=;
+        b=Y5zBaqK3BQL4QZKwsufqCXJRjDWURw15qHhZIYlH7Ktl9SkgR0DEq+ncmHjF43A8DDp74v
+        S+0fGpUb4gHL6qCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 442D213C5D;
+        Fri,  1 Oct 2021 13:00:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9dnZDngGV2GZdAAAMHmgww
+        (envelope-from <jroedel@suse.de>); Fri, 01 Oct 2021 13:00:40 +0000
+Date:   Fri, 1 Oct 2021 15:00:38 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
+Message-ID: <YVcGdpVuSsieFL8W@suse.de>
+References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
+ <YVbNlXwiASQEsG+x@zn.tnic>
+ <YVb2AGXAwYx/OI6J@suse.de>
+ <YVcF9ENTfLAGaLec@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 11017B2797
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: puwwxmhsexewzfpw3qbffo5mdcrmjsjr
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/T9D+S2TnbfTMVQ+IwfzVVUcKNC/yKCc4=
-X-HE-Tag: 1633093191-702007
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVcF9ENTfLAGaLec@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-01 at 08:34 +0200, Sohaib Mohamed wrote:
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-
-try using checkpatch on your proposed patch.
-
-> diff --git a/fs/9p/v9fs.h b/fs/9p/v9fs.h
-[]
-> @@ -135,8 +135,8 @@ static inline struct fscache_cookie *v9fs_inode_cookie(struct v9fs_inode *v9inod
->  
+On Fri, Oct 01, 2021 at 02:58:28PM +0200, Borislav Petkov wrote:
+> On Fri, Oct 01, 2021 at 01:50:24PM +0200, Joerg Roedel wrote:
+> > Yeah, I think the right fix is to export cea_map_percpu_pages() and move
+> > the cea_map_stack() macro to a header and use it to map the VC stacks.
 > 
->  extern int v9fs_show_options(struct seq_file *m, struct dentry *root);
->  
-> 
-> -struct p9_fid *v9fs_session_init(struct v9fs_session_info *, const char *,
-> -									char *);
-> +struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses, const char
-> +		*dev_name, char *data);
+> I'll do you one better: Put the #VC stack mapping into
+> percpu_setup_exception_stacks(), where it naturally belongs and where
+> the other stacks are being mapped instead of doing everything "by hand"
+> like now and exporting random helpers.
 
-That's really not pretty as it separates the type of the 2nd argument.
+The VC stack is only allocated and mapped when SEV-ES is detected, so
+they can't always be mapped by generic code.
 
-Perhaps:
+Regards,
 
-struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
-				 const char *dev_name, char *data);
-
-
+	Joerg
