@@ -2,154 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2982A41F367
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC0541F37B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 19:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355456AbhJARoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 13:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S1354823AbhJARrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 13:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355424AbhJARoE (ORCPT
+        with ESMTP id S229496AbhJARq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:44:04 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FEEC06177D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:42:20 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so12471745otx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:42:20 -0700 (PDT)
+        Fri, 1 Oct 2021 13:46:58 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B40C06177D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 10:45:13 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b65so9894421qkc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 10:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RuDmOgPfw7NqoydBG9DQd34tvaItfS8ZKq0v6QDg/FY=;
-        b=XLFHevB6WrVgB1k383+Eu2L6o1qbyh58b6SA8R/5BAw8TC7lyqv5IHXHTh7gCmKLsD
-         JtQJBcH+5/FlXZLnaln8on35bnRb9B7YlTtjle+vzTyxT191syLSAlrcBtl/HONyMZ5L
-         OjhVF911PC8tk7jBqUUWTHpKZ2JcO4pvyNFhhZFz66ffzBIJdteqYwJbMYHqHhgrBR5/
-         mINS3p9w6Jerb7cqf9Q6f2tv6/iw0CxHxcDrldyOOyDlZfSqqEDcgp/SjJV2EvHNzoD8
-         Fn2r1P+gRCnNtt6UB9Edv2Guq8nw48v+1tcem18VUIAqkCcywLDGzRjzLEEBavkmiOaq
-         j97A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CY+QWSave8EGEaNVpceAJQ+ky5w1DWCyy9j7COQnHFM=;
+        b=askYTJzym7O5yaOqpeMzKwOj0j6Qwo04kEM179/a3sFhqrYyXzPAu1ifpOhcFl9q0Y
+         F/PLEDnH9R02hCpQbyV2Dzb5iXF38C6sxpIDCyRjVSLdg9m4x9mzmxGfikoOrIb4KO5g
+         KK7/5+UqT19eZNeA5mH/CtKtbeSKvPvg7bkvpD2k5W8s0SA56gdmbn7g92dyRjv6qzWm
+         NApTHpAV13PnJqbcQXh1/icou6aS6s4O8Q5naDdwg2J2VccmTim8IhxnqvDSONGlD1i/
+         3CEpYbeXydKMWMWPJCbhj1ViExG40KWNfqcSecJq4GbUKkEnpgalIV0poHVYP2TUwniL
+         UMFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RuDmOgPfw7NqoydBG9DQd34tvaItfS8ZKq0v6QDg/FY=;
-        b=zeBNIFbvkNnGsEXvRvCsrgbxdh3toVGhZJv76ydJwUyaC4dY2GAdRl522LcwfPqT6f
-         Nbqigtofa/4mZiN9CUwGcIvpWZ/dqRVU0z1F2OPnJW5T1FPy9G2lYnieevtH9aDOvECC
-         FdTszNlwx8bCXxtW8xNZgcP0ECZgvDeR8QKBwBRm4g9NJNTdTxKwuyNBJHGSlkZrOuFG
-         /tW0s8/rKxsBG8xkKMsaRe1GTVC2osYLCNFw770R1mj/S1/mpystglLAGyilr1bT06ko
-         fg2tJ/dxjxXr4a+dbY+PhJzFLGpiF62o2biRHKb+hlmusYvD+PjhdFUWl/yOdJ8T4RUN
-         iRJg==
-X-Gm-Message-State: AOAM533e/R3EDisqud1hnFZjV2h2ti/KUaeyELXBmtBgtDZLhstJOd4u
-        qrVZvFJtZ+6EN6mq1yJjx4t0ag==
-X-Google-Smtp-Source: ABdhPJws9faHBQvlTIfIFjLeXXFXgk7jiuKKfBY2CwB4kFziy9psiZ97T1gAtt89z7WID9l5hdsO1Q==
-X-Received: by 2002:a05:6830:310c:: with SMTP id b12mr11691000ots.193.1633110139673;
-        Fri, 01 Oct 2021 10:42:19 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id u15sm1369264oon.35.2021.10.01.10.42.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CY+QWSave8EGEaNVpceAJQ+ky5w1DWCyy9j7COQnHFM=;
+        b=IwaPpFSZACNj1UUr2ySYZxSn02NQAk73YJZlgiL2rsP/YCK/hHTcgG7Bg4v5PVfY9w
+         8x1UuTIH+vePwOSsXEPMr/q+AP98ulY13FJiZ/yR3xuuYdd8o9bODS/L1tMlLSkypCPQ
+         QouLn/3nwAL7I/2IZE9STMQCmqPdpYIxeAwPST66uSiZjS7kRgP6FmbJ/AQiWCbPouYU
+         mYKKtGB0+/zdQogPd/JtR1sgMB6FI1BT2EpJDKUH3eIgFhmB4+DvOvRtoeTJY8V3j6bw
+         XRvYK5ChYs+jt8aWe0g0HUFlHIJ15hhesPH2lCPXBYg76NodlTnKHR0WLh6FsmZUz3gx
+         2UUw==
+X-Gm-Message-State: AOAM530Dap79CWv+I1gWhCH/Tznqn3ai7PHcnCV27KDq2sWJMnqEyiqf
+        Ob89NrQXzuqyiuusukkdECUe0g==
+X-Google-Smtp-Source: ABdhPJx/K6VNm0duCKrTeu/4uI4ViO+0lSC4pUeGkBrnh5E8R/aNPnPsk6AlICpx2DIIm1QpxAom9A==
+X-Received: by 2002:a37:8747:: with SMTP id j68mr10365945qkd.165.1633110313062;
+        Fri, 01 Oct 2021 10:45:13 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id w17sm3357837qkf.97.2021.10.01.10.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 10:42:19 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] drm/msm/dp: Allow sub-regions to be specified in DT
-Date:   Fri,  1 Oct 2021 10:44:00 -0700
-Message-Id: <20211001174400.981707-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211001174400.981707-1-bjorn.andersson@linaro.org>
-References: <20211001174400.981707-1-bjorn.andersson@linaro.org>
+        Fri, 01 Oct 2021 10:45:12 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mWMat-0097tt-HS; Fri, 01 Oct 2021 14:45:11 -0300
+Date:   Fri, 1 Oct 2021 14:45:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Alistair Popple <apopple@nvidia.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
+Message-ID: <20211001174511.GQ3544071@ziepe.ca>
+References: <20210916234100.122368-20-logang@deltatee.com>
+ <20210928195518.GV3544071@ziepe.ca>
+ <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
+ <20210929230543.GB3544071@ziepe.ca>
+ <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
+ <20210929233540.GF3544071@ziepe.ca>
+ <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
+ <20210930003652.GH3544071@ziepe.ca>
+ <20211001134856.GN3544071@ziepe.ca>
+ <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all platforms has P0 at an offset of 0x1000 from the base address,
-so add support for specifying each sub-region in DT. The code falls back
-to the predefined offsets in the case that only a single reg is
-specified, in order to support existing DT.
+On Fri, Oct 01, 2021 at 11:01:49AM -0600, Logan Gunthorpe wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+> In device-dax, the refcount is only used to prevent the device, and
+> therefore the pages, from going away on device unbind. Pages cannot be
+> recycled, as you say, as they are mapped linearly within the device. The
+> address space invalidation is done only when the device is unbound.
 
-Changes since v2:
-- None
+By address space invalidation I mean invalidation of the VMA that is
+pointing to those pages.
 
- drivers/gpu/drm/msm/dp/dp_parser.c | 49 +++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 11 deletions(-)
+device-dax may not have a issue with use-after-VMA-invalidation by
+it's very nature since every PFN always points to the same
+thing. fsdax and this p2p stuff are different though.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-index 1f084b2b5bd3..4d6e047f803d 100644
---- a/drivers/gpu/drm/msm/dp/dp_parser.c
-+++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-@@ -50,18 +50,45 @@ static int dp_parser_ctrl_res(struct dp_parser *parser)
- 	if (IS_ERR(dss->ahb.base))
- 		return PTR_ERR(dss->ahb.base);
- 
--	if (dss->ahb.len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
--		DRM_ERROR("legacy memory region not large enough\n");
--		return -EINVAL;
--	}
-+	dss->aux.base = dp_ioremap(pdev, 1, &dss->aux.len);
-+	if (IS_ERR(dss->aux.base)) {
-+		/*
-+		 * The initial binding had a single reg, but in order to
-+		 * support variation in the sub-region sizes this was split.
-+		 * dp_ioremap() will fail with -ENODEV here if only a single
-+		 * reg is specified, so fill in the sub-region offsets and
-+		 * lengths based on this single region.
-+		 */
-+		if (PTR_ERR(dss->aux.base) == -ENODEV) {
-+			if (dss->ahb.len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
-+				DRM_ERROR("legacy memory region not large enough\n");
-+				return -EINVAL;
-+			}
-+
-+			dss->ahb.len = DP_DEFAULT_AHB_SIZE;
-+			dss->aux.base = dss->ahb.base + DP_DEFAULT_AUX_OFFSET;
-+			dss->aux.len = DP_DEFAULT_AUX_SIZE;
-+			dss->link.base = dss->ahb.base + DP_DEFAULT_LINK_OFFSET;
-+			dss->link.len = DP_DEFAULT_LINK_SIZE;
-+			dss->p0.base = dss->ahb.base + DP_DEFAULT_P0_OFFSET;
-+			dss->p0.len = DP_DEFAULT_P0_SIZE;
-+		} else {
-+			DRM_ERROR("unable to remap aux region: %pe\n", dss->aux.base);
-+			return PTR_ERR(dss->aux.base);
-+		}
-+	} else {
-+		dss->link.base = dp_ioremap(pdev, 2, &dss->link.len);
-+		if (IS_ERR(dss->link.base)) {
-+			DRM_ERROR("unable to remap link region: %pe\n", dss->link.base);
-+			return PTR_ERR(dss->link.base);
-+		}
- 
--	dss->ahb.len = DP_DEFAULT_AHB_SIZE;
--	dss->aux.base = dss->ahb.base + DP_DEFAULT_AUX_OFFSET;
--	dss->aux.len = DP_DEFAULT_AUX_SIZE;
--	dss->link.base = dss->ahb.base + DP_DEFAULT_LINK_OFFSET;
--	dss->link.len = DP_DEFAULT_LINK_SIZE;
--	dss->p0.base = dss->ahb.base + DP_DEFAULT_P0_OFFSET;
--	dss->p0.len = DP_DEFAULT_P0_SIZE;
-+		dss->p0.base = dp_ioremap(pdev, 3, &dss->p0.len);
-+		if (IS_ERR(dss->p0.base)) {
-+			DRM_ERROR("unable to remap p0 region: %pe\n", dss->p0.base);
-+			return PTR_ERR(dss->p0.base);
-+		}
-+	}
- 
- 	io->phy = devm_phy_get(&pdev->dev, "dp");
- 	if (IS_ERR(io->phy))
--- 
-2.29.2
+> Before the invalidation, an active flag is cleared to ensure no new
+> mappings can be created while the unmap is proceeding.
+> unmap_mapping_range() should sequence itself with the TLB flush and
 
+AFIAK unmap_mapping_range() kicks off the TLB flush and then
+returns. It doesn't always wait for the flush to fully finish. Ie some
+cases use RCU to lock the page table against GUP fast and so the
+put_page() doesn't happen until the call_rcu completes - after a grace
+period. The unmap_mapping_range() does not wait for grace periods.
+
+This is why for normal memory the put_page is done after the TLB flush
+completes, not when unmap_mapping_range() finishes. This ensures that
+before the refcount reaches 0 no concurrent GUP fast can still observe
+the old PTEs.
+
+> GUP-fast using the same mechanism it does for regular pages. As far as I
+> can see, by the time unmap_mapping_range() returns, we should be
+> confident that there are no pages left in any mapping (seeing no new
+> pages could be added since before the call). 
+
+When viewed under the page table locks this is true, but the 'fast'
+walkers like gup_fast and hmm_range_fault can continue to be working
+on old data in the ptes because they don't take the page table locks.
+
+They interact with unmap_mapping_range() via the IPI/rcu (gup fast) or
+mmu notifier sequence count (hmm_range_fault)
+
+> P2PDMA follows this pattern, except pages are not mapped linearly and
+> are returned to the genalloc when their refcount falls to 1. This only
+> happens after a VMA is closed which should imply the PTEs have already
+> been unlinked from the pages. 
+
+And here is the problem, since the genalloc is being used we now care
+that a page should not continue to be accessed by userspace after it
+has be placed back into the genalloc. I suppose fsdax has the same
+basic issue too.
+
+> Not to say that all this couldn't use a big conceptual cleanup. A
+> similar question exists with the single find_special_page() user
+> (xen/gntdev) and it's definitely not clear what the differences are
+> between the find_special_page() and vmf_insert_mixed() techniques and
+> when one should be used over the other. Or could they both be merged to
+> use the same technique?
+
+Oh that gntdev stuff is just nonsense. IIRC is trying to delegate
+control over a PTE entry itself to the hypervisor.
+
+		/*
+		 * gntdev takes the address of the PTE in find_grant_ptes() and
+		 * passes it to the hypervisor in gntdev_map_grant_pages(). The
+		 * purpose of the notifier is to prevent the hypervisor pointer
+		 * to the PTE from going stale.
+		 *
+		 * Since this vma's mappings can't be touched without the
+		 * mmap_lock, and we are holding it now, there is no need for
+		 * the notifier_range locking pattern.
+
+I vaugely recall it stuffs in a normal page then has the hypervisor
+overwrite the PTE. When it comes time to free the PTE it recovers the
+normal page via the 'find_special_page' hack and frees it. Somehow the
+hypervisor is also using the normal page for something.
+
+It is all very strange and one shouldn't think about it :|
+
+Jason
