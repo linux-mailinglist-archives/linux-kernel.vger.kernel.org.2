@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C52D41EE08
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BD641EE0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 15:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353687AbhJANC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 09:02:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35506 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353502AbhJANCZ (ORCPT
+        id S1353742AbhJANDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 09:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353502AbhJANDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 09:02:25 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 98AE222675;
-        Fri,  1 Oct 2021 13:00:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633093240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8KM+xbda/WIoRg9sPEGIZlEe401mZyQLLM/2ulb4YBQ=;
-        b=p+F5M+3Mim8vVwUoc4pVPv9FD+vwt25tYG3I1KrNLmCvg1ic8howqbCE72Yr2UKjkkDjd4
-        Qy0ekpRSVaULREpGTLlLj4hYliu7epqHdpe1BXKsxXF6eBkPtZk6ck868mlU6w532mrNPa
-        3haxDsWjnQaJ/zqf96fLfk3LIsyUB4I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633093240;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8KM+xbda/WIoRg9sPEGIZlEe401mZyQLLM/2ulb4YBQ=;
-        b=Y5zBaqK3BQL4QZKwsufqCXJRjDWURw15qHhZIYlH7Ktl9SkgR0DEq+ncmHjF43A8DDp74v
-        S+0fGpUb4gHL6qCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 442D213C5D;
-        Fri,  1 Oct 2021 13:00:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9dnZDngGV2GZdAAAMHmgww
-        (envelope-from <jroedel@suse.de>); Fri, 01 Oct 2021 13:00:40 +0000
-Date:   Fri, 1 Oct 2021 15:00:38 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] x86/sev: Fully map the #VC exception stacks
-Message-ID: <YVcGdpVuSsieFL8W@suse.de>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
- <YVbNlXwiASQEsG+x@zn.tnic>
- <YVb2AGXAwYx/OI6J@suse.de>
- <YVcF9ENTfLAGaLec@zn.tnic>
+        Fri, 1 Oct 2021 09:03:13 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0B8C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 06:01:29 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id i84so20250264ybc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 06:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3U50WAWyskpQk1AzOfpHHLz3EX5tLnCzGo+gGZ6SnDo=;
+        b=Gx04O3EK1AOaaHZ7zoxzCRlga+/f3FK4SpwvT4NQwbGSMBKoxIAdcSL50S/oY/IkIn
+         QOa65ChfB96jt1C89jm6lRmNp5qfrBnDuGMCa9htJL46t4rxjCfcbu86HiS+OB3l+p6K
+         1ykIAkBHSDoU076+5plhdpVfpTcjGPF8KP95nBKqrDoXekYsk+BMlYacYXioLbp89T+O
+         T0Q5bwRhLATQSnrcEsgalS2Ne81naDphCztH4mhpk7mrgW+TsUspGOGyA3BuJjThH06L
+         UqJfHX5QifuEJ6pre2fiIOQJnMVjJhgw3eHHz0bkhW0pNkiU2+MLIFG6feCi8xz/pRuP
+         5wwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3U50WAWyskpQk1AzOfpHHLz3EX5tLnCzGo+gGZ6SnDo=;
+        b=jF/uhGCT7MipXF/WQWsz3HwUScbUvYFTnUTbpbYymFWxjpnQMksnPJbBxo8JX1nVE/
+         P3qdu+y0juMY+JxS1mzViAUztl2O2u/k/ImQEOS4BkHP6S0oF0oMe/yy0SlJg+jnAF7M
+         M4gTPN3BQRLn++0c9eAezl/2W/VOLc3dO+Oi55p9Wv/25vhLfIgdlljtbH5YMPSlp2sc
+         aWRGaFWtgea5SZtpTqFG1CuyGwFKgfK7yxqT/MaskTXa5yU9smVS9BgIR0r/8hohBRVg
+         N3pq+qPaTS6rr/5EXFioJT4ArTvdl6xau5z/mbpCm5PRlaGG92+unGqPYjGVsHiIcJ9B
+         9Vsw==
+X-Gm-Message-State: AOAM533+rt2lMitCkk4faB8WI+bSoAFJS+upj6LAqB5m6tPf2ead37/U
+        WeJ7ytNXrxbOlbCgpvzwo80UrMzwGO/39+vX++s=
+X-Google-Smtp-Source: ABdhPJyOtpCZvuNfHU8rRDLLTaWHiKi1SFVbXUrbWdyPqMbsk+CmIjUEf1gol23yId5XiR3d0FPw0XetdULeMMFkLSs=
+X-Received: by 2002:a25:641:: with SMTP id 62mr6000425ybg.162.1633093286576;
+ Fri, 01 Oct 2021 06:01:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVcF9ENTfLAGaLec@zn.tnic>
+Received: by 2002:a05:7000:13b:0:0:0:0 with HTTP; Fri, 1 Oct 2021 06:01:25
+ -0700 (PDT)
+Reply-To: dhlcustomercares@outlook.com
+From:   Richard Palmer <undpgrantclaim06@gmail.com>
+Date:   Fri, 1 Oct 2021 06:01:25 -0700
+Message-ID: <CAMZsRA4rZY9-4ru1_=xZ-MaHB75yKkyRVKehTLtETrzQdtE1gA@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 02:58:28PM +0200, Borislav Petkov wrote:
-> On Fri, Oct 01, 2021 at 01:50:24PM +0200, Joerg Roedel wrote:
-> > Yeah, I think the right fix is to export cea_map_percpu_pages() and move
-> > the cea_map_stack() macro to a header and use it to map the VC stacks.
-> 
-> I'll do you one better: Put the #VC stack mapping into
-> percpu_setup_exception_stacks(), where it naturally belongs and where
-> the other stacks are being mapped instead of doing everything "by hand"
-> like now and exporting random helpers.
+Dear Beneficiary,
 
-The VC stack is only allocated and mapped when SEV-ES is detected, so
-they can't always be mapped by generic code.
+UNITED NATION, and PAYMENT NOTIFICATION this is to bring to your
+notice that, I have paid the re-activation fee and the delivery of
+your ATM Card. I paid it because the ATM Card is 8119
+(US$4.800,000.00), has less three days to expire and when it expires,
+the money will go into Government purse. With that I decided to help
+you pay the money so that, the ATM Card will not expire, because I
+know when you will get your ATM Card definitely you must pay me back
+my money and even compensate me for helping you.
 
-Regards,
+Now i want you to contact DHL COURIER SERVICE with your Full Contact
+information?s so that they can deliver your Card to your designated
+address without any delay. Like I stated earlier, the delivery charges
+has been paid but i did not pay their official keeping fees since they
+refused. They refused and the reason is that they do not know when you
+are going to contact them and demurrage might have increase.
 
-	Joerg
+YOU? COUNTRY; YOU? FULL NAME;
+OCCUPATION; HOME ADDRESS; PASS PORT;
+MOBIL PHONE NUMBER; OFFICE NUMBER;
+HOME NUMBER; AGE; SEX;
+
+Below is their Contact Information?s, Contact Person: Larry Page. DHL
+Delivery Manager Email: (dhlexpress.fastservice@outlook.com) Tel:
++1(224) 269-1525 Contact today to avoid increase of their keeping fees
+and let me know once you receive your kind.
+
+Best Regards.
+Richard Palmer
