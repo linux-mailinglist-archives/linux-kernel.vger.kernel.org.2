@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEC141F565
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C053C41F56D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Oct 2021 21:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354937AbhJATF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 15:05:26 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:33744 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhJATFY (ORCPT
+        id S229882AbhJATGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 15:06:32 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:35397 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhJATGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:05:24 -0400
-Received: by mail-oi1-f175.google.com with SMTP id 24so12691406oix.0;
-        Fri, 01 Oct 2021 12:03:40 -0700 (PDT)
+        Fri, 1 Oct 2021 15:06:31 -0400
+Received: by mail-oi1-f174.google.com with SMTP id n64so12670585oih.2;
+        Fri, 01 Oct 2021 12:04:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=AaCeKJcib3FJiV3HX2sgMBrTcdReAxBxq1SITEI+C/0=;
-        b=PDd/173tMlEb0Qtk3MqOBdqCeRo0Sr8QGAPK7Emc7/0lMZIcsukw48YsgqEwmHebCm
-         jix6zg6FbIFz1qGfsLRDEsTAm/fd+BURPdOAvb7kV1Fmopdrua/xc6dQhDESdUb3ka/C
-         rd/48YaPynLdSrD6BckP1FP8lUvYFlQCmPlZpHgk1ZYK0b0HTAvvG64MIT7Abn6mJEUJ
-         yrkBVvkin5AqgMNDE+SMIhPJAtqwdxIeLJS8TmYuUsponhZb2loJN9foCtYePPKjb8AS
-         7NwPZJhPf9gzWn02seu6B22uVV05ANCQ9XJ8opjcz7fkiKsQZNp/Wohy3H9PNoj9uyQF
-         xVYg==
-X-Gm-Message-State: AOAM531PG2uyDUimHLK1tjFyG55Lb9khIpaH8nybQ0ysLwDHy/bL1k1N
-        CNIBtlvBZyuhe6d1IjH0dw==
-X-Google-Smtp-Source: ABdhPJzXM+LsFeHXSBeISyHVxuZDXoVUYnnKfozOL/f9TaZwO8L5uAzXQWnqiUUWxIbNabeOU0oUhg==
-X-Received: by 2002:aca:2319:: with SMTP id e25mr5080076oie.175.1633115019612;
-        Fri, 01 Oct 2021 12:03:39 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l1sm396946oop.28.2021.10.01.12.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Oct 2021 12:03:39 -0700 (PDT)
-Received: (nullmailer pid 4113071 invoked by uid 1000);
-        Fri, 01 Oct 2021 19:03:37 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     bgoswami@codeaurora.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        plai@codeaurora.org, devicetree@vger.kernel.org, tiwai@suse.com,
-        lgirdwood@gmail.com, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        judyhsiao@chromium.org, agross@kernel.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, perex@perex.cz, robh+dt@kernel.org,
-        bjorn.andersson@linaro.org
-In-Reply-To: <1633087292-1378-7-git-send-email-srivasam@codeaurora.org>
-References: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org> <1633087292-1378-7-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH 6/8] ASoC: dt-bindings: Add SC7280 sound card bindings
-Date:   Fri, 01 Oct 2021 14:03:37 -0500
-Message-Id: <1633115017.918117.4113070.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6kWvsqS9wtvwiaERR1Va8UItEXxGSeZlzApY0N8G3rE=;
+        b=q94lhcFZLqGuzJpezvCiw8fS3mZssVIacMfRks9iZu7EhlaV52myfGaJEJs8wenHms
+         yAhIjtjL4GVWAyPQE67iMQXelm7eDT+C2urNhqWJ0Do+XzlU2C6hdvAkyH+62CbtBYDD
+         XwEFKTGQCuAFk+NcL5X+cMqyOC4f4mLLtESgfwZB/g1J4rtCNz3eBdSw8B//aLiK//It
+         ka5YWFMf7O3GJtT6n6T2GHyAkT9fxSi5KYGa72f3GKaxnemH+YUu6rV9rtfjxzgZ0frl
+         /X2QJIX9Ttjj2c/U+yOBOLwcqvDzFBVoPc58rD4VKaUO2EQxlNoaYreowNnY4aJHA2PS
+         XMBA==
+X-Gm-Message-State: AOAM533zK3hZnCHlG35ggnsJFBTZ78cliHEkPZk4+18koq6eNvkSYBk4
+        paf3r5MvsTdJzCq7+T2YfvdF0dZjbjkdJyPizC8=
+X-Google-Smtp-Source: ABdhPJwkJ1z1pZjMxWjmM/JFqZfk81xzq1QVWsHMICaYKew+bU3RpBJyonPfV4yRXS3vbFfo9JHBvc+qP2NyUlBFBLk=
+X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr4979269oib.69.1633115086415;
+ Fri, 01 Oct 2021 12:04:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210928164217.950960-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0jzbm5xnFSceQNmZjDQ0eU=i_f_WnDcoa05rEQ083mDkg@mail.gmail.com> <5b5f8adcf441494c5e17b9fb47dc42f345c737f2.camel@linux.intel.com>
+In-Reply-To: <5b5f8adcf441494c5e17b9fb47dc42f345c737f2.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 1 Oct 2021 21:04:35 +0200
+Message-ID: <CAJZ5v0iVMfz2joKiWK05FLpDyQTQj4RFAoE9Mc_RHbaUA1qRvw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Process HWP Guaranteed change notification
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, pablomh@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Oct 2021 16:51:30 +0530, Srinivasa Rao Mandadapu wrote:
-> Add bindings for lpass sc7280 based soundcards which supports
-> audio over i2s based speaker, soundwire based headset, msm dmics
-> and HDMI Port.
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
->  1 file changed, 61 insertions(+), 8 deletions(-)
-> 
+On Fri, Oct 1, 2021 at 9:01 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Fri, 2021-10-01 at 20:52 +0200, Rafael J. Wysocki wrote:
+> > On Tue, Sep 28, 2021 at 6:42 PM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > >
+> > > It is possible that HWP guaranteed ratio is changed in response to
+> > > change in power and thermal limits. For example when Intel Speed
+> > > Select
+> > > performance profile is changed or there is change in TDP, hardware
+> > > can
+> > > send notifications. It is possible that the guaranteed ratio is
+> > > increased. This creates an issue when turbo is disabled, as the old
+> > > limits set in MSR_HWP_REQUEST are still lower and hardware will
+> > > clip
+> > > to older limits.
+> > >
+> > > This change enables HWP interrupt and process HWP interrupts. When
+> > > guaranteed is changed, calls cpufreq_update_policy() so that driver
+> > > callbacks are called to update to new HWP limits. This callback
+> > > is called from a delayed workqueue of 10ms to avoid frequent
+> > > updates.
+> > >
+> > > Although the scope of IA32_HWP_INTERRUPT is per logical cpu, on
+> > > some
+> > > plaforms interrupt is generated on all CPUs. This is particularly a
+> > > problem during initialization, when the driver didn't allocated
+> > > data for other CPUs. So this change uses a cpumask of enabled CPUs
+> > > and
+> > > process interrupts on those CPUs only.
+> > >
+> > > When the cpufreq offline() or suspend()callback is called, HWP
+> > > interrupt
+> > > is disabled on those CPUs and also cancels any pending work item.
+> > >
+> > > Spin lock is used to protect data and processing shared with
+> > > interrupt
+> > > handler. Here READ_ONCE(), WRITE_ONCE() macros are used to
+> > > designate
+> > > shared data, even though spin lock act as an optmization barrier
+> > > here.
+> > >
+> > > Signed-off-by: Srinivas Pandruvada <
+> > > srinivas.pandruvada@linux.intel.com>
+> > > ---
+> > > This patch is a replacement from the patch submitted to 5.15 and
+> > > later
+> > > reverted.
+> >
+> > Applied as 5.16 material, thanks!
+> I got email that pablo (pablomh@gmail.com) tested this. So he can added
+> Tested-by also pointed out typo in "optmization".
+> Shall I send a patch with this change?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml: allOf:3:then:properties:interrupt-names:anyOf:2:items: 'anyOf' conditional failed, one must be fixed:
-	[{'const': 'lpass-irq-lpaif'}, 'lpass-irq-vaif', 'lpass-irq-rxtxif', 'lpass-irq-hdmi'] is not of type 'object', 'boolean'
-	'lpass-irq-vaif' is not of type 'object', 'boolean'
-	'lpass-irq-rxtxif' is not of type 'object', 'boolean'
-	'lpass-irq-hdmi' is not of type 'object', 'boolean'
-	from schema $id: http://json-schema.org/draft-07/schema#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml: ignoring, error in schema: allOf: 3: then: properties: interrupt-names: anyOf: 2: items
-warning: no schema found in file: ./Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml:0:0: /example-0/soc/lpass@62d80000: failed to match any schema with compatible: ['qcom,sc7180-lpass-cpu']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1535291
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+No need, I will update the commit in the tree.
