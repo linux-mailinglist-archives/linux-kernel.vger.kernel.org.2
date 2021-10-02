@@ -2,140 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFF041FC95
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49AE41FC99
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhJBOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 10:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229560AbhJBOpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 10:45:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE8161A38;
-        Sat,  2 Oct 2021 14:44:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633185845;
-        bh=RVXCE1KtXB8pEGemhZzbi1pw9kaZh7HJ77HnqA+Npns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KmKcktd/wdJOAcwgKPmcihqF52yuGkwO6RKYCQVgvR3byomenOLbvq2VfDP6EjvI0
-         plksHABi/Z/OXC4bfqZU2y4MUj4nw/JE7r+MlNbFWxMgZ3xVT+GKw6RNwYkpMQ3q5H
-         Df6XaN3sMEBBNp5q2PWkokq4AYxKlEzAikICkvoM=
-Date:   Sat, 2 Oct 2021 16:44:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-Message-ID: <YVhwMJyJeAb8iEFL@kroah.com>
-References: <20210930065953-mutt-send-email-mst@kernel.org>
- <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
- <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
- <YVaywQLAboZ6b36V@kroah.com>
- <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com>
- <20211002070218-mutt-send-email-mst@kernel.org>
- <YVg/F10PCFNOtCnL@kroah.com>
- <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
+        id S233430AbhJBOrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 10:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhJBOrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 10:47:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE732C0613EC;
+        Sat,  2 Oct 2021 07:45:37 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r201so6302120pgr.4;
+        Sat, 02 Oct 2021 07:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nxHNwN/IZVw4dmnEIbmDPrePZ8gOd6ZA6sVAKz4Y2u0=;
+        b=W3Vp62ZyhHKMdLgxO5EFSAcZ57XnFRUfAvuHonde+anM+i/cMhoUjZRde+fM94KYgf
+         qukqhjbBHy5pgHD7lp0WK7X+4NLzhUXeKd9OC37Pqd/LAy7BR/YiO4IAHzDH/bHQbIs4
+         M+QpvjTqy6k879CTjCtHSW//Bk4vVqL5M2wNQRJ2ohrVZ8g5zd+n3dNgYX7Dxlb4Gx+a
+         t+WXm1mYyKWeevCRTFBWDSSzQan/t1SSppmMIia3PZLUj6eHqIC6UvLux92CH5XPxrv5
+         Tuhyw1K811oA8oveNFbVLPWYe1v3SfU45FkwWqMKjMRV/xM+PoA1Z1rqdiJAOdHkWSBn
+         t6kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nxHNwN/IZVw4dmnEIbmDPrePZ8gOd6ZA6sVAKz4Y2u0=;
+        b=Jlf1iLmyPy4Z38BeI2zdju6LpRxOo3biEcRzQfbPCbMqUsaha7NSQEZOVyR7weReyW
+         h09NPPIZNva2tHA2bHfjgOujEtMEX+DuWkE90So/uGg18tpPDn9PP6aDAEJ8fOBSoJPY
+         NvzlKsFNHCozlIVo5uoE7HUGDOjk8KboD9CfGMVh55vrOiP0stGZMPLW34Jors5ca1Lf
+         8f+n+gi5SO0/1qM6qXKLrF0GwU7MeP0EVgHFZPm10LHC6bUSDb4/zMO6uQSAgwC/thz6
+         tM7WqUsKLSsTul9OtW4pX7rbuSPDzGht9huLaX9jmwZF6YJboA/99ChglIJkM2Y3tFSv
+         q44w==
+X-Gm-Message-State: AOAM532QhYgg+UU4qdm/L3KQmkUjchTe1E1USUyZ491z3aYUIJd8/5en
+        CQc++TBeurzs4eGIzpY8ZdqowoXjAtF23suDPec=
+X-Google-Smtp-Source: ABdhPJx/wu4MUilt2DGxHuqo3pqfpoKZsxRoN/aNu9Z2o/4Xm25ORUCeeqFd8ZaMXEdo38e7BCjUCg==
+X-Received: by 2002:a63:3648:: with SMTP id d69mr3080725pga.295.1633185937212;
+        Sat, 02 Oct 2021 07:45:37 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6006:a148:5133:c24f:f24a:a8c])
+        by smtp.googlemail.com with ESMTPSA id x10sm8818058pfq.0.2021.10.02.07.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 07:45:36 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH v2] docs: checkpatch: add UNNECESSARY_ELSE message
+Date:   Sat,  2 Oct 2021 20:15:06 +0530
+Message-Id: <20211002144506.29974-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211001120218.28751-1-utkarshverma294@gmail.com>
+References: <20211001120218.28751-1-utkarshverma294@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 02, 2021 at 07:20:22AM -0700, Andi Kleen wrote:
-> 
-> On 10/2/2021 4:14 AM, Greg Kroah-Hartman wrote:
-> > On Sat, Oct 02, 2021 at 07:04:28AM -0400, Michael S. Tsirkin wrote:
-> > > On Fri, Oct 01, 2021 at 08:49:28AM -0700, Andi Kleen wrote:
-> > > > >    Do you have a list of specific drivers and kernel options that you
-> > > > > feel you now "trust"?
-> > > > For TDX it's currently only virtio net/block/console
-> > > > 
-> > > > But we expect this list to grow slightly over time, but not at a high rate
-> > > > (so hopefully <10)
-> > > Well there are already >10 virtio drivers and I think it's reasonable
-> > > that all of these will be used with encrypted guests. The list will
-> > > grow.
-> > What is keeping "all" drivers from being on this list?
-> 
-> It would be too much work to harden them all, and it would be pointless
-> because all these drivers are never legitimately needed in a virtualized
-> environment which only virtualize a very small number of devices.
+Added and documented UNNECESSARY_ELSE message type.
 
-Why would you not want to properly review and fix up all kernel drivers?
-That feels like you are being lazy.
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+Changes in v2:
+  - Included the continue statement.
 
-What exactly are you meaning by "harden"?  Why isn't it automated?  Who
-is doing this work?  Where is it being done?
+ Documentation/dev-tools/checkpatch.rst | 77 ++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
 
-Come on, you have a small number of virtio drivers, to somehow say that
-they are now divided up into trusted/untrusted feels very very odd.
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index f0956e9ea2d8..b7c41e876d1d 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -1166,3 +1166,80 @@ Others
+ 
+   **TYPO_SPELLING**
+     Some words may have been misspelled.  Consider reviewing them.
++
++  **UNNECESSARY_ELSE**
++    Using an else statement just after a return/break/continue statement is
++    unnecessary. For example::
++
++      for (i = 0; i < 100; i++) {
++              int foo = bar();
++              if (foo < 1)
++                      break;
++              else
++                      usleep(1);
++      }
++
++    is generally better written as::
++
++      for (i = 0; i < 100; i++) {
++              int foo = bar();
++              if (foo < 1)
++                      break;
++              usleep(1);
++      }
++
++    It helps to reduce the indentation and removes the unnecessary else
++    statement. But note, there can be some false positives because of the
++    way it is implemented in the checkpatch script. The checkpatch script
++    throws this warning message if it finds an else statement and the line
++    above it is a break/continue/return statement indented at one tab more
++    than the else statement. So there can be some false positives like::
++
++      int n = 15;
++      if (n > 10)
++              n--;
++      else if (n == 10)
++              return 0;
++      else
++              n++;
++
++    Now the checkpatch will give a warning for the use of else after return
++    statement. If the else statement is removed then::
++
++      int n = 15;
++      if (n > 10)
++              n--;
++      else if (n == 10)
++              return 0;
++      n++;
++
++    Now both the n-- and n++ statements will be executed which is different
++    from the logic in the first case. As the if block doesn't have a return
++    statement, so removing the else statement is wrong.
++
++    Always check the previous if/else if blocks, for break/continue/return
++    statements, and do not blindly follow the checkpatch advice. One
++    patch (https://lore.kernel.org/all/20200615155131.GA4563@sevic69/)
++    even made it to the mainline, which was again reverted and fixed.
++    Commit 98fe05e21a6e ("staging: rtl8712: Remove unnecesary else
++    after return statement.")
++
++    Also, do not change the code if there is only a single return statement
++    inside if-else block, like::
++
++      if (a > b)
++              return a;
++      else
++              return b;
++
++    now if the else statement is removed::
++
++      if (a > b)
++              return a;
++      return b;
++
++    there is no considerable increase in the readability and one can argue
++    that the first form is more readable because of the indentation. So
++    do not remove the else statement in case of a single return statement
++    inside the if-else block.
++    See: https://lore.kernel.org/lkml/20140925032215.GK7996@ZenIV.linux.org.uk/
+-- 
+2.25.1
 
-Just do the real work here, everyone will benefit, including yourself.
-
-> >   How exactly are
-> > you determining what should, and should not, be allowed?
-> 
-> Everything that has had reasonable effort at hardening can be added. But if
-> someone proposes to add a driver that should trigger additional scrutiny in
-> code review. We should also request them to do some fuzzing.
-
-You can provide that fuzzing right now, why isn't syzbot running on
-these interfaces today?
-
-And again, what _exactly_ do you all mean by "hardening" that has
-happened?  Where is that documented and who did that work?
-
-> > And why not just put all of that into userspace and have it pick and
-> > choose?  That should be the end-goal here, you don't want to encode
-> > policy like this in the kernel, right?
-> 
-> How would user space know what drivers have been hardened? This is really
-> something that the kernel needs to determine. I don't think we can outsource
-> it to anyone else.
-
-It would "know" just as well as you know today in the kernel.  There is
-no difference here.
-
-Just do the real work here, and "harden" all of the virtio drivers
-please.  What prevents that?
-
-> Also BTW of course user space can still override it, but really the defaults
-> should be a kernel policy.
-> 
-> There's also the additional problem that one of the goals of confidential
-> guest is to just move existing guest virtual images into them without much
-> changes. So it's better for such a case if as much as possible of the policy
-> is in the kernel. But that's more a secondary consideration, the first point
-> is really the important part.
-
-Where exactly are all of these "goals" and "requirements" documented and
-who is defining them and forcing them on us without actually doing any
-of the work involved?
-
-thanks,
-
-greg k-h
