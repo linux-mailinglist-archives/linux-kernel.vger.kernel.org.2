@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5BC41FCDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E522941FCE4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhJBPyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S233543AbhJBP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhJBPyW (ORCPT
+        with ESMTP id S233438AbhJBP4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:54:22 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4568EC0613EC;
-        Sat,  2 Oct 2021 08:52:36 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 6D0931F411C6
-Received: by earth.universe (Postfix, from userid 1000)
-        id 348223C0CA8; Sat,  2 Oct 2021 17:52:31 +0200 (CEST)
-Date:   Sat, 2 Oct 2021 17:52:31 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: power: supply: max17040: switch to
- unevaluatedProperties
-Message-ID: <20211002155231.esfpwvirwjkhhij4@earth.universe>
-References: <20210929160605.74831-1-david@ixit.cz>
+        Sat, 2 Oct 2021 11:56:18 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F839C0613EF
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 08:54:30 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id u5so6041405uao.13
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 08:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=FVpHGn6Bd/3N42nal2cBmvqDTFJLswOt/kbQoY3Pz7JLJvYjPcJlY4qwZNq4RP9B1n
+         BpzLfIYXWy05x2EaEKAlO/5wCUe/8rmsQMvKG3TMgoDZL8AE6oLIuj6qMrVK9InqVm9u
+         Dl8haCJ+RZt8epUP8e5EUGvEePT2ZLCWl3Z3sedbL624S26uOpX0Barj4T47JNn2bt0V
+         E8YzxOJh+2HQ4R/m13c5ec2fCChJc7N/U3Loqdei9aMpsOYrsemdhA6mdkYdPazKXQN6
+         CO3F0WeHchjlK34+2diiPcI6dHSb1tVq8x+1J3e/WHOMghfGsrtc+KVaBxKFAljgbHuJ
+         w6/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=cOS0GNaDGfk6oGlWWwnxvSx8MC+60dge9kTd1BmrCgLpOLNsv7kZ12A3WfdhSkiV+5
+         aiU9FQtcoVnHQ5/RlURUNEe/gWT50CLoHRyYkdiOC1N6vPTLAS5A3XuFHAuvzbsMBpnd
+         YOAdc73bd3L+JuF1TlSaehpNbNxEqM/LktH0PEbjsj4EUu2d22VwX6xghvi9keEGeS1b
+         aGSc+n2gbh6gG0SV2WLEAlZN8LdnytV6cSNCYEOfRwaX8bMngmD8OGv74I1fgx+R378a
+         xRAWORlNCv7U12PbobegRPSAM5itVG3DSTAYF7EDIQNRghNib70lcFhycOSq3/XQw6P+
+         vUOg==
+X-Gm-Message-State: AOAM532LGrRAtaAcaYr5hBvyvYsiOhA8nsVgKVWq21GuXDf+xAIbj3aA
+        UaK0CykRlMmtB1Oo7N8FV8sWOr/84lNmvu9w2g==
+X-Google-Smtp-Source: ABdhPJxfNu0atcOn4ckF1m0436CxFLD1pDq0ZbHqXwQtyd+31Ih3YffoKHxmJ5ljAneYgsJw+K3Iryd9p+/80m+051w=
+X-Received: by 2002:ab0:4adc:: with SMTP id t28mr2211322uae.4.1633190069450;
+ Sat, 02 Oct 2021 08:54:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ab4zly5rdnua3eyf"
-Content-Disposition: inline
-In-Reply-To: <20210929160605.74831-1-david@ixit.cz>
+Received: by 2002:ab0:594c:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 08:54:29 -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
+Date:   Sat, 2 Oct 2021 08:54:29 -0700
+Message-ID: <CAMoG4bUH=LL_f8RmPG0JYMPeV5URKhqqs3vSmkksQHcZzRXYaQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Friend,
 
---ab4zly5rdnua3eyf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-Hi,
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-On Wed, Sep 29, 2021 at 06:06:05PM +0200, David Heidelberg wrote:
-> Required for validation of power-supplies from power-supply.yaml.
->=20
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
-Thanks, queued.
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
 
--- Sebastian
+Your Urgent Reply Will Be Appreciated
 
->  .../devicetree/bindings/power/supply/maxim,max17040.yaml        | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/power/supply/maxim,max1704=
-0.yaml b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-> index f792d06db413..ffb344987a7b 100644
-> --- a/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
-> @@ -62,7 +62,7 @@ required:
->    - compatible
->    - reg
-> =20
-> -additionalProperties: false
-> +unevaluatedProperties: false
-> =20
->  examples:
->    - |
-> --=20
-> 2.33.0
->=20
-
---ab4zly5rdnua3eyf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFYgD8ACgkQ2O7X88g7
-+pppyw/+Pr45fsL2424436n0/uBMv7viJDetLGP4IpWijlWCA4MgFBndngjRjyK3
-5dzfsjd7+JarWzyCSeA1L8FrAb/H9sl+LLUoLAF0CtFxV0lHluW3R1ND+0hv0ubZ
-dQXQ7Hx24csnXM7ONVyljhEQI/w4XwB2eHN4D0+vyFwVGEUHHSSFH/cqEhtABerU
-OODcgs1ZC+42y/XwYF9EsLYMkRNsQqWYBcLSi2OZg1c1QST1TSJ7pakKGqmGzyZc
-PvcQDTe8uInveS7Sm7aArMgLRoCY81F33ykMz2BFDvCT4SetQittn0NLgiglXDFd
-9DeRa4Q1k83pSwQKols7TRa4Z3T8LZkcHXxGVEQFgMSNsS8WwAhHd2SlsW8S20KL
-Zfg0GC/Fx0o9BwyJa9j+CoZ6WeLa83IIpvVwPPln/WqSeV6F7HUDz9tAF/RDbo3K
-luTzAxy4a5IECm36LnrgQ8ydEC42VQGII1gkjHMDmbUmD3HlCiVyCsCh/Ayjgq0d
-DPyKXjV0zdPWAHXgV3CgGkZpgpVEwknyQLgVnd2/7uq5zc/n8ZexVjJxIG+UjXux
-6puN1CpIJl+l/WSlg+5HZIdVwnFgiqLpwvqjhA5OjFpn206Zl1sUWedqfLPoEK88
-Db7FDGuysN6ncIa1Ta9Dfb1uwoF3yF8jiRSMH7PbkjdKYu73EBc=
-=j8W1
------END PGP SIGNATURE-----
-
---ab4zly5rdnua3eyf--
+Best Regards
+Mrs Aisha Al-Qaddafi
