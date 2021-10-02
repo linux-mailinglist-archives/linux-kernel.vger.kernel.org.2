@@ -2,211 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0E141FA5B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE5C41FA61
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhJBHxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 03:53:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232457AbhJBHxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 03:53:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7538361AEB;
-        Sat,  2 Oct 2021 07:51:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633161081;
-        bh=sIvSK2EP7/bNxMt0lT3kxzdAfTGoeSBeihandePxDMQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cuYHoEfgKt/8PymKwrVtdRwsJzfOuwM0HUbS/NXUtK45abnWgrIGV+rH1kTw5ZQkO
-         TN69OYHpL3GxUgtS/ZqQdB1F/Z0kewWzCu/yD6jRL+92l843L6ykBSCjlOgGhNpkFl
-         p/4UDVxFuu53Kb5uOzDLcul7K5Ir0MjKWAbXPWO5boIzlHHS+pARssk7oZaT0Tn0Fu
-         cSw/7QGrWl5lAvUcl3G0yrqhS5oVRAsMJmxS7zsf1l5xPihpvFnKN0JONiuHguQ+b1
-         c7lVL2ILIYyomYp9fo30vcr5x1os6FN5OmES6HJRvS2z9NUt0kn0yZs8/XF6dP2nCM
-         jgvgN1Bsl7qzg==
-Date:   Sat, 2 Oct 2021 09:51:18 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
-        shyam-sundar.s-k@amd.com, seth.heasley@intel.com,
-        nhorman@tuxdriver.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] i2c: switch from 'pci_' to 'dma_' API
-Message-ID: <YVgPdvwOGJrEqghZ@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
-        shyam-sundar.s-k@amd.com, seth.heasley@intel.com,
-        nhorman@tuxdriver.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <fad542b558afc45496f7a7ba581593cd46e68f7c.1629660967.git.christophe.jaillet@wanadoo.fr>
+        id S232607AbhJBIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 04:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232505AbhJBIAB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 04:00:01 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEAEC061775;
+        Sat,  2 Oct 2021 00:58:16 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id g7so42213742edv.1;
+        Sat, 02 Oct 2021 00:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ts6bk3GxBovwG4f530eMKfVDJOqsxZjiK9yVTc/q2vI=;
+        b=ixui5CDxltu462nt8n7kRhhiVQESIcKesNwemS7JvZkqIURGjUXuzSMSmnvdfhYudH
+         f3T+wWOeY9eMpdqz4vYcC1E7uPhojBm+ccJxF4NMJKsoYO7nGmWJD2WogIm0HV4so02Y
+         xIlMHFK6UaGngR/CQvYrDC9Z8LMDEYBDqXfHF8znpRpRZ/7NxqefphOF4/zFnpIleZJU
+         GykbYp+YtLnjjPMaO4iUXin5hGEYe2kg9mdrHxI0nH8tpM07QifJVMCV7h9qJzxbdGwy
+         EbaGZKCPrHChqqHWOyOouKJc4YQjwLzTFHlfTjSkcsgT722SE30U0ZB9A5XC9Atwc7DY
+         V3FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ts6bk3GxBovwG4f530eMKfVDJOqsxZjiK9yVTc/q2vI=;
+        b=ECmx+gjM4BLHREUzQ8KVVjUFY4FZXgC4k922cG8p13On2v77K1mFv2q+Z8XbMwJeDr
+         Ma4DD2/PWyWNK43dbcDXLDEMjs2jJiBPkOdqqPGVWckj0K8VTxefOBN1OOpkFrdVaKCJ
+         8MYVahapvVoFeOOxbgjjZZTEGgG9+2G8yJLy930Z/1dEj2N186BXmtf8dRUiMfAjP9Ct
+         aB5wmtLigzzfztYi5koiho0T9zX5GxSZLoGYUAymF42FLK5lS86k6ak4NqJnzKiSlELl
+         RHgX64YVojXSt4K01TibghQ8a212EGDfjNBpJTJ4VXojUOcC/bgnbIgizTc4skXyHpSZ
+         v8Ug==
+X-Gm-Message-State: AOAM530Ju1JvKn0tnL5su70iWH8h7DRjDMD95WWKb6SkUL2ahchSlUdw
+        e0RGYSfjJAefumMJqIaV2QqWufEbVHK9o6Rzj/+IflP1ako=
+X-Google-Smtp-Source: ABdhPJxCmLx4wUpcKCRgAg9IvaHgwZ17hJLPvVRKzijZAVUEVTSIPDE7KPW8qbpn/1SO3pcTcGQ+dDHuMJhQYaadV4s=
+X-Received: by 2002:a50:e00b:: with SMTP id e11mr2498592edl.359.1633161494719;
+ Sat, 02 Oct 2021 00:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uXHfLlTznz6LvNSF"
-Content-Disposition: inline
-In-Reply-To: <fad542b558afc45496f7a7ba581593cd46e68f7c.1629660967.git.christophe.jaillet@wanadoo.fr>
+References: <20211001122917.67228-1-andriy.shevchenko@linux.intel.com> <20211001163931.e3bb7bf5a401fa982fda5bb2@linux-foundation.org>
+In-Reply-To: <20211001163931.e3bb7bf5a401fa982fda5bb2@linux-foundation.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 2 Oct 2021 10:57:38 +0300
+Message-ID: <CAHp75VdQeNnNqVtp00iD6Wo+5GOs1AxSKqSDmxxx6D-AbAJ2AQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] seq_file: Move seq_escape() to a header
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 2, 2021 at 2:41 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Fri,  1 Oct 2021 15:29:17 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+>
+> > Move seq_escape() to the header as inliner.
+>
+> Some reason for doing this would be nice.  Does it make the kernel
+> smaller?  Is this performance-sensitive?
 
---uXHfLlTznz6LvNSF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It reduces exported namespace, hence makes it smaller, yes.
 
-On Sun, Aug 22, 2021 at 09:38:12PM +0200, Christophe JAILLET wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
->=20
-> The patch has been generated with the coccinelle script below.
->=20
-> It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-> This is less verbose.
->=20
-> While at it a 'dev_err()' message has been slightly simplified.
->=20
-> It has been compile tested.
->=20
->=20
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
->=20
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
->=20
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
->=20
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
->=20
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->=20
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
->=20
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
->=20
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
->=20
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
->=20
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+...
 
-Applied to for-next, thanks!
+> > +#include <linux/string_helpers.h>
+>
+> Why was this added?
 
+The definition of ESCAPE_OCTAL is there.
 
---uXHfLlTznz6LvNSF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFYD3YACgkQFA3kzBSg
-KbYu0Q/+PtIEYynAEiJoePONop4qyjpKf7cFhQ+JIZRHdWoOo4WMNQTMPHAtWEGB
-6GZHNfDB+v/P/LHGEbnDAzD0pfDwMTi8A9ad4MNGILUPeCGxvc6RQwz8OZOW/SuS
-8Tics4yhwDAmqlzLpo7i0xc8jPbaqkvGl+fOK++dTykPtXvRqZq+DbEteo6YAQtP
-v2KpTTEZ+cuQa0tJ/gx3HwbnlgiMHst9N8ttsbsvtP3+Bm1Q8BtpXwkDqGdfqS/b
-t0cj8P5qTYhIX0XR7+sepBpmAfO5YiO5kthv90SOrJKfUPWlsZxYzTsWg2TEUTKN
-2pG7G4KZH7Qmp1tuBTnd2I0S/aDDklzca5Mx1c4WQkTcoXtF8fP+bWVshAEgaZEh
-rUsSPkesnrxEDUS7bKvJtBZ1+zGr5pL9MPvVDvJ/aI5xcpVLFaojI2qHoSpi/nkc
-gkxMJvqXtbMyFlDPh3215Hthuhl14LwdfXQEV6PKbPhO4Mu8jOEA/z3FkQKwIlut
-Kw9OjDt1oX1Kbeq1m6T8VBoYscB+CLuZ3zd4YzDAd2v4IZeAPYLQdd9Ug0hN+xEA
-kHq9MFoHCS/3qNELjCVsHlQ+GwK/Mdjwe8RoG428iwmjFGe17eioWVgm3BXMGPD0
-etFhicXjZ8F2pwvWpIxNZmfy/dfBoVB1vZUSPQYhnIJxXaL4A/8=
-=PHaG
------END PGP SIGNATURE-----
-
---uXHfLlTznz6LvNSF--
+-- 
+With Best Regards,
+Andy Shevchenko
