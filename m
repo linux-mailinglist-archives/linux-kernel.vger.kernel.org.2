@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E30B41FECC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E7641FED2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhJBXpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
+        id S234290AbhJBXxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234280AbhJBXps (ORCPT
+        with ESMTP id S234273AbhJBXxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:45:48 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6D7C0613EF;
-        Sat,  2 Oct 2021 16:44:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HMNpy1d9Pz4xb9;
-        Sun,  3 Oct 2021 10:43:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633218235;
-        bh=jdy5JNJViBbQceeojrb8Lg+GiJVod62XNefz9Q9zGMg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rLO4CxydwThjUYpKtT+ewMDVdVfKgCUwXrMukvMI1VENAoBzrFq71t4MN+6vbfVl2
-         fpPtMPnefXCa8oYRNOzlImwID10tgnIpA9sveg8qEGU4QACpUb2AjUUDGx3ESg00Xs
-         zkUnh3hPftLvlEMti64+zjYQzCjeU6w/1fdveZCbQeJ6c2YqUItmyBjGVEVzyw8jv8
-         XK1pHUwz03abFsQ0b7r6dtl+8LbQzouyMfQW+zJCgzhTxj3AwcULYWKDNVuX0v8NXg
-         vBVj4+Rqgcu7D2yuTjoAwK9Htz79Vq6AZd5MBrdIdzef9FkZptW2qIDrCxEQxeFXFW
-         nmt2SFbhCMPKQ==
-Date:   Sun, 3 Oct 2021 10:43:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
-Message-ID: <20211003104353.7787c3e9@canb.auug.org.au>
-In-Reply-To: <YVjm3NXEhoBQtUSI@yury-ThinkPad>
-References: <20211001181245.228419-1-yury.norov@gmail.com>
-        <20211003094722.434c030d@canb.auug.org.au>
-        <YVjm3NXEhoBQtUSI@yury-ThinkPad>
+        Sat, 2 Oct 2021 19:53:53 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60495C0613EF
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 16:52:07 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i24so6152843lfj.13
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 16:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=DWmaqaBK3VHPsKjTNJeXDdL5YO382kmrBlq18HElcSI=;
+        b=FKhaKLPFJ6RQQamReLb4STcsqPATczVCwjxHPW3hG5nUKXijCucZTQyhtYt4MDYt0r
+         4P1yZcIm+WF0dDL5q5ZK2yBsV2FU0kPSn228mtLdUIBD11MEaj561ldZmG8HV9soAP72
+         2WarEPNFRKYS1pX89sFqu6+kVrjCTZiAeelh/ScMEJW5ETLrXUfySNd0B7egPn4bdu9l
+         AVC0yl6gRffLhoirxUG4OHMjKWVRs6lLADFrD5AYnCpArhLrDyK0LRhAclr00MMH45aP
+         PJOljZoVxbO0TD7umCgk88Zr/Ixh17TLdI402OgejXacBb1fZn1vcupG0auc7508hEML
+         SUFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DWmaqaBK3VHPsKjTNJeXDdL5YO382kmrBlq18HElcSI=;
+        b=ByOurgBHCevqtY1gRAt61Dt3bQBAHnVRrcfhakeRRfPhWvsXfWx8luq18a1+aTLjHm
+         hj7UOREX4ZBV8EXXEgXv/w1ERv5w7oZJOQV7A5MCbAUXdqc+6U+uW5HRHIxsjdqxzjSY
+         +2rSt5qXRGxpQOasbPMLDKyXpvCsTk1sculPxZYS3JsEGlvPpwnuRI8z5lOdSGfPbki1
+         tKwCFBIeNbcRxdN0CticI9welU40pJ8XDdIGwVsAzCvh6q55YglAqM+MLeg6kQULqi7h
+         34WBLqRp5e4zGdUI96vHI+ibBwyBT8o4QqpOpMZJajqo/gdbJFMkWZpHZ3fLseWniCTc
+         WAow==
+X-Gm-Message-State: AOAM531pm+Fhwp+2tfXzyZXovuPRVJeLITH5JlFf1e0t8DXYyEjL6yET
+        DiL2125lf+jHjqT1EamY1UUQYZPCdg2jNw==
+X-Google-Smtp-Source: ABdhPJy9JFhgCqmgrcSVr3c9iyMWIHWO+E+81TAcESUFPm5L7GEZMkZnE/pGGkQ9LWj+daE80rvfEQ==
+X-Received: by 2002:a2e:4a12:: with SMTP id x18mr6618398lja.309.1633218725415;
+        Sat, 02 Oct 2021 16:52:05 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id d1sm1163650lfj.61.2021.10.02.16.52.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 16:52:05 -0700 (PDT)
+Subject: Re: [V2] drm: msm: adreno: use IS_ERR() instead of null pointer check
+To:     Wang Qing <wangqing@vivo.com>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1604719151-28491-1-git-send-email-wangqing@vivo.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <4b7f494e-98f4-5e06-d025-72593ccb5301@linaro.org>
+Date:   Sun, 3 Oct 2021 02:52:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+sbm5rWV9n_aJg+5hEB3VwJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1604719151-28491-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+sbm5rWV9n_aJg+5hEB3VwJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 07/11/2020 06:19, Wang Qing wrote:
+> a6xx_gmu_get_mmio() never return null in case of error, but ERR_PTR(), so
+> we should use IS_ERR() instead of null pointer check and IS_ERR_OR_NULL().
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-Hi Yury,
+As a second thought, ioremap's NULL is converted to ERR_PTR(-EINVAL), so 
+the patch is correct.
 
-On Sat, 2 Oct 2021 16:10:20 -0700 Yury Norov <yury.norov@gmail.com> wrote:
->
-> Ok, I'll resend it based on Linus tree shortly
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 491fee4..82420f7
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -492,7 +492,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>   	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
+>   	uint32_t pdc_address_offset;
+>   
+> -	if (!pdcptr || !seqptr)
+> +	if (IS_ERR(pdcptr) || IS_ERR(seqptr))
+>   		goto err;
+>   
+>   	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
+> @@ -580,9 +580,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>   	wmb();
+>   
+>   err:
+> -	if (!IS_ERR_OR_NULL(pdcptr))
+> +	if (!IS_ERR(pdcptr))
+>   		iounmap(pdcptr);
+> -	if (!IS_ERR_OR_NULL(seqptr))
+> +	if (!IS_ERR(seqptr))
+>   		iounmap(seqptr);
+>   }
+>   
+> 
 
-There is no big hurry, the next linux-next release will not be until
-Tuesday (my time).  So you have time to retest after the rebase.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+sbm5rWV9n_aJg+5hEB3VwJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFY7rkACgkQAVBC80lX
-0GxF9gf+KAnaxw0eisqqSqcepbYMcwRtN4jFLkus8fDpuO17V4jnFQLsw22GkxaP
-Mcrbu2fgU/PVCWgxn/3uRSlJnjb0jaZ44zVym1DBof8qIiX5YIiDjaTobS7r16L+
-Bbiaury6Fe2RTDRqsxgiMtSJ4+DzQXNyRqNocCsMSElLwDjs3YARuFBS+dh/enDA
-uqX2MA+FH2Ijb75pqd/ui1ydpehNWtgvCKFltoaVTKEV2NP7ex2617WmSifleQOy
-xnWdwCU3UH8FA05x0q6B1o9TgpqHSjDeuq5A8AlM/s2Efh9rAU3lh4JTkKC69XLo
-+B2Tj8og5FXwIiw40Ua9fIxIZ0uJ5w==
-=4tcx
------END PGP SIGNATURE-----
-
---Sig_/+sbm5rWV9n_aJg+5hEB3VwJ--
+-- 
+With best wishes
+Dmitry
