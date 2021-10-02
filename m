@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E6D41FE34
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C76941FE36
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbhJBVLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 17:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
+        id S234073AbhJBVLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 17:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhJBVLk (ORCPT
+        with ESMTP id S234063AbhJBVLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 17:11:40 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68200C0613EF;
-        Sat,  2 Oct 2021 14:09:54 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y26so53751756lfa.11;
-        Sat, 02 Oct 2021 14:09:54 -0700 (PDT)
+        Sat, 2 Oct 2021 17:11:43 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A90C0613EF;
+        Sat,  2 Oct 2021 14:09:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y26so53752032lfa.11;
+        Sat, 02 Oct 2021 14:09:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ECXQTmBzFDgjiUakh8NRBVFwA2IrMTf5bmMTCdebOkA=;
-        b=pYquTQUf0hoen+Q+syQ9tYb/Nqk55KHsS+K/6/xUCLtIRU5xEDUsVWkXmvPIGD+vo1
-         jo/uzUwRevjSATlkfGHnF/WsVraK95EV5yzhhElAl7vYt4A0HqxmY3/ySVfeQPyKE/xu
-         u1k5TsAJ39npA7kLrnZWgHnsEToca2ZDNjk+owKZr1B1luza/4y+fUj/30BJlJjzNmX5
-         Ylm63AHuUyiXq3JDb5wClEABk9YeSmyrcJpUMlVyvDpEtCe92I/3OUI8wZa06wJNVVWY
-         66hYQei608Lat5zBjVQ9RRVhkgov0r99JSedFa7NmYY1nW2hNM81jp+EP4GN2XNFJTSk
-         vPhA==
+        bh=z0IJbSEK/6SCXx0V/HqC228nq1G+1MvfvLAKYcbNvfw=;
+        b=GAbFp0WBLXUWWsEebkkiFLSClHuQ2RG1LrKfvBBOhkgmmuGF0yIrHGfP8nxrRJv2p8
+         jQ10xq2cGlY6Tp2mBDIPxj1Kj+sQmYgYhX1/0RlZrjr02UrUHaeiNARIX65xhwNy5Aih
+         Dws85SUi0HI78EfM581oVRq5EjPHeoC+o3KaZ+iKJbnPVtypqoF8YEFp0pxggiGqhr9z
+         kPwj8LqHQkiXPBAHowYqqwiw17wsj3jSWUFqIZTLjpDiJezzyruIckW1SeI5mtMgtzAI
+         ZU/RjRbTW1MXV9Gt6WBZ+dj9TDMjzube79A5eDRDONSWv3GQCeeyJDQmJSFNBDqxEsT9
+         C+VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ECXQTmBzFDgjiUakh8NRBVFwA2IrMTf5bmMTCdebOkA=;
-        b=Kno24DWowOS5upIuP9H2J/VYNUJRJa/carhlP5LBUct1Cqn7XFRWxpH2SI2Tl8rjKa
-         uLaiH/CiOzXx+WXrpyw1Vkgy8Y33kA14JmbMCnRcl7erobVYXrCWKImlfmxVilAwxOHU
-         /Z2YgR4IV1Le5/73njorVD5/kQhdT0BDDzlK1fWgFrSe95an0Mo7FgfiHfYPGrUqVXi+
-         CXp33+Zgp4aCn9yy1dOccTDmOUJyw1Dr39s0qANI0udsk3IHQgjNmuI9mhgLTpCFxQ1M
-         YzeSPClypqIrktduVe7lblF0zWIQx/gzspY7zZ/v6wWtC2Gpi5R7k5OzxxmpGgl8iCqi
-         oqUw==
-X-Gm-Message-State: AOAM532v/EsgVb9xr1KLLPE4pdkBHuC87NOnUGJ22EHi6zmRPimVSJmB
-        tUH9w/Nvt0gr7NDZXfa14jE=
-X-Google-Smtp-Source: ABdhPJyMi++6vT6HjTE+jQBsVzMNGEiSwpBUH6vNB53jLlJyDnGZzGPmDzJl2JS4YZ7Ntaz1ocg9pQ==
-X-Received: by 2002:a05:6512:ea4:: with SMTP id bi36mr5481005lfb.486.1633208992771;
-        Sat, 02 Oct 2021 14:09:52 -0700 (PDT)
+        bh=z0IJbSEK/6SCXx0V/HqC228nq1G+1MvfvLAKYcbNvfw=;
+        b=caNMtvAT0FyrkeIO71ZXMd+GIDWqbEOOd8zJ+rH3nlygbkDPGTqglB4RRseKiolLox
+         0r8mF0CUaATEIgqh7tyeaRBL8zahekaIMRsVSafjdWYT69xArk5bs1PZ3K3A2br/kLKh
+         sKRvTH03Wl0cs6nKshJbjh7n7lBZ6dKTz+queW5ryKVN7mu+/N4iX87VtpDa2oeZqMQJ
+         VEBwG617+HdkD8GaJE8X7ue6V4y7QyeM8LILRKZS8wsSZhverAkY2d5WoFoFXHA7G96T
+         +DbdXDKWMz0EkklRBBoa47ZMiSxV9f9V2l5BStlFmxZasndEd/T41gOsXQRDzfFNORID
+         hzjA==
+X-Gm-Message-State: AOAM530N4n3JEHxptkCnPRBNVpH/MLBg/WDYCI4iqxVOkgcgCvuCPaAu
+        KZh4DehlgH5ZnwTuSNM0mbY=
+X-Google-Smtp-Source: ABdhPJy3OhR2JBlpV7pzwA0c3953EEAj8ERh9MUQNofIlmSeQiDO87pFe3AeD+6PS8JstY2PCCR+MQ==
+X-Received: by 2002:a05:651c:1795:: with SMTP id bn21mr5969738ljb.525.1633208995102;
+        Sat, 02 Oct 2021 14:09:55 -0700 (PDT)
 Received: from localhost.localdomain (105-28-94-178.pool.ukrtel.net. [178.94.28.105])
-        by smtp.gmail.com with ESMTPSA id l9sm279511lje.32.2021.10.02.14.09.51
+        by smtp.gmail.com with ESMTPSA id l9sm279511lje.32.2021.10.02.14.09.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 14:09:52 -0700 (PDT)
+        Sat, 02 Oct 2021 14:09:54 -0700 (PDT)
 From:   Denis Pauk <pauk.denis@gmail.com>
-Cc:     pauk.denis@gmail.com, Kamil Pietrzak <kpietrzak@disroot.org>,
+Cc:     pauk.denis@gmail.com, Eugene Shalygin <eugene.shalygin@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@intel.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
         linux-hwmon@vger.kernel.org
-Subject: [PATCH 2/3] hwmon: (nct6775) Use custom scale for ASUS motherboards.
-Date:   Sun,  3 Oct 2021 00:08:55 +0300
-Message-Id: <20211002210857.709956-3-pauk.denis@gmail.com>
+Subject: [PATCH 3/3] hwmon: (asus_wmi_sensors) Support access via Asus WMI.
+Date:   Sun,  3 Oct 2021 00:08:56 +0300
+Message-Id: <20211002210857.709956-4-pauk.denis@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211002210857.709956-1-pauk.denis@gmail.com>
 References: <20211002210857.709956-1-pauk.denis@gmail.com>
@@ -67,124 +67,676 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use custom scaling factor for:
-* TUF GAMING Z490-PLUS
-* TUF GAMING Z490-PLUS (WI-FI)
+Linux HWMON sensors driver for ASUS motherboards to read
+sensors from the embedded controller.
 
-Voltage scaling factors are based on Asus software on Windows.
+Many ASUS motherboards do not publish all the available
+sensors via the Super I/O chip but the missing ones are
+available through the embedded controller (EC) registers.
+
+This driver implements reading those sensor data via the
+WMI method BREC, which is known to be present in all ASUS
+motherboards based on the AMD 500 series chipsets (and
+probably is available in other models too). The driver
+needs to know exact register addresses for the sensors and
+thus support for each motherboard has to be added explicitly.
+
+Supported motherboards:
+* ROG CROSSHAIR VIII HERO
+* ROG CROSSHAIR VIII DARK HERO
+* ROG CROSSHAIR VIII FORMULA
+* ROG STRIX X570-E GAMING
+* ROG STRIX B550-E GAMING
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
 Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
+Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
 Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/hwmon/nct6775.c | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
+ drivers/hwmon/Kconfig            |  12 +
+ drivers/hwmon/Makefile           |   1 +
+ drivers/hwmon/asus_wmi_sensors.c | 595 +++++++++++++++++++++++++++++++
+ 3 files changed, 608 insertions(+)
+ create mode 100644 drivers/hwmon/asus_wmi_sensors.c
 
-diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 8eaf86ea2433..ba18c1cbf572 100644
---- a/drivers/hwmon/nct6775.c
-+++ b/drivers/hwmon/nct6775.c
-@@ -140,6 +140,7 @@ struct nct6775_sio_data {
- 	int ld;
- 	enum kinds kind;
- 	enum sensor_access access;
-+	bool custom_scale;
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index 7fde4c6e1e7f..cb8c8ebb0dab 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -2215,6 +2215,18 @@ config SENSORS_ATK0110
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called asus_atk0110.
  
- 	/* superio_() callbacks  */
- 	void (*sio_outb)(struct nct6775_sio_data *sio_data, int reg, int val);
-@@ -1159,14 +1160,19 @@ static const u16 scale_in[15] = {
- 	800, 800
- };
++config SENSORS_ASUS_WMI
++	tristate "ASUS WMI"
++	depends on X86
++	help
++	  If you say yes here you get support for the ACPI hardware
++	  monitoring interface found in many ASUS motherboards. This
++	  driver will provide readings of fans, voltages and temperatures
++	  through the system firmware.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called asus_wmi_sensors.
++
+ endif # ACPI
  
--static inline long in_from_reg(u8 reg, u8 nr)
-+static const u16 scale_in_z490[15] = {
-+	888, 4000, 1600, 1600, 9600, 800, 800, 1600, 1600, 1600, 1600, 1600, 800,
-+	800, 800
+ endif # HWMON
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index baee6a8d4dd1..dbadc79b890d 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_HWMON_VID)		+= hwmon-vid.o
+ # APCI drivers
+ obj-$(CONFIG_SENSORS_ACPI_POWER) += acpi_power_meter.o
+ obj-$(CONFIG_SENSORS_ATK0110)	+= asus_atk0110.o
++obj-$(CONFIG_SENSORS_ASUS_WMI)	+= asus_wmi_sensors.o
+ 
+ # Native drivers
+ # asb100, then w83781d go first, as they can override other drivers' addresses.
+diff --git a/drivers/hwmon/asus_wmi_sensors.c b/drivers/hwmon/asus_wmi_sensors.c
+new file mode 100644
+index 000000000000..6b04fad18891
+--- /dev/null
++++ b/drivers/hwmon/asus_wmi_sensors.c
+@@ -0,0 +1,595 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * HWMON driver for ASUS motherboards that publish some sensor values
++ * via the embedded controller registers
++ *
++ * Copyright (C) 2021 Eugene Shalygin <eugene.shalygin@gmail.com>
++ * Copyright (C) 2018-2019 Ed Brindley <kernel@maidavale.org>
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++#define DRVNAME "asus_wmi_sensors"
++
++#include <linux/dmi.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/init.h>
++#include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/platform_device.h>
++#include <linux/acpi.h>
++#include <linux/wmi.h>
++
++#define ASUSWMI_MONITORING_GUID		"466747A0-70EC-11DE-8A39-0800200C9A66"
++#define ASUSWMI_METHODID_BLOCK_READ_EC		0x42524543 /* BREC */
++
++#define HWMON_MAX	9
++
++#define ASUS_WMI_BLOCK_READ_REGISTERS_MAX 0x10 /* from the ASUS DSDT source */
++/* from the ASUS_WMI_BLOCK_READ_REGISTERS_MAX value */
++#define ASUS_WMI_MAX_BUF_LEN 0x80
++#define MAX_SENSOR_LABEL_LENGTH 0x10
++
++#define ASUSWMI_SENSORS_MAX 11
++#define ASUS_EC_KNOWN_EC_REGISTERS 14
++
++enum asus_wmi_ec_board {
++	BOARD_R_C8H, // ROG Crosshair VIII Hero
++	BOARD_R_C8DH, // ROG Crosshair VIII Dark Hero
++	BOARD_R_C8F, // ROG Crosshair VIII Formula
++	BOARD_RS_X570_E_G, // ROG STRIX X570-E GAMING
++	BOARD_RS_B550_E_G, // ROG STRIX B550-E GAMING
 +};
 +
-+static inline long in_from_reg(u8 reg, u8 nr, const u16 *scale)
- {
--	return DIV_ROUND_CLOSEST(reg * scale_in[nr], 100);
-+	return DIV_ROUND_CLOSEST(reg * scale[nr], 100);
- }
- 
--static inline u8 in_to_reg(u32 val, u8 nr)
-+static inline u8 in_to_reg(u32 val, u8 nr, const u16 *scale)
- {
--	return clamp_val(DIV_ROUND_CLOSEST(val * 100, scale_in[nr]), 0, 255);
-+	return clamp_val(DIV_ROUND_CLOSEST(val * 100, scale[nr]), 0, 255);
- }
- 
- /*
-@@ -1323,6 +1329,9 @@ struct nct6775_data {
- 	u8 fandiv2;
- 	u8 sio_reg_enable;
- 
-+	/* voltage scaling factors */
-+	const u16 *scale;
++/* boards with EC support */
++static const char *const asus_wmi_ec_boards_names[] = {
++	[BOARD_R_C8H] = "ROG CROSSHAIR VIII HERO",
++	[BOARD_R_C8DH] = "ROG CROSSHAIR VIII DARK HERO",
++	[BOARD_R_C8F] = "ROG CROSSHAIR VIII FORMULA",
++	[BOARD_RS_X570_E_G] = "ROG STRIX X570-E GAMING",
++	[BOARD_RS_B550_E_G] = "ROG STRIX B550-E GAMING",
++};
 +
- 	/* nct6775_*() callbacks  */
- 	u16 (*read_value)(struct nct6775_data *data, u16 reg);
- 	int (*write_value)(struct nct6775_data *data, u16 reg, u16 value);
-@@ -2026,7 +2035,7 @@ show_in_reg(struct device *dev, struct device_attribute *attr, char *buf)
- 	int index = sattr->index;
- 	int nr = sattr->nr;
- 
--	return sprintf(buf, "%ld\n", in_from_reg(data->in[nr][index], nr));
-+	return sprintf(buf, "%ld\n", in_from_reg(data->in[nr][index], nr, data->scale));
- }
- 
- static ssize_t
-@@ -2044,7 +2053,7 @@ store_in_reg(struct device *dev, struct device_attribute *attr, const char *buf,
- 	if (err < 0)
- 		return err;
- 	mutex_lock(&data->update_lock);
--	data->in[nr][index] = in_to_reg(val, nr);
-+	data->in[nr][index] = in_to_reg(val, nr, data->scale);
- 	data->write_value(data, data->REG_IN_MINMAX[index - 1][nr],
- 			  data->in[nr][index]);
- 	mutex_unlock(&data->update_lock);
-@@ -3980,6 +3989,11 @@ static int nct6775_probe(struct platform_device *pdev)
- 		data->write_value = nct6775_wmi_write_value;
- 	}
- 
-+	if (sio_data->custom_scale)
-+		data->scale = scale_in_z490;
-+	else
-+		data->scale = scale_in;
++static u32 hwmon_attributes[] = {
++	[hwmon_chip] = HWMON_C_REGISTER_TZ,
++	[hwmon_temp] = HWMON_T_INPUT | HWMON_T_LABEL,
++	[hwmon_in] = HWMON_I_INPUT | HWMON_I_LABEL,
++	[hwmon_curr] = HWMON_C_INPUT | HWMON_C_LABEL,
++	[hwmon_fan] = HWMON_F_INPUT | HWMON_F_LABEL,
++};
 +
- 	mutex_init(&data->update_lock);
- 	data->name = nct6775_device_names[data->kind];
- 	data->bank = 0xff;		/* Force initial bank selection */
-@@ -5020,6 +5034,7 @@ static int __init sensors_nct6775_init(void)
- 	struct nct6775_sio_data sio_data;
- 	int sioaddr[2] = { 0x2e, 0x4e };
- 	enum sensor_access access = access_direct;
-+	bool custom_scale = false;
- 	const char *board_vendor, *board_name;
- 	u8 tmp;
- 
-@@ -5043,6 +5058,10 @@ static int __init sensors_nct6775_init(void)
- 				pr_err("Can't read ChipID by Asus WMI.\n");
- 			}
- 		}
++union asus_wmi_ec_sensor_address {
++	u32 value;
++	struct {
++		u8 index;
++		u8 bank;
++		u8 size;
++		u8 dummy;
++	} addr;
++};
 +
-+		if (strcmp(board_name, "TUF GAMING Z490-PLUS") == 0 ||
-+		    strcmp(board_name, "TUF GAMING Z490-PLUS (WI-FI)") == 0)
-+			custom_scale = true;
- 	}
- 
- 	/*
-@@ -5066,6 +5085,7 @@ static int __init sensors_nct6775_init(void)
- 		found = true;
- 
- 		sio_data.access = access;
-+		sio_data.custom_scale = custom_scale;
- 
- 		if (access == access_asuswmi) {
- 			sio_data.sio_outb = superio_wmi_outb;
++struct asus_wmi_ec_sensor_info {
++	char label[MAX_SENSOR_LABEL_LENGTH];
++	enum hwmon_sensor_types type;
++	union asus_wmi_ec_sensor_address addr;
++	u32 cached_value;
++};
++
++struct asus_wmi_ec_info {
++	struct asus_wmi_ec_sensor_info sensors[ASUSWMI_SENSORS_MAX];
++	/* UTF-16 string to pass to BRxx() WMI function */
++	char read_arg[((ASUS_WMI_BLOCK_READ_REGISTERS_MAX * 4) + 1) * 2];
++	u8 read_buffer[ASUS_WMI_BLOCK_READ_REGISTERS_MAX];
++	u8 nr_sensors; /* number of board EC sensors */
++	/* number of EC registers to read (sensor might span more than 1 register) */
++	u8 nr_registers;
++	unsigned long last_updated; /* in jiffies */
++};
++
++struct asus_wmi_sensors {
++	/* lock access to instrnal cache */
++	struct mutex lock;
++	struct asus_wmi_ec_info ec;
++
++	int ec_board;
++};
++
++struct asus_wmi_data {
++	int ec_board;
++};
++
++static inline union asus_wmi_ec_sensor_address asus_wmi_ec_make_sensor_address(u8 size,
++									       u8 bank,
++									       u8 index)
++{
++	union asus_wmi_ec_sensor_address res;
++
++	res.value = (size << 16) + (bank << 8) + index;
++	return res;
++}
++
++static inline void asus_wmi_ec_set_sensor_info(struct asus_wmi_ec_sensor_info *sensor_info,
++					       const char *label,
++					       enum hwmon_sensor_types type,
++					       union asus_wmi_ec_sensor_address addr,
++					       u8 *nr_regs)
++{
++	sensor_info->type = type;
++	strcpy(sensor_info->label, label);
++	sensor_info->cached_value = 0;
++	sensor_info->addr.value = addr.value;
++	*nr_regs += sensor_info->addr.addr.size;
++}
++
++static void asus_wmi_ec_fill_board_sensors(struct asus_wmi_ec_info *ec, int board)
++{
++	struct asus_wmi_ec_sensor_info *si;
++
++	si = ec->sensors;
++	ec->nr_registers = 0;
++
++	switch (board) {
++	case BOARD_RS_B550_E_G:
++	case BOARD_RS_X570_E_G:
++	case BOARD_R_C8H:
++	case BOARD_R_C8DH:
++	case BOARD_R_C8F:
++		asus_wmi_ec_set_sensor_info(si++, "Chipset", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3A),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "CPU", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3B),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "Motherboard", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3C),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "T_Sensor", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3D),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "VRM", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3E),
++					    &ec->nr_registers);
++	}
++
++	switch (board) {
++	case BOARD_RS_X570_E_G:
++	case BOARD_R_C8H:
++	case BOARD_R_C8DH:
++	case BOARD_R_C8F:
++		asus_wmi_ec_set_sensor_info(si++, "CPU_Opt", hwmon_fan,
++					    asus_wmi_ec_make_sensor_address(2, 0x00, 0xB0),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "CPU", hwmon_curr,
++					    asus_wmi_ec_make_sensor_address(1, 0x00, 0xF4),
++					    &ec->nr_registers);
++	}
++
++	switch (board) {
++	case BOARD_RS_X570_E_G:
++	case BOARD_R_C8H:
++	case BOARD_R_C8F:
++		asus_wmi_ec_set_sensor_info(si++, "Chipset", hwmon_fan,
++					    asus_wmi_ec_make_sensor_address(2, 0x00, 0xB4),
++					    &ec->nr_registers);
++	}
++
++	switch (board) {
++	case BOARD_R_C8H:
++	case BOARD_R_C8DH:
++	case BOARD_R_C8F:
++		asus_wmi_ec_set_sensor_info(si++, "Water", hwmon_fan,
++					    asus_wmi_ec_make_sensor_address(2, 0x00, 0xBC),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "Water_In", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x01, 0x00),
++					    &ec->nr_registers);
++		asus_wmi_ec_set_sensor_info(si++, "Water_Out", hwmon_temp,
++					    asus_wmi_ec_make_sensor_address(1, 0x01, 0x01),
++					    &ec->nr_registers);
++	}
++
++	ec->nr_sensors = si - ec->sensors;
++}
++
++/*
++ * The next four functions converts to/from BRxx string argument format
++ * The format of the string is as follows:
++ * The string consists of two-byte UTF-16 characters
++ * The value of the very first byte int the string is equal to the total length
++ * of the next string in bytes, thus excluding the first two-byte character
++ * The rest of the string encodes pairs of (bank, index) pairs, where both
++ * values are byte-long (0x00 to 0xFF)
++ * Numbers are encoded as UTF-16 hex values
++ */
++
++static inline char *asus_wmi_ec_hex_utf_16_le_pack(char *buf, u8 byte)
++{
++	*buf++ = hex_asc_hi(byte);
++	*buf++ = 0;
++	*buf++ = hex_asc_lo(byte);
++	*buf++ = 0;
++	return buf;
++}
++
++static void asus_wmi_ec_decode_reply_buffer(const u8 *inp, u8 *out)
++{
++	u8 len = ACPI_MIN(ASUS_WMI_MAX_BUF_LEN, inp[0] / 4);
++	const u8 *data = inp + 2;
++	u8 i;
++
++	for (i = 0; i < len; ++i, data += 4)
++		out[i] = (hex_to_bin(data[0]) << 4) + hex_to_bin(data[2]);
++}
++
++static void asus_wmi_ec_encode_registers(u16 *registers, u8 len, char *out)
++{
++	u8 i;
++
++	// assert(len <= 30)
++	*out++ = len * 8;
++	*out++ = 0;
++	for (i = 0; i < len; ++i) {
++		out = asus_wmi_ec_hex_utf_16_le_pack(out, (registers[i] & 0xFF00) >> 8);
++		out = asus_wmi_ec_hex_utf_16_le_pack(out, (registers[i] & 0x00FF));
++	}
++}
++
++static void asus_wmi_ec_make_block_read_query(struct asus_wmi_ec_info *ec)
++{
++	u16 registers[ASUS_EC_KNOWN_EC_REGISTERS];
++	u8 i, j, register_idx = 0;
++
++	/* if we can get values for all the registers in a single query,
++	 * the query will not change from call to call
++	 */
++	if (ec->nr_registers <= ASUS_WMI_BLOCK_READ_REGISTERS_MAX &&
++	    ec->read_arg[0] > 0) {
++		/* no need to update */
++		return;
++	}
++
++	for (i = 0; i < ec->nr_sensors; ++i) {
++		for (j = 0; j < ec->sensors[i].addr.addr.size;
++		     ++j, ++register_idx) {
++			registers[register_idx] =
++				(ec->sensors[i].addr.addr.bank << 8) +
++				ec->sensors[i].addr.addr.index + j;
++		}
++	}
++
++	asus_wmi_ec_encode_registers(registers, ec->nr_registers, ec->read_arg);
++}
++
++static int asus_wmi_ec_block_read(u32 method_id, const char *query, u8 *out)
++{
++	struct acpi_buffer input;
++	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER,
++				      NULL }; // TODO use pre-allocated buffer
++	acpi_status status;
++	union acpi_object *obj;
++
++	/* the first byte of the BRxx() argument string has to be the string size */
++	input.length = (acpi_size)query[0] + 2;
++	input.pointer = (void *)query;
++	status = wmi_evaluate_method(ASUSWMI_MONITORING_GUID, 0, method_id, &input,
++				     &output);
++
++	if (ACPI_FAILURE(status)) {
++		acpi_os_free(output.pointer);
++		return -EIO;
++	}
++
++	obj = output.pointer;
++	if (!obj || obj->type != ACPI_TYPE_BUFFER) {
++		pr_err("unexpected reply type from ASUS ACPI code");
++		acpi_os_free(output.pointer);
++		return -EIO;
++	}
++	asus_wmi_ec_decode_reply_buffer(obj->buffer.pointer, out);
++	acpi_os_free(output.pointer);
++	return 0;
++}
++
++static int asus_wmi_ec_update_ec_sensors(struct asus_wmi_ec_info *ec)
++{
++	struct asus_wmi_ec_sensor_info *si;
++	u32 value;
++	int status;
++	u8 i_sensor, read_reg_ct, i_sensor_register;
++
++	asus_wmi_ec_make_block_read_query(ec);
++	status = asus_wmi_ec_block_read(ASUSWMI_METHODID_BLOCK_READ_EC,
++					ec->read_arg,
++					ec->read_buffer);
++	if (status)
++		return status;
++
++	read_reg_ct = 0;
++	for (i_sensor = 0; i_sensor < ec->nr_sensors; ++i_sensor) {
++		si = &ec->sensors[i_sensor];
++		value = ec->read_buffer[read_reg_ct++];
++		for (i_sensor_register = 1;
++		     i_sensor_register < si->addr.addr.size;
++		     ++i_sensor_register) {
++			value <<= 8;
++			value += ec->read_buffer[read_reg_ct++];
++		}
++		si->cached_value = value;
++	}
++	return 0;
++}
++
++static int asus_wmi_ec_scale_sensor_value(u32 value, int data_type)
++{
++	switch (data_type) {
++	case hwmon_curr:
++	case hwmon_temp:
++	case hwmon_in:
++		return value * 1000;
++	default:
++		return value;
++	}
++}
++
++static u8 asus_wmi_ec_find_sensor_index(const struct asus_wmi_ec_info *ec,
++					enum hwmon_sensor_types type, int channel)
++{
++	u8 i;
++
++	for (i = 0; i < ec->nr_sensors; ++i) {
++		if (ec->sensors[i].type == type) {
++			if (channel == 0)
++				return i;
++
++			--channel;
++		}
++	}
++	return 0xFF;
++}
++
++static int asus_wmi_ec_get_cached_value_or_update(int sensor_index,
++						  struct asus_wmi_sensors *state,
++						  u32 *value)
++{
++	int ret;
++
++	if (time_after(jiffies, state->ec.last_updated + HZ)) {
++		ret = asus_wmi_ec_update_ec_sensors(&state->ec);
++
++		if (ret) {
++			pr_err("asus_wmi_ec_update_ec_sensors() failure\n");
++			return -EIO;
++		}
++
++		state->ec.last_updated = jiffies;
++	}
++
++	*value = state->ec.sensors[sensor_index].cached_value;
++	return 0;
++}
++
++/*
++ * Now follow the functions that implement the hwmon interface
++ */
++
++static int asus_wmi_ec_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
++				  u32 attr, int channel, long *val)
++{
++	int ret;
++	u32 value = 0;
++	struct asus_wmi_sensors *sensor_data = dev_get_drvdata(dev);
++
++	u8 sidx = asus_wmi_ec_find_sensor_index(&sensor_data->ec, type, channel);
++
++	mutex_lock(&sensor_data->lock);
++
++	ret = asus_wmi_ec_get_cached_value_or_update(sidx, sensor_data, &value);
++	mutex_unlock(&sensor_data->lock);
++
++	if (!ret)
++		*val = asus_wmi_ec_scale_sensor_value(value, sensor_data->ec.sensors[sidx].type);
++
++	return ret;
++}
++
++static int asus_wmi_ec_hwmon_read_string(struct device *dev,
++					 enum hwmon_sensor_types type, u32 attr,
++					 int channel, const char **str)
++{
++	struct asus_wmi_sensors *sensor_data = dev_get_drvdata(dev);
++
++	u8 sensor_index = asus_wmi_ec_find_sensor_index(&sensor_data->ec, type, channel);
++	*str = sensor_data->ec.sensors[sensor_index].label;
++
++	return 0;
++}
++
++static umode_t asus_wmi_ec_hwmon_is_visible(const void *drvdata,
++					    enum hwmon_sensor_types type, u32 attr,
++					    int channel)
++{
++	const struct asus_wmi_sensors *sensor_data = drvdata;
++
++	return asus_wmi_ec_find_sensor_index(&sensor_data->ec, type, channel) != 0xFF ?
++			     0444 :
++			     0;
++}
++
++static int asus_wmi_hwmon_add_chan_info(struct hwmon_channel_info *asus_wmi_hwmon_chan,
++					struct device *dev, int num,
++					enum hwmon_sensor_types type, u32 config)
++{
++	int i;
++	u32 *cfg = devm_kcalloc(dev, num + 1, sizeof(*cfg), GFP_KERNEL);
++
++	if (!cfg)
++		return -ENOMEM;
++
++	asus_wmi_hwmon_chan->type = type;
++	asus_wmi_hwmon_chan->config = cfg;
++	for (i = 0; i < num; i++, cfg++)
++		*cfg = config;
++
++	return 0;
++}
++
++static const struct hwmon_ops asus_wmi_ec_hwmon_ops = {
++	.is_visible = asus_wmi_ec_hwmon_is_visible,
++	.read = asus_wmi_ec_hwmon_read,
++	.read_string = asus_wmi_ec_hwmon_read_string,
++};
++
++static struct hwmon_chip_info asus_wmi_ec_chip_info = {
++	.ops = &asus_wmi_ec_hwmon_ops,
++	.info = NULL,
++};
++
++static int asus_wmi_ec_configure_sensor_setup(struct platform_device *pdev,
++					      struct asus_wmi_sensors *sensor_data)
++{
++	int i;
++	int nr_count[HWMON_MAX] = { 0 }, nr_types = 0;
++	struct device *hwdev;
++	struct device *dev = &pdev->dev;
++	struct hwmon_channel_info *asus_wmi_hwmon_chan;
++	const struct hwmon_channel_info **ptr_asus_wmi_ci;
++	const struct hwmon_chip_info *chip_info;
++	const struct asus_wmi_ec_sensor_info *si;
++	enum hwmon_sensor_types type;
++
++	if (sensor_data->ec_board < 0)
++		return 0;
++
++	asus_wmi_ec_fill_board_sensors(&sensor_data->ec, sensor_data->ec_board);
++
++	if (!sensor_data->ec.nr_sensors)
++		return -ENODEV;
++
++	for (i = 0; i < sensor_data->ec.nr_sensors; ++i) {
++		si = &sensor_data->ec.sensors[i];
++		if (!nr_count[si->type])
++			++nr_types;
++		++nr_count[si->type];
++	}
++
++	if (nr_count[hwmon_temp])
++		nr_count[hwmon_chip]++, nr_types++;
++
++	asus_wmi_hwmon_chan = devm_kcalloc(dev, nr_types,
++					   sizeof(*asus_wmi_hwmon_chan),
++					   GFP_KERNEL);
++	if (!asus_wmi_hwmon_chan)
++		return -ENOMEM;
++
++	ptr_asus_wmi_ci = devm_kcalloc(dev, nr_types + 1,
++				       sizeof(*ptr_asus_wmi_ci), GFP_KERNEL);
++	if (!ptr_asus_wmi_ci)
++		return -ENOMEM;
++
++	asus_wmi_ec_chip_info.info = ptr_asus_wmi_ci;
++	chip_info = &asus_wmi_ec_chip_info;
++
++	for (type = 0; type < HWMON_MAX; type++) {
++		if (!nr_count[type])
++			continue;
++
++		asus_wmi_hwmon_add_chan_info(asus_wmi_hwmon_chan, dev,
++					     nr_count[type], type,
++					     hwmon_attributes[type]);
++		*ptr_asus_wmi_ci++ = asus_wmi_hwmon_chan++;
++	}
++
++	pr_info("%s board has %d EC sensors that span %d registers",
++		asus_wmi_ec_boards_names[sensor_data->ec_board],
++		sensor_data->ec.nr_sensors,
++		sensor_data->ec.nr_registers);
++
++	hwdev = devm_hwmon_device_register_with_info(dev, "asuswmiecsensors",
++						     sensor_data, chip_info, NULL);
++
++	return PTR_ERR_OR_ZERO(hwdev);
++}
++
++static int asus_wmi_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct asus_wmi_data *data = dev_get_platdata(dev);
++	struct asus_wmi_sensors *sensor_data;
++	int err;
++
++	sensor_data = devm_kzalloc(dev, sizeof(struct asus_wmi_sensors),
++				   GFP_KERNEL);
++	if (!sensor_data)
++		return -ENOMEM;
++
++	mutex_init(&sensor_data->lock);
++	sensor_data->ec_board = data->ec_board;
++
++	platform_set_drvdata(pdev, sensor_data);
++
++	/* ec init */
++	err = asus_wmi_ec_configure_sensor_setup(pdev,
++						 sensor_data);
++
++	return err;
++}
++
++static struct platform_driver asus_wmi_sensors_platform_driver = {
++	.driver = {
++		.name	= "asus-wmi-sensors",
++	},
++	.probe = asus_wmi_probe
++};
++
++static struct platform_device *sensors_pdev;
++
++static int __init asus_wmi_init(void)
++{
++	const char *board_vendor, *board_name;
++	struct asus_wmi_data data;
++
++	data.ec_board = -1;
++
++	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
++	board_name = dmi_get_system_info(DMI_BOARD_NAME);
++
++	if (board_vendor && board_name &&
++	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
++		if (!wmi_has_guid(ASUSWMI_MONITORING_GUID))
++			return -ENODEV;
++
++		data.ec_board = match_string(asus_wmi_ec_boards_names,
++					     ARRAY_SIZE(asus_wmi_ec_boards_names),
++					     board_name);
++	}
++
++	/* Nothing to support */
++	if (data.ec_board < 0)
++		return -ENODEV;
++
++	sensors_pdev = platform_create_bundle(&asus_wmi_sensors_platform_driver,
++					      asus_wmi_probe,
++					      NULL, 0,
++					      &data, sizeof(struct asus_wmi_data));
++
++	if (IS_ERR(sensors_pdev))
++		return PTR_ERR(sensors_pdev);
++
++	return 0;
++}
++
++static void __exit asus_wmi_exit(void)
++{
++	platform_device_unregister(sensors_pdev);
++	platform_driver_unregister(&asus_wmi_sensors_platform_driver);
++}
++
++MODULE_AUTHOR("Ed Brindley <kernel@maidavale.org>");
++MODULE_AUTHOR("Eugene Shalygin <eugene.shalygin@gmail.com>");
++MODULE_DESCRIPTION("Asus WMI Sensors Driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("1");
++
++module_init(asus_wmi_init);
++module_exit(asus_wmi_exit);
 -- 
 2.33.0
 
