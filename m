@@ -2,122 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E7241F8CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C1641F8D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhJBAuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:50:04 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:44575 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhJBAuD (ORCPT
+        id S231266AbhJBAy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhJBAyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:50:03 -0400
-Received: by mail-il1-f197.google.com with SMTP id i11-20020a92540b000000b0025456903645so8410677ilb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:48:18 -0700 (PDT)
+        Fri, 1 Oct 2021 20:54:24 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0421C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 17:52:39 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id i84so23948613ybc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L8Rp4f/3LTcWcsABgUbxkyZKMylwzyOZ2rjywnv7e9g=;
+        b=jtyw/jHSR3zJy3bp5sMcf1IJXYrh7wyktV14F4IKdliz3ggiVG6ZN1ln8h51IcBKbz
+         NPMtSDrr4WDihVPG50rrLqSLZ1vnSLWEDoMCYuwQ7r2gyFik8prAJ/NR0RFqgFENuxBS
+         YG6KIw8Txrfb+IyJTvuBCX0KqDWwTOzg264e5M20dZOy+ndO7XHyG4jOoZ7nW4lVk+Mj
+         +WdVhS0UafcvGaiqTlmb8yoQQCoKsvf0fUb/gfZGRwbCf41L3suU5u+MUijdFXHH2X8I
+         yyUmGMNXGTqKYifbq2/sP8fbEOhxtn/OSIOY8/xRirNWqkx9Hk4Ibx+SKRiq9QgTwDdT
+         RNkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HIg4eiscweqPr3NwOYBCUHiwXXZ8jp5A10ER9cKuXfg=;
-        b=PvHF82BtX2WsXwWhOkEvvKyK9OrkLieq675BQJ5fOwNadY9+jNEIfzJAlOKtiwwKGW
-         qSuzjy9xcOdWuAjtLnOkO1zPiBHKhS876DSqCbTcOaCC0rzfpg91H6ZmivarufwlzEn4
-         nx1SfvHD9E8D1V6ypinMEppYt5eMIPUAXPHI4UJJBNxjrAH7Jp9tGLmN5g2aikt89x34
-         G5dIeyY1GwaJtSCjcJlGVIS6BeBZJqDYaV5EevAQYdpVaHxNqISDlidyqHYyPJgryEvm
-         qB6yv9I5MFqZ5ofR/6B+G6bcaRdsBw2otC0IzNeVniM2NfrnC1ToM4ja+Jzp+CjTK7Lf
-         Xrgg==
-X-Gm-Message-State: AOAM531OiXPfFtDFLpM0Tqi8SYKRfZvr+sO+CeH9uoqk8+Z1eVFiOU2f
-        qrlIXt4TaTbCif6wRzM7307wGHrxEZXcnGc300nlaqmQoNPc
-X-Google-Smtp-Source: ABdhPJwDKs2Jd1f8JLMJ5OrR9cQANhF1V2G6QaW3z1FJLrL2pANQIbPWI8Q0JMiF94uq9gDEi3hMDCEaIH8RsFYJoKGr5XTLXaf1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L8Rp4f/3LTcWcsABgUbxkyZKMylwzyOZ2rjywnv7e9g=;
+        b=fejh9Ac7Lanx52OnyjSHisLFColELKDueKcWuZ1BzjZS9j9nXKEZ4OCsKRvim0egv2
+         DHnbIfIIqMpp/Fwgh2FASE+rIhEYlc3eJhlyW88irMpz7XKpC3O9YTX8+Pp+KYU2XQxZ
+         g9I5WUoHFiY9bySb2ti/Vu4ltrszSy6aFGyPfzIx7lxR9CapmrHhZyA55Z2fX8RaMyiO
+         +jSXLH2HnG0wZ3Eu6m0K1+Izherh+KaGwohesRQg64ceSq29RYw4b32NjY7Clnh9dWO8
+         jcgPKHgusOaKduY1ugSbeuxvrNnikpBt16gu50fqR1SQsBRcfsshdb+cgJ62NwdGIsc3
+         jo4w==
+X-Gm-Message-State: AOAM533oub8yMPly+QPMNdaaMfaZie5GRNy0qtYHZ66vegy4UMGYSsaf
+        tv224/XDnckPW75iWSb6caln30xX5BaBazVZEHboRQ==
+X-Google-Smtp-Source: ABdhPJw2kFgqD0WRKR1BC6Gy8VGESSrssnKuvc2ZmTYYncVxGyWrTdGQfNZ7C5A5O5TLs7MMb2BHBhIufTQhiRkTuXk=
+X-Received: by 2002:a25:3:: with SMTP id 3mr982859yba.418.1633135958226; Fri,
+ 01 Oct 2021 17:52:38 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d3c1:: with SMTP id c1mr628667ilh.223.1633135698649;
- Fri, 01 Oct 2021 17:48:18 -0700 (PDT)
-Date:   Fri, 01 Oct 2021 17:48:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000030283d05cd540908@google.com>
-Subject: [syzbot] net-next test error: WARNING in devlink_nl_region_notify
-From:   syzbot <syzbot+e51ead0112c2cb8d1b45@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jiri@nvidia.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-2-surenb@google.com>
+ <20211001160830.700c36b32b736478000b3420@linux-foundation.org>
+In-Reply-To: <20211001160830.700c36b32b736478000b3420@linux-foundation.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 1 Oct 2021 17:52:27 -0700
+Message-ID: <CAJuCfpGpMru4z=ZMezRQW56tHNjrWHU3jWhG3qzuXvuUytq-3w@mail.gmail.com>
+Subject: Re: [PATCH v10 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 1, 2021 at 4:08 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri,  1 Oct 2021 13:56:56 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> > From: Colin Cross <ccross@google.com>
+> >
+> > In many userspace applications, and especially in VM based applications
+> > like Android uses heavily, there are multiple different allocators in use.
+> >  At a minimum there is libc malloc and the stack, and in many cases there
+> > are libc malloc, the stack, direct syscalls to mmap anonymous memory, and
+> > multiple VM heaps (one for small objects, one for big objects, etc.).
+> > Each of these layers usually has its own tools to inspect its usage;
+> > malloc by compiling a debug version, the VM through heap inspection tools,
+> > and for direct syscalls there is usually no way to track them.
+> >
+> > On Android we heavily use a set of tools that use an extended version of
+> > the logic covered in Documentation/vm/pagemap.txt to walk all pages mapped
+> > in userspace and slice their usage by process, shared (COW) vs.  unique
+> > mappings, backing, etc.  This can account for real physical memory usage
+> > even in cases like fork without exec (which Android uses heavily to share
+> > as many private COW pages as possible between processes), Kernel SamePage
+> > Merging, and clean zero pages.  It produces a measurement of the pages
+> > that only exist in that process (USS, for unique), and a measurement of
+> > the physical memory usage of that process with the cost of shared pages
+> > being evenly split between processes that share them (PSS).
+> >
+> > If all anonymous memory is indistinguishable then figuring out the real
+> > physical memory usage (PSS) of each heap requires either a pagemap walking
+> > tool that can understand the heap debugging of every layer, or for every
+> > layer's heap debugging tools to implement the pagemap walking logic, in
+> > which case it is hard to get a consistent view of memory across the whole
+> > system.
+> >
+> > Tracking the information in userspace leads to all sorts of problems.
+> > It either needs to be stored inside the process, which means every
+> > process has to have an API to export its current heap information upon
+> > request, or it has to be stored externally in a filesystem that
+> > somebody needs to clean up on crashes.  It needs to be readable while
+> > the process is still running, so it has to have some sort of
+> > synchronization with every layer of userspace.  Efficiently tracking
+> > the ranges requires reimplementing something like the kernel vma
+> > trees, and linking to it from every layer of userspace.  It requires
+> > more memory, more syscalls, more runtime cost, and more complexity to
+> > separately track regions that the kernel is already tracking.
+> >
+> > This patch adds a field to /proc/pid/maps and /proc/pid/smaps to show a
+> > userspace-provided name for anonymous vmas.  The names of named anonymous
+> > vmas are shown in /proc/pid/maps and /proc/pid/smaps as [anon:<name>].
+> >
+> > Userspace can set the name for a region of memory by calling
+> > prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned long)name);
+>
+> So this can cause a vma to be split, if [start,len] doesn't exactly
+> describe an existing vma?  If so, is this at all useful?  If not then
+> `len' isn't needed - just pass in some address within an existing vma?
 
-syzbot found the following issue on:
+Technically one could mmap a large chunk of memory and then assign
+different names to its parts to use for different purposes, which
+would cause the vma to split. I don't think Android uses it that way
+but I'll have to double-check. I think one advantage of doing this
+could be to minimize the number of mmap syscalls.
 
-HEAD commit:    7fec4d39198b gve: Use kvcalloc() instead of kvzalloc()
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1302aebb300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
-dashboard link: https://syzkaller.appspot.com/bug?extid=e51ead0112c2cb8d1b45
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > Setting the name to NULL clears it. The name length limit is 80 bytes
+> > including NUL-terminator and is checked to contain only printable ascii
+> > characters (including space), except '[',']','\','$' and '`'.
+> >
+> > The name is stored in a pointer in the shared union in vm_area_struct
+> > that points to a null terminated string. Anonymous vmas with the same
+> > name (equivalent strings) and are otherwise mergeable will be merged.
+>
+> So this can prevent vma merging if used incorrectly (or maliciously -
+> can't think how)?  What are the potential impacts of this?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e51ead0112c2cb8d1b45@syzkaller.appspotmail.com
+Potential impact would be that otherwise mergeable vmas would not be
+merged due to the name difference. This is a known downside of naming
+an anon vma which I documented in my manual pages description as "Note
+that assigning an  attribute to a virtual memory area might prevent it
+from being merged with adjacent virtual memory areas due to the
+difference in that attribute's value.". In Android we see an increase
+in the number of VMAs due to this feature but it was not significant.
+I'll try to dig up the numbers or will rerun the test to get them.
+If a process maliciously wants to increase the number of vmas in the
+system it could generate lots of vmas with different names in its
+address space, however this can be done even without this feature by
+mapping vmas while toggling a protection bit. Something like this:
 
-batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
-device hsr_slave_0 entered promiscuous mode
-device hsr_slave_1 entered promiscuous mode
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6534 at net/core/devlink.c:5158 devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
-Modules linked in:
-CPU: 1 PID: 6534 Comm: syz-executor.0 Not tainted 5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
-Code: 38 41 b8 c0 0c 00 00 31 d2 48 89 ee 4c 89 e7 e8 72 1a 26 00 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e e9 01 bb 41 fa e8 fc ba 41 fa <0f> 0b e9 f7 fe ff ff e8 f0 ba 41 fa 0f 0b eb da 4c 89 e7 e8 c4 16
-RSP: 0018:ffffc90002b8f658 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88807872b900 RSI: ffffffff87345094 RDI: 0000000000000003
-RBP: ffff888073785e00 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff87344f8a R11: 0000000000000000 R12: ffff888025299000
-R13: 0000000000000000 R14: 000000000000002c R15: ffff888025299070
-FS:  00005555561e0400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f286d3ee000 CR3: 000000006885e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- devlink_region_create+0x39f/0x4c0 net/core/devlink.c:10327
- nsim_dev_dummy_region_init drivers/net/netdevsim/dev.c:481 [inline]
- nsim_dev_probe+0x5f6/0x1150 drivers/net/netdevsim/dev.c:1479
- call_driver_probe drivers/base/dd.c:517 [inline]
- really_probe+0x245/0xcc0 drivers/base/dd.c:596
- __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
- __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
- __device_attach+0x228/0x4a0 drivers/base/dd.c:969
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
- device_add+0xc35/0x21b0 drivers/base/core.c:3359
- nsim_bus_dev_new drivers/net/netdevsim/bus.c:435 [inline]
- new_device_store+0x48b/0x770 drivers/net/netdevsim/bus.c:302
- bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
- sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x429/0x660 fs/read_write.c:507
- vfs_write+0x7cf/0xae0 fs/read_write.c:594
- ksys_write+0x12d/0x250 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2677dce3ef
-Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd ff ff 48
-RSP: 002b:00007ffe549b8fe0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f2677dce3ef
-RDX: 0000000000000003 RSI: 00007ffe549b9030 RDI: 0000000000000004
-RBP: 0000000000000004 R08: 0000000000000000 R09: 00007ffe549b8f80
-R10: 0000000000000000 R11: 0000000000000293 R12: 00007f2677e75971
-R13: 00007ffe549b9030 R14: 0000000000000000 R15: 00007ffe549b9700
+int prot = PROT_WRITE;
+for (i = 0; i < count; i++) {
+    mmap(NULL, size_bytes, prot, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+    prot = (prot ^ PROT_READ) & (PROT_READ | PROT_WRITE);
+}
 
+> > The name pointers are not shared between vmas even if they contain the
+> > same name. The name pointer is stored in a union with fields that are
+> > only used on file-backed mappings, so it does not increase memory usage.
+> >
+> > The patch is based on the original patch developed by Colin Cross, more
+> > specifically on its latest version [1] posted upstream by Sumit Semwal.
+> > It used a userspace pointer to store vma names. In that design, name
+> > pointers could be shared between vmas. However during the last upstreaming
+> > attempt, Kees Cook raised concerns [2] about this approach and suggested
+> > to copy the name into kernel memory space, perform validity checks [3]
+> > and store as a string referenced from vm_area_struct.
+> > One big concern is about fork() performance which would need to strdup
+> > anonymous vma names. Dave Hansen suggested experimenting with worst-case
+> > scenario of forking a process with 64k vmas having longest possible names
+> > [4]. I ran this experiment on an ARM64 Android device and recorded a
+> > worst-case regression of almost 40% when forking such a process. This
+> > regression is addressed in the followup patch which replaces the pointer
+> > to a name with a refcounted structure that allows sharing the name pointer
+> > between vmas of the same name. Instead of duplicating the string during
+> > fork() or when splitting a vma it increments the refcount.
+>
+> Generally, the patch adds a bunch of code which a lot of users won't
+> want.  Did we bust a gut to reduce this impact?  Was a standalone
+> config setting considered?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I didn't consider a standalone config for this feature because when
+not used it has no memory impact at runtime. As for the image size, I
+built Linus' ToT with and without this patchset with allmodconfig and
+the sizes are:
+Without the patchset:
+$ size vmlinux
+   text    data     bss     dec     hex filename
+40763556 58424519 29016228 128204303 7a43e0f vmlinux
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+With the patchset:
+$ size vmlinux
+   text    data     bss     dec     hex filename
+40765068 58424671 29016228 128205967 7a4448f vmlinux
+
+The increase seems quite small, so I'm not sure if it warrants a
+separate config option.
+
+> And what would be the impact of making this feature optional?  Is a
+> proliferation of formats in /proc/pid/maps going to make userspace
+> parsers harder to develop and test?
+
+I'm guessing having one format is simpler and therefore preferable?
+
+> I do think that saying "The names of named anonymous vmas are shown in
+> /proc/pid/maps and /proc/pid/smaps as [anon:<name>]." is a bit thin.
+> Please provide sample output so we can consider these things better.
+
+Sure. Here is a sample /proc/$pid/maps output (partial):
+
+6ffacb6000-6ffacd6000 r--s 00000000 00:10 361
+  /dev/__properties__/properties_serial
+6ffacd6000-6ffacd9000 rw-p 00000000 00:00 0
+  [anon:System property context nodes]
+6ffacd9000-6ffaceb000 r--s 00000000 00:10 79
+  /dev/__properties__/property_info
+6ffaceb000-6ffad4f000 r--p 00000000 00:00 0
+  [anon:linker_alloc]
+6ffad4f000-6ffad51000 rw-p 00000000 00:00 0
+  [anon:bionic_alloc_small_objects]
+6ffad51000-6ffad52000 r--p 00000000 00:00 0
+  [anon:atexit handlers]
+6ffad52000-6ffbc2c000 ---p 00000000 00:00 0
+6ffbc2c000-6ffbc2e000 rw-p 00000000 00:00 0
+6ffbc2e000-6ffbd52000 ---p 00000000 00:00 0
+6ffbd52000-6ffbd53000 ---p 00000000 00:00 0
+6ffbd53000-6ffbd5b000 rw-p 00000000 00:00 0
+  [anon:thread signal stack]
+6ffbd5b000-6ffbd5c000 rw-p 00000000 00:00 0
+  [anon:arc4random data]
+6ffbd5c000-6ffbd5d000 r--p 0000d000 07:90 59
+  /apex/com.android.art/javalib/arm64/boot-okhttp.art
+6ffbd5d000-6ffbd5e000 r--p 00014000 07:90 56
+  /apex/com.android.art/javalib/arm64/boot-core-libart.art
+6ffbd5e000-6ffbd5f000 rw-p 00000000 00:00 0
+  [anon:arc4random data]
+6ffbd5f000-6ffbd61000 r--p 00000000 00:00 0                              [vvar]
+6ffbd61000-6ffbd62000 r-xp 00000000 00:00 0                              [vdso]
+
+and sample /proc/$pid/smaps output (partial):
+
+6ffad4f000-6ffad51000 rw-p 00000000 00:00 0
+  [anon:bionic_alloc_small_objects]
+Size:                  8 kB
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+Rss:                   0 kB
+Pss:                   0 kB
+Shared_Clean:          0 kB
+Shared_Dirty:          0 kB
+Private_Clean:         0 kB
+Private_Dirty:         0 kB
+Referenced:            0 kB
+Anonymous:             0 kB
+LazyFree:              0 kB
+AnonHugePages:         0 kB
+ShmemPmdMapped:        0 kB
+FilePmdMapped:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  8 kB
+SwapPss:               8 kB
+Locked:                0 kB
+THPeligible:    0
+VmFlags: rd wr mr mw me ac
+
+>
+> What are the risks that existing parsers will be broken by such changes?
+
+That I can't really answer. It would depend on how the parser is
+written. The implementation follows the same pattern as [stack],
+[vdso] and other non-filebacked sections are named, however if a
+parser is written so that it does not ignore an unknown entry then it
+would fail to parse [anon:...] name if some process decides to name
+its anonymous vmas.
