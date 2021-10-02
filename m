@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E2641FBCD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D3441FBCF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhJBMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 08:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S233179AbhJBMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 08:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhJBMkF (ORCPT
+        with ESMTP id S232821AbhJBMme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:40:05 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFD1C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 05:38:19 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1095068pjc.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 05:38:19 -0700 (PDT)
+        Sat, 2 Oct 2021 08:42:34 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E986BC0613EC;
+        Sat,  2 Oct 2021 05:40:48 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y5so8069476pll.3;
+        Sat, 02 Oct 2021 05:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P6qFBggDbUbYVolP3u2ZDXe489MEX4kV8HKAIWuNb9Q=;
-        b=LArsdtKCRVn3qXwzRpX3ns9MPpOkKw/M9whS5PtOH2bbHqfvWy/jGztHzCCU3dsW3V
-         u01XXbGa2PqSUN5C8hviQD6OPRrSfReTqtKSqPOSjQV8IxlKbpeHu83OAIu91b5V/mDe
-         kT/lXP/r5z0gWnNrKgNS+0KmoQJokQuhHmhRF9uPzHYkf6iRl6N+R9dlFyCpHSFbTnPQ
-         oaId6C4BdMuBr1ejJhCFdHJ69iqNJJnmpgwFctdnCaLzMm1Zg8L5wmfrKp9JusJ1p80O
-         HgpbR64Zn0TV2dlRiLUdUP65O1psuoljP36ScI8aieptd8dkPxyoVl5E588LZ0gsoiGS
-         pGYQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=boC5DH+e5eDznk4gCfSQd5KzFhA9YXPE0HN8TOlXHRM=;
+        b=DrDz4tlLiEuf9X/s3JrTFdv/dbjHHnVXgOJq08OXY9rxryZjAOa0aPLnCA4wrU6kjj
+         SGu850FsqNzOzqE8FWNCFQlXlYALzgd9KgSmoAh1dsEfR4zx/5K1bQffnwtwVCxVhy2Z
+         16zYnq0qg4NaZGENFiv1m2GJvWw8EgfShf3c2pfRnructRQoWqdlzgLVKuXgL/OhI0Vg
+         PFCijxWyRHg0Zbf9Heh5gy5kL8/CodI08EpJfJuugeeukMFy8lMj9/Z46i2xTrxyi4rM
+         pEgl1MiIP41gZSoqVz+sD9d5E7b/oFCLvdJyYKEVyX/rZmw9CFA7wdwZ5Zkez11LZ9Nd
+         Rdxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P6qFBggDbUbYVolP3u2ZDXe489MEX4kV8HKAIWuNb9Q=;
-        b=V/BDaus5SIsCdsS6pMq/mXTw64rivWNpjeJ6GA3L81Dnk7lxkw+Jg/Y22Y0b6wbkEE
-         45qGsKT9HiuFxCBTCRVWJARkRr5hzh1yFAZN7D/eoc8Arcwwp0LnoDrwnCqynU4YjoLd
-         HIkCkl8cQgIBGvllqfGEVBa7wzrEN3VYg1Qbxy1/A6E4u9DZHsRJNY3Sk8O9fLUM9cEa
-         XTsdfoXBDMIyRy8CZDm/GZevW3HBlGKgKoC/tePQm6QLXC5bK7fex+lqAGOVAjBFAivG
-         AXmmdLpttRtuU9gWS6+YK6bonpbEV+XF9ip7gePtBlBrYvHCEcvk+bnI5x7zWd8KEYlX
-         JxZQ==
-X-Gm-Message-State: AOAM532pTUQCsvqT7iL+/0OrmvQCZAXLavT0qHHqzABkSwnVbm6KHL48
-        hrTYK0GJFOSXx6TgBUCNpT4=
-X-Google-Smtp-Source: ABdhPJyzOShZpfenGoc/Ai07w5jAUABN8v2uRvEI7/QpnmEqT5fEhLHFOePYPoe9/4yIJ3zx7CRpew==
-X-Received: by 2002:a17:90b:3ec3:: with SMTP id rm3mr17943544pjb.93.1633178299288;
-        Sat, 02 Oct 2021 05:38:19 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id on9sm8725333pjb.3.2021.10.02.05.38.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=boC5DH+e5eDznk4gCfSQd5KzFhA9YXPE0HN8TOlXHRM=;
+        b=YCsSakDD7MI/unbWfN1jBCtCMI7PSE91o6/hd/Q//dyPVbvh8rjPCcK6+sCzm8awXG
+         y03G1KluRkPaDJq1KkGLm9b+28JPf71CNQn14UKKgkFkg377WKPxp5ZhC9GvIsTYDdp+
+         nKQzL5pigRiKDGzU64drb8K5xTuwCMRSiY5PktA2UtTYovT/SY3FJZN2vtf20e2WIXyO
+         TogFyoIdr9DqaJcfer+kuY3LRaEKhit+7vYihStynsHTkOmJ5ArWx8mWGTlv5is6LppV
+         8v7V8Xl80xovGj86T90JWdmMqCqB8B9ZA1G98CXUjT1VMV67JoESUfu198Qbf3pRXhqn
+         JuMg==
+X-Gm-Message-State: AOAM531eLE+ZLctufofrUHOmJbGBT2VxRbNRuy8k6KplMJ1cVnnSYQ/O
+        s66bz97h4f144GMW8ZYdchykTFh0toQ=
+X-Google-Smtp-Source: ABdhPJzDtA/vEzbxkSvzWKRyYY4VFSJIYY3QysxOrL0OPQ4NHudtiWZQ9dn0Lac2J0jbvWPA8DEMJQ==
+X-Received: by 2002:a17:902:b909:b0:13a:2d8e:12bc with SMTP id bf9-20020a170902b90900b0013a2d8e12bcmr14245355plb.6.1633178448124;
+        Sat, 02 Oct 2021 05:40:48 -0700 (PDT)
+Received: from ajay-Latitude-E6320.. ([122.161.244.167])
+        by smtp.gmail.com with ESMTPSA id c9sm8760694pgq.58.2021.10.02.05.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 05:38:18 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 21:38:16 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org
-Subject: Re: [PATCH] openrisc: time: don't mark comment as kernel-doc
-Message-ID: <YVhSuFFMnlQm+x+8@antec>
-References: <20211001021101.18225-1-rdunlap@infradead.org>
+        Sat, 02 Oct 2021 05:40:47 -0700 (PDT)
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org
+Cc:     Ajay Garg <ajaygargnsit@gmail.com>
+Subject: [PATCH] iommu: intel: remove flooding of non-error logs, when new-DMA-PTE is the same as old-DMA-PTE.
+Date:   Sat,  2 Oct 2021 18:10:12 +0530
+Message-Id: <20211002124012.18186-1-ajaygargnsit@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001021101.18225-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 07:11:01PM -0700, Randy Dunlap wrote:
-> Fix a kernel-doc warning by unmarking the comment as being in
-> kernel-doc notation.
-> 
-> Fixes this warning:
-> arch/openrisc/kernel/time.c:137: warning: expecting prototype for Clocksource(). Prototype was for openrisc_timer_read() instead
-> 
-> Fixes: b731fbbd246e ("OpenRISC: Timekeeping")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Cc: openrisc@lists.librecores.org
-> ---
->  arch/openrisc/kernel/time.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20210930.orig/arch/openrisc/kernel/time.c
-> +++ linux-next-20210930/arch/openrisc/kernel/time.c
-> @@ -127,7 +127,7 @@ irqreturn_t __irq_entry timer_interrupt(
->  	return IRQ_HANDLED;
->  }
->  
-> -/**
-> +/*
->   * Clocksource: Based on OpenRISC timer/counter
->   *
->   * This sets up the OpenRISC Tick Timer as a clock source.  The tick timer
+Taking a SD-MMC controller (over PCI) as an example, following is an
+example sequencing, where the log-flooding happened :
 
-Hi Randy,
+0.
+We have a host and a guest, both running latest x86_64 kernels.
 
-This looks good to me, thank you.  I am queuing it.
+1.
+Host-machine is booted up (with intel_iommu=on), and the DMA-PTEs
+are setup for the controller (on the host), for the first time.
 
--Stafford
+2.
+The SD-controller device is added to a (L1) guest on a KVM-VM
+(via virt-manager).
+
+3.
+The KVM-VM is booted up.
+
+4.
+Above triggers a re-setup of DMA-PTEs on the host, for a
+second time.
+
+It is observed that the new PTEs formed (on the host) are same
+as the original PTEs, and thus following logs, accompanied by
+stacktraces, overwhelm the logs :
+
+......
+ DMAR: ERROR: DMA PTE for vPFN 0x428ec already set (to 3f6ec003 not 3f6ec003)
+ DMAR: ERROR: DMA PTE for vPFN 0x428ed already set (to 3f6ed003 not 3f6ed003)
+ DMAR: ERROR: DMA PTE for vPFN 0x428ee already set (to 3f6ee003 not 3f6ee003)
+ DMAR: ERROR: DMA PTE for vPFN 0x428ef already set (to 3f6ef003 not 3f6ef003)
+ DMAR: ERROR: DMA PTE for vPFN 0x428f0 already set (to 3f6f0003 not 3f6f0003)
+......
+
+As the PTEs are same, so there is no cause of concern, and we can easily
+avoid the logs-flood for this non-error case.
+
+Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
+---
+ drivers/iommu/intel/iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index d75f59ae28e6..8bea8b4e3ff9 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -2370,7 +2370,7 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
+ 		 * touches the iova range
+ 		 */
+ 		tmp = cmpxchg64_local(&pte->val, 0ULL, pteval);
+-		if (tmp) {
++		if (tmp && (tmp != pteval)) {
+ 			static int dumps = 5;
+ 			pr_crit("ERROR: DMA PTE for vPFN 0x%lx already set (to %llx not %llx)\n",
+ 				iov_pfn, tmp, (unsigned long long)pteval);
+-- 
+2.30.2
+
