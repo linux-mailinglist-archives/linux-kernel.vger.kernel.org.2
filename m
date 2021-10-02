@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041CE41FBAF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4264441FBB1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhJBMOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 08:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        id S233104AbhJBMOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 08:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbhJBMOD (ORCPT
+        with ESMTP id S233096AbhJBMOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:14:03 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68889C061570;
-        Sat,  2 Oct 2021 05:12:17 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so44856498edt.7;
-        Sat, 02 Oct 2021 05:12:17 -0700 (PDT)
+        Sat, 2 Oct 2021 08:14:22 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CE1C0613EE;
+        Sat,  2 Oct 2021 05:12:36 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so15020556otj.2;
+        Sat, 02 Oct 2021 05:12:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tibZxfhm6fu2F8DsDvkJG8AdOd90GMcQ9Sq4RnXIpao=;
-        b=iWQa2iTvX91F8F82So6xGlEkqOnobmYIUO5LO1QMYBy3FCLwD9rwtyGdjok0vzbSMP
-         aL1RSEN/i5HuNIFQRWVKveeY+bSomwKCkfZhbLOvv1dc2aXYNQ0F0lciuRf5jcaR69oA
-         prYD6/bj6dYl8StO5tXzlyegRVNV6gfdz8h9MC/Bp5PbAWdzHF84oo/8ls8CvrYODI4+
-         oxShbmsCy4u4EW2PRA5MI+z0m3tAQDUpQgmCRGlpfA+E2BN7UdCXrFx52r3ffBvpBw+4
-         AFVuBZ+5gP69lo7IreZ2g6Rn/7AjptHRKqR6hR7TUnUAk8mcXzdYqvkBjdJC2+r7uY5n
-         3Tpg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sFYDZod90D6bVfnwrwAESHjb0mPHYNSTdLNe5dl+FxU=;
+        b=Fy79lCM4S6chB/UpyPoz/7kzQrHDMcvPmUU5pF3N6b/5pxNp9/IRDCcTNSzCUCEtWe
+         r9qRP/Xx0pYLdkNQS4DZwx5mnRG4A9ydXllAnWyW8S/EQvce+MvVqZeNWqOky3lAmAPJ
+         iePXYLISmK140PSRDw6/HnihtXR8mR1FrD1uboBr42nZzE6089V+WU5L020skeXdmW38
+         m/OLwb4CtDlsWC5tWfY2gHc5lKgd2jrS5YpsoFXp6P/cp+N7ldb1j7xFyhw4ykyqEwJx
+         2wozhfMKQnKluj+/TEUp5Aqe9LtKEPfi6BZ3XtbtKUBroCDhGh4EmyDqByK1c0PM5eiW
+         Fg6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tibZxfhm6fu2F8DsDvkJG8AdOd90GMcQ9Sq4RnXIpao=;
-        b=CxTx1qnti8KpJlr43gE1DddJh4Yv0zFacBsruGfIGiD6Jo66cwxtjVZspsg6+LPIKk
-         l/jnqluPfnK5FwbEKsTdQOQUu4WouXHRaEraYc0vv2b1t2v7YVB+kmNzRf1FA/PSJ5wv
-         rcEOWuJe07ZZL7QQWHMrrrQyFDCdJKX5XRvhCzXvflB60YVDFS5HAtS8zkdz+igWg8xE
-         qoz3R8eQOpvsaoV9Q+NknfqyrkTDA1mvr2p9GSIZs7Cq0/dyu6RrJHeasuk5pzNbujKj
-         kNnSY4l09eD1TA3MgvPQ3r/SyThvMRfWRcJSNio/i2NHyzPuimav7EiD+GuMa3c03lKg
-         5BlA==
-X-Gm-Message-State: AOAM531Do8nerhmlNaQqUxf3c0cpcPOm1v0y2b2hDUslVhH527uMNdik
-        dMF9zQynS3XBHwXsWylffFGj5Q/w2wa8urEPERc=
-X-Google-Smtp-Source: ABdhPJzRxQBHF8PF9+dkIDaraDxFnDec/EX7TuXiX2MTf3E7412z/FH6I1BLi4GLb0YEgWAmK2F33FQn+BSWtqjtAS8=
-X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr3815050ejc.77.1633176735741;
- Sat, 02 Oct 2021 05:12:15 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=sFYDZod90D6bVfnwrwAESHjb0mPHYNSTdLNe5dl+FxU=;
+        b=3oL8HOkmbqlrCjeUo88vSgQregIxBlqqP7Q8ZXbmrbZFn1OoBGTyJuTBgYOFOfj9om
+         pBjble4TC2im0F1ape3vC8zreoEOQ++lG4RfCNWNesDJimqJSGZ+hE9z7gNuRisZXKqq
+         mN85utX5STN4YIgEY7EIsbkB+BtEUpXg3H4kiCwibsQlFf4RhcVOhcfeslFJQ2/k811c
+         j+/4fRCWoNCUkXXDlJyIUtxS2bKoLLb3GMvKL6DLSIeVia67PC5afsJFpODVoivKDRYJ
+         3kgSN8M866+cbMtIB05s7AbvIuZ1HbQr6caW/0lrJvcUEEzB7ek34iJeC1TWEcsgG9K3
+         3PYg==
+X-Gm-Message-State: AOAM5310XV/CEAkXEh7TUTiVF0SXVtyoG6gVe2bR3P5U9w8UDa4u27gE
+        opNpn7G13UyaAkWxsIoZNnI=
+X-Google-Smtp-Source: ABdhPJwJ5hxZgmjYGp4bUvs/uKznZ2dkgEL+zaksQvZJNMrhMjNljgOsFNh47/63wYzdPHzQ2Gr8eg==
+X-Received: by 2002:a9d:a47:: with SMTP id 65mr2342289otg.133.1633176755996;
+        Sat, 02 Oct 2021 05:12:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c10sm1675006ooi.11.2021.10.02.05.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 05:12:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 2 Oct 2021 05:12:34 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Marc Hulsman <m.hulsman@tudelft.nl>,
+        Rudolf Marek <r.marek@assembler.cz>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH v2 2/3] hwmon: (w83792d) Fix NULL pointer dereference by
+ removing unnecessary structure field
+Message-ID: <20211002121234.GA2188531@roeck-us.net>
+References: <20210921155153.28098-1-lutovinova@ispras.ru>
+ <20210921155153.28098-2-lutovinova@ispras.ru>
 MIME-Version: 1.0
-References: <20210109170103.1249838-1-aford173@gmail.com> <20211001095404.41f73d88@aktux>
- <C0A84970-0AAC-42E7-8E0F-4D165F0C9551@goldelico.com>
-In-Reply-To: <C0A84970-0AAC-42E7-8E0F-4D165F0C9551@goldelico.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 2 Oct 2021 07:12:05 -0500
-Message-ID: <CAHCN7x+TdPb0UthQ9CeQL_sWwJmRK++M1kUXZVvCcj8anAFqRQ@mail.gmail.com>
-Subject: Re: [PATCH V2] ARM: dts: omap36xx: Remove turbo mode for 1GHz variants
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921155153.28098-2-lutovinova@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 4:59 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
->
->
-> > Am 01.10.2021 um 09:54 schrieb Andreas Kemnade <andreas@kemnade.info>:
-> >
-> > On Sat,  9 Jan 2021 11:01:03 -0600
-> > Adam Ford <aford173@gmail.com> wrote:
-> >
-> >> Previously, the 1GHz variants were marked as a turbo,
-> >> because that variant has reduced thermal operating range.
-> >>
-> >> Now that the thermal throttling is in place, it should be
-> >> safe to remove the turbo-mode from the 1GHz variants, because
-> >> the CPU will automatically slow if the thermal limit is reached.
-> >>
-> >> Signed-off-by: Adam Ford <aford173@gmail.com>
-> >> ---
-> >> V2:  The orignal patch had the wrong file added. Add the omap36xx.dtsi
-> >>
-> > hmm, I somehow expected that there is a revert of this thing going
-> > through. But now, the turbo-mode is still missing
->
-> tagging by turbo-mode means the OPP is *disabled* by default and
-> needs to be enabled actively.
->
-> > and I understood the
-> > revert is only in Nikolaus' trees.
->
-> It is just a revert for the gta04a5 because I think it is the only board
-> which is affected (maybe it would need SmartReflex in operation to
-> fine tune the OPPs compared to the generic table). Therefore I have
-> a patch which adds turbo-mode to the gta04a5.dts
->
-> > The 1Ghz mode was working for some
-> > time but does not anymore. Is it just me or do others also have the
-> > same problems?
->
-> That would be interesting to know.
->
+On Tue, Sep 21, 2021 at 06:51:52PM +0300, Nadezda Lutovinova wrote:
+> If driver read val value sufficient for 
+> (val & 0x08) && (!(val & 0x80)) && ((val & 0x7) == ((val >> 4) & 0x7))
+> from device then Null pointer dereference occurs. 
+> (It is possible if tmp = 0b0xyz1xyz, where same literals mean same numbers)
+> Also lm75[] does not serve a purpose anymore after switching to
+> devm_i2c_new_dummy_device() in w83791d_detect_subclients().
+> 
+> The patch fixes possible NULL pointer dereference by removing lm75[].
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-What version are you seeing the break?  It's working for me on 5.15.y branch
+Applied, after fixing multi-line alignments
 
-# cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies
-300000 600000 800000 1000000
-# uname -a
-Linux buildroot 5.14.9-00260-g70248e7b378b-dirty #1 SMP Sat Oct 2
-06:56:02 CDT 2021 armv7l GNU/Linux
-#
-
-adam
-
-
-> BR,
-> NIkolaus
->
-> >
-> >
-> >> diff --git a/arch/arm/boot/dts/omap36xx.dtsi b/arch/arm/boot/dts/omap36xx.dtsi
-> >> index 05fe5ed127b0..20844dbc002e 100644
-> >> --- a/arch/arm/boot/dts/omap36xx.dtsi
-> >> +++ b/arch/arm/boot/dts/omap36xx.dtsi
-> >> @@ -72,7 +72,6 @@ opp1g-1000000000 {
-> >>                                       <1375000 1375000 1375000>;
-> >>                      /* only on am/dm37x with speed-binned bit set */
-> >>                      opp-supported-hw = <0xffffffff 2>;
-> >> -                    turbo-mode;
-> >>              };
-> >>      };
-> >>
-> >
->
+> ---
+> v2: 
+>  - split one file per patch 
+>  - remove lm75[] instead of adding checking  
+> ---
+>  drivers/hwmon/w83792d.c | 31 ++++++++++++++-----------------
+>  1 file changed, 14 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/hwmon/w83792d.c b/drivers/hwmon/w83792d.c
+> index abd5c3a722b9..8a72be4ad74f 100644
+> --- a/drivers/hwmon/w83792d.c
+> +++ b/drivers/hwmon/w83792d.c
+> @@ -264,9 +264,6 @@ struct w83792d_data {
+>  	char valid;		/* !=0 if following fields are valid */
+>  	unsigned long last_updated;	/* In jiffies */
+>  
+> -	/* array of 2 pointers to subclients */
+> -	struct i2c_client *lm75[2];
+> -
+>  	u8 in[9];		/* Register value */
+>  	u8 in_max[9];		/* Register value */
+>  	u8 in_min[9];		/* Register value */
+> @@ -927,7 +924,6 @@ w83792d_detect_subclients(struct i2c_client *new_client)
+>  	int address = new_client->addr;
+>  	u8 val;
+>  	struct i2c_adapter *adapter = new_client->adapter;
+> -	struct w83792d_data *data = i2c_get_clientdata(new_client);
+>  
+>  	id = i2c_adapter_id(adapter);
+>  	if (force_subclients[0] == id && force_subclients[1] == address) {
+> @@ -946,20 +942,21 @@ w83792d_detect_subclients(struct i2c_client *new_client)
+>  	}
+>  
+>  	val = w83792d_read_value(new_client, W83792D_REG_I2C_SUBADDR);
+> +
+> +	if (!(val & 0x88) && (val & 0x7) == ((val >> 4) & 0x7)) {
+> +		dev_err(&new_client->dev,
+> +			"duplicate addresses 0x%x, use force_subclient\n",
+> +				0x48 + (val & 0x7));
+> +		return -ENODEV;
+> +	}
+> +
+>  	if (!(val & 0x08))
+> -		data->lm75[0] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+> -							  0x48 + (val & 0x7));
+> -	if (!(val & 0x80)) {
+> -		if (!IS_ERR(data->lm75[0]) &&
+> -			((val & 0x7) == ((val >> 4) & 0x7))) {
+> -			dev_err(&new_client->dev,
+> -				"duplicate addresses 0x%x, use force_subclient\n",
+> -				data->lm75[0]->addr);
+> -			return -ENODEV;
+> -		}
+> -		data->lm75[1] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+> -							  0x48 + ((val >> 4) & 0x7));
+> -	}
+> +		devm_i2c_new_dummy_device(&new_client->dev, adapter,
+> +						0x48 + (val & 0x7));
+> +
+> +	if (!(val & 0x80))
+> +		devm_i2c_new_dummy_device(&new_client->dev, adapter,
+> +						0x48 + ((val >> 4) & 0x7));
+>  
+>  	return 0;
+>  }
