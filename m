@@ -2,202 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF00341FD97
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 20:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BB341FDA2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 20:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233783AbhJBSNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 14:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbhJBSNN (ORCPT
+        id S233815AbhJBSPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 14:15:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39030 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233779AbhJBSPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 14:13:13 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BF9C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 11:11:27 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id j15so14007615ila.6
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 11:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=si6VK9l9Z2rrdXVWj/mhPTsIWAhKCn4rQ61qxbJLJfQ=;
-        b=cXqzG+ZpbI4aAo6Vv2KTN3e1WMjT1U1la/DSZDSuehNgGcT+7vZbXv0y/MaiQShnLt
-         JE9bWx6O9k0tqx7w94trvJGGFAzjbUYDvczu1E4zKs8z9kbMll2yKbeZO3gcZLQWxR0x
-         tgTIPAeU4rj4P6Nuf7cJhWUVeAbRvQR/MjVdAdutoLq+FiKfPY7in9ddXQtkar1YFh09
-         da6ACUZm2j4ddJZdezTkXGRlnGHoLwTDZWaEZF4uwESGKAbeeyB59d9bdR5VNprG4SZ5
-         34+u8BN/8DD7x2wFhmtzFf+1IMMMIme9+fKzODpKJ2Nr/VlQtkaG6f2rFo1RFEO+jYhS
-         vdmw==
+        Sat, 2 Oct 2021 14:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633198425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3oSEK/nQsdZlU+yYMpXszg2Kp8d5WMgwuTa52Aw2D3Y=;
+        b=I8PsR+DgGuOe1K9hlg6YjY22aR5Q3e7Ss+hf0JhsEsvBw8KhKOQl8wwofCop3rYD9rw05z
+        i5jXyuChArjpBK80ERj3mzsiF/HfAj4X1I5h8pfFsW2baxt/IIhhjvfOCDh48jSwdlbQ1x
+        FM56uT5HnB3echT77ZAsr+x24o/MtO0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-W9b_4sT9OuKyyKzkwZU3qw-1; Sat, 02 Oct 2021 14:13:44 -0400
+X-MC-Unique: W9b_4sT9OuKyyKzkwZU3qw-1
+Received: by mail-ed1-f71.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso13290801edx.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 11:13:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=si6VK9l9Z2rrdXVWj/mhPTsIWAhKCn4rQ61qxbJLJfQ=;
-        b=zqm21pNCv5MVgt+k0IPRKkVDTUp8vDGBjghuAudpeWZqicfAlGbwPhbReTyMdhsPQo
-         Aj6Bsi39kL9lTqFoXihNCyaPDk+yG4wiS7uGXr9fkeQ9bON8VgyLtUy7E2lsc+znX9go
-         ncsLLBqRE9gfa26IcnVMsCQDG/1Ci/+f6HmgbeUVOGqiYoPOZ6RKrrVSABwMw5So5Hms
-         oXjLEMWaEJkkxY8KPyD1Ut8Pf2Kc/4VOAEAMVE5T2HcswmzCAHsaBE/WnFKcAGpYfIG2
-         j78r1y0NhXzsB9dFkUmg8YBUXyGsowlvcSHXooCcHhyNWgSiyKofYkBzn4JEkVqHTj6w
-         ugNQ==
-X-Gm-Message-State: AOAM532vVkxzmfAhzvYY7Ezva1lzmrDB4Qi+DxAaRmhMZEuAPbuTF95n
-        FYEy+F0Rncys8Hfafv/4U7n2KuhxrbLYvViIV3tPTA==
-X-Google-Smtp-Source: ABdhPJzEE+SXuGKFWyPKhxC89xvtycrSV5p7SCnEBJ1bQ9gnudzpZopvPPTQRgKEsTNm/ZeCdK6eeIcGdysrPkPYPQ4=
-X-Received: by 2002:a05:6e02:12e6:: with SMTP id l6mr3364224iln.293.1633198286914;
- Sat, 02 Oct 2021 11:11:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3oSEK/nQsdZlU+yYMpXszg2Kp8d5WMgwuTa52Aw2D3Y=;
+        b=cAsOmg+1DPldJ5P8iOmPd0KL0+ShFSWygKS0VpUr8cPT2VfnKyVe3uaczlX179SA5R
+         Wn20y2vZnp0qGRUeCjuquKQsYEBrDecKrjh6JwkP6E/obemsMIvkoPzJs/jTLiZBUBy/
+         8Cgixp82/2YzTMWuGXNtomh+EWQnDaZnq2voTJ5ydqk+bR4EvXYltnTXIXKY/Exmhjdz
+         09/Gj7pHkA7bcQJmbJPU1jNaw9QtqSF9QcGsAcfTBCvQ7du4XimK+F8731HxTnp2G9Vc
+         aJI8AoBtO5eTP2UytkRvMZ7L/L5UnXZQcHoZ/SISC2WAhF5qiyXEr7XwNfOQ1YpCuD77
+         rabg==
+X-Gm-Message-State: AOAM531RLizvGb1XQ/Wg4WC1MFRJxuFo4kpA4kddyo3FhvvKCpqwtohJ
+        b9G94CWR4UhlS79oB5bIMtCQvJPNMPcyvGrD4JlAEYEmS+gX/IdFPO1sowD2olAJDbl/rO0gutw
+        G+x5SrRBEa3TwkGAYtJbKJG7T
+X-Received: by 2002:a17:906:3148:: with SMTP id e8mr5549042eje.240.1633198422786;
+        Sat, 02 Oct 2021 11:13:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRv0l7yLWVghnzKaRjGETRmZdWUznHgB707hsC9MH/6Nu9SV2dEEHSsiG1hSfbsv5Yq/RsSA==
+X-Received: by 2002:a17:906:3148:: with SMTP id e8mr5549025eje.240.1633198422593;
+        Sat, 02 Oct 2021 11:13:42 -0700 (PDT)
+Received: from redhat.com ([2.55.22.213])
+        by smtp.gmail.com with ESMTPSA id d10sm4409791eja.81.2021.10.02.11.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 11:13:41 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 14:13:37 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211002082128-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <87r1d64dl4.fsf@redhat.com>
+ <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+ <87ilyi47wn.fsf@redhat.com>
+ <20211001162213.18d7375e.pasic@linux.ibm.com>
+ <87v92g3h9l.fsf@redhat.com>
 MIME-Version: 1.0
-References: <YUZBkZhQsF5SlcLb@marsc.168.1.7> <CAGS_qxrtD7wJ8oTcyMdYjUZubiJwD7CO+YFDy8ohho5jLeNa8g@mail.gmail.com>
- <YU943oP0ERX1Xh3Q@marsc.168.1.7> <CAGS_qxooHU+7SW9_GbvV2w2QAr3daBJcybx0zMqVFp3f3azrGg@mail.gmail.com>
- <CAGS_qxpbH6c3OvoYZC6TXFQomLpwZg5q7=EZ9B9k=Rw1mOz=0w@mail.gmail.com>
-In-Reply-To: <CAGS_qxpbH6c3OvoYZC6TXFQomLpwZg5q7=EZ9B9k=Rw1mOz=0w@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Sat, 2 Oct 2021 11:11:15 -0700
-Message-ID: <CAGS_qxp9fjKyw4z3sE2TDRrXB3=mMCcomcRq=CszOFLzsw6yNA@mail.gmail.com>
-Subject: Re: [PATCH] kunit: mock: add support for function mocks with no parameters
-To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc:     brendanhiggins@google.com, andy.li@unisoc.com,
-        andersonreisrosa@gmail.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v92g3h9l.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 11:09 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Mon, Sep 27, 2021 at 9:44 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > [2]
-> > On Sat, Sep 25, 2021 at 12:30 PM Marcelo Schmitt
-> > <marcelo.schmitt1@gmail.com> wrote:
-> > >
-> > > Hi Daniel,
-> > >
-> > > Thanks for your review.
-> > >
-> > > On 09/21, Daniel Latypov wrote:
-> > > > On Sat, Sep 18, 2021 at 12:44 PM Marcelo Schmitt
-> > > > <marcelo.schmitt1@gmail.com> wrote:
-> > > > >
-> > > > > Function mocks defined with DEFINE_FUNCTION_MOCK(...) do not support
-> > > > > empty parameters list due to strict function prototypes enforcement
-> > > > > (-Werror=strict-prototypes). Add support for function mocks with no
-> > > > > parameters by adding checks to declare strict function prototypes when
-> > > > > an empty param list is provided.
-> > > > > Further, add an expectation to test that the generated code works.
-> > > > >
-> > > > > Co-developed-by: Anderson Reis Rosa <andersonreisrosa@gmail.com>
-> > > > > Signed-off-by: Anderson Reis Rosa <andersonreisrosa@gmail.com>
-> > > > > Signed-off-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-> > > >
-> > > > Meta: kunit/alpha/master isn't really maintained anymore.
-> > > > I think David and myself having some commits from this year might give
-> > > > the wrong impression.
-> > > > But all of my patches in 2021 were to make it easier to get people to
-> > > > *move away* from kunit/alpha/master ;)
-> > >
-> > > We can't submit it upstream because the mock stuff isn't there yet.
-> > > By the way, as nothing from mocking is upstream and kunit/alpha/master is
-> > > being frozen somewhat, what tree/branch should we base our work on if we
-> > > decide to develop more on the mocking framework?
-> > > I recall the branch with the POC for mocking was at
-> > > https://kunit-review.googlesource.com/c/linux/+/1114
-> > > Should we use this branch to base future work on mocking?
-> > > Or will the mocking framework be discontinued?
-> >
-> > All the mocking stuff is in limbo at the moment.
-> > The v2 of the class mocking RFC was sent out Oct 2020,
-> > https://lore.kernel.org/linux-kselftest/20201012222050.999431-1-dlatypov@google.com/
-> >
-> > Until we have user interest in mocking support, that RFC will likely
-> > just sit there.
-> > Or maybe we scrap it and just introduce the functionality piece by piece.
-> >
-> > There's https://kunit.dev/mocking.html which talks about how one can
-> > implement mocking on their own, or (better yet) write fakes while
-> > leveraging KUnit.
-> > If we start seeing adoption of that, we can start factoring out
-> > functionality into shared code as needed, e.g. support for saying a
-> > mock should be called N times, then maybe gradually the parameter
-> > matchers and return values, etc.
-> >
-> > I missed it, but I know David and Brendan talked a bit about this in
-> > their recent LPC talk, https://youtu.be/Y_minEhZNm8?t=15905
-> >
-> > >
-> > > Sorry for asking so many questions. We just want to help to enhance KUnit.
-> >
-> > No worries, and we really appreciate it.
-> >
-> > > We can work on something else besides mocking if it makes more sense to the
-> > > project.
-> >
-> > Mocking doesn't feel like an area where we can expect to see progress right now.
-> > In terms of other KUnit features we know would be useful now, I think
-> > it's mostly just [1] and [2], which hopefully will land in 5.16.
->
-> To be clear, if anyone thinks up a useful feature, that'd be great.
-> I personally am just out of ideas at the moment, and I think so are
-> Brendan and David.
->
-> We'd want to prioritize features that can improve existing tests or
-> unblock known new tests.
-> Mocking in the alpha version of KUnit is a case where a feature
-> sounded really good on paper and had a bunch of bells and whistles
-> (e.g. strict/nice/naggy mocks support, etc.) but was perhaps
-> overengineered and thus failed to find a home upstream.
->
-> But I just thought of a few more things we could do in the kunit.py script.
-> I think we have more room for improvement there than in the in-kernel
-> part of KUnit right now, but I assume it's the more boring part for
-> most people.
->
-> One thing I'd really like to see is getting code coverage to work in
-> kunit.py while using QEMU.
-> We have a process for doing so under UML here:
-> https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
+On Fri, Oct 01, 2021 at 05:18:46PM +0200, Cornelia Huck wrote:
+> I'd say we need a hack here so that we assume little-endian config space
+> if VERSION_1 has been offered; if your patch here works, I assume QEMU
+> does what we expect (assmuming little-endian as well.) I'm mostly
+> wondering what happens if you use a different VMM; can we expect it to
+> work similar to QEMU?
 
-wrong copy-paste, meant
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/running_tips.html#generating-code-coverage-reports-under-uml
+Hard to say of course ... hopefully other VMMs are actually
+implementing the spec. E.g. IIUC rust vmm is modern only.
 
-> UML actually uses a different coverage implementation than normal, so
-> there's a few things that would need to change.
->
-> We can build and run against "normal" coverage kernels pretty easily:
->
-> $ cat >qemu_coverage_kunitconfig <<EOF
-> CONFIG_KUNIT=y
-> CONFIG_KUNIT_EXAMPLE_TEST=y
-> CONFIG_GCOV_KERNEL=y
-> CONFIG_DEBUG_FS=y
-> CONFIG_GCOV_PROFILE_ALL=y
-> EOF
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> --kunitconfig=qemu_coverage_kunitconfig
->
-> The problem is we'd need to copy the coverage data off the VM instead
-> of just letting it shutdown when tests are done.
-> If we had a userspace running, we'd basically do something like
-> $ scp -r user@vm:/sys/kernel/debug/gcov .
-> <some stuff to get these files in the right spot under .kunit/>
-> <then we'd run lcov and genhtml, just like we do for UML>
->
-> Normal KUnit tests definitely don't want to have to have the overhead
-> of running a userspace, so the implementation might look like a
-> "--qemu_coverage" flag, or maybe a set of generic flags that would
-> give a user enough control over the VM to do this.
-> Or maybe the right answer is to not involve kunit.py at all.
->
-> Not sure if that sounds interesting to you or anyone.
->
+
+> Even if it helps for s390, we should double-check
+> what happens for other architectures.
+> 
 > >
-> > I think right now we probably need more tests written to have a better
-> > idea of what else we could/should do.
-> > Partly because of that, David is trying to get the ball rolling on
-> > testing ext4. We're also hopeful that it'll be easier to add tests if
-> > adjacent code is already tested (sharing fakes, conventions, ability
-> > to copy-paste, etc.).
+> >> 
+> >> Anyone have any better suggestions?
+> >> 
 > >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=3b29021ddd10cfb6b2565c623595bd3b02036f33
-> > [2] https://lore.kernel.org/linux-kselftest/20210909001037.2842954-1-dlatypov@google.com/
-> >
-> >
+> > There is the conditional compile, as an option but I would not say it is
+> > better.
+> 
+> Yes, I agree.
+> 
+> Anyone else have an idea? This is a nasty regression; we could revert the
+> patch, which would remove the symptoms and give us some time, but that
+> doesn't really feel right, I'd do that only as a last resort.
+
+Well we have Halil's hack (except I would limit it
+to only apply to BE, only do devices with validate,
+and only in modern mode), and we will fix QEMU to be spec compliant.
+Between these why do we need any conditional compiles?
+
+-- 
+MST
+
