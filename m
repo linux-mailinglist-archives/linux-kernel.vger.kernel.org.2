@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4A841FDE0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 21:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8994A41FDE7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 21:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhJBTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 15:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S233921AbhJBTuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 15:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233894AbhJBTbd (ORCPT
+        with ESMTP id S229689AbhJBTuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 15:31:33 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364DEC0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 12:29:47 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id u66so126030vku.4
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 12:29:47 -0700 (PDT)
+        Sat, 2 Oct 2021 15:50:23 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3160C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 12:48:36 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y26so53247009lfa.11
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 12:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9leNoau+R4yAyj8BW9BHEyz2KSOlgtqAoposPj8ZmQw=;
-        b=Oedpzi0n93C5YwGDPoD3KcGVnay0KPYT0FLDCxr+XQ51SAn6i9L/G6FYTykc7os22a
-         f4QVotgw+qjSgIOiMOEyaGh/biW+1TClN1PkjYMTxPAvj1yPopixUk2FZxBg5O4vWo0W
-         S8Vn1aszWFaCT0LadyhHI9A7QsCQ/EOr/EDKW+eAk7kV/JzkoU+TeMh+k+knFJ1+B6s/
-         z0wKM7n2wTz4WUTH0uWfzwP2iHid2tTAPnJMyZb6N/uRX0g5j1wHXBab49fwWbqrjphq
-         B4ylSxVEKBrLhzVlS+vBcmUdqOM2HCDGYh1c0+RkYwZKxVI9MGLeq9mdhq7JOtNMC0Qx
-         zldA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3v/geDj0uGsJ/NYH2t8jxZkd5djSTKuilXHwfdzt1Cc=;
+        b=RHg/dSVzLyBV46OXc3FslmwBEmjnSZ551iVREvMg49ZnxMhGpK8IqjAlYnyuzz4VyA
+         qDY03Z7ywArwD0J+/I7fU1CqVSTlzISn0nvICz84CkGqS3CEuyMkUYZybqK1ZbROgm83
+         JoP6GmR/pLdjYA2ySMpbLnVq3xpW5Fw7voH/YA4xt2g98PJUTVJHjSnZWChxzIk+Rpoa
+         BnXuNaAkHfh72cSHr2qMgkLivgXC+PjpgY9Y8t/siTpdwusB9OxwokOeMqk4B/WkuwkF
+         79JaNsd0T1XrCNrANY/O++5vhdtYtl4SSE//KL2AOD3Yd8q7vxa/DveK4vOwzOdEB0sa
+         hw/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9leNoau+R4yAyj8BW9BHEyz2KSOlgtqAoposPj8ZmQw=;
-        b=LIH+1jlrKfKBUPbjiMtuOjpgd8rmmqP3d3/HK5YM462Sivg4Z1CLd1kCTEBEIB33pb
-         jaC3E72lWvknQSCrBBn+81qPcq0bfC/Jjvd5r9UBOxVOi3DXzp3lLAdy5YU8EnWKwSYR
-         Impdd4+hQv6ZvJIz2HN6sZPOtd3MPbeelPYKlJ6aMCZrzRYyiVcr2g/K924TLXODJdeu
-         fL2SR8X0UV2mfqyM5G7AZN1EWxbpyXyMKjw9R0QnbIOD+HQLyCOTOFI4+4eLMd61Fa1Z
-         TwxguKiiq8EyMh7Xv91AvFqylCSoWfy30mRwEzRHcwxXKvJHqMOjr6qTr2ekKSk9kmQM
-         ScIg==
-X-Gm-Message-State: AOAM530o0HaCkKxxIVU9Gynd250ZIfLZNWwXet6mE6hs7iMU7HGs0Oyi
-        +/AiAA1ZluT2U6BHI/pFBfU=
-X-Google-Smtp-Source: ABdhPJwJTZrtzNGoCgRSF+WXPZ7c9CNC+maGpP0gHcYDwk0t4TFtsnuzc9z+3/PlkposVRX+j8vNAw==
-X-Received: by 2002:a1f:5ed4:: with SMTP id s203mr12760932vkb.20.1633202986342;
-        Sat, 02 Oct 2021 12:29:46 -0700 (PDT)
-Received: from marsc.168.1.7 ([2804:30c:95c:7f00:4a55:391d:16ef:6119])
-        by smtp.gmail.com with ESMTPSA id d125sm4928962vkb.5.2021.10.02.12.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 12:29:45 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 16:29:42 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     brendanhiggins@google.com, andersonreisrosa@gmail.com,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com
-Subject: Re: [PATCH] kunit: mock: add support for function mocks with no
- parameters
-Message-ID: <YVizJvi/7+e3n55Q@marsc.168.1.7>
-References: <YUZBkZhQsF5SlcLb@marsc.168.1.7>
- <CAGS_qxrtD7wJ8oTcyMdYjUZubiJwD7CO+YFDy8ohho5jLeNa8g@mail.gmail.com>
- <YU943oP0ERX1Xh3Q@marsc.168.1.7>
- <CAGS_qxooHU+7SW9_GbvV2w2QAr3daBJcybx0zMqVFp3f3azrGg@mail.gmail.com>
- <CAGS_qxpbH6c3OvoYZC6TXFQomLpwZg5q7=EZ9B9k=Rw1mOz=0w@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3v/geDj0uGsJ/NYH2t8jxZkd5djSTKuilXHwfdzt1Cc=;
+        b=BK6j9J7pFxLS0DUUOYpfPUw+p4LGAm2K4lyPaeB/+4/j+h9axiCHa5VY2NXjFpamoY
+         ZeN1eaJBtvctny/YrDnwzKW6CyKA0kQjDvZPJsAPPZ9HreIweuwH6HnEmPZ0EkTP5x7E
+         Qn+whKyuXExLEc1iASvdw5byakjFaSKg39eR9+8bWDAtC9VGSlj7m1wQj0Yf5Orh/laN
+         Kp5u6X+7RZ6k06rMn2qJ8FJQSMRXWq+YeECVm4oNgfym+ycLE2o4Q7i/IxJDQFFIaQOA
+         i3r+N2EMXwBSsggJyJ34ZGAERI5KSWqCboDgq75Tvn4yL0goR+ln18IesowkUUirkQr2
+         7bKg==
+X-Gm-Message-State: AOAM531zeVcF87j/GYsX27RO4g1ZTg8SReFvd2QwFfYfin1n9XbHUWf1
+        Gcj1MNWn61PbLiL9P+H+Q/Gl5j7nS8QPyg==
+X-Google-Smtp-Source: ABdhPJwLnDBY0HJqJaaf7DmtwiIdW9JIcvRLJwkpht+8jNm1I/nya8rzp3SvoRS6VNc2NJxlBiCI8Q==
+X-Received: by 2002:a2e:1557:: with SMTP id 23mr5644871ljv.84.1633204115051;
+        Sat, 02 Oct 2021 12:48:35 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id e23sm632330lfn.215.2021.10.02.12.48.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 12:48:34 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/mdp4: Remove redundant null check before
+ clk_prepare_enable/clk_disable_unprepare
+To:     Xu Wang <vulab@iscas.ac.cn>, robdclark@gmail.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, jcrouse@codeaurora.org,
+        tzimmermann@suse.de, sam@ravnborg.org
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201231094155.25481-1-vulab@iscas.ac.cn>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <3809d7e9-3aa6-8ac0-c1ea-88b63a3d6d63@linaro.org>
+Date:   Sat, 2 Oct 2021 22:48:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGS_qxpbH6c3OvoYZC6TXFQomLpwZg5q7=EZ9B9k=Rw1mOz=0w@mail.gmail.com>
+In-Reply-To: <20201231094155.25481-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed Andy from the CC list as we're not talking about that bug anymore.
-[...]
+On 31/12/2020 12:41, Xu Wang wrote:
+> Because clk_prepare_enable() and clk_disable_unprepare() already checked
+> NULL clock parameter, so the additional checks are unnecessary, just
+> remove them.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-> > > We can work on something else besides mocking if it makes more sense to the
-> > > project.
-> >
-> > Mocking doesn't feel like an area where we can expect to see progress right now.
-> > In terms of other KUnit features we know would be useful now, I think
-> > it's mostly just [1] and [2], which hopefully will land in 5.16.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>   drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 18 ++++++------------
+>   1 file changed, 6 insertions(+), 12 deletions(-)
 > 
-> To be clear, if anyone thinks up a useful feature, that'd be great.
-> I personally am just out of ideas at the moment, and I think so are
-> Brendan and David.
-> 
-> We'd want to prioritize features that can improve existing tests or
-> unblock known new tests.
-> Mocking in the alpha version of KUnit is a case where a feature
-> sounded really good on paper and had a bunch of bells and whistles
-> (e.g. strict/nice/naggy mocks support, etc.) but was perhaps
-> overengineered and thus failed to find a home upstream.
-> 
-> But I just thought of a few more things we could do in the kunit.py script.
-> I think we have more room for improvement there than in the in-kernel
-> part of KUnit right now, but I assume it's the more boring part for
-> most people.
-> 
-> One thing I'd really like to see is getting code coverage to work in
-> kunit.py while using QEMU.
-> We have a process for doing so under UML here:
-> https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
-> UML actually uses a different coverage implementation than normal, so
-> there's a few things that would need to change.
-> 
-> We can build and run against "normal" coverage kernels pretty easily:
-> 
-> $ cat >qemu_coverage_kunitconfig <<EOF
-> CONFIG_KUNIT=y
-> CONFIG_KUNIT_EXAMPLE_TEST=y
-> CONFIG_GCOV_KERNEL=y
-> CONFIG_DEBUG_FS=y
-> CONFIG_GCOV_PROFILE_ALL=y
-> EOF
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> --kunitconfig=qemu_coverage_kunitconfig
-> 
-> The problem is we'd need to copy the coverage data off the VM instead
-> of just letting it shutdown when tests are done.
-> If we had a userspace running, we'd basically do something like
-> $ scp -r user@vm:/sys/kernel/debug/gcov .
-> <some stuff to get these files in the right spot under .kunit/>
-> <then we'd run lcov and genhtml, just like we do for UML>
-> 
-> Normal KUnit tests definitely don't want to have to have the overhead
-> of running a userspace, so the implementation might look like a
-> "--qemu_coverage" flag, or maybe a set of generic flags that would
-> give a user enough control over the VM to do this.
-> Or maybe the right answer is to not involve kunit.py at all.
-> 
-> Not sure if that sounds interesting to you or anyone.
+> diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+> index 3d729270bde1..696a22d571ad 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+> @@ -207,12 +207,9 @@ int mdp4_disable(struct mdp4_kms *mdp4_kms)
+>   	DBG("");
+>   
+>   	clk_disable_unprepare(mdp4_kms->clk);
+> -	if (mdp4_kms->pclk)
+> -		clk_disable_unprepare(mdp4_kms->pclk);
+> -	if (mdp4_kms->lut_clk)
+> -		clk_disable_unprepare(mdp4_kms->lut_clk);
+> -	if (mdp4_kms->axi_clk)
+> -		clk_disable_unprepare(mdp4_kms->axi_clk);
+> +	clk_disable_unprepare(mdp4_kms->pclk);
+> +	clk_disable_unprepare(mdp4_kms->lut_clk);
+> +	clk_disable_unprepare(mdp4_kms->axi_clk);
+>   
+>   	return 0;
+>   }
+> @@ -222,12 +219,9 @@ int mdp4_enable(struct mdp4_kms *mdp4_kms)
+>   	DBG("");
+>   
+>   	clk_prepare_enable(mdp4_kms->clk);
+> -	if (mdp4_kms->pclk)
+> -		clk_prepare_enable(mdp4_kms->pclk);
+> -	if (mdp4_kms->lut_clk)
+> -		clk_prepare_enable(mdp4_kms->lut_clk);
+> -	if (mdp4_kms->axi_clk)
+> -		clk_prepare_enable(mdp4_kms->axi_clk);
+> +	clk_prepare_enable(mdp4_kms->pclk);
+> +	clk_prepare_enable(mdp4_kms->lut_clk);
+> +	clk_prepare_enable(mdp4_kms->axi_clk);
+>   
+>   	return 0;
+>   }
 > 
 
-Sounds cool. We'll try to make it.
 
-Thanks
-
-> >
-> > I think right now we probably need more tests written to have a better
-> > idea of what else we could/should do.
-> > Partly because of that, David is trying to get the ball rolling on
-> > testing ext4. We're also hopeful that it'll be easier to add tests if
-> > adjacent code is already tested (sharing fakes, conventions, ability
-> > to copy-paste, etc.).
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=3b29021ddd10cfb6b2565c623595bd3b02036f33
-> > [2] https://lore.kernel.org/linux-kselftest/20210909001037.2842954-1-dlatypov@google.com/
-> >
-> >
+-- 
+With best wishes
+Dmitry
