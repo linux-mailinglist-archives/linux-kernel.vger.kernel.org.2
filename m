@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C5741FE46
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD9841FE4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhJBVgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 17:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S234058AbhJBVoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 17:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhJBVgN (ORCPT
+        with ESMTP id S229503AbhJBVom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 17:36:13 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B68C061714;
-        Sat,  2 Oct 2021 14:34:27 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i25so53589254lfg.6;
-        Sat, 02 Oct 2021 14:34:27 -0700 (PDT)
+        Sat, 2 Oct 2021 17:44:42 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F8AC061714
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 14:42:56 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k23so8907887pji.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 14:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:cc:subject:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Sr7zpoMXlNOqHgczAlk6ZgoWjf6JMJ+TU28A00eG/Uw=;
-        b=Ykn+zz4p4l24vq8JxMWjB6NcFHM7zS5WXz52Rj65EHo4+Krjz9bgJ+Ka3o0BFrWm6Y
-         qvXFuMJQDShXVoWZs9Oewtau2kw3JITOd5/HuOxRV7vwXbxZ2AgA7ZWyTQd/e3QFuZS4
-         3p+BRrZTIPBwnGEUSJtmtYKY8DsEoyOZU0owgI4CBrZK/I6A8UmhpqP+2d3sxwcj4pm+
-         0F+yPnQv1DbZwMFz7CYNPVb9IlLP0QBeQcfwS18qBhjua0U1bXONt3MReavCXAJrK88c
-         Fn9F2GAI9wTxn1qfadT5SS209COmfqs0BTOo7vjWHeU819ZRLh9GpUo+Bz2c97Y63kMU
-         CzRw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0FFjP0oMZpxRexvNkXdCYUTlS/H85H78Cl8QLMYAVqY=;
+        b=lu/QAwQBpT03rq/VQqSlSsmAXa6QbEPOPpK95EFgVMjGjF7JAjrI9RiL1pn6ZotiKB
+         g8/UamqqsiA5JdRLDR8CJ2qO1NoES6urk1/CRCn+M6s0ohwG4KegN2MXXtF2rSUgiiJo
+         neebnm2figgIUrMXjkXgAD6IquiNvy+HfLBjI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Sr7zpoMXlNOqHgczAlk6ZgoWjf6JMJ+TU28A00eG/Uw=;
-        b=uaarjzJzckfOYKXrtwSo+bc/XX0/h+5gCix8fqSuKfOS6L5JAc+ghmEterWrPKtbhl
-         FRd+1MAUDdixcj7WHbzu1U8vwUnxc/m8i3QQCq78R7IQH7TvcSlkGlUbd4uuJ0lmnKSu
-         38cSqdTmqZU1lrmODgm5gqGO2pWpKkgS9uEYou6pxZi1zLmJWfsVmtHkcLHFke8ccaeT
-         lAcHajqsLBOhuk6OX2/mxDV4eZqG2tCpbpXRdhnFtczycTZi5R8i/uE3e5y1ETva8IHd
-         6T01dtAV+S9qSJW/SzDMvr9G43EyPjlOtSloXTPN7soda/RSjGSEv7ZDv6FjY9YlGHb2
-         pbbg==
-X-Gm-Message-State: AOAM530IgzEdrvQjb67WAF9MLCikeIoX2u21APNNdmBSqKSZwbR9WF7s
-        FAD3bGHHvKbiOWXsrjE7A58=
-X-Google-Smtp-Source: ABdhPJx+rDNyNSeCgX4mr7KHsYLnTzAeRX68ElJgpte2wb9TFdHbovKNruevbJC+sUvfg6tSu3b2BA==
-X-Received: by 2002:a2e:a787:: with SMTP id c7mr6024923ljf.264.1633210465425;
-        Sat, 02 Oct 2021 14:34:25 -0700 (PDT)
-Received: from penguin.lxd (105-28-94-178.pool.ukrtel.net. [178.94.28.105])
-        by smtp.gmail.com with ESMTPSA id h1sm161757lfk.161.2021.10.02.14.34.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0FFjP0oMZpxRexvNkXdCYUTlS/H85H78Cl8QLMYAVqY=;
+        b=VPca9Gk7gaZYHoXmQZ0yXFgsVjtcHEz9/6pGH9T25mQBeVJFYkZ7V/WBjcIyGaZO9c
+         OPN+zDcfNzXKKGfnXCjJ+ub1ipM0JJRAHb2oiJGoMi4p2TorMpN73M2tmsqYleOehQsd
+         cV1axbxyOUmn9TyIUHukLrHTPicg78IODeO3ysBu8MzuKYi6IkUtkvgIWiaVzi/jhS+2
+         KKbo/qpxK4iqrKCXVThJzdA5YODMl4tzS1bzIf81UuEaDsIEcI13IlKfN9h9P7uhTfQN
+         yGDy92G7Ys5WnnPzJRbfAq7uHIo889sKXomVFf4Q1Di2RUXb0DyJ+I9zCeW9nWqD8lpx
+         Cjag==
+X-Gm-Message-State: AOAM530cfmtyHz2zmApVg/cB9B/JFprEy7ODF9n4moJuQFGhHcnMVDaE
+        JxboEbe4FvsRNi7NX/Rx7SzKRg==
+X-Google-Smtp-Source: ABdhPJwHouZwwcQTL+3/hhpEg8o6JRvZfZmd3ySpA8bXdqKGb9wtZn+VEUaXyTMCYiTTh0fev9osyw==
+X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr28057348pji.177.1633210976114;
+        Sat, 02 Oct 2021 14:42:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t8sm10821655pjt.39.2021.10.02.14.42.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 14:34:25 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 00:34:10 +0300
-From:   Denis Pauk <pauk.denis@gmail.com>
-Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        matt-testalltheway <sefoci9222@rerunway.com>,
-        Kamil Dudka <kdudka@redhat.com>,
-        Robert Swiecki <robert@swiecki.net>,
-        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
-        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 0/3] Update ASUS WMI supported boards.
-Message-ID: <20211003003410.28248af4@penguin.lxd>
-In-Reply-To: <20211002210857.709956-1-pauk.denis@gmail.com>
-References: <20211002210857.709956-1-pauk.denis@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; aarch64-unknown-linux-gnu)
+        Sat, 02 Oct 2021 14:42:55 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 14:42:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4] docs: Explain the desired position of function
+ attributes
+Message-ID: <202110021441.C70D775A61@keescook>
+References: <20210930235754.2635912-1-keescook@chromium.org>
+ <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
+ <YVf80rXg8Yd19Hmw@kroah.com>
+ <9f262a81acffffb6e267d5832b29d8596d8046e2.camel@perches.com>
+ <CANiq72m7gRxNmHUJb9jJ+JMiYHyMuNf6Yc1+7N87yz_RLc3atA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72m7gRxNmHUJb9jJ+JMiYHyMuNf6Yc1+7N87yz_RLc3atA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Oct 2021 00:08:53 +0300
-Denis Pauk <pauk.denis@gmail.com> wrote:
+On Sat, Oct 02, 2021 at 06:27:02PM +0200, Miguel Ojeda wrote:
+> On Sat, Oct 2, 2021 at 5:22 PM Joe Perches <joe@perches.com> wrote:
+> >
+> > If automated scripts exist to change all the code to that new
+> > 'one true way', it wouldn't be applied.
+> 
+> I think nobody is saying we should reformat all code at once, just
+> that agreeing on a given style allows us to eventually automate it (it
+> also makes humans more likely to be consistent).
 
-Patches should be applied over
-git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git:hwmon-next
-(0889b7c73a4d8eaaa321eafcf66835979ead862a)
+I just want to know what style to use to not have it NAKed by Linus. ;)
 
-> Add support to nct6775:
-> * PRIME B360-PLUS
-> * PRIME X570-PRO
-> * ROG CROSSHAIR VIII FORMULA
-> * ROG STRIX B550-I GAMING
-> * ROG STRIX X570-F GAMING
-> * ROG STRIX Z390-E GAMING
-> * TUF GAMING B550-PRO
-> * TUF GAMING Z490-PLUS
-> * TUF GAMING Z490-PLUS (WI-FI)
-> 
-> Add sensors driver for ASUS motherboards to read sensors from the
-> embedded controller. Based on
-> https://github.com/zeule/asus-wmi-ec-sensors.
-> 
-> Could you please review?
-> 
-> @Andy Shevchenko, @Guenter Roeck should I split last patch in some
-> way? Should I add to MAINTAINERS:
-> --
-> ASUS WMI HARDWARE MONITOR DRIVER
-> M:     Eugene Shalygin <eugene.shalygin@gmail.com>
-> M:     Denis Pauk <pauk.denis@gmail.com>
-> L:     linux-hwmon@vger.kernel.org
-> S:     Maintained
-> F:     drivers/hwmon/asus_wmi_sensors.c
-> --
-> 
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
-> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-> Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
-> Tested-by: Kamil Dudka <kdudka@redhat.com>
-> Tested-by: Robert Swiecki <robert@swiecki.net>
-> Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
-> Tested-by: Igor <igor@svelig.com>
-> Tested-by: Tor Vic <torvic9@mailbox.org>
-> Tested-by: Poezevara <nephartyz@gmail.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> 
-> ---
-> Denis Pauk (3):
->   hwmon: (nct6775) Add additional ASUS motherboards.
->   hwmon: (nct6775) Use custom scale for ASUS motherboards.
->   hwmon: (asus_wmi_sensors) Support access via Asus WMI.
-> 
->  drivers/hwmon/Kconfig            |  12 +
->  drivers/hwmon/Makefile           |   1 +
->  drivers/hwmon/asus_wmi_sensors.c | 595
-> +++++++++++++++++++++++++++++++ drivers/hwmon/nct6775.c          |
-> 41 ++- 4 files changed, 643 insertions(+), 6 deletions(-)
->  create mode 100644 drivers/hwmon/asus_wmi_sensors.c
-> 
+But yeah, it might be nice to do style checking against the kernel some
+day. We have a lot of weird stuff in here, though! *slaps roof of kernel*
 
+-- 
+Kees Cook
