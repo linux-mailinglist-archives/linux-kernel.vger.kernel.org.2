@@ -2,145 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950B641F891
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA1841F894
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhJBAQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:16:03 -0400
-Received: from relay06.th.seeweb.it ([5.144.164.167]:45431 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhJBAP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:15:56 -0400
-Received: from localhost.localdomain (83.6.167.124.neoplus.adsl.tpnet.pl [83.6.167.124])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id ED5BC3F347;
-        Sat,  2 Oct 2021 02:14:08 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: qcom: sdm845: Move gpio.h inclusion to SoC DTSI
-Date:   Sat,  2 Oct 2021 02:13:58 +0200
-Message-Id: <20211002001358.45920-6-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211002001358.45920-1-konrad.dybcio@somainline.org>
-References: <20211002001358.45920-1-konrad.dybcio@somainline.org>
+        id S230457AbhJBASX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:18:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230337AbhJBASW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:18:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA724610EA;
+        Sat,  2 Oct 2021 00:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633133797;
+        bh=XoESlOgXD7gA/gwzvFCnOXxEc6BCvHDmyfV8dM0b4gU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=X+BkYXCngJnrbXJitP5/gxGS8OAWgM9qQJh/xim8ynlqJhnXLacYzRu0d5j22SlNG
+         KxHJ2z3nv1bdodRgH9Z/e8Z5J5G3ymU2QcUe7hAjqcFwSW5sca67sKnPg6GBPZX+kk
+         6p6ccH9jMe2uJhCnbzdSjAo6RJCjY7jZFLFCP81zhGmL0TV0SrtopTCqsjgZeQHu/K
+         Owq6V3MRwqfPxu7Pm/7R4HwYdXcQdCsj0w/sfZU1U3o2AHkUyuwGcVRNqUwjqXR/2C
+         6DpRRXCwzw1FNy9JL5kFy7PUsHUOiXIaoxlBkTjJxqwnt0GI1sJEA7sDTvRua08BvQ
+         VnG9TGNmNkT9g==
+From:   Mark Brown <broonie@kernel.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Mark Brown <broonie@kernel.org>, wsd_upstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-spi@vger.kernel.org, dafna3@gmail.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kernel@collabora.com, enric.balletbo@collabora.com,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] spi: mediatek: skip delays if they are 0
+Date:   Sat,  2 Oct 2021 01:16:22 +0100
+Message-Id: <163313375302.13893.4068868673523917902.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211001152153.4604-1-dafna.hirschfeld@collabora.com>
+References: <20211001152153.4604-1-dafna.hirschfeld@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Almost any board that boots and has a way to interact with it
-(say for the rare cases of just-pstore or let's-rely-on-bootloader-setup)
-needs to set some GPIOs, so it makes no sense to include gpio.h separately
-each time. Hence move it to SoC DTSI.
+On Fri, 1 Oct 2021 17:21:53 +0200, Dafna Hirschfeld wrote:
+> In the function 'mtk_spi_set_hw_cs_timing'
+> the 'setup', 'hold' and 'inactive' delays are configured.
+> In case those values are 0 it causes errors on mt8173:
+> 
+> cros-ec-i2c-tunnel 1100a000.spi:ec@0:i2c-tunnel0:
+> 	Error transferring EC i2c message -71
+> cros-ec-spi spi0.0: EC failed to respond in time.
+> 
+> [...]
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi           | 1 -
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts           | 1 -
- arch/arm64/boot/dts/qcom/sdm845-mtp.dts              | 1 -
- arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi  | 1 -
- arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 1 -
- arch/arm64/boot/dts/qcom/sdm845.dtsi                 | 1 +
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 1 -
- 7 files changed, 1 insertion(+), 6 deletions(-)
+Applied to
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index 0251afc7f7c6..4a6285a25f77 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -5,7 +5,6 @@
-  * Copyright 2018 Google LLC.
-  */
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sdm845.dtsi"
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 2755cc8525fa..66a86b140b5c 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -5,7 +5,6 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-index 588f899d40f2..5e6e8f4fb5be 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-@@ -7,7 +7,6 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sdm845.dtsi"
- 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-index 3e9448ac1912..aee30abd8117 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-@@ -7,7 +7,6 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/linux-event-codes.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-index 93717749037f..e3b9d6e282b7 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-@@ -2,7 +2,6 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 0e64538da7cb..e7bffa26b03f 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -12,6 +12,7 @@
- #include <dt-bindings/clock/qcom,lpass-sdm845.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/clock/qcom,videocc-sdm845.h>
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interconnect/qcom,osm-l3.h>
- #include <dt-bindings/interconnect/qcom,sdm845.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 164d2a93a30b..a3b61cb3cfad 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -7,7 +7,6 @@
- 
- /dts-v1/;
- 
--#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/gpio-keys.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
--- 
-2.33.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
+Thanks!
+
+[1/1] spi: mediatek: skip delays if they are 0
+      commit: 3672bb820f3292b6f035469f863c020317a3dd28
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
