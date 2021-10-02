@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA35641FE9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2031F41FEA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbhJBXMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        id S234212AbhJBXUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhJBXMF (ORCPT
+        with ESMTP id S234203AbhJBXUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:12:05 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607EFC061714;
-        Sat,  2 Oct 2021 16:10:19 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id p1so5148507pfh.8;
-        Sat, 02 Oct 2021 16:10:19 -0700 (PDT)
+        Sat, 2 Oct 2021 19:20:09 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B15AC061714
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 16:18:23 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id q201so287429pgq.12
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 16:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uWsmnTdLYgGTIESxzt0fKdeqEQq87Inaf5bYUeItpZw=;
-        b=VFvP6LrVFrumdKonxWiPTWqt1wzR+4nfggmOkAXBi0frjODwU7AKHK6odrkaYnuJH6
-         hvx/WNaTEmlAFhuFCDSkfmWjHZ2mopR9wqO4r2yWBX9G81P3VIsitAMlmlR+lc/KsA4K
-         8BKBYUE4G1ZJqIJd4czLQd7wc0tVfxedzujFAQz7pbJJ/THHc8GB8xlA+gYw6x39yVG7
-         siZFQmTZ4QJqtYPRsAhWeIRD/o1/mU3c6F8DH8ykZHWu/C9uDSWRDdKaEwZk7HWEMJAF
-         mR35EDQs2T3U+0p16dx/HxGPQTWQT8bX8JPYhYHp8129LxLdQY+wJBTAUU9DbLn3WxKs
-         WTgA==
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+wqFw2hPWBzL/6wM3Yf8mXadq/oh65HiCzw31MXRMl8=;
+        b=OfAOnhIwRrNibniln0v2IJlgQDSmjKkJSNE9x8mt3I93ywrs5vpLKcof0GwnZN7NQ2
+         MumgkJSj8/MPnuCF2xzGVpnhb8LEvyrZ1kUg97YKK9nGyblOamZy5JnnhXjJPHUzD7P1
+         TXSASkuramWlAl4at48FmI5RyhARXm8qMlnifYqMGUFwxrQ06Iwuyl7WPfbtfqIruSSI
+         nznkN1r3hm6siDl3Us4TX4aGhCOaEeWuL5Ea1vyj0DcrJQSZuy7NJdJ/OccaDawELS55
+         yljQkHuhkYEn/2a5nbsOBvjdo5Asuq1TQUsquwoqTef6t1y4vrssbRdyKMrEyFOKN+yz
+         cGYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uWsmnTdLYgGTIESxzt0fKdeqEQq87Inaf5bYUeItpZw=;
-        b=IE1av44gleedUCOqhEMyL/BpkWObpfMB8E80p+txqnA0mBWG0inUxKjqrWGArs2RmO
-         H6g+UTwX2H3f9+kDQ7HjjA4glPEjqMB0Eq6LRGbsjQawTC4L41pgQ7K9qRLXuIHogkyW
-         NyMk5fU3ikh28Kl9KI64/uha8gkvi8OYk9Tsfo2v/aLVZLuyY5qg9SzG7LT+beOMHpyh
-         Km6pBLPjtBRCabnW3YYcsQVPEIe22lSlodX+wzq0io8jPRKizIb/YRLXUbMTnkDVdkeA
-         EIgml6woBGWC2oP8ZxtUJZyIjg2xFuyy0aKzrw0bLRQViCif/KWRz0k/VDxlFoi2M1hl
-         +3rQ==
-X-Gm-Message-State: AOAM533P+9WBOmClEGKschl3HUlGiF2+yA29lkY2k+UHZmkYEicrzxRd
-        VRw4pc0d4PZPxs0RweG5HX8=
-X-Google-Smtp-Source: ABdhPJxBPfASvqvpKaozrHZlhb76h0W/4pnVSDT2NKcdRSrRFmnKkE73nJpee/T1k5kzMl0+1fkGqA==
-X-Received: by 2002:a63:cc49:: with SMTP id q9mr4712022pgi.463.1633216218668;
-        Sat, 02 Oct 2021 16:10:18 -0700 (PDT)
-Received: from localhost (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id b142sm10096505pfb.17.2021.10.02.16.10.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+wqFw2hPWBzL/6wM3Yf8mXadq/oh65HiCzw31MXRMl8=;
+        b=XX7YW9cLJIA6EWb4eIN/ah4J1zvYBqPUFYxRuS0LeR3pFnSPUcMLx0rrwk+tLHSYVz
+         24KmxxDV0ARgrQvaL0J2/g0ifeKrYciXxIvqtos4TNUYBGMH5A1pG/2yTykwt5oHyBgV
+         c90qohNUh8MY//GQQZUPOSWTykA3D2AJvjHIS+wHdKdj/7g1wCfZ/qUgF/T23NT9mvCP
+         lPYs3yL8coAzsH097kZdieXHAiWUImBxtma0fcNPoPIy5bI8gN6/MSGnWDJkoZeo15ED
+         HgU24J5vGbxqiYbWl3S616IgyYGrKWiGCoZR++j+q7a5jbh8BFE7rv/c0/FEZ/VY5VuT
+         dRrQ==
+X-Gm-Message-State: AOAM532e0OTXBhlDDIlvMLlU+rDrnA0iwittg6Hy3czFi6boLUZh7VM6
+        gC2gGk4k8DMJ9a8QOeCHIvwk7Q==
+X-Google-Smtp-Source: ABdhPJyfQC43Mwjmccd3TpJmj5a3tTym10SC7M5P7R8+ogHeLCSWZ45GTq0SHoyTXDhRrO44jZKARA==
+X-Received: by 2002:a05:6a00:98b:b0:44b:df34:c17b with SMTP id u11-20020a056a00098b00b0044bdf34c17bmr17470228pfg.34.1633216702038;
+        Sat, 02 Oct 2021 16:18:22 -0700 (PDT)
+Received: from integral.. ([182.2.37.211])
+        by smtp.gmail.com with ESMTPSA id k17sm5928989pfk.16.2021.10.02.16.18.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 16:10:18 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 16:10:20 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
-Message-ID: <YVjm3NXEhoBQtUSI@yury-ThinkPad>
-References: <20211001181245.228419-1-yury.norov@gmail.com>
- <20211003094722.434c030d@canb.auug.org.au>
+        Sat, 02 Oct 2021 16:18:21 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Bedirhan KURT <windowz414@gnuweeb.org>
+Subject: [PATCH] media: atomisp: fix `-Werror=return-type`
+Date:   Sun,  3 Oct 2021 06:17:23 +0700
+Message-Id: <20211002231723.29019-1-ammar.faizi@students.amikom.ac.id>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211003094722.434c030d@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 09:47:22AM +1100, Stephen Rothwell wrote:
-> Hi Yury,
-> 
-> On Fri,  1 Oct 2021 11:12:29 -0700 Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> > Can you please take this series into the next tree? It has been already
-> > in next-tree for 5.14:
-> > 
-> > https://lore.kernel.org/linux-mmc/YSeduU41Ef568xhS@alley/T/
-> > 
-> > But it was damaged and we decided to merge it in 5.15 cycle. No changes
-> > comparing to 5.14, except for Andy's patch that was already upstreamed
-> > and therefore removed from here.
-> > 
-> > The git tree is here:
-> > 	https://github.com/norov/linux/tree/bitmap-20210929
-> 
-> Sorry, I cannot include that in linux-next since it it based on (an old
-> version of) linux-next itself.  If it needs to be based on other trees in
-> linux-next, then it has to be added to Andrew Morton's patch series (in
-> the post linux-next section.  Otherwise, if it can be based on Linus
-> Torvald's tree (even with a few conflicts), then that is better.
+Bedirhan reported build error:
+```
+  drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
+  drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+   1649 | }
+        | ^
+  cc1: some warnings being treated as errors
+  make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o] Error 1
+  make[3]: *** [scripts/Makefile.build:540: drivers/staging/media/atomisp] Error 2
+  make[2]: *** [scripts/Makefile.build:540: drivers/staging/media] Error 2
+  make[1]: *** [scripts/Makefile.build:540: drivers/staging] Error 2
+  make: *** [Makefile:1868: drivers] Error 2
+```
 
-Ok, I'll resend it based on Linus tree shortly
+Commit 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp:
+remove useless returns") incorrectly removed a required return results
+in the above build error. Reinstate it.
 
-Thanks,
-Yury
+Cc: Pavel Skripkin <paskripkin@gmail.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: linux-media@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org
+Reported-by: Bedirhan KURT <windowz414@gnuweeb.org>
+Fixes: 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp: remove useless returns")
+Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+---
+ .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+index 8e085dda0c18..1bd917e81743 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+@@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_channel_sensor(
+ 	default:
+ 		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+ 	}
++	return INPUT_SYSTEM_ERR_NO_ERROR;
+ }
+ 
+ // Test flags and set structure.
+-- 
+2.30.2
+
