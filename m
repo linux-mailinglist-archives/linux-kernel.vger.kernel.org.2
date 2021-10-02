@@ -2,191 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE48841FE29
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCCE41FE2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbhJBVFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 17:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234021AbhJBVE7 (ORCPT
+        id S234048AbhJBVHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 17:07:49 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:45034 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233966AbhJBVHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 17:04:59 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6902C061714
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 14:03:12 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id s16so11108842pfk.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 14:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f7kGYU9i8iehxQ7ed0jxcX484pBLuV+nP2UpT0YHga0=;
-        b=KCFo1XEywDIaVfsHl65LLQZLhInq0HBpq3+oWSErEM00ItsX5IHl+xXjsw30f5qNfY
-         GcJPfDhslBinoV++447QA+WNp9oVKL7+UjxlR2Pj+mPLnS+/l/jt+r0XEpvWam0MWV7b
-         K+enVYzKefruDJIA3vIq2R5OCTWMbBL9aX626+JXAQ9ZrL4vl2/Lagt2QU5iaWlkxM08
-         xcuyL7xPiIxL74Mvp36cToiPtTIQgfPY7bGXJeo1oziAMObwXHIyYZy06bFc/T2TFmrH
-         Fyrl4AkwSpuPBIAzGiwICybIH/KuXgmFZfW4DOWGun16Bjb6knwM/KAf5cpdvnXXzL8u
-         cbCQ==
+        Sat, 2 Oct 2021 17:07:48 -0400
+Received: by mail-wr1-f49.google.com with SMTP id d6so21593498wrc.11;
+        Sat, 02 Oct 2021 14:06:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f7kGYU9i8iehxQ7ed0jxcX484pBLuV+nP2UpT0YHga0=;
-        b=qDgsZqepU+U56/jskRSfnWu7UtV4Te5ZJAh4LCl7TNzU4TVRRrB3/oXstpYDyuMYXe
-         Qj7kv6JnHJYJ4p5K+6MiY6gZRnbcrhMrjaHwpILPW463iyjxeXZH0c/5XkzSjjKKC0A8
-         NLOs2nFuzDbDkGXZ1TaBmK9ThUZp1JloKpSN9vmClkJ0Dw+Cr5VKOgVfkqCwsOvk1v7B
-         sa6BSC+oYm3LHkR8uwUxDkM+401O+gWWTqgNu6Pc9In2OS2sNo32PowqtvGyG2f14ceC
-         LDiLW/vFsbOAg+8824wtVSYfmZa5CMJXytcSV+AM2rg/7chVqh5YhJs6kNnmJM9Mn5qN
-         iPdQ==
-X-Gm-Message-State: AOAM533V/JvB6l05MC5ZNIWHhj/Sdxs4NDaKYmwqZhssgKHPj6QnpUrC
-        oGM5dQhkkRvWGLH5USrWOOFAEZmvhPFgsSlDNdbJBw==
-X-Google-Smtp-Source: ABdhPJzhI8aTPmQj2TCDJhpk71KTGItBNrMGOeuXQgD40I3hEWBhRl+v6gpth7rPwL1yQxOj5GJoI1Mw+eknEQj7Zp0=
-X-Received: by 2002:aa7:959a:0:b0:43b:adeb:ef58 with SMTP id
- z26-20020aa7959a000000b0043badebef58mr16909160pfj.19.1633208592223; Sat, 02
- Oct 2021 14:03:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210928235635.1348330-1-willmcvicker@google.com>
- <7766faf8-2dd1-6525-3b9a-8ba790c29cff@canonical.com> <CABYd82YodFDwBxexCv+0hpYrdYEX1Z1CvnRkmnBPkEJNJ4bssQ@mail.gmail.com>
- <CAOesGMgSt_mYvRzF0rC=fnjMYGO9EX0_Ow2cD1d8XKLD5pHsZA@mail.gmail.com>
- <CAGETcx-b0ea-rqH+fj37sq9SLWY=+ePK94Y6rnLPuNbqFVBWmw@mail.gmail.com>
- <CAMuHMdWhCB_zg6TwjYfz+=vc+_Wd5yzuAAzk=2ToZOQSAyaiJA@mail.gmail.com>
- <CAK8P3a10R-Q8hB-piH_QT0hzkaAZTczLbM=6WmgoMHYL8EhZ4g@mail.gmail.com>
- <CAOesGMhHK7Z8Ki+UFRi24dXTdk4=YC6ExneOnfkVmG2HFiVMKw@mail.gmail.com> <CAGETcx_UFLCwmqs_d5c8JY8Je9r=jy=KnELz1h91Qbrw9z+kaw@mail.gmail.com>
-In-Reply-To: <CAGETcx_UFLCwmqs_d5c8JY8Je9r=jy=KnELz1h91Qbrw9z+kaw@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Sat, 2 Oct 2021 14:03:00 -0700
-Message-ID: <CAOesGMjn-RKqRBL_A2bYjOb4jVhMbjvJs4JGtrQzX-WVSvJ6dQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>,
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=5H/GFVPqJxpNuzq9DTTrJ9nYbSkD2Uo4JrRe91cjYbs=;
+        b=Cfzp417lJRS/JZWt6dVI/eGKzZ2WLYUx5iavfxBij8RnJxA8myy9EbEqqIG+x4lpSx
+         LtPbvC2lHmaTylfO1rJiRYrIo1/jEr3Jb3aw7GCzu8KpWftutvZQLMV5N1rcXxFviMs1
+         E4NISm11mhpO5T5B427nG6sy0qlie9jeIS8ZSJs1WmAXvWcd0yG1j6wCLo/Fy7byNT+4
+         XWoKsMP1/Slg3pIdrRYtBxLZOEfUG3N6bdIXkEoelZAGBQs35qjeK0ZZYMcyxNssc35a
+         +LEfmCN/DhK1Mg35o/ADrbjjnpgdwr/othIcyxUD2GHqfwud8j8iT/+cUNXCnqdWOY33
+         OTdg==
+X-Gm-Message-State: AOAM531BXQYHNO3Pw5BvMWXtmwglCUiNfuUcTbr6hRruV7dIgetJbAcA
+        F2bgvJTQMsnuYPZCEFyodS4IZNyJg+g=
+X-Google-Smtp-Source: ABdhPJwYfEVPx9sGnNGcKfk+RdHjOSBlPv7Nzvdneo7e6BX2JSVXpOIrqI0GJQjGi7+1lZHBuoznpw==
+X-Received: by 2002:adf:e30d:: with SMTP id b13mr5072345wrj.438.1633208761027;
+        Sat, 02 Oct 2021 14:06:01 -0700 (PDT)
+Received: from [10.9.0.26] ([46.166.133.199])
+        by smtp.gmail.com with ESMTPSA id q8sm9509980wrv.26.2021.10.02.14.05.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 14:06:00 -0700 (PDT)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will.deacon@arm.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        notify@kernel.org
+References: <20210929185823.499268-1-alex.popov@linux.com>
+ <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+ <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1> <YVWAPXSzFNbHz6+U@alley>
+ <CAHk-=widOm3FXMPXXK0cVaoFuy3jCk65=5VweLceQCuWdep=Hg@mail.gmail.com>
+ <ba67ead7-f075-e7ad-3274-d9b2bc4c1f44@linux.com>
+ <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
+From:   Alexander Popov <alex.popov@linux.com>
+Message-ID: <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com>
+Date:   Sun, 3 Oct 2021 00:05:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 12:26 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Fri, Oct 1, 2021 at 8:27 AM Olof Johansson <olof@lixom.net> wrote:
-> >
-> > On Fri, Oct 1, 2021 at 2:01 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > On Fri, Oct 1, 2021 at 10:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Fri, Oct 1, 2021 at 7:24 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > GIC and arch timer. Basically the minimal kernel would need a timer
-> > > > > for the scheduler tick and IRQ controller to get the timer IRQ and the
-> > > > > fixed clock driver if the archtimer uses one to get its frequency and
-> > > > > the early UART console is pointless as a module (so build it in to
-> > > > > allow debugging/development).
-> > > > >
-> > > > > And then all new drivers, we should make sure are implemented as
-> > > > > tristate drivers. And we can go back and slowly work on converting
-> > > > > existing drivers to modules (community effort -- not one person or
-> > > > > entity) -- at least the ones where the author has hardware or ones
-> > > > > where the change is very likely to be correct and someone else is
-> > > > > willing to test it. We'll never be able to support some/all ARM32 (do
-> > > > > they even have a GIC/arch timer standard?), but at least for ARM64,
-> > > > > this seems like a viable goal.
-> > > >
-> > > > Cortex-A7/A15 and later have GIC and architectured timer, so it should
-> > > > work for contemporary systems.
-> > > > Cortex-A9 systems may have GIC, and TWD and/or Global Timer (but I've
-> > > > seen SoCs where the interrupt for the latter was not wired :-(.
-> > >
-> > > There are a number of well-known examples even with 64-bit chips or
-> > > Cortex-A7/A15 based SoCs that can't use the architected timer,
-> > > irqchip or iommu.
-> > >
-> > > Apple M1, Broadcom BCM283x, Samsung Exynos5 and
-> > > some Hisilicon server parts come to mind, I'm sure there
-> > > are more.
-> >
-> > There's also more and more movement towards having coprocessors with
-> > standardized interfaces dealing with this functionality. We're
-> > currently at the point where they have coprocessors with
-> > non-standardized interfaces, and it's useful to keep encouraging
-> > convergence in this area to everybody's benefit. I don't find it
-> > particularly useful to make life easier for the custom solutions at
-> > the expense of others like this patchset does, when that's (just
-> > beyond? on?) the horizon.
-> >
-> > > > What are the plans for other architectures?
-> > > > I've seen similar patches being applied for e.g. MIPS.
-> > >
-> > > There is some work in the more actively maintained MIPS
-> > > platforms to make those behave more like Arm/powerpc/riscv/m68k
-> > > platforms, using a single image and moving drivers into modules.
-> > > Most MIPS platforms seem unlikely to get updated to this,
-> > > and will continue to require a SoC specific kernel binary forever,
-> > > similar to the renesas superh platforms. Most of the less
-> > > common architectures (arc, csky, hexagon, nios2, xtensa,
-> > > microblaze, nds32, openrisc, sparc/leon) are way behind that
-> > > though, and generally don't work at all without out-of-tree
-> > > code.
-> >
-> > One of the arguments for needing some of these core drivers in-kernel
-> > is that some platforms boot at very conservative DVFS operating
-> > points, to a degree that you really want to turn up the CPU clocks
-> > fairly early during boot.
-> >
-> > If you don't have the drivers built-in, you can't do that and/or you
-> > create possible fragile or awkward inter-module dependencies with
-> > deferred probing, etc. We do care about boot time enough to prefer to
-> > just build them in for this reason.
->
-> Go look at a Pixel 5, we got this working just fine with all these
-> drivers as modules and we definitely care about boot time. You just
-> need to load your CPU freq driver and the other ones it needs early
-> on. And with fw_devlink=on (default in upstream), there's hardly any
-> deferred probing.
+On 02.10.2021 19:52, Linus Torvalds wrote:
+> On Sat, Oct 2, 2021 at 4:41 AM Alexander Popov <alex.popov@linux.com> wrote:
+>>
+>> And what do you think about the proposed pkill_on_warn?
+> 
+> Honestly, I don't see the point.
+> 
+> If you can reliably trigger the WARN_ON some way, you can probably
+> cause more problems by fooling some other process to trigger it.
+> 
+> And if it's unintentional, then what does the signal help?
+> 
+> So rather than a "rationale" that makes little sense, I'd like to hear
+> of an actual _use_ case. That's different. That's somebody actually
+> _using_ that pkill to good effect for some particular load.
 
-Unfortunately these problems are usually easier to fix on new
-platforms, especially during new product development. The hard part is
-making sure you haven't regressed any of the legacy platforms when
-you're changing the implementation for them as well.
+I was thinking about a use case for you and got an insight.
 
+Bugs usually don't come alone. Killing the process that got WARN_ON() prevents
+possible bad effects **after** the warning. For example, in my exploit for
+CVE-2019-18683, the kernel warning happens **before** the memory corruption
+(use-after-free in the V4L2 subsystem).
+https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
 
-> > If vmlinux binary size is a concern, maybe it's time to consider
-> > splitting the drivers into a bare-minimum piece that's not a module
-> > for early setup, and the rest that can be loaded post-boot.
->
-> Isn't this literally what I was suggesting with my
-> ARM64_MINIMAL_GENERIC_KERNEL suggestion? Build in all the bare minimum
-> drivers that are needed before module loading can happen? You'd just
-> select them all under that config. And any existing platform that
-> wants to use it would break up their drivers into modules and switch
-> to it.
+So pkill_on_warn allows the kernel to stop the process when the first signs of
+wrong behavior are detected. In other words, proceeding with the code execution
+from the wrong state can bring more disasters later.
 
-Do you understand the implications of your proposal on the complexity
-for those who care about making sure different config combinations
-keep building and working, i.e. both the minimal-generic-kernel and
-the regular generic version? You've doubled the testing workload for
-all of those folks. It's a different mindset from when you mostly need
-to care about your one config and platform.
+> That said, I don't much care in the end. But it sounds like a
+> pointless option to just introduce yet another behavior to something
+> that should never happen anyway, and where the actual
+> honest-to-goodness reason for WARN_ON() existing is already being
+> fulfilled (ie syzbot has been very effective at flushing things like
+> that out).
 
+Yes, we slowly get rid of kernel warnings.
+However, the syzbot dashboard still shows a lot of them.
+Even my small syzkaller setup finds plenty of new warnings.
+I believe fixing all of them will take some time.
+And during that time, pkill_on_warn may be a better reaction to WARN_ON() than
+ignoring and proceeding with the execution.
 
--Olof
+Is that reasonable?
+
+Best regards,
+Alexander
+
