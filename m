@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEA241F9DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 06:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF7241F9E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 06:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhJBEqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 00:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50474 "EHLO
+        id S231381AbhJBFBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 01:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhJBEqt (ORCPT
+        with ESMTP id S229581AbhJBFBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 00:46:49 -0400
+        Sat, 2 Oct 2021 01:01:30 -0400
 Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7825CC061775;
-        Fri,  1 Oct 2021 21:45:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84CEC061775;
+        Fri,  1 Oct 2021 21:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=r6g82CisCmXF23aDh6/Yob8NqFKFNYUbpI0fuA/iR/A=; b=WzXOriUpcILM1GsfYhOXO7Fmmt
-        Dv5u4sSt0Wl7MQh6J5Pe5OXfGDzAMZaKYYotx67k+uqBALeyARuUYegZKvcIyeD9K+xZNQy242HBZ
-        3B+eAil6N8AXRSowg5ZdMC2hD6PRr8VxDM7Xbzx99RZUlJFfruRjiL+9efTCK5APpROgW2/7uo8F5
-        Y2oyei/qTRbLpyeoiX7/7iwJ0Qd7BaeCrdVqkgqSGy0DRXt9PNP6xmigdOGBPua5rZi1Bi2940p75
-        0UeqsX38Cnli/BMxzZgEGA1vW+vh69GgvgV44xv4nZApVlwWbgaT8eKPw0hXyFi+EJJBLWjE3YNnq
-        GIF381yw==;
+        bh=iJLC+3ZlFQ1U2zcDDHfUhr1pau9J8AeUPSVlkDJtwmY=; b=aGb8RLPtIx9naj1IOx8MNlP8KN
+        faH5Mbdl2zCuZxYcHzFI/dBJwl715/Cn/LXvgDxguAJdg0zk0bqNoitlz0SbpHkquT95fOic7/wna
+        5NeGY4cf4GsEm2HK8kmwDSEu6pYciULYxlrbF0/wAfNckfWbf+2LkfRy3HSLjMvuU8rENn7Q2BLQ8
+        /DpvGryojCtiVVJvym9PSfz4AjH07XVWEQ+3ccZk3cwhqTUwxkKWWV2oL8ES4L48t+1jEMlBmZ7qY
+        W6Zs9FIj/FdiP6mQrEey9xsL8yyYuXjwREwuibgQd8F5R9VUUnMzByrSXLUxnH3NCqTGRldA1jjKM
+        SwrOvxxg==;
 Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWWtS-001mbD-LN; Sat, 02 Oct 2021 04:45:02 +0000
+        id 1mWX7g-001mnB-FB; Sat, 02 Oct 2021 04:59:44 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         kernel test robot <lkp@intel.com>,
         Aditya Srivastava <yashsri421@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH] PNP: system.c: unmark a comment as being kernel-doc
-Date:   Fri,  1 Oct 2021 21:45:00 -0700
-Message-Id: <20211002044500.24306-1-rdunlap@infradead.org>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org,
+        Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: [PATCH] input/misc: max8925_onkey.c: don't mark comment as kernel-doc
+Date:   Fri,  1 Oct 2021 21:59:43 -0700
+Message-Id: <20211002045943.9406-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,29 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a documentation build warning caused by the comment not being
-in kernel-doc format:
+Change the comment to a normal (non-kernel-doc) comment to avoid
+these kernel-doc warnings:
 
-system.c:110: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Reserve motherboard resources after PCI claim BARs,
+max8925_onkey.c:2: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * MAX8925 ONKEY driver
+max8925_onkey.c:2: warning: missing initial short description on line:
+ * MAX8925 ONKEY driver
 
+Fixes: 3734574cac100 ("Input: enable onkey driver of max8925")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Reported-by: kernel test robot <lkp@intel.com>
 Cc: Aditya Srivastava <yashsri421@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: linux-acpi@vger.kernel.org
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
 ---
- drivers/pnp/system.c |    2 +-
+ drivers/input/misc/max8925_onkey.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20211001.orig/drivers/pnp/system.c
-+++ linux-next-20211001/drivers/pnp/system.c
-@@ -106,7 +106,7 @@ static int __init pnp_system_init(void)
- 	return pnp_register_driver(&system_pnp_driver);
- }
- 
+--- linux-next-20211001.orig/drivers/input/misc/max8925_onkey.c
++++ linux-next-20211001/drivers/input/misc/max8925_onkey.c
+@@ -1,4 +1,4 @@
 -/**
 +/*
-  * Reserve motherboard resources after PCI claim BARs,
-  * but before PCI assign resources for uninitialized PCI devices
-  */
+  * MAX8925 ONKEY driver
+  *
+  * Copyright (C) 2009 Marvell International Ltd.
