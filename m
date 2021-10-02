@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361D241FCC2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657C741FCC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhJBPhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:37:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56830 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233537AbhJBPgy (ORCPT
+        id S233484AbhJBPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233464AbhJBPhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:36:54 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 3C0661F43FC0
-Received: by earth.universe (Postfix, from userid 1000)
-        id F22923C0CA8; Sat,  2 Oct 2021 17:35:04 +0200 (CEST)
-Date:   Sat, 2 Oct 2021 17:35:04 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        patches@opensource.cirrus.com, linux-pm@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: wm831x_power: fix spelling mistake on
- function name
-Message-ID: <20211002153504.244kdj7vkurcuzg7@earth.universe>
-References: <20211001120449.17914-1-colin.king@canonical.com>
- <20211001132534.GJ9223@ediswmail.ad.cirrus.com>
+        Sat, 2 Oct 2021 11:37:34 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AD9C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 08:35:48 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b20so51532488lfv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 08:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=As5HYpMOHZAgsgVtpz9x0BzJO7EL9YEqeOwuc5uWDrwFedCQwVgBRyGfXoUj5DaJTX
+         XJj4AJhCz/zVzA2tPMFxew8HHV/BhR5ISCBSbiW1I7saUZx93pSfzQQHLUHd3o5Mkt5+
+         1Ssts3qcl2p5fCeXOW5SJjlTo1mVCxP87KKPiy9aRJUtuaT44SGwP/wwGx+Zeq8N+Tj/
+         sdXRE9jAqhEesgXd6tmur7zGZ+xSjSe+hAgqow7Yk9ptTc3SeclKMw0UQmh+C+VTd2Df
+         crS6GraHZQSretBq1tJYZwqt0ytt3CP0qAics58OssMWrO9UvBwRuavmf/9d4dNlF7vP
+         gf6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=oVav5e6ZScLlzF7VnlrDBT6F8zq9eCyO19mPjry3H68cqBMNyFTY/o9IPLBL/kL7cP
+         qV2Li/eUUvPBkj13cGnX0+yRxigs7frIS23JrnAMajGRvSPeFBK7hXdR89WufS5fIdPG
+         4YQyyid8W8BOgk0byT9smlK1TWVQsrnaj3MW0ZuWCMcaYDIlEB8qtNOnJMHz21lyIhrA
+         0S/FKtB8cOF6tbitdJwfCFsQIJBe759pPoDyGk0rCgHlxlgxfLtB0rBnMdNyrJAdZdfx
+         owbAz5cU7qkvpY8DEnjGAaw9gsHPpY3O7s/b6MJy+ARgI0EFROsrc+UqjjFpPlbO61ZO
+         S2pQ==
+X-Gm-Message-State: AOAM533t9xxeFNIRQOD9NHQAYPMscl+57bVIYM2UH6uGCV4MB1FRW03N
+        ZfFY+Ll7tPKtZrfVoJ9hjIcp2P1fIPs1o2LFu4E=
+X-Google-Smtp-Source: ABdhPJxBs5bhzKnH3P2hXJSU8PVpZwe2eGoKym/RyavOHhgz2UYnd2fGKT/gfV8m4WEGYqwtmlTxJCPiSHpH2OAjCQo=
+X-Received: by 2002:a05:6512:114e:: with SMTP id m14mr4230370lfg.322.1633188946909;
+ Sat, 02 Oct 2021 08:35:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pjryjpadlfjb4xau"
-Content-Disposition: inline
-In-Reply-To: <20211001132534.GJ9223@ediswmail.ad.cirrus.com>
+Received: by 2002:a05:6512:20cb:0:0:0:0 with HTTP; Sat, 2 Oct 2021 08:35:46
+ -0700 (PDT)
+Reply-To: monica43brown@gmail.com
+From:   monica brown <tiemhm9@gmail.com>
+Date:   Sat, 2 Oct 2021 16:35:46 +0100
+Message-ID: <CAEVBgMiX_6kJzzRHWV-8dJXfmRNq+__dkQMnzX0j234dr673uQ@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---pjryjpadlfjb4xau
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Oct 01, 2021 at 01:25:34PM +0000, Charles Keepax wrote:
-> On Fri, Oct 01, 2021 at 01:04:49PM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >=20
-> > There is a spelling mistake in the name wm831x_battey_apply_config,
-> > fix it.
-> >=20
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
->=20
-> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks, queued.
-
--- Sebastian
-
---pjryjpadlfjb4xau
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFYfCIACgkQ2O7X88g7
-+pqFug//SCffn3nc+/n4Q7PPL99PrQXAlxTHIrSYatkXgJRSJIh831p3sYAxjbJz
-ilOrw7mmX6DDJMr/7JtnBOaGaOk/iFIiqt7Oim26cgikiL4OUDuo8jpqIWe8Inr0
-OefTzxlcjLadO6MnydBcmB3CGqTY8cLfvVXcEmFf3V2YY4d1fvttf7HGVi6N8mTJ
-Kuv9bKGEy5NfLoZgwopolSeVu1g8AQM//GrqVysmX6Z2+C6df5b9ik1agyekBCJl
-tOByOf7uigNP69KeeWHJliJyYrPsLHJRzj8OnS6wAaV6q0hc3p7EIc4YPhrBRQsD
-XMCy4wkAbOTX7HQ58ADL+BZjsmziwioj2Ea1o1OdWd9hhFz4EpuQBtevT1VNZ2Oe
-JHfm6H8b+V0JX6DAiV0M+Oa5ZjN0B4exnhKfnQQPeZt3pAsxJpi6GuDhHvsZiqAv
-tYUcBNwLi3du3b3rKZAiqlKVO9zkVnTqAhRsHJWjvdJYgRkZRPRP2uiy62hxvZYf
-Qc+qmcJICtoE1lQgpNpj0HGH6D+E6/wW/8Z+VnFQzB4FZ28rFTA9qmQ0Iyo4iCQP
-Yo2j3FZpQi40h5q97ak1WGuqjALTpbqkoHVPN0u/VM4z7f/JfEiqj56I0xo6laOL
-thf8NvK5ZRCm4RJAWOUViV1FbY5LRNIxkFP5gkaj/UK49Vq0Gic=
-=O7Ze
------END PGP SIGNATURE-----
-
---pjryjpadlfjb4xau--
+Greetings from me
+My name is Monica Brown and how are you today, please I have something that
+i will like to share with you okay please try and get back.
