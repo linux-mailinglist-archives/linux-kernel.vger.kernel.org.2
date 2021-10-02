@@ -2,148 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248A541FC13
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0875F41FC19
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 15:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhJBNL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 09:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56270 "EHLO mail.kernel.org"
+        id S233269AbhJBNNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 09:13:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19027 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232821AbhJBNL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 09:11:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0E061AE0;
-        Sat,  2 Oct 2021 13:09:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633180181;
-        bh=6yVYyz2ScywFmKSZH3jBX2CrwSLdM6zkZln8XU6qjxI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bDwK/yEO4sqP184OX4wGd8mV+lfK96PiNgPa4HbOupXS9hl0WaZTvSmI3HS4QxyJX
-         pKdBDA5+dh5dRAWW3FlF7UDd7AKjG//bWfyHc9Ccx9JuwylwLCXfom3l/tLvuI2ngM
-         myfCrTJEKMvvcAk3lAYNM+CnWN6sSkqV32SInBVmAMmWPON4b0vxWk0TvZbE2u4ont
-         eXanV9vLuPKR28gbpo9yDhHc5nCvHL4qb5mjWfa/3JaNx3iuh1d4dSSLMCBVxeS6sS
-         P+l0DPY/KwM6J/EpIzIJtnCHEaNrM7qVMAoo7WwoBozj+Vrnst+kwgZGB4+9l2e93g
-         E0UeHY4bgO1lQ==
-Received: by pali.im (Postfix)
-        id 31AC71087; Sat,  2 Oct 2021 15:09:39 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] serial: core: Fix initializing and restoring termios speed
-Date:   Sat,  2 Oct 2021 15:09:00 +0200
-Message-Id: <20211002130900.9518-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S233240AbhJBNNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 09:13:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633180288; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=U56aPpP9fNQficQEnaop9Sqfh0G91mtG/y8HvE9u/Sg=; b=hHsRL/0FGW+umKlWf9y2RwPZPgDZdRyNrwtr5yN7QwkMY6524efXoaCg6OAbGbKgQh/dyBBX
+ a18q8CvaQtIcSu/IivZGpwMwS0UuWnMbJb/xORIpp3yQIx8WE6gy4AubINfuhrj6CAnOqtMU
+ ko1Rf/FoH2goJ5naCta0eUBv+o8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 61585a7d47d64efb6dea8e52 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 02 Oct 2021 13:11:25
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 521A7C4361B; Sat,  2 Oct 2021 13:11:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5381EC4338F;
+        Sat,  2 Oct 2021 13:11:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5381EC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
+        Sujith.Manoharan@atheros.com, linville@tuxdriver.com,
+        vasanth@atheros.com, senthilkumar@atheros.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+03110230a11411024147@syzkaller.appspotmail.com,
+        syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com
+Subject: Re: [PATCH RESEND] net: ath9k: fix use-after-free in ath9k_hif_usb_rx_cb
+References: <4e1374b1-74e4-22ea-d5e0-7cf592a0b65b@gmail.com>
+        <20210922164204.32680-1-paskripkin@gmail.com>
+        <9bbf1f36-2878-69d1-f262-614d3cb66328@gmail.com>
+Date:   Sat, 02 Oct 2021 16:11:18 +0300
+In-Reply-To: <9bbf1f36-2878-69d1-f262-614d3cb66328@gmail.com> (Pavel
+        Skripkin's message of "Sat, 2 Oct 2021 16:05:47 +0300")
+Message-ID: <87pmsnh8qx.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit edc6afc54968 ("tty: switch to ktermios and new framework")
-termios speed is no longer stored only in c_cflag member but also in new
-additional c_ispeed and c_ospeed members. If BOTHER flag is set in c_cflag
-then termios speed is stored only in these new members.
+Pavel Skripkin <paskripkin@gmail.com> writes:
 
-Therefore to correctly restore termios speed it is required to store also
-ispeed and ospeed members, not only cflag member.
+> On 9/22/21 19:42, Pavel Skripkin wrote:
+>> Syzbot reported use-after-free Read in ath9k_hif_usb_rx_cb(). The
+>> problem was in incorrect htc_handle->drv_priv initialization.
+>>
+>> Probable call trace which can trigger use-after-free:
+>>
+>> ath9k_htc_probe_device()
+>>    /* htc_handle->drv_priv = priv; */
+>>    ath9k_htc_wait_for_target()      <--- Failed
+>>    ieee80211_free_hw()		   <--- priv pointer is freed
+>>
+>> <IRQ>
+>> ...
+>> ath9k_hif_usb_rx_cb()
+>>    ath9k_hif_usb_rx_stream()
+>>     RX_STAT_INC()		<--- htc_handle->drv_priv access
+>>
+>> In order to not add fancy protection for drv_priv we can move
+>> htc_handle->drv_priv initialization at the end of the
+>> ath9k_htc_probe_device() and add helper macro to make
+>> all *_STAT_* macros NULL save.
+>>
+>> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
+>> Reported-and-tested-by: syzbot+03110230a11411024147@syzkaller.appspotmail.com
+>> Reported-and-tested-by: syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com
+>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+>> ---
+>>
+>> Why resend?
+>> 	No activity on this patch since 8/6/21, Kalle Valo has asked around,
+>> 	for review and no one claimed it.
+>>
+>> Resend changes:
+>> 	1. Rebased on top of v5.15-rc2
+>> 	2. Removed clean ups for macros
+>> 	3. Added 1 more syzbot tag, since this patch has passed 2 syzbot
+>> 	tests
+>>
+>
+> Hi, ath9k maintainers!
+>
+> Does this patch need any further work? I can't see any comments on it
+> since 8/6/21 and I can't see it on wireless patchwork.
+>
+> If this bug is already fixed and I've overlooked a fix commit, please,
+> let me know. As I see syzbot hits this bug really often [1]
 
-In case only cflag member with BOTHER flag is restored then functions
-tty_termios_baud_rate() and tty_termios_input_baud_rate() returns baudrate
-stored in c_ospeed / c_ispeed member, which is zero as it was not restored
-too. If reported baudrate is invalid (e.g. zero) then serial core functions
-report fallback baudrate value 9600. So it means that in this case original
-baudrate is lost and kernel changes it to value 9600.
+See my other mail I just sent about ath9k syzbot patches:
 
-Simple reproducer of this issue is to boot kernel with following command
-line argument: "console=ttyXXX,86400" (where ttyXXX is the device name).
-For speed 86400 there is no Bnnn constant and therefore kernel has to
-represent this speed via BOTHER c_cflag. Which means that speed is stored
-only in c_ospeed and c_ispeed members, not in c_cflag anymore.
+https://lore.kernel.org/linux-wireless/87tuhzhdyq.fsf@codeaurora.org/
 
-If bootloader correctly configures serial device to speed 86400 then kernel
-prints boot log to early console at speed speed 86400 without any issue.
-But after kernel starts initializing real console device ttyXXX then speed
-is changed to fallback value 9600 because information about speed was lost.
+In summary: please wait patiently once I'm able to test the syzbot
+patches on a real device.
 
-This patch fixes above issue by storing and restoring also ispeed and
-ospeed members, which are required for BOTHER flag.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: edc6afc54968 ("tty: switch to ktermios and new framework")
-Cc: stable@vger.kernel.org
----
- drivers/tty/serial/serial_core.c | 16 ++++++++++++++--
- include/linux/console.h          |  2 ++
- 2 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 18266ea830d2..3f48b540ff1e 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -222,7 +222,11 @@ static int uart_port_startup(struct tty_struct *tty, struct uart_state *state,
- 	if (retval == 0) {
- 		if (uart_console(uport) && uport->cons->cflag) {
- 			tty->termios.c_cflag = uport->cons->cflag;
-+			tty->termios.c_ispeed = uport->cons->ispeed;
-+			tty->termios.c_ospeed = uport->cons->ospeed;
- 			uport->cons->cflag = 0;
-+			uport->cons->ispeed = 0;
-+			uport->cons->ospeed = 0;
- 		}
- 		/*
- 		 * Initialise the hardware port settings.
-@@ -290,8 +294,11 @@ static void uart_shutdown(struct tty_struct *tty, struct uart_state *state)
- 		/*
- 		 * Turn off DTR and RTS early.
- 		 */
--		if (uport && uart_console(uport) && tty)
-+		if (uport && uart_console(uport) && tty) {
- 			uport->cons->cflag = tty->termios.c_cflag;
-+			uport->cons->ispeed = tty->termios.c_ispeed;
-+			uport->cons->ospeed = tty->termios.c_ospeed;
-+		}
- 
- 		if (!tty || C_HUPCL(tty))
- 			uart_port_dtr_rts(uport, 0);
-@@ -2100,8 +2107,11 @@ uart_set_options(struct uart_port *port, struct console *co,
- 	 * Allow the setting of the UART parameters with a NULL console
- 	 * too:
- 	 */
--	if (co)
-+	if (co) {
- 		co->cflag = termios.c_cflag;
-+		co->ispeed = termios.c_ispeed;
-+		co->ospeed = termios.c_ospeed;
-+	}
- 
- 	return 0;
- }
-@@ -2235,6 +2245,8 @@ int uart_resume_port(struct uart_driver *drv, struct uart_port *uport)
- 		 */
- 		memset(&termios, 0, sizeof(struct ktermios));
- 		termios.c_cflag = uport->cons->cflag;
-+		termios.c_ispeed = uport->cons->ispeed;
-+		termios.c_ospeed = uport->cons->ospeed;
- 
- 		/*
- 		 * If that's unset, use the tty termios setting.
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 20874db50bc8..a97f277cfdfa 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -149,6 +149,8 @@ struct console {
- 	short	flags;
- 	short	index;
- 	int	cflag;
-+	uint	ispeed;
-+	uint	ospeed;
- 	void	*data;
- 	struct	 console *next;
- };
 -- 
-2.20.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
