@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBCB41FBC9
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E2641FBCD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhJBMhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 08:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S233174AbhJBMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 08:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbhJBMhS (ORCPT
+        with ESMTP id S232821AbhJBMkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:37:18 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6247C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 05:35:31 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 71so26433804ybe.6
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 05:35:31 -0700 (PDT)
+        Sat, 2 Oct 2021 08:40:05 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFD1C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 05:38:19 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1095068pjc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 05:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=HO7UaKavBCU4G9TsxrFHymYV8AfA1mKx9sn0m38IslI=;
-        b=EnCTrAT2CJOGbkIJMvHFysNAoyJF+IMrzpcxIT0VWKE2Ua3LpbarJ8j6DddmoJjVEo
-         GjoOwW28hY4BB1qMPTjt8ZnNMrpJ4IPENhnl15NCsqn8vG/PzHDPlyFtCjL7I5z/GfBw
-         fvTnoo3sSR/WFq/JZaDBU27PNsj/Qm/gBzAd56dKPrfdx5aYwVlzjgIWI1KG2v1irS+N
-         UEqGIcokMHN4fwZ33z/W2WHbpnhNHFbsxHBpKUlQSQncqElESC5rOpngDiHM/9DRGe0s
-         KYzRSpjxqk4kJMPBDpk+QyVzoFWTfOqWtpcKsTUt2M4hZR4art8kyL6Qw87F5yJdZzvZ
-         Q5CA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P6qFBggDbUbYVolP3u2ZDXe489MEX4kV8HKAIWuNb9Q=;
+        b=LArsdtKCRVn3qXwzRpX3ns9MPpOkKw/M9whS5PtOH2bbHqfvWy/jGztHzCCU3dsW3V
+         u01XXbGa2PqSUN5C8hviQD6OPRrSfReTqtKSqPOSjQV8IxlKbpeHu83OAIu91b5V/mDe
+         kT/lXP/r5z0gWnNrKgNS+0KmoQJokQuhHmhRF9uPzHYkf6iRl6N+R9dlFyCpHSFbTnPQ
+         oaId6C4BdMuBr1ejJhCFdHJ69iqNJJnmpgwFctdnCaLzMm1Zg8L5wmfrKp9JusJ1p80O
+         HgpbR64Zn0TV2dlRiLUdUP65O1psuoljP36ScI8aieptd8dkPxyoVl5E588LZ0gsoiGS
+         pGYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=HO7UaKavBCU4G9TsxrFHymYV8AfA1mKx9sn0m38IslI=;
-        b=XIClBATg87+gzWJsjg9lnOxPdP5GT3wx6uzM1kwgi31Xhny6d+XDkbIkW93Mle9vX1
-         W5WKAzmL+gzSF7vQHUJ/9573P9xL/DHxFWR4Cg0XKYi4V+jWEkgo2EV9zVlZenMsWBUD
-         3JhXsbuse1ZbBX80HIytt/GLCuN6weDrXV+K8ILslEoizStdmMunmZvmMStFzMviUbmR
-         uBlaIGE42quRAcQW4TLgNAm+/PMjPsl/2d9AxnY88RNybEJ4z/TgpCLAKOJpyVJ7f4pW
-         X0Qcyqs0DPKN65VVYm9qxbqHTIIGyRWKvYiR/e0AHyl7uUzifagvbNvXDEmdEkhVPOw/
-         iTQg==
-X-Gm-Message-State: AOAM532p7I9pcK7kewY4rMNuUWcYRkfdK2JGiJqWnPYcIJjJ9XIciR7H
-        MfA/hwCLLMuvnLALt8UtxZiHGxCi3MMuSR754JM=
-X-Google-Smtp-Source: ABdhPJwLt+K2U/NS79pOqJuVmu9urGgTJjhKIpDp1fLZqx1FEuUUhSIR27nU3tHRLYNfPRxtoc3BD4rFNYMXRF6lVUc=
-X-Received: by 2002:a25:3142:: with SMTP id x63mr3194198ybx.99.1633178130906;
- Sat, 02 Oct 2021 05:35:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P6qFBggDbUbYVolP3u2ZDXe489MEX4kV8HKAIWuNb9Q=;
+        b=V/BDaus5SIsCdsS6pMq/mXTw64rivWNpjeJ6GA3L81Dnk7lxkw+Jg/Y22Y0b6wbkEE
+         45qGsKT9HiuFxCBTCRVWJARkRr5hzh1yFAZN7D/eoc8Arcwwp0LnoDrwnCqynU4YjoLd
+         HIkCkl8cQgIBGvllqfGEVBa7wzrEN3VYg1Qbxy1/A6E4u9DZHsRJNY3Sk8O9fLUM9cEa
+         XTsdfoXBDMIyRy8CZDm/GZevW3HBlGKgKoC/tePQm6QLXC5bK7fex+lqAGOVAjBFAivG
+         AXmmdLpttRtuU9gWS6+YK6bonpbEV+XF9ip7gePtBlBrYvHCEcvk+bnI5x7zWd8KEYlX
+         JxZQ==
+X-Gm-Message-State: AOAM532pTUQCsvqT7iL+/0OrmvQCZAXLavT0qHHqzABkSwnVbm6KHL48
+        hrTYK0GJFOSXx6TgBUCNpT4=
+X-Google-Smtp-Source: ABdhPJyzOShZpfenGoc/Ai07w5jAUABN8v2uRvEI7/QpnmEqT5fEhLHFOePYPoe9/4yIJ3zx7CRpew==
+X-Received: by 2002:a17:90b:3ec3:: with SMTP id rm3mr17943544pjb.93.1633178299288;
+        Sat, 02 Oct 2021 05:38:19 -0700 (PDT)
+Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
+        by smtp.gmail.com with ESMTPSA id on9sm8725333pjb.3.2021.10.02.05.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 05:38:18 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 21:38:16 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org
+Subject: Re: [PATCH] openrisc: time: don't mark comment as kernel-doc
+Message-ID: <YVhSuFFMnlQm+x+8@antec>
+References: <20211001021101.18225-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6918:11c4:b0:5f:c18b:9903 with HTTP; Sat, 2 Oct 2021
- 05:35:30 -0700 (PDT)
-Reply-To: mllchrist703@gmail.com
-From:   Christiane <haidarmarina66@gmail.com>
-Date:   Sat, 2 Oct 2021 14:35:30 +0200
-Message-ID: <CAKZ+pTMyQ8USBbhFBnuiGC8uXbwrQ6+UTvs=cgKixAmJ8bzaGw@mail.gmail.com>
-Subject: Message from hospital
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001021101.18225-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Thu, Sep 30, 2021 at 07:11:01PM -0700, Randy Dunlap wrote:
+> Fix a kernel-doc warning by unmarking the comment as being in
+> kernel-doc notation.
+> 
+> Fixes this warning:
+> arch/openrisc/kernel/time.c:137: warning: expecting prototype for Clocksource(). Prototype was for openrisc_timer_read() instead
+> 
+> Fixes: b731fbbd246e ("OpenRISC: Timekeeping")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: openrisc@lists.librecores.org
+> ---
+>  arch/openrisc/kernel/time.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20210930.orig/arch/openrisc/kernel/time.c
+> +++ linux-next-20210930/arch/openrisc/kernel/time.c
+> @@ -127,7 +127,7 @@ irqreturn_t __irq_entry timer_interrupt(
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -/**
+> +/*
+>   * Clocksource: Based on OpenRISC timer/counter
+>   *
+>   * This sets up the OpenRISC Tick Timer as a clock source.  The tick timer
 
+Hi Randy,
 
-Dearest
+This looks good to me, thank you.  I am queuing it.
 
-I have to apologize for sending you an unwelcomed message because I
-know this is not a predictable way to encourage communication with a
-stranger at the same time, forgive me for contacting you without
-knowing you personally.
-
-In any case, I am writing to you from the hospital where I have been
-hospitalized for esophageal cancer over the past six months. In fact,
-I have performed many unsuccessful surgeries in the past and recently
-my doctor told me that I only have a few periods to live because of
-the cancer damage.
-
-After learning that I had a 10% chance to survive another surgery, and
-a short period of life gave me a lot of worries because I am a
-66-year-old widow with no children.
-
-Initially, I wanted to create a charity project to fulfill the wish of
-my late husband, but my current health condition will not allow me to
-implement the project myself.
-
-I decide to call you until I make you the beneficiary of the fund that
-I inherited from my late husband so that you can create a charitable
-project that benefits street children and orphans in the meantime when
-you accept this offer, 70% of the fund will be used for the project
-and 30% to you.
-I hope to hear from you
-Thank you very much
+-Stafford
