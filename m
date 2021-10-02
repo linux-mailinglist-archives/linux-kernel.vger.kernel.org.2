@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96E641F89B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B3441F89E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhJBASd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:18:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56060 "EHLO mail.kernel.org"
+        id S232394AbhJBASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhJBASb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:18:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C6161A02;
-        Sat,  2 Oct 2021 00:16:45 +0000 (UTC)
+        id S232391AbhJBASe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:18:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4E6761A38;
+        Sat,  2 Oct 2021 00:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633133806;
-        bh=mmDjWWi+TkT/WSERjV05zbbQ8vJ54Y+MPbjST5V3/bo=;
+        s=k20201202; t=1633133809;
+        bh=djCM2MPz4yHHqyvVmJ7vTCfBqWgi6PNsQ/jqOwIa6+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ESapNYJo380amxE8fyDJ8oeFNL1ir6rqc9SXrv7VFTnOYqVbGuu4rVWiMLKDKIpnX
-         meCnvTayveV2a/d6gy+GR47kgaxVrtKVMS5BRmUfgyWklVNeCg2zCpyOPo0DtS0J78
-         GAYPI0Pxa6as7ipcqI92XM+TGIaIexofEpMmQeFpCqN1i6TtNjqaplhitLtGgWrg3z
-         WuzQ4YnwnNKnWJ9xodRPo2eLUzDYk6lM7J/Abf+JjE60MiRRyKPJJB+2keFtoqzPFO
-         tjLnFE/7Oh9uEUnJNCLm06dcNIYdKiVW0dioq/8CIZENVAd4uVSwT4mdX//WKS74gV
-         0Z09qqnTWRScQ==
+        b=ExcHzP3aXHG6wAeaJIm/OsR6Om6LkYaxcMgBBTMPg8E6rwv+Htxzax50FHcI0cTsD
+         GQ4sX7roiglW//DpNgcXWuyEhwj6SjwHfuTbfyUYantX31bdFALLxF+CfbFpMcAN6J
+         cPMAd2xrVVl2HmGrE5wsHt2o5kN5mb/McBM3K3Axxv2xIZnTIy1xy5Z8x+2Zns0cVG
+         UG4OfuO9eYnl1nv44W8Oavp3oThY844j91mhwvdR6Exuy83aEUJZUmEPJosTunTqeP
+         2KGmGk4Iff3QpopD0l6EXeh8ecdU0r+iTWo17WKkmWbWGTLpbSrgp6LgcdCSdkcLLq
+         Wp/YyUwDWbYMQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     tudor.ambarus@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com,
-        Ville Baillie <VilleB@bytesnap.co.uk>,
-        ludovic.desroches@microchip.com
-Cc:     Mark Brown <broonie@kernel.org>, dan.sneddon@microchip.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2] spi: atmel: Fix PDC transfer setup bug
-Date:   Sat,  2 Oct 2021 01:16:25 +0100
-Message-Id: <163313375301.13893.52482775381403027.b4-ty@kernel.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kathiravan T <kathirav@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Loic Poulain <loic.poulain@linaro.org>
+Subject: Re: [PATCH 0/2] Add PM2250 qcom_smd regulators
+Date:   Sat,  2 Oct 2021 01:16:26 +0100
+Message-Id: <163313363140.52167.8614698450886602712.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <a86bf8dcf3154f6bbf7e1ae21c073ea1@bytesnap.co.uk>
-References: <a86bf8dcf3154f6bbf7e1ae21c073ea1@bytesnap.co.uk>
+In-Reply-To: <20210926084549.29880-1-shawn.guo@linaro.org>
+References: <20210926084549.29880-1-shawn.guo@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,27 +44,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 07:46:11 +0000, Ville Baillie wrote:
-> From 7f796c2004407f848f9ed97f406e24b9eadd74be Mon Sep 17 00:00:00 2001
-> From: Ville Baillie <villeb@bytesnap.co.uk>
-> Date: Thu, 16 Sep 2021 14:16:46 +0000
-> Subject: [PATCH v2] spi: atmel: Fix PDC transfer setup bug
+On Sun, 26 Sep 2021 16:45:47 +0800, Shawn Guo wrote:
+> The series adds Qualcomm PM2250 smd-rpm regulators support.
 > 
-> Commit 5fa5e6dec762 ("spi: atmel: Switch to transfer_one transfer
-> method") refactored the code and changed a conditional causing
-> atmel_spi_dma_map_xfer to never be called in PDC mode. This causes the
-> driver to silently fail.
+> Shawn Guo (2):
+>   dt-bindings: regulator: Document PM2250 smd-rpm regulators
+>   regulator: qcom_smd: Add PM2250 regulators
+> 
+> .../regulator/qcom,smd-rpm-regulator.yaml     |  4 ++
+>  drivers/regulator/qcom_smd-regulator.c        | 49 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: atmel: Fix PDC transfer setup bug
-      commit: 75e33c55ae8fb4a177fe07c284665e1d61b02560
+[1/2] dt-bindings: regulator: Document PM2250 smd-rpm regulators
+      commit: 482f8032f496d8fa1441da742fd57fadbb17fb3d
+[2/2] regulator: qcom_smd: Add PM2250 regulators
+      commit: 400c93151f4160cf75e065d40e3774a18c8555a0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
