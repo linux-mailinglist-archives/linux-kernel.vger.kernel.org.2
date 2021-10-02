@@ -2,123 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48AD41FA37
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1D641FA3C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhJBHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 03:15:22 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53327 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232355AbhJBHPT (ORCPT
+        id S232501AbhJBHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 03:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232355AbhJBHVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 03:15:19 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id EFE27581013;
-        Sat,  2 Oct 2021 03:13:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 02 Oct 2021 03:13:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=h
-        kdwWmElPEdAAxaQYiaUG9iDPW9L8k80trrD6uyRPLo=; b=b+qy2lC7OANZhdcFY
-        lTuHru7sN/+DtcqTrF4SpXic1GmtM7cUT2qmnPzpzBoOwlJLK+z7eh8TFrUFqSQD
-        TQ8jkhtPZqfnj2vBf+fDgE4RoYWo8WlREzgRC0Kgkb5u5KRBrrNW9I+jLw68qq5K
-        nR1QEz/T3vXeMOnlNj/Kte72tUeYYrYxUq90NqOZhz8H/aQau8o3YqPwNJNR9p51
-        IjEDlpgp6u3tl97X5eFyj1ScaFTQnCPDxidv6nerNdEjj30tannDQtOgGzaF9LP9
-        ywzRJBQ3oe9A57JmpNxlJeehLxTyoJAGbhhjUtwcTPnRaupVb4E9JI7Bx0avudQu
-        wU7Zw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=hkdwWmElPEdAAxaQYiaUG9iDPW9L8k80trrD6uyRP
-        Lo=; b=D/XRLalTmeWLNXMgGrYTT36Ur+ARcjhRea20l1zZycriBriaimr4jYDvH
-        Y/163WSY2WWorF7d3pv3hpERLm6NZDJlTk//5jLEVXcIMWmMoPJNQxbhgBi1BWBn
-        Cya7cwjtn+FBF1NZP0fA4N1ZLelGM6CeBzY0yS2wBDAcnYs2k7uqp2sBcpzNWjb6
-        i2zLNiZLVqztUinKNFfAh4HmJdPap30w+S9jG7OBxVgGj0AGGzwot5oYlTBmBwa3
-        wt4cnG/tw8mgyWw7yKANX9GzEEYCNUrYCiZAngxSNFSdx9IvgQwTnhE894+IssxT
-        TFpzih5gWDYejAq9jm76uBihYwVjQ==
-X-ME-Sender: <xms:mQZYYR7VpWIekz5jKw9rfJZPtY7gObW-Ps2HK3WAeJ6thHYPvyedzQ>
-    <xme:mQZYYe7NssF99qddped0Oz3y0xvsSlXqyEN9IInl1E0lXOHMmNnU3P09OPy6-VZVV
-    Kq6QxkN1Uw7cqd15Q>
-X-ME-Received: <xmr:mQZYYYfa7VDv6N19FC4M0Vettj4NdhNIg1PrJFkZXVaEfhz91yBv0dzwZCvP5KfF1YQRSpIl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekjedgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefhvghr
-    nhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrg
-    htthgvrhhnpeffleelfeejkefgfffhvdffjedvteelhefgvdfftdehfefghfdtgeevgfek
-    keeuleenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghdptddurdhorhhgne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvggv
-    nhhfohhosehuledvrdgvuh
-X-ME-Proxy: <xmx:mgZYYaLB8vJT6HmaAyecptRqqdECxDA3-U7v-ucSTdOqaK0yFO0hbA>
-    <xmx:mgZYYVLC78TXBxqTVCuTBFhpEgbixvlFTNJh-8rLG1dppSYC7Y77OQ>
-    <xmx:mgZYYTwFKgNks0BLJyv6wDGWqMfiEngurGR3Api93phNOr_Ls8Qtcg>
-    <xmx:mgZYYSCN8z0NaX2WnaxUXdRraVDUxKHnoPfZ_ydCt_0QpVQB9btRYQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 2 Oct 2021 03:13:26 -0400 (EDT)
-Date:   Sat, 2 Oct 2021 09:13:22 +0200
-From:   Fernando Ramos <greenfoo@u92.eu>
-To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [Intel-gfx] [PATCH v2 00/17] drm: cleanup: Use
- DRM_MODESET_LOCK_ALL_* helpers where possible
-Message-ID: <YVgGklsHT5fkavDL@zacax395.localdomain>
-References: <20210924064324.229457-1-greenfoo@u92.eu>
- <20211001183655.GW2515@art_vandelay>
- <YVda4jNSGuQf50JV@intel.com>
- <20211001204815.GA2515@art_vandelay>
- <YVeGOyLzuhN7zzV7@intel.com>
- <YVfEWaLfYWdhezCa@intel.com>
+        Sat, 2 Oct 2021 03:21:55 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444B0C0613E8
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 00:20:09 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so13015944wmq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 00:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=S4WTRvyYeldW8QekSycFwQ5FlF4CTjAutou4WtcIjj4=;
+        b=L2jFQQk+Tr+KJxp5/VepfSxRQM5j9SwxtvlskuE0PJ+mmKMbcDDEV/fo2GgvjP5M4s
+         wKsIi5T5KWAvUzXqS6nC/+rlnhJ/L47nqetcXFAXc3sj5gdPa/lqQge4DdQF3kv+pr2F
+         PH9rtLeiU4bfhZeCOvsTivmEt0H3BnhFUjLZWgzKknFt6x7SOdrIxV2HhZQV19MvGSZ9
+         otzCoQHE+H+kKpRSzC7vl7DOI/ReCYIyFfJ3g52qkEOp/+2VBqqglqfp56jES4t4yDKy
+         X13CCy/6PsNQ1Tel2VG7YHhu/DAOgHzyhY6ocGZho3GQpE92dGWwCGxxNUy5L/s650Vi
+         9O/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S4WTRvyYeldW8QekSycFwQ5FlF4CTjAutou4WtcIjj4=;
+        b=fq07kaMMiUytoLzG4Qje4H8+30/nCLQA7opiXZWS1cwlrpjfXRV+1PhI7QhFRmI+P2
+         GdMr94ZMKXti5mXTqx/JAsL61liQtk1gIANdA1uLA1ftp0jMMQ3DIQS3RW69AwYnUNLn
+         Es+gX/v0VxuL0qCgSI/a/l+LZP10VXLr/cRgVFhbyBFllx1qH5d79x05nrvK4Ao5s+xT
+         T8yAfzjvmzeKKjk0nlk7bUtDpPde7ktvlRaepWmTlxB4agOEO1/KLKApDMwbsHqslkao
+         uybm7rFjdhBohJMOudcm6sndgEg9c9SQt76uHNZsUS6NtioTIHn0O1kA74ng5eFFMGrv
+         VyQg==
+X-Gm-Message-State: AOAM5307ybHt4wB39/wieaKlKWgbFXI1kdwv6OuaKqZ7gKa/XXfOvnpG
+        gXgp+A23iGfTLQ0FUk3NoozmVO6AxWlEP+djvPAI1A==
+X-Google-Smtp-Source: ABdhPJydhaV371BMrf3l2dtZKS3QQFptiUMmQudz9NU/tAQyTV8xfoRc+SLGKM91m6bf/0EUuX5c3SAUJaiVWnpqu/I=
+X-Received: by 2002:a05:600c:1c1d:: with SMTP id j29mr8166189wms.49.1633159207545;
+ Sat, 02 Oct 2021 00:20:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVfEWaLfYWdhezCa@intel.com>
+References: <20210926223322.848641-1-isabellabdoamaral@usp.br> <20210926223322.848641-2-isabellabdoamaral@usp.br>
+In-Reply-To: <20210926223322.848641-2-isabellabdoamaral@usp.br>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 2 Oct 2021 15:19:56 +0800
+Message-ID: <CABVgOS=Ux00jm9Qiy-u0zhhHUBpmXQCsnFdr=sEU-1q1XBWM7w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hash.h: remove unused define directive
+To:     Isabella Basso <isabellabdoamaral@usp.br>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>, ferreiraenzoa@gmail.com,
+        augusto.duraes33@gmail.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/02 05:30AM, Ville Syrjälä wrote:
-> On Sat, Oct 02, 2021 at 01:05:47AM +0300, Ville Syrjälä wrote:
-> > On Fri, Oct 01, 2021 at 04:48:15PM -0400, Sean Paul wrote:
-> > > On Fri, Oct 01, 2021 at 10:00:50PM +0300, Ville Syrjälä wrote:
-> > > > On Fri, Oct 01, 2021 at 02:36:55PM -0400, Sean Paul wrote:
-> > > > > 
-> > > > > Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
-> > > > > with the necessary drm-tip conflict resolutions).
-> > > > 
-> > > > Ugh. Did anyone actually review the locking changes this does?
-> > > > I shot the previous i915 stuff down because the commit messages
-> > > > did not address any of it.
-> > > 
-> > > I reviewed the set on 9/17, I didn't see your feedback on that thread.
-> > 
-> > It was much earlir than that.
-> > https://lists.freedesktop.org/archives/dri-devel/2021-June/313193.html
-> > 
-> > And I think I might have also shot down a similar thing earlier.
-> > 
-> > I was actually half considering sending a patch to nuke that
-> > misleading TODO item. I don't think anything which changes
-> > which locks are taken should be considred a starter level task.
-> > And the commit messages here don't seem to address any of it.
-> 
-> And i915 is now broken :(
-> 
-> https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_10680/fi-bwr-2160/boot.html
+On Mon, Sep 27, 2021 at 6:33 AM Isabella Basso <isabellabdoamaral@usp.br> w=
+rote:
+>
+> Currently, there exist hash_32() and __hash_32() functions, which were
+> introduced in a patch [1] targeting architecture specific optimizations.
+> These functions can be overridden on a per-architecture basis to achieve
+> such optimizations. They must set their corresponding define directive
+> (HAVE_ARCH_HASH_32 and HAVE_ARCH__HASH_32, respectively) so that header
+> files can deal with these overrides properly.
+>
+> As the supported 32-bit architectures that have their own hash function
+> implementation (i.e. m68k, Microblaze, H8/300, pa-risc) have only been
+> making use of the (more general) __hash_32() function (which only lacks
+> a right shift operation when compared to the hash_32() function),
+> remove the define directive corresponding to the arch-specific hash_32()
+> implementation.
+>
+> [1] https://lore.kernel.org/lkml/20160525073311.5600.qmail@ns.sciencehori=
+zons.net/
+>
+> Changes since v1:
+> - As suggested by David Gow:
+>   1. Reword commit message.
 
-I completely overlooked the side effects of not having a global context anymore.
-Sorry for all the trouble.
+Maybe move this changelog to below the "---", so it doesn't show up in
+the final commit message?
 
-Sean, could you revert the whole patch series? I'll have a deeper look into the
-patch set and come up with a v3 where all these issues will be addressed.
+>
+> Tested-by: David Gow <davidgow@google.com>
+> Co-developed-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
+> Signed-off-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
+> Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
+> ---
 
-Thanks and sorry once again for the extra overhead this might have caused.
+This looks sensible enough to me. Since no-one seems to be speaking up
+in architecture-specific hash_32()'s defence, let's get rid of it.
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
 
 
+>  include/linux/hash.h       |  5 +----
+>  lib/test_hash.c            | 24 +-----------------------
+>  tools/include/linux/hash.h |  5 +----
+>  3 files changed, 3 insertions(+), 31 deletions(-)
+>
+> diff --git a/include/linux/hash.h b/include/linux/hash.h
+> index ad6fa21d977b..38edaa08f862 100644
+> --- a/include/linux/hash.h
+> +++ b/include/linux/hash.h
+> @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
+>         return val * GOLDEN_RATIO_32;
+>  }
+>
+> -#ifndef HAVE_ARCH_HASH_32
+> -#define hash_32 hash_32_generic
+> -#endif
+> -static inline u32 hash_32_generic(u32 val, unsigned int bits)
+> +static inline u32 hash_32(u32 val, unsigned int bits)
+>  {
+>         /* High bits are more random, so use them. */
+>         return __hash_32(val) >> (32 - bits);
+> diff --git a/lib/test_hash.c b/lib/test_hash.c
+> index 0ee40b4a56dd..d4b0cfdb0377 100644
+> --- a/lib/test_hash.c
+> +++ b/lib/test_hash.c
+> @@ -94,22 +94,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][3=
+3])
+>                         pr_err("hash_32(%#x, %d) =3D %#x > %#x", h0, k, h=
+1, m);
+>                         return false;
+>                 }
+> -#ifdef HAVE_ARCH_HASH_32
+> -               h2 =3D hash_32_generic(h0, k);
+> -#if HAVE_ARCH_HASH_32 =3D=3D 1
+> -               if (h1 !=3D h2) {
+> -                       pr_err("hash_32(%#x, %d) =3D %#x !=3D hash_32_gen=
+eric() "
+> -                               " =3D %#x", h0, k, h1, h2);
+> -                       return false;
+> -               }
+> -#else
+> -               if (h2 > m) {
+> -                       pr_err("hash_32_generic(%#x, %d) =3D %#x > %#x",
+> -                               h0, k, h1, m);
+> -                       return false;
+> -               }
+> -#endif
+> -#endif
+> +
+>                 /* Test hash_64 */
+>                 hash_or[1][k] |=3D h1 =3D hash_64(h64, k);
+>                 if (h1 > m) {
+> @@ -227,13 +212,6 @@ test_hash_init(void)
+>  #else
+>         pr_info("__hash_32() has no arch implementation to test.");
+>  #endif
+> -#ifdef HAVE_ARCH_HASH_32
+> -#if HAVE_ARCH_HASH_32 !=3D 1
+> -       pr_info("hash_32() is arch-specific; not compared to generic.");
+> -#endif
+> -#else
+> -       pr_info("hash_32() has no arch implementation to test.");
+> -#endif
+>  #ifdef HAVE_ARCH_HASH_64
+>  #if HAVE_ARCH_HASH_64 !=3D 1
+>         pr_info("hash_64() is arch-specific; not compared to generic.");
+> diff --git a/tools/include/linux/hash.h b/tools/include/linux/hash.h
+> index ad6fa21d977b..38edaa08f862 100644
+> --- a/tools/include/linux/hash.h
+> +++ b/tools/include/linux/hash.h
+> @@ -62,10 +62,7 @@ static inline u32 __hash_32_generic(u32 val)
+>         return val * GOLDEN_RATIO_32;
+>  }
+>
+> -#ifndef HAVE_ARCH_HASH_32
+> -#define hash_32 hash_32_generic
+> -#endif
+> -static inline u32 hash_32_generic(u32 val, unsigned int bits)
+> +static inline u32 hash_32(u32 val, unsigned int bits)
+>  {
+>         /* High bits are more random, so use them. */
+>         return __hash_32(val) >> (32 - bits);
+> --
+> 2.33.0
+>
