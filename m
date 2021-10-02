@@ -2,141 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ED241F925
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 03:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FF241F931
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 03:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhJBB1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 21:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S232297AbhJBBie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 21:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhJBB1r (ORCPT
+        with ESMTP id S230255AbhJBBid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 21:27:47 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245EFC061775
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 18:26:02 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id d18so13636528iof.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 18:26:02 -0700 (PDT)
+        Fri, 1 Oct 2021 21:38:33 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA099C0613E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 18:36:48 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id x3-20020a05620a448300b0045e3e24de82so18357136qkp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 18:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Kw2EQT4OwtFSYkrrYyMi89jNPuGjX5Pm5VnDT6BIPTo=;
-        b=iftskyZrQnblM5IeQbZ6UuCPH+aCmDe7PMu732bOeM5q5vFBs4rD1xSeoLwVhqWtX8
-         k6pib6gKKEO48cWsGpsqj44TyyFTbWtM4UOOK1M0Mwb2+y8LSffdgLB2dkpgCYnH2lF6
-         VKHwUUjHXZovjI5uvRXKc7MH7WwGVdt/heIO1yyMxzro85Ds0uMAp0Rw080U9t+0yuB8
-         K8+eDRvxuy1meShdi+fhOF8kfL3jAh6CjylbAJEpLTi8oPyEWQeo3a8KYpUVmjfKR0fk
-         9AyhQHj8klR7aV+CYyrPoFM6/JihOh2vHlhwZi/R3DOtPu27vI8gDw93dsX4IZ+vM4mz
-         JWMQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3skiXeSFx93MB2hEdNJh2A8SAF5NjVQ9efw10AOuPtg=;
+        b=BB8RSZu+hVVoIAHC03lA+KeGFyxaW6TysPpj05M/nHJglND+GBmXBz2mSwDJlxlM7b
+         H6ZXYazCPfTMzW5LV2MaaKivMQHjvMb76bpNbEGVwrd47NI/UYn4jdFT+t8TJE07h4mo
+         imlgbXAUIhit7X9b0CY8NKgTJ1FcStGiPAaf0YE1uaBYLx+uKhqJoXZ+Imgb+X2UQf64
+         qaFE8sskISeUiE1vt6gRwmFBFlzqAczVAJWVXW8Km5SXTOe9IDJxTW9ej9rWhPEkD6xd
+         PlsHp9sN5Y0WSMRgGTxrQ6fDzR0b1P7HD+EcWFbR+UJBD1Rhj+6SbY8xVo2lYPXortAf
+         IUiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Kw2EQT4OwtFSYkrrYyMi89jNPuGjX5Pm5VnDT6BIPTo=;
-        b=HgmgMwhFFU3KSybcWIFZ0a+TodPpHkjkW2+MVi8ZYfOazREqX3BZ7vIcdAz6YoTHsA
-         mc29eN4RTYR4gZqItXAXIRGAoK/nlJi2x/7yohCN/AkO+oivHq5YOoPCKtXbeR0ExYg5
-         4/GKh8bs3sbfJDD21RTu4RV6yGpMIH1D9PQ7j2//F1YMWRSWv/P98T3w7fMNbzJBc2rW
-         0z65cUfWFnC1ZcM11mY0yiEuK3sQ1qIBE5AKRcRggGiV7gwsOq88JPb8bG7lDE6JWEVz
-         NOmdfcNqUkmHoXSePShlvYzI0+3JFL48LvrX6bPUXBwCl6O4EDUSMh4eiY1yu1DQG5I/
-         klhg==
-X-Gm-Message-State: AOAM5321+5A4qTWK7z1IPYnXLMNlrfTuVOTsFcaPjhNQsdFvDifQ3eYB
-        afyDj45A4DWvsyq+8YcA3UpvYw==
-X-Google-Smtp-Source: ABdhPJwoqXKAX+NayArtKBl7Z/qDro3Fo4FiXW4w323FcZM2bZd0Jeg5aYb9qMoOBQdl0k+EZUJVpA==
-X-Received: by 2002:a05:6638:25cd:: with SMTP id u13mr890296jat.114.1633137960552;
-        Fri, 01 Oct 2021 18:26:00 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id u18sm4468860ilj.24.2021.10.01.18.25.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Oct 2021 18:26:00 -0700 (PDT)
-Subject: Re: swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first use in
- this function)
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>
-References: <CA+G9fYsKjyOL1xj+GFC=Ab7Yw+b0Tg9jf8uvnN2tOc6OdupA-Q@mail.gmail.com>
- <250970e7-e430-e8fe-2844-5c7f627b0c26@kernel.dk>
- <b2ed59e2-aed1-1a46-bb99-b7495de0dea7@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d8d446be-97da-1ea2-56ea-6f2c74b85273@kernel.dk>
-Date:   Fri, 1 Oct 2021 19:25:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <b2ed59e2-aed1-1a46-bb99-b7495de0dea7@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3skiXeSFx93MB2hEdNJh2A8SAF5NjVQ9efw10AOuPtg=;
+        b=giXKCPfEHtT7W8tnr7iVNbPfloRqbYtgEL3lAXOhGvjQNphMkdsIdZxQZy4jFNJrOW
+         xc6qXTLho0RhYv45w5nhKkxNW2AKfZK8dPwloFi6XH6I3//Fesp5w71f0iC0rDGQzsL3
+         YtIf4YOHB0uFJ6v1CRadnYdbmbC+lNd1aP6ySUkY+RUXOHaXoH8RG4EuHfi3hCEYpY3x
+         Ve0CFEvBCsya3tcM0cAb+wnaZtQJsj4qH9eUg9jZALrqT+uBrT6zdZC0Y4j2ulB0VuEI
+         LP+yPCgTaeXGWuQffuR3I4T85hZMjrDlhwdJsD2xJF0JJEwbvkPvlUQk3Gkc7OXrRt5u
+         /SkA==
+X-Gm-Message-State: AOAM530CxbnM2TU/W5SNbZNljuR5GZ+7ejtpapJUcJqi5Rkzro58YWF9
+        9VfABcWBLdmp8Ev6O3hkPjlwPvr3B3LABg==
+X-Google-Smtp-Source: ABdhPJzMnysPfeYy7+RHp8TucZKS3hV05iPIHX+RlD78Df9Ph9DPvZsVw+JZXYSmFM7OqygVCYVmS7xXL+nZcA==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1e46:b2fa:2be8:301e])
+ (user=dlatypov job=sendgmr) by 2002:a0c:c2c4:: with SMTP id
+ c4mr13460268qvi.30.1633138607708; Fri, 01 Oct 2021 18:36:47 -0700 (PDT)
+Date:   Fri,  1 Oct 2021 18:36:35 -0700
+Message-Id: <20211002013635.2076371-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] kunit: fix too small allocation when using suite-only kunit.filter_glob
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/21 7:12 PM, Randy Dunlap wrote:
-> On 10/1/21 12:57 PM, Jens Axboe wrote:
->> On 10/1/21 4:49 AM, Naresh Kamboju wrote:
->>> Following build errors noticed while building Linux next 20211001
->>> with gcc-11 for powerpc architecture.
->>>
->>> kernel/sched/debug.c: In function 'print_cfs_group_stats':
->>> kernel/sched/debug.c:460:41: warning: unused variable 'stats'
->>> [-Wunused-variable]
->>>    460 |                struct sched_statistics *stats =
->>> __schedstats_from_se(se);
->>>        |                                         ^~~~~
->>> In file included from include/linux/blkdev.h:6,
->>>                   from include/linux/blk-mq.h:5,
->>>                   from drivers/block/swim3.c:24:
->>> drivers/block/swim3.c: In function 'swim3_attach':
->>> drivers/block/swim3.c:1200:38: error: 'FLOPPY_MAJOR' undeclared (first
->>> use in this function)
->>>   1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
->>>        |                                      ^~~~~~~~~~~~
->>> include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
->>>    276 |         __register_blkdev(major, name, NULL)
->>>        |                           ^~~~~
->>> drivers/block/swim3.c:1200:38: note: each undeclared identifier is
->>> reported only once for each function it appears in
->>>   1200 |                 rc = register_blkdev(FLOPPY_MAJOR, "fd");
->>>        |                                      ^~~~~~~~~~~~
->>> include/linux/genhd.h:276:27: note: in definition of macro 'register_blkdev'
->>>    276 |         __register_blkdev(major, name, NULL)
->>>        |                           ^~~~~
->>> make[3]: *** [scripts/Makefile.build:288: drivers/block/swim3.o] Error 1
->>> make[3]: Target '__build' not remade because of errors.
->>> make[2]: *** [scripts/Makefile.build:571: drivers/block] Error 2
->>> make[2]: Target '__build' not remade because of errors.
->>> make[1]: *** [Makefile:2034: drivers] Error 2
->>>
->>> Build config:
->>> https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/config
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>> meta data:
->>> -----------
->>>      git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->>>      git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
->>>      git_short_log: a25006a77348 (\"Add linux-next specific files for 20211001\")
->>>      kconfig:  ppc6xx_defconfig
->>>      kernel_version: 5.15.0-rc3
->>>      target_arch: powerpc
->>>      toolchain: gcc-11
->>>
->>> steps to reproduce:
->>> https://builds.tuxbuild.com/1ytcB62L9I617oV0cveJtUhcpUu/tuxmake_reproducer.sh
->>
->> Does this fix it?
-> 
-> Yes, WorksForMe.
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+When a user filters by a suite and not a test, e.g.
+$ ./tools/testing/kunit/kunit.py run 'suite_name'
 
-Thanks, now added to my for-next branch.
+it hits this code
+  const int len = strlen(filter_glob);
+  ...
+  parsed->suite_glob = kmalloc(len, GFP_KERNEL);
+which fails to allocate space for the terminating NULL.
 
+Somehow, it seems like we can't easily reproduce this under UML, so the
+existing `parse_filter_test()` didn't catch this.
+
+Fix this by allocating `len + 1` and switch to kzalloc() just to be a
+bit more defensive. We're only going to run this code once per kernel
+boot, and it should never be very long.
+
+Also update the unit tests to be a bit more cautious.
+This bug showed up as a NULL pointer dereference here:
+>  KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
+`filtered.start[0][0]` was NULL, and `name` is at offset 0 in the struct,
+so `...->name` was also NULL.
+
+Fixes: 3b29021ddd10 ("kunit: tool: allow filtering test cases via glob")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ lib/kunit/executor.c      | 2 +-
+ lib/kunit/executor_test.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index bab3ab940acc..1d7fecd33261 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -33,7 +33,7 @@ static void kunit_parse_filter_glob(struct kunit_test_filter *parsed,
+ 	const char *period = strchr(filter_glob, '.');
+ 
+ 	if (!period) {
+-		parsed->suite_glob = kmalloc(len, GFP_KERNEL);
++		parsed->suite_glob = kzalloc(len + 1, GFP_KERNEL);
+ 		parsed->test_glob = NULL;
+ 		strcpy(parsed->suite_glob, filter_glob);
+ 		return;
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+index e6323f398dfa..7d2b8dc668b1 100644
+--- a/lib/kunit/executor_test.c
++++ b/lib/kunit/executor_test.c
+@@ -149,6 +149,7 @@ static void filter_suites_test(struct kunit *test)
+ 
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0][0]);
+ 	KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
+ }
+ 
+
+base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
 -- 
-Jens Axboe
+2.33.0.800.g4c38ced690-goog
 
