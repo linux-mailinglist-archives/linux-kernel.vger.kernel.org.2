@@ -2,165 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49AE41FC99
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6582541FC9A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhJBOrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 10:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S233434AbhJBOti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 10:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhJBOrX (ORCPT
+        with ESMTP id S229560AbhJBOth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 10:47:23 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE732C0613EC;
-        Sat,  2 Oct 2021 07:45:37 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r201so6302120pgr.4;
-        Sat, 02 Oct 2021 07:45:37 -0700 (PDT)
+        Sat, 2 Oct 2021 10:49:37 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC90C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 07:47:51 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m22so15023463wrb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 07:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nxHNwN/IZVw4dmnEIbmDPrePZ8gOd6ZA6sVAKz4Y2u0=;
-        b=W3Vp62ZyhHKMdLgxO5EFSAcZ57XnFRUfAvuHonde+anM+i/cMhoUjZRde+fM94KYgf
-         qukqhjbBHy5pgHD7lp0WK7X+4NLzhUXeKd9OC37Pqd/LAy7BR/YiO4IAHzDH/bHQbIs4
-         M+QpvjTqy6k879CTjCtHSW//Bk4vVqL5M2wNQRJ2ohrVZ8g5zd+n3dNgYX7Dxlb4Gx+a
-         t+WXm1mYyKWeevCRTFBWDSSzQan/t1SSppmMIia3PZLUj6eHqIC6UvLux92CH5XPxrv5
-         Tuhyw1K811oA8oveNFbVLPWYe1v3SfU45FkwWqMKjMRV/xM+PoA1Z1rqdiJAOdHkWSBn
-         t6kg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=EXaz91VynQUtGRPsCHnZ8KgaZZE30+maPa6ti159Xw8=;
+        b=A0EEtQdfGdKXkSiA2YmVM3lrxZ8WjonbEkDaEM0noojVbtFezcwyjm/giS/x5jFHzA
+         r9atcdK29SbUlmclYatqMn2taZuMdHobES0ILw+nteSgfPyYG8MTW683sT2HPxpYFy5+
+         IBIz/mPBHkDS9cWXM7xj0iTXigmw5xEl0MtZlAKRdVAyM/o7u6E0L3/cRx89TGN2Qegs
+         x+aWMXvvf/hot9PKClbO4qnnp+O8aIUSCwGxLSw9ENQln701wqHiYiLxYpAQ4YJHHdjV
+         Rp9Cx9OqTX+dmdW3kicUHCnQPcfbQrTyKJR+xeAVhiMmW7KoCgEAugQFmkFeypE17YSb
+         Hz+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nxHNwN/IZVw4dmnEIbmDPrePZ8gOd6ZA6sVAKz4Y2u0=;
-        b=Jlf1iLmyPy4Z38BeI2zdju6LpRxOo3biEcRzQfbPCbMqUsaha7NSQEZOVyR7weReyW
-         h09NPPIZNva2tHA2bHfjgOujEtMEX+DuWkE90So/uGg18tpPDn9PP6aDAEJ8fOBSoJPY
-         NvzlKsFNHCozlIVo5uoE7HUGDOjk8KboD9CfGMVh55vrOiP0stGZMPLW34Jors5ca1Lf
-         8f+n+gi5SO0/1qM6qXKLrF0GwU7MeP0EVgHFZPm10LHC6bUSDb4/zMO6uQSAgwC/thz6
-         tM7WqUsKLSsTul9OtW4pX7rbuSPDzGht9huLaX9jmwZF6YJboA/99ChglIJkM2Y3tFSv
-         q44w==
-X-Gm-Message-State: AOAM532QhYgg+UU4qdm/L3KQmkUjchTe1E1USUyZ491z3aYUIJd8/5en
-        CQc++TBeurzs4eGIzpY8ZdqowoXjAtF23suDPec=
-X-Google-Smtp-Source: ABdhPJx/wu4MUilt2DGxHuqo3pqfpoKZsxRoN/aNu9Z2o/4Xm25ORUCeeqFd8ZaMXEdo38e7BCjUCg==
-X-Received: by 2002:a63:3648:: with SMTP id d69mr3080725pga.295.1633185937212;
-        Sat, 02 Oct 2021 07:45:37 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6006:a148:5133:c24f:f24a:a8c])
-        by smtp.googlemail.com with ESMTPSA id x10sm8818058pfq.0.2021.10.02.07.45.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 07:45:36 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH v2] docs: checkpatch: add UNNECESSARY_ELSE message
-Date:   Sat,  2 Oct 2021 20:15:06 +0530
-Message-Id: <20211002144506.29974-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211001120218.28751-1-utkarshverma294@gmail.com>
-References: <20211001120218.28751-1-utkarshverma294@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=EXaz91VynQUtGRPsCHnZ8KgaZZE30+maPa6ti159Xw8=;
+        b=KFal9mMu5kVXWQ/0hz9X1xqf67MQODX8qkpOQou/Yaild0UtpCbF8V0Z+ZZxO88VCZ
+         /Me3W78wTjpFG0TXYMyTVltwgpH9xQaZymAmPUbOk7LxOG7nNv4i/swJhMaE2mAQcxKc
+         dndT2q6GLHeL8/5UTsGERzOG9gQ2iIqaxsZ4+JgQaWkJMIfU4xTrlk9C6Io5JYgSFq/9
+         40bdQ5tiDDsgzQHtDZ6m5ESd5jKIF57ndEyW/PWH4l1uWBmkISl1fySGmoNDV9AD/Qf0
+         PhQXA6MD0cxV7y81OJx892O3wfPlbruwRoI1oAmYPiB4UgtJ7lfvSScfGM3TkmUc4QFb
+         N5WQ==
+X-Gm-Message-State: AOAM533Jf0FDSw2dstgXyUPvpkCD2QrQhy1gUdBtfyJAWS7c5XZyB8eF
+        7kXArybXpR3bIuorThwc9Y8=
+X-Google-Smtp-Source: ABdhPJw4+S3FgiR5OaMace3M/NZUE2SYcqkJFX/bGqMSRW/U3F0mRH/sF3C/Nt5JfBNGIvPFuIZvSA==
+X-Received: by 2002:a5d:668c:: with SMTP id l12mr3650589wru.436.1633186070068;
+        Sat, 02 Oct 2021 07:47:50 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
+        by smtp.gmail.com with ESMTPSA id y15sm2058296wrp.44.2021.10.02.07.47.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 07:47:49 -0700 (PDT)
+Message-ID: <fb64de38-50e1-e0e7-0b13-42e2c2e43f3d@gmail.com>
+Date:   Sat, 2 Oct 2021 16:47:48 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] staging: r8188eu: core: remove power_saving_wk_hdl
+ function
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YVhv5JiHovfdpNGg@user>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <YVhv5JiHovfdpNGg@user>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added and documented UNNECESSARY_ELSE message type.
+On 10/2/21 16:42, Saurav Girepunje wrote:
+> Remove function power_saving_wk_hdl is it just calling rtw_ps_processor.
+> Instead of power_saving_wk_hdl() call  rtw_ps_processor().
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>   drivers/staging/r8188eu/core/rtw_cmd.c | 7 +------
+>   1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+> index 3a70776f3304..44a1df4f51d1 100644
+> --- a/drivers/staging/r8188eu/core/rtw_cmd.c
+> +++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+> @@ -1649,11 +1649,6 @@ u8 rtw_antenna_select_cmd(struct adapter *padapter, u8 antenna, u8 enqueue)
+>   	return res;
+>   }
+> 
+> -static void power_saving_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
+> -{
+> -	 rtw_ps_processor(padapter);
+> -}
+> -
+>   u8 p2p_protocol_wk_cmd(struct adapter *padapter, int intCmdType)
+>   {
+>   	struct cmd_obj	*ph2c;
+> @@ -1890,7 +1885,7 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
+>   		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
+>   		break;
+>   	case POWER_SAVING_CTRL_WK_CID:
+> -		power_saving_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
+> +		rtw_ps_processor(padapter);
+>   		break;
+>   	case LPS_CTRL_WK_CID:
+>   		lps_ctrl_wk_hdl(padapter, (u8)pdrvextra_cmd->type_size);
+> --
+> 2.32.0
+> 
 
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
-Changes in v2:
-  - Included the continue statement.
+Looks good to me.
 
- Documentation/dev-tools/checkpatch.rst | 77 ++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index f0956e9ea2d8..b7c41e876d1d 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -1166,3 +1166,80 @@ Others
- 
-   **TYPO_SPELLING**
-     Some words may have been misspelled.  Consider reviewing them.
-+
-+  **UNNECESSARY_ELSE**
-+    Using an else statement just after a return/break/continue statement is
-+    unnecessary. For example::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              else
-+                      usleep(1);
-+      }
-+
-+    is generally better written as::
-+
-+      for (i = 0; i < 100; i++) {
-+              int foo = bar();
-+              if (foo < 1)
-+                      break;
-+              usleep(1);
-+      }
-+
-+    It helps to reduce the indentation and removes the unnecessary else
-+    statement. But note, there can be some false positives because of the
-+    way it is implemented in the checkpatch script. The checkpatch script
-+    throws this warning message if it finds an else statement and the line
-+    above it is a break/continue/return statement indented at one tab more
-+    than the else statement. So there can be some false positives like::
-+
-+      int n = 15;
-+      if (n > 10)
-+              n--;
-+      else if (n == 10)
-+              return 0;
-+      else
-+              n++;
-+
-+    Now the checkpatch will give a warning for the use of else after return
-+    statement. If the else statement is removed then::
-+
-+      int n = 15;
-+      if (n > 10)
-+              n--;
-+      else if (n == 10)
-+              return 0;
-+      n++;
-+
-+    Now both the n-- and n++ statements will be executed which is different
-+    from the logic in the first case. As the if block doesn't have a return
-+    statement, so removing the else statement is wrong.
-+
-+    Always check the previous if/else if blocks, for break/continue/return
-+    statements, and do not blindly follow the checkpatch advice. One
-+    patch (https://lore.kernel.org/all/20200615155131.GA4563@sevic69/)
-+    even made it to the mainline, which was again reverted and fixed.
-+    Commit 98fe05e21a6e ("staging: rtl8712: Remove unnecesary else
-+    after return statement.")
-+
-+    Also, do not change the code if there is only a single return statement
-+    inside if-else block, like::
-+
-+      if (a > b)
-+              return a;
-+      else
-+              return b;
-+
-+    now if the else statement is removed::
-+
-+      if (a > b)
-+              return a;
-+      return b;
-+
-+    there is no considerable increase in the readability and one can argue
-+    that the first form is more readable because of the indentation. So
-+    do not remove the else statement in case of a single return statement
-+    inside the if-else block.
-+    See: https://lore.kernel.org/lkml/20140925032215.GK7996@ZenIV.linux.org.uk/
--- 
-2.25.1
-
+Thanks,
+Michael
