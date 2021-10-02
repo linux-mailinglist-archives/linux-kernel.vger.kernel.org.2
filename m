@@ -2,102 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D5241FEBA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C1741FEC0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234269AbhJBXhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234235AbhJBXhk (ORCPT
+        id S234230AbhJBXnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:43:03 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55511 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhJBXnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:37:40 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC55C061714;
-        Sat,  2 Oct 2021 16:35:54 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so14663752wmq.1;
-        Sat, 02 Oct 2021 16:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MztqkJ6kEnYY3QY22MZAhVkiyYz8DlYPtSLS1AAw8jM=;
-        b=GPP3XEmUpER7Jifk5aXhGuB2IdZ9dYWM7+4gi3WqJEH0myRrgZSbhORhiJGETOErNO
-         mqiKtnBml/30gMd08kYdCh1ITAopXUgMmrNU05m0QyrMaQawNbEULfg78peHFVn7jZOE
-         subtmm/xR+gUDM9TvJt/cLXR23UM/l6oBT+Q3i28zmodk0PSrFdwMRxnhxBYfbckoRV8
-         1JRgVdlAyt0u24m0dyghSDKj45c8fODPcR4oDTawtLgetjbncU/z2BJuRKG3ruXEENmW
-         UslJfT8iZPJR3mAbdDEOLZxPU4x5NG/awjGmjVwyn0eOOu4fqpNWm5fhcONrIMwlvJ63
-         i8fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MztqkJ6kEnYY3QY22MZAhVkiyYz8DlYPtSLS1AAw8jM=;
-        b=emTg21jcCHWgOEE+hC7UA5PkbgZnNFQ/TSsxIlE2+FfGhh7X9FK/dFl7LWsMTUM5XM
-         /eUj57NQKptJ4nLSb4BL9WaGonaGFVLqcNMi/sImfpDi9QR9PaHecqd2vnJ37neUeC47
-         VN55MHeIlkRFDe8nmlozEw5pLPsb2PLMDtbnvNyetsCpKjgFo+xYIQkEhY0UbmCXkTR/
-         PzA0hXv1EKYtgNf6dKI3hylA3POUE1xEEZBrt9t/HiXIshZcjnEPSOmr4Pk9Tnaolsmr
-         wh2ODksM5HoNxEodnRIq1B6CvTEfaCoe0ncryqwAVbWF7b7sbM1hki9+9Frz/bnVs+eD
-         c2mQ==
-X-Gm-Message-State: AOAM532oWIS9semYolqBJPuf58nVDVOHdtSpKealg0WrSNbkoRYhNoZU
-        JhLwZTaVI6GdxbWYf1V2UFI=
-X-Google-Smtp-Source: ABdhPJzXoDtZo5DdB8DYLuVGO2v//b+Wp15T0u3Fxi7NnZxoVEihQFQ01yI49bal4m2C9c/LPmWnuw==
-X-Received: by 2002:a05:600c:1d0b:: with SMTP id l11mr11350453wms.46.1633217752661;
-        Sat, 02 Oct 2021 16:35:52 -0700 (PDT)
-Received: from localhost.localdomain (94-29-54-195.dynamic.spd-mgts.ru. [94.29.54.195])
-        by smtp.gmail.com with ESMTPSA id r2sm10487089wmq.28.2021.10.02.16.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 16:35:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 5/5] drm/bridge: tc358768: Correct BTACNTRL1 programming
-Date:   Sun,  3 Oct 2021 02:34:47 +0300
-Message-Id: <20211002233447.1105-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211002233447.1105-1-digetx@gmail.com>
-References: <20211002233447.1105-1-digetx@gmail.com>
+        Sat, 2 Oct 2021 19:43:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HMNll5JY5z4xLs;
+        Sun,  3 Oct 2021 10:41:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633218073;
+        bh=h5rCfWVd2KAS1r0rx/4MyeNOm0KXGCv7ei1Oa3wfVw8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LR9XvwNWo52I8k8xV1ARFIY3gZCD6/3fjo9CQhO0P6jaKRMszMFIL9bWLhh5iHw0q
+         UHI2kDxGx1bMKWBNHrBp7vyYxW4DB20WArsVI1kDqdO7+0ghnrMEG4K/yb7+LvTwBn
+         toMSTxPFapsEexWZp/qdWSTAlR/D4/Okbw7UJ9E7Wa23OVSX84UUlHu82Aj8bm8gOQ
+         ThsZMc01DLr77Asp89OT4VFUxxBLN+Y+e6SBiCL90Jtjex4R5Tmr24TCfkIDfGv451
+         a9P2jZ3BOQozarZeeuXvTI2lmn7rO4tPUj5/hnApbqIEbaANHaSK8XxZoti6ar9Lpw
+         dnZNNNZseg4Aw==
+Date:   Sun, 3 Oct 2021 10:41:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
+Message-ID: <20211003104106.1526fa31@canb.auug.org.au>
+In-Reply-To: <YVjm3NXEhoBQtUSI@yury-ThinkPad>
+References: <20211001181245.228419-1-yury.norov@gmail.com>
+        <20211003094722.434c030d@canb.auug.org.au>
+        <YVjm3NXEhoBQtUSI@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/kAlpOp8EAy3Kn/awCgiF/9z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TXTAGOCNT and RXTASURECNT bitfields of BTACNTRL1 register are swapped in
-the code, correct them. Driver doesn't implement low power mode for now,
-so this change doesn't make a practical difference yet.
+--Sig_/kAlpOp8EAy3Kn/awCgiF/9z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Andreas Westman Dorcsak <hedmoo@yahoo.com> # Asus TF700T
-Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> #TF700T
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpu/drm/bridge/tc358768.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Yury,
 
-diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index cfceba5ef3b8..fd585bf925fe 100644
---- a/drivers/gpu/drm/bridge/tc358768.c
-+++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -790,7 +790,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 	val = tc358768_ns_to_cnt(val, dsibclk_nsk) - 1;
- 	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk),
- 				  dsibclk_nsk) - 2;
--	val |= val2 << 16;
-+	val = val << 16 | val2;
- 	dev_dbg(priv->dev, "BTACNTRL1: 0x%x\n", val);
- 	tc358768_write(priv, TC358768_BTACNTRL1, val);
- 
--- 
-2.32.0
+On Sat, 2 Oct 2021 16:10:20 -0700 Yury Norov <yury.norov@gmail.com> wrote:
+>
+> Ok, I'll resend it based on Linus tree shortly
 
+Thanks.
+
+I also need a branch name that will stay the same.  I will fetch that
+branch every day and use whatever you have set that branch to.
+
+Here are the rules for inclusion in linux-next:
+
+You will need to ensure that the commits in your tree/branch have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/kAlpOp8EAy3Kn/awCgiF/9z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFY7hMACgkQAVBC80lX
+0Gyudgf/duBmonArREDWPtOW4lp51VabyQLx+hZYJ+Q1auyILQqUEA2zzIxjOlcr
+Q9PeQKO7pqN8v6Cy8BW1ObVXhQDCrgfWgAXxv+E3r3DuiybqvfhXGh+33dcs339/
+ASl5rj/Wg3L3deEtupNsN2kvN0bjnrBP2b/1FeTPWCrhq/JCHiH2hM1NDJ9BzXzM
+jBDYxqlAwxPxWq4IcOFu/rq9Sykml+ROpOnKcKf72d60WcJUsG9HtWZZjy/FbKym
+2R+EwahIb8SXCFmsAPmWuCwcQMAz/m/OH91/VZ9Es8X9ef+MlWMQpg94hw3JlMrP
+e33F7MaTTKnxgbRK/TW8ReYml2wriA==
+=NPVY
+-----END PGP SIGNATURE-----
+
+--Sig_/kAlpOp8EAy3Kn/awCgiF/9z--
