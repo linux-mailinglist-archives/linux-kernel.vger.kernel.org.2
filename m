@@ -2,277 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF90741FB35
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE3841FB36
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbhJBLt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 07:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        id S232905AbhJBLu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 07:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbhJBLt4 (ORCPT
+        with ESMTP id S232868AbhJBLuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 07:49:56 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC94CC061570;
-        Sat,  2 Oct 2021 04:48:10 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id 66so14272784vsd.11;
-        Sat, 02 Oct 2021 04:48:10 -0700 (PDT)
+        Sat, 2 Oct 2021 07:50:55 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4CFC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 04:49:09 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso14951271otb.11
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 04:49:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bSQRibgDnpTqOXZp7vnqZJ1QVyQSI1d0M4GZTbpWPbU=;
-        b=W/E1MGjEbSDDZHveDGcgEYVt58pIGf0/RE9j+KpAk4NDuaoWQ9IS7HgGovoyUX8910
-         GTdOu0RmK04aLK2JRZpzNgn39vidIk9Kr9Qby6tDKfVo34X52nKRgu3A0JRXhBxYqDis
-         yNKvVJKvhe0o4YOzoZrGR5bDqc6S1kj3Uw5tldfK+0hzMW8eF9xA0Zm5oZmJM1iaxXA3
-         RULDAeUuP5BDYCTC4XfS9v3R2qw69RMlW9QvaEmKG1oZYB8P0LQu1pPTueghbeNhYU4l
-         tVCw/DJFlGrhbkLJibBLm78UlpaaL/AEmGVkcsIVLjY0EHbfqE+2ViiyNFvLFPKPvCl9
-         LC4g==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=eMBn4piUa5P7icXaukpkHUzeRwiwiWTIBVzdYRFqAwQ=;
+        b=cC21qCmaifBlZHFcvEARG78LO9BPX1c1foQIEO5UdxMFtrJLmWlR/cmMYDKQCWtPW6
+         B41aA9eJiEp70PTBsZ4WnK3UFGltFL4ZdMSMo3tlJFkRK6ZtsMKpl0nIyrIPpXbf6Kff
+         LwJtQDgST2u2eY8M7SyPAoj/TfzU7gfbfRuISVcz3vYIL5mcNlDQGK5r7VQQ9rg8zGIE
+         gUYI65sqqyqu+BOe07G46GOlQaRnf3YK9y27JObgA52k6GvX4RZi7jtQCjL7p1UsgN6w
+         BdGu0Ms3t7q2CulJ3IfY10hodVks22aZk7MxxA9kY+7EFN3YjD74LUQI68VNlLkaoRp/
+         vCmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bSQRibgDnpTqOXZp7vnqZJ1QVyQSI1d0M4GZTbpWPbU=;
-        b=zrYHuaXoPoVOG77PkzPSU5xIDbGB45lwN003uTa9k+W2mh27D75ndS+0Laqs6Gtba+
-         j8WHY3eRU6IFXoto2TCS8vqE7txklMboZGdOyJqQgYHw45UpyWwvR3+g8Z28ghPgDs7M
-         kId6XXNYLkr8E7OxK4UanZ3lT0RqpYEtAkmdFDZxEqA0v7KuINR5lbm3C83RDKituwyw
-         PsOQn4RaNuFrSZPkp/PKS+b7BWtICb7v/HrF7rkNs5LC0SdPoFsB+SpoKTBLRGgTMH7A
-         xXxmEAiIOZvHxxBkmQmWSPWJFikf69fof7992T/mDvw6TamJoFCnOFu6/AoDi6Daip62
-         MctQ==
-X-Gm-Message-State: AOAM530I/0lSTmp42GgRuKfl5sKPaoueGYia0e7MalF6F5GvW7ysORaq
-        QqLYXnN8VBaoE/z/PC89dipFLnMOPnGyk/2a5Wo=
-X-Google-Smtp-Source: ABdhPJwRsEo96AY3MSUxRf4j9Wd8RJCHH3n6Q8CjvmcG7cUdh2FNyaWj2sAHEU0GGWIcRqdfBaRR717SOm4gEBp1LtQ=
-X-Received: by 2002:a67:cb96:: with SMTP id h22mr7891227vsl.3.1633175289819;
- Sat, 02 Oct 2021 04:48:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=eMBn4piUa5P7icXaukpkHUzeRwiwiWTIBVzdYRFqAwQ=;
+        b=Dv2FbuuT31NWo2/QM8OXxOcaUNALfDGZ0DoheyQ1jt2aMEcIcoDUBEvskNb3IewcbQ
+         B4DO6P7vItfjS9+KN0Ev+FlHY0e6Wk3OqhyLw/3+o0JwkT1liKCLY7FpaIrycd+f9eEE
+         1VbOGb4XbJjYnTZjBJaVcBJFGlB6B7V7DHeMURwZoD3lXWFNn89XAo3xwO6CYd0a5wHl
+         k7Nxi/8kLGkvbmt2NfxXKp2WSf2K8QyXu8jNrKWlLPJurkhmi5m5tj3j7GDpA/MGsg52
+         PWGpmbSU3BhQY1xRpeLMRPa9u4sNO5wNeegAJyfYaXGX8rX+L9O1gz8XhwBZ4B9zPjlN
+         BYFg==
+X-Gm-Message-State: AOAM533QtsALHeB5tzdPslxOaPgaqQZb3atn4hfi6JR0+bIumwmszQCz
+        miqB+sT1KWjAUXdczoIyf/jxhSdhU1AixGgCvts=
+X-Google-Smtp-Source: ABdhPJzU15zjnd8pjBBesQhHVU8TZuuiS/q7uZJHumOlNvkM411j+LPFyrOSBPSU0LzHkEbVF43ZmR7oghM5h15ww68=
+X-Received: by 2002:a9d:6c46:: with SMTP id g6mr2343591otq.55.1633175349193;
+ Sat, 02 Oct 2021 04:49:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
- <20210927064300.624279-8-chenhuacai@loongson.cn> <YVbogd2gihouyWJd@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVbogd2gihouyWJd@hirez.programming.kicks-ass.net>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sat, 2 Oct 2021 19:47:58 +0800
-Message-ID: <CAAhV-H7MNU7oYMH44hrjFGKQvmDrgbBKAy2e8dfrMWq=bgxBQA@mail.gmail.com>
-Subject: Re: [PATCH V4 07/22] LoongArch: Add atomic/locking headers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Received: by 2002:ac9:6c91:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 04:49:08 -0700 (PDT)
+Reply-To: mrsjanedennis1@gmail.com
+From:   POST OFFICE <postofficetogo2@gmail.com>
+Date:   Sat, 2 Oct 2021 13:49:08 +0200
+Message-ID: <CAMPPJo3AObhvTF4PT-4SXvKhw7nOHs5KrQ7auJV5HZbXchUd+A@mail.gmail.com>
+Subject: =?UTF-8?B?576O5aW955qE5LiA5aSp77yM6Kaq5oSb55qE5pyL5Y+L77yM?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
-
-On Fri, Oct 1, 2021 at 6:54 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Sep 27, 2021 at 02:42:44PM +0800, Huacai Chen wrote:
-> > diff --git a/arch/loongarch/include/asm/bitops.h b/arch/loongarch/include/asm/bitops.h
-> > new file mode 100644
-> > index 000000000000..8b05d9683571
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/bitops.h
-> > @@ -0,0 +1,220 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_BITOPS_H
-> > +#define _ASM_BITOPS_H
-> > +
-> > +#ifndef _LINUX_BITOPS_H
-> > +#error only <linux/bitops.h> can be included directly
-> > +#endif
-> > +
-> > +#include <linux/compiler.h>
-> > +#include <linux/types.h>
-> > +#include <asm/barrier.h>
-> > +#include <asm/byteorder.h>
-> > +#include <asm/compiler.h>
-> > +#include <asm/cpu-features.h>
-> > +
-> > +#if _LOONGARCH_SZLONG == 32
-> > +#define __LL         "ll.w   "
-> > +#define __SC         "sc.w   "
-> > +#define __AMADD              "amadd.w        "
-> > +#define __AMAND_SYNC "amand_db.w     "
-> > +#define __AMOR_SYNC  "amor_db.w      "
-> > +#define __AMXOR_SYNC "amxor_db.w     "
-> > +#elif _LOONGARCH_SZLONG == 64
-> > +#define __LL         "ll.d   "
-> > +#define __SC         "sc.d   "
-> > +#define __AMADD              "amadd.d        "
-> > +#define __AMAND_SYNC "amand_db.d     "
-> > +#define __AMOR_SYNC  "amor_db.d      "
-> > +#define __AMXOR_SYNC "amxor_db.d     "
-> > +#endif
-> > +
-> > +/*
-> > + * set_bit - Atomically set a bit in memory
-> > + * @nr: the bit to set
-> > + * @addr: the address to start counting from
-> > + */
-> > +static inline void set_bit(unsigned long nr, volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMOR_SYNC "$zero, %1, %0        \n"
-> > +     : "+ZB" (*m)
-> > +     : "r" (1UL << bit)
-> > +     : "memory");
-> > +}
-> > +
-> > +/*
-> > + * clear_bit - Clears a bit in memory
-> > + * @nr: Bit to clear
-> > + * @addr: Address to start counting from
-> > + */
-> > +static inline void clear_bit(unsigned long nr, volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMAND_SYNC "$zero, %1, %0       \n"
-> > +     : "+ZB" (*m)
-> > +     : "r" (~(1UL << bit))
-> > +     : "memory");
-> > +}
-> > +
-> > +/*
-> > + * clear_bit_unlock - Clears a bit in memory
-> > + * @nr: Bit to clear
-> > + * @addr: Address to start counting from
-> > + */
-> > +static inline void clear_bit_unlock(unsigned long nr, volatile unsigned long *addr)
-> > +{
-> > +     clear_bit(nr, addr);
-> > +}
-> > +
-> > +/*
-> > + * change_bit - Toggle a bit in memory
-> > + * @nr: Bit to change
-> > + * @addr: Address to start counting from
-> > + */
-> > +static inline void change_bit(unsigned long nr, volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMXOR_SYNC "$zero, %1, %0       \n"
-> > +     : "+ZB" (*m)
-> > +     : "r" (1UL << bit)
-> > +     : "memory");
-> > +}
-> > +
-> > +/*
-> > + * test_and_set_bit - Set a bit and return its old value
-> > + * @nr: Bit to set
-> > + * @addr: Address to count from
-> > + */
-> > +static inline int test_and_set_bit(unsigned long nr,
-> > +     volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     unsigned long res;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMOR_SYNC "%1, %2, %0       \n"
-> > +     : "+ZB" (*m), "=&r" (res)
-> > +     : "r" (1UL << bit)
-> > +     : "memory");
-> > +
-> > +     res = res & (1UL << bit);
-> > +
-> > +     return res != 0;
-> > +}
-> > +
-> > +/*
-> > + * test_and_set_bit_lock - Set a bit and return its old value
-> > + * @nr: Bit to set
-> > + * @addr: Address to count from
-> > + */
-> > +static inline int test_and_set_bit_lock(unsigned long nr,
-> > +     volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     unsigned long res;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMOR_SYNC "%1, %2, %0       \n"
-> > +     : "+ZB" (*m), "=&r" (res)
-> > +     : "r" (1UL << bit)
-> > +     : "memory");
-> > +
-> > +     res = res & (1UL << bit);
-> > +
-> > +     return res != 0;
-> > +}
-> > +/*
-> > + * test_and_clear_bit - Clear a bit and return its old value
-> > + * @nr: Bit to clear
-> > + * @addr: Address to count from
-> > + */
-> > +static inline int test_and_clear_bit(unsigned long nr,
-> > +     volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     unsigned long res, temp;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMAND_SYNC "%1, %2, %0      \n"
-> > +     : "+ZB" (*m), "=&r" (temp)
-> > +     : "r" (~(1UL << bit))
-> > +     : "memory");
-> > +
-> > +     res = temp & (1UL << bit);
-> > +
-> > +     return res != 0;
-> > +}
-> > +
-> > +/*
-> > + * test_and_change_bit - Change a bit and return its old value
-> > + * @nr: Bit to change
-> > + * @addr: Address to count from
-> > + */
-> > +static inline int test_and_change_bit(unsigned long nr,
-> > +     volatile unsigned long *addr)
-> > +{
-> > +     int bit = nr % BITS_PER_LONG;
-> > +     unsigned long res;
-> > +     volatile unsigned long *m = &addr[BIT_WORD(nr)];
-> > +
-> > +     __asm__ __volatile__(
-> > +     "   " __AMXOR_SYNC "%1, %2, %0      \n"
-> > +     : "+ZB" (*m), "=&r" (res)
-> > +     : "r" (1UL << bit)
-> > +     : "memory");
-> > +
-> > +     res = res & (1UL << bit);
-> > +
-> > +     return res != 0;
-> > +}
->
-> Why is asm-generic/bitops/atomic.h not working for you?
-It seems that __clear_bit_unlock() needs an additional mb() after the
-generic version, all other functions are the same as the generic
-version.
-
-Huacai
->
+576O5aW955qE5LiA5aSp77yM6Kaq5oSb55qE5pyL5Y+L77yMDQoNCue+juWlveeahOS4gOWkqe+8
+jOaIkeimquaEm+eahOaci+WPi++8jOS9oOWlveWXju+8n+W+iOmVt+S4gOauteaZgumWk++8jOaI
+keW+iOmrmOiIiOWcsOmAmuefpeaCqO+8jOaIkeWcqOaWsOWQiOS9nOWkpeS8tOeahOWQiOS9nOS4
+i+aIkOWKn+i9ieenu+S6humAmeS6m+mBuueUouWfuumHke+8jOebruWJjeaIkeWcqOWNsOW6puea
+hOWkluWci+aKleizh+mgheebruS4re+8jOaIkeiHquW3seS9lOS6hue4vemHkemhjeeahOS7vemh
+jeOAguWQjOaZgu+8jOaIkeaykuacieW/mOiomOaCqOmBjuWOu+eahOWKquWKm+WSjOWYl+ippu+8
+jOWNs+S9v+Wug+S7peafkOeoruaWueW8j+S9v+aIkeWAkeWkseaVl+S6hu+8jOS9huS7jeW5q+WK
+qeaIkei9ieenu+S6humAmeS6m+mBuueUouWfuumHkeOAgg0KDQrnj77lnKjoga/nuavmiJHlnKjo
+pb/pnZ7mtJvnvo7lpJrlk6XnmoTnp5jmm7jvvIzlpbnnmoTlkI3lrZfmmK8gTXJzLkphbmUgRGVu
+bmlz77yM5aW555qE6Zu75a2Q6YO15Lu25Zyw5Z2AIChtcnNqYW5lZGVubmlzMUBnbWFpbC5jb20p
+DQoNCuiri+WlueWQkeaCqOWvhOmAgee4vemHkemhje+8iDk1MCwwMDAuMDAg576O5YWD77yJ77yM
+5oiR5L+d55WZ55qEIDk1IOiQrOe+juWFg+S9nOeCuuaCqOmBjuWOu+WcqOS6pOaYk+S4reWNlOWK
+qeaIkeeahOaJgOacieWKquWKm+WSjOWYl+ippueahOijnOWEn+OAgg0KDQrmiJHpnZ7luLjmhJ/o
+rJ3mgqjnlbbmmYLnmoTliqrlipvvvIzmiYDku6Xoq4vpmqjmmYLoga/nuavmiJHnmoTnp5jmm7jn
+sKHCt+S4ueWwvOaWr+Wkq+S6uu+8jOS4puaMh+ekuuWlueWwh+e4vemHkemhjSAoJDk1MCwwMDAu
+MDApIOeahCBBVE0g5Y2h5a+E5b6A5L2V6JmVDQoNCuaUtuWIsOW+jOiri+eri+WNs+mAmuefpeaI
+ke+8jOiuk+aIkeWAkeS4gOi1t+WIhuS6q+eVtuaZguWPl+iLpuW+jOeahOWWnOaCheOAgg0KDQrp
+gJnmrrXmmYLplpPmiJHlnKjpgJnoo6Hlvojlv5nvvIzlm6DngrrmiJHlkozmiJHnmoTmlrDlpKXk
+vLTmnInmipXos4fpoIXnm67vvIzntYLmlrzoqJjlvpfmiJHlt7LntpPku6PooajkvaDlkJHmiJHn
+moTnp5jmm7jovYnnmbzkuobmjqXmlLZBVE3ljaHnmoTmjIfnpLrjgIINCg0K5Zug5q2k77yM6KuL
+6Zqo5pmC6IiH57ChwrfkuLnlsLzmlq/lpKvkurroga/nuavvvIzlpbnmnIPmr6vkuI3mi5blu7bl
+nLDlsIfph5HpoY3nmbzpgIHntabmgqjjgIINCg0K5q2k6Ie077yMDQpBbmR5IENodWt3deWFiOeU
+nw0K
