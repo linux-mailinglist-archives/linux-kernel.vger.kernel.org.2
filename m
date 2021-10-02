@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CBF41FAEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 12:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8518241FAF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 12:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhJBKsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 06:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
+        id S232807AbhJBKv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 06:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhJBKse (ORCPT
+        with ESMTP id S232621AbhJBKv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 06:48:34 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCD2C061570;
-        Sat,  2 Oct 2021 03:46:48 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id e144so14580649iof.3;
-        Sat, 02 Oct 2021 03:46:48 -0700 (PDT)
+        Sat, 2 Oct 2021 06:51:57 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F314EC061570;
+        Sat,  2 Oct 2021 03:50:11 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id c33so8542960uae.9;
+        Sat, 02 Oct 2021 03:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t4Vbvfqul2QFRFjweRNao7lCpjhaECLAq5CXnSLrpSc=;
-        b=Fva1PNUDrspBT6Qe0CKmeiDlLQYn67jc2rEtlOgRoO8FU3CZdwYpTed5cW4Uo308rm
-         OyiSMfjQge65mReRhI3soLOTBWg4ZInOOUMi8dXwcRkeKP4yelPNhFLdUmiZCouDr3mP
-         +FJk7IsSne5B1YI+qo5qrPI2AKXkFl3D2Jn/+L9LPO9cuooTNlRu6pApag+rKzM9Egxc
-         i7uyiMoYkotU7PyLaH8F903WuzYYJ3mnsPmUTnVBKVUhgLNxO38pN/FJ6oYJ8ayUS+2Q
-         jaINIV/yAUlA2LpBovEfWb4xoTTh6Sdnsl9nIW+fM3Df6xP0wMvdk/5ktRuZk75UJiyp
-         1awg==
+        bh=hApVBQxpxEC5vFy5Vo/ksJtoWpp3dT/2xS6YTcdOE2Y=;
+        b=P4RPrTAKw+Xf8YTtm1ijdqPK6rNH7thWGY11M24OTN89QTWl5phavzvMYOnB841xaO
+         r5MWL3qF0YjZMBCfKSLHQRRNKkUn7oUB7u1AB8WQ9VMVs/Z5Dcs9/3GSbjZyaPLZH8A2
+         evdyYUhjPjgJHbpf+zYErf0n6OmVD5++ogTQblzFSFWscBYnRRW0PDibXMndfme0RWwB
+         2fM6DeJixjQERPJAd0Hg7Or7bcDhf0AUJMEJb8JqRHpYpL/T6t+jwTcewby+QDbvSdQx
+         9554NPbY9bEAtg7YGN95WBS5y3gWzoGLGS2MlqX7jJfRGQad1anu9rrz0/tbtbEQiY+u
+         cOqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t4Vbvfqul2QFRFjweRNao7lCpjhaECLAq5CXnSLrpSc=;
-        b=6zSpt5zQ2I4/QSzuGlIUZ6Z5zpclJclZHvc+lbu1we5Op0QMa5RUlfGHegLk75MfLr
-         xSsG7/lrgsZRcxlG0Qv4kW1Pv5+6N1qdCR9iYZOZHyF/c8uTDouvict+E02DDW9p537e
-         soLGRhUaxn+hkLmnT0ldVsYBK0oNkZUOcof91TJaSG1oXXJ0fpfgWEzDplMNRGQ5rrFX
-         SBk72exU75Wq1b2hpCPWDOYbM/wBV5uH7gzXmxFKdX3UZ9N72mdMNXSlQuVmOxQDP+DZ
-         Ky11GAByXjiP+UK9f3m1uU8E9dqePQGEB6ikMlAr10j9n3hDiIcUJk6424ySISs8j87C
-         nVSA==
-X-Gm-Message-State: AOAM53261g4Q0Rb8+KSwiR3n9zHpBOns3Q/mo0tju/xbpI3oZbp0yLq/
-        0573WPX74q7jN8VKC4gd3Foej1giTyHBjKgRaCM=
-X-Google-Smtp-Source: ABdhPJz7DQ9B1xRDxK67+F0v4ZEUenO0JwNu2opo+RO5QCCO+W4xelFrC3zfK2DDB15nEA7awHxuGqRlMDBO5125Smk=
-X-Received: by 2002:a05:6638:12d5:: with SMTP id v21mr2388869jas.133.1633171608331;
- Sat, 02 Oct 2021 03:46:48 -0700 (PDT)
+        bh=hApVBQxpxEC5vFy5Vo/ksJtoWpp3dT/2xS6YTcdOE2Y=;
+        b=uymqnCFHD+6bYu7Vhsud5hvIA18SypWr3nmXHyJqwpDQ8xabJ4YjgLjlX539ekf1J8
+         +4GvPvwB0I9PvAKFB+hdgpHyuENxRY1B5ZZkAJihjvs4OILgzwNttcnBp2PSq41wjjWW
+         Fw18nW4hWzDmVkU78AV0fhqmDeU3Czsy3jT5fqNxODHsbQDaDZj/K+5FBPwLbJUn7IwU
+         6cVRjePHuR5DnedLJzTIEJky+Ez2L4U8xhjVL5FrEu2GktFcZ7m32R/VJBlHqpawf6hI
+         G9bcvVK41FnieFnCdsLYUTgA2q1K0UtcZeMmsFsebwTcUBzOsoTO/APfQy84nGgutdKT
+         es5w==
+X-Gm-Message-State: AOAM532cCgyMtKRvWRx4K9f0s2mGfFpQvHho5J7nC5fvux3n+z6oKe8Q
+        FziTmOraHPCgY8RDVRU35UnIGAYQwbOjKfO0Bzc=
+X-Google-Smtp-Source: ABdhPJxrt0PHaUYomQoyBR7LSumjrjkCTVkFlD8OoKphsiOwEiX4pq6aBotbO+VWDsjqM++E1d15YgXCMvWwLVyq5kc=
+X-Received: by 2002:ab0:550f:: with SMTP id t15mr1343048uaa.22.1633171810757;
+ Sat, 02 Oct 2021 03:50:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930235754.2635912-1-keescook@chromium.org>
-In-Reply-To: <20210930235754.2635912-1-keescook@chromium.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 2 Oct 2021 12:46:37 +0200
-Message-ID: <CANiq72=Z30f6nPN+pBLYzkew0UipXmBV1Wd_hr4u6aiug=8qrA@mail.gmail.com>
-Subject: Re: [PATCH v4] docs: Explain the desired position of function attributes
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joe Perches <joe@perches.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+References: <20210927064300.624279-1-chenhuacai@loongson.cn>
+ <20210927064300.624279-7-chenhuacai@loongson.cn> <91d12c483421cc7bd69d8ee7f28243d65877a7af.camel@mengyan1223.wang>
+In-Reply-To: <91d12c483421cc7bd69d8ee7f28243d65877a7af.camel@mengyan1223.wang>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sat, 2 Oct 2021 18:49:59 +0800
+Message-ID: <CAAhV-H6Pt5=DCC39PhJg6jHgpo+GyTGH=KonpncOVFMpD=__Ow@mail.gmail.com>
+Subject: Re: [PATCH V4 06/22] LoongArch: Add CPU definition headers
+To:     Xi Ruoyao <xry111@mengyan1223.wang>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 1:59 AM Kees Cook <keescook@chromium.org> wrote:
+Hi, Ruoyao,
+
+On Thu, Sep 30, 2021 at 11:30 PM Xi Ruoyao <xry111@mengyan1223.wang> wrote:
 >
-> + static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
-> +               size_t size, u8 count, char *fmt, ...)
-> +               __malloc
+> On Mon, 2021-09-27 at 14:42 +0800, Huacai Chen wrote:
+>
+> > +#define t0     $r12    /* caller saved */
+> > +#define t1     $r13
+> > +#define t2     $r14
+> > +#define t3     $r15
+> > +#define t4     $r16
+> > +#define t5     $r17
+> > +#define t6     $r18
+> > +#define t7     $r19
+> > +#define t8     $r20
+> > +#define x0     $r21
+>
+> In the doc it's said x0 will be used to name a 256-bit vector register.
+> Maybe it's better to rename this one?
+OK, I want to rename it to u0 (U means Unused in userspace).
 
-(From my other email) Is this `__malloc` intended to be in a separate
-line? (the first example has everything on the same line).
-
-Cheers,
-Miguel
+Huacai
+>
