@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECD041FCA7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C5B41FCAB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhJBPNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233274AbhJBPNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:13:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE22611C7;
-        Sat,  2 Oct 2021 15:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633187516;
-        bh=SbD0pLMeuMsQguP7ZVdU4NgeQOy5CPZuKGaMkAkIfkI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=b46de+QJ1JwnmCWmVBZVR7FuPAC2vA7jEhMPZVEyNrHqD8ZUQX12egjCJvHz5umYb
-         oT8r4yvtKDiGvGQvYdFEP3qV4ZKkx9S/6gSQ2/hdpfACn9tU4lKBySXxBPY3IfRhjV
-         6zaRd6rQFfccqy6kyPtGN/d3VskGmfVPX5wstU+FBKOJnpz/H0dXegde+daYvSgthv
-         8xCGMwczrVuQtSUFPmntJio401eyJS0Oozz/OBHeobizJs9GEYwcR/UoBIdCWeUPuF
-         l60oDAuB+ay8bLlWBKNDFs8yxdCwWwCIyKukhLyoMqT7o+lOF8QIGiX1V3Ar9ajnb6
-         +TabPgsAhdkLg==
-Date:   Sat, 2 Oct 2021 10:11:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     logang@deltatee.com, kurt.schwemmer@microsemi.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kelvincao@outlook.com
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Message-ID: <20211002151153.GA967141@bhelgaas>
+        id S233452AbhJBPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233274AbhJBPPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 11:15:44 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A401C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 08:13:59 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id r7so8524363pjo.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 08:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3CcsIBkjnD7sDWaAM5mdqO8LXPHUnsgkAUC6h+d4KEk=;
+        b=J15ChbwXUVu9rh26SHqVY8sa3JxBfK6+NkF3P+sW6CoB7qKhOr0DCh+uWiNSgdfVmn
+         2UlJbZNPi1qqbaR2ZodVYqfPRsfBQK98sE1sXV+y/9WSsbE/vh+fTHbV5uacQW8e0gwF
+         SwbkM6yq7TuRa+JpqAfsqGTCvs7cQk4rb+a/O7oZmu5EG8iF6j1oWjDNKiwTQ0JzxWSi
+         fP//HwDl+cjmVDKh+bQKU0YJk4vFp0ijv+l/5XNshglCev+EraQCX5LMVV2M3fbNmtbU
+         4e+eqWBHNXExmEQF6sLqhCdODyRWJOCRFwhBVvqKRZcIUc+EIPkHJoFDP7HnXe/hRcd3
+         TnPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3CcsIBkjnD7sDWaAM5mdqO8LXPHUnsgkAUC6h+d4KEk=;
+        b=7NzQPtZDK/35xNH9rgoRLjWfBDu96XZg+A8/OB7KVDrKy2Tx4mNlhC5NmgN79beAnv
+         jM4M8BC2lq5v77GC3wuNYakzoKDhdi9TGYTW+Ftc36Bv7QhMuqDfpufWc/3Lv15Hdr6v
+         lIayP96Ehgv+y3gzNqQ0glLT0LbXlT7aEZzCa39WikAv0MDdYsqScBYQHSA68b6UZZkC
+         FUlSJwYGmQGczCSHQ2Hkx0mTlL3RwUAbvYNQt5FiDoqvU9Z8GxEvcxE2nR4/4pRBHfE+
+         yyVb/XNI4QBcNppX7/R94MtnksXrZ4+LRMPx9NpO1KlhmcRn/Cxgki9bfZjCM3pLiobo
+         cn7Q==
+X-Gm-Message-State: AOAM531d8v+OEKIhkP1Hx4t0U3NgKrOQz701uUNNgcRoap/pRLATr1Hq
+        KszA/DGh9ebY6Cg3DPiN6WM=
+X-Google-Smtp-Source: ABdhPJyCmF7HojIrD01MKnEYPyf/gWuUwhD9TDFQCO8AAPjwSrA9JATjobIyQV7V4jpi9Ir+BFnKMg==
+X-Received: by 2002:a17:902:dad2:b0:13c:a6ce:faea with SMTP id q18-20020a170902dad200b0013ca6cefaeamr15873437plx.45.1633187638437;
+        Sat, 02 Oct 2021 08:13:58 -0700 (PDT)
+Received: from user ([223.230.105.60])
+        by smtp.gmail.com with ESMTPSA id k22sm9472702pfi.149.2021.10.02.08.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 08:13:58 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 20:43:52 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove unused variable pAdapter
+Message-ID: <YVh3MP/JrUwkKr3Y@user>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ed856f361ef3ca80e34c4565daffe6e566a8baa3.camel@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 11:49:18PM +0000, Kelvin.Cao@microchip.com wrote:
-> On Fri, 2021-10-01 at 14:29 -0600, Logan Gunthorpe wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe
-> > 
-> > On 2021-10-01 2:18 p.m., Bjorn Helgaas wrote:
-> > > On Fri, Sep 24, 2021 at 11:08:38AM +0000, kelvin.cao@microchip.com
-> > > wrote:
-> > > > From: Kelvin Cao <kelvin.cao@microchip.com>
-> > > > 
-> > > > After a firmware hard reset, MRPC command executions, which
-> > > > are based on the PCI BAR (which Microchip refers to as GAS)
-> > > > read/write, will hang indefinitely. This is because after a
-> > > > reset, the host will fail all GAS reads (get all 1s), in which
-> > > > case the driver won't get a valid MRPC status.
-> > > 
-> > > Trying to write a merge commit log for this, but having a hard
-> > > time summarizing it.  It sounds like it covers both
-> > > Switchtec-specific (firmware and MRPC commands) and generic PCIe
-> > > behavior (MMIO read failures).
-> > > 
-> > > This has something to do with a firmware hard reset.  What is
-> > > that?  Is that like a firmware reboot?  A device reset, e.g.,
-> > > FLR or secondary bus reset, that causes a firmware reboot?  A
-> > > device reset initiated by firmware?
->
-> A firmware reset can be triggered by a reset command issued to the
-> firmware to reboot it.
+Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
 
-So I guess this reset command was issued by the driver?
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_efuse.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> > > Anyway, apparently when that happens, MMIO reads to the switch
-> > > fail (timeout or error completion on PCIe) for a while.  If a
-> > > device reset is involved, that much is standard PCIe behavior.
-> > > And the driver sees ~0 data from those failed reads.  That's not
-> > > part of the PCIe spec, but is typical root complex behavior.
-> > > 
-> > > But you said the MRPC commands hang indefinitely.  Presumably
-> > > MMIO reads would start succeeding eventually when the device
-> > > becomes ready, so I don't know how that translates to
-> > > "indefinitely."
-> > 
-> > I suspect Kelvin can expand on this and fix the issue below. But
-> > in my experience, the MMIO will read ~0 forever after a firmware
-> > reset, until the system is rebooted. Presumably on systems that
-> > have good hot plug support they are supposed to recover. Though
-> > I've never seen that.
-> 
-> This is also my observation, all MMIO read will fail (~0 returned)
-> until the system is rebooted or a PCI rescan is performed.
+diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+index 801887f497cf..d33a5b3b4088 100644
+--- a/drivers/staging/r8188eu/core/rtw_efuse.c
++++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+@@ -28,8 +28,7 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+ #define REG_EFUSE_CTRL		0x0030
+ #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
 
-This made sense until you said MMIO reads would start working after a
-PCI rescan.  A rescan doesn't really do anything special other than
-doing config accesses to the device.  Two things come to mind:
+-static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
+-					   u16 Offset,
++static bool Efuse_Read1ByteFromFakeContent(u16 Offset,
+ 					   u8 *Value)
+ {
+ 	if (Offset >= EFUSE_MAX_HW_SIZE)
+@@ -96,7 +95,7 @@ ReadEFuseByte(
+ 	u16 retry;
 
-1) Rescan does a config read of the Vendor ID, and devices may
-respond with "Configuration Request Retry Status" if they are not
-ready.  In this event, Linux retries this for a while.  This scenario
-doesn't quite fit because it sounds like this is a device-specific
-reset initiated by the driver, and CRS is not permited in this case.
-PCIe r5.0, sec 2.3.1, says:
+ 	if (pseudo) {
+-		Efuse_Read1ByteFromFakeContent(Adapter, _offset, pbuf);
++		Efuse_Read1ByteFromFakeContent(_offset, pbuf);
+ 		return;
+ 	}
 
-  A device Function is explicitly not permitted to return CRS
-  following a software-initiated reset (other than an FLR) of the
-  device, e.g., by the device's software driver writing to a
-  device-specific reset bit.
+@@ -134,7 +133,7 @@ u8 efuse_OneByteRead(struct adapter *pAdapter, u16 addr, u8 *data, bool pseudo)
+ 	u8 result;
 
-2) The device may lose its bus and device number configuration after a
-reset, so it must capture bus and device numbers from config writes.
-I don't think Linux does this explicitly, but a rescan does do config
-writes, which could accidentally fix something (PCIe r5.0, sec 2.2.9).
+ 	if (pseudo) {
+-		result = Efuse_Read1ByteFromFakeContent(pAdapter, addr, data);
++		result = Efuse_Read1ByteFromFakeContent(addr, data);
+ 		return result;
+ 	}
+ 	/*  -----------------e-fuse reg ctrl --------------------------------- */
+--
+2.32.0
 
-> > The MMIO read that signals the MRPC status always returns ~0 and the
-> > userspace request will eventually time out.
-> 
-> The problem in this case is that, in DMA MRPC mode, the status (in host
-> memory) is always initialized to 'in progress', and it's up to the
-> firmware to update it to 'done' after the command is executed in the
-> firmware. After a firmware reset is performed, the firmware cannot be
-> triggered to start a MRPC command, therefore the status in host memory
-> remains 'in progress' in the driver, which prevents a MRPC from timing
-> out. I should have included this in the message.
-
-I *thought* the problem was that the PCIe Memory Read failed and the
-Root Complex fabricated ~0 data to complete the CPU read.  But now I'm
-not sure, because it sounds like it might be that the PCIe transaction
-succeeds, but it reads data that hasn't been updated by the firmware,
-i.e., it reads 'in progress' because firmware hasn't updated it to
-'done'.
-
-Bjorn
