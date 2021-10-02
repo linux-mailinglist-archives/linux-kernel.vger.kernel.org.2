@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D3C41FCBA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933D041FCBF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhJBPXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:23:55 -0400
-Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:37466 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233508AbhJBPXy (ORCPT
+        id S233440AbhJBPfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:35:42 -0400
+Received: from relay.rsaweb.co.za ([41.71.65.116]:46391 "EHLO
+        relay.rsaweb.co.za" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhJBPfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:23:54 -0400
-Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id AE189182CED28;
-        Sat,  2 Oct 2021 15:22:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 3E13B20A294;
-        Sat,  2 Oct 2021 15:22:05 +0000 (UTC)
-Message-ID: <0cbd2549be1245b445796f6c57a27b910fa4dc9d.camel@perches.com>
-Subject: Re: [PATCH v4] docs: Explain the desired position of function
- attributes
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Date:   Sat, 02 Oct 2021 08:22:04 -0700
-In-Reply-To: <CANiq72=T9b_RgZGHuKDjj=E46c0nB2CHH3+Wsdws2Wt9YWcHVw@mail.gmail.com>
-References: <20210930235754.2635912-1-keescook@chromium.org>
-         <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
-         <YVf80rXg8Yd19Hmw@kroah.com>
-         <CANiq72=T9b_RgZGHuKDjj=E46c0nB2CHH3+Wsdws2Wt9YWcHVw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sat, 2 Oct 2021 11:35:41 -0400
+X-Greylist: delayed 552 seconds by postgrey-1.27 at vger.kernel.org; Sat, 02 Oct 2021 11:35:40 EDT
+Received: from relay.rsaweb.co.za (localhost [127.0.0.1])
+        by relay.rsaweb.co.za (Postfix) with ESMTP id BAB933E3457;
+        Sat,  2 Oct 2021 17:21:57 +0200 (SAST)
+Received: from mailnode2.rsaweb.co.za (unknown [41.74.182.203])
+        by relay.rsaweb.co.za (Postfix) with ESMTP;
+        Sat,  2 Oct 2021 17:21:57 +0200 (SAST)
+Received: from mail.rsaweb.co.za (mailnode2.rsaweb.co.za [10.0.0.112])
+        by mailnode2.rsaweb.co.za (Postfix) with ESMTP id CBEAA60497;
+        Sat,  2 Oct 2021 17:24:28 +0200 (SAST)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.60
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 3E13B20A294
-X-Stat-Signature: yanmkicwt4zwyzm7d6m19nhnm1p8j4c5
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/U9EYoX2BCER/gqYqYndT+x8+0TM0IkdI=
-X-HE-Tag: 1633188125-535750
+Date:   Sat, 02 Oct 2021 08:24:28 -0700
+From:   Mrs Maria Weber <staceyleigh@rsaweb.co.za>
+To:     undisclosed-recipients:;
+Subject: Dear Friend
+Organization: Mrs Maria Weber
+Reply-To: kf0615614@gmail.com
+Mail-Reply-To: kf0615614@gmail.com
+Message-ID: <245b652195f8a5b86af163f764da66b0@rsaweb.co.za>
+X-Sender: staceyleigh@rsaweb.co.za
+User-Agent: Roundcube Webmail/1.3.1 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-02 at 12:42 +0200, Miguel Ojeda wrote:
-> In the future, clang-format could have a configuration option to pass
-> a sort order, in which case, having the sort order already defined in
-> the kernel would definitely be helpful.
+Dear Friend
 
-It's not so much a sort order so much as it's a positional one.
+I am a widow because I lost my husband 5 years ago, we were married for 
+eleven years without a child. He died after a brief illness that lasted 
+for couple of weeks. When my late husband was alive he deposited the sum 
+of Seven Million Dollars($7,000,000.00 USD)in the bank, because we 
+earlier had plans of having a charity firm.
 
+Recently, My Doctor told me that I have couple of weeks to live due to 
+Brain tumor / cancer. Having known my condition I decided to hand you 
+over this mission to take care of the less-privileged, you will utilize 
+this money the way I am going to instruct herein.
 
+Because I grew up as an Orphan and I don't have anybody as my family 
+member. As soon as I receive your reply I shall link you up with the 
+Lawyer. for more information reply to my direct email;
+
+Mrs.Maria Weber
+Reply to- kf0615614@gmail.com
