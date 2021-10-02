@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EB141FCB0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4949641FCB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhJBPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233468AbhJBPVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:21:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2BCFF61B06;
-        Sat,  2 Oct 2021 15:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633188007;
-        bh=0NdqX5AXnj3U6jq+wBvSsBPAt9a24+NFzsCdzpr1XUQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tm59uVkdj2M6MeEd5tfPYNAmIYm0ek6vLlNE298muwdsdesn4wJu7rm+Pj0yG9uC6
-         P51WOO6EIjS3tAz6hl2NKna5LWt6PCY6AbRu3YlPKamg3R0z33AElpE8kQRtkZxJb/
-         OUGG6zVUEwlAhd6FlDaEs/IW1Fy6WWYzKZpu4gLzIzUrvziXFihsPB2foPzLOdtfrS
-         OdVkXBCMWTe877FoKIplon9qCxg/djcgYy3FoImKUbpfbolhiOf2niwBnTjHHOrP5G
-         EImrOlKTGYBuafEjetNGK9TXIZHE/UJGBm5IkeiuQrKXeuc7pH/YZOGt0ApNzZ5ioQ
-         62LVt5HlS3y3w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1D3A1600AB;
-        Sat,  2 Oct 2021 15:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233504AbhJBPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:23:51 -0400
+Received: from smtprelay0040.hostedemail.com ([216.40.44.40]:37060 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233425AbhJBPXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 11:23:49 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 49791100E7B55;
+        Sat,  2 Oct 2021 15:22:02 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 077632351F3;
+        Sat,  2 Oct 2021 15:21:59 +0000 (UTC)
+Message-ID: <9f262a81acffffb6e267d5832b29d8596d8046e2.camel@perches.com>
+Subject: Re: [PATCH v4] docs: Explain the desired position of function
+ attributes
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Date:   Sat, 02 Oct 2021 08:21:58 -0700
+In-Reply-To: <YVf80rXg8Yd19Hmw@kroah.com>
+References: <20210930235754.2635912-1-keescook@chromium.org>
+         <CAKwvOdm37zpJZkLvbHvVkXax=XGQ-Ym3iPfx7LtTUnZhADnYCA@mail.gmail.com>
+         <YVf80rXg8Yd19Hmw@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 net 1/1] ptp_pch: Load module automatically if ID matches
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163318800711.15445.7631528846521046417.git-patchwork-notify@kernel.org>
-Date:   Sat, 02 Oct 2021 15:20:07 +0000
-References: <20211001162033.13578-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211001162033.13578-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     davem@davemloft.net, lee.jones@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, richardcochran@gmail.com
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 077632351F3
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: soyiqo7o57w1r49asd8u46n98r7p3mry
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18XHyC4W8Hgtuauvy9FtyuPzQMwcIbmQI8=
+X-HE-Tag: 1633188119-488567
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sat, 2021-10-02 at 08:31 +0200, Greg KH wrote:
+> I would think that now we have a format that the tools can
+> actually follow, while before it was semi-random as to what to pick as
+> the "one true way".
 
-This patch was applied to netdev/net.git (refs/heads/master):
+There will never be 'one true (and universal) way'.
 
-On Fri,  1 Oct 2021 19:20:33 +0300 you wrote:
-> The driver can't be loaded automatically because it misses
-> module alias to be provided. Add corresponding MODULE_DEVICE_TABLE()
-> call to the driver.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/ptp/ptp_pch.c | 1 +
->  1 file changed, 1 insertion(+)
+Most existing code doesn't follow the suggested formatting and you
+can't require or expect the existing code to change.
 
-Here is the summary with links:
-  - [v1,net,1/1] ptp_pch: Load module automatically if ID matches
-    https://git.kernel.org/netdev/net/c/7cd8b1542a7b
+If automated scripts exist to change all the code to that new
+'one true way', it wouldn't be applied.
+ 
+> What am I missing here?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Try writing a regex for the proposal and make sure to separate out
+all the various __<foo> attributes into their proper locations...
 
+yuck and g'luck.
 
