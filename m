@@ -2,117 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEB041FE81
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 00:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B90C41FE89
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 00:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhJBWlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 18:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhJBWlv (ORCPT
+        id S234167AbhJBWta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 18:49:30 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:49893 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhJBWt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 18:41:51 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56585C061714
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 15:40:04 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i4so54506281lfv.4
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 15:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3o+HPeR9EbtnHX+94EjHfOu3iAnHimt25CzZpAQ8GlI=;
-        b=RWopi1jMhILOrbSqr6Msa20jU1DWxrGZDgqc4NOxHUPWffQ37cz0/w2irICGXyMEQm
-         QdpwobZwbOTfjpxdvm0n3An3AXr156XOHOAaHpQQSj3F/IwsaSOBFBrVKBcAfsBoLYFr
-         WVeUgklWzIzMy34MWSNcJJmfgreYiXHvQ8SpI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3o+HPeR9EbtnHX+94EjHfOu3iAnHimt25CzZpAQ8GlI=;
-        b=TIXstwTS3PP6yYfLczZES7Hv7uu05aJGNTXhCwuAz5shxCiiNl/IwAJA/6+e4m28R3
-         5kDoSU+wFizqfUL+RtLTVj8QF1dXWJYQezuJUzivBHmg+T9duocvuGBOjUQTuUhVTlG4
-         MML5OFo01GOsGI+EnmKzMgCFtsFe81lRZ/djnyGsz3fN+HIpxSB4pQgEg8SAcsJ9C0g8
-         onU3i5tt8JVR58CvPp9h3jz4LfP4SUcGLpxATgdZJtbhMZxqXY71v1Wr9kq6eJlLFRqJ
-         yZ+4BAUnf0jNNXezJtt+uqy/7GZz1ou6U5KUsyJFO3YD8Y8f3OnezNnqD+GB8iQXF5Gf
-         jtRQ==
-X-Gm-Message-State: AOAM531C9jAFJEbt4PkAUS9oE+RtTwW+oBUSJEwPDVszKShelLs7DbiO
-        Lj2r3kQLymMB/BeQy3tdVuvubcR+0IfGhuB9mfA=
-X-Google-Smtp-Source: ABdhPJyoDc1E4Gcci08LHX+1g/e1qISDxmTfO8zvFvSixgtxV8nu3adxs5pj8QhuUDzkkiTq/zmJTA==
-X-Received: by 2002:ac2:597b:: with SMTP id h27mr5910584lfp.541.1633214402361;
-        Sat, 02 Oct 2021 15:40:02 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id o13sm298432lfl.111.2021.10.02.15.40.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Oct 2021 15:40:01 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id b20so54322075lfv.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 15:40:01 -0700 (PDT)
-X-Received: by 2002:ac2:51a6:: with SMTP id f6mr6005698lfk.150.1633214401510;
- Sat, 02 Oct 2021 15:40:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <7E585A79-A705-4CB9-9E4C-0E73DCE237E2@goodmis.org>
-In-Reply-To: <7E585A79-A705-4CB9-9E4C-0E73DCE237E2@goodmis.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 2 Oct 2021 15:39:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whpkoC4wDPDUtVs22aZ=5v2bzAUPTGZTxnK19qB6euRug@mail.gmail.com>
-Message-ID: <CAHk-=whpkoC4wDPDUtVs22aZ=5v2bzAUPTGZTxnK19qB6euRug@mail.gmail.com>
-Subject: Re: [RFC][PATCH] tracing: Define "fake" struct trace_pid_list
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        Sat, 2 Oct 2021 18:49:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HMMYm0llyz4xR9;
+        Sun,  3 Oct 2021 09:47:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633214860;
+        bh=WZxRlkQAJZ4tqNobecHm+w38BSGUESdihRsAdeUkre0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lroR3kmh4LYMftkmOxhvcJS7+pnh3a93hk6rg/CPpoYSU8ZWfL4YBiVSwyH06HYQn
+         f6fguCb0AxD7QUqw1YIyq/vJ62G3+TYTtylKrXTUiklrzA/2hOb2fC4LvM/wg4YFSH
+         KG8MQhBIPvHuJ1WmyKCn4j6p0KFhw65riWANZ2AVVLuS9pDXeGMd+I50l+GJoQRr6I
+         7foBJKgfmCZpsWy6Gj5dPHcRNuO3Ql45XAlDEVOgopLjJY1Os8xgFzWdtrAKgEFmdO
+         f4SQ2cUV6Sx1VEbHG7oGcVOzk6jJxI7YA6zFu7LMsSzMNOB/oKsTBZM+GOR73gkWW8
+         rv/N36CNA9/kg==
+Date:   Sun, 3 Oct 2021 09:47:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
+Message-ID: <20211003094722.434c030d@canb.auug.org.au>
+In-Reply-To: <20211001181245.228419-1-yury.norov@gmail.com>
+References: <20211001181245.228419-1-yury.norov@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/oR.tVRCv.tbi8TditjTwdeB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 1:04 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+--Sig_/oR.tVRCv.tbi8TditjTwdeB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Yury,
+
+On Fri,  1 Oct 2021 11:12:29 -0700 Yury Norov <yury.norov@gmail.com> wrote:
 >
->
-> [ Note, this is on top of my tree in ftrace/core, but wanted to ask if
->   this is the proper "fix".
+> Can you please take this series into the next tree? It has been already
+> in next-tree for 5.14:
+>=20
+> https://lore.kernel.org/linux-mmc/YSeduU41Ef568xhS@alley/T/
+>=20
+> But it was damaged and we decided to merge it in 5.15 cycle. No changes
+> comparing to 5.14, except for Andy's patch that was already upstreamed
+> and therefore removed from here.
+>=20
+> The git tree is here:
+> 	https://github.com/norov/linux/tree/bitmap-20210929
 
-Ugh, please no. This is going to be very confusing, and it's going to
-mess with anything that does things based on type (eg traditionally
-module signatures etc).
+Sorry, I cannot include that in linux-next since it it based on (an old
+version of) linux-next itself.  If it needs to be based on other trees in
+linux-next, then it has to be added to Andrew Morton's patch series (in
+the post linux-next section.  Otherwise, if it can be based on Linus
+Torvald's tree (even with a few conflicts), then that is better.
 
-I'd rather you just expose the proper type, if that is what it takes.
+--=20
+Cheers,
+Stephen Rothwell
 
-> Some compilers give this error:
+--Sig_/oR.tVRCv.tbi8TditjTwdeB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Only some? Which ones? And what did you do to make it appear? Sounds
-like whatever change wasn't worth it.
+-----BEGIN PGP SIGNATURE-----
 
-The advantage of some "opaque type" does _not_ override the
-disadvantage of then having to make up these kinds of horrific
-workarounds that actively lie to the compiler.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFY4XoACgkQAVBC80lX
+0Gxiwgf/emUO5IIiIm61dtXY7bC6BcDa1+b8CTRjOTsGOfFGUqPiJ8GdK6d0r6PJ
+dT8+GtWpM3a8+xy6hF5w0kb1/fhIErfy55w2qqIIsklK0rq8oesadwry63i4GTAY
+I7oyQWoPiukuEZnGo+57jxYhidDnL0KHQ6QcMWgUi+F6T63BFbWazHj54L6D3K9K
+/THBvsdN7qt3MZ1Ci+qlhAoT4kkp///yl7j4aP2NJKN2nXz5Fo7QjKHXFbLjtj+T
+RHBcZ5f+ceb9eohhPLBEQUoy5fzOwlOghwIZQiqRVwHyb3g5xiPrnjtYKc2+KkYp
+Tmc+zpG6K8cz+7j8pPw4X4ja8SL1Xw==
+=1SmH
+-----END PGP SIGNATURE-----
 
-We have tons of structures (and occasionally single structure members)
-that we don't want people to access directly, and instead use a
-wrapper function. That doesn't mean that they can't be exposed as a
-type.
-
-> The reason is that rcu_dereference_sched() has a check that uses
-> typeof(*p) of the pointer passed to it.
-
-Sadly, we do that for a reason - we do a
-
-     typeof(*p) *__local_p;
-
-to drop the address space specifiers from (or add them to) the pointer.
-
-That said, I wonder how many of them are actually needed. At least
-some of them are purely for sparse
-
-So at least some could probably just use
-
-     typeof(p) __local_p;
-
-instead, which would avoid the problem with a pointer to an incomplete
-type (and keep it as a pointer to an incomplete type).
-
-So one option might be to work on the RCU accessor macros instead.
-
-               Linus
+--Sig_/oR.tVRCv.tbi8TditjTwdeB--
