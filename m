@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE8641FD5C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 19:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFFD41FD60
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 19:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhJBRUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 13:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbhJBRUW (ORCPT
+        id S233693AbhJBRWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 13:22:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42962 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233451AbhJBRWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 13:20:22 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA7EC0613EC;
-        Sat,  2 Oct 2021 10:18:36 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id s69so15770512oie.13;
-        Sat, 02 Oct 2021 10:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pCMhrtix1SaJdraOyPsvWpY4qULx6HH4b0l2FJCif+s=;
-        b=CqeIUySNilx89Gfas5OSnD5d/nqOtklsn4cge6Lnskw9WHu6z0tpXYqThb/5oqmjba
-         TmuPVhxeQPz7CBFCm0iFVtyJVeVZVdp8D38lq0Y/m18U6hhjTULrhjJ6ixCYbS/EWN1N
-         6UAXVMIviH5fQqLhFOGk1SqumVaA3GiDKHzoFIfWKd5nMCNesFk4igVR9Rxi7w5tF4Xq
-         lBDXij3d88iEY2KpTB6ZAFXksHWFOoo3fASPl/sBKVHBoJdEDYiH7goDt0vwaFK1O+Zi
-         g0Bud3wx/cht2Ov79p+dJdBITocNtyfkHS0n5MiKlRRBwaW/IOspkHAKNX9Ecxfn/f6x
-         zZ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pCMhrtix1SaJdraOyPsvWpY4qULx6HH4b0l2FJCif+s=;
-        b=ymExOmdhAOTcUBxA0/8pHdGdedxGHHcuZI/Oqif6S+VMxylDnISacZvcsPhBEi7aky
-         MVD0SZss3QNueqp3JAgIZBkjpv9Mlg21HHXp3RDi8She77KOskAPOUGDS99JQdGdZK33
-         +Df5fHJ+D28w4jP11aB0i1mOawhNN8y8GR1iyxvH0f4/zRi82dxvQ0W5ORgTLjS+nl6z
-         VU16rHdbUP8wvXOVuWESUOFB97VvdGML0WOHPmye1M6DnigMUmgM0X4y7UcRAClntLD0
-         kOiTTlcrSVbwX23u5zXInFg28diHmw5aQe1YtmcM3lMgYP+n1FhxQ7ONFsQ3JKz0Nuyf
-         SeQA==
-X-Gm-Message-State: AOAM531tCkEsnqpkmnQMQBIlAvTnNeoyyNODchOaKZuuLBAUNaOpYn59
-        rPg9V/NRluzT82908it8AkS9G2aGv6JQlY97oACiowRv
-X-Google-Smtp-Source: ABdhPJwZG5HdKsDLU1eNgRB+843KErY7M7wZ/Yvr087j5kazZZddpcsFvIfTlJuYPoieaA7sk/fHxcA8AE5VdMq6n9E=
-X-Received: by 2002:aca:6009:: with SMTP id u9mr1497495oib.71.1633195116215;
- Sat, 02 Oct 2021 10:18:36 -0700 (PDT)
+        Sat, 2 Oct 2021 13:22:46 -0400
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AB94820B4843;
+        Sat,  2 Oct 2021 10:21:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AB94820B4843
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1633195260;
+        bh=pWCqFFkYasORJJMiOzE5VQLaiyHxduAqYZzlCIytLqQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LyKrWMc38OVWl2j9tIYxU3ZFOduqLihYwvTtN171qiIhb3+T9MTX0va4g/YVFU62x
+         XHX/SCETWaXXuR9pGbnaHiejpw9tyr1vCA5lpM5q7KyOAUE5ovJjUjvCHFheHtzO6d
+         w2HUr0aShPeR9dZOpCNqrEpn531swZTi1scougEw=
+Received: by mail-pg1-f174.google.com with SMTP id m21so12420505pgu.13;
+        Sat, 02 Oct 2021 10:21:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531Ex9cSTd1a8iAhTIp5KzO6PMIMXBR5d5JXofCXn0uoCXNkt86J
+        SeFtl2LvKyl48L5uf1/rppQM+CcxQrSrxu3enE8=
+X-Google-Smtp-Source: ABdhPJwRgcg38SDaLtejzUC7b3vUQaLoXhosdn0Luf4+osGEZjiBK/kt73FsWwkr6Ivx47XCMUrE42724JxbuCOWnTQ=
+X-Received: by 2002:a65:528a:: with SMTP id y10mr3603950pgp.103.1633195260173;
+ Sat, 02 Oct 2021 10:21:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com> <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com>
-In-Reply-To: <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Sat, 2 Oct 2021 22:48:24 +0530
-Message-ID: <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>
+References: <20210929172234.31620-1-mcroce@linux.microsoft.com>
+ <20210929172234.31620-2-mcroce@linux.microsoft.com> <20211001112354.GA10720@duo.ucw.cz>
+In-Reply-To: <20211001112354.GA10720@duo.ucw.cz>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sat, 2 Oct 2021 19:20:24 +0200
+X-Gmail-Original-Message-ID: <CAFnufp3uD7Wx=TnHYFaHBCy3mQu08zvv2NO=dws=tOMkKTpKCA@mail.gmail.com>
+Message-ID: <CAFnufp3uD7Wx=TnHYFaHBCy3mQu08zvv2NO=dws=tOMkKTpKCA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] riscv: optimized memcpy
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Lu for the reply.
-
+On Fri, Oct 1, 2021 at 1:23 PM Pavel Machek <pavel@ucw.cz> wrote:
 >
-> Isn't the domain should be switched from a default domain to an
-> unmanaged domain when the device is assigned to the guest?
+> Hi!
 >
-> Even you want to r-setup the same mappings, you need to un-map all
-> existing mappings, right?
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > Write a C version of memcpy() which uses the biggest data size allowed,
+> > without generating unaligned accesses.
+> >
+> > The procedure is made of three steps:
+> > First copy data one byte at time until the destination buffer is aligned
+> > to a long boundary.
+> > Then copy the data one long at time shifting the current and the next u8
+> > to compose a long at every cycle.
+> > Finally, copy the remainder one byte at time.
+> >
+> > On a BeagleV, the TCP RX throughput increased by 45%:
+> >
+> > before:
+> >
+> > $ iperf3 -c beaglev
+> > Connecting to host beaglev, port 5201
+> > [  5] local 192.168.85.6 port 44840 connected to 192.168.85.48 port 5201
+> > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+> > [  5]   0.00-1.00   sec  76.4 MBytes   641 Mbits/sec   27    624 KBytes
+> > [  5]   1.00-2.00   sec  72.5 MBytes   608 Mbits/sec    0    708 KBytes
+> >
+> > after:
+> >
+> > $ iperf3 -c beaglev
+> > Connecting to host beaglev, port 5201
+> > [  5] local 192.168.85.6 port 44864 connected to 192.168.85.48 port 5201
+> > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+> > [  5]   0.00-1.00   sec   109 MBytes   912 Mbits/sec   48    559 KBytes
+> > [  5]   1.00-2.00   sec   108 MBytes   902 Mbits/sec    0    690
+> > KBytes
+>
+> That's really quite cool. Could you see if it is your "optimized
+> unaligned" copy doing the difference?>
+>
+> +/* convenience union to avoid cast between different pointer types */
+> > +union types {
+> > +     u8 *as_u8;
+> > +     unsigned long *as_ulong;
+> > +     uintptr_t as_uptr;
+> > +};
+> > +
+> > +union const_types {
+> > +     const u8 *as_u8;
+> > +     unsigned long *as_ulong;
+> > +     uintptr_t as_uptr;
+> > +};
+>
+> Missing consts here?
+>
+> Plus... this is really "interesting" coding style. I'd just use casts
+> in kernel.
 >
 
-Hmm, I guess that's a (design) decision the KVM/QEMU/VFIO communities
-need to take.
-May be the patch could suppress the flooding till then?
+Yes, the one for as_ulong is missing.
 
+By using casts I had to use too many of them, making repeated
+assignments in every function.
+This is basically the same, with less code :)
 
-
-Thanks and Regards,
-Ajay
+Cheers,
+-- 
+per aspera ad upstream
