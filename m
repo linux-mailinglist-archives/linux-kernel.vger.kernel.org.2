@@ -2,129 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD40C41FCED
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1083B41FCEB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhJBQFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 12:05:11 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57036 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbhJBQFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 12:05:10 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id BB6DF1F4418A
-Received: by earth.universe (Postfix, from userid 1000)
-        id 7764F3C0CA8; Sat,  2 Oct 2021 18:03:20 +0200 (CEST)
-Date:   Sat, 2 Oct 2021 18:03:20 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] power: supply: cpcap-battery: use
- device_get_match_data() to simplify code
-Message-ID: <20211002160320.24clt5v2nevynuco@earth.universe>
-References: <20210928020623.21192-1-tangbin@cmss.chinamobile.com>
+        id S233545AbhJBQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 12:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232575AbhJBQDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 12:03:51 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0C5861A3A;
+        Sat,  2 Oct 2021 16:02:04 +0000 (UTC)
+Date:   Sat, 2 Oct 2021 17:06:01 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH] iio: adc: nau7802: convert probe to full device-managed
+Message-ID: <20211002170601.2a37a8a0@jic23-huawei>
+In-Reply-To: <YVYz+rY9euHC4lb4@piout.net>
+References: <20210926154932.3287590-1-aardelean@deviqon.com>
+        <20210930171023.2bf5a414@jic23-huawei>
+        <YVYz+rY9euHC4lb4@piout.net>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p5fpuwijhyki46dm"
-Content-Disposition: inline
-In-Reply-To: <20210928020623.21192-1-tangbin@cmss.chinamobile.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 1 Oct 2021 00:02:34 +0200
+Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
 
---p5fpuwijhyki46dm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 30/09/2021 17:10:23+0100, Jonathan Cameron wrote:
+> > On Sun, 26 Sep 2021 18:49:32 +0300
+> > Alexandru Ardelean <aardelean@deviqon.com> wrote:
+> >   
+> > > This is a trivial conversion to device-managed functions.
+> > > The mutex_destroy() calls are redundant, as the data will be free'd anyway.
+> > > 
+> > > And the IRQ and IIO register functions both have device-managed
+> > > equivalents.
+> > > 
+> > > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>  
+> > 
+> > +CC Maxime and Alexandre.
+> > 
+> > Looks simple enough to me that I won't wait on their replies to queue it up.
+> > Obviously feedback welcome though!
+> > 
+> > Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+> > to see if it can find stuff we missed.
+> >   
+> 
+> This seems good to me too
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Great. Added tag.
 
-Hi,
+Thanks,
 
-On Tue, Sep 28, 2021 at 10:06:23AM +0800, Tang Bin wrote:
-> In the function cpcap_battery_probe(), the driver only needs the
-> data object, so use device_get_match_data() instead, to make the
-> code cleaner.
->=20
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
+Jonathan
+> 
+> > Thanks,
+> > 
+> > Jonathan
+> > 
+> >   
+> > > ---
+> > >  drivers/iio/adc/nau7802.c | 50 +++++++--------------------------------
+> > >  1 file changed, 9 insertions(+), 41 deletions(-)
+> > > 
+> > > diff --git a/drivers/iio/adc/nau7802.c b/drivers/iio/adc/nau7802.c
+> > > index bb70b51d25b1..976c235f3079 100644
+> > > --- a/drivers/iio/adc/nau7802.c
+> > > +++ b/drivers/iio/adc/nau7802.c
+> > > @@ -428,8 +428,6 @@ static int nau7802_probe(struct i2c_client *client,
+> > >  
+> > >  	st = iio_priv(indio_dev);
+> > >  
+> > > -	i2c_set_clientdata(client, indio_dev);
+> > > -
+> > >  	indio_dev->name = dev_name(&client->dev);
+> > >  	indio_dev->modes = INDIO_DIRECT_MODE;
+> > >  	indio_dev->info = &nau7802_info;
+> > > @@ -495,13 +493,13 @@ static int nau7802_probe(struct i2c_client *client,
+> > >  	 * will enable them back when we will need them..
+> > >  	 */
+> > >  	if (client->irq) {
+> > > -		ret = request_threaded_irq(client->irq,
+> > > -				NULL,
+> > > -				nau7802_eoc_trigger,
+> > > -				IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
+> > > -				IRQF_NO_AUTOEN,
+> > > -				client->dev.driver->name,
+> > > -				indio_dev);
+> > > +		ret = devm_request_threaded_irq(&client->dev, client->irq,
+> > > +						NULL,
+> > > +						nau7802_eoc_trigger,
+> > > +						IRQF_TRIGGER_HIGH | IRQF_ONESHOT |
+> > > +						IRQF_NO_AUTOEN,
+> > > +						client->dev.driver->name,
+> > > +						indio_dev);
+> > >  		if (ret) {
+> > >  			/*
+> > >  			 * What may happen here is that our IRQ controller is
+> > > @@ -526,7 +524,7 @@ static int nau7802_probe(struct i2c_client *client,
+> > >  		ret = i2c_smbus_write_byte_data(st->client, NAU7802_REG_CTRL2,
+> > >  					  NAU7802_CTRL2_CRS(st->sample_rate));
+> > >  		if (ret)
+> > > -			goto error_free_irq;
+> > > +			return ret;
+> > >  	}
+> > >  
+> > >  	/* Setup the ADC channels available on the board */
+> > > @@ -536,36 +534,7 @@ static int nau7802_probe(struct i2c_client *client,
+> > >  	mutex_init(&st->lock);
+> > >  	mutex_init(&st->data_lock);
+> > >  
+> > > -	ret = iio_device_register(indio_dev);
+> > > -	if (ret < 0) {
+> > > -		dev_err(&client->dev, "Couldn't register the device.\n");
+> > > -		goto error_device_register;
+> > > -	}
+> > > -
+> > > -	return 0;
+> > > -
+> > > -error_device_register:
+> > > -	mutex_destroy(&st->lock);
+> > > -	mutex_destroy(&st->data_lock);
+> > > -error_free_irq:
+> > > -	if (client->irq)
+> > > -		free_irq(client->irq, indio_dev);
+> > > -
+> > > -	return ret;
+> > > -}
+> > > -
+> > > -static int nau7802_remove(struct i2c_client *client)
+> > > -{
+> > > -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> > > -	struct nau7802_state *st = iio_priv(indio_dev);
+> > > -
+> > > -	iio_device_unregister(indio_dev);
+> > > -	mutex_destroy(&st->lock);
+> > > -	mutex_destroy(&st->data_lock);
+> > > -	if (client->irq)
+> > > -		free_irq(client->irq, indio_dev);
+> > > -
+> > > -	return 0;
+> > > +	return devm_iio_device_register(&client->dev, indio_dev);
+> > >  }
+> > >  
+> > >  static const struct i2c_device_id nau7802_i2c_id[] = {
+> > > @@ -582,7 +551,6 @@ MODULE_DEVICE_TABLE(of, nau7802_dt_ids);
+> > >  
+> > >  static struct i2c_driver nau7802_driver = {
+> > >  	.probe = nau7802_probe,
+> > > -	.remove = nau7802_remove,
+> > >  	.id_table = nau7802_i2c_id,
+> > >  	.driver = {
+> > >  		   .name = "nau7802",  
+> >   
+> 
 
-Thanks, queued.
-
--- Sebastian
-
-> Changes from v1
->  - change the title and commit message.
->  - change the code to use other api to make code simple.
-> ---
->  drivers/power/supply/cpcap-battery.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/=
-cpcap-battery.c
-> index 8d62d4241..18e3ff0e1 100644
-> --- a/drivers/power/supply/cpcap-battery.c
-> +++ b/drivers/power/supply/cpcap-battery.c
-> @@ -1026,20 +1026,13 @@ static const struct power_supply_desc cpcap_charg=
-er_battery_desc =3D {
->  static int cpcap_battery_probe(struct platform_device *pdev)
->  {
->  	struct cpcap_battery_ddata *ddata;
-> -	const struct of_device_id *match;
->  	struct power_supply_config psy_cfg =3D {};
->  	int error;
-> +	const struct cpcap_battery_config *cfg;
-> =20
-> -	match =3D of_match_device(of_match_ptr(cpcap_battery_id_table),
-> -				&pdev->dev);
-> -	if (!match)
-> -		return -EINVAL;
-> -
-> -	if (!match->data) {
-> -		dev_err(&pdev->dev, "no configuration data found\n");
-> -
-> +	cfg =3D device_get_match_data(&pdev->dev);
-> +	if (!cfg)
->  		return -ENODEV;
-> -	}
-> =20
->  	ddata =3D devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
->  	if (!ddata)
-> @@ -1047,7 +1040,7 @@ static int cpcap_battery_probe(struct platform_devi=
-ce *pdev)
-> =20
->  	INIT_LIST_HEAD(&ddata->irq_list);
->  	ddata->dev =3D &pdev->dev;
-> -	memcpy(&ddata->config, match->data, sizeof(ddata->config));
-> +	memcpy(&ddata->config, cfg, sizeof(ddata->config));
-> =20
->  	ddata->reg =3D dev_get_regmap(ddata->dev->parent, NULL);
->  	if (!ddata->reg)
-> --=20
-> 2.20.1.windows.1
->=20
->=20
->=20
-
---p5fpuwijhyki46dm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFYgsgACgkQ2O7X88g7
-+pqV+A/+IWRbLr8ueUYq5cmxH1A/cnfQhibQuHCWDfQ7mZDld82vBzvi7xQ4MciH
-x5goyvXWZLX3ZB336fEoqZAwi7ve1PxB5s4NCFG08+adh4hxi+//yd+DslImSsbt
-oE3srIc3AiFArJ853omaUZp3hh4C0FmuXJP867LlMz+I4TUoDumF4wdBaVm+bwtQ
-tHPA7TrRl4wcgLI+p6BklVhIBDnZAnBMV2ypUiaJZLMLGLrnJ7XJ2jTWbPTrIqLf
-KEeHpJ1Rx4q3CR7FtgdpS7Haj01+9GoLd7IFCT5yQQsM83vCMxTpOxK0icCiK/e+
-dI9l/hHfvJoTqoB1WLUG37oSS6A+suta0+ebkL0Xne0IaZSrAJgKtt6jgFtmiGWX
-i1tdNgpAQ1hsB8nwvkFGseL8tE9JGJFZEBFrUQIihBAynuOnqg1bGMcBJeWK7ppF
-UWWdko6Y7yDWQeCTQQfKqbY+oDxFJOJ4C3+L7o9T8SDRchAvh/fN3UpaGTrytkQx
-7FmtuQ0u/FSu5x3vvab9zjtEJO9gyNxDBEZl7C2wTkE/erS9GaTJ33+4OR0dT674
-Wnle0DZWfTGLwF3wiLCJOJYrFr3438b7RpmhseIoHIB/h+cgI69kYoede4w+Jjo6
-bTn7dyFgHYrGDaCajGQbttOEF5nxcBp76fAsVF/JaVv9vrOi4L4=
-=lVLE
------END PGP SIGNATURE-----
-
---p5fpuwijhyki46dm--
