@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE041F8A5
+	by mail.lfdr.de (Postfix) with ESMTP id 6429541F8A6
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhJBAS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:18:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56588 "EHLO mail.kernel.org"
+        id S232481AbhJBATD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232508AbhJBASy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:18:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD4261A38;
-        Sat,  2 Oct 2021 00:17:08 +0000 (UTC)
+        id S232549AbhJBAS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:18:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C8561A50;
+        Sat,  2 Oct 2021 00:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633133829;
-        bh=VAVHnoUfr1vHRk1CPnvhgVB1qv+vlUJG4BZ/csbPNkE=;
+        s=k20201202; t=1633133831;
+        bh=kcJKuC0wkvfILqJ9qCwz2Ct/sDna6hfeZwqpy5GIkao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pkf6hRKvY5FWkI3Rtxyro/ALYWAw3LcLBdP7tAGoxaDHhGlmHGpfa1vRUQ6e0E3sX
-         0bQ8RW7Ss6NRTW425fZb7tj0V/xlxZ6/Z/VRcvs6DKm+RctHFGKGxK+kSotlDd0zcS
-         4Glo9NlX5s15PT3gSlbxV3rRCBzgHAVccLBSiipBgZ0X6vuXq12ystMaU+8SOoK8dJ
-         j7luMQ2I9vHSFv64D2fAwiv4GLtDXZHLc1FxzNs6Fp0gZ1vckJxDgM0+n0A//GOKCX
-         pNiH1Ml6jzYicXweoZMPEDdlL3t1PLojI6qa+u0GV/7NTnfuJUpJVezm4DQjfsjTZK
-         msAU5Dmfu1A7g==
+        b=hIYJ7rVWkNABVcCbGiHIsO+b18+sNtUvD/mG8R7uv9KMIdo9ntAw+DW5vJlNBaIBZ
+         KZtCyzdd4AQBG9Sa/OHPAnPdZ/wycdqi+XNwgBdvBn4wQG7Bwt9exO5qs52pJd45D1
+         1pPYvbmzR6b9R0Y3WAOGq76kFQnIp57D3JZZLEfNcUiEGZSLBxLai3+oCAfWT82OOY
+         d5uDt+NQv/SGN2hwSDtzzLMtNJLhhnacxNmGkCh0CkbM74TZ8NDIWNzXtckzE86zSS
+         IP7HNe2E7Ox07Sf/MYQbUPKI6LKvaydplKZvRaUhnZX7AVjdCs6BznzLdFqAMaOuAW
+         UAY0Chk4DRLTg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Simon Trimmer <simont@opensource.cirrus.com>
+To:     festevam@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+        perex@perex.cz, timur@kernel.org, Xiubo.Lee@gmail.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH] ASoC: soc-component: Remove conditional definition of debugfs data members
-Date:   Sat,  2 Oct 2021 01:16:33 +0100
-Message-Id: <163313339122.45396.9113357063584478110.b4-ty@kernel.org>
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ASoC: fsl_spdif: implement bypass mode from in to out
+Date:   Sat,  2 Oct 2021 01:16:34 +0100
+Message-Id: <163313339132.45396.13488907784155100500.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210930142116.528878-1-simont@opensource.cirrus.com>
-References: <20210930142116.528878-1-simont@opensource.cirrus.com>
+In-Reply-To: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,13 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 15:21:16 +0100, Simon Trimmer wrote:
-> This simplification allows the use of the standard kernel pattern of
-> static inline dummy functions for debugfs code. Most systems will only
-> have a small number of snd_soc_components so the memory impact is
-> minimal.
+On Sun, 26 Sep 2021 17:49:20 +0800, Shengjiu Wang wrote:
+> From: Viorel Suman <viorel.suman@nxp.com>
 > 
+> Implement SPDIF bypass mode. It implies internal SoC
+> routing of SPDIF input signal to SPDIF output signal. The
+> test bed requires two boards: B1 configured in bypass mode,
+> and B2 to feed B1 SPDIF RX port and read B1 SPDIF TX port:
+>    B2 TX -> B1 RX,
+>    B2 RX <- B1 TX.
+> The test procedure:
+>  a) Boot both boards
+>  b) B2: start "arecord <spdifcard> -r 48kHz | aplay <local DAC>"
+>  c) B2: start "aplay <spdifcard> -r 48kHz <2ch 48kHz audio file>"
+>  d) B1: enable bypass mode:
+> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' on
+>  e) B2: check DAC audio, make sure the same sample rate is used at
+> 	steps b) and c), in example above the rate is 48kHz.
+>  f) B1: try to run "aplay" or "arecord" on imxspdif card while in
+> 	bypass mode - both must fail until bypass mode is disabled
+>  g) B1: disable bypass mode:
+> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' off
+>  h) B1: check the usual playback and capture on imxspdif card.
+> 	During this test try to set bypass mode - must not be allowed
+> 	while playback or capture is running.
 > 
+> [...]
 
 Applied to
 
@@ -54,8 +75,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-component: Remove conditional definition of debugfs data members
-      commit: 0a43c152ed0666dc837009bae031b898ced95e5b
+[1/1] ASoC: fsl_spdif: implement bypass mode from in to out
+      commit: 83bea088f976a289bc2efe4e404af47ab79d6639
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
