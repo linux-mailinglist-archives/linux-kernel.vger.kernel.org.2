@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9758D41FEA5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700BC41FEAC
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhJBX3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S234203AbhJBXhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhJBX3x (ORCPT
+        with ESMTP id S234050AbhJBXhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:29:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4094CC061714;
-        Sat,  2 Oct 2021 16:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Ra/JlvMS1JTAccs5WeqBxECVBNLxUjnfS6eMMFq8SR4=; b=IoeFNrRPbNrh8XclSVUdSdSOzX
-        KJR0ulX65E26sPA/oghxIxvU9PNKGpal9vdRcuv9Liq+1AB1KIOalEkNZtIjdgAtqQzMlNxMaoL/h
-        Q/Uu7EX7xmRMYi36woWli6gILqsvpu7i6a0GLtT57xWhXm6aXmeVggFK0dOJiWP0UZBGheY2m+LIS
-        8ryWDwFL+2/ilyUP4SxO2AHKCxbDn59vrgbfK1MG7wOZI41y0pWjENsI8giY+LkQ1WNEyinfI9Xcg
-        27s/UgU3gPkgRIGAbggfqDj2E5tGaocCvdu9sGmwYEWah1PQQ5zBGUK8uMs85ym/nFSSHe0ozwi2d
-        FJySkGlA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWoQG-002tT3-HK; Sat, 02 Oct 2021 23:28:04 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH -next] iio: chemical: SENSEAIR_SUNRISE_CO2 depends on I2C
-Date:   Sat,  2 Oct 2021 16:28:03 -0700
-Message-Id: <20211002232803.5108-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 2 Oct 2021 19:37:36 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4E7C061714;
+        Sat,  2 Oct 2021 16:35:47 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id m14-20020a05600c3b0e00b0030d4dffd04fso4227116wms.3;
+        Sat, 02 Oct 2021 16:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vJLRmXvXpDieM9p4IfNVMQWSXUi92X3nPkKdYWz2iRk=;
+        b=dqFnPfjdfHWAMnleVoj0KScKX7p6/vhlBE0vXQN+6NwMhtmaEv42mDcebtV3Ndu/S3
+         9pPGZ6WfSTA2JPmzncn9GHuxu6Yz2bq28ZlAWZrWo43lQx9GBGjrpE3crdMAqa/zu44P
+         1S/JGe18EUfEY5fMzJOeX2Qpfs2ylzPOOJ74x4zogblZcp6GBKDrikJHNSDum9nqnROC
+         HMV6dsBbMZ04RN445ChK04TwuAs0squOIhJxHRnuW95EIQ4VYdZS1vLm4jWFLaAWqluW
+         8evW1OWhU6fm0sAQVvx//7a47psS/mPs4C2di/N1fcz8Wi+MMSIBQYFJlQv5rLxYMCA8
+         JwzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vJLRmXvXpDieM9p4IfNVMQWSXUi92X3nPkKdYWz2iRk=;
+        b=NJwqR64c8V7/tsI6r7dL5SRMLP3sRFfXx/3zFrRZUR7G+5lGsqNOQN6xVRvh6LCD/D
+         NvY3gZ5itwTCPsVGWljBRIAJ6BONWB6AFNoSl45SAfDIYR21eso1oBdinrijxHlk5umN
+         nNreEpXbd8owapjPY1+4X2oyQxa6H9IeSDIzavI2P/nkDdnOJ2ZQj9tWKhxZxfc1g6Vu
+         ED9OQZCywmXlsAOGxy0sr4yc2DC+SEdjxvNPF0IuAxizNqia3N9tStmZIMrQL1ce2Jqm
+         voWIlN4pYXXbvzZCmdsoRhxRzuiO5apmADlcGmqywiBO2e3pHIdPvx3acZZpQDY0dN0f
+         YzRQ==
+X-Gm-Message-State: AOAM530+85VbOQJCVLCGEdX/R5zW5Zt99RGl5T2Qn4VW7pZKeJrzM80/
+        bL1MITvoG5fuFOlC+PqVT7YvdoFLUm8=
+X-Google-Smtp-Source: ABdhPJxqno/bpAL3KvAxFuikauLNUkQ2rUI2693qHcvKv693EkSXRaxLRuM/BKXaUwl+PCc9NCxDgQ==
+X-Received: by 2002:a7b:c0da:: with SMTP id s26mr11144158wmh.58.1633217746229;
+        Sat, 02 Oct 2021 16:35:46 -0700 (PDT)
+Received: from localhost.localdomain (94-29-54-195.dynamic.spd-mgts.ru. [94.29.54.195])
+        by smtp.gmail.com with ESMTPSA id r2sm10487089wmq.28.2021.10.02.16.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 16:35:45 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/5] Improvements for TC358768 DSI bridge driver
+Date:   Sun,  3 Oct 2021 02:34:42 +0300
+Message-Id: <20211002233447.1105-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kconfig symbol dependency warning:
+This series adds couple improvements to the TC358768 DSI bridge driver,
+enabling Panasonic VVX10F004B00 DSI panel support. This panel is used by
+ASUS Transformer TF700T tablet, which is ready for upstream kernel and
+display panel support is the biggest missing part.
 
-WARNING: unmet direct dependencies detected for REGMAP_I2C
-  Depends on [n]: I2C [=n]
-  Selected by [y]:
-  - SENSEAIR_SUNRISE_CO2 [=y] && IIO [=y]
+Dmitry Osipenko (5):
+  drm/bridge: tc358768: Enable reference clock
+  drm/bridge: tc358768: Support pulse mode
+  drm/bridge: tc358768: Calculate video start delay
+  drm/bridge: tc358768: Disable non-continuous clock mode
+  drm/bridge: tc358768: Correct BTACNTRL1 programming
 
-Fixes: c3253a3fdc77 ("iio: chemical: Add Senseair Sunrise 006-0-007 drive")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jacopo Mondi <jacopo@jmondi.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-iio@vger.kernel.org
----
- drivers/iio/chemical/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/bridge/tc358768.c | 94 +++++++++++++++++++++++--------
+ 1 file changed, 71 insertions(+), 23 deletions(-)
 
---- linux-next-20211001.orig/drivers/iio/chemical/Kconfig
-+++ linux-next-20211001/drivers/iio/chemical/Kconfig
-@@ -172,6 +172,7 @@ config SPS30_SERIAL
- 
- config SENSEAIR_SUNRISE_CO2
- 	tristate "Senseair Sunrise 006-0-0007 CO2 sensor"
-+	depends on I2C
- 	select REGMAP_I2C
- 	help
- 	  Say yes here to build support for Senseair Sunrise 006-0-0007 CO2
+-- 
+2.32.0
+
