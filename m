@@ -2,154 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C848641FB9A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E4F41FBA6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhJBMJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 08:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhJBMJh (ORCPT
+        id S233054AbhJBMLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 08:11:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232972AbhJBMLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:09:37 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4430DC061570;
-        Sat,  2 Oct 2021 05:07:52 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 24so15076445oix.0;
-        Sat, 02 Oct 2021 05:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8JCAOEDCDvSDxOuC8dv7CM9Hr45vp3pb26n1zICiHhk=;
-        b=JhMj45rKQ3KHwoJbfnTKdwBWYKlRY7BJ8znyPiSoHDqPWAvenTPjRCsqryE/HwyNvg
-         NpFppJRUiFDZpgMxUj/s/7ccRHNq/wZ77hgX3YBNzJ+Hya/GTfSHFoE4i32+JtsyknVN
-         BtEhS8Ud6o4GY9kgvx+eEy4txh79bs31CZPqUNhZO+PTYkBIBxPiUgFj+3w+8GSZTxtN
-         Ly+wwRzKfnev2vNiY43U3yhP7hn9MB6oGMwCGhvRq2PVZNBs4JGoYrVfBSznBKfwF5Lo
-         XUaRFndRra5HHKQR7to2NCTfgzMI1l+V8v1m0V6G/mHc7fgA/7uBp+hHExrnbzBOkwhp
-         5t9w==
+        Sat, 2 Oct 2021 08:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633176569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/l7+0a5Dc1Aijj3yF6yBWlmwwsTZcgNOfg/nDpXLfXA=;
+        b=iT70Z/iaaZ9jcC6c2p8hlrFqyNdD1IPuqjf571SX6IHmHEp+UY/QjKgP3ea/MFe3bPR+2v
+        uMaB86r+kM/1pCZzySGl/uh8Z2szgkNlFKermdC5KXRZRnkH9OvsgGgqzZQNY8ioEwX2S1
+        OjtKVskFB5bq67QLlkV5Rwn0brJm+4U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-njYbHzRpO7W8VXV3TN95IA-1; Sat, 02 Oct 2021 08:09:26 -0400
+X-MC-Unique: njYbHzRpO7W8VXV3TN95IA-1
+Received: by mail-wm1-f72.google.com with SMTP id y142-20020a1c7d94000000b0030cdc76dedeso7296937wmc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 05:09:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=8JCAOEDCDvSDxOuC8dv7CM9Hr45vp3pb26n1zICiHhk=;
-        b=mLKBsMJv8hv4uYxrYSw27K2QOnPDihM9tz1SjXcsfkezHVOQE2KuRte0tOdFH5Nh3T
-         AwYLlQeQEFB5vrolK7op5LRmc8CBWzYRapNsCxeLt6VZ1LG3gLduOvzos1ZuSHlfvx8q
-         NFXZlxUwKj1z2M3u7UILefNr2bA4VpXFc84V3Xj9zV7At1fGjsQAuUTd4s6EHj4WOu9/
-         ht0Cl6vwBwpc/BaWdlk+yICEnXUxjMgagtS7P6IRyH4hR6WUQX20S5xkQZMBwVGhD3cV
-         mO74dYyKKI+ACnw/o9E3SptTmLgvSRtJerdUHwxR7XaevnlfBj78aRPMHAOf5zW9IBHN
-         s6fQ==
-X-Gm-Message-State: AOAM531R6gsU8n9m5M2WXNYhcg82wB4oLJ6pez9MX3Fb6OH2eXs3Cnvg
-        nh73Gcf3QmR8/6t/4NDoxlk=
-X-Google-Smtp-Source: ABdhPJx9fqjMqOpD0PKrtGYvt5awtYJiPBEJhaw7v3FGekmkvut9XsrW9unDm/MJZb/yRvjTz+n8tQ==
-X-Received: by 2002:a05:6808:256:: with SMTP id m22mr7492951oie.150.1633176471605;
-        Sat, 02 Oct 2021 05:07:51 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k3sm799009otn.16.2021.10.02.05.07.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/l7+0a5Dc1Aijj3yF6yBWlmwwsTZcgNOfg/nDpXLfXA=;
+        b=BTlh4t6vH6x+uCVhew/ChpG5MPflif7XRbM1YyndEMR3PM6aUm0j1xLr6Bb9hhNq3A
+         j5/AqK7S15M5RQwT48sph5m8hI/7lpNw+KIjem/5anD+uN7a9HGv9SCvf8jT0fSGjxHr
+         NNL8gQHwhOM2kMQfbiRYppZ3CDRHdOAda2MQZ8sMpn2hrW2rLrCaTS8syFMTnefNtRCT
+         +vPDMeH2HOBq0bt+ZU7RSLxBXTjhacvdZp9deXRlBC29sY0tflqpiQNWqvJThpOi57xq
+         uHHHlGnTn2XH5nNBhStnE7/Xo4wdUJzR98j+pBvIx6HsmOXw2/K72UWdVnwqwP1xVO2j
+         22WQ==
+X-Gm-Message-State: AOAM532+CtMkT77BII9y+S4Sn8rmvN3Bkyrh/3SbnTGJAzryRNG60edR
+        NlkEpSvjAL3CotKj8gwrCVGeRJrj0R/uEIAp0CPNAttLI/LR4nN6btYB0I88lbPmfE/tr/v8eDF
+        1ROMUJhrD2Tz1wW0kFOZ3dO9H
+X-Received: by 2002:adf:a501:: with SMTP id i1mr3165428wrb.184.1633176565071;
+        Sat, 02 Oct 2021 05:09:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw38kfx3fxrscY8VHyOvNaEHcZggBOMmzmqc53e9zPq8Vw2+DVJj5c2u+5vTedBvpWiBw0D+A==
+X-Received: by 2002:adf:a501:: with SMTP id i1mr3165397wrb.184.1633176564766;
+        Sat, 02 Oct 2021 05:09:24 -0700 (PDT)
+Received: from redhat.com ([2.55.22.213])
+        by smtp.gmail.com with ESMTPSA id c9sm11040352wmb.41.2021.10.02.05.09.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 05:07:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 2 Oct 2021 05:07:49 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Marc Hulsman <m.hulsman@tudelft.nl>,
-        Rudolf Marek <r.marek@assembler.cz>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH v2 1/3] hwmon: (w83791d) Fix NULL pointer dereference by
- removing unnecessary structure field
-Message-ID: <20211002120749.GA2021669@roeck-us.net>
-References: <20210811181844.GB3138792@roeck-us.net>
- <20210921155153.28098-1-lutovinova@ispras.ru>
+        Sat, 02 Oct 2021 05:09:24 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 08:09:20 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211002062331-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <87r1d64dl4.fsf@redhat.com>
+ <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+ <87ilyi47wn.fsf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921155153.28098-1-lutovinova@ispras.ru>
+In-Reply-To: <87ilyi47wn.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 06:51:51PM +0300, Nadezda Lutovinova wrote:
-> If driver read val value sufficient for 
-> (val & 0x08) && (!(val & 0x80)) && ((val & 0x7) == ((val >> 4) & 0x7))
-> from device then Null pointer dereference occurs. 
-> (It is possible if tmp = 0b0xyz1xyz, where same literals mean same numbers)
-> Also lm75[] does not serve a purpose anymore after switching to
-> devm_i2c_new_dummy_device() in w83791d_detect_subclients().
+On Thu, Sep 30, 2021 at 01:31:04PM +0200, Cornelia Huck wrote:
+> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 > 
-> The patch fixes possible NULL pointer dereference by removing lm75[].
+> > On Thu, 30 Sep 2021 11:28:23 +0200
+> > Cornelia Huck <cohuck@redhat.com> wrote:
+> >
+> >> On Thu, Sep 30 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+> >> 
+> >> > This patch fixes a regression introduced by commit 82e89ea077b9
+> >> > ("virtio-blk: Add validation for block size in config space") and
+> >> > enables similar checks in verify() on big endian platforms.
+> >> >
+> >> > The problem with checking multi-byte config fields in the verify
+> >> > callback, on big endian platforms, and with a possibly transitional
+> >> > device is the following. The verify() callback is called between
+> >> > config->get_features() and virtio_finalize_features(). That we have a
+> >> > device that offered F_VERSION_1 then we have the following options
+> >> > either the device is transitional, and then it has to present the legacy
+> >> > interface, i.e. a big endian config space until F_VERSION_1 is
+> >> > negotiated, or we have a non-transitional device, which makes
+> >> > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+> >> > thus presents a little endian config space. Because at this point we
+> >> > can't know if the device is transitional or non-transitional, we can't
+> >> > know do we need to byte swap or not.
+> >> >
+> >> > The virtio spec explicitly states that the driver MAY read config
+> >> > between reading and writing the features so saying that first accessing
+> >> > the config before feature negotiation is done is not an option. The
+> >> > specification ain't clear about setting the features multiple times
+> >> > before FEATURES_OK, so I guess that should be fine.
+> >> >
+> >> > I don't consider this patch super clean, but frankly I don't think we
+> >> > have a ton of options. Another option that may or man not be cleaner,
+> >> > but is also IMHO much uglier is to figure out whether the device is
+> >> > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+> >> > according tho what we have figured out, hoping that the characteristics
+> >> > of the device didn't change.
+> >> >
+> >> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> >> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> >> > Reported-by: markver@us.ibm.com
+> >> > ---
+> >> >  drivers/virtio/virtio.c | 4 ++++
+> >> >  1 file changed, 4 insertions(+)
+> >> >
+> >> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> >> > index 0a5b54034d4b..9dc3cfa17b1c 100644
+> >> > --- a/drivers/virtio/virtio.c
+> >> > +++ b/drivers/virtio/virtio.c
+> >> > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
+> >> >  		if (device_features & (1ULL << i))
+> >> >  			__virtio_set_bit(dev, i);
+> >> >  
+> >> > +	/* Write back features before validate to know endianness */
+> >> > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+> >> > +		dev->config->finalize_features(dev);  
+> >> 
+> >> This really looks like a mess :(
+> >> 
+> >> We end up calling ->finalize_features twice: once before ->validate, and
+> >> once after, that time with the complete song and dance. The first time,
+> >> we operate on one feature set; after validation, we operate on another,
+> >> and there might be interdependencies between the two (like a that a bit
+> >> is cleared because of another bit, which would not happen if validate
+> >> had a chance to clear that bit before).
+> >
+> > Basically the second set is a subset of the first set.
 > 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> I don't think that's clear.
 > 
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+> >
+> >> 
+> >> I'm not sure whether that is even a problem in the spec: while the
+> >> driver may read the config before finally accepting features
+> >
+> > I'm not sure I'm following you. Let me please qoute the specification:
+> > """
+> > 4. Read device feature bits, and write the subset of feature bits
+> > understood by the OS and driver to the device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration fields to check that it can support the device before accepting it. 
+> > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step. 
+> > """
+> > https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-930001
+> 
+> Yes, exactly, it MAY read before accepting features. How does the device
+> know whether the config space is little-endian or not?
 
-Applied, after fixing multi-line alignments.
+I think it knows simply because the spec says it's little-endian.
 
-Guenter
 
-> ---
-> v2: 
->  - split one file per patch 
->  - remove lm75[] instead of adding checking  
-> ---
->  drivers/hwmon/w83791d.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+
+> >
+> >> , it does
+> >> not really make sense to do so before a feature bit as basic as
+> >> VERSION_1 which determines the endianness has been negotiated. 
+> >
+> > Are you suggesting that ->verify() should be after
+> > virtio_finalize_features()?
 > 
-> diff --git a/drivers/hwmon/w83791d.c b/drivers/hwmon/w83791d.c
-> index 37b25a1474c4..b4eae45859c1 100644
-> --- a/drivers/hwmon/w83791d.c
-> +++ b/drivers/hwmon/w83791d.c
-> @@ -273,9 +273,6 @@ struct w83791d_data {
->  	char valid;			/* !=0 if following fields are valid */
->  	unsigned long last_updated;	/* In jiffies */
->  
-> -	/* array of 2 pointers to subclients */
-> -	struct i2c_client *lm75[2];
-> -
->  	/* volts */
->  	u8 in[NUMBER_OF_VIN];		/* Register value */
->  	u8 in_max[NUMBER_OF_VIN];	/* Register value */
-> @@ -1257,7 +1254,6 @@ static const struct attribute_group w83791d_group_fanpwm45 = {
->  static int w83791d_detect_subclients(struct i2c_client *client)
->  {
->  	struct i2c_adapter *adapter = client->adapter;
-> -	struct w83791d_data *data = i2c_get_clientdata(client);
->  	int address = client->addr;
->  	int i, id;
->  	u8 val;
-> @@ -1280,21 +1276,21 @@ static int w83791d_detect_subclients(struct i2c_client *client)
->  	}
->  
->  	val = w83791d_read(client, W83791D_REG_I2C_SUBADDR);
-> +
-> +	if (!(val & 0x88) && (val & 0x7) == ((val >> 4) & 0x7)) {
-> +		dev_err(&client->dev,
-> +			"duplicate addresses 0x%x, use force_subclient\n",
-> +				0x48 + (val & 0x7));
-> +		return -ENODEV;
-> +	}
-> +
->  	if (!(val & 0x08))
-> -		data->lm75[0] = devm_i2c_new_dummy_device(&client->dev, adapter,
-> -							  0x48 + (val & 0x7));
-> -	if (!(val & 0x80)) {
-> -		if (!IS_ERR(data->lm75[0]) &&
-> -				((val & 0x7) == ((val >> 4) & 0x7))) {
-> -			dev_err(&client->dev,
-> -				"duplicate addresses 0x%x, "
-> -				"use force_subclient\n",
-> -				data->lm75[0]->addr);
-> -			return -ENODEV;
-> -		}
-> -		data->lm75[1] = devm_i2c_new_dummy_device(&client->dev, adapter,
-> -							  0x48 + ((val >> 4) & 0x7));
-> -	}
-> +		devm_i2c_new_dummy_device(&client->dev, adapter,
-> +						0x48 + (val & 0x7));
-> +
-> +	if (!(val & 0x80))
-> +		devm_i2c_new_dummy_device(&client->dev, adapter,
-> +						0x48 + ((val >> 4) & 0x7));
->  
->  	return 0;
->  }
+> No, that would defeat the entire purpose of verify. After
+> virtio_finalize_features(), we are done with feature negotiation.
+> 
+> > Wouldn't
+> > that mean that verify() can't reject feature bits? But that is the whole
+> > point of commit 82e89ea077b9 ("virtio-blk: Add validation for block size
+> > in config space"). Do you think that the commit in question is
+> > conceptually flawed? My understanding of the verify is, that it is supposed
+> > to fence features and feature bits we can't support, e.g. because of
+> > config space things, but I may be wrong.
+> 
+> No, that commit is not really flawed on its own, I think the whole
+> procedure may be problematic.
+> 
+> >
+> > The trouble is, feature bits are not negotiated one by one, but basically all
+> > at once. I suppose, I did the next best thing to first negotiating
+> > VERSION_1.
+> 
+> We probably need to special-case VERSION_1 to move at least forward;
+> i.e. proceed as if we accepted it when reading the config space.
+> 
+> The problem is that we do not know what the device assumes when we read
+> the config space prior to setting FEATURES_OK. It may assume
+> little-endian if it offered VERSION_1, or it may not. The spec does not
+> really say what happens before feature negotiation has finished.
+
+
+So if your device is non transitional then it's LE.
+If it's transitional it exposes a legacy interface
+in addition to the modern one, and that one is guest endian.
+How does device know which interface is used?
+E.g. for PCI it's a separate address range.
+
+For ccw why not check the revision? legacy drivers use 0 for that.
+
+
+> >
+> >
+> >> For
+> >> VERSION_1, we can probably go ahead and just assume that we will accept
+> >> it if offered, but what about other (future) bits?
+> >
+> > I don't quite understand.
+> 
+> There might be other bits in the future that change how the config space
+> works. We cannot assume that any of those bits will be accepted if
+> offered; i.e. we need a special hack for VERSION_1.
+> 
+> >
+> > Anyway, how do you think we should solve this problem?
+> 
+> This is a mess. For starters, we need to think about if we should do
+> something in the spec, and if yes, what.. Then, we can probably think
+> about how to implement that properly.
+> 
+> As we have an error right now that is basically a regression, we
+> probably need a band-aid to keep going. Not sure if your patch is the
+> right approach, maybe we really need to special-case VERSION_1 (the
+> "assume we accepted it" hack mentioned above.) This will likely fix the
+> reported problem (I assume that is s390x on QEMU); do we know about
+> other VMMs? Any other big-endian architectures?
+> 
+> Anyone have any better suggestions?
+
