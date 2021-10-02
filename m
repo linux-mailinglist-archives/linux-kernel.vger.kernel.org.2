@@ -2,82 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE3841FB36
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D486D41FB39
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbhJBLu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 07:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbhJBLuz (ORCPT
+        id S232875AbhJBLvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 07:51:18 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55225 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhJBLvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 07:50:55 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4CFC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 04:49:09 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso14951271otb.11
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 04:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=eMBn4piUa5P7icXaukpkHUzeRwiwiWTIBVzdYRFqAwQ=;
-        b=cC21qCmaifBlZHFcvEARG78LO9BPX1c1foQIEO5UdxMFtrJLmWlR/cmMYDKQCWtPW6
-         B41aA9eJiEp70PTBsZ4WnK3UFGltFL4ZdMSMo3tlJFkRK6ZtsMKpl0nIyrIPpXbf6Kff
-         LwJtQDgST2u2eY8M7SyPAoj/TfzU7gfbfRuISVcz3vYIL5mcNlDQGK5r7VQQ9rg8zGIE
-         gUYI65sqqyqu+BOe07G46GOlQaRnf3YK9y27JObgA52k6GvX4RZi7jtQCjL7p1UsgN6w
-         BdGu0Ms3t7q2CulJ3IfY10hodVks22aZk7MxxA9kY+7EFN3YjD74LUQI68VNlLkaoRp/
-         vCmA==
+        Sat, 2 Oct 2021 07:51:14 -0400
+Received: by mail-io1-f72.google.com with SMTP id f3-20020a5d8603000000b005dbf6d911e4so481256iol.21
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 04:49:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=eMBn4piUa5P7icXaukpkHUzeRwiwiWTIBVzdYRFqAwQ=;
-        b=Dv2FbuuT31NWo2/QM8OXxOcaUNALfDGZ0DoheyQ1jt2aMEcIcoDUBEvskNb3IewcbQ
-         B4DO6P7vItfjS9+KN0Ev+FlHY0e6Wk3OqhyLw/3+o0JwkT1liKCLY7FpaIrycd+f9eEE
-         1VbOGb4XbJjYnTZjBJaVcBJFGlB6B7V7DHeMURwZoD3lXWFNn89XAo3xwO6CYd0a5wHl
-         k7Nxi/8kLGkvbmt2NfxXKp2WSf2K8QyXu8jNrKWlLPJurkhmi5m5tj3j7GDpA/MGsg52
-         PWGpmbSU3BhQY1xRpeLMRPa9u4sNO5wNeegAJyfYaXGX8rX+L9O1gz8XhwBZ4B9zPjlN
-         BYFg==
-X-Gm-Message-State: AOAM533QtsALHeB5tzdPslxOaPgaqQZb3atn4hfi6JR0+bIumwmszQCz
-        miqB+sT1KWjAUXdczoIyf/jxhSdhU1AixGgCvts=
-X-Google-Smtp-Source: ABdhPJzU15zjnd8pjBBesQhHVU8TZuuiS/q7uZJHumOlNvkM411j+LPFyrOSBPSU0LzHkEbVF43ZmR7oghM5h15ww68=
-X-Received: by 2002:a9d:6c46:: with SMTP id g6mr2343591otq.55.1633175349193;
- Sat, 02 Oct 2021 04:49:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TxM9Xomw4NkWnOXL5CXFszT+5JBuU4qqbJet8FXAYV4=;
+        b=kX3uUMJUa6p1Z9o3WnxbqY3VzPb6IbQj0MQCLZwxXiTf5dcCcW5AoSksw60KB9JV0c
+         z4wf8CPn+hf5qu2E4VOuOx/Uj1iE+729XgfHeuTkYGbuQH+QjZ8dQetR49bUaW/RbIP3
+         yINN+Wj62jp5MSNr140x0bd/Cc+i6mDV8R3+Nh72rwmVmSEyAapNLDX6rDOlZGtbc0Gr
+         RHtFa4qnPSmFOpHAyPJBgu2k75Tx9f+oEceZcX+QDOQuDEtEkhjJJxtsJRFgpvrg8MDZ
+         Z2fxjVEua2AKme99VtTW/MGEQZwqXp/jXtKQ6hF0NNX1Fz7dfE8/cjgYov0UXlpV4Lhp
+         5kJg==
+X-Gm-Message-State: AOAM533qnv97OzfI4pveBD81NjVbRcAK+dfvqEzyCo3Jq4E39K2ykZdP
+        67mMIsqxvBRmG1raa/mVwXbeGtxjRQEhfJeu0DLNlvmr2RA3
+X-Google-Smtp-Source: ABdhPJy0S+EUv86uoLU/w13YtrgANg3dRZq3JvPij7rcYlEaZzkLZJv9MpqQx+BneOmfW51Cu8E4aExj/kOt4a04N6xdJGH9R6Te
 MIME-Version: 1.0
-Received: by 2002:ac9:6c91:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 04:49:08 -0700 (PDT)
-Reply-To: mrsjanedennis1@gmail.com
-From:   POST OFFICE <postofficetogo2@gmail.com>
-Date:   Sat, 2 Oct 2021 13:49:08 +0200
-Message-ID: <CAMPPJo3AObhvTF4PT-4SXvKhw7nOHs5KrQ7auJV5HZbXchUd+A@mail.gmail.com>
-Subject: =?UTF-8?B?576O5aW955qE5LiA5aSp77yM6Kaq5oSb55qE5pyL5Y+L77yM?=
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6638:d89:: with SMTP id l9mr2580890jaj.46.1633175368985;
+ Sat, 02 Oct 2021 04:49:28 -0700 (PDT)
+Date:   Sat, 02 Oct 2021 04:49:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b96daa05cd5d4538@google.com>
+Subject: [syzbot] linux-next test error: WARNING in devlink_nl_region_notify
+From:   syzbot <syzbot+e7ae6f62421c72822b9d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jiri@nvidia.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-576O5aW955qE5LiA5aSp77yM6Kaq5oSb55qE5pyL5Y+L77yMDQoNCue+juWlveeahOS4gOWkqe+8
-jOaIkeimquaEm+eahOaci+WPi++8jOS9oOWlveWXju+8n+W+iOmVt+S4gOauteaZgumWk++8jOaI
-keW+iOmrmOiIiOWcsOmAmuefpeaCqO+8jOaIkeWcqOaWsOWQiOS9nOWkpeS8tOeahOWQiOS9nOS4
-i+aIkOWKn+i9ieenu+S6humAmeS6m+mBuueUouWfuumHke+8jOebruWJjeaIkeWcqOWNsOW6puea
-hOWkluWci+aKleizh+mgheebruS4re+8jOaIkeiHquW3seS9lOS6hue4vemHkemhjeeahOS7vemh
-jeOAguWQjOaZgu+8jOaIkeaykuacieW/mOiomOaCqOmBjuWOu+eahOWKquWKm+WSjOWYl+ippu+8
-jOWNs+S9v+Wug+S7peafkOeoruaWueW8j+S9v+aIkeWAkeWkseaVl+S6hu+8jOS9huS7jeW5q+WK
-qeaIkei9ieenu+S6humAmeS6m+mBuueUouWfuumHkeOAgg0KDQrnj77lnKjoga/nuavmiJHlnKjo
-pb/pnZ7mtJvnvo7lpJrlk6XnmoTnp5jmm7jvvIzlpbnnmoTlkI3lrZfmmK8gTXJzLkphbmUgRGVu
-bmlz77yM5aW555qE6Zu75a2Q6YO15Lu25Zyw5Z2AIChtcnNqYW5lZGVubmlzMUBnbWFpbC5jb20p
-DQoNCuiri+WlueWQkeaCqOWvhOmAgee4vemHkemhje+8iDk1MCwwMDAuMDAg576O5YWD77yJ77yM
-5oiR5L+d55WZ55qEIDk1IOiQrOe+juWFg+S9nOeCuuaCqOmBjuWOu+WcqOS6pOaYk+S4reWNlOWK
-qeaIkeeahOaJgOacieWKquWKm+WSjOWYl+ippueahOijnOWEn+OAgg0KDQrmiJHpnZ7luLjmhJ/o
-rJ3mgqjnlbbmmYLnmoTliqrlipvvvIzmiYDku6Xoq4vpmqjmmYLoga/nuavmiJHnmoTnp5jmm7jn
-sKHCt+S4ueWwvOaWr+Wkq+S6uu+8jOS4puaMh+ekuuWlueWwh+e4vemHkemhjSAoJDk1MCwwMDAu
-MDApIOeahCBBVE0g5Y2h5a+E5b6A5L2V6JmVDQoNCuaUtuWIsOW+jOiri+eri+WNs+mAmuefpeaI
-ke+8jOiuk+aIkeWAkeS4gOi1t+WIhuS6q+eVtuaZguWPl+iLpuW+jOeahOWWnOaCheOAgg0KDQrp
-gJnmrrXmmYLplpPmiJHlnKjpgJnoo6Hlvojlv5nvvIzlm6DngrrmiJHlkozmiJHnmoTmlrDlpKXk
-vLTmnInmipXos4fpoIXnm67vvIzntYLmlrzoqJjlvpfmiJHlt7LntpPku6PooajkvaDlkJHmiJHn
-moTnp5jmm7jovYnnmbzkuobmjqXmlLZBVE3ljaHnmoTmjIfnpLrjgIINCg0K5Zug5q2k77yM6KuL
-6Zqo5pmC6IiH57ChwrfkuLnlsLzmlq/lpKvkurroga/nuavvvIzlpbnmnIPmr6vkuI3mi5blu7bl
-nLDlsIfph5HpoY3nmbzpgIHntabmgqjjgIINCg0K5q2k6Ie077yMDQpBbmR5IENodWt3deWFiOeU
-nw0K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    2d02a18f75fc Add linux-next specific files for 20210929
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1166777f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4b58fe22c337ee4a
+dashboard link: https://syzkaller.appspot.com/bug?extid=e7ae6f62421c72822b9d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e7ae6f62421c72822b9d@syzkaller.appspotmail.com
+
+batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
+device hsr_slave_0 entered promiscuous mode
+device hsr_slave_1 entered promiscuous mode
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6562 at net/core/devlink.c:5158 devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Modules linked in:
+CPU: 1 PID: 6562 Comm: syz-executor.0 Not tainted 5.15.0-rc3-next-20210929-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Code: 38 41 b8 c0 0c 00 00 31 d2 48 89 ee 4c 89 e7 e8 62 0b 26 00 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e e9 e1 03 45 fa e8 dc 03 45 fa <0f> 0b e9 f7 fe ff ff e8 d0 03 45 fa 0f 0b eb da 4c 89 e7 e8 b4 62
+RSP: 0018:ffffc90002c3f660 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801d199d00 RSI: ffffffff87313be4 RDI: 0000000000000003
+RBP: ffff88801d320b00 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87313ada R11: 0000000000000000 R12: ffff888019ed5000
+R13: 0000000000000000 R14: 000000000000002c R15: ffff888019ed5070
+FS:  00005555560ce400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6594537000 CR3: 00000000684dd000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ devlink_region_create+0x39f/0x4c0 net/core/devlink.c:10327
+ nsim_dev_dummy_region_init drivers/net/netdevsim/dev.c:481 [inline]
+ nsim_dev_probe+0x5f6/0x1150 drivers/net/netdevsim/dev.c:1479
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x245/0xcc0 drivers/base/dd.c:596
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc17/0x1ee0 drivers/base/core.c:3395
+ nsim_bus_dev_new drivers/net/netdevsim/bus.c:435 [inline]
+ new_device_store+0x48b/0x770 drivers/net/netdevsim/bus.c:302
+ bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:136
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write+0x429/0x660 fs/read_write.c:507
+ vfs_write+0x7cf/0xae0 fs/read_write.c:594
+ ksys_write+0x12d/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f3dbe12f3ef
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd ff ff 48
+RSP: 002b:00007ffcb02d3780 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f3dbe12f3ef
+RDX: 0000000000000003 RSI: 00007ffcb02d37d0 RDI: 0000000000000004
+RBP: 0000000000000004 R08: 0000000000000000 R09: 00007ffcb02d3720
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007f3dbe1d6971
+R13: 00007ffcb02d37d0 R14: 0000000000000000 R15: 00007ffcb02d3ea0
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
