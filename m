@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2638541FDFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 22:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD02441FE02
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 22:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhJBUGA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Oct 2021 16:06:00 -0400
-Received: from smtprelay0040.hostedemail.com ([216.40.44.40]:39238 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233950AbhJBUF4 (ORCPT
+        id S233968AbhJBU0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 16:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhJBU0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 16:05:56 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id B6C2A1808B2BD;
-        Sat,  2 Oct 2021 20:04:09 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id 2163A18A612;
-        Sat,  2 Oct 2021 20:04:09 +0000 (UTC)
-Date:   Sat, 02 Oct 2021 16:04:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [RFC][PATCH] tracing: Define "fake" struct trace_pid_list
-User-Agent: K-9 Mail for Android
-Message-ID: <7E585A79-A705-4CB9-9E4C-0E73DCE237E2@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 2163A18A612
-X-Stat-Signature: 1irdst9r91rgkk1ib775z5esxknmegrc
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18dRtjbUDlWD37tbp7U62Ij/tCT8F1QKhw=
-X-HE-Tag: 1633205049-972717
+        Sat, 2 Oct 2021 16:26:18 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFBBC061714
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 13:24:32 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id h132so5948131vke.8
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 13:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gheH1BWtvHm1zTSupgo4rpDcUcxXI3Gdklert++eNsE=;
+        b=Qa5Fk+e0vrtXkpOlqgyKxq9fdCMqo2B9CVY8g4xw7CN3+f1sv7VpByX12vgNLSEkYt
+         e0qW07WfIqE+PQLA2tb1lsvi5Emkth88DaatRRfI+0JDpyz+LKZU9YkmIAfS6u2Ct5I0
+         o5UzeZeCjokrD8ANPCj14YWRBINOBLp8dhL7Fo7qvuea95i0Lb1wXmMaspGZLK4/HZYz
+         nSI7uVkR4DNtw2ErK9QV467TW/+FqXxj61z1OEt3Yw2lSlb/eR7par4ZLCRYfJQ/kbBQ
+         aVTrNoAX4PeXXFe10lI3ek9eVZ3Nq77JB1Wns7fizh1MO4r9C40W1s2CByAeUbx7UcZA
+         Hb7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=gheH1BWtvHm1zTSupgo4rpDcUcxXI3Gdklert++eNsE=;
+        b=1CKYDGhWiSNIEeX7McL00n9LV7EQv+abln8tY6ZWKgszcNXhhzfRgH4ksMTN1jefP/
+         8W7qGbFDwNfYzfqk2gdQHozN2N5ZW5bat6Q9r6qzvgQz/4hMm2A+MTNFcxIVpCMqhX2P
+         EFJ0AkPGPCBcpVD8GpRsG5bj+P6XU3mpMZRsFYUGSM53FnXM6xeR0oISoij7Fcpv3Lak
+         Msu0TPa2Ba/+1LvbS4udpBXBe20iXQXwmg+P5S2hyVnsZXj+WpulCpBgzTpoBwW/WFQy
+         4FOxht9adbDPLTCjgvooWCpjjGiolvY+ddzduhdmpNbao680K+oBOgJnG+BleAfJI31u
+         VfKw==
+X-Gm-Message-State: AOAM5335ZLE6S5rC4NMUMmFuTsisJYIT0j4k1qLmYrQHdo0XZwthcIir
+        SOlsLgUaOkyMmRC25zZbx4qL5Q==
+X-Google-Smtp-Source: ABdhPJzNTve39xRVt8rmHnTobccKXQkEqcHACW9GMv/Nc5OpzbK2tJq3gt3Ap7dd1/3x+FlUW3L+sA==
+X-Received: by 2002:a1f:388e:: with SMTP id f136mr11173001vka.12.1633206271300;
+        Sat, 02 Oct 2021 13:24:31 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e21sm4583394vsh.4.2021.10.02.13.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 13:24:30 -0700 (PDT)
+Date:   Sat, 02 Oct 2021 13:24:30 -0700 (PDT)
+X-Google-Original-Date: Sat, 02 Oct 2021 13:24:25 PDT (-0700)
+Subject:     Re: [PATCH -next v3 0/3] riscv: Fix two vdso issue
+In-Reply-To: <20210901024621.2528797-1-tongtiangen@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        abdulras@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     tongtiangen@huawei.com
+Message-ID: <mhng-62e741b1-d0a2-4c88-a2df-785f061924c9@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 31 Aug 2021 19:46:18 PDT (-0700), tongtiangen@huawei.com wrote:
+> v3->v2:
+>   Adapt to the latest code.
+>
+> v2->v1:
+>   Add patch "Refactor asm/vdso.h" to avoid vdso.lds syntax error if
+>   CONFIG_GENERIC_TIME_VSYSCALL=n.
+>
+> 1) Move vdso data page up front and introduce enum vvar_pages, This makes it
+> easier to introduce new feature TIME_NS.
+>
+> 2) In arch_setup_additional_pages(), make Wait for the lock in the killable mode
+> and return with EINTR if the task got killed while waiting.
+>
+> Tong Tiangen (3):
+>   riscv/vdso: Refactor asm/vdso.h
+>   riscv/vdso: Move vdso data page up front
+>   riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for
+>     write killable
+>
+>  arch/riscv/include/asm/syscall.h  |  1 +
+>  arch/riscv/include/asm/vdso.h     | 15 ++++-----
+>  arch/riscv/kernel/syscall_table.c |  1 -
+>  arch/riscv/kernel/vdso.c          | 53 +++++++++++++++++++------------
+>  arch/riscv/kernel/vdso/vdso.lds.S |  3 +-
+>  5 files changed, 42 insertions(+), 31 deletions(-)
 
-[ Note, this is on top of my tree in ftrace/core, but wanted to ask if
-  this is the proper "fix". I moved the struct trace_pid_list into a
-  separate file to have more control over it, and only declare the
-  structure to be passed by pointers. It is protected by RCU sched, and
-  uses the rcu_dereference_sched() to retrieve the pointer, but while
-  testing it against gcc 8, it gave the error below. It compiles fine
-  on gcc 10. The issue is that on gcc 8, the "typeof(*p)" used in
-  rcu_dereference_sched() causes the "incomplete type" error, because
-  it does a "*p" where p is a pointer to the undefined struct
-  trace_pid_list. To get around this error, I declared struct
-  trace_pid_list as the following:
-
-    struct trace_pid_list {
-	volatile void *ignore;
-    };
-
-  With a #ifdef around it to allow it to be declared properly where it
-  is modified, but all other uses has this fake structure pointer.
-  This is obviously a hack workaround. But since we support gcc 8, and
-  I don't want to expose this structure for anything else, is this OK
-  to do?
-]
-
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-Some compilers give this error:
-
-kernel/trace/ftrace.c: In function 'ftrace_filter_pid_sched_switch_probe':
-include/linux/rcupdate.h:389:9: error: dereferencing pointer to incomplete type 'struct trace_pid_list'
-  typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-         ^
-include/linux/rcupdate.h:558:2: note: in expansion of macro '__rcu_dereference_check'
-  __rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
-  ^~~~~~~~~~~~~~~~~~~~~~~
-include/linux/rcupdate.h:612:34: note: in expansion of macro 'rcu_dereference_sched_check'
- #define rcu_dereference_sched(p) rcu_dereference_sched_check(p, 0)
-                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c:7101:13: note: in expansion of macro 'rcu_dereference_sched'
-  pid_list = rcu_dereference_sched(tr->function_pids);
-             ^~~~~~~~~~~~~~~~~~~~~
-
-The reason is that rcu_dereference_sched() has a check that uses
-typeof(*p) of the pointer passed to it. But here, the pointer is of type
-"struct trace_pid_list *" which is abstracted out, and nothing outside of
-pid_list.c should care what the content of it is. But the check uses
-typeof(*p) and on some (not all) compilers, it errors with the
-dereferencing pointer to incomplete type, which is totally bogus here.
-
-Instead of just declaring "struct trace_pid_list", define it as a
-structure with a volatile pointer (just to keep the compiler from doing any
-optimization tricks).
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/pid_list.c |  1 +
- kernel/trace/trace.h    | 14 +++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/pid_list.c b/kernel/trace/pid_list.c
-index 6d1e6cda6973..c4b1bbc59b7b 100644
---- a/kernel/trace/pid_list.c
-+++ b/kernel/trace/pid_list.c
-@@ -5,6 +5,7 @@
- #include <linux/spinlock.h>
- #include <linux/irq_work.h>
- #include <linux/slab.h>
-+#define DEFINED_PID_LIST
- #include "trace.h"
- 
- /*
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index fe13a0542486..46323ceed8e8 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -188,7 +188,19 @@ struct trace_options {
- 	struct trace_option_dentry	*topts;
- };
- 
--struct trace_pid_list;
-+#ifndef DEFINED_PID_LIST
-+/*
-+ * rcu_dereference_sched() does typeof(*p) on struct trace_pid_list *, and that
-+ * causes some compiler versions to error, with "dereferencing pointer to incomplete type"
-+ * because the "*p" of "typeof(*p)" dereferences the pointer to trace_pid_list.
-+ * As nothing should need to know that structure, and it should remain
-+ * abstracted, define a fake structure for all uses, and define it where it is
-+ * actually updated.
-+ */
-+struct trace_pid_list {
-+	volatile void *ignore;	/* Add volatile just to keep from any tricky optimizations */
-+};
-+#endif
- 
- struct trace_pid_list *trace_pid_list_alloc(void);
- void trace_pid_list_free(struct trace_pid_list *pid_list);
--- 
-2.31.1
-
-
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
+Sorry, I thought this was targeted at for-next.  I've put this on fixes 
+(not sure if my last copy went out, my mail client crashed).
