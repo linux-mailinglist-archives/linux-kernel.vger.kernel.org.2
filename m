@@ -2,315 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5177341FA77
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 10:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288EC41FA7F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 11:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbhJBJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 05:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbhJBJAV (ORCPT
+        id S232656AbhJBJCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 05:02:01 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:46087 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232630AbhJBJCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 05:00:21 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8600C061570;
-        Sat,  2 Oct 2021 01:58:35 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id D9B5322221;
-        Sat,  2 Oct 2021 10:58:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1633165112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XyvrP5Gd1sjz+HochVoe4sahVMI33+xxvsJNhM7MRz4=;
-        b=p2F2c7mL/plZO3EhbWh2h5ttNJrvguGdr3qKWIFXjORw8vjjokAkBKTfYNTcA6g7DstQH9
-        TjXvKI+M8R7U/E0oOJI07w7/2B6VzlfwNJChjbBUsVFy1VW11a1HLmRnRx/OhzSEcodUhf
-        EXK0JNnFpqzTH2hDMWm/9JOGUQ8ls4I=
+        Sat, 2 Oct 2021 05:02:00 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 192901xr018821;
+        Sat, 2 Oct 2021 18:00:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 192901xr018821
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1633165202;
+        bh=JHz4i+8pt4AvIQSo/7hCa7srH2sFG4p4+x14KmlkQwI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fjb2UGCQvBDOOJwhMIwjj37f0VL0q89Ixt04GMjEb+m/hbQyw8x+vfZtajuOIsBC9
+         VEY+Pj5ksURjNe5ZBEEPToMHrE+CHpMK27vOE06umTQKIpgODLybziyzz4Rgnz1LPm
+         4AA3VigjRv3XMxB4RLmHkHYDcQTioWb/c6kNhC6z4RzSI8EPO2RurM3Qiw5+iVmWQO
+         PoI3voLim0zDJRpvgACNDeSUe6eoSJCGTI0XhZmV8zM3Y2C30kDzHGV2Xw17KdXbsg
+         beT+b5aM/fYv/HhxD3aO9QzOaj0LckIJ1yp4TbOBsM91mWstOX7wukrAHHSk+pDPTW
+         Kysj8Ge9YLevA==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id s75so824370pgs.5;
+        Sat, 02 Oct 2021 02:00:01 -0700 (PDT)
+X-Gm-Message-State: AOAM533Fecq62i7STSOXf5/KGA4JwtueQbyl/M6NXyBwZrckkXL5RZEM
+        pxFhZO2xyKZ9afq5HcAQ58ZWwu4vSSsETHR0ytM=
+X-Google-Smtp-Source: ABdhPJyeKNU0+QuV7Nj1yDalOKASW70c+miq82NS0k/L1i49x1prYQRUn8QHaTYY2YCXA87C1wDCxSvL9q1QYMBizGc=
+X-Received: by 2002:a63:aa0b:: with SMTP id e11mr2143764pgf.128.1633165200771;
+ Sat, 02 Oct 2021 02:00:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 02 Oct 2021 10:58:31 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: Re: [PATCH] spi: spi-nxp-fspi: don't depend on a specific node name
- erratum workaround
-In-Reply-To: <20211002013737.hpalogc72umopz4x@skbuf>
-References: <20211001212726.159437-1-michael@walle.cc>
- <20211002013737.hpalogc72umopz4x@skbuf>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c5a67c34af869fd93d34320ef181c682@walle.cc>
-X-Sender: michael@walle.cc
+References: <20211001053253.1223316-1-masahiroy@kernel.org>
+ <20211001053253.1223316-10-masahiroy@kernel.org> <20211001112831.499A27FEFB@deb-nschier.ads.avm.de>
+In-Reply-To: <20211001112831.499A27FEFB@deb-nschier.ads.avm.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 2 Oct 2021 17:59:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT9wepoi92fMLta-kwQBLfYjPJ8tVKCAw_jnUBkXxnPYg@mail.gmail.com>
+Message-ID: <CAK7LNAT9wepoi92fMLta-kwQBLfYjPJ8tVKCAw_jnUBkXxnPYg@mail.gmail.com>
+Subject: Re: [PATCH 10/10] [for next only] kconfig: generate include/generated/rustc_cfg
+To:     Nicolas Schier <n.schier@avm.de>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-10-02 03:37, schrieb Vladimir Oltean:
-> On Fri, Oct 01, 2021 at 11:27:26PM +0200, Michael Walle wrote:
+On Fri, Oct 1, 2021 at 8:29 PM <n.schier@avm.de> wrote:
+>
+> On Fri, Oct 01, 2021 at 02:32:53PM +0900, Masahiro Yamada wrote:
+> > This patch is not intended for the mainline.
+> >
+> > I created this patch for Stephen Rothwell to resolve the merge
+> > conflicts more easily.
+> >
+> > The Rust tree is touching scripts/kconfig/confdata.c to generate
+> > include/generated/rustc_cfg, which would cause complicated conflicts
+> > with changes from the kbuild tree.
+> >
+> > I re-implemented it to produce the equaivalent rustc_cfg.
+> >
+> > I also fixed the memory leak; the original code from the Rust tree
+> > did not free the malloc'ed pointer.
+> >
+> > Stephen:
+> > When you resolve the conflicts in confdata.c, please take this one.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  scripts/kconfig/confdata.c | 42 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 42 insertions(+)
+> >
+> > diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> > index 9ece2f3b61a6..4767f3810cf4 100644
+> > --- a/scripts/kconfig/confdata.c
+> > +++ b/scripts/kconfig/confdata.c
+> > @@ -603,6 +603,9 @@ static const struct comment_style comment_style_c = {
+> >
+> >  static void conf_write_heading(FILE *fp, const struct comment_style *cs)
+> >  {
+> > +     if (!cs) /* no heading for rustc_cfg? */
+> > +             return;
+> > +
+> >       fprintf(fp, "%s\n", cs->comment_block_begin);
+> >
+> >       fprintf(fp, "%s Automatically generated file; DO NOT EDIT.\n",
+> > @@ -750,6 +753,39 @@ static void print_symbol_for_c(FILE *fp, struct symbol *sym)
+> >       free(escaped);
+> >  }
+> >
+> > +/* rustc configuration */
+> > +static void print_symbol_for_rustc_cfg(FILE *fp, struct symbol *sym)
+> > +{
+> > +     const char *val;
+> > +     char *escaped;
+> > +
+> > +     if (sym->type == S_UNKNOWN)
+> > +             return;
+> > +
+> > +     val = sym_get_string_value(sym);
+> > +     escaped = escape_string_value(val);
+> > +
+> > +     if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
+> > +             if (*val == 'n')
+> > +                     return;
+>
+> I'd expect a "free(escaped);" here.
 
->> Make the workaround more reliable and just drop the unneeded sysclk
->> lookup.
->> 
->> For reference, the error during the bootup is the following:
->> [    4.898400] nxp-fspi 20c0000.spi: Errata cannot be executed. Read 
->> via IP bus may not work
-> 
-> Well, in Kuldeep's defence, at least this part is sane, right? I mean 
-> we
-> cannot prove an issue => we don't disable reads via the AHB. So it's
-> just the error message (which I didn't notice TBH, sorry).
 
-Its just an error message in case the platform clock is 400Mhz. But
-if you have a 300MHz platform clock the workaround wouldn't be applied.
+Thank you for catching it.
 
-The reference is just there if someone stumbles over this error and
-searches for it on google.
+I just sent v2.
 
-> On the other hand, is anyone using LS1028A with a platform clock of 300 
-> MHz? :)
-> 
->> Fixes: 82ce7d0e74b6 ("spi: spi-nxp-fspi: Implement errata workaround 
->> for LS1028A")
->> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/spi/spi-nxp-fspi.c | 26 +++++++-------------------
->>  1 file changed, 7 insertions(+), 19 deletions(-)
->> 
->> diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
->> index a66fa97046ee..2b0301fc971c 100644
->> --- a/drivers/spi/spi-nxp-fspi.c
->> +++ b/drivers/spi/spi-nxp-fspi.c
->> @@ -33,6 +33,7 @@
->> 
->>  #include <linux/acpi.h>
->>  #include <linux/bitops.h>
->> +#include <linux/bitfield.h>
->>  #include <linux/clk.h>
->>  #include <linux/completion.h>
->>  #include <linux/delay.h>
->> @@ -315,6 +316,7 @@
->>  #define NXP_FSPI_MIN_IOMAP	SZ_4M
->> 
->>  #define DCFG_RCWSR1		0x100
->> +#define SYS_PLL_RAT		GENMASK(6, 2)
-> 
-> Ugh. So your solution still makes a raw read of the platform PLL value
-> from the DCFG, now it just adds a nice definition for it. Not nice.
 
-Keep in mind that this is intended to be a fixes commit. I agree with
-you that having a new clock in the device tree and checking that would
-have been better. Feel free to change the workaround after this fix
-is applied (without a fixes tag), but I don't think introducing a new
-clock (and you forgot to update the bindings) will qualify as a fixes
-commit. Esp. when you change the compatible string.
 
->> 
->>  /* Access flash memory using IP bus only */
->>  #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
->> @@ -926,9 +928,8 @@ static void erratum_err050568(struct nxp_fspi *f)
->>  		{ .family = "QorIQ LS1028A" },
->>  		{ /* sentinel */ }
->>  	};
->> -	struct device_node *np;
->>  	struct regmap *map;
->> -	u32 val = 0, sysclk = 0;
->> +	u32 val, sys_pll_ratio;
->>  	int ret;
->> 
->>  	/* Check for LS1028A family */
->> @@ -937,7 +938,6 @@ static void erratum_err050568(struct nxp_fspi *f)
->>  		return;
->>  	}
->> 
->> -	/* Compute system clock frequency multiplier ratio */
->>  	map = syscon_regmap_lookup_by_compatible("fsl,ls1028a-dcfg");
->>  	if (IS_ERR(map)) {
->>  		dev_err(f->dev, "No syscon regmap\n");
->> @@ -948,23 +948,11 @@ static void erratum_err050568(struct nxp_fspi 
->> *f)
->>  	if (ret < 0)
->>  		goto err;
->> 
->> -	/* Strap bits 6:2 define SYS_PLL_RAT i.e frequency multiplier ratio 
->> */
->> -	val = (val >> 2) & 0x1F;
->> -	WARN(val == 0, "Strapping is zero: Cannot determine ratio");
->> +	sys_pll_ratio = FIELD_GET(SYS_PLL_RAT, val);
->> +	dev_dbg(f->dev, "val: 0x%08x, sys_pll_ratio: %d\n", val, 
->> sys_pll_ratio);
-> 
-> Do we really feel that this dev_dbg is valuable?
 
-No, I just briefly looked at it to see it prints 4 ;)
-
->> -	/* Compute system clock frequency */
->> -	np = of_find_node_by_name(NULL, "clock-sysclk");
->> -	if (!np)
->> -		goto err;
->> -
->> -	if (of_property_read_u32(np, "clock-frequency", &sysclk))
->> -		goto err;
->> -
->> -	sysclk = (sysclk * val) / 1000000; /* Convert sysclk to Mhz */
->> -	dev_dbg(f->dev, "val: 0x%08x, sysclk: %dMhz\n", val, sysclk);
->> -
->> -	/* Use IP bus only if PLL is 300MHz */
->> -	if (sysclk == 300)
->> +	/* Use IP bus only if platform clock is 300MHz */
->> +	if (sys_pll_ratio == 3)
->>  		f->devtype_data->quirks |= FSPI_QUIRK_USE_IP_ONLY;
->> 
->>  	return;
->> --
->> 2.30.2
->> 
-> 
-> How about:
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> index 343ecf0e8973..ffe820c22719 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> @@ -326,15 +326,17 @@ i2c7: i2c@2070000 {
->  		};
-> 
->  		fspi: spi@20c0000 {
-> -			compatible = "nxp,lx2160a-fspi";
-> +			compatible = "nxp,ls1028a-fspi";
-
-Why not
-   compatible = "nxp,ls1028a-fspi", "nxp,lx2160a-fspi";
-to keep at least some compatibility.
-
->  			#address-cells = <1>;
->  			#size-cells = <0>;
->  			reg = <0x0 0x20c0000 0x0 0x10000>,
->  			      <0x0 0x20000000 0x0 0x10000000>;
->  			reg-names = "fspi_base", "fspi_mmap";
->  			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-> -			clocks = <&fspi_clk>, <&fspi_clk>;
-> -			clock-names = "fspi_en", "fspi";
-> +			clocks = <&fspi_clk>, <&fspi_clk>,
-> +				 <&clockgen QORIQ_CLK_PLATFORM_PLL
-> +					    QORIQ_CLK_PLL_DIV(2)>;
-> +			clock-names = "fspi_en", "fspi", "base";
->  			status = "disabled";
->  		};
-> 
-> diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-> index a66fa97046ee..f2815e6cae2c 100644
-> --- a/drivers/spi/spi-nxp-fspi.c
-> +++ b/drivers/spi/spi-nxp-fspi.c
-> @@ -314,8 +314,6 @@
->  #define NXP_FSPI_MAX_CHIPSELECT		4
->  #define NXP_FSPI_MIN_IOMAP	SZ_4M
-> 
-> -#define DCFG_RCWSR1		0x100
-> -
->  /* Access flash memory using IP bus only */
->  #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
-> 
-> @@ -922,55 +920,18 @@ static int nxp_fspi_adjust_op_size(struct
-> spi_mem *mem, struct spi_mem_op *op)
-> 
->  static void erratum_err050568(struct nxp_fspi *f)
->  {
-> -	const struct soc_device_attribute ls1028a_soc_attr[] = {
-> -		{ .family = "QorIQ LS1028A" },
-> -		{ /* sentinel */ }
-> -	};
-
-Mh, I see how you came to the conclusion to rename the compatible
-string. But normally, this also contains a revision check,
-which is missing here IMHO. It might as well be fixed in the
-next revision (though we both know, this is highly unlikely; its
-still wrong). So while you could rename the compatible (oh no!)
-you'd still have to do the rev 1.0 check here.
-
-> -	struct device_node *np;
-> -	struct regmap *map;
-> -	u32 val = 0, sysclk = 0;
-> -	int ret;
-> +	struct clk *clk_base;
-> 
-> -	/* Check for LS1028A family */
-> -	if (!soc_device_match(ls1028a_soc_attr)) {
-> -		dev_dbg(f->dev, "Errata applicable only for LS1028A\n");
-> +	clk_base = clk_get(f->dev, "base");
-> +	if (IS_ERR(clk_base)) {
-> +		dev_err(f->dev, "Errata cannot be executed. Read via IP bus may not 
-> work\n");
->  		return;
->  	}
-> 
-> -	/* Compute system clock frequency multiplier ratio */
-> -	map = syscon_regmap_lookup_by_compatible("fsl,ls1028a-dcfg");
-> -	if (IS_ERR(map)) {
-> -		dev_err(f->dev, "No syscon regmap\n");
-> -		goto err;
-> -	}
-> -
-> -	ret = regmap_read(map, DCFG_RCWSR1, &val);
-> -	if (ret < 0)
-> -		goto err;
-> -
-> -	/* Strap bits 6:2 define SYS_PLL_RAT i.e frequency multiplier ratio 
-> */
-> -	val = (val >> 2) & 0x1F;
-> -	WARN(val == 0, "Strapping is zero: Cannot determine ratio");
-> -
-> -	/* Compute system clock frequency */
-> -	np = of_find_node_by_name(NULL, "clock-sysclk");
-> -	if (!np)
-> -		goto err;
-> -
-> -	if (of_property_read_u32(np, "clock-frequency", &sysclk))
-> -		goto err;
-> -
-> -	sysclk = (sysclk * val) / 1000000; /* Convert sysclk to Mhz */
-> -	dev_dbg(f->dev, "val: 0x%08x, sysclk: %dMhz\n", val, sysclk);
-> -
-> -	/* Use IP bus only if PLL is 300MHz */
-> -	if (sysclk == 300)
-> +	/* Use IP bus only if platform PLL is configured for 300 MHz, hence
-> we get 150 MHz */
-> +	if (clk_get_rate(clk_base) == 150000000)
->  		f->devtype_data->quirks |= FSPI_QUIRK_USE_IP_ONLY;
-> -
-> -	return;
-> -
-> -err:
-> -	dev_err(f->dev, "Errata cannot be executed. Read via IP bus may not 
-> work\n");
-> +	clk_put(clk_base);
->  }
-> 
->  static int nxp_fspi_default_setup(struct nxp_fspi *f)
-> @@ -994,10 +955,8 @@ static int nxp_fspi_default_setup(struct nxp_fspi 
-> *f)
->  	/*
->  	 * ERR050568: Flash access by FlexSPI AHB command may not work with
->  	 * platform frequency equal to 300 MHz on LS1028A.
-> -	 * LS1028A reuses LX2160A compatible entry. Make errata applicable 
-> for
-> -	 * Layerscape LS1028A platform.
->  	 */
-> -	if (of_device_is_compatible(f->dev->of_node, "nxp,lx2160a-fspi"))
-> +	if (of_device_is_compatible(f->dev->of_node, "nxp,ls1028a-fspi"))
->  		erratum_err050568(f);
-> 
->  	/* Reset the module */
 
 -- 
--michael
+Best Regards
+Masahiro Yamada
