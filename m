@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCCE41FE2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0B441FE30
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbhJBVHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 17:07:49 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:45034 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbhJBVHs (ORCPT
+        id S234043AbhJBVLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 17:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233122AbhJBVLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 17:07:48 -0400
-Received: by mail-wr1-f49.google.com with SMTP id d6so21593498wrc.11;
-        Sat, 02 Oct 2021 14:06:01 -0700 (PDT)
+        Sat, 2 Oct 2021 17:11:36 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4896EC061714;
+        Sat,  2 Oct 2021 14:09:50 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i4so53984822lfv.4;
+        Sat, 02 Oct 2021 14:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HxVWflK9zpXBijrFY0ftzOts3Dk+lUJ247YDKOyiFAc=;
+        b=oz8KSdimPB+gzkxD/Xhn4mUg/M+SZtIMoe08EH//suN2NVuGQBF3HSh20WxqqSWd+p
+         z/ze3KFBc7lp3zcQZrfm/jrW31IXDLMaIVjYJDxES8p28Lz/n17RKJyS6ejVZgrgmw/b
+         0/4uuCyhyMFg3blJGuWpBaHUMjqOa7zAu73t+hhQtgFyifqQcTy9qiRVh/ukZiZixZ4p
+         baDJXr/fB+zpUj2l89TX5mSMM5CdH0O0dBEuxWwvPX1boybAbdxhfJYknpo35+ND9flY
+         /0CIVMFhNyv8y+CaUOsrNnYdKu6pSsjZ4DhXFC3CNjSNgQlSFWRH5E6w9jXyE6Ktfeeh
+         IjIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=5H/GFVPqJxpNuzq9DTTrJ9nYbSkD2Uo4JrRe91cjYbs=;
-        b=Cfzp417lJRS/JZWt6dVI/eGKzZ2WLYUx5iavfxBij8RnJxA8myy9EbEqqIG+x4lpSx
-         LtPbvC2lHmaTylfO1rJiRYrIo1/jEr3Jb3aw7GCzu8KpWftutvZQLMV5N1rcXxFviMs1
-         E4NISm11mhpO5T5B427nG6sy0qlie9jeIS8ZSJs1WmAXvWcd0yG1j6wCLo/Fy7byNT+4
-         XWoKsMP1/Slg3pIdrRYtBxLZOEfUG3N6bdIXkEoelZAGBQs35qjeK0ZZYMcyxNssc35a
-         +LEfmCN/DhK1Mg35o/ADrbjjnpgdwr/othIcyxUD2GHqfwud8j8iT/+cUNXCnqdWOY33
-         OTdg==
-X-Gm-Message-State: AOAM531BXQYHNO3Pw5BvMWXtmwglCUiNfuUcTbr6hRruV7dIgetJbAcA
-        F2bgvJTQMsnuYPZCEFyodS4IZNyJg+g=
-X-Google-Smtp-Source: ABdhPJwYfEVPx9sGnNGcKfk+RdHjOSBlPv7Nzvdneo7e6BX2JSVXpOIrqI0GJQjGi7+1lZHBuoznpw==
-X-Received: by 2002:adf:e30d:: with SMTP id b13mr5072345wrj.438.1633208761027;
-        Sat, 02 Oct 2021 14:06:01 -0700 (PDT)
-Received: from [10.9.0.26] ([46.166.133.199])
-        by smtp.gmail.com with ESMTPSA id q8sm9509980wrv.26.2021.10.02.14.05.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Oct 2021 14:06:00 -0700 (PDT)
-Reply-To: alex.popov@linux.com
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will.deacon@arm.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        notify@kernel.org
-References: <20210929185823.499268-1-alex.popov@linux.com>
- <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
- <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1> <YVWAPXSzFNbHz6+U@alley>
- <CAHk-=widOm3FXMPXXK0cVaoFuy3jCk65=5VweLceQCuWdep=Hg@mail.gmail.com>
- <ba67ead7-f075-e7ad-3274-d9b2bc4c1f44@linux.com>
- <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
-From:   Alexander Popov <alex.popov@linux.com>
-Message-ID: <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com>
-Date:   Sun, 3 Oct 2021 00:05:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HxVWflK9zpXBijrFY0ftzOts3Dk+lUJ247YDKOyiFAc=;
+        b=YfR0WlM3CR94BV1PuY9aRwfj3EhW9Y0BLd5aN10V+gBGLhtKFu/0/wlG2cJgYJYziU
+         riUR3+8t5d+8j7L9ZtZnQK4aCPVHVOvVeYO1djVkugMOdmzkGCSImzpBxteLxRm+wSob
+         jmklvGT3p2zzAw06uAChnYTFskVMniInpi+RFDQ6THmJxuNlpQO91un2hAG94kLMHD3I
+         56zy4S8RNa5ldC0irUOpWCfReJdm8erUSofIf9awDPqeKvFcgRa5Z2BqEQuMtTuB2ZhH
+         hvyINYOl4KJla7EGVvfBDwpnLvDtnxC9zqoYCanc9WbLu4MeQYvd8fmEv0jfZt6D221d
+         U2PA==
+X-Gm-Message-State: AOAM530hEMRrVajD84u3iaCxMcAqp8yRNCO8HFNxazwS3nMfrgidGpjo
+        nQXStTE189/oVYJtkcisoK8=
+X-Google-Smtp-Source: ABdhPJyXkHupuq294i47Y4hLPf0YTgK5zQV4FoH5aprUKestpPuJ/3vCguRdn1WzxZLojbGpnsJXxA==
+X-Received: by 2002:a2e:8782:: with SMTP id n2mr5831276lji.177.1633208988469;
+        Sat, 02 Oct 2021 14:09:48 -0700 (PDT)
+Received: from localhost.localdomain (105-28-94-178.pool.ukrtel.net. [178.94.28.105])
+        by smtp.gmail.com with ESMTPSA id l9sm279511lje.32.2021.10.02.14.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 14:09:48 -0700 (PDT)
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     pauk.denis@gmail.com, Eugene Shalygin <eugene.shalygin@gmail.com>,
+        matt-testalltheway <sefoci9222@rerunway.com>,
+        Kamil Dudka <kdudka@redhat.com>,
+        Robert Swiecki <robert@swiecki.net>,
+        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
+        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: [PATCH 0/3] Update ASUS WMI supported boards.
+Date:   Sun,  3 Oct 2021 00:08:53 +0300
+Message-Id: <20211002210857.709956-1-pauk.denis@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.2021 19:52, Linus Torvalds wrote:
-> On Sat, Oct 2, 2021 at 4:41 AM Alexander Popov <alex.popov@linux.com> wrote:
->>
->> And what do you think about the proposed pkill_on_warn?
-> 
-> Honestly, I don't see the point.
-> 
-> If you can reliably trigger the WARN_ON some way, you can probably
-> cause more problems by fooling some other process to trigger it.
-> 
-> And if it's unintentional, then what does the signal help?
-> 
-> So rather than a "rationale" that makes little sense, I'd like to hear
-> of an actual _use_ case. That's different. That's somebody actually
-> _using_ that pkill to good effect for some particular load.
+Add support to nct6775:
+* PRIME B360-PLUS
+* PRIME X570-PRO
+* ROG CROSSHAIR VIII FORMULA
+* ROG STRIX B550-I GAMING
+* ROG STRIX X570-F GAMING
+* ROG STRIX Z390-E GAMING
+* TUF GAMING B550-PRO
+* TUF GAMING Z490-PLUS
+* TUF GAMING Z490-PLUS (WI-FI)
 
-I was thinking about a use case for you and got an insight.
+Add sensors driver for ASUS motherboards to read sensors from the embedded 
+controller. Based on https://github.com/zeule/asus-wmi-ec-sensors.
 
-Bugs usually don't come alone. Killing the process that got WARN_ON() prevents
-possible bad effects **after** the warning. For example, in my exploit for
-CVE-2019-18683, the kernel warning happens **before** the memory corruption
-(use-after-free in the V4L2 subsystem).
-https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+Could you please review?
 
-So pkill_on_warn allows the kernel to stop the process when the first signs of
-wrong behavior are detected. In other words, proceeding with the code execution
-from the wrong state can bring more disasters later.
+@Andy Shevchenko, @Guenter Roeck should I split last patch in some way?
+Should I add to MAINTAINERS:
+--
+ASUS WMI HARDWARE MONITOR DRIVER
+M:     Eugene Shalygin <eugene.shalygin@gmail.com>
+M:     Denis Pauk <pauk.denis@gmail.com>
+L:     linux-hwmon@vger.kernel.org
+S:     Maintained
+F:     drivers/hwmon/asus_wmi_sensors.c
+--
 
-> That said, I don't much care in the end. But it sounds like a
-> pointless option to just introduce yet another behavior to something
-> that should never happen anyway, and where the actual
-> honest-to-goodness reason for WARN_ON() existing is already being
-> fulfilled (ie syzbot has been very effective at flushing things like
-> that out).
 
-Yes, we slowly get rid of kernel warnings.
-However, the syzbot dashboard still shows a lot of them.
-Even my small syzkaller setup finds plenty of new warnings.
-I believe fixing all of them will take some time.
-And during that time, pkill_on_warn may be a better reaction to WARN_ON() than
-ignoring and proceeding with the execution.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
+Tested-by: Kamil Dudka <kdudka@redhat.com>
+Tested-by: Robert Swiecki <robert@swiecki.net>
+Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
+Tested-by: Igor <igor@svelig.com>
+Tested-by: Tor Vic <torvic9@mailbox.org>
+Tested-by: Poezevara <nephartyz@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
 
-Is that reasonable?
+---
+Denis Pauk (3):
+  hwmon: (nct6775) Add additional ASUS motherboards.
+  hwmon: (nct6775) Use custom scale for ASUS motherboards.
+  hwmon: (asus_wmi_sensors) Support access via Asus WMI.
 
-Best regards,
-Alexander
+ drivers/hwmon/Kconfig            |  12 +
+ drivers/hwmon/Makefile           |   1 +
+ drivers/hwmon/asus_wmi_sensors.c | 595 +++++++++++++++++++++++++++++++
+ drivers/hwmon/nct6775.c          |  41 ++-
+ 4 files changed, 643 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/hwmon/asus_wmi_sensors.c
+
+-- 
+2.33.0
 
