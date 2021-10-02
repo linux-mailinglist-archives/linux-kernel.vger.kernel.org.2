@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD8741FA55
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B802C41FA58
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhJBHsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 03:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbhJBHsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 03:48:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45FDC061775;
-        Sat,  2 Oct 2021 00:46:53 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id v10so43397180edj.10;
-        Sat, 02 Oct 2021 00:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tJg9+G2d7ooPfbqfkYfBieTy/55m+eZ3a38V/ihBSWs=;
-        b=fgwmk9YZT+ogWvcMTYDpRFWQ5XdaiP4t/KZMDWnL9hBOhTILd9me82OJpFpzaDsoQE
-         DwznfJHYG2vclF8JHRb8LkvyqxhTFuWYrA5JC2T5osU9th3hSQlGG/IRX0wBXnO40eFz
-         sEWy4gavcen2tK5gKyc1OHIKGHIGkN3qF9s/OwYuFCKsTc10J9e8dWs/ENJBSv3XUTq8
-         f86hmvEi0JM5DtPJxNclsmpdnJm5pHGElv2qIQ/FAT2ZDj63Vjr2SXE93fMPirZtxG/T
-         KxBr53e4wZZO8Vp3WCkbybqteuZlXWXDfhFfd6aIDcDIu6BsPpWt8CcHQDG5Cnv0bCRr
-         e4WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tJg9+G2d7ooPfbqfkYfBieTy/55m+eZ3a38V/ihBSWs=;
-        b=GzoyAeZqh8xfn1Qs8EGlRylAgY2LRsCZyMS5FSIEAEtFfKBNfEwmLgBYihdIqYSGD2
-         XGMuNY9dF5Y/Ye5eJ/tbWAOkhosbvzCE8+NaR2YjHyQR9toLYFTcqfP8jf02IkNd4+hq
-         qHLv7pDnnAzSxfCk6L6wkAbYuge47wTA00I5vkqeLq0reSTzofiwC/sC7TTBIXXU2Ip+
-         b5umOR0RfpohGJPUZMwHTt7DCsU8fLTzFUbgWa3nEI3jkdHBQSJmdtQQRDKRNgmqRty8
-         6ROBWuLb2/izxU57M977N5yhA5vMvs4ZxLLEZaKMcOpEJxZGPs3XkFglTiAO6N/ZrkQS
-         /wmw==
-X-Gm-Message-State: AOAM530gGhi4qBezMfD5sHDJ9UzciH2b3cJXXG73BZlTwy8jaxRyTCcj
-        +E46o2BenIkvR1PClyg1xAUd46ujh8aPaJEBmD8k6LF9m88=
-X-Google-Smtp-Source: ABdhPJyifesxX0te54Yf2c3MJaKYVmW7xXeAoUpwd2Hjq9B9MZT0q4hSabgNIhuA8lKZtwSm3lBxJOKxJCIq71getXE=
-X-Received: by 2002:a05:6402:143b:: with SMTP id c27mr2578037edx.224.1633160812442;
- Sat, 02 Oct 2021 00:46:52 -0700 (PDT)
+        id S232598AbhJBHwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 03:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232457AbhJBHww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 03:52:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E44761AAC;
+        Sat,  2 Oct 2021 07:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633161066;
+        bh=MwPjezR9kh3YnUIid+XJgsrLavX6tfp1IzsXZHdX+Ew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KrQKXzespV6f7WFqwny87FNmRIEmLTa+HWnY6ZRTbxUuDhQ/DtnYF4c8SyRotRxlQ
+         vc9MNC6PNhY/R4GUNPkRj2+7OM1buLIda89oEU2e9FVq9lQjgT8eFLcth6IS/ZQeUf
+         UjeBFZ1IWP6C9CWhwg7tAmLaGty5XrEvs3TDnz1AYhg/ifIIyIXVsDBwipmakEdsJJ
+         YswPoWgbX0pUO1KGM5PgF4q4bA+sad+sy7Hhq/ZJy+DBxpHURIk96S47jvuc9Om4lR
+         PYzMp8QF7deg9/qR09TjKLeuCxlIhNtyHF5YNS+JZNrprD/qH23s8ghe03mFsIHcuM
+         hBa5UXlveHoqA==
+Date:   Sat, 2 Oct 2021 09:51:03 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Qing Wang <wangqing@vivo.com>
+Cc:     Seth Heasley <seth.heasley@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] i2c: busses: switch from 'pci_' to 'dma_' API
+Message-ID: <YVgPZxNZm3fPqxbb@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Qing Wang <wangqing@vivo.com>,
+        Seth Heasley <seth.heasley@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1632800519-108430-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-References: <20211001135544.1823-1-andriy.shevchenko@linux.intel.com> <BN8PR21MB1284A4B993EA1C8A51A043C7CAAB9@BN8PR21MB1284.namprd21.prod.outlook.com>
-In-Reply-To: <BN8PR21MB1284A4B993EA1C8A51A043C7CAAB9@BN8PR21MB1284.namprd21.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 2 Oct 2021 10:46:16 +0300
-Message-ID: <CAHp75VdXs4QWzeGrLoOEMEcQnC51J-bbsoQTrk+Ju4qL6KgdoA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] hyper-v: Replace uuid.h with types.h
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="F3o/S5cEAXbTt/uY"
+Content-Disposition: inline
+In-Reply-To: <1632800519-108430-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 1:36 AM Haiyang Zhang <haiyangz@microsoft.com> wrote:
-> > -----Original Message-----
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Sent: Friday, October 1, 2021 9:56 AM
 
-...
+--F3o/S5cEAXbTt/uY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Hyper-v drivers are using uuid/guid APIs, but they can get the defs from
-> linux/mod_devicetable.h:
->
-> ./include/linux/mod_devicetable.h:#include <linux/uuid.h>
-> ./include/linux/hyperv.h:#include <uapi/linux/hyperv.h>
-> ./include/linux/hyperv.h:#include <linux/mod_devicetable.h>
+On Mon, Sep 27, 2021 at 08:41:56PM -0700, Qing Wang wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+>=20
+> The patch has been generated with the coccinelle script below.
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+>=20
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+>=20
+> While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+> updated to a much less verbose 'dma_set_mask_and_coherent()'.
+>=20
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
 
-Yes, drivers inside the kernel may use that and this is the correct
-way. The uAPI is not using it.
+I applied this one instead
 
-> So your patch looks fine. Thanks.
->
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+http://patchwork.ozlabs.org/project/linux-i2c/patch/fad542b558afc45496f7a7b=
+a581593cd46e68f7c.1629660967.git.christophe.jaillet@wanadoo.fr/
 
-Thank you!
+because it was earlier and more complete. Still, thank you for the
+effort!
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+--F3o/S5cEAXbTt/uY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFYD2cACgkQFA3kzBSg
+KbZRJA/+Odw8AiMc3m3eoihOoBRJkU4Z9PQdPDqG6pmsBz0b7aqsxIknW7Hl7ul/
+MFpvZR3vuWjZyuGBqXLSJU2Yz00ykNeNVQl/K6zYuCEE6YsvwxUjwgpkgcZB8J0I
+qW+TMoq6ZNbRNQ+ZNELP7NveT0wiq6RLIA7K6GoUGloBSBJFxgje8m6pUxU/2gbE
+Xi6hsh6gu8mlAx/OpfpvQvIMoQ2cK4eaAu9x6U8zzCXAZ4tyJSxLL2f/LSsWRJyx
+j9IK0VSwPOKxFDX1P+SiagjFjIl4e1dfsiN7A72iAfgdgVMI4OgsrVjyaOGOFeaU
+0LNaUf7X6zML+7vE1pL0zjWIpiZySqZiLT8jlq734smWsOk9sAN3Qqf23B57W66f
+394lFMw5Hq4HjaW3w7re7x0PPOMsIQjc0xwFhCg8y0Qq55Hv6qB9t6dGQyOuFCiR
+eAAtZTs1zGRlfVTyZ2eGNDBWHcUKQ/tPoGjlpH4OtQ+ptJyKvLA9pGt2ackh9nwa
+3ykLH+0gblXAm5/XRlIT/79aJ/Xm+SDPpE86RSj8Kutz3pDmsimnlCht6Af/YFtV
+d20tbboDhRThXQxIWNP86anyyfQTl4GzSL3F4o1MfOoe+lEW1WerDhzYY5JtYlRT
+fXzoAAiN6xKwoZtW5QrlfpHq+3sr7qhbVuMgWQGGQmOc7yj8gTo=
+=WX1j
+-----END PGP SIGNATURE-----
+
+--F3o/S5cEAXbTt/uY--
