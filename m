@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781C641F8A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0DC41F8A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhJBASq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:18:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
+        id S231877AbhJBASs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232406AbhJBASi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:18:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6CEE61ACE;
-        Sat,  2 Oct 2021 00:16:51 +0000 (UTC)
+        id S232404AbhJBASk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:18:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE26061A02;
+        Sat,  2 Oct 2021 00:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633133812;
-        bh=SqkMJsnkHZDT+eZzsrisFKTL2JeLsdSMMioQ/miBr24=;
+        s=k20201202; t=1633133815;
+        bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+GLco18UbSCDYlixqfJ9E5tda0Fa/sW5GEE6hFZwJnfxEfOUVMC9i5tm3nE8tW5d
-         de6aoIagpe8OLsXHUlTfV1lYmvS1rvszVC8BP6oHp7XDwF4T+XMEOQPOI79Y/lpf//
-         2+EFtyujN+k52GqtZ03Vd4uo4KfWYJKf8++qJeiaMvrfQ5attEOXoocz3R9BcEGYRw
-         k2pWIh7XAvSVUPO3qbywCECoobcJGiSSZBz4Lzy6WhruFBjFg/guTQb/Fj5b14tJ6X
-         C5XpJzVz/WsO7HF8nUIXbQYNWa0MvSPqiC+Ha+1PYliM/ox9LCx4hoyZXiJ6J6/vOW
-         Zdt+3LfuHF89Q==
+        b=nFt15lP34RVnJFmjDkn7gD/T3yx7WhE/u9AZT6sYCeAoZKAu929L7+Oe1NeNNO5/m
+         wGmuZFWRJKFDoHSe6CQR2F2U8xyhhyN7cDDK8RfPO6W+MlMkSV5JxISZYRRmm5K/B/
+         jy9+hTweIqEeWHnWxoaJs8+x1GBQc5qg2csRsn179YK2RWhH+CHbblsphE76dStjXf
+         0Ky6H0V9gBpMJJVi6G2SmwFxn+BHaehoLSvheZz9KjezeaC/AaLtmtWQdCXbrllG1W
+         UoiRjlyXZumCBsZQMUrnwHWYLnI2S7ao6YPE2jQ2KwRK1ac4buZXjz6kLBXtJ27n8Q
+         7Ty48dyEqdW9Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>,
-        matthias.bgg@gmail.com
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        bicycle.tsai@mediatek.com
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: move of_node_put to remove function
-Date:   Sat,  2 Oct 2021 01:16:27 +0100
-Message-Id: <163313339131.45396.13424331817826400710.b4-ty@kernel.org>
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: qcom: apq8096: Constify static snd_soc_ops
+Date:   Sat,  2 Oct 2021 01:16:28 +0100
+Message-Id: <163313339131.45396.15118766100261477417.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001031601.3953-1-trevor.wu@mediatek.com>
-References: <20211001031601.3953-1-trevor.wu@mediatek.com>
+In-Reply-To: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
+References: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,15 +44,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 11:16:01 +0800, Trevor Wu wrote:
-> platforms->of_node and codes->of_node are assigned in probe function,
-> and of_node_put is called at the end of probe function, because of_node
-> seems to be not used after probe functon
+On Fri, 1 Oct 2021 13:50:30 +0200, Rikard Falkeborn wrote:
+> The struct iapq8096_ops is only assigned to the ops field in the
+> snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+> Make it const to allow the compiler to put it in read-only memory.
 > 
-> In this patch, of_node_put is moved to platform remove function in case
-> of_node is used at any occasions after probe function in the future.
 > 
-> [...]
 
 Applied to
 
@@ -59,8 +57,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8195: move of_node_put to remove function
-      commit: bd8bec1408ab2336939bd69d93897bf19d0325ed
+[1/1] ASoC: qcom: apq8096: Constify static snd_soc_ops
+      commit: cd96663bc27e1c94210b5b737de4d7cf233d90f8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
