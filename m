@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E522941FCE4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD40C41FCED
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhJBP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhJBP4S (ORCPT
+        id S233558AbhJBQFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 12:05:11 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57036 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhJBQFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:56:18 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F839C0613EF
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 08:54:30 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id u5so6041405uao.13
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 08:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=FVpHGn6Bd/3N42nal2cBmvqDTFJLswOt/kbQoY3Pz7JLJvYjPcJlY4qwZNq4RP9B1n
-         BpzLfIYXWy05x2EaEKAlO/5wCUe/8rmsQMvKG3TMgoDZL8AE6oLIuj6qMrVK9InqVm9u
-         Dl8haCJ+RZt8epUP8e5EUGvEePT2ZLCWl3Z3sedbL624S26uOpX0Barj4T47JNn2bt0V
-         E8YzxOJh+2HQ4R/m13c5ec2fCChJc7N/U3Loqdei9aMpsOYrsemdhA6mdkYdPazKXQN6
-         CO3F0WeHchjlK34+2diiPcI6dHSb1tVq8x+1J3e/WHOMghfGsrtc+KVaBxKFAljgbHuJ
-         w6/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=cOS0GNaDGfk6oGlWWwnxvSx8MC+60dge9kTd1BmrCgLpOLNsv7kZ12A3WfdhSkiV+5
-         aiU9FQtcoVnHQ5/RlURUNEe/gWT50CLoHRyYkdiOC1N6vPTLAS5A3XuFHAuvzbsMBpnd
-         YOAdc73bd3L+JuF1TlSaehpNbNxEqM/LktH0PEbjsj4EUu2d22VwX6xghvi9keEGeS1b
-         aGSc+n2gbh6gG0SV2WLEAlZN8LdnytV6cSNCYEOfRwaX8bMngmD8OGv74I1fgx+R378a
-         xRAWORlNCv7U12PbobegRPSAM5itVG3DSTAYF7EDIQNRghNib70lcFhycOSq3/XQw6P+
-         vUOg==
-X-Gm-Message-State: AOAM532LGrRAtaAcaYr5hBvyvYsiOhA8nsVgKVWq21GuXDf+xAIbj3aA
-        UaK0CykRlMmtB1Oo7N8FV8sWOr/84lNmvu9w2g==
-X-Google-Smtp-Source: ABdhPJxfNu0atcOn4ckF1m0436CxFLD1pDq0ZbHqXwQtyd+31Ih3YffoKHxmJ5ljAneYgsJw+K3Iryd9p+/80m+051w=
-X-Received: by 2002:ab0:4adc:: with SMTP id t28mr2211322uae.4.1633190069450;
- Sat, 02 Oct 2021 08:54:29 -0700 (PDT)
+        Sat, 2 Oct 2021 12:05:10 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id BB6DF1F4418A
+Received: by earth.universe (Postfix, from userid 1000)
+        id 7764F3C0CA8; Sat,  2 Oct 2021 18:03:20 +0200 (CEST)
+Date:   Sat, 2 Oct 2021 18:03:20 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] power: supply: cpcap-battery: use
+ device_get_match_data() to simplify code
+Message-ID: <20211002160320.24clt5v2nevynuco@earth.universe>
+References: <20210928020623.21192-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:594c:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 08:54:29 -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
-Date:   Sat, 2 Oct 2021 08:54:29 -0700
-Message-ID: <CAMoG4bUH=LL_f8RmPG0JYMPeV5URKhqqs3vSmkksQHcZzRXYaQ@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p5fpuwijhyki46dm"
+Content-Disposition: inline
+In-Reply-To: <20210928020623.21192-1-tangbin@cmss.chinamobile.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+--p5fpuwijhyki46dm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Hi,
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
+On Tue, Sep 28, 2021 at 10:06:23AM +0800, Tang Bin wrote:
+> In the function cpcap_battery_probe(), the driver only needs the
+> data object, so use device_get_match_data() instead, to make the
+> code cleaner.
+>=20
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
 
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
+Thanks, queued.
 
-Your Urgent Reply Will Be Appreciated
+-- Sebastian
 
-Best Regards
-Mrs Aisha Al-Qaddafi
+> Changes from v1
+>  - change the title and commit message.
+>  - change the code to use other api to make code simple.
+> ---
+>  drivers/power/supply/cpcap-battery.c | 15 ++++-----------
+>  1 file changed, 4 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/=
+cpcap-battery.c
+> index 8d62d4241..18e3ff0e1 100644
+> --- a/drivers/power/supply/cpcap-battery.c
+> +++ b/drivers/power/supply/cpcap-battery.c
+> @@ -1026,20 +1026,13 @@ static const struct power_supply_desc cpcap_charg=
+er_battery_desc =3D {
+>  static int cpcap_battery_probe(struct platform_device *pdev)
+>  {
+>  	struct cpcap_battery_ddata *ddata;
+> -	const struct of_device_id *match;
+>  	struct power_supply_config psy_cfg =3D {};
+>  	int error;
+> +	const struct cpcap_battery_config *cfg;
+> =20
+> -	match =3D of_match_device(of_match_ptr(cpcap_battery_id_table),
+> -				&pdev->dev);
+> -	if (!match)
+> -		return -EINVAL;
+> -
+> -	if (!match->data) {
+> -		dev_err(&pdev->dev, "no configuration data found\n");
+> -
+> +	cfg =3D device_get_match_data(&pdev->dev);
+> +	if (!cfg)
+>  		return -ENODEV;
+> -	}
+> =20
+>  	ddata =3D devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
+>  	if (!ddata)
+> @@ -1047,7 +1040,7 @@ static int cpcap_battery_probe(struct platform_devi=
+ce *pdev)
+> =20
+>  	INIT_LIST_HEAD(&ddata->irq_list);
+>  	ddata->dev =3D &pdev->dev;
+> -	memcpy(&ddata->config, match->data, sizeof(ddata->config));
+> +	memcpy(&ddata->config, cfg, sizeof(ddata->config));
+> =20
+>  	ddata->reg =3D dev_get_regmap(ddata->dev->parent, NULL);
+>  	if (!ddata->reg)
+> --=20
+> 2.20.1.windows.1
+>=20
+>=20
+>=20
+
+--p5fpuwijhyki46dm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFYgsgACgkQ2O7X88g7
++pqV+A/+IWRbLr8ueUYq5cmxH1A/cnfQhibQuHCWDfQ7mZDld82vBzvi7xQ4MciH
+x5goyvXWZLX3ZB336fEoqZAwi7ve1PxB5s4NCFG08+adh4hxi+//yd+DslImSsbt
+oE3srIc3AiFArJ853omaUZp3hh4C0FmuXJP867LlMz+I4TUoDumF4wdBaVm+bwtQ
+tHPA7TrRl4wcgLI+p6BklVhIBDnZAnBMV2ypUiaJZLMLGLrnJ7XJ2jTWbPTrIqLf
+KEeHpJ1Rx4q3CR7FtgdpS7Haj01+9GoLd7IFCT5yQQsM83vCMxTpOxK0icCiK/e+
+dI9l/hHfvJoTqoB1WLUG37oSS6A+suta0+ebkL0Xne0IaZSrAJgKtt6jgFtmiGWX
+i1tdNgpAQ1hsB8nwvkFGseL8tE9JGJFZEBFrUQIihBAynuOnqg1bGMcBJeWK7ppF
+UWWdko6Y7yDWQeCTQQfKqbY+oDxFJOJ4C3+L7o9T8SDRchAvh/fN3UpaGTrytkQx
+7FmtuQ0u/FSu5x3vvab9zjtEJO9gyNxDBEZl7C2wTkE/erS9GaTJ33+4OR0dT674
+Wnle0DZWfTGLwF3wiLCJOJYrFr3438b7RpmhseIoHIB/h+cgI69kYoede4w+Jjo6
+bTn7dyFgHYrGDaCajGQbttOEF5nxcBp76fAsVF/JaVv9vrOi4L4=
+=lVLE
+-----END PGP SIGNATURE-----
+
+--p5fpuwijhyki46dm--
