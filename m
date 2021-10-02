@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C691441FE42
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C5741FE46
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 23:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhJBVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 17:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S234108AbhJBVgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 17:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJBVdh (ORCPT
+        with ESMTP id S234098AbhJBVgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 17:33:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E617C061714;
-        Sat,  2 Oct 2021 14:31:51 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633210309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=XAgRQtFBHsbRzmJ/Hn8rU+rglpQXhDRVc8VEErk4l88=;
-        b=OOgOM7YtXOhLWRkpS5/up6YJYIb5XY/mVgEOq+HXp4S6UaTts/077HIUsyQhhrCfBZLm4h
-        DcOhfXVkTGWfTIIui0TKbEg39RwGDEPWsbRZ29VbZcUHUt2KpdPqnUbq8gHXTK7Kt9hs0C
-        bqed1yCUaWPPFs4XtzvEyrJDD8ACNcAznsLRzqecIaJBqMJM/nxtdt3Z5yW2ho/sY22J0H
-        nrfYSLoejZuxwOYt/Voa/BTRfsJR0oAMq4/jclJmKGsCVrwaZeIvKXr5/DupT//1HGfLrA
-        bJJIW8bfUoxtdEFko5JHO5/bZ0QCfO1VcGYXlxgSOh5t48DJ9G9SquVWuRg0Zw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633210309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=XAgRQtFBHsbRzmJ/Hn8rU+rglpQXhDRVc8VEErk4l88=;
-        b=j6gtvaQTt1AY/2a2N7nrXZ1imOK6vuHY0DcXRKP3J/EuzAYA3QGu/iPDFJFkM0k2wP3Sjp
-        f9BQfS+vxRUDRDCg==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10 10/28] x86/fpu/xstate: Update the XSTATE save
- function to support dynamic states
-In-Reply-To: <87tui04urt.ffs@tglx>
-Date:   Sat, 02 Oct 2021 23:31:48 +0200
-Message-ID: <87pmsnglkr.ffs@tglx>
+        Sat, 2 Oct 2021 17:36:13 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B68C061714;
+        Sat,  2 Oct 2021 14:34:27 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id i25so53589254lfg.6;
+        Sat, 02 Oct 2021 14:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:cc:subject:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=Sr7zpoMXlNOqHgczAlk6ZgoWjf6JMJ+TU28A00eG/Uw=;
+        b=Ykn+zz4p4l24vq8JxMWjB6NcFHM7zS5WXz52Rj65EHo4+Krjz9bgJ+Ka3o0BFrWm6Y
+         qvXFuMJQDShXVoWZs9Oewtau2kw3JITOd5/HuOxRV7vwXbxZ2AgA7ZWyTQd/e3QFuZS4
+         3p+BRrZTIPBwnGEUSJtmtYKY8DsEoyOZU0owgI4CBrZK/I6A8UmhpqP+2d3sxwcj4pm+
+         0F+yPnQv1DbZwMFz7CYNPVb9IlLP0QBeQcfwS18qBhjua0U1bXONt3MReavCXAJrK88c
+         Fn9F2GAI9wTxn1qfadT5SS209COmfqs0BTOo7vjWHeU819ZRLh9GpUo+Bz2c97Y63kMU
+         CzRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Sr7zpoMXlNOqHgczAlk6ZgoWjf6JMJ+TU28A00eG/Uw=;
+        b=uaarjzJzckfOYKXrtwSo+bc/XX0/h+5gCix8fqSuKfOS6L5JAc+ghmEterWrPKtbhl
+         FRd+1MAUDdixcj7WHbzu1U8vwUnxc/m8i3QQCq78R7IQH7TvcSlkGlUbd4uuJ0lmnKSu
+         38cSqdTmqZU1lrmODgm5gqGO2pWpKkgS9uEYou6pxZi1zLmJWfsVmtHkcLHFke8ccaeT
+         lAcHajqsLBOhuk6OX2/mxDV4eZqG2tCpbpXRdhnFtczycTZi5R8i/uE3e5y1ETva8IHd
+         6T01dtAV+S9qSJW/SzDMvr9G43EyPjlOtSloXTPN7soda/RSjGSEv7ZDv6FjY9YlGHb2
+         pbbg==
+X-Gm-Message-State: AOAM530IgzEdrvQjb67WAF9MLCikeIoX2u21APNNdmBSqKSZwbR9WF7s
+        FAD3bGHHvKbiOWXsrjE7A58=
+X-Google-Smtp-Source: ABdhPJx+rDNyNSeCgX4mr7KHsYLnTzAeRX68ElJgpte2wb9TFdHbovKNruevbJC+sUvfg6tSu3b2BA==
+X-Received: by 2002:a2e:a787:: with SMTP id c7mr6024923ljf.264.1633210465425;
+        Sat, 02 Oct 2021 14:34:25 -0700 (PDT)
+Received: from penguin.lxd (105-28-94-178.pool.ukrtel.net. [178.94.28.105])
+        by smtp.gmail.com with ESMTPSA id h1sm161757lfk.161.2021.10.02.14.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 14:34:25 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 00:34:10 +0300
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        matt-testalltheway <sefoci9222@rerunway.com>,
+        Kamil Dudka <kdudka@redhat.com>,
+        Robert Swiecki <robert@swiecki.net>,
+        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
+        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 0/3] Update ASUS WMI supported boards.
+Message-ID: <20211003003410.28248af4@penguin.lxd>
+In-Reply-To: <20211002210857.709956-1-pauk.denis@gmail.com>
+References: <20211002210857.709956-1-pauk.denis@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01 2021 at 17:41, Thomas Gleixner wrote:
-> On Wed, Aug 25 2021 at 08:53, Chang S. Bae wrote:
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 74dde635df40..7c46747f6865 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9899,11 +9899,16 @@ static void kvm_save_current_fpu(struct fpu *fpu)
->>  	 * KVM does not support dynamic user states yet. Assume the buffer
->>  	 * always has the minimum size.
+On Sun,  3 Oct 2021 00:08:53 +0300
+Denis Pauk <pauk.denis@gmail.com> wrote:
 
-I have to come back to this because that assumption is just broken.
+Patches should be applied over
+git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git:hwmon-next
+(0889b7c73a4d8eaaa321eafcf66835979ead862a)
 
-create_vcpu()
-   vcpu->user_fpu = alloc_default_fpu_size();
-   vcpu->guest_fpu = alloc_default_fpu_size();
+> Add support to nct6775:
+> * PRIME B360-PLUS
+> * PRIME X570-PRO
+> * ROG CROSSHAIR VIII FORMULA
+> * ROG STRIX B550-I GAMING
+> * ROG STRIX X570-F GAMING
+> * ROG STRIX Z390-E GAMING
+> * TUF GAMING B550-PRO
+> * TUF GAMING Z490-PLUS
+> * TUF GAMING Z490-PLUS (WI-FI)
+> 
+> Add sensors driver for ASUS motherboards to read sensors from the
+> embedded controller. Based on
+> https://github.com/zeule/asus-wmi-ec-sensors.
+> 
+> Could you please review?
+> 
+> @Andy Shevchenko, @Guenter Roeck should I split last patch in some
+> way? Should I add to MAINTAINERS:
+> --
+> ASUS WMI HARDWARE MONITOR DRIVER
+> M:     Eugene Shalygin <eugene.shalygin@gmail.com>
+> M:     Denis Pauk <pauk.denis@gmail.com>
+> L:     linux-hwmon@vger.kernel.org
+> S:     Maintained
+> F:     drivers/hwmon/asus_wmi_sensors.c
+> --
+> 
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+> Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+> Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
+> Tested-by: Kamil Dudka <kdudka@redhat.com>
+> Tested-by: Robert Swiecki <robert@swiecki.net>
+> Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
+> Tested-by: Igor <igor@svelig.com>
+> Tested-by: Tor Vic <torvic9@mailbox.org>
+> Tested-by: Poezevara <nephartyz@gmail.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> 
+> ---
+> Denis Pauk (3):
+>   hwmon: (nct6775) Add additional ASUS motherboards.
+>   hwmon: (nct6775) Use custom scale for ASUS motherboards.
+>   hwmon: (asus_wmi_sensors) Support access via Asus WMI.
+> 
+>  drivers/hwmon/Kconfig            |  12 +
+>  drivers/hwmon/Makefile           |   1 +
+>  drivers/hwmon/asus_wmi_sensors.c | 595
+> +++++++++++++++++++++++++++++++ drivers/hwmon/nct6775.c          |
+> 41 ++- 4 files changed, 643 insertions(+), 6 deletions(-)
+>  create mode 100644 drivers/hwmon/asus_wmi_sensors.c
+> 
 
-vcpu_task()
-   get_amx_permission()
-   use_amx()
-     #NM
-     alloc_larger_state()
-   ...
-   kvm_arch_vcpu_ioctl_run()
-     kvm_arch_vcpu_ioctl_run()
-       kvm_load_guest_fpu()
-         kvm_save_current_fpu(vcpu->arch.user_fpu);
-           save_fpregs_to_fpstate(fpu);         <- Out of bounds write
-
-Adding a comment that KVM does not yet support dynamic user states does
-not cut it, really.
-
-Even if the above is unlikely, it is possible and has to be handled
-correctly at the point where AMX support is enabled in the kernel
-independent of guest support.
-
-You have two options:
-
-  1) Always allocate the large buffer size which is required to
-     accomodate all possible features.
-
-     Trivial, but waste of memory.
-
-  2) Make the allocation dynamic which seems to be trivial to do in
-     kvm_load_guest_fpu() at least for vcpu->user_fpu.
-
-     The vcpu->guest_fpu handling can probably be postponed to the
-     point where AMX is actually exposed to guests, but it's probably
-     not the worst idea to think about the implications now.
-
-Paolo, any opinions?
-
-Thanks,
-
-        tglx
