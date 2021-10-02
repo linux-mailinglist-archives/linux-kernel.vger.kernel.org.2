@@ -2,120 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D3441FBCF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0707741FBD2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 14:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhJBMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 08:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhJBMme (ORCPT
+        id S233188AbhJBMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 08:42:59 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:36447 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232821AbhJBMm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 08:42:34 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E986BC0613EC;
-        Sat,  2 Oct 2021 05:40:48 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y5so8069476pll.3;
-        Sat, 02 Oct 2021 05:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=boC5DH+e5eDznk4gCfSQd5KzFhA9YXPE0HN8TOlXHRM=;
-        b=DrDz4tlLiEuf9X/s3JrTFdv/dbjHHnVXgOJq08OXY9rxryZjAOa0aPLnCA4wrU6kjj
-         SGu850FsqNzOzqE8FWNCFQlXlYALzgd9KgSmoAh1dsEfR4zx/5K1bQffnwtwVCxVhy2Z
-         16zYnq0qg4NaZGENFiv1m2GJvWw8EgfShf3c2pfRnructRQoWqdlzgLVKuXgL/OhI0Vg
-         PFCijxWyRHg0Zbf9Heh5gy5kL8/CodI08EpJfJuugeeukMFy8lMj9/Z46i2xTrxyi4rM
-         pEgl1MiIP41gZSoqVz+sD9d5E7b/oFCLvdJyYKEVyX/rZmw9CFA7wdwZ5Zkez11LZ9Nd
-         Rdxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=boC5DH+e5eDznk4gCfSQd5KzFhA9YXPE0HN8TOlXHRM=;
-        b=YCsSakDD7MI/unbWfN1jBCtCMI7PSE91o6/hd/Q//dyPVbvh8rjPCcK6+sCzm8awXG
-         y03G1KluRkPaDJq1KkGLm9b+28JPf71CNQn14UKKgkFkg377WKPxp5ZhC9GvIsTYDdp+
-         nKQzL5pigRiKDGzU64drb8K5xTuwCMRSiY5PktA2UtTYovT/SY3FJZN2vtf20e2WIXyO
-         TogFyoIdr9DqaJcfer+kuY3LRaEKhit+7vYihStynsHTkOmJ5ArWx8mWGTlv5is6LppV
-         8v7V8Xl80xovGj86T90JWdmMqCqB8B9ZA1G98CXUjT1VMV67JoESUfu198Qbf3pRXhqn
-         JuMg==
-X-Gm-Message-State: AOAM531eLE+ZLctufofrUHOmJbGBT2VxRbNRuy8k6KplMJ1cVnnSYQ/O
-        s66bz97h4f144GMW8ZYdchykTFh0toQ=
-X-Google-Smtp-Source: ABdhPJzDtA/vEzbxkSvzWKRyYY4VFSJIYY3QysxOrL0OPQ4NHudtiWZQ9dn0Lac2J0jbvWPA8DEMJQ==
-X-Received: by 2002:a17:902:b909:b0:13a:2d8e:12bc with SMTP id bf9-20020a170902b90900b0013a2d8e12bcmr14245355plb.6.1633178448124;
-        Sat, 02 Oct 2021 05:40:48 -0700 (PDT)
-Received: from ajay-Latitude-E6320.. ([122.161.244.167])
-        by smtp.gmail.com with ESMTPSA id c9sm8760694pgq.58.2021.10.02.05.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 05:40:47 -0700 (PDT)
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kvm@vger.kernel.org
-Cc:     Ajay Garg <ajaygargnsit@gmail.com>
-Subject: [PATCH] iommu: intel: remove flooding of non-error logs, when new-DMA-PTE is the same as old-DMA-PTE.
-Date:   Sat,  2 Oct 2021 18:10:12 +0530
-Message-Id: <20211002124012.18186-1-ajaygargnsit@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 2 Oct 2021 08:42:58 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D1F7022247;
+        Sat,  2 Oct 2021 14:41:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1633178470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7LTWfcj1Mgl8Q6Bw62IIEi4P7ppF7NVVDvnDHKB+EVA=;
+        b=UvkwuRFpPhkrCQPkAXfLanvaQySWxG9VoqKXUFc1rwpiFXjLyz6yppW95xXUeHJcZN1TSy
+        HynqbontRW6B0wIVIpuQThFecKfXbzJiN5JVAYq/bwFRm/az3J/X1rKP9JeZQUDnAigzyI
+        IFw2jWj9ru+lm8KBk0IzhZjR5PKmZmE=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 02 Oct 2021 14:41:10 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: Re: [PATCH] spi: spi-nxp-fspi: don't depend on a specific node name
+ erratum workaround
+In-Reply-To: <20211002095515.iw5rgakysyusvqte@skbuf>
+References: <20211001212726.159437-1-michael@walle.cc>
+ <20211002013737.hpalogc72umopz4x@skbuf>
+ <c5a67c34af869fd93d34320ef181c682@walle.cc>
+ <20211002092301.ue77mzzwcel76umx@skbuf>
+ <c9a4f7cca7d2e3959e20d8098a322562@walle.cc>
+ <20211002095515.iw5rgakysyusvqte@skbuf>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <1ce9c7be1c486e412c1d0326fa00ca54@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Taking a SD-MMC controller (over PCI) as an example, following is an
-example sequencing, where the log-flooding happened :
+Am 2021-10-02 11:55, schrieb Vladimir Oltean:
+> On Sat, Oct 02, 2021 at 11:34:12AM +0200, Michael Walle wrote:
+>> > > > Ugh. So your solution still makes a raw read of the platform PLL value
+>> > > > from the DCFG, now it just adds a nice definition for it. Not nice.
+>> > >
+>> > > Keep in mind that this is intended to be a fixes commit. I agree with
+>> > > you that having a new clock in the device tree and checking that would
+>> > > have been better. Feel free to change the workaround after this fix
+>> > > is applied (without a fixes tag), but I don't think introducing a new
+>> > > clock (and you forgot to update the bindings)
+> 
+> I don't think I'm the one who forgot to update the bindings, btw.
+> In Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt (still not
+> using JSON schema), the "clocks" are not documented as to what they 
+> want
+> and why do both "fspi" and "fspi_en" even exist. The only mention you
+> see of the "fspi" and "fspi_en" clocks in that file is an _example_.
+> And that example remains correct, because it is for the LX2160A.
 
-0.
-We have a host and a guest, both running latest x86_64 kernels.
+That doesn't mean you shouldn't document it in the bindings.
 
-1.
-Host-machine is booted up (with intel_iommu=on), and the DMA-PTEs
-are setup for the controller (on the host), for the first time.
+I just wanted to point out that for a fixes commit, you'd
+have to consider that change, too.
 
-2.
-The SD-controller device is added to a (L1) guest on a KVM-VM
-(via virt-manager).
+>> > > will qualify as a fixes
+>> > > commit. Esp. when you change the compatible string.
+>> >
+>> > I think it could be justified as a fixes commit to Shawn Guo - the
+>> > LS1028A is not "compatible" with LX2160A in the sense that it has
+>> > software-visible errata which LX2160A doesn't have.
+>> 
+>> And you'd need to get Rob into the boat for the dt bindings "fixes",
+>> no? For the new clock.
+> 
+> Yup.
+> 
+>> > > > How about:
+>> > > >
+>> > > > diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> > > > b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> > > > index 343ecf0e8973..ffe820c22719 100644
+>> > > > --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> > > > +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> > > > @@ -326,15 +326,17 @@ i2c7: i2c@2070000 {
+>> > > >  		};
+>> > > >
+>> > > >  		fspi: spi@20c0000 {
+>> > > > -			compatible = "nxp,lx2160a-fspi";
+>> > > > +			compatible = "nxp,ls1028a-fspi";
+>> > >
+>> > > Why not
+>> > >   compatible = "nxp,ls1028a-fspi", "nxp,lx2160a-fspi";
+>> > > to keep at least some compatibility.
+>> >
+>> > Of course that would be even better. I just wanted to rush to get here
+>> > before Mark, and it looks like I still didn't make it in time.
+>> >
+>> > Worst case, new (cleaned up to not calculate the platform clock on its
+>> > own)
+>> > driver will still probe with old device tree, but not apply the ERR
+>> > workaround for 300 MHz systems.
+>> 
+>> No worst case is, the flexspi driver doesn't probe at all (new 
+>> devicetree,
+>> old kernel ;).
+> 
+> Well, if you're going to take my patch as is, sure. But the device tree
+> can still be modified in such a way that old kernels keep seeing what
+> they saw before - the fallback compatibility string, and ignore the
+> third clock provider.
 
-3.
-The KVM-VM is booted up.
+Ack.
 
-4.
-Above triggers a re-setup of DMA-PTEs on the host, for a
-second time.
+> With even more care and consideration for new kernels operating with 
+> old
+> DT blobs, the ERR workaround could check for the clock provider in the
+> device tree first, then fall back to open-coding its own deductions of
+> the platform clock if that fails. After a grace period of one or two
+> years or so, maybe the open-coding could then be removed.
 
-It is observed that the new PTEs formed (on the host) are same
-as the original PTEs, and thus following logs, accompanied by
-stacktraces, overwhelm the logs :
+Mh, do you really want to go that extra mile for something you don't
+even know is used? It's up to you, I wouldn't do it ;)
 
-......
- DMAR: ERROR: DMA PTE for vPFN 0x428ec already set (to 3f6ec003 not 3f6ec003)
- DMAR: ERROR: DMA PTE for vPFN 0x428ed already set (to 3f6ed003 not 3f6ed003)
- DMAR: ERROR: DMA PTE for vPFN 0x428ee already set (to 3f6ee003 not 3f6ee003)
- DMAR: ERROR: DMA PTE for vPFN 0x428ef already set (to 3f6ef003 not 3f6ef003)
- DMAR: ERROR: DMA PTE for vPFN 0x428f0 already set (to 3f6f0003 not 3f6f0003)
-......
+>> > I may be ignorant here, but I just don't know how many systems use 300
+>> > MHz platform in practice. Anyway, it's always difficult to fix up
+>> > something that came to depend on DT bindings in a certain way.
+>> >
+>> > > >  			#address-cells = <1>;
+>> > > >  			#size-cells = <0>;
+>> > > >  			reg = <0x0 0x20c0000 0x0 0x10000>,
+>> > > >  			      <0x0 0x20000000 0x0 0x10000000>;
+>> > > >  			reg-names = "fspi_base", "fspi_mmap";
+>> > > >  			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+>> > > > -			clocks = <&fspi_clk>, <&fspi_clk>;
+>> > > > -			clock-names = "fspi_en", "fspi";
+>> > > > +			clocks = <&fspi_clk>, <&fspi_clk>,
+>> > > > +				 <&clockgen QORIQ_CLK_PLATFORM_PLL
+>> > > > +					    QORIQ_CLK_PLL_DIV(2)>;
+>> > > > +			clock-names = "fspi_en", "fspi", "base";
+>> > > >  			status = "disabled";
+>> > > >  		};
+>> > > >
+>> > > > diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
+>> > > > index a66fa97046ee..f2815e6cae2c 100644
+>> > > > --- a/drivers/spi/spi-nxp-fspi.c
+>> > > > +++ b/drivers/spi/spi-nxp-fspi.c
+>> > > > @@ -314,8 +314,6 @@
+>> > > >  #define NXP_FSPI_MAX_CHIPSELECT		4
+>> > > >  #define NXP_FSPI_MIN_IOMAP	SZ_4M
+>> > > >
+>> > > > -#define DCFG_RCWSR1		0x100
+>> > > > -
+>> > > >  /* Access flash memory using IP bus only */
+>> > > >  #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
+>> > > >
+>> > > > @@ -922,55 +920,18 @@ static int nxp_fspi_adjust_op_size(struct
+>> > > > spi_mem *mem, struct spi_mem_op *op)
+>> > > >
+>> > > >  static void erratum_err050568(struct nxp_fspi *f)
+>> > > >  {
+>> > > > -	const struct soc_device_attribute ls1028a_soc_attr[] = {
+>> > > > -		{ .family = "QorIQ LS1028A" },
+>> > > > -		{ /* sentinel */ }
+>> > > > -	};
+>> > >
+>> > > Mh, I see how you came to the conclusion to rename the compatible
+>> > > string. But normally, this also contains a revision check,
+>> > > which is missing here IMHO. It might as well be fixed in the
+>> > > next revision (though we both know, this is highly unlikely; its
+>> > > still wrong). So while you could rename the compatible (oh no!)
+>> > > you'd still have to do the rev 1.0 check here.
+>> >
+>> > So you want a compatible string a la "fsl,ls1021a-v1.0-dspi", right?
+>> > I don't know, no strong opinion, as you said, we both know that no
+>> > LS1028A rev 2 seems to be planned.
+>> 
+>> Nooo. No revisions in the compatible string.
+>> 
+>> const struct soc_device_attribute ls1028a_soc_attr[] = {
+>> 	{ .family = "QorIQ LS1028A", .revision = "1.0" },
+>> 	{ }
+>> };
+>> 
+>> Thus you'd still need that check above.
+> 
+> Ok, the idea of changing the compatible string was to make the driver
+> search for the third "base" clock. But the bindings document can simply
+> say that the "base" clock is optional for all SoCs - with the caveat
+> that the LS1028A ERR workarounds will not be applied if not provided.
+> And in that case, not even a SoC specific compatible string is needed.
 
-As the PTEs are same, so there is no cause of concern, and we can easily
-avoid the logs-flood for this non-error case.
+Ack.
 
-Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
----
- drivers/iommu/intel/iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d75f59ae28e6..8bea8b4e3ff9 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2370,7 +2370,7 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 		 * touches the iova range
- 		 */
- 		tmp = cmpxchg64_local(&pte->val, 0ULL, pteval);
--		if (tmp) {
-+		if (tmp && (tmp != pteval)) {
- 			static int dumps = 5;
- 			pr_crit("ERROR: DMA PTE for vPFN 0x%lx already set (to %llx not %llx)\n",
- 				iov_pfn, tmp, (unsigned long long)pteval);
--- 
-2.30.2
-
+-michael
