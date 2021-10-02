@@ -2,192 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C3D41FADD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2A041FADF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 12:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhJBKTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 06:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbhJBKT3 (ORCPT
+        id S232779AbhJBKX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 06:23:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232727AbhJBKX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 06:19:29 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4360DC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 03:17:43 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 194so11628798qkj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 03:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=L04RaRlqH1ifPK8xvh6SS0IhEYtmxlsOrxlOabQ/lVs=;
-        b=SvbJHFYxj0cT/VKP+yAaUVTejlYdkIjBw2jzhZTzg1tc/vQCihoHIHvuv29dIVp7l0
-         WzY1XRv/plPcePEwwBqxu7JLq0MHjoIw7Qa7i2zFuVmpNwrBNsQa3lU55uVOqjWieaSK
-         YtJlwBcFqYVZab/hi841e+1CHMAkqRPL713HK4fQEGK+/L378MskK14yydQcA5SZNooG
-         LUzhh+YgcPAdD1DQvJueaPpqPr2sFioFPpw9CzAwgcvbHEP/uxZSr7aeykvAjGcLyVXb
-         5+CKgm/YxzofKbqutwDRRcJMJ8h2EcYq1A58q8n0nlBpOu7lq7u2hGwK/OOptwxxxQjc
-         T0hw==
+        Sat, 2 Oct 2021 06:23:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633170101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ralEWdhrk09yJSkvlggMNWVcH3C+hpuchF+iW56D2YA=;
+        b=QjTiRe3EweDZhGozrYfTGnVPT1B9izZ8hqITW2FQCeSfInNZdA37V9XYRwSYwUvOSV+7Oi
+        e9dXRoVKcUZFjTFczqnuWcKWbmWWljNtjQ8sAhflZRptmUwG5z728MHkNe4SPmW8JWpWwg
+        nTY8CMMyswcHVJPVmQSJXnYJtXWO2XI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-aRfN6NAkNp6uUKYPYtF4mQ-1; Sat, 02 Oct 2021 06:21:39 -0400
+X-MC-Unique: aRfN6NAkNp6uUKYPYtF4mQ-1
+Received: by mail-wm1-f69.google.com with SMTP id v5-20020a1cac05000000b0030b85d2d479so5897895wme.9
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 03:21:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=L04RaRlqH1ifPK8xvh6SS0IhEYtmxlsOrxlOabQ/lVs=;
-        b=BC9g5cvFdbHoFxxzCHiMF9844un3R6isQPfzuVNGyfH24tj72R+8xD3QiRd4irW2JH
-         /2FlZZw2HBmzmjATP3uMGG5QifACK1K+zKyh0V2rDOxw5xzg8K36+IXR7J9pbhwWz09J
-         CGm/ATptFLccT/9fLA4aY0pJ3N45Zu+uEU7B8hFa7gZfWtFcaeHGo+Nbyk/xjbQCtea/
-         IGVIx6ETgZkqUMMFujpEIYE1yiJlnto+Jw7xTYDgS+YZERZR+TiSU21KXlMN6dvUl0xS
-         hRL0vOkd9yBYNdd7tr9JKMgcmCpXjmEJzFLVorOZtdByknVAbYMPvXEri1ogpud/l2am
-         2DeQ==
-X-Gm-Message-State: AOAM532BK2yLyQya4W14gTzMzvJB0zUujTzZd+6uF5irDdhO9sUzRD7U
-        ciN76h+7XTxaY3r2R/2/wJQ4GA==
-X-Google-Smtp-Source: ABdhPJyhROMakybhDDzG86uIA1c9FvgY/j9InoVrCBK3aiffORLmH7+B+PoOiHB1+XM3qHWKKOSbKA==
-X-Received: by 2002:a37:9e8d:: with SMTP id h135mr1920291qke.189.1633169862014;
-        Sat, 02 Oct 2021 03:17:42 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w1sm4961927qtv.71.2021.10.02.03.17.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ralEWdhrk09yJSkvlggMNWVcH3C+hpuchF+iW56D2YA=;
+        b=frhYtkGHjJq3jithNu3pAhh2EgCkLYucxFlnLCrTe/oBj21WU7/DdGOYP/1QCjnWUb
+         Bt8jJtIJ2zlwIL+Yok+F16pup9UFnbHDlACHnZ3ZZMW8CpywpXNtZz9fuyIzGb7U0C92
+         IzUvKqZ8WYbu2wOOwQdfO+DOt6Hn6o1RaZGbAZf43rtTStg9NIVnIybCkY6DWgHso5fn
+         UgptzdiOa+VL+3DVXWxvDt0Na7hsuwrqXUkxm4ro32TZ+toazJoWWTsYWcVOMg+DN6hN
+         FC0B6PTlaBY5X4qS4dyLPPT5x4KFR3utZTwQlmj7J2h5rYoju7Ws8spQ/4KZsxKjy4Ek
+         CFzg==
+X-Gm-Message-State: AOAM530J+dQgYEwwTVVoz44cum38eaYgeLwWQpZcr6oO5VFY9gbzV4Vk
+        w9DJ8rYgc114iiTPQAjEQwPDdGYsKleoSMfR2r8qETKFWGmmvrPTG7iMYvWG4l7mRzN0yBsDpmA
+        3tCKyP8mbrh23MVtjXFmid4H0
+X-Received: by 2002:adf:e309:: with SMTP id b9mr2717101wrj.81.1633170098221;
+        Sat, 02 Oct 2021 03:21:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaYuniCZqgujfLZEPFmteRflgkqbcg4NLL2qSDJrEuxaqnXY86gX1bStILdbzjT4HLj8pVew==
+X-Received: by 2002:adf:e309:: with SMTP id b9mr2717071wrj.81.1633170097875;
+        Sat, 02 Oct 2021 03:21:37 -0700 (PDT)
+Received: from redhat.com ([2.55.22.213])
+        by smtp.gmail.com with ESMTPSA id e22sm599592wme.36.2021.10.02.03.21.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 03:17:41 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 03:17:29 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Caz Yokoyama <caz.yokoyama@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [BUG 5.15-rc3] kernel BUG at
- drivers/gpu/drm/i915/i915_sw_fence.c:245!
-In-Reply-To: <20211002020257.34a0e882@oasis.local.home>
-Message-ID: <259ff554-76b8-8523-033-9e996f549c70@google.com>
-References: <20211002020257.34a0e882@oasis.local.home>
+        Sat, 02 Oct 2021 03:21:36 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 06:21:32 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Cornelia Huck <cohuck@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211002055605-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <20211001092125.64fef348.pasic@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001092125.64fef348.pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Oct 2021, Steven Rostedt wrote:
-
-> When I tried to test patches applied to v5.15-rc3, I hit this bug (and
-> hence can not test my code), on 32 bit x86.
+On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
+> On Thu, 30 Sep 2021 07:12:21 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> ------------[ cut here ]------------
-> kernel BUG at drivers/gpu/drm/i915/i915_sw_fence.c:245!
-> invalid opcode: 0000 [#1] SMP PTI
-> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc1-test+ #456
-> Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
-> EIP: __i915_sw_fence_init+0x15/0x38
-> Code: 2b 3d 58 98 88 c1 74 05 e8 60 d9 58 00 8d 65 f4 5b 5e 5f 5d c3 3e
-> 8d 74 26 00 55 89 e5 56 89 d6 53 85 d2 74 05 f6 c2 03 74 02 <0f> 0b 89
-> ca 8b 4d 08 89 c3 e8 48 94 ab ff 89 73 34 c7 43 38 01 00
-> EAX: c2508260 EBX: c2508000 ECX: c143de1e EDX: c09dfadd
-> ESI: c09dfadd EDI: c45e7200 EBP: c26c9c68 ESP: c26c9c60
-> DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> CR0: 80050033 CR2: 00000000 CR3: 019e2000 CR4: 001506f0
-> Call Trace:
->  intel_context_init+0x112/0x145
->  intel_context_create+0x29/0x37
->  intel_ring_submission_setup+0x3cb/0x5a8
->  ? kfree+0x135/0x1c6
->  ? wa_init_finish+0x32/0x59
->  ? wa_init_finish+0x4f/0x59
->  ? intel_engine_init_ctx_wa+0x39a/0x3b3
->  intel_engines_init+0x2dd/0x4d0
->  ? gen6_bsd_submit_request+0x97/0x97
->  intel_gt_init+0x122/0x20d
->  i915_gem_init+0x80/0xef
->  i915_driver_probe+0x880/0xa90
->  ? i915_pci_remove+0x27/0x27
->  i915_pci_probe+0xdd/0xf6
->  ? __pm_runtime_resume+0x63/0x6b
->  ? i915_pci_remove+0x27/0x27
->  pci_device_probe+0xbc/0x11e
->  really_probe+0x13e/0x328
->  __driver_probe_device+0x140/0x176
->  driver_probe_device+0x1f/0x71
->  __driver_attach+0xf6/0x109
->  ? __device_attach_driver+0xbd/0xbd
->  bus_for_each_dev+0x5b/0x88
->  driver_attach+0x19/0x1b
->  ? __device_attach_driver+0xbd/0xbd
->  bus_add_driver+0xf2/0x199
->  driver_register+0x8c/0xbe
->  __pci_register_driver+0x5b/0x60
->  i915_register_pci_driver+0x19/0x1b
->  i915_init+0x15/0x67
->  ? radeon_module_init+0x6a/0x6a
->  do_one_initcall+0xce/0x21c
->  ? rcu_read_lock_sched_held+0x35/0x6d
->  ? trace_initcall_level+0x5f/0x99
->  kernel_init_freeable+0x1fb/0x247
->  ? rest_init+0x129/0x129
->  kernel_init+0x17/0xfd
->  ret_from_fork+0x1c/0x28
-> Modules linked in:
-> ---[ end trace 791dc89810d853da ]---
-> EIP: __i915_sw_fence_init+0x15/0x38
-> Code: 2b 3d 58 98 88 c1 74 05 e8 60 d9 58 00 8d 65 f4 5b 5e 5f 5d c3 3e
-> 8d 74 26 00 55 89 e5 56 89 d6 53 85 d2 74 05 f6 c2 03 74 02 <0f> 0b 89
-> ca 8b 4d 08 89 c3 e8 48 94 ab ff 89 73 34 c7 43 38 01 00
-> EAX: c2508260 EBX: c2508000 ECX: c143de1e EDX: c09dfadd
-> ESI: c09dfadd EDI: c45e7200 EBP: c26c9c68 ESP: c26c9c60
-> DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010202
-> CR0: 80050033 CR2: 00000000 CR3: 019e2000 CR4: 001506f0
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> Kernel Offset: disabled
-> ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
+> > > This patch fixes a regression introduced by commit 82e89ea077b9
+> > > ("virtio-blk: Add validation for block size in config space") and
+> > > enables similar checks in verify() on big endian platforms.
+> > > 
+> > > The problem with checking multi-byte config fields in the verify
+> > > callback, on big endian platforms, and with a possibly transitional
+> > > device is the following. The verify() callback is called between
+> > > config->get_features() and virtio_finalize_features(). That we have a
+> > > device that offered F_VERSION_1 then we have the following options
+> > > either the device is transitional, and then it has to present the legacy
+> > > interface, i.e. a big endian config space until F_VERSION_1 is
+> > > negotiated, or we have a non-transitional device, which makes
+> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+> > > thus presents a little endian config space. Because at this point we
+> > > can't know if the device is transitional or non-transitional, we can't
+> > > know do we need to byte swap or not.  
+> > 
+> > Hmm which transport does this refer to?
 > 
-> Attached is the dmesg and the config.
+> It is the same with virtio-ccw and virtio-pci. I see the same problem
+> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
+> yet (have to figure out how to do that with libvirt) for pci I used
+> virtio-blk-pci.
 > 
-> I bisected it down to this commit:
+> > Distinguishing between legacy and modern drivers is transport
+> > specific.  PCI presents
+> > legacy and modern at separate addresses so distinguishing
+> > between these two should be no trouble.
 > 
-> 3ffe82d701a4 ("drm/i915/xehp: handle new steering options")
+> You mean the device id? Yes that is bolted down in the spec, but
+> currently we don't exploit that information. Furthermore there
+> is a fat chance that with QEMU even the allegedly non-transitional
+> devices only present a little endian config space after VERSION_1
+> was negotiated. Namely get_config for virtio-blk is implemented in
+> virtio_blk_update_config() which does virtio_stl_p(vdev,
+> &blkcfg.blk_size, blk_size) and in there we don't care
+> about transitional or not:
+> 
+> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
+> {
+> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
+>     return virtio_is_big_endian(vdev);
+> #elif defined(TARGET_WORDS_BIGENDIAN)
+>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
+>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
+>         return false;
+>     }
+>     return true;
+> #else
+>     return false;
+> #endif
+> }
+> 
 
-Yes (though bisection doesn't work right on this one): the fix
-https://lore.kernel.org/lkml/1f955bff-fd9e-d2ee-132a-f758add9e9cb@google.com/
-seems to have got lost in the system: it has not even appeared in
-linux-next yet. I was going to send a reminder later this weekend.
+ok so that's a QEMU bug. Any virtio 1.0 and up
+compatible device must use LE.
+It can also present a legacy config space where the
+endian depends on the guest.
 
-Here it is again (but edited to replace "__aligned(4)" in the original
-by the official "__i915_sw_fence_call" I discovered afterwards; and
-ignoring recent discussions of where __attributes ought to appear :-)
+> > Channel i/o has versioning so same thing?
+> >
+> 
+> Don't think so. Both a transitional and a non-transitional device
+> would have to accept revisions higher than 0 if the driver tried to
+> negotiate those (and we do in our case).
+
+Yes, the modern driver does. And that one is known to be LE.
+legacy driver doesn't.
+
+> > > The virtio spec explicitly states that the driver MAY read config
+> > > between reading and writing the features so saying that first accessing
+> > > the config before feature negotiation is done is not an option. The
+> > > specification ain't clear about setting the features multiple times
+> > > before FEATURES_OK, so I guess that should be fine.
+> > > 
+> > > I don't consider this patch super clean, but frankly I don't think we
+> > > have a ton of options. Another option that may or man not be cleaner,
+> > > but is also IMHO much uglier is to figure out whether the device is
+> > > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+> > > according tho what we have figured out, hoping that the characteristics
+> > > of the device didn't change.  
+> > 
+> > I am confused here. So is the problem at the device or at the driver level?
+> 
+> We have a driver regression. Since the 82e89ea077b9 ("virtio-blk: Add
+> validation for block size in config space") virtio-blk is broken on
+> s390.
+
+Because of a qemu bug. I agree. It's worth working around in the driver
+since the qemu bug has been around for a very long time.
 
 
-[PATCH] drm/i915: fix blank screen booting crashes
+> The deeper problem is in the spec. We stated that the driver may read
+> config space before the feature negotiation is finalized, but we didn't
+> think enough about what happens when native endiannes is not little
+> endian in the different cases.
 
-5.15-rc1 crashes with blank screen when booting up on two ThinkPads
-using i915.  Bisections converge convincingly, but arrive at different
-and suprising "culprits", none of them the actual culprit.
+Because the spec is very clear that endian-ness is LE.
+I don't see a spec issue yet here, just an implementation issue.
 
-netconsole (with init_netconsole() hacked to call i915_init() when
-logging has started, instead of by module_init()) tells the story:
+> I believe, for non-transitional devices we have a problem in the host as
+> well (i.e. in QEMU).
 
-kernel BUG at drivers/gpu/drm/i915/i915_sw_fence.c:245!
-with RSI: ffffffff814d408b pointing to sw_fence_dummy_notify().
-I've been building with CONFIG_CC_OPTIMIZE_FOR_SIZE=y, and that
-function needs to be 4-byte aligned.
+Because QEMU ignores the spec and instead relies on the feature
+negotiation.
 
-Fixes: 62eaf0ae217d ("drm/i915/guc: Support request cancellation")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
+> 
+> > I suspect it's actually the host that has the issue, not
+> > the guest?
+> 
+> I tend to say we have a problem both in the host and in the guest. I'm
+> more concerned about the problem in the guest, because that is a really
+> nasty regression.
 
- drivers/gpu/drm/i915/gt/intel_context.c |    1 +
- 1 file changed, 1 insertion(+)
+The problem is in the guest. The bug is in the host ;)
 
---- a/drivers/gpu/drm/i915/gt/intel_context.c
-+++ b/drivers/gpu/drm/i915/gt/intel_context.c
-@@ -362,6 +362,7 @@ static int __intel_context_active(struct
- 	return 0;
- }
- 
-+__i915_sw_fence_call	/* Respect the I915_SW_FENCE_MASK */
- static int sw_fence_dummy_notify(struct i915_sw_fence *sf,
- 				 enum i915_sw_fence_notify state)
- {
+> For the host. I think for legacy we don't have a
+> problem, because both sides would operate on the assumption no
+> _F_VERSION_1, IMHO the implementation for the transitional devices is
+> correct.
+
+Well no, the point of transitional is really to be 1.0 compliant
+*and* also expose a legacy interface.
+
+> For non-transitional flavor, it depends on the device. For
+> example virtio-net and virtio-blk is broken, because we use primitives
+> like virtio_stl_p() and those don't do the right thing before feature
+> negotiation is completed. On the other hand virtio-crypto.c as a truly
+> non-transitional device uses stl_le_p() and IMHO does the right thing.
+> 
+> Thanks for your comments! I hope I managed to answer your questions. I
+> need some guidance on how do we want to move forward on this.
+> 
+> Regards,
+> Halil
+
+OK so. I don't have a problem with the patch itself,
+assuming it's enough to work around all buggy hosts.
+I am especially worried about things like vhost/vhost-user,
+I suspect they might have a bug like this too, and
+I am not sure whether your work around is enough for these.
+Can you check please?
+
+If not we'll have to move all validate code to after FEATURES_OK
+is set.
+
+We do however want to document that this API can be called
+multiple times since that was not the case
+previously.
+
+Also, I would limit this to when
+- the validate callback exists
+- the guest endian-ness is not LE
+
+We also want to document the QEMU bug in a comment here,
+e.g. 
+
+/*
+ * QEMU before version 6.2 incorrectly uses driver features with guest
+ * endian-ness to set endian-ness for config space instead of just using
+ * LE for the modern interface as per spec.
+ * This breaks reading config in the validate callback.
+ * To work around that, when device is 1.0 (so supposed to be LE)
+ * but guest is not LE, then send the features to device one extra
+ * time before validation.
+ */
+
+Finally I'd like to see the QEMU bug fix before I merge this one,
+since it will be harder to test with a fix.
+
+
+
+
+> > 
+> > 
+> > > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> > > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> > > Reported-by: markver@us.ibm.com
+> > > ---
+> > >  drivers/virtio/virtio.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> > > index 0a5b54034d4b..9dc3cfa17b1c 100644
+> > > --- a/drivers/virtio/virtio.c
+> > > +++ b/drivers/virtio/virtio.c
+> > > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
+> > >  		if (device_features & (1ULL << i))
+> > >  			__virtio_set_bit(dev, i);
+> > >  
+> > > +	/* Write back features before validate to know endianness */
+> > > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+> > > +		dev->config->finalize_features(dev);
+> > > +
+> > >  	if (drv->validate) {
+> > >  		err = drv->validate(dev);
+> > >  		if (err)
+> > > 
+> > > base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+> > > -- 
+> > > 2.25.1  
+> > 
+
