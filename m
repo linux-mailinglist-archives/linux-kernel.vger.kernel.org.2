@@ -2,202 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7844F41F8AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7CB41F8B8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhJBAU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhJBAU1 (ORCPT
+        id S231175AbhJBAf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:35:58 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:54410 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230337AbhJBAf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:20:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22C4C061775;
-        Fri,  1 Oct 2021 17:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=RqX8/wclMPh8rdKmPHIqwNBBYNDwMU8vPuFzjp1ZKig=; b=RVvzTboaKRM1qFIDREl9FccXN8
-        U9jmnJ4h6Zg6gnVkYw1Aui63VaCOXtf/4dd3UAAvWDMjQMDQG5aCKykfzsV0/lpmpr1x4pc8Q0Ekx
-        CJ33ImURpLylkWsOdwvDfIZjCOjuzARAX1eEwIIdGRWWs7VOy9DqAwKYid6ND8BROeNljGLRG+x7U
-        eFNSchp2R2gNMRoBA5oNhyaXwDch6/FvC3EmDEoYII0emZ8JKw/G/4epmUfPsO6n2KUQJh8n2IECl
-        A3u50OmYNI8z7U/8Ji9NjcfRgFKby4m5FArnDrJIITZtKtv6yQbI0JQj/t+TQjaXsCBZO87gaYiJz
-        E0Tz9EvA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWSji-001XMM-2a; Sat, 02 Oct 2021 00:18:42 +0000
-Subject: Re: [RFC v2 01/11] Documentation: Add HTE subsystem guide
-To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        warthog618@gmail.com, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, robh+dt@kernel.org
-References: <20210930232617.6396-1-dipenp@nvidia.com>
- <20210930232617.6396-2-dipenp@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <70321686-276c-b972-302a-e649f28412de@infradead.org>
-Date:   Fri, 1 Oct 2021 17:18:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210930232617.6396-2-dipenp@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Fri, 1 Oct 2021 20:35:57 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 191NcfNj015729;
+        Sat, 2 Oct 2021 00:34:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=Il7X1neTcjDAsgJXlsMa3DeMdWggDdEomMiTzBSgJRc=;
+ b=FXjGROCV3bOH+ACz655PhqADcoOAGQwSy3AsCE4zCqi7YoeIoX/kDLah3ikudpL9sWlj
+ 2xKXyOW6Ic82+BmEWwWl2bGtsRIkwB32j5f74GICYlJB0d1ITHIAdOWCRpkVKYe4riR+
+ GJbOVGO46vgEEGUM6dFL/UigVR/es7XW8jAYpUL+K5ZKcNKzbPJKbtQv2DqYXWa5oF3x
+ JFyhmfWouPu/3D7F+enRuqShUm9MGUysU77aLkR9yV928ZyUtGCYwo3gDH/Ay2phYRGH
+ ZIdZtq1DT+5morcgfLbaAkb5mryIZyZRaSLZcXqvgjWzGo7wKpJdi0esdUBQniEv0btl Pg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3be440kdh6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 02 Oct 2021 00:34:05 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1920VMTD140459;
+        Sat, 2 Oct 2021 00:34:04 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by aserp3030.oracle.com with ESMTP id 3bd5wdcpff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 02 Oct 2021 00:34:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CxGQ1+uDLGEAL5uwt/NG4Vkq/mB+XXmJokTqLKyoL9HeQlOTXGiJGuw6Zv5lVP8HVz3yvGTuyy/PD+G9FRrSRTynfX9N9L833n03RNfTWH3Lk7XKCiTDW2eOl35BAurAxQfs109759LOm1zfHFX0LZQikXbj4iqYFGXnTlQ+WqYSK4cICPuMKUg9bMHS87EMRx415eF35CUw1xh133hqjNfo3KCvHw3O1yhnjf9MJPQzAu8+ksdDlETMsW51EpnVekBQtEahse61FvxaWRulEnYp4x4fT89kbVfWGKQVXBTs1eYvDYOpEf1STph/egZTxUXvc7brrIeuv6FmsenQlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Il7X1neTcjDAsgJXlsMa3DeMdWggDdEomMiTzBSgJRc=;
+ b=j8LgZR5agCSqYXbKc9Tl5iwbB37K3QyriQjwWJ0Ux1NGKRzW0RnN9OERzAEAG5Rt64/HDFbsJIutqASP1krsncc8g4Ecm/nL3L5jXa5bC7xptEcUeNbGtdX6MHkH1wWY0G0JmQ1/X6/E1feSaiuFP6HxN6vcPnSychdRGCauvkQa/8nS+zLQ4rACdQrpXyYLn29zNvfKZHzSY6IZV65Bmo/MXQOEDu6sY9W3MtbP9668CggYVHXitBFFovHooGTUgjh2HwipqyQd9ZpMv5mTxEQUqs3mnVYGJZ/guKgMFUaPPwAo6BAeOq/ku+OXrfOC8XxQEIzYOTJKp2a9F12X/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Il7X1neTcjDAsgJXlsMa3DeMdWggDdEomMiTzBSgJRc=;
+ b=CAISp9nWcYaQuu1ebMqltZammNQ+8OmfgxwlOKy3E8ESzOErypzeUYBENcL+X4MQUbdNpRe/ovfbmNtPvTsvef1dEvVX66J+XHCXjU6c7I4rNe4x8nPA9FothskBl3mZ+YNJpEeG/DIAvconf4BZC8kkoYJmLODqYiMocSEA5rM=
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BL0PR10MB3443.namprd10.prod.outlook.com (2603:10b6:208:74::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Sat, 2 Oct
+ 2021 00:34:02 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%5]) with mapi id 15.20.4566.019; Sat, 2 Oct 2021
+ 00:34:02 +0000
+Subject: Re: [PATCH 0/6] xen/x86: PV boot speedup
+To:     Jan Beulich <jbeulich@suse.com>, Juergen Gross <jgross@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <9f49ecdb-26d3-c38d-56a4-8425a567bf0d@oracle.com>
+Date:   Fri, 1 Oct 2021 20:33:58 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SN7PR04CA0173.namprd04.prod.outlook.com
+ (2603:10b6:806:125::28) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.98.147] (160.34.88.147) by SN7PR04CA0173.namprd04.prod.outlook.com (2603:10b6:806:125::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Sat, 2 Oct 2021 00:34:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c5c4f0f2-ed71-4f91-2388-08d9853c5504
+X-MS-TrafficTypeDiagnostic: BL0PR10MB3443:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB34433E0FF0FD37CD12A8A29A8AAC9@BL0PR10MB3443.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lJqn8tVqEuRpvueDBVRI4RJlLtZrnwH2ejGbtLim8pdQm0M70KrpIPQeFerjG0loNpi02OAgIYOoadw1SQ0cwRQl9qMa3VOqzh7acPlwCj+V7FYtp7QrU9DfuR0Owyrg5brZZrNJbhFPc0Y8Xy/DqxnOWLgDWO9jWvuAuSIHtNSMfQRxYm8V82d4F5U5E5pzwe6tkNyAxQDp+08iiVqAKolxxQ7U76/XXdJRaDHxdaagmKBWrxSD1J+w8c8tudA+JHdBC0XYnKd4Qxsi4ZIzBpJaooIPpDkpHGXz7mIUDC/S4SQ7jrgUuEkIWpV7cWnsIHs8r/X6zNRV/qGzf24lkynYr36MRetZF5C1IjbDBtfxNaSmNS2J+H0xMEi8d/fNaD4FDy0UZm8JfsaRIK7qLxMB7ArXDaYXLec0+dzIgQPIz7i4vkqgXx5SeQau3ZKHe1PfOcJuBKK3ZesQTF6pG7FqKhJ2ABOAdC+JyEj2750jl8sczHSPw1Pf4D6zA6KZmpArMTt+r4wh8CUDqUpjdxqwUOcsCqCY5gsh5a6AEUKJmypp8/sV62oHD4YaSF5IfaOOTd/Vu4OrdWZHcivciI+stmTlk1vlpcnUOsKobUNZcgLAXPi7bz46sKthY3p10kXQ/2BifHSCuIiURYqZTS7Gbsk/n7jcc3152j7IX2MQtkiZ/6RP43Ea4jcYmTNYjZ2wdrGh6GAsFujn5MDQ9KX/wZUWBRHnKtde7NEqiwU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(66556008)(8676002)(66476007)(66946007)(186003)(508600001)(86362001)(6666004)(4744005)(4326008)(26005)(54906003)(110136005)(36756003)(16576012)(8936002)(5660300002)(83380400001)(2906002)(316002)(53546011)(2616005)(956004)(38100700002)(31696002)(44832011)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bWJDenUzY2U4Q1FOQ0pBVjVHeG9hQUhLYU9qa2h2UGxwZHZsRWFIaUN5RzdL?=
+ =?utf-8?B?aG9oQm9zanQvSHVjblluaHJjMTdmdEpsWXdvL1gxVCtjMjlHUTd0eTNiazB1?=
+ =?utf-8?B?TklPdHJoUktucWpUQ2Vab0tmN2dwRk1Db2VLSnB1SHRHMXloUkh5NGlxc2No?=
+ =?utf-8?B?amR6c3Ivdk03MzVYcStDS0hYemE5K0krdkRMbzBDNklVSllVNWU1Y0JUKzdS?=
+ =?utf-8?B?U2paNTB3cUNsSnpGN3N6T2wreFdCUldnTWVOcVhreW11L3VHaVE4T21pdmdM?=
+ =?utf-8?B?VFZWQm9JVXA0VXM1R1VXSFE4ZWFQNmYzeDV5bllqcno0cnovYjNOZ2hJTlNZ?=
+ =?utf-8?B?Y1IzQ0FteW9GRjZNMXB2bHZ6NUVJdDA4M0ljYTFNb0xlOExTSEhjVUIzVlk0?=
+ =?utf-8?B?cDdpOXNKL0crNFBndHE2SmE3d1cxTHhBN0lCMEkvVHdVbFJMQXVLQ3A5VHNa?=
+ =?utf-8?B?VjhEcE9yUm9BMlVGcGVseEtqaTRXbytEdWZ1Yi8rMWlFTkxiR2RBdnArc05h?=
+ =?utf-8?B?ZU43aVBQNWtEZEdreDBRY1BDU0plV29Bd1Y4T2hhZnptcVBEU0JtM1I3anB1?=
+ =?utf-8?B?OGVzb1NaTVBUV2pOYW9zb2ZMVnZJTWRGb2RKa0EzczRybHFFbzQxaER4dkFC?=
+ =?utf-8?B?YStVNTdDelp5ejdxcDA2aDlPVlFWUnVPTElTZHkwNFpIZ0hJYk42d0Q1TndZ?=
+ =?utf-8?B?TG81c0hydytTSlJtdkc5UnNsOVZyeFQyUGc4MWhhSTdzRnlGZmdMNjdiVEFM?=
+ =?utf-8?B?ZEVPV2VTYjYvNk8rNDBXNWNYWHpsSDVMOCtydFEwR3JzVEQrTmRtYS9FMzZX?=
+ =?utf-8?B?WitlcFM2RnFtdHVBNnZ6VFI0ZHpxVmJHM1VVNWErMVV2UFIwQ05zZW9hOTVn?=
+ =?utf-8?B?cWl6TTNzUFo1Z3hESHhwY2lwRUlxU3NSZ0t2MUxTc1VOakdJRWxVUzJ0TXhO?=
+ =?utf-8?B?L3NYVElERXJZall1YWVqWEQ2U042YlBVV0FCcHFORFJGYWJGOXpiMnJHRnoz?=
+ =?utf-8?B?NDhpS2xabUJvMDRyWDZJK3dXZmJCemNONEg5S0ZJa3R2dTJPMnp6dnRaQVFz?=
+ =?utf-8?B?UjhWZk1JWGhhaUNXSEhuMlcxakxTSkN4cncyekljWDFhU1VWR05SeUlqS2Fr?=
+ =?utf-8?B?eTF3U3kwYlFwS0tmRlhHMU1RK0c3YWlSRzZoaWtvdjUxbWdJVktLaUtDUk41?=
+ =?utf-8?B?T1ZyWHNtT1QvL3M5TG5uRnlmZjNFY0xGRjBQWFo1WktLWi93cUFmOVZoRHVo?=
+ =?utf-8?B?aTg3K3gyTE93dEdnSkdVZ0I3bFZPZTcvcGdwZjB6M2p3MzBsK0RDNUdUZmFU?=
+ =?utf-8?B?QkJJNUpuU2xuZ2FoUWhKMXZ1ZVBhVDMzN2V0S3pkWVk1R0J5YnplTjl3L3Zu?=
+ =?utf-8?B?MGYrMloxZ1BaWDE5a1RCbnFiV01kUVlMYTUrOFhhV0Q1ZTJSMHkwMFlKSk50?=
+ =?utf-8?B?bU5qSFQ0cE5FSFN1NmRmUmJkdk5qeEVuYUQ0bDVOMlJVVDRrbGFMbmRLWXVm?=
+ =?utf-8?B?NEp3TGVrZnBkOEFGM2N3dE9rZlpOQmtveFl3WXIzdjdBNjNkNDFQdHpJbGQ0?=
+ =?utf-8?B?MUFBdGloSHJySFBZWVhLUG0vdnRUcXNReEZHUy9jOTRCT2FGekhUOGVzclVh?=
+ =?utf-8?B?Ym1XZ21PMGlNZVJVY2N3dVU1T2hKYlMwTDUvSmFWYlUyUU1zMHhrWmxzR3BM?=
+ =?utf-8?B?ZHZ0SlZ2MHRSY1NyRVVzbFVZNjVyZVA4alp2S2ZSaTF4aWh4Z3M3ZlhUbnlw?=
+ =?utf-8?Q?AJBaEqVJcN0JctzioJVFkwmonYSDEu17OA+Z4pF?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5c4f0f2-ed71-4f91-2388-08d9853c5504
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2021 00:34:02.2414
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HYe+sSBSRPnhQHGXObjEvBujmY0RVJiHWgBUdMJr+/Z5oCc8a0/QI/zQgFOcj8S3Nu89DHjlGemQEoLEmejK2zCFKYyQ5SyE1cTm4Wq6B90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB3443
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10124 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110020000
+X-Proofpoint-ORIG-GUID: Gz9AbWBCSqxz8FxFYc1rCVUBPlNW0MQy
+X-Proofpoint-GUID: Gz9AbWBCSqxz8FxFYc1rCVUBPlNW0MQy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/21 4:26 PM, Dipen Patel wrote:
-> Adding hte document which can help understand various APIs implemented
-> in HTE framework for the HTE producers and the consumers.
-> 
-> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
-> ---
-> Changes in v2:
-> - Removed explanation, instead added kernel-doc references.
-> 
->   Documentation/hte/hte.rst | 83 +++++++++++++++++++++++++++++++++++++++
->   1 file changed, 83 insertions(+)
->   create mode 100644 Documentation/hte/hte.rst
-> 
-> diff --git a/Documentation/hte/hte.rst b/Documentation/hte/hte.rst
-> new file mode 100644
-> index 000000000000..c9b1badae601
-> --- /dev/null
-> +++ b/Documentation/hte/hte.rst
-> @@ -0,0 +1,83 @@
-> +============================================
-> +The Linux Hardware Timestamping Engine (HTE)
-> +============================================
-> +
-> +:Author: Dipen Patel
-> +
-> +Introduction
-> +------------
-> +
-> +Certain devices have built in hardware timestamping engines which can
-> +monitor sets of system signals, lines, buses etc... in realtime for state
-> +change; upon detecting the change they can automatically store the timestamp at
-> +the moment of occurrence. Such functionality may help achieve better accuracy
-> +in obtaining timestamp than using software counterparts i.e. ktime and friends.
 
-                 timestamps
-
-> +
-> +This document describes the API that can be used by hardware timestamping
-> +engine provider and consumer drivers that want to use the hardware timestamping
-> +engine (HTE) framework. Both consumers and providers must
-> +#include <linux/hte.h>.
-> +
-> +The HTE framework APIs for the providers
-> +----------------------------------------
-> +
-> +.. kernel-doc:: drivers/hte/hte.c
-> +   :functions: devm_hte_register_chip hte_push_ts_ns
-> +
-> +The HTE framework APIs for the consumers
-> +----------------------------------------
-> +
-> +.. kernel-doc:: drivers/hte/hte.c
-> +   :functions: devm_of_hte_request_ts hte_req_ts_by_hte_name hte_release_ts hte_enable_ts hte_disable_ts hte_get_clk_src_info
-> +
-> +The HTE framework public structures
-> +-----------------------------------
-> +.. kernel-doc:: include/linux/hte.h
-> +
-> +
-> +More on the HTE timestamp data
-> +------------------------------
-> +The struct hte_ts_data is used to pass timestamp details between the consumers
-> +and the providers. It expresses timestamp data in nano second in u64 data
-
-                                                      nanosesconds
-                                              possibly:           in a __u64 data
-
-> +type. For now all the HTE APIs using struct hte_ts_data requires tsc to be in
-
-                                                            require tsc to be in
-
-> +nano seconds. An example of the typical hte_ts_data data life cycle, for the
-
-    nanoseconds.
-
-> +GPIO line is as follows::
-> +
-> + - Monitors GPIO line change.
-> + - Detects the state change on GPIO line.
-> + - Converts timestamps in nano seconds and stores it in tsc.
-
-                              nanoseconds
-
-> + - Stores GPIO direction in dir variable if the provider has that hardware
-> + capability.
-> + - Pushes this hte_ts_data object to HTE subsystem.
-> + - HTE subsystem increments seq counter and invokes consumer provided callback.
-> + Based on callback return value, the HTE starts kernel thread and invokes
-
-                                             starts a kernel thread
-
-> + secondary callback in the thread context.
-> +
-> +HTE subsystem debugfs attributes
-> +--------------------------------
-> +HTE subsystem creates debugfs attributes at ``/sys/kernel/debug/hte/``.
-> +It also creates line/signal related debugfs attributes at
-
-                         signal-related
-
-> +``/sys/kernel/debug/hte/<provider>/<label or line id>/``.
-> +
-> +`ts_requested`
-> +		The total number of entities requested from the given provider,
-> +		where entity is the provider specific and could represent
-
-		             is specified by the provider and could
-(just guessing here; I could not parse it.)
-
-> +		lines, GPIO, chip signals, buses etc...
-> +                The attribute will be availble at
-
-		                         available
-
-> +		``/sys/kernel/debug/hte/<provider>/``.
-> +
-> +		Read only value
-
-		Read-only value
-
-> +
-> +`total_ts`
-> +		The total number of entities supported by the provider.
-> +                The attribute will be availble at
-
-		                         available
-
-> +		``/sys/kernel/debug/hte/<provider>/``.
-> +
-> +		Read only value
-
-		Read-only value
-
-> +
-> +`dropped_timestamps`
-> +		The dropped timestamps for a given line.
-> +                The attribute will be availble at
-
-		                         available
-
-> +		``/sys/kernel/debug/hte/<provider>/<label or line id>/``.
-> +
-> +		Read only value
-
-		Read-only value
-> 
+On 9/30/21 8:33 AM, Jan Beulich wrote:
+> The observed (by the human eye) performance difference of early boot
+> between native and PV-on-Xen was just too large to not look into. As
+> it turns out, gaining performance back wasn't all that difficult.
+>
+> While the series (re)introduces a small number of PTWR emulations on
+> the boot path (from phys_pte_init()), there has been a much larger
+> number of them post-boot. Hence I think if this was of concern, the
+> post-boot instances would want eliminating first.
+>
+> Some of the later changes aren'r directly related to the main goal of
+> the series; these address aspects noticed while doing the investigation.
+>
+> 1: streamline set_pte_mfn()
+> 2: restore (fix) xen_set_pte_init() behavior
+> 3: adjust xen_set_fixmap()
+> 4: adjust handling of the L3 user vsyscall special page table
+> 5: there's no highmem anymore in PV mode
+> 6: restrict PV Dom0 identity mapping
 
 
--- 
-~Randy
+
+For the series:
+
+
+Reviewed-by: Boris Ostrovsky <boris.ostrovksy@oracle.com>
+
