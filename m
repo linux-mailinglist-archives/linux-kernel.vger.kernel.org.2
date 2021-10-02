@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A9C41FB0E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0154941FB13
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhJBLO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 07:14:27 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:34030 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhJBLOY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 07:14:24 -0400
-Date:   Sat, 02 Oct 2021 11:12:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1633173156;
-        bh=lgKYE1UiXuqTBPdG3LxCk9lKMfDD0+fFAGQZZoEkMbo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mjCJHoAimPW9nMZizBL0WRXceUbhh11sNYJIep1ZKuS2ZTWaXsfnZkK8pjfnACbyE
-         kjOeMQwNPA5ttApgbgHKhs9XORQj87Mo+hv40E4wGKS1XoBb3CBRubT7YlE2j/LP/C
-         +ZrG9A7c7Cng0Y1ipBVi8mYGUjPaWVGgY/ucSk6M=
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-From:   Orlando Chamberlain <redecorating@protonmail.com>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
-Subject: Re: [PATCHv3] mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N UART
-Message-ID: <20211002111221.1c3076f3@localhost>
-In-Reply-To: <YVg8vsdU89wjC9/7@smile.fi.intel.com>
-References: <20211001084905.4133-1-redecorating@protonmail.com> <YVbf9J3jgAmBY+ch@smile.fi.intel.com> <YVdP9PwNrjmKxKac@google.com> <YVdR4bdpr9/E+GNf@smile.fi.intel.com> <20211002032810.3729-1-redecorating@protonmail.com> <YVg8vsdU89wjC9/7@smile.fi.intel.com>
+        id S232919AbhJBLQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 07:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232805AbhJBLQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 07:16:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F1A61A8F;
+        Sat,  2 Oct 2021 11:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633173274;
+        bh=oA5M5+lU7nwhD/rOivosaKv0XTN5QnVPtj675tCx3ks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1Z9pCS6A/zvKbuIWtPQJlXbQRYqiOOfvQxKqHhEIkajwh0e3d4lJeeYcqUtmHAduS
+         9p1lU36Hd879Z2rHYNKKlSlgdoVXSyo0enKGfKCPqHiQm3G+LWvy/TiI25Ef+L2jJm
+         AZPD3QuK/tbDBXoLEs5C2I3i7LyKTQCngkqZPsXE=
+Date:   Sat, 2 Oct 2021 13:14:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+Message-ID: <YVg/F10PCFNOtCnL@kroah.com>
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065953-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
+ <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
+ <YVXWaF73gcrlvpnf@kroah.com>
+ <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
+ <YVaywQLAboZ6b36V@kroah.com>
+ <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com>
+ <20211002070218-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211002070218-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 02 Oct 2021 21:04:30 +1000
-"Andy Shevchenko" <andriy.shevchenko@linux.intel.com> wrote:
+On Sat, Oct 02, 2021 at 07:04:28AM -0400, Michael S. Tsirkin wrote:
+> On Fri, Oct 01, 2021 at 08:49:28AM -0700, Andi Kleen wrote:
+> > >   Do you have a list of specific drivers and kernel options that you
+> > > feel you now "trust"?
+> > 
+> > For TDX it's currently only virtio net/block/console
+> > 
+> > But we expect this list to grow slightly over time, but not at a high rate
+> > (so hopefully <10)
+> 
+> Well there are already >10 virtio drivers and I think it's reasonable
+> that all of these will be used with encrypted guests. The list will
+> grow.
 
-> You ignoring my Reviewed-by tag. Any reason why?
+What is keeping "all" drivers from being on this list?  How exactly are
+you determining what should, and should not, be allowed?  How can
+drivers move on, or off, of it over time?
 
-Sorry, I'm new to this and assumed it needed to be reviewed again after
-any changes (including to the commit message).
+And why not just put all of that into userspace and have it pick and
+choose?  That should be the end-goal here, you don't want to encode
+policy like this in the kernel, right?
 
-> Besides that you are posting patches as continuation of the thread.
-> It may be problematic for some tools, like `b4`, although I dunno if
-> Lee is using such tools.
+thanks,
 
-I'll make a v4 with the reviewed-by line. I'll make it a reply to the
-first version of the patch, and hopefully that'll be the first place
-tools like `b4` look.
-
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->=20
-> > Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
-> > ---
-> > v2->v3: Mention "ICL-N" in commit message.
-> >  drivers/mfd/intel-lpss-pci.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/mfd/intel-lpss-pci.c
-> > b/drivers/mfd/intel-lpss-pci.c index c54d19fb184c..a872b4485eac
-> > 100644 --- a/drivers/mfd/intel-lpss-pci.c
-> > +++ b/drivers/mfd/intel-lpss-pci.c
-> > @@ -253,6 +253,8 @@ static const struct pci_device_id
-> > intel_lpss_pci_ids[] =3D { { PCI_VDEVICE(INTEL, 0x34ea),
-> > (kernel_ulong_t)&bxt_i2c_info }, { PCI_VDEVICE(INTEL, 0x34eb),
-> > (kernel_ulong_t)&bxt_i2c_info }, { PCI_VDEVICE(INTEL, 0x34fb),
-> > (kernel_ulong_t)&spt_info },
-> > +=09/* ICL-N */
-> > +=09{ PCI_VDEVICE(INTEL, 0x38a8),
-> > (kernel_ulong_t)&bxt_uart_info }, /* TGL-H */
-> >  =09{ PCI_VDEVICE(INTEL, 0x43a7),
-> > (kernel_ulong_t)&bxt_uart_info }, { PCI_VDEVICE(INTEL, 0x43a8),
-> > (kernel_ulong_t)&bxt_uart_info }, --
-> > 2.33.0
-> >
-> > =20
->=20
-> --
-> With Best Regards,
-> Andy Shevchenko
->=20
->=20
-
-
-
---=20
-
+greg k-h
