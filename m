@@ -2,203 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B344B41F8D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1717041F8F0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 03:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhJBA4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S231976AbhJBBGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 21:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhJBA4P (ORCPT
+        with ESMTP id S230255AbhJBBGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:56:15 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D984C0613E4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 17:54:30 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j198so413555pfd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:54:30 -0700 (PDT)
+        Fri, 1 Oct 2021 21:06:12 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724E6C061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 18:04:26 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id y23so10115668lfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 18:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dz4gCHHRlMiAuhNya+sXKLhxyvHziFcWxfMt2VtitXk=;
-        b=Y40BfZx3kfEmj6oc4wP5edmnI0YKLH+C3ENpc7kzLwXGrrHiZdQziSHpXelsyAoY1w
-         EtcmpmSl5Og9+N7Kt7sCR52juVA7j2786Emq6SUx3JGVk7WjOsHCOnC+UNUb6fF1tUtL
-         j2q0xpeZiIAYBBE3uA8X2a8Xtq66TpgOi+Rmh91gVo6H/e8vcEoXwUgPagHW7RsQoici
-         y+5SG1wYYDRFNNsRdUegMCWSc/jDIVQl7kUuPQETyQ865ASPAmsR481VN3MQGhEjM9se
-         I0zpQ+u2q8nPqA5oz+GbtEe79Hw7pE/m3iE+GccEUSu+8ZIDjVHkEtM1Om00wlKTr4cv
-         zSPQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bBqFMnErG4GH3r+7O+ALCEzoJ/5HVSbS5xSothngSqU=;
+        b=JBKXQAAsxFQDDJ/WDB4YgCwq2Ygg3SzXL8K+1grASm5k9WQwXCvTdOmeCHhaipaeYe
+         BqxtYMUC64NSyCzlvn+WiombtjjwpPlZabb6f/Vjp/0/BQ3ZhFjpnKeSDk+DtYy46Opw
+         dluAwQD52yJx15frVi4MUk9assLAKT1mUMWGfeXBwdojqUvhPE+1eV79IKt/JpRGeIao
+         esv5hDCo0EXVxKkCXMDGIx8jQxrLBqHK/QIuqzJd6qSLk3mdO8MlObyVdxHLT7k0b4rg
+         ERD/kgGSt12gXuT8sawpLfs9hkzy/2Hsr4CE+nchEi7siWm9ZcOLjHPOAzpzxp7CjoZ8
+         aIjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dz4gCHHRlMiAuhNya+sXKLhxyvHziFcWxfMt2VtitXk=;
-        b=BVlKNNQs84XZvWWLWLq5blJsFdUwnbymiMxV0ZQ7674nuKgtZt3KkgdaZ7fJ5oe6Hk
-         V8XQns6Iulw4UZHwTnwtCG78zU4NmoSvcvjnnTfgMkSu6mgXq7siS4jpv0W4rqqYoGv8
-         Qx07yHjB/a2RxGtznOevTl6wDTa2h/l9KSAcU6je8iH+oyPUUh2lUATihkRol6T5nFA7
-         3/ivNPx5aUqDqwfkvQz6Yi525tTVJOmOlrPzKN9c6WXF44H6fBOyCyTnePKKCpZoNTk7
-         T+7G5cMtbxQjhfi2CpzNbO2kGGU8VwSKo9LWKQctwCWwNsg7PgZGay/KqfRhydxN40tU
-         +8wg==
-X-Gm-Message-State: AOAM532N/NZXefe6DPz2iJ0F67moNiSPe3FK537NngdvsBQTiJusdbjo
-        RVtCQKHNs7r9lo19g65zYz7lTJca9Ra2T3Kagxm2qw==
-X-Google-Smtp-Source: ABdhPJxoT43ANHvidEjUrlGXpA1JKWY6SOUCbiH6H03kpY+tlMRisQkFbKCxN1Bqckr4Ege0uDyW1EzA4erC5l+jEkM=
-X-Received: by 2002:a63:f346:: with SMTP id t6mr822842pgj.345.1633136069808;
- Fri, 01 Oct 2021 17:54:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bBqFMnErG4GH3r+7O+ALCEzoJ/5HVSbS5xSothngSqU=;
+        b=3cQg+qWp5P82Iq67pPPv9mxlQb8qugNllwIjAUPGld4Qfk1NU0rofZ+ygum3jWQDhG
+         t4VP6SVetsWeBip9KmeQIzNZiW1e4XVfynrHa8XaCPujAZF9ukTdbuAC4yzgtE396fuu
+         YW1WdmyAxvRjfb1WMiPOf283AzPlNaTps+evBBClMK+5xu24WbkG0WAt7SUGMpH34Dt9
+         WZ4CW+KZmS5zcq9UQtW+0Q8YQAd5xQKPl1Lo+7w72Wb3iZ3G7qmbCtVpIReKpGJ5Nn/h
+         CMduBZJzwJ0VjLOOStn5ROu0ufzMrJPSGX+bckAskiRBfxZtatzp8TAKIVLEFodDKUl3
+         5txA==
+X-Gm-Message-State: AOAM5319VxdioaG9qqgDxgPHlWHQUNytCAAd7iRLb6ysixFWwcKvTcPj
+        nOIvxEofN3P7ZOD8MDvi6OGJjQ==
+X-Google-Smtp-Source: ABdhPJwByXmufhaYBRr4CsuPoSbhdQN4oFOqSAGoZSx5nj+bWkNLOMFcS6yMQ364Mxopl0BfHUlorQ==
+X-Received: by 2002:a05:6512:2396:: with SMTP id c22mr1164796lfv.55.1633136664604;
+        Fri, 01 Oct 2021 18:04:24 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id s8sm894150lfd.149.2021.10.01.18.04.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Oct 2021 18:04:24 -0700 (PDT)
+Subject: Re: [PATCH] Revert "of: property: fw_devlink: Add support for
+ remote-endpoint"
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20210927204830.4018624-1-dmitry.baryshkov@linaro.org>
+ <CAGETcx-3Y3rOSoXu3SbDa6BP_jcT8uSQA+MV55QCY4b0Oe7L-A@mail.gmail.com>
+ <11fe1793-1455-ae44-b213-9afe47dfa370@linaro.org>
+ <CAGETcx_HRmvDKuXQEJkMk7zBpedLGkQmvJ24tAWpCHFf4DPX_w@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <61ce03c1-1b31-bb56-8951-7b71ecdd66a9@linaro.org>
+Date:   Sat, 2 Oct 2021 04:04:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210915195306.612966-1-kaleshsingh@google.com>
- <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com> <CAM9d7ciQC1sV8hOOsgHVLxk7sze_Qp_dBqBkK_FrtVhZ0=AzZQ@mail.gmail.com>
-In-Reply-To: <CAM9d7ciQC1sV8hOOsgHVLxk7sze_Qp_dBqBkK_FrtVhZ0=AzZQ@mail.gmail.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Fri, 1 Oct 2021 17:54:18 -0700
-Message-ID: <CAC_TJvdV-WD_ChfOkErQ7znjgMur1-ubAy_4k6R1sFCPZE=DTw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAGETcx_HRmvDKuXQEJkMk7zBpedLGkQmvJ24tAWpCHFf4DPX_w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 3:58 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Kalesh,
->
-> On Wed, Sep 15, 2021 at 1:09 PM Kalesh Singh <kaleshsingh@google.com> wrote:
-> >
-> > On Wed, Sep 15, 2021 at 12:53 PM Kalesh Singh <kaleshsingh@google.com> wrote:
-> > >
-> > > The frequency of the rss_stat trace event is known to be of the same
-> > > magnitude as that of the sched_switch event on Android devices. This can
-> > > cause flooding of the trace buffer with rss_stat traces leading to a
-> > > decreased trace buffer capacity and loss of data.
-> > >
-> > > If it is not necessary to monitor very small changes in rss (as is the
-> > > case in Android) then the rss_stat tracepoint can be throttled to only
-> > > emit the event once there is a large enough change in the rss size.
-> > > The original patch that introduced the rss_stat tracepoint also proposed
-> > > a fixed throttling mechanism that only emits the rss_stat event
-> > > when the rss size crosses a 512KB boundary. It was concluded that more
-> > > generic support for this type of filtering/throttling was need, so that
-> > > it can be applied to any trace event. [1]
-> > >
-> > > From the discussion in [1], histogram triggers seemed the most likely
-> > > candidate to support this type of throttling. For instance to achieve the
-> > > same throttling as was proposed in [1]:
-> > >
-> > >   (1) Create a histogram variable to save the 512KB bucket of the rss size
-> > >   (2) Use the onchange handler to generate a synthetic event when the
-> > >       rss size bucket changes.
-> > >
-> > > The only missing pieces to support such a hist trigger are:
-> > >   (1) Support for setting a hist variable to a specific value -- to set
-> > >       the bucket size / granularity.
-> > >   (2) Support for division arithmetic operation -- to determine the
-> > >       corresponding bucket for an rss size.
-> > >
-> > > This series extends histogram trigger expressions to:
-> > >   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
-> > >       and using literals directly in expressions (eg. x=size/1234)
-> > >   (2) Support division and multiplication in hist expressions.
-> > >       (eg. a=$x/$y*z); and
-> > >   (3) Fixes expression parsing for non-associative operators: subtraction
-> > >       and division. (eg. 8-4-2 should be 2 not 6)
-> > >
-> > > The rss_stat event can then be throttled using histogram triggers as
-> > > below:
-> > >
-> > >   # Create a synthetic event to monitor instead of the high frequency
-> > >   # rss_stat event
-> > >   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
-> > >          int member; long size' >> tracing/synthetic_events
-> > >
-> > >   # Create a hist trigger that emits the synthetic rss_stat_throttled
-> > >   # event only when the rss size crosses a 512KB boundary.
-> > >   echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
-> > >               .rss_stat_throttled(mm_id,curr,member,size)'
-> > >         >> events/kmem/rss_stat/trigger
-> > >
-> >
-> > Sorry, I have a clerical mistake here. The above key should be:
-> > s/keys=common_pid/keys=keys=mm_id,member
-> >
-> > The rss size is specific to the mm struct's member not the pid.
-> > The results below were captured with the correct key so no changes there.
-> >
-> > >  ------ Test Results ------
-> > > Histograms can also be used to evaluate the effectiveness of this
-> > > throttling by noting the Total Hits on each trigger:
-> > >
-> > >   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
-> > >   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
-> > >   echo 'hist:keys=common_pid'
-> > >            >> events/synthetic/rss_stat_throttled/trigger
-> > >
-> > > Allowing the above example (512KB granularity) run for 5 minutes on
-> > > an arm64 device with 5.10 kernel:
-> > >
-> > >    sched_switch      : total hits = 147153
-> > >    rss_stat          : total hits =  38863
-> > >    rss_stat_throttled: total hits =   2409
-> > >
-> > > The synthetic rss_stat_throttled event is ~16x less frequent than the
-> > > rss_stat event when using a 512KB granularity.
-> > >
-> > >
-> > > The results are more pronounced when rss size is changing at a higher
-> > > rate in small increments. For instance the following results were obtained
-> > > by recording the hits on the above events for a run of Android's
-> > > lmkd_unit_test [2], which continually forks processes that map anonymous
-> > > memory until there is an oom kill:
-> > >
-> > >    sched_switch      : total hits =  148832
-> > >    rss_stat          : total hits = 4754802
-> > >    rss_stat_throttled: total hits =   96214
-> > >
-> > > In this stress this, the  synthetic rss_stat_throttled event is ~50x less
-> > > frequent than the rss_stat event when using a 512KB granularity.
-> > >
-> > >
-> > > [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
-> > > [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
-> > >
-> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
->
-> Reviewed-by: Namhyung Kim <namhyung@kernel.org>
+On 28/09/2021 04:13, Saravana Kannan wrote:
+> On Mon, Sep 27, 2021 at 5:56 PM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> [Adding Stephen and linux-arm-msm to the CC list, missed on the patch Cc
+>> list]
+>>
+>> On 28/09/2021 00:58, Saravana Kannan wrote:
+>>> On Mon, Sep 27, 2021 at 1:48 PM Dmitry Baryshkov
+>>> <dmitry.baryshkov@linaro.org> wrote:
+>>>>
+>>>> Since the commit f7514a663016 ("of: property: fw_devlink: Add support
+>>>> for remote-endpoint") Linux kernel started parsing and adding devlinks
+>>>> for the remote-endpoint properties. However this brings more harm than
+>>>> good.
+>>>>
+>>>> For all the remote-endpoints in the graph two links are created. Thus
+>>>> each and every remote-endpoint ends up in the cyclic graph (instead of
+>>>> the original intent of catching a cycle of graph + non-graph link):
+>>>
+>>> Yes, I'm well aware of this. I even called this out in the commit
+>>> text. This creating of cycles and then catching and relaxing it is
+>>> intentional.
+>>> https://lore.kernel.org/all/20210330185056.1022008-1-saravanak@google.com/
+>>
+>> What would be the reason two always create a cycle which gives no
+>> additional information? Maybe I'm just misunderstanding this piece of code.
+> 
+> It's basically a tiny bit of busy work. Ulf and I planned to fix it
+> and we know how to. Just haven't gotten around to it since it doesn't
+> really break anything.
+> 
+>> Regarding your commit message. Even if there is a non-remote-endpoint
+>> dependency, it will be hidden by the remote-endpoint cycle.
+> 
+> That's the point. Because there's no way to tell without the driver
+> involvement, we basically need to ignore all dependencies between
+> those two devices pointing at each other.
+> 
+>>
+>> And another consequence of remote-endpoint loops.
+>>
+>> Consider this part part of dmesg. One warning is correct (real cyclic
+>> dependency). Others are remote-endpoint spam. Can you spot, which ones?
+>>
+>> [    7.032225] platform 1d87000.phy: Fixing up cyclic dependency with
+>> 1d84000.ufshc
+>> [   21.760326] platform c440000.spmi:pmic@2:typec@1500: Fixing up cyclic
+>> dependency with c440000.spmi:pmic@2:pmic-tcpm
+>> [   21.944849] platform c440000.spmi:pmic@2:pdphy@1700: Fixing up cyclic
+>> dependency with c440000.spmi:pmic@2:pmic-tcpm
+>> [   23.541968] platform a600000.usb: Fixing up cyclic dependency with
+>> c440000.spmi:pmic@2:pmic-tcpm
+>> [   30.354170] i2c 5-002b: Fixing up cyclic dependency with hdmi-out
+> 
+> It's info, not warning if I'm not mistaken. If that's really a problem
+> we can make it a debug log. Not the end of the world.
+> 
+>>
+>>
+>>>>
+>>>> [    0.381057] OF: remote-endpoint linking /soc@0/geniqup@9c0000/i2c@994000/hdmi-bridge@2b to /soc@0/mdss@ae00000/dsi@ae94000/ports/port@1/endpoint
+>>>> [    0.394421] OF: remote-endpoint linking /soc@0/geniqup@9c0000/i2c@994000/hdmi-bridge@2b to /hdmi-out/port/endpoint
+>>>> [    0.407007] OF: remote-endpoint linking /soc@0/phy@88e9000 to /soc@0/spmi@c440000/pmic@2/pmic-tcpm/connector/ports/port@0/endpoint@0
+>>>> [    0.419648] OF: remote-endpoint linking /soc@0/usb@a6f8800/usb@a600000 to /soc@0/spmi@c440000/pmic@2/pmic-tcpm/ports/port@2/endpoint@0
+>>>> [    0.432578] OF: remote-endpoint linking /soc@0/cci@ac4f000/i2c-bus@1/cam1@c0 to /soc@0/camss@ac6a000/ports/port@1/endpoint
+>>>> [    0.444450] OF: remote-endpoint linking /soc@0/camss@ac6a000 to /soc@0/cci@ac4f000/i2c-bus@1/cam1@c0/port/endpoint
+>>>> [    0.455292] OF: remote-endpoint linking /soc@0/mdss@ae00000/mdp@ae01000 to /soc@0/mdss@ae00000/dsi@ae94000/ports/port@0/endpoint
+>>>> [    0.467210] OF: remote-endpoint linking /soc@0/mdss@ae00000/mdp@ae01000 to /soc@0/mdss@ae00000/dsi@ae96000/ports/port@0/endpoint
+>>>> [    0.479239] OF: remote-endpoint linking /soc@0/mdss@ae00000/dsi@ae94000 to /soc@0/mdss@ae00000/mdp@ae01000/ports/port@0/endpoint
+>>>> [    0.491147] OF: remote-endpoint linking /soc@0/mdss@ae00000/dsi@ae94000 to /soc@0/geniqup@9c0000/i2c@994000/hdmi-bridge@2b/ports/port@0/endpoint
+>>>> [    0.504979] OF: remote-endpoint linking /soc@0/spmi@c440000/pmic@2/typec@1500 to /soc@0/spmi@c440000/pmic@2/pmic-tcpm/ports/port@0/endpoint
+>>>> [    0.517958] OF: remote-endpoint linking /soc@0/spmi@c440000/pmic@2/pdphy@1700 to /soc@0/spmi@c440000/pmic@2/pmic-tcpm/ports/port@1/endpoint
+>>>> [    0.565326] OF: remote-endpoint linking /hdmi-out to /soc@0/geniqup@9c0000/i2c@994000/hdmi-bridge@2b/ports/port@2/endpoint
+>>>>
+>>>> Under some conditions the device can become it's own supplier,
+>>>> preventing this device to be probed at all:
+>>>
+>>> I'm not sure this analysis is correct -- this shouldn't be happening.
+>>> If you go to the device link folder and cat "sync_state_only", I
+>>> expect it to be "1" in this case. Can you confirm that?
+>>
+>> It is "1".
+> 
+> Thanks for confirming.
+> 
+>>
+>>> Which means it won't block probing. Yes, the link itself is useless
+>>> and it'll get auto deleted once mdss probes and it's easy to not
+>>> create it in the first place. But this is definitely not your issue.
+>>>
+>>>> $ ls -l /sys/bus/platform/devices/ae00000.mdss/
+>>>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13 consumer:platform:ae00000.mdss -> ../../../virtual/devlink/platform:ae00000.mdss--platform:ae00000.mdss
+>>>>
+>>>> I think that until of_link can be tought to handle bi-directional links
+>>>> on its own, we should not parse remote-endpoint properties. Thus the
+>>>> aforementioned commit should be reverted.
+>>>
+>>> Nak. remote-endpoint parsing is working as intended. I don't think the
+>>> analysis is correct.
+>>>
+>>> Can you please enable the logs in all these functions and attach the
+>>> log so we can see why it's not probing mdss?
+>>> device_link_add
+>>> device_links_check_suppliers
+>>> func fw_devlink_relax_link
+>>> fw_devlink_create_devlink
+>>
+>> After doing the analysis, I can confirm that I was too quick regarding
+>> the mdss links preventing it from being probed. Sorry about that.
+>>
+>> It all went up to the DP phy having a link with usb-c-connector. I was
+>> running the kernel 5.15-rc1, so your tcpm fix is already present.
+>> However my colleague has disabled the tcpm device (which I did not
+>> notice). So the driver did not call fw_devlink_purge_absent_suppliers().
+>> The devlink still exists:
+> 
+> Let me take a closer look at this before the end of this week. Can you
+> point me to the exact DT changes that were made that's causing this
+> issue? It should help me debug the issue. I have a guess on what the
+> issue might be.
 
-Thanks for the review Namhyung!
+Here is the kernel source: 
+https://git.linaro.org/people/bryan.odonoghue/kernel.git/log/?h=5.15-rc1-camss-v2
 
->
-> Thanks,
-> Namhyung
->
->
-> > >
-> > > Kalesh Singh (5):
-> > >   tracing: Add support for creating hist trigger variables from literal
-> > >   tracing: Add division and multiplication support for hist triggers
-> > >   tracing: Fix operator precedence for hist triggers expression
-> > >   tracing/selftests: Add tests for hist trigger expression parsing
-> > >   tracing/histogram: Document expression arithmetic and constants
-> > >
-> > >  Documentation/trace/histogram.rst             |  14 +
-> > >  kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
-> > >  .../testing/selftests/ftrace/test.d/functions |   4 +-
-> > >  .../trigger/trigger-hist-expressions.tc       |  73 ++++
-> > >  4 files changed, 357 insertions(+), 52 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > >
-> > >
-> > > base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
-> > > --
-> > > 2.33.0.309.g3052b89438-goog
-> > >
+The change that causes PHY driver to silently stop probing, causing an 
+avalanche of devices not being probed:
+
+https://git.linaro.org/people/bryan.odonoghue/kernel.git/commit/?h=5.15-rc1-camss-v2&id=d0bf3fc47c132968c302965154eeb5c88007fa73
+
+> 
+>>
+>> [   53.426446] platform 88e9000.phy: probe deferral - wait for supplier
+>> connector
+>>
+>> However it is not present in the sysfs:
+> 
+> Right, because it's not a device link yet. It's waiting for the device
+> to show up to create the device link (it has to for the grand scheme
+> of things to work correctly).
+
+Could you please make it somehow visible that there is a 
+pending/blocking device link which is not visible yet (or even better 
+where it is pointing)?
+
+> 
+>>
+>> root@qcom-armv8a:~# ls -l /sys/bus/platform/devices/88e9000.phy/
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+>> consumer:platform:a600000.usb ->
+>> ../../../virtual/devlink/platform:88e9000.phy--platform:a600000.usb
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+>> consumer:platform:af00000.clock-controller ->
+>> ../../../virtual/devlink/platform:88e9000.phy--platform:af00000.clock-controller
+>> -rw-r--r--    1 root     root          4096 Aug  4 15:13 driver_override
+>> -r--r--r--    1 root     root          4096 Aug  4 15:13 modalias
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13 of_node ->
+>> ../../../../firmware/devicetree/base/soc@0/phy@88e9000
+>> drwxr-xr-x    2 root     root             0 Aug  4 15:13 power
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:10 subsystem ->
+>> ../../../../bus/platform
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+>> supplier:platform:100000.clock-controller ->
+>> ../../../virtual/devlink/platform:100000.clock-controller--platform:88e9000.phy
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+>> supplier:platform:18200000.rsc:clock-controller ->
+>> ../../../virtual/devlink/platform:18200000.rsc:clock-controller--platform:88e9000.phy
+>> lrwxrwxrwx    1 root     root             0 Aug  4 15:13
+>> supplier:platform:18200000.rsc:pm8150-rpmh-regulators ->
+>> ../../../virtual/devlink/platform:18200000.rsc:pm8150-rpmh-regulators--platform:88e9000.phy
+>> -rw-r--r--    1 root     root          4096 Aug  4 15:10 uevent
+>> -r--r--r--    1 root     root          4096 Aug  4 15:13
+>> waiting_for_supplier
+>>
+>> Thus it is not possible to spot this device link without
+>> CONFIG_DEBUG_DRIVER=y (or any similar debugging technique).
+> 
+> I sent out some patches to make this easier. But doesn't look like
+> it'll land in 5.15.
+> https://lore.kernel.org/lkml/20210915172808.620546-1-saravanak@google.com/
+
+Thank you, I'll take a look.
+
+> 
+>> If I re-enabled tcpm device or if I reverted remote-endpoint parsing, DP
+>> PHY probing would go fine. The DP PHY does not really depend on the
+>> connector (or TCPM) being present in the system. The driver will
+>> continue working w/o it. However it does not have a change to declare that.
+>>
+>> Furthermore I went back to the original case that caused you to add
+>> remote-endpoint support. The DSI-eDP bridge and eDP panel using the GPIO
+>> provided by that bridge. I think the proper fix for the original problem
+>> was implemented by the commit bf73537f411b ("drm/bridge: ti-sn65dsi86:
+>> Break GPIO and MIPI-to-eDP bridge into sub-drivers"). It split the
+>> DSI-eDP bridge driver into functional parts (devices), so that GPIO part
+>> and eDP parts are independent, thus breaking this cyclic dependency in a
+>> functional way. The remote-endpoint parsing is no longer necessary in
+>> this case (Stephen, please correct me if I'm wrong).
+> 
+> Even if the original case doesn't need remote-endpoint to work
+> correctly and the cycle has been broken, that doesn't remove the need
+> for parsing remote-endpoint. There could be other cases like the
+> original case.
+> 
+>> I still think that remote endpoint parsing does more harm and noise than
+>> good and thus should be reverted.
+> 
+> I'll agree to disagree. I'm sure your issue can be fixed without
+> removing support for remote-endpoint parsing -- let's work on that
+> (I've asked for more details above).
+> 
+> -Saravana
+> 
+
+
+-- 
+With best wishes
+Dmitry
