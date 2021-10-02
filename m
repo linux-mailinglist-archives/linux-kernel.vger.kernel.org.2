@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E7641FED2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A5B41FED3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhJBXxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbhJBXxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:53:53 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60495C0613EF
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 16:52:07 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i24so6152843lfj.13
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 16:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=DWmaqaBK3VHPsKjTNJeXDdL5YO382kmrBlq18HElcSI=;
-        b=FKhaKLPFJ6RQQamReLb4STcsqPATczVCwjxHPW3hG5nUKXijCucZTQyhtYt4MDYt0r
-         4P1yZcIm+WF0dDL5q5ZK2yBsV2FU0kPSn228mtLdUIBD11MEaj561ldZmG8HV9soAP72
-         2WarEPNFRKYS1pX89sFqu6+kVrjCTZiAeelh/ScMEJW5ETLrXUfySNd0B7egPn4bdu9l
-         AVC0yl6gRffLhoirxUG4OHMjKWVRs6lLADFrD5AYnCpArhLrDyK0LRhAclr00MMH45aP
-         PJOljZoVxbO0TD7umCgk88Zr/Ixh17TLdI402OgejXacBb1fZn1vcupG0auc7508hEML
-         SUFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DWmaqaBK3VHPsKjTNJeXDdL5YO382kmrBlq18HElcSI=;
-        b=ByOurgBHCevqtY1gRAt61Dt3bQBAHnVRrcfhakeRRfPhWvsXfWx8luq18a1+aTLjHm
-         hj7UOREX4ZBV8EXXEgXv/w1ERv5w7oZJOQV7A5MCbAUXdqc+6U+uW5HRHIxsjdqxzjSY
-         +2rSt5qXRGxpQOasbPMLDKyXpvCsTk1sculPxZYS3JsEGlvPpwnuRI8z5lOdSGfPbki1
-         tKwCFBIeNbcRxdN0CticI9welU40pJ8XDdIGwVsAzCvh6q55YglAqM+MLeg6kQULqi7h
-         34WBLqRp5e4zGdUI96vHI+ibBwyBT8o4QqpOpMZJajqo/gdbJFMkWZpHZ3fLseWniCTc
-         WAow==
-X-Gm-Message-State: AOAM531pm+Fhwp+2tfXzyZXovuPRVJeLITH5JlFf1e0t8DXYyEjL6yET
-        DiL2125lf+jHjqT1EamY1UUQYZPCdg2jNw==
-X-Google-Smtp-Source: ABdhPJy9JFhgCqmgrcSVr3c9iyMWIHWO+E+81TAcESUFPm5L7GEZMkZnE/pGGkQ9LWj+daE80rvfEQ==
-X-Received: by 2002:a2e:4a12:: with SMTP id x18mr6618398lja.309.1633218725415;
-        Sat, 02 Oct 2021 16:52:05 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d1sm1163650lfj.61.2021.10.02.16.52.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Oct 2021 16:52:05 -0700 (PDT)
-Subject: Re: [V2] drm: msm: adreno: use IS_ERR() instead of null pointer check
-To:     Wang Qing <wangqing@vivo.com>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <1604719151-28491-1-git-send-email-wangqing@vivo.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <4b7f494e-98f4-5e06-d025-72593ccb5301@linaro.org>
-Date:   Sun, 3 Oct 2021 02:52:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234266AbhJBX7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234050AbhJBX7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 19:59:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BEC161A03;
+        Sat,  2 Oct 2021 23:57:20 +0000 (UTC)
+Date:   Sat, 2 Oct 2021 19:57:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [RFC][PATCH] tracing: Define "fake" struct trace_pid_list
+Message-ID: <20211002195718.0b5d9b67@oasis.local.home>
+In-Reply-To: <CAHk-=whpkoC4wDPDUtVs22aZ=5v2bzAUPTGZTxnK19qB6euRug@mail.gmail.com>
+References: <7E585A79-A705-4CB9-9E4C-0E73DCE237E2@goodmis.org>
+        <CAHk-=whpkoC4wDPDUtVs22aZ=5v2bzAUPTGZTxnK19qB6euRug@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1604719151-28491-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/2020 06:19, Wang Qing wrote:
-> a6xx_gmu_get_mmio() never return null in case of error, but ERR_PTR(), so
-> we should use IS_ERR() instead of null pointer check and IS_ERR_OR_NULL().
+On Sat, 2 Oct 2021 15:39:45 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Sat, Oct 2, 2021 at 1:04 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> >
+> > [ Note, this is on top of my tree in ftrace/core, but wanted to ask if
+> >   this is the proper "fix".  
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> Ugh, please no. This is going to be very confusing, and it's going to
+> mess with anything that does things based on type (eg traditionally
+> module signatures etc).
 
-As a second thought, ioremap's NULL is converted to ERR_PTR(-EINVAL), so 
-the patch is correct.
+This is why I asked ;-)
 
-> ---
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index 491fee4..82420f7
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -492,7 +492,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->   	void __iomem *seqptr = a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
->   	uint32_t pdc_address_offset;
->   
-> -	if (!pdcptr || !seqptr)
-> +	if (IS_ERR(pdcptr) || IS_ERR(seqptr))
->   		goto err;
->   
->   	if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-> @@ -580,9 +580,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->   	wmb();
->   
->   err:
-> -	if (!IS_ERR_OR_NULL(pdcptr))
-> +	if (!IS_ERR(pdcptr))
->   		iounmap(pdcptr);
-> -	if (!IS_ERR_OR_NULL(seqptr))
-> +	if (!IS_ERR(seqptr))
->   		iounmap(seqptr);
->   }
->   
+> I'd rather you just expose the proper type, if that is what it takes.
+
+I can, as I'm currently the only one using this, it should be fine. I
+just like to not expose structures that shouldn't be touched, but
+that's my preference, but that's not really that common of a habit in
+the kernel anyway.
+
 > 
+> > Some compilers give this error:  
+> 
+> Only some? Which ones? And what did you do to make it appear? Sounds
+> like whatever change wasn't worth it.
 
+Yes, this is what surprised me. It worked on all my machines and for
+most of my tests, which are pretty much all gcc 10.X. But for one of my
+tests, I compile with gcc 8.1.0 (one I pulled down from kernel.org a
+while ago), and that's the one that blew up.
 
--- 
-With best wishes
-Dmitry
+It has nothing to do with the config (the same config compiles fine
+with gcc 10.x). And if I didn't have a test that compiled with 8.1.0, I
+would never had know this was an issue.
+
+> 
+> The advantage of some "opaque type" does _not_ override the
+> disadvantage of then having to make up these kinds of horrific
+> workarounds that actively lie to the compiler.
+
+I felt uncomfortable with the change, and that's why I wanted to get
+your opinion before having you first see it in a pull request.
+
+> 
+> We have tons of structures (and occasionally single structure members)
+> that we don't want people to access directly, and instead use a
+> wrapper function. That doesn't mean that they can't be exposed as a
+> type.
+> 
+> > The reason is that rcu_dereference_sched() has a check that uses
+> > typeof(*p) of the pointer passed to it.  
+> 
+> Sadly, we do that for a reason - we do a
+> 
+>      typeof(*p) *__local_p;
+> 
+> to drop the address space specifiers from (or add them to) the pointer.
+> 
+> That said, I wonder how many of them are actually needed. At least
+> some of them are purely for sparse
+> 
+> So at least some could probably just use
+> 
+>      typeof(p) __local_p;
+> 
+> instead, which would avoid the problem with a pointer to an incomplete
+> type (and keep it as a pointer to an incomplete type).
+> 
+> So one option might be to work on the RCU accessor macros instead.
+
+I looked at changing them, but for the one place:
+
+	((typeof(*p) __force __kernel *)(_________p1)); 
+
+Where there's a separation from the type and adding of "__force __kernel"
+before the pointer. Not sure if it matters or not.
+
+I'll do a little investigation, and see if tweaks to these RCU macros
+will fix it, otherwise, I'll just move the structure back out to being
+public.
+
+Thanks for the feedback,
+
+-- Steve
