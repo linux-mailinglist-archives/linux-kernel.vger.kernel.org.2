@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACFC41FCFC
+	by mail.lfdr.de (Postfix) with ESMTP id 741CA41FCFD
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbhJBQLJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Oct 2021 12:11:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27138 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233557AbhJBQLH (ORCPT
+        id S233597AbhJBQLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 12:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhJBQLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 12:11:07 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-185-X3JNG97FPwich-hLz-WT8w-1; Sat, 02 Oct 2021 17:09:19 +0100
-X-MC-Unique: X3JNG97FPwich-hLz-WT8w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Sat, 2 Oct 2021 17:09:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Sat, 2 Oct 2021 17:09:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH bpf-next v2 2/2] bpf: Replace callers of BPF_CAST_CALL
- with proper function typedef
-Thread-Topic: [PATCH bpf-next v2 2/2] bpf: Replace callers of BPF_CAST_CALL
- with proper function typedef
-Thread-Index: AQHXtL3/8BB2BiidZEGFv/aSkiFUcau/5NIA
-Date:   Sat, 2 Oct 2021 16:09:17 +0000
-Message-ID: <29ca9f764f07426093b570515dc8e025@AcuMS.aculab.com>
-References: <20210928230946.4062144-1-keescook@chromium.org>
- <20210928230946.4062144-3-keescook@chromium.org>
-In-Reply-To: <20210928230946.4062144-3-keescook@chromium.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 2 Oct 2021 12:11:11 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3440BC0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 09:09:25 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s11so12352053pgr.11
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 09:09:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:cc:subject:content-language
+         :to:references:from:in-reply-to:content-transfer-encoding;
+        bh=BMdIVWKp3ys5Ki4OkuinpSXjnqylPnTrfzGBeDzjdeo=;
+        b=Q05CiJuLApqub6sFWeG6+kf66teDw7Z9v7cmgqGKaLhZWKlvjclXChpT+BRNKXJWkC
+         hqIfq7aPINSgCtZGiiR48mO9WNHXkr+5hrIwM5oWYha2Cn0N9+f3h/xNPmASKQcLJ1iZ
+         k/FptNiJLEiXD6k6DlQ5fs5EjCcXtzpNyo9OP1baiLqwS1ZEhYWOADatfp0Gp3Ocw7Wb
+         UaMMtEfVb6o9nmk2ii5h0EM4rqkmR9ePepjYVrORmxlIxNPx1WoEgwidbNpIRgHwsfWi
+         P/aUW+dPFfmOG9+t4Zehvqk+76c6WsohFFGSGeceVN2eht5E2BZqJh83hL24Z0Zo9rkd
+         XAXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BMdIVWKp3ys5Ki4OkuinpSXjnqylPnTrfzGBeDzjdeo=;
+        b=OJMaHM5YQm2r24NpkhPXg4YrusN3KMeo/y0y/ZuKrWEkviCtFYvKNo7YJW8sAEojAc
+         DWchJe0HXrmTBo8GJGCn8GBolK0/l3ir0lSzKv6FTXxwPHDKw+xrA6H2k+o9kvxhzJ4v
+         t8GcSXa8gTZUDa/DVXuL6hbPUS/4ydLMTLOlG9fH/f+gj7Q/Wb1E7mXg460zGUxX1vsu
+         tsfS82yjk9xx6Tub43DeIxV0MGejoNGk/jk33X/kKF3lYs3lWqnB+2lkjp2spSpkV3gl
+         AVsrh/ljnK7tRIyQJBdCto5S7wxRonMXG0KpPEefK5yUQQs35O9zYK+RSFTtzoZMdTxk
+         pYGA==
+X-Gm-Message-State: AOAM533z6uXyrlEw5NxxvorgvCIZs1FduBU5YigAwTBu/CYYn28HpU7P
+        JgvEgDmI+EuQ3MXtlTStCTk=
+X-Google-Smtp-Source: ABdhPJxYDkCwwhPFpfdW/zRSqjObWrvwbVCUu1j5WXpD1xbbqvw5mWkpoyk/yTGQ8L0Yq3JrKdariQ==
+X-Received: by 2002:a63:5213:: with SMTP id g19mr3402250pgb.87.1633190964703;
+        Sat, 02 Oct 2021 09:09:24 -0700 (PDT)
+Received: from [192.168.1.6] ([223.230.105.60])
+        by smtp.gmail.com with ESMTPSA id b129sm9204377pfg.157.2021.10.02.09.09.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 09:09:24 -0700 (PDT)
+Message-ID: <c00d96ef-0168-c004-7fb1-a422a7c8aaa3@gmail.com>
+Date:   Sat, 2 Oct 2021 21:39:20 +0530
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Cc:     saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: r8188eu: core: remove unused variable pAdapter
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+To:     Michael Straube <straube.linux@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <YVh3MP/JrUwkKr3Y@user>
+ <59ac1835-2afd-cd7a-d073-5c5d2bb02805@gmail.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <59ac1835-2afd-cd7a-d073-5c5d2bb02805@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook
-> Sent: 29 September 2021 00:10
-...
-> In order to keep ahead of cases in the kernel where Control Flow
-> Integrity (CFI) may trip over function call casts, enabling
-> -Wcast-function-type is helpful. To that end, BPF_CAST_CALL causes
-> various warnings and is one of the last places in the kernel
-> triggering this warning.
-...
-> -static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
-> +static int bpf_for_each_array_elem(struct bpf_map *map, bpf_callback_t callback_fn,
->  				   void *callback_ctx, u64 flags)
->  {
->  	u32 i, key, num_elems = 0;
-> @@ -668,9 +668,8 @@ static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
->  			val = array->value + array->elem_size * i;
->  		num_elems++;
->  		key = i;
-> -		ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> -					(u64)(long)&key, (u64)(long)val,
-> -					(u64)(long)callback_ctx, 0);
-> +		ret = callback_fn((u64)(long)map, (u64)(long)&key,
-> +				  (u64)(long)val, (u64)(long)callback_ctx, 0);
->  		/* return value: 0 - continue, 1 - stop and return */
->  		if (ret)
->  			break;
 
-This is still entirely horrid and potentially error prone.
-While a callback function seems a nice idea the code is
-almost always better and much easier to read if some
-kind of iterator function is used so that the calling
-code is just a simple loop.
-This is true even if you need a #define for the loop end.
 
-	David
+On 02/10/21 9:08 pm, Michael Straube wrote:
+> Thanks for you patch Saurav, just some minor style issue.
+> 
+> On 10/2/21 17:13, Saurav Girepunje wrote:
+>> Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_efuse.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c 
+>> b/drivers/staging/r8188eu/core/rtw_efuse.c
+>> index 801887f497cf..d33a5b3b4088 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_efuse.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+>> @@ -28,8 +28,7 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+>>   #define REG_EFUSE_CTRL        0x0030
+>>   #define EFUSE_CTRL            REG_EFUSE_CTRL        /*  E-Fuse 
+>> Control. */
+>>
+>> -static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
+>> -                       u16 Offset,
+>> +static bool Efuse_Read1ByteFromFakeContent(u16 Offset,
+>>                          u8 *Value)
+> 
+> There is no need for a line break here.                 ^
+> 
+> Other than that looks good to me.
+> 
+> Thanks,
+> Michael
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks Michael for review. Yes line break not needed here. I will 
+update. I will resend the patch.
 
+Regards,
+Saurav
