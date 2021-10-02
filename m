@@ -2,145 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C1741FEC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D41741FEC6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 01:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234230AbhJBXnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 19:43:03 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:55511 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhJBXnB (ORCPT
+        id S234272AbhJBXpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 19:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234255AbhJBXpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 19:43:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HMNll5JY5z4xLs;
-        Sun,  3 Oct 2021 10:41:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633218073;
-        bh=h5rCfWVd2KAS1r0rx/4MyeNOm0KXGCv7ei1Oa3wfVw8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LR9XvwNWo52I8k8xV1ARFIY3gZCD6/3fjo9CQhO0P6jaKRMszMFIL9bWLhh5iHw0q
-         UHI2kDxGx1bMKWBNHrBp7vyYxW4DB20WArsVI1kDqdO7+0ghnrMEG4K/yb7+LvTwBn
-         toMSTxPFapsEexWZp/qdWSTAlR/D4/Okbw7UJ9E7Wa23OVSX84UUlHu82Aj8bm8gOQ
-         ThsZMc01DLr77Asp89OT4VFUxxBLN+Y+e6SBiCL90Jtjex4R5Tmr24TCfkIDfGv451
-         a9P2jZ3BOQozarZeeuXvTI2lmn7rO4tPUj5/hnApbqIEbaANHaSK8XxZoti6ar9Lpw
-         dnZNNNZseg4Aw==
-Date:   Sun, 3 Oct 2021 10:41:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RESEND 2 00/16] Resend bitmap patches
-Message-ID: <20211003104106.1526fa31@canb.auug.org.au>
-In-Reply-To: <YVjm3NXEhoBQtUSI@yury-ThinkPad>
-References: <20211001181245.228419-1-yury.norov@gmail.com>
-        <20211003094722.434c030d@canb.auug.org.au>
-        <YVjm3NXEhoBQtUSI@yury-ThinkPad>
+        Sat, 2 Oct 2021 19:45:19 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAF1C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 16:43:33 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so14731652wmc.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 16:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/T6wA479aMjXiGVQMPU8TC7VB5tEcMArPpG5ub2OJHk=;
+        b=EUhZfVpGDD6qg834LaUvUxb9ZhDqAco06iXtwjwHY0t+P8zjiqQea4m2vej+OHxL/l
+         Y9mM1kUwszAQ25fM1xo1dLgXBC/nFzrAFFqUEvI/5eVVKy5RL8SSeenVB5i7Nv6dYGl9
+         BZFV9xkLNKKFml88jtYV9xgbx0khTQug76YELXAQeCyWcQHfeaU1f4scvMlhAGKsj3b3
+         C+Q+XSD1TRfSItSDklV22WZKxvf6Jw2radWrncD7geXukbtzwAjmq+4s9ZrXFRmbvXEU
+         WPboa8oE9uQd9eDA39TWhg9PjdTjpW3EGvdA56dQFQ6vdJpr+EUtgqBoVvgxImd/mWDY
+         b1vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/T6wA479aMjXiGVQMPU8TC7VB5tEcMArPpG5ub2OJHk=;
+        b=LGl25kNZqHjBUORurPzGOY6Eji6m1DHwSlfaDNXo1dpulnrWDzTe++c1nPRow6o2p3
+         glB8OerSKYHPtVN+t/Y5YlKIHl/9a9XMq+dgONQla/5AWmnk5EV08VCGQbIflwTOIXbN
+         oSHvUP62kqULc/oV7/yu1qF9+TLrHRbxCXQkpKkPwyAg1uxenCfW+ZlrDLeRYXZ/BQun
+         gzN/tmXU/TOWrherI1d6PxiQk9NGU/QiarWLjx2iRtVnZq5hzbPqKbAKvVMjWXHtIpcn
+         7iASB3HHhEgwdEgU3WlSQJTG8N2Mrp++XoptJl8bCaF+d60kxOuH4qUUBPhlby0iu3MF
+         Cjow==
+X-Gm-Message-State: AOAM532JdkHiXiNEuMHI5yxFpTfBpkCoNDM5XKvnnOKLMwsexQ8i+AEg
+        uEx8vSkGhbCuTh5wuk1FBLQnDo+wWJo=
+X-Google-Smtp-Source: ABdhPJz/j7AnQVPkNfWnlxPyZBz5ITWoO6U2bBx+6+JZMWi8y1ZoDmE4l6z7g9WKHWWnom6z6VtlwA==
+X-Received: by 2002:a1c:2c3:: with SMTP id 186mr11197754wmc.14.1633218211603;
+        Sat, 02 Oct 2021 16:43:31 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c22-7bbe-df00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:7bbe:df00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id z6sm13999463wmp.1.2021.10.02.16.43.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 16:43:31 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     jbrunet@baylibre.com, alsa-devel@alsa-project.org,
+        linux-amlogic@lists.infradead.org
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control questions and issues
+Date:   Sun,  3 Oct 2021 01:43:12 +0200
+Message-Id: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kAlpOp8EAy3Kn/awCgiF/9z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/kAlpOp8EAy3Kn/awCgiF/9z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Jerome et al.,
 
-Hi Yury,
+on Amlogic Meson SoCs which use the AIU audio controller we have the
+so-called "machine gun noise" (MGN) issue, reproducible for example in
+Kodi. So far nobody was able to identify the cause of this issue. My
+idea was to at least narrow down the issue so we can categorize it. For
+that I wanted to get the SPDIF output from AIU to the HDMI controller
+working.
 
-On Sat, 2 Oct 2021 16:10:20 -0700 Yury Norov <yury.norov@gmail.com> wrote:
->
-> Ok, I'll resend it based on Linus tree shortly
+On Amlogic Meson GXBB/GXL/GXM SoCs a DesignWare HDMI TX controller is
+used. This has an SPDIF input but there's currently not driver for it.
+On Meson8/8b/8m2 SoCs I am working on a HDMI driver for the TransSwitch
+HDMI controller which - just like DesignWare HDMI TX - supports SPDIF
+and I2S inputs.
+I decided to add SPDIF support to the latter since the code from the
+vendor driver is much easier.
 
-Thanks.
+It took me a while to figure out why I would not get any audio output
+from AIU SPDIF to the HDMI controller - or from there to the sink.
+The "fix" for this issue is the RFC patch which is part of this series.
+Any feedback would be great as I am still new to the ASoC subsystem.
 
-I also need a branch name that will stay the same.  I will fetch that
-branch every day and use whatever you have set that branch to.
+Another part I am still struggling with is the audio "routing" (due to
+lack of a better term - please correct me if this is not the right word
+to use for this case). I have the following description in my .dts:
+	sound {
+		compatible = "amlogic,gx-sound-card";
+		model = "M8B-ODROID-C1";
 
-Here are the rules for inclusion in linux-next:
+		assigned-clocks = <&clkc CLKID_MPLL0>,
+				  <&clkc CLKID_MPLL1>;
+		assigned-clock-rates = <294912000>,
+				       <270950400>;
+		dai-link-0 {
+			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
+		};
 
-You will need to ensure that the commits in your tree/branch have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
+		dai-link-1 {
+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
+		};
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
+		dai-link-2 {
+			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
+			dai-format = "i2s";
+			mclk-fs = <256>;
 
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
+			codec-0 {
+				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
+			};
+		};
 
---Sig_/kAlpOp8EAy3Kn/awCgiF/9z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+		dai-link-3 {
+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
 
------BEGIN PGP SIGNATURE-----
+			codec-0 {
+				sound-dai = <&aiu AIU_HDMI CTRL_PCM>;
+			};
+		};
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFY7hMACgkQAVBC80lX
-0Gyudgf/duBmonArREDWPtOW4lp51VabyQLx+hZYJ+Q1auyILQqUEA2zzIxjOlcr
-Q9PeQKO7pqN8v6Cy8BW1ObVXhQDCrgfWgAXxv+E3r3DuiybqvfhXGh+33dcs339/
-ASl5rj/Wg3L3deEtupNsN2kvN0bjnrBP2b/1FeTPWCrhq/JCHiH2hM1NDJ9BzXzM
-jBDYxqlAwxPxWq4IcOFu/rq9Sykml+ROpOnKcKf72d60WcJUsG9HtWZZjy/FbKym
-2R+EwahIb8SXCFmsAPmWuCwcQMAz/m/OH91/VZ9Es8X9ef+MlWMQpg94hw3JlMrP
-e33F7MaTTKnxgbRK/TW8ReYml2wriA==
-=NPVY
------END PGP SIGNATURE-----
+		dai-link-4 {
+			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
 
---Sig_/kAlpOp8EAy3Kn/awCgiF/9z--
+			codec-0 {
+				sound-dai = <&hdmi_tx>;
+			};
+		};
+	};
+The driver for &hdmi_tx defines:
+	struct hdmi_codec_pdata pdata = {
+		.ops			= &txc_48352_hdmi_codec_ops,
+		.i2s			= 1,
+		.spdif			= 1,
+		.max_i2s_channels	= 8,
+		.data			= priv,
+	};
+In hdmi_codec_ops.hw_params I always get fmt->fmt HDMI_I2S unless I
+remove all I2S references from the .dts snipped above (only then
+HDMI_SPDIF is detected). Based on the selection of the "HDMI Source"
+enum in aiu-codec-ctrl I was expecting the format to update as well.
+That unfortunately doesn't happen and I don't know how that can be
+achieved.
+
+
+Best regards,
+Martin
+
+
+Martin Blumenstingl (1):
+  ASoC: meson: aiu: Fix HDMI codec control selection
+
+ sound/soc/meson/aiu-codec-ctrl.c  | 108 ++++++++++++++++++++++--------
+ sound/soc/meson/aiu-encoder-i2s.c |   6 --
+ 2 files changed, 80 insertions(+), 34 deletions(-)
+
+-- 
+2.33.0
+
