@@ -2,242 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273EE41FC8E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA8A41FC91
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhJBOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 10:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S233403AbhJBOl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 10:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhJBOjN (ORCPT
+        with ESMTP id S229560AbhJBOlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 10:39:13 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84099C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 07:37:26 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 52F4371A3; Sat,  2 Oct 2021 16:37:18 +0200 (CEST)
+        Sat, 2 Oct 2021 10:41:55 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D255C0613EC;
+        Sat,  2 Oct 2021 07:40:09 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y8so10591659pfa.7;
+        Sat, 02 Oct 2021 07:40:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1633185438;
-        bh=4AVH6fDKoa6JzB+sc4k7HhIqkbRVJlCDwp3u8GzP0OU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=C+ZwTcGxL0ePMgOl8BURH6qVeKGwxKxaDqP8/QqMAV76HfoHWCNQynzi+5cANHLih
-         PYngqu6f/AB6etd4/hGb+jYdhgsB14422oM2W14dgU401vTEZkNrCcRCntGDqbVWKd
-         70unnBds2ggudOrUDKI24Umm0WBXTpaE+wQzS848EBC16+JFWVM8tRnMneb9MzrPkx
-         WA/ss/A5rizrgHKkp6XWtsiw5hZs3mtu2JFOq+etcLEdqfiuYRpEyylQNb8zH3PsA/
-         Y1NQ5dwM9bFOqqwPRaKT0Yx9mCeLwBSdakiPrBK/KNxv2C+T2MwynTr8d01c8Zn0Hc
-         C4PspsOvTPa0o7NSCAwTtx1zexwe11PJl5H69BS7i5Jc5QxxGhspVgSL4KkJpP6kDF
-         pJlC2Jk7KTORuspbn39OXT/2b7CQ4/LYsCN26kUVBw06AeyuxR+0/08Mt8LMK47D3o
-         pWAa1V812uWH5zrWRuNin9opUGgO0tPumFH2sXOC4AYmDeHR1aWgg4OatKU24MMptN
-         Q4+ndGJJqJMD6yLpvrRbxoeW94LDVuGLdc0gQgDr2TDVmnshZI+GFGSNwrpIVpUo3s
-         aOG/FBZ3YpEcnQ0bUHBdcVrSJMCsTbSkXmkmRRfM0IH5ONt27I+pIHVVjFn0mNMa9Z
-         XJgwBi15Z6plW85PGTK7xyUw=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-Cc:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Subject: [PATCH] ocfs2: cleanup journal init and shutdown
-Date:   Sat,  2 Oct 2021 16:36:40 +0200
-Message-Id: <20211002143640.26512-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DhqK+ArXjOjZa+oG4Fg6CrcyqWKqBYM+cDJqPKFTj1Y=;
+        b=cUP8o59dy39Y+pX5bhAu2X0gbRFVsEbbFjDm8enHO/Basfah7l18NqbwKJfVekcvkg
+         X6lPclFmdEEbQxnk/fY9ZD3bDpHufvZYX8RkRfvdqG4CHRBvXVm8KacWMCBvyueXHQoH
+         jhmy2mh4QCirOwRLDSQnM7g6X3Xn/ZS5tsEZkN/ELgRxOBUEKWhTsnYwYbol6VMl0Bg3
+         ba+wzRyzjygCjnl1ENRuGNcPhMMQqoeUBQLMcbppGFid8lNoFhlK99rsgsa+QqMkZwP8
+         SMQV8aFa1jeoAa8Xs6z8ShSMRW+tTBmAC5dXS6kQbZviwFKTDYwIc0I5QCybozObnncX
+         IHGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DhqK+ArXjOjZa+oG4Fg6CrcyqWKqBYM+cDJqPKFTj1Y=;
+        b=LaMuH5Hw/Ucvbk16e3Nc3vFK+UsHyesVgC+iL/SVSTOFy7DsDWHm5Sr0cBPpcWYOk7
+         t0+ZU+7c19i20Ls2zUITRGN7MbPorMOsnbvqWMAtXUmI+4kG+MUtVn2GgGypB95Jj/MU
+         d6fkTTLsYNQVVzIZ/vCKOIXT1Xx/8r7J8VMtoU3F115DevD0OBMaObeBt9FyFH1/WeZy
+         Qf5iwT+aooZzFdsLlxyrPPAK/DT0Dku4WDf1WooDrUOVeRKAjxo0CT1sV1IchwYDFkus
+         dIzUog+rVprQsrpVreu8PDLnH11M5ZtOLjxgdvgsmx2Cbwsb/iZbwc22oN7q/mQHNtfE
+         1Ndw==
+X-Gm-Message-State: AOAM5330RXxBtds2J9FLfajwHzNUfOgc25QrYHOhMwVgOH1ko9LUD3GC
+        q3QT16HeY+v/sT+ff39kCCU=
+X-Google-Smtp-Source: ABdhPJzhqKbKc4pKj0Qz4h3vYl7ZYtAq/GBEXfVoW4W3zdLAXr7eSUHeacMohQPRpXHWrj+iCtkLdw==
+X-Received: by 2002:aa7:82ce:0:b0:44b:436b:b171 with SMTP id f14-20020aa782ce000000b0044b436bb171mr16952302pfn.21.1633185608861;
+        Sat, 02 Oct 2021 07:40:08 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id k14sm8725564pji.45.2021.10.02.07.39.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 07:40:08 -0700 (PDT)
+Subject: Re: [PATCH V6 7/8] Drivers: hv: vmbus: Add SNP support for VMbus
+ channel initiate message
+To:     Michael Kelley <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "tj@kernel.org" <tj@kernel.org>
+Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+References: <20210930130545.1210298-1-ltykernel@gmail.com>
+ <20210930130545.1210298-8-ltykernel@gmail.com>
+ <MWHPR21MB15933BC87034940AB7170552D7AC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <1c31c18d-af76-c5af-84f1-0dafe48f8605@gmail.com>
+Date:   Sat, 2 Oct 2021 22:39:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MWHPR21MB15933BC87034940AB7170552D7AC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate and free struct ocfs2_journal in ocfs2_journal_init and
-ocfs2_journal_shutdown. Init and release of system inodes references
-the journal so reorder calls to make sure they work correctly.
+Hi Michael:
+      Thanks for your review.
 
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
----
- fs/ocfs2/inode.c   |  4 ++--
- fs/ocfs2/journal.c | 25 +++++++++++++++++++++----
- fs/ocfs2/journal.h |  3 +--
- fs/ocfs2/super.c   | 40 +++-------------------------------------
- 4 files changed, 27 insertions(+), 45 deletions(-)
 
-diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
-index bc8f32fab964..c2275895c229 100644
---- a/fs/ocfs2/inode.c
-+++ b/fs/ocfs2/inode.c
-@@ -125,7 +125,6 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
- 	struct inode *inode = NULL;
- 	struct super_block *sb = osb->sb;
- 	struct ocfs2_find_inode_args args;
--	journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
- 
- 	trace_ocfs2_iget_begin((unsigned long long)blkno, flags,
- 			       sysfile_type);
-@@ -172,10 +171,11 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
- 	 * part of the transaction - the inode could have been reclaimed and
- 	 * now it is reread from disk.
- 	 */
--	if (journal) {
-+	if (OCFS2_SB(sb)->journal) {
- 		transaction_t *transaction;
- 		tid_t tid;
- 		struct ocfs2_inode_info *oi = OCFS2_I(inode);
-+		journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
- 
- 		read_lock(&journal->j_state_lock);
- 		if (journal->j_running_transaction)
-diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-index 4f15750aac5d..d50f0ac3fd46 100644
---- a/fs/ocfs2/journal.c
-+++ b/fs/ocfs2/journal.c
-@@ -810,19 +810,34 @@ void ocfs2_set_journal_params(struct ocfs2_super *osb)
- 	write_unlock(&journal->j_state_lock);
- }
- 
--int ocfs2_journal_init(struct ocfs2_journal *journal, int *dirty)
-+int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
- {
- 	int status = -1;
- 	struct inode *inode = NULL; /* the journal inode */
- 	journal_t *j_journal = NULL;
-+	struct ocfs2_journal *journal = NULL;
- 	struct ocfs2_dinode *di = NULL;
- 	struct buffer_head *bh = NULL;
--	struct ocfs2_super *osb;
- 	int inode_lock = 0;
- 
--	BUG_ON(!journal);
-+	/* initialize our journal structure */
-+	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
-+	if (!journal) {
-+		mlog(ML_ERROR, "unable to alloc journal\n");
-+		status = -ENOMEM;
-+		goto done;
-+	}
-+	osb->journal = journal;
-+	journal->j_osb = osb;
- 
--	osb = journal->j_osb;
-+	atomic_set(&journal->j_num_trans, 0);
-+	init_rwsem(&journal->j_trans_barrier);
-+	init_waitqueue_head(&journal->j_checkpointed);
-+	spin_lock_init(&journal->j_lock);
-+	journal->j_trans_id = 1UL;
-+	INIT_LIST_HEAD(&journal->j_la_cleanups);
-+	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
-+	journal->j_state = OCFS2_JOURNAL_FREE;
- 
- 	/* already have the inode for our journal */
- 	inode = ocfs2_get_system_file_inode(osb, JOURNAL_SYSTEM_INODE,
-@@ -1031,6 +1046,8 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
- //	up_write(&journal->j_trans_barrier);
- done:
- 	iput(inode);
-+	kfree(journal);
-+	osb->journal = NULL;
- }
- 
- static void ocfs2_clear_journal_error(struct super_block *sb,
-diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
-index d158acb8b38a..8dcb2f2cadbc 100644
---- a/fs/ocfs2/journal.h
-+++ b/fs/ocfs2/journal.h
-@@ -167,8 +167,7 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb);
-  *  ocfs2_start_checkpoint - Kick the commit thread to do a checkpoint.
-  */
- void   ocfs2_set_journal_params(struct ocfs2_super *osb);
--int    ocfs2_journal_init(struct ocfs2_journal *journal,
--			  int *dirty);
-+int    ocfs2_journal_init(struct ocfs2_super *osb, int *dirty);
- void   ocfs2_journal_shutdown(struct ocfs2_super *osb);
- int    ocfs2_journal_wipe(struct ocfs2_journal *journal,
- 			  int full);
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index 5c914ce9b3ac..1286b88b6fa1 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -1894,8 +1894,6 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
- 	/* This will disable recovery and flush any recovery work. */
- 	ocfs2_recovery_exit(osb);
- 
--	ocfs2_journal_shutdown(osb);
--
- 	ocfs2_sync_blockdev(sb);
- 
- 	ocfs2_purge_refcount_trees(osb);
-@@ -1918,6 +1916,8 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
- 
- 	ocfs2_release_system_inodes(osb);
- 
-+	ocfs2_journal_shutdown(osb);
-+
- 	/*
- 	 * If we're dismounting due to mount error, mount.ocfs2 will clean
- 	 * up heartbeat.  If we're a local mount, there is no heartbeat.
-@@ -2016,7 +2016,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 	int i, cbits, bbits;
- 	struct ocfs2_dinode *di = (struct ocfs2_dinode *)bh->b_data;
- 	struct inode *inode = NULL;
--	struct ocfs2_journal *journal;
- 	struct ocfs2_super *osb;
- 	u64 total_blocks;
- 
-@@ -2197,33 +2196,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
- 
- 	get_random_bytes(&osb->s_next_generation, sizeof(u32));
- 
--	/* FIXME
--	 * This should be done in ocfs2_journal_init(), but unknown
--	 * ordering issues will cause the filesystem to crash.
--	 * If anyone wants to figure out what part of the code
--	 * refers to osb->journal before ocfs2_journal_init() is run,
--	 * be my guest.
--	 */
--	/* initialize our journal structure */
--
--	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
--	if (!journal) {
--		mlog(ML_ERROR, "unable to alloc journal\n");
--		status = -ENOMEM;
--		goto bail;
--	}
--	osb->journal = journal;
--	journal->j_osb = osb;
--
--	atomic_set(&journal->j_num_trans, 0);
--	init_rwsem(&journal->j_trans_barrier);
--	init_waitqueue_head(&journal->j_checkpointed);
--	spin_lock_init(&journal->j_lock);
--	journal->j_trans_id = (unsigned long) 1;
--	INIT_LIST_HEAD(&journal->j_la_cleanups);
--	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
--	journal->j_state = OCFS2_JOURNAL_FREE;
--
- 	INIT_WORK(&osb->dquot_drop_work, ocfs2_drop_dquot_refs);
- 	init_llist_head(&osb->dquot_drop_list);
- 
-@@ -2404,7 +2376,7 @@ static int ocfs2_check_volume(struct ocfs2_super *osb)
- 						  * ourselves. */
- 
- 	/* Init our journal object. */
--	status = ocfs2_journal_init(osb->journal, &dirty);
-+	status = ocfs2_journal_init(osb, &dirty);
- 	if (status < 0) {
- 		mlog(ML_ERROR, "Could not initialize journal!\n");
- 		goto finally;
-@@ -2513,12 +2485,6 @@ static void ocfs2_delete_osb(struct ocfs2_super *osb)
- 
- 	kfree(osb->osb_orphan_wipes);
- 	kfree(osb->slot_recovery_generations);
--	/* FIXME
--	 * This belongs in journal shutdown, but because we have to
--	 * allocate osb->journal at the start of ocfs2_initialize_osb(),
--	 * we free it here.
--	 */
--	kfree(osb->journal);
- 	kfree(osb->local_alloc_copy);
- 	kfree(osb->uuid_str);
- 	kfree(osb->vol_label);
--- 
-2.30.2
+On 10/2/2021 9:26 PM, Michael Kelley wrote:
+>> @@ -303,10 +365,26 @@ void vmbus_disconnect(void)
+>>   		vmbus_connection.int_page = NULL;
+>>   	}
+>>
+>> -	hv_free_hyperv_page((unsigned long)vmbus_connection.monitor_pages[0]);
+>> -	hv_free_hyperv_page((unsigned long)vmbus_connection.monitor_pages[1]);
+>> -	vmbus_connection.monitor_pages[0] = NULL;
+>> -	vmbus_connection.monitor_pages[1] = NULL;
+>> +	if (hv_is_isolation_supported()) {
+>> +		memunmap(vmbus_connection.monitor_pages[0]);
+>> +		memunmap(vmbus_connection.monitor_pages[1]);
+> The matching memremap() calls are made in vmbus_connect() only in the
+> SNP case.  In the non-SNP case, monitor_pages and monitor_pages_original
+> are the same, so you would be doing an unmap, and then doing the
+> set_memory_encrypted() and hv_free_hyperv_page() using an address
+> that is no longer mapped, which seems wrong.   Looking at memunmap(),
+> it might be a no-op in this case, but even if it is, making them conditional
+> on the SNP case might be a safer thing to do, and it would make the code
+> more symmetrical.
+>
+
+Yes, memumap() does nothing is the non-SNP CVM and so I didn't check CVM
+type here. I will add the check in the next version.
+
+Thanks.
+
 
