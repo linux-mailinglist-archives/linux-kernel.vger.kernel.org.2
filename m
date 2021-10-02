@@ -2,152 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30A141FD17
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A84541FD19
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhJBQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 12:35:11 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:46892 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233444AbhJBQfK (ORCPT
+        id S233643AbhJBQgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 12:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233444AbhJBQgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 12:35:10 -0400
-Received: by mail-wm1-f53.google.com with SMTP id o4-20020a05600c510400b0030d55d6449fso2348996wms.5;
-        Sat, 02 Oct 2021 09:33:24 -0700 (PDT)
+        Sat, 2 Oct 2021 12:36:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8045DC0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 09:34:31 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s55so9699061pfw.4
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 09:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=wLb2A0PtJlB17tyLyjs2uzTuOP43MV6eb3/hU3RQqhE=;
+        b=QHB5X2UHQEkRlzsC39y2neBg6czGLrOigMaMM0ZU/KthuJ132gk2nQSZOn8QGiO8R5
+         4tGvRCpYKKxuKdIXyDldB/YZkvWscrj5eJGq4jDCYW1eq2Gn+6mDj/F6POynyNgOhkNc
+         Sqvskuu8sYxenRuSjPx5SnvM15QH0DwxAONHIoJzrmeBYtCM4WM7czjTLRuJVrR/+iDs
+         uA9U731NC4TWDHsqN86Ie4x2nIorq3SasLVV2XHbebP82K1V0733EsSwIQ2bpwSBrptt
+         kBPS9PCNlcHlgEqIutxMhaboWioceLctW00/klC6NB7fTBNk0KBIrhROMoO2R0rDpy0c
+         XMzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=XPPGkU56zJhC1We9hrBWJnpYMVu8F2L8QKrG+oAgNZA=;
-        b=GiQyFy2Nwz42KBqTETpKBTHxTSNtgOnkLCANiRsyoQGMTJtY4L3O4vZyDoVmdIgDuS
-         4VNJQNI1H4RBL3WY1JyAgHh+GY50rH8+zoBCMbotHGpLHKuKs+rlN+zvFhh9vWRw1cRC
-         eIBMcAkSaJJjEa5BhlgdxpITdWjhVDxqApes3EluqCcC/mCRn/e0LzaKXj3ZarhIAkyk
-         aqgaUM7UbK4Kyz3zX/C6wHfjis70tnrNPp7Fv9bVUkOJLtDfaUEZ4g4hFPuku4leZEFK
-         BP5K3LRz43whMy3UdnPaJx0DVCZGl6NYY4efGr4Xtdg5Eg9bL4XQzoES3qvcljtfbHE/
-         Pkwg==
-X-Gm-Message-State: AOAM532iRdTiZ7WBzs9hos4vSvZTMyBbF8Og81+4ILfTCjnIVDzhvYcp
-        vJEFCfJuUjNTOU0RDKS9Sr0=
-X-Google-Smtp-Source: ABdhPJxnblRp0iST3pjMz+7tehqv68lMCKl8gTtuCPWUtdqmj3LGMvYGXoO4MgsXUEEqgbn3pAhWlA==
-X-Received: by 2002:a05:600c:1907:: with SMTP id j7mr10013673wmq.184.1633192403799;
-        Sat, 02 Oct 2021 09:33:23 -0700 (PDT)
-Received: from [10.9.0.26] ([46.166.133.199])
-        by smtp.gmail.com with ESMTPSA id q126sm10973918wma.10.2021.10.02.09.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Oct 2021 09:33:23 -0700 (PDT)
-Reply-To: alex.popov@linux.com
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will.deacon@arm.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        notify@kernel.org
-References: <20210929185823.499268-1-alex.popov@linux.com>
- <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
- <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1> <YVWAPXSzFNbHz6+U@alley>
- <CAHk-=widOm3FXMPXXK0cVaoFuy3jCk65=5VweLceQCuWdep=Hg@mail.gmail.com>
- <ba67ead7-f075-e7ad-3274-d9b2bc4c1f44@linux.com>
- <20211002081359.5de4e2b1@oasis.local.home>
-From:   Alexander Popov <alex.popov@linux.com>
-Message-ID: <62cd30d5-0982-5074-969b-a4ae1ee188c3@linux.com>
-Date:   Sat, 2 Oct 2021 19:33:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=wLb2A0PtJlB17tyLyjs2uzTuOP43MV6eb3/hU3RQqhE=;
+        b=ZTCT1wysDPZ0qSgS2S0bmeK4VAIZjZH0iilsDl258XBS/FNElkEESaLWpwClGl4d0m
+         hoNWD6r3O9KXwflZnAb2oLIesO/Z79Yvb5K3R0YOs705CxaPWmfMNWWRDHcN1z2cmZUw
+         UaKcXrh8EBbCGjZAi9zAgORIs/cR2jugMzdXV+PQoAP9PT70nujCgY1GNzxfxol1C2xF
+         mv2faVD/ovYHfvkiLxjVBpjnfAYxYwdKeLN1lp8LRzzQKeAps4CL0Q8570t9M1/OjALj
+         7+9AXPUveNYXYtEbP8dvjcWEt/KV86TAbGOwwefTe+d8jqSmcTtvFRfAYy8of+KdO9hN
+         KtYQ==
+X-Gm-Message-State: AOAM5335xxzWDS7DDwgHZ08rlrI4aYypMdZLcxkmQdQ6BUtx9GWavsEC
+        A6w7DBRql9rMTjUNL4ZGjCDXS4ABsVg=
+X-Google-Smtp-Source: ABdhPJx2qUsUSk9/7hEBy2obN0pznxb2BpCV+tjFYypJVOO/yl8M+7NPeZmfH7YpiQJUSO3piuOQDA==
+X-Received: by 2002:a63:d64c:: with SMTP id d12mr3502461pgj.186.1633192468617;
+        Sat, 02 Oct 2021 09:34:28 -0700 (PDT)
+Received: from user ([223.230.105.60])
+        by smtp.gmail.com with ESMTPSA id p2sm9874131pgd.84.2021.10.02.09.34.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 09:34:28 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 22:04:23 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH v2] staging: r8188eu: core: remove unused variable pAdapter
+Message-ID: <YViKDzqX5isFX+gv@user>
 MIME-Version: 1.0
-In-Reply-To: <20211002081359.5de4e2b1@oasis.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.2021 15:13, Steven Rostedt wrote:
-> On Sat, 2 Oct 2021 14:41:34 +0300
-> Alexander Popov <alex.popov@linux.com> wrote:
-> 
->> Currently, the Linux kernel provides two types of reaction to kernel warnings:
->>  1. Do nothing (by default),
->>  2. Call panic() if panic_on_warn is set. That's a very strong reaction,
->>     so panic_on_warn is usually disabled on production systems.
->>
->> >From a safety point of view, the Linux kernel misses a middle way of handling  
->> kernel warnings:
->>  - The kernel should stop the activity that provokes a warning,
->>  - But the kernel should avoid complete denial of service.
->>
->> >From a security point of view, kernel warning messages provide a lot of useful  
->> information for attackers. Many GNU/Linux distributions allow unprivileged users
->> to read the kernel log (for various reasons), so attackers use kernel warning
->> infoleak in vulnerability exploits. See the examples:
->> https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
->> https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
->> https://googleprojectzero.blogspot.com/2018/09/a-cache-invalidation-bug-in-linux.html
->>
->> Let's introduce the pkill_on_warn parameter.
->> If this parameter is set, the kernel kills all threads in a process that
->> provoked a kernel warning. This behavior is reasonable from a safety point of
->> view described above. It is also useful for kernel security hardening because
->> the system kills an exploit process that hits a kernel warning.
-> 
-> How does this help? It only kills the process that caused the warning,
-> it doesn't kill the process that spawned it. This is trivial to get
-> around. Just fork a process, trigger the warning (it gets killed) and
-> then read the kernel log.
-> 
-> If this is your rationale, then I'm not convinced this helps at all.
+Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
 
-Steven, as I understand, here you ask about the security implications of
-pkill_on_warn (not about the safety implications that I mentioned).
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
 
-Killing the exploit process that hit a warning is MUCH better than ignoring and
-proceeding with execution. That may influence the stability of the exploits that
-hit WARN_ON() or rely on WARN_ON() infoleak.
+ChangeLog V2:
+	-Remove unneeded line break on Efuse_Read1ByteFromFakeContenit().
 
-Exploit development is the constant struggle for attack stability. Exploiting a
-heap memory corruption is especially painful when the kernel works with the
-attacked slab caches in parallel with your exploit.
+ChangeLog V1:
+	-Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
 
-So when the kernel kills the exploit process, some of the WARN_ON() infoleak
-data becomes obsolete; the attacker loses the execution in that particular
-kernel task on that particular CPU. Moreover, restarting the exploit process
-would bring a lot of noise to the system. That may decrease the attack stability
-even more.
+ drivers/staging/r8188eu/core/rtw_efuse.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-So killing the exploit process is the best option that we have here to distress
-the attacker who uses the WARN_ON() infoleak technique. I.e. that is
-probabilistic attack mitigation, which is reasonable for kernel safety as well.
+diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+index 801887f497cf..225ebdee21c1 100644
+--- a/drivers/staging/r8188eu/core/rtw_efuse.c
++++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+@@ -28,9 +28,7 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+ #define REG_EFUSE_CTRL		0x0030
+ #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
 
-I hope I managed to show this from the attacker's side.
+-static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
+-					   u16 Offset,
+-					   u8 *Value)
++static bool Efuse_Read1ByteFromFakeContent(u16 Offset, u8 *Value)
+ {
+ 	if (Offset >= EFUSE_MAX_HW_SIZE)
+ 		return false;
+@@ -96,7 +94,7 @@ ReadEFuseByte(
+ 	u16 retry;
 
-Best regards,
-Alexander
+ 	if (pseudo) {
+-		Efuse_Read1ByteFromFakeContent(Adapter, _offset, pbuf);
++		Efuse_Read1ByteFromFakeContent(_offset, pbuf);
+ 		return;
+ 	}
+
+@@ -134,7 +132,7 @@ u8 efuse_OneByteRead(struct adapter *pAdapter, u16 addr, u8 *data, bool pseudo)
+ 	u8 result;
+
+ 	if (pseudo) {
+-		result = Efuse_Read1ByteFromFakeContent(pAdapter, addr, data);
++		result = Efuse_Read1ByteFromFakeContent(addr, data);
+ 		return result;
+ 	}
+ 	/*  -----------------e-fuse reg ctrl --------------------------------- */
+--
+2.32.0
+
