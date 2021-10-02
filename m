@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0598841FCF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACFC41FCFC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 18:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhJBQGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 12:06:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232575AbhJBQGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 12:06:54 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A896E61B20;
-        Sat,  2 Oct 2021 16:05:03 +0000 (UTC)
-Date:   Sat, 2 Oct 2021 17:09:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v3 6/9] iio: adc: meson_saradc: Make use of the helper
- function dev_err_probe()
-Message-ID: <20211002170901.7378fcc4@jic23-huawei>
-In-Reply-To: <CAFBinCB+tYAjqhyO-UAsZxqm6FkK8Q8TGPJ_ehuxwgRSSRZDJA@mail.gmail.com>
-References: <20210928141956.2148-1-caihuoqing@baidu.com>
-        <20210928141956.2148-6-caihuoqing@baidu.com>
-        <CAFBinCB+tYAjqhyO-UAsZxqm6FkK8Q8TGPJ_ehuxwgRSSRZDJA@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S233587AbhJBQLJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Oct 2021 12:11:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27138 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233557AbhJBQLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 12:11:07 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-185-X3JNG97FPwich-hLz-WT8w-1; Sat, 02 Oct 2021 17:09:19 +0100
+X-MC-Unique: X3JNG97FPwich-hLz-WT8w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Sat, 2 Oct 2021 17:09:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Sat, 2 Oct 2021 17:09:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH bpf-next v2 2/2] bpf: Replace callers of BPF_CAST_CALL
+ with proper function typedef
+Thread-Topic: [PATCH bpf-next v2 2/2] bpf: Replace callers of BPF_CAST_CALL
+ with proper function typedef
+Thread-Index: AQHXtL3/8BB2BiidZEGFv/aSkiFUcau/5NIA
+Date:   Sat, 2 Oct 2021 16:09:17 +0000
+Message-ID: <29ca9f764f07426093b570515dc8e025@AcuMS.aculab.com>
+References: <20210928230946.4062144-1-keescook@chromium.org>
+ <20210928230946.4062144-3-keescook@chromium.org>
+In-Reply-To: <20210928230946.4062144-3-keescook@chromium.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Oct 2021 15:01:56 +0200
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+From: Kees Cook
+> Sent: 29 September 2021 00:10
+...
+> In order to keep ahead of cases in the kernel where Control Flow
+> Integrity (CFI) may trip over function call casts, enabling
+> -Wcast-function-type is helpful. To that end, BPF_CAST_CALL causes
+> various warnings and is one of the last places in the kernel
+> triggering this warning.
+...
+> -static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
+> +static int bpf_for_each_array_elem(struct bpf_map *map, bpf_callback_t callback_fn,
+>  				   void *callback_ctx, u64 flags)
+>  {
+>  	u32 i, key, num_elems = 0;
+> @@ -668,9 +668,8 @@ static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
+>  			val = array->value + array->elem_size * i;
+>  		num_elems++;
+>  		key = i;
+> -		ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
+> -					(u64)(long)&key, (u64)(long)val,
+> -					(u64)(long)callback_ctx, 0);
+> +		ret = callback_fn((u64)(long)map, (u64)(long)&key,
+> +				  (u64)(long)val, (u64)(long)callback_ctx, 0);
+>  		/* return value: 0 - continue, 1 - stop and return */
+>  		if (ret)
+>  			break;
 
-> On Tue, Sep 28, 2021 at 4:20 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
-> >
-> > When possible use dev_err_probe help to properly deal with the
-> > PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> > in the devices_deferred debugfs file.
-> > Using dev_err_probe() can reduce code size, and the error value
-> > gets printed.
-> >
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>  
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> as well as:
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> # Odroid-C1
-Hi Martin,
+This is still entirely horrid and potentially error prone.
+While a callback function seems a nice idea the code is
+almost always better and much easier to read if some
+kind of iterator function is used so that the calling
+code is just a simple loop.
+This is true even if you need a #define for the loop end.
 
-Confusing tag.  Was the second meant to be a Tested-by?
+	David
 
-Thanks,
-
-Jonathan
-> 
-> Thanks for your contribution!
-> 
-> 
-> Best regards,
-> Martin
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
