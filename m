@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DC741FC68
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AF741FC71
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 16:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbhJBOFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 10:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S233361AbhJBOPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 10:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbhJBOFO (ORCPT
+        with ESMTP id S233274AbhJBOPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 10:05:14 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187BFC0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 07:03:29 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id v11so555893pgb.8
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 07:03:29 -0700 (PDT)
+        Sat, 2 Oct 2021 10:15:19 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A591C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 07:13:33 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id h1so6441973pfv.12
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 07:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j6bc62fJKriPiLvCCqtI4vfnS9A2ln4GTK9v11F+mtw=;
-        b=kWIplTUT/HM07TCKdKRNVhvgGEUVKOnSSLUs/2E1P9uSUQjGpI/W4s3u+4G2SrY9Qo
-         pdnsbD7BB14P/UwiLNoGKmyPvyuXFOI88WOa965dNPkRND6gPOl7g/Cw9oPBbRe8ff7J
-         0NkaPHhkDf9KxnWu46u0i4FoKbdk6TTtMqIBn8oab9a54pS8oL4DVC6iYUJY0GRg2e3/
-         F6rudCXBJmdrRRltgICDS6NxTmyTxbjOE+nYodN/emDwJsfrkO4aYpG1lMD+lEOqsS8A
-         xb3QBR3t8tbbKzAbl9MLFB2l48vnBZ3fMJ1OKZPJ/egLfb4sFKHPSFF0S/qYBKGsdolC
-         DOpA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=GmWwwc/7x5Zt6Q9LrNLIvEiUYEg4AjgxYm4UNuFf9Ig=;
+        b=i1HJZNUFFGNOjpzYrPGS487erP/Dutkcy538JXmzDZ9BuDeIe/r1sGe+SCkueYIROW
+         sP91bmwvjhpc6Vo9cZ43jAlWN63S1FmGdy0gg5CgLoRK3ELNxUfbCDgBdm5uV3hmvppP
+         FL3kmrPQ5M3ZcdbYWg+dI5+H1o+MCUq0UNOn0w/tbpyRrKoT6xnqZ6Aygaag4oaecrIy
+         swkwAEukFOMaEtRvXecg7nF0X+A/5JyjvCKLLe+EE5qZnsiMopsxGuIw1ug6CEfvT4ob
+         IjxEUrLDOe4qeWW3jePZQSL+eNycVW0qwzAkkdaeGGeI8yUsaXrQLKDOpqOPsLY+RtIE
+         nRhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j6bc62fJKriPiLvCCqtI4vfnS9A2ln4GTK9v11F+mtw=;
-        b=DRaG0Kt9L3LvDXcYN9fzrZlBRQ9cB4NXkXL8JTJit3W7U62F/6A21btbt4Iw5FLD+X
-         Sq9z2SAYDUu0F6V7dOILUL//Xv6L+QXQJFeN+jPbJPwS3nq8/zSODe0asrO0yClH8jV+
-         tE7xyNqLnk0w/qADPsrOZcKoT8RM9jahpOSNt+1L/r14WwnkuMs1khenIknWn6eGkfMy
-         KApdyOAMqvki0+pqron41bECxI7sBTCS4Z0Q45kJSZv1k7lSN/upKdzP9kUZxK6/AEaS
-         jcdSQnHPuyEW5MUUG7x0Z5lEA3vuWebCa2CvrupTHNUYl6U5J/79hE+mVWC7+VoVkULt
-         0TBg==
-X-Gm-Message-State: AOAM530EjwmOh4MH1Vbrsho8J8uTP4euC8OPdVqWk7IZa1IrnkiHKgit
-        AdDKY78eSgSqfMQJdNfaKhM=
-X-Google-Smtp-Source: ABdhPJxG96LpJgB9i/K7J+Av8OoH9qsEn4iohqKuPTUVoWYlRL/P0abafhIyPm5ZtlVU9w8AD/dz7Q==
-X-Received: by 2002:a63:535f:: with SMTP id t31mr3015771pgl.270.1633183407240;
-        Sat, 02 Oct 2021 07:03:27 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6006:a148:5133:c24f:f24a:a8c])
-        by smtp.googlemail.com with ESMTPSA id s188sm8931276pfb.44.2021.10.02.07.03.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=GmWwwc/7x5Zt6Q9LrNLIvEiUYEg4AjgxYm4UNuFf9Ig=;
+        b=g8BAVpi7mAxLw+XBHOyPR22LDjEUGpfyXNc2pz6WxW6OLQff2dH3kFGOKjJL+CAP7f
+         barT9dNXg2dPYtTWJCzedHtqIXpw1zFg97PrxeMF/JtggMjXwXn7b/8T7o+sVigRHsR9
+         kiAS3joW/qkoW2QLw2QYjUVd4vqfhvTmw8/Hhr4+D2CjcvpSDEMLUUgIuk7fNymFhwqX
+         6ihs6wyIzIdpAWpsQs5ptHBydBpS6IKaSSuEPFEhPn8XRDp2uhViLSpz26Arkbw93Gch
+         Df4Fc4z0wSYDrNZJoPp/toupooeLcWH5UKjz0jxEIrnBC3QmndfCmJPif2irzRAlv3xz
+         sN6g==
+X-Gm-Message-State: AOAM531LnjNikilYAPlvzC6JRpvblFpEUb7jNxMmgYXc5oS8pNdP8qmi
+        +xVqUt+PXjQoMcEa5zwxA0k=
+X-Google-Smtp-Source: ABdhPJxL3P/OBvBoNSKbjJ71tJMJERPJcFe+QbVr8EnjkA4fcsksLk89hxLzrnxT9iAB6PnHTYYZtw==
+X-Received: by 2002:a63:950f:: with SMTP id p15mr3013366pgd.265.1633184012883;
+        Sat, 02 Oct 2021 07:13:32 -0700 (PDT)
+Received: from user ([223.230.105.60])
+        by smtp.gmail.com with ESMTPSA id l185sm9308237pfd.29.2021.10.02.07.13.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 07:03:26 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH v3] checkpatch: add check for continue statement in UNNECESSARY_ELSE
-Date:   Sat,  2 Oct 2021 19:32:47 +0530
-Message-Id: <20211002140247.28677-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <d15bba541aac03ebe24c733f24b6bda96d03a3ec.camel@perches.com>
-References: <d15bba541aac03ebe24c733f24b6bda96d03a3ec.camel@perches.com>
+        Sat, 02 Oct 2021 07:13:32 -0700 (PDT)
+Date:   Sat, 2 Oct 2021 19:43:25 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
+        straube.linux@gmail.com, saurav.girepunje@gmail.com,
+        linux@roeck-us.net, dan.carpenter@oracle.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove unused variable local variable
+Message-ID: <YVhpBWhNt7mwfNKU@user>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UNNECESSARY_ELSE only checks for the usage of else after a return or
-break. But the same logic is also true for continue statement.
+Remove unused local variable macAddr.
 
-else used after a continue statement is unnecessary. So add a test
-for continue statement also.
-
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
- scripts/checkpatch.pl | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/staging/r8188eu/core/rtw_br_ext.c    | 3 +--
+ drivers/staging/r8188eu/core/rtw_xmit.c      | 2 +-
+ drivers/staging/r8188eu/include/usb_osintf.h | 3 +--
+ 3 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index c27d2312cfc3..0eee086d87fe 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4011,15 +4011,15 @@ sub process {
- 
- # check indentation of any line with a bare else
- # (but not if it is a multiple line "if (foo) return bar; else return baz;")
--# if the previous line is a break or return and is indented 1 tab more...
-+# if the previous line is a break or continue or return and is indented 1 tab more...
- 		if ($sline =~ /^\+([\t]+)(?:}[ \t]*)?else(?:[ \t]*{)?\s*$/) {
- 			my $tabs = length($1) + 1;
--			if ($prevline =~ /^\+\t{$tabs,$tabs}break\b/ ||
--			    ($prevline =~ /^\+\t{$tabs,$tabs}return\b/ &&
--			     defined $lines[$linenr] &&
--			     $lines[$linenr] !~ /^[ \+]\t{$tabs,$tabs}return/)) {
-+			if ($prevline =~ /^\+\t{$tabs,$tabs}(break|continue|return)\b/ &&
-+			    !($1 eq "return" &&
-+			      defined $lines[$linenr] &&
-+			      $lines[$linenr] =~ /^[ \+]\t{$tabs,$tabs}return/)) {
- 				WARN("UNNECESSARY_ELSE",
--				     "else is not generally useful after a break or return\n" . $hereprev);
-+				     "else is not generally useful after a $1\n" . $hereprev);
- 			}
- 		}
- 
--- 
-2.25.1
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index 62a672243696..bcd0f9dd64b1 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -695,8 +695,7 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
+ 	}
+ }
+
+-void *scdb_findEntry(struct adapter *priv, unsigned char *macAddr,
+-				unsigned char *ipAddr)
++void *scdb_findEntry(struct adapter *priv, unsigned char *ipAddr)
+ {
+ 	unsigned char networkAddr[MAX_NETWORK_ADDR_LEN];
+ 	struct nat25_network_db_entry *db;
+diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+index f9ae48f73cdf..b34cb5b97df1 100644
+--- a/drivers/staging/r8188eu/core/rtw_xmit.c
++++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+@@ -1593,7 +1593,7 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 		if (*((__be16 *)(skb->data + MACADDRLEN * 2)) == __constant_htons(ETH_P_IP)) {
+ 			if (memcmp(padapter->scdb_mac, skb->data + MACADDRLEN, MACADDRLEN)) {
+ 				padapter->scdb_entry = (struct nat25_network_db_entry *)scdb_findEntry(padapter,
+-							skb->data + MACADDRLEN, skb->data + WLAN_ETHHDR_LEN + 12);
++							skb->data + WLAN_ETHHDR_LEN + 12);
+ 				if (padapter->scdb_entry) {
+ 					memcpy(padapter->scdb_mac, skb->data + MACADDRLEN, MACADDRLEN);
+ 					memcpy(padapter->scdb_ip, skb->data + WLAN_ETHHDR_LEN + 12, 4);
+diff --git a/drivers/staging/r8188eu/include/usb_osintf.h b/drivers/staging/r8188eu/include/usb_osintf.h
+index 34229b1cb081..624298b4bd0b 100644
+--- a/drivers/staging/r8188eu/include/usb_osintf.h
++++ b/drivers/staging/r8188eu/include/usb_osintf.h
+@@ -19,8 +19,7 @@ u8 usbvendorrequest(struct dvobj_priv *pdvobjpriv, enum bt_usb_request brequest,
+ int pm_netdev_open(struct net_device *pnetdev, u8 bnormal);
+ void netdev_br_init(struct net_device *netdev);
+ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb);
+-void *scdb_findEntry(struct adapter *priv, unsigned char *macAddr,
+-		     unsigned char *ipAddr);
++void *scdb_findEntry(struct adapter *priv, unsigned char *ipAddr);
+ void nat25_db_expire(struct adapter *priv);
+ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method);
+
+--
+2.32.0
 
