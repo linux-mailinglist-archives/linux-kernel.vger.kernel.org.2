@@ -2,364 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FCA41F938
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 03:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBF441F93A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 03:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhJBBj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 21:39:28 -0400
-Received: from mail-eopbgr70085.outbound.protection.outlook.com ([40.107.7.85]:5386
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230255AbhJBBj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 21:39:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G9/zVNBdr65pWupbdT2BEHjmi2f4+3FwtaeaJKHkHnCGzMUDfWOMzFOo888+/Ml+3zfJijXQeThidd9Y2bTZ52ST72nsp+tqUtm0aEkKynmwf5CYjgHv7xlqIglflLSkU71jOcGszyrgzXFNsV6oy4TVNrbE5PsErJseo0xspnpO41JXpbXwLnbPB45KpaJTkwJ2sCO6pUq40gs4pymbhZhxbs7aMzAhVFT3Yn72pdiBKK2Q5VeKpoYqMrygNDUY8pyy/yZKv/C1ASmzBVHLj3qvxV8qTsMzXunLag0GLVyF/2Jti4BswEnCPORuOfGLsWEVW1+wIJ5y/dhusqcFyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hjnb0cv0ExgEWRNlhIH8bF9xZ8qV1ec5x8zYMfSe2MI=;
- b=d/G/xjWfEmtChI09V9x0/25KechWRbMxTJ+Et3DDUWjFboQf1hzwkO/EuDBvsFhXlbQSGQ++5wwe4e67rbnJztIVcuHTSybIycsLAqJHjF2eNbvrV02puR4a4k/HhFTwpuY+rlxz1eTRWiBXpRuY/UM1gEGwOsDKFxHMN5oq/yk7MlDz2LJK3aVVfWAFNiBhOZ5wMZ1c0Z4Jw9Y+B5keT3ZEjGmLroSToh3HC3iHk52rpiLEyoAlwbL6u9mLydMjfhNorN0hNGVKuW58i3xizeMEtbx8cPON2KUCaEoyhXZ9JXLzDVK1fFBk4GiN3rX9sCgQ0RocNtOLY+p1O0PubQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hjnb0cv0ExgEWRNlhIH8bF9xZ8qV1ec5x8zYMfSe2MI=;
- b=hyDh2z2cCoBrIWfkBZFpoO1rB1MTdHw4gV8aJPVdwrBuwewnseAT+LQW1UP/FtK5wACRriFW+57KtwdnGKDPL3EludfwXX+6JJ/dJQUdiwsKqKTYlLh95fZWMxk/Q/Fs8n6E9N5Z8pAACMDMIhobTTGncesU8EtC7ftLKhZDqpY=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VE1PR04MB6509.eurprd04.prod.outlook.com (2603:10a6:803:125::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Sat, 2 Oct
- 2021 01:37:38 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4566.019; Sat, 2 Oct 2021
- 01:37:38 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: Re: [PATCH] spi: spi-nxp-fspi: don't depend on a specific node name
- erratum workaround
-Thread-Topic: [PATCH] spi: spi-nxp-fspi: don't depend on a specific node name
- erratum workaround
-Thread-Index: AQHXtwso2m8Esg1oVE6VXXAu/eOY4qu+7hKA
-Date:   Sat, 2 Oct 2021 01:37:38 +0000
-Message-ID: <20211002013737.hpalogc72umopz4x@skbuf>
-References: <20211001212726.159437-1-michael@walle.cc>
-In-Reply-To: <20211001212726.159437-1-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4d723fae-07db-4230-5467-08d9854537ed
-x-ms-traffictypediagnostic: VE1PR04MB6509:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB6509F7FC8CF4193464D8CB3CE0AC9@VE1PR04MB6509.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vE17QgDdNvH3vCwTRoXhMtY4HzX1i3jG2mnT7yN90IMt64XGFXZ3o9m8RjsnmWfNRW8xgzAalLGiAr05mzFyx8VdxuXLzRxQp9Sh9FViAaeXweojHLhN+BL7ZAkDn4CfVX+GYO7Q2f5/ZM8s0t5EEgLVCxd1IYaBZmxSZF8jmi0+mPBj5R9Z2KwBfxekyK4/ZJTYz6IGGZNyxaEqgMtoXeJZHTsbfci1RkoAzdiLc3k487egfsmw1QUxd5dQpsUwnGf3NnaWsKazks3niXMbM5nR0+GH6/Hbf5je4HqQ/pV0NDgbqQHJXUqhE6p+0YYw+P0spunNDvh81UDv+3wXEB9AoJD/BHrFlLBIR0lb0GkHrsvYGxZRQWzk5fWgJWlPFvheYy8t92ocAeMrywI6BXG1HKZgIij0zxNqf5EZBWt7c7Pw8AHZcaxc7JUO5AJPAXNt+g3iK8lAiWBq/NNje3Iy/1gz/GMEaMxL20IEWhzwRuY/YN2V9GILj+bF5C9Zmpn6lEa3jszEBZAiqCMVl1AjgxtvJJzp9f8tpQ5X1vP4NHSiZyuM+HQWjDb5wsfEtWJUwl8rSEdgnvFDKizY6mylWwVJSFbsEPDY0hDaIktUvAM031r8iCmU+ckCNjRxCxY1JxtMbWQ0MgofXpyoUMJ98teyg2w5bJZ0OqwXnh07Kc1FHvdW26RCVOp3OwQTqS4TB3+1ofIyb1nnHPmMMg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(86362001)(6506007)(91956017)(76116006)(66446008)(64756008)(66556008)(38070700005)(44832011)(4326008)(8936002)(5660300002)(83380400001)(9686003)(6512007)(66946007)(26005)(6916009)(66476007)(186003)(316002)(122000001)(508600001)(71200400001)(33716001)(54906003)(8676002)(2906002)(38100700002)(6486002)(1076003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QYSeHyBCGgbfzbZ4D37jRHG+P75DHFlN6F/T8sBGy1iBrxMi+LKXo2FLn41b?=
- =?us-ascii?Q?d7nfqE2lRNF60iw/uhYHnBxfiugt16eAgDdvxn8IXrysgatekDxv6wMLzbfB?=
- =?us-ascii?Q?578nUWUvC5AyCrQ5HcMpl4av714pKfQHh9WvUmtd5BJgJcxMH95x+LNjIJqG?=
- =?us-ascii?Q?9S7cK8JqV6HSp/xs8gbc1xg0px/rBqPZOZaO6iJwxbdQr399TuXz2z8VcKwy?=
- =?us-ascii?Q?kt7urfGeaHdPh/WWgOu/Z+0f3m+NJ4EwnN66n9JAp/F+TLIt+mljn37e83Gl?=
- =?us-ascii?Q?pxC0Vc4Cx52dlBixho1p1eeItgXeD2RltFpHMs2KVM/xte1KTVsu8DluqSqs?=
- =?us-ascii?Q?40GuZtBp5NTCnJDMiBJCh3kGtmrru/Jn+mc2T/hP/wXBPNjkRuEpMrw0AEsV?=
- =?us-ascii?Q?RCIhTd2DiPRwXlnMyyh+y6oOrzbxx2AmikzIEkBLYy9aczj2ACc21ApBEeIe?=
- =?us-ascii?Q?vs+Cu7mzW3+wPy2fNlqE7esjy9N3IMpQrlpho9J3Mu17RhlHHBOfMzdXtDD3?=
- =?us-ascii?Q?5FgoVbxrg07TiIXdLRPDAJojXAF/GSTh3RVU1sonVRu+T1tudnIuJOtOpzGK?=
- =?us-ascii?Q?5yhmIMprWKRJkRBSuO31EAkowzU9nDw8hIVRSw/4Kw4VKzVNigzzEjJSSzFu?=
- =?us-ascii?Q?RQ8fYcwcCrfDOChye90V3W0EOlxTnQ0t118vHsKLR9reQtjkZG/nkc1n59J9?=
- =?us-ascii?Q?IMm/fum8ui4sOERu0hTNNq1AW8DsvNi9UDiDC7/u8h91hDeGT4zg8aVkVso3?=
- =?us-ascii?Q?OolmZjRUgNbMF+7aNv6wPVoUIAVeJVMmMxDejpjuedd871GichlGsg89Akcb?=
- =?us-ascii?Q?8cDJUcfrAwjOn+g9tG5fJ786HfXuj+0a6e3hFoYRictqAHbVzQ+6mW37qaqF?=
- =?us-ascii?Q?C7KOqMttO/Krf/ewvrSexzraASsN+xkeeYdugi9TywaMyoiAWi+PFFLY9Ahf?=
- =?us-ascii?Q?4KowXAzOKGv1GJLhUCfaeiglJ5YFyA6M/G6EAUa1QXNgXYrYkjTcetb9hFXf?=
- =?us-ascii?Q?hOzi4md4zHCEYMiatNsVOM7URwRDtpJcQoYtAMsP64pXqxyqwq0csaAS4k/W?=
- =?us-ascii?Q?6pSsr/Z1YzhVuD8/UDH60mU1u436+7GCVA8vL1yYY+C4b+P6pBiARdcH1/Hj?=
- =?us-ascii?Q?JY64SC0CDTDZ/ZKJmBBSD638fGEaxAyHdXFKivvv6tlq4ucyphOQNx14oR/G?=
- =?us-ascii?Q?W7J8rREeouaC74UYShQbsn98piqORUOlZOD5/HQqm33yUKMQfna4+HFXxTD3?=
- =?us-ascii?Q?V7iF7yss8dX8S9SiO1kA+d4oCJwWKAJXlCsN6dEd9hWHVyKSKQGkNbpUU/ON?=
- =?us-ascii?Q?ZUCDz3tC8UASW6IS/AFoHcumt3ntBUNsEL05uWkj782jag=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BEA4DD3F0A5854419EE5BA6A00224721@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232305AbhJBBnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 21:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhJBBnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 21:43:20 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FCCC061775
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 18:41:35 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id h129so13741149iof.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 18:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XgEscKj+8UDBDiRhNzMMOlJXsRPIFTvm7YYXD1gUv8E=;
+        b=GMxeIr7kErI/fOs955L9lS8dIs2Tbf+tfumHdpyJL21unUR3IyiCKtql/QihBeibiv
+         VBDxB2QfIJZ9hMa4duYKlHzQK+f96VE14KsAGbs1MCdsgc/i/l8m83iBEqep8pyOLxTM
+         5AbLHOJosf/DswM066035bVw0Uc69nYQ2x2ldtkGWo5FA7EmnZ+ixc42YF3P/gR79shW
+         w4UrXki8W1NGpUOcNdf9K4y+CXmHsbjBAELwUQNif8gd1aBd2UbGtSA69HrNHtugR5Gj
+         qpofF2brR7N+3l+0XYOqbYukGkqj8V0E8CeYxyHtiN3DBWlxlXmjhCkUm0o5bYUX9AQ0
+         XmrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XgEscKj+8UDBDiRhNzMMOlJXsRPIFTvm7YYXD1gUv8E=;
+        b=ob3eTKIv0lIEU7yUuyoi6qLL10BnbzlktXtG1/JC+AxGOQlPAm221xn+ivk6IKKn8v
+         CHwfYElTj6vqFx7YULwPevIc+8T3/sWaj5q8VE3Qh3hChGQEoWaAVJ9FE/1kC01KjWU9
+         88pBhKMZdxFuwWQlyhqq496leap+sJky/0iWAtKoWXCzMWT0ED11Leb+bZFUMXDw/+ub
+         wOP+8TuayVW5ufK3jL6lRd1jLlRC/kpkN2AzhWM2YsfShHGZOqxKWV9o1BxmxPiBNUlb
+         tX8lpVyu+3BPOC0rJWEl45zJsfO2lSziH5ghMnktHwNf1t37MjudsiiOpAOjejXkEGs0
+         TIfw==
+X-Gm-Message-State: AOAM532Sv263FD1DHypGwonDyYVxGRLWkqT0fmlCwEzIVnWYoITlXr4o
+        FM36nMRA+AQTWQqxSKGkay+3TD39wJMudo9L1DT1bw==
+X-Google-Smtp-Source: ABdhPJzvGeuzcQcAzfGI6d//ekmtuNT9ritBdXrRty2n1+LDUT7cOC5fqcYgfL980xXbsLdaRSQKc37zpi23Vm9f/jw=
+X-Received: by 2002:a05:6638:59:: with SMTP id a25mr933541jap.92.1633138894629;
+ Fri, 01 Oct 2021 18:41:34 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d723fae-07db-4230-5467-08d9854537ed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2021 01:37:38.5045
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TX3V1TEAtrhGJsuXbA6DIc0Wacwe5+oBGBYN7uPirI4glKJptnVSe+gDyty7QZnkuxrOZ/+q7dACKdxWHznG7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6509
+References: <20210930063730.GC29843@xsang-OptiPlex-9020> <CAGS_qxrY53c9jY50ujpgnyqWTuLbgayK6StEn5rAA0+7vnyRpg@mail.gmail.com>
+In-Reply-To: <CAGS_qxrY53c9jY50ujpgnyqWTuLbgayK6StEn5rAA0+7vnyRpg@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 1 Oct 2021 18:41:22 -0700
+Message-ID: <CAGS_qxrH25tAvXxk8rvNZQuKwQ2aDDrosawLpsezj5Fm3k1LnQ@mail.gmail.com>
+Subject: Re: [kunit] 3b29021ddd: BUG:kernel_NULL_pointer_dereference,address
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 11:27:26PM +0200, Michael Walle wrote:
-> In commit 7e71b85473f8 ("arm64: dts: ls1028a: fix node name for the
-> sysclk") the sysclk node name was renamed and broke the erratum
-> workaround because it tries to fetch a device tree node by its name,
-> which is very fragile in general.
+On Thu, Sep 30, 2021 at 10:14 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Wed, Sep 29, 2021 at 11:17 PM kernel test robot
+> <oliver.sang@intel.com> wrote:
+> >
+> >
+> >
+> > Greeting,
+> >
+> > FYI, we noticed the following commit (built with clang-14):
+> >
+> > commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33 ("kunit: tool: allow filtering test cases via glob")
+> > https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git kunit
+> >
+> >
+> > in testcase: boot
+> >
+> > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> >
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >
+> >
+> > +--------------------------------------------------------------------------+------------+------------+
+> > |                                                                          | 2e53f56af3 | 3b29021ddd |
+> > +--------------------------------------------------------------------------+------------+------------+
+> > | BUG:kernel_NULL_pointer_dereference,address                              | 0          | 22         |
+> > | Oops:#[##]                                                               | 0          | 23         |
+> > | EIP:strcmp                                                               | 0          | 20         |
+> > | Kernel_panic-not_syncing:Fatal_exception                                 | 0          | 22         |
+> > +--------------------------------------------------------------------------+------------+------------+
+> >
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> >
+> >
+> > [   74.983767][  T243] BUG: kernel NULL pointer dereference, address: 00000000
+> > [   74.984577][  T243] #PF: supervisor read access in kernel mode
+> > [   74.984946][  T243] #PF: error_code(0x0000) - not-present page
+> > [   74.985316][  T243] *pde = 00000000
+> > [   74.985549][  T243] Oops: 0000 [#1]
+> > [   74.985776][  T243] CPU: 0 PID: 243 Comm: kunit_try_catch Tainted: G        W         5.15.0-rc1-00002-g3b29021ddd10 #1
+> > [   74.986494][  T243] EIP: strcmp+0xe/0x40
+> > [   74.986753][  T243] Code: 75 f7 31 c0 c4 04 5e 5f c4 04 5e 5f 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 00 55 89 e5 00 55 89 e5 89 c6 ac ae 89 c6 <ac> ae 75
+> > f8 31 c0 75 f8 31 c0 0c 01 5e 5f 0c 01 5e 5f 90 90 90 90
+> > [   74.987988][  T243] EAX: 00000000 EBX: f53c0108 ECX: 00000001 EDX: c33a266c
+> > [   74.988425][  T243] ESI: 00000000 EDI: c33a266c EBP: f52d3ee0 ESP: f52d3ed8
+> > [   74.988864][  T243] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010286
+> > [   74.989332][  T243] CR0: 80050033 CR2: 00000000 CR3: 03ec2000 CR4: 000406d0
+> > [   74.989771][  T243] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> > [   74.990219][  T243] DR6: fffe0ff0 DR7: 00000400
+> > [   74.990505][  T243] Call Trace:
+> > [   74.990708][  T243]  filter_suites_test+0x319/0x340
+>
+> This is happening in executor_test.c, in one of the test updated  for
+> test filtering support.
+> So this _might_ be an issue just with our unit tests, and not KUnit itself.
 
-It seems to me that the honest approach for the patch that got broken
-would have been to add a separate "nxp,ls1028a-fspi" compatible string
-instead of keeping banging "nxp,lx2160a-fspi", and for this special
-compatible string, require the platform PLL as a clock provider, and use
-clk_get() and clk_get_rate().
+This is a KUnit issue.
+Specifically when using a kunit.filter_glob that only has a suite
+part, and no test part.
 
-> We don't even need the sysclk node because the only possible sysclk
-> frequency input is 100MHz.
+The fix is https://lore.kernel.org/linux-kselftest/20211002013635.2076371-1-dlatypov@google.com/
 
-True. In the RCW, every SYSCLK_FREQ value except 0b1001011000 - 100 MHz
-is reserved.
-
-That goes to show how shallow my patch which broke this ERR workaround
-was. The sysclk frequency in the device tree was 100 MHz before _and_
-after the U-Boot "fixup", but the warning message was just annoying me.
-
-> In fact, the erratum says it applies if SYS_PLL_RAT is 3, not that the
-> platform clock is 300 MHz.
-
-Correct, although one implies the other.
-And probably the platform clock does not matter either, just the clock
-that the block gets, which just "happens" to be platform clock / 2.
-Anyway.
-
-> Make the workaround more reliable and just drop the unneeded sysclk
-> lookup.
->=20
-> For reference, the error during the bootup is the following:
-> [    4.898400] nxp-fspi 20c0000.spi: Errata cannot be executed. Read via =
-IP bus may not work
-
-Well, in Kuldeep's defence, at least this part is sane, right? I mean we
-cannot prove an issue =3D> we don't disable reads via the AHB. So it's
-just the error message (which I didn't notice TBH, sorry).
-
-On the other hand, is anyone using LS1028A with a platform clock of 300 MHz=
-? :)
-
-> Fixes: 82ce7d0e74b6 ("spi: spi-nxp-fspi: Implement errata workaround for =
-LS1028A")
-> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/spi/spi-nxp-fspi.c | 26 +++++++-------------------
->  1 file changed, 7 insertions(+), 19 deletions(-)
->=20
-> diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-> index a66fa97046ee..2b0301fc971c 100644
-> --- a/drivers/spi/spi-nxp-fspi.c
-> +++ b/drivers/spi/spi-nxp-fspi.c
-> @@ -33,6 +33,7 @@
-> =20
->  #include <linux/acpi.h>
->  #include <linux/bitops.h>
-> +#include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/completion.h>
->  #include <linux/delay.h>
-> @@ -315,6 +316,7 @@
->  #define NXP_FSPI_MIN_IOMAP	SZ_4M
-> =20
->  #define DCFG_RCWSR1		0x100
-> +#define SYS_PLL_RAT		GENMASK(6, 2)
-
-Ugh. So your solution still makes a raw read of the platform PLL value
-from the DCFG, now it just adds a nice definition for it. Not nice.
-
-> =20
->  /* Access flash memory using IP bus only */
->  #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
-> @@ -926,9 +928,8 @@ static void erratum_err050568(struct nxp_fspi *f)
->  		{ .family =3D "QorIQ LS1028A" },
->  		{ /* sentinel */ }
->  	};
-> -	struct device_node *np;
->  	struct regmap *map;
-> -	u32 val =3D 0, sysclk =3D 0;
-> +	u32 val, sys_pll_ratio;
->  	int ret;
-> =20
->  	/* Check for LS1028A family */
-> @@ -937,7 +938,6 @@ static void erratum_err050568(struct nxp_fspi *f)
->  		return;
->  	}
-> =20
-> -	/* Compute system clock frequency multiplier ratio */
->  	map =3D syscon_regmap_lookup_by_compatible("fsl,ls1028a-dcfg");
->  	if (IS_ERR(map)) {
->  		dev_err(f->dev, "No syscon regmap\n");
-> @@ -948,23 +948,11 @@ static void erratum_err050568(struct nxp_fspi *f)
->  	if (ret < 0)
->  		goto err;
-> =20
-> -	/* Strap bits 6:2 define SYS_PLL_RAT i.e frequency multiplier ratio */
-> -	val =3D (val >> 2) & 0x1F;
-> -	WARN(val =3D=3D 0, "Strapping is zero: Cannot determine ratio");
-> +	sys_pll_ratio =3D FIELD_GET(SYS_PLL_RAT, val);
-> +	dev_dbg(f->dev, "val: 0x%08x, sys_pll_ratio: %d\n", val, sys_pll_ratio)=
-;
-
-Do we really feel that this dev_dbg is valuable?
-
-> =20
-> -	/* Compute system clock frequency */
-> -	np =3D of_find_node_by_name(NULL, "clock-sysclk");
-> -	if (!np)
-> -		goto err;
-> -
-> -	if (of_property_read_u32(np, "clock-frequency", &sysclk))
-> -		goto err;
-> -
-> -	sysclk =3D (sysclk * val) / 1000000; /* Convert sysclk to Mhz */
-> -	dev_dbg(f->dev, "val: 0x%08x, sysclk: %dMhz\n", val, sysclk);
-> -
-> -	/* Use IP bus only if PLL is 300MHz */
-> -	if (sysclk =3D=3D 300)
-> +	/* Use IP bus only if platform clock is 300MHz */
-> +	if (sys_pll_ratio =3D=3D 3)
->  		f->devtype_data->quirks |=3D FSPI_QUIRK_USE_IP_ONLY;
-> =20
->  	return;
-> --=20
-> 2.30.2
->=20
-
-How about:
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/bo=
-ot/dts/freescale/fsl-ls1028a.dtsi
-index 343ecf0e8973..ffe820c22719 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -326,15 +326,17 @@ i2c7: i2c@2070000 {
- 		};
-=20
- 		fspi: spi@20c0000 {
--			compatible =3D "nxp,lx2160a-fspi";
-+			compatible =3D "nxp,ls1028a-fspi";
- 			#address-cells =3D <1>;
- 			#size-cells =3D <0>;
- 			reg =3D <0x0 0x20c0000 0x0 0x10000>,
- 			      <0x0 0x20000000 0x0 0x10000000>;
- 			reg-names =3D "fspi_base", "fspi_mmap";
- 			interrupts =3D <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
--			clocks =3D <&fspi_clk>, <&fspi_clk>;
--			clock-names =3D "fspi_en", "fspi";
-+			clocks =3D <&fspi_clk>, <&fspi_clk>,
-+				 <&clockgen QORIQ_CLK_PLATFORM_PLL
-+					    QORIQ_CLK_PLL_DIV(2)>;
-+			clock-names =3D "fspi_en", "fspi", "base";
- 			status =3D "disabled";
- 		};
-=20
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index a66fa97046ee..f2815e6cae2c 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -314,8 +314,6 @@
- #define NXP_FSPI_MAX_CHIPSELECT		4
- #define NXP_FSPI_MIN_IOMAP	SZ_4M
-=20
--#define DCFG_RCWSR1		0x100
--
- /* Access flash memory using IP bus only */
- #define FSPI_QUIRK_USE_IP_ONLY	BIT(0)
-=20
-@@ -922,55 +920,18 @@ static int nxp_fspi_adjust_op_size(struct spi_mem *me=
-m, struct spi_mem_op *op)
-=20
- static void erratum_err050568(struct nxp_fspi *f)
- {
--	const struct soc_device_attribute ls1028a_soc_attr[] =3D {
--		{ .family =3D "QorIQ LS1028A" },
--		{ /* sentinel */ }
--	};
--	struct device_node *np;
--	struct regmap *map;
--	u32 val =3D 0, sysclk =3D 0;
--	int ret;
-+	struct clk *clk_base;
-=20
--	/* Check for LS1028A family */
--	if (!soc_device_match(ls1028a_soc_attr)) {
--		dev_dbg(f->dev, "Errata applicable only for LS1028A\n");
-+	clk_base =3D clk_get(f->dev, "base");
-+	if (IS_ERR(clk_base)) {
-+		dev_err(f->dev, "Errata cannot be executed. Read via IP bus may not work=
-\n");
- 		return;
- 	}
-=20
--	/* Compute system clock frequency multiplier ratio */
--	map =3D syscon_regmap_lookup_by_compatible("fsl,ls1028a-dcfg");
--	if (IS_ERR(map)) {
--		dev_err(f->dev, "No syscon regmap\n");
--		goto err;
--	}
--
--	ret =3D regmap_read(map, DCFG_RCWSR1, &val);
--	if (ret < 0)
--		goto err;
--
--	/* Strap bits 6:2 define SYS_PLL_RAT i.e frequency multiplier ratio */
--	val =3D (val >> 2) & 0x1F;
--	WARN(val =3D=3D 0, "Strapping is zero: Cannot determine ratio");
--
--	/* Compute system clock frequency */
--	np =3D of_find_node_by_name(NULL, "clock-sysclk");
--	if (!np)
--		goto err;
--
--	if (of_property_read_u32(np, "clock-frequency", &sysclk))
--		goto err;
--
--	sysclk =3D (sysclk * val) / 1000000; /* Convert sysclk to Mhz */
--	dev_dbg(f->dev, "val: 0x%08x, sysclk: %dMhz\n", val, sysclk);
--
--	/* Use IP bus only if PLL is 300MHz */
--	if (sysclk =3D=3D 300)
-+	/* Use IP bus only if platform PLL is configured for 300 MHz, hence we ge=
-t 150 MHz */
-+	if (clk_get_rate(clk_base) =3D=3D 150000000)
- 		f->devtype_data->quirks |=3D FSPI_QUIRK_USE_IP_ONLY;
--
--	return;
--
--err:
--	dev_err(f->dev, "Errata cannot be executed. Read via IP bus may not work\=
-n");
-+	clk_put(clk_base);
- }
-=20
- static int nxp_fspi_default_setup(struct nxp_fspi *f)
-@@ -994,10 +955,8 @@ static int nxp_fspi_default_setup(struct nxp_fspi *f)
- 	/*
- 	 * ERR050568: Flash access by FlexSPI AHB command may not work with
- 	 * platform frequency equal to 300 MHz on LS1028A.
--	 * LS1028A reuses LX2160A compatible entry. Make errata applicable for
--	 * Layerscape LS1028A platform.
- 	 */
--	if (of_device_is_compatible(f->dev->of_node, "nxp,lx2160a-fspi"))
-+	if (of_device_is_compatible(f->dev->of_node, "nxp,ls1028a-fspi"))
- 		erratum_err050568(f);
-=20
- 	/* Reset the module */=
+>
+> Given it's complaining about strcmp, I'd assume that means it's in
+> that last line of the test?
+>
+>    151          KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
+>    152          KUNIT_EXPECT_STREQ(test, (const char
+> *)filtered.start[0][0]->name, "suite0");
+>    153  }
+>
+> > [   74.991021][  T243]  ? kunit_binary_ptr_assert_format+0xc0/0xc0
+>
+> But the problem is, I don't understand what this is doing in the stack.
+> I'd expect kunit_binary_str_assert_format here.
+>
+> I don't even know how this test case can call that function.
+> The only pointer related assertions are KUNIT_ASSERT_NOT_ERR_OR_NULL,
+> but that would go to kunit_ptr_not_err_assert_format.
+>
+> So I'm clearly missing something when it comes to reading kernel stack traces.
+> David, Brendan, any ideas or tips?
+>
+> > [   74.991394][  T243]  ? trace_hardirqs_on+0x4f/0xc0
+> > [   74.991701][  T243]  kunit_try_run_case+0x3c/0xc0
+> > [   74.992000][  T243]  kunit_generic_run_threadfn_adapter+0x16/0x40
+> > [   74.992383][  T243]  kthread+0x14c/0x180
+> > [   74.992634][  T243]  ? kunit_try_catch_run+0x180/0x180
+> > [   74.992971][  T243]  ? kthread_unuse_mm+0xc0/0xc0
+> > [   74.993269][  T243]  ret_from_fork+0x1c/0x28
+> > [   74.993541][  T243] Modules linked in:
+> > [   74.993779][  T243] CR2: 0000000000000000
+> > [   74.994045][  T243] ---[ end trace e46267553c50ccd5 ]---
+> > [   74.994391][  T243] EIP: strcmp+0xe/0x40
+> > [   74.994643][  T243] Code: 75 f7 31 c0 c4 04 5e 5f c4 04 5e 5f 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 00 55 89 e5 00 55 89 e5 89 c6 ac ae 89 c6 <ac> ae 75
+> > f8 31 c0 75 f8 31 c0 0c 01 5e 5f 0c 01 5e 5f 90 90 90 90
+> > [   74.995853][  T243] EAX: 00000000 EBX: f53c0108 ECX: 00000001 EDX: c33a266c
+> > [   74.996456][  T243] ESI: 00000000 EDI: c33a266c EBP: f52d3ee0 ESP: f52d3ed8
+> > [   74.997031][  T243] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010286
+> > [   74.997499][  T243] CR0: 80050033 CR2: 00000000 CR3: 03ec2000 CR4: 000406d0
+> > [   74.997937][  T243] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> > [   74.998384][  T243] DR6: fffe0ff0 DR7: 00000400
+> > [   74.998670][  T243] Kernel panic - not syncing: Fatal exception
+> > [   74.999042][  T243] Kernel Offset: disabled
+> >
+> >
+> >
+> > To reproduce:
+> >
+> >         # build kernel
+> >         cd linux
+> >         cp config-5.15.0-rc1-00002-g3b29021ddd10 .config
+> >         make HOSTCC=clang-14 CC=clang-14 ARCH=i386 olddefconfig prepare modules_prepare bzImage
+> >
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> >
+> >         # if come across any failure that blocks the test,
+> >         # please remove ~/.lkp and /lkp dir to run from a clean state.
+> >
+> >
+> >
+> > ---
+> > 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> > https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+> >
+> > Thanks,
+> > Oliver Sang
+> >
