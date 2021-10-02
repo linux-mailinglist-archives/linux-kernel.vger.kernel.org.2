@@ -2,97 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6429541F8A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7844F41F8AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhJBATD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhJBAS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:18:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C8561A50;
-        Sat,  2 Oct 2021 00:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633133831;
-        bh=kcJKuC0wkvfILqJ9qCwz2Ct/sDna6hfeZwqpy5GIkao=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hIYJ7rVWkNABVcCbGiHIsO+b18+sNtUvD/mG8R7uv9KMIdo9ntAw+DW5vJlNBaIBZ
-         KZtCyzdd4AQBG9Sa/OHPAnPdZ/wycdqi+XNwgBdvBn4wQG7Bwt9exO5qs52pJd45D1
-         1pPYvbmzR6b9R0Y3WAOGq76kFQnIp57D3JZZLEfNcUiEGZSLBxLai3+oCAfWT82OOY
-         d5uDt+NQv/SGN2hwSDtzzLMtNJLhhnacxNmGkCh0CkbM74TZ8NDIWNzXtckzE86zSS
-         IP7HNe2E7Ox07Sf/MYQbUPKI6LKvaydplKZvRaUhnZX7AVjdCs6BznzLdFqAMaOuAW
-         UAY0Chk4DRLTg==
-From:   Mark Brown <broonie@kernel.org>
-To:     festevam@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
-        perex@perex.cz, timur@kernel.org, Xiubo.Lee@gmail.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ASoC: fsl_spdif: implement bypass mode from in to out
-Date:   Sat,  2 Oct 2021 01:16:34 +0100
-Message-Id: <163313339132.45396.13488907784155100500.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
+        id S232058AbhJBAU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhJBAU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:20:27 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22C4C061775;
+        Fri,  1 Oct 2021 17:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=RqX8/wclMPh8rdKmPHIqwNBBYNDwMU8vPuFzjp1ZKig=; b=RVvzTboaKRM1qFIDREl9FccXN8
+        U9jmnJ4h6Zg6gnVkYw1Aui63VaCOXtf/4dd3UAAvWDMjQMDQG5aCKykfzsV0/lpmpr1x4pc8Q0Ekx
+        CJ33ImURpLylkWsOdwvDfIZjCOjuzARAX1eEwIIdGRWWs7VOy9DqAwKYid6ND8BROeNljGLRG+x7U
+        eFNSchp2R2gNMRoBA5oNhyaXwDch6/FvC3EmDEoYII0emZ8JKw/G/4epmUfPsO6n2KUQJh8n2IECl
+        A3u50OmYNI8z7U/8Ji9NjcfRgFKby4m5FArnDrJIITZtKtv6yQbI0JQj/t+TQjaXsCBZO87gaYiJz
+        E0Tz9EvA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWSji-001XMM-2a; Sat, 02 Oct 2021 00:18:42 +0000
+Subject: Re: [RFC v2 01/11] Documentation: Add HTE subsystem guide
+To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        warthog618@gmail.com, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, robh+dt@kernel.org
+References: <20210930232617.6396-1-dipenp@nvidia.com>
+ <20210930232617.6396-2-dipenp@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <70321686-276c-b972-302a-e649f28412de@infradead.org>
+Date:   Fri, 1 Oct 2021 17:18:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210930232617.6396-2-dipenp@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sep 2021 17:49:20 +0800, Shengjiu Wang wrote:
-> From: Viorel Suman <viorel.suman@nxp.com>
+On 9/30/21 4:26 PM, Dipen Patel wrote:
+> Adding hte document which can help understand various APIs implemented
+> in HTE framework for the HTE producers and the consumers.
 > 
-> Implement SPDIF bypass mode. It implies internal SoC
-> routing of SPDIF input signal to SPDIF output signal. The
-> test bed requires two boards: B1 configured in bypass mode,
-> and B2 to feed B1 SPDIF RX port and read B1 SPDIF TX port:
->    B2 TX -> B1 RX,
->    B2 RX <- B1 TX.
-> The test procedure:
->  a) Boot both boards
->  b) B2: start "arecord <spdifcard> -r 48kHz | aplay <local DAC>"
->  c) B2: start "aplay <spdifcard> -r 48kHz <2ch 48kHz audio file>"
->  d) B1: enable bypass mode:
-> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' on
->  e) B2: check DAC audio, make sure the same sample rate is used at
-> 	steps b) and c), in example above the rate is 48kHz.
->  f) B1: try to run "aplay" or "arecord" on imxspdif card while in
-> 	bypass mode - both must fail until bypass mode is disabled
->  g) B1: disable bypass mode:
-> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' off
->  h) B1: check the usual playback and capture on imxspdif card.
-> 	During this test try to set bypass mode - must not be allowed
-> 	while playback or capture is running.
+> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
+> ---
+> Changes in v2:
+> - Removed explanation, instead added kernel-doc references.
 > 
-> [...]
+>   Documentation/hte/hte.rst | 83 +++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 83 insertions(+)
+>   create mode 100644 Documentation/hte/hte.rst
+> 
+> diff --git a/Documentation/hte/hte.rst b/Documentation/hte/hte.rst
+> new file mode 100644
+> index 000000000000..c9b1badae601
+> --- /dev/null
+> +++ b/Documentation/hte/hte.rst
+> @@ -0,0 +1,83 @@
+> +============================================
+> +The Linux Hardware Timestamping Engine (HTE)
+> +============================================
+> +
+> +:Author: Dipen Patel
+> +
+> +Introduction
+> +------------
+> +
+> +Certain devices have built in hardware timestamping engines which can
+> +monitor sets of system signals, lines, buses etc... in realtime for state
+> +change; upon detecting the change they can automatically store the timestamp at
+> +the moment of occurrence. Such functionality may help achieve better accuracy
+> +in obtaining timestamp than using software counterparts i.e. ktime and friends.
 
-Applied to
+                 timestamps
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> +
+> +This document describes the API that can be used by hardware timestamping
+> +engine provider and consumer drivers that want to use the hardware timestamping
+> +engine (HTE) framework. Both consumers and providers must
+> +#include <linux/hte.h>.
+> +
+> +The HTE framework APIs for the providers
+> +----------------------------------------
+> +
+> +.. kernel-doc:: drivers/hte/hte.c
+> +   :functions: devm_hte_register_chip hte_push_ts_ns
+> +
+> +The HTE framework APIs for the consumers
+> +----------------------------------------
+> +
+> +.. kernel-doc:: drivers/hte/hte.c
+> +   :functions: devm_of_hte_request_ts hte_req_ts_by_hte_name hte_release_ts hte_enable_ts hte_disable_ts hte_get_clk_src_info
+> +
+> +The HTE framework public structures
+> +-----------------------------------
+> +.. kernel-doc:: include/linux/hte.h
+> +
+> +
+> +More on the HTE timestamp data
+> +------------------------------
+> +The struct hte_ts_data is used to pass timestamp details between the consumers
+> +and the providers. It expresses timestamp data in nano second in u64 data
 
-Thanks!
+                                                      nanosesconds
+                                              possibly:           in a __u64 data
 
-[1/1] ASoC: fsl_spdif: implement bypass mode from in to out
-      commit: 83bea088f976a289bc2efe4e404af47ab79d6639
+> +type. For now all the HTE APIs using struct hte_ts_data requires tsc to be in
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+                                                            require tsc to be in
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +nano seconds. An example of the typical hte_ts_data data life cycle, for the
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+    nanoseconds.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +GPIO line is as follows::
+> +
+> + - Monitors GPIO line change.
+> + - Detects the state change on GPIO line.
+> + - Converts timestamps in nano seconds and stores it in tsc.
 
-Thanks,
-Mark
+                              nanoseconds
+
+> + - Stores GPIO direction in dir variable if the provider has that hardware
+> + capability.
+> + - Pushes this hte_ts_data object to HTE subsystem.
+> + - HTE subsystem increments seq counter and invokes consumer provided callback.
+> + Based on callback return value, the HTE starts kernel thread and invokes
+
+                                             starts a kernel thread
+
+> + secondary callback in the thread context.
+> +
+> +HTE subsystem debugfs attributes
+> +--------------------------------
+> +HTE subsystem creates debugfs attributes at ``/sys/kernel/debug/hte/``.
+> +It also creates line/signal related debugfs attributes at
+
+                         signal-related
+
+> +``/sys/kernel/debug/hte/<provider>/<label or line id>/``.
+> +
+> +`ts_requested`
+> +		The total number of entities requested from the given provider,
+> +		where entity is the provider specific and could represent
+
+		             is specified by the provider and could
+(just guessing here; I could not parse it.)
+
+> +		lines, GPIO, chip signals, buses etc...
+> +                The attribute will be availble at
+
+		                         available
+
+> +		``/sys/kernel/debug/hte/<provider>/``.
+> +
+> +		Read only value
+
+		Read-only value
+
+> +
+> +`total_ts`
+> +		The total number of entities supported by the provider.
+> +                The attribute will be availble at
+
+		                         available
+
+> +		``/sys/kernel/debug/hte/<provider>/``.
+> +
+> +		Read only value
+
+		Read-only value
+
+> +
+> +`dropped_timestamps`
+> +		The dropped timestamps for a given line.
+> +                The attribute will be availble at
+
+		                         available
+
+> +		``/sys/kernel/debug/hte/<provider>/<label or line id>/``.
+> +
+> +		Read only value
+
+		Read-only value
+> 
+
+
+-- 
+~Randy
