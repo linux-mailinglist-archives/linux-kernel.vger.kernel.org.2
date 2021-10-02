@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C5B41FCAB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DE841FCAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 17:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbhJBPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233274AbhJBPPo (ORCPT
+        id S233465AbhJBPVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 11:21:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56714 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhJBPVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 11:15:44 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A401C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 08:13:59 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id r7so8524363pjo.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 08:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3CcsIBkjnD7sDWaAM5mdqO8LXPHUnsgkAUC6h+d4KEk=;
-        b=J15ChbwXUVu9rh26SHqVY8sa3JxBfK6+NkF3P+sW6CoB7qKhOr0DCh+uWiNSgdfVmn
-         2UlJbZNPi1qqbaR2ZodVYqfPRsfBQK98sE1sXV+y/9WSsbE/vh+fTHbV5uacQW8e0gwF
-         SwbkM6yq7TuRa+JpqAfsqGTCvs7cQk4rb+a/O7oZmu5EG8iF6j1oWjDNKiwTQ0JzxWSi
-         fP//HwDl+cjmVDKh+bQKU0YJk4vFp0ijv+l/5XNshglCev+EraQCX5LMVV2M3fbNmtbU
-         4e+eqWBHNXExmEQF6sLqhCdODyRWJOCRFwhBVvqKRZcIUc+EIPkHJoFDP7HnXe/hRcd3
-         TnPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3CcsIBkjnD7sDWaAM5mdqO8LXPHUnsgkAUC6h+d4KEk=;
-        b=7NzQPtZDK/35xNH9rgoRLjWfBDu96XZg+A8/OB7KVDrKy2Tx4mNlhC5NmgN79beAnv
-         jM4M8BC2lq5v77GC3wuNYakzoKDhdi9TGYTW+Ftc36Bv7QhMuqDfpufWc/3Lv15Hdr6v
-         lIayP96Ehgv+y3gzNqQ0glLT0LbXlT7aEZzCa39WikAv0MDdYsqScBYQHSA68b6UZZkC
-         FUlSJwYGmQGczCSHQ2Hkx0mTlL3RwUAbvYNQt5FiDoqvU9Z8GxEvcxE2nR4/4pRBHfE+
-         yyVb/XNI4QBcNppX7/R94MtnksXrZ4+LRMPx9NpO1KlhmcRn/Cxgki9bfZjCM3pLiobo
-         cn7Q==
-X-Gm-Message-State: AOAM531d8v+OEKIhkP1Hx4t0U3NgKrOQz701uUNNgcRoap/pRLATr1Hq
-        KszA/DGh9ebY6Cg3DPiN6WM=
-X-Google-Smtp-Source: ABdhPJyCmF7HojIrD01MKnEYPyf/gWuUwhD9TDFQCO8AAPjwSrA9JATjobIyQV7V4jpi9Ir+BFnKMg==
-X-Received: by 2002:a17:902:dad2:b0:13c:a6ce:faea with SMTP id q18-20020a170902dad200b0013ca6cefaeamr15873437plx.45.1633187638437;
-        Sat, 02 Oct 2021 08:13:58 -0700 (PDT)
-Received: from user ([223.230.105.60])
-        by smtp.gmail.com with ESMTPSA id k22sm9472702pfi.149.2021.10.02.08.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 08:13:58 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 20:43:52 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove unused variable pAdapter
-Message-ID: <YVh3MP/JrUwkKr3Y@user>
+        Sat, 2 Oct 2021 11:21:23 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id ADC021F44931
+Received: by earth.universe (Postfix, from userid 1000)
+        id C2AD73C0CA8; Sat,  2 Oct 2021 17:19:33 +0200 (CEST)
+Date:   Sat, 2 Oct 2021 17:19:33 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Martyn Welch <martyn.welch@collabora.com>
+Subject: Re: [PATCH] ARM: dts: imx6dl-b1x5v2: drop unsupported vcc-supply for
+ MPL3115A2
+Message-ID: <20211002151933.4p47qostpheldpr3@earth.universe>
+References: <20210920182227.339577-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pwvhzfyyfezbrgkg"
 Content-Disposition: inline
+In-Reply-To: <20210920182227.339577-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_efuse.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+--pwvhzfyyfezbrgkg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
-index 801887f497cf..d33a5b3b4088 100644
---- a/drivers/staging/r8188eu/core/rtw_efuse.c
-+++ b/drivers/staging/r8188eu/core/rtw_efuse.c
-@@ -28,8 +28,7 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
- #define REG_EFUSE_CTRL		0x0030
- #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
+Hi,
 
--static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
--					   u16 Offset,
-+static bool Efuse_Read1ByteFromFakeContent(u16 Offset,
- 					   u8 *Value)
- {
- 	if (Offset >= EFUSE_MAX_HW_SIZE)
-@@ -96,7 +95,7 @@ ReadEFuseByte(
- 	u16 retry;
+On Mon, Sep 20, 2021 at 08:22:27PM +0200, Krzysztof Kozlowski wrote:
+> The MPL3115A2 I2C pressure sensor driver does not take a VCC regulator.
+> The bindings are so far trivial, but the datasheet does not have a VCC
+> pin.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
 
- 	if (pseudo) {
--		Efuse_Read1ByteFromFakeContent(Adapter, _offset, pbuf);
-+		Efuse_Read1ByteFromFakeContent(_offset, pbuf);
- 		return;
- 	}
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-@@ -134,7 +133,7 @@ u8 efuse_OneByteRead(struct adapter *pAdapter, u16 addr, u8 *data, bool pseudo)
- 	u8 result;
+FWIW &reg_3v3_acm is connected to VDD obviously, but it's an
+always-on regulator without any means to control it, so there
+is no need to describe it.
 
- 	if (pseudo) {
--		result = Efuse_Read1ByteFromFakeContent(pAdapter, addr, data);
-+		result = Efuse_Read1ByteFromFakeContent(addr, data);
- 		return result;
- 	}
- 	/*  -----------------e-fuse reg ctrl --------------------------------- */
---
-2.32.0
+-- Sebastian
 
+>  arch/arm/boot/dts/imx6dl-b1x5v2.dtsi | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi b/arch/arm/boot/dts/imx=
+6dl-b1x5v2.dtsi
+> index a326a331508e..f028b6a191df 100644
+> --- a/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
+> +++ b/arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
+> @@ -47,7 +47,6 @@ &i2c5 {
+>  	mpl3115a2: pressure-sensor@60 {
+>  		compatible =3D "fsl,mpl3115";
+>  		reg =3D <0x60>;
+> -		vcc-supply =3D <&reg_3v3_acm>;
+> =20
+>  		/*
+>  		 * The MPL3115 interrupts are connected to pin 22 and 23
+> --=20
+> 2.30.2
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--pwvhzfyyfezbrgkg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFYeHkACgkQ2O7X88g7
++pqtIg//fMGCTweMUgdK4LAWx2sOeLerSt14MdRQnyVK6/8qmjIn1gj+mlg4EU3b
+rF9lEFypzxCdZ2o8GQFewDJ66PXV90Wz9iBP75dgxnZPTyWDAm8pgoYDC95CWiSZ
+/br+4/78IZV5fdHlDb5D74rKwWcjE9pFGNLCtBmAXBwLeF11hJsy6WZduMPsyB+v
+qzFh+ZUi46p3KyWYNEPrlemJ9dtrfDGvL/ANtDtBdNp/hGRtY2Rra5vpYoxA7KbT
+TO0uzwH1P4S4N9v6xijFv6B1jPCboimPqCf3eG2yQ8OVoF1tQSf0dcPnYLxceUKA
+pjfkCoZeEjD2nNAiP1GJtj0pOdtkG90w5WnMhfPPv1wyW9Cc8HkI79TX4cV8IRla
+Ce+838uCediYcItroEWZTQ1lPl5f91bbMSs9mOiHJCT/r/ZGVUlg66iTDrc7pXYo
+x6sonqCuozJEf66lcLedAwNkkUMbH0QmK4+rJ1K8iv8X4/H/NxPYwvqI2RHiWLWn
+PGSQZg1zVMYJGEyCzwVOBEoZ9RNhti8vszkooLQdu9+Y2NdGYs5WIAtfBNsjMuM5
+WPo0AKhSThgvgYB+SbQ1KiKcN66uiQJAsheOoiiDwqTi4TEZm9ujE1ZlT+ky5Yix
+GAQ2H2Q7y84mewlNe9fmG21ziuZU8vELC7SaVykwJz2BdXjETBk=
+=3+Ry
+-----END PGP SIGNATURE-----
+
+--pwvhzfyyfezbrgkg--
