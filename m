@@ -2,313 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C1641F8D0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B344B41F8D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhJBAy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        id S232048AbhJBA4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbhJBAyY (ORCPT
+        with ESMTP id S231628AbhJBA4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:54:24 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0421C0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 17:52:39 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i84so23948613ybc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:52:39 -0700 (PDT)
+        Fri, 1 Oct 2021 20:56:15 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D984C0613E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Oct 2021 17:54:30 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id j198so413555pfd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L8Rp4f/3LTcWcsABgUbxkyZKMylwzyOZ2rjywnv7e9g=;
-        b=jtyw/jHSR3zJy3bp5sMcf1IJXYrh7wyktV14F4IKdliz3ggiVG6ZN1ln8h51IcBKbz
-         NPMtSDrr4WDihVPG50rrLqSLZ1vnSLWEDoMCYuwQ7r2gyFik8prAJ/NR0RFqgFENuxBS
-         YG6KIw8Txrfb+IyJTvuBCX0KqDWwTOzg264e5M20dZOy+ndO7XHyG4jOoZ7nW4lVk+Mj
-         +WdVhS0UafcvGaiqTlmb8yoQQCoKsvf0fUb/gfZGRwbCf41L3suU5u+MUijdFXHH2X8I
-         yyUmGMNXGTqKYifbq2/sP8fbEOhxtn/OSIOY8/xRirNWqkx9Hk4Ibx+SKRiq9QgTwDdT
-         RNkQ==
+        bh=Dz4gCHHRlMiAuhNya+sXKLhxyvHziFcWxfMt2VtitXk=;
+        b=Y40BfZx3kfEmj6oc4wP5edmnI0YKLH+C3ENpc7kzLwXGrrHiZdQziSHpXelsyAoY1w
+         EtcmpmSl5Og9+N7Kt7sCR52juVA7j2786Emq6SUx3JGVk7WjOsHCOnC+UNUb6fF1tUtL
+         j2q0xpeZiIAYBBE3uA8X2a8Xtq66TpgOi+Rmh91gVo6H/e8vcEoXwUgPagHW7RsQoici
+         y+5SG1wYYDRFNNsRdUegMCWSc/jDIVQl7kUuPQETyQ865ASPAmsR481VN3MQGhEjM9se
+         I0zpQ+u2q8nPqA5oz+GbtEe79Hw7pE/m3iE+GccEUSu+8ZIDjVHkEtM1Om00wlKTr4cv
+         zSPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L8Rp4f/3LTcWcsABgUbxkyZKMylwzyOZ2rjywnv7e9g=;
-        b=fejh9Ac7Lanx52OnyjSHisLFColELKDueKcWuZ1BzjZS9j9nXKEZ4OCsKRvim0egv2
-         DHnbIfIIqMpp/Fwgh2FASE+rIhEYlc3eJhlyW88irMpz7XKpC3O9YTX8+Pp+KYU2XQxZ
-         g9I5WUoHFiY9bySb2ti/Vu4ltrszSy6aFGyPfzIx7lxR9CapmrHhZyA55Z2fX8RaMyiO
-         +jSXLH2HnG0wZ3Eu6m0K1+Izherh+KaGwohesRQg64ceSq29RYw4b32NjY7Clnh9dWO8
-         jcgPKHgusOaKduY1ugSbeuxvrNnikpBt16gu50fqR1SQsBRcfsshdb+cgJ62NwdGIsc3
-         jo4w==
-X-Gm-Message-State: AOAM533oub8yMPly+QPMNdaaMfaZie5GRNy0qtYHZ66vegy4UMGYSsaf
-        tv224/XDnckPW75iWSb6caln30xX5BaBazVZEHboRQ==
-X-Google-Smtp-Source: ABdhPJw2kFgqD0WRKR1BC6Gy8VGESSrssnKuvc2ZmTYYncVxGyWrTdGQfNZ7C5A5O5TLs7MMb2BHBhIufTQhiRkTuXk=
-X-Received: by 2002:a25:3:: with SMTP id 3mr982859yba.418.1633135958226; Fri,
- 01 Oct 2021 17:52:38 -0700 (PDT)
+        bh=Dz4gCHHRlMiAuhNya+sXKLhxyvHziFcWxfMt2VtitXk=;
+        b=BVlKNNQs84XZvWWLWLq5blJsFdUwnbymiMxV0ZQ7674nuKgtZt3KkgdaZ7fJ5oe6Hk
+         V8XQns6Iulw4UZHwTnwtCG78zU4NmoSvcvjnnTfgMkSu6mgXq7siS4jpv0W4rqqYoGv8
+         Qx07yHjB/a2RxGtznOevTl6wDTa2h/l9KSAcU6je8iH+oyPUUh2lUATihkRol6T5nFA7
+         3/ivNPx5aUqDqwfkvQz6Yi525tTVJOmOlrPzKN9c6WXF44H6fBOyCyTnePKKCpZoNTk7
+         T+7G5cMtbxQjhfi2CpzNbO2kGGU8VwSKo9LWKQctwCWwNsg7PgZGay/KqfRhydxN40tU
+         +8wg==
+X-Gm-Message-State: AOAM532N/NZXefe6DPz2iJ0F67moNiSPe3FK537NngdvsBQTiJusdbjo
+        RVtCQKHNs7r9lo19g65zYz7lTJca9Ra2T3Kagxm2qw==
+X-Google-Smtp-Source: ABdhPJxoT43ANHvidEjUrlGXpA1JKWY6SOUCbiH6H03kpY+tlMRisQkFbKCxN1Bqckr4Ege0uDyW1EzA4erC5l+jEkM=
+X-Received: by 2002:a63:f346:: with SMTP id t6mr822842pgj.345.1633136069808;
+ Fri, 01 Oct 2021 17:54:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-2-surenb@google.com>
- <20211001160830.700c36b32b736478000b3420@linux-foundation.org>
-In-Reply-To: <20211001160830.700c36b32b736478000b3420@linux-foundation.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 1 Oct 2021 17:52:27 -0700
-Message-ID: <CAJuCfpGpMru4z=ZMezRQW56tHNjrWHU3jWhG3qzuXvuUytq-3w@mail.gmail.com>
-Subject: Re: [PATCH v10 2/3] mm: add a field to store names for private
- anonymous memory
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+References: <20210915195306.612966-1-kaleshsingh@google.com>
+ <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com> <CAM9d7ciQC1sV8hOOsgHVLxk7sze_Qp_dBqBkK_FrtVhZ0=AzZQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ciQC1sV8hOOsgHVLxk7sze_Qp_dBqBkK_FrtVhZ0=AzZQ@mail.gmail.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Fri, 1 Oct 2021 17:54:18 -0700
+Message-ID: <CAC_TJvdV-WD_ChfOkErQ7znjgMur1-ubAy_4k6R1sFCPZE=DTw@mail.gmail.com>
+Subject: Re: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 4:08 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+On Thu, Sep 30, 2021 at 3:58 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> On Fri,  1 Oct 2021 13:56:56 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+> Hi Kalesh,
 >
-> > From: Colin Cross <ccross@google.com>
+> On Wed, Sep 15, 2021 at 1:09 PM Kalesh Singh <kaleshsingh@google.com> wrote:
 > >
-> > In many userspace applications, and especially in VM based applications
-> > like Android uses heavily, there are multiple different allocators in use.
-> >  At a minimum there is libc malloc and the stack, and in many cases there
-> > are libc malloc, the stack, direct syscalls to mmap anonymous memory, and
-> > multiple VM heaps (one for small objects, one for big objects, etc.).
-> > Each of these layers usually has its own tools to inspect its usage;
-> > malloc by compiling a debug version, the VM through heap inspection tools,
-> > and for direct syscalls there is usually no way to track them.
+> > On Wed, Sep 15, 2021 at 12:53 PM Kalesh Singh <kaleshsingh@google.com> wrote:
+> > >
+> > > The frequency of the rss_stat trace event is known to be of the same
+> > > magnitude as that of the sched_switch event on Android devices. This can
+> > > cause flooding of the trace buffer with rss_stat traces leading to a
+> > > decreased trace buffer capacity and loss of data.
+> > >
+> > > If it is not necessary to monitor very small changes in rss (as is the
+> > > case in Android) then the rss_stat tracepoint can be throttled to only
+> > > emit the event once there is a large enough change in the rss size.
+> > > The original patch that introduced the rss_stat tracepoint also proposed
+> > > a fixed throttling mechanism that only emits the rss_stat event
+> > > when the rss size crosses a 512KB boundary. It was concluded that more
+> > > generic support for this type of filtering/throttling was need, so that
+> > > it can be applied to any trace event. [1]
+> > >
+> > > From the discussion in [1], histogram triggers seemed the most likely
+> > > candidate to support this type of throttling. For instance to achieve the
+> > > same throttling as was proposed in [1]:
+> > >
+> > >   (1) Create a histogram variable to save the 512KB bucket of the rss size
+> > >   (2) Use the onchange handler to generate a synthetic event when the
+> > >       rss size bucket changes.
+> > >
+> > > The only missing pieces to support such a hist trigger are:
+> > >   (1) Support for setting a hist variable to a specific value -- to set
+> > >       the bucket size / granularity.
+> > >   (2) Support for division arithmetic operation -- to determine the
+> > >       corresponding bucket for an rss size.
+> > >
+> > > This series extends histogram trigger expressions to:
+> > >   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
+> > >       and using literals directly in expressions (eg. x=size/1234)
+> > >   (2) Support division and multiplication in hist expressions.
+> > >       (eg. a=$x/$y*z); and
+> > >   (3) Fixes expression parsing for non-associative operators: subtraction
+> > >       and division. (eg. 8-4-2 should be 2 not 6)
+> > >
+> > > The rss_stat event can then be throttled using histogram triggers as
+> > > below:
+> > >
+> > >   # Create a synthetic event to monitor instead of the high frequency
+> > >   # rss_stat event
+> > >   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
+> > >          int member; long size' >> tracing/synthetic_events
+> > >
+> > >   # Create a hist trigger that emits the synthetic rss_stat_throttled
+> > >   # event only when the rss size crosses a 512KB boundary.
+> > >   echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
+> > >               .rss_stat_throttled(mm_id,curr,member,size)'
+> > >         >> events/kmem/rss_stat/trigger
+> > >
 > >
-> > On Android we heavily use a set of tools that use an extended version of
-> > the logic covered in Documentation/vm/pagemap.txt to walk all pages mapped
-> > in userspace and slice their usage by process, shared (COW) vs.  unique
-> > mappings, backing, etc.  This can account for real physical memory usage
-> > even in cases like fork without exec (which Android uses heavily to share
-> > as many private COW pages as possible between processes), Kernel SamePage
-> > Merging, and clean zero pages.  It produces a measurement of the pages
-> > that only exist in that process (USS, for unique), and a measurement of
-> > the physical memory usage of that process with the cost of shared pages
-> > being evenly split between processes that share them (PSS).
+> > Sorry, I have a clerical mistake here. The above key should be:
+> > s/keys=common_pid/keys=keys=mm_id,member
 > >
-> > If all anonymous memory is indistinguishable then figuring out the real
-> > physical memory usage (PSS) of each heap requires either a pagemap walking
-> > tool that can understand the heap debugging of every layer, or for every
-> > layer's heap debugging tools to implement the pagemap walking logic, in
-> > which case it is hard to get a consistent view of memory across the whole
-> > system.
+> > The rss size is specific to the mm struct's member not the pid.
+> > The results below were captured with the correct key so no changes there.
 > >
-> > Tracking the information in userspace leads to all sorts of problems.
-> > It either needs to be stored inside the process, which means every
-> > process has to have an API to export its current heap information upon
-> > request, or it has to be stored externally in a filesystem that
-> > somebody needs to clean up on crashes.  It needs to be readable while
-> > the process is still running, so it has to have some sort of
-> > synchronization with every layer of userspace.  Efficiently tracking
-> > the ranges requires reimplementing something like the kernel vma
-> > trees, and linking to it from every layer of userspace.  It requires
-> > more memory, more syscalls, more runtime cost, and more complexity to
-> > separately track regions that the kernel is already tracking.
-> >
-> > This patch adds a field to /proc/pid/maps and /proc/pid/smaps to show a
-> > userspace-provided name for anonymous vmas.  The names of named anonymous
-> > vmas are shown in /proc/pid/maps and /proc/pid/smaps as [anon:<name>].
-> >
-> > Userspace can set the name for a region of memory by calling
-> > prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned long)name);
+> > >  ------ Test Results ------
+> > > Histograms can also be used to evaluate the effectiveness of this
+> > > throttling by noting the Total Hits on each trigger:
+> > >
+> > >   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+> > >   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
+> > >   echo 'hist:keys=common_pid'
+> > >            >> events/synthetic/rss_stat_throttled/trigger
+> > >
+> > > Allowing the above example (512KB granularity) run for 5 minutes on
+> > > an arm64 device with 5.10 kernel:
+> > >
+> > >    sched_switch      : total hits = 147153
+> > >    rss_stat          : total hits =  38863
+> > >    rss_stat_throttled: total hits =   2409
+> > >
+> > > The synthetic rss_stat_throttled event is ~16x less frequent than the
+> > > rss_stat event when using a 512KB granularity.
+> > >
+> > >
+> > > The results are more pronounced when rss size is changing at a higher
+> > > rate in small increments. For instance the following results were obtained
+> > > by recording the hits on the above events for a run of Android's
+> > > lmkd_unit_test [2], which continually forks processes that map anonymous
+> > > memory until there is an oom kill:
+> > >
+> > >    sched_switch      : total hits =  148832
+> > >    rss_stat          : total hits = 4754802
+> > >    rss_stat_throttled: total hits =   96214
+> > >
+> > > In this stress this, the  synthetic rss_stat_throttled event is ~50x less
+> > > frequent than the rss_stat event when using a 512KB granularity.
+> > >
+> > >
+> > > [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
+> > > [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
+> > >
+> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 >
-> So this can cause a vma to be split, if [start,len] doesn't exactly
-> describe an existing vma?  If so, is this at all useful?  If not then
-> `len' isn't needed - just pass in some address within an existing vma?
+> Reviewed-by: Namhyung Kim <namhyung@kernel.org>
 
-Technically one could mmap a large chunk of memory and then assign
-different names to its parts to use for different purposes, which
-would cause the vma to split. I don't think Android uses it that way
-but I'll have to double-check. I think one advantage of doing this
-could be to minimize the number of mmap syscalls.
-
-> > Setting the name to NULL clears it. The name length limit is 80 bytes
-> > including NUL-terminator and is checked to contain only printable ascii
-> > characters (including space), except '[',']','\','$' and '`'.
-> >
-> > The name is stored in a pointer in the shared union in vm_area_struct
-> > that points to a null terminated string. Anonymous vmas with the same
-> > name (equivalent strings) and are otherwise mergeable will be merged.
->
-> So this can prevent vma merging if used incorrectly (or maliciously -
-> can't think how)?  What are the potential impacts of this?
-
-Potential impact would be that otherwise mergeable vmas would not be
-merged due to the name difference. This is a known downside of naming
-an anon vma which I documented in my manual pages description as "Note
-that assigning an  attribute to a virtual memory area might prevent it
-from being merged with adjacent virtual memory areas due to the
-difference in that attribute's value.". In Android we see an increase
-in the number of VMAs due to this feature but it was not significant.
-I'll try to dig up the numbers or will rerun the test to get them.
-If a process maliciously wants to increase the number of vmas in the
-system it could generate lots of vmas with different names in its
-address space, however this can be done even without this feature by
-mapping vmas while toggling a protection bit. Something like this:
-
-int prot = PROT_WRITE;
-for (i = 0; i < count; i++) {
-    mmap(NULL, size_bytes, prot, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-    prot = (prot ^ PROT_READ) & (PROT_READ | PROT_WRITE);
-}
-
-> > The name pointers are not shared between vmas even if they contain the
-> > same name. The name pointer is stored in a union with fields that are
-> > only used on file-backed mappings, so it does not increase memory usage.
-> >
-> > The patch is based on the original patch developed by Colin Cross, more
-> > specifically on its latest version [1] posted upstream by Sumit Semwal.
-> > It used a userspace pointer to store vma names. In that design, name
-> > pointers could be shared between vmas. However during the last upstreaming
-> > attempt, Kees Cook raised concerns [2] about this approach and suggested
-> > to copy the name into kernel memory space, perform validity checks [3]
-> > and store as a string referenced from vm_area_struct.
-> > One big concern is about fork() performance which would need to strdup
-> > anonymous vma names. Dave Hansen suggested experimenting with worst-case
-> > scenario of forking a process with 64k vmas having longest possible names
-> > [4]. I ran this experiment on an ARM64 Android device and recorded a
-> > worst-case regression of almost 40% when forking such a process. This
-> > regression is addressed in the followup patch which replaces the pointer
-> > to a name with a refcounted structure that allows sharing the name pointer
-> > between vmas of the same name. Instead of duplicating the string during
-> > fork() or when splitting a vma it increments the refcount.
->
-> Generally, the patch adds a bunch of code which a lot of users won't
-> want.  Did we bust a gut to reduce this impact?  Was a standalone
-> config setting considered?
-
-I didn't consider a standalone config for this feature because when
-not used it has no memory impact at runtime. As for the image size, I
-built Linus' ToT with and without this patchset with allmodconfig and
-the sizes are:
-Without the patchset:
-$ size vmlinux
-   text    data     bss     dec     hex filename
-40763556 58424519 29016228 128204303 7a43e0f vmlinux
-
-With the patchset:
-$ size vmlinux
-   text    data     bss     dec     hex filename
-40765068 58424671 29016228 128205967 7a4448f vmlinux
-
-The increase seems quite small, so I'm not sure if it warrants a
-separate config option.
-
-> And what would be the impact of making this feature optional?  Is a
-> proliferation of formats in /proc/pid/maps going to make userspace
-> parsers harder to develop and test?
-
-I'm guessing having one format is simpler and therefore preferable?
-
-> I do think that saying "The names of named anonymous vmas are shown in
-> /proc/pid/maps and /proc/pid/smaps as [anon:<name>]." is a bit thin.
-> Please provide sample output so we can consider these things better.
-
-Sure. Here is a sample /proc/$pid/maps output (partial):
-
-6ffacb6000-6ffacd6000 r--s 00000000 00:10 361
-  /dev/__properties__/properties_serial
-6ffacd6000-6ffacd9000 rw-p 00000000 00:00 0
-  [anon:System property context nodes]
-6ffacd9000-6ffaceb000 r--s 00000000 00:10 79
-  /dev/__properties__/property_info
-6ffaceb000-6ffad4f000 r--p 00000000 00:00 0
-  [anon:linker_alloc]
-6ffad4f000-6ffad51000 rw-p 00000000 00:00 0
-  [anon:bionic_alloc_small_objects]
-6ffad51000-6ffad52000 r--p 00000000 00:00 0
-  [anon:atexit handlers]
-6ffad52000-6ffbc2c000 ---p 00000000 00:00 0
-6ffbc2c000-6ffbc2e000 rw-p 00000000 00:00 0
-6ffbc2e000-6ffbd52000 ---p 00000000 00:00 0
-6ffbd52000-6ffbd53000 ---p 00000000 00:00 0
-6ffbd53000-6ffbd5b000 rw-p 00000000 00:00 0
-  [anon:thread signal stack]
-6ffbd5b000-6ffbd5c000 rw-p 00000000 00:00 0
-  [anon:arc4random data]
-6ffbd5c000-6ffbd5d000 r--p 0000d000 07:90 59
-  /apex/com.android.art/javalib/arm64/boot-okhttp.art
-6ffbd5d000-6ffbd5e000 r--p 00014000 07:90 56
-  /apex/com.android.art/javalib/arm64/boot-core-libart.art
-6ffbd5e000-6ffbd5f000 rw-p 00000000 00:00 0
-  [anon:arc4random data]
-6ffbd5f000-6ffbd61000 r--p 00000000 00:00 0                              [vvar]
-6ffbd61000-6ffbd62000 r-xp 00000000 00:00 0                              [vdso]
-
-and sample /proc/$pid/smaps output (partial):
-
-6ffad4f000-6ffad51000 rw-p 00000000 00:00 0
-  [anon:bionic_alloc_small_objects]
-Size:                  8 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Rss:                   0 kB
-Pss:                   0 kB
-Shared_Clean:          0 kB
-Shared_Dirty:          0 kB
-Private_Clean:         0 kB
-Private_Dirty:         0 kB
-Referenced:            0 kB
-Anonymous:             0 kB
-LazyFree:              0 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-FilePmdMapped:         0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  8 kB
-SwapPss:               8 kB
-Locked:                0 kB
-THPeligible:    0
-VmFlags: rd wr mr mw me ac
+Thanks for the review Namhyung!
 
 >
-> What are the risks that existing parsers will be broken by such changes?
-
-That I can't really answer. It would depend on how the parser is
-written. The implementation follows the same pattern as [stack],
-[vdso] and other non-filebacked sections are named, however if a
-parser is written so that it does not ignore an unknown entry then it
-would fail to parse [anon:...] name if some process decides to name
-its anonymous vmas.
+> Thanks,
+> Namhyung
+>
+>
+> > >
+> > > Kalesh Singh (5):
+> > >   tracing: Add support for creating hist trigger variables from literal
+> > >   tracing: Add division and multiplication support for hist triggers
+> > >   tracing: Fix operator precedence for hist triggers expression
+> > >   tracing/selftests: Add tests for hist trigger expression parsing
+> > >   tracing/histogram: Document expression arithmetic and constants
+> > >
+> > >  Documentation/trace/histogram.rst             |  14 +
+> > >  kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
+> > >  .../testing/selftests/ftrace/test.d/functions |   4 +-
+> > >  .../trigger/trigger-hist-expressions.tc       |  73 ++++
+> > >  4 files changed, 357 insertions(+), 52 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> > >
+> > >
+> > > base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
+> > > --
+> > > 2.33.0.309.g3052b89438-goog
+> > >
