@@ -2,165 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D2441F8C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E7241F8CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhJBAnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:43:15 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42164 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230101AbhJBAnO (ORCPT
+        id S231984AbhJBAuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:50:04 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44575 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhJBAuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:43:14 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19200osO012501;
-        Sat, 2 Oct 2021 00:41:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=jOA1OW3f4FLdi3yHgOlrFGlyDwX0rJiFhNEb9s9/Nbw=;
- b=W5ffz/Yl9S0w35Xi+P24nXqLDo3Uu+pdmYnRwlrwQN58ULWTNLBGjusRLMK2o/mD6T1l
- NJlPO1JdwDijXZF9EfIXMWggIIYx1ld2yqlT4m9KnKF12DTARzo8gM+qaYzsoX+Nugp8
- k2eMd2An4rVkqgqP+QDLtDHe3OG3QtehyDcF2yv6l+IXDWiL3pa2rGbYGwaMPC/yBvMz
- iAVg/9Z2O/NP3TfRMYZfbaaFtUZXncvdoQ8o+KIAGdxYIUn6fjlMsZ5byLTXZI8b9Jn4
- ORiXMl4BbHUWSlYszOSE/UfmfxIVcjx8cd7yBJDOU+smDyXw2PuSKQ6DycV1kvb57WFM 5A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bdevvj1bb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 02 Oct 2021 00:41:23 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1920eYUZ069980;
-        Sat, 2 Oct 2021 00:41:22 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-        by userp3030.oracle.com with ESMTP id 3bechsgtmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 02 Oct 2021 00:41:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g8OXQaF9Axm0jZ8VQ20wEzE+hpV+VfuqG4MIGIrLiFl4ADsmHv2+983QFNIojDDVnyoF+qGeza4vvDQWeeFtQrC2fnxGJP/TfR++LYKAGMG8RZSTqxlaMIph1S6K113s//hLIJ1XKRPrDdaIARQKs4OjusByWTZCmZKvaXeg3WMN8vG4Ub81++Kxr423z+JjFCF8K98JSxE//xv1ED7c89QRX/bSYZrCNRNxEeho+0yBgsAFxEdaJ35RHnZyd/Z8mcSYjJgUB2RDTaNB1W9NzoG4JJvosZf11H0/uEIQMk2P8GuSOGWXGBryqCY53u2AZUOLBlbDS7Vwt9CxGYFxWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jOA1OW3f4FLdi3yHgOlrFGlyDwX0rJiFhNEb9s9/Nbw=;
- b=Qgm0zyEJK1U5VZTcTRToJDsi612ez7i2KW+JxecMx+z7qRMS1nNYLfPAu+yD/HsUyWbC89EsA2O2K2ZarrCsaNUUWoDnmMEjLMMuCZ6eL2RBKtMhxG6J1muEVcNZ2aQZ7Clf4k6gE66hXkLIsXKV2Ehwlpndm8qoF0j5OAwp6MQFi0e033Tc5uC+XDO9fkE9PsyqnGBaUvR25F7to61C+0AQe6+ykhQqBNFIq6ZRHrXZh7y9m+3ux6aZMN9pl9hiqUJhWucCJFFeXiL3d6+qI3Xs6wNU/pLTAHP6f2Jl2AVMYiY/k127+bLTSakcyXHXJ29BJLA+PJ8ahilPtIH+oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jOA1OW3f4FLdi3yHgOlrFGlyDwX0rJiFhNEb9s9/Nbw=;
- b=OjeKvNV9q9xu5dPhK/AusHmZ9HN/sKn3g8bqnE7MgcfCpqBVW5UXknxcdR8ZlxGbzGvmvCTcG9+8RylaroZksRpZafmcvqnKucLGy0upDfN+d/Ji/4AoHBmNClb11i1JqUze2oODsXkpa5m0p9odFHd8gEO09Cuw0xZtkTTNu64=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BL0PR10MB2835.namprd10.prod.outlook.com (2603:10b6:208:31::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17; Sat, 2 Oct
- 2021 00:41:20 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329%5]) with mapi id 15.20.4566.019; Sat, 2 Oct 2021
- 00:41:20 +0000
-Subject: Re: [PATCH v5 1/3] usb: Add Xen pvUSB protocol description
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>
-References: <20211001150039.15921-1-jgross@suse.com>
- <20211001150039.15921-2-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <e13367e4-2152-c99a-9b98-05d424019322@oracle.com>
-Date:   Fri, 1 Oct 2021 20:41:17 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <20211001150039.15921-2-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SN7PR04CA0220.namprd04.prod.outlook.com
- (2603:10b6:806:127::15) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        Fri, 1 Oct 2021 20:50:03 -0400
+Received: by mail-il1-f197.google.com with SMTP id i11-20020a92540b000000b0025456903645so8410677ilb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Oct 2021 17:48:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HIg4eiscweqPr3NwOYBCUHiwXXZ8jp5A10ER9cKuXfg=;
+        b=PvHF82BtX2WsXwWhOkEvvKyK9OrkLieq675BQJ5fOwNadY9+jNEIfzJAlOKtiwwKGW
+         qSuzjy9xcOdWuAjtLnOkO1zPiBHKhS876DSqCbTcOaCC0rzfpg91H6ZmivarufwlzEn4
+         nx1SfvHD9E8D1V6ypinMEppYt5eMIPUAXPHI4UJJBNxjrAH7Jp9tGLmN5g2aikt89x34
+         G5dIeyY1GwaJtSCjcJlGVIS6BeBZJqDYaV5EevAQYdpVaHxNqISDlidyqHYyPJgryEvm
+         qB6yv9I5MFqZ5ofR/6B+G6bcaRdsBw2otC0IzNeVniM2NfrnC1ToM4ja+Jzp+CjTK7Lf
+         Xrgg==
+X-Gm-Message-State: AOAM531OiXPfFtDFLpM0Tqi8SYKRfZvr+sO+CeH9uoqk8+Z1eVFiOU2f
+        qrlIXt4TaTbCif6wRzM7307wGHrxEZXcnGc300nlaqmQoNPc
+X-Google-Smtp-Source: ABdhPJwDKs2Jd1f8JLMJ5OrR9cQANhF1V2G6QaW3z1FJLrL2pANQIbPWI8Q0JMiF94uq9gDEi3hMDCEaIH8RsFYJoKGr5XTLXaf1
 MIME-Version: 1.0
-Received: from [10.74.98.147] (160.34.88.147) by SN7PR04CA0220.namprd04.prod.outlook.com (2603:10b6:806:127::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Sat, 2 Oct 2021 00:41:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6722244b-3698-4062-2887-08d9853d5a5c
-X-MS-TrafficTypeDiagnostic: BL0PR10MB2835:
-X-Microsoft-Antispam-PRVS: <BL0PR10MB2835F75988731904618589628AAC9@BL0PR10MB2835.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BkwpCcilQB05rBdtsmQ9D+qdlOdLKWMuS2FBGtwNsZM8MzVTnQjEa3oh8BLBoZUIWrYgJOWPDNS+5PoBwddmNgIi05UZwU9iy15IxgCda+j+x2ms9UfLhGdPPxTJZ9YXIb3q2tZqxe47grU0ZF/2BRPwr4yyACH/J8loAYxiUN78t3Wgbpx970JscMxhDobdhiaiLIv7GDj3TpWt5vvGDLz9cMjToFmHgyJBQKhOkYvbQPVTB2lJc2WDaxscsgMDqio1mNNgx2qBGz3geGxrty55dy/FoFL/JIuhIKc/4yuchh9fW4h4ZbY+hy8l3voe3T5nQvmtupl/h0FXxOJuadm9Rl5oJgOy3AXLT1jnasmBcPxhAKzm6wXrZXhS+nVaIrNHyPf2eXm4r03rjBLHFgr8jWBjEwq14Cch/91FnWotjkujI0nW0d+0yI29kmZVD0SJybJklL2ghhSr9WoZjV9RiQy6aVhmjSvuR2quKo1bc1F0ENTipw5ANi7kPSyhM18rjDdFnJ12Q8pN7V2j298e9OWPrm14iBbRqmV5F35EEeGUyGWhL5vTds8IWxKp9smccepNd1OS1hzPBWriJRH9rZS5lyY+f/DnbekTsG/YJDV5iW36ZG8uDLaXDEFVa0G4LndpGJMpwKSSZaBr3V4WxEWOvz9BSjO2apPu6DBh4hc8OtNNxvfpLEV+tvmiTXgj6fJ+Z9zrXQUNSd191OUIzsNlyS77bGUKzw6DK9/cJo9HwbcSbDQ0HLrumBR4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(44832011)(508600001)(8936002)(31696002)(956004)(6486002)(86362001)(2906002)(66946007)(4744005)(53546011)(38100700002)(2616005)(66556008)(26005)(16576012)(31686004)(8676002)(36756003)(4326008)(5660300002)(66476007)(316002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dnZwOGU4Ym9scHI2Q1NVSFRkb2duYms3S2oya3lWbkVQa2xXWWZRbDhwZzZ4?=
- =?utf-8?B?MC8zV3FpOEVSYzU3RVp1cVJDU1RwVElGekdQMjRWWHFOaHdxL1RPMzg3WEZW?=
- =?utf-8?B?bzJJYk5FaG5SRGtyWVQ1OWdPN1ZCTUpxWnpCanhVdXhsLzVaZmtiWjlBbUlQ?=
- =?utf-8?B?dFhUSDg1elVsWEhJVFdqdHFwMS8rT3ZyN3d2MlV6Vi9JTzI2ZWlGL1hSN0to?=
- =?utf-8?B?SnRSOG5QMUluV1IwNStiM3RzeS9vaCtRRjY3ZFJCSDM4NzJLMWpENXhuRWpX?=
- =?utf-8?B?djJBazFzVWFteHYvVkNyVGNZeVNOQ1pjUGRKYnh3MmZ0eDNXZEw5bWJoSGNC?=
- =?utf-8?B?Vy9NSENlaGU3R0lUN29wZWhHU1F6YU1qa3RUZkQwVWp6dEhPR3gvVEFoYzlV?=
- =?utf-8?B?alJrMHhUMUJKbWQ3R2YwTy8zZXFuVEd2emI0bnpCcUlSUjNZU2VUV09FOS9C?=
- =?utf-8?B?Q2QvN0p2c081ODAyRjd1Rkx0S0crN2dteGw2WUhhTldZbEdibExDV1crdzFs?=
- =?utf-8?B?cCt0UVRLZFE1R0drczhOMjROdUc2OFNjdWliait2Wkg0OFUyL3JRbDN4TVNo?=
- =?utf-8?B?aVVPWVh2cEVjYkE4WGJrYW5LWllrUEhGYVRtZWowNzVVU3BwcFRKMyt4MWps?=
- =?utf-8?B?UUFkTXI2ZnZWVFNicFVaUTdyRUlCQ1Y1ejI4VjZzWGJENitISjNhOUdCVVgz?=
- =?utf-8?B?d29SN0huUmNOeng2SmJUVTBld0I5NFFzMS9zRHRmcGJKS1NlRXFZOGVRWUpn?=
- =?utf-8?B?TC8rREVkWDdHNVVka2JHMkZlbmdjQ2pPajFSTUM1OXRKd0YvRndTYjJ6eTZS?=
- =?utf-8?B?T1NHOW82QUljL3pjNmNTK3V6R2FWVWErOUVJNkEwenpVWldLVmhTK08rSFRN?=
- =?utf-8?B?S0E2TW1nYnlQUDJyR1hLWjVOSllEM2Q1VVAxWG9VTVNXMXpacG4xaTh4T0Jp?=
- =?utf-8?B?bWd5eW5McjJpOXlIa1B3TDlMUk80TXFPTWhBYTd4U3dqYlQ1dEovd1NHWDdT?=
- =?utf-8?B?WUNGcHdVdm5YZ1RoZE9nbkhHa09FYTk3V0hrc3cvWGYxY21kREhMek1VT0xR?=
- =?utf-8?B?YTZyLy9KaDdXcTZvc01USWwvMjlGZkd5eW1wdFpFTGt6YW9EaEJ3YTBIaG5I?=
- =?utf-8?B?L1Zkano0Q3B3UGdOSm9zeUJ6R3hzTHZVOHlUZnZCaFpoV0g3dVFGYzRGSWsr?=
- =?utf-8?B?cnZXQTQ1RGh5ZnJ1Tkx2QTk0UGtrTGphVDlGNjBreTNMVnF0akw4cmhtYlRX?=
- =?utf-8?B?TDBBTUFVK1ZmdGdFYUh3TUxwV1ZMaWRaa3hmSDdyeHFuZXJjNEZnOEFUdDNE?=
- =?utf-8?B?dDZhSWwwU1l2a3E4SnorUVh3T1p1T1NiUDdla0NBNy9pL1JLZjg1UEZlY1E2?=
- =?utf-8?B?SUVsdmg5OG1Qbm8rbVRyQzNtdnl5ZW42aTdEV3lwR3BJbmNzenBDaG1tWmRY?=
- =?utf-8?B?aHlpUVB1bUJMSnpJekFPQVl1RzkvN0RkWWVLdGJzTWVEOU5hSW82L0JhaU9G?=
- =?utf-8?B?TVFMQXRDbnpQTC9rMEZtQlU0ejBOOStRNllCV0ZlaGJOeU84N0ViaVM3Q3R1?=
- =?utf-8?B?ZDB0Y0NaZ2FFbHVmZ3JHWHJ0R0NHbndtM25VWmRLeWJpL1pxWFh3R3F2NWEw?=
- =?utf-8?B?cUFIcE1oRkhlcGpoTTM3anJ6VFl2SjB2YTB2Y2FYaFdFcG5GTlJVMXNvL2RO?=
- =?utf-8?B?SUtxdHllbFdCcnYvSnFTcDNCYm00OW1nRkx6SGFoWEFZUU1jOVVwMTFpTGdu?=
- =?utf-8?Q?2+zDcegdcNJShHfoIVhAK85Qw9NoIvXXoGXimfg?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6722244b-3698-4062-2887-08d9853d5a5c
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2021 00:41:20.6478
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rDhLROxoAdXP6X/9Q36TszibltVr0lXN8u6q8aUgWF66J0Ok1oXi+mG832zIOtgjAAXKauRE1tCI08eifSmFS7CqIQfDhNBzOkA/9PIrmYo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2835
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10124 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110020001
-X-Proofpoint-ORIG-GUID: 2qMlHNNWSjhRUMUzUrM4TsP0pIE-2QlV
-X-Proofpoint-GUID: 2qMlHNNWSjhRUMUzUrM4TsP0pIE-2QlV
+X-Received: by 2002:a92:d3c1:: with SMTP id c1mr628667ilh.223.1633135698649;
+ Fri, 01 Oct 2021 17:48:18 -0700 (PDT)
+Date:   Fri, 01 Oct 2021 17:48:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000030283d05cd540908@google.com>
+Subject: [syzbot] net-next test error: WARNING in devlink_nl_region_notify
+From:   syzbot <syzbot+e51ead0112c2cb8d1b45@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jiri@nvidia.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 10/1/21 11:00 AM, Juergen Gross wrote:
-> Add the definition of pvUSB protocol used between the pvUSB frontend in
-> a Xen domU and the pvUSB backend in a Xen driver domain (usually Dom0).
->
-> This header was originally provided by Fujitsu for Xen based on Linux
-> 2.6.18.
->
-> Changes are:
-> - adapt to Linux kernel style guide
-> - use Xen namespace
-> - add lots of comments
-> - don't use kernel internal defines
->
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+syzbot found the following issue on:
+
+HEAD commit:    7fec4d39198b gve: Use kvcalloc() instead of kvzalloc()
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1302aebb300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e917f3dfc452c977
+dashboard link: https://syzkaller.appspot.com/bug?extid=e51ead0112c2cb8d1b45
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e51ead0112c2cb8d1b45@syzkaller.appspotmail.com
+
+batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
+device hsr_slave_0 entered promiscuous mode
+device hsr_slave_1 entered promiscuous mode
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6534 at net/core/devlink.c:5158 devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Modules linked in:
+CPU: 1 PID: 6534 Comm: syz-executor.0 Not tainted 5.15.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+Code: 38 41 b8 c0 0c 00 00 31 d2 48 89 ee 4c 89 e7 e8 72 1a 26 00 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e e9 01 bb 41 fa e8 fc ba 41 fa <0f> 0b e9 f7 fe ff ff e8 f0 ba 41 fa 0f 0b eb da 4c 89 e7 e8 c4 16
+RSP: 0018:ffffc90002b8f658 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88807872b900 RSI: ffffffff87345094 RDI: 0000000000000003
+RBP: ffff888073785e00 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87344f8a R11: 0000000000000000 R12: ffff888025299000
+R13: 0000000000000000 R14: 000000000000002c R15: ffff888025299070
+FS:  00005555561e0400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f286d3ee000 CR3: 000000006885e000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ devlink_region_create+0x39f/0x4c0 net/core/devlink.c:10327
+ nsim_dev_dummy_region_init drivers/net/netdevsim/dev.c:481 [inline]
+ nsim_dev_probe+0x5f6/0x1150 drivers/net/netdevsim/dev.c:1479
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x245/0xcc0 drivers/base/dd.c:596
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc35/0x21b0 drivers/base/core.c:3359
+ nsim_bus_dev_new drivers/net/netdevsim/bus.c:435 [inline]
+ new_device_store+0x48b/0x770 drivers/net/netdevsim/bus.c:302
+ bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write+0x429/0x660 fs/read_write.c:507
+ vfs_write+0x7cf/0xae0 fs/read_write.c:594
+ ksys_write+0x12d/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f2677dce3ef
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd ff ff 48
+RSP: 002b:00007ffe549b8fe0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f2677dce3ef
+RDX: 0000000000000003 RSI: 00007ffe549b9030 RDI: 0000000000000004
+RBP: 0000000000000004 R08: 0000000000000000 R09: 00007ffe549b8f80
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007f2677e75971
+R13: 00007ffe549b9030 R14: 0000000000000000 R15: 00007ffe549b9700
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
