@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BEF41FA82
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 11:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE8541FA86
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 11:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhJBJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 05:06:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232611AbhJBJGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 05:06:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55CE61AA9;
-        Sat,  2 Oct 2021 09:04:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633165473;
-        bh=m1O8K7AIaIxHDsI0pUGbMNZV2m4sU+hqM4GI4F3pMkc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sTdxKn8qyKWpiRchR6DAnM055Iw2NWr0zra85aX++Y+szXBuCE8d4tDtjcQcsmNKm
-         yu1ly+zjpXtROj1NcDH+HLRSTY2uJSJVM5LOAY2eZT/Hc/Yw9EzaLIAtacAuOA4vsy
-         ex3HL9UDu41G+6BmByAKwbuANMWWFSQt1dCA97ghiXOQd3DMdRhLJBfCzXy1GT2gas
-         +OrApDhDcV3kuR8FN3gQ8XSENL+q/ZcpJfiF3Kl3paa8uwB/uWrzfJGx5pGI8iXmFW
-         KwBoempfJjqIyaQz/eiBVDo5+5OerYY1TIZ9sw2sRDtlc82Gdwa1sL+/I3Taj06sJa
-         vw6CgL0eHpdCA==
-Received: by pali.im (Postfix)
-        id 4EF0F1087; Sat,  2 Oct 2021 11:04:30 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
-Date:   Sat,  2 Oct 2021 11:04:09 +0200
-Message-Id: <20211002090409.3833-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S232664AbhJBJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 05:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232611AbhJBJHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 05:07:47 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A171CC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 02:06:01 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id y23so9038523lfb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 02:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=AnIUtRQtDgk3YDJAatwz+LXUKRWPbctJNdAprjwvZ5o=;
+        b=lr0lM7D15Jtp+K9ioUPsKCesC2INy7sjVDbZK9PdLA5HzXG0XZpz3E/P/+4GjhDSVn
+         8OUytMY1Lze28g96m41AeXDthWt8HvcnYcoOkCDjXf1La5UskpuCkuzEH48oAwn0rSuH
+         GYWCi/8qMl2FbSaBN+1tmL2gkHuKVqpBLeAD3wPFSQRqpLl6KhhbVHE30miaRd7+391N
+         CQ/CIkUnThQetj9S6gy1dY3GizC9Xx/n8A4pFujypAZPBknFIxQEP+G8684TGGSeKqCf
+         ZuGs16V1ejB74ixZbH0Q7W1OTXiTR7x3cyvGiXFoszuv1Tzr8zAfdpL9wzm65daWV+kz
+         760w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=AnIUtRQtDgk3YDJAatwz+LXUKRWPbctJNdAprjwvZ5o=;
+        b=tzzkpzks6n8TGNBU9171ncvzaX0j9XmsfVRFG73f4mEBMM3+C+Sa//qY37iZ+xhyNH
+         9dEFfU2/J5nzZnwujkf0fk3ZeG8T0fHL9c4edFduoJfDxFPN62zYRkmam3TihZSjMnmT
+         24lY4Fgq1A2nCyE7X2ImdMcWfg4l6hX44JNX3JNeFT7wO+cGv01KE9ZEJMH/FG5XSN8n
+         eOHYOD7bHUsrhyUmciaWPYzSzTGBjVDFs9gA9GNizg2qKF5FvJB4SMszzeeKOwdnYG4j
+         H6TPF52FEqfB/R70WDON9PDYwa1yL4q9HfCvNHJYexGzGrmM645LYCk7Zt0pLYvulBbu
+         532w==
+X-Gm-Message-State: AOAM5307Jb5R1u5ldfcorfSkBAkCC4O+IT+YfMwWPvf7jdegC/H0mJG1
+        IVD6AzX98Bkn8CW7jTvQ6wTNm6IjOBV+2aRDtg==
+X-Google-Smtp-Source: ABdhPJzRRn73M+pINdcKklClatkCTJQdcys3+EeNHbucGcsViFwls5amgiVwuGX6fBYj5gaGikGa4xdITUJ48f8G64A=
+X-Received: by 2002:a19:f20c:: with SMTP id q12mr2980661lfh.166.1633165559673;
+ Sat, 02 Oct 2021 02:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab3:7855:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 02:05:59 -0700 (PDT)
+Reply-To: southwestloanco59@gmail.com
+From:   SOUTHWESTLOANCO <yahuzabello772@gmail.com>
+Date:   Sat, 2 Oct 2021 02:05:59 -0700
+Message-ID: <CADZhzha_KOvHVB2XiiOpB4di6Yp9=y_0M34X4YM_fd0yQsrscA@mail.gmail.com>
+Subject: Dear owner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Property phy-connection-type contains invalid value "sgmii-2500" per scheme
-defined in file ethernet-controller.yaml.
-
-Correct phy-connection-type value should be "2500base-x".
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the board device tree(s)")
-Acked-by: Scott Wood <oss@buserror.net>
----
-Per Andrew's request I'm resending this patch again:
-https://patchwork.kernel.org/project/netdevbpf/patch/20210704134325.24842-1-pali@kernel.org/
----
- arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-index 5ba6fbfca274..f82f85c65964 100644
---- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-+++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-@@ -154,7 +154,7 @@
- 
- 			fm1mac3: ethernet@e4000 {
- 				phy-handle = <&sgmii_aqr_phy3>;
--				phy-connection-type = "sgmii-2500";
-+				phy-connection-type = "2500base-x";
- 				sleep = <&rcpm 0x20000000>;
- 			};
- 
 -- 
-2.20.1
+Good day,
+          Do you need a loan ? We offer any kind of loan to repay in
+6months with just 2% interest
 
+Kindly Reply with below information
+
+NAME...............
+ADDRESS..........
+OCCUPATION....
+AGE...................
+PHONE..............
+AMOUNT NEEDED......
+
+Regards
+
+Contact  Mr Gary Edward +13182955380
+
+Remittance Department southwestloanco59@gmail.com
