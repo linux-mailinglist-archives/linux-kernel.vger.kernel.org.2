@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897A841FB02
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A9C41FB0E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 13:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhJBLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 07:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhJBLHJ (ORCPT
+        id S232847AbhJBLO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 07:14:27 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:34030 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232821AbhJBLOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 07:07:09 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B67C061570;
-        Sat,  2 Oct 2021 04:05:23 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id y28so447443vsd.3;
-        Sat, 02 Oct 2021 04:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lOvScWWdsWCsTrT9qAyN9hFCi3UuNxTHx/MbnP0X/8w=;
-        b=eDB0oNVafDTVhCe4pMIfJK9Mt77dkoTCfFD7fFEOfugZAuhWkUbHwE0SnYahtcNKh8
-         8PY70r5RXCS4Wf+eB3UADhNuyHgLiBmbL5WLpMtloWhunmTW0xDPhKBluAH/+udwYwkE
-         aqdDG2ok4sf5/ScKdcIUFrTAf3QUmA49bImqk1AFeCeBk7p+Ez2aHa+xKpgGymSiSQdQ
-         FpzcW+w50fPo6ARbHEFcZNh+ktGsic6WAOPm0LPn8k9ARKYVAqd4rvtrb8P4EtRzG6dz
-         PHqidp0wulGCdCyl8trZWfNxENS3IR1yVBTNTTRiDaeOd7rjMIOSytI9DzmRRJOpp43e
-         tQKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lOvScWWdsWCsTrT9qAyN9hFCi3UuNxTHx/MbnP0X/8w=;
-        b=hQ/U4xDc+UjoS0D338l137a6APgtN7oO7/sea2nHAVLRdoA1KjuxRPauCXQ329Cy9q
-         L6N5KfUXfNbMSzq+802f7aNUhV8G9bud4Zs2gbY+pUMQo2rSTG73ZkS1uSMmhcbTsjGg
-         2WDyc57eH7/oN6jw6e5OGcw+Eujl5/URponvJ6bZj1QyRd7c5bW8l2xzbXeA5eNhpnJK
-         +hyjpTs1TsC7IjH3tFcKpbm04rJfp5bmOCOjvlPvQlcb3VW8dN38IY8KcJ7uYdksnPnn
-         GvPBxRGV0fUuC3re5oJ9kWOpBcuxfo4dju5P3q310NR/gLI24Xg94swZ596qP/EdbDFN
-         2iQQ==
-X-Gm-Message-State: AOAM530QNhub2tTlrFxcqn0HRoUByQqkEd9LriedR0V8QBDIBgtnPOEF
-        8Kmt/KoYZJ0kMnfV+7n0dXjwYKB+3LcvKGENZ6Y=
-X-Google-Smtp-Source: ABdhPJyYK98qTlp9uh3k6KKGXFm8Vao/jKxUvntwx3UlQqUZMeVdbLPcD3ZJIHUb94lr8wncJBSjP2mk6YHRercHls8=
-X-Received: by 2002:a67:ee12:: with SMTP id f18mr8135716vsp.20.1633172723091;
- Sat, 02 Oct 2021 04:05:23 -0700 (PDT)
+        Sat, 2 Oct 2021 07:14:24 -0400
+Date:   Sat, 02 Oct 2021 11:12:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1633173156;
+        bh=lgKYE1UiXuqTBPdG3LxCk9lKMfDD0+fFAGQZZoEkMbo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=mjCJHoAimPW9nMZizBL0WRXceUbhh11sNYJIep1ZKuS2ZTWaXsfnZkK8pjfnACbyE
+         kjOeMQwNPA5ttApgbgHKhs9XORQj87Mo+hv40E4wGKS1XoBb3CBRubT7YlE2j/LP/C
+         +ZrG9A7c7Cng0Y1ipBVi8mYGUjPaWVGgY/ucSk6M=
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From:   Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
+Subject: Re: [PATCHv3] mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N UART
+Message-ID: <20211002111221.1c3076f3@localhost>
+In-Reply-To: <YVg8vsdU89wjC9/7@smile.fi.intel.com>
+References: <20211001084905.4133-1-redecorating@protonmail.com> <YVbf9J3jgAmBY+ch@smile.fi.intel.com> <YVdP9PwNrjmKxKac@google.com> <YVdR4bdpr9/E+GNf@smile.fi.intel.com> <20211002032810.3729-1-redecorating@protonmail.com> <YVg8vsdU89wjC9/7@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
- <20210927064300.624279-8-chenhuacai@loongson.cn> <YVbrPHsDkhTl4FTA@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVbrPHsDkhTl4FTA@hirez.programming.kicks-ass.net>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sat, 2 Oct 2021 19:05:10 +0800
-Message-ID: <CAAhV-H5yA1_63OeYH-6KEgw1m8FUMDGHV0g_sw=F758HJhQ66w@mail.gmail.com>
-Subject: Re: [PATCH V4 07/22] LoongArch: Add atomic/locking headers
-To:     Peter Zijlstra <peterz@infradead.org>, yili0568@gmail.com
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
+On Sat, 02 Oct 2021 21:04:30 +1000
+"Andy Shevchenko" <andriy.shevchenko@linux.intel.com> wrote:
 
-On Fri, Oct 1, 2021 at 7:04 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Sep 27, 2021 at 02:42:44PM +0800, Huacai Chen wrote:
-> > diff --git a/arch/loongarch/include/asm/spinlock.h b/arch/loongarch/include/asm/spinlock.h
-> > new file mode 100644
-> > index 000000000000..2544ee546596
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/spinlock.h
-> > @@ -0,0 +1,12 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_SPINLOCK_H
-> > +#define _ASM_SPINLOCK_H
-> > +
-> > +#include <asm/processor.h>
-> > +#include <asm/qspinlock.h>
-> > +#include <asm/qrwlock.h>
-> > +
-> > +#endif /* _ASM_SPINLOCK_H */
-> > diff --git a/arch/loongarch/include/asm/spinlock_types.h b/arch/loongarch/include/asm/spinlock_types.h
-> > new file mode 100644
-> > index 000000000000..91f258401ef9
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/spinlock_types.h
-> > @@ -0,0 +1,11 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_SPINLOCK_TYPES_H
-> > +#define _ASM_SPINLOCK_TYPES_H
-> > +
-> > +#include <asm-generic/qspinlock_types.h>
-> > +#include <asm-generic/qrwlock_types.h>
-> > +
-> > +#endif
->
-> Also see the many lkml threads on this, is there big enough loongson to
-> justify qspinlock? Have you tried a ticket lock?
-Loongson-3A5000 supports NUMA, we have as many as 16 nodes, 64 cores
-in total. And we have tried ticket lock which is worse than qspinlock.
-Maybe Jun Yi (yili0568@gmail.com) can give some performace data?
+> You ignoring my Reviewed-by tag. Any reason why?
 
-Huacai
+Sorry, I'm new to this and assumed it needed to be reviewed again after
+any changes (including to the commit message).
+
+> Besides that you are posting patches as continuation of the thread.
+> It may be problematic for some tools, like `b4`, although I dunno if
+> Lee is using such tools.
+
+I'll make a v4 with the reviewed-by line. I'll make it a reply to the
+first version of the patch, and hopefully that'll be the first place
+tools like `b4` look.
+
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> > Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
+> > ---
+> > v2->v3: Mention "ICL-N" in commit message.
+> >  drivers/mfd/intel-lpss-pci.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/mfd/intel-lpss-pci.c
+> > b/drivers/mfd/intel-lpss-pci.c index c54d19fb184c..a872b4485eac
+> > 100644 --- a/drivers/mfd/intel-lpss-pci.c
+> > +++ b/drivers/mfd/intel-lpss-pci.c
+> > @@ -253,6 +253,8 @@ static const struct pci_device_id
+> > intel_lpss_pci_ids[] =3D { { PCI_VDEVICE(INTEL, 0x34ea),
+> > (kernel_ulong_t)&bxt_i2c_info }, { PCI_VDEVICE(INTEL, 0x34eb),
+> > (kernel_ulong_t)&bxt_i2c_info }, { PCI_VDEVICE(INTEL, 0x34fb),
+> > (kernel_ulong_t)&spt_info },
+> > +=09/* ICL-N */
+> > +=09{ PCI_VDEVICE(INTEL, 0x38a8),
+> > (kernel_ulong_t)&bxt_uart_info }, /* TGL-H */
+> >  =09{ PCI_VDEVICE(INTEL, 0x43a7),
+> > (kernel_ulong_t)&bxt_uart_info }, { PCI_VDEVICE(INTEL, 0x43a8),
+> > (kernel_ulong_t)&bxt_uart_info }, --
+> > 2.33.0
+> >
+> > =20
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+>=20
+>=20
+
+
+
+--=20
+
