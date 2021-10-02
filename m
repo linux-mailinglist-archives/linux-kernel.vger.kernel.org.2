@@ -2,87 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9C341FDAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 20:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DECA41FD8E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 20:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhJBSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 14:23:58 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:35624 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbhJBSXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 14:23:55 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWjMo-009FYI-Tn; Sat, 02 Oct 2021 18:04:11 +0000
-Date:   Sat, 2 Oct 2021 18:04:10 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Garnier <thgarnie@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Laura Abbott <labbott@redhat.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, notify@kernel.org
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-Message-ID: <YVifGtn3LctrWOwg@zeniv-ca.linux.org.uk>
-References: <20210929185823.499268-1-alex.popov@linux.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929185823.499268-1-alex.popov@linux.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S233766AbhJBSJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 14:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233679AbhJBSJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 14:09:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 176A961B3C;
+        Sat,  2 Oct 2021 18:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633198064;
+        bh=FEuVabHw3h87FeojjKDBvBuj4KbIfv9zMG9gJORFh0A=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=TWdnulKRfZJ1YaLWQGh5vu+tnSkqvEivBnJVQ/GnaEFw64cE5heRYnLnRCl5uxmIS
+         L4RLFtjYY+nGOQFSTqyc0b7SqsUku/q0qkDLcl+Rrj4uPT4deGXA0QjKZn90AtxEi+
+         wy+vI3ZG0QJITptJC1x+hNAZww+k9nrMhnsWrDJJKz+B9FbfUJuKqTgNUabDFHMByu
+         +ACv9HJYXVU5IDXPIv2Als6VCA2vGkrXe4DC421t/0Uc8Uze05RpLHRDbA3+B00YQU
+         lwXzWH/LEVb5yYHjmeqGsapJLqWqxBcgGOCw+EjXU2EZVobdbjx0GTWCP99fcdAekh
+         WQ9ZANXYvg+vA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0CF23609D6;
+        Sat,  2 Oct 2021 18:07:44 +0000 (UTC)
+Subject: Re: [GIT PULL] nvdimm fixes for v5.15-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPcyv4iEHttW7fDzaKYdAr2t4w3YJQ7t7QtadO0bZKDWPuK0Ag@mail.gmail.com>
+References: <CAPcyv4iEHttW7fDzaKYdAr2t4w3YJQ7t7QtadO0bZKDWPuK0Ag@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAPcyv4iEHttW7fDzaKYdAr2t4w3YJQ7t7QtadO0bZKDWPuK0Ag@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-fixes-5.15-rc4
+X-PR-Tracked-Commit-Id: d55174cccac2e4c2a58ff68b6b573fc0836f73bd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f05c643743a43b42e7603a520ad052e5218f4e53
+Message-Id: <163319806399.17549.15745657730170751522.pr-tracker-bot@kernel.org>
+Date:   Sat, 02 Oct 2021 18:07:43 +0000
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:58:23PM +0300, Alexander Popov wrote:
+The pull request you sent on Fri, 1 Oct 2021 18:19:12 -0700:
 
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -53,6 +53,7 @@ static int pause_on_oops_flag;
->  static DEFINE_SPINLOCK(pause_on_oops_lock);
->  bool crash_kexec_post_notifiers;
->  int panic_on_warn __read_mostly;
-> +int pkill_on_warn __read_mostly;
->  unsigned long panic_on_taint;
->  bool panic_on_taint_nousertaint = false;
->  
-> @@ -610,6 +611,9 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
->  
->  	print_oops_end_marker();
->  
-> +	if (pkill_on_warn && system_state >= SYSTEM_RUNNING)
-> +		do_group_exit(SIGKILL);
-> +
+> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-fixes-5.15-rc4
 
-Wait a sec...  do_group_exit() is very much not locking-neutral.
-Aren't you introducing a bunch of potential deadlocks by adding
-that?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f05c643743a43b42e7603a520ad052e5218f4e53
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
