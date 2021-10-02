@@ -2,263 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E673A41FA30
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48AD41FA37
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 09:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhJBHL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 03:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhJBHL4 (ORCPT
+        id S232527AbhJBHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 03:15:22 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53327 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232355AbhJBHPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 03:11:56 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360D8C061775;
-        Sat,  2 Oct 2021 00:10:11 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g8so43006180edt.7;
-        Sat, 02 Oct 2021 00:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uya+S2oyhnbkuHTWONszE5UZOsIwnMCwXNyK7u9GIz4=;
-        b=RaBYpuL/bugZIPxIQop7OOGWQJ3os0RXhaZYqSH7X6Eq8SKjy6nukbWLymaEeygt+a
-         8abEBOcQ8GRHpJjSSKhq/QxMRsZ71P31OZZihc/ZX4h7cmF/gg8iw7Geqa0gg+odtAD/
-         5a6g1C0mq98DQxpO+mJg4a8DdInJMgcgY+r595tU8ZFZYBV8qQUZoh4ejThhT0HiNajW
-         wowbsegiKoKf4QYHNfNzp7JNzHoXywwe2SSoUt8P5CrMpP3EJu3vp8MhB6fNfCALqy+2
-         F1mi8UtmA8zjZcbAkNAfDX9M4qV4OUNN7NLWmyc9+sjBlrrW+Fr5bwwQGjuBnkcH9+NG
-         5yEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uya+S2oyhnbkuHTWONszE5UZOsIwnMCwXNyK7u9GIz4=;
-        b=sfg+2Ic41fvAyS5bhkYVarJd+LN6v77JokvdF9r5gAtSeBVMBaZ6w0GL7jQm6JW4Bw
-         D1mPGtzMx7HZObT/8fnqFapIrlU8jSvxiLi/5oeEVU0JN4s/qs7wdUGEIuxdZEmG0l/Z
-         Ou2FHwNX59oTDdi/EvjEhSeTR6LMyi/TT+JqARcQEmybZD9d3u9i9fJjVGrIwSbETlkD
-         IUVlvukqslmUgIxE09WvIYPS0y2WHQQgBgKChL0ISSvNQHsosNFmopatb6zjnx63YUeM
-         UbyAWNdQtPNp302AVYjR+IH7HGbWr5F0eapyt5+uCJiJzUVvUaHw4Ht0RFCkLu5g6BRf
-         1NSQ==
-X-Gm-Message-State: AOAM53218AxoENyrUvnMK5encdFEGnf4ThmbpmZW6Fxhiv0dJAuBMEjK
-        IHnyOoS0ZAkWB4FKYRqbbnqm429AL0AMXq0nWKk=
-X-Google-Smtp-Source: ABdhPJytWM/UfVWwpCpa3LaCakRZEviBUoJmjYVE+NvaVqmU5GB68aEvf0Ihpc58SJjTGvlXnYNLo72dSTrf1KIdf4E=
-X-Received: by 2002:a50:dacf:: with SMTP id s15mr2402763edj.385.1633158609542;
- Sat, 02 Oct 2021 00:10:09 -0700 (PDT)
+        Sat, 2 Oct 2021 03:15:19 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id EFE27581013;
+        Sat,  2 Oct 2021 03:13:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 02 Oct 2021 03:13:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=h
+        kdwWmElPEdAAxaQYiaUG9iDPW9L8k80trrD6uyRPLo=; b=b+qy2lC7OANZhdcFY
+        lTuHru7sN/+DtcqTrF4SpXic1GmtM7cUT2qmnPzpzBoOwlJLK+z7eh8TFrUFqSQD
+        TQ8jkhtPZqfnj2vBf+fDgE4RoYWo8WlREzgRC0Kgkb5u5KRBrrNW9I+jLw68qq5K
+        nR1QEz/T3vXeMOnlNj/Kte72tUeYYrYxUq90NqOZhz8H/aQau8o3YqPwNJNR9p51
+        IjEDlpgp6u3tl97X5eFyj1ScaFTQnCPDxidv6nerNdEjj30tannDQtOgGzaF9LP9
+        ywzRJBQ3oe9A57JmpNxlJeehLxTyoJAGbhhjUtwcTPnRaupVb4E9JI7Bx0avudQu
+        wU7Zw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=hkdwWmElPEdAAxaQYiaUG9iDPW9L8k80trrD6uyRP
+        Lo=; b=D/XRLalTmeWLNXMgGrYTT36Ur+ARcjhRea20l1zZycriBriaimr4jYDvH
+        Y/163WSY2WWorF7d3pv3hpERLm6NZDJlTk//5jLEVXcIMWmMoPJNQxbhgBi1BWBn
+        Cya7cwjtn+FBF1NZP0fA4N1ZLelGM6CeBzY0yS2wBDAcnYs2k7uqp2sBcpzNWjb6
+        i2zLNiZLVqztUinKNFfAh4HmJdPap30w+S9jG7OBxVgGj0AGGzwot5oYlTBmBwa3
+        wt4cnG/tw8mgyWw7yKANX9GzEEYCNUrYCiZAngxSNFSdx9IvgQwTnhE894+IssxT
+        TFpzih5gWDYejAq9jm76uBihYwVjQ==
+X-ME-Sender: <xms:mQZYYR7VpWIekz5jKw9rfJZPtY7gObW-Ps2HK3WAeJ6thHYPvyedzQ>
+    <xme:mQZYYe7NssF99qddped0Oz3y0xvsSlXqyEN9IInl1E0lXOHMmNnU3P09OPy6-VZVV
+    Kq6QxkN1Uw7cqd15Q>
+X-ME-Received: <xmr:mQZYYYfa7VDv6N19FC4M0Vettj4NdhNIg1PrJFkZXVaEfhz91yBv0dzwZCvP5KfF1YQRSpIl>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekjedgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefhvghr
+    nhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrg
+    htthgvrhhnpeffleelfeejkefgfffhvdffjedvteelhefgvdfftdehfefghfdtgeevgfek
+    keeuleenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghdptddurdhorhhgne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvggv
+    nhhfohhosehuledvrdgvuh
+X-ME-Proxy: <xmx:mgZYYaLB8vJT6HmaAyecptRqqdECxDA3-U7v-ucSTdOqaK0yFO0hbA>
+    <xmx:mgZYYVLC78TXBxqTVCuTBFhpEgbixvlFTNJh-8rLG1dppSYC7Y77OQ>
+    <xmx:mgZYYTwFKgNks0BLJyv6wDGWqMfiEngurGR3Api93phNOr_Ls8Qtcg>
+    <xmx:mgZYYSCN8z0NaX2WnaxUXdRraVDUxKHnoPfZ_ydCt_0QpVQB9btRYQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 2 Oct 2021 03:13:26 -0400 (EDT)
+Date:   Sat, 2 Oct 2021 09:13:22 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2 00/17] drm: cleanup: Use
+ DRM_MODESET_LOCK_ALL_* helpers where possible
+Message-ID: <YVgGklsHT5fkavDL@zacax395.localdomain>
+References: <20210924064324.229457-1-greenfoo@u92.eu>
+ <20211001183655.GW2515@art_vandelay>
+ <YVda4jNSGuQf50JV@intel.com>
+ <20211001204815.GA2515@art_vandelay>
+ <YVeGOyLzuhN7zzV7@intel.com>
+ <YVfEWaLfYWdhezCa@intel.com>
 MIME-Version: 1.0
-References: <20210924085104.44806-1-21cnbao@gmail.com> <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
- <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
- <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net> <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
-In-Reply-To: <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sat, 2 Oct 2021 20:09:58 +1300
-Message-ID: <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com>
-Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
- balance between clusters
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVfEWaLfYWdhezCa@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 12:22 PM Tim Chen <tim.c.chen@linux.intel.com> wrote:
->
-> On Fri, 2021-10-01 at 16:57 +0200, Peter Zijlstra wrote:
-> > On Fri, Oct 01, 2021 at 12:39:56PM +0200, Vincent Guittot wrote:
-> > > Hi Barry,
-> > >
-> > > On Fri, 1 Oct 2021 at 12:32, Barry Song <21cnbao@gmail.com> wrote:
-> > > > Hi Vincent, Dietmar, Peter, Ingo,
-> > > > Do you have any comment on this first series which exposes
-> > > > cluster topology
-> > > > of ARM64 kunpeng 920 & x86 Jacobsville and supports load balance
-> > > > only for
-> > > > the 1st stage?
-> > > > I will be very grateful for your comments so that things can move
-> > > > forward in the
-> > > > right direction. I think Tim also looks forward to bringing up
-> > > > cluster
-> > > > support in
-> > > > Jacobsville.
-> > >
-> > > This patchset makes sense to me and the addition of a new
-> > > scheduling
-> > > level to better reflect the HW topology goes in the right
-> > > direction.
-> >
-> > So I had a look, dreading the selecti-idle-sibling changes, and was
-> > pleasantly surprised they're gone :-)
+On 21/10/02 05:30AM, Ville Syrjälä wrote:
+> On Sat, Oct 02, 2021 at 01:05:47AM +0300, Ville Syrjälä wrote:
+> > On Fri, Oct 01, 2021 at 04:48:15PM -0400, Sean Paul wrote:
+> > > On Fri, Oct 01, 2021 at 10:00:50PM +0300, Ville Syrjälä wrote:
+> > > > On Fri, Oct 01, 2021 at 02:36:55PM -0400, Sean Paul wrote:
+> > > > > 
+> > > > > Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
+> > > > > with the necessary drm-tip conflict resolutions).
+> > > > 
+> > > > Ugh. Did anyone actually review the locking changes this does?
+> > > > I shot the previous i915 stuff down because the commit messages
+> > > > did not address any of it.
+> > > 
+> > > I reviewed the set on 9/17, I didn't see your feedback on that thread.
+> > 
+> > It was much earlir than that.
+> > https://lists.freedesktop.org/archives/dri-devel/2021-June/313193.html
+> > 
+> > And I think I might have also shot down a similar thing earlier.
+> > 
+> > I was actually half considering sending a patch to nuke that
+> > misleading TODO item. I don't think anything which changes
+> > which locks are taken should be considred a starter level task.
+> > And the commit messages here don't seem to address any of it.
+> 
+> And i915 is now broken :(
+> 
+> https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_10680/fi-bwr-2160/boot.html
 
-Thanks, Peter and Vincent for reviewing.
+I completely overlooked the side effects of not having a global context anymore.
+Sorry for all the trouble.
 
-My tiny scheduler team is still hardly working on the
-select-idle-sibling changes.
-And that one will be sent as a separate series as an improvement to this series.
-I promise the wake-affine series won't be that scary when you see it
-next time :-)
+Sean, could you revert the whole patch series? I'll have a deeper look into the
+patch set and come up with a v3 where all these issues will be addressed.
 
-> >
-> > As is, this does indeed look like something mergable without too much
-> > hassle.
-> >
-> > The one questino I have is, do we want default y?
->
-> I also agree that default y is preferable.
-
-Thanks, Tim, for your comments.
-I am ok to make it default "Y" for x86 after having a better doc as below:
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index bd27b1cdac34..940eb1fe0abb 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1002,12 +1002,17 @@ config NR_CPUS
-          to the kernel image.
-
- config SCHED_CLUSTER
--       bool "Cluster scheduler support"
--       default n
-+       def_bool y
-+       prompt "Cluster scheduler support"
-        help
-         Cluster scheduler support improves the CPU scheduler's decision
--        making when dealing with machines that have clusters of CPUs
--        sharing L2 cache. If unsure say N here.
-+        making when dealing with machines that have clusters of CPUs.
-+        Cluster usually means a couple of CPUs which are placed closely
-+        by sharing mid-level caches, last-level cache tags or internal
-+        busses. For example, on x86 Jacobsville, each 4 CPUs share one
-+        L2 cache. This feature isn't a universal win because it can bring
-+        a cost of slightly increased overhead in some places. If unsure
-+        say N here.
-
-This also aligns well with SCHED_MC and SCHED_SMT in arch/x86/kconfig:
-config SCHED_MC
-    def_bool y
-    prompt "Multi-core scheduler support"
-
-config SCHED_SMT
-    def_bool y if SMP
-
-But ARM64 is running in a different tradition, arch/arm64/Kconfig has
-SCHED_MC and SCHED_SMT as below:
-   config SCHED_MC
-   bool "Multi-core scheduler support"
-   help
-    ...
-
-config SCHED_SMT
-  bool "SMT scheduler support"
-  help
-  ...
-
-I don't want to be an odd man :-)  So for ARM64, I vote keeping the
-Kconfig file as is.  And I am planning to modify arch/arm64/defconfig
-in second patchset(select-idle-sibling) by adding
-CONFIG_SCHED_CLUSTR=y
-as load-balance plus wake-affine changes seem to make cluster
-scheduler much more widely win on kunpeng920 while doing load-
-balance only can sometimes hurt. so I don't mind holding "N" for
-a while on the ARM64 platform.
-
->
-> >
-> > The one nit I have is the Kconfig text, I'm not really sure that's
-> > clarifying what a cluster is.
->
-> Do you have a preference of a different name other than cluster?
-> Or simply better documentation on what a cluster is for ARM64
-> and x86 in Kconfig?
-
-Anyway, naming is really a hard thing. cluster seems not a bad name for
-ARM SoCs as besides kunpeng, some other ARM SoCs are also using this
-name in specifications, for example, neoverse-n1, phytium etc.
-
-Will we use the same name between x86 and ARM and just refine the document
-as below? Does the below doc explain what is "cluster" better?
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7e4651a1aaf4..86821e83b935 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -993,8 +993,13 @@ config SCHED_CLUSTER
-        bool "Cluster scheduler support"
-        help
-          Cluster scheduler support improves the CPU scheduler's decision
--         making when dealing with machines that have clusters(sharing internal
--         bus or sharing LLC cache tag). If unsure say N here.
-+         making when dealing with machines that have clusters of CPUs.
-+         Cluster usually means a couple of CPUs which are placed closely
-+         by sharing mid-level caches, last-level cache tags or internal
-+         busses. For example, on Hisilicon Kunpeng920, each 4 CPUs share
-+         LLC cache tags. This feature isn't a universal win because it
-+         can bring a cost of slightly increased overhead in some places.
-+         If unsure say N here.
-
- config SCHED_SMT
-        bool "SMT scheduler support"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index bd27b1cdac34..940eb1fe0abb 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1002,12 +1002,17 @@ config NR_CPUS
-          to the kernel image.
-
- config SCHED_CLUSTER
--       bool "Cluster scheduler support"
--       default n
-+       def_bool y
-+       prompt "Cluster scheduler support"
-        help
-         Cluster scheduler support improves the CPU scheduler's decision
--        making when dealing with machines that have clusters of CPUs
--        sharing L2 cache. If unsure say N here.
-+        making when dealing with machines that have clusters of CPUs.
-+        Cluster usually means a couple of CPUs which are placed closely
-+        by sharing mid-level caches, last-level cache tags or internal
-+        busses. For example, on x86 Jacobsville, each 4 CPUs share one
-+        L2 cache. This feature isn't a universal win because it can bring
-+        a cost of slightly increased overhead in some places. If unsure
-+        say N here.
-
- config SCHED_SMT
-        def_bool y if SMP
+Thanks and sorry once again for the extra overhead this might have caused.
 
 
->
-> Thanks.
->
-> Tim
->
-
-Thanks
-barry
