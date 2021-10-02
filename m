@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13D141FA24
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 08:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A989D41FA27
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 08:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhJBGmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 02:42:40 -0400
-Received: from sauhun.de ([88.99.104.3]:35068 "EHLO pokefinder.org"
+        id S232493AbhJBGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 02:46:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62737 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232400AbhJBGmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 02:42:38 -0400
-Received: from localhost (p5486c558.dip0.t-ipconnect.de [84.134.197.88])
-        by pokefinder.org (Postfix) with ESMTPSA id 0A60A2C01D8;
-        Sat,  2 Oct 2021 08:40:52 +0200 (CEST)
-Date:   Sat, 2 Oct 2021 08:40:51 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Kewei Xu <kewei.xu@mediatek.com>
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com, qii.wang@mediatek.com,
-        liguo.zhang@mediatek.com, caiyu.chen@mediatek.com,
-        ot_daolong.zhu@mediatek.com, yuhan.wei@mediatek.com
-Subject: Re: [PATCH v7 6/7] i2c: mediatek: Isolate speed setting via dts for
- special devices
-Message-ID: <YVf+83LdUEPjoLdI@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Kewei Xu <kewei.xu@mediatek.com>, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com, leilk.liu@mediatek.com,
-        qii.wang@mediatek.com, liguo.zhang@mediatek.com,
-        caiyu.chen@mediatek.com, ot_daolong.zhu@mediatek.com,
-        yuhan.wei@mediatek.com
-References: <20210917101416.20760-1-kewei.xu@mediatek.com>
- <20210917101416.20760-7-kewei.xu@mediatek.com>
+        id S232355AbhJBGqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 Oct 2021 02:46:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="223759862"
+X-IronPort-AV: E=Sophos;i="5.85,341,1624345200"; 
+   d="scan'208";a="223759862"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2021 23:44:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,341,1624345200"; 
+   d="scan'208";a="709234814"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Oct 2021 23:44:14 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mWYko-00024d-0v; Sat, 02 Oct 2021 06:44:14 +0000
+Date:   Sat, 2 Oct 2021 14:43:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [intel-tdx:guest 70/126] arch/x86/kernel/cc_platform.c: asm/tdx.h is
+ included more than once.
+Message-ID: <202110021453.x1teJzru-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+erojwrcEqBTpKxl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917101416.20760-7-kewei.xu@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://github.com/intel/tdx.git guest
+head:   00e7708dd946e76b7a5e973162ae71111ca32aea
+commit: 6a67679c8809382f3bb97bd485c6e99e424543f2 [70/126] x86/tdx: Add device filter support for x86 TDX guest platform
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
---+erojwrcEqBTpKxl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Sep 17, 2021 at 06:14:15PM +0800, Kewei Xu wrote:
-> In the commit be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust
-> support"), the I2C timing calculation has been revised to support
-> ac-timing adjustment, however that will break on some I2C components.
-> As a result we want to introduce a new setting "default-adjust-timing"
-> so those components can choose to use the old (default) timing algorithm.
-
-Why can't the new calculation be updated in a way that it works for all
-I2C components?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
---+erojwrcEqBTpKxl
-Content-Type: application/pgp-signature; name="signature.asc"
+includecheck warnings: (new ones prefixed by >>)
+>> arch/x86/kernel/cc_platform.c: asm/tdx.h is included more than once.
 
------BEGIN PGP SIGNATURE-----
+Please review and possibly fold the followup patch.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFX/vMACgkQFA3kzBSg
-KbbgTxAAsQj8w7VTGVuNghWtRnRUYzsv+yrT8l0xbXYTWaJyoty5NtJoFgR4epKb
-xvzwypsMJb/LDJ7MmM//yR6p7myQXh+mTRbP2RxBOmBqJk7WyQc+NioQ8/N857Sb
-c/9USo5ie/l8KLHHWfL5cIbhyXEfIDNc9yqCr2Gnzva20D6KDAZAdcN1a8obGo4V
-rH1JSpOlvQt5q0idamv96D1bswvLUcwp5VPus7/gI752fBxaUcVEFv03bA+JNgT1
-C39M/KGd2CDRzSeOHOPxT71SLir1iBgvj/4ioQN4blln+gzmHSamzAAcxLREBppJ
-Y3qfRUY+E/xJSj7uvuh++74LEYNOMH+LN//BuCG13jn1Rb1BZEyyMQkAqpC+ZqIM
-ASSMWUPeZYOONV8XZshMybYVKrA411kmQEdg7Qz1CTms9Jl8Zwg9BW6rHR6l2mrf
-csDILr6aXdW4QliPdh6NSl7QbXIDoNFyB3tQFA9PDBgITzX3JHF4bmGMh2UmmzAJ
-NqkD/8fy6aO9b65KxHGOrXutHwcSv83fE35aklFYtzWtVkKWr2rgIBQ4+2sCp1hM
-VvPI3w+6lr1HKNDA3qRhCRt3m/jrpkUB2Fy7lfdLp7uhoroc3ryNgjJTKiVOBZ+S
-noQe7ZqE8URbQO0l5Y6cBxOi4jLqFy3cGCVcvALeMvQBolI8pM8=
-=4to8
------END PGP SIGNATURE-----
-
---+erojwrcEqBTpKxl--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
