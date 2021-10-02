@@ -2,160 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D4941FD66
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2462241FD70
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 19:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhJBR1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 13:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233739AbhJBR0R (ORCPT
+        id S233732AbhJBRaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 13:30:00 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:45069 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233451AbhJBR3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 13:26:17 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF939C0613EC;
-        Sat,  2 Oct 2021 10:24:31 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h1so126296pfv.12;
-        Sat, 02 Oct 2021 10:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D1bXkBk9YxmebFeA6E0BW5aK15Kg0BQ6ZYq9gHvLf8I=;
-        b=bD7c6t/HirAEIz+/PxtC8eGDtvg1LK+3UlvnvIzjRphISe/ujCdscLeEaYSqGdB2cj
-         JceH5o9k+buUK9BNbOFXYeSR6DHP8ur+gBgb3eBAUsRAu2yqdnuBuRC/DMXAkD3ty/RE
-         BKJFJIER/2X0fKhIho35yK3irtEi8Cr1Ru59ywzHmKOD6NQHYnBqMsP3yYZi6nVszfMo
-         yxXeTDn2azo9UfL+g1crhi6VQX939ULcMfw+t4q8pLQ+UwAB9cCtQp0MiV/yoQL4nr1H
-         Q17zkMpwJTeP2iFQKAU9BbhXTjeExEr8SMlR20wT94Rx1kUGfpINHmZLFEM6wdRtfFRp
-         kbgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D1bXkBk9YxmebFeA6E0BW5aK15Kg0BQ6ZYq9gHvLf8I=;
-        b=0UNITr5eyIip/TO9bOJ/g/xAAccRGaRr8rjXSU0Ri/IMT0ohCu1F4v73HyVPS8Qhar
-         /wbYTbjn5wjS5TcbFzAKf91E+F01plNewRwhw0NHl9DQeq/o3pnNBEgACk93VBLweV0G
-         UOmaHVv5gs7WVEqqkg6hO8zD9khevZBIn0/MkWySBEkTb7PPenkBdtTHglwQF91skboq
-         v+e+qY3BBn3HwiRkknDTyAKYwIadrSZBoPKVaD6lqeNPIVb0JK499EgLscJaEOHDWCmG
-         goWtNgRac2oZoWi7xPgFMnhUpkCwZituc8HXDEuC25p/1whNqf0o4HsK6ZlV+DVj5Lfu
-         0iRg==
-X-Gm-Message-State: AOAM533ifFVAhrlepNY97KbdqQgdtmk2/NWf5hl4b4XkH7JhpKnVzakH
-        s1MoJ51bBrwd6XnxlRmOVuA=
-X-Google-Smtp-Source: ABdhPJx5joTF1gNiWd6ZXwTh3t1fPMuPaA4tteEBIL9LThUASubI0TivX6vd9CDwEQL/39E2/PqcBw==
-X-Received: by 2002:a63:131f:: with SMTP id i31mr3665877pgl.207.1633195470271;
-        Sat, 02 Oct 2021 10:24:30 -0700 (PDT)
-Received: from localhost (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id ch7sm10714708pjb.44.2021.10.02.10.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 10:24:29 -0700 (PDT)
-Date:   Sat, 2 Oct 2021 10:24:31 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 03/16] include: move find.h from asm_generic to linux
-Message-ID: <YViVz/28pNaGs+Rv@yury-ThinkPad>
-References: <20211001181245.228419-1-yury.norov@gmail.com>
- <20211001181245.228419-4-yury.norov@gmail.com>
- <CAMuHMdUbzBBpCvw+44BAEVWtLfXLH_75JUcsUkedyxZYmdwL7w@mail.gmail.com>
+        Sat, 2 Oct 2021 13:29:55 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 647E45804E9;
+        Sat,  2 Oct 2021 13:28:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 02 Oct 2021 13:28:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=N
+        dG2AiDGU0yyjfZEfSHSA1eX2my+Y7Dhy95tEwsxOEE=; b=EHf38XIxyX3AijX2q
+        ngopIdoNyr1T5LjiY1RSy1XuPrV8q1XjL/4tLTYscB1g0B6chFWCuxlMe9QImHiV
+        kUpLrMS9xdGbUshDw+eXNLhDLdgo8zVWBjqftwU0nnAVlbE+KFdfEpgLiDq38IZ4
+        AXamJNqMxQXQUKYBEugY/tcVm7z5aaZeWfLZgKrJsiQgRlW4aMI9ca3HhZF090fF
+        TY/u7r/lXgDW9S5blz3NC7PUxKj/TR7c8R646Q4AK7Nu9uCUNIXZXuEROSZtl92o
+        GYGRgcLS1zLTnpzVv/HMzNgUtzsoU8rYdAmiUHJVjxtvP/c6HfwAnyamZYrldcuB
+        93tzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=NdG2AiDGU0yyjfZEfSHSA1eX2my+Y7Dhy95tEwsxO
+        EE=; b=RrpcoIklxRRr1rba6cZd76mHODb8D+vtPu79QI+bAxxAMeXKLCDgaupqC
+        JBUzgot1VDDL+3oxEW+xFShKnLUv8F/9i97SMqx++QNxoq3x/LVndAw7I3HX3kdJ
+        /pJ7/W1ykkpDt+vPELlhrLDli4MI+GxLfSzApQw9pc2geW6yCJYw2aH9HHHcrcva
+        uSwZzMvBtjl2+H0v6OiyBRIYP9LmVlltLFMa267Jd579CWYYxFkJfi1BpSL9PqFK
+        aQfe+VLf7jqJ3oShgh3viO7+9jjJLuPfbRhF0qyGiIjt8ilL+WrvObsImLgTXnTr
+        M+oDUovLY3IvonoBXHDIz77IcXOLQ==
+X-ME-Sender: <xms:p5ZYYc6C5hKN4W1y5JtKH-pQV-GWgNVKCNp0gst7MYkbAFgbXncIXw>
+    <xme:p5ZYYd7hiKdkyl5vWoA78zGA5phD8s6tDgUtMlZBjWCMf5CXr0BN4kv6re3BEBXS4
+    dWP_07Ww8KH8SCIOw>
+X-ME-Received: <xmr:p5ZYYbf3PQTUIfpmiTMquywnIKLHp0OtfyBwiq7Vy2Og_pzRfgRNyWCRptIe86pa3FFNjg6T>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekkedgudduvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefhvghr
+    nhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhhoohesuhelvddrvghuqeenucggtffrrg
+    htthgvrhhnpeeghfffgedufeeuheevtddukedtteeikefgiefhudfhfeffjeetvedtgfff
+    keejudenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghdpmhhuthgvgidrsh
+    honecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhr
+    vggvnhhfohhosehuledvrdgvuh
+X-ME-Proxy: <xmx:qJZYYRJPiM7v-h_OyID40YuW8z7zHCbCpFD7_x7o2gIg1-LmMH0EzQ>
+    <xmx:qJZYYQKb7yPr7CSSefp3QHug76AGInQ4EfuSKY6xBTXXI7qCH73gFw>
+    <xmx:qJZYYSxoB7UTJoL9NFfxQdHs61p9oapG08SeOKgWK_YlS0lJB_xsxQ>
+    <xmx:qJZYYdDxWowz3_IF0LiVoWYot8015Y8My-CogxeqM1cnMlDwleOVxA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 2 Oct 2021 13:28:04 -0400 (EDT)
+Date:   Sat, 2 Oct 2021 19:28:02 +0200
+From:   Fernando Ramos <greenfoo@u92.eu>
+To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2 00/17] drm: cleanup: Use
+ DRM_MODESET_LOCK_ALL_* helpers where possible
+Message-ID: <YViWomXZWdy/81uT@zacax395.localdomain>
+References: <20210924064324.229457-1-greenfoo@u92.eu>
+ <20211001183655.GW2515@art_vandelay>
+ <YVda4jNSGuQf50JV@intel.com>
+ <20211001204815.GA2515@art_vandelay>
+ <YVeGOyLzuhN7zzV7@intel.com>
+ <YVfEWaLfYWdhezCa@intel.com>
+ <YVgGklsHT5fkavDL@zacax395.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdUbzBBpCvw+44BAEVWtLfXLH_75JUcsUkedyxZYmdwL7w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVgGklsHT5fkavDL@zacax395.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 02, 2021 at 11:23:26AM +0200, Geert Uytterhoeven wrote:
-> Hi Yuri,
-> 
-> Thanks for your patch!
-> 
-> On Fri, Oct 1, 2021 at 8:12 PM Yury Norov <yury.norov@gmail.com> wrote:
-> > find_bit API and bitmap API are closely related, but inclusion paths
-> > are different - include/asm-generic and include/linux, correspondingly.
-> > In the past it made a lot of troubles due to circular dependencies
-> > and/or undefined symbols. Fix this by moving find.h under include/linux.
-> 
-> .. and including it from include/linux/bitmap.h, like the other helper includes?
+On 21/10/02 09:13AM, Fernando Ramos wrote:
+> On 21/10/02 05:30AM, Ville Syrjälä wrote:
+> > On Sat, Oct 02, 2021 at 01:05:47AM +0300, Ville Syrjälä wrote:
+> > > On Fri, Oct 01, 2021 at 04:48:15PM -0400, Sean Paul wrote:
+> > > > On Fri, Oct 01, 2021 at 10:00:50PM +0300, Ville Syrjälä wrote:
+> > > > > On Fri, Oct 01, 2021 at 02:36:55PM -0400, Sean Paul wrote:
+> > > > > > 
+> > > > > > Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
+> > > > > > with the necessary drm-tip conflict resolutions).
+> > > > > 
+> > > > > Ugh. Did anyone actually review the locking changes this does?
+> > > > > I shot the previous i915 stuff down because the commit messages
+> > > > > did not address any of it.
+> > > > 
+> > > > I reviewed the set on 9/17, I didn't see your feedback on that thread.
+> > > 
+> > > It was much earlir than that.
+> > > https://lists.freedesktop.org/archives/dri-devel/2021-June/313193.html
 
-yes.
+Sorry, I'm new to this and it did not occur to me to search for similar patches
+in the mailing list archives in case there were additional comments that applied
+to my change set.
 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> 
-> >  arch/m68k/include/asm/bitops.h               |  2 --
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -6,6 +6,7 @@
-> >
-> >  #include <linux/align.h>
-> >  #include <linux/bitops.h>
-> > +#include <linux/find.h>
-> >  #include <linux/limits.h>
-> >  #include <linux/string.h>
-> >  #include <linux/types.h>
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+In case I had done that I would have found that, as you mentioned, you had
+already raised two issues back in June:
+
+    On Tue, Jun 29, 2021, Ville Syrjälä wrote:
+    >
+    > That looks wrong. You're using a private ctx here, but still
+    > passing dev->mode_config.acquire_ctx to the lower level stuff.
+    > 
+    > Also DRM_MODESET_LOCK_ALL_{BEGIN,END}() do not seem to be
+    > equivalent to drm_modeset_{lock,unlock}_all() when it comes to 
+    > mode_config.mutex. So would need a proper review whether we
+    > actually need that lock or not.
+
+The first one was pointing out the same error I would later repeat in my patch
+series (ups).
+
+After further inspection of the code it looks to me that changing this:
+
+    intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
+
+...into this:
+
+    intel_modeset_setup_hw_state(dev, &ctx);
+
+...would be enough.
+
+Why? The only difference between the old drm_modeset_{lock,unlock}_all()
+functions and the new DRM_MODESET_LOCK_ALL_{BEGIN,END}() macros is that the
+former use a global context stored in dev->mode_config.acquire_ctx while the
+latter depend on a user provided one (typically in the stack).
+
+In the old (working) code the global context structure is freed in
+drm_modeset_unlock_all() thus we are sure no one is holding a reference to it at
+that point. This means that as long as no one accesses the global
+dev->mode_config.acquire_ctx context in the block that runs between lock/BEGIN
+and unlock/END, the code should be equivalent before and after my changes.
+
+In fact, now that my patch series removes the drm_modeset_{lock,unlock}_all()
+functions, the acquire_ctx field of the drm_mode_config structure should be
+deleted:
+
+    /**
+     * @acquire_ctx:
+     *
+     * Global implicit acquire context used by atomic drivers for legacy
+     * IOCTLs. Deprecated, since implicit locking contexts make it
+     * impossible to use driver-private &struct drm_modeset_lock. Users of
+     * this must hold @mutex.
+     */
+    struct drm_modeset_acquire_ctx *acquire_ctx;
+
+If I had done that (ie. removing this field) I would have detected the problem
+when compiling.
+
+There is another place (in the amdgpu driver) where this field is still being
+referenced, but before I investigate that I would like to know if you agree that
+this is a good path to follow.
+
+Regarding the second issue you raised...
+
+    > Also DRM_MODESET_LOCK_ALL_{BEGIN,END}() do not seem to be
+    > equivalent to drm_modeset_{lock,unlock}_all() when it comes to 
+    > mode_config.mutex. So would need a proper review whether we
+    > actually need that lock or not.
+
+...the only difference regarding mode_config.mutex I see is that in the new
+macros the mutex is locked only under this condition:
+
+    if (!drm_drv_uses_atomic_modeset(dev))
+
+...which seems reasonable, right? Is this what you were referring to or is it
+something else?
+
+Please let me know what you think.
+
+Thanks!
+
+
+
