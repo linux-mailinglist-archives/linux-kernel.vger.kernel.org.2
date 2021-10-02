@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0DC41F8A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451A841F8A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 02:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhJBASs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Oct 2021 20:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56268 "EHLO mail.kernel.org"
+        id S232396AbhJBASv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Oct 2021 20:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232404AbhJBASk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Oct 2021 20:18:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE26061A02;
-        Sat,  2 Oct 2021 00:16:54 +0000 (UTC)
+        id S232462AbhJBASn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Oct 2021 20:18:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 722AF610EA;
+        Sat,  2 Oct 2021 00:16:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633133815;
-        bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
+        s=k20201202; t=1633133818;
+        bh=N5hEszx5y0b/1BTKlULPRntIWovz5UNiVzuxIKHXINs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nFt15lP34RVnJFmjDkn7gD/T3yx7WhE/u9AZT6sYCeAoZKAu929L7+Oe1NeNNO5/m
-         wGmuZFWRJKFDoHSe6CQR2F2U8xyhhyN7cDDK8RfPO6W+MlMkSV5JxISZYRRmm5K/B/
-         jy9+hTweIqEeWHnWxoaJs8+x1GBQc5qg2csRsn179YK2RWhH+CHbblsphE76dStjXf
-         0Ky6H0V9gBpMJJVi6G2SmwFxn+BHaehoLSvheZz9KjezeaC/AaLtmtWQdCXbrllG1W
-         UoiRjlyXZumCBsZQMUrnwHWYLnI2S7ao6YPE2jQ2KwRK1ac4buZXjz6kLBXtJ27n8Q
-         7Ty48dyEqdW9Q==
+        b=X4z4SNnwQs+hqF45oz3NrOfh2gixpvNc392kv3QAsWb1RUoMlrGwCaP/vBhysbFsq
+         rS7KiS2dJXqi1OigNefP7im8Ts4eItOW7CzFrX8EEVS2hNU5X/0WsPEaQIuEUrZebM
+         QjM7P7YCpdeCIxcssErbLZZn/a8J7FeYEUf2ZTHonJFYWRGiSVmRXjvfGEnxMEPx1e
+         EIpRCSc9kduI7ZrLqBXSQUXyIOZB7LB/u56bhXAk4/jB8McUuovpjIitJU2/V+bNe9
+         KVbzqr9DdeZOgaroNWzohecn3aDpMsZPYdOCfJCCngu/omo6+WInUj5SpFE8DqSTD9
+         E41lXxoRVn1iw==
 From:   Mark Brown <broonie@kernel.org>
 To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+        Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        alsa-devel@alsa-project.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: qcom: apq8096: Constify static snd_soc_ops
-Date:   Sat,  2 Oct 2021 01:16:28 +0100
-Message-Id: <163313339131.45396.15118766100261477417.b4-ty@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: Constify static snd_soc_ops
+Date:   Sat,  2 Oct 2021 01:16:29 +0100
+Message-Id: <163313339131.45396.6427425261003311553.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
-References: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20211001114517.6752-1-rikard.falkeborn@gmail.com>
+References: <20211001114517.6752-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,8 +47,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 13:50:30 +0200, Rikard Falkeborn wrote:
-> The struct iapq8096_ops is only assigned to the ops field in the
+On Fri, 1 Oct 2021 13:45:17 +0200, Rikard Falkeborn wrote:
+> The struct tegra_machine_snd_ops is only assigned to the ops field in the
 > snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
 > Make it const to allow the compiler to put it in read-only memory.
 > 
@@ -57,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: apq8096: Constify static snd_soc_ops
-      commit: cd96663bc27e1c94210b5b737de4d7cf233d90f8
+[1/1] ASoC: tegra: Constify static snd_soc_ops
+      commit: 620868b2a0bd56ae814bdde2598d7d7b20538e6d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
