@@ -2,147 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3147741FE0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 22:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972F241FE1A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Oct 2021 22:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhJBUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 16:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        id S234028AbhJBUqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 16:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbhJBUcT (ORCPT
+        with ESMTP id S233975AbhJBUqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 16:32:19 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E50C061714
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 13:30:32 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id v10so48374395edj.10
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 13:30:32 -0700 (PDT)
+        Sat, 2 Oct 2021 16:46:36 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357FBC061714;
+        Sat,  2 Oct 2021 13:44:50 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id j5so48530857lfg.8;
+        Sat, 02 Oct 2021 13:44:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DBU/eugVLHJnNv/7vjHoBSC9sRWw65Q/giAQQj/u/t8=;
-        b=b/CeJaD8yfh+cEsjmwl996oH73CaUi75zCCE5VRa8F7nxP/NxkraOciEGvbiJoNEzp
-         +oW6Xd34ERPYyf1qY+bn+kXN8izgZqdQNv8jEPQoQ87L0vZdofYPrLK/y3bphrL0OiVW
-         1SNwWoSHkW0V3gYlLZTI7Ifk+PnSgGegB0JeCcXeN6mamZnypQMns9t4GzwadKTtVOW/
-         2AleWrGdSz/Kir3eWbCyo6/sKMdpFGKUPD7AyS+06/5PIqrKHtZxRSr7ItlRWHaCeu/v
-         WF3NlwF9wbkfYUXM2uv4igcA1dWJgXv0ItKsBr3r7Kvg4Igr1T4qUCyOoulYlZj/Vj5s
-         pDxw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T5NA95fXjewFVQZ7RXmQGjvZaYL3KLG4ILjTuHYXm9E=;
+        b=VInxURP7xctDXfL0Dl1Z5iIuI8Z57STPldPnyJ+NEoakoMviQJJZLMTDvRJajSYeUA
+         L6hAx+33fXvlxHQdSLAb2swwYgCSXcm4IHTOs4QNGPXy0n+3kc1PaSRsPOeccYBdBeZd
+         i/GVKW6ch0QjgR5Al9izKnsKjtkLP9b6WFxxbgQj5xOtMJ+SSJ3vI3nxrqadHVRi/RnA
+         W6QxtWyfIbdShJzgMDhIpqfX5qzkmNQXHlvgGM11cFUopWEMKunpWxyqUcwKJKYvFAG5
+         +vztm6uVxmXOzcI8Wt5yVr3CSoQmJa2Le0PpZjwLrPdDyp4eM6GhDyuSByQAckD1zOgW
+         c3ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DBU/eugVLHJnNv/7vjHoBSC9sRWw65Q/giAQQj/u/t8=;
-        b=Rqc7Uh70/8TkgTOmKLJB236A8BkRP/040CpjypG5I1jSmHjjfZeIJiIyqTZdPkIQtI
-         xWzT+Cn3j6vfglk4uY5tcHAld1G7DgMP7cnSf/FW6zknENKFuoG4B7lcx0t8upykv60K
-         2JCsJRvhmUrwpyw4ax+OiI4mEYDj3PIGAenaf3gJmWSKDJsx9zRJHUFqeCHLT5TQ9zBb
-         F4liozJT9icCFJU+3cza7YvkzukoPd2NxU/oVok5/rAbg3HdNVAYvpCebP8UXthBr9rI
-         ZqeTU1M0uCPFMIVJ4GyDCCB3wrR62NA/VdoL3mo8Bua2TRYK8Mkx4Vm+1F4saTji7fvK
-         af+g==
-X-Gm-Message-State: AOAM533p8ZRs1USHZld7P3WpFxMr04Qhm70L0Gce/Zx3S5v/nK5ET2ND
-        mc+WkZM4mwmXTdnRkosUHCg=
-X-Google-Smtp-Source: ABdhPJx0S0kiFv98tbJRmbvSsqgbY9akIIk3ZoTQPW1J2YwdvOXC+1NnMakIZPRfscPxkErwSk9PnA==
-X-Received: by 2002:a05:6402:713:: with SMTP id w19mr6484692edx.366.1633206631522;
-        Sat, 02 Oct 2021 13:30:31 -0700 (PDT)
-Received: from localhost.localdomain ([213.91.86.150])
-        by smtp.gmail.com with ESMTPSA id dt4sm4615804ejb.27.2021.10.02.13.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 13:30:31 -0700 (PDT)
-From:   Nikola Pavlica <pavlica.nikola@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@googlegroups.com, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nikola Pavlica <pavlica.nikola@gmail.com>
-Subject: [PATCH] drm/panel-simple: Add Vivax TPC-9150 panel v5
-Date:   Sat,  2 Oct 2021 22:30:17 +0200
-Message-Id: <20211002203017.509940-1-pavlica.nikola@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        bh=T5NA95fXjewFVQZ7RXmQGjvZaYL3KLG4ILjTuHYXm9E=;
+        b=o+AkgwIXTGmhQJOReVcp/TKkZzv7PXYcfMekTaitKUtIJwq9Jx49Ek3A6rzLNWnGDw
+         P14BK/n3ooXkpVEH9nCyL8FXZYN7ZEwDQcX/HwTKjBIRyMgJudlk3iv1sfciLtZTSdOR
+         vwOpvOwVQIenigGsvIM5EuTWq+4BDfs+q6YQF1gWnaCKscYOjk/MGgW3xBNn8ZhUdVCZ
+         7xYmRwRBj20i5ZIDmJzuKM5BziIPaasu+aA7E2ExtPF5uOYuwbOaw7T/wguPP+RgSZQ4
+         IMKvmtAHcPJB8dSJI9T5/DLw2qkb2FpwIt50gSksOXa8MP0ZwlDi4BPe4g+NLYlyBgjd
+         yb5A==
+X-Gm-Message-State: AOAM5320QoRG2UTT3/F5jVU3Ku5BPR/cGcwERvAogi3KnHxkjgIS1xsP
+        utURybmrqidGKVMJdilKdqs=
+X-Google-Smtp-Source: ABdhPJzClEAya5hcn4TqFZQoHIn0mpgv86q3zG4rhbGd/Hwr0saEHFeEJIpz6XM0cCQNRVK631z4Mw==
+X-Received: by 2002:a2e:80cd:: with SMTP id r13mr5454584ljg.415.1633207488462;
+        Sat, 02 Oct 2021 13:44:48 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-52-238.dynamic.spd-mgts.ru. [94.29.52.238])
+        by smtp.googlemail.com with ESMTPSA id v27sm1233535lfp.0.2021.10.02.13.44.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Oct 2021 13:44:47 -0700 (PDT)
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
+Date:   Sat, 2 Oct 2021 23:44:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The model and make of the LCD panel of the Vivax TPC-9150 is unknown,
-hence the panel settings that were retrieved with a FEX dump are named
-after the device NOT the actual panel.
+01.10.2021 15:32, Ulf Hansson пишет:
+>> +static __maybe_unused int tegra_clock_pm_suspend(struct device *dev)
+>> +{
+>> +       struct tegra_clk_device *clk_dev = dev_get_drvdata(dev);
+>> +
+>> +       /*
+>> +        * Power management of the clock is entangled with the Tegra PMC
+>> +        * GENPD because PMC driver enables/disables clocks for toggling
+>> +        * of the PD's on/off state.
+>> +        *
+>> +        * The PMC GENPD is resumed in NOIRQ phase, before RPM of the clocks
+>> +        * becomes available, hence PMC can't use clocks at the early resume
+>> +        * phase if RPM is involved. For example when 3d clock is enabled,
+>> +        * it may enable the parent PLL clock that needs to be RPM-resumed.
+>> +        *
+>> +        * Secondly, the PLL clocks may be enabled by the low level suspend
+>> +        * code, so we need to assume that PLL is in enabled state during
+>> +        * suspend.
+>> +        *
+>> +        * We will keep PLLs and system clock resumed during suspend time.
+>> +        * All PLLs on all SoCs are low power and system clock is always-on,
+>> +        * so practically not much is changed here.
+>> +        */
+>> +
+>> +       return clk_prepare(clk_dev->hw->clk);
+> I am trying to understand, more exactly, what you intend to achieve
+> with the clk_prepare() here. It looks a bit weird, to me. Can you try
+> to elaborate a bit more on the use case?
 
-The LCD in question is a 50 pin MISO TFT LCD panel of the resolution
-1024x600 used by the aforementioned device.
+The Tegra GENPD driver enable/disable clocks when domain is turned on.
+This can't be done during early system resume, when domains are getting
+turned on by the drivers core, because when clock is enabled, it's
+getting prepared (RPM-resumed) and this preparation fails because
+performance state of the clock goes up and it doesn't work during the
+early resume time since I2C, which applies the state to hardware, is
+suspended and can't work at that early time.
 
-Version 2, as Thierry kindly suggested that I fix the order in which the
-panel was ordered compared to others.
+Secondly, Tegra has arch-specific low level assembly which touches
+clocks during last phase of system suspend and in the beginning of
+resume. Hence, clocks should stay prepared during suspend just because
+technically clock should be prepared before it can be enabled.
 
-Version 3, filling in the required info suggested by Sam. Plus some
-factual issues that I've corrected myself (tested working)
+> Is this rather about making sure that the clock's corresponding PM
+> domain stays powered on during system suspend? In that case, I think
+> there may be an alternative option....
+> 
 
-Version 4, rearranged the display parameters and fix invalid bit format
-issue. (Thanks Sam)
-
-Version 5, referred to FEX file instead of manual debugging for
-information.
-
-NOTE: Seperate dt-binding patch has been sent to THAT mailing list. So
-that's why they're NOT included here. Advise freely if that's not how
-you're supposed to do it.
-
-Thanks,
-Nikola
-
-Signed-off-by: Nikola Pavlica <pavlica.nikola@gmail.com>
----
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 9b6c4e6c3..680fd3f72 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -4363,6 +4363,32 @@ static const struct panel_desc urt_umsh_8596md_parallel = {
- 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
- };
-
-+static const struct drm_display_mode vivax_tpc9150_panel_mode = {
-+	.clock = 60000,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1024 + 160 + 100,
-+	.htotal = 1024 + 160 + 100 + 60,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 10,
-+	.vtotal = 600 + 12 + 10 + 13,
-+};
-+
-+static const struct panel_desc vivax_tpc9150_panel = {
-+	.modes = &vivax_tpc9150_panel_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 200,
-+		.height = 115,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
-+};
-+
-+
- static const struct drm_display_mode vl050_8048nt_c01_mode = {
- 	.clock = 33333,
- 	.hdisplay = 800,
-@@ -4891,6 +4917,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "urt,umsh-8596md-20t",
- 		.data = &urt_umsh_8596md_parallel,
-+	}, {
-+		.compatible = "vivax,tpc9150-panel",
-+		.data = &vivax_tpc9150_panel,
- 	}, {
- 		.compatible = "vxt,vl050-8048nt-c01",
- 		.data = &vl050_8048nt_c01,
---
-2.33.0
-
+This is not about domain staying powered on, this is about keeping the
+performance state of the domain high during suspend.
