@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D378420139
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4EBB42013D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhJCKpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 06:45:22 -0400
-Received: from mout.gmx.net ([212.227.15.15]:55463 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhJCKpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 06:45:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633257798;
-        bh=zopy7JiduOhiOraL+CIOE8r8McNSECiWHJbGvJY+/wk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=lvx5GL/7dRsd5R/rBBj/tK46Hs3uVK08hGHs9VaKJev7d95nT7KoAgo7aEpUrCa7k
-         83SRFuRYMzsPBEdgge8DSDM5R0q3nqYztQq01UkWpw4O79nannpH7bk5uz4E18oi1w
-         0rsU9CC57/nCJ6bu1AJzqJw3PjjC2vB/oucng1CQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1N9dwd-1mtnBT2n9J-015c9e; Sun, 03 Oct 2021 12:43:18 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
-Date:   Sun,  3 Oct 2021 12:42:58 +0200
-Message-Id: <20211003104258.18550-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S230070AbhJCKtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 06:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhJCKtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 06:49:03 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23673C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 03:47:16 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id g193-20020a1c20ca000000b0030d55f1d984so5078091wmg.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 03:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=vMMwa7IT7oG2iCb/XqivgT4lMgOipj0gblXHu4x8S0o=;
+        b=HJmNX0T8RS4yKFMLsT1tR4IeTwBVq3AumWfS8MmVkYjUXjc1ATVjYFA4yY72iMhV7G
+         b9JUEiwY7Znsiv49rdpMFDy3GwAK5g/361dokXdul/mW6oe4Wwpm6ei3IaR/XyuEGscR
+         0lLnh9LwE8HNIvf4W8iR+4vbymjnFulXlJK58EmXgEF0R/K3Nhumvx45wVr/yd7KJJrw
+         mDV41hgI5cWxMHmBVoU7kUkD40roTT61ISxveR2eAs4oteJCbf9yf13pb8js+6hecYKc
+         wg7yqhd6SxJ12gvvh7JOjoOgOr3mou+V59OuXFWQDsA8Bm9jobicWkYDG4T4rcvZiIl4
+         weiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vMMwa7IT7oG2iCb/XqivgT4lMgOipj0gblXHu4x8S0o=;
+        b=ucZwBT1XDOCRJTttHUrZvp+SvOrKuRrMQ5WEjxdJGe1MRkMtzMmzeB5h0+8FONHE0S
+         4l8jLAzyvJ/0osHisEkJYkA2NPw5WSpVu+QPB0EFG+qB9WgQVuzldcdTD7HnwzhSV+R7
+         /25UZygNcmQARXQ847zqGvM4eOSeVYmMUlzq0KUGeVMJMSeSKKtllKzOQqXv6u8X29nw
+         ujxbZ4dmkLw1/QI1ETZiWCwWmUSX2hj4UrZeqxu6gnxS9Su+PBbuSOraZp8wzCxrMDyg
+         VebQQYiew56aJ32kzB5uSctgts+siWyQ6GZtlYn3WDAQjMffYM30iXrKgMN2Lh7N0hQX
+         yB5w==
+X-Gm-Message-State: AOAM532hQQ3a232zkgEx6xG8VRcNOpLFufdc5sRGb1w16yfCMUuSwVQG
+        A9PqJnYTE02euOp8Ffmdolo=
+X-Google-Smtp-Source: ABdhPJwqJzCvFH5QzdMir//AFtuNEuWDYX6hToiSOLLJMgdSeRO8JZQFjtj/Myl4NQ+iUo8ExOHhbw==
+X-Received: by 2002:a1c:411:: with SMTP id 17mr394294wme.158.1633258034811;
+        Sun, 03 Oct 2021 03:47:14 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
+        by smtp.gmail.com with ESMTPSA id m5sm13078178wms.41.2021.10.03.03.47.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Oct 2021 03:47:14 -0700 (PDT)
+Message-ID: <6b5c6c02-7c66-1315-fc60-d11804d40adb@gmail.com>
+Date:   Sun, 3 Oct 2021 12:47:13 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uxCZL6xJRu3oEOGIGxrkEkeAYobt3kt5RUND+CwOV7gb29aFtlt
- XYBMW8PY3+dXrVVEyjK13+fJll8DyzLN5hKiyTJwBj7xorhQJWIRIJlhc7qgnpoRH1yJWkf
- 2hAQv7FbJdd4kVls/vfCWapbxyQ/CmhjQU/diQasrAEpcfjfCgHmpKHWhCb4I10bOqQkLUT
- Pl1tYhlOrbJQJf1gpBtaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QArz2dc5ypc=:p3dODVcckWTX11y2VtLBr7
- FC/Utic68qHS63CflCCl/X/mpL8FtpFit/UwO99wCcZMBO1JS8G0MRlSRYJSv0w8aYX+OM/Gi
- 0g/5QwJ8hI91A3IUORASvq1Py8jAcoa2371wPgjzXDAlkjeJxyTn0nwzFuIeuOdp9Wz6qtrLO
- KqDd5Kn/vq8cGvb59EQWFwz/VfRxBqMLXCHzE6U8CZA8cBUH6WDcVGLNDOe8oiZX1GPS/H4+d
- YSEff4AmwtR3f0jr24gk0vYqTFNFJbPDYFqE8g2vqEblxo3SzOpVuoAbNiobu1PN8mHUEdJiB
- KEPFHijtDdOIzsAg3FmkiVrzyGz+/j8N9GlbIaDXx+c10rCjzeg5fTc036Bce48tJh1Y/phG0
- B/4aSWr1pHD7PeQPry1Ev/isEjZdovZLu/dFZMQFzJuoiDFi2guxhdKSJZOsZAnGfDvvgIslN
- O3nfeHlqbFxhMcB5amayK+e5mZ00v4AfqImC1wJPRZj0CKR/H0yYHcVbQTJk1F9nwIP1M0sKY
- caLX0bCQKnRZXK0b/OJkr9F+2Jioc98c66zsbZm4vP6WsMQj+n9XyFwFi4+phdUuer6N0rbBE
- UzUcMtXWWhUmY+AIoKJmWJ53JQG9qO358J7PMEJMVXt1COwQlZh8SoR3Ve8aTDng3TpP7KhEI
- 88f3kO03YSsBXibhXRandSRMdKMuZzF0GmcfSiioLaqVmJxc/+yszUq7wfeaNKKJg/93Jdo7d
- 4Il2pBI04ZylcnevLpzPm0o6KfoHv9PDjiPoINqlFfnd7bZprZWAFOTO6hvTQraPWTRQaYaGg
- fZBmNv+8PIIxZs/Lmjce8KIFr9vz6nnmVF/46ue+3fElE1UBYb3utd2ciSaf9eDOrcFyJGea3
- 2oU8WEZYAQpWUFTCB1eh/kJQy4PfLUp1YnkFM/comLpQib+PHEFIx/RIBlVpIqPbeNXN2P/I9
- xdd/texNihEkS69vV9nviESlpMvEcsX2NcmdxYViSYZqystYFjeXGnmpRdKuZ7KniGRMqsIIW
- vHrGhRMNFS4rbZTbHWOUUhcosT3/MQdtCIbLGktMWhRwiKy37OOr2339lZPXA6LvwTaq4SE0r
- +2AKRZwPwqeFYQ=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v2] staging: r8188eu: core: remove unused variable
+ pAdapter
+Content-Language: en-US
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YViKDzqX5isFX+gv@user>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <YViKDzqX5isFX+gv@user>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+On 10/2/21 18:34, Saurav Girepunje wrote:
+> Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+> 
+> ChangeLog V2:
+> 	-Remove unneeded line break on Efuse_Read1ByteFromFakeContenit().
+> 
+> ChangeLog V1:
+> 	-Remove unused variable pAdapter in Efuse_Read1ByteFromFakeContent.
+> 
+>   drivers/staging/r8188eu/core/rtw_efuse.c | 8 +++-----
+>   1 file changed, 3 insertions(+), 5 deletions(-)
+> 
 
-In this case these are not actually dynamic sizes: all the operands
-involved in the calculation are constant values. However it is better to
-refactor them anyway, just to keep the open-coded math idiom out of
-code.
+Looks good to me now.
 
-So, add at the end of the struct i915_syncmap a union with two flexible
-array members (these arrays share the same memory layout). This is
-possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
-struct_size() helper to do the arithmetic instead of the argument
-"size + count * size" in the kmalloc and kzalloc() functions.
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
-Also, take the opportunity to refactor the __sync_seqno and __sync_child
-making them more readable.
-
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
-
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/i915_syncmap.c b/drivers/gpu/drm/i915/i9=
-15_syncmap.c
-index 60404dbb2e9f..a8d35491d05a 100644
-=2D-- a/drivers/gpu/drm/i915/i915_syncmap.c
-+++ b/drivers/gpu/drm/i915/i915_syncmap.c
-@@ -82,6 +82,10 @@ struct i915_syncmap {
- 	 *	struct i915_syncmap *child[KSYNCMAP];
- 	 * };
- 	 */
-+	union {
-+		DECLARE_FLEX_ARRAY(u32, seqno);
-+		DECLARE_FLEX_ARRAY(struct i915_syncmap *, child);
-+	};
- };
-
- /**
-@@ -99,13 +103,13 @@ void i915_syncmap_init(struct i915_syncmap **root)
- static inline u32 *__sync_seqno(struct i915_syncmap *p)
- {
- 	GEM_BUG_ON(p->height);
--	return (u32 *)(p + 1);
-+	return p->seqno;
- }
-
- static inline struct i915_syncmap **__sync_child(struct i915_syncmap *p)
- {
- 	GEM_BUG_ON(!p->height);
--	return (struct i915_syncmap **)(p + 1);
-+	return p->child;
- }
-
- static inline unsigned int
-@@ -200,7 +204,7 @@ __sync_alloc_leaf(struct i915_syncmap *parent, u64 id)
- {
- 	struct i915_syncmap *p;
-
--	p =3D kmalloc(sizeof(*p) + KSYNCMAP * sizeof(u32), GFP_KERNEL);
-+	p =3D kmalloc(struct_size(p, seqno, KSYNCMAP), GFP_KERNEL);
- 	if (unlikely(!p))
- 		return NULL;
-
-@@ -282,7 +286,7 @@ static noinline int __sync_set(struct i915_syncmap **r=
-oot, u64 id, u32 seqno)
- 			unsigned int above;
-
- 			/* Insert a join above the current layer */
--			next =3D kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
-+			next =3D kzalloc(struct_size(next, child, KSYNCMAP),
- 				       GFP_KERNEL);
- 			if (unlikely(!next))
- 				return -ENOMEM;
-=2D-
-2.25.1
-
+Thanks,
+Michael
