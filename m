@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD6D420233
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E0D420244
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhJCP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 11:29:27 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:59825 "EHLO
+        id S231156AbhJCPcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 11:32:31 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:52785 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhJCP30 (ORCPT
+        with ESMTP id S231133AbhJCPc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 11:29:26 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MZTVu-1mLUOV3zyI-00WXuJ for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021
- 17:27:38 +0200
-Received: by mail-wr1-f47.google.com with SMTP id v25so14894715wra.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 08:27:37 -0700 (PDT)
-X-Gm-Message-State: AOAM530cKk7VcVvwdQ7m5yOlkj2Ytz27RyMu8A8SAiLArjLNMbEbEFN/
-        Fu0zukrOTkDfdECufJ/TlWofLLbrt3dpJz5/89M=
-X-Google-Smtp-Source: ABdhPJx555MTqA/6lXrHsT6BxpSfCJdY8NtrEPSUzogliHWkD7nZWhljz+fmDWgCwkYBjzzHM8AasmP64bCKDOBptXE=
-X-Received: by 2002:a5d:4b50:: with SMTP id w16mr9028120wrs.71.1633274857642;
- Sun, 03 Oct 2021 08:27:37 -0700 (PDT)
+        Sun, 3 Oct 2021 11:32:29 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MNtjq-1m8nRA29DU-00ODiN for <linux-kernel@vger.kernel.org>; Sun, 03 Oct
+ 2021 17:30:40 +0200
+Received: by mail-wr1-f46.google.com with SMTP id t8so25670134wri.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 08:30:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532425xnZ0Hc0oDyKJSiol4yv9UT2rvlQvxP3UZgHFI8leewShj8
+        u/YPdVcCjqy0C75Ble8JrK/wpoDZnmNOrilTSQM=
+X-Google-Smtp-Source: ABdhPJwJGaMMarFg1ioVjxCZ2/4wMv2JVL+5Fcq22wk7PQqXZw0GCeAokU19zp848kd3HeQyLietiBcO8YZxvzJvNCE=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr9039258wro.411.1633275040200;
+ Sun, 03 Oct 2021 08:30:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211002235712.189536-1-palmer@dabbelt.com>
-In-Reply-To: <20211002235712.189536-1-palmer@dabbelt.com>
+References: <20211003002120.198752-1-palmer@dabbelt.com>
+In-Reply-To: <20211003002120.198752-1-palmer@dabbelt.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 3 Oct 2021 17:27:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3-VffaUQmQ=w8CNCEWarm9JFqwEAXrEGqr9Dj3khRV2A@mail.gmail.com>
-Message-ID: <CAK8P3a3-VffaUQmQ=w8CNCEWarm9JFqwEAXrEGqr9Dj3khRV2A@mail.gmail.com>
-Subject: Re: [PATCH] checksyscalls: Unconditionally ignore fstat{,at}64
+Date:   Sun, 3 Oct 2021 17:30:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1rwMWQSmdW4ARkk6swT9VC2Fcx5nBWVugSOuhv8o7QHg@mail.gmail.com>
+Message-ID: <CAK8P3a1rwMWQSmdW4ARkk6swT9VC2Fcx5nBWVugSOuhv8o7QHg@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Include clone3() on rv32
 To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mike Rapoport <rppt@kernel.org>,
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Brauner <christian@brauner.io>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+        Android Kernel Team <kernel-team@android.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:xtW63c6SLd1JkEwnCPZtfWpYyuRQXp9jqEyolzKbjDRLrIUmj5A
- 420vhmBSPrtUD0Lv3BkXSPJ4R0IGy9wb5qmgMRthcbcn31GTouHl1uvxX9ePlPKRM+KuyyD
- zJ9U54dl/r9UnFLOycn1IyPMlhheFydvph9/L40vKWqlgyJ91OQgO5y+Ztgawo9RNYX2Xi5
- KmaTN4tgV555gN9rhMvZA==
+X-Provags-ID: V03:K1:iNKzHJR4cAi4PeB/Q63yDHAB3+PocKq6MAga8pNGBsh+CHY+L8F
+ 8Y+B0V/8v/pX1JIK8VUr4gCl/v5XyPdTXCaT5+NMUw2Y5wyKXedbH6y6PSWRHj/awp+P70Y
+ S/QOaN8eGIw3qewgsupHmRCtOInJrGjWt6z+3GINNgSTKuchSiWAnRqDey5nl9ccnpeQ7V9
+ nuKowEgkvDUst11hBYSYw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T4P+QxGPMY8=:ttwNxtVdETnF1J8E0LPxlh
- VA9IRItKtSUjVDpUpv9ZUW3sGRcVPQriK35AwVXl0JSesn3NPq5pMXjIELXr6ADDm4XGoI6FN
- cBq9IODRhAA0Y/vs9Q885S7Van+UhLDMCsG0ODlIgFq+DIYP99cGTWeV62f+Pc0uFILO89Yl2
- WVCGX+M/8kr1avZ3Wh+QZyGk3bq147TTRPuJ/rySLvADZcRitREM0KJrh6RkkebTSUdQQhqMy
- vyJZefyKihmrzrwnRa9CS/3dsNYlQLLutsZkP2kK/9T1mLjpSgQHSkwopZ7spTjsKTTc0TrGP
- Jrd0AhWkSp3hgAcpKIBzPfUzQd+7PQlzMOGggfyAZj9wg9wwmx+UbUsfi9f0yhTdQ+uV+aJbz
- XU6BFXfoIc4IVa0nvF3OIeNLfwhGzkAo0ipNG6/sSqr8XUgNAvK2ygqKwgdBT6gt9gvUA8aFC
- KXZ657DuAW3wUSvVZwfIq9cBUwsAxl+xyDMirQYWs+N3flsdHd08YiAmDE9euIJQMkFoxxSLp
- VjzrQIzexI8EMDFCVAfgDWXwXEgXNMkX7ysqHqARRNYcjqJxCQKJ9xJjZqQdZ0hNYSw7Ui868
- Go3CFfsFm9taysUwuVpmWOZ+q2P5HKNdjQhwUcfaJN1ddY58hvPEQOHtUeJ2OHOjgYPSHjsAe
- veyil0AZi/dyfRLwEx0C79lr73YY1cRhMOnKrDKie0Rr6z6BEVfQ3jLTlTMbKmm2mR+OykViJ
- 2TnTziOPxaN0+JIG3ui1icmDG99PFlqfLimZEw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bpXX6TckVBo=:DOPWkbSwkYc900OpITYIQD
+ j4GF+7vTZ3jEHG8pkLWh0Ft60AAKa+8oUtqfyr5bM0h7OxAP7Ism3MiH/dKkRcXXKIkKpkWrd
+ v3KMwDPAlxH0Kw9v3sL3xezJwCztVkORtKMZf6J+aRrQb2S+k6N5YG0BA08qtHLtqumfVg9je
+ znmdwb6MSdQdkypH0zyeU5NeoyHjsLcNNUAS81qddBj3BTob3yC2Iyl4CEv2A+5sTlNGAgoNO
+ 6xWF/5bNlET6bc+X4Z171t85zbeDsxyEtTDsg8qaglwQK6tv8LW9yyDTauPD/tpDvw3cILs6c
+ n9wlyjahpGCL0tmaZhopQevE6kz/HhDMtAUlwDj9PY9HKd4vr0KGr722DlQ4M7iyg1z6femBX
+ 95K3XfSdhCdz9kZ9G0eXKEbyDPlInfNcnnslucVQiNEMeES+cioxd83JmDav1MY3p3c3CRi7l
+ EbHanRzQDJFZ826MXZjD88NrDTUx0YPanElcwA3kJLVC7MaPtXiAeVmYWNAAy6W8lMcVDHyZh
+ 3s3ZG7XirHKAui5fR9AFd8PICUicn6sPXtZBYSzHPS6KLuSuifL0M3kBKWhGgLij5dsE7yDk/
+ r7Za4VBiyWVIv8rCrSI6FhpcKtRVhHKk7S0Km/9mpxh+tYNCLMMhKKKpbDBdkGujpkppIEAgO
+ r0/zWIgascNV/Z2nHbTciRTBtKAHcfUJ83k9i0GVYQi4YKtwVtOfbU+HHIGm1qrOJSnZnrvJZ
+ PPGK/umPMPj+V3crrx5TNmzdiGrYnr0V2BlzLIYufs/QxPpRIqozDdQTUWStl6rKUMp3iXlUI
+ Ow/MR7u1dUQzBcMaLCb4NY7iTelCLUuBThlVcnY4lS9s53A+PEyouNVYIxy0DkIF6lUfZgHNY
+ 7xhViGFTAv4Lw5+bG+Lg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 2:56 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+On Sun, Oct 3, 2021 at 2:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 >
 > From: Palmer Dabbelt <palmerdabbelt@google.com>
 >
-> These can be replaced by statx().  Since rv32 has a 64-bit time_t we
-> just never ended up with them in the first place.
+> As far as I can tell this should be enabled on rv32 as well, I'm not
+> sure why it's rv64-only.  checksyscalls is complaining about our lack of
+> clone3() on rv32.
 >
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
 > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
+We should probably reverse the polarity of this symbol and force
+architectures that don't implement it properly to say they don't
+have it, but for now, it definitely makes sense to treat this the same
+way on 32-bit and 64-bit risc-v.
+
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-
-> Happy to take this through the RISC-V tree, as it's fixing a build warning
-> (that's being promoted to an error for me, not sure why).  I'm just not all
-> that familiar with how this one works.
->
-> Arnd suggested putting these here, but not exactly doing it this way.
-
-Merging it through your tree sounds good.
