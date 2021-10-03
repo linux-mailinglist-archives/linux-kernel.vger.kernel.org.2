@@ -2,163 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5794203BC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 21:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F155B4203C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 21:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhJCT2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 15:28:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231280AbhJCT2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 15:28:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 779A26113E;
-        Sun,  3 Oct 2021 19:26:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633289219;
-        bh=xT1kBNgVseYDpuIPi5OSd2BvxN7N+C4ybBmVSDmqbkw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZFKPpkB9z5vxwWZwjePFLih316yP1HgZIuOANjShMByhj5Z1HbWQr7PMFHpgihbY7
-         BwQjqopfa1f3UEH0y2An/6BwWaJR2RCIFTEkS0GJpfNKBfZ7vu1Y37hxAa8/cAn0MR
-         FVsSQmGGvdeb0BXIzOqKtlSJUYTcV8Bl8D09e3bx50qzye/T8bHYSf2aazg9TP2LfD
-         0TPKslFYPAsZTdRLHKN5AGVbrxKSoWAqJtZ3TIyRXaZXw08xeELDAxlWV4We37lkiQ
-         n+Seiekuu51pgRpZH+tNjshcx8r/oRPo3+km73qvzXjVVMZZc/Uqh6BvRGoCiggth/
-         1aXl4I2xeXJog==
-Date:   Sun, 3 Oct 2021 21:26:54 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: lets settle the LED `function` property regarding the netdev
- trigger
-Message-ID: <20211003212654.30fa43f5@thinkpad>
-In-Reply-To: <YVn815h7JBtVSfwZ@lunn.ch>
-References: <20211001143601.5f57eb1a@thinkpad>
-        <YVn815h7JBtVSfwZ@lunn.ch>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231510AbhJCTjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 15:39:33 -0400
+Received: from mail-40140.protonmail.ch ([185.70.40.140]:29858 "EHLO
+        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhJCTjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 15:39:31 -0400
+Date:   Sun, 03 Oct 2021 19:37:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+        s=protonmail; t=1633289860;
+        bh=Vkis8q3wAr5DLrDK2kyBtcT3tC2zLfRByim6BGFmAjI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=vJ+/0awUSluDcG8pFS3P/dqMtHC++VrRIVA0lJXgnUKZGDrcj+py6V0EOyEGZP9oF
+         IZi/Z/rgBTS8up9A0eRUo7kFcj1ycQo+IWc/11sHazm4OWYLmLoKoCr2jhd0bFFCT9
+         Rslw76Cko+gDDN+tn1JRU3Qob+J0wqHQNXh2fi/o=
+To:     Alexey Gladkov <legion@kernel.org>
+From:   Jordan Glover <Golden_Miller83@protonmail.ch>
+Cc:     ebiederm@xmission.com, LKML <linux-kernel@vger.kernel.org>,
+        "linux-mm\\\\@kvack.org" <linux-mm@kvack.org>,
+        "containers\\\\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>
+Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
+Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
+Message-ID: <x60kD9HRSkoQBLUAQHfwu3QUvrZSR7xG1Eirly0J6TMH0pOKcx-biWrQGLyCHAJZez4isFYFm745RPFJ_oCsvPeHRdDUElohmeqZR1g7Pq8=@protonmail.ch>
+In-Reply-To: <20210929173611.fo5traia77o63gpw@example.org>
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch> <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch> <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch> <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch> <20210929173611.fo5traia77o63gpw@example.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Oct 2021 20:56:23 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
+On Wednesday, September 29th, 2021 at 5:36 PM, Alexey Gladkov <legion@kerne=
+l.org> wrote:
 
-> On Fri, Oct 01, 2021 at 02:36:01PM +0200, Marek Beh=C3=BAn wrote:
-> > Hello Pavel, Jacek, Rob and others,
-> >=20
-> > I'd like to settle DT binding for the LED function property regarding
-> > the netdev LED trigger.
-> >=20
-> > Currently we have, in include/dt-bindings/leds/common.h, the following
-> > functions defined that could be interpreted as request to enable netdev
-> > trigger on given LEDs:
-> >   activity
-> >   lan
-> >   rx tx
-> >   wan
-> >   wlan
-> >=20
-> > The "activity" function was originally meant to imply the CPU
-> > activity trigger, while "rx" and "tx" are AFAIK meant as UART indicators
-> > (tty LED trigger), see
-> > https://lore.kernel.org/linux-leds/20190609190803.14815-27-jacek.anasze=
-wski@gmail.com/
-> >=20
-> > The netdev trigger supports different settings:
-> > - indicate link
-> > - blink on rx, blink on tx, blink on both
-> >=20
-> > The current scheme does not allow for implying these.
-> >=20
-> > I therefore propose that when a LED has a network device handle in the
-> > trigger-sources property, the "rx", "tx" and "activity" functions
-> > should also imply netdev trigger (with the corresponding setting).
-> > A "link" function should be added, also implying netdev trigger.
-> >=20
-> > What about if a LED is meant by the device vendor to indicate both link
-> > (on) and activity (blink)?
-> > The function property is currently a string. This could be changed to
-> > array of strings, and then we can have
-> >   function =3D "link", "activity";
-> > Since the function property is also used for composing LED classdev
-> > names, I think only the first member should be used for that.
-> >=20
-> > This would allow for ethernet LEDs with names
-> >   ethphy-0:green:link
-> >   ethphy-0:yellow:activity
-> > to be controlled by netdev trigger in a specific setting without the
-> > need to set the trigger in /sys/class/leds. =20
->=20
-> Hi Marek
->=20
-> There is no real standardization here. Which means PHYs differ a lot
-> in what they can do. We need to strike a balance between over
-> simplifying and only supporting a very small set of PHY LED features,
-> and allowing great flexibility and having each PHY implement its own
-> specific features and having little in common.
->=20
-> I think your current proposal is currently on the too simple side.
->=20
-> One common feature is that there are multiple modes for indicating
-> link, which take into account the link speed. Look at for example
-> include/dt-bindings/net/microchip-lan78xx.h
->=20
-> #define LAN78XX_LINK_ACTIVITY           0
-> #define LAN78XX_LINK_1000_ACTIVITY      1
-> #define LAN78XX_LINK_100_ACTIVITY       2
-> #define LAN78XX_LINK_10_ACTIVITY        3
-> #define LAN78XX_LINK_100_1000_ACTIVITY  4
-> #define LAN78XX_LINK_10_1000_ACTIVITY   5
-> #define LAN78XX_LINK_10_100_ACTIVITY    6
->=20
-> And:
->=20
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK10	0x0010
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK100	0x0020
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK10X	0x0030
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK1000	0x0040
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK10_0	0x0050
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK100X	0x0060
-> intel-xway.c:#define  XWAY_MMD_LEDxL_BLINKS_LINK10XX	0x0070
->=20
-> Marvell PHYs have similar LINK modes which can either be one specific
-> speed, or a combination of speeds.
->=20
-> This is a common enough feature, and a frequently used feature, we
-> need to support it. We also need to forward looking. We should not
-> limit ourselves to 10/100/1G. We have 3 PHY drivers which support
-> 2.5G, 5G and 10G. 25G and 40G are standardized so are likely to come
-> along at some point.
->=20
-> One way we could support this is:
->=20
-> function =3D "link100", "link1G", "activity";
->=20
-> for LAN78XX_LINK_100_1000_ACTIVITY, etc.
->=20
->     Andrew
+> On Tue, Sep 28, 2021 at 01:40:48PM +0000, Jordan Glover wrote:
+>
+> > On Thursday, September 16th, 2021 at 5:30 PM, ebiederm@xmission.com wro=
+te:
+> >
+> > > Jordan Glover Golden_Miller83@protonmail.ch writes:
+> > >
+> > > > On Wednesday, September 15th, 2021 at 10:42 PM, Jordan Glover Golde=
+n_Miller83@protonmail.ch wrote:
+> > > >
+> > > > > I had about 2 containerized (flatpak/bubblewrap) apps (browser + =
+music player) running . I quickly closed them with intent to shutdown the s=
+ystem but instead get the freeze and had to use magic sysrq to reboot. Syst=
+em logs end with what I posted and before there is nothing suspicious.
+> > > > >
+> > > > > Maybe it's some random fluke. I'll reply if I hit it again.
+> > > >
+> > > > Heh, it jut happened again. This time closing firefox alone had suc=
+h
+> > > >
+> > > > effect:
+> > >
+> > > Ok. It looks like he have a couple of folks seeing issues here.
+> > >
+> > > I thought we had all of the issues sorted out for the release of v5.1=
+4,
+> > >
+> > > but it looks like there is still some little bug left.
+> > >
+> > > If Alex doesn't beat me to it I will see if I can come up with a
+> > >
+> > > debugging patch to make it easy to help track down where the referenc=
+e
+> > >
+> > > count is going wrong. It will be a little bit as my brain is mush at
+> > >
+> > > the moment.
+> > >
+> > > Eric
+> >
+> > As the issue persist in 5.14.7 I would be very interested in such patch=
+.
+> >
+> > For now the thing is mostly reproducible when I close several tabs in f=
+f then
+> >
+> > close the browser in short period of time. When I close tabs then wait =
+out
+> >
+> > a bit then close the browser it doesn't happen so I guess some interrup=
+ted
+> >
+> > cleanup triggers it.
+>
+> I'm still investigating, but I would like to rule out one option.
+>
+> Could you check out the patch?
+>
+> diff --git a/kernel/ucount.c b/kernel/ucount.c
+>
+> index bb51849e6375..f23f906f4f62 100644
+>
+> --- a/kernel/ucount.c
+>
+> +++ b/kernel/ucount.c
+>
+> @@ -201,11 +201,14 @@ void put_ucounts(struct ucounts *ucounts)
+>
+> {
+>
+> unsigned long flags;
+>
+> -         if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock,=
+ flags)) {
+>
+>
+>
+> -         spin_lock_irqsave(&ucounts_lock, flags);
+>
+>
+> -         if (atomic_dec_and_test(&ucounts->count)) {
+>
+>                   hlist_del_init(&ucounts->node);
+>
+>                   spin_unlock_irqrestore(&ucounts_lock, flags);
+>                   kfree(ucounts);
+>
+>
+> -                 return;
+>           }
+>
+>
+> -         spin_unlock_irqrestore(&ucounts_lock, flags);
+>
+>
+>
+> }
+>
+> static inline bool atomic_long_inc_below(atomic_long_t *v, int u)
+>
+> ---------------------------------------------------------------------
+>
+> Rgrds, legion
 
-Hello Andrew,
+I'm still able to reproduce the issue with above patch although situation
+changed/improved a bit as now I have to close tabs and browser really fast
+to hit it which means it's more unlikely to happen during real usage.
 
-I am aware of this, and in fact am working on a proposal for an
-extension of netdev LED extension, to support the different link
-modes. (And also to support for multi-color LEDs.)
+On the other hand the kernel logging cuts off much earlier, just after few
+lines:
 
-But I am not entirely sure whether these different link modes should be
-also definable via device-tree. Are there devices with ethernet LEDs
-dedicated for a specific speed? (i.e. the manufacturer says in the
-documentation of the device, or perhaps on the device's case, that this
-LED shows 100M/1000M link, and that other LED is shows 10M link?)
-If so, that this should be specified in the devicetree, IMO. But are
-such devices common?
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 20387 at kernel/ucount.c:256 dec_ucount+0x43/0x50
+Modules linked in: ...
 
-And what about multi-color LEDs? There are ethernet ports where one LED
-is red-green, and so can generate red, green, and yellow color. Should
-device tree also define which color indicates which mode?
-
-Marek
+Jordan
