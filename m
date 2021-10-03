@@ -2,106 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A976642031B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1173F420320
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhJCRcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 13:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        id S231304AbhJCRoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 13:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhJCRck (ORCPT
+        with ESMTP id S231218AbhJCRog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 13:32:40 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0725CC0613EC;
-        Sun,  3 Oct 2021 10:30:52 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id p13so27360899edw.0;
-        Sun, 03 Oct 2021 10:30:52 -0700 (PDT)
+        Sun, 3 Oct 2021 13:44:36 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F043C0613EC;
+        Sun,  3 Oct 2021 10:42:48 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y23so22406432lfb.0;
+        Sun, 03 Oct 2021 10:42:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nx23uFP7YBzW7KynLSJkC6d2qQ5HngXNFDwkHBWR0lk=;
-        b=fhGEHTsEhv/Zwc517ylamR/z4Limsn4EaraS/9cstKmq8+b9o6edTUumHJBwq7JjNV
-         o2b0q8va80XXfVT/aTcj4BOlBbrGRikJwGIyyoWYdolLjayE4xO1QKUvhS7J83eXkenK
-         GU6Cvha1sGRlyV0nQdb5TwblgGwhaGQ63yHVHS3DHX8xxNbk6NwyVTNHPUCZrbIJ7vqP
-         JCamDjZl0/q1z/tzqFDqqNAAvpMaeCJsohx+M+ukfvepRd+gM9fBaoVs6WUgJqjqhoKG
-         Alz60T4cOLwHZ3SLu6GWQa1Gw+rOcjHpvg4/cGRl/BOEWe3fyBoSkyl8gpQ/k4VQEdvT
-         qIqA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fp7K/loU26ruITuOa6jURGENBgeS0ANLVcb3/g9gBd4=;
+        b=dF0K5o8nHY63oo44CokXeilF60prm/HLae6dyr3FxuFdCs/vjjZ0+3jh8/xQZ3TzoF
+         Xj5UxeCPR39EghbULPgnLky+0MuMtL70n8IokATaE+cLi70VLhk151FT5gAGDAG0W1Ah
+         sToCTDLPM9onGwp/R/YQCyHpLMEM3SRk8K0BhoKTUUVVYoaSvJVvVswGJRotDx8WPH9C
+         Gvt9GbcTmGQzxq4CJpCJ0xtBs7LmhvCuvIv4nUpL6noOrdihNBwK/wmR6WwYXE/sOSQC
+         +BRioV7Rkl1Sc+q/B1Gv/AVr5mKupR4DCgSEPgPlDyGnMhQQH9dCEvhWI8dKI0iZFZGd
+         Ul3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nx23uFP7YBzW7KynLSJkC6d2qQ5HngXNFDwkHBWR0lk=;
-        b=TtgmOsUtc6DtgNFC9w3RqGgiuiZ1G7Y8sVyjbj1tiewUHpYlL9811hkwL/E9gRwT8g
-         M/naxHYXs8LUIG/R/iMNxqWSOdhYKQe57uvUCn1/EaRpTw7XgIps1JlErlDq4i4ZNMPA
-         bkeOHB998X9rcquAVOuihfiVHK6ZJSTd/G0C/woGvtsnZBTYMfO5d0fZDopOVjg0O5ST
-         Rp07ojw5jMuOVfL4z983xfHk+3DFMrHIhXj5WmDMcutk0BykiduYmKlNDox1+4aFpov6
-         DfTo21AjlAOdGpsW3kXpK3NxsTLZtFb8irL4Ohnj6EhwWnvaqmNUYZUii7m6xDT8bwfd
-         u6ow==
-X-Gm-Message-State: AOAM533OTJZJHfmRo34XrNehj7jeKw0jBRMhf9kO0Jyupprov+1r+g9c
-        jxyRux3YK4IXBwL/9TfwwiEGguJbt0vWl5yXRRA=
-X-Google-Smtp-Source: ABdhPJyJ816L0NPRO045GzLme97N9JS8dpWNmsA5szO6yFhlz2Rifjh5TX3TIOq62HO3pVWnfp2bCDh88ftrfmGIQ8E=
-X-Received: by 2002:a05:6402:1696:: with SMTP id a22mr12270212edv.283.1633282249403;
- Sun, 03 Oct 2021 10:30:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fp7K/loU26ruITuOa6jURGENBgeS0ANLVcb3/g9gBd4=;
+        b=UZn4TTIgvo1Fd6IySeBSfF6AM72Xopa5eztB0glZMb15/OaMPRgf2YNA7MNMEw2dJM
+         FVTyC1El6yx2lIBy/jQ/PcVROJ30qs58vwXb3qiDs89kfFxtREsdsHyS+iH392qORo7c
+         Ci0R5qPzy67+uZkV/UQtOmJPTtUQWxQJVUgTaONLyVMskXMACVD/okmi3qGJYaXV78xH
+         GtrkEt9XXuuwAjRBXmHNiZpCHcmcab2Uo6+XE6083zYcMOzINZ4fQR2YQTYogXHkk/bJ
+         u8SJkPxmtn5OjY5/jPYTw4HqebSJkNF5pAtw5jdaoPte3MkrkR+oSW6967S8IjaDdklL
+         W+yA==
+X-Gm-Message-State: AOAM530ifhpaXi3Hq0gvNTj2uhxw704YlCOQr95tNZmtXk+UsYQsXWVh
+        UjRpF/wJD+mvsh72zO7kzTgmWifZd4A=
+X-Google-Smtp-Source: ABdhPJy+MrPj6vOAyRi5R3N/O9eSa7lJw1lpMMD/7A1DBmLl4jx4H1KowNOD1DqLbIlEaftytwWfpw==
+X-Received: by 2002:a2e:9a11:: with SMTP id o17mr10553779lji.291.1633282966606;
+        Sun, 03 Oct 2021 10:42:46 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id o9sm1498430lfl.280.2021.10.03.10.42.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 10:42:46 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 20:42:44 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/2] fs/ntfs3: Remove unnecessary includes
+Message-ID: <20211003174244.ijg3uxoqdt2ywyqe@kari-VirtualBox>
+References: <992eee8f-bed8-4019-a966-1988bd4dd5de@paragon-software.com>
+ <43e50860-3708-2887-86f7-e201782a2001@paragon-software.com>
 MIME-Version: 1.0
-References: <20211003133344.9036-1-oleksandr@natalenko.name>
-In-Reply-To: <20211003133344.9036-1-oleksandr@natalenko.name>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 3 Oct 2021 20:30:13 +0300
-Message-ID: <CAHp75VeYm1NEOMjmdpw7+azrcLs_kOgEQqEVC4DqgRq=rZUkmg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] hwmon: add ASUS Pro WS X570-ACE support
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Denis Pauk <pauk.denis@gmail.com>,
-        matt-testalltheway <sefoci9222@rerunway.com>,
-        Kamil Dudka <kdudka@redhat.com>,
-        Robert Swiecki <robert@swiecki.net>,
-        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
-        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43e50860-3708-2887-86f7-e201782a2001@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 4:41 PM Oleksandr Natalenko
-<oleksandr@natalenko.name> wrote:
->
-> Based on hwmon-next + [1].
->
-> ASUS Pro WS X570-ACE board carries an nct6775 chip, which needs proper
-> support without kernel command line quirk. Also, the sensors of this
-> board can be monitored via BREC WMI method.
->
-> This submission addresses both issues.
->
-> Please review.
+On Fri, Oct 01, 2021 at 07:02:51PM +0300, Konstantin Komarov wrote:
+> All removed includes already included from other headers.
 
-All three looks good to me,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Nack from me. Usually in kernel both header and source file should make
+they own includes even when they both include same header file.
 
-> Thanks.
->
-> [1] https://lore.kernel.org/lkml/20211002210857.709956-1-pauk.denis@gmail.com/
->
-> Oleksandr Natalenko (3):
->   hwmon: (nct6775) add Pro WS X570-ACE
->   hwmon: (asus_wmi_sensors) split out T_Sensor
->   hwmon: (asus_wmi_sensors) add Pro WS X570-ACE
->
->  drivers/hwmon/asus_wmi_sensors.c | 19 ++++++++++++++++---
->  drivers/hwmon/nct6775.c          |  1 +
->  2 files changed, 17 insertions(+), 3 deletions(-)
->
-> --
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/attrib.c   | 2 --
+>  fs/ntfs3/attrlist.c | 2 --
+>  fs/ntfs3/dir.c      | 2 --
+>  fs/ntfs3/file.c     | 2 --
+>  fs/ntfs3/frecord.c  | 2 --
+>  fs/ntfs3/fslog.c    | 2 --
+>  fs/ntfs3/fsntfs.c   | 2 --
+>  fs/ntfs3/index.c    | 3 ---
+>  fs/ntfs3/inode.c    | 2 --
+>  fs/ntfs3/lznt.c     | 1 -
+>  fs/ntfs3/namei.c    | 2 --
+>  fs/ntfs3/ntfs_fs.h  | 1 -
+>  fs/ntfs3/record.c   | 2 --
+>  fs/ntfs3/run.c      | 2 --
+>  fs/ntfs3/super.c    | 4 +---
+>  fs/ntfs3/xattr.c    | 2 --
+>  16 files changed, 1 insertion(+), 32 deletions(-)
+> 
+> diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+> index 8a00fa978f5f..dd4f1613081d 100644
+> --- a/fs/ntfs3/attrib.c
+> +++ b/fs/ntfs3/attrib.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/kernel.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /*
+> diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+> index bad6d8a849a2..c3934a2a28a9 100644
+> --- a/fs/ntfs3/attrlist.c
+> +++ b/fs/ntfs3/attrlist.c
+> @@ -7,8 +7,6 @@
+>  
+>  #include <linux/fs.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /*
+> diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
+> index 785e72d4392e..293303f00b66 100644
+> --- a/fs/ntfs3/dir.c
+> +++ b/fs/ntfs3/dir.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/nls.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /* Convert little endian UTF-16 to NLS string. */
+> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+> index 5fb3508e5422..13789543a0fb 100644
+> --- a/fs/ntfs3/file.c
+> +++ b/fs/ntfs3/file.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/falloc.h>
+>  #include <linux/fiemap.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
+> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+> index 007602badd90..b27f3ca2704b 100644
+> --- a/fs/ntfs3/frecord.c
+> +++ b/fs/ntfs3/frecord.c
+> @@ -9,8 +9,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/vmalloc.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  #ifdef CONFIG_NTFS3_LZX_XPRESS
+>  #include "lib/lib.h"
+> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+> index 06492f088d60..4bf340babb32 100644
+> --- a/fs/ntfs3/fslog.c
+> +++ b/fs/ntfs3/fslog.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/random.h>
+>  #include <linux/slab.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /*
+> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> index 4de9acb16968..85cbbb8f41ea 100644
+> --- a/fs/ntfs3/fsntfs.c
+> +++ b/fs/ntfs3/fsntfs.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/kernel.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  // clang-format off
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 6f81e3a49abf..a25f04dcb85b 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -8,10 +8,7 @@
+>  #include <linux/blkdev.h>
+>  #include <linux/buffer_head.h>
+>  #include <linux/fs.h>
+> -#include <linux/kernel.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  static const struct INDEX_NAMES {
+> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+> index 7dd162f6a7e2..06113610c529 100644
+> --- a/fs/ntfs3/inode.c
+> +++ b/fs/ntfs3/inode.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/uio.h>
+>  #include <linux/writeback.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /*
+> diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
+> index 28f654561f27..d9614b8e1b4e 100644
+> --- a/fs/ntfs3/lznt.c
+> +++ b/fs/ntfs3/lznt.c
+> @@ -11,7 +11,6 @@
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+>  
+> -#include "debug.h"
+>  #include "ntfs_fs.h"
+>  
+>  // clang-format off
+> diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
+> index bc741213ad84..ed29cd3e98f4 100644
+> --- a/fs/ntfs3/namei.c
+> +++ b/fs/ntfs3/namei.c
+> @@ -8,8 +8,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/nls.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /*
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index 38b7c1a9dc52..e6f37f9993a0 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -29,7 +29,6 @@
+>  #include <asm/div64.h>
+>  #include <asm/page.h>
+>  
+> -#include "debug.h"
+>  #include "ntfs.h"
+>  
+>  struct dentry;
+> diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
+> index 861e35791506..3dd7b960ac8d 100644
+> --- a/fs/ntfs3/record.c
+> +++ b/fs/ntfs3/record.c
+> @@ -7,8 +7,6 @@
+>  
+>  #include <linux/fs.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  static inline int compare_attr(const struct ATTRIB *left, enum ATTR_TYPE type,
+> diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
+> index a8fec651f973..f5a5ce7aa206 100644
+> --- a/fs/ntfs3/run.c
+> +++ b/fs/ntfs3/run.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/log2.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  /* runs_tree is a continues memory. Try to avoid big size. */
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 705d8b4f4894..bd8d39992b35 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -35,8 +35,6 @@
+>  #include <linux/seq_file.h>
+>  #include <linux/statfs.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  #ifdef CONFIG_NTFS3_LZX_XPRESS
+>  #include "lib/lib.h"
+> @@ -772,7 +770,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+>  		/* No way to use ntfs_get_block in this case. */
+>  		ntfs_err(
+>  			sb,
+> -			"Failed to mount 'cause NTFS's cluster size (%u) is less than media sector size (%u)",
+> +			"Failed to mount 'cause NTFS's cluster size (%u) is less than media's sector size (%u)",
+>  			sbi->cluster_size, sector_size);
+>  		goto out;
+>  	}
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 111355692163..0673ba5e8c43 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -10,8 +10,6 @@
+>  #include <linux/posix_acl_xattr.h>
+>  #include <linux/xattr.h>
+>  
+> -#include "debug.h"
+> -#include "ntfs.h"
+>  #include "ntfs_fs.h"
+>  
+>  // clang-format off
+> -- 
 > 2.33.0
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> 
