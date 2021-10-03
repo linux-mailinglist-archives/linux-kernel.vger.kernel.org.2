@@ -2,168 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37E44201B6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EDD4201B8
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhJCNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 09:31:45 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:29295 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhJCNbn (ORCPT
+        id S230339AbhJCNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 09:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230050AbhJCNff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 09:31:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1633267797; x=1664803797;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VGwovkGa+WY8F1kG/48FD2Z2jA2VmsCJEsD/96lmkz4=;
-  b=MrnY17L8GN33f0liniE9uTFDx0OeW9EqgCAq2y/iQptEyeeEvLSGfGkJ
-   1wc0MyLqYMfwqtSSOO9Ic5IUBsNvye+LsL8VBd8EjVFfoAfVlSJikQ5wP
-   nU4lAO56+KfOqqPY7gO2JFqicil+9HBb6KBf2XdiwEtW6+PanYFCACEQy
-   I=;
-X-IronPort-AV: E=Sophos;i="5.85,343,1624320000"; 
-   d="scan'208";a="146425938"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-d3b4d400.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 03 Oct 2021 13:29:48 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-d3b4d400.us-east-1.amazon.com (Postfix) with ESMTPS id 08BE1C08DC;
-        Sun,  3 Oct 2021 13:29:44 +0000 (UTC)
-Received: from [192.168.13.185] (10.43.160.137) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sun, 3 Oct 2021 13:29:38 +0000
-Message-ID: <1c699d2b-5018-92a4-e579-fe312d5e4ddf@amazon.com>
-Date:   Sun, 3 Oct 2021 16:29:32 +0300
+        Sun, 3 Oct 2021 09:35:35 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6620C0613EC;
+        Sun,  3 Oct 2021 06:33:47 -0700 (PDT)
+Received: from localhost (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3A636C1D32E;
+        Sun,  3 Oct 2021 15:33:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1633268026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mIYYiuaK7RnIFNO4Pd0IkOhjPGFSnIVabnzRF0jk9y8=;
+        b=PiKrIFsX7Tyw7ZOQrf98SI4kBpEEpEm6WxK2eqRoWjLhGyr6qkCCSECiH6SVMtEetdnU8u
+        PCfQIbO9eQJ/vj9BSnDalDpSD017VyyK48fETe2tG3UKq2DDoBkT86GLKaq5bk8tDt7igd
+        TbI+yMUNY6RaUP/bCq1iHkVUMj5PJv0=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Denis Pauk <pauk.denis@gmail.com>,
+        matt-testalltheway <sefoci9222@rerunway.com>,
+        Kamil Dudka <kdudka@redhat.com>,
+        Robert Swiecki <robert@swiecki.net>,
+        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
+        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: [PATCH 0/3] hwmon: add ASUS Pro WS X570-ACE support
+Date:   Sun,  3 Oct 2021 15:33:41 +0200
+Message-Id: <20211003133344.9036-1-oleksandr@natalenko.name>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [PATCH v2 2/4] nitro_enclaves: sanity check the physical region
- during setting
-Content-Language: en-US
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
-        <gregkh@linuxfoundation.org>, <kamal@canonical.com>,
-        <pbonzini@redhat.com>, <sgarzare@redhat.com>,
-        <stefanha@redhat.com>, <vkuznets@redhat.com>,
-        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
-        <alcioa@amazon.com>
-References: <20210921151039.1502-1-longpeng2@huawei.com>
- <20210921151039.1502-3-longpeng2@huawei.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-In-Reply-To: <20210921151039.1502-3-longpeng2@huawei.com>
-X-Originating-IP: [10.43.160.137]
-X-ClientProxiedBy: EX13D45UWB004.ant.amazon.com (10.43.161.54) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyMS8wOS8yMDIxIDE4OjEwLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBTYW5pdHkg
-Y2hlY2sgdGhlIHBoeXNpY2FsIHJlZ2lvbiBiZWZvcmUgYWRkIGl0IHRvIHRoZSBhcnJheSwgdGhp
-cyBtYWtlcwo+IHRoZSBjb2RlIG1vcmUgdGVzdGFibGUsIHRodXMgd2UgY2FuIHRlc3QgdGhlIHBo
-eXNpY2FsIHJlZ2lvbiBzZXR1cCBsb2dpYwo+IGluZGl2aWR1YWxseS4KCkNvdWxkIGhhdmUgdGhl
-IGZvbGxvd2luZyBmb3IgdGhlIHRpdGxlOgoKbml0cm9fZW5jbGF2ZXM6IFNhbml0eSBjaGVjayBw
-aHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBkdXJpbmcgbWVyZ2luZwoKVGhlbiB0aGUgY29tbWl0IG1l
-c3NhZ2UgYm9keSBjb3VsZCBiZToKClNhbml0eSBjaGVjayB0aGUgcGh5c2ljYWwgbWVtb3J5IHJl
-Z2lvbnMgZHVyaW5nIHRoZSBtZXJnZSBvZiBjb250aWd1b3VzIApyZWdpb25zLiBUaHVzIHdlIGNh
-biB0ZXN0IHRoZSBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBzZXR1cCBsb2dpYyAKaW5kaXZpZHVh
-bGx5LCBpbmNsdWRpbmcgdGhlIGVycm9yIGNhc2VzIGNvbWluZyBmcm9tIHRoZSBzYW5pdHkgY2hl
-Y2tzLgoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyhNaWtlKSA8bG9uZ3BlbmcyQGh1YXdl
-aS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYu
-YyB8IDYyICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2Vk
-LCAzNCBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMgYi9kcml2ZXJzL3ZpcnQvbml0
-cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYwo+IGluZGV4IGE0Nzc2ZmMuLmQ1NTFiODggMTAwNjQ0
-Cj4gLS0tIGEvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiArKysg
-Yi9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYwo+IEBAIC04NDQsMTAg
-Kzg0NCwyOCBAQCBzdGF0aWMgaW50IG5lX3Nhbml0eV9jaGVja191c2VyX21lbV9yZWdpb25fcGFn
-ZShzdHJ1Y3QgbmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgICAgICAgICByZXR1cm4gMDsKPiAg
-IH0KPiAKPiAtc3RhdGljIHZvaWQgbmVfYWRkX3BoeXNfbWVtb3J5X3JlZ2lvbihzdHJ1Y3QgcGh5
-c19jb250aWdfbWVtX3JlZ2lvbiAqcmVnaW9ucywKPiAtICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHU2NCBwYWRkciwgdTY0IHNpemUpCj4gK3N0YXRpYyBpbmxpbmUgaW50IG5l
-X3Nhbml0eV9jaGVja19waHlzX21lbV9yZWdpb24odTY0IHBhZGRyLCB1NjQgc2l6ZSkKClBsZWFz
-ZSBhZGQgYSBjb21tZW50IGluY2x1ZGluZyBhIGJyaWVmIGRlc2NyaXB0aW9uIGZvciB0aGUgZnVu
-Y3Rpb24sIHRoZSAKcGFyYW1ldGVycyBhbmQgdGhlIHJldHVybiB2YWx1ZSwgYXMgdGhlcmUgYXJl
-IGF2YWlsYWJsZSBmb3IgdGhlIGFscmVhZHkgCmV4aXN0aW5nIGZ1bmN0aW9ucy4gQWxzbyBjb3Vs
-ZCBiZSBtb3JlIHNwZWNpZmljIGFuZCBtZW50aW9uIAoicGh5c19tZW1fcmVnaW9uX3BhZGRyIiBh
-bmQgInBoeXNfbWVtX3JlZ2lvbl9zaXplIiBmb3IgdGhlIHBhcmFtZXRlcnMuCgpObyBuZWVkIGZv
-ciAiaW5saW5lIiBoZXJlLCB0aGVyZSBhcmUgYSBjb3VwbGUgb2Ygc2FuaXR5IGNoZWNrcywgZS5n
-LiBub3QgCmEgdmVyeSBzaW1wbGUsIG9uZSBsaW5lIGxvZ2ljLgoKPiArewo+ICsgICAgICAgaWYg
-KHNpemUgJiAoTkVfTUlOX01FTV9SRUdJT05fU0laRSAtIDEpKSB7Cj4gKyAgICAgICAgICAgICAg
-IGRldl9lcnJfcmF0ZWxpbWl0ZWQobmVfbWlzY19kZXYudGhpc19kZXZpY2UsCj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIlBoeXNpY2FsIG1lbSByZWdpb24gc2l6ZSBpcyBu
-b3QgbXVsdGlwbGUgb2YgMiBNaUJcbiIpOwo+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZB
-TDsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBpZiAoIUlTX0FMSUdORUQocGFkZHIsIE5FX01J
-Tl9NRU1fUkVHSU9OX1NJWkUpKSB7Cj4gKyAgICAgICAgICAgICAgIGRldl9lcnJfcmF0ZWxpbWl0
-ZWQobmVfbWlzY19kZXYudGhpc19kZXZpY2UsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIlBoeXNpY2FsIG1lbSByZWdpb24gYWRkcmVzcyBpcyBub3QgMiBNaUIgYWxpZ25l
-ZFxuIik7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ICsgICAgICAgfQo+ICsK
-PiArICAgICAgIHJldHVybiAwOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IG5lX2FkZF9waHlzX21l
-bW9yeV9yZWdpb24oc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb24gKnJlZ2lvbnMsCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHU2NCBwYWRkciwgdTY0IHNpemUpCj4g
-ICB7Cj4gICAgICAgICAgdTY0IHByZXZfcGh5c19yZWdpb25fZW5kID0gMDsKPiArICAgICAgIGlu
-dCByYyA9IDA7Cj4gCj4gICAgICAgICAgaWYgKHJlZ2lvbnMtPm51bSkgewo+ICAgICAgICAgICAg
-ICAgICAgcHJldl9waHlzX3JlZ2lvbl9lbmQgPSByZWdpb25zLT5yZWdpb25bcmVnaW9ucy0+bnVt
-IC0gMV0ucGFkZHIgKwo+IEBAIC04NTUsMTQgKzg3MywyMyBAQCBzdGF0aWMgdm9pZCBuZV9hZGRf
-cGh5c19tZW1vcnlfcmVnaW9uKHN0cnVjdCBwaHlzX2NvbnRpZ19tZW1fcmVnaW9uICpyZWdpb25z
-LAo+IAo+ICAgICAgICAgICAgICAgICAgLyogUGh5c2ljYWwgY29udGlndW91cywganVzdCBtZXJn
-ZSAqLwo+ICAgICAgICAgICAgICAgICAgaWYgKHByZXZfcGh5c19yZWdpb25fZW5kID09IHBhZGRy
-KSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmMgPSBuZV9zYW5pdHlfY2hlY2tfcGh5c19t
-ZW1fcmVnaW9uKHBhZGRyLCBzaXplKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAocmMg
-PCAwKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJjOwo+ICsKPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgcmVnaW9ucy0+cmVnaW9uW3JlZ2lvbnMtPm51bSAtIDFd
-LnNpemUgKz0gc2l6ZTsKPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47Cj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0dXJuIDA7CgpDYW4gbGVhdmUgYSBibGFuayBsaW5lIGJlZm9y
-ZSByZXR1cm4uCgo+ICAgICAgICAgICAgICAgICAgfQo+ICAgICAgICAgIH0KPiAKPiArICAgICAg
-IHJjID0gbmVfc2FuaXR5X2NoZWNrX3BoeXNfbWVtX3JlZ2lvbihwYWRkciwgc2l6ZSk7Cj4gKyAg
-ICAgICBpZiAocmMgPCAwKQo+ICsgICAgICAgICAgICAgICByZXR1cm4gcmM7CgoKVGhpcyBjaGVj
-ayBjYW4gYmUgbW92ZWQgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgZnVuY3Rpb24sIGJlZm9yZSB0
-aGUgCmluaXRpYWwgImlmIiBjb2RlIGJsb2NrLiBUaGVuIGNhbiByZW1vdmUgdGhlIGNoZWNrIGZy
-b20gdGhlIAoicHJldl9waHlzX3JlZ2lvbl9lbmQiIGNoZWNrIGJsb2NrIGFib3ZlLgoKPiArCj4g
-ICAgICAgICAgcmVnaW9ucy0+cmVnaW9uW3JlZ2lvbnMtPm51bV0ucGFkZHIgPSBwYWRkcjsKPiAg
-ICAgICAgICByZWdpb25zLT5yZWdpb25bcmVnaW9ucy0+bnVtXS5zaXplID0gc2l6ZTsKPiAgICAg
-ICAgICByZWdpb25zLT5udW0rKzsKPiArICAgICAgIHJldHVybiAwOwoKCkNhbiBsZWF2ZSBhIGJs
-YW5rIGxpbmUgYmVmb3JlIHJldHVybi4KCj4gICB9Cj4gCj4gICAvKioKPiBAQCAtOTQyLDggKzk2
-OSwxMCBAQCBzdGF0aWMgaW50IG5lX3NldF91c2VyX21lbW9yeV9yZWdpb25faW9jdGwoc3RydWN0
-IG5lX2VuY2xhdmUgKm5lX2VuY2xhdmUsCj4gICAgICAgICAgICAgICAgICBpZiAocmMgPCAwKQo+
-ICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAKPiAtICAgICAgICAg
-ICAgICAgbmVfYWRkX3BoeXNfbWVtb3J5X3JlZ2lvbihwaHlzX3JlZ2lvbnMsIHBhZ2VfdG9fcGh5
-cyhuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSksCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgcGFnZV9zaXplKG5lX21lbV9yZWdpb24tPnBhZ2VzW2ldKSk7Cj4gKyAg
-ICAgICAgICAgICAgIHJjID0gbmVfYWRkX3BoeXNfbWVtb3J5X3JlZ2lvbihwaHlzX3JlZ2lvbnMs
-IHBhZ2VfdG9fcGh5cyhuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSksCj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3NpemUobmVfbWVtX3JlZ2lvbi0+
-cGFnZXNbaV0pKTsKPiArICAgICAgICAgICAgICAgaWYgKHJjIDwgMCkKPiArICAgICAgICAgICAg
-ICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAKPiAgICAgICAgICAgICAgICAgIG1lbW9yeV9z
-aXplICs9IHBhZ2Vfc2l6ZShuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSk7Cj4gCj4gQEAgLTk2MCwy
-OSArOTg5LDYgQEAgc3RhdGljIGludCBuZV9zZXRfdXNlcl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0
-cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+ICAgICAgICAgICAgICAgICAgZ290byBwdXRf
-cGFnZXM7Cj4gICAgICAgICAgfQo+IAo+IC0gICAgICAgZm9yIChpID0gMDsgaSA8IHBoeXNfcmVn
-aW9ucy0+bnVtOyBpKyspIHsKPiAtICAgICAgICAgICAgICAgdTY0IHBoeXNfcmVnaW9uX2FkZHIg
-PSBwaHlzX3JlZ2lvbnMtPnJlZ2lvbltpXS5wYWRkcjsKPiAtICAgICAgICAgICAgICAgdTY0IHBo
-eXNfcmVnaW9uX3NpemUgPSBwaHlzX3JlZ2lvbnMtPnJlZ2lvbltpXS5zaXplOwo+IC0KPiAtICAg
-ICAgICAgICAgICAgaWYgKHBoeXNfcmVnaW9uX3NpemUgJiAoTkVfTUlOX01FTV9SRUdJT05fU0la
-RSAtIDEpKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgZGV2X2Vycl9yYXRlbGltaXRlZChu
-ZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICJQaHlzaWNhbCBtZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9m
-IDIgTWlCXG4iKTsKPiAtCj4gLSAgICAgICAgICAgICAgICAgICAgICAgcmMgPSAtRUlOVkFMOwo+
-IC0KPiAtICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAtICAgICAgICAg
-ICAgICAgfQo+IC0KPiAtICAgICAgICAgICAgICAgaWYgKCFJU19BTElHTkVEKHBoeXNfcmVnaW9u
-X2FkZHIsIE5FX01JTl9NRU1fUkVHSU9OX1NJWkUpKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAg
-ICAgZGV2X2Vycl9yYXRlbGltaXRlZChuZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiAtICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJQaHlzaWNhbCBtZW0gcmVnaW9u
-IGFkZHJlc3MgaXMgbm90IDIgTWlCIGFsaWduZWRcbiIpOwo+IC0KPiAtICAgICAgICAgICAgICAg
-ICAgICAgICByYyA9IC1FSU5WQUw7Cj4gLQo+IC0gICAgICAgICAgICAgICAgICAgICAgIGdvdG8g
-cHV0X3BhZ2VzOwo+IC0gICAgICAgICAgICAgICB9Cj4gLSAgICAgICB9Cj4gLQoKU2hvdWxkIGFs
-c28gY2FsbCB0aGUgY2hlY2sgZnVuY3Rpb24gaGVyZSwgYWZ0ZXIgdGhlIG1lcmdlIG9mIHBoeXNp
-Y2FsIApjb250aWd1b3VzIG1lbW9yeSByZWdpb25zIGhhcyBiZWVuIGNvbXBsZXRlZCwgZm9yIGRv
-dWJsZSBjaGVja2luZy4KClRoYW5rcywKQW5kcmEKCj4gICAgICAgICAgbmVfbWVtX3JlZ2lvbi0+
-bWVtb3J5X3NpemUgPSBtZW1fcmVnaW9uLm1lbW9yeV9zaXplOwo+ICAgICAgICAgIG5lX21lbV9y
-ZWdpb24tPnVzZXJzcGFjZV9hZGRyID0gbWVtX3JlZ2lvbi51c2Vyc3BhY2VfYWRkcjsKPiAKPiAt
-LQo+IDEuOC4zLjEKPiAKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5S
-LkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3Ig
-MiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21h
-bmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+Based on hwmon-next + [1].
+
+ASUS Pro WS X570-ACE board carries an nct6775 chip, which needs proper
+support without kernel command line quirk. Also, the sensors of this
+board can be monitored via BREC WMI method.
+
+This submission addresses both issues.
+
+Please review.
+
+Thanks.
+
+[1] https://lore.kernel.org/lkml/20211002210857.709956-1-pauk.denis@gmail.com/
+
+Oleksandr Natalenko (3):
+  hwmon: (nct6775) add Pro WS X570-ACE
+  hwmon: (asus_wmi_sensors) split out T_Sensor
+  hwmon: (asus_wmi_sensors) add Pro WS X570-ACE
+
+ drivers/hwmon/asus_wmi_sensors.c | 19 ++++++++++++++++---
+ drivers/hwmon/nct6775.c          |  1 +
+ 2 files changed, 17 insertions(+), 3 deletions(-)
+
+-- 
+2.33.0
 
