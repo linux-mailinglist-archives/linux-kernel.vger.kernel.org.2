@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB23420329
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D454B42032B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhJCRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 13:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
+        id S231347AbhJCRzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 13:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhJCRw2 (ORCPT
+        with ESMTP id S231290AbhJCRzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 13:52:28 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754F5C0613EC;
-        Sun,  3 Oct 2021 10:50:40 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id e15so61759796lfr.10;
-        Sun, 03 Oct 2021 10:50:40 -0700 (PDT)
+        Sun, 3 Oct 2021 13:55:12 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F3CC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 10:53:25 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id y15so15931820ilu.12
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 10:53:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2iMRuCjPLsINVQw+OgaPjcThJGWw/f8kcZvZZDA75bY=;
-        b=Ti8jNCJp7ftb5ZrVviV6F0dR394sfOd1XZx5L3D1+TNsORPhLlnohkACLN6QDEcqqN
-         HjcCqTf880v1TLqU6hh00Dq66wzYD3U2X9qFqG0hwAROrstAglfP/OtRvul76tmepjrx
-         F6sceIh0NyBOMwMCnjGrUy/HmhKLCeCFJ6gAuWVobaYJZcOfLIwg6kN0WEESZt/xgzWF
-         ub6Tcy+V5ug985Lz4UYzUuWwX98X+8OlgO7wUf/oX/q5QiKvTuOYATkOb9XkPf/4rtO1
-         n4lUR6KZRUxx0NZ7zUcmFZzS5oI5B3LwSz5TEO7p3KQf7bcC5rKhsOAEVGqzUQNBBMok
-         xlBA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oeR+JF91jA1RQ/aOGCMv9JGlVQuVQcLbc+E39kT+rCw=;
+        b=Oz0X13K4A5Wxv8TSwZFvrtgoZI8c1LLizlUsK5uGBqeK+lZRI6TeimzkkrpM0Cv6A0
+         iz2hkBIW81q8lafmBy/39tXCCJDcXwa+cPmhWUk18g+ylhaNxXluF6bJzBy2jftvcBOt
+         zs03g6CPTdDPDPeWzvVdmNaqOJtm+ECWep4sEtwmZr59hNKhZhVddVsiSGNLpbY4XPHi
+         OIudMIGF7UqmTMgpzCUZpzpB2OEbCBEwSsXKtEhRt2I+xPhLX+Vrikuz7ZT6eWw1lUm7
+         cksRa1KUS617K17wBYKmn1JUJ0gMWXH2O6NI50db6y94E281nr2TnhWqqAcBpCdvVU1U
+         afUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2iMRuCjPLsINVQw+OgaPjcThJGWw/f8kcZvZZDA75bY=;
-        b=fGRh4tjy5zi+B29/gwMqY4un9JSich/S/ojPMBSx1D+OxeDHp+eDcvEZkK/HbJ2GGP
-         059f7Mb0Ankxz4flkB6W0EX5cxaCaygZ3Bfpf67NAhxSaBMJjQ1kPj/tuSe5TqhHEtPQ
-         Ms4iaj58S5ZkaY5ft09qfC+mxcsdzI3j4+x5YOdbiC2Fizlz8AJ5h4egka4a8egu0e0n
-         miHzkIYREvxrzo61W5MOo/fihQ90S39PWXFABn67P2YnAxuCuKVoKxeJ9KSDl6GvCxIy
-         kAzE22FNb9ZmXBPvNZqfAv4C4taPX8NV34Bs01//v1riSUynyDwxK4u12sk+Pwv7gxvH
-         ARoA==
-X-Gm-Message-State: AOAM533S7INfthwnLlMucTw7whZ3tcFCjk0NNu+z1tf0slvGM9b8EX4v
-        Iffego0UdRWuoY24UzyNJlc=
-X-Google-Smtp-Source: ABdhPJyjNdjw/hVXJMP3xb/cyret3SIinnQDRSVfmMXQZrNMNEJ4VWnNvnUFjuirBrxoiwgbWVEKaA==
-X-Received: by 2002:a05:6512:463:: with SMTP id x3mr9974290lfd.103.1633283438739;
-        Sun, 03 Oct 2021 10:50:38 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id b22sm1378191lfv.286.2021.10.03.10.50.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 10:50:38 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 20:50:36 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mohammad Rasim <mohammad.rasim96@gmail.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs/ntfs3: Check for NULL if ATTR_EA_INFO is incorrect
-Message-ID: <20211003175036.ly4m3lw2bjoippsh@kari-VirtualBox>
-References: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oeR+JF91jA1RQ/aOGCMv9JGlVQuVQcLbc+E39kT+rCw=;
+        b=jhF6/9b8Eg2JxeaIYiLbobDqqBAe2P4rCaxZU9s/coUCXroiO70kxp2ZPj8ei4QJQa
+         cKO2EHmufix56ElDXtEG4u5pmmCcc3ZII3pxmuRYLP5EtKofBpCkNp5iIfX1emfD/bcV
+         tz91jnsm0E+Fi0WNsb0iZDOqSkTZsSFFzCpG/1huiwwSf8AQTlI91r5YrKbROrr/6xmC
+         +4KhnQeO4qZyiKHRMHlsLVx72qnyZhXyUDl2pgjVHMuzpzsLtexucZU1Y3mlD7ziFU6t
+         YKHJXMNndd6ueKltxY855E+vIfS9f/q6nne+AjuQXcoeSu2wJ6yR/El0S7fgPWBNcUMW
+         wvGg==
+X-Gm-Message-State: AOAM533FqSjwoBKILNItmkNTkWoAdsuzXKh4ZEW4FGSAvZFNQeS1N+WA
+        z8X6BDZGD+hQEiY/2pNF2r+LN5ER10HC7dDi4nI=
+X-Google-Smtp-Source: ABdhPJx7lXt8UfdmzGB8wlRlWLvNEmXlmAbJHZpefNkY7xPuzVioB7oF5+VJLw+C1z2ZfelfEM3quw05Y87cASXBVTI=
+X-Received: by 2002:a05:6e02:bf1:: with SMTP id d17mr2423631ilu.81.1633283604964;
+ Sun, 03 Oct 2021 10:53:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
+References: <20210913112609.2651084-1-elver@google.com>
+In-Reply-To: <20210913112609.2651084-1-elver@google.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Sun, 3 Oct 2021 19:53:14 +0200
+Message-ID: <CA+fCnZdvSmTguF_uKQTHgQK=QZhx7RHF-j_YaRGSPHvvqEU2cw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] stackdepot, kasan, workqueue: Avoid expanding
+ stackdepot slabs when holding raw_spin_lock
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:35:43PM +0300, Konstantin Komarov wrote:
-> This can be reason for reported panic.
-> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+On Mon, Sep 13, 2021 at 1:26 PM Marco Elver <elver@google.com> wrote:
+>
+> Shuah Khan reported [1]:
+>
+>  | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
+>  | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
+>  | it tries to allocate memory attempting to acquire spinlock in page
+>  | allocation code while holding workqueue pool raw_spinlock.
+>  |
+>  | There are several instances of this problem when block layer tries
+>  | to __queue_work(). Call trace from one of these instances is below:
+>  |
+>  |     kblockd_mod_delayed_work_on()
+>  |       mod_delayed_work_on()
+>  |         __queue_delayed_work()
+>  |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
+>  |             insert_work()
+>  |               kasan_record_aux_stack()
+>  |                 kasan_save_stack()
+>  |                   stack_depot_save()
+>  |                     alloc_pages()
+>  |                       __alloc_pages()
+>  |                         get_page_from_freelist()
+>  |                           rm_queue()
+>  |                             rm_queue_pcplist()
+>  |                               local_lock_irqsave(&pagesets.lock, flags);
+>  |                               [ BUG: Invalid wait context triggered ]
+>
+> PROVE_RAW_LOCK_NESTING is pointing out that (on RT kernels) the locking
+> rules are being violated. More generally, memory is being allocated from
+> a non-preemptive context (raw_spin_lock'd c-s) where it is not allowed.
+>
+> To properly fix this, we must prevent stackdepot from replenishing its
+> "stack slab" pool if memory allocations cannot be done in the current
+> context: it's a bug to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> non-preemptive contexts, including raw_spin_locks (see gfp.h and
+> ab00db216c9c7).
+>
+> The only downside is that saving a stack trace may fail if: stackdepot
+> runs out of space AND the same stack trace has not been recorded before.
+> I expect this to be unlikely, and a simple experiment (boot the kernel)
+> didn't result in any failure to record stack trace from insert_work().
+>
+> The series includes a few minor fixes to stackdepot that I noticed in
+> preparing the series. It then introduces __stack_depot_save(), which
+> exposes the option to force stackdepot to not allocate any memory.
+> Finally, KASAN is changed to use the new stackdepot interface and
+> provide kasan_record_aux_stack_noalloc(), which is then used by
+> workqueue code.
+>
+> [1] https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
+>
+> v2:
+> * Refer to __stack_depot_save() in comment of stack_depot_save().
+>
+> Marco Elver (6):
+>   lib/stackdepot: include gfp.h
+>   lib/stackdepot: remove unused function argument
+>   lib/stackdepot: introduce __stack_depot_save()
+>   kasan: common: provide can_alloc in kasan_save_stack()
+>   kasan: generic: introduce kasan_record_aux_stack_noalloc()
+>   workqueue, kasan: avoid alloc_pages() when recording stack
+>
+>  include/linux/kasan.h      |  2 ++
+>  include/linux/stackdepot.h |  6 +++++
+>  kernel/workqueue.c         |  2 +-
+>  lib/stackdepot.c           | 52 ++++++++++++++++++++++++++++++--------
+>  mm/kasan/common.c          |  6 ++---
+>  mm/kasan/generic.c         | 14 ++++++++--
+>  mm/kasan/kasan.h           |  2 +-
+>  7 files changed, 66 insertions(+), 18 deletions(-)
+>
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-I see that you have include this to devel branch but you did not send V2
-[1]. I also included Mohammad Rasim to this thread. Maybe they can test
-this patch. Rasim can you test [2] if your problem will be fixed with
-this tree. Or just test this patch if you prefer that way.
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-[1]: github.com/Paragon-Software-Group/linux-ntfs3/commit/35afb70dcfe4eb445060dd955e5b67d962869ce5
-[2]: github.com/Paragon-Software-Group/linux-ntfs3/tree/devel
-
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/frecord.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-> index 9a53f809576d..007602badd90 100644
-> --- a/fs/ntfs3/frecord.c
-> +++ b/fs/ntfs3/frecord.c
-> @@ -3080,7 +3080,9 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
->                         const struct EA_INFO *info;
->  
->                         info = resident_data_ex(attr, sizeof(struct EA_INFO));
-> -                       dup->ea_size = info->size_pack;
-> +                       /* If ATTR_EA_INFO exists 'info' can't be NULL. */
-> +                       if (info)
-> +                               dup->ea_size = info->size_pack;
->                 }
->         }
->  
-> -- 
-> 2.33.0
-> 
+for the series.
