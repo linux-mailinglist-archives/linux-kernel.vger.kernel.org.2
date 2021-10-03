@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C63A41FF19
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 03:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDF241FF24
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 03:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhJCBei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 21:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        id S229606AbhJCBeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 21:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhJCBeg (ORCPT
+        with ESMTP id S229511AbhJCBeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 2 Oct 2021 21:34:36 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860E6C0613EC;
-        Sat,  2 Oct 2021 18:32:49 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id s21so22516410wra.7;
-        Sat, 02 Oct 2021 18:32:49 -0700 (PDT)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3EBC0613EC;
+        Sat,  2 Oct 2021 18:32:50 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id r10so6071518wra.12;
+        Sat, 02 Oct 2021 18:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KiymIwYE2EmUjFjTWRRk5oWuN9aBVXESXtXS4L2qhYU=;
-        b=oCtajAQe7RUAUfRDJLUGSlZO1Xg4Ce1dThHMndcioqRHZsCk+JB/5YwWkmO8XgMXx3
-         5NTDHaZTpGB6yc2aVSDU3HyavuAHOPudTis9UIMOfwM4IORYXRogqec2samItCxGQ8aG
-         lhKHNOZeaYxPB7y3YAeBG8H2tRwOKMPJQoc9RERN91A4Nmgd9BrJdLt84cAUxsZHER6S
-         f1T2d0H7qE7DSwgfHRIbvYrMPqLOn+W46935oyhBFTzSVwTQiBj1Jzl8197W8JT1BE6g
-         EgyENwpUeVeicZxFdjMxEDOdMbceOvgDU+wocLnV4Q8khOtdFXyI8s/QRkTCeSssBqrD
-         DPzw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=W/CLM3NjFJ+jE/VoO2ncG57+jK2RKmooryYVNTnraoQ=;
+        b=kqtIV4Yw4zceCFFiX8jCXWRkXBlVPl30q9h0sPKc7HVOvA1MzgBV7glxAZM3m9Uhj0
+         3ls3CtF+MGQSfO4C+fVrnUHESHe1gTpiRmhHdO+2l8pbkNiqba6WKMimCnEbh5nicJCP
+         OpKlgSU020CICn8gpofmp+4SNw8DX1xjeOFsbaw4daSO0/TeMy/iTxhXjFnZYtiT/8m3
+         eQx8+0oCBcvOf7XRchn9vXSvvZJtge1L9JEPK+J/SRJXkLTK9Tc35QVhWv5Jxw/erRjP
+         gU4EaZNvwsLg9u/opdEmKYaqzofv8TSV1vHzq8BCpNvS9SKcrTo6YKWvHyu+rdVNHGsU
+         NBOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KiymIwYE2EmUjFjTWRRk5oWuN9aBVXESXtXS4L2qhYU=;
-        b=bZJOYFba4N1y75od7P3DBpfpgkv340yFRUtqA23hRyOuet8HIVN6pB6qJjh7lLBgBj
-         Zumnf5TLqXn5OqhmH1zN7WVCWxe4u7KW0soqfQYWarnT3iqTQSaCn1V5Zb+8LBjvKSz2
-         f1MpcXT4b8R/UouQ1NauBt/h89YODyUkGAcOT0lNv0nZ3qnkkPB6T/X1unYALU3yOaCY
-         qLK6ff+5LOAZqadrp9JrDT99Okx32fw4OZSlnLVJG1a4yO/X6J/6Qb1YuUNWrUab/3k0
-         Nnk01OvoyAxcfxow1JEj3rKXrzlBDudMZ1nMpkPma8mPa5PYhE8r/QH85wqnjkw8tb1i
-         lA/Q==
-X-Gm-Message-State: AOAM532Qfq79iFiTi5zb7/EUhynfe3+KkeNCId6/F5YrxHL9i7HSOvQe
-        pTsM6K2eXQL/H3K9fnG66YU=
-X-Google-Smtp-Source: ABdhPJz8QWrqyroYXoeL2HonN+zMQ7MEkHDgpKip8tz/f38QImTYb0WqyqU1KMJO9yq1MRtF5mMJ5w==
-X-Received: by 2002:a5d:4810:: with SMTP id l16mr5872701wrq.3.1633224768099;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=W/CLM3NjFJ+jE/VoO2ncG57+jK2RKmooryYVNTnraoQ=;
+        b=eA+d69zIn2uLvPs9qYARkSLDJdiDbQCKFxg+6FC3K49qwkxGegFR9g/DVnIIXRZnys
+         AnXr7wv4LZRlESnhsRIbMp6atjLNTc1OpvdOA0DiCaJXutvpmgCXF3+0a4UMtINIasdW
+         aGDXYZxK7CjffYMgxjMNzc+TyUNImFVDTuFn77pWUCZ5bbAKkTghdTC0yerlZ7OZdbhH
+         C8ei8Fxn0m94lscz7DMBF/ElZTdmjh8wkKTiMAfD958vX7EfjeKu/BhpOrql5CK0+NYc
+         mJAUZp40XPKva/09BSwtbA9jOhwioBF1hBhil9KZt/lJzuNPfIdY/isUZLpj0xrnq3Pw
+         e5GA==
+X-Gm-Message-State: AOAM533gRWjHY2KE0k0WrH3hKN1raOTNxd5wa2WMYe3dnXgT8wtF/G4y
+        r+avjphcGIL7tc54RAGIq30=
+X-Google-Smtp-Source: ABdhPJzrDJnK+TvkjMGX+4zrIUhbBTy0XWmCg69csPmwh2YboJqEMUzfOYalGerY46uQwyBjnBQvyw==
+X-Received: by 2002:a5d:5255:: with SMTP id k21mr6016070wrc.421.1633224768877;
         Sat, 02 Oct 2021 18:32:48 -0700 (PDT)
 Received: from localhost.localdomain (94-29-54-195.dynamic.spd-mgts.ru. [94.29.54.195])
-        by smtp.gmail.com with ESMTPSA id 20sm12481926wme.46.2021.10.02.18.32.47
+        by smtp.gmail.com with ESMTPSA id 20sm12481926wme.46.2021.10.02.18.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 18:32:47 -0700 (PDT)
+        Sat, 02 Oct 2021 18:32:48 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -55,56 +55,145 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v3 0/4] tegra20-emc: Identify memory chip by LPDDR configuration
-Date:   Sun,  3 Oct 2021 04:32:31 +0300
-Message-Id: <20211003013235.2357-1-digetx@gmail.com>
+Subject: [PATCH v3 1/4] dt-bindings: memory: Add LPDDR2 binding
+Date:   Sun,  3 Oct 2021 04:32:32 +0300
+Message-Id: <20211003013235.2357-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211003013235.2357-1-digetx@gmail.com>
+References: <20211003013235.2357-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support memory chip identification by LPDDR2 configuration, which is
-needed by ASUS Transformer TF101 tablet device that doesn't store RAMCODE
-in Tegra's NVMEM.
+Add binding for standard LPDDR2 memory chip properties.
 
-Changelog:
-
-v3: - Corrected sub-node name in tegra20-emc.yaml.
-
-v2: - Added separate binding for standard LPDDR2 properties, like it
-      was suggested by Krzysztof Kozlowski.
-
-    - Switched Tegra binding to use new lpddr2-configuration sub-node
-      that contains the standard properties.
-
-    - Extended commit message of the "emc: Document new LPDDR2 sub-node"
-      patch, telling how the properties are supposed to be used, which
-      was requested by Krzysztof Kozlowski.
-
-    - Added new common helpers for parsing LPDDR2 properties and made
-      tegra20-emc driver to use these helpers.
-
-Dmitry Osipenko (4):
-  dt-bindings: memory: Add LPDDR2 binding
-  dt-bindings: memory: tegra20: emc: Document new LPDDR2 sub-node
-  memory: Add LPDDR2 configuration helpers
-  memory: tegra20-emc: Support matching timings by LPDDR2 configuration
-
- .../memory-controllers/jedec,lpddr2.yaml      |  80 ++++++++
- .../nvidia,tegra20-emc.yaml                   |  17 +-
- drivers/memory/jedec_ddr.h                    |  21 ++
- drivers/memory/jedec_ddr_data.c               |  42 ++++
- drivers/memory/of_memory.c                    |  34 ++++
- drivers/memory/of_memory.h                    |   9 +
- drivers/memory/tegra/Kconfig                  |   1 +
- drivers/memory/tegra/tegra20-emc.c            | 191 ++++++++++++++++--
- include/dt-bindings/memory/lpddr2.h           |  25 +++
- 9 files changed, 404 insertions(+), 16 deletions(-)
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ .../memory-controllers/jedec,lpddr2.yaml      | 80 +++++++++++++++++++
+ include/dt-bindings/memory/lpddr2.h           | 25 ++++++
+ 2 files changed, 105 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
  create mode 100644 include/dt-bindings/memory/lpddr2.h
 
+diff --git a/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml b/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
+new file mode 100644
+index 000000000000..ef227eba1e4a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/jedec,lpddr2.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: JEDEC LPDDR2 SDRAM
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++
++properties:
++  jedec,lpddr2-manufacturer-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    description: |
++      Unique manufacturer ID of SDRAM chip. See MR5 description in JESD209-2.
++
++  jedec,lpddr2-revision-id1:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    description: |
++      Revision 1 value of SDRAM chip.
++      See MR6 description in chip vendor specification.
++
++  jedec,lpddr2-revision-id2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    description: |
++      Revision 2 value of SDRAM chip.
++      See MR7 description in chip vendor specification.
++
++  jedec,lpddr2-density-mbits:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Density in megabits of SDRAM chip. See MR8 description in JESD209-2.
++    enum:
++      - 64
++      - 128
++      - 256
++      - 512
++      - 1024
++      - 2048
++      - 4096
++      - 8192
++      - 16384
++      - 32768
++
++  jedec,lpddr2-io-width-bits:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      IO bus width in bits of SDRAM chip. See MR8 description in JESD209-2.
++    enum:
++      - 32
++      - 16
++      - 8
++
++  jedec,lpddr2-type:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      LPDDR type which corresponds to a number of words SDRAM pre-fetches
++      per column request. See MR8 description in JESD209-2.
++    enum:
++      - 0 # S4 (4 words prefetch architecture)
++      - 1 # S2 (2 words prefetch architecture)
++      - 2 # NVM (Non-volatile memory)
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/memory/lpddr2.h>
++
++    lpddr2 {
++        jedec,lpddr2-manufacturer-id = <LPDDR2_MANID_ELPIDA>;
++        jedec,lpddr2-revision-id1 = <1>;
++        jedec,lpddr2-density-mbits = <2048>;
++        jedec,lpddr2-io-width-bits = <16>;
++        jedec,lpddr2-type = <LPDDR2_TYPE_S4>;
++    };
+diff --git a/include/dt-bindings/memory/lpddr2.h b/include/dt-bindings/memory/lpddr2.h
+new file mode 100644
+index 000000000000..e837b0d8a11e
+--- /dev/null
++++ b/include/dt-bindings/memory/lpddr2.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++#ifndef _DT_BINDINGS_LPDDR2_H
++#define _DT_BINDINGS_LPDDR2_H
++
++#define LPDDR2_MANID_SAMSUNG		1
++#define LPDDR2_MANID_QIMONDA		2
++#define LPDDR2_MANID_ELPIDA		3
++#define LPDDR2_MANID_ETRON		4
++#define LPDDR2_MANID_NANYA		5
++#define LPDDR2_MANID_HYNIX		6
++#define LPDDR2_MANID_MOSEL		7
++#define LPDDR2_MANID_WINBOND		8
++#define LPDDR2_MANID_ESMT		9
++#define LPDDR2_MANID_SPANSION		11
++#define LPDDR2_MANID_SST		12
++#define LPDDR2_MANID_ZMOS		13
++#define LPDDR2_MANID_INTEL		14
++#define LPDDR2_MANID_NUMONYX		254
++#define LPDDR2_MANID_MICRON		255
++
++#define LPDDR2_TYPE_S4			0
++#define LPDDR2_TYPE_S2			1
++#define LPDDR2_TYPE_NVM			2
++
++#endif /*_DT_BINDINGS_LPDDR2_H */
 -- 
 2.32.0
 
