@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B7E4201F6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 16:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89299420206
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 16:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhJCOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 10:18:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230250AbhJCOSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 10:18:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E9061B00;
-        Sun,  3 Oct 2021 14:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633270575;
-        bh=iz8OwoA1KSQRR7ghgLdO4bXC5lIJtF5D8luSFSvaE1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KmFMt40HaC1QnXzwnqpRfJvBuSovqM5unyIPeHWY/UbaBH50RTE1VTuey1KLCkJEv
-         gTiJh6x6uFZsRub26lBluUExpAeVygxRKmcqj+4eZyrBcDM4E8l7P0Er5jjHT98mHR
-         mUIsdkQuM2s51uEMep4llbs9xoA1/CC577LI9P4Y=
-Date:   Sun, 3 Oct 2021 16:16:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 5.10] KVM: rseq: Update rseq when processing
- NOTIFY_RESUME on xfer to KVM guest
-Message-ID: <YVm7LRQSegT0WR0Q@kroah.com>
-References: <20210927192846.1533905-1-seanjc@google.com>
+        id S230510AbhJCOXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 10:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhJCOXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 10:23:11 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C98BC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 07:21:23 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id q6so15642783ilm.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 07:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PLsBvOc6u//jlK7gHEH07WFhN7dqb9OTeWm8I3p/AkY=;
+        b=SrZPaSpb6NTKrTi6dAph9DMMS0ol/yf+xMS0erj2GIRNd8FH1iB+NzytOwQmfbB8Oi
+         n0fhdGmbPkgGNVjtN7mcF6KArXrr0WTBGL/jP1Lz/rb+zoZFQUyO2nWkjxQ9KlQAkBxn
+         WptVi8aiEvLExHQDpsHHzPhIgRWYQbKsmpTalTmpDQUhOiSodU3JNuqIDZcL7s6SPLZn
+         XMKHnB8mhzDwZcdxQsp5d6bHF7tG4qelRaJs0YtThXNc3R4yPLSJ67e1buYGozHzojUK
+         Aq7+H8pkomdBArNBdr+54hqNV55/EW0A/1yBK8pgxEwJvGo6SkXd82wjW+eTZ2WVjYKr
+         oDgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PLsBvOc6u//jlK7gHEH07WFhN7dqb9OTeWm8I3p/AkY=;
+        b=cmdIsVHPRIJ+VRuA/0JyKB6fX3T2ZMxx8tG/xVihsnQJbgktDaur/EyqsEfyZdMMuK
+         VffPmog6c/6UbOE3p2wWyOvAli1Q5n8JO9WFRf88Ct4cmSvw38/AZcU4kKvlxrtiuj9p
+         GWczej/uEEz6CUwEHKaKt6MIo320un79Kh2dUMlA+pj1/sKDvebTMa3tZI1/wzVlpPsL
+         w9bDlyrTrAovGcfV7SEL8tLOzVsl2whWwyOBOMpoz8F5PQHmK/zF6FFV8ENLNcK/F3DL
+         0wCBqvCV6ahDpkuue5S8t2ZDz77CDoyQHzgxZVIB1y8fJqlu+85PbfxAvC7esp2GhHVs
+         iuTw==
+X-Gm-Message-State: AOAM530vQXtoIcLU9rhCOFFeMiPeJ2hqBLwon7sUIoqhnxP3sNmvJMbh
+        jxfqYTIaS8QoNmJnjBX/9FjQjCZMYWTDBTH3Pqo=
+X-Google-Smtp-Source: ABdhPJylV4bQup4aKrNgMd2/7oUamVcuwVYj7O5vq0cgGgE2PgoG9e8E5oEyDRczVzBN1enUofXG8KzpksNIBSlPo1E=
+X-Received: by 2002:a92:ca4f:: with SMTP id q15mr6356369ilo.131.1633270882779;
+ Sun, 03 Oct 2021 07:21:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927192846.1533905-1-seanjc@google.com>
+References: <20210929115036.4851-1-laoar.shao@gmail.com> <YVkmaSUxbg/JtBHb@zeniv-ca.linux.org.uk>
+In-Reply-To: <YVkmaSUxbg/JtBHb@zeniv-ca.linux.org.uk>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 3 Oct 2021 22:20:46 +0800
+Message-ID: <CALOAHbDhwJsYO+a7dyTn-HxrpVNnaLi_xrJ7gk-mBwjPNV4YMw@mail.gmail.com>
+Subject: Re: [PATCH 0/5] kthread: increase the size of kthread's comm
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 12:28:46PM -0700, Sean Christopherson wrote:
-> commit 8646e53633f314e4d746a988240d3b951a92f94a upstream.
-> 
-> Invoke rseq's NOTIFY_RESUME handler when processing the flag prior to
-> transferring to a KVM guest, which is roughly equivalent to an exit to
-> userspace and processes many of the same pending actions.  While the task
-> cannot be in an rseq critical section as the KVM path is reachable only
-> by via ioctl(KVM_RUN), the side effects that apply to rseq outside of a
-> critical section still apply, e.g. the current CPU needs to be updated if
-> the task is migrated.
-> 
-> Clearing TIF_NOTIFY_RESUME without informing rseq can lead to segfaults
-> and other badness in userspace VMMs that use rseq in combination with KVM,
-> e.g. due to the CPU ID being stale after task migration.
-> 
-> Fixes: 72c3c0fe54a3 ("x86/kvm: Use generic xfer to guest work function")
-> Reported-by: Peter Foley <pefoley@google.com>
-> Bisected-by: Doug Evans <dje@google.com>
-> Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Message-Id: <20210901203030.1292304-2-seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> [sean: Resolve benign conflict due to unrelated access_ok() check in 5.10]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  kernel/entry/kvm.c |  4 +++-
->  kernel/rseq.c      | 13 ++++++++++---
->  2 files changed, 13 insertions(+), 4 deletions(-)
+On Sun, Oct 3, 2021 at 11:41 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Sep 29, 2021 at 11:50:31AM +0000, Yafang Shao wrote:
+>
+> > That motivates me to do this improvement.
+> >
+> > This patch increases the size of ktread's comm from 16 to 24, which is
+> > the same with workqueue's. After this change, the name of kthread can be
+> > fully displayed in /proc/[pid]/comm, for example,
+> >
+> >     rcu_tasks_kthread
+> >     rcu_tasks_rude_kthread
+> >     rcu_tasks_trace_kthread
+> >     ecryptfs-kthread
+> >     vfio-irqfd-cleanup
+> >     ext4-rsv-conversion
+> >     jbd2/nvme0n1p2-8
+> >     ...
+> >
+> > Because there're only a few of kthreads, so it won't increase too much
+> > memory consumption.
+>
+> That's a bloody massive overkill.  If you care about /proc/*/comm, you
+> might want to take a look at the function that generates its contents:
+>
+> void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
+> {
+>         char tcomm[64];
+>
+>         if (p->flags & PF_WQ_WORKER)
+>                 wq_worker_comm(tcomm, sizeof(tcomm), p);
+>         else
+>                 __get_task_comm(tcomm, sizeof(tcomm), p);
+>
+>         if (escape)
+>                 seq_escape_str(m, tcomm, ESCAPE_SPACE | ESCAPE_SPECIAL, "\n\\");
+>         else
+>                 seq_printf(m, "%.64s", tcomm);
+> }
+>
+> Hint: it's not always p->comm verbatim...
 
-Applied, but we also need a 5.14.y version as well.
+Right, I found it.  That's why I was wondering  storing the kthread's
+comm in kthread_data.[1]
+But after Petr's suggestion, I find increasing the size of comm to 24
+for COFNIG_BASE_FULL and keeping it as 16 for COFNIG_BASE_SMALL is a
+better solution.
 
-thanks,
+[1]. https://lore.kernel.org/lkml/CALOAHbD3HUqUnjMYKX7NGwVWiS4K7OvS6uPNWucnOA5Cy3pn9w@mail.gmail.com/#t
 
-greg k-h
+-- 
+Thanks
+Yafang
