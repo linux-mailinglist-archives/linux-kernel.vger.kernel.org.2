@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A317241FEFF
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 02:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB2E41FF00
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 02:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbhJCAye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 20:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37360 "EHLO mail.kernel.org"
+        id S234380AbhJCAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 20:54:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234312AbhJCAyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234329AbhJCAyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 2 Oct 2021 20:54:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DCEE1617E1;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E67C761AF7;
         Sun,  3 Oct 2021 00:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1633222366;
-        bh=KkldJ/GgFHlwi1ufc6bEIVU51AvyFvGPXVYtPaom1JE=;
+        bh=wy8+yXrFKFZA6EzKmUFybyAfO5+P3eIVjoyLXj50VmA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rX0uqb9XBFHCmxkKkL7KXRzWNdY2gm0jl7iaKIszFhcertRD51+9z44lPCLU1p9eE
-         1VBo+1uow7J050vw11wB0/m9tRQVauxgNtHj6AwhHwafvAq8fk2Hu97AWvoyGXrBz4
-         w93kIemN6nx3BZPNV3KeKU9z+S+zS9lKiixRX7nHlL1wJJWh8Fs8mk/bHGeo9biP9/
-         JUd29r/tn8QfuBaVs3EVBSR1cWrbJ2RiJFc8iw25HmmOGaL2ImqI1Hx3eoYrpBJV43
-         n14kFVtKMN48T8q0CSRgGecZG+pbgN6qd7GpULNHPIYLk0Ds2pBdncaiYKBfriZRok
-         5eWXYSbrPHZYw==
+        b=VkEQro566HoYpDRtcBLo7uf0pzwOC5a8hXsuMo6I5ix19tdOtuPc+iY5KJbgiUY3P
+         sJ3P86wdGl+0/9kyIXtKcb+9jzTl12vVGVL0/GqVn/S/RZ7eLrhoGOmPcg5T8/v4L0
+         su39FBr50CBx/U/EfdEHjVjE7/ICIMjzuBP9JMp0GzajCDmeW4AszOBUwuW1wXMPZV
+         wmbuG8Jb1652sWy8Mn20dnGGswfgD1/wB2fkHhtjGgZ43Cd/lhokbmAFXoHujqNdMq
+         aCMlMB1qk2OjcUCjdxoWXMGZdVaPfHsE0RP3hq+7zisW5m9393kDPM2daijy6juesJ
+         fDPYVpK3E0eAg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C9B6760AA0;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB67D60982;
         Sun,  3 Oct 2021 00:52:46 +0000 (UTC)
-Subject: Re: [GIT PULL] ksmbd server security fixes
+Subject: Re: [GIT PULL] hwmon fixes for v5.15-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5muy3GtTQPoaVXiD_tU-cG4FAQk4SCmmiR8vS4_pWvPanw@mail.gmail.com>
-References: <CAH2r5muy3GtTQPoaVXiD_tU-cG4FAQk4SCmmiR8vS4_pWvPanw@mail.gmail.com>
+In-Reply-To: <20211002161353.37484-1-linux@roeck-us.net>
+References: <20211002161353.37484-1-linux@roeck-us.net>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5muy3GtTQPoaVXiD_tU-cG4FAQk4SCmmiR8vS4_pWvPanw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/5.15-rc3-ksmbd-fixes
-X-PR-Tracked-Commit-Id: 87ffb310d5e8a441721a9d04dfa7c90cd9da3916
+X-PR-Tracked-Message-Id: <20211002161353.37484-1-linux@roeck-us.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.15-rc4
+X-PR-Tracked-Commit-Id: dd4d747ef05addab887dc8ff0d6ab9860bbcd783
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e25ca045c32a0d787b143fef0acc5a43cc9ccc66
-Message-Id: <163322236676.17155.15570923256805470867.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 7b66f4393ad421e425ba643fde0493fa64346a43
+Message-Id: <163322236689.17155.15161063289065771969.pr-tracker-bot@kernel.org>
 Date:   Sun, 03 Oct 2021 00:52:46 +0000
-To:     Steve French <smfrench@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 1 Oct 2021 23:14:41 -0500:
+The pull request you sent on Sat,  2 Oct 2021 09:13:53 -0700:
 
-> git://git.samba.org/ksmbd.git tags/5.15-rc3-ksmbd-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.15-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e25ca045c32a0d787b143fef0acc5a43cc9ccc66
+https://git.kernel.org/torvalds/c/7b66f4393ad421e425ba643fde0493fa64346a43
 
 Thank you!
 
