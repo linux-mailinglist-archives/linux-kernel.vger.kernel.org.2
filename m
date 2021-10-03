@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B236420101
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 11:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C8B420108
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 11:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhJCJM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 05:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJCJM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 05:12:57 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDC8C0613EC;
-        Sun,  3 Oct 2021 02:11:10 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id u66so543857vku.4;
-        Sun, 03 Oct 2021 02:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JPleIos8zuocYDdWZp8SNu5UWPdQdIHw7rKBa26GVq8=;
-        b=V/pFiv8W0GUSl3MEfw9m5XmzXy4J28eDIm9TdnXbyqy5ibrfvn+1SqAfU1RXho4QP/
-         yLGqDkfegiQx9ZeYcIlTICQNhvtOy3knSN43E9dIrYObKk2cA4DoJoi09yb0G9909FhW
-         Jqs0WUgBhZJT7yg/Or4pMSFxAJGQkbW6pTz+e5L2SNNq8ja3tJzPQOnAvT8eua1sDM4F
-         jkECM8m1cbaksHsolQjlKk+zlqkcRIlGxlf+DDvIbKfUnItb+vIOA5foy/h9e0y8kN03
-         GwwVzfVCx97BRXRKZI49TqA/4GvFJ+MVE9Oop8cp/soiosqNt3ckHkha0o4C7xOcK8i8
-         LSiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JPleIos8zuocYDdWZp8SNu5UWPdQdIHw7rKBa26GVq8=;
-        b=NiP1srNMLsI3pC7Eam9DkYxEMciqIAK3fj2Xy7RF2mRVIkIXWsu0LtlK+goEL36qbt
-         zfjCK9G2pKaUA5m8aiZvMN9XJHnu+Q2zp9IRPhVadP6uNnl/Js5GQOJILeizQqh0Jtbw
-         0Pfaj58mBkTwVBJ5fxgEtD5PZW33RjFJ1l/bXWPTwF2WjtvuIfZdiQMZIhXirpfM1ArR
-         zPYTFIUoRnPb0x4Zn4gD5cx22moxLooBeQ1fTqLCQmRSUU6fH3Hu8Jnyjw2YBp40OTF0
-         7VkOJaMEV2dnwWRIaZ5UvE59bR64dFzBvPHq3F8hF9p8NibgkCgxHgV1cUZ1kebbPYRI
-         Yllw==
-X-Gm-Message-State: AOAM532vQkSmCpwQTZxky4Oz0aNipVkudjHT9C7BoU/XFsb72R8RLORf
-        QkPr0d1BozPY3X+vj24J5f4kEAbUKx6uSvRpYQ4=
-X-Google-Smtp-Source: ABdhPJy7h5pk1kzVx4IF5Lq7FWIXift5eu5mcCsilcdds9wFERzQpH+cg/XWA38awf0/pOGRQVF5wgcsN3jzTv/bJXk=
-X-Received: by 2002:a1f:2cd1:: with SMTP id s200mr12167838vks.3.1633252269396;
- Sun, 03 Oct 2021 02:11:09 -0700 (PDT)
+        id S229895AbhJCJPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 05:15:39 -0400
+Received: from mail-dm6nam08on2061.outbound.protection.outlook.com ([40.107.102.61]:43270
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229512AbhJCJPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 05:15:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DMUVBMelOd3E0PwgYy9iveaFP5P6QkvRZx4siS2C1Rx7m0bMQ2B6vBMWWkjff+47Fo4WAU/qkvznaQszeuitIXVMdnylL4KjY0MQ0sXda74mRQEhN2wbF1NGpK5PXOk2jhuGfQ1uWP8BdTIxTEV3o5FhjEAyqnPqHE/ihaEpNOWCUhCU/cJohukg3YNMhEFTZkxYd+Uqyu0QfJDz1dSkFmkDc7ymCNKFe/qyhwinfQe8IOHBwmlKwvrNoj0RffvrAg697l1Jdx3dP9Gr79tkW+6aF8lU8yEVjR0svtvQ5pPoHfNLdYLvegTntrEYa6r+lKc4kpQWirGCJgO0ndQD5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8Cf0RKnkoKlWzyRU7pKlIqRlsiani+9wXY85bnkWYJs=;
+ b=OWFjBetailRDqkmiu95QO0Z5fYt8g2DixKeez7p4fEXMM+bfHcafQcM+sj4DG+0AQzhQEX83OsJDOyzWfQTAHw1swnXMS9cxniTSl9imyUaBeKDQ+nJo/6yLDYRiGeKZbrVKdZxnNLj051CztBlwEteGe2ewUcWjEL3ecWS78iPvvCDDEDkJIBvscoRIaazRkTdVl1EbI/hHOXzLYJ8ttONvlcSkhho3ZLgDS1Nb1oucnD73Xu2bzmauTmmF1PiuwViybMQ8uuKbJEJnYuW07OHpym8MlQDio/ke6g04NLZELhyipGD1QOcYcjryjOmMLHvuzDlHjB9mYYj672D88w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Cf0RKnkoKlWzyRU7pKlIqRlsiani+9wXY85bnkWYJs=;
+ b=pKIoZJ4plSbD12itoTDXePuvMsHf+xybpWc91oWmoICYXY+p7KhQiWCZDFbVqER598x33wHHEjdHYJ3qYyK01cKozItH2YBXYqmpSQV35Y5Yz9bDrPPLQGnnEQuoz/azVwHxf7KyXEBt+7WIUQWF1cdj+0FYsLZ2LXUs0jqEKTyTPIEqrD/Pzqu0aRXmOKd169lRcLEdXKaeGbMBjpsschxdjHg2WV1Zz0On/jWMGo3SuZ6rUdqvGTv/GKEx2XdPLPldUqy2G1Ldk6fT4FXZD93BPPLjWmXXJFT9DQ36ijBn/zBbbo/baXev21llKVtFJlOkny5NwbD7u9ovYKq4cQ==
+Received: from BN9PR03CA0335.namprd03.prod.outlook.com (2603:10b6:408:f6::10)
+ by BL1PR12MB5095.namprd12.prod.outlook.com (2603:10b6:208:31b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Sun, 3 Oct
+ 2021 09:13:49 +0000
+Received: from BN8NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f6:cafe::77) by BN9PR03CA0335.outlook.office365.com
+ (2603:10b6:408:f6::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend
+ Transport; Sun, 3 Oct 2021 09:13:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT059.mail.protection.outlook.com (10.13.177.120) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Sun, 3 Oct 2021 09:13:49 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 3 Oct
+ 2021 09:13:47 +0000
+Received: from r-arch-stor03.mtr.labs.mlnx (172.20.187.5) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Sun, 3 Oct 2021 09:13:45 +0000
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+To:     <hch@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>
+CC:     <stefanha@redhat.com>, <oren@nvidia.com>,
+        <linux-pci@vger.kernel.org>, <kw@linux.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: [PATCH v2 1/2] driver core: use NUMA_NO_NODE during device_initialize
+Date:   Sun, 3 Oct 2021 12:13:43 +0300
+Message-ID: <20211003091344.718-1-mgurtovoy@nvidia.com>
+X-Mailer: git-send-email 2.18.1
 MIME-Version: 1.0
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
- <20210927064300.624279-12-chenhuacai@loongson.cn> <YVkZ7jLWJpvZz9us@zeniv-ca.linux.org.uk>
-In-Reply-To: <YVkZ7jLWJpvZz9us@zeniv-ca.linux.org.uk>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sun, 3 Oct 2021 17:10:58 +0800
-Message-ID: <CAAhV-H5ndJvpcZ3P0P-65_-MFmpLuZ7k8Be6vUAFaL--sXDtxg@mail.gmail.com>
-Subject: Re: [PATCH V4 11/22] LoongArch: Add process management
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d5ce1b26-7907-4125-16e4-08d9864e1c92
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5095:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB50955FE351BBA0C5F66A131ADEAD9@BL1PR12MB5095.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ogqkCZ8e1qcv4dXGOdzAVi4DnkGD5nDV+0cSLHmcQaKhR2pQhFCjKz25NbnWlcZG/nJRONJZ9DEGUQRTNnTSy3sq3AmrOf3lfrSt+sYfcWUYeiIZAMVLS8kxA/M/QorfYDczqeI8c2rqeH85zh6hzJxt82a8HP4a16dXXVZ+IubBeHHz6qH3NW8WnYPRjdv8mvIPeUhQDZZlUxNdM7jkciXAhIjwkPI4LZKwBF7DirqmxbfRsISD99ZTbxjYao3MGNq0St7Y3GT2DWDVYd21EkTax/aSXQO5i06QTbo0Pv2jwKB57mt/t96uYw+utmNjEiH21g0swvDTSi2w9PDGn3Id65eV13ewgQDtEpBWOBKXSTyClqn/8fJDQxlEpE6t+8h1s0k6sAMSVK7tYQhMDGAjL601PWRWoF5+0eeaC9HpeyxiRMSYVTueqn0m/GXPMdRFPiRbdiquBxVT81H8ojCZytlCnOfAR/ywdHsvlKCiUuMPQ42NEuh863fUG7UwU26BACYJEzluezuAf/l8NnhbptKju9sPyhKrqzwcD4V992qMHXbsqKXdQ3pxeygHU7BS7cvvXx8UxpvzPNW+dJ7D4U+fcOuknx/36KtR6S2sJ6Apxs3jXS6JSA1P8WeFMUd5o6vXbB8GLB28DISZOv/rnniLVCaaOYlzMla4eu3LAbJ9dHBby9/wdFJ2oAZ2HLat7ddMzu7bDDA2VMMR3Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8676002)(426003)(83380400001)(107886003)(186003)(26005)(47076005)(5660300002)(8936002)(336012)(4744005)(1076003)(2906002)(70586007)(70206006)(2616005)(54906003)(82310400003)(86362001)(4326008)(36756003)(7636003)(508600001)(110136005)(316002)(36860700001)(356005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2021 09:13:49.3043
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5ce1b26-7907-4125-16e4-08d9864e1c92
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Al,
+Don't use (-1) constant for setting initial device node. Instead, use
+the generic NUMA_NO_NODE definition to indicate that "no node id
+specified".
 
-On Sun, Oct 3, 2021 at 10:50 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Mon, Sep 27, 2021 at 02:42:48PM +0800, Huacai Chen wrote:
->
-> > +/*
-> > + * Does the process account for user or for system time?
-> > + */
-> > +#define user_mode(regs) (((regs)->csr_prmd & PLV_MASK) == PLV_USER)
-> > +
-> > +static inline int is_syscall_success(struct pt_regs *regs)
-> > +{
-> > +     return !regs->regs[7];
-> > +}
-> >
-> > +static inline long regs_return_value(struct pt_regs *regs)
-> > +{
-> > +     if (is_syscall_success(regs) || !user_mode(regs))
-> > +             return regs->regs[4];
-> > +     else
-> > +             return -regs->regs[4];
-> > +}
->
-> Huh???  That looks like you've copied those from MIPS, but on MIPS we have
-> things like
->         li      t0, -EMAXERRNO - 1      # error?
->         sltu    t0, t0, v0
->         sd      t0, PT_R7(sp)           # set error flag
->         beqz    t0, 1f
->
->         ld      t1, PT_R2(sp)           # syscall number
->         dnegu   v0                      # error
->         sd      t1, PT_R0(sp)           # save it for syscall restarting
-> 1:      sd      v0, PT_R2(sp)           # result
-> right after the call of sys_...(), along with the restart logics
-> looking like
->         if (regs->regs[0]) {
->                 switch(regs->regs[2]) {
->                 case ERESTART_RESTARTBLOCK:
->                 case ERESTARTNOHAND:
-> IOW, syscall return values from -EMAXERRNO to -1 are negated, with
-> regs[7] set accordingly.  Nothing of that sort is done in your
-> patchset after syscall, and if it had been, your restart logics in
-> signal handling would've been wrong anyway.
->
-> What's going on there?
-Sorry, the code derived from MIPS is wrong here, regs_return_value
-should simply return regs->regs[4].
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+---
 
-Huacai
+changes from v1:
+ - added patch 2/2 (Krzysztof)
+ - added Reviewed-by signature (Stefan)
+
+---
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index e65dd803a453..2b4b46f6c676 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2838,7 +2838,7 @@ void device_initialize(struct device *dev)
+ 	spin_lock_init(&dev->devres_lock);
+ 	INIT_LIST_HEAD(&dev->devres_head);
+ 	device_pm_init(dev);
+-	set_dev_node(dev, -1);
++	set_dev_node(dev, NUMA_NO_NODE);
+ #ifdef CONFIG_GENERIC_MSI_IRQ
+ 	raw_spin_lock_init(&dev->msi_lock);
+ 	INIT_LIST_HEAD(&dev->msi_list);
+-- 
+2.18.1
+
