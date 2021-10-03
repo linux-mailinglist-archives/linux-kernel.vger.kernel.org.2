@@ -2,196 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A11242046D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C46042046E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhJCXEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 19:04:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231809AbhJCXEB (ORCPT
+        id S231962AbhJCXNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 19:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231947AbhJCXNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 19:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633302132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ydM58jWNkyMBGo30i2TV4XDTsxAfhfxAZn04m4Gf1Jc=;
-        b=WDvpexxUKfajJYhgXnAuZ9TtcIGye0lod8EaKwZiP392Kp7vxNlieDLUGQjonnL4ofSJQy
-        nxr5MxYN2fEIzho8L9Ijv4Sugar43V1fOx3y7Guv23hNZT/0naZFOkVBqYWQxHlyDLxuoc
-        G7TRM5qE1gzGBMGQJrBGXUovW8KC/5o=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-eOYPqT7zO-Gs-M-KPmMtCQ-1; Sun, 03 Oct 2021 19:02:12 -0400
-X-MC-Unique: eOYPqT7zO-Gs-M-KPmMtCQ-1
-Received: by mail-qk1-f199.google.com with SMTP id bm12-20020a05620a198c00b00432e14ddb99so22126772qkb.21
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:02:11 -0700 (PDT)
+        Sun, 3 Oct 2021 19:13:48 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E8CC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 16:12:00 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id y28so3711843vsd.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mMQIV6iy/YcB5GjonDB7HSdfPpKfOSD7BW3xn+YP/DU=;
+        b=QkXTiIR3+QNbtk78cJbJtsNqnJQf1vPk3ReN5Z/IsCuN+ld/6Y8+SyjR/sSNObHrvy
+         LuwIIfiTgyLmDaVPkhz88u8/lmQxA27XGwZcsb0S0nOHIx8h1yFrgLaurz5EJtxUxH+Z
+         kDtuPH/tB7mrtMZB0/2saB1PT3ODQNBwlUAyfdI6Rbi5qDdWhK59KNV8ElrjleNny4aL
+         JYefwlQ2doHpniLrfKl03S/vFCtOPJfxz/pUOw/bPcXaXIIxh4wGelE/u0M90x8qXTYU
+         YGnandWgE7gO/FTbroftj6bhHtNiQiqlPCWQY7DaczTEDmgAeWhzWNkQdQNjclseSgA3
+         Cv1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ydM58jWNkyMBGo30i2TV4XDTsxAfhfxAZn04m4Gf1Jc=;
-        b=fGgaw8Yv1LsBjsp18laUbWjZ+5JBjKsv/7IVjmhj08HhQ8dEQIafTawzT89xD0Jzc+
-         +6I5pASPqJWS42N1zhU1PgvPzrEYjg6XrIY+CTLAAvBTVmO+/FiLXQVwVm5/RCZh9sBx
-         SrkfjFxZWuNNc6/RzfWvcG/PCmzmSZPODTkCnsvvTEQhQTODyMkAY0YdIGZd9M1A39ir
-         jd5qk57Q/lw2it1nZiPl5f8/zU80YxYbOx+xtEHScHMrXT2xjsG4BDl8YWeFp7P07soI
-         AQejpwXarmsYR3ONTPN321TLr3uK7Uwza/0Lv3Kw3x/qk+z87WpJNjXKex3PRAaqmZ3v
-         CsHw==
-X-Gm-Message-State: AOAM533cAjPQkEumnLbAQuYzK6yZAbcqyB8czx0Aa/V0Q2QdsN5eK5fP
-        fNtC5bCm4m1xsdnVpgzghJRGc4w8irzwHbg/46qhzuzUv4ljczJbadAkMNYldwh8uSBmK0npL/P
-        v+y9oOVXmdY/bJGhCBUXPHDqe
-X-Received: by 2002:ac8:4348:: with SMTP id a8mr10498392qtn.262.1633302129921;
-        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdyu/AYvU46F4wEputwC1yP6oucW8rWviCEyPScmbpJ2Ewv4qGAwp6ehXz3pxcUtk2mSVZCg==
-X-Received: by 2002:ac8:4348:: with SMTP id a8mr10498359qtn.262.1633302129640;
-        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id u129sm6637853qkd.127.2021.10.03.16.02.07
+        bh=mMQIV6iy/YcB5GjonDB7HSdfPpKfOSD7BW3xn+YP/DU=;
+        b=qscXBWfzb+ZgiXJHMZk7JVrr538pHqzgHk4uaogUf08VCjA8vxugUXRVd/vtsugTu1
+         r6LXcgVFNU5YL8om3/l56WAexR6CP48q5MMI4fszJNuX88uq2i8I4yJUXNTJ8Q6NWZzR
+         F5uQow7dPOisoceYrjob/V8mC8WViR4qv2Poae+FouAJ3sHGl5TDDo1388S4vd4YbRR/
+         8oHRS5IR9rMkcUi+Y2Mc3Qqej8Pn0W6HKVlxxgeTKFwGpj6QaiVK5HdnF4O3QM574Xps
+         U9JMH8vjuJ82Md3uVm1TH1npf6lj2whtLBcqeSekq2KI2GGZgoBaq6S+js21YSAy6fX4
+         Q/jA==
+X-Gm-Message-State: AOAM531oPMt5YIL2erueW7WxSlis9tMHRw5CelBLM7zK+6uh4FFkh5Lr
+        Lf/C+kPnHZaeDbjHpH0D7fU=
+X-Google-Smtp-Source: ABdhPJxZFZJ00cfx/JjWexY4Yi9Z65BWyW0WPxPc+6iP9/jByvYrihDArkBL5WNBLxsnACqlUzbi6g==
+X-Received: by 2002:a67:d00d:: with SMTP id r13mr10866961vsi.23.1633302719105;
+        Sun, 03 Oct 2021 16:11:59 -0700 (PDT)
+Received: from geday ([2804:7f2:8280:9a0f:98f0:31ff:fe93:2dc7])
+        by smtp.gmail.com with ESMTPSA id t5sm6100912vsk.24.2021.10.03.16.11.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 16:02:06 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Borislav Petkov <bp@suse.de>, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-Subject: Re: [GIT PULL] objtool/urgent for v5.15-rc4
-Message-ID: <20211003230206.hhrrhna52dnhumji@treble>
-References: <YVl7RR5NcbPyiXgO@zn.tnic>
- <CAHk-=wh9JzLmwAqA2+cA=Y4x_TYNBZv_OM4eSEDFPF8V_GAPug@mail.gmail.com>
- <CAHk-=wiZwq-0LknKhXN4M+T8jbxn_2i9mcKpO+OaBSSq_Eh7tg@mail.gmail.com>
- <CAHk-=wjtJ532TqnLN+CLqZJXx=MWHjQqi0-fR8PSQ-nGZ_iMvg@mail.gmail.com>
+        Sun, 03 Oct 2021 16:11:58 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 20:11:54 -0300
+From:   Geraldo Nascimento <geraldogabriel@gmail.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+        broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
+ questions and issues
+Message-ID: <YVo4uuKJy2QIQ77n@geday>
+References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+ <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjtJ532TqnLN+CLqZJXx=MWHjQqi0-fR8PSQ-nGZ_iMvg@mail.gmail.com>
+In-Reply-To: <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 12:10:38PM -0700, Linus Torvalds wrote:
-> Replying to myself just to add more proper people to the cc.
+On Sun, Oct 03, 2021 at 05:57:34PM +0200, Jerome Brunet wrote:
 > 
-> I'm also wondering how I could possibly be the only person who saw the warning.
+> On Sun 03 Oct 2021 at 01:43, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 > 
-> I don't think I am, and I think that people who signed off on commit
-> 24ff65257375 ("objtool: Teach get_alt_entry() about more relocation
-> types") and claimed to have "tested" it, clearly didn't actually do
-> so.
+> > Hello Jerome et al.,
+> >
+> > on Amlogic Meson SoCs which use the AIU audio controller we have the
+> > so-called "machine gun noise" (MGN) issue, reproducible for example in
+> > Kodi. So far nobody was able to identify the cause of this issue. My
+> > idea was to at least narrow down the issue so we can categorize it. For
+> > that I wanted to get the SPDIF output from AIU to the HDMI controller
+> > working.
 > 
-> PeterZ/Josh/Nathan: see the thread at
+> Ok, I'll clarify (again) about this issue.
 > 
->    https://lore.kernel.org/lkml/CAHk-=wiZwq-0LknKhXN4M+T8jbxn_2i9mcKpO+OaBSSq_Eh7tg@mail.gmail.com/
+> This issue is on AIU only (not the AXG series), on the i2s encoder
+> regardless of the output (HDMI, internal and external codec)
 > 
-> if you need more context, but I suspect you can figure it out just
-> from this email too.
+> This encoder support either 2ch or 8ch mode, nothing else.
+> As long as only 2ch was supported, there was no problem.
+> In order to switch between 2ch and 8ch mode.  AIU_RST_SOFT_I2S_FAST and
+> AIU_I2S_SYNC shall be "poked" (check iu-fifo-i2s.c and
+> aiu-encoder-i2c.c). Without this, the switch is not done.
+> 
+> What these do, how and when it should be done is unclear. I tried
+> several combination. At the time I found something stable-ish but it was
+> not perfect.
+> 
+> At the time, It was completely new driver. Even if was not rock solid,
+> it was still progress and I opted to upstream it with an imperfect 8ch
+> support so people could help debug it. This was mentioned in the
+> original submission.
+> 
+> The other solution is to restrict to 2ch mode and remove
+> AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
+> anymore.
+> 
 
-Sorry about that.  I think Peter and I failed to run this through
-regression testing.  We can work on tightening up our process.
+Hi, Jerome,
 
-Definitely *not* Nathan's fault.  His 'Tested-by' only means that this
-fixed his particular issue.
+Thanks for the extensive clarification. I have compiled 5.15-rc3
+commenting out the pokes for 8ch as you have suggested, both for
+AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC in both aiu-fifo-i2s.c
+and aiu-encoder-i2c.c.
 
-> > > Looking at the kvm code, that kvm_fastop_exception thing is some funky sh*t.
-> > >
-> > > I _think_ the problem is that 'kvm_fastop_exception' is done with bare
-> > > asm at the top-level and that triggers some odd interaction with other
-> > > section data, but I really don't know.
-> >
-> > No, it's the fact that it is marked as a global function (why?) that
-> > it then causes problems.
-> >
-> > Now, I don't actually see why it would cause problems (the same way I
-> > don't see why it's marked global). But removing that
-> >
-> >      ".global kvm_fastop_exception \n"
-> >
-> > works.
-> >
-> > I suspect it makes the linker do the relocation for us before objtool
-> > runs, because now that it's a local name, there is no worry about
-> > multiply defined symbols of the same name or anything like that.
-> >
-> > I also suspect that the reason for the warning is that the symbol type
-> > has never been declared, so it's not marked as a STT_FUNC in the
-> > relocation information.
+It works, the bug is gone just like you said it would be.
 
-Right, basically objtool's complaining that it doesn't know how to
-handle the NOTYPE symbol.  But really, any non-object symbol should be
-straightforward.  I may just remove these warnings altogether in favor
-of something much simpler (something like the patch below).
+My suggestion is that, for the time being, until someone can solve
+this properly, you restrict enablement of 8ch configuration under
+an EXPERIMENTAL kernel option, with a big fat warning in the help
+description, saying it will break 2ch.
 
-> > In the meantime, I think the exception handling for kvm
-> > divide/multiply emulation is badly broken right now. Hmm?
+Last but no least, thanks for helping Martin out.
 
-The warning is harmless, so it doesn't necessarily mean anything's
-broken.  That said, I have no idea what's going in that code or why
-kvm_fastop_exception() is clearing %esi.
-
-
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index f58ecc50fb10..0217ac3fa7ff 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -58,22 +58,11 @@ void __weak arch_handle_alternative(unsigned short feature, struct special_alt *
- {
- }
- 
--static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
-+static void reloc_to_sec_off(struct reloc *reloc, struct section **sec,
-+			     unsigned long *off)
- {
--	switch (reloc->sym->type) {
--	case STT_FUNC:
--		*sec = reloc->sym->sec;
--		*off = reloc->sym->offset + reloc->addend;
--		return true;
--
--	case STT_SECTION:
--		*sec = reloc->sym->sec;
--		*off = reloc->addend;
--		return true;
--
--	default:
--		return false;
--	}
-+	*sec = reloc->sym->sec;
-+	*off = reloc->sym->offset + reloc->addend;
- }
- 
- static int get_alt_entry(struct elf *elf, struct special_entry *entry,
-@@ -109,11 +98,7 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 		WARN_FUNC("can't find orig reloc", sec, offset + entry->orig);
- 		return -1;
- 	}
--	if (!reloc2sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off)) {
--		WARN_FUNC("don't know how to handle reloc symbol type: %s",
--			   sec, offset + entry->orig, orig_reloc->sym->name);
--		return -1;
--	}
-+	reloc_to_sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off);
- 
- 	if (!entry->group || alt->new_len) {
- 		new_reloc = find_reloc_by_dest(elf, sec, offset + entry->new);
-@@ -131,11 +116,7 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 		if (arch_is_retpoline(new_reloc->sym))
- 			return 1;
- 
--		if (!reloc2sec_off(new_reloc, &alt->new_sec, &alt->new_off)) {
--			WARN_FUNC("don't know how to handle reloc symbol type: %s",
--				  sec, offset + entry->new, new_reloc->sym->name);
--			return -1;
--		}
-+		reloc_to_sec_off(new_reloc, &alt->new_sec, &alt->new_off);
- 
- 		/* _ASM_EXTABLE_EX hack */
- 		if (alt->new_off >= 0x7ffffff0)
-
+Thank you,
+Geraldo Nascimento
