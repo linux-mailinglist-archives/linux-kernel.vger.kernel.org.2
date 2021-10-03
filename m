@@ -2,167 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3334420065
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 09:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D06420070
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 09:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJCHGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 03:06:37 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:3956 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229567AbhJCHGg (ORCPT
+        id S229835AbhJCH2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 03:28:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34857 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhJCH2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 03:06:36 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 192NY4Yl006328;
-        Sun, 3 Oct 2021 00:04:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=sYDJTx+9daFstkb2C6VLhX500MkLQP+G48sDiihmrvE=;
- b=p7ouG8tMImfWF51dpksm5SJSO2kXGIBmmRRlpvto8JB1GfOIBz4PFi7DPM/LJU0f4X+q
- k0fwQgvjEJEVcdvZyjlMMXbzkHckB6qcZC/tqRAYEMxFbwA17ca1swuWSckmbD4rCNGC
- 8ZuEARpSLHgICfQEb1wcK98B0vSlBU1dX15Pb9+U4k8Y6oiMWr7KT4O30890OxeSd4fh
- VMNemI6ItCuNpWl7wCsotNNnyyxigMNmWHzBPigMICVJjEG4YsmL8qXa58qTBjg0+BhE
- fPGZUe7rGA+xCyQDGUFGgll87POYPg2NBxw57t+7Cqqg2NbODDSr2LmheLeG7ertsWG7 Og== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3bekyyj78c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Oct 2021 00:04:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KHQCaQfcgfL2e5CbMOZ+F2/cBSSEtVhTNxdtYj+lHnspZHiOPL9Z0N2FCKXAlwuU8s+quoKnsoalxnfWDeShDoPzb4SUAL4wwsLaH4wtfECwqBc207yCYlqPcR2gT31z7zsCQJsu9dry40MJyip4EnGp0qmV39MAA9k6ogFa7qMOkaQ4yh9IoMx1HckaRJgHfmG2asFP1rHvlxxe6z9IGTrWuW10w1uGbCtjSvQjXB4aA6QSxAQnYYIscWpql77Q3OtZulqZK4xy9cnVQGid6vJZo6SFrhIIGLBJikcagoRv2xKGG5p8JULnXa5tztT2EHeP3iqnF7OeKHbMucmL9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sYDJTx+9daFstkb2C6VLhX500MkLQP+G48sDiihmrvE=;
- b=hpzZb+/sSs+pVOWTbYl+HWHrqBAndwDFU24ozuj5qo4Zyjd/L7AkIMhVwCcDjPpWWKf3YI9uWHxggu/hpeAmIxy/Y+4pmZrDmPSvs297/1K88lCyso55I7wDcgTtcOxaOsC/fJPCUDyKPDdmOUAngoBD2TfvOkKv+It/HBGhVafPWCfJbUoJAyLJ/pgO9ChXCM+WHjU6iqVRYEKOWy18DbuRy6jE9ljDVR5mQgQ/Qh7ZWHWOb7piQcByzHwSx7yL3bWBdziKd4OHR3qIsgqZ/kmeoKOiabHFIDVs3FhCCDb6UGJE1CJLl5fRIcH4ewvdFbX7z5uXpe170C/+2lYStQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=oracle.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYDJTx+9daFstkb2C6VLhX500MkLQP+G48sDiihmrvE=;
- b=4sYdPz1st0oAK3OUVmTMRrtAz2DWxxr3LOXyIFo+YWqzLgMya5pi34eVHs/De/D6ccS2GrTiBqhjfuT4fGC1aGXbNMJw/j0j8r7jvwYc4Ic/s8uCmFoej1Vd+HUFytMwdN/RzAtqQ1A+eTIrtWTxHqxHgsIjIfhn754ysjvqanM=
-Received: from MWHPR04CA0040.namprd04.prod.outlook.com (2603:10b6:300:ee::26)
- by BYAPR07MB5304.namprd07.prod.outlook.com (2603:10b6:a03:6c::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Sun, 3 Oct
- 2021 07:04:42 +0000
-Received: from MW2NAM12FT050.eop-nam12.prod.protection.outlook.com
- (2603:10b6:300:ee:cafe::b6) by MWHPR04CA0040.outlook.office365.com
- (2603:10b6:300:ee::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend
- Transport; Sun, 3 Oct 2021 07:04:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
- smtp.mailfrom=cadence.com; oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- MW2NAM12FT050.mail.protection.outlook.com (10.13.180.241) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.8 via Frontend Transport; Sun, 3 Oct 2021 07:04:41 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 19374dBC006562
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 3 Oct 2021 03:04:40 -0400
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 3 Oct 2021 09:04:20 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Sun, 3 Oct 2021 09:04:20 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 19374KB0014738;
-        Sun, 3 Oct 2021 09:04:20 +0200
-Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 19374KAv014737;
-        Sun, 3 Oct 2021 09:04:20 +0200
-From:   Parshuram Thombare <pthombar@cadence.com>
-To:     <broonie@kernel.org>, <dan.carpenter@oracle.com>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jpawar@cadence.com>, <mparab@cadence.com>,
-        Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH] spi: cadence: fix static checker warning
-Date:   Sun, 3 Oct 2021 09:04:18 +0200
-Message-ID: <1633244658-14702-1-git-send-email-pthombar@cadence.com>
-X-Mailer: git-send-email 2.2.2
+        Sun, 3 Oct 2021 03:28:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633245975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hDTlj8yauGXn36BnLPk7YQFUogtZGxp6fGoAswuoG/g=;
+        b=dr5WwdrErqvFXhFilcR50rvrGVY8HPdO5BjSl+Y8DViS0SZn+qx7crCdhD+0DflrEoX4vu
+        PO0AS0orQxiq/k8TEGBxff7ArUmZntgtkjWzcMCtz+MBNkO3PN8m9WrX/X5cV6IogZ+fA6
+        3TKR7bPYArXh5Pj+2eHNUifUvaxMYdU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-CTI4cSxbO9y2Ygl6_Etx8g-1; Sun, 03 Oct 2021 03:26:14 -0400
+X-MC-Unique: CTI4cSxbO9y2Ygl6_Etx8g-1
+Received: by mail-wm1-f72.google.com with SMTP id o11-20020a05600c378b00b0030d4f47013aso3085692wmr.7
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 00:26:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hDTlj8yauGXn36BnLPk7YQFUogtZGxp6fGoAswuoG/g=;
+        b=SOUQhEkyF0W3bmja53PyVvFuTi77KOuSkG8pn7D4QQ6O1rNsYcLqgpnHcD0njlFFou
+         i4qoBmMxw64ZtS+/BTq7ojMKwejlZ36FevDEbB1En7iv5Ge0hjoeCx0GhJbcQesnNHWA
+         KHrnpr58vtsLwcCc0q4KAG0JoqbiAZwfvXKxCzJY9MC2mNhsq4bI1x6SMLKVnI9RLflt
+         amyvVQfKsp0qeWb7BEa6XrF1QhMUPk2IMMetzlYM90CsX9UvwJ3u9Vr8L/7WBSBof2It
+         qGxW0ScueHprzbpbEtP/bgAySKpcegjUf0Jclwyrey1vw9V11w+Bb6j/ct1FMssDIPxx
+         x0IQ==
+X-Gm-Message-State: AOAM532Qaqf/b0m8HyEl4/C8N02dw+NdpaZLtm7H2udhOSGCZ9E+gnZu
+        TmPZaln8Y0oqyuiQj3tfs5tvs3YyhJDlEONz4NWxqYMW+5LLtO3nZtuF7qRpkbqQzv+Ff+UD9bV
+        Eap2ftnhcihAzVcXX61KvVHCB
+X-Received: by 2002:a5d:56cc:: with SMTP id m12mr7015398wrw.22.1633245973399;
+        Sun, 03 Oct 2021 00:26:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNAQtpj1eV275e1gGoSR2AJUhmX2Av/LkhXFA8TjxRNFl9fJFjPs+0pBxxeePuOYAE3C5EmA==
+X-Received: by 2002:a5d:56cc:: with SMTP id m12mr7015373wrw.22.1633245973096;
+        Sun, 03 Oct 2021 00:26:13 -0700 (PDT)
+Received: from redhat.com ([2.55.22.213])
+        by smtp.gmail.com with ESMTPSA id b15sm4804079wrr.90.2021.10.03.00.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 00:26:11 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 03:26:07 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211003032253-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <87fstm47no.fsf@redhat.com>
+ <20211002141351-mutt-send-email-mst@kernel.org>
+ <20211003070030.658fc94e.pasic@linux.ibm.com>
+ <20211003021027-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0c405b0e-08a7-449a-8745-08d9863c125f
-X-MS-TrafficTypeDiagnostic: BYAPR07MB5304:
-X-Microsoft-Antispam-PRVS: <BYAPR07MB530484D3F86AFB6852069365C1AD9@BYAPR07MB5304.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rCUDcg9UlM0RQLJaeoCNMv1p0LSOjxgFAfMrSU4j8+N0w+rWOJAh88WJzmTXEba9qbt2kluJrfXA+tzm1fEE5Gc0trkZ5SskxEJVlkdBpQcOsn0KN+/NaRZDAwySLMMKHfUiUvk5C15m0BUFmSGjQ3p0z3sg9f0JWUXhrEYj7B5xX3vmYK1gODrG8TihUSrh0xKdKxnvTRmkSbSTroX8mib7RfclmU4XWyADfWQW8BNwZa/S3HrDkYJKuODEeuCCU+oRlz+O/hlFZMqGTT1raQuwFoQuJP/BQhgQ1DrmtimzNr8s+bAb2e40bt1GSw4NcSVWsfL8Atb/GmghD9auRKeLj1NunzPtq86RhElweCVgo9ZGBaXRdIJGTFWswHFAGvK9gKi+PLwxwx3wwBudbmL4HhLthR/Dk3g4BxL9yfmnEchozwzOfLcd3llrgfwVYAP5GLp/jeqvFqkKgx9/5ZErykmfv6Kl6g1R4Qh4jjcj5j2GFNfVdicAz4cIrZTj8MNEClvaYtqUD9GSTmLJUTnrsNyUeKz8Bh8Zq7wwpXmQiI3nUjO7vsqzGSL12ng7YkXql4h5kysoY9JBs4VfjXRNrjRsmIHmIolW7HiH5JlTPCiYiaO/ngit/EVQEdVBgw1ZD7DMIGZZ53yvZ4w8mGtS+6hfCrHjvODU+O0P2pjDjSzohbjU9JA6up8kapnMonCkeCv66b3BrmCANFHZbXTX2WWV+Jti+opzIsloIShvzoVf+OFLAYz+wiZWxOkR4zYubmwl+0UIZkWZA+kEVRnUsKKjetI+RpF7gZu7LJRKugT5DJ7L7jVmSM2bZzqseAUPMWxnhlrsq+AJdR3haooDQPby3xVka9bJTto9Ng8=
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36092001)(36840700001)(46966006)(2906002)(82310400003)(81166007)(336012)(83380400001)(186003)(36860700001)(4326008)(426003)(966005)(356005)(5660300002)(107886003)(508600001)(36756003)(36906005)(47076005)(86362001)(110136005)(54906003)(2616005)(8676002)(316002)(26005)(8936002)(70206006)(42186006)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2021 07:04:41.2518
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c405b0e-08a7-449a-8745-08d9863c125f
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT050.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB5304
-X-Proofpoint-ORIG-GUID: xIjSSddLT2sMUl4lphwb0AcaioRG_36U
-X-Proofpoint-GUID: xIjSSddLT2sMUl4lphwb0AcaioRG_36U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-03_02,2021-10-01_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 spamscore=0 mlxscore=0 adultscore=0
- impostorscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110030049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211003021027-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes Smatch static checker warning.
-CDNS_XSPI_CMD_REG_5 is used in ACMD mode and currently
-only STIG mode is enabled which doesn't use CDNS_XSPI_CMD_REG_5
-and hence everything was working in STIG mode.
-Since plan is to use same function cdns_xspi_trigger_command()
-in ACMD mode, increasing size of the array passed to it.
+On Sun, Oct 03, 2021 at 02:42:30AM -0400, Michael S. Tsirkin wrote:
+> On Sun, Oct 03, 2021 at 07:00:30AM +0200, Halil Pasic wrote:
+> > On Sat, 2 Oct 2021 14:20:47 -0400
+> > "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > 
+> > > > >From my perspective the problem is that the version of the device  
+> > > > remains in limbo as long as the features have not yet been finalized,
+> > > > which means that the endianness of the config space remains in limbo as
+> > > > well. Both device and driver might come to different conclusions.  
+> > > 
+> > > Version === legacy versus modern?
+> > > It is true that feature negotiation can not be used by device to decide that
+> > > question simply because it happens too late.
+> > > So let's not use it for that then ;)
+> > > 
+> > > Yes we have VERSION_1 which looks like it should allow this, but
+> > > unfortunately it only helps with that for the driver, not the device.
+> > > 
+> > > In practice legacy versus modern has to be determined by
+> > > transport specific versioning, luckily we have that for all
+> > > specified transports (can't say what happens with rproc).
+> > 
+> > So if we look at ccw, you say that the revision negotiation already
+> > determines whether VERSION_1 is negotiated or not, and the
+> > feature bit VERSION_1 is superfluous?
+> > 
+> > That would also imply, that 
+> > 1) if revision > 0 was negotiated then the device must offer VERSION_1
+> > 2) if revision > 0 was negotiated and the driver cleared VERSION_1
+> >    the device must refuse to operate.
+> > 3) if revision > 0 was negotiated then the driver should reject 
+> >    to drive a device if it does not offer VERSION_1
+> > 4) if revision > 0 was negotiated the driver must accept VERSION_1
+> > 5) if revision > 0 was *not* negotiated then the device should not offer
+> >    VERSION_1 because at this point it is already certain that the device
+> >    can not act in accordance to the virtio 1.0 or higher interface.
+> > 
+> > Does that sound about right?
+> 
+> To me, it does.
+> 
+> > IMHO we should also change 
+> > https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-160003
+> > and the definition of VERSION_1 because both sides have to know what is
+> > going on before features are fully negotiated. Or?
+> > 
+> > Regards,
+> > Halil
+> > 
+> 
+> I guess so. And I guess we need transport-specific sections
+> describing this behaviour for each transport.
+> 
+> So something like this, for starters?
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/linux-spi/20210930134231.GA14363@kili/
-Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
----
- drivers/spi/spi-cadence-xspi.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Sent too early. So here's what I propose. Could you pls take a look
+and if you like this, post a ccw section?
+There's also an attempt to prevent fallback from modern to legacy
+here since if driver does fallback then failing FEATURES_OK can't work
+properly.
+That's a separate issue, will be a separate patch when I post
+this for consideration by the TC.
 
-diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
-index 3401fcf..6bd0e67 100644
---- a/drivers/spi/spi-cadence-xspi.c
-+++ b/drivers/spi/spi-cadence-xspi.c
-@@ -239,7 +239,7 @@ static int cdns_xspi_wait_for_controller_idle(struct cdns_xspi_dev *cdns_xspi)
- }
+
+diff --git a/content.tex b/content.tex
+index 1398390..06271f4 100644
+--- a/content.tex
++++ b/content.tex
+@@ -140,10 +140,13 @@ \subsection{Legacy Interface: A Note on Feature
+ Bits}\label{sec:Basic Facilities of a Virtio Device / Feature
+ Bits / Legacy Interface: A Note on Feature Bits}
  
- static void cdns_xspi_trigger_command(struct cdns_xspi_dev *cdns_xspi,
--				      u32 cmd_regs[5])
-+				      u32 cmd_regs[6])
- {
- 	writel(cmd_regs[5], cdns_xspi->iobase + CDNS_XSPI_CMD_REG_5);
- 	writel(cmd_regs[4], cdns_xspi->iobase + CDNS_XSPI_CMD_REG_4);
-@@ -346,7 +346,7 @@ static int cdns_xspi_send_stig_command(struct cdns_xspi_dev *cdns_xspi,
- 				       const struct spi_mem_op *op,
- 				       bool data_phase)
- {
--	u32 cmd_regs[5];
-+	u32 cmd_regs[6];
- 	u32 cmd_status;
- 	int ret;
+-Transitional Drivers MUST detect Legacy Devices by detecting that
+-the feature bit VIRTIO_F_VERSION_1 is not offered.
+-Transitional devices MUST detect Legacy drivers by detecting that
+-VIRTIO_F_VERSION_1 has not been acknowledged by the driver.
++Transitional drivers MAY support operating legacy devices.
++Transitional devices MAY support operation by legacy drivers.
++
++Transitional drivers MUST detect legacy devices in a way that is
++transport specific.
++Transitional devices MUST detect legacy drivers in a way that
++is transport specific.
  
--- 
-1.7.1
+ In this case device is used through the legacy interface.
+ 
+@@ -160,6 +163,33 @@ \subsection{Legacy Interface: A Note on Feature
+ Specification text within these sections generally does not apply
+ to non-transitional devices.
+ 
++\begin{note}
++The device offers different features when used through
++the legacy interface and when operated in accordance with this
++specification.
++\end{note}
++
++Transitional drivers MUST use Devices only through the legacy interface
++if the feature bit VIRTIO_F_VERSION_1 is not offered.
++Transitional devices MUST NOT offer VIRTIO_F_VERSION_1 when used through
++the legacy interface.
++
++When the driver uses a device through the legacy interface, then it
++MUST only accept the features the device offered through the
++legacy interface.
++
++When used through the legacy interface, the device SHOULD
++validate that the driver only accepted the features it
++offered through the legacy interface.
++
++When operating a transitional device, a transitional driver
++SHOULD NOT use the device through the legacy interface if
++operation through the modern interface has failed.
++In particular, a transitional driver
++SHOULD NOT fall back to using the device through the
++legacy interface if feature negotiation failed
++(since that would defeat the purpose of the FEATURES_OK bit).
++
+ \section{Notifications}\label{sec:Basic Facilities of a Virtio Device
+ / Notifications}
+ 
+@@ -1003,6 +1033,12 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
+ 
+ The driver MUST NOT write a 0 to \field{queue_enable}.
+ 
++\paragraph}{Legacy Interface: Common configuration structure layout}\label{sec:Virtio Transport Options / Virtio Over PCI Bus / PCI Device Layout / Legacy Interface: Common configuration structure layout}
++Transitional drivers SHOULD detect legacy devices by detecting
++that the device has the Transitional PCI Device ID in
++the range 0x1000 to 0x103f and lacks a VIRTIO_PCI_CAP_COMMON_CFG
++capability specifying the location of a common configuration structure.
++
+ \subsubsection{Notification structure layout}\label{sec:Virtio Transport Options / Virtio Over PCI Bus / PCI Device Layout / Notification capability}
+ 
+ The notification location is found using the VIRTIO_PCI_CAP_NOTIFY_CFG
+@@ -1288,6 +1324,10 @@ \subsubsection{Legacy Interfaces: A Note on PCI Device Layout}\label{sec:Virtio
+ Transitional devices MUST present part of configuration
+ registers in a legacy configuration structure in BAR0 in the first I/O
+ region of the PCI device, as documented below.
++
++Transitional devices SHOULD detect legacy drivers by detecting
++access to the legacy configuration structure.
++
+ When using the legacy interface, transitional drivers
+ MUST use the legacy configuration structure in BAR0 in the first
+ I/O region of the PCI device, as documented below.
 
