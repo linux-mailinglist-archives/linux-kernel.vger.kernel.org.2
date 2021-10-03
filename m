@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBC6420311
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCE5420317
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhJCRSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 13:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
+        id S231288AbhJCRVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 13:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhJCRSD (ORCPT
+        with ESMTP id S230504AbhJCRVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 13:18:03 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95430C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 10:16:15 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id q6so15922136ilm.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 10:16:15 -0700 (PDT)
+        Sun, 3 Oct 2021 13:21:11 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AECC0613EC;
+        Sun,  3 Oct 2021 10:19:23 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id p80so17603158iod.10;
+        Sun, 03 Oct 2021 10:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LvbtWHhJ2QLzR2m5rN3+eMw6+xLJZ5dbABBjFP9K8VA=;
-        b=GpnNmP4B6Z6PBaYkxrt9Nlu1ZLHxBPVu3yX6c6Y4oYkiK4YIUPFCfUU0k5qcIHxyXJ
-         AW75dQQaoZ46Jg+jw6XNZ8cISG6rJDTW+W+NxejjKW3rvHTZflEqU8pJlGPia5pbzdAG
-         Lx6FDZCQ6LzYueH21ELfGIMJfAD5QWBu9C32+JPkGBU9zdq+VPQS5ig21WYCPO/fYI+f
-         9g1wHFrOuaJiZJDhoOQCtN3xVdaUKX4A4uhD9vcXdxRLEVJ1MPi6B3Ua3FxW9vbQKkEb
-         blBm3LDYp4OO+asBEuPzluUAzzpVJPyc7/RvwrmywhrzSINrmBfa4z2L1VTdrqZUq/6z
-         sWzg==
+        bh=LtNAm7zzl2qrgZZh/QTIxNxuRAfc7I+2wFFQB9vnTF0=;
+        b=HPajL2gRll5UGOWQudiLfEhv04bZJLEY04ZU7ZSRAIC019LPw99IB3jcVbN4EN+uaa
+         xyKMFFwUWxMYSoP4ZBJywqtND/RYthdauADK8DHtR06cFEMk7vPzapNi8yp+/BQqu9DS
+         XOr3DnKVtkoe0wPl/79bKfHiDibk91+zdv0sLCel9UFYLCb9bmD47OsCKSwE0mGDtw8/
+         6gdgpENhRKndxirmzsgGPXX1upChcdibaOTNC3bq+DmwPpNVd9cFYYXmPAmiOvESIXbo
+         CSbSXebOc4mMaPqb0Px805lEkzhdOgcnojNc1+KreKV66iyssiTwe6WqQz88OHS1mJw/
+         GXiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LvbtWHhJ2QLzR2m5rN3+eMw6+xLJZ5dbABBjFP9K8VA=;
-        b=LXiWKtwvzzZhprubJbXJDvR63SLU21wUsAep7K1a2Q/+vFmfCzvtd/dIJTkAc/s1JQ
-         VDTB2GI8jNwQMY+7cMgPDyv0B3ry9gkX3fuLeiThyEHc1D+SGwsGBPil8MnxFsmZ7l2e
-         tBrWMQzT0KN6jmMM9EoXmB49YN6S6mq9pNw56rVyW7kzTw4svphqN//OJk+J7C0bniLD
-         Az8KXH8Xy9NvOadbrRrzXBkarVxkOIwAffovBDvdjRVaFBOPLNm6F4Ie/lSCN7JjsJGj
-         TPoM67o9MrUV3COHcqigQGbWlQIs9vdOmKFvpV9FkSMxA/7V21QrlvYvEFwSkEn7FhsA
-         mPag==
-X-Gm-Message-State: AOAM530LQqn2B9t2NY7WP9mtGgkzkw1bEz+5LBd8Q8sz97Xa3v7XjlYV
-        JmO2MdgbjCmE3L4zCB6DA0s+k8De5giXAvg/3pM=
-X-Google-Smtp-Source: ABdhPJwmNHzX5Ab37NQL6tTa5ueYM1TH+wmuIZbpjDwwkSosoDJLxqcMB5gt9X5KnImsRcmI6Z1PsMy7GDdCawlYmnA=
-X-Received: by 2002:a05:6e02:1a69:: with SMTP id w9mr1245501ilv.235.1633281375073;
- Sun, 03 Oct 2021 10:16:15 -0700 (PDT)
+        bh=LtNAm7zzl2qrgZZh/QTIxNxuRAfc7I+2wFFQB9vnTF0=;
+        b=OlJvNQS4Y84OZTjs29lxUhu7NVJXGBUBlDEKWR77L5beT9+YJbW6ZE6vsZhKSORaNu
+         Zjk7+snQ7f8+yIOuq594x7JkqAbRLCLUvMSZoxYfjtT6Fy3mM7PRGEZXBLn9E31o5Ii4
+         pZJU3bUZ1KkQ1xCg9PnW0Yz0Mt8k9mPFRKQlMGiZw9Z8KxNum2RFQAJzx8kvd6+MITby
+         +LUKlCmGPfmvWe6fp6px09cLOLoT9HjL8jLm6H/nYmOROprlbIWMhuskijP2ZHQTpipr
+         8uIRvN1pmjqdFjwYVwVnFYR4R36YDceS+dptD32PcjJnyG1dhEK5kvB4nNLLvqOvUSni
+         IGrA==
+X-Gm-Message-State: AOAM530kCN3EUHHI7U5xQ2AzGAH6ur52saDb7ZLGzN6gc14eVZaeiig/
+        E97KBM4k6Ot70DKFQGYBmN4GxfWf4Cov0KNNNBM=
+X-Google-Smtp-Source: ABdhPJzE8E4NG+zryoNkkGJT+VnCZOOENDmogYIeJjU1ZUgffAvfm3SvEG54YtnyET4C9tYQXAL12Yepc0ZqQhXt644=
+X-Received: by 2002:a05:6602:214f:: with SMTP id y15mr6480548ioy.127.1633281563293;
+ Sun, 03 Oct 2021 10:19:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
- <20210913081424.48613-6-vincenzo.frascino@arm.com> <CANpmjNN5atO1u6+Y71EiEvr9V8+WhdOGzC_8gvviac+BDkP+sA@mail.gmail.com>
- <f789ede2-3fa2-8a50-3d82-8b2dc2f12386@arm.com>
-In-Reply-To: <f789ede2-3fa2-8a50-3d82-8b2dc2f12386@arm.com>
+References: <20210930071143.63410-1-wangkefeng.wang@huawei.com> <20210930071143.63410-8-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210930071143.63410-8-wangkefeng.wang@huawei.com>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 3 Oct 2021 19:16:04 +0200
-Message-ID: <CA+fCnZe-gogW1yMuiHhXmKXTsmfkb+-iWp1Vf9K6ZY9madtxfw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] kasan: Extend KASAN mode kernel parameter
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Marco Elver <elver@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Sun, 3 Oct 2021 19:19:12 +0200
+Message-ID: <CA+fCnZd6=sXgb-782KkijqJ7zgBj38oXLeLbi4HoUhm3MY4J8g@mail.gmail.com>
+Subject: Re: [PATCH v4 07/11] mm: kasan: Use is_kernel() helper
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        bpf <bpf@vger.kernel.org>, linux-alpha@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 9:46 AM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
+On Thu, Sep 30, 2021 at 9:09 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 >
-> On 9/16/21 12:43 PM, Marco Elver wrote:
-> >
-> > Shouldn't kasan.h also define kasan_asymm_mode_enabled() similar to
-> > kasan_async_mode_enabled()?
-> >
-> > And based on that, also use it where kasan_async_mode_enabled() is
-> > used in tests to ensure the tests do not fail. Otherwise, there is no
-> > purpose for kasan_flag_asymm.
-> >
+> Directly use is_kernel() helper in kernel_or_module_addr().
 >
-> I was not planning to have the tests shipped as part of this series, they will
-> come in a future one.
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  mm/kasan/report.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> For what concerns kasan_flag_asymm, I agree with you it is meaningful only if
-> the tests are implemented hence I will remove it in v2.
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 3239fd8f8747..1c955e1c98d5 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -226,7 +226,7 @@ static void describe_object(struct kmem_cache *cache, void *object,
+>
+>  static inline bool kernel_or_module_addr(const void *addr)
+>  {
+> -       if (addr >= (void *)_stext && addr < (void *)_end)
+> +       if (is_kernel((unsigned long)addr))
+>                 return true;
+>         if (is_module_address((unsigned long)addr))
+>                 return true;
+> --
+> 2.26.2
+>
 
-Hi Vincenzo,
-
-Up till now, the code assumes that not having the async mode enabled
-means that the sync mode is enabled. There are two callers to
-kasan_async_mode_enabled(): lib/test_kasan.c and mm/kasan/report.c.
-Assuming tests support will be added later, at least the second one
-should be adjusted.
-
-Maybe we should rename kasan_async_mode_enabled() to
-kasan_async_fault_possible(), make it return true for both async and
-asymm modes, and use that in mm/kasan/report.c. And also add
-kasan_sync_fault_possible() returning true for sync and asymm, and use
-that in lib/test_kasan.c. (However, it seems that the tests don't work
-with async faults right now.)
-
-Thanks!
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
