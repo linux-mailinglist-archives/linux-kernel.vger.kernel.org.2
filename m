@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321E742026A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E248420260
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhJCPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 11:50:08 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:35171 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhJCPuH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 11:50:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633275917;
-    s=strato-dkim-0002; d=xenosoft.de;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=n2U0PeCsRntS+jp/SpPVszJZtYbXqemerUZ0qpTMk3Y=;
-    b=jHCVuR3xGifKlofLLmuBTrzVjBk/X/XTWXVFrjZJBVrGpJDUzUodQFRCUY63HjTqOm
-    MCDgwgKMqJsUmlw/ZBESOwt54n9riq0Kp/02jNPE/l50GRe3TxIh4FJ5ThroT0e+JkGS
-    QZZnKrVyQX6Ns1gWtfwmfnK0bAgJxk3FQb5PZ+vTF5b+cTu3Clo2K/D2fWLCyGp6Ij08
-    +B089K9+ZpQz6FUtqhpaz+h5yJRFdeDXN217EbLZbQ98c3zJI5ycsvLrUCIL9cZ4u767
-    cSweAdnV2Loq9VtqUlwxf7kn/GWKi7LPdoGUHAwWgPi7lgMHOfTOfbAyid2dSgP2zSKL
-    UdDg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHvJzedV4hp0mZXDvscF/B540qv0BQZVZQLfrrxE4ejuGDN89"
-X-RZG-CLASS-ID: mo00
-Received: from cc-build-machine.a-eon.tld
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id I00cdex93FjDhap
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 3 Oct 2021 17:45:13 +0200 (CEST)
-Subject: Re: Add Apple M1 support to PASemi i2c driver
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        "R.T.Dickinson" <rtd@a-eon.com>
-References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
- <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
- <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
- <9c1f5c48-bf1a-0ecc-e769-773d2935c66c@xenosoft.de>
- <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
-From:   Christian Zigotzky <chzigotzky@xenosoft.de>
-Message-ID: <d4aa72da-cb0b-45b9-1a20-08f183cde421@xenosoft.de>
-Date:   Sun, 3 Oct 2021 17:45:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231144AbhJCPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 11:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230482AbhJCPpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 11:45:19 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB684611C2;
+        Sun,  3 Oct 2021 15:43:28 +0000 (UTC)
+Date:   Sun, 3 Oct 2021 16:47:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Yizhuo <yzhai003@ucr.edu>,
+        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: stm32-dfsdm: Fix the uninitialized use if
+ regmap_read() fails
+Message-ID: <20211003164726.42e20526@jic23-huawei>
+In-Reply-To: <20210808183243.70619aa8@jic23-huawei>
+References: <20210719195313.40341-1-yzhai003@ucr.edu>
+        <20210724164840.7381053b@jic23-huawei>
+        <20210808183243.70619aa8@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: de-DE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03 October 2021 at 04:36 pm, Sven Peter wrote:
- > Hi,
- >
- >
- > On Fri, Oct 1, 2021, at 06:47, Christian Zigotzky wrote:
- >> On 27 September 2021 at 07:39 am, Sven Peter wrote:
- >>  > Hi Christian,
- >>  >
- >>  > Thanks already for volunteering to test this!
- >>  >
- >> Hello Sven,
- >>
- >> Damian (Hypex) has successfully tested the RC3 of kernel 5.15 with your
- >> modified i2c driver on his Nemo board yesterday. [1]
- >
- > Thanks a lot, that's great to hear!
- > If he wants to I can credit him with a Tested-by tag in the commit 
-message,
- > see e.g. 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes.
- >
- >
- > Best,
- >
- >
- > Sven
+On Sun, 8 Aug 2021 18:32:43 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-Hello Sven,
+> On Sat, 24 Jul 2021 16:48:40 +0100
+> Jonathan Cameron <jic23@kernel.org> wrote:
+> 
+> > On Mon, 19 Jul 2021 19:53:11 +0000
+> > Yizhuo <yzhai003@ucr.edu> wrote:
+> >   
+> > > Inside function stm32_dfsdm_irq(), the variable "status", "int_en"
+> > > could be uninitialized if the regmap_read() fails and returns an error
+> > > code.  However, they are directly used in the later context to decide
+> > > the control flow, which is potentially unsafe.
+> > > 
+> > > Fixes: e2e6771c64625 ("IIO: ADC: add STM32 DFSDM sigma delta ADC support")
+> > > 
+> > > Signed-off-by: Yizhuo <yzhai003@ucr.edu>    
+> > 
+> > Hi Yizhou
+> > 
+> > I want to get some review of this from people familiar with the
+> > hardware as there is a small possibility your reordering might have
+> > introduced a problem.  
+> 
+> To stm32 people, can someone take a look at this?
 
-We are still testing your i2c modifications. [1]
-Please wait a litte bit till we finished our tests.
+This one is still outstanding.  If anyone from stm32 side of things could take a look
+that would be great,
 
-@Darren
-Could you also please check Sven's i2c modifications? He has also 
-modified your source code a little bit. [2]
+Jonathan
 
-@Olof
-Are these i2c modifications OK? Do these work on your P.A. Semi board?
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> >   
+> > > ---
+> > >  drivers/iio/adc/stm32-dfsdm-adc.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > index 1cfefb3b5e56..d8b78aead942 100644
+> > > --- a/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > @@ -1292,9 +1292,11 @@ static irqreturn_t stm32_dfsdm_irq(int irq, void *arg)
+> > >  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+> > >  	struct regmap *regmap = adc->dfsdm->regmap;
+> > >  	unsigned int status, int_en;
+> > > +	int ret;
+> > >  
+> > > -	regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> > > -	regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);    
+> > 
+> > Moving this later is only valid if there aren't any side effects.
+> > The current ordering is strange enough it makes me wonder if there might be!
+> > 
+> > Jonathan
+> >   
+> > > +	ret = regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> > > +	if (ret)
+> > > +		return IRQ_HANDLED;
+> > >  
+> > >  	if (status & DFSDM_ISR_REOCF_MASK) {
+> > >  		/* Read the data register clean the IRQ status */
+> > > @@ -1303,6 +1305,9 @@ static irqreturn_t stm32_dfsdm_irq(int irq, void *arg)
+> > >  	}
+> > >  
+> > >  	if (status & DFSDM_ISR_ROVRF_MASK) {
+> > > +		ret = regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);
+> > > +		if (ret)
+> > > +			return IRQ_HANDLED;
+> > >  		if (int_en & DFSDM_CR2_ROVRIE_MASK)
+> > >  			dev_warn(&indio_dev->dev, "Overrun detected\n");
+> > >  		regmap_update_bits(regmap, DFSDM_ICR(adc->fl_id),    
+> >   
+> 
 
-Thanks,
-Christian
-
-[1] https://forum.hyperion-entertainment.com/viewtopic.php?p=54138#p54138
-[2] https://lists.ozlabs.org/pipermail/linuxppc-dev/2017-January/153195.html
