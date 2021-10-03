@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F155B4203C6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 21:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7414203D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 22:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhJCTjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 15:39:33 -0400
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:29858 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhJCTjb (ORCPT
+        id S231622AbhJCUCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 16:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhJCUCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 15:39:31 -0400
-Date:   Sun, 03 Oct 2021 19:37:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=protonmail; t=1633289860;
-        bh=Vkis8q3wAr5DLrDK2kyBtcT3tC2zLfRByim6BGFmAjI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=vJ+/0awUSluDcG8pFS3P/dqMtHC++VrRIVA0lJXgnUKZGDrcj+py6V0EOyEGZP9oF
-         IZi/Z/rgBTS8up9A0eRUo7kFcj1ycQo+IWc/11sHazm4OWYLmLoKoCr2jhd0bFFCT9
-         Rslw76Cko+gDDN+tn1JRU3Qob+J0wqHQNXh2fi/o=
-To:     Alexey Gladkov <legion@kernel.org>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     ebiederm@xmission.com, LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm\\\\@kvack.org" <linux-mm@kvack.org>,
-        "containers\\\\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
-Message-ID: <x60kD9HRSkoQBLUAQHfwu3QUvrZSR7xG1Eirly0J6TMH0pOKcx-biWrQGLyCHAJZez4isFYFm745RPFJ_oCsvPeHRdDUElohmeqZR1g7Pq8=@protonmail.ch>
-In-Reply-To: <20210929173611.fo5traia77o63gpw@example.org>
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch> <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch> <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch> <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch> <20210929173611.fo5traia77o63gpw@example.org>
+        Sun, 3 Oct 2021 16:02:05 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64753C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 13:00:17 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id i30so17139585vsj.13
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 13:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YMigLaitifOukkJI53gEbD34hZV1NeNoJ7lOXzjShXQ=;
+        b=OXHLliz3vpImECLH3fMcowjVcW8mgxeq4cZzmCHjriSOelou4M5R8h27jOqA2tJRC/
+         FteXQxq8F90Un8aSxiZQWP9DMVvqD7eZlKtssOywBjwzC4tdifKGoMJmEFoordE3mWWz
+         vW//s/xDTf6KwKLeoPN53bfSvYGXB8nYX7PdNGLj6+UQAfERJ3RlFxDMOFR7L3N0CIk8
+         wzHniGE/W45cX0HTBtYwQjQOgwO+xveKGJalKd7myoqgTYKme35Zs91fYFXh4qTVh4pN
+         BJPVG/+ldu54nq44vfGcbrgYFaczN6Cf55hprAqOeZofnHLtrqEV0hsGRB29FzySRYbo
+         wgEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YMigLaitifOukkJI53gEbD34hZV1NeNoJ7lOXzjShXQ=;
+        b=H7il5u80EW+artYi5vfGmAo171oFVwwQMKJ6MoznFYjlOPE1+Jv3p1sjAd2gAs+8Mp
+         W5ECBb1eydQr4c3DDa6QT6HTfC2cyhK2jGyIoOjAY5RnkyPKdeom7lmASc65m12QCXpk
+         2z3Svc3LofMy5ki+LdqxP8Q8ssMLN7b7tIjqVk3PrqvWQy11zUomGwpIBH8PL7akkYdJ
+         0N/gubYGhyYpZRCnhX1XpPdquDHKkkRmRH6c1w5IlV1p+uKap7sDm+o30fFPMORfTOWm
+         XbyTWPa0HxO4rdLSAFY9mz+5kYUJho4ucczNFhxNOTvNaapzq1Hs1fplD5dC+ui+PdZH
+         Q34g==
+X-Gm-Message-State: AOAM530ly2loGsPf/fIpvNVKBcxGjh2byAOQjXQlPzVMOc6nZ0sksLrc
+        WZsnQh52LqdvsKrKxfO44aA=
+X-Google-Smtp-Source: ABdhPJyh0fDRqtVxRvkW8y+i6KNPZZ7Pc6IqHlHwCInffwdxmEYGwWrktd51Bio/37YTPhjZjYHLxA==
+X-Received: by 2002:a67:c896:: with SMTP id v22mr10782275vsk.39.1633291216576;
+        Sun, 03 Oct 2021 13:00:16 -0700 (PDT)
+Received: from localhost.localdomain ([181.23.73.135])
+        by smtp.gmail.com with ESMTPSA id x21sm6691019uao.2.2021.10.03.13.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 13:00:16 -0700 (PDT)
+From:   Gaston Gonzalez <gascoar@gmail.com>
+To:     linux-staging@lists.linux.dev
+Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, gascoar@gmail.com
+Subject: [PATCH 0/9] staging: vchiq_core: various style cleanups
+Date:   Sun,  3 Oct 2021 16:57:49 -0300
+Message-Id: <20211003195758.36572-1-gascoar@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 29th, 2021 at 5:36 PM, Alexey Gladkov <legion@kerne=
-l.org> wrote:
+This set of patches consists in some code style fixes.
 
-> On Tue, Sep 28, 2021 at 01:40:48PM +0000, Jordan Glover wrote:
->
-> > On Thursday, September 16th, 2021 at 5:30 PM, ebiederm@xmission.com wro=
-te:
-> >
-> > > Jordan Glover Golden_Miller83@protonmail.ch writes:
-> > >
-> > > > On Wednesday, September 15th, 2021 at 10:42 PM, Jordan Glover Golde=
-n_Miller83@protonmail.ch wrote:
-> > > >
-> > > > > I had about 2 containerized (flatpak/bubblewrap) apps (browser + =
-music player) running . I quickly closed them with intent to shutdown the s=
-ystem but instead get the freeze and had to use magic sysrq to reboot. Syst=
-em logs end with what I posted and before there is nothing suspicious.
-> > > > >
-> > > > > Maybe it's some random fluke. I'll reply if I hit it again.
-> > > >
-> > > > Heh, it jut happened again. This time closing firefox alone had suc=
-h
-> > > >
-> > > > effect:
-> > >
-> > > Ok. It looks like he have a couple of folks seeing issues here.
-> > >
-> > > I thought we had all of the issues sorted out for the release of v5.1=
-4,
-> > >
-> > > but it looks like there is still some little bug left.
-> > >
-> > > If Alex doesn't beat me to it I will see if I can come up with a
-> > >
-> > > debugging patch to make it easy to help track down where the referenc=
-e
-> > >
-> > > count is going wrong. It will be a little bit as my brain is mush at
-> > >
-> > > the moment.
-> > >
-> > > Eric
-> >
-> > As the issue persist in 5.14.7 I would be very interested in such patch=
-.
-> >
-> > For now the thing is mostly reproducible when I close several tabs in f=
-f then
-> >
-> > close the browser in short period of time. When I close tabs then wait =
-out
-> >
-> > a bit then close the browser it doesn't happen so I guess some interrup=
-ted
-> >
-> > cleanup triggers it.
->
-> I'm still investigating, but I would like to rule out one option.
->
-> Could you check out the patch?
->
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
->
-> index bb51849e6375..f23f906f4f62 100644
->
-> --- a/kernel/ucount.c
->
-> +++ b/kernel/ucount.c
->
-> @@ -201,11 +201,14 @@ void put_ucounts(struct ucounts *ucounts)
->
-> {
->
-> unsigned long flags;
->
-> -         if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock,=
- flags)) {
->
->
->
-> -         spin_lock_irqsave(&ucounts_lock, flags);
->
->
-> -         if (atomic_dec_and_test(&ucounts->count)) {
->
->                   hlist_del_init(&ucounts->node);
->
->                   spin_unlock_irqrestore(&ucounts_lock, flags);
->                   kfree(ucounts);
->
->
-> -                 return;
->           }
->
->
-> -         spin_unlock_irqrestore(&ucounts_lock, flags);
->
->
->
-> }
->
-> static inline bool atomic_long_inc_below(atomic_long_t *v, int u)
->
-> ---------------------------------------------------------------------
->
-> Rgrds, legion
+Gaston Gonzalez (9):
+  staging: vchiq_core: cleanup blank lines
+  staging: vchiq_core: cleanup code alignment issues
+  staging: vchiq_core.h: fix CamelCase in function declaration
+  staging: vchiq_core.h: use preferred kernel types
+  staging: vchiq: drop trailing semicolon in macro definition
+  staging: vchiq_core: drop extern prefix in function declarations
+  staging: vchiq_core: cleanup lines that end with '(' or '['
+  staging: vchiq_core: cleanup unnecessary blank line
+  staging: vchiq_core: fix quoted strings split across lines
 
-I'm still able to reproduce the issue with above patch although situation
-changed/improved a bit as now I have to close tabs and browser really fast
-to hit it which means it's more unlikely to happen during real usage.
+ .../interface/vchiq_arm/vchiq_arm.c           |   4 +-
+ .../interface/vchiq_arm/vchiq_core.c          | 764 +++++++-----------
+ .../interface/vchiq_arm/vchiq_core.h          |  99 +--
+ .../interface/vchiq_arm/vchiq_dev.c           |   4 +-
+ 4 files changed, 335 insertions(+), 536 deletions(-)
 
-On the other hand the kernel logging cuts off much earlier, just after few
-lines:
+-- 
+2.33.0
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 20387 at kernel/ucount.c:256 dec_ucount+0x43/0x50
-Modules linked in: ...
-
-Jordan
