@@ -2,81 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C836420440
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 00:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0BB420444
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 00:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhJCWL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 18:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S231857AbhJCWSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 18:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbhJCWL6 (ORCPT
+        with ESMTP id S231778AbhJCWSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 18:11:58 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354F9C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 15:10:10 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id g41so63224433lfv.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 15:10:10 -0700 (PDT)
+        Sun, 3 Oct 2021 18:18:09 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D495DC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 15:16:21 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so63103527lfa.9
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 15:16:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U9Mf9GI5Pm+kL+VrrV0E+/1cX+8MmlfNpjuTrHIHDBU=;
-        b=yz+MMKs016NPuE07ZM/SC+j0anFa+U46jg+mEqlMroGgSo0OVRX/iofinaFE6ejX/x
-         VmzstodfD09SW17AUy8oeN4nfpEg1VsLCoPIb3qX1pz40qF5uWpt7PQdZfFt4IkANUkT
-         kbO945a/obo21YaI+yunotwvgZA8hGf4DX4wS+5Fqkd9lGVGx6BrKMR9YONncGZPmD2l
-         Tay+n7KiAFQIa9c81prLgONI+BqzyXEFY5hXEdfBGz8n4MuJHHMfJAs/nVy7IAfWj2zF
-         Od88lzNIPSr8M89btm4C01W7RyiHdr7I1IN5cmBmIA39pWY3OBgpEFZGEJrVPRfiQUmW
-         aJlQ==
+        bh=IzkTIQlWqZRG2Zb0hdr5rkICTLhL0XajYhtt4w+t2gY=;
+        b=nCi896ZVJ+XlHPgC/hVF3y+2DogSrixg8Iv5PKYCvEuvU71pn6aDEwNkdL3tOWmYxS
+         8w+a8aAOgj/tDt6dUZ/H0WkQCzt1gG029eDv8zeoFL1evfaLZXgL+V4mKTv6fm5J3uu5
+         zeQyieGB1SJQjv50AZg17MtTKJRnMTNl7Sevkd/1PhY/dg9ZfV8GjbcQTzKJaV6wsuPX
+         LeA2ByGzZEjDV8xvF9k+F9Q6k4uI0KitpOVCMzX2Nx5ViDo36fh9CkzDDedU//EIfpba
+         3RW7q/QiuZT58slMeqWvp4HMJqAywV/KipY0FQKmWjtYlGi2uMYTHnlLg/j67pBhovr1
+         lCgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U9Mf9GI5Pm+kL+VrrV0E+/1cX+8MmlfNpjuTrHIHDBU=;
-        b=XPmUQ/EJIzAX/Bt7JLajXIPqajNU0k+FAOQ3GsFMT5xw8QyNj/fboHMYRmelXpYEXU
-         ORW6k+FypwYc2v0S68vAT3d0IsKABqf67HgP7qLnpfjFns061lMaRmix3W5axrCADSOw
-         SfnmT4TmA/R9iadoJVLq1ugrHbXFlwN+wHHf39aaqooZmloD2/hlMrCVkIYSyzOoolir
-         HrWjSBvKW8c711/lxFccGJUeTBvS9glPLkgZxQrkFPdE8OnMYCgb2OCsLX+83EZ2ZeFJ
-         ZDsmIu33G6xvXUmXoccY2+6rrQEFy/tsuCTyJhKMusI0chM5NuPm+i5c8AKLNwMx9jAj
-         unkw==
-X-Gm-Message-State: AOAM531dS2b9eGid2fI2WxJZVxWgdqhsWThSQfY5I798SFUWwkcTMxvd
-        bihTzriXXf4jrSoXURm8hktGqpypjYW/a+zm23DEIQ==
-X-Google-Smtp-Source: ABdhPJwXQxgJnBiCJXHiEECucos6gkDzEYPUpOuN9ryCXhy30bNBzWy6TPluZ4UpN7159wDQXClY4Uo7sDaMjt8BupI=
-X-Received: by 2002:a2e:510a:: with SMTP id f10mr12187903ljb.358.1633299008538;
- Sun, 03 Oct 2021 15:10:08 -0700 (PDT)
+        bh=IzkTIQlWqZRG2Zb0hdr5rkICTLhL0XajYhtt4w+t2gY=;
+        b=2A38Hfn8RaibRdfpoVYW84Qbe76Zf0DMeb/J081Mvre3B7cSubK+hm+0OCwIWBkApA
+         L8CyLCd1fKFQi9FNC1Ohpmj9cwfWqeGQDn3ofIgP9+RryV8ME73+ljZmk0nnmv0RqAeM
+         PmFNagppdZ/1nvh4UkZhDIr7n62uBs+keVorYoJK88Wk07EgCM94zzEvLwu4NK9kJiVL
+         ETpxpLSRFk0A65teSesE6OwfspnJrgUHi1dNd250B2NX4PlunDogRfTvvNbmJomKtp8J
+         vNJusQZQN3RnWxJI4Ovm2pUmHHYb61m6H/DjHqcF3ATOc42bnT6/UrAxlOATmTaDooNT
+         610g==
+X-Gm-Message-State: AOAM533KvGGdEk/qaJadXr8/o08PXd7IUNluje5InpE3MBxBOeFP1OUQ
+        NBfK6LanwSLXRokZtdZ9+LF9bHLDGIVHiuociz2rhpJDJjQ=
+X-Google-Smtp-Source: ABdhPJzJNcxs126/Cswt/LOh3w+e3WQG9QzaKgVRFp6ZuMTVSDMfwDrCeBQ+YuPNqm3O5zUMs7QE0ShXTfpn6nb2iq0=
+X-Received: by 2002:a19:c10a:: with SMTP id r10mr9180470lff.95.1633299379618;
+ Sun, 03 Oct 2021 15:16:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930232617.6396-1-dipenp@nvidia.com> <20210930232617.6396-9-dipenp@nvidia.com>
-In-Reply-To: <20210930232617.6396-9-dipenp@nvidia.com>
+References: <20211002162000.3708238-1-daniel@0x0f.com>
+In-Reply-To: <20211002162000.3708238-1-daniel@0x0f.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Oct 2021 00:09:57 +0200
-Message-ID: <CACRpkdaO8ydTEkPU4LT+ibzb_-5VEw9mdvMbu+R9cR6zv9MsDQ@mail.gmail.com>
-Subject: Re: [RFC v2 08/11] gpiolib: cdev: Add hardware timestamp clock type
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
+Date:   Mon, 4 Oct 2021 00:16:08 +0200
+Message-ID: <CACRpkdZmhZcGXi2Xg=r1BGaf8-QLPDawY_7Kp3d-xmvHuDe0xQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] gpiolib: Move setting the flow handler and don't set
+ it at all if there is a parent domain
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 1:26 AM Dipen Patel <dipenp@nvidia.com> wrote:
+Hi Daniel,
 
-> +       if (test_bit(FLAG_EVENT_CLOCK_HARDWARE, &line->desc->flags)) {
+thanks for your patch!
 
-I don't know if it's here or a few other places as well we could sneak
-in a IS_ENABLED(CONFIG_HTE) to make sure the compiler will
-optimize out a bunch of the HTE support code if HTE is not in use?
+On Sat, Oct 2, 2021 at 6:20 PM Daniel Palmer <daniel@0x0f.com> wrote:
 
-Just an idea, I guess it's not the most urgent.
+> Calling irq_domain_set_info() before irq_domain_alloc_irqs_parent()
+> can cause a null pointer dereference as the parent domain isn't
+> ready yet.
+>
+> Move irq_domain_set_info() to after irq_domain_alloc_irqs_parent().
+> A side effect of this is that irq_domain_set_info() will now overwrite
+> the flow handler from the parent domain. So if there is a parent
+> domain do not set the flow handler anymore.
+>
+> This allows gpio-msc313.c to level it's irq domain on top of the
+> new irq controller in later SigmaStar SoCs without crashing.
+>
+> Link: https://lore.kernel.org/linux-arm-kernel/20210914100415.1549208-1-daniel@0x0f.com/
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Suggested-by: Marc Zyngier <maz@kernel.org>
+
+If Marc says this is the way to go I think it is the way to go!
+
+>         kfree(parent_arg);
+> +
+> +       if (!ret) {
+
+Please just exit on error so invert this.
+
+if (ret)
+  return ret;
+
+and just de-indent the below code (easier to follow)
+
+> +               /* If there is a parent domain leave the flow handler alone */
+> +               if (d->parent)
+> +                       irq_domain_set_hwirq_and_chip(d,
+> +                                                     irq,
+> +                                                     hwirq,
+> +                                                     gc->irq.chip,
+> +                                                     gc);
+> +               /* Otherwise set the flow handler supplied by the gpio driver */
+> +               else
+> +                       irq_domain_set_info(d,
+> +                                           irq,
+> +                                           hwirq,
+> +                                           gc->irq.chip,
+> +                                           gc,
+> +                                           girq->handler,
+> +                                           NULL, NULL);
+> +               irq_set_probe(irq);
+> +       }
+
+Should we print an error if girq->handler is not NULL and we find
+a parent domain, like
+if (d->parent && girq->handler)
+  dev_err(dev, "parent domain and flow handler both specified\n");
 
 Yours,
 Linus Walleij
