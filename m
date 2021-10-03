@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87814200A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 10:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B484200BD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 10:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhJCIIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 04:08:54 -0400
-Received: from ssh248.corpemail.net ([210.51.61.248]:50126 "EHLO
-        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhJCIIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 04:08:52 -0400
-Received: from ([60.208.111.195])
-        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id XKK00156;
-        Sun, 03 Oct 2021 16:06:56 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
- 15.1.2308.14; Sun, 3 Oct 2021 16:06:58 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kai Song <songkai01@inspur.com>
-Subject: [PATCH] btrfs: zoned: Use kmemdup() to replace kmalloc + memcpy
-Date:   Sun, 3 Oct 2021 16:06:56 +0800
-Message-ID: <20211003080656.217151-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        id S229929AbhJCIds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 04:33:48 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:37898 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhJCIdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 04:33:47 -0400
+Received: from g550jk.portal.nstrein.ns.nl (unknown [145.15.244.215])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 9454DC9072;
+        Sun,  3 Oct 2021 08:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1633249919; bh=7A3bctolnPomul0Ceu+ocAChJSDa+GUUAFf4Ke825mc=;
+        h=From:To:Cc:Subject:Date;
+        b=cDaZGW7vadCXMfDCOVNdSTrGqr8VU8gvccrlL6DA1N3p0m4gWG3xSpyGfWRWSOkeA
+         6T08FT3SNi7oCdB+eDSRqrxuWt5oqkx8wGGXDsZ4Xiimpvhun0npLRveeKJ5xyke49
+         8xlc+MAD5wDb4JEJyFLCQ8ThU0kMbgSZF7+0Vy3c=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Hector Martin <marcan@marcan.st>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/11] Initial Fairphone 4 support
+Date:   Sun,  3 Oct 2021 10:31:23 +0200
+Message-Id: <20211003083141.613509-1-luca@z3ntu.xyz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   20211003160656a3af2400dbd184062f23e01267357a2a
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix memdup.cocci warning:
-fs/btrfs/zoned.c:1198:23-30: WARNING opportunity for kmemdup
+This series adds basic support for the recently announced Fairphone 4
+smartphone, based on the Snapdragon 750G (sm7225).
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
----
- fs/btrfs/zoned.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+This adds support for UART, power & volume buttons, screen based on
+simple-framebuffer, regulators and USB.
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 1433ee220c94..cfa25f5ede0d 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1195,14 +1195,12 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
- 
- 	map = em->map_lookup;
- 
--	cache->physical_map = kmalloc(map_lookup_size(map->num_stripes), GFP_NOFS);
-+	cache->physical_map = kmemdup(map, map_lookup_size(map->num_stripes), GFP_NOFS);
- 	if (!cache->physical_map) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	memcpy(cache->physical_map, map, map_lookup_size(map->num_stripes));
--
- 	alloc_offsets = kcalloc(map->num_stripes, sizeof(*alloc_offsets), GFP_NOFS);
- 	if (!alloc_offsets) {
- 		ret = -ENOMEM;
+Luca Weiss (11):
+  clk: qcom: add select QCOM_GDSC for SM6350
+  dt-bindings: regulator: qcom,rpmh: Add compatible for PM6350
+  regulator: qcom-rpmh: Add PM6350 regulators
+  dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for PM6350
+  pinctrl: qcom: spmi-gpio: Add compatible for PM6350
+  arm64: dts: qcom: Add PM6350 PMIC
+  arm64: dts: qcom: sm6350: add debug uart
+  dt-bindings: arm: cpus: Add Kryo 570 CPUs
+  dt-bindings: arm: qcom: Document sm7225 and fairphone,fp4 board
+  arm64: dts: qcom: Add SM7225 device tree
+  arm64: dts: qcom: sm7225: Add device tree for Fairphone 4
+
+ .../devicetree/bindings/arm/cpus.yaml         |   1 +
+ .../devicetree/bindings/arm/qcom.yaml         |   6 +
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml      |   2 +
+ .../regulator/qcom,rpmh-regulator.yaml        |   2 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/pm6350.dtsi          |  54 +++
+ arch/arm64/boot/dts/qcom/sm6350.dtsi          |  31 ++
+ .../boot/dts/qcom/sm7225-fairphone-fp4.dts    | 322 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm7225.dtsi          |  16 +
+ drivers/clk/qcom/Kconfig                      |   1 +
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      |   1 +
+ drivers/regulator/qcom-rpmh-regulator.c       |  32 ++
+ 12 files changed, 469 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pm6350.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7225.dtsi
+
 -- 
-2.27.0
+2.33.0
 
