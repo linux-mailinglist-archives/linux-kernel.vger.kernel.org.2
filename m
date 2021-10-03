@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C46042046E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84201420475
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhJCXNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 19:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S231907AbhJCX04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 19:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbhJCXNs (ORCPT
+        with ESMTP id S230520AbhJCX0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 19:13:48 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E8CC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 16:12:00 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id y28so3711843vsd.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:12:00 -0700 (PDT)
+        Sun, 3 Oct 2021 19:26:55 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A5DC061780
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 16:25:06 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id p13so29552886edw.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:25:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mMQIV6iy/YcB5GjonDB7HSdfPpKfOSD7BW3xn+YP/DU=;
-        b=QkXTiIR3+QNbtk78cJbJtsNqnJQf1vPk3ReN5Z/IsCuN+ld/6Y8+SyjR/sSNObHrvy
-         LuwIIfiTgyLmDaVPkhz88u8/lmQxA27XGwZcsb0S0nOHIx8h1yFrgLaurz5EJtxUxH+Z
-         kDtuPH/tB7mrtMZB0/2saB1PT3ODQNBwlUAyfdI6Rbi5qDdWhK59KNV8ElrjleNny4aL
-         JYefwlQ2doHpniLrfKl03S/vFCtOPJfxz/pUOw/bPcXaXIIxh4wGelE/u0M90x8qXTYU
-         YGnandWgE7gO/FTbroftj6bhHtNiQiqlPCWQY7DaczTEDmgAeWhzWNkQdQNjclseSgA3
-         Cv1w==
+        d=amikom.ac.id; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GSCXqxIA1o807PK6C5J2wuYzWvo/IRAhFGJYC3Av3vU=;
+        b=Y/PSYvM7+k9cj4P4gwtvnHz+ZogB6+5zu/W4Av/04ZU9AcbOBuyF05JNsJL5NRsdog
+         AraEq8Jyj7dpz+iYH5kc4Q8lh8QOq1Kr887D686efcFO4tVqYPqOyZwJcn4FlZF2SGs6
+         3quETLnmkKbJn5ssxNmIDAm+lDx6OGfOF8dZayARYoCepwtxvQlUVcdB7lI8zG0pZeBF
+         VqaDu8SYOt/m9iSUqb+HryyQ4lY3BmQtvMpz/AG7uuva/uAggGbqhlCoSlc0+woS+ZC+
+         5sRNiczOWVr2tSy9yNL64DgyNBTBKNqg67T0R/MKw+ut8VHAyiogCOr8g/0tvb611std
+         jfTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mMQIV6iy/YcB5GjonDB7HSdfPpKfOSD7BW3xn+YP/DU=;
-        b=qscXBWfzb+ZgiXJHMZk7JVrr538pHqzgHk4uaogUf08VCjA8vxugUXRVd/vtsugTu1
-         r6LXcgVFNU5YL8om3/l56WAexR6CP48q5MMI4fszJNuX88uq2i8I4yJUXNTJ8Q6NWZzR
-         F5uQow7dPOisoceYrjob/V8mC8WViR4qv2Poae+FouAJ3sHGl5TDDo1388S4vd4YbRR/
-         8oHRS5IR9rMkcUi+Y2Mc3Qqej8Pn0W6HKVlxxgeTKFwGpj6QaiVK5HdnF4O3QM574Xps
-         U9JMH8vjuJ82Md3uVm1TH1npf6lj2whtLBcqeSekq2KI2GGZgoBaq6S+js21YSAy6fX4
-         Q/jA==
-X-Gm-Message-State: AOAM531oPMt5YIL2erueW7WxSlis9tMHRw5CelBLM7zK+6uh4FFkh5Lr
-        Lf/C+kPnHZaeDbjHpH0D7fU=
-X-Google-Smtp-Source: ABdhPJxZFZJ00cfx/JjWexY4Yi9Z65BWyW0WPxPc+6iP9/jByvYrihDArkBL5WNBLxsnACqlUzbi6g==
-X-Received: by 2002:a67:d00d:: with SMTP id r13mr10866961vsi.23.1633302719105;
-        Sun, 03 Oct 2021 16:11:59 -0700 (PDT)
-Received: from geday ([2804:7f2:8280:9a0f:98f0:31ff:fe93:2dc7])
-        by smtp.gmail.com with ESMTPSA id t5sm6100912vsk.24.2021.10.03.16.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 16:11:58 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 20:11:54 -0300
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
-        broonie@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
- questions and issues
-Message-ID: <YVo4uuKJy2QIQ77n@geday>
-References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
- <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GSCXqxIA1o807PK6C5J2wuYzWvo/IRAhFGJYC3Av3vU=;
+        b=OxQdd58D76POIrXLs5fXfk87MLzPYYvgWH+awRZr7LyARkAeyKZVResGb5dyiySCOD
+         a8MbPzuUxA8YNPmk6iNvkN6hyKBzwJ4zeSm7/y4/qJNGuWhGHGRkZ1jjlv9JNmUlcEPY
+         UDmT1pZJTiRMx1Kq4qRkCrg6BsdbfsGLbCIEb7ICVQBoSvcYNJ6Bkk3ZHUYAwJOh5BpE
+         F6x8KpdZbl1Xb7nXmWHKv3wPEfeUyyiNur8RP4aMk2ycKTxEqkkIAEoNtM58MnewhBBD
+         1G40MuxEc7ngKDL9Ti0AGH+4SeVGQqTuYOIm+auwZkNZa5rVLnuVJvSDUV4rqE4Y5R4M
+         eVcA==
+X-Gm-Message-State: AOAM532uTBvKq4VZ7xLSIXBRgafAsnbIHWjt8KZikPeHlnO+/mSiv3RC
+        XzcEeigJspRlHSM9/VapRJdQ/rzsobjWb6/TD4p5Hg==
+X-Google-Smtp-Source: ABdhPJwlXghwRiHVLqNgde12Z99mmV7noD5vKOvj8fqS+t1n0MgWrz9xYYiT4DFgmZVqaxsnlqW7f0hZFg8M0ej9xNw=
+X-Received: by 2002:a17:906:1757:: with SMTP id d23mr13761971eje.102.1633303504459;
+ Sun, 03 Oct 2021 16:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+References: <20211002231723.29019-1-ammar.faizi@students.amikom.ac.id> <1bad16dc-e11e-4096-2014-a0eae92686e8@gmail.com>
+In-Reply-To: <1bad16dc-e11e-4096-2014-a0eae92686e8@gmail.com>
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+Date:   Mon, 4 Oct 2021 06:24:52 +0700
+Message-ID: <CAGzmLMWehxhp7L7Ye+ERjZPRxAaVu=pYmV6Zr-Q78dzruu2qaA@mail.gmail.com>
+Subject: Re: [PATCH] media: atomisp: fix `-Werror=return-type`
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Bedirhan KURT <windowz414@gnuweeb.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 05:57:34PM +0200, Jerome Brunet wrote:
-> 
-> On Sun 03 Oct 2021 at 01:43, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
-> 
-> > Hello Jerome et al.,
+On Sun, Oct 3, 2021 at 11:19 PM Pavel Skripkin <paskripkin@gmail.com> wrote=
+:
+>
+> On 10/3/21 02:17, Ammar Faizi wrote:
+> > Bedirhan reported build error:
+> > ```
+> >    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_sys=
+tem.c: In function =E2=80=98input_system_configure_channel_sensor=E2=80=99:
+> >    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_sys=
+tem.c:1649:1: error: control reaches end of non-void function [-Werror=3Dre=
+turn-type]
+> >     1649 | }
+> >          | ^
+> >    cc1: some warnings being treated as errors
+> >    make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atom=
+isp/pci/hive_isp_css_common/host/input_system.o] Error 1
+> >    make[3]: *** [scripts/Makefile.build:540: drivers/staging/media/atom=
+isp] Error 2
+> >    make[2]: *** [scripts/Makefile.build:540: drivers/staging/media] Err=
+or 2
+> >    make[1]: *** [scripts/Makefile.build:540: drivers/staging] Error 2
+> >    make: *** [Makefile:1868: drivers] Error 2
+> > ```
 > >
-> > on Amlogic Meson SoCs which use the AIU audio controller we have the
-> > so-called "machine gun noise" (MGN) issue, reproducible for example in
-> > Kodi. So far nobody was able to identify the cause of this issue. My
-> > idea was to at least narrow down the issue so we can categorize it. For
-> > that I wanted to get the SPDIF output from AIU to the HDMI controller
-> > working.
-> 
-> Ok, I'll clarify (again) about this issue.
-> 
-> This issue is on AIU only (not the AXG series), on the i2s encoder
-> regardless of the output (HDMI, internal and external codec)
-> 
-> This encoder support either 2ch or 8ch mode, nothing else.
-> As long as only 2ch was supported, there was no problem.
-> In order to switch between 2ch and 8ch mode.  AIU_RST_SOFT_I2S_FAST and
-> AIU_I2S_SYNC shall be "poked" (check iu-fifo-i2s.c and
-> aiu-encoder-i2c.c). Without this, the switch is not done.
-> 
-> What these do, how and when it should be done is unclear. I tried
-> several combination. At the time I found something stable-ish but it was
-> not perfect.
-> 
-> At the time, It was completely new driver. Even if was not rock solid,
-> it was still progress and I opted to upstream it with an imperfect 8ch
-> support so people could help debug it. This was mentioned in the
-> original submission.
-> 
-> The other solution is to restrict to 2ch mode and remove
-> AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
-> anymore.
-> 
+> > Commit 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp:
+> > remove useless returns") incorrectly removed a required return results
+> > in the above build error. Reinstate it.
+> >
+> > Cc: Pavel Skripkin <paskripkin@gmail.com>
+> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linux-staging@lists.linux.dev
+> > Cc: linux-kernel@vger.kernel.org
+> > Reported-by: Bedirhan KURT <windowz414@gnuweeb.org>
+> > Fixes: 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp: remov=
+e useless returns")
+> > Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+> > ---
+> >   .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 =
++
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host=
+/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/hos=
+t/input_system.c
+> > index 8e085dda0c18..1bd917e81743 100644
+> > --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_=
+system.c
+> > +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_=
+system.c
+> > @@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_=
+channel_sensor(
+> >       default:
+> >               return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> >       }
+> > +     return INPUT_SYSTEM_ERR_NO_ERROR;
+> >   }
+> >
+> >   // Test flags and set structure.
+> >
+>
+> Hi, Ammar!
+>
+>
+> Thank you for fixing this, but it's already fixed in linux-next tree.
+> See commit 05344a1d2ea7 ("media: atomisp: restore missing 'return'
+> statement").
+>
+> Again, I am sorry for introducing this bug :(
+>
+>
+>
+>
+> With regards,
+> Pavel Skripkin
 
-Hi, Jerome,
+No worries, thanks for the update :D
 
-Thanks for the extensive clarification. I have compiled 5.15-rc3
-commenting out the pokes for 8ch as you have suggested, both for
-AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC in both aiu-fifo-i2s.c
-and aiu-encoder-i2c.c.
-
-It works, the bug is gone just like you said it would be.
-
-My suggestion is that, for the time being, until someone can solve
-this properly, you restrict enablement of 8ch configuration under
-an EXPERIMENTAL kernel option, with a big fat warning in the help
-description, saying it will break 2ch.
-
-Last but no least, thanks for helping Martin out.
-
-Thank you,
-Geraldo Nascimento
+--=20
+Ammar Faizi
