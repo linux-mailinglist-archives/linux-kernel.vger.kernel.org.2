@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1F84202A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB724202AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhJCQXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 12:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        id S231189AbhJCQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 12:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhJCQXW (ORCPT
+        with ESMTP id S230426AbhJCQ3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 12:23:22 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6418C0613EC;
-        Sun,  3 Oct 2021 09:21:34 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id s137so6582603vke.11;
-        Sun, 03 Oct 2021 09:21:34 -0700 (PDT)
+        Sun, 3 Oct 2021 12:29:08 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB57C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 09:27:20 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p80so17513551iod.10
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 09:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4qRRfwZJhmxqi+2+u51qjiYBwGnqaigXoaasxBjBoXM=;
-        b=eU3IOaOfGUBKRGL01mmNBtatdgLAThBzQygaEg2nojL5I3fcIM4hDJIBBXPyTpPbcf
-         tf7RgHJc5Uym8beolT86Enl4lq00cNlryN5j8UIOB1miFrS7ElgzSKMOyVG0DFlhoE2s
-         IQUYiTQ/skgV5HOOoCfaQ6/YnsZyclubnECM3XfAXNdrNEut691HKDdq+toxDNp6kbbN
-         9inWayh6k+h3HyYV8r9TBecU1tkOTqFKj7t8b6qdNE6K8u4CSo/HAfj2WbE8xdCnrZcE
-         UsHcVQJOYf5da7cwM5UWDAX6tMGR+5ij5KvsK7CbGb748ckt3F8f50wSxAzk0oL1XNI9
-         fT9A==
+        bh=gGz/7798TEe0PuD2hstTWSueeSofOrfEOZMUAoLV9NI=;
+        b=WV0sN6CkWLEjLdwaqH+RRv/QPo1wzQrpUkFDjo/lEM+rDQGc2vPvUhIJLz2y/wKY6g
+         gfZt16J8rvw5By+OcqK+o8M9mKb0o9uePR94TvsLfmwsN70xSQHf222+9AgqkpjsOUT+
+         tNm6DcJhsWlX8fRujhaCcXR1POGSIdvRxwP1uCdBHzxqJKYfUveUVN0OIKeMhyxaKU6T
+         Onf8YTdlCeQefd38znfzSpkM+MX9ki1I5FLMLHmKquuWCT9on+1xZpktQXrQjeP9Kbom
+         ke5zQ5uAGlOCm/0toZB/udeRGm1ExKu2sYVJ9IGHpVb2Uj3Pc6l8oF2RSJzHcmqMHvhm
+         kpHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4qRRfwZJhmxqi+2+u51qjiYBwGnqaigXoaasxBjBoXM=;
-        b=TIn2x1IDa4AIbkwMcH1jYlBvW61ZIGK0rmJdlSq1lV00TNvR3LPrtgPkRZDVfFLMmA
-         o8Zw1rw6yLsv1E4P37xELTZgTrjF/dNAKfdj3rqKwgJwMJfBkiJuOOea+vUSsWWP4Rfl
-         VDaZPt8/MnzJs8G+/s/Km23/ltS8Jg9w7YwJ6iDTcjUfrFxMw3kRVP0r1NzdTDeL/Uqz
-         K/wk0R0nWkHs7xwkbo+jICw87P4u3qQ9UH1lCL4rYakBtyZqg7N4qs6h9c7xvDFRqdGT
-         +yEVkOjSF/1W9K6wMvT1O3PDWa9MOOeAT74bPivwQol9Rlrn/MreJ2cQbAA+VHmEZa9s
-         UegQ==
-X-Gm-Message-State: AOAM531JU8Xgxcj+EZdTg4p1CiZMI+Z5alAzDMJvyiqcQ5WMIlqvrPvw
-        poyhwIoEIlMnw9U/IV/UMfLUWpgaaOzdOzFYEHU=
-X-Google-Smtp-Source: ABdhPJxIZ8XYcpRKD5CmGahKwC2rLWUaIZzEBxfK9VvV+gVjRUFAErPJc3kLFKGfmEE+1JRpNf9Drt6ivnXuIAKrqpA=
-X-Received: by 2002:a1f:1c57:: with SMTP id c84mr12626251vkc.22.1633278093113;
- Sun, 03 Oct 2021 09:21:33 -0700 (PDT)
+        bh=gGz/7798TEe0PuD2hstTWSueeSofOrfEOZMUAoLV9NI=;
+        b=0mn62Lww9nHlDYxoz2vDzDqED8GS64xzX38IsmtKW+gijfj4BuPPwILN8GMoE5h6L4
+         HDYyWxj8/FHBoq0I0aTHj12D+wgEy4wVVRlt0S2MLbEcN1VreuzoiOPQl2TbfqSpH84d
+         UkOw2wyCxed/kAPxJ2wjzAlK51889IvHbvfk51xmbOrMbSBsVCdB/sDzvtOM8a9jtRr+
+         S+z1NZ1FYXEpb7N0PGWzh2xBpujPwyr1N7jdXPCmPyxHqvNJoMJOUO/SEt+JwhIIhqlP
+         HeGpvF0lOQC9k0JjuW69g375g/1Kp03ysD3YOQth4nB4hzXcy4eUqQ3/4OcMGyAgDUkb
+         M+Bw==
+X-Gm-Message-State: AOAM533oqPxU3nH3LXc5PlsGw2CTjV/SyhOvZ2sH0Ygc2acknOd+Cz99
+        1xS7pvYs5PNAe6u0jCBaVY15ZJt6g1T05np/N2w=
+X-Google-Smtp-Source: ABdhPJwJ4NlNl/UT98Bv7qSDY/uujcrXZHzqmF3GH8oLkQdIoJYtV0c28VvBpNU+1poxsUyNx8qX1pgDqblDPkMqkQA=
+X-Received: by 2002:a02:7b01:: with SMTP id q1mr7320811jac.121.1633278439943;
+ Sun, 03 Oct 2021 09:27:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210925203224.10419-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20210925203224.10419-1-sergio.paracuellos@gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 3 Oct 2021 18:21:21 +0200
-Message-ID: <CAMhs-H9p4xmPO2F_byk4DQncTGZayW1HwAzrPn_W0eEW5UUn9A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] MIPS: ralink: fix PCI IO resources
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20211001024105.3217339-1-willy@infradead.org> <CA+fCnZfSUxToYKUfHwQT0r3bC9NYZNc2iC3PXv+GciuW0Fm79A@mail.gmail.com>
+ <YVcVtNLnyJModOhn@casper.infradead.org>
+In-Reply-To: <YVcVtNLnyJModOhn@casper.infradead.org>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Sun, 3 Oct 2021 18:27:09 +0200
+Message-ID: <CA+fCnZd7dGOz2T3eVwbJzAEmXMB7YezB5FoZt5a0D92mPPv74g@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Fix tag for large allocations when using CONFIG_SLAB
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, Oct 1, 2021 at 4:06 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Oct 01, 2021 at 03:29:29PM +0200, Andrey Konovalov wrote:
+> > On Fri, Oct 1, 2021 at 4:42 AM Matthew Wilcox (Oracle)
+> > <willy@infradead.org> wrote:
+> > >
+> > > If an object is allocated on a tail page of a multi-page slab, kasan
+> > > will get the wrong tagbecause page->s_mem is NULL for tail pages.
+> >
+> > Interesting. Is this a known property of tail pages? Why does this
+> > happen? I failed to find this exception in the code.
+>
+> Yes, it's a known property of tail pages.  kmem_getpages() calls
+> __alloc_pages_node() which returns a pointer to the head page.
+> All the tail pages are initialised to point to the head page.
+> Then in alloc_slabmgmt(), we set ->s_mem of the head page, but
+> we never set ->s_mem of the tail pages.  Instead, we rely on
+> people always passing in the head page.  I have a patch in the works
+> to change the type from struct page to struct slab so you can't
+> make this mistake.  That was how I noticed this problem.
 
-On Sat, Sep 25, 2021 at 10:32 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> MIPs ralink need a special tratement regarding the way it handles PCI IO
-> resources. On MIPS I/O ports are memory mapped, so we access them using normal
-> load/store instructions. MIPS 'plat_mem_setup()' function does a call to
-> 'set_io_port_base(KSEG1)'. There, variable 'mips_io_port_base'
-> is set then using this address which is a virtual address to which all
-> ports are being mapped. Ralink I/O space has a mapping of bus address
-> equal to the window into the mmio space, with an offset of IO start range
-> cpu address. This means that to have this working we need:
-> - linux port numbers in the range 0-0xffff.
-> - pci port numbers in the range 0-0xffff.
-> - io_offset being zero.
->
-> These means at the end to have bus address 0 mapped to IO range cpu address.
-> We need a way of properly set 'mips_io_port_base' with a virtually mapped
-> value of the IO cpu address.
->
-> This series do the following approach:
-> 1) Revert two bad commit from a previous attempt of make this work [0].
-> 2) Set PCI_IOBASE to mips 'mips_io_port_base'.
-> 3) Allow architecture dependent 'pci_remap_iospace'.
-> 4) Implement 'pci_remap_iospace' for MIPS.
-> 5) Be sure IOBASE address for IO window is set with correct value.
->
-> More context about this series appoach in this mail thread [1].
->
-> Patches related with reverts are from this merge cycle so they are only
-> added to the staging git tree. So to have all stuff together I'd like to
-> get everybody Ack's to get all of this series through staging tree if
-> possible :).
->
-> Thanks in advance for your time.
->
-> Changes in v3:
->  - Collect Arnd's Acked-by for the patches.
->  - Be sure IO resource start address is zero and WARN_ONCE if it is not
->    on MIPS pci_remap_iospace() patch. Also make use of 'resource_size'
->    instead of do the logic explicitly again.
+Ah, so it's not "the tail page", it's "a tail page". Meaning any page
+but the head page. Got it.
 
-I think nothing is missing to get this added through the staging tree.
+> > The tag value won't really be "wrong", just unexpected. But if s_mem
+> > is indeed NULL for tail pages, your fix makes sense.
+> >
+> > > I'm not quite sure what the user-visible effect of this might be.
+> >
+> > Everything should work, as long as tag values are assigned
+> > consistently based on the object address.
+>
+> OK, maybe this doesn't need to be backported then?  Actually, why
+> subtract s_mem in the first place?  Can we just avoid that for all
+> tag calculations?
 
-Thanks in advance for your time.
+We could avoid it. To me, it seems cleaner to assign tags based on the
+object index rather than on the absolute address. But either way
+should work.
 
-Best regards,
-   Sergio Paracuellos
+There's no security nor stability impact from this issue, so probably
+not so much incentive to backport. But the patch makes sense.
 
->
-> Changes in v2:
->  - re-do commit messages for PCI patch as Bjorn pointed out in previous series.
->  - Add Bjorn's Acked-by for PCI subsystem patch.
->  - Re-do commit message of MIPS 'pci_remap_iospace()' patch to align with changes
->    in the PCI patch (s/architecture dependent/architecture-specific/)
->  - Add Fixes-by tag for MIPS set PCI_IOBASE patch.
->
-> [0]: https://www.spinics.net/lists/kernel/msg4051474.html
-> [1]: https://lkml.org/lkml/2021/9/22/6
-> Sergio Paracuellos (6):
->   Revert "MIPS: ralink: don't define PC_IOBASE but increase
->     IO_SPACE_LIMIT"
->   Revert "staging: mt7621-pci: set end limit for 'ioport_resource'"
->   MIPS: ralink: set PCI_IOBASE to 'mips_io_port_base'
->   PCI: Allow architecture-specific pci_remap_iospace()
->   MIPS: implement architecture-specific 'pci_remap_iospace()'
->   staging: mt7621-pci: properly adjust base address for the IO window
->
->  arch/mips/include/asm/mach-ralink/spaces.h |  4 +++-
->  arch/mips/include/asm/pci.h                |  2 ++
->  arch/mips/pci/pci-generic.c                | 14 ++++++++++++++
->  drivers/pci/pci.c                          |  2 ++
->  drivers/staging/mt7621-pci/pci-mt7621.c    |  4 +---
->  5 files changed, 22 insertions(+), 4 deletions(-)
->
-> --
-> 2.25.1
->
+Thanks!
