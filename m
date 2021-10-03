@@ -2,397 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3004200C7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 10:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349FE4200B5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 10:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhJCIeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 04:34:04 -0400
-Received: from mail.z3ntu.xyz ([128.199.32.197]:38012 "EHLO mail.z3ntu.xyz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhJCIeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 04:34:02 -0400
-Received: from g550jk.portal.nstrein.ns.nl (unknown [145.15.244.215])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id E9E4CC911C;
-        Sun,  3 Oct 2021 08:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1633249934; bh=xrjVmZaNGXmnKhnfR3B6j98mRtdc4nBRFLHvoMvZRSo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Vm11V5fGfVS0qMu5Xi5bHdgj1ik7bzxsNhJHwPDqEM2d5H43xuxKXYt/fBOJ0DIRI
-         t+XKHPXB+bDCwO748jO7EvKMsQOSmucD89iKye0TocKMQ3leC++qnSbdfzY9a/XwAp
-         PxiW81CE6yIOqK9RWaQqOp5YIPQgJ6XZ4uVaf9MY=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] arm64: dts: qcom: sm7225: Add device tree for Fairphone 4
-Date:   Sun,  3 Oct 2021 10:31:34 +0200
-Message-Id: <20211003083141.613509-12-luca@z3ntu.xyz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211003083141.613509-1-luca@z3ntu.xyz>
-References: <20211003083141.613509-1-luca@z3ntu.xyz>
+        id S229872AbhJCIdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 04:33:39 -0400
+Received: from unicom146.biz-email.net ([210.51.26.146]:24734 "EHLO
+        unicom146.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhJCIdj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 04:33:39 -0400
+Received: from ([60.208.111.195])
+        by unicom146.biz-email.net ((LNX1044)) with ASMTP (SSL) id XKJ00046;
+        Sun, 03 Oct 2021 16:31:46 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2308.14; Sun, 3 Oct 2021 16:31:47 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <luciano.coelho@intel.com>, <kvalo@codeaurora.org>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kai Song <songkai01@inspur.com>
+Subject: [PATCH] iwlwifi: mvm: Use kmemdup() instead of kzalloc and memcpy
+Date:   Sun, 3 Oct 2021 16:31:44 +0800
+Message-ID: <20211003083144.217955-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   20211003163146c565c7ce0e91ad08bcd63cca1b366d29
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree for the Fairphone 4 smartphone which is based on
-Snapdragon 750G (sm7225) which is basically sm6350.
+fix memdup.cocci warning:
+drivers/net/wireless/intel/iwlwifi/mvm/rfi.c:110:8-15: WARNING opportunity for kmemdup
 
-Currently supported are UART, physical buttons (power & volume), screen
-(based on simple-framebuffer set up by the bootloader), regulators and
-USB.
-
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Signed-off-by: Kai Song <songkai01@inspur.com>
 ---
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- .../boot/dts/qcom/sm7225-fairphone-fp4.dts    | 322 ++++++++++++++++++
- 2 files changed, 323 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
+ drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 59ece83abad0..9ed189e9c197 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -85,6 +85,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6350-sony-xperia-lena-pdx213.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm7225-fairphone-fp4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-microsoft-surface-duo.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-new file mode 100644
-index 000000000000..6d509b2bdabe
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-@@ -0,0 +1,322 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Luca Weiss <luca@z3ntu.xyz>
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "sm7225.dtsi"
-+#include "pm6350.dtsi"
-+
-+/ {
-+	model = "Fairphone 4";
-+	compatible = "fairphone,fp4", "qcom,sm7225";
-+
-+	/* required for bootloader to select correct board */
-+	qcom,msm-id = <434 0x10000>, <459 0x10000>;
-+	qcom,board-id = <8 32>;
-+
-+	aliases {
-+		serial0 = &uart2;
-+	};
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		stdout-path = "serial0:115200n8";
-+
-+		framebuffer0: framebuffer@a000000 {
-+			compatible = "simple-framebuffer";
-+			reg = <0 0xa0000000 0 (2340 * 1080 * 4)>;
-+			width = <1080>;
-+			height = <2340>;
-+			stride = <(1080 * 4)>;
-+			format = "a8r8g8b8";
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_keys_pins>;
-+
-+		volume-up {
-+			label = "volume_up";
-+			linux,code = <KEY_VOLUMEUP>;
-+			gpios = <&pm6350_gpios 2 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&apps_rsc {
-+	pm6350-rpmh-regulators {
-+		compatible = "qcom,pm6350-rpmh-regulators";
-+		qcom,pmic-id = "a";
-+
-+		vreg_s1a: smps1 {
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1200000>;
-+		};
-+
-+		vreg_s2a: smps2 {
-+			regulator-min-microvolt = <1503000>;
-+			regulator-max-microvolt = <2048000>;
-+		};
-+
-+		vreg_l2a: ldo2 {
-+			regulator-min-microvolt = <1503000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3a: ldo3 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4a: ldo4 {
-+			regulator-min-microvolt = <352000>;
-+			regulator-max-microvolt = <801000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5a: ldo5 {
-+			regulator-min-microvolt = <1503000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6a: ldo6 {
-+			regulator-min-microvolt = <1710000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7a: ldo7 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8a: ldo8 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9a: ldo9 {
-+			regulator-min-microvolt = <1650000>;
-+			regulator-max-microvolt = <3401000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11a: ldo11 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12a: ldo12 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13a: ldo13 {
-+			regulator-min-microvolt = <570000>;
-+			regulator-max-microvolt = <650000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l14a: ldo14 {
-+			regulator-min-microvolt = <1700000>;
-+			regulator-max-microvolt = <1900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15a: ldo15 {
-+			regulator-min-microvolt = <1100000>;
-+			regulator-max-microvolt = <1305000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16a: ldo16 {
-+			regulator-min-microvolt = <830000>;
-+			regulator-max-microvolt = <921000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18a: ldo18 {
-+			regulator-min-microvolt = <788000>;
-+			regulator-max-microvolt = <1049000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l19a: ldo19 {
-+			regulator-min-microvolt = <1080000>;
-+			regulator-max-microvolt = <1305000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l20a: ldo20 {
-+			regulator-min-microvolt = <530000>;
-+			regulator-max-microvolt = <801000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l21a: ldo21 {
-+			regulator-min-microvolt = <751000>;
-+			regulator-max-microvolt = <825000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l22a: ldo22 {
-+			regulator-min-microvolt = <1080000>;
-+			regulator-max-microvolt = <1305000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pm6150l-rpmh-regulators {
-+		compatible = "qcom,pm6150l-rpmh-regulators";
-+		qcom,pmic-id = "e";
-+
-+		vreg_s8e: smps8 {
-+			regulator-min-microvolt = <313000>;
-+			regulator-max-microvolt = <1395000>;
-+		};
-+
-+		vreg_l1e: ldo1 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2e: ldo2 {
-+			regulator-min-microvolt = <1170000>;
-+			regulator-max-microvolt = <1305000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3e: ldo3 {
-+			regulator-min-microvolt = <1100000>;
-+			regulator-max-microvolt = <1299000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4e: ldo4 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5e: ldo5 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6e: ldo6 {
-+			regulator-min-microvolt = <1700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7e: ldo7 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8e: ldo8 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9e: ldo9 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10e: ldo10 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3401000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11e: ldo11 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3401000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_bob: bob {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <5492000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-+			regulator-allow-bypass;
-+		};
-+	};
-+};
-+
-+&pm6350_gpios {
-+	gpio_keys_pins: gpio-keys-pins {
-+		pinconf {
-+			pins = "gpio2";
-+			function = PMIC_GPIO_FUNC_NORMAL;
-+			bias-pull-up;
-+			input-enable;
-+			power-source = <0>;
-+		};
-+	};
-+};
-+
-+&pm6350_resin {
-+	status = "okay";
-+	linux,code = <KEY_VOLUMEDOWN>;
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <13 4>, <56 2>;
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	maximum-speed = "super-speed";
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+
-+	vdd-supply = <&vreg_l18a>;
-+	vdda-pll-supply = <&vreg_l2a>;
-+	vdda-phy-dpdm-supply = <&vreg_l3a>;
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vreg_l22a>;
-+	vdda-pll-supply = <&vreg_l16a>;
-+};
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+index 44344216a1a9..1954b4cdb90b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_rfi_get_freq_table(struct iwl_mvm *mvm)
+ 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
+ 		return ERR_PTR(-EIO);
+ 
+-	resp = kzalloc(resp_size, GFP_KERNEL);
++	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
+ 	if (!resp)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	memcpy(resp, cmd.resp_pkt->data, resp_size);
+-
+ 	iwl_free_resp(&cmd);
+ 	return resp;
+ }
 -- 
-2.33.0
+2.27.0
 
