@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCFB42003C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 07:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B663442003D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 07:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhJCFgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 01:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S229759AbhJCFlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 01:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhJCFgm (ORCPT
+        with ESMTP id S229450AbhJCFll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 01:36:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC468C061780
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 22:34:55 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j5so51806274lfg.8
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 22:34:55 -0700 (PDT)
+        Sun, 3 Oct 2021 01:41:41 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF9DC0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 22:39:53 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id np13so3023656pjb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 22:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=xRc3IHUizmviQEjT/aA/BX2eK4NRIQ6MOKbVgrtXYgk=;
-        b=g7M0ACmOl2zW0cHz+RnESJKP7jAFlCVCTRLUO5Tr3iKnX8URaQqFHL8NK+WsljlrJP
-         AIP7NyQtw/CTIcHm3gXpWhFA0op5ckjnsmw58MjbFWK390WLI5yH6ht4A1/OODijFuv9
-         43JMlG2D674egeOnoYSmeNjUAkJiZHmn2DQF+UL6HtWTvvmFVMh9ROxJQzbq6sGrAtUd
-         1yLfAlsbmbFOfASRL+VOZn0U4n1rF+U9cPjt35zBLkbhofVAIPcNhl09UJko26eNx4Jj
-         an6XrG3pbw4krIDMmUob+dQyTCRh7KVj4ebgexrQ0kWPrz/Fu3dn5944EEwNtkS3cGJ7
-         vKfg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MHHrRyhaaSDdyDXA0sw78/JGPr6cOHuLgaZg+N4Xe6U=;
+        b=Z/bDX0E8Tg4Rx3ZSANxhh7uQgC6DVmNIXLklE26atN51paijLMN7APASynBLbT+9J6
+         KMABmrXp2yH8kzKamw+dqWwvTexYUoz/KuSWUUKPeSqOWiJkjNvtoPFTK91E5lrB9yC/
+         jcW/O2wxuSlgXwklPmYdrR3B278RX3uposeae02p3FRTRVRe/PUndr56CyXBx8b0bqK1
+         WvG6dRA9aR8T3FMv19IlvPLD74RGBMlQp2oCmeZtep+fqHHOgjKL+iEizaHEYPcFxHPZ
+         nnoPy4DzWFL0Eb4ia/ZMliHUHIrzE4H9rstDJ/zctzlvgQF6bH+i/5i4kpwC08NwPKZP
+         j4Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=xRc3IHUizmviQEjT/aA/BX2eK4NRIQ6MOKbVgrtXYgk=;
-        b=vsR6bBHEHdO3efFzylbK62r+SbDe2E7z1sqSN4sYr4y5zQO7DvbwoYgC3SSdLQ+zNE
-         FrTpTPMcbZvLS8xJTUrduCHxf+MDsjoLw+xNjraImmJf+F6DTCuUdpewrlGO2NNCHyCe
-         ZvCE4DY45sqPCp4gHISvAu/tKZkSis+gGg38M+JiMotwuKH8doC9cHcNAI2NQFzX/uNa
-         qs/BElZD/SiPbIdjOoyxc1EKpIWmoFMUxPfqPdVqytJy8aF4vT7XSSnMhslYFLtyZAQG
-         aTaunmxAjBsIGMtJtLn/T/CoVmpcwnfUOr32XUewrHLpxwAe7I9OU5lzBDNcDynMpU25
-         rw7w==
-X-Gm-Message-State: AOAM531OVr0EB72QakrSttGIQ+WGSnqhcUyyiKPJXE4cOlPrfjFZ/vy7
-        aj75cVQnK33cb6bS/iZLAAWwKWxZinjka6Zvgyw=
-X-Google-Smtp-Source: ABdhPJyK/gE8F1dfQaoL8QjCgXnNsWM9vZiyCp+OO5NG0WJ439CRCiSYjyOsuIj+HyBBpuyW6KLxsNzy6PwOvfmoXEE=
-X-Received: by 2002:a2e:8852:: with SMTP id z18mr7946188ljj.412.1633239293419;
- Sat, 02 Oct 2021 22:34:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MHHrRyhaaSDdyDXA0sw78/JGPr6cOHuLgaZg+N4Xe6U=;
+        b=8QHY98J+qut8kTxSe6HMZHXyHivjQCppITdf5Ob+4Pg42ZoG1eIEwhRJc3QvnU+J6b
+         K13tzDXOdO8xyLDH/qSQ+f00JsezVszWclb2aN8JWxki+PEepmwcCfWH0+pN81NpSdDw
+         r8HG0iLPbR9tE1DcuCh0z40q90bLQvcIToomtsm8pqKW+4biyX6OKmWv8J4YBctsPMHN
+         CwyF0epb+2CApgLe02eYlHae4pZ8r3NTxvcZH2t8kcMBvq1gprzCkHoA/yqvBw6s+weE
+         vyhKlb5JSzm1AecQ89W10zbegL57crWRj4GejTDWW3UIU0nbcRMl54f7pxQRo2VSgZ+S
+         /7EQ==
+X-Gm-Message-State: AOAM530oYmRT9PFvIblMfD1awJER+Kfw+NdfaryvajBcsSQHUjzeXi46
+        Bmeh4V9kHAI9PiUrHPQ8Lzg=
+X-Google-Smtp-Source: ABdhPJxeSik6ef7wkacHPzAsUw4qfCTU1Cx487tjA4klSwidPAfICQXAj1pKvDOSQDYuC6zR3Zmzcg==
+X-Received: by 2002:a17:90a:9908:: with SMTP id b8mr29642248pjp.203.1633239592645;
+        Sat, 02 Oct 2021 22:39:52 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6006:a148:3549:857c:c627:c3bc])
+        by smtp.googlemail.com with ESMTPSA id w4sm10455485pfb.3.2021.10.02.22.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 22:39:52 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH v4] checkpatch: add check for continue statement in UNNECESSARY_ELSE
+Date:   Sun,  3 Oct 2021 11:08:56 +0530
+Message-Id: <20211003053856.10348-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: info.bfinfo3@gmail.com
-Received: by 2002:a05:6520:47c4:b0:139:1b10:ad9d with HTTP; Sat, 2 Oct 2021
- 22:34:52 -0700 (PDT)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Sun, 3 Oct 2021 07:34:52 +0200
-X-Google-Sender-Auth: cs_Mm6z3_mOBa1eeuOQgQZ1Cezs
-Message-ID: <CABCrZePVjK7mWiuJ4jbESRpSzt3oKeVScvAhta4CmeZtz-WD1Q@mail.gmail.com>
-Subject: This is to inform you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+UNNECESSARY_ELSE only checks for the usage of else after a return or
+break. But the same logic applies for the continue statement.
 
-How are you doing? I am very happy to inform you about my success. I'm
-currently out of the country for an investment with part of my share,
-after completing the transfer with an Indian business man. But i will
-visit your country, next year, after the completion of my project.
-Please, contact my secretary to send you the (ATM) card which I've
-already credited with the sum of ($500,000.00). Just contact her to
-help you in receiving the (ATM) card. I've explained everything to her
-before my trip. This is what I can do for you because, you couldn't
-help in the transfer, but for the fact that you're the person whom
-I've contacted initially, for the transfer. I decided to give this
-($500,000.00) as a compensation for being contacted initially for the
-transfer. I always try to make the difference, in dealing with people
-any time I come in contact with them. I'm also trying to show that I'm
-quite a different person from others whose may have a different
-purpose within them. I believe that you will render some help to me
-when I, will visit your country, for another investment there. So
-contact my secretary for the card, Her contact are as follows,
+An else branch used after a continue statement is unnecessary. So add
+a test for the continue statement, too.
 
-Full name: Mrs, Jovita Dumuije,
-Country: Burkina Faso
-Email: jovitadumuije@gmail.com
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+ scripts/checkpatch.pl | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks, and hope for a good corporation with you in future.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index c27d2312cfc3..0eee086d87fe 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4011,15 +4011,15 @@ sub process {
+ 
+ # check indentation of any line with a bare else
+ # (but not if it is a multiple line "if (foo) return bar; else return baz;")
+-# if the previous line is a break or return and is indented 1 tab more...
++# if the previous line is a break or continue or return and is indented 1 tab more...
+ 		if ($sline =~ /^\+([\t]+)(?:}[ \t]*)?else(?:[ \t]*{)?\s*$/) {
+ 			my $tabs = length($1) + 1;
+-			if ($prevline =~ /^\+\t{$tabs,$tabs}break\b/ ||
+-			    ($prevline =~ /^\+\t{$tabs,$tabs}return\b/ &&
+-			     defined $lines[$linenr] &&
+-			     $lines[$linenr] !~ /^[ \+]\t{$tabs,$tabs}return/)) {
++			if ($prevline =~ /^\+\t{$tabs,$tabs}(break|continue|return)\b/ &&
++			    !($1 eq "return" &&
++			      defined $lines[$linenr] &&
++			      $lines[$linenr] =~ /^[ \+]\t{$tabs,$tabs}return/)) {
+ 				WARN("UNNECESSARY_ELSE",
+-				     "else is not generally useful after a break or return\n" . $hereprev);
++				     "else is not generally useful after a $1\n" . $hereprev);
+ 			}
+ 		}
+ 
+-- 
+2.25.1
 
-Godwin Peter,
