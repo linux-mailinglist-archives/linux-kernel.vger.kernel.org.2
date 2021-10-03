@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE584201D7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CC84201EE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhJCOAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 10:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
+        id S230442AbhJCOPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 10:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhJCOAR (ORCPT
+        with ESMTP id S230408AbhJCOPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 10:00:17 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C42CC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 06:58:30 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id om12-20020a17090b3a8c00b0019eff43daf5so10295797pjb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 06:58:30 -0700 (PDT)
+        Sun, 3 Oct 2021 10:15:12 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C2CC061780
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 07:13:25 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id d11so15613935ilc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 07:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9WrBX8ansHuvSpv9nqokuMgzB1KN55NYa8tseNN8L50=;
-        b=IGkLXN6UzlOWMlfGr4FAb3ik+X6qyXcxNST8j4Y8fkYbAcYrpwSy9GUIyx1zE04SK+
-         BA2M/fGND4PLfs8KN65Nh8QDPGtCJeTD2lmMor9agL6KftLRg4rFc/aaVIuICmfIB2gM
-         9zIG6PbGz6exAoMxFmGgwug3MZuSCcCy+RnvUI1POVAWsu4shjZ4D80Xun2ZyDzT11gJ
-         pobg3xrvB3vOQN/NCGZPRYzaYa9qeFs7tebBZnsuE93TYtX1GAWPvlsW8CamgMjD3CUF
-         NrC+050PzO2GUdwfqI0/mYJtAIBxKN43YlK1rRWoCv69uv4wevy6PY+sQDW7/dejU9ld
-         dcGQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=CzLLeOt2D85wYPflsbZMOSwizKARCM6P3C9aq2kTvCAL8FK1dZZaA9VZZmaIp3f33B
+         tnm7G3V2dSSl++TwJMleTYdX1B+nHs6V3T2kRG0mYWyJJeYz7qX7jy1hYLK3DbH2R2nw
+         s23bV9DFCP/frjDIfPkf4Pfma5XFXzhSsBnviadqVs/m7wSBu53yNlrmkKp7f2YVi/It
+         ZHuETojNIvNB4gxIqmtIeSHsXJSazkAFHv9YhnP92mjANq4rgL7D8Z3b8FlRGGi0rzws
+         FkUIMeczEpa/qhSZ6d5qXGP8gHqGq1whjWB6bpLGdUx8q6RDPUBcAAR5slseYAxd0IQv
+         TL2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9WrBX8ansHuvSpv9nqokuMgzB1KN55NYa8tseNN8L50=;
-        b=5iF1YaFELqu1L4AAk0GmOAxr16nBS4qLcia+jHnLNnEXZcdoJqCcblRPS/tr+09VBh
-         qXZoPFOXTgX23Hj98XGfz9arGSK/RhQnKeBeHaQ2hTQ8OVByBqhGuqdclnzFPBLVY4O8
-         eqGoSXhOBLagYowMOgiNboNNJtxa42MS8hamkSv1h0B5UJuMphsQp3mztLhQrmqne1W0
-         q2kLVLtgliFtTrFSXnWEDJG+0is6jn9IUs7KjbY6Stt/SxMmX2S49kI4CRxm33orfJ6R
-         P67CXNhAY+cBG9UB7tU6T+HZ/23Ho2FMhrnrMOehjCYTu+1WIZ8pN5aMur4PXYyfl1sD
-         XFTA==
-X-Gm-Message-State: AOAM532fgM3Jb3tn6LPwg+298VLZtR0sHNx8wUFk4VMEc7cwtgUHUIiW
-        7B/ZTI2ejypEi6jvzLgJPkQi0Q==
-X-Google-Smtp-Source: ABdhPJx9xIlSQUqcX7OLNVY2Hd8715d8ebJYtH1jy+9OggFBY+rkI1flTUgoI4SNkcTM5gImorHcHg==
-X-Received: by 2002:a17:90a:1a4c:: with SMTP id 12mr24541653pjl.175.1633269510042;
-        Sun, 03 Oct 2021 06:58:30 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id 3sm10493334pjk.18.2021.10.03.06.58.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 03 Oct 2021 06:58:29 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 21:58:23 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-Message-ID: <20211003135822.GA13320@dragon>
-References: <20210926132847.22268-1-shawn.guo@linaro.org>
- <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=jGEUoX6EbDHBbHAggEetyUEEFWweAJA0+9YqUalPjvGTpdicJtWuZqPzqkEhB00fOj
+         WdrjyttibRuFydJ3aj7PNnDoYbEjHf5bTHKoUVeHkQJL6klYdHx0pZsNTLHwRdik2ptB
+         4OPRtaPj+WTjqQpsTsDYs2i8WNPQkMII3BCvodqQwEFn7i8OB5ZGOeVoIJ18f+KqbSH8
+         1XXw3FSlkv1LHRYm88daYwaOBVDN0WjdHuWWBK2o8tI956SnkbcK9Nm7exXTeca6NQtK
+         h1lbL8wL9k3x85E4Ey3Dw7QuNgm8+N1cUx+qJ7o5sSUbCtcxikStRKnQ0tXnX4+Mf/0z
+         DOgg==
+X-Gm-Message-State: AOAM532h5EdrEWlhezS34cWTdphs1Yl+QKGeMgxFIggR7Aya9BVnxudP
+        AqhKkJkmCXZNsHoZmgltKe41XWRTRkfd6YEF55U=
+X-Google-Smtp-Source: ABdhPJwb1HesNpW12IaqapBMFTaGWumjzJ93O2SJa+U30ZV3tpE5aeCcsKdEmofeOcmkqiLqiA+h+PWUQjkjjE/OhS8=
+X-Received: by 2002:a05:6e02:1a89:: with SMTP id k9mr6219250ilv.77.1633270404496;
+ Sun, 03 Oct 2021 07:13:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a05:6e02:1a0f:0:0:0:0 with HTTP; Sun, 3 Oct 2021 07:13:24
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi488@gmail.com>
+Date:   Sun, 3 Oct 2021 07:13:24 -0700
+Message-ID: <CAOXivUpd8ZMrXQnFbTbrBMJzPT8pHpftGpqTH6627mngwH4Nig@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 01:00:03PM +0200, Ulf Hansson wrote:
-> On Sun, 26 Sept 2021 at 15:28, Shawn Guo <shawn.guo@linaro.org> wrote:
-> >
-> > On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-> > which is being treated as an invalid value by sdhci_set_power_noreg().
-> > And thus eMMC is totally broken on the platform.
-> >
-> > [    1.436599] ------------[ cut here ]------------
-> > [    1.436606] mmc0: Invalid vdd 0x17
-> > [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-> > [    1.436655] Modules linked in:
-> > [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-> > [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-> > [    1.436674] Workqueue: events_unbound async_run_entry_fn
-> > [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-> > [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-> > [    1.436703] sp : ffff800010803a60
-> > [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-> > [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-> > [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-> > [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-> > [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-> > [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-> > [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-> > [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-> > [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> > [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-> > [    1.436797] Call trace:
-> > [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-> > [    1.436805]  sdhci_set_ios+0xa0/0x7fc
-> > [    1.436811]  mmc_power_up.part.0+0xc4/0x164
-> > [    1.436818]  mmc_start_host+0xa0/0xb0
-> > [    1.436824]  mmc_add_host+0x60/0x90
-> > [    1.436830]  __sdhci_add_host+0x174/0x330
-> > [    1.436836]  sdhci_msm_probe+0x7c0/0x920
-> > [    1.436842]  platform_probe+0x68/0xe0
-> > [    1.436850]  really_probe.part.0+0x9c/0x31c
-> > [    1.436857]  __driver_probe_device+0x98/0x144
-> > [    1.436863]  driver_probe_device+0xc8/0x15c
-> > [    1.436869]  __device_attach_driver+0xb4/0x120
-> > [    1.436875]  bus_for_each_drv+0x78/0xd0
-> > [    1.436881]  __device_attach_async_helper+0xac/0xd0
-> > [    1.436888]  async_run_entry_fn+0x34/0x110
-> > [    1.436895]  process_one_work+0x1d0/0x354
-> > [    1.436903]  worker_thread+0x13c/0x470
-> > [    1.436910]  kthread+0x150/0x160
-> > [    1.436915]  ret_from_fork+0x10/0x20
-> > [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
-> >
-> > Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-> > SDHCI_POWER_330 as well.
-> >
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> > I'm not sure if this is the right solution, as I do not have SDHCI
-> > specification.  Hence it's a RFC.
-> >
-> >  drivers/mmc/host/sdhci.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index 8eefa7d5fe85..2427481535a3 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -2042,6 +2042,8 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >                         break;
-> >                 case MMC_VDD_32_33:
-> >                 case MMC_VDD_33_34:
-> > +               case MMC_VDD_34_35:
-> > +               case MMC_VDD_35_36:
-> >                         pwr = SDHCI_POWER_330;
-> 
-> The SDHCI specification doesn't state exactly what level
-> SDHCI_POWER_330 corresponds to. It's 3.3V typically.
-> 
-> I don't have any strong opinion about this change, although I am a
-> little bit puzzled over why this solves the problem for you.
-> 
-> Unless the host (sdhci) announces that it supports MMC_VDD_34_35 or
-> MMC_VDD_35_36 through its mmc->ocr_avail mask, the mmc core shouldn't
-> try to use it. Can you perhaps check what value the mmc->ocr_avail
-> gets assigned to in sdhci_setup_host() for your mmc host?
+Dear Friend,
 
-Hi Ulf,
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-Thanks for the comment!
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-ocr_avail is 0xfff800, which is a result of mmc_regulator_get_ocrmask()
-call.  On this platform, the vmmc has a 3.6V max voltage.  I can enforce
-`regulator-max-microvolt` to be 3.3V to fix the problem, but I'm not
-sure it's more correct than this RFC change.
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
-Shawn 
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+
+Your Urgent Reply Will Be Appreciated
+
+Best Regards
+Mrs Aisha Al-Qaddafi
