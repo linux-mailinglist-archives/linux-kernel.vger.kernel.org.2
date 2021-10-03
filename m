@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A242D41FF52
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 05:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082E741FF55
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 05:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhJCDFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 23:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhJCDFx (ORCPT
+        id S229643AbhJCDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 23:06:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25576 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhJCDGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 23:05:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC833C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 20:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=V2oLactPpE5eJWgOLN3Dhq4j/4VC1w7xQGXAdA2EUAA=; b=dsSyZPPISXb3VZpr7E4zsjPCYm
-        Rdwbph+1+lOthfEY7StkeMW/KId/D8kKDxpXjV/ogYGSBxj2js+NEUBfsaU2HU1UUAphnlTbwNpVu
-        g/SASSf37tG2LRI4uZqq1X48WVkWJZZR2dwbnnsyw7l7XojZtj7JGaEt4r2evyyw43wmi9iWSmLLj
-        qYdmcR5KQq+L0PnDsUA4SMF1JdtEMGDvNbpXu1gQRRAY8R4bQkiMftDj/hhQYLvITws+08P04+0p0
-        zTTZCWaw9YAWKD63qCLgipjHS2vEJiCwjWQjQpJ6KKyN8WN4d8Khd8azf7HKa6uFWEzlfO7MIBawr
-        OPZhwgXw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWrnJ-0037Sc-Qe; Sun, 03 Oct 2021 03:04:05 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl: add COMPILE_TEST for SND_SOC_FSL_ASRC
-Date:   Sat,  2 Oct 2021 20:04:04 -0700
-Message-Id: <20211003030404.32707-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 2 Oct 2021 23:06:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633230272; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5snCxLi8F8uQ51HdV7IJUVGVflh62VQugqOG9cqFM0U=; b=eMfdSLYa6sVaWoNIGO6DHo/9/lyvhcoNVgLY/A54b9pcaVrMJqxCf72P5moFvhGOD9AKTf19
+ Ggo5zqLAYM6hbAZ9T+0lPVZ8bO7+QZUIozjldFkPydyBzbkBNA/454E4wlIwa6rjnELgCcWm
+ xqU+r8sXdcFq5qCcQ71kbLuV2xQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61591dbe9ffb413149d1a997 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 03 Oct 2021 03:04:30
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1C2DAC43460; Sun,  3 Oct 2021 03:04:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83F73C43460;
+        Sun,  3 Oct 2021 03:04:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 83F73C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org,
+        p.zabel@pengutronix.de
+Cc:     swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v5 0/3] Add support for sc7280 WPSS PIL loading
+Date:   Sun,  3 Oct 2021 08:34:08 +0530
+Message-Id: <1633230251-12676-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert pointed out that since sound/soc has the soc_dummy_driver for
-NO_DMA platforms, it is possible (desirable) to have drivers that
-depend on HAS_DMA to alternately depend on COMPILE_TEST.
+Add support for PIL loading of WPSS co-processor for SC7280 SOCs.
 
-This means that SND_ATMEL_FSL_ASRC can depend on HAS_DMA || COMPIE_TEST.
+Changes from v4:
+- Add yaml conversion for adsp/cdsp dt-bindings
+- Change clock names in wpss dt-bindings
 
-Fixes: 121a01521b1e ("ASoC: fsl: fix build failure")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: Fabio Estevam <festevam@gmail.com>
----
- sound/soc/fsl/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Rakesh Pillai (3):
+  dt-bindings: remoteproc: qcom: adsp: Convert binding to YAML
+  dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+  remoteproc: qcom: q6v5_wpss: Add support for sc7280 WPSS
 
---- linux-next-20211001.orig/sound/soc/fsl/Kconfig
-+++ linux-next-20211001/sound/soc/fsl/Kconfig
-@@ -5,7 +5,7 @@ comment "Common SoC Audio options for Fr
- 
- config SND_SOC_FSL_ASRC
- 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
--	depends on HAS_DMA
-+	depends on HAS_DMA || COMPILE_TEST
- 	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
+ .../bindings/remoteproc/qcom,hexagon-v56.txt       | 140 --------------
+ .../bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml  | 167 ++++++++++++++++
+ .../bindings/remoteproc/qcom,sc7280-wpss-pil.yaml  | 196 +++++++++++++++++++
+ .../bindings/remoteproc/qcom,sdm845-adsp-pil.yaml  | 160 ++++++++++++++++
+ drivers/remoteproc/qcom_q6v5_adsp.c                | 209 +++++++++++++++++++--
+ 5 files changed, 717 insertions(+), 155 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,sdm845-adsp-pil.yaml
+
+-- 
+2.7.4
+
