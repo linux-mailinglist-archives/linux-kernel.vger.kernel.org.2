@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CCE420121
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D757F420123
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhJCJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 05:57:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59826 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhJCJ50 (ORCPT
+        id S229985AbhJCKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 06:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhJCKHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 05:57:26 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2451522250;
-        Sun,  3 Oct 2021 09:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633254939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TRg+ipz9bZOssMftBGeIOzKLlU13uhVvMD0yXjkQMfI=;
-        b=Ld8aMXj0vzo4JnIzfv/4gb7lmjtd45uyQSgj4R4hGgEhyhHt3fk63S/f2TnW0QYrUWVjUY
-        MiIU85eGsZUI1/Ig/fk07uaj8SJdhZ0M4GfGru7A8dVHxKthXYs1gG9pulbNLq5skAV29l
-        lKj8kJE5Jf2Q3Wufj94atGxbOYuZphc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633254939;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TRg+ipz9bZOssMftBGeIOzKLlU13uhVvMD0yXjkQMfI=;
-        b=AbAwddRu/zEu/1elswSc9VOhHn0G2Gu2p5rZCz4vYPv/4L4iZ0I6VFwgKpDDrUH7mO/zSn
-        zSbZuX6ALnxLPlDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 039AB13BFC;
-        Sun,  3 Oct 2021 09:55:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gcprABt+WWH9AgAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 03 Oct 2021 09:55:38 +0000
-Date:   Sun, 3 Oct 2021 11:55:33 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] perf/urgent for v5.15-rc4
-Message-ID: <YVl+FSNMK3BSy9gd@zn.tnic>
+        Sun, 3 Oct 2021 06:07:49 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF0C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 03:06:02 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k23so9511193pji.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 03:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=P16WnH0VJHDsfubnkfkpcmB3utpmNsLVNCNG7HTYBcE=;
+        b=E7fqAknLWuXaPP5p4GKJGmI+A5FkPZE7+ObybOHYXwFA26iDOG9rwfs0s0AWxQzqVh
+         DVfZ3gbduRfDjSgDzujTTPhe50al9A6P5nAwY954d83ixY2My87pcNgXQsbZWsNicQrk
+         Qw0PLGoxOiKaUid7EshxIhnvJ8WJMHQw+OwN7JEBvRGhB9KNI3zK0qv8qeBfB2/2h1gW
+         CVFiYGdExk74cMaWBmYGCXfuW051wYFoxmBWssm6t70P5nTzoRdbthabmvFlmPRnfiAN
+         ROSi48Ht1V11/XjJC1q4onITxQnhNW2k0KmZwFnXiv3u63tjwkPyRUaqOu96a+zwwsa3
+         xO9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=P16WnH0VJHDsfubnkfkpcmB3utpmNsLVNCNG7HTYBcE=;
+        b=Xb+7a4nQkXn7+M0HyrfcKxXDmhfbalfefttIbjbUU3BPLqT5rSPqDR8HSuaEbZO/xG
+         gvxF2hEth7SKzvw5ETh2/5AdfIsaRhMNL7mqVFJwQeGREK5xW6IrQYMlhdKtVjod2l5O
+         JRvoWvkWeMXIQm4tjZJC+4swuOw6rrwguafAqWQWWmzCguKWBS0y5ODEZBJOZJxtSguO
+         FXeSFIg7s8V8V+5SEKLUC0k/lgEOhQydruZWW3M4b1au3g0zwz0XKnR/Aq6+yuv1T/ct
+         mZql7s/mJZeXuk6ilZsjoDOO8QN7vNI0GszTieIxa8+5GiNANevW2z96PWEc1LLECEyE
+         AAoA==
+X-Gm-Message-State: AOAM531l27q6dfuXOQq7dDk8DLznXfbqOHBl2B9zXWdkzzyAXFNOlChu
+        MfyVx5Vmren1htPGqQFqz0c=
+X-Google-Smtp-Source: ABdhPJwiv/nONia3tS+eGxG/2QKKbADl99KpLmvw/6TAozeDdnnwY+uCktXgf/oOKGNzr7twR4DzUw==
+X-Received: by 2002:a17:90b:3e8d:: with SMTP id rj13mr2955635pjb.183.1633255561796;
+        Sun, 03 Oct 2021 03:06:01 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id i13sm900386pjh.0.2021.10.03.03.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 03:06:01 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 15:35:56 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, will+git@drnd.me,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8192e: remove unused variable ieee
+Message-ID: <YVmAhOSRB8yc/iwU@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Remove unused local variable ieee from ActivateBAEntry().
 
-please pull three urgent perf fixes for v5.15.
-
-Thx.
-
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+index 7dfe7a055876..97afea4c3511 100644
+--- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+@@ -10,8 +10,7 @@
+ #include "rtllib.h"
+ #include "rtl819x_BA.h"
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+-static void ActivateBAEntry(struct rtllib_device *ieee, struct ba_record *pBA,
+-			    u16 Time)
++static void ActivateBAEntry(struct ba_record *pBA, u16 Time)
+ {
+ 	pBA->b_valid = true;
+ 	if (Time != 0)
+@@ -288,7 +287,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	else
+ 		pBA->ba_param_set.field.buffer_size = 32;
 
-are available in the Git repository at:
+-	ActivateBAEntry(ieee, pBA, 0);
++	ActivateBAEntry(pBA, 0);
+ 	rtllib_send_ADDBARsp(ieee, dst, pBA, ADDBA_STATUS_SUCCESS);
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.15_rc4
+ 	return 0;
+@@ -390,7 +389,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		pAdmittedBA->ba_start_seq_ctrl = pPendingBA->ba_start_seq_ctrl;
+ 		pAdmittedBA->ba_param_set = *pBaParamSet;
+ 		DeActivateBAEntry(ieee, pAdmittedBA);
+-		ActivateBAEntry(ieee, pAdmittedBA, *pBaTimeoutVal);
++		ActivateBAEntry(pAdmittedBA, *pBaTimeoutVal);
+ 	} else {
+ 		pTS->bAddBaReqDelayed = true;
+ 		pTS->bDisable_AddBa = true;
+@@ -490,7 +489,7 @@ void TsInitAddBA(struct rtllib_device *ieee, struct tx_ts_record *pTS,
+ 	pBA->ba_timeout_value = 0;
+ 	pBA->ba_start_seq_ctrl.field.seq_num = (pTS->TxCurSeq + 3) % 4096;
 
-for you to fetch changes up to f792565326825ed806626da50c6f9a928f1079c1:
+-	ActivateBAEntry(ieee, pBA, BA_SETUP_TIMEOUT);
++	ActivateBAEntry(pBA, BA_SETUP_TIMEOUT);
 
-  perf/core: fix userpage->time_enabled of inactive events (2021-10-01 13:57:54 +0200)
+ 	rtllib_send_ADDBAReq(ieee, pTS->TsCommonInfo.Addr, pBA);
+ }
+--
+2.32.0
 
-----------------------------------------------------------------
-- Make sure the destroy callback is reset when a event initialization fails
-
-- Update the event constraints for Icelake
-
-- Make sure the active time of an event is updated even for inactive events
-
-----------------------------------------------------------------
-Anand K Mistry (1):
-      perf/x86: Reset destroy callback on event init failure
-
-Kan Liang (1):
-      perf/x86/intel: Update event constraints for ICX
-
-Song Liu (1):
-      perf/core: fix userpage->time_enabled of inactive events
-
- arch/x86/events/core.c       |  1 +
- arch/x86/events/intel/core.c |  1 +
- include/linux/perf_event.h   |  4 +++-
- kernel/events/core.c         | 34 ++++++++++++++++++++++++++++++----
- 4 files changed, 35 insertions(+), 5 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
