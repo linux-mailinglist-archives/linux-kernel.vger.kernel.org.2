@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FA8420372
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F320420375
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJCShV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 14:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
+        id S231344AbhJCSkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 14:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbhJCShT (ORCPT
+        with ESMTP id S231239AbhJCSkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 14:37:19 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B59C0613EC;
-        Sun,  3 Oct 2021 11:35:32 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id y15so15990697ilu.12;
-        Sun, 03 Oct 2021 11:35:32 -0700 (PDT)
+        Sun, 3 Oct 2021 14:40:07 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD8FC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 11:38:20 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x27so61645558lfa.9
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 11:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s3zKRb0iXvq1kjachqtiRna8BobohfMUyicQ87NDlYk=;
-        b=Arhn8iq4yRKneH0PzOfopq/HMm/+wK/C8Af3X5D9CukGeelH6lUeL0BtRjEyrwZ/yi
-         9KjIyuGvZMDKLVpH4ey7wvMeQe34FOWG2pCnH9HvPOiIdmPsQFfsjh68ax7ESKSISg5q
-         BTDYlMRgK8ByV5mt0ZhOQCt7Cp4maK8dAYwyvFdeYVYQJcu8VfDelAwFbMwEykG4H9XM
-         3IttdCOGsTNfZQt62oZwoo05yFt3qvEiDp5LLSvT/coXw+/+0JPb+gjD6Neb9r2FfgJe
-         RvvNDuEdBPJOFAfuy2KCl7NWzIG+9Srelh1Ew7/6xfjbVi95TTCYhtTF0GLntB7TKzlG
-         7xwQ==
+        bh=VR5QfWPFpdGmXNFJjgSMUkUyN7BZEoQ4vmt9rMlh7cc=;
+        b=M6BsPTcN+WAxDbETnbCiRpHBxt5WDjH5LqnA2td5leg0ichX7EfewvgwiziQg/HqoD
+         oKuTom0cfCOWKCiLXmwXOaQ3jZRCMvAGP3ag9q4FQYbhnyOP8IcqQwNyTjqLVLfmWepu
+         ZwAhQuwu6UvFkcAFn2iFZqjKjK+Nyj8tzm2Gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s3zKRb0iXvq1kjachqtiRna8BobohfMUyicQ87NDlYk=;
-        b=3lGJzp89mN+9N52UVtqabbIg/Oiavwb+LeaP0jj0lTi4pGZh8AFGL6TRYr6NB1+AFR
-         yL3pywEVv++gbQCjGeocD1Z0luGIBBd82Fc4iqJ6bN9lE8jnj3SOwqIWlEP2L3GpXBLW
-         1vduw7IUfLP7DShowW4Zwba6wJaSxntdnb+VRxwclwtFNDz52VuSj3HxTHjh0yjtEYsO
-         P2jUWBfiasnfo3jQ1bzW/kgqJ9fu4TlY7FwYtC1MHjvUhSjpvpsjHal7Q6ke9jW1tVJ/
-         JFqBm815RyfoTM9OxiBpBfHlkc0lEtUQRyLg2Y5ua8xaob4IdYVVZLw3ehZizaX3gAFN
-         695Q==
-X-Gm-Message-State: AOAM533OnDZlw9njePFrWdRk2a7OO9V4luf9iaoOodHZZemgdGGshFhP
-        Mcyjmyt28ir1bUBFirm2d7pSxqG62GhDlBduPzc=
-X-Google-Smtp-Source: ABdhPJxhar6w8tddlqjksFXOuCpCvUdAg2/eX3HYGmvUfiVnquoGPgXave1VLOFOr+UXfvazr9IWXrCGH7F6R+wuaX0=
-X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr6550554ilt.289.1633286131789;
- Sun, 03 Oct 2021 11:35:31 -0700 (PDT)
+        bh=VR5QfWPFpdGmXNFJjgSMUkUyN7BZEoQ4vmt9rMlh7cc=;
+        b=JUP6beJshvRJyEJCLDHdkJMzbX9cSjf00PEkcA6hSohhQSO5wQzwQwfAMWEjlHXG7H
+         jzMbP7a8GyClfUJo3baQbmuE3y7lFCCgq+kW1XYuwkRZItikqKpcfWfNw7/vwZ+yI0Xi
+         RTvKAqZVMvKhdiZvGB6/22hqGWqKXjqm9XFWVmjBoND7JwML0GPfVqp35kN3IoOa5izx
+         GAnE88j3e+W42B/FiDPFjUpl+2hNsAm/nerkwADZ9nz3j3ZUtLjTnh6D18d36Ur1GUWY
+         WwW95ZsD71zrvOV/4c4hSmKPIyRciNxDMdOSJA4pj3ZfjE8GMrVNO+0H9Ahr7QwWEAoo
+         +aKQ==
+X-Gm-Message-State: AOAM531mrXT9iRO6OTkR/ArqWi5vqoD7JN8e0LbweI4pLSmGs2B5sRpM
+        DMKhCBWNx17Whh8mSRcl3Ci6eX9FIIJ7LLgb
+X-Google-Smtp-Source: ABdhPJzYYSLCTKL8GlRkjgMA6J3+JwGQAkIznYhTQsEmYOZWQGLpIFmLLYhWssVuKNJYh15U5RaldQ==
+X-Received: by 2002:a2e:812:: with SMTP id 18mr11080761lji.497.1633286298083;
+        Sun, 03 Oct 2021 11:38:18 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id v10sm1340299ljd.17.2021.10.03.11.38.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Oct 2021 11:38:17 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id x27so61645274lfa.9
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 11:38:16 -0700 (PDT)
+X-Received: by 2002:a05:6512:b9f:: with SMTP id b31mr10471352lfv.655.1633286296561;
+ Sun, 03 Oct 2021 11:38:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211002210857.709956-1-pauk.denis@gmail.com> <20211002210857.709956-4-pauk.denis@gmail.com>
- <CAB95QASk7JGqP2_qLtkb-PXUmKPDMcOvLr_8FLrKpv3S2602mw@mail.gmail.com>
-In-Reply-To: <CAB95QASk7JGqP2_qLtkb-PXUmKPDMcOvLr_8FLrKpv3S2602mw@mail.gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Sun, 3 Oct 2021 20:35:20 +0200
-Message-ID: <CAB95QAS-yKFmy1bM7U4S2wtzGL7FA2G6hU=_Kurg0So-HXZLzQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (asus_wmi_sensors) Support access via Asus WMI.
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
+References: <YVl7RR5NcbPyiXgO@zn.tnic>
+In-Reply-To: <YVl7RR5NcbPyiXgO@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 3 Oct 2021 11:38:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh9JzLmwAqA2+cA=Y4x_TYNBZv_OM4eSEDFPF8V_GAPug@mail.gmail.com>
+Message-ID: <CAHk-=wh9JzLmwAqA2+cA=Y4x_TYNBZv_OM4eSEDFPF8V_GAPug@mail.gmail.com>
+Subject: Re: [GIT PULL] objtool/urgent for v5.15-rc4
+To:     Borislav Petkov <bp@suse.de>, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Denis,
+On Sun, Oct 3, 2021 at 2:43 AM Borislav Petkov <bp@suse.de> wrote:
+>
+> - Handle symbol relocations properly due to changes in the toolchains
+> which remove section symbols now
 
-I've reworked module initialisation [1] to support automatic loading
-via MODULE_DEVICE_TABLE(dmi, ...). Could you, please, fetch these
-changes?
+Ugh.
 
-Best regards,
-Eugene
+This actually causes a new warning for me:
 
-[1] https://github.com/zeule/asus-wmi-ec-sensors/pull/3
+    arch/x86/kvm/emulate.o: warning: objtool: __ex_table+0x4: don't
+know how to handle reloc symbol type: kvm_fastop_exception
 
-On Sat, 2 Oct 2021 at 23:56, Eugene Shalygin <eugene.shalygin@gmail.com> wrote:
->
-> Hi, Denis!
->
-> Thank you for submitting this driver to the mainline! I have a few
-> comments/suggestions, please find them below.
->
-> > +#define HWMON_MAX      9
->
-> There is a hwmon_max enum member, whose current value is 10.
->
-> > +#define ASUS_WMI_BLOCK_READ_REGISTERS_MAX 0x10 /* from the ASUS DSDT source */
-> > +/* from the ASUS_WMI_BLOCK_READ_REGISTERS_MAX value */
-> > +#define ASUS_WMI_MAX_BUF_LEN 0x80
-> Suggestion:
-> #define ASUS_WMI_MAX_BUF_LEN 0x80 /* from the
-> ASUS_WMI_BLOCK_READ_REGISTERS_MAX value */
->
-> > +#define ASUSWMI_SENSORS_MAX 11
-> This one is for the EC only, maybe rename it accordingly?
->
-> > +struct asus_wmi_data {
-> > +       int ec_board;
-> > +};
->
-> Duplicates the value in the asus_wmi_sensors struct. Refactoring artifact?
->
->              asus_wmi_ec_set_sensor_info(si++, "Water", hwmon_fan,
-> > +                                           asus_wmi_ec_make_sensor_address(2, 0x00, 0xBC),
-> > +                                           &ec->nr_registers);
-> This one is named "W_FLOW" in the BIOS and ASUS software. Maybe append
-> "_flow" to the label?
->
-> > + * The next four functions converts to/from BRxx string argument format
-> convert (remove "s")
->
-> > +       // assert(len <= 30)
-> Makes little sense in the kernel.
->
-> > +static void asus_wmi_ec_make_block_read_query(struct asus_wmi_ec_info *ec)
-> > +{
-> > +       u16 registers[ASUS_EC_KNOWN_EC_REGISTERS];
-> > +       u8 i, j, register_idx = 0;
-> > +
-> > +       /* if we can get values for all the registers in a single query,
-> > +        * the query will not change from call to call
-> > +        */
-> > +       if (ec->nr_registers <= ASUS_WMI_BLOCK_READ_REGISTERS_MAX &&
-> > +           ec->read_arg[0] > 0) {
-> > +               /* no need to update */
-> > +               return;
-> > +       }
-> > +
-> I would add a test for ec->nr_registers >
-> ASUS_WMI_BLOCK_READ_REGISTERS_MAX and a warning log message here.
->
-> > +static int asus_wmi_probe(struct platform_device *pdev)
->
-> Can we add a module alias or to load the module automatically by other
-> means? For module aliases we know DMI parameters for the supported
-> boards.
->
-> Best regards,
-> Eugene
+on an x86-64 allmodconfig build (and my normal clang build for my
+actual default config too).
+
+Looking at the kvm code, that kvm_fastop_exception thing is some funky sh*t.
+
+I _think_ the problem is that 'kvm_fastop_exception' is done with bare
+asm at the top-level and that triggers some odd interaction with other
+section data, but I really don't know.
+
+Anyway, that thing is in my public tree now, because it's better to
+get it out and fixed and have the kvm people look at it.
+
+         Linus
