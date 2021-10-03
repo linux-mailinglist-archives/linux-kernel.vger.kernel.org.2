@@ -2,148 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB26C420269
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26FB42027B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhJCPt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 11:49:59 -0400
-Received: from mga14.intel.com ([192.55.52.115]:65215 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230426AbhJCPt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 11:49:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="225502392"
-X-IronPort-AV: E=Sophos;i="5.85,343,1624345200"; 
-   d="scan'208";a="225502392"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 08:48:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,343,1624345200"; 
-   d="scan'208";a="710370568"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Oct 2021 08:48:07 -0700
-Subject: Re: [RFC PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-To:     Shawn Guo <shawn.guo@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210926132847.22268-1-shawn.guo@linaro.org>
- <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
- <20211003135822.GA13320@dragon>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <68124891-469f-20ea-a1c8-87e9a865e8f7@intel.com>
-Date:   Sun, 3 Oct 2021 18:47:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S231167AbhJCP5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 11:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhJCP5H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 11:57:07 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A0AC061780
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 08:55:19 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id n64so18494288oih.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 08:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=iChcR5uTIZhcphPQjMM5YY80i0DrBNUFoe7WHCNot/0KLm5rPclxneTqwWs6EhTKO3
+         MZbx1ksgkuj6UD5Yocr9qn0C0jbE98hJeu1HFoLgONifGmm+rCMRWJ/eAIG45guu769s
+         U07pJQKxzO1Edqk0XqevAs1Uj9T/H7leG0JbMDxyooqR0OBI4/3sUDxjEgnH6BTQECpA
+         7An4sr5TySyVoN7II3Sz7aX4OxVKgto3nU4uid3jZo2fQ+/Hw03TY55pFum8RroYPGfs
+         2O/OFbZ7fLjt2d/ocGGkYfQ6SBAmK9KAsttDYhGCuVDDsxX+UFIjWgKtEbiT7pwpSdvk
+         PTnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=DTbuXHIs+Z0XXC9kplahFri3hnhXBhwoBrE0+6zy5z6HyB0ThqYQ3JldERNg/jd2ih
+         VqPGpzKzDlF4NQ9gXHppkCj7PYeTE7QUvdJN/0O7LzO4sAMjXlcTT2hF789aSlHtjK0k
+         tmFW2/hR7mn1jCQ87/NRFl7uzqB77oJtCBYwxqBlRRLJ6u4PfrrgZ3rE1CuaGI7S6mym
+         vs0bHyjNSQzzYE7sprbrfQLAzGY1jrvDOgXT1rHwnN4CZum6sK0d9g1HNDwYyjFobF3T
+         ZrRnuyjTl+KP0h2HHpIqIX2dgKQ/4IOFwHiomj1lHtkS/haYEmP7nOvMsR+jy3rRR6B+
+         FmZA==
+X-Gm-Message-State: AOAM5329symuLkSYEuLCpF7An/bz//+cTpQhLlJy9lKU6olMWSHXr8Fx
+        BrqqfPe2+AtqCKO5mUSVmcjc6CxyeuGxyv9VPUw=
+X-Google-Smtp-Source: ABdhPJwRz/IYzgAnbi0H+zXSxT7daw3CVpQNIKi4Y2U/Bg3Yt8HqZncjxvJrskg2Ez4csI6NnyynJjjq5Z5PshPc9s8=
+X-Received: by 2002:aca:2b02:: with SMTP id i2mr11047826oik.109.1633276518521;
+ Sun, 03 Oct 2021 08:55:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211003135822.GA13320@dragon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a8a:7da:0:0:0:0:0 with HTTP; Sun, 3 Oct 2021 08:55:17 -0700 (PDT)
+Reply-To: mrschantelhermans@gmail.com
+From:   Mrs Chantel Hermans <mrsmaricovid19@gmail.com>
+Date:   Sun, 3 Oct 2021 08:55:17 -0700
+Message-ID: <CALw_ptGa=s8cE+GGiUy9Hg3h4DuLW6QvALdAxzJ+_cUV=AdoVg@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2021 16:58, Shawn Guo wrote:
-> On Thu, Sep 30, 2021 at 01:00:03PM +0200, Ulf Hansson wrote:
->> On Sun, 26 Sept 2021 at 15:28, Shawn Guo <shawn.guo@linaro.org> wrote:
->>>
->>> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
->>> which is being treated as an invalid value by sdhci_set_power_noreg().
->>> And thus eMMC is totally broken on the platform.
->>>
->>> [    1.436599] ------------[ cut here ]------------
->>> [    1.436606] mmc0: Invalid vdd 0x17
->>> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
->>> [    1.436655] Modules linked in:
->>> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
->>> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
->>> [    1.436674] Workqueue: events_unbound async_run_entry_fn
->>> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->>> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
->>> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
->>> [    1.436703] sp : ffff800010803a60
->>> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
->>> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
->>> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
->>> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
->>> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
->>> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
->>> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
->>> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
->>> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
->>> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
->>> [    1.436797] Call trace:
->>> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
->>> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
->>> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
->>> [    1.436818]  mmc_start_host+0xa0/0xb0
->>> [    1.436824]  mmc_add_host+0x60/0x90
->>> [    1.436830]  __sdhci_add_host+0x174/0x330
->>> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
->>> [    1.436842]  platform_probe+0x68/0xe0
->>> [    1.436850]  really_probe.part.0+0x9c/0x31c
->>> [    1.436857]  __driver_probe_device+0x98/0x144
->>> [    1.436863]  driver_probe_device+0xc8/0x15c
->>> [    1.436869]  __device_attach_driver+0xb4/0x120
->>> [    1.436875]  bus_for_each_drv+0x78/0xd0
->>> [    1.436881]  __device_attach_async_helper+0xac/0xd0
->>> [    1.436888]  async_run_entry_fn+0x34/0x110
->>> [    1.436895]  process_one_work+0x1d0/0x354
->>> [    1.436903]  worker_thread+0x13c/0x470
->>> [    1.436910]  kthread+0x150/0x160
->>> [    1.436915]  ret_from_fork+0x10/0x20
->>> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
->>>
->>> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
->>> SDHCI_POWER_330 as well.
->>>
->>> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
->>> ---
->>> I'm not sure if this is the right solution, as I do not have SDHCI
->>> specification.  Hence it's a RFC.
->>>
->>>  drivers/mmc/host/sdhci.c | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
->>> index 8eefa7d5fe85..2427481535a3 100644
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -2042,6 +2042,8 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->>>                         break;
->>>                 case MMC_VDD_32_33:
->>>                 case MMC_VDD_33_34:
->>> +               case MMC_VDD_34_35:
->>> +               case MMC_VDD_35_36:
->>>                         pwr = SDHCI_POWER_330;
->>
->> The SDHCI specification doesn't state exactly what level
->> SDHCI_POWER_330 corresponds to. It's 3.3V typically.
->>
->> I don't have any strong opinion about this change, although I am a
->> little bit puzzled over why this solves the problem for you.
->>
->> Unless the host (sdhci) announces that it supports MMC_VDD_34_35 or
->> MMC_VDD_35_36 through its mmc->ocr_avail mask, the mmc core shouldn't
->> try to use it. Can you perhaps check what value the mmc->ocr_avail
->> gets assigned to in sdhci_setup_host() for your mmc host?
-> 
-> Hi Ulf,
-> 
-> Thanks for the comment!
-> 
-> ocr_avail is 0xfff800, which is a result of mmc_regulator_get_ocrmask()
-> call.  On this platform, the vmmc has a 3.6V max voltage.  I can enforce
-> `regulator-max-microvolt` to be 3.3V to fix the problem, but I'm not
-> sure it's more correct than this RFC change.
+-- 
 
-The host controller lines are not necessarily connected directly to the
-card, and the 3.3V selection is not necessarily actually 3.3V either.
-So I have no problem with the change, but the question of whether it is
-right for you really depends on your hardware.  For the patch, I would
-suggest adding a comment in the code, that the driver that allows
-3.4V-3.6V is assumed to know that the hardware supports it.
+
+ATTENTION
+
+
+
+You have been compensated with the sum of 6.9 million dollars in this
+United Nation the payment will be issue into ATM Visa Card,
+
+
+
+and send to you from the Santander Bank of Spain we need your
+Address,Passport and your whatsapp number.
+
+
+
+THANKS
+
+*Mrs Chantel Hermans*
