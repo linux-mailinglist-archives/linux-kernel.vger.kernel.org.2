@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ABD42016B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 14:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51748420175
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 14:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhJCMNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 08:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S230195AbhJCMRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 08:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhJCMNO (ORCPT
+        with ESMTP id S230004AbhJCMRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 08:13:14 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B66C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 05:11:27 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id b8so18847871edk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 05:11:27 -0700 (PDT)
+        Sun, 3 Oct 2021 08:17:20 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2425C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 05:15:33 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m21so13872313pgu.13
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 05:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=+KoS1PIk4Hjw1f3/vpoXHDDfc1MtDGrhUPwAgZC71pI=;
-        b=A+DFnt0e89m6bMBafkXai1T0kadk234pwyZkGN5zx5/CWtKl86H6EDnUAVvatazt/h
-         Ywg198cng2o0h5z/bkURAw07DrqnYxbmsEURNursIZy9/D+R6vN5mCNWywX2bT1QWve5
-         DsSYdifU1gntnhZS5Fdb/oLfytmcpcVsMJos3sjHKdjq2jPzgAs4m3cgbi3Iiz7iO01L
-         HdLgMpmnSaCgSbelBRYu1OkQxei76OxFOwwfH+kJJbPsKDfbyCbuEMUhL4y/qoF8V5hF
-         BKjme5pSsALPqieRNQ5KoHNTNFrV/CaXODl+cYWicT8LjhFbziAXpqyUdVPlR/0HdSQb
-         7Irw==
+        bh=GISa/5YWim1dL4gwKmc0fTZB94/Tkhhvffj3A4gtCN4=;
+        b=YtuExd2hljo/eVPf5MDPEXB9sfmS1N0rJz9fbit3XIyKWwBHvpKC/Mbna6CIZtdAzJ
+         loZ55T5I1hqsXuWVEsLOhBXPvAazBQUTe5IxKTm8P/c0ZH+yiyHHUEESz34gcF0Aar+l
+         ZwHvdhh9S5qa8QtPFQkhJuM4CAf9Us4wu7udZpCwTrmXgZuo1mXjxuylNKYce01hLkAD
+         cQiNw665YcuEI6fFKJY6IL7+cZnGv0FqwABYxo0tV7xEegv2GdqaSsIqhsx4+csxeL7K
+         s4f8nXHP3ipC7KGvqaPLezIqfQPIwfquIZNmJTftoI9qhfg2IeaSo2u7X1LBLpZohyYp
+         e6tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition;
-        bh=+KoS1PIk4Hjw1f3/vpoXHDDfc1MtDGrhUPwAgZC71pI=;
-        b=U8q3QBd+VVz5fHDpzLWKuqlZeZ7+WOA1bEQUtGFLeYhG5pt8VHQkSMvwz5dXK5htZb
-         KWDiZlbsK/ytejxPluLDRKqSVgTIze5JL67Id2HEItsGrJrlMT5eeAsBTDFF+xvsfL8t
-         1HxpomDz/WcjQnKjFbgzmRO0Fo465wr8u5aTP2rC3wlWBhDvwd2c4PH+81sKQJ4l6Cdp
-         XJoPGpY5X4nKYiWgXY3jwMRDFAs5600TxfrOq/TLOeeaMEErBkz6Han8/d5i5DSU2D5e
-         VFogcmwGawqX5RecgglkQenz0mE3cRh8KU+M4+j1I2+IEQIyeW6QeSJWGOmmXPzbChYC
-         FoXw==
-X-Gm-Message-State: AOAM533lQJEipjC/VeQjPcKwQT34qz4B76B0xJxtmtFAPXalfAbNwstz
-        SRfWGjaP0WoM2tSn1dsG1eXKCnA75A==
-X-Google-Smtp-Source: ABdhPJz0w48RAAp0ZaZx/Q5ts4+bLqAl0KLW/+ad8f0fW0OCUYSvwHDDkW2mw2n2cmpUhRcvZ9SK/Q==
-X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr10726330ejt.96.1633263086214;
-        Sun, 03 Oct 2021 05:11:26 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.253.147])
-        by smtp.gmail.com with ESMTPSA id i10sm5930971edl.15.2021.10.03.05.11.25
+        bh=GISa/5YWim1dL4gwKmc0fTZB94/Tkhhvffj3A4gtCN4=;
+        b=SBNUhLEcL4v+tevojc9urBkT/YpPqOpHXttf79On/wjCofCLnz8+LgfEyNMHmrC37j
+         x2K4vjPL6SXFqiRyTNzUFYm70WhM41BPqDNiSvZjPHlK1yjjYKrb0yMne9LFFNi2v89i
+         U2nx9BOi62iiOgxnYwd/ISWout6daYoJf2G1bCIFGj/S7Uykz2noha/jK+NULdLiD737
+         DQs8zs46hhqvmFsUS2vMExRxmxZgOK2LU0yCZZYOxRnuQXeNEMblt2jIS2Sv30t3FY1l
+         I9SssC7Fwx+enH2HeGQrh16oMwwjK60oUNNUviJZ1BCmow4egaP6BR+7K7y6LnFZksHT
+         D3AQ==
+X-Gm-Message-State: AOAM531GauZG/Dc94cpmhCU/yc92JEM56wbimuZFrwqxRattCzxbYws0
+        XQpvefGJESqwpdNFZ2O3ZQWTea8rjnE=
+X-Google-Smtp-Source: ABdhPJyZwLdjjb7qfu6aCgCoxk/5yYeqIjvYnhu03K8VaD8JxNm41YGMBAosllXfs9qOQ07497+I6g==
+X-Received: by 2002:a05:6a00:c8c:b0:447:bddb:c83 with SMTP id a12-20020a056a000c8c00b00447bddb0c83mr20853105pfv.1.1633263333250;
+        Sun, 03 Oct 2021 05:15:33 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id g22sm13519394pfj.15.2021.10.03.05.15.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 05:11:25 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 15:11:24 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] ELF: fix overflow in total mapping size calculation
-Message-ID: <YVmd7D0M6G/DcP4O@localhost.localdomain>
+        Sun, 03 Oct 2021 05:15:32 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 17:45:27 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        nathan@kernel.org, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove duplicate condition check
+Message-ID: <YVme3xtnCHN/hOjS@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel assumes that ELF program headers are ordered by mapping address,
-but doesn't enforce it. It is possible to make mapping size extremely huge
-by simply shuffling first and last PT_LOAD segments.
+Remove the same expression (!memcmp(pIE->data, BROADCOM_OUI2, 3))
+on both the side of "||" .
 
-As long as PT_LOAD segments do not overlap, it is silly to require
-sorting by v_addr anyway because mmap() doesn't care.
-
-Don't assume PT_LOAD segments are sorted and calculate min and max
-addresses correctly.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
+ drivers/staging/r8188eu/core/rtw_wlan_util.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- fs/binfmt_elf.c |   23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+index 3d1d8c198e53..8db68cf1e11c 100644
+--- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
++++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+@@ -1271,7 +1271,6 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
+ 				DBG_88E("link to Artheros AP\n");
+ 				return HT_IOT_PEER_ATHEROS;
+ 			} else if ((!memcmp(pIE->data, BROADCOM_OUI1, 3)) ||
+-				   (!memcmp(pIE->data, BROADCOM_OUI2, 3)) ||
+ 				   (!memcmp(pIE->data, BROADCOM_OUI2, 3))) {
+ 				DBG_88E("link to Broadcom AP\n");
+ 				return HT_IOT_PEER_BROADCOM;
+--
+2.32.0
 
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
- #define ELF_CORE_EFLAGS	0
- #endif
- 
--#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
-+#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
- #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
- #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
- 
-@@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
- 	return(map_addr);
- }
- 
--static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
-+static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
- {
--	int i, first_idx = -1, last_idx = -1;
-+	elf_addr_t min_addr = -1;
-+	elf_addr_t max_addr = 0;
-+	bool pt_load = false;
-+	int i;
- 
- 	for (i = 0; i < nr; i++) {
--		if (cmds[i].p_type == PT_LOAD) {
--			last_idx = i;
--			if (first_idx == -1)
--				first_idx = i;
-+		if (phdr[i].p_type == PT_LOAD) {
-+			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-+			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-+			pt_load = true;
- 		}
- 	}
--	if (first_idx == -1)
--		return 0;
--
--	return cmds[last_idx].p_vaddr + cmds[last_idx].p_memsz -
--				ELF_PAGESTART(cmds[first_idx].p_vaddr);
-+	return pt_load ? (max_addr - min_addr) : 0;
- }
- 
- static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
