@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6831B42016C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 14:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ABD42016B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 14:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhJCMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 08:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        id S230185AbhJCMNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 08:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhJCMN5 (ORCPT
+        with ESMTP id S230132AbhJCMNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 08:13:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021D2C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 05:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/yJMhw3wPQSlyKaEi+lnBPfgzZ18ON2DTC2x75zIHa0=; b=Z/3qakIcDJeLpgvVAHld4Swu0L
-        2ZRyHoY1CSgsQSiX2/o9b3Dhr37N2z0Fg+Bf6cIjz2JY/wy9rMpUNfgLs+XESSEyZeklyiqmnmfQ8
-        yVNXsce+LInTB002JXsZk8AtSl9l/VEYBYOcX6VxnPsHSlMOvr2Pknu00fnsPJqJxGezk9qIugd1G
-        6ZP5z2SnHBNTiKLn3ogL9BL3zq2ZL89aRqruXT06YPExcvdkutVzYJl8t7inCuQ1FF+HMzps69JYW
-        lVwvJlMl0JwGxuoIMBWIsTOEe5wtGInNwYObBmkEtsXuoBi6hDR7fK+SvFCBAF/cI1ewgiWEETLFh
-        36LknG7A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mX0Jw-00Ftb6-KR; Sun, 03 Oct 2021 12:10:42 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1CC12981431; Sun,  3 Oct 2021 14:10:19 +0200 (CEST)
-Date:   Sun, 3 Oct 2021 14:10:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
-Message-ID: <20211003121019.GF4323@worktop.programming.kicks-ass.net>
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-2-namit@vmware.com>
+        Sun, 3 Oct 2021 08:13:14 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B66C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 05:11:27 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id b8so18847871edk.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 05:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=+KoS1PIk4Hjw1f3/vpoXHDDfc1MtDGrhUPwAgZC71pI=;
+        b=A+DFnt0e89m6bMBafkXai1T0kadk234pwyZkGN5zx5/CWtKl86H6EDnUAVvatazt/h
+         Ywg198cng2o0h5z/bkURAw07DrqnYxbmsEURNursIZy9/D+R6vN5mCNWywX2bT1QWve5
+         DsSYdifU1gntnhZS5Fdb/oLfytmcpcVsMJos3sjHKdjq2jPzgAs4m3cgbi3Iiz7iO01L
+         HdLgMpmnSaCgSbelBRYu1OkQxei76OxFOwwfH+kJJbPsKDfbyCbuEMUhL4y/qoF8V5hF
+         BKjme5pSsALPqieRNQ5KoHNTNFrV/CaXODl+cYWicT8LjhFbziAXpqyUdVPlR/0HdSQb
+         7Irw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=+KoS1PIk4Hjw1f3/vpoXHDDfc1MtDGrhUPwAgZC71pI=;
+        b=U8q3QBd+VVz5fHDpzLWKuqlZeZ7+WOA1bEQUtGFLeYhG5pt8VHQkSMvwz5dXK5htZb
+         KWDiZlbsK/ytejxPluLDRKqSVgTIze5JL67Id2HEItsGrJrlMT5eeAsBTDFF+xvsfL8t
+         1HxpomDz/WcjQnKjFbgzmRO0Fo465wr8u5aTP2rC3wlWBhDvwd2c4PH+81sKQJ4l6Cdp
+         XJoPGpY5X4nKYiWgXY3jwMRDFAs5600TxfrOq/TLOeeaMEErBkz6Han8/d5i5DSU2D5e
+         VFogcmwGawqX5RecgglkQenz0mE3cRh8KU+M4+j1I2+IEQIyeW6QeSJWGOmmXPzbChYC
+         FoXw==
+X-Gm-Message-State: AOAM533lQJEipjC/VeQjPcKwQT34qz4B76B0xJxtmtFAPXalfAbNwstz
+        SRfWGjaP0WoM2tSn1dsG1eXKCnA75A==
+X-Google-Smtp-Source: ABdhPJz0w48RAAp0ZaZx/Q5ts4+bLqAl0KLW/+ad8f0fW0OCUYSvwHDDkW2mw2n2cmpUhRcvZ9SK/Q==
+X-Received: by 2002:a17:906:6d9a:: with SMTP id h26mr10726330ejt.96.1633263086214;
+        Sun, 03 Oct 2021 05:11:26 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.253.147])
+        by smtp.gmail.com with ESMTPSA id i10sm5930971edl.15.2021.10.03.05.11.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 05:11:25 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 15:11:24 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ELF: fix overflow in total mapping size calculation
+Message-ID: <YVmd7D0M6G/DcP4O@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210925205423.168858-2-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 01:54:22PM -0700, Nadav Amit wrote:
+Kernel assumes that ELF program headers are ordered by mapping address,
+but doesn't enforce it. It is possible to make mapping size extremely huge
+by simply shuffling first and last PT_LOAD segments.
 
-> @@ -338,25 +344,25 @@ static unsigned long change_protection_range(struct vm_area_struct *vma,
->  	struct mm_struct *mm = vma->vm_mm;
->  	pgd_t *pgd;
->  	unsigned long next;
-> -	unsigned long start = addr;
->  	unsigned long pages = 0;
-> +	struct mmu_gather tlb;
->  
->  	BUG_ON(addr >= end);
->  	pgd = pgd_offset(mm, addr);
->  	flush_cache_range(vma, addr, end);
->  	inc_tlb_flush_pending(mm);
+As long as PT_LOAD segments do not overlap, it is silly to require
+sorting by v_addr anyway because mmap() doesn't care.
 
-That seems unbalanced...
+Don't assume PT_LOAD segments are sorted and calculate min and max
+addresses correctly.
 
-> +	tlb_gather_mmu(&tlb, mm);
-> +	tlb_start_vma(&tlb, vma);
->  	do {
->  		next = pgd_addr_end(addr, end);
->  		if (pgd_none_or_clear_bad(pgd))
->  			continue;
-> -		pages += change_p4d_range(vma, pgd, addr, next, newprot,
-> +		pages += change_p4d_range(&tlb, vma, pgd, addr, next, newprot,
->  					  cp_flags);
->  	} while (pgd++, addr = next, addr != end);
->  
-> -	/* Only flush the TLB if we actually modified any entries: */
-> -	if (pages)
-> -		flush_tlb_range(vma, start, end);
-> -	dec_tlb_flush_pending(mm);
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-... seeing you do remove the extra decrement.
+ fs/binfmt_elf.c |   23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-> +	tlb_end_vma(&tlb, vma);
-> +	tlb_finish_mmu(&tlb);
->  
->  	return pages;
->  }
-> -- 
-> 2.25.1
-> 
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
+ #define ELF_CORE_EFLAGS	0
+ #endif
+ 
+-#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
++#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
+ #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
+ #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
+ 
+@@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
+ 	return(map_addr);
+ }
+ 
+-static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
++static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
+ {
+-	int i, first_idx = -1, last_idx = -1;
++	elf_addr_t min_addr = -1;
++	elf_addr_t max_addr = 0;
++	bool pt_load = false;
++	int i;
+ 
+ 	for (i = 0; i < nr; i++) {
+-		if (cmds[i].p_type == PT_LOAD) {
+-			last_idx = i;
+-			if (first_idx == -1)
+-				first_idx = i;
++		if (phdr[i].p_type == PT_LOAD) {
++			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
++			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
++			pt_load = true;
+ 		}
+ 	}
+-	if (first_idx == -1)
+-		return 0;
+-
+-	return cmds[last_idx].p_vaddr + cmds[last_idx].p_memsz -
+-				ELF_PAGESTART(cmds[first_idx].p_vaddr);
++	return pt_load ? (max_addr - min_addr) : 0;
+ }
+ 
+ static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
