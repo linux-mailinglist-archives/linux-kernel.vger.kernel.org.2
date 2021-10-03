@@ -2,171 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE30741FFCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 06:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D4F41FFD1
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 06:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhJCEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 00:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhJCEkR (ORCPT
+        id S229704AbhJCEm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 00:42:58 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:62028 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhJCEmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 00:40:17 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7EBC0613EC;
-        Sat,  2 Oct 2021 21:38:30 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id i4so56710454lfv.4;
-        Sat, 02 Oct 2021 21:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GBzF2o/olSqI5VSwY6RloUi89r97A89V2tyJ+1MXYw0=;
-        b=TjRRMhTY8qWrT+y4fk6cuBRqBqFP/B2X2PH92VXDEB1WfEKwxcf7mae0f0w72Pe5/v
-         6GsIMy5suA9690UZN1fyitqUtyEO1Qrgqg7tCiIezHeakrVsSOzYjtNq1ALWJRzx4J7U
-         8oVcJaIQMz/kzguefgyN8xCoyIv4eUiK+UuVEBUZnYCo9iCmQpZx0A9mBGYqgMqAr5/w
-         +rREZHO2Z5CEqgYxPX+1OJkHa32IJMQJtJ5xvpd5iFgmEheAllJ4m4g5FcLFqps7pvYx
-         ZpEFWxWA/uQDx7htGr2nb75cJNiUy2o2sZDfb/xlEVL0ii/VA4pibPDd9WCHuSQQb2zC
-         WuKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GBzF2o/olSqI5VSwY6RloUi89r97A89V2tyJ+1MXYw0=;
-        b=NnCrULC135CDTWc4HCWMdRWjgpZ6cHIILwEENaafhpsEdVTdA4hoB28mzVTDGYc8sZ
-         wLPuVOYp8AnkD9CziF9dVyAWmBOu4DGlt0ZFCww8uRIqVKveEf314F4+3ATs5nZIA4bM
-         w/RdcEAQJv0YnKigKKYgAjWPzrUjfC4BmDT8DN4ZdaECUbI+WnyHyfwK8m/OPRQoOrvt
-         oVOsOHsH+VyRs8hGJj3krQu7wWUGlwLfoHHyLsejRacsK5OEYsCDjOa5qOoH5eK/rnLG
-         hS477ydsfFObht/+ig9VztPFDpB4fscVN2F+pTdgF/HDq4fh5NW8uZH3QpmHR0bcoOn1
-         fBtg==
-X-Gm-Message-State: AOAM530frq3GEuMUpbOiNMjNbniQOr2rHn8PXIxCFSBoExwbMnl2kj40
-        sbu4kwqq8ixOnehzl1f07+lAu8HOUn/3v5hy7Vw=
-X-Google-Smtp-Source: ABdhPJwqNDiATd6Ic8j+bXMYMemj3oTRLXV/smqCd5DUvmymaQtt+oiG1dUuE9ZF4P0j4Q9n3tWYzuhUWioTjn2C1uk=
-X-Received: by 2002:a05:6512:3c95:: with SMTP id h21mr7316515lfv.128.1633235908556;
- Sat, 02 Oct 2021 21:38:28 -0700 (PDT)
+        Sun, 3 Oct 2021 00:42:55 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id WtJ1mh6etsoWhWtJAm9O0T; Sun, 03 Oct 2021 06:41:06 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Sun, 03 Oct 2021 06:41:06 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1] can: netlink: report the CAN controller mode supported flags
+Date:   Sun,  3 Oct 2021 13:40:49 +0900
+Message-Id: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211001120218.28751-1-utkarshverma294@gmail.com> <20211002144506.29974-1-utkarshverma294@gmail.com>
-In-Reply-To: <20211002144506.29974-1-utkarshverma294@gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sun, 3 Oct 2021 10:08:17 +0530
-Message-ID: <CABJPP5Bpc_0c=b8kymo0fgXZARNZJ8EM5F=Gpx1=y+vOfPWM8Q@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: checkpatch: add UNNECESSARY_ELSE message
-To:     Utkarsh Verma <utkarshverma294@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 8:15 PM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
->
-> Added and documented UNNECESSARY_ELSE message type.
->
-> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> ---
-> Changes in v2:
->   - Included the continue statement.
->
->  Documentation/dev-tools/checkpatch.rst | 77 ++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index f0956e9ea2d8..b7c41e876d1d 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -1166,3 +1166,80 @@ Others
->
->    **TYPO_SPELLING**
->      Some words may have been misspelled.  Consider reviewing them.
-> +
-> +  **UNNECESSARY_ELSE**
-> +    Using an else statement just after a return/break/continue statement is
-> +    unnecessary. For example::
-> +
-> +      for (i = 0; i < 100; i++) {
-> +              int foo = bar();
-> +              if (foo < 1)
-> +                      break;
-> +              else
-> +                      usleep(1);
-> +      }
-> +
-> +    is generally better written as::
-> +
-> +      for (i = 0; i < 100; i++) {
-> +              int foo = bar();
-> +              if (foo < 1)
-> +                      break;
-> +              usleep(1);
-> +      }
-> +
-> +    It helps to reduce the indentation and removes the unnecessary else
-> +    statement. But note, there can be some false positives because of the
-> +    way it is implemented in the checkpatch script. The checkpatch script
-> +    throws this warning message if it finds an else statement and the line
-> +    above it is a break/continue/return statement indented at one tab more
-> +    than the else statement. So there can be some false positives like::
-> +
-> +      int n = 15;
-> +      if (n > 10)
-> +              n--;
-> +      else if (n == 10)
-> +              return 0;
-> +      else
-> +              n++;
-> +
-> +    Now the checkpatch will give a warning for the use of else after return
-> +    statement. If the else statement is removed then::
-> +
-> +      int n = 15;
-> +      if (n > 10)
-> +              n--;
-> +      else if (n == 10)
-> +              return 0;
-> +      n++;
-> +
-> +    Now both the n-- and n++ statements will be executed which is different
-> +    from the logic in the first case. As the if block doesn't have a return
-> +    statement, so removing the else statement is wrong.
-> +
-> +    Always check the previous if/else if blocks, for break/continue/return
-> +    statements, and do not blindly follow the checkpatch advice. One
-> +    patch (https://lore.kernel.org/all/20200615155131.GA4563@sevic69/)
-> +    even made it to the mainline, which was again reverted and fixed.
-> +    Commit 98fe05e21a6e ("staging: rtl8712: Remove unnecesary else
+This patch introduces a method for the user to check both the
+supported and the static capabilities.
 
-s/unnecesary/unnecessary
-> +    after return statement.")
-> +
-> +    Also, do not change the code if there is only a single return statement
-> +    inside if-else block, like::
-> +
-> +      if (a > b)
-> +              return a;
-> +      else
-> +              return b;
-> +
-> +    now if the else statement is removed::
-> +
-> +      if (a > b)
-> +              return a;
-> +      return b;
-> +
-> +    there is no considerable increase in the readability and one can argue
-> +    that the first form is more readable because of the indentation. So
-> +    do not remove the else statement in case of a single return statement
-> +    inside the if-else block.
-> +    See: https://lore.kernel.org/lkml/20140925032215.GK7996@ZenIV.linux.org.uk/
-> --
-> 2.25.1
->
+Currently, the CAN netlink interface provides no easy ways to check
+the capabilities of a given controller. The only method from the
+command line is to try each CAN_CTRLMODE_ individually to check
+whether the netlink interface returns an -EOPNOTSUPP error or not
+(alternatively, one may find it easier to directly check the source
+code of the driver instead...)
 
-I think this message is unnecessarily long for a warning that's understandable
-at best without the verbose part. Try to shorten it up with only what's
-required for a user to understand why the warning is there.
+It appears that, currently, the struct can_ctrlmode::mask field is
+only used in one direction: from the userland to the kernel. So we can
+just reuse this field in the other direction (from the kernel to
+userland). But, because the semantic is different, we use a union to
+give this field a proper name: supported.
 
-Dwaipayan.
+Below table explains how the two fields can_ctrlmode::supported and
+can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
+flags, allow us to identify both the supported and the static
+capabilities:
+
+ supported &	flags &		Controller capabilities
+ CAN_CTRLMODE_*	CAN_CTRLMODE_*
+ ------------------------------------------------------------------------
+ false		false		Feature not supported (always disabled)
+ false		true		Static feature (always enabled)
+ true		false		Feature supported but disabled
+ true		true		Feature supported and enabled
+
+N.B.: This patch relies on the fact that a given CAN_CTRLMODE_*
+feature can not be set for both can_priv::ctrlmode_supported and
+can_priv::ctrlmode_static at the same time. c.f. comments in struct
+can_priv [1]. Else, there would be no way to distinguish which
+features were statically enabled.
+
+[1] https://elixir.bootlin.com/linux/v5.14/source/include/linux/can/dev.h#61
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+I will send a iproute2-next patch right after to illustrate the idea.
+---
+ drivers/net/can/dev/netlink.c    | 5 ++++-
+ include/uapi/linux/can/netlink.h | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 80425636049d..480818edccc1 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -264,7 +264,10 @@ static size_t can_get_size(const struct net_device *dev)
+ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
++	struct can_ctrlmode cm = {
++		.supported = priv->ctrlmode_supported,
++		.flags = priv->ctrlmode
++	};
+ 	struct can_berr_counter bec = { };
+ 	enum can_state state = priv->state;
+ 
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index f730d443b918..2847ed0dcac3 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -88,7 +88,10 @@ struct can_berr_counter {
+  * CAN controller mode
+  */
+ struct can_ctrlmode {
+-	__u32 mask;
++	union {
++		__u32 mask;		/* Userland to kernel */
++		__u32 supported;	/* Kernel to userland */
++	};
+ 	__u32 flags;
+ };
+ 
+-- 
+2.32.0
+
