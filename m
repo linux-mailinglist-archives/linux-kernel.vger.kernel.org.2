@@ -2,104 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133BA4203F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 22:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABECB4203FF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 23:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhJCUzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 16:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35630 "EHLO mail.kernel.org"
+        id S231715AbhJCVCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 17:02:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231389AbhJCUza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 16:55:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 869B861351;
-        Sun,  3 Oct 2021 20:53:41 +0000 (UTC)
+        id S231389AbhJCVCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 17:02:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 978B56134F;
+        Sun,  3 Oct 2021 21:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633294422;
-        bh=LVnGsdHgFry4gvPG4cX/v4LbZx//84vGhu9+mdAQeOw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IAgx+8gJyb5LuLcgsNfPG+xZ3FsPs1DbzC09MK2+6cLN8q2VvQRAlek6m2rscKBx6
-         gyPJktkzDzTw1QnRrAZ35p1niNJeex/pUuHoJy3zrU5N9ScA/aSC1olJLpoZkW9nVA
-         kCoragpFTdlGR7vvW/fVLuEUSoaimMd9Hhs0UrQiKPW/s2Hco0p6A2Mj1pkv/vsNyN
-         BAMZuR8H43AMbA7iRZrG50nVcWdrYUOoAMD/cUyP5ZIynYfADF9H2VCY865D2sGSIe
-         d/3xeutrDn40QrA9jW5vQ17hmCBn9ll1Gzwy5lmw+1svhK4z23htme8FWuCmuy5K/h
-         lokKinLe0xGUA==
-Date:   Sun, 3 Oct 2021 22:53:38 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: are device names part of sysfs ABI? (was Re: devicename part of
- LEDs under ethernet MAC / PHY)
-Message-ID: <20211003225338.76092ec3@thinkpad>
-In-Reply-To: <20211001144053.3952474a@thinkpad>
-References: <20211001133057.5287f150@thinkpad>
-        <YVb/HSLqcOM6drr1@lunn.ch>
-        <20211001144053.3952474a@thinkpad>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        s=k20201202; t=1633294851;
+        bh=7n2xwObzoARYrQnvu603jRY3Gc2rfSAjpQmgTIXEUz4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=gxQqmiE0x+2qMA75lmpCEJ269nUQssroDuRvYGYTjdygn19TSov/0HofUTefRK9n3
+         F//+yGTBatCzmypxbyOXcL01D1jkLb93ezqBRsjtRuGKQ35p/uZlCsNAV8Pikcmd9S
+         sSofW94VbpY5nqtLZg0MEuTyIfAqpDJ6TYrNxTbIN6zeg6pITfrRSt7r4CNpWPf54q
+         C/FKUJQSNzODAVeMQhBmdiwYuKCQWf52/tvzThmksY/d+ycayjJ+jhaF2LUDBaub2T
+         tdRkXhiRI96/L1p+wPT36/W149y6XtoNFV1/vKF0wfAbKJw2NqCSJrVz40EgEC6W95
+         eq1KsAb6Ret2A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84A4160982;
+        Sun,  3 Oct 2021 21:00:51 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 fixes for 5.15-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YVnay/TJEr8K64+U@mit.edu>
+References: <YVnay/TJEr8K64+U@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YVnay/TJEr8K64+U@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: f2c77973507fd116c3657df1dc048864a2b16a1c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ca3cef466feaaf296c8519e2cc5ccf6565e3e7e9
+Message-Id: <163329485148.21280.244814728557688517.pr-tracker-bot@kernel.org>
+Date:   Sun, 03 Oct 2021 21:00:51 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+The pull request you sent on Sun, 3 Oct 2021 12:31:07 -0400:
 
-could you give your opinion on this discussion?
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-Are device names (as returned by dev_name() function) also part of
-sysfs ABI? Should these names be stable across reboots / kernel
-upgrades?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ca3cef466feaaf296c8519e2cc5ccf6565e3e7e9
 
-Marek
+Thank you!
 
-On Fri, 1 Oct 2021 14:40:53 +0200
-Marek Beh=C3=BAn <kabel@kernel.org> wrote:
-
-> On Fri, 1 Oct 2021 14:29:17 +0200
-> Andrew Lunn <andrew@lunn.ch> wrote:
->=20
-> > > - Andrew proposed that the numbering should start at non-zero number,
-> > >   for example at 42, to prevent people from thinking that the numbers
-> > >   are related to numbers in network interface names (ethN).
-> > >   A system with interfaces
-> > >     eth0
-> > >     eth1
-> > >   and LEDs
-> > >     ethphy0:green:link
-> > >     ethphy1:green:link
-> > >   may make user think that the ethphy0 LED does correspond to eth0
-> > >   interface, which is not necessarily true.
-> > >   Instead if LEDs are
-> > >     ethphy42:green:link
-> > >     ethphy43:green:link=20
-> > >   the probability of confusing the user into relating them to network
-> > >   interfaces by these numbers is lower.
-> > >=20
-> > > Anyway, the issue with these naming is that it is not stable. Upgradi=
-ng
-> > > the kernel, enabling drivers and so on can change these names between
-> > > reboots.   =20
-> >=20
-> > Sure, eth0 can become eth1, eth1 can become eth0. That is why we have
-> > udev rules, systemd interface names etc. Interface names have never
-> > been guaranteed to be stable. Also, you can have multiple interfaces
-> > named eth0, so long as they are in different network name spaces.
-> >  =20
-> > > Also for LEDs on USB ethernet adapters, removing the USB and
-> > > plugging it again would change the name, although the device path does
-> > > not change if the adapter is re-plugged into the same port.
-> > >=20
-> > > To finally settle this then, I would like to ask your opinion on
-> > > whether this naming of LEDs should be stable.   =20
-> >=20
-> > No. They should be unstable like everything else. =20
->=20
-> LED classdev names are something different.
-> For etherent interfaces, the interface name is different from name of
-> the underlying struct device. But LED classdev names are also
-> corresponding struct device names, and thus part of sysfs ABI, which,
-> as far as I understand, should be stable.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
