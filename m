@@ -2,90 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8C14202A0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE2B4202A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhJCQUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 12:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S231179AbhJCQVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 12:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhJCQUX (ORCPT
+        with ESMTP id S230426AbhJCQVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 12:20:23 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79398C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 09:18:35 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id y5so9518963pll.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 09:18:35 -0700 (PDT)
+        Sun, 3 Oct 2021 12:21:10 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32127C0613EC;
+        Sun,  3 Oct 2021 09:19:23 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y23so26138230lfj.7;
+        Sun, 03 Oct 2021 09:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=wiTJBRq4UGMODPvYEyNV3oB8d3MZ6hINzZgUpTIRnFg=;
-        b=IGbTGR7afZSkCOXJtiwKxmYnVPo/YCvglOkp8k+Idl5bj3Nx33PZAKES7kGhM8sr+P
-         24JXDMRDwgaYISibW5B6jV1QN1YT5Ne0hvrSwoNO/EzxX8jrgo7z7S+vvchMLumyrIbi
-         NKJbzfMFAjz8Gg6Yn0PH2v9PbJ20n8mxtQ84jLlPKAXIv5sYGZST6zS0G4BcmVLbLT6h
-         2ai+1WmyO9XbCxTuR0pO/V4mUQna8jW/Ybc0mfNkBcISSHvxzrh7k4FlNVqxMjNOV6a4
-         cqtu99qOjMO42zyV+bLV6p5gP7mtHVCXvGtnNQSzYdwkKZDY98T1g5Mw6i9VmGDYV+2d
-         c0FA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=llNEIxhbTSZcUz/lPANGAqOblDCi/UrFP7kaAKP4keU=;
+        b=iMBm8AwapfDJTBhIZYAwPszSAxnzFsOVLZ+j8Uyli8khiCJhULvx8qM7JmI/KKUK2f
+         EzP8bV6h8QYSevFDyf0DMcJOT+o48h1b8uJsvRfP1Z76mM9ZXQfZAuNgqMDUNrbXWvm4
+         2aUVqbWVeCNfJKNRLLulqkem+/oNsS6RcRXJ10rZr+ZovkXH5Ko3wAPAtts1B6EBRhbK
+         I/R3Q+P1toK8ptlGvXGYcXm5aomTnTTJ8sbmWJ2BSdQEtc1+WOqyg2FhYeMwB1/+qqbp
+         j2zsgZzWgCzzIUhbScMj6xZjXYKQOFMjK74hnGq7+SxILDl4IguVnHw2+qdw/sfp5YY2
+         VVWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=wiTJBRq4UGMODPvYEyNV3oB8d3MZ6hINzZgUpTIRnFg=;
-        b=Yp3DZwk51Dr7EcTFFBhj082+Rm71mAsiVZGWxmAG477tl/hMXvVm0FC2BNxnhkSvzB
-         UIqsn5/VrmWQxaedVxbApcgadpjgZhkPLgDJB0JGpgwQWQsTXQ+iilCV0RwhlfjZpsRZ
-         wd/rUAsQZDxCihEYesHjrTrXCw+RAI3/gWG4ULnHISOIRfhH7mmMs4P7Z1YR93v9fqlF
-         6raMM83AHDmVVIyesZzE28Z5lUzt1C/BML1Dug2A2MpM2oo/lq8AZyADxlJAprSoietM
-         Bt+Dp+Mp0++FsQ+UPr5w1lTwAxtm+c3WcpRzSaKohbQRS7lOjLVUOk9EtaCl4cZMfiAo
-         G7fQ==
-X-Gm-Message-State: AOAM5310IH021t+sIMSGNP5fHHZ1fgPpqQDLjqSQ8RpuI6h87qqRMUNP
-        TtkYHFpFDsaueFXWmLgaWag=
-X-Google-Smtp-Source: ABdhPJz9pjwAe9gvabiDAnDEiwL4XOcxppxKmiMf3zIyhLzVJ9TemVfVQcAvo1qW1L2B2ABPQ1wAYg==
-X-Received: by 2002:a17:902:7d89:b0:13c:a5e1:f0f1 with SMTP id a9-20020a1709027d8900b0013ca5e1f0f1mr20512815plm.24.1633277914803;
-        Sun, 03 Oct 2021 09:18:34 -0700 (PDT)
-Received: from user ([223.230.43.197])
-        by smtp.gmail.com with ESMTPSA id h13sm11364173pgf.14.2021.10.03.09.18.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 09:18:34 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 21:48:28 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, hdegoede@redhat.com,
-        marcocesati@gmail.com, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: rtl8723bs: core: remove reassignment of same value
- to variable
-Message-ID: <YVnX1HIYoisW621x@user>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=llNEIxhbTSZcUz/lPANGAqOblDCi/UrFP7kaAKP4keU=;
+        b=IT7PvSA+x6ylNcycoyW13sBRVLhOICRvoP3/muxeN7WqfSnqTSO7mgnvLNy+eDZq+5
+         /yCTYt9EMPQ5dicekdKFvd/4l3QUFvBInSWsG8NBMuHRgn3AbPQ/TjsCzocCX7mP37Gl
+         NhexLXY0JUYYlLi4cuuWhz3PKvxKJk+FWK9jPMmdOdtkmwgMDcE+beKikwcpKgJ9Ypp/
+         Dp6/YaCE5CUmY9DLa/lvc1bROg6Ye0yRgDbju6C/oeG+kZxo9LgnHej6eUIGztex9Pkq
+         vFwX6vPyf+H1wuDrHz0Q9BOdIcsK0SJhymC7KXTQ9neEeAmkNZv8eZ+oNBmUIFADErKa
+         EY6w==
+X-Gm-Message-State: AOAM532nLonHwvGy/UAz1XD3/bpeHYcB/OKo7dMYjwdwcsSzVRLaOqMY
+        ov72SgX0v8VGTrme48kutBw5ArpLLF4=
+X-Google-Smtp-Source: ABdhPJz9BjYRvkt6eRG7+7adWwZUvWuFcpNGUlKEL2xMti3oEMnwTfmWXA6Kv8Fq/UwxgF1mHJRSRg==
+X-Received: by 2002:a05:6512:344f:: with SMTP id j15mr4527384lfr.521.1633277961257;
+        Sun, 03 Oct 2021 09:19:21 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.120])
+        by smtp.gmail.com with ESMTPSA id u21sm1292162lju.26.2021.10.03.09.19.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Oct 2021 09:19:20 -0700 (PDT)
+Message-ID: <1bad16dc-e11e-4096-2014-a0eae92686e8@gmail.com>
+Date:   Sun, 3 Oct 2021 19:19:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] media: atomisp: fix `-Werror=return-type`
+Content-Language: en-US
+To:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Bedirhan KURT <windowz414@gnuweeb.org>
+References: <20211002231723.29019-1-ammar.faizi@students.amikom.ac.id>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20211002231723.29019-1-ammar.faizi@students.amikom.ac.id>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove reassignment of same value to variable pstat->auth_seq.
-On if (seq == 1) assigning the value 2. At the end of if statement
-also assigning the value pstat->auth_seq = seq + 1 that is again
-assigning the value 2.
+On 10/3/21 02:17, Ammar Faizi wrote:
+> Bedirhan reported build error:
+> ```
+>    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
+>    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+>     1649 | }
+>          | ^
+>    cc1: some warnings being treated as errors
+>    make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o] Error 1
+>    make[3]: *** [scripts/Makefile.build:540: drivers/staging/media/atomisp] Error 2
+>    make[2]: *** [scripts/Makefile.build:540: drivers/staging/media] Error 2
+>    make[1]: *** [scripts/Makefile.build:540: drivers/staging] Error 2
+>    make: *** [Makefile:1868: drivers] Error 2
+> ```
+> 
+> Commit 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp:
+> remove useless returns") incorrectly removed a required return results
+> in the above build error. Reinstate it.
+> 
+> Cc: Pavel Skripkin <paskripkin@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-staging@lists.linux.dev
+> Cc: linux-kernel@vger.kernel.org
+> Reported-by: Bedirhan KURT <windowz414@gnuweeb.org>
+> Fixes: 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp: remove useless returns")
+> Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+> ---
+>   .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> index 8e085dda0c18..1bd917e81743 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> @@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_channel_sensor(
+>   	default:
+>   		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+>   	}
+> +	return INPUT_SYSTEM_ERR_NO_ERROR;
+>   }
+>   
+>   // Test flags and set structure.
+> 
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 1 -
- 1 file changed, 1 deletion(-)
+Hi, Ammar!
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 3ee4d35ca8d7..059cd85f4b03 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -808,7 +808,6 @@ unsigned int OnAuth(struct adapter *padapter, union recv_frame *precv_frame)
- 			pstat->state &= ~WIFI_FW_AUTH_NULL;
- 			pstat->state |= WIFI_FW_AUTH_STATE;
- 			pstat->authalg = algorithm;
--			pstat->auth_seq = 2;
- 		} else if (seq == 3) {
 
- 			p = rtw_get_ie(pframe + WLAN_HDR_A3_LEN + 4 + _AUTH_IE_OFFSET_, WLAN_EID_CHALLENGE, (int *)&ie_len,
---
-2.32.0
+Thank you for fixing this, but it's already fixed in linux-next tree. 
+See commit 05344a1d2ea7 ("media: atomisp: restore missing 'return' 
+statement").
 
+Again, I am sorry for introducing this bug :(
+
+
+
+
+With regards,
+Pavel Skripkin
