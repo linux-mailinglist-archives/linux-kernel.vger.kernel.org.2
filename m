@@ -2,142 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33758420163
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 13:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE62D420167
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 14:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhJCLwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 07:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        id S230163AbhJCMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 08:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhJCLwH (ORCPT
+        with ESMTP id S229505AbhJCMGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 07:52:07 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9193CC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 04:50:19 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id B6F18C1CF19;
-        Sun,  3 Oct 2021 13:50:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1633261813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=53ZERQv7zMU+x8S9Zu7/z/fDX7OMssKxmy5sBN16hRY=;
-        b=ruX1rti+FtFS0w4WCjpEZ04u6WM3hVkgoASvqZAJNJov/PL/MZ3MMZ0lAknc+M9G6tzEr/
-        wrKHw2IbxhX4Cj4Ve5jhseS6JiUdVmBom0Bs4OAJH5w96M5gzIlTeWmGQ3lDEfcbNmWQup
-        IEDcbuRCq5YMLi/5NtIzHHM6dsWwwFk=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     pauk.denis@gmail.com, Eugene Shalygin <eugene.shalygin@gmail.com>,
-        matt-testalltheway <sefoci9222@rerunway.com>,
-        Kamil Dudka <kdudka@redhat.com>,
-        Robert Swiecki <robert@swiecki.net>,
-        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
-        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 0/3] Update ASUS WMI supported boards.
-Date:   Sun, 03 Oct 2021 13:50:12 +0200
-Message-ID: <6096864.rdmfHhMOLH@natalenko.name>
-In-Reply-To: <20211002210857.709956-1-pauk.denis@gmail.com>
-References: <20211002210857.709956-1-pauk.denis@gmail.com>
+        Sun, 3 Oct 2021 08:06:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307F7C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 05:04:19 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g8so53473847edt.7
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 05:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=16jv9dHgdRgKVxtGwcKBR5fNJruBm+0ydvDzDv4vhuM=;
+        b=E4pqZZkP/UJkcQRg7nI6xnxMpBoPonlviiSF9zun6gj4ihbfUh45gWcEREXdV0d8FY
+         DQQ7Gf9abyRJm0RJE0san48IOsHBeDiW07G87kq0ycOQRCfQJwF+fp1zkpqpIYC1/uvu
+         OpAqOxoIP5nuMlrZy+mFt0xtak8tc5F4TbgbhYkqzfuDLhe4WxYHVED2fvPSNFhLXeOe
+         0vyBXk2Rz8PBGYIxXmvSc4Os3dGWYOVh+ghqVpSuoikTqLo0atk57/AJ7crdQ2xGtzJd
+         ELl0ehZxDm2wvV3dAKcw8j60ZiUHtCoLbqxX/IOADFDsWqm0QSp4IdRXk72TRY8Tr3jh
+         s8+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=16jv9dHgdRgKVxtGwcKBR5fNJruBm+0ydvDzDv4vhuM=;
+        b=JYPlHm1tCIO4Ma+PELcLv4TZ6wwUTPUDFAT7tPSg2j6BjVZwWyKc/C5kBRgrtJEckP
+         vFqlabWlO4wQu16NNC97oRtA2wUTYFDsQ4y/+sz46S+WsO1U5KRpfrYaB25Fx0gmCuyI
+         RNGtq+KVOMhgqH+mH21C2HWWjR5KBG/E/zeiIDdE4349jUODeGAITgeu4vvbzM7LWJdh
+         /7fJRJM0x0g8cNGzc7sOQvvF9k0EbThnagnL0Kq70AsGRXcjXerLlNj2kugQsiL+H53w
+         MfJ+LLi2y9aIqWHn/s9S9brOZjy5l/QgpQ8E43LWR3dO4LYfRaB+QvifxAFgP2hJaTlk
+         Bhvw==
+X-Gm-Message-State: AOAM531HVv4788CNiuwAhqXjVlHJgx191nDdeAUGqDeMjVsmYTBy/MZv
+        lx7MLG1cIkWB9uOrJvuyX/tNww24UA==
+X-Google-Smtp-Source: ABdhPJyF2TA1UDEjTjE7+KWUCKCh674Gb1x/BeMolN40O+YYBlxbSUvtHhlbuIbzGkU5HOKWXU1Zvw==
+X-Received: by 2002:a50:d84c:: with SMTP id v12mr10458100edj.203.1633262657289;
+        Sun, 03 Oct 2021 05:04:17 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.253.147])
+        by smtp.gmail.com with ESMTPSA id s16sm1834229ejf.76.2021.10.03.05.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 05:04:17 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 15:04:15 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ELF: simplify STACK_ALLOC macro
+Message-ID: <YVmcP256fRMqCwgK@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam: Yes
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+"A -= B; A" is equivalent to "A -= B".
 
-On sobota 2. =C5=99=C3=ADjna 2021 23:08:53 CEST Denis Pauk wrote:
-> Add support to nct6775:
-> * PRIME B360-PLUS
-> * PRIME X570-PRO
-> * ROG CROSSHAIR VIII FORMULA
-> * ROG STRIX B550-I GAMING
-> * ROG STRIX X570-F GAMING
-> * ROG STRIX Z390-E GAMING
-> * TUF GAMING B550-PRO
-> * TUF GAMING Z490-PLUS
-> * TUF GAMING Z490-PLUS (WI-FI)
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-Thank you for this submission.
+ fs/binfmt_elf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Do you happen to know whether it can be extended with another ASUS board wh=
-ich=20
-is:
-
-```
-Manufacturer: ASUSTeK COMPUTER INC.
-Product Name: Pro WS X570-ACE
-```
-
-?
-
-I've got one, and in case any info or testing is needed, I'd be happy to=20
-contribute.
-
-Currently, this board is kinda working after adding=20
-`acpi_enforce_resources=3Dlax`, but I assume a proper support is needed ins=
-tead.
-
-Thanks.
-
-> Add sensors driver for ASUS motherboards to read sensors from the embedded
-> controller. Based on https://github.com/zeule/asus-wmi-ec-sensors.
->=20
-> Could you please review?
->=20
-> @Andy Shevchenko, @Guenter Roeck should I split last patch in some way?
-> Should I add to MAINTAINERS:
-> --
-> ASUS WMI HARDWARE MONITOR DRIVER
-> M:     Eugene Shalygin <eugene.shalygin@gmail.com>
-> M:     Denis Pauk <pauk.denis@gmail.com>
-> L:     linux-hwmon@vger.kernel.org
-> S:     Maintained
-> F:     drivers/hwmon/asus_wmi_sensors.c
-> --
->=20
->=20
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D204807
-> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-> Co-developed-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
-> Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
-> Tested-by: Kamil Dudka <kdudka@redhat.com>
-> Tested-by: Robert Swiecki <robert@swiecki.net>
-> Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
-> Tested-by: Igor <igor@svelig.com>
-> Tested-by: Tor Vic <torvic9@mailbox.org>
-> Tested-by: Poezevara <nephartyz@gmail.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
->=20
-> ---
-> Denis Pauk (3):
->   hwmon: (nct6775) Add additional ASUS motherboards.
->   hwmon: (nct6775) Use custom scale for ASUS motherboards.
->   hwmon: (asus_wmi_sensors) Support access via Asus WMI.
->=20
->  drivers/hwmon/Kconfig            |  12 +
->  drivers/hwmon/Makefile           |   1 +
->  drivers/hwmon/asus_wmi_sensors.c | 595 +++++++++++++++++++++++++++++++
->  drivers/hwmon/nct6775.c          |  41 ++-
->  4 files changed, 643 insertions(+), 6 deletions(-)
->  create mode 100644 drivers/hwmon/asus_wmi_sensors.c
-
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
-
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -156,7 +156,7 @@ static int padzero(unsigned long elf_bss)
+ #define STACK_ADD(sp, items) ((elf_addr_t __user *)(sp) - (items))
+ #define STACK_ROUND(sp, items) \
+ 	(((unsigned long) (sp - items)) &~ 15UL)
+-#define STACK_ALLOC(sp, len) ({ sp -= len ; sp; })
++#define STACK_ALLOC(sp, len) (sp -= len)
+ #endif
+ 
+ #ifndef ELF_BASE_PLATFORM
