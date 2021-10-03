@@ -2,116 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB202420365
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF93E42036B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhJCSSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 14:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbhJCSSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 14:18:44 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D836C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 11:16:57 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id r201so8524947pgr.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 11:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=GQhMyogHN7y8nehFLIZCJ9ROYU/DzWV4+WI3lnHC9VE=;
-        b=HJXXYtLIklgXaY1BKE1WVSZvqJvgRFJ2bq1B/kZyIKmuyJio1QqAerURv3BoGAPnBP
-         iFO1Q69rFetDZXN0JzSr5DJVZ7BI8+AlXG1hz+3f9vlBS48Tjk45M0iLdVaYND48Ctnk
-         RugsYl8YFR9fUC6fv9pL/2LGvUNSedKbeNlZ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=GQhMyogHN7y8nehFLIZCJ9ROYU/DzWV4+WI3lnHC9VE=;
-        b=fh3a1tGPWIU6d6/RxdZ04+Zaca8rU0Tl6VN+iD2mV5IhwPYk3YH+HYhqG8ctngdT7V
-         Bmb8TbkOP4jxgUp5FRsCAeoBGDRLftV+O4+/CMAAkangYRNO7vq9sXP9n60LXAIE9Zl1
-         RB07pAU7Nu4quQZ2/EGlwWZxiDRhUHRsZbpBzjKfmmB83Ed3So9YWOpT22/mzzYWDT+7
-         IQamPmqlVma9Zxx+FXIiME6QoxkM0FaT4IDI3HNQ2tbSF85xTzMoWI3Z28hEPoLmNg4o
-         PxYQNOMIdxUilx3zqGRqeFVkKr5nXn7fJhsnvZi+frHKNA+pDEcBmFDENTXXUdoKo3LR
-         6ezQ==
-X-Gm-Message-State: AOAM533o0DbCzwLC7IiXTd7ISgMuetWiGlfWbKXdcoQYml7raDiNuEoY
-        0o/DG1aMRL9w8h+84aCjrOqYjaTW0vIcihLX
-X-Google-Smtp-Source: ABdhPJyr4km4MCiJoBD0XdidzykZY8m5fGbJA0/LZPs13VQG6nURhAMkwoirnnMoaWuzJeCGvoRjIw==
-X-Received: by 2002:a63:e516:: with SMTP id r22mr7622020pgh.197.1633285016627;
-        Sun, 03 Oct 2021 11:16:56 -0700 (PDT)
-Received: from ebadger-ThinkPad-T590 (cpe-75-80-179-40.san.res.rr.com. [75.80.179.40])
-        by smtp.gmail.com with ESMTPSA id j7sm11028777pjf.18.2021.10.03.11.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 11:16:56 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 11:16:53 -0700
-From:   Eric Badger <ebadger@purestorage.com>
-To:     ebadger@purestorage.com
-Cc:     Eric Badger <ebadger@purestorage.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] EDAC/mc_sysfs: Print MC-scope sysfs counters unsigned
-Message-ID: <20211003181653.GA685515@ebadger-ThinkPad-T590>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S231553AbhJCSWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 14:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231421AbhJCSWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 14:22:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5DFE261A54;
+        Sun,  3 Oct 2021 18:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633285248;
+        bh=nO10C9kP7mw0Gj7YTUJ0cfWKH0drvv6BufygsQ2OCnw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=hRzDs6VBsIU3wjXnC3aYar1BAtO3lfYRYjwhaX8qjs7bnBwiEe/nX0dFrKgTsiT8K
+         6kMtyh49c3xF8CI+4EklomHwiZc49Uk1+dyDjq1u/sd3JulR/jEQsztxQbPO3FdPcN
+         uUiC5rhtwVZpmC+9zkJD9qVGHrtbBp7DwWFNScjVYjgiTU1ls+xv5m7Sl6+Hc1UK5s
+         U+9/c1kda3SOPC/DjrPsPgRPeOuuBOVsJghAYHnZcvJSGrvet4CqKrhWG4RascgD0Y
+         jLZXqSHq7ZX15SPH5gIpcupJtS5eauNVdJZtudg04t4YPBkRbjGD8ygIqHlXdMSBok
+         xpHTEhjMt8GBQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 50594609DA;
+        Sun,  3 Oct 2021 18:20:48 +0000 (UTC)
+Subject: Re: [GIT PULL] Char/Misc driver fixes for 5.15-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YVmDHIFZyWWVcZHx@kroah.com>
+References: <YVmDHIFZyWWVcZHx@kroah.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YVmDHIFZyWWVcZHx@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc4
+X-PR-Tracked-Commit-Id: bb8a4fcb2136508224c596a7e665bdba1d7c3c27
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6761a0ae9895fce67536510396bfa63158b0b8ec
+Message-Id: <163328524832.23868.9653406325205953400.pr-tracker-bot@kernel.org>
+Date:   Sun, 03 Oct 2021 18:20:48 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is cosmetically nicer for counts > INT32_MAX, and aligns the
-MC-scope format with that of the lower layer sysfs counter files.
+The pull request you sent on Sun, 3 Oct 2021 12:17:00 +0200:
 
-Signed-off-by: Eric Badger <ebadger@purestorage.com>
----
- drivers/edac/edac_mc_sysfs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc4
 
-diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
-index 2f9f1e7..0a638c9 100644
---- a/drivers/edac/edac_mc_sysfs.c
-+++ b/drivers/edac/edac_mc_sysfs.c
-@@ -744,7 +744,7 @@ static ssize_t mci_ue_count_show(struct device *dev,
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
- 
--	return sprintf(data, "%d\n", mci->ue_mc);
-+	return sprintf(data, "%u\n", mci->ue_mc);
- }
- 
- static ssize_t mci_ce_count_show(struct device *dev,
-@@ -753,7 +753,7 @@ static ssize_t mci_ce_count_show(struct device *dev,
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
- 
--	return sprintf(data, "%d\n", mci->ce_mc);
-+	return sprintf(data, "%u\n", mci->ce_mc);
- }
- 
- static ssize_t mci_ce_noinfo_show(struct device *dev,
-@@ -762,7 +762,7 @@ static ssize_t mci_ce_noinfo_show(struct device *dev,
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
- 
--	return sprintf(data, "%d\n", mci->ce_noinfo_count);
-+	return sprintf(data, "%u\n", mci->ce_noinfo_count);
- }
- 
- static ssize_t mci_ue_noinfo_show(struct device *dev,
-@@ -771,7 +771,7 @@ static ssize_t mci_ue_noinfo_show(struct device *dev,
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
- 
--	return sprintf(data, "%d\n", mci->ue_noinfo_count);
-+	return sprintf(data, "%u\n", mci->ue_noinfo_count);
- }
- 
- static ssize_t mci_seconds_show(struct device *dev,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6761a0ae9895fce67536510396bfa63158b0b8ec
+
+Thank you!
+
 -- 
-1.9.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
