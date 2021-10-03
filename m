@@ -2,124 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2080B4201BE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6319F4201C6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhJCNfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 09:35:42 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:58370 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhJCNfj (ORCPT
+        id S230386AbhJCNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 09:44:53 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:50072 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230506AbhJCNow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 09:35:39 -0400
-Received: from localhost (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3C059C1D331;
-        Sun,  3 Oct 2021 15:33:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1633268031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pvs0gicvaFyjP0hgJFa4i9LD8zRmZXhHgPSJ+metaAA=;
-        b=qnlJoFp1jMQf9wtsbzgdJNsdwr4ft+1mmVuJBbcAVgj4g8ipd69gOVCqEOGbve2+0Isgzd
-        5Q1crBrU7yFgqpsSyYXNXUM3sx8T2mHEAgK9TioGuIAbrUwUzGYqUe/af97g50X5bt2XIe
-        3qrAH/UG71ajpOp89NxLS1zIxZfN8jA=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Denis Pauk <pauk.denis@gmail.com>,
-        matt-testalltheway <sefoci9222@rerunway.com>,
-        Kamil Dudka <kdudka@redhat.com>,
-        Robert Swiecki <robert@swiecki.net>,
-        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
-        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Subject: [PATCH 3/3] hwmon: (asus_wmi_sensors) add Pro WS X570-ACE
-Date:   Sun,  3 Oct 2021 15:33:44 +0200
-Message-Id: <20211003133344.9036-4-oleksandr@natalenko.name>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211003133344.9036-1-oleksandr@natalenko.name>
-References: <20211003133344.9036-1-oleksandr@natalenko.name>
+        Sun, 3 Oct 2021 09:44:52 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mX1hQ-009dmQ-PD; Sun, 03 Oct 2021 13:38:40 +0000
+Date:   Sun, 3 Oct 2021 13:38:40 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, krisman@collabora.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 1/2] fs: dcache: Handle case-exact lookup in
+ d_alloc_parallel
+Message-ID: <YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk>
+References: <cover.1632909358.git.shreeya.patel@collabora.com>
+ <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASUS Pro WS X570-ACE also supports accessing sensor information from the
-embedded controller via BREC WMI method. Hence, add it to the list.
+On Wed, Sep 29, 2021 at 04:23:38PM +0530, Shreeya Patel wrote:
+> There is a soft hang caused by a deadlock in d_alloc_parallel which
+> waits up on lookups to finish for the dentries in the parent directory's
+> hash_table.
+> In case when d_add_ci is called from the fs layer's lookup functions,
+> the dentry being looked up is already in the hash table (created before
+> the fs lookup function gets called). We should not be processing the
+> same dentry that is being looked up, hence, in case of case-insensitive
+> filesystems we are making it a case-exact match to prevent this from
+> happening.
 
-Note `T_Sensor` is not supported by this board.
+NAK.  What you are doing would lead to parallel calls of ->lookup() in the
+same directory for names that would compare as equal.  Which violates
+all kinds of assumptions in the analysis of dentry tree locking.
 
-Tested by me on this hardware:
+d_add_ci() is used to force the "exact" spelling of the name on lookup -
+that's the whole point of that thing.  What are you trying to achieve,
+and what's the point of mixing that with non-trivial ->d_compare()?
 
-```
-Base Board Information
-    Manufacturer: ASUSTeK COMPUTER INC.
-    Product Name: Pro WS X570-ACE
-
-BIOS Information
-    Vendor: American Megatrends Inc.
-    Version: 3801
-    Release Date: 07/30/2021
-```
-
-Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
----
- drivers/hwmon/asus_wmi_sensors.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/hwmon/asus_wmi_sensors.c b/drivers/hwmon/asus_wmi_sensors.c
-index 98e761861601..319c879624b2 100644
---- a/drivers/hwmon/asus_wmi_sensors.c
-+++ b/drivers/hwmon/asus_wmi_sensors.c
-@@ -35,6 +35,7 @@
- #define ASUS_EC_KNOWN_EC_REGISTERS 14
- 
- enum asus_wmi_ec_board {
-+	BOARD_PW_X570_A, // Pro WS X570-ACE
- 	BOARD_R_C8H, // ROG Crosshair VIII Hero
- 	BOARD_R_C8DH, // ROG Crosshair VIII Dark Hero
- 	BOARD_R_C8F, // ROG Crosshair VIII Formula
-@@ -44,6 +45,7 @@ enum asus_wmi_ec_board {
- 
- /* boards with EC support */
- static const char *const asus_wmi_ec_boards_names[] = {
-+	[BOARD_PW_X570_A] = "Pro WS X570-ACE",
- 	[BOARD_R_C8H] = "ROG CROSSHAIR VIII HERO",
- 	[BOARD_R_C8DH] = "ROG CROSSHAIR VIII DARK HERO",
- 	[BOARD_R_C8F] = "ROG CROSSHAIR VIII FORMULA",
-@@ -130,6 +132,7 @@ static void asus_wmi_ec_fill_board_sensors(struct asus_wmi_ec_info *ec, int boar
- 	ec->nr_registers = 0;
- 
- 	switch (board) {
-+	case BOARD_PW_X570_A:
- 	case BOARD_RS_B550_E_G:
- 	case BOARD_RS_X570_E_G:
- 	case BOARD_R_C8H:
-@@ -161,6 +164,7 @@ static void asus_wmi_ec_fill_board_sensors(struct asus_wmi_ec_info *ec, int boar
- 	}
- 
- 	switch (board) {
-+	case BOARD_PW_X570_A:
- 	case BOARD_RS_X570_E_G:
- 	case BOARD_R_C8H:
- 	case BOARD_R_C8DH:
-@@ -174,6 +178,7 @@ static void asus_wmi_ec_fill_board_sensors(struct asus_wmi_ec_info *ec, int boar
- 	}
- 
- 	switch (board) {
-+	case BOARD_PW_X570_A:
- 	case BOARD_RS_X570_E_G:
- 	case BOARD_R_C8H:
- 	case BOARD_R_C8F:
--- 
-2.33.0
-
+If it's "force to exact spelling on lookup, avoid calling ->lookup() on
+aliases", d_add_ci() is simply not a good match.
