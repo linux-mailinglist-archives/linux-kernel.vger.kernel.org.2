@@ -2,59 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D757F420123
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2828420127
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhJCKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 06:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhJCKHt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 06:07:49 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF0C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 03:06:02 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k23so9511193pji.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 03:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=P16WnH0VJHDsfubnkfkpcmB3utpmNsLVNCNG7HTYBcE=;
-        b=E7fqAknLWuXaPP5p4GKJGmI+A5FkPZE7+ObybOHYXwFA26iDOG9rwfs0s0AWxQzqVh
-         DVfZ3gbduRfDjSgDzujTTPhe50al9A6P5nAwY954d83ixY2My87pcNgXQsbZWsNicQrk
-         Qw0PLGoxOiKaUid7EshxIhnvJ8WJMHQw+OwN7JEBvRGhB9KNI3zK0qv8qeBfB2/2h1gW
-         CVFiYGdExk74cMaWBmYGCXfuW051wYFoxmBWssm6t70P5nTzoRdbthabmvFlmPRnfiAN
-         ROSi48Ht1V11/XjJC1q4onITxQnhNW2k0KmZwFnXiv3u63tjwkPyRUaqOu96a+zwwsa3
-         xO9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=P16WnH0VJHDsfubnkfkpcmB3utpmNsLVNCNG7HTYBcE=;
-        b=Xb+7a4nQkXn7+M0HyrfcKxXDmhfbalfefttIbjbUU3BPLqT5rSPqDR8HSuaEbZO/xG
-         gvxF2hEth7SKzvw5ETh2/5AdfIsaRhMNL7mqVFJwQeGREK5xW6IrQYMlhdKtVjod2l5O
-         JRvoWvkWeMXIQm4tjZJC+4swuOw6rrwguafAqWQWWmzCguKWBS0y5ODEZBJOZJxtSguO
-         FXeSFIg7s8V8V+5SEKLUC0k/lgEOhQydruZWW3M4b1au3g0zwz0XKnR/Aq6+yuv1T/ct
-         mZql7s/mJZeXuk6ilZsjoDOO8QN7vNI0GszTieIxa8+5GiNANevW2z96PWEc1LLECEyE
-         AAoA==
-X-Gm-Message-State: AOAM531l27q6dfuXOQq7dDk8DLznXfbqOHBl2B9zXWdkzzyAXFNOlChu
-        MfyVx5Vmren1htPGqQFqz0c=
-X-Google-Smtp-Source: ABdhPJwiv/nONia3tS+eGxG/2QKKbADl99KpLmvw/6TAozeDdnnwY+uCktXgf/oOKGNzr7twR4DzUw==
-X-Received: by 2002:a17:90b:3e8d:: with SMTP id rj13mr2955635pjb.183.1633255561796;
-        Sun, 03 Oct 2021 03:06:01 -0700 (PDT)
-Received: from user ([223.230.43.197])
-        by smtp.gmail.com with ESMTPSA id i13sm900386pjh.0.2021.10.03.03.05.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 03:06:01 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 15:35:56 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, will+git@drnd.me,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: rtl8192e: remove unused variable ieee
-Message-ID: <YVmAhOSRB8yc/iwU@user>
+        id S230031AbhJCKS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 06:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229875AbhJCKS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 06:18:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC1C661A05;
+        Sun,  3 Oct 2021 10:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633256201;
+        bh=rINtyPohnMxSn3h+VYLTlMoq+gRIQzSxEl3nEfbFUWc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SOpN489ht7MmcIoOM9DeFWDWDiU+fZQ4M6Xu+vPitXQIvtyozTW3zehA6w9Ww5jdA
+         GxQtZADR/6+QeqKo5SJ/gu6UMwjQNRp9L57vImHNM1l9Aq2RRnCTSdmZ1QG7tZEpJ+
+         1AMqUAM0DWdesKdDA7L37OFHTYMrYvIyBgX5VYJM=
+Date:   Sun, 3 Oct 2021 12:16:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [GIT PULL] Driver core fixes for 5.15-rc4
+Message-ID: <YVmDByRt0G36h1nC@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -62,54 +36,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused local variable ieee from ActivateBAEntry().
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index 7dfe7a055876..97afea4c3511 100644
---- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -10,8 +10,7 @@
- #include "rtllib.h"
- #include "rtl819x_BA.h"
+are available in the Git repository at:
 
--static void ActivateBAEntry(struct rtllib_device *ieee, struct ba_record *pBA,
--			    u16 Time)
-+static void ActivateBAEntry(struct ba_record *pBA, u16 Time)
- {
- 	pBA->b_valid = true;
- 	if (Time != 0)
-@@ -288,7 +287,7 @@ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
- 	else
- 		pBA->ba_param_set.field.buffer_size = 32;
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.15-rc4
 
--	ActivateBAEntry(ieee, pBA, 0);
-+	ActivateBAEntry(pBA, 0);
- 	rtllib_send_ADDBARsp(ieee, dst, pBA, ADDBA_STATUS_SUCCESS);
+for you to fetch changes up to df38d852c6814cbbd010d81e84efb9dc057d5ba6:
 
- 	return 0;
-@@ -390,7 +389,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
- 		pAdmittedBA->ba_start_seq_ctrl = pPendingBA->ba_start_seq_ctrl;
- 		pAdmittedBA->ba_param_set = *pBaParamSet;
- 		DeActivateBAEntry(ieee, pAdmittedBA);
--		ActivateBAEntry(ieee, pAdmittedBA, *pBaTimeoutVal);
-+		ActivateBAEntry(pAdmittedBA, *pBaTimeoutVal);
- 	} else {
- 		pTS->bAddBaReqDelayed = true;
- 		pTS->bDisable_AddBa = true;
-@@ -490,7 +489,7 @@ void TsInitAddBA(struct rtllib_device *ieee, struct tx_ts_record *pTS,
- 	pBA->ba_timeout_value = 0;
- 	pBA->ba_start_seq_ctrl.field.seq_num = (pTS->TxCurSeq + 3) % 4096;
+  kernfs: also call kernfs_set_rev() for positive dentry (2021-09-28 18:18:15 +0200)
 
--	ActivateBAEntry(ieee, pBA, BA_SETUP_TIMEOUT);
-+	ActivateBAEntry(pBA, BA_SETUP_TIMEOUT);
+----------------------------------------------------------------
+Driver core fixes for 5.15-rc4
 
- 	rtllib_send_ADDBAReq(ieee, pTS->TsCommonInfo.Addr, pBA);
- }
---
-2.32.0
+Here are some driver core and kernfs fixes for reported issues for
+5.15-rc4.  These fixes include:
+	- kernfs positive dentry bugfix
+	- debugfs_create_file_size error path fix
+	- cpumask sysfs file bugfix to preserve the user/kernel abi (has
+	  been reported multiple times.)
+	- devlink fixes for mdiobus devices as reported by the subsystem
+	  maintainers.
 
+Also included in here are some devlink debugging changes to make it
+easier for people to report problems when asked.  They have already
+helped with the mdiobus and other subsystems reporting issues.
+
+All of these have been linux-next for a while with no reported issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Hou Tao (1):
+      kernfs: also call kernfs_set_rev() for positive dentry
+
+Nirmoy Das (1):
+      debugfs: debugfs_create_file_size(): use IS_ERR to check for error
+
+Saravana Kannan (6):
+      driver core: fw_devlink: Improve handling of cyclic dependencies
+      driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+      net: mdiobus: Set FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for mdiobus parents
+      driver core: Set deferred probe reason when deferred by driver core
+      driver core: Create __fwnode_link_del() helper function
+      driver core: Add debug logs when fwnode links are added/deleted
+
+Tobias Klauser (1):
+      cpumask: Omit terminating null byte in cpumap_print_{list,bitmask}_to_buf
+
+ drivers/base/core.c        | 90 ++++++++++++++++++++++++++++++++--------------
+ drivers/net/phy/mdio_bus.c |  4 +++
+ fs/debugfs/inode.c         |  2 +-
+ fs/kernfs/dir.c            |  9 +++--
+ include/linux/cpumask.h    |  7 ++--
+ include/linux/fwnode.h     | 11 ++++--
+ 6 files changed, 87 insertions(+), 36 deletions(-)
