@@ -2,222 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D06420070
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 09:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB015420074
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 09:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhJCH2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 03:28:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34857 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229786AbhJCH2C (ORCPT
+        id S229849AbhJCHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 03:30:39 -0400
+Received: from unicom145.biz-email.net ([210.51.26.145]:45148 "EHLO
+        unicom145.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhJCHai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 03:28:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633245975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hDTlj8yauGXn36BnLPk7YQFUogtZGxp6fGoAswuoG/g=;
-        b=dr5WwdrErqvFXhFilcR50rvrGVY8HPdO5BjSl+Y8DViS0SZn+qx7crCdhD+0DflrEoX4vu
-        PO0AS0orQxiq/k8TEGBxff7ArUmZntgtkjWzcMCtz+MBNkO3PN8m9WrX/X5cV6IogZ+fA6
-        3TKR7bPYArXh5Pj+2eHNUifUvaxMYdU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-CTI4cSxbO9y2Ygl6_Etx8g-1; Sun, 03 Oct 2021 03:26:14 -0400
-X-MC-Unique: CTI4cSxbO9y2Ygl6_Etx8g-1
-Received: by mail-wm1-f72.google.com with SMTP id o11-20020a05600c378b00b0030d4f47013aso3085692wmr.7
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 00:26:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hDTlj8yauGXn36BnLPk7YQFUogtZGxp6fGoAswuoG/g=;
-        b=SOUQhEkyF0W3bmja53PyVvFuTi77KOuSkG8pn7D4QQ6O1rNsYcLqgpnHcD0njlFFou
-         i4qoBmMxw64ZtS+/BTq7ojMKwejlZ36FevDEbB1En7iv5Ge0hjoeCx0GhJbcQesnNHWA
-         KHrnpr58vtsLwcCc0q4KAG0JoqbiAZwfvXKxCzJY9MC2mNhsq4bI1x6SMLKVnI9RLflt
-         amyvVQfKsp0qeWb7BEa6XrF1QhMUPk2IMMetzlYM90CsX9UvwJ3u9Vr8L/7WBSBof2It
-         qGxW0ScueHprzbpbEtP/bgAySKpcegjUf0Jclwyrey1vw9V11w+Bb6j/ct1FMssDIPxx
-         x0IQ==
-X-Gm-Message-State: AOAM532Qaqf/b0m8HyEl4/C8N02dw+NdpaZLtm7H2udhOSGCZ9E+gnZu
-        TmPZaln8Y0oqyuiQj3tfs5tvs3YyhJDlEONz4NWxqYMW+5LLtO3nZtuF7qRpkbqQzv+Ff+UD9bV
-        Eap2ftnhcihAzVcXX61KvVHCB
-X-Received: by 2002:a5d:56cc:: with SMTP id m12mr7015398wrw.22.1633245973399;
-        Sun, 03 Oct 2021 00:26:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNAQtpj1eV275e1gGoSR2AJUhmX2Av/LkhXFA8TjxRNFl9fJFjPs+0pBxxeePuOYAE3C5EmA==
-X-Received: by 2002:a5d:56cc:: with SMTP id m12mr7015373wrw.22.1633245973096;
-        Sun, 03 Oct 2021 00:26:13 -0700 (PDT)
-Received: from redhat.com ([2.55.22.213])
-        by smtp.gmail.com with ESMTPSA id b15sm4804079wrr.90.2021.10.03.00.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 00:26:11 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 03:26:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20211003032253-mutt-send-email-mst@kernel.org>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <87fstm47no.fsf@redhat.com>
- <20211002141351-mutt-send-email-mst@kernel.org>
- <20211003070030.658fc94e.pasic@linux.ibm.com>
- <20211003021027-mutt-send-email-mst@kernel.org>
+        Sun, 3 Oct 2021 03:30:38 -0400
+Received: from ([60.208.111.195])
+        by unicom145.biz-email.net ((LNX1044)) with ASMTP (SSL) id WHF00045;
+        Sun, 03 Oct 2021 15:28:45 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2308.14; Sun, 3 Oct 2021 15:28:43 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <Larry.Finger@lwfinger.net>, <phil@philpotter.co.uk>,
+        <straube.linux@gmail.com>, <fmdefrancesco@gmail.com>,
+        <martin@kaiser.cx>, <linux-staging@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
+Subject: [PATCH] staging: r8188eu: Use kmemdup() to replace kmalloc + memcpy
+Date:   Sun, 3 Oct 2021 15:28:41 +0800
+Message-ID: <20211003072841.215903-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211003021027-mutt-send-email-mst@kernel.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   2021100315284586480ab6b99732ccbe6ed0624a85d86d
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 02:42:30AM -0400, Michael S. Tsirkin wrote:
-> On Sun, Oct 03, 2021 at 07:00:30AM +0200, Halil Pasic wrote:
-> > On Sat, 2 Oct 2021 14:20:47 -0400
-> > "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > 
-> > > > >From my perspective the problem is that the version of the device  
-> > > > remains in limbo as long as the features have not yet been finalized,
-> > > > which means that the endianness of the config space remains in limbo as
-> > > > well. Both device and driver might come to different conclusions.  
-> > > 
-> > > Version === legacy versus modern?
-> > > It is true that feature negotiation can not be used by device to decide that
-> > > question simply because it happens too late.
-> > > So let's not use it for that then ;)
-> > > 
-> > > Yes we have VERSION_1 which looks like it should allow this, but
-> > > unfortunately it only helps with that for the driver, not the device.
-> > > 
-> > > In practice legacy versus modern has to be determined by
-> > > transport specific versioning, luckily we have that for all
-> > > specified transports (can't say what happens with rproc).
-> > 
-> > So if we look at ccw, you say that the revision negotiation already
-> > determines whether VERSION_1 is negotiated or not, and the
-> > feature bit VERSION_1 is superfluous?
-> > 
-> > That would also imply, that 
-> > 1) if revision > 0 was negotiated then the device must offer VERSION_1
-> > 2) if revision > 0 was negotiated and the driver cleared VERSION_1
-> >    the device must refuse to operate.
-> > 3) if revision > 0 was negotiated then the driver should reject 
-> >    to drive a device if it does not offer VERSION_1
-> > 4) if revision > 0 was negotiated the driver must accept VERSION_1
-> > 5) if revision > 0 was *not* negotiated then the device should not offer
-> >    VERSION_1 because at this point it is already certain that the device
-> >    can not act in accordance to the virtio 1.0 or higher interface.
-> > 
-> > Does that sound about right?
-> 
-> To me, it does.
-> 
-> > IMHO we should also change 
-> > https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-160003
-> > and the definition of VERSION_1 because both sides have to know what is
-> > going on before features are fully negotiated. Or?
-> > 
-> > Regards,
-> > Halil
-> > 
-> 
-> I guess so. And I guess we need transport-specific sections
-> describing this behaviour for each transport.
-> 
-> So something like this, for starters?
+fix memdup.cocci warning:
+drivers/staging/r8188eu/os_dep/ioctl_linux.c:4452:33-40: WARNING opportunity for kmemdup
 
-Sent too early. So here's what I propose. Could you pls take a look
-and if you like this, post a ccw section?
-There's also an attempt to prevent fallback from modern to legacy
-here since if driver does fallback then failing FEATURES_OK can't work
-properly.
-That's a separate issue, will be a separate patch when I post
-this for consideration by the TC.
+Generated by: scripts/coccinelle/api/memdup.cocci
 
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/content.tex b/content.tex
-index 1398390..06271f4 100644
---- a/content.tex
-+++ b/content.tex
-@@ -140,10 +140,13 @@ \subsection{Legacy Interface: A Note on Feature
- Bits}\label{sec:Basic Facilities of a Virtio Device / Feature
- Bits / Legacy Interface: A Note on Feature Bits}
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index 20f6182fd93c..71843690356a 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -4189,12 +4189,11 @@ static int rtw_wx_set_priv(struct net_device *dev,
+ 			kfree(pmlmepriv->wps_probe_req_ie);
+ 			pmlmepriv->wps_probe_req_ie = NULL;
  
--Transitional Drivers MUST detect Legacy Devices by detecting that
--the feature bit VIRTIO_F_VERSION_1 is not offered.
--Transitional devices MUST detect Legacy drivers by detecting that
--VIRTIO_F_VERSION_1 has not been acknowledged by the driver.
-+Transitional drivers MAY support operating legacy devices.
-+Transitional devices MAY support operation by legacy drivers.
-+
-+Transitional drivers MUST detect legacy devices in a way that is
-+transport specific.
-+Transitional devices MUST detect legacy drivers in a way that
-+is transport specific.
- 
- In this case device is used through the legacy interface.
- 
-@@ -160,6 +163,33 @@ \subsection{Legacy Interface: A Note on Feature
- Specification text within these sections generally does not apply
- to non-transitional devices.
- 
-+\begin{note}
-+The device offers different features when used through
-+the legacy interface and when operated in accordance with this
-+specification.
-+\end{note}
-+
-+Transitional drivers MUST use Devices only through the legacy interface
-+if the feature bit VIRTIO_F_VERSION_1 is not offered.
-+Transitional devices MUST NOT offer VIRTIO_F_VERSION_1 when used through
-+the legacy interface.
-+
-+When the driver uses a device through the legacy interface, then it
-+MUST only accept the features the device offered through the
-+legacy interface.
-+
-+When used through the legacy interface, the device SHOULD
-+validate that the driver only accepted the features it
-+offered through the legacy interface.
-+
-+When operating a transitional device, a transitional driver
-+SHOULD NOT use the device through the legacy interface if
-+operation through the modern interface has failed.
-+In particular, a transitional driver
-+SHOULD NOT fall back to using the device through the
-+legacy interface if feature negotiation failed
-+(since that would defeat the purpose of the FEATURES_OK bit).
-+
- \section{Notifications}\label{sec:Basic Facilities of a Virtio Device
- / Notifications}
- 
-@@ -1003,6 +1033,12 @@ \subsubsection{Common configuration structure layout}\label{sec:Virtio Transport
- 
- The driver MUST NOT write a 0 to \field{queue_enable}.
- 
-+\paragraph}{Legacy Interface: Common configuration structure layout}\label{sec:Virtio Transport Options / Virtio Over PCI Bus / PCI Device Layout / Legacy Interface: Common configuration structure layout}
-+Transitional drivers SHOULD detect legacy devices by detecting
-+that the device has the Transitional PCI Device ID in
-+the range 0x1000 to 0x103f and lacks a VIRTIO_PCI_CAP_COMMON_CFG
-+capability specifying the location of a common configuration structure.
-+
- \subsubsection{Notification structure layout}\label{sec:Virtio Transport Options / Virtio Over PCI Bus / PCI Device Layout / Notification capability}
- 
- The notification location is found using the VIRTIO_PCI_CAP_NOTIFY_CFG
-@@ -1288,6 +1324,10 @@ \subsubsection{Legacy Interfaces: A Note on PCI Device Layout}\label{sec:Virtio
- Transitional devices MUST present part of configuration
- registers in a legacy configuration structure in BAR0 in the first I/O
- region of the PCI device, as documented below.
-+
-+Transitional devices SHOULD detect legacy drivers by detecting
-+access to the legacy configuration structure.
-+
- When using the legacy interface, transitional drivers
- MUST use the legacy configuration structure in BAR0 in the first
- I/O region of the PCI device, as documented below.
+-			pmlmepriv->wps_probe_req_ie = kmalloc(cp_sz, GFP_KERNEL);
++			pmlmepriv->wps_probe_req_ie = kmemdup(probereq_wpsie, cp_sz, GFP_KERNEL);
+ 			if (!pmlmepriv->wps_probe_req_ie) {
+ 				ret =  -EINVAL;
+ 				goto FREE_EXT;
+ 			}
+-			memcpy(pmlmepriv->wps_probe_req_ie, probereq_wpsie, cp_sz);
+ 			pmlmepriv->wps_probe_req_ie_len = cp_sz;
+ 		}
+ 		goto FREE_EXT;
+-- 
+2.27.0
 
