@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747764202AE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617544202B2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 18:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhJCQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 12:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhJCQ3a (ORCPT
+        id S231219AbhJCQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 12:33:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46332 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230426AbhJCQc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 12:29:30 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DAEC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 09:27:42 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id q205so17527985iod.8
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 09:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U5w14pACpoxsQ3TFrs7KmyZVY7r/vaDnkMZUZO1ngik=;
-        b=MXjrW9mY+a/gXFgLG6oQScrnY0uleIHBIcH9doKJKaK1+66Z3XPGlHC1yGYKZJ7upQ
-         GRO1je7knBI7usd9rQ9oQGx2iNhC8vC3F0w7G9G3IgmiLkpgug27fp5RTlVuGK1MREHm
-         hjX1vfP1qukT9Mcba/dSw7m1pMSFECYCIvy3tUNIer2u1PCVae+ZhKpBk9cH9aDv7XLq
-         8Tn/w5K/ERUb8eyfS7OezaRjrfnH7g5oiEdIs2J9khCX5nca43xko5mnDhlgElGZk2ZX
-         u+ndPrDlb3+WXdO24WfDhdncWjSD2xY4Au+Fxv/SRyvt/6GB5z4VH3W4016eFQGWzhas
-         ZKDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U5w14pACpoxsQ3TFrs7KmyZVY7r/vaDnkMZUZO1ngik=;
-        b=D1cqngcZZnHb5lX9I5fSNXWtLHbrOjPBjILtYIrtTfQrIhO0lVEH/4ke/BIGW0e4Kv
-         EWG1FsNeHwP08Wc+TJkSUno0biwazZvFa103Uz0Oi5xqr8oDaAoPjDSTwrlzx7JjDY29
-         B+olro1vyFNjGpPIoYRmM9fdgKBfB1Bk4rU/9wb67N8bGZj1Kkjg9xrSca7QdQptZOyk
-         mpowz3Pio42qnn7HFeiFOa2i09BsP8GM1e8+LaomG/1L8NfwagepXYQ3/sQ1BG77p1I4
-         ZacnIKL+/HTMDkJ7Sa5p2fp55gkpc553KlafaEQ9xj8uc2EVqedCjWzivlMrWNjflPSw
-         cQJg==
-X-Gm-Message-State: AOAM531ivNWqF/UW5jgx4m05Kypxm22TLZa0OXCaLpmwdjfbSBAGNM4b
-        Gyf174/rTyGggl+EJW33KIA29dW0+/KWf+Qk25M=
-X-Google-Smtp-Source: ABdhPJxVrz3rT6h1KZm+9SHUacnquEAHScQiTtCF8pHLENV9hptvWJl26PtoqE7yl5R+Y0mNFafi6gfZjEA9ZDrzX5g=
-X-Received: by 2002:a05:6638:16c5:: with SMTP id g5mr7339293jat.130.1633278462090;
- Sun, 03 Oct 2021 09:27:42 -0700 (PDT)
+        Sun, 3 Oct 2021 12:32:59 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 193GV7wK030923
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 3 Oct 2021 12:31:07 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 1F34115C34C3; Sun,  3 Oct 2021 12:31:07 -0400 (EDT)
+Date:   Sun, 3 Oct 2021 12:31:07 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 fixes for 5.15-rc4
+Message-ID: <YVnay/TJEr8K64+U@mit.edu>
 MIME-Version: 1.0
-References: <20211001024105.3217339-1-willy@infradead.org>
-In-Reply-To: <20211001024105.3217339-1-willy@infradead.org>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 3 Oct 2021 18:27:31 +0200
-Message-ID: <CA+fCnZeJ1AdvEmNmwo8r+ue0qtQVUoQyeMSsq0DMXyK2EQxj5g@mail.gmail.com>
-Subject: Re: [PATCH] kasan: Fix tag for large allocations when using CONFIG_SLAB
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 4:42 AM Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
->
-> If an object is allocated on a tail page of a multi-page slab, kasan
-> will get the wrong tag because page->s_mem is NULL for tail pages.
-> I'm not quite sure what the user-visible effect of this might be.
->
-> Fixes: 7f94ffbc4c6a ("kasan: add hooks implementation for tag-based mode")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/kasan/common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 2baf121fb8c5..41779ad109cd 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -298,7 +298,7 @@ static inline u8 assign_tag(struct kmem_cache *cache,
->         /* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
->  #ifdef CONFIG_SLAB
->         /* For SLAB assign tags based on the object index in the freelist. */
-> -       return (u8)obj_to_index(cache, virt_to_page(object), (void *)object);
-> +       return (u8)obj_to_index(cache, virt_to_head_page(object), (void *)object);
->  #else
->         /*
->          * For SLUB assign a random tag during slab creation, otherwise reuse
-> --
-> 2.32.0
->
+The following changes since commit baaae979b112642a41b71c71c599d875c067d257:
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+  ext4: make the updating inode data procedure atomic (2021-08-30 23:36:51 -0400)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+
+for you to fetch changes up to f2c77973507fd116c3657df1dc048864a2b16a1c:
+
+  ext4: recheck buffer uptodate bit under buffer lock (2021-10-01 00:10:28 -0400)
+
+----------------------------------------------------------------
+Fix a number of ext4 bugs in fast_commit, inline data, and delayed
+allocation.  Also fix error handling code paths in ext4_dx_readdir()
+and ext4_fill_super().  Finally, avoid a grabbing a journal head in
+the delayed allocation write in the common cases where we are
+overwriting an pre-existing block or appending to an inode.
+
+----------------------------------------------------------------
+Eric Whitney (2):
+      ext4: remove extent cache entries when truncating inline data
+      ext4: enforce buffer head state assertion in ext4_da_map_blocks
+
+Hou Tao (1):
+      ext4: limit the number of blocks in one ADD_RANGE TLV
+
+Jeffle Xu (1):
+      ext4: fix reserved space counter leakage
+
+Ritesh Harjani (1):
+      ext4: fix loff_t overflow in ext4_max_bitmap_size()
+
+Theodore Ts'o (2):
+      ext4: add error checking to ext4_ext_replay_set_iblocks()
+      Merge branch 'delalloc-buffer-write' into dev
+
+Zhang Yi (5):
+      ext4: check and update i_disksize properly
+      ext4: correct the error path of ext4_write_inline_data_end()
+      ext4: factor out write end code of inline file
+      ext4: drop unnecessary journal handle in delalloc write
+      ext4: recheck buffer uptodate bit under buffer lock
+
+yangerkun (2):
+      ext4: flush s_error_work before journal destroy in ext4_fill_super
+      ext4: fix potential infinite loop in ext4_dx_readdir()
+
+ fs/ext4/dir.c         |   6 +-
+ fs/ext4/ext4.h        |   3 -
+ fs/ext4/extents.c     |  19 ++++--
+ fs/ext4/fast_commit.c |   6 ++
+ fs/ext4/inline.c      | 150 +++++++++++++++++++++++++--------------------
+ fs/ext4/inode.c       | 176 ++++++++++++++++++-----------------------------------
+ fs/ext4/super.c       |  21 +++++--
+ 7 files changed, 182 insertions(+), 199 deletions(-)
