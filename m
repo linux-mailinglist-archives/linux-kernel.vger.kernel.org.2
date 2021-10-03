@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDE041FF46
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 04:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A03141FF51
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 05:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhJCCwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 22:52:20 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:41542 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhJCCwS (ORCPT
+        id S229574AbhJCDFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 23:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhJCDFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 22:52:18 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWrXy-009Wzm-I7; Sun, 03 Oct 2021 02:48:14 +0000
-Date:   Sun, 3 Oct 2021 02:48:14 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH V4 11/22] LoongArch: Add process management
-Message-ID: <YVkZ7jLWJpvZz9us@zeniv-ca.linux.org.uk>
-References: <20210927064300.624279-1-chenhuacai@loongson.cn>
- <20210927064300.624279-12-chenhuacai@loongson.cn>
+        Sat, 2 Oct 2021 23:05:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DC4C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 20:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4YvURUzfuR+b0ciJbjJBoAaKlNBhJh9slT7j92oq2ws=; b=wyjSaBqMLdq3AWlScqXPahhc8+
+        DJR3rBpOwDkvd5yGt614xQcqLNgeAtcYsuVU4dCWz1X38P/8USRS1P3OK/2lx8uvTUa3ONEjnNhFq
+        J/7SefOAPKbf/hJDnz6hDVhCtQc6whfuyNiytwfFVgNym5NuXcsPmIz+7kLdM6FaKgMFhod2Trrnp
+        zKSOfIFKf8/tz/pmeihDv1kYMfDzDtRWlK3375hzqkZeZPTLsGdBhs9TF4j180fR8w5iLafccdU6Y
+        YkS4obrnIPlxlwD+/9O5yjbYqfc/dGdQUGKCmUHr/IrXlmlzsM8oLSF3XxMYfdu/4rj5RdKbd00ZM
+        FML0DFbw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWrnC-0037SG-2t; Sun, 03 Oct 2021 03:03:58 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH] ASoC: atmel: add COMPILE_TEST for SND_ATMEL_SOC_PDC
+Date:   Sat,  2 Oct 2021 20:03:57 -0700
+Message-Id: <20211003030357.32456-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927064300.624279-12-chenhuacai@loongson.cn>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:42:48PM +0800, Huacai Chen wrote:
+Geert pointed out that since sound/soc has the soc_dummy_driver for
+NO_DMA platforms, it is possible (desirable) to have drivers that
+depend on HAS_DMA to alternately depend on COMPILE_TEST.
 
-> +/*
-> + * Does the process account for user or for system time?
-> + */
-> +#define user_mode(regs) (((regs)->csr_prmd & PLV_MASK) == PLV_USER)
-> +
-> +static inline int is_syscall_success(struct pt_regs *regs)
-> +{
-> +	return !regs->regs[7];
-> +}
->
-> +static inline long regs_return_value(struct pt_regs *regs)
-> +{
-> +	if (is_syscall_success(regs) || !user_mode(regs))
-> +		return regs->regs[4];
-> +	else
-> +		return -regs->regs[4];
-> +}
+This means that SND_ATMEL_SOC_PDC can depend on HAS_DMA || COMPIE_TEST.
 
-Huh???  That looks like you've copied those from MIPS, but on MIPS we have
-things like
-        li      t0, -EMAXERRNO - 1      # error?
-        sltu    t0, t0, v0
-        sd      t0, PT_R7(sp)           # set error flag
-        beqz    t0, 1f
+Fixes: 6c5c659dfe3f ("ASoC: atmel: ATMEL drivers don't need HAS_DMA")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/atmel/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-        ld      t1, PT_R2(sp)           # syscall number
-        dnegu   v0                      # error
-        sd      t1, PT_R0(sp)           # save it for syscall restarting
-1:      sd      v0, PT_R2(sp)           # result
-right after the call of sys_...(), along with the restart logics
-looking like
-        if (regs->regs[0]) {
-                switch(regs->regs[2]) {
-                case ERESTART_RESTARTBLOCK:
-                case ERESTARTNOHAND:
-IOW, syscall return values from -EMAXERRNO to -1 are negated, with
-regs[7] set accordingly.  Nothing of that sort is done in your
-patchset after syscall, and if it had been, your restart logics in
-signal handling would've been wrong anyway.
-
-What's going on there?
+--- linux-next-20211001.orig/sound/soc/atmel/Kconfig
++++ linux-next-20211001/sound/soc/atmel/Kconfig
+@@ -11,6 +11,7 @@ if SND_ATMEL_SOC
+ 
+ config SND_ATMEL_SOC_PDC
+ 	bool
++	depends on HAS_DMA || COMPILE_TEST
+ 
+ config SND_ATMEL_SOC_DMA
+ 	bool
