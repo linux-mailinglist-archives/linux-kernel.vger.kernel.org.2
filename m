@@ -2,179 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F8A420058
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 08:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1237742005C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 08:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhJCGoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 02:44:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229786AbhJCGoV (ORCPT
+        id S229813AbhJCGt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 02:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhJCGt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 02:44:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633243352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r+Bl1u326f9yQhaXb6udjEGQWjjecevglQG5IV4fpCo=;
-        b=dZfMOxllVGBiU9LJpGvXoqspg+dph6U38+PMQLCV1uq9keC8zo46koQIO+nYWOFAcCh9nF
-        +Wwzt7WXOvAhzLEvGhnfJD/HxhRv1ZukZYKFlopSJFK1gC3p+y6zhDUU54CDfio60q4b7Q
-        +YT2YLrxKMXKEcFFtxzsJlxKqKJZtc8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-ZkYjfnZmMfioMSVB3nRFQg-1; Sun, 03 Oct 2021 02:42:31 -0400
-X-MC-Unique: ZkYjfnZmMfioMSVB3nRFQg-1
-Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso14078431edj.20
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 23:42:31 -0700 (PDT)
+        Sun, 3 Oct 2021 02:49:26 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20948C061780
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 23:47:39 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id a13so13099062qtw.10
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 23:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=MIlI/WQkwPpdmPLTKH138J1xzqOq2TNXP4QRduXN8Vw=;
+        b=l9fv3An1OZtM4yoLpki23bpZ32SOEocP4RUbkPgIVeuT45EeiRld1CZx49ijLBpxnT
+         ypHkMyfWlAxCTKaEcy2k6rM0kPuIc1XwkUsZLLbxi7n4H+fXLynIHmY+uZHpeiaNDW0O
+         6zLw543AtV0rWPcwcqSPn7475dsL98XyrLw9Inz8X3b6RvvP+eUEhNOYJwaibgXFcFQi
+         brY/VTCxcaDvAJs7x/cRVrjPb0rDXf1Q6hEEZv+Ij61mRr8JaOwupuZhAC6YmmgmBEsu
+         1igMqpsiG/ZE8RZ711AZ2aLnPHilwjlNxwosNAGBNAdxPGfKcXM37Giei+Yx7zREQ6h2
+         6wew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r+Bl1u326f9yQhaXb6udjEGQWjjecevglQG5IV4fpCo=;
-        b=vfMF4mP7iMSMYveGI4ZlpgQ/phCtyPrxIHwLMxJ+L2SF2hfmj/UWKBwFgkMKrq8VCY
-         lTKPN1RnDhRmsUVKwviDaZack3lufCEGCFRo/0ec+FE6N15yqSo2868A1nhEEGih9fCU
-         f+3TA3yvo+mn/rAlooMhzm0yJo/HVN9mft4ijfqUpbVBTTY1mCBxzyXpTXXLqfndPR16
-         5FGR7v3pwW0O47yp1RbxIqa66dHTgA2yTyt/xgtqPPyszUHJrXLv65hzxqqCjaM1rFsQ
-         JH/D6jeQ2dKnORybEWkrwTJZBODJJnAYW/qjudTw8/eDXwq1VE2KcPTgzxEDBk9PzFBj
-         OUtQ==
-X-Gm-Message-State: AOAM533LSwo35wnrAmwAxA+2QHlhHKllE0SnHQlJxa+2aVan7+PXH/+x
-        79GNXi2U6xfUN0cG7rJjvc5s+1OJ1GzQRFxjFOGcr39gCF8hMgr2gzR1i+8/XPnkEVb/eS9bzCx
-        Cn8/NFMpe+rPiZXMnB5SEtbih
-X-Received: by 2002:a17:907:2d0d:: with SMTP id gs13mr8578181ejc.94.1633243350450;
-        Sat, 02 Oct 2021 23:42:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtHT8Cegow6Zx3CCdmEJQH1USoUtFEpuumSAmNgt5hz1mJRyfrkZWULFFV8XgcH+xyZ4AWZQ==
-X-Received: by 2002:a17:907:2d0d:: with SMTP id gs13mr8578148ejc.94.1633243350156;
-        Sat, 02 Oct 2021 23:42:30 -0700 (PDT)
-Received: from redhat.com ([2.55.22.213])
-        by smtp.gmail.com with ESMTPSA id h10sm5564701edf.85.2021.10.02.23.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Oct 2021 23:42:29 -0700 (PDT)
-Date:   Sun, 3 Oct 2021 02:42:25 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20211003021027-mutt-send-email-mst@kernel.org>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <87fstm47no.fsf@redhat.com>
- <20211002141351-mutt-send-email-mst@kernel.org>
- <20211003070030.658fc94e.pasic@linux.ibm.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=MIlI/WQkwPpdmPLTKH138J1xzqOq2TNXP4QRduXN8Vw=;
+        b=vfwq+ZYz0CHdipeVkqIcthEYbjg7hierZ3flCf2A5Kug49nXiGMQgQZt+zanspBEHg
+         TgVVWDdelAwzaRaxWyZVlb5LgREzCyoYsT35iYvgs5IDtA8hPLJ+shoW0HDr+IT5AHQ0
+         Ttbji5KOZMSZYqQcUfIPRxVmVW/pTrnmuDl3wHFK1d0UG7LlrTi9ZqMQ+sb7KO5lTrrb
+         APuNpHMmfQBCXNJ08486twSmx6qqSiZwzX55l7tnVHLgKXCOIDEBE0zPDSg1xpzGK74L
+         LqlT1Ng11TJ9Vw/+BpPAGN5Pq0kWOdbjzH+WtmJhY3MQqsdAYZJU+rzqgNTVxcW1O+gB
+         ls+w==
+X-Gm-Message-State: AOAM532YzgIph9QyHzohNaaUbmRjRGKaKbK+AeDKeUPHRiA1qlIWIN5c
+        blIZWtqKfQ7510zmb0CDn9gIGSStT1evBf+muA0=
+X-Google-Smtp-Source: ABdhPJzbJIs2LkFG/iTKk7xwueTfCuuELU58rET42hPgmgPEF4VY3/Ny0mrwyDDD7WPZvc6WMfG7lSF3Fblqq4eWvKU=
+X-Received: by 2002:ac8:5617:: with SMTP id 23mr7084377qtr.257.1633243658210;
+ Sat, 02 Oct 2021 23:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211003070030.658fc94e.pasic@linux.ibm.com>
+Received: by 2002:a05:620a:4d9:0:0:0:0 with HTTP; Sat, 2 Oct 2021 23:47:37
+ -0700 (PDT)
+Reply-To: Evelynscott20211@gmail.com
+From:   Richard smith <rw4577778@gmail.com>
+Date:   Sun, 3 Oct 2021 06:47:37 +0000
+Message-ID: <CAAcs34x+W3H3S8hL0ifT=qKet8GLUfaF9+0t83R7rhPU393uJQ@mail.gmail.com>
+Subject: HI
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 07:00:30AM +0200, Halil Pasic wrote:
-> On Sat, 2 Oct 2021 14:20:47 -0400
-> "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> 
-> > > >From my perspective the problem is that the version of the device  
-> > > remains in limbo as long as the features have not yet been finalized,
-> > > which means that the endianness of the config space remains in limbo as
-> > > well. Both device and driver might come to different conclusions.  
-> > 
-> > Version === legacy versus modern?
-> > It is true that feature negotiation can not be used by device to decide that
-> > question simply because it happens too late.
-> > So let's not use it for that then ;)
-> > 
-> > Yes we have VERSION_1 which looks like it should allow this, but
-> > unfortunately it only helps with that for the driver, not the device.
-> > 
-> > In practice legacy versus modern has to be determined by
-> > transport specific versioning, luckily we have that for all
-> > specified transports (can't say what happens with rproc).
-> 
-> So if we look at ccw, you say that the revision negotiation already
-> determines whether VERSION_1 is negotiated or not, and the
-> feature bit VERSION_1 is superfluous?
-> 
-> That would also imply, that 
-> 1) if revision > 0 was negotiated then the device must offer VERSION_1
-> 2) if revision > 0 was negotiated and the driver cleared VERSION_1
->    the device must refuse to operate.
-> 3) if revision > 0 was negotiated then the driver should reject 
->    to drive a device if it does not offer VERSION_1
-> 4) if revision > 0 was negotiated the driver must accept VERSION_1
-> 5) if revision > 0 was *not* negotiated then the device should not offer
->    VERSION_1 because at this point it is already certain that the device
->    can not act in accordance to the virtio 1.0 or higher interface.
-> 
-> Does that sound about right?
-
-To me, it does.
-
-> IMHO we should also change 
-> https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-160003
-> and the definition of VERSION_1 because both sides have to know what is
-> going on before features are fully negotiated. Or?
-> 
-> Regards,
-> Halil
-> 
-
-I guess so. And I guess we need transport-specific sections
-describing this behaviour for each transport.
-
-So something like this, for starters?
-
-diff --git a/content.tex b/content.tex
-index 1398390..c526dd3 100644
---- a/content.tex
-+++ b/content.tex
-@@ -140,10 +140,13 @@ \subsection{Legacy Interface: A Note on Feature
- Bits}\label{sec:Basic Facilities of a Virtio Device / Feature
- Bits / Legacy Interface: A Note on Feature Bits}
- 
--Transitional Drivers MUST detect Legacy Devices by detecting that
--the feature bit VIRTIO_F_VERSION_1 is not offered.
--Transitional devices MUST detect Legacy drivers by detecting that
--VIRTIO_F_VERSION_1 has not been acknowledged by the driver.
-+Transitional drivers MAY support operating legacy devices.
-+Transitional devices MAY support operation by legacy drivers.
-+
-+Transitional drivers MUST detect legacy devices in a way that is
-+transport specific.
-+Transitional devices MUST detect legacy drivers in a way that
-+is transport specific.
- 
- In this case device is used through the legacy interface.
- 
-@@ -160,6 +163,25 @@ \subsection{Legacy Interface: A Note on Feature
- Specification text within these sections generally does not apply
- to non-transitional devices.
- 
-+\begin{note}
-+The device offers different features when used through
-+the legacy interface and when operated in accordance with this
-+specification.
-+\end{note}
-+
-+Transitional drivers MUST use Devices only through the legacy interface
-+if the feature bit VIRTIO_F_VERSION_1 is not offered.
-+Transitional devices MUST NOT offer VIRTIO_F_VERSION_1 when used through
-+the legacy interface.
-+
-+When the driver uses a device through the legacy interface, then it
-+MUST only accept the features the device offered through the
-+legacy interface.
-+
-+When used through the legacy interface, the device SHOULD
-+validate that the driver only accepted the features it
-+offered through the legacy interface.
-+
- \section{Notifications}\label{sec:Basic Facilities of a Virtio Device
- / Notifications}
- 
-
+LS0gDQpHw7PDsGFuIGRhZywgdmludXIgbWlubiwNCg0KR8Ozw7BhbiBkYWdpbm4gZWxza2FuIG3D
+rW4sIGh2ZXJuaWcgZXJ0dSDDrSBsYW5nYW4gdMOtbWE/IMOJZyBlciDDoW7DpmfDsHVyIG1lw7AN
+CnVwcGzDvXNhIMO+aWcgdW0gw6FyYW5ndXIgbWlubiB2acOwIGHDsCBmw6Egw75lc3NhciBhcmZs
+ZWlmw7BhcnNqw7PDsGlyDQpGbHl0amEgbWXDsCDDvsOhdHR0w7ZrdSBuw71ycmEgc2Ftc3RhcmZz
+YcOwaWxhIGZyw6EgQ2hpbGUuIE7Dug0Kw4lnIGVyIGHDsCBnZXJhIGVybGVuZGlyIGZqw6FyZmVz
+dGluZ2FydmVya2Vmbmkgw6EgSW5kbGFuZGkgbWXDsCBlaWdpbiBobHV0ZGVpbGQgw60NCkdyYW5k
+IHNhbXRhbHMsIGVuIMOpZyBoZWYgZWtraSBnbGV5bXQgdmnDsGxlaXRuaSDDvmlubmkgb2cgcmV5
+bnQgc3ZvIGxhbmd0Lg0KdGlsIGHDsCBoasOhbHBhIG3DqXIgYcOwIGZseXRqYSDDvsOhIGFyZmxl
+aWbDsGFyc2rDs8OwaXIsIGphZm52ZWwgw77Ds3R0IMO+YcOwIHbDpnJpDQpFaW5odmVybiB2ZWdp
+bm4gdMOza3N0IGVpbmh2ZXJuIHZlZ2lubiwgaGFmw7B1IHNhbWJhbmQgdmnDsCByaXRhcmEgbcOt
+bmEgw60NCkxvbcOpIFTDs2fDsywgVmVzdHVyLUFmcsOta3UsDQpIw7puIGhlaXRpciBmcsO6IEV2
+ZWx5biBTY290dCwgw60gdMO2bHZ1cMOzc3RpIGhlbm5hci4NCkhlaW1pbGlzZmFuZyAoRXZlbHlu
+c2NvdHQyMDIxMUBnbWFpbC5jb20pIEJpZGR1IGhlbm5pIGHDsCBzZW5kYSDDvsOpcg0KZnVsbGEg
+dXBwaMOmw7BpbmENCmFmICgkIDk1MC4wMDAuMDApLCBuw611IGh1bmRydcOwIGZpbW10dSDDvsO6
+c3VuZCBCYW5kYXLDrWtpbg0KRG9sbGFyYSBzZW0gw6lnIGjDqWx0IGZ5cmlyIGLDpnR1ciDDvsOt
+bmFyIGZ5cmlyIGFsbGEgZnlycmkgdmnDsGxlaXRuaSDDvsOtbmENCk9nIHJleW5kdSBhw7AgaGrD
+oWxwYSBtw6lyIHZpw7AgdmnDsHNraXB0aW4uIMOJZyDDvmFra2Egdmlya2lsZWdhDQpWacOwbGVp
+dG5pIMO+w61uYSBhZnR1ciDDvsOhLiBTdm8gZWtraSBoaWthIHZpw7Agb2cgaGFmw7B1IHNhbWJh
+bmQgdmnDsCByaXRhcmENCm3DrW5hIGZyw7ogRXZlbHluIFNjb3R0IG9nIHNlZ8OwdSBoZW5uaSBo
+dmFyIMOhIGHDsCBmw6EgaHJhw7BiYW5rYWtvcnRpw7AgYWYNCkdyYW5kIFRvdGFsICgkIDk1MC4w
+MDAuMDApLiBWaW5zYW1sZWdhc3QgbMOhdHR1IG1pZyB2aXRhIHN0cmF4IGVmIMO+w7oNCkbDoSDD
+vmHDsCDDvmFubmlnIGHDsCB2acOwIGdldHVtIGRlaWx0IGdsZcOwaSBlZnRpciBhbGxhIMO+asOh
+bmluZ3VuYQ0Kw75ldHRhIHNraXB0aSAuDQpOw7puYSBlciDDqWcgbWrDtmcgdXBwdGVraW5uIGjD
+qXIgdmVnbmEgZmrDoXJmZXN0aW5nYXJ2ZXJrZWZuYS4NCnNlbSDDqWcgaGVmIG1lw7AgbsO9amEg
+bWFrYSBtaW5uLiBBw7AgbG9rdW0gYcOwIG1pbm5pciDDvmlnIMOhIGHDsCDDqWcgaGFmw7BpDQpM
+ZWnDsGJlaW5pbmdhciBzZW5kYXIgdGlsIHJpdGFyYSBtaW5uYXIgZnlyaXIgw77DrW5hIGjDtm5k
+IHRpbCBhw7AgbGV5c2Egw7pyDQpIcmHDsGJhbmthIGtvcnQsIHN2byBla2tpIGhpa2EgdmnDsCBh
+w7AgaGFmYSBzYW1iYW5kIHZpw7AgZnLDuiBFdmVseW4gU2NvdHQsIGjDum4NClZpw7AgbXVudW0g
+c2VuZGEgw77DqXIgdXBwaMOmw7BpbmEgw6FuIHRhZmFyLg0KDQpNZcOwIGt2ZcOwanUsDQpSaWNo
+YXJkIFNtaXRoLg0K
