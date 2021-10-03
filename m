@@ -2,156 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D454B42032B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 19:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB94420336
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhJCRzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 13:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
+        id S231303AbhJCSGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 14:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhJCRzM (ORCPT
+        with ESMTP id S230519AbhJCSGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 13:55:12 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F3CC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 10:53:25 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id y15so15931820ilu.12
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 10:53:25 -0700 (PDT)
+        Sun, 3 Oct 2021 14:06:52 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE7EC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 11:05:04 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id y197so17676551iof.11
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 11:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oeR+JF91jA1RQ/aOGCMv9JGlVQuVQcLbc+E39kT+rCw=;
-        b=Oz0X13K4A5Wxv8TSwZFvrtgoZI8c1LLizlUsK5uGBqeK+lZRI6TeimzkkrpM0Cv6A0
-         iz2hkBIW81q8lafmBy/39tXCCJDcXwa+cPmhWUk18g+ylhaNxXluF6bJzBy2jftvcBOt
-         zs03g6CPTdDPDPeWzvVdmNaqOJtm+ECWep4sEtwmZr59hNKhZhVddVsiSGNLpbY4XPHi
-         OIudMIGF7UqmTMgpzCUZpzpB2OEbCBEwSsXKtEhRt2I+xPhLX+Vrikuz7ZT6eWw1lUm7
-         cksRa1KUS617K17wBYKmn1JUJ0gMWXH2O6NI50db6y94E281nr2TnhWqqAcBpCdvVU1U
-         afUA==
+        bh=0t/uC6UY+gZWkI7u9HEXsrryIwtnXmLh6shI3cfFXHw=;
+        b=cB6WICj3ZrwgOR0Ic+R8lmr9MqGCJSjbqzjS/sDhbyud/r8u+UnfjPxTCJTSLWRt4+
+         V6y5PAv6L4Yq4CsIjP35UkZ7PCt6QdkKRYUPTYH04s3mtu0sGObyz0XPpFcWpMtrp79D
+         Rgqo+nD95CxYkJutsZiIUFKvP02dN0/JQnZRd5zW0bwO4SEUjjSJdDLmimfOuxqlMDA1
+         Jo1gCyYZPpYEouHk0QUNmV2ciOagnuF8WJqWOlL+yvMD7LEqD6+XjGdodlNdIsZch40w
+         cVUo7foe41DX1dcfeB04jXSdxKrtIpHy+WMW51vGTDUKxqz26DewSm5PQZ5gLJWXaOwh
+         F5gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oeR+JF91jA1RQ/aOGCMv9JGlVQuVQcLbc+E39kT+rCw=;
-        b=jhF6/9b8Eg2JxeaIYiLbobDqqBAe2P4rCaxZU9s/coUCXroiO70kxp2ZPj8ei4QJQa
-         cKO2EHmufix56ElDXtEG4u5pmmCcc3ZII3pxmuRYLP5EtKofBpCkNp5iIfX1emfD/bcV
-         tz91jnsm0E+Fi0WNsb0iZDOqSkTZsSFFzCpG/1huiwwSf8AQTlI91r5YrKbROrr/6xmC
-         +4KhnQeO4qZyiKHRMHlsLVx72qnyZhXyUDl2pgjVHMuzpzsLtexucZU1Y3mlD7ziFU6t
-         YKHJXMNndd6ueKltxY855E+vIfS9f/q6nne+AjuQXcoeSu2wJ6yR/El0S7fgPWBNcUMW
-         wvGg==
-X-Gm-Message-State: AOAM533FqSjwoBKILNItmkNTkWoAdsuzXKh4ZEW4FGSAvZFNQeS1N+WA
-        z8X6BDZGD+hQEiY/2pNF2r+LN5ER10HC7dDi4nI=
-X-Google-Smtp-Source: ABdhPJx7lXt8UfdmzGB8wlRlWLvNEmXlmAbJHZpefNkY7xPuzVioB7oF5+VJLw+C1z2ZfelfEM3quw05Y87cASXBVTI=
-X-Received: by 2002:a05:6e02:bf1:: with SMTP id d17mr2423631ilu.81.1633283604964;
- Sun, 03 Oct 2021 10:53:24 -0700 (PDT)
+        bh=0t/uC6UY+gZWkI7u9HEXsrryIwtnXmLh6shI3cfFXHw=;
+        b=HU0uu/Dfa8ede/sjj9M7aQgvziYju+eyGX5MsENXYPYOI0s69Zs0ay2105vlvVweJU
+         KVr+8IrncQfqoO2XZj+lCwvNVXcM+tay+tekUQqDgD2mBbrji8+4Xkwlg3PZ11P5ZW4U
+         Zm8eWq2vy0xT+pT4e+etcrrjjljVeNfA31NnTCId3fUOTBPI8MthuD+jUwaWiPQGZoyb
+         dLEBWz72dqhstgTAjXYUzvSHUo35si9pK0TruXWC6I6oTjw2KB6K1BV/Gcrlp+yylscZ
+         jl0b0X8GhTyc9WXNidxGkxM+l5iDRlxFeEMw31yvhQcz03A6ccmxm7s9pqcTMszkL7wK
+         r3QA==
+X-Gm-Message-State: AOAM533ohNtQuwJAPm2rk8XkiVgyp7W4/SaHDzfpOFoptcUpHPge8AwG
+        jYTONOOUhKYucxBmEg+LzH4zgb0SOevRjG1r2MlJOhClxCrY8A==
+X-Google-Smtp-Source: ABdhPJwDVfrttSPm9m8jYxfYJ/qQN44t4XnSk0Jhu7W+St8ZuSLv9HUuBgDcghtNm0TzWUFmTK1FeeXxM4ShmSbA7k0=
+X-Received: by 2002:a6b:c38d:: with SMTP id t135mr6528600iof.99.1633284304078;
+ Sun, 03 Oct 2021 11:05:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913112609.2651084-1-elver@google.com>
-In-Reply-To: <20210913112609.2651084-1-elver@google.com>
+References: <20210922205525.570068-1-nathan@kernel.org>
+In-Reply-To: <20210922205525.570068-1-nathan@kernel.org>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 3 Oct 2021 19:53:14 +0200
-Message-ID: <CA+fCnZdvSmTguF_uKQTHgQK=QZhx7RHF-j_YaRGSPHvvqEU2cw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] stackdepot, kasan, workqueue: Avoid expanding
- stackdepot slabs when holding raw_spin_lock
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
+Date:   Sun, 3 Oct 2021 20:04:53 +0200
+Message-ID: <CA+fCnZdfMYvQ1o8n41dDzgJUArsUyhnb9Y_azgCVuzj6_KBifA@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+To:     Nathan Chancellor <nathan@kernel.org>,
         Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:26 PM Marco Elver <elver@google.com> wrote:
+On Wed, Sep 22, 2021 at 10:55 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> Shuah Khan reported [1]:
+> Currently, the asan-stack parameter is only passed along if
+> CFLAGS_KASAN_SHADOW is not empty, which requires KASAN_SHADOW_OFFSET to
+> be defined in Kconfig so that the value can be checked. In RISC-V's
+> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means that
+> asan-stack does not get disabled with clang even when CONFIG_KASAN_STACK
+> is disabled, resulting in large stack warnings with allmodconfig:
 >
->  | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
->  | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
->  | it tries to allocate memory attempting to acquire spinlock in page
->  | allocation code while holding workqueue pool raw_spinlock.
->  |
->  | There are several instances of this problem when block layer tries
->  | to __queue_work(). Call trace from one of these instances is below:
->  |
->  |     kblockd_mod_delayed_work_on()
->  |       mod_delayed_work_on()
->  |         __queue_delayed_work()
->  |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
->  |             insert_work()
->  |               kasan_record_aux_stack()
->  |                 kasan_save_stack()
->  |                   stack_depot_save()
->  |                     alloc_pages()
->  |                       __alloc_pages()
->  |                         get_page_from_freelist()
->  |                           rm_queue()
->  |                             rm_queue_pcplist()
->  |                               local_lock_irqsave(&pagesets.lock, flags);
->  |                               [ BUG: Invalid wait context triggered ]
+> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
+> error: stack frame size (14400) exceeds limit (2048) in function
+> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+> static int lb035q02_connect(struct omap_dss_device *dssdev)
+>            ^
+> 1 error generated.
 >
-> PROVE_RAW_LOCK_NESTING is pointing out that (on RT kernels) the locking
-> rules are being violated. More generally, memory is being allocated from
-> a non-preemptive context (raw_spin_lock'd c-s) where it is not allowed.
+> Ensure that the value of CONFIG_KASAN_STACK is always passed along to
+> the compiler so that these warnings do not happen when
+> CONFIG_KASAN_STACK is disabled.
 >
-> To properly fix this, we must prevent stackdepot from replenishing its
-> "stack slab" pool if memory allocations cannot be done in the current
-> context: it's a bug to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> non-preemptive contexts, including raw_spin_locks (see gfp.h and
-> ab00db216c9c7).
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+> References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8 and earlier")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  scripts/Makefile.kasan | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> The only downside is that saving a stack trace may fail if: stackdepot
-> runs out of space AND the same stack trace has not been recorded before.
-> I expect this to be unlikely, and a simple experiment (boot the kernel)
-> didn't result in any failure to record stack trace from insert_work().
+> diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+> index 801c415bac59..b9e94c5e7097 100644
+> --- a/scripts/Makefile.kasan
+> +++ b/scripts/Makefile.kasan
+> @@ -33,10 +33,11 @@ else
+>         CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
+>          $(call cc-param,asan-globals=1) \
+>          $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
+> -        $(call cc-param,asan-stack=$(stack_enable)) \
+>          $(call cc-param,asan-instrument-allocas=1)
+>  endif
+
+This part of code always looked weird to me.
+
+Shouldn't we be able to pull all these options out of the else section?
+
+Then, the code structure would make sense: first, try applying
+KASAN_SHADOW_OFFSET; if failed, use CFLAGS_KASAN_MINIMAL; and then try
+applying all these options one by one.
+
+> +CFLAGS_KASAN += $(call cc-param,asan-stack=$(stack_enable))
+> +
+>  endif # CONFIG_KASAN_GENERIC
 >
-> The series includes a few minor fixes to stackdepot that I noticed in
-> preparing the series. It then introduces __stack_depot_save(), which
-> exposes the option to force stackdepot to not allocate any memory.
-> Finally, KASAN is changed to use the new stackdepot interface and
-> provide kasan_record_aux_stack_noalloc(), which is then used by
-> workqueue code.
+>  ifdef CONFIG_KASAN_SW_TAGS
 >
-> [1] https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
->
-> v2:
-> * Refer to __stack_depot_save() in comment of stack_depot_save().
->
-> Marco Elver (6):
->   lib/stackdepot: include gfp.h
->   lib/stackdepot: remove unused function argument
->   lib/stackdepot: introduce __stack_depot_save()
->   kasan: common: provide can_alloc in kasan_save_stack()
->   kasan: generic: introduce kasan_record_aux_stack_noalloc()
->   workqueue, kasan: avoid alloc_pages() when recording stack
->
->  include/linux/kasan.h      |  2 ++
->  include/linux/stackdepot.h |  6 +++++
->  kernel/workqueue.c         |  2 +-
->  lib/stackdepot.c           | 52 ++++++++++++++++++++++++++++++--------
->  mm/kasan/common.c          |  6 ++---
->  mm/kasan/generic.c         | 14 ++++++++--
->  mm/kasan/kasan.h           |  2 +-
->  7 files changed, 66 insertions(+), 18 deletions(-)
->
+> base-commit: 4057525736b159bd456732d11270af2cc49ec21f
 > --
-> 2.33.0.309.g3052b89438-goog
+> 2.33.0.514.g99c99ed825
 >
-
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-
-for the series.
