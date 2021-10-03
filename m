@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D6441FF0C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 03:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAE141FF16
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 03:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhJCBRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 21:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbhJCBRn (ORCPT
+        id S229523AbhJCBbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 21:31:37 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:40998 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhJCBbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 21:17:43 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEE9C0613EC
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 18:15:56 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v18so48663787edc.11
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 18:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=k6fomv0sdqyhGG3g2MPtJX0afBVvlWccl4oJlzfMn9Y=;
-        b=ITaEhLTRPos31OWg6CuGxxHTWOc9f+l+6fgyoMu9dC022Q3+Oef7UKcqhnFIaMgj73
-         DOLviTYzcv4+cZymp88FMtjuAXhcnyrrzZEQq4F6MunbwMlUvxigGbnohlBtC0pHTOnX
-         DL4/zBKvjTehAx0Z7E0yr4zLyNU3vYA1F2Hpgl8WnT0pz8KP8Ovb8ql43gcj6Mf8y2H3
-         s9/kG9i3i4uLKmMe+mb39wuVU7Hp9oXSDc+f4Wc/RpUpO5WMIbcNvCqAYkc0lqv1PlsC
-         jrRZDNVYqz39yUHGoNkcPFgvJj1ddkjbVyQe0ZVfs5iMP3TswRwSgjZDWl0lWUB76kQi
-         JUuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=k6fomv0sdqyhGG3g2MPtJX0afBVvlWccl4oJlzfMn9Y=;
-        b=NkmRr/t/FwmiAFaKhzk+yrMwCJDANESEXxHivR7yqGCrm8EefvapGUHPnAlajlkM+I
-         BQOygWOfgJbzv/ezIqwV1GhY/qM8MbSTR2bG/vvbNIKfAqvqUPuK3lzWckiQgO9LVNPN
-         fIlXh2R9SKzhflPRv+1mlMmWT5mANNpKc+LE9xaz7onm0hmQhcnSYuv5XsnEY8Ck2KAM
-         0FsQidcWYXBSvViST/vQ5qOrcgKoojvLgB8jIaJH9TrO3+reT+7ffRrInniIx4o+Xl+o
-         zdbj/7IKS3bd4ZJhoP4wq9/OReJRKq+HcV02a1CjLG3oBesnow6Wb0biRM+TJgcxDeAF
-         9ijA==
-X-Gm-Message-State: AOAM5302+lG0Hvw/GQ73rYcSihravHpugoJbcD9oZbJnn726Un6Y3cM9
-        LpW7ZSkkiFzYDzLod+zG1leUhpX1cweg/6Z0ohg=
-X-Google-Smtp-Source: ABdhPJyhBtLTOm3xsvHl0IEHLKhVgyAwmKriV5gpXKRDCGNGXTJb9Dwi9phjbqU58hUM1GNJ+D6WV8qmLlyD/rs7h/s=
-X-Received: by 2002:a50:e0cf:: with SMTP id j15mr7852516edl.23.1633223755140;
- Sat, 02 Oct 2021 18:15:55 -0700 (PDT)
+        Sat, 2 Oct 2021 21:31:36 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mWqHq-009WBL-Mq; Sun, 03 Oct 2021 01:27:30 +0000
+Date:   Sun, 3 Oct 2021 01:27:30 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: fs/buffer.c:2342:1: warning: the frame size of 2056 bytes is
+ larger than 1024 bytes
+Message-ID: <YVkHAlZrL/XycxXX@zeniv-ca.linux.org.uk>
+References: <202110030821.xXVLBESU-lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a50:a416:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 18:15:54 -0700 (PDT)
-Reply-To: asameraa950@gmail.com
-From:   Samera Ali <hasamuhammad24@gmail.com>
-Date:   Sat, 2 Oct 2021 18:15:54 -0700
-Message-ID: <CAEsd0fka8+LtfyHf1DRygmHRNE-3v3T9VDC0HOFwJ-VOUXX6gQ@mail.gmail.com>
-Subject: Hey dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202110030821.xXVLBESU-lkp@intel.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey dear
+On Sun, Oct 03, 2021 at 08:48:34AM +0800, kernel test robot wrote:
+> Hi Christophe,
 
-Nice to meet you, Am Miss samera I found your email here in google
-search and I picked interest to contact you. I've something very
-important which I would like to discuss with you and I would
-appreciate if you respond back to me through my email address as to
-tell you more about me with my photos, my private email as fellows??
-[ asameraa950@gmail.com ]
+>         # save the attached .config to linux build tree
 
-From, samera ali
+>    fs/buffer.c: In function 'block_read_full_page':
+> >> fs/buffer.c:2342:1: warning: the frame size of 2056 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+
+fs/buffer.c:2259:       struct buffer_head *bh, *head, *arr[MAX_BUF_PER_PAGE];
+
+Now,
+include/linux/buffer_head.h:44:#define MAX_BUF_PER_PAGE (PAGE_SIZE / 512)
+
+so 'arr' in the above is PAGE_SIZE/512 pointers.  From the attached .config,
+CONFIG_32BIT=y
+and
+# CONFIG_PPC_4K_PAGES is not set
+# CONFIG_PPC_16K_PAGES is not set
+# CONFIG_PPC_64K_PAGES is not set
+CONFIG_PPC_256K_PAGES=y
+CONFIG_PPC_PAGE_SHIFT=18
+
+IOW, we have 256K/512 pointers, 4 bytes each, which amounts to 2K.  Just in
+that array.
+
+The rest of affected functions have similar local arrays...
