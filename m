@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F77242033C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE1242033E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhJCSNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 14:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhJCSM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 14:12:59 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCEFC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 11:11:12 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id y197so17687506iof.11
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 11:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=03zSPuwgcyuPWlzavMUzzry8631FQwG9HWEfh5JVqAo=;
-        b=EBng0DgqvSkqKPixTYzc0Hv16vJe6gKESioOdjfOoEf9RRxXbj3VdkV+N9okI0GEEW
-         ixjUe4eh3nkUJVWrac0wP49ztda80CwX415HWxzfY0eQOtpbv4job8t6E1DznNXyiiOd
-         1jxK4LXrddiWZfhbCXQTcGkr2tgRsl75rVkqaniU8jWzppzTIWJfwB+DW8eD0wLW+gsY
-         79+BsG76wruPU5EmXcJrtL7Dd+PdmKbMxDJ+YZirYOHH1lMBtsCljFRb1GLXjuB3cRwe
-         O0Sd6yL2gmVYklVN3RaVKqNhivHj5f5VFmAayGcKqcbpSN58kWpCB1W7DxospG3MQA4E
-         /wKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=03zSPuwgcyuPWlzavMUzzry8631FQwG9HWEfh5JVqAo=;
-        b=1odDAuHOLUP/vX3ccirqoiA1BZl27KVNKkz4niku0YWqjUrbDkaXmN+yGh3+4wktEX
-         Q2reLcjjdu7Qmr5lwtwWYZp5YbG3Xl8oX2jA9qdFF5oT2XWKipfSfzdswhk5pOUNzPSq
-         O9+w/mOfqVhOLlrQ4JszhXo/AoF5ENzQ0/b9SoCrB24LFCb+HaAWppNi6/hFCpIyiTqL
-         7gZb1QY7nqw5+BNnQ/in2GpPhZqWluMl9ps3f1rTyweNeF0LJZW8Iyf+EYg33eIbulEs
-         +UBljp3euft8cpZImYf+MIpSIokfYo8AsdPe402PGc7XVQgMeRDUFy8tlps6nWzA9Zq/
-         0lZw==
-X-Gm-Message-State: AOAM530UhXlp7b4mBHKr+NUyVRMu9wwuXrUmyWsXGPUwS/2aFCLPZ2Dm
-        7BeyuEG6r9CdY+Cm0YlFGqnUtEt8H95JPnf1g2w=
-X-Google-Smtp-Source: ABdhPJwIwEmvfSn0nk9FDk/YIAQ+9xdtC3xUWleHn3IDV3PC/zxiQ1m3+ocahKCrldzvWaWjQ/dkfLbED1xYjHf56E8=
-X-Received: by 2002:a05:6638:16c5:: with SMTP id g5mr7675904jat.130.1633284670747;
- Sun, 03 Oct 2021 11:11:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210923164741.1859522-1-bigeasy@linutronix.de>
-In-Reply-To: <20210923164741.1859522-1-bigeasy@linutronix.de>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 3 Oct 2021 20:11:00 +0200
-Message-ID: <CA+fCnZcJ4YeTR6ZRZUrr0NYWZC+OVpUKdnHg-Tjf_DCG0B1H3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] kcov: PREEMPT_RT fixup + misc
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S231386AbhJCSOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 14:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231252AbhJCSN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 14:13:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 856166134F;
+        Sun,  3 Oct 2021 18:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633284731;
+        bh=D7jN9jM4hAeJc0S/qDp+zVB+ygDS5UpyUHMHuwrUDEQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RpA1OUpduNud0tnpQ1qaxlkiGaPFsw3S/evVoQaZmH1Ps7cQt6lmmddvcizmsCRfX
+         RVcmhqUnctSQmmG+yPe3uu4fqETun+pvkAoBeq7VjRZdBAgkj5Dt5rGfdrcD0aza2e
+         Bkn1TvsvLAZcpJTllYPv/29NBMhBORBYNgjqIoR5OjUdITkglj4mMm9c3jSPbkX8d9
+         PP6Mlupu1U2LKE2XZitQz4hyNo30zvgwvAkznwkFC+J9L2D1Ay6GZJTLLcHGIGS8lK
+         3fu5wAExXvASBJD4ULww1DynSIV/g1prpUevze7AFf5M1Y2e11kgt5moRDXx97pMpj
+         vmV5Q95zkQgGg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Marco Elver <elver@google.com>,
-        Clark Williams <williams@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: [PATCH net-next v2 0/5] devlink reload simplification
+Date:   Sun,  3 Oct 2021 21:12:01 +0300
+Message-Id: <cover.1633284302.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 6:47 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> This is a repost of my initial series [0] with collected tags.
->
-> The last patch in series is follow-up to address the PREEMPT_RT issue
-> within in kcov reported by Clark [1].
-> Patches 1-3 are smaller things that I noticed while staring at it.
-> Patch 4 is small change which makes replacement in #5 simpler / more
-> obvious.
-> I tested this with the snippets in examples, Marco Elver used to run syzkaller
-> for a few hours.
->
-> [0] https://lkml.kernel.org/r/20210830172627.267989-1-bigeasy@linutronix.de
-> [1] https://lkml.kernel.org/r/20210809155909.333073de@theseus.lan
->
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Changelog:
+v2:
+ * Dropped const removal patch
+ * Added new patch to hide struct devlink
+ * Added new patch to annotate devlink API
+ * Implemented copy of all callback in devlink ops
+v1: https://lore.kernel.org/all/cover.1632916329.git.leonro@nvidia.com
+ * Missed removal of extra WARN_ON
+ * Added "ops parameter to macro as Dan suggested.
+v0: https://lore.kernel.org/all/cover.1632909221.git.leonro@nvidia.com
 
-for the series.
+-------------------------------------------------------------------
+Hi,
+
+This series fixes the bug with mlx5 device, which in some configurations
+doesn't support devlink reload and shouldn't have any reload statistics
+like any other net device. Unfortunately, it is not the case in the
+current implementation of devlink reload.
+
+This fix is done by simplification of internal API.
+
+Thanks
+
+Leon Romanovsky (5):
+  devlink: Reduce struct devlink exposure
+  devlink: Annotate devlink API calls
+  devlink: Allow set specific ops callbacks dynamically
+  net/mlx5: Register separate reload devlink ops for multiport device
+  devlink: Delete reload enable/disable interface
+
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |   3 -
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |   3 -
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   2 -
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |  13 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   3 -
+ .../mellanox/mlx5/core/sf/dev/driver.c        |   5 +-
+ drivers/net/ethernet/mellanox/mlxfw/mlxfw.h   |   2 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  10 +-
+ drivers/net/netdevsim/dev.c                   |   3 -
+ include/net/devlink.h                         |  57 +--
+ include/trace/events/devlink.h                |  72 ++--
+ net/core/devlink.c                            | 390 ++++++++++++------
+ 12 files changed, 317 insertions(+), 246 deletions(-)
+
+-- 
+2.31.1
+
