@@ -2,129 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E44420056
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 08:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F8A420058
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 08:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhJCGmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 02:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhJCGmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 02:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1841561B2C;
-        Sun,  3 Oct 2021 06:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633243244;
-        bh=q9rseHbfMkCOtuOdC8dHz19BTSOJHk4goi5YKRUsEnc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CL/lBnswr3SxpuaWGHxuu4GyLyFYqX9Ttm8PpYNzXxIq8Qdv4VXAI5J09Bd4e0aYw
-         VYoRTCEjo4vx5ZFzfJAuQ9n6HXvRZmT5NXUE7T4WML7FvzcBIG5DQhnWO/18If46CY
-         8q8X4w3NgFqdxl6/xg1CZcZeXW2mon10BQ/vs6h0=
-Date:   Sun, 3 Oct 2021 08:40:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        id S229829AbhJCGoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 02:44:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhJCGoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 02:44:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633243352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r+Bl1u326f9yQhaXb6udjEGQWjjecevglQG5IV4fpCo=;
+        b=dZfMOxllVGBiU9LJpGvXoqspg+dph6U38+PMQLCV1uq9keC8zo46koQIO+nYWOFAcCh9nF
+        +Wwzt7WXOvAhzLEvGhnfJD/HxhRv1ZukZYKFlopSJFK1gC3p+y6zhDUU54CDfio60q4b7Q
+        +YT2YLrxKMXKEcFFtxzsJlxKqKJZtc8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-ZkYjfnZmMfioMSVB3nRFQg-1; Sun, 03 Oct 2021 02:42:31 -0400
+X-MC-Unique: ZkYjfnZmMfioMSVB3nRFQg-1
+Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso14078431edj.20
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 23:42:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r+Bl1u326f9yQhaXb6udjEGQWjjecevglQG5IV4fpCo=;
+        b=vfMF4mP7iMSMYveGI4ZlpgQ/phCtyPrxIHwLMxJ+L2SF2hfmj/UWKBwFgkMKrq8VCY
+         lTKPN1RnDhRmsUVKwviDaZack3lufCEGCFRo/0ec+FE6N15yqSo2868A1nhEEGih9fCU
+         f+3TA3yvo+mn/rAlooMhzm0yJo/HVN9mft4ijfqUpbVBTTY1mCBxzyXpTXXLqfndPR16
+         5FGR7v3pwW0O47yp1RbxIqa66dHTgA2yTyt/xgtqPPyszUHJrXLv65hzxqqCjaM1rFsQ
+         JH/D6jeQ2dKnORybEWkrwTJZBODJJnAYW/qjudTw8/eDXwq1VE2KcPTgzxEDBk9PzFBj
+         OUtQ==
+X-Gm-Message-State: AOAM533LSwo35wnrAmwAxA+2QHlhHKllE0SnHQlJxa+2aVan7+PXH/+x
+        79GNXi2U6xfUN0cG7rJjvc5s+1OJ1GzQRFxjFOGcr39gCF8hMgr2gzR1i+8/XPnkEVb/eS9bzCx
+        Cn8/NFMpe+rPiZXMnB5SEtbih
+X-Received: by 2002:a17:907:2d0d:: with SMTP id gs13mr8578181ejc.94.1633243350450;
+        Sat, 02 Oct 2021 23:42:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxtHT8Cegow6Zx3CCdmEJQH1USoUtFEpuumSAmNgt5hz1mJRyfrkZWULFFV8XgcH+xyZ4AWZQ==
+X-Received: by 2002:a17:907:2d0d:: with SMTP id gs13mr8578148ejc.94.1633243350156;
+        Sat, 02 Oct 2021 23:42:30 -0700 (PDT)
+Received: from redhat.com ([2.55.22.213])
+        by smtp.gmail.com with ESMTPSA id h10sm5564701edf.85.2021.10.02.23.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 23:42:29 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 02:42:25 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
+        Xie Yongji <xieyongji@bytedance.com>,
         virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-Message-ID: <YVlQZ1+b7NlsDegb@kroah.com>
-References: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
- <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
- <YVaywQLAboZ6b36V@kroah.com>
- <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com>
- <20211002070218-mutt-send-email-mst@kernel.org>
- <YVg/F10PCFNOtCnL@kroah.com>
- <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
- <20211002142138-mutt-send-email-mst@kernel.org>
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211003021027-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <87fstm47no.fsf@redhat.com>
+ <20211002141351-mutt-send-email-mst@kernel.org>
+ <20211003070030.658fc94e.pasic@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211002142138-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211003070030.658fc94e.pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 02, 2021 at 02:40:55PM -0400, Michael S. Tsirkin wrote:
-> On Sat, Oct 02, 2021 at 07:20:22AM -0700, Andi Kleen wrote:
-> > 
-> > On 10/2/2021 4:14 AM, Greg Kroah-Hartman wrote:
-> > > On Sat, Oct 02, 2021 at 07:04:28AM -0400, Michael S. Tsirkin wrote:
-> > > > On Fri, Oct 01, 2021 at 08:49:28AM -0700, Andi Kleen wrote:
-> > > > > >    Do you have a list of specific drivers and kernel options that you
-> > > > > > feel you now "trust"?
-> > > > > For TDX it's currently only virtio net/block/console
-> > > > > 
-> > > > > But we expect this list to grow slightly over time, but not at a high rate
-> > > > > (so hopefully <10)
-> > > > Well there are already >10 virtio drivers and I think it's reasonable
-> > > > that all of these will be used with encrypted guests. The list will
-> > > > grow.
-> > > What is keeping "all" drivers from being on this list?
-> > 
-> > It would be too much work to harden them all, and it would be pointless
-> > because all these drivers are never legitimately needed in a virtualized
-> > environment which only virtualize a very small number of devices.
-> > 
-> > >   How exactly are
-> > > you determining what should, and should not, be allowed?
-> > 
-> > Everything that has had reasonable effort at hardening can be added. But if
-> > someone proposes to add a driver that should trigger additional scrutiny in
-> > code review. We should also request them to do some fuzzing.
+On Sun, Oct 03, 2021 at 07:00:30AM +0200, Halil Pasic wrote:
+> On Sat, 2 Oct 2021 14:20:47 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> Looks like out of tree modules get a free pass then.
-
-That's not good.  As we already know if a module is in or out of the
-tree, you all should be banning all out-of-tree modules if you care
-about these things.  That should be very easy to do if you care.
-
-> > How would user space know what drivers have been hardened? This is really
-> > something that the kernel needs to determine. I don't think we can outsource
-> > it to anyone else.
+> > > >From my perspective the problem is that the version of the device  
+> > > remains in limbo as long as the features have not yet been finalized,
+> > > which means that the endianness of the config space remains in limbo as
+> > > well. Both device and driver might come to different conclusions.  
+> > 
+> > Version === legacy versus modern?
+> > It is true that feature negotiation can not be used by device to decide that
+> > question simply because it happens too late.
+> > So let's not use it for that then ;)
+> > 
+> > Yes we have VERSION_1 which looks like it should allow this, but
+> > unfortunately it only helps with that for the driver, not the device.
+> > 
+> > In practice legacy versus modern has to be determined by
+> > transport specific versioning, luckily we have that for all
+> > specified transports (can't say what happens with rproc).
 > 
-> IIUC userspace is the distro. It can also do more than a binary on/off,
-> e.g. it can decide "only virtio", "no out of tree drivers".
-> A distro can also ship configs with a specific features
-> enabled/disabled. E.g. I can see where some GPU drivers will be
-> included by some distros since they are so useful, and excluded
-> by others since they are so big and hard to audit.
-> I don't see how the kernel can reasonably make a stand here.
-> Is "some audit and some fuzzing" a good policy? How much is enough?
+> So if we look at ccw, you say that the revision negotiation already
+> determines whether VERSION_1 is negotiated or not, and the
+> feature bit VERSION_1 is superfluous?
+> 
+> That would also imply, that 
+> 1) if revision > 0 was negotiated then the device must offer VERSION_1
+> 2) if revision > 0 was negotiated and the driver cleared VERSION_1
+>    the device must refuse to operate.
+> 3) if revision > 0 was negotiated then the driver should reject 
+>    to drive a device if it does not offer VERSION_1
+> 4) if revision > 0 was negotiated the driver must accept VERSION_1
+> 5) if revision > 0 was *not* negotiated then the device should not offer
+>    VERSION_1 because at this point it is already certain that the device
+>    can not act in accordance to the virtio 1.0 or higher interface.
+> 
+> Does that sound about right?
 
-Agreed, that is why the policy for this should be in userspace.
+To me, it does.
 
-> Well if userspace sets the policy then I'm not sure we also want
-> a kernel one ... but if yes I'd like it to be in a central
-> place so whoever is building the kernel can tweak it easily
-> and rebuild, without poking at individual drivers.
+> IMHO we should also change 
+> https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-160003
+> and the definition of VERSION_1 because both sides have to know what is
+> going on before features are fully negotiated. Or?
+> 
+> Regards,
+> Halil
+> 
 
-And here I thought the requirement was that no one could rebuild their
-kernel as it was provided by someone else.
+I guess so. And I guess we need transport-specific sections
+describing this behaviour for each transport.
 
-Again, these requirements seem contradicting, but as no one has actually
-pointed me at the real list of them, who knows what they are?
+So something like this, for starters?
 
-thanks,
+diff --git a/content.tex b/content.tex
+index 1398390..c526dd3 100644
+--- a/content.tex
++++ b/content.tex
+@@ -140,10 +140,13 @@ \subsection{Legacy Interface: A Note on Feature
+ Bits}\label{sec:Basic Facilities of a Virtio Device / Feature
+ Bits / Legacy Interface: A Note on Feature Bits}
+ 
+-Transitional Drivers MUST detect Legacy Devices by detecting that
+-the feature bit VIRTIO_F_VERSION_1 is not offered.
+-Transitional devices MUST detect Legacy drivers by detecting that
+-VIRTIO_F_VERSION_1 has not been acknowledged by the driver.
++Transitional drivers MAY support operating legacy devices.
++Transitional devices MAY support operation by legacy drivers.
++
++Transitional drivers MUST detect legacy devices in a way that is
++transport specific.
++Transitional devices MUST detect legacy drivers in a way that
++is transport specific.
+ 
+ In this case device is used through the legacy interface.
+ 
+@@ -160,6 +163,25 @@ \subsection{Legacy Interface: A Note on Feature
+ Specification text within these sections generally does not apply
+ to non-transitional devices.
+ 
++\begin{note}
++The device offers different features when used through
++the legacy interface and when operated in accordance with this
++specification.
++\end{note}
++
++Transitional drivers MUST use Devices only through the legacy interface
++if the feature bit VIRTIO_F_VERSION_1 is not offered.
++Transitional devices MUST NOT offer VIRTIO_F_VERSION_1 when used through
++the legacy interface.
++
++When the driver uses a device through the legacy interface, then it
++MUST only accept the features the device offered through the
++legacy interface.
++
++When used through the legacy interface, the device SHOULD
++validate that the driver only accepted the features it
++offered through the legacy interface.
++
+ \section{Notifications}\label{sec:Basic Facilities of a Virtio Device
+ / Notifications}
+ 
 
-greg k-h
