@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1512D420251
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321E742026A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 17:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJCPls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 11:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230509AbhJCPlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 11:41:47 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFCAB61181;
-        Sun,  3 Oct 2021 15:39:57 +0000 (UTC)
-Date:   Sun, 3 Oct 2021 16:43:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jiri Valek - 2N <valek@2n.cz>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexander Koch <mail@alexanderkoch.net>,
-        Andreas Dannenberg <dannenberg@ti.com>
-Subject: Re: [PATCH] iio: light: opt3001: Fixed timeout error when 0 lux
-Message-ID: <20211003164355.3757c44f@jic23-huawei>
-In-Reply-To: <20210926145514.5395fdc6@jic23-huawei>
-References: <20210920125351.6569-1-valek@2n.cz>
-        <20210926145514.5395fdc6@jic23-huawei>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231160AbhJCPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 11:50:08 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:35171 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhJCPuH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 11:50:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633275917;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=n2U0PeCsRntS+jp/SpPVszJZtYbXqemerUZ0qpTMk3Y=;
+    b=jHCVuR3xGifKlofLLmuBTrzVjBk/X/XTWXVFrjZJBVrGpJDUzUodQFRCUY63HjTqOm
+    MCDgwgKMqJsUmlw/ZBESOwt54n9riq0Kp/02jNPE/l50GRe3TxIh4FJ5ThroT0e+JkGS
+    QZZnKrVyQX6Ns1gWtfwmfnK0bAgJxk3FQb5PZ+vTF5b+cTu3Clo2K/D2fWLCyGp6Ij08
+    +B089K9+ZpQz6FUtqhpaz+h5yJRFdeDXN217EbLZbQ98c3zJI5ycsvLrUCIL9cZ4u767
+    cSweAdnV2Loq9VtqUlwxf7kn/GWKi7LPdoGUHAwWgPi7lgMHOfTOfbAyid2dSgP2zSKL
+    UdDg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHvJzedV4hp0mZXDvscF/B540qv0BQZVZQLfrrxE4ejuGDN89"
+X-RZG-CLASS-ID: mo00
+Received: from cc-build-machine.a-eon.tld
+    by smtp.strato.de (RZmta 47.33.8 AUTH)
+    with ESMTPSA id I00cdex93FjDhap
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 3 Oct 2021 17:45:13 +0200 (CEST)
+Subject: Re: Add Apple M1 support to PASemi i2c driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        Darren Stevens <darren@stevens-zone.net>,
+        Matthew Leaman <matthew@a-eon.biz>,
+        "R.T.Dickinson" <rtd@a-eon.com>
+References: <6487d099-e0d6-4ea3-d312-6adbd94589f4@xenosoft.de>
+ <3dcc6c36-a0dd-0cad-428d-a6ed0f73e687@xenosoft.de>
+ <d0a646c7-426b-4b40-b3fc-9776c6a1025d@www.fastmail.com>
+ <9c1f5c48-bf1a-0ecc-e769-773d2935c66c@xenosoft.de>
+ <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+Message-ID: <d4aa72da-cb0b-45b9-1a20-08f183cde421@xenosoft.de>
+Date:   Sun, 3 Oct 2021 17:45:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sep 2021 14:55:14 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+On 03 October 2021 at 04:36 pm, Sven Peter wrote:
+ > Hi,
+ >
+ >
+ > On Fri, Oct 1, 2021, at 06:47, Christian Zigotzky wrote:
+ >> On 27 September 2021 at 07:39 am, Sven Peter wrote:
+ >>  > Hi Christian,
+ >>  >
+ >>  > Thanks already for volunteering to test this!
+ >>  >
+ >> Hello Sven,
+ >>
+ >> Damian (Hypex) has successfully tested the RC3 of kernel 5.15 with your
+ >> modified i2c driver on his Nemo board yesterday. [1]
+ >
+ > Thanks a lot, that's great to hear!
+ > If he wants to I can credit him with a Tested-by tag in the commit 
+message,
+ > see e.g. 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes.
+ >
+ >
+ > Best,
+ >
+ >
+ > Sven
 
-> On Mon, 20 Sep 2021 14:53:48 +0200
-> Jiri Valek - 2N <valek@2n.cz> wrote:
-> 
-> > Reading from sensor returned timeout error under
-> > zero light conditions.
-> > 
-> > Signed-off-by: Jiri Valek - 2N <valek@2n.cz>  
-> Hi Jiri,
-> 
-> Thanks for this. Looks good to me though I'll leave a little longer for others
-> to take a look.
-> 
-> Does need a fixes tag though so we know how far to backport it.
-> I think it should be
-> 
-> Fixes: ac663db3678a ("iio: light: opt3001: enable operation w/o IRQ")
-> 
-> +Cc Alexander and Andreas
+Hello Sven,
 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+We are still testing your i2c modifications. [1]
+Please wait a litte bit till we finished our tests.
+
+@Darren
+Could you also please check Sven's i2c modifications? He has also 
+modified your source code a little bit. [2]
+
+@Olof
+Are these i2c modifications OK? Do these work on your P.A. Semi board?
 
 Thanks,
+Christian
 
-Jonathan
-
-> 
-> > ---
-> >  drivers/iio/light/opt3001.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/iio/light/opt3001.c b/drivers/iio/light/opt3001.c
-> > index 52963da401a7..1880bd5bb258 100644
-> > --- a/drivers/iio/light/opt3001.c
-> > +++ b/drivers/iio/light/opt3001.c
-> > @@ -276,6 +276,8 @@ static int opt3001_get_lux(struct opt3001 *opt, int *val, int *val2)
-> >  		ret = wait_event_timeout(opt->result_ready_queue,
-> >  				opt->result_ready,
-> >  				msecs_to_jiffies(OPT3001_RESULT_READY_LONG));
-> > +		if (ret == 0)
-> > +			return -ETIMEDOUT;
-> >  	} else {
-> >  		/* Sleep for result ready time */
-> >  		timeout = (opt->int_time == OPT3001_INT_TIME_SHORT) ?
-> > @@ -312,9 +314,7 @@ static int opt3001_get_lux(struct opt3001 *opt, int *val, int *val2)
-> >  		/* Disallow IRQ to access the device while lock is active */
-> >  		opt->ok_to_ignore_lock = false;
-> >  
-> > -	if (ret == 0)
-> > -		return -ETIMEDOUT;
-> > -	else if (ret < 0)
-> > +	if (ret < 0)
-> >  		return ret;
-> >  
-> >  	if (opt->use_irq) {  
-> 
-
+[1] https://forum.hyperion-entertainment.com/viewtopic.php?p=54138#p54138
+[2] https://lists.ozlabs.org/pipermail/linuxppc-dev/2017-January/153195.html
