@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57D241FED9
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 02:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E05941FF02
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 02:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhJCAEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Oct 2021 20:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S234376AbhJCA5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Oct 2021 20:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhJCAEL (ORCPT
+        with ESMTP id S234318AbhJCA5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Oct 2021 20:04:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57843C0613EC;
-        Sat,  2 Oct 2021 17:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=omHdQW8RoUi6ifbhhHmVnPn0+e1h6W72GazCfAP8OU0=; b=0ZUD4MHG6qPchZNa8EQnH2kNrY
-        lRb31Wc/RnFjAEEgHvsFjYvOHaZPxH2sEMvlNo6EOH6miLAEgpZD8unein9YFR7vk3pzEVjthekMu
-        3wSlcvVhwi523wey4lbpohoFUs2+IWeCx5xDCmGjoRAiw3NqEzASlm/1IjLAyLxxmVbWUGmFSos6i
-        WRXFy4tZeinPgTWEKex3bfh6CB6jAahc2Jcdp67npYOwFUzJCbc/sN5SQ502DItyMVLWZT+tShMVP
-        kCEOf2MYr/j6okRjk6byyWIxnH5MzEPWqmh8qzt+u07LC6NOuDv7HP7sKdOqoIXHw5tqByOzGpYHb
-        +ldMYI7g==;
-Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWoxU-002vzh-FQ; Sun, 03 Oct 2021 00:02:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [RFC PATCH] m68k: set a default value for MEMORY_RESERVE
-Date:   Sat,  2 Oct 2021 17:02:23 -0700
-Message-Id: <20211003000223.25769-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 2 Oct 2021 20:57:13 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF31C0613EC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Oct 2021 17:55:27 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id b34so9547595uad.8
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Oct 2021 17:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=WuNiwrSrEnX4dMPY+G+mXt6Rdx6le2ov5eo31uGaV4I=;
+        b=bPORE+Ka6bQ6Ix9WoLbi801Em9kp1jiG0FyOFqPVZt65cg/2zt5ZuNpxySSs0hMhvQ
+         ZnoU2ZEzcdWIcy11FGW1VofxIEHe7J4HSnuQtiCf630/RnccOOk81eSeU/KHzch4T/hy
+         C1BAMcOgRuQq3GksdQWDdupDqRC9x5KzgZC+IAyAF3uz1tF5Hv0oPI9N2HomeZzcp3Yn
+         RvXBXfxNVv+S8IIshKvE4V+2MwNCkZ0niKddHfZPN7VVdp5iP4+H1lue0twzVCoqTt0H
+         fvBJgbGQB/9BJVohjDNI58sMDU4fQQKjJCPgtrESqNXxTfXHmUviJnW8Vv6T6D9e4KHv
+         M83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=WuNiwrSrEnX4dMPY+G+mXt6Rdx6le2ov5eo31uGaV4I=;
+        b=ungLEJGcx+lZjEVdxGbdx0oz8g8+iKfD2YMn8cDjf/rpbSd5eXTy0YW8ApNKViroJN
+         6IuyIwhxfitYyijaGCCgaf5THwzigoHM5GExT0HKrruuarh7ummPEgDEb0d6EKmIvRlh
+         cVqhp4gqlQdslheJOTcrj7foPfyezHdpnBxpobSdOAgqx0bEvdKGkldL0nHy+dSDc9Hl
+         tRvueSLT60JNSbDJNVlt4pzI+Cr3Qrk9ebHnkcLUSZCsmP6z3wnBhAU4ygFLM0Lc2Yzv
+         88Y/DJ42az0yI+6einxJX7XDMuH60TamQxnYNHxPKoR6eQh5rD2VJTTOtKnhVOVHdMCM
+         fOHA==
+X-Gm-Message-State: AOAM530r1wTU2WgDVg2thSIlyJnZ/AYxItCi+WhjSaf+UKQiwE6NSjY3
+        QoKF3uAHWM5KN4dRwSOSyFb33R6ouCpjXg==
+X-Google-Smtp-Source: ABdhPJzSW3IDnK2jC80wagzqFwX6QHpCIBNq6auYYvJl8xfq3QRo1kdhsuuVeVyrLEVwd1hGJp0MTA==
+X-Received: by 2002:ab0:53c8:: with SMTP id l8mr2937713uaa.26.1633222526611;
+        Sat, 02 Oct 2021 17:55:26 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q26sm5273759vkn.40.2021.10.02.17.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Oct 2021 17:55:26 -0700 (PDT)
+Subject: [PATCH] RISC-V: Include clone3() on rv32
+Date:   Sat,  2 Oct 2021 17:21:20 -0700
+Message-Id: <20211003002120.198752-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        christian@brauner.io, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:         linux-riscv@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'make randconfig' can produce a .config file with
-"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
-When a subsequent 'make all' is done, kconfig restarts the config
-and prompts for a value for MEMORY_RESERVE. This breaks
-scripting/automation where there is no interactive user input.
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Add a default value for MEMORY_RESERVE. (Any integer value will
-work here for kconfig.)
+As far as I can tell this should be enabled on rv32 as well, I'm not
+sure why it's rv64-only.  checksyscalls is complaining about our lack of
+clone3() on rv32.
 
-Fixes a kconfig warning:
-
-.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
-* Restart config...
-Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
+Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- arch/m68k/Kconfig.machine |    1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/include/uapi/asm/unistd.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- linux-next-20211001.orig/arch/m68k/Kconfig.machine
-+++ linux-next-20211001/arch/m68k/Kconfig.machine
-@@ -203,6 +203,7 @@ config INIT_LCD
- config MEMORY_RESERVE
- 	int "Memory reservation (MiB)"
- 	depends on (UCSIMM || UCDIMM)
-+	default 0
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
+diff --git a/arch/riscv/include/uapi/asm/unistd.h b/arch/riscv/include/uapi/asm/unistd.h
+index 4b989ae15d59..8062996c2dfd 100644
+--- a/arch/riscv/include/uapi/asm/unistd.h
++++ b/arch/riscv/include/uapi/asm/unistd.h
+@@ -18,9 +18,10 @@
+ #ifdef __LP64__
+ #define __ARCH_WANT_NEW_STAT
+ #define __ARCH_WANT_SET_GET_RLIMIT
+-#define __ARCH_WANT_SYS_CLONE3
+ #endif /* __LP64__ */
  
++#define __ARCH_WANT_SYS_CLONE3
++
+ #include <asm-generic/unistd.h>
+ 
+ /*
+-- 
+2.33.0.800.g4c38ced690-goog
+
