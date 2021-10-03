@@ -2,140 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8114F42011E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 11:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CCE420121
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 12:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhJCJud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 05:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhJCJuc (ORCPT
+        id S229957AbhJCJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 05:57:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59826 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhJCJ50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 05:50:32 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC1BC0613EC;
-        Sun,  3 Oct 2021 02:48:44 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so52384356edv.12;
-        Sun, 03 Oct 2021 02:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jOLGt+yfCVBdYhsG5pGUWfu5DrI22+00GHKhfNjMQrA=;
-        b=CKncsyOLbLtTMzH4mmIWk4HWCp/yO1NuIXbMX+pd0jkbQH+/tnwX0+TDuTdLsKQlUz
-         VEIJGf9NEjobZpA1RWWg3TTeNcC0ITG+G19BVH0w655d/lGuiVaMIYtezitDkHbnO616
-         P/Cb7KiyuxeWS/pSGmvE/ajhY2RJ/XHyKRQo39o6eIzY463WGaZEn13en372PbKii1se
-         Oyi5HpoPXaCSlu6L7PgiEOGlQEghNMSsLwddLDbPP64X1iMtYX9RY/83sG5AGdhC8tKT
-         xWtc+KaApdAlxyg0vOM6DY1NmFt3yu2ovAVxIR2zpfOcl3pWgs8dlSacq6yn1l5a0PsJ
-         nw6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jOLGt+yfCVBdYhsG5pGUWfu5DrI22+00GHKhfNjMQrA=;
-        b=4BqF43MWzIusya1R6VtcDZJC4D/atfcne/m6grYjxeBJWLtoOQ/Ao9Xlyk/R6KPmjc
-         AKGEfaJtz8OiWk0E3iDpoGt4usmAs63QMvp1GsbNznWzQ8wfohzyhJ0gYOw2MHdozcYU
-         padkBpg9FWg85MZCGMAlyIW/+dMBIgo/QHYwrgxxH+QRGDp4WxJ5h9iZ7o2mzT0hnPsr
-         IzyYY8PilhHVZYgvhBA2YjoM8tJVBREN2jWP1Bcc0k752CgirJ5OgNrmcvSvADJopQu1
-         OazNWSqwoff28YLrMESTA5w70hCzByZTZEi3U/WfDRtNJa/CJEb1TlmwLnewqNSexNEA
-         RPKQ==
-X-Gm-Message-State: AOAM5337fwjRVoaFjv5eSkoyc+fSW2EB4p5VOvDe4qEucS7KTZDemAMT
-        WdKKVXq/RsJ0IKjv5SfMBZCDO3Kl9W1TbVn9EDc=
-X-Google-Smtp-Source: ABdhPJzzfa44i+Oga90yALlJfZFS8kITln5E3P5lrdyQ4oelHOwIUgNvYPwGnL+iyEVLqu+ASSHj2V3TKL6v7QIWv8Q=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr8983616eje.377.1633254522888;
- Sun, 03 Oct 2021 02:48:42 -0700 (PDT)
+        Sun, 3 Oct 2021 05:57:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2451522250;
+        Sun,  3 Oct 2021 09:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633254939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TRg+ipz9bZOssMftBGeIOzKLlU13uhVvMD0yXjkQMfI=;
+        b=Ld8aMXj0vzo4JnIzfv/4gb7lmjtd45uyQSgj4R4hGgEhyhHt3fk63S/f2TnW0QYrUWVjUY
+        MiIU85eGsZUI1/Ig/fk07uaj8SJdhZ0M4GfGru7A8dVHxKthXYs1gG9pulbNLq5skAV29l
+        lKj8kJE5Jf2Q3Wufj94atGxbOYuZphc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633254939;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TRg+ipz9bZOssMftBGeIOzKLlU13uhVvMD0yXjkQMfI=;
+        b=AbAwddRu/zEu/1elswSc9VOhHn0G2Gu2p5rZCz4vYPv/4L4iZ0I6VFwgKpDDrUH7mO/zSn
+        zSbZuX6ALnxLPlDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 039AB13BFC;
+        Sun,  3 Oct 2021 09:55:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gcprABt+WWH9AgAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 03 Oct 2021 09:55:38 +0000
+Date:   Sun, 3 Oct 2021 11:55:33 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] perf/urgent for v5.15-rc4
+Message-ID: <YVl+FSNMK3BSy9gd@zn.tnic>
 MIME-Version: 1.0
-References: <20211002210857.709956-1-pauk.denis@gmail.com> <20211002210857.709956-2-pauk.denis@gmail.com>
-In-Reply-To: <20211002210857.709956-2-pauk.denis@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 3 Oct 2021 12:48:06 +0300
-Message-ID: <CAHp75VcKQr22xQLN7OizG_Vu42UiDYbmNb9N6EUxkG7Dm0pa+w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] hwmon: (nct6775) Add additional ASUS motherboards.
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     matt-testalltheway <sefoci9222@rerunway.com>,
-        Kamil Dudka <kdudka@redhat.com>,
-        Robert Swiecki <robert@swiecki.net>,
-        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
-        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 12:10 AM Denis Pauk <pauk.denis@gmail.com> wrote:
->
-> Add support:
-> * PRIME B360-PLUS
-> * PRIME X570-PRO
-> * ROG CROSSHAIR VIII FORMULA
-> * ROG STRIX B550-I GAMING
-> * ROG STRIX X570-F GAMING
-> * ROG STRIX Z390-E GAMING
-> * TUF GAMING B550-PRO
-> * TUF GAMING Z490-PLUS
-> * TUF GAMING Z490-PLUS (WI-FI)
+Hi Linus,
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+please pull three urgent perf fixes for v5.15.
 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
-> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-> Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
-> Tested-by: Kamil Dudka <kdudka@redhat.com>
-> Tested-by: Robert Swiecki <robert@swiecki.net>
-> Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
-> Tested-by: Igor <igor@svelig.com>
-> Tested-by: Tor Vic <torvic9@mailbox.org>
-> Tested-by: Poezevara <nephartyz@gmail.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> ---
->  drivers/hwmon/nct6775.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-> index aa58ead0ad43..8eaf86ea2433 100644
-> --- a/drivers/hwmon/nct6775.c
-> +++ b/drivers/hwmon/nct6775.c
-> @@ -4986,20 +4986,29 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
->  static struct platform_device *pdev[2];
->
->  static const char * const asus_wmi_boards[] = {
-> +       "PRIME B360-PLUS",
->         "PRIME B460-PLUS",
-> +       "PRIME X570-PRO",
->         "ROG CROSSHAIR VIII DARK HERO",
-> +       "ROG CROSSHAIR VIII FORMULA",
->         "ROG CROSSHAIR VIII HERO",
->         "ROG CROSSHAIR VIII IMPACT",
->         "ROG STRIX B550-E GAMING",
->         "ROG STRIX B550-F GAMING",
->         "ROG STRIX B550-F GAMING (WI-FI)",
-> +       "ROG STRIX B550-I GAMING",
-> +       "ROG STRIX X570-F GAMING",
-> +       "ROG STRIX Z390-E GAMING",
->         "ROG STRIX Z490-I GAMING",
->         "TUF GAMING B550M-PLUS",
->         "TUF GAMING B550M-PLUS (WI-FI)",
->         "TUF GAMING B550-PLUS",
-> +       "TUF GAMING B550-PRO",
->         "TUF GAMING X570-PLUS",
->         "TUF GAMING X570-PLUS (WI-FI)",
->         "TUF GAMING X570-PRO (WI-FI)",
-> +       "TUF GAMING Z490-PLUS",
-> +       "TUF GAMING Z490-PLUS (WI-FI)",
->  };
->
->  static int __init sensors_nct6775_init(void)
-> --
-> 2.33.0
->
+Thx.
 
+---
+
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.15_rc4
+
+for you to fetch changes up to f792565326825ed806626da50c6f9a928f1079c1:
+
+  perf/core: fix userpage->time_enabled of inactive events (2021-10-01 13:57:54 +0200)
+
+----------------------------------------------------------------
+- Make sure the destroy callback is reset when a event initialization fails
+
+- Update the event constraints for Icelake
+
+- Make sure the active time of an event is updated even for inactive events
+
+----------------------------------------------------------------
+Anand K Mistry (1):
+      perf/x86: Reset destroy callback on event init failure
+
+Kan Liang (1):
+      perf/x86/intel: Update event constraints for ICX
+
+Song Liu (1):
+      perf/core: fix userpage->time_enabled of inactive events
+
+ arch/x86/events/core.c       |  1 +
+ arch/x86/events/intel/core.c |  1 +
+ include/linux/perf_event.h   |  4 +++-
+ kernel/events/core.c         | 34 ++++++++++++++++++++++++++++++----
+ 4 files changed, 35 insertions(+), 5 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
