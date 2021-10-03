@@ -2,154 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4456420466
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 00:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A11242046D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhJCWuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 18:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhJCWuS (ORCPT
+        id S231938AbhJCXEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 19:04:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34668 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231809AbhJCXEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 18:50:18 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FB5C061780
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 15:48:30 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i4so64229885lfv.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 15:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sW+crIeDmhAMH4pK5GASAaCZE8D1VZtdK5/sygrAG2k=;
-        b=lQrEOA0euWiU9H9sWtnhFM9pj1nGUVTgMmT1inlS8kcAIcWUCFr349N1dSAz2SVqFj
-         T7ORD7odD/G0eN6Z706ABNk23F2RpNaz9XiITGtS4a/oLqxc8vuWRXMazGo3kVH7nEhf
-         id6efAjoCVCJj4EHeoDcPwnvEdhdrZYcay0MmicPuvWvTC2tTU4WHwu9kmjVm1V4AwTR
-         u6HEKMibBBBYXjB040lkOfpApeYAiOmDVboF7H14zEQd2CgkvyFRV06wLTn0go2HgEcm
-         q5Ki3D4KVSRrkUBia9z2Nc7Z2wKuTuJ7Xo21FCTQ2IL9079vG1F49SrZu+4+Y7LN8iJb
-         jIIQ==
+        Sun, 3 Oct 2021 19:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633302132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ydM58jWNkyMBGo30i2TV4XDTsxAfhfxAZn04m4Gf1Jc=;
+        b=WDvpexxUKfajJYhgXnAuZ9TtcIGye0lod8EaKwZiP392Kp7vxNlieDLUGQjonnL4ofSJQy
+        nxr5MxYN2fEIzho8L9Ijv4Sugar43V1fOx3y7Guv23hNZT/0naZFOkVBqYWQxHlyDLxuoc
+        G7TRM5qE1gzGBMGQJrBGXUovW8KC/5o=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-eOYPqT7zO-Gs-M-KPmMtCQ-1; Sun, 03 Oct 2021 19:02:12 -0400
+X-MC-Unique: eOYPqT7zO-Gs-M-KPmMtCQ-1
+Received: by mail-qk1-f199.google.com with SMTP id bm12-20020a05620a198c00b00432e14ddb99so22126772qkb.21
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:02:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sW+crIeDmhAMH4pK5GASAaCZE8D1VZtdK5/sygrAG2k=;
-        b=hMRW7SQxljbGN4s1XtHDySs0ugcYeRaPZmgScTQ0d3K9EGpx6Nb0mCm164Pcz0RnY3
-         9pcGglm/57NM5o8CUsUniD53DlzIMb25XlmKaWU2tSy4xfY5NPmENfoHLvD5T1F3QOFx
-         ZuyO8qYXQ4ExXgoH3fyUc5J3saKkUCwqGm72Yp998pQhp6okjyo9EVxVaa9MU8kp+OO3
-         7x0CNQXfC5yd6Ho6BvvOFqGZ06eNmGefCXRS/bZI10Huj74TxuRu+D1P8yBdwp28OJvu
-         l1jEzlHyV3eBCbqgJAlvxFfESZkPHyFuvUi7auQ2WC4N+IByBc82s9uYbX3ddY23VXXp
-         tjxA==
-X-Gm-Message-State: AOAM533IfYzYX3eBClDWLqZcnkQJbNpty6/b5aOm/I4xpnFOxbC4tsPt
-        IThwMqw6VdesTtqdCmfW44wk6Wv/dTh/XB8+Dhnmdg==
-X-Google-Smtp-Source: ABdhPJwlIO3xJmMne7SA3V9EP6o49YZWJtcqreYaPVZa30sqz5Vxc/CuLZ5GbJ4uqeokuIsg0281gvTYxIzcMfCsea0=
-X-Received: by 2002:a2e:4e11:: with SMTP id c17mr11819356ljb.19.1633301308432;
- Sun, 03 Oct 2021 15:48:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ydM58jWNkyMBGo30i2TV4XDTsxAfhfxAZn04m4Gf1Jc=;
+        b=fGgaw8Yv1LsBjsp18laUbWjZ+5JBjKsv/7IVjmhj08HhQ8dEQIafTawzT89xD0Jzc+
+         +6I5pASPqJWS42N1zhU1PgvPzrEYjg6XrIY+CTLAAvBTVmO+/FiLXQVwVm5/RCZh9sBx
+         SrkfjFxZWuNNc6/RzfWvcG/PCmzmSZPODTkCnsvvTEQhQTODyMkAY0YdIGZd9M1A39ir
+         jd5qk57Q/lw2it1nZiPl5f8/zU80YxYbOx+xtEHScHMrXT2xjsG4BDl8YWeFp7P07soI
+         AQejpwXarmsYR3ONTPN321TLr3uK7Uwza/0Lv3Kw3x/qk+z87WpJNjXKex3PRAaqmZ3v
+         CsHw==
+X-Gm-Message-State: AOAM533cAjPQkEumnLbAQuYzK6yZAbcqyB8czx0Aa/V0Q2QdsN5eK5fP
+        fNtC5bCm4m1xsdnVpgzghJRGc4w8irzwHbg/46qhzuzUv4ljczJbadAkMNYldwh8uSBmK0npL/P
+        v+y9oOVXmdY/bJGhCBUXPHDqe
+X-Received: by 2002:ac8:4348:: with SMTP id a8mr10498392qtn.262.1633302129921;
+        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdyu/AYvU46F4wEputwC1yP6oucW8rWviCEyPScmbpJ2Ewv4qGAwp6ehXz3pxcUtk2mSVZCg==
+X-Received: by 2002:ac8:4348:: with SMTP id a8mr10498359qtn.262.1633302129640;
+        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id u129sm6637853qkd.127.2021.10.03.16.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 16:02:09 -0700 (PDT)
+Date:   Sun, 3 Oct 2021 16:02:06 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Borislav Petkov <bp@suse.de>, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
+Subject: Re: [GIT PULL] objtool/urgent for v5.15-rc4
+Message-ID: <20211003230206.hhrrhna52dnhumji@treble>
+References: <YVl7RR5NcbPyiXgO@zn.tnic>
+ <CAHk-=wh9JzLmwAqA2+cA=Y4x_TYNBZv_OM4eSEDFPF8V_GAPug@mail.gmail.com>
+ <CAHk-=wiZwq-0LknKhXN4M+T8jbxn_2i9mcKpO+OaBSSq_Eh7tg@mail.gmail.com>
+ <CAHk-=wjtJ532TqnLN+CLqZJXx=MWHjQqi0-fR8PSQ-nGZ_iMvg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
- <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
- <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com> <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
-In-Reply-To: <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Oct 2021 00:48:17 +0200
-Message-ID: <CACRpkdaBUrgnyFnO0Tdae56PKR4pLN1boLpK0FMCk7eYshZ5LA@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjtJ532TqnLN+CLqZJXx=MWHjQqi0-fR8PSQ-nGZ_iMvg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
+On Sun, Oct 03, 2021 at 12:10:38PM -0700, Linus Torvalds wrote:
+> Replying to myself just to add more proper people to the cc.
+> 
+> I'm also wondering how I could possibly be the only person who saw the warning.
+> 
+> I don't think I am, and I think that people who signed off on commit
+> 24ff65257375 ("objtool: Teach get_alt_entry() about more relocation
+> types") and claimed to have "tested" it, clearly didn't actually do
+> so.
+> 
+> PeterZ/Josh/Nathan: see the thread at
+> 
+>    https://lore.kernel.org/lkml/CAHk-=wiZwq-0LknKhXN4M+T8jbxn_2i9mcKpO+OaBSSq_Eh7tg@mail.gmail.com/
+> 
+> if you need more context, but I suspect you can figure it out just
+> from this email too.
 
-sorry for slow reply, I am a bit busy.
+Sorry about that.  I think Peter and I failed to run this through
+regression testing.  We can work on tightening up our process.
 
-On Tue, Aug 24, 2021 at 10:03 AM Robert Marko <robert.marko@sartura.hr> wrote:
-> On Wed, Aug 11, 2021 at 2:17 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > On Tue, Aug 3, 2021 at 9:23 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> >
-> > > The pins that this driver wants to expose are used for SFP-s only,
-> > > they are provided by the Lattice CPLD which also does other things.
+Definitely *not* Nathan's fault.  His 'Tested-by' only means that this
+fixed his particular issue.
+
+> > > Looking at the kvm code, that kvm_fastop_exception thing is some funky sh*t.
 > > >
-> > > Linux has a generic SFP driver which is used to manage these SFP
-> > > ports, but it only supports GPIO-s, it has no concept of anything else.
-> > > Since the driver is fully generic, I have no idea how could one extend it
-> > > to effectively handle these pins internally, especially since I have more
-> > > switches that use the CPLD for SFP-s as well, even for 48 ports and 192
-> > > pins for them.
+> > > I _think_ the problem is that 'kvm_fastop_exception' is done with bare
+> > > asm at the top-level and that triggers some odd interaction with other
+> > > section data, but I really don't know.
 > >
-> > Which file is this driver in so I can look?
->
-> Hi Linus,
-> Sorry for the late reply.
->
-> Sure, here is the generic Linux driver that is used for SFP handling:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/phy/sfp.c?h=v5.14-rc7
-
-So this has this:
-
-enum {
-        GPIO_MODDEF0,
-        GPIO_LOS,
-        GPIO_TX_FAULT,
-        GPIO_TX_DISABLE,
-        GPIO_RATE_SELECT,
-        GPIO_MAX,
-
-        SFP_F_PRESENT = BIT(GPIO_MODDEF0),
-        SFP_F_LOS = BIT(GPIO_LOS),
-        SFP_F_TX_FAULT = BIT(GPIO_TX_FAULT),
-        SFP_F_TX_DISABLE = BIT(GPIO_TX_DISABLE),
-        SFP_F_RATE_SELECT = BIT(GPIO_RATE_SELECT),
-
-        SFP_E_INSERT = 0,
-        SFP_E_REMOVE,
-
-This does not look general purpose to me at all?
-It's just some hardware engineer that thougt "GPIO"
-was a nice thing to call this.
-
-> > Maybe it is not a good idea to look for generic code just because
-> > it is convenient? I have had this problem before with GPIO, along
-> > the lines "lemme just do this dirty thing this one time because it
-> > is so convenient for me" (more or less) and the answer is still
-> > "no".
+> > No, it's the fact that it is marked as a global function (why?) that
+> > it then causes problems.
 > >
-> > Can you either augment the driver to handle a regmap with bit indices
-> > instead or write a new similar driver for that or refactor it some other
-> > way?
+> > Now, I don't actually see why it would cause problems (the same way I
+> > don't see why it's marked global). But removing that
 > >
-> > It is not a simple solution to your problem, but it might be the right
-> > solution even if it means some more work.
->
-> I understand your position, believe me, I spend some time looking at
-> what would be the logical way for these switches.
-> But I see no way how could the SFP driver be extended in a generic way
-> that would allow supporting different register layouts when it comes to pins.
+> >      ".global kvm_fastop_exception \n"
+> >
+> > works.
+> >
+> > I suspect it makes the linker do the relocation for us before objtool
+> > runs, because now that it's a local name, there is no worry about
+> > multiply defined symbols of the same name or anything like that.
+> >
+> > I also suspect that the reason for the warning is that the symbol type
+> > has never been declared, so it's not marked as a STT_FUNC in the
+> > relocation information.
 
-Why do you think you have to use the GPIO abstraction and bindings?
-Just invent something that satisfy your needs, the bindings are just
-strings. Why does the consumer have to use the GPIO binding?
-They can just use phandle named anything. Some "sfp-foo-resource = <&...>
-or so.
+Right, basically objtool's complaining that it doesn't know how to
+handle the NOTYPE symbol.  But really, any non-object symbol should be
+straightforward.  I may just remove these warnings altogether in favor
+of something much simpler (something like the patch below).
 
-For example I created this:
-Documentation/devicetree/bindings/firmware/intel,ixp4xx-network-processing-engine.yaml
-It's handling out a resource using a phandle. Nothing different than
-GPIO, regulator, clock etc. Just invent something for SFP?
+> > In the meantime, I think the exception handling for kvm
+> > divide/multiply emulation is badly broken right now. Hmm?
 
-Yours,
-Linus Walleij
+The warning is harmless, so it doesn't necessarily mean anything's
+broken.  That said, I have no idea what's going in that code or why
+kvm_fastop_exception() is clearing %esi.
+
+
+diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+index f58ecc50fb10..0217ac3fa7ff 100644
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -58,22 +58,11 @@ void __weak arch_handle_alternative(unsigned short feature, struct special_alt *
+ {
+ }
+ 
+-static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
++static void reloc_to_sec_off(struct reloc *reloc, struct section **sec,
++			     unsigned long *off)
+ {
+-	switch (reloc->sym->type) {
+-	case STT_FUNC:
+-		*sec = reloc->sym->sec;
+-		*off = reloc->sym->offset + reloc->addend;
+-		return true;
+-
+-	case STT_SECTION:
+-		*sec = reloc->sym->sec;
+-		*off = reloc->addend;
+-		return true;
+-
+-	default:
+-		return false;
+-	}
++	*sec = reloc->sym->sec;
++	*off = reloc->sym->offset + reloc->addend;
+ }
+ 
+ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+@@ -109,11 +98,7 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 		WARN_FUNC("can't find orig reloc", sec, offset + entry->orig);
+ 		return -1;
+ 	}
+-	if (!reloc2sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off)) {
+-		WARN_FUNC("don't know how to handle reloc symbol type: %s",
+-			   sec, offset + entry->orig, orig_reloc->sym->name);
+-		return -1;
+-	}
++	reloc_to_sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off);
+ 
+ 	if (!entry->group || alt->new_len) {
+ 		new_reloc = find_reloc_by_dest(elf, sec, offset + entry->new);
+@@ -131,11 +116,7 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 		if (arch_is_retpoline(new_reloc->sym))
+ 			return 1;
+ 
+-		if (!reloc2sec_off(new_reloc, &alt->new_sec, &alt->new_off)) {
+-			WARN_FUNC("don't know how to handle reloc symbol type: %s",
+-				  sec, offset + entry->new, new_reloc->sym->name);
+-			return -1;
+-		}
++		reloc_to_sec_off(new_reloc, &alt->new_sec, &alt->new_off);
+ 
+ 		/* _ASM_EXTABLE_EX hack */
+ 		if (alt->new_off >= 0x7ffffff0)
+
