@@ -2,100 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6254E4201A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0085E4201B5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Oct 2021 15:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhJCNRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 09:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S230311AbhJCN1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 09:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhJCNRU (ORCPT
+        with ESMTP id S230050AbhJCN1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 09:17:20 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65AEC061780
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 06:15:32 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id w14so2024pll.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 06:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=RNJERDOIDcil3yoF2ADjmROEOLO4j0hGtz7GlVopmOU=;
-        b=Ku31O49TKxGkgrtjjyrnP6eeJJCWPNI+/7eaCBwDN79KwMqoVIp92RH6OzNTTW6MKA
-         qWoB9NkzEsnyeOVQB2gJFk6nTSeFMxtXJAeU52Ao5NDkUcD6bbkusDRnJoo9P0HpjUhL
-         HqdabfC7ZJ4ARM/5YbDJEMLbx6898uKl8kHkN+tNSBf/E3P0KAPuzvD+tvS2zPxnWKbt
-         2hgT3WrlgIhcaL2V/PCsuOeM1gNbGbAx0ZZGNXL2EK3m/Ro6ANBIzVCa6YbeH/yeVIZA
-         cJiiTAXT8VZUfO/yP9TkkGeWmiDSKvR6JMLlV45+SVYhXpTx6zWrWRHvHv6Z6XANCm0Y
-         8s8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=RNJERDOIDcil3yoF2ADjmROEOLO4j0hGtz7GlVopmOU=;
-        b=dXYSdkmFLH5LfN25go2H1w/96BoOcKWGlXjqGBReeXIKtXNZ0IHOIQxtjtXRDY9iYX
-         Cw5NJ1KHjgCZvdZ54Hs95RTmb48+TJzebZr7oDgDJlp1Uhf4ncBGf6n9ntJ3NGzvWoRs
-         6moMcWf6IDCGXMRRNPgDCc+DQa/qiwBeJUpaZSXMcobJMKfCp/0fqsmw9heTC8MUwoUz
-         29M8JfvGTkU6jHzXnPpwpIHu1QDEf58HsykdA3dJn8VL6HmthA+nNWQU+/6FVx+QUWtt
-         VkU6RZ8Sg22F5Qb8yvPIu+f7l57+8nvGa6yaDiYAgNPVgzi+OgIFk+5XfPWwtXbe+t54
-         uKBw==
-X-Gm-Message-State: AOAM53210rpy7QSB1CKb6gsPpu29nxZzG181jhmvEGYEOaSqS18ha2uk
-        DLNT8AQhIDEEnWN8mP0vG31nNzZ7cyduneaOxn4=
-X-Google-Smtp-Source: ABdhPJw5EKdQxe1lMEfHk1VwrCXRklAI65YOay7OOBvD0+QO6RQeDMbHrnesvdJ17xopo9+2ff/uxm6m6KYep0cQI98=
-X-Received: by 2002:a17:90b:4a90:: with SMTP id lp16mr7724012pjb.25.1633266932137;
- Sun, 03 Oct 2021 06:15:32 -0700 (PDT)
+        Sun, 3 Oct 2021 09:27:06 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBEFC0613EC;
+        Sun,  3 Oct 2021 06:25:19 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F2ADA2A;
+        Sun,  3 Oct 2021 15:25:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633267514;
+        bh=VHWbPfGiA5vgTAu1+k5AM/WGLi1c7AUlzQbdWY3enhc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h/2eYjwJbH2EhjYD40qxfbcEgYr3mE2IAAas4v5feH+XAkkT1BgxIkzYa06DtV8ZJ
+         EGzSpMCGvRfSWCjwZLJzUC8o7X3Bf6J0UPkB/gHZWzl2XGBTtdBn6f67BRJU7V8OWE
+         df/2bykLM9Wcuj02kfnm0rlzKLBpNTFJPdjZTaAU=
+Date:   Sun, 3 Oct 2021 16:25:09 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        John Stultz <john.stultz@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order
+ consistent
+Message-ID: <YVmvNTzZyqQHI4Co@pendragon.ideasonboard.com>
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+ <YVTg8nqA9obYokxT@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:83c2:0:0:0:0 with HTTP; Sun, 3 Oct 2021 06:15:31
- -0700 (PDT)
-Reply-To: drrhamabenson16@gmail.com
-From:   Dr Rhama Benson <drrhamabenson2016@gmail.com>
-Date:   Sun, 3 Oct 2021 06:15:31 -0700
-Message-ID: <CAJPyHHY-xuZ8NJ2rya-EN=6CLQcuEGP+DNJPUvfUvasLrGkPZw@mail.gmail.com>
-Subject: Contact me back immediately.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVTg8nqA9obYokxT@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear Friend.
+Hi Maxime,
 
-How are you and your family today? I hope all is well, I'm happy to
-share this transaction with you. I have a very lucrative business
-transaction which requires your utmost discretion. Please understand
-that you and me are to work as one team to inherit this fund, hence I
-am your insider in the bank as the transaction commence. I will direct
-you how to claim and get the fund without any problem I also advise
-you to feel free because its 100% legal and risk free.
+On Thu, Sep 30, 2021 at 12:56:02AM +0300, Laurent Pinchart wrote:
+> On Fri, Sep 10, 2021 at 12:11:54PM +0200, Maxime Ripard wrote:
+> > Hi,
+> > 
+> > We've encountered an issue with the RaspberryPi DSI panel that prevented the
+> > whole display driver from probing.
+> > 
+> > The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:
+> > Only register our component once a DSI device is attached"), but the basic idea
+> > is that since the panel is probed through i2c, there's no synchronization
+> > between its probe and the registration of the MIPI-DSI host it's attached to.
+> > 
+> > We initially moved the component framework registration to the MIPI-DSI Host
+> > attach hook to make sure we register our component only when we have a DSI
+> > device attached to our MIPI-DSI host, and then use lookup our DSI device in our
+> > bind hook.
+> > 
+> > However, all the DSI bridges controlled through i2c are only registering their
+> > associated DSI device in their bridge attach hook, meaning with our change
+> > above, we never got that far, and therefore ended up in the same situation than
+> > the one we were trying to fix for panels.
+> > 
+> > The best practice to avoid those issues is to register its functions only after
+> > all its dependencies are live. We also shouldn't wait any longer than we should
+> > to play nice with the other components that are waiting for us, so in our case
+> > that would mean moving the DSI device registration to the bridge probe.
+> > 
+> > I also had a look at all the DSI hosts, and it seems that exynos, kirin and msm
+> > would be affected by this and wouldn't probe anymore after those changes.
+> > Exynos and kirin seems to be simple enough for a mechanical change (that still
+> > requires to be tested), but the changes in msm seemed to be far more important
+> > and I wasn't confortable doing them.
+> > 
+> > Let me know what you think,
+> 
+> I've tested this series on my RPi CM4-based board, and there's a clear
+> improvement: the sn65dsi83 now probes successfully !
+> 
+> The downside is that I can now look at a panel that desperately refuses
+> to display anything. That's a separate issue, but it prevents me from
+> telling whether this series introduces regressions :-S I'll try to debug
+> that separately.
 
-Though, I know it would come to you at uttermost surprise and unbelief
-because its internet contact and it's virtually impossible to know who
-is trustworthy and who to believed but don't be afraid you will not
-regret of dealing with me, I want you to help me to claim and receive
-the fund to your account in your country where it will share between
-me and you for our own benefit.
+I managed to (partly) fix that issue with a few backports from the RPi
+kernel, making me confident enough to say
 
-I am aware of the unsafe nature of the internet and was compelled to
-use this medium due to the nature of this project. I have access to
-every vital information that can be used to transfer the fund, which
-may culminate into the investment of the said funds into your account
-or any lucrative company in your country.
+Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-If you will like to assist me as a partner then kindly indicate your
-interest, after which we shall both discuss the modalities and the
-sharing percentage. Upon receipt of your reply on your expression of
-interest, I will give you full details on how the business will be
-executed. I am open for negotiation,
+for
 
-Thanks for your anticipated cooperation. Note you might receive this
-message in your inbox or spam folder, depends on your web host or
-server network. Contact me through this
-email(drrhamabenson16@gmail.com)
+drivers/gpu/drm/bridge/ti-sn65dsi83.c
+drivers/gpu/drm/drm_bridge.c
+drivers/gpu/drm/drm_mipi_dsi.c
+include/drm/drm_mipi_dsi.h
 
-Name....
-Age.......
-Country......
-Telephone Number......
+> Also, Kieran, would you be able to test this with the SN65DSI86 ?
+> 
+> > ---
+> > 
+> > Changes from v3:
+> >   - Converted exynos and kirin
+> >   - Converted all the affected bridge drivers
+> >   - Reworded the documentation a bit
+> > 
+> > Changes from v2:
+> >   - Changed the approach as suggested by Andrzej, and aligned the bridge on the
+> >     panel this time.
+> >   - Fixed some typos
+> > 
+> > Changes from v1:
+> >   - Change the name of drm_of_get_next function to drm_of_get_bridge
+> >   - Mention the revert of 87154ff86bf6 and squash the two patches that were
+> >     reverting that commit
+> >   - Add some documentation
+> >   - Make drm_panel_attach and _detach succeed when no callback is there
+> > 
+> > Maxime Ripard (24):
+> >   drm/bridge: Add documentation sections
+> >   drm/bridge: Document the probe issue with MIPI-DSI bridges
+> >   drm/mipi-dsi: Create devm device registration
+> >   drm/mipi-dsi: Create devm device attachment
+> >   drm/bridge: adv7533: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: adv7511: Register and attach our DSI device at probe
+> >   drm/bridge: anx7625: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: anx7625: Register and attach our DSI device at probe
+> >   drm/bridge: lt8912b: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: lt8912b: Register and attach our DSI device at probe
+> >   drm/bridge: lt9611: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: lt9611: Register and attach our DSI device at probe
+> >   drm/bridge: lt9611uxc: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: lt9611uxc: Register and attach our DSI device at probe
+> >   drm/bridge: ps8640: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: ps8640: Register and attach our DSI device at probe
+> >   drm/bridge: sn65dsi83: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: sn65dsi83: Register and attach our DSI device at probe
+> >   drm/bridge: sn65dsi86: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: sn65dsi86: Register and attach our DSI device at probe
+> >   drm/bridge: tc358775: Switch to devm MIPI-DSI helpers
+> >   drm/bridge: tc358775: Register and attach our DSI device at probe
+> >   drm/kirin: dsi: Adjust probe order
+> >   drm/exynos: dsi: Adjust probe order
+> > 
+> >  Documentation/gpu/drm-kms-helpers.rst        |  12 +++
+> >  drivers/gpu/drm/bridge/adv7511/adv7511.h     |   1 -
+> >  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c |  15 ++-
+> >  drivers/gpu/drm/bridge/adv7511/adv7533.c     |  20 +---
+> >  drivers/gpu/drm/bridge/analogix/anx7625.c    |  40 ++++----
+> >  drivers/gpu/drm/bridge/lontium-lt8912b.c     |  31 ++----
+> >  drivers/gpu/drm/bridge/lontium-lt9611.c      |  62 +++++-------
+> >  drivers/gpu/drm/bridge/lontium-lt9611uxc.c   |  65 +++++-------
+> >  drivers/gpu/drm/bridge/parade-ps8640.c       | 101 ++++++++++---------
+> >  drivers/gpu/drm/bridge/tc358775.c            |  50 +++++----
+> >  drivers/gpu/drm/bridge/ti-sn65dsi83.c        |  86 ++++++++--------
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c        |  94 ++++++++---------
+> >  drivers/gpu/drm/drm_bridge.c                 |  69 ++++++++++++-
+> >  drivers/gpu/drm/drm_mipi_dsi.c               |  81 +++++++++++++++
+> >  drivers/gpu/drm/exynos/exynos_drm_dsi.c      |  19 ++--
+> >  drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c |  27 +++--
+> >  include/drm/drm_mipi_dsi.h                   |   4 +
+> >  17 files changed, 460 insertions(+), 317 deletions(-)
 
-Compliment of the day,
+-- 
 Regards,
-Dr. Rhama.
+
+Laurent Pinchart
