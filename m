@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C968420D27
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1BD420B57
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhJDNMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:12:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S233637AbhJDM4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:56:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234884AbhJDNJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D4F761B70;
-        Mon,  4 Oct 2021 13:03:42 +0000 (UTC)
+        id S233383AbhJDM4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF0946136F;
+        Mon,  4 Oct 2021 12:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352623;
-        bh=HEWDTzCLqV+HpbB90KCj3txdaD1TWH2NcrLpXvEobLU=;
+        s=korg; t=1633352074;
+        bh=RlyUX7sP5Ct99u20gbtpOm7CNK2Mnr+7k0y2eCkd/Bs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a9w0pru1PDlqwbMq3C2Mu0DJ5eEfRdP8Qy35fKm68/u1lsMycG73+/Wb8r8Sm5Wf4
-         v7y5IJIyFz701Ke4LYp7sqa1aE+Rf9i5hqIzBnHtJ5fExEMlFOGm+qQ/vOhsxSRJV2
-         WauIMvLLOnR/e22skhHs308vJf5/Gfx/b7oEbvfE=
+        b=wHfUhIyfQ8mNjgCv9dpI+RafkrppmWAjepb2mvJj+hgA0vmIB1veFF7rQenSSRf+u
+         0zZujjcN8Z1ty8Arymb5IbMS3J378XZDjKS/INotVfJGxyZbK1JXtlvJIir/LC8uu6
+         jS+N1c+MxKpu/j5ol9ZAaEnh03a75qUq5ZfFqFZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Paul Fulghum <paulkf@microgate.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/95] tty: synclink_gt: rename a conflicting function name
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.4 04/41] xen/x86: fix PV trap handling on secondary processors
 Date:   Mon,  4 Oct 2021 14:51:55 +0200
-Message-Id: <20211004125034.377580951@linuxfoundation.org>
+Message-Id: <20211004125026.740038171@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,232 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit 06e49073dfba24df4b1073a068631b13a0039c34 ]
+commit 0594c58161b6e0f3da8efa9c6e3d4ba52b652717 upstream.
 
-'set_signals()' in synclink_gt.c conflicts with an exported symbol
-in arch/um/, so change set_signals() to set_gtsignals(). Keep
-the function names similar by also changing get_signals() to
-get_gtsignals().
+The initial observation was that in PV mode under Xen 32-bit user space
+didn't work anymore. Attempts of system calls ended in #GP(0x402). All
+of the sudden the vector 0x80 handler was not in place anymore. As it
+turns out up to 5.13 redundant initialization did occur: Once from
+cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
+2nd time while each CPU was brought fully up. This 2nd initialization is
+now gone, uncovering that the 1st one was flawed: Unlike for the
+set_trap_table hypercall, a full virtual IDT needs to be specified here;
+the "vector" fields of the individual entries are of no interest. With
+many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
+the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
+becoming the domain's handler for vector 0x20.
 
-../drivers/tty/synclink_gt.c:442:13: error: conflicting types for ‘set_signals’
- static void set_signals(struct slgt_info *info);
-             ^~~~~~~~~~~
-In file included from ../include/linux/irqflags.h:16:0,
-                 from ../include/linux/spinlock.h:58,
-                 from ../include/linux/mm_types.h:9,
-                 from ../include/linux/buildid.h:5,
-                 from ../include/linux/module.h:14,
-                 from ../drivers/tty/synclink_gt.c:46:
-../arch/um/include/asm/irqflags.h:6:5: note: previous declaration of ‘set_signals’ was here
- int set_signals(int enable);
-     ^~~~~~~~~~~
+Make xen_convert_trap_info() fit for either purpose, leveraging the fact
+that on the xen_copy_trap_info() path the table starts out zero-filled.
+This includes moving out the writing of the sentinel, which would also
+have lead to a buffer overrun in the xen_copy_trap_info() case if all
+(kernel) IDT entries were populated. Convert the writing of the sentinel
+to clearing of the entire table entry rather than just the address
+field.
 
-Fixes: 705b6c7b34f2 ("[PATCH] new driver synclink_gt")
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Paul Fulghum <paulkf@microgate.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/20210902003806.17054-1-rdunlap@infradead.org
+(I didn't bother trying to identify the commit which uncovered the issue
+in 5.14; the commit named below is the one which actually introduced the
+bad code.)
+
+Fixes: f87e4cac4f4e ("xen: SMP guest support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/synclink_gt.c | 44 +++++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ arch/x86/xen/enlighten.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
-index 503836be5fe2..afe34beec720 100644
---- a/drivers/tty/synclink_gt.c
-+++ b/drivers/tty/synclink_gt.c
-@@ -438,8 +438,8 @@ static void reset_tbufs(struct slgt_info *info);
- static void tdma_reset(struct slgt_info *info);
- static bool tx_load(struct slgt_info *info, const char *buf, unsigned int count);
- 
--static void get_signals(struct slgt_info *info);
--static void set_signals(struct slgt_info *info);
-+static void get_gtsignals(struct slgt_info *info);
-+static void set_gtsignals(struct slgt_info *info);
- static void set_rate(struct slgt_info *info, u32 data_rate);
- 
- static void bh_transmit(struct slgt_info *info);
-@@ -721,7 +721,7 @@ static void set_termios(struct tty_struct *tty, struct ktermios *old_termios)
- 	if ((old_termios->c_cflag & CBAUD) && !C_BAUD(tty)) {
- 		info->signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
- 		spin_lock_irqsave(&info->lock,flags);
--		set_signals(info);
-+		set_gtsignals(info);
- 		spin_unlock_irqrestore(&info->lock,flags);
- 	}
- 
-@@ -731,7 +731,7 @@ static void set_termios(struct tty_struct *tty, struct ktermios *old_termios)
- 		if (!C_CRTSCTS(tty) || !tty_throttled(tty))
- 			info->signals |= SerialSignal_RTS;
- 		spin_lock_irqsave(&info->lock,flags);
--	 	set_signals(info);
-+	 	set_gtsignals(info);
- 		spin_unlock_irqrestore(&info->lock,flags);
- 	}
- 
-@@ -1183,7 +1183,7 @@ static inline void line_info(struct seq_file *m, struct slgt_info *info)
- 
- 	/* output current serial signal states */
- 	spin_lock_irqsave(&info->lock,flags);
--	get_signals(info);
-+	get_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock,flags);
- 
- 	stat_buf[0] = 0;
-@@ -1283,7 +1283,7 @@ static void throttle(struct tty_struct * tty)
- 	if (C_CRTSCTS(tty)) {
- 		spin_lock_irqsave(&info->lock,flags);
- 		info->signals &= ~SerialSignal_RTS;
--		set_signals(info);
-+		set_gtsignals(info);
- 		spin_unlock_irqrestore(&info->lock,flags);
- 	}
- }
-@@ -1308,7 +1308,7 @@ static void unthrottle(struct tty_struct * tty)
- 	if (C_CRTSCTS(tty)) {
- 		spin_lock_irqsave(&info->lock,flags);
- 		info->signals |= SerialSignal_RTS;
--		set_signals(info);
-+		set_gtsignals(info);
- 		spin_unlock_irqrestore(&info->lock,flags);
- 	}
- }
-@@ -1480,7 +1480,7 @@ static int hdlcdev_open(struct net_device *dev)
- 
- 	/* inform generic HDLC layer of current DCD status */
- 	spin_lock_irqsave(&info->lock, flags);
--	get_signals(info);
-+	get_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock, flags);
- 	if (info->signals & SerialSignal_DCD)
- 		netif_carrier_on(dev);
-@@ -2236,7 +2236,7 @@ static void isr_txeom(struct slgt_info *info, unsigned short status)
- 		if (info->params.mode != MGSL_MODE_ASYNC && info->drop_rts_on_tx_done) {
- 			info->signals &= ~SerialSignal_RTS;
- 			info->drop_rts_on_tx_done = false;
--			set_signals(info);
-+			set_gtsignals(info);
- 		}
- 
- #if SYNCLINK_GENERIC_HDLC
-@@ -2401,7 +2401,7 @@ static void shutdown(struct slgt_info *info)
- 
-  	if (!info->port.tty || info->port.tty->termios.c_cflag & HUPCL) {
- 		info->signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
--		set_signals(info);
-+		set_gtsignals(info);
- 	}
- 
- 	flush_cond_wait(&info->gpio_wait_q);
-@@ -2429,7 +2429,7 @@ static void program_hw(struct slgt_info *info)
- 	else
- 		async_mode(info);
- 
--	set_signals(info);
-+	set_gtsignals(info);
- 
- 	info->dcd_chkcount = 0;
- 	info->cts_chkcount = 0;
-@@ -2437,7 +2437,7 @@ static void program_hw(struct slgt_info *info)
- 	info->dsr_chkcount = 0;
- 
- 	slgt_irq_on(info, IRQ_DCD | IRQ_CTS | IRQ_DSR | IRQ_RI);
--	get_signals(info);
-+	get_gtsignals(info);
- 
- 	if (info->netcount ||
- 	    (info->port.tty && info->port.tty->termios.c_cflag & CREAD))
-@@ -2681,7 +2681,7 @@ static int wait_mgsl_event(struct slgt_info *info, int __user *mask_ptr)
- 	spin_lock_irqsave(&info->lock,flags);
- 
- 	/* return immediately if state matches requested events */
--	get_signals(info);
-+	get_gtsignals(info);
- 	s = info->signals;
- 
- 	events = mask &
-@@ -3099,7 +3099,7 @@ static int tiocmget(struct tty_struct *tty)
-  	unsigned long flags;
- 
- 	spin_lock_irqsave(&info->lock,flags);
-- 	get_signals(info);
-+ 	get_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock,flags);
- 
- 	result = ((info->signals & SerialSignal_RTS) ? TIOCM_RTS:0) +
-@@ -3138,7 +3138,7 @@ static int tiocmset(struct tty_struct *tty,
- 		info->signals &= ~SerialSignal_DTR;
- 
- 	spin_lock_irqsave(&info->lock,flags);
--	set_signals(info);
-+	set_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock,flags);
- 	return 0;
- }
-@@ -3149,7 +3149,7 @@ static int carrier_raised(struct tty_port *port)
- 	struct slgt_info *info = container_of(port, struct slgt_info, port);
- 
- 	spin_lock_irqsave(&info->lock,flags);
--	get_signals(info);
-+	get_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock,flags);
- 	return (info->signals & SerialSignal_DCD) ? 1 : 0;
- }
-@@ -3164,7 +3164,7 @@ static void dtr_rts(struct tty_port *port, int on)
- 		info->signals |= SerialSignal_RTS | SerialSignal_DTR;
- 	else
- 		info->signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
--	set_signals(info);
-+	set_gtsignals(info);
- 	spin_unlock_irqrestore(&info->lock,flags);
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -861,8 +861,8 @@ static void xen_write_idt_entry(gate_des
+ 	preempt_enable();
  }
  
-@@ -3963,10 +3963,10 @@ static void tx_start(struct slgt_info *info)
- 
- 		if (info->params.mode != MGSL_MODE_ASYNC) {
- 			if (info->params.flags & HDLC_FLAG_AUTO_RTS) {
--				get_signals(info);
-+				get_gtsignals(info);
- 				if (!(info->signals & SerialSignal_RTS)) {
- 					info->signals |= SerialSignal_RTS;
--					set_signals(info);
-+					set_gtsignals(info);
- 					info->drop_rts_on_tx_done = true;
- 				}
- 			}
-@@ -4020,7 +4020,7 @@ static void reset_port(struct slgt_info *info)
- 	rx_stop(info);
- 
- 	info->signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
--	set_signals(info);
-+	set_gtsignals(info);
- 
- 	slgt_irq_off(info, IRQ_ALL | IRQ_MASTER);
- }
-@@ -4442,7 +4442,7 @@ static void tx_set_idle(struct slgt_info *info)
- /*
-  * get state of V24 status (input) signals
-  */
--static void get_signals(struct slgt_info *info)
-+static void get_gtsignals(struct slgt_info *info)
+-static void xen_convert_trap_info(const struct desc_ptr *desc,
+-				  struct trap_info *traps)
++static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
++				      struct trap_info *traps, bool full)
  {
- 	unsigned short status = rd_reg16(info, SSR);
+ 	unsigned in, out, count;
  
-@@ -4504,7 +4504,7 @@ static void msc_set_vcr(struct slgt_info *info)
- /*
-  * set state of V24 control (output) signals
-  */
--static void set_signals(struct slgt_info *info)
-+static void set_gtsignals(struct slgt_info *info)
+@@ -872,17 +872,18 @@ static void xen_convert_trap_info(const
+ 	for (in = out = 0; in < count; in++) {
+ 		gate_desc *entry = (gate_desc*)(desc->address) + in;
+ 
+-		if (cvt_gate_to_trap(in, entry, &traps[out]))
++		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
+ 			out++;
+ 	}
+-	traps[out].address = 0;
++
++	return out;
+ }
+ 
+ void xen_copy_trap_info(struct trap_info *traps)
  {
- 	unsigned char val = rd_reg8(info, VCR);
- 	if (info->signals & SerialSignal_DTR)
--- 
-2.33.0
-
+ 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
+ 
+-	xen_convert_trap_info(desc, traps);
++	xen_convert_trap_info(desc, traps, true);
+ }
+ 
+ /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
+@@ -892,6 +893,7 @@ static void xen_load_idt(const struct de
+ {
+ 	static DEFINE_SPINLOCK(lock);
+ 	static struct trap_info traps[257];
++	unsigned out;
+ 
+ 	trace_xen_cpu_load_idt(desc);
+ 
+@@ -899,7 +901,8 @@ static void xen_load_idt(const struct de
+ 
+ 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
+ 
+-	xen_convert_trap_info(desc, traps);
++	out = xen_convert_trap_info(desc, traps, false);
++	memset(&traps[out], 0, sizeof(traps[0]));
+ 
+ 	xen_mc_flush();
+ 	if (HYPERVISOR_set_trap_table(traps))
 
 
