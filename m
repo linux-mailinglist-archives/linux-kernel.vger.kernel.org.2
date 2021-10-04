@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD448421A88
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A040A421A9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbhJDXWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S236984AbhJDXYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhJDXWy (ORCPT
+        with ESMTP id S234181AbhJDXYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:22:54 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E7EC061749;
-        Mon,  4 Oct 2021 16:21:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=lB9klwC6rOjyM0N8bWwN1xpjBQyssT4L9VIpQtP7fP8=; b=t8Nl04LLGQN7l/8hLjSQbU9tx5
-        wTCzED2f1xX8RisVP2fIokIbHQaVyBpSU+uB2U+zRgngCoNPg6CWHgnLZpkilY/cxCQxPfwykKWrp
-        2Saypf/97tvJkRSn4jZSmUcFbuezIePgX3C+nF+LCoVGHIZfdT9CtYfQ4vzzCYX2wHIBUpl+6wr8W
-        i260b28NLvdlRmMNaBnmoPn6JRrngwYbi/yqE9N3D1Q2BQX6cPriVTjmJTto3aZNP47dFHPl4KcfY
-        xIet0Abmv8DT4kvS46IxieH0c1nhY02UFoOlFLL8T07x7QNub45XA7ekQEufYcssUm87OYHLhOIDN
-        T86zC31A==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXXGa-008O7O-0r; Mon, 04 Oct 2021 23:21:04 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH] usb: typec: STUSB160X should select REGMAP_I2C
-Date:   Mon,  4 Oct 2021 16:21:03 -0700
-Message-Id: <20211004232103.23893-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 4 Oct 2021 19:24:50 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A687C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 16:23:00 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y23so38997922lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 16:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8asHn/iYd03g83vgfgxo+lFvMDcDL8rsmQBpQeeHnK0=;
+        b=p2CcespYqIe+M2AjipUxAHP9K6Vi0ifbq9m4GxyLkI3gV/vEZt+7Na2ASheJOcDaag
+         NzwggfOJ5GRvhbWFrmr2TOk2gF2M48CGpklW3fkKnNELgLxc23/ioQuuxilSX0pDm26G
+         emhJARxOj8i7L1ZxfmCeM1nt+tOQE3DmM0akSFQMotmOSqI0XhiyKCT59uhfDTIQWz1r
+         NwPp4acNH9q+dcl9PbJcmmyTsXyX1y5FrjXuTomfEJt9ApLEV38Gemi63fOoHnsMHfVB
+         eddiL3GEotR6ZA9idDdKD7JplqlmYGVYLB1uue1oOlqAFz4M6yu5qbILDB4Vr2wPiidO
+         3FRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8asHn/iYd03g83vgfgxo+lFvMDcDL8rsmQBpQeeHnK0=;
+        b=FJJ75UXHw7MVn7pstZ8sYBpcxx9rZ6F8/3IQeCg+fTVKG5tUe75/2BUinSpZ7Bw6e4
+         k3bVuHcgcO+DMJuJqrvu8MDa3rdPNY+04cw6ie/EtF7IqZYE627K7P+T/Voi0kruxBoF
+         fELimEKQqOg7nP8pwH7Q2Gn6WcDBh6eL28bsfgG0IW0u2edDfw9oZJ24oNjve0LQDd+r
+         IkUZ7NLP5wRxEH4D7wTk07+k/mWdG1l2JWdwdfHXzokNVAArkaT0FwzIRViOhsuRHP8f
+         +/t9vjyyBinAjLMbJCfbdXjKJUZEaGaiRe/gcO0MmsrvWKqOjgCr6DOt0Am9Eu6F0MXN
+         WiiQ==
+X-Gm-Message-State: AOAM531zfwv6aJRrxnAQpefvjaD7guuTts4LtwDSmVbCYkzit1ftOcms
+        mAYK2uBZ8mVC/pmS79oqCxUXP50p1fDLSBr/vCnagw==
+X-Google-Smtp-Source: ABdhPJxBnNNC6CU4ZwFoxnRbyfB4pSz2595jYvt6QuBRmw//X5abCAwApH63HrjCOVWwTWHw6koNnYhIz9PTUTUxY0g=
+X-Received: by 2002:a05:6512:2294:: with SMTP id f20mr17500184lfu.489.1633389778636;
+ Mon, 04 Oct 2021 16:22:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202110020501.RKX4zca7-lkp@intel.com> <20211004162936.21961-1-ndesaulniers@google.com>
+ <163337043811.3396838.458236649388694225.b4-ty@chromium.org>
+ <CAKwvOdm5bBUE0df8jbXq+bSCf9U0AM3Wm4NsZeHu=Nuhi0yd-A@mail.gmail.com>
+ <20211004183806.5weyuk554ppe5olb@meerkat.local> <CAKwvOdkzviryHByOZj1K6r6HVKcC+4Tc43jXn4Eqk9EXGVpucg@mail.gmail.com>
+ <20211004194521.e2syd25qzrgn5mzg@meerkat.local> <20211004203754.nvk4aijql7tevbnh@meerkat.local>
+In-Reply-To: <20211004203754.nvk4aijql7tevbnh@meerkat.local>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 4 Oct 2021 16:22:47 -0700
+Message-ID: <CAKwvOdm_C4nYW1xWmf6RbjXoV76xZs8OCq6VfSKXKtJXdMta-Q@mail.gmail.com>
+Subject: Re: [PATCH v6] kallsyms: strip LTO suffixes from static functions
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-REGMAP_I2C is not a user visible kconfig symbol so driver configs
-should not "depend on" it. They should depend on I2C and then
-select REGMAP_I2C.
+On Mon, Oct 4, 2021 at 1:37 PM Konstantin Ryabitsev
+<konstantin@linuxfoundation.org> wrote:
+>
+> On Mon, Oct 04, 2021 at 03:45:21PM -0400, Konstantin Ryabitsev wrote:
+> > So, this line:
+> >
+> > > fatal: command 'git hook run sendemail-validate -- <patch>' died with exit code 1
+> >
+> > Suggests to me that your git version is patched to carry the
+> > new-and-not-yet-accepted "git hook" changes. It seems that it both opens a
+> > stdin and passes the file as the parameter. When we find a stdin, we always
+> > grab that instead of the passed parameter, but that's only a problem with this
+> > change to git.
+>
+> Patatt version 0.4.9 is out and should fix this problem. Glad we caught it
+> before the fancy new git-hook patches are in upstream git. :)
 
-If this worked, it was only because some other driver had set/enabled
-REGMAP_I2C.
+$ pip install --user patatt --upgrade
+$ git send-email ...
+$ echo $?
+0
 
-Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Amelie Delaunay <amelie.delaunay@st.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
----
- drivers/usb/typec/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- lnx-515-rc4.orig/drivers/usb/typec/Kconfig
-+++ lnx-515-rc4/drivers/usb/typec/Kconfig
-@@ -65,9 +65,9 @@ config TYPEC_HD3SS3220
- 
- config TYPEC_STUSB160X
- 	tristate "STMicroelectronics STUSB160x Type-C controller driver"
--	depends on I2C
--	depends on REGMAP_I2C
- 	depends on USB_ROLE_SWITCH || !USB_ROLE_SWITCH
-+	depends on I2C
-+	select REGMAP_I2C
- 	help
- 	  Say Y or M here if your system has STMicroelectronics STUSB160x
- 	  Type-C port controller.
+:) LGTM, thanks Konstantin. Did I mention that b4 has significantly
+improved my workflow contributing to the Linux kernel?
+-- 
+Thanks,
+~Nick Desaulniers
