@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AE3420B9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C532E420CD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhJDM63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
+        id S235806AbhJDNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:09:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233624AbhJDM5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E75613AC;
-        Mon,  4 Oct 2021 12:55:51 +0000 (UTC)
+        id S235193AbhJDNHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:07:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6F5B61A35;
+        Mon,  4 Oct 2021 13:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352152;
-        bh=YJpWnxLF0W0MXEdB7eyL5x4rB8uf941j7FDbJUGhOeY=;
+        s=korg; t=1633352515;
+        bh=0dN88o96YP0pNo+/81dDK60JmrHL0hbAZ9I6xHd91zI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJXOW8NBBe6In8zeKYn8UKtcEhAxhiGrWM+FSk0kG0JQcSC6pMBdHRYLxfLAdOB8s
-         QCygwH/qGvDArT0ngpX1qNq3wY5mBRJX0BPBX5uY3IsheAvLD/uIb+QtsTIJnK5DMt
-         HpFmo7V9UP1Oq/D8U3YF4m0VYg6tWFtps8z45XXU=
+        b=lkivtzh8JuaCyQpKgcz7zTjYzHq8ICuXaa7Glw6zomSRUUimHhzX/eI1Q/5sDRsBT
+         aSlK++bNqJcD1V4mi15xF5Uwr6Ny6H/J8AHhjdDhmJNswHmg39vae0D+BeMrwOEjX4
+         +Ldznj7HaZGCEEkERB9Ko/vHqR1FK0I8Uy0Qz2Ao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.9 02/57] usb: gadget: r8a66597: fix a loop in set_feature()
-Date:   Mon,  4 Oct 2021 14:51:46 +0200
-Message-Id: <20211004125029.019131489@linuxfoundation.org>
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.19 17/95] serial: mvebu-uart: fix drivers tx_empty callback
+Date:   Mon,  4 Oct 2021 14:51:47 +0200
+Message-Id: <20211004125034.119664731@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 17956b53ebff6a490baf580a836cbd3eae94892b upstream.
+commit 74e1eb3b4a1ef2e564b4bdeb6e92afe844e900de upstream.
 
-This loop is supposed to loop until if reads something other than
-CS_IDST or until it times out after 30,000 attempts.  But because of
-the || vs && bug, it will never time out and instead it will loop a
-minimum of 30,000 times.
+Driver's tx_empty callback should signal when the transmit shift register
+is empty. So when the last character has been sent.
 
-This bug is quite old but the code is only used in USB_DEVICE_TEST_MODE
-so it probably doesn't affect regular usage.
+STAT_TX_FIFO_EMP bit signals only that HW transmit FIFO is empty, which
+happens when the last byte is loaded into transmit shift register.
 
-Fixes: 96fe53ef5498 ("usb: gadget: r8a66597-udc: add support for TEST_MODE")
+STAT_TX_EMP bit signals when the both HW transmit FIFO and transmit shift
+register are empty.
+
+So replace STAT_TX_FIFO_EMP check by STAT_TX_EMP in mvebu_uart_tx_empty()
+callback function.
+
+Fixes: 30530791a7a0 ("serial: mvebu-uart: initial support for Armada-3700 serial port")
 Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210906094221.GA10957@kili
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Link: https://lore.kernel.org/r/20210911132017.25505-1-pali@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/r8a66597-udc.c |    2 +-
+ drivers/tty/serial/mvebu-uart.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/udc/r8a66597-udc.c
-+++ b/drivers/usb/gadget/udc/r8a66597-udc.c
-@@ -1253,7 +1253,7 @@ static void set_feature(struct r8a66597
- 			do {
- 				tmp = r8a66597_read(r8a66597, INTSTS0) & CTSQ;
- 				udelay(1);
--			} while (tmp != CS_IDST || timeout-- > 0);
-+			} while (tmp != CS_IDST && timeout-- > 0);
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -163,7 +163,7 @@ static unsigned int mvebu_uart_tx_empty(
+ 	st = readl(port->membase + UART_STAT);
+ 	spin_unlock_irqrestore(&port->lock, flags);
  
- 			if (tmp == CS_IDST)
- 				r8a66597_bset(r8a66597,
+-	return (st & STAT_TX_FIFO_EMP) ? TIOCSER_TEMT : 0;
++	return (st & STAT_TX_EMP) ? TIOCSER_TEMT : 0;
+ }
+ 
+ static unsigned int mvebu_uart_get_mctrl(struct uart_port *port)
 
 
