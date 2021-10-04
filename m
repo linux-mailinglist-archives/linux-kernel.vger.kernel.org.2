@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5788B420DC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92544420C00
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhJDNSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53970 "EHLO mail.kernel.org"
+        id S234502AbhJDNBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235750AbhJDNQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:16:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03FAD61BA8;
-        Mon,  4 Oct 2021 13:06:30 +0000 (UTC)
+        id S234034AbhJDNAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E21761213;
+        Mon,  4 Oct 2021 12:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352791;
-        bh=I2etFlXvpAhsBcT+O1eRDwIbnvp39z8/zOR6c1KJGsg=;
+        s=korg; t=1633352273;
+        bh=KXnMig1+1jNUcDKDIWgFR3AO2q8KWmvyo3DPJs9IbLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uw5ctv9u3LKClOHDONLw3+Ug/V0JGoju7S4nsLD8yFZaaQzcqiqgyDVfHMdHq2o96
-         o24BYU+cSe4vkVO/YzfzjN99Ja3ubK0CSjDjZ1prRfrMODxEEUEDcEj53CUNEwcZBh
-         /bLLBgUFSnFy4LpJeaNr4QGkYjAEGLHHD0eQWEQc=
+        b=W5iaNGfzFUFc9/2QHTrViFIXBr0+wBpCQjpqKHvyTlBrjjR2mp3682n2unGvlQQ1V
+         vzVuSOeVcMtrvPW413UFISXw7pF0kg/eF+EMAeTCt3UPiP7uPy9pG01+Y2tVxu6lq3
+         nsqeL+rLtL/Q4OxmjScnF/dGCKJPveSMAi1qTQ6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/56] hwmon: (tmp421) report /PVLD condition as fault
+        stable@vger.kernel.org,
+        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.9 56/57] HID: usbhid: free raw_report buffers in usbhid_stop
 Date:   Mon,  4 Oct 2021 14:52:40 +0200
-Message-Id: <20211004125030.641485449@linuxfoundation.org>
+Message-Id: <20211004125030.720628285@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Fertser <fercerpav@gmail.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-[ Upstream commit 540effa7f283d25bcc13c0940d808002fee340b8 ]
+commit f7744fa16b96da57187dc8e5634152d3b63d72de upstream.
 
-For both local and remote sensors all the supported ICs can report an
-"undervoltage lockout" condition which means the conversion wasn't
-properly performed due to insufficient power supply voltage and so the
-measurement results can't be trusted.
+Free the unsent raw_report buffers when the device is removed.
 
-Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-Link: https://lore.kernel.org/r/20210924093011.26083-2-fercerpav@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes a memory leak reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
+
+Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/tmp421.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/hid/usbhid/hid-core.c |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
-index a94e35cff3e5..e245ae272f7d 100644
---- a/drivers/hwmon/tmp421.c
-+++ b/drivers/hwmon/tmp421.c
-@@ -160,10 +160,10 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
- 		return 0;
- 	case hwmon_temp_fault:
- 		/*
--		 * The OPEN bit signals a fault. This is bit 0 of the temperature
--		 * register (low byte).
-+		 * Any of OPEN or /PVLD bits indicate a hardware mulfunction
-+		 * and the conversion result may be incorrect
- 		 */
--		*val = tmp421->temp[channel] & 0x01;
-+		*val = !!(tmp421->temp[channel] & 0x03);
- 		return 0;
- 	default:
- 		return -EOPNOTSUPP;
-@@ -176,9 +176,6 @@ static umode_t tmp421_is_visible(const void *data, enum hwmon_sensor_types type,
- {
- 	switch (attr) {
- 	case hwmon_temp_fault:
--		if (channel == 0)
--			return 0;
--		return 0444;
- 	case hwmon_temp_input:
- 		return 0444;
- 	default:
--- 
-2.33.0
-
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -500,7 +500,7 @@ static void hid_ctrl(struct urb *urb)
+ 
+ 	if (unplug) {
+ 		usbhid->ctrltail = usbhid->ctrlhead;
+-	} else {
++	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
+ 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
+ 
+ 		if (usbhid->ctrlhead != usbhid->ctrltail &&
+@@ -1185,9 +1185,20 @@ static void usbhid_stop(struct hid_devic
+ 		usbhid->intf->needs_remote_wakeup = 0;
+ 
+ 	clear_bit(HID_STARTED, &usbhid->iofl);
++
+ 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
+ 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
++	while (usbhid->ctrltail != usbhid->ctrlhead) {
++		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
++			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
++			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
++		}
++
++		usbhid->ctrltail = (usbhid->ctrltail + 1) &
++			(HID_CONTROL_FIFO_SIZE - 1);
++	}
+ 	spin_unlock_irq(&usbhid->lock);
++
+ 	usb_kill_urb(usbhid->urbin);
+ 	usb_kill_urb(usbhid->urbout);
+ 	usb_kill_urb(usbhid->urbctrl);
 
 
