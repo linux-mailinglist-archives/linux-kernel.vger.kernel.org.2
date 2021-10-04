@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E37D4219FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09B3421A0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbhJDW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:28:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32727 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234861AbhJDW2x (ORCPT
+        id S235692AbhJDWbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235565AbhJDWbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:28:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633386423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=go//iVwtY7zZIP/QH6T/mRZIb51VgkEaG2XcNzZciIo=;
-        b=A7ApVUJTu7MXBRX90hxsI1VAvPYTNG/l3lW2b/+DCsFbYcRPMFly+4ySRUfxTkADxm/7uA
-        VkHi3JtTil//fenHG3FxoeTgRqiBZmBbvlL4l1NfbVl7ISeT/JlYG4d79L8AXSbAWUJqML
-        hAH5qWechxVWdYmFRkwo7zubYpCTWc4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-bw0XuvdjPN2hgzVz5wjh_Q-1; Mon, 04 Oct 2021 18:27:02 -0400
-X-MC-Unique: bw0XuvdjPN2hgzVz5wjh_Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 268E28145E6;
-        Mon,  4 Oct 2021 22:27:01 +0000 (UTC)
-Received: from virtlab512.virt.lab.eng.bos.redhat.com (virtlab512.virt.lab.eng.bos.redhat.com [10.19.152.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4291618B5E;
-        Mon,  4 Oct 2021 22:27:00 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        mtosatti@redhat.com, tglx@linutronix.de, frederic@kernel.org,
-        mingo@kernel.org, nilal@redhat.com
-Subject: [PATCH v1] KVM: isolation: retain initial mask for kthread VM worker
-Date:   Mon,  4 Oct 2021 18:26:39 -0400
-Message-Id: <20211004222639.239209-1-nitesh@redhat.com>
+        Mon, 4 Oct 2021 18:31:15 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4979AC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 15:29:25 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id u18so78041606lfd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 15:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=um4Fcr2fRzJCbuqb6umRyrAwaJXGfwl9VTVZmIntFmY=;
+        b=azmyGfTEmdbEJHm+SlhRjjeQax/I1DRRaIkHgTN4T7Jcza4Q0DN4yXcxnjzsUyiSIO
+         wesrHq+r64z1z1P6Ck+CGOVWAIhXFEk/k5e/E2RvXZi+fUhkoeZRV9ifX8bxLC30LI7a
+         yey+Enhe6gT/eAg03pHu9jiX6/WexDBqOn0KFD9sNQXxoS8I+Zcd93ndmcs+opzvMtOt
+         67065Q6A2selnkErXNaPY46ULEyJevFiohL8dCMnW1syunxS+Q3JyZ7XYBR6yGcxHzO9
+         G2tGr+dHvGy4+QQoXusqgtaIGAlPdnfbpq2MR3df2xhvmf2DSSibzNom38jGEHLBKcgt
+         UmWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=um4Fcr2fRzJCbuqb6umRyrAwaJXGfwl9VTVZmIntFmY=;
+        b=C/hKQqe40glPs5bWGHYf57J8Gu8n1yXZ0jCjnc45bNi4cVTro5S9WUHpXq0G5+vjcA
+         r/ZCzpggyf2JqxOR+ifiueYOrD8MqemTd5I3hzhJX8ToU1bAuqYfhvg7+wwVRcj1k9Nv
+         I4B/InN+Fyuo3nkGq9bnYY9B+/DknJoHd1uAvuXx/LDOaHzVppjBdVNTVgKnPM06zcWP
+         4Eqq8eHVHeowhBBuJuiZihGynMLQRKCObFiLE6YVYteBHLnGxiaWfd4qyY4Xr74DPVbO
+         pRbT57msO3ew4E4JbuA2QSBRNfeg4P8DKzagVb4zukLvzGj5v9drqYqqGaYjPaFdtMIE
+         dkMg==
+X-Gm-Message-State: AOAM533ELaZxvGvW9FZWrHGw7ifwuQ53ya2omDV1NtZHRgV5CquaCrUR
+        xCEorsxxFwS0A8FBwSZKbRsbvdY4mexiLZZDjn+k4A==
+X-Google-Smtp-Source: ABdhPJykxc+U57C0bYOepxwQRGK6sUfG/2fmg1ryrkmQhSafCwiTubKiNfdXkMC9JaMoYBco6qzyBu7W+0Rrjgm8A2U=
+X-Received: by 2002:ac2:4f92:: with SMTP id z18mr16805817lfs.354.1633386563407;
+ Mon, 04 Oct 2021 15:29:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+ <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
+ <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com> <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
+ <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com>
+In-Reply-To: <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 5 Oct 2021 00:28:57 +0200
+Message-ID: <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Tosatti <mtosatti@redhat.com>
+On Mon, Oct 4, 2021 at 6:19 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 10/1/2021 3:58 PM, Jann Horn wrote:
+> > On Fri, Oct 1, 2021 at 10:10 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 10/1/2021 12:50 PM, Jann Horn wrote:
+> >>> On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
+> >>>> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>>> On 10/1/2021 10:55 AM, Todd Kjos wrote:
+> >>>>>> Save the struct cred associated with a binder process
+> >>>>>> at initial open to avoid potential race conditions
+> >>>>>> when converting to a security ID.
+> >>>>>>
+> >>>>>> Since binder was integrated with selinux, it has passed
+> >>>>>> 'struct task_struct' associated with the binder_proc
+> >>>>>> to represent the source and target of transactions.
+> >>>>>> The conversion of task to SID was then done in the hook
+> >>>>>> implementations. It turns out that there are race conditions
+> >>>>>> which can result in an incorrect security context being used.
+> >>>>> In the LSM stacking patch set I've been posting for a while
+> >>>>> (on version 29 now) I use information from the task structure
+> >>>>> to ensure that the security information passed via the binder
+> >>>>> interface is agreeable to both sides. Passing the cred will
+> >>>>> make it impossible to do this check. The task information
+> >>>>> required is not appropriate to have in the cred.
+> >>>> Why not? Why can't you put the security identity of the task into the creds?
+> >>> Ah, I get it now, you're concerned about different processes wanting
+> >>> to see security contexts formatted differently (e.g. printing the
+> >>> SELinux label vs printing the AppArmor label), right?
+> >> That is correct.
+> >>
+> >>> But still, I don't think you can pull that information from the
+> >>> receiving task. Maybe the easiest solution would be to also store that
+> >>> in the creds? Or you'd have to manually grab that information when
+> >>> /dev/binder is opened.
+> >> I'm storing the information in the task security blob because that's
+> >> the appropriate scope. Today the LSM hook is given both task_struct's.
+> > Which is wrong, because you have no idea who the semantic "recipient
+> > task" is - any task that has a mapping of the binder fd can
+> > effectively receive transactions from it.
+> >
+> > (And the current "sender task" is also wrong, because binder looks at
+> > the task that opened the binder device, not the task currently
+> > performing the action.)
+>
+> I'm confused. Are you saying that the existing binder code is
+> completely broken? Are you saying that neither "task" is correct?
 
-kvm_vm_worker_thread() creates a kthread VM worker and migrates it
-to the parent cgroup using cgroup_attach_task_all() based on its
-effective cpumask.
+Yeah, basically - but luckily the actual impact this has is limited by
+the transitions that SELinux permits. If domain1 has no way to
+transition to domain2, then it can't abuse this bug to pretend to be
+domain2. I do have a reproducer that lets Android's "shell" domain
+send a binder transaction that appears to come from "runas", but
+luckily "runas" has no interesting privileges with regards to binder,
+so that's not exploitable.
 
-In an environment that is booted with the nohz_full kernel option, cgroup's
-effective cpumask can also include CPUs running in nohz_full mode. These
-CPUs often run SCHED_FIFO tasks which may result in the starvation of the
-VM worker if it has been migrated to one of these CPUs.
+> How does passing the creds from the wrong tasks "fix" the problem?
 
-Since unbounded kernel threads allowed CPU mask already respects nohz_full
-CPUs at the time of their setup (because of 9cc5b8656892: "isolcpus: Affine
-unbound kernel threads to housekeeping cpus"), retain the initial CPU mask
-for the kthread by stopping its migration to the parent cgroup's effective
-CPUs.
+This patch is not passing the creds from the "wrong" tasks at all. It
+relies on the basic idea that when a security context opens a
+resource, and then hands that resource to another context for
+read/write operations, then you can effectively treat this as a
+delegation of privileges from the original opener, and perform access
+checks against the credentials using which the resource was opened.
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
----
- virt/kvm/kvm_main.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+In particular, we already have those semantics in the core kernel for
+->read() and ->write() VFS operations - they are *not allowed* to look
+at the credentials of the caller, and if they want to make security
+checks, they have to instead check against file->f_cred, which are the
+credentials using which the file was originally opened. (Yes, some
+places still get that wrong.) Passing a file descriptor to another
+task is a delegation of access, and the other task can then call
+syscalls like read() / write() / mmap() on the file descriptor without
+needing to have any access to the underlying file.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7851f3a1b5f7..87bc193fd020 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -56,6 +56,7 @@
- #include <asm/processor.h>
- #include <asm/ioctl.h>
- #include <linux/uaccess.h>
-+#include <linux/sched/isolation.h>
- 
- #include "coalesced_mmio.h"
- #include "async_pf.h"
-@@ -5634,11 +5635,20 @@ static int kvm_vm_worker_thread(void *context)
- 	if (err)
- 		goto init_complete;
- 
--	err = cgroup_attach_task_all(init_context->parent, current);
--	if (err) {
--		kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
--			__func__, err);
--		goto init_complete;
-+	/*
-+	 * For nohz_full enabled environments, don't migrate the worker thread
-+	 * to parent cgroup as its effective mask may have a CPU running in
-+	 * nohz_full mode. nohz_full CPUs often run SCHED_FIFO task which could
-+	 * result in starvation of the worker thread if it is pinned on the same
-+	 * CPU.
-+	 */
-+	if (!housekeeping_enabled(HK_FLAG_KTHREAD)) {
-+		err = cgroup_attach_task_all(init_context->parent, current);
-+		if (err) {
-+			kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
-+				__func__, err);
-+			goto init_complete;
-+		}
- 	}
- 
- 	set_user_nice(current, task_nice(init_context->parent));
--- 
-2.27.0
+You can't really attribute binder transactions to specific tasks that
+are actually involved in the specific transaction, neither on the
+sending side nor on the receiving side, because binder is built around
+passing data through memory mappings. Memory mappings can be accessed
+by multiple tasks, and even a task that does not currently have it
+mapped could e.g. map it at a later time. And on top of that you have
+the problem that the receiving task might also go through privileged
+execve() transitions.
 
+> >> It's easy to compare to make sure the tasks are compatible.
+> > It would be, if you actually had a pair of tasks that accurately
+> > represent the sender and the recipient.
+> >
+> >> Adding the
+> >> information to the cred would be yet another case where the scope of
+> >> security information is wrong.
+> > Can you elaborate on why you think that?
+>
+> The information identifies how the task is going to display
+> the security "context". It isn't used in access checks.
+
+But it is data that AFAICS needs to be preserved in the same places
+where the creds need to be preserved, and it is also related to
+security labels, so isn't "struct cred" a logical place to stuff it
+anyway?
