@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D545E420F99
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6555420FA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbhJDNgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
+        id S236778AbhJDNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236269AbhJDNdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C136961AAC;
-        Mon,  4 Oct 2021 13:15:32 +0000 (UTC)
+        id S236582AbhJDNex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B06761881;
+        Mon,  4 Oct 2021 13:15:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353333;
-        bh=mOgugXgcLv2VxWNy/hGeUqDkIQm2ezwHnXM9Shl0ZrY=;
+        s=korg; t=1633353338;
+        bh=RtU55DnzmwifvM70zL20eJG7d1lJfdM7W4xWz2HvvjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2dmHcVDYfonHoPKtAnoNtluPiUgRqKyr8MuPRt6D5Y8rKAlJ+qvlxNiROh/rjnaee
-         NhOA8azJsNHO3P5RA6VOXWteIaQB1c7ZjU8SOE/U4X0LoSmNm3PIjzTs5brGkRLiLU
-         bIRnQe43ho7L51uMRbXyZ/3dYlXU627iZv94jweo=
+        b=tJ7vL7TGCvFTS0nHP0QBRloy/6+OFemugSEZPQhpyMH3YzS8Q3XfvZ737CIX05pLA
+         hr0f5/V3GIp+k2CqdU+y6n21t9+Bms2VectdBHqAy8NQeLzhpdbFtJE58+ZPRLg8RW
+         kFA4v75RCYEwhpIK5t4kGnVIl61GVw+BdHLvSGLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH 5.14 087/172] netfilter: log: work around missing softdep backend module
-Date:   Mon,  4 Oct 2021 14:52:17 +0200
-Message-Id: <20211004125047.798905253@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 088/172] Revert "mac80211: do not use low data rates for data frames with no ack flag"
+Date:   Mon,  4 Oct 2021 14:52:18 +0200
+Message-Id: <20211004125047.836891379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
 References: <20211004125044.945314266@linuxfoundation.org>
@@ -41,146 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit b53deef054e58fe4f37c66211b8ece9f8fc1aa13 ]
+[ Upstream commit 98d46b021f6ee246c7a73f9d490d4cddb4511a3b ]
 
-iptables/nftables has two types of log modules:
+This reverts commit d333322361e7 ("mac80211: do not use low data rates for
+data frames with no ack flag").
 
-1. backend, e.g. nf_log_syslog, which implement the functionality
-2. frontend, e.g. xt_LOG or nft_log, which call the functionality
-   provided by backend based on nf_tables or xtables rule set.
+Returning false early in rate_control_send_low breaks sending broadcast
+packets, since rate control will not select a rate for it.
 
-Problem is that the request_module() call to load the backed in
-nf_logger_find_get() might happen with nftables transaction mutex held
-in case the call path is via nf_tables/nft_compat.
+Before re-introducing a fixed version of this patch, we should probably also
+make some changes to rate control to be more conservative in selecting rates
+for no-ack packets and also prevent using probing rates on them, since we won't
+get any feedback.
 
-This can cause deadlocks (see 'Fixes' tags for details).
-
-The chosen solution as to let modprobe deal with this by adding 'pre: '
-soft dep tag to xt_LOG (to load the syslog backend) and xt_NFLOG (to
-load nflog backend).
-
-Eric reports that this breaks on systems with older modprobe that
-doesn't support softdeps.
-
-Another, similar issue occurs when someone either insmods xt_(NF)LOG
-directly or unloads the backend module (possible if no log frontend
-is in use): because the frontend module is already loaded, modprobe is
-not invoked again so the softdep isn't evaluated.
-
-Add a workaround: If nf_logger_find_get() returns -ENOENT and call
-is not via nft_compat, load the backend explicitly and try again.
-
-Else, let nft_compat ask for deferred request_module via nf_tables
-infra.
-
-Softdeps are kept in-place, so with newer modprobe the dependencies
-are resolved from userspace.
-
-Fixes: cefa31a9d461 ("netfilter: nft_log: perform module load from nf_tables")
-Fixes: a38b5b56d6f4 ("netfilter: nf_log: add module softdeps")
-Reported-and-tested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: d333322361e7 ("mac80211: do not use low data rates for data frames with no ack flag")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20210906083559.9109-1-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_compat.c | 17 ++++++++++++++++-
- net/netfilter/xt_LOG.c     | 10 +++++++++-
- net/netfilter/xt_NFLOG.c   | 10 +++++++++-
- 3 files changed, 34 insertions(+), 3 deletions(-)
+ net/mac80211/rate.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index 272bcdb1392d..f69cc73c5813 100644
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -19,6 +19,7 @@
- #include <linux/netfilter_bridge/ebtables.h>
- #include <linux/netfilter_arp/arp_tables.h>
- #include <net/netfilter/nf_tables.h>
-+#include <net/netfilter/nf_log.h>
+diff --git a/net/mac80211/rate.c b/net/mac80211/rate.c
+index e5935e3d7a07..8c6416129d5b 100644
+--- a/net/mac80211/rate.c
++++ b/net/mac80211/rate.c
+@@ -392,10 +392,6 @@ static bool rate_control_send_low(struct ieee80211_sta *pubsta,
+ 	int mcast_rate;
+ 	bool use_basicrate = false;
  
- /* Used for matches where *info is larger than X byte */
- #define NFT_MATCH_LARGE_THRESH	192
-@@ -257,8 +258,22 @@ nft_target_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
- 	nft_compat_wait_for_destructors();
- 
- 	ret = xt_check_target(&par, size, proto, inv);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (ret == -ENOENT) {
-+			const char *modname = NULL;
-+
-+			if (strcmp(target->name, "LOG") == 0)
-+				modname = "nf_log_syslog";
-+			else if (strcmp(target->name, "NFLOG") == 0)
-+				modname = "nfnetlink_log";
-+
-+			if (modname &&
-+			    nft_request_module(ctx->net, "%s", modname) == -EAGAIN)
-+				return -EAGAIN;
-+		}
-+
- 		return ret;
-+	}
- 
- 	/* The standard target cannot be used */
- 	if (!target->target)
-diff --git a/net/netfilter/xt_LOG.c b/net/netfilter/xt_LOG.c
-index 2ff75f7637b0..f39244f9c0ed 100644
---- a/net/netfilter/xt_LOG.c
-+++ b/net/netfilter/xt_LOG.c
-@@ -44,6 +44,7 @@ log_tg(struct sk_buff *skb, const struct xt_action_param *par)
- static int log_tg_check(const struct xt_tgchk_param *par)
- {
- 	const struct xt_log_info *loginfo = par->targinfo;
-+	int ret;
- 
- 	if (par->family != NFPROTO_IPV4 && par->family != NFPROTO_IPV6)
- 		return -EINVAL;
-@@ -58,7 +59,14 @@ static int log_tg_check(const struct xt_tgchk_param *par)
- 		return -EINVAL;
- 	}
- 
--	return nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
-+	ret = nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
-+	if (ret != 0 && !par->nft_compat) {
-+		request_module("%s", "nf_log_syslog");
-+
-+		ret = nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
-+	}
-+
-+	return ret;
- }
- 
- static void log_tg_destroy(const struct xt_tgdtor_param *par)
-diff --git a/net/netfilter/xt_NFLOG.c b/net/netfilter/xt_NFLOG.c
-index fb5793208059..e660c3710a10 100644
---- a/net/netfilter/xt_NFLOG.c
-+++ b/net/netfilter/xt_NFLOG.c
-@@ -42,13 +42,21 @@ nflog_tg(struct sk_buff *skb, const struct xt_action_param *par)
- static int nflog_tg_check(const struct xt_tgchk_param *par)
- {
- 	const struct xt_nflog_info *info = par->targinfo;
-+	int ret;
- 
- 	if (info->flags & ~XT_NFLOG_MASK)
- 		return -EINVAL;
- 	if (info->prefix[sizeof(info->prefix) - 1] != '\0')
- 		return -EINVAL;
- 
--	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
-+	ret = nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
-+	if (ret != 0 && !par->nft_compat) {
-+		request_module("%s", "nfnetlink_log");
-+
-+		ret = nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
-+	}
-+
-+	return ret;
- }
- 
- static void nflog_tg_destroy(const struct xt_tgdtor_param *par)
+-	if (ieee80211_is_tx_data(txrc->skb) &&
+-	    info->flags & IEEE80211_TX_CTL_NO_ACK)
+-		return false;
+-
+ 	if (!pubsta || rc_no_data_or_no_ack_use_min(txrc)) {
+ 		__rate_control_send_low(txrc->hw, sband, pubsta, info,
+ 					txrc->rate_idx_mask);
 -- 
 2.33.0
 
