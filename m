@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF39442141C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2AC42141D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237042AbhJDQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236808AbhJDQcO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:32:14 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AE0C061745;
-        Mon,  4 Oct 2021 09:30:25 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id g2so14976048pfc.6;
-        Mon, 04 Oct 2021 09:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U/gXY3WVhJ/nvDWWVPhBXPgTxuRKJcOBX7y2RATu4k8=;
-        b=nR6cs3n/l5GebOuqrwwoUW8Dmv4Uc+aROASi3zE11rcVXU1dWmmNeMTupCOCJmZ2yg
-         bCsK8eKbgKW+xIniwvS78xovucXVVspEDrSlHfqTN3OcVHUna5sWqwWnzIbiM4b1rFBd
-         7Rt80oTFJzJOIJBTdNuy8ic4ni/iaUbFHiL8q65mBDms2v/sarrtifDmWD8cd35OgAUg
-         dVHxcZs546XIATLMQPb2SlTihIkmqAdHoPAU0e41QEUZU5+IasQLSk1zSGY5gV0SLz+k
-         f5btrkA1jNoEMq+Ot1Yb98AMq2fAP5uvZEQSYUHQ1lxAwONKJMf5Kazw2FTm+wJaKFyr
-         k8ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=U/gXY3WVhJ/nvDWWVPhBXPgTxuRKJcOBX7y2RATu4k8=;
-        b=Ly9UQKrgm4zVP4HEw9fAkbXrfSLmbeah8DyZPg4fEwCVwnBhPzk0MMAD9unV1Qb3Fi
-         p+h7WZzhKa4pote0qWsti6cliSRL2y6ZW59oJic7s1LL/JaCFo1gpdT7E2rodBxLEBYZ
-         zNn2EUGRvlIHBhbx+5wMptpB6G/62zRp7HS/B29kfle/AO2y/3yqCBDq45ql51hnlYm/
-         K+ysAGMOECELsboYWpIGGDax9qjEJF2x1xDSY61H/sl/vBsBriTJxHk8fDu9dbmg/rP5
-         xB/vwKkXXSEj8fid40CV9irPUfmze0h1Oh/gVbQruj2/ERHscdwQeVan8TZ6BbWTz16w
-         rYSQ==
-X-Gm-Message-State: AOAM532UanYhp9hECJowoLWkZ6Fjt3QI/ZQjMZ0M9xyJ8QTXKfZpKd4x
-        9p5EvvXxJLWNbggcjgT1cpw=
-X-Google-Smtp-Source: ABdhPJxDG//5O1ZUGqvalSOL8+L5N2i7FGS/YP1KD4/omrYIHHLe0MI1C/FNW9fOgYi61oRH5MRViA==
-X-Received: by 2002:a63:a65:: with SMTP id z37mr11909128pgk.192.1633365024435;
-        Mon, 04 Oct 2021 09:30:24 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id mj2sm386314pjb.18.2021.10.04.09.30.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:30:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 4 Oct 2021 06:30:22 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] cgroup: a u16 is enough for cgroup_subsys.depends_on
-Message-ID: <YVssHgmGdoSBY59K@slm.duckdns.org>
-References: <20211004084928.17622-1-richard.weiyang@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004084928.17622-1-richard.weiyang@gmail.com>
+        id S237069AbhJDQcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237047AbhJDQcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:32:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D670B61184;
+        Mon,  4 Oct 2021 16:30:28 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mXQrC-00EgMR-L0; Mon, 04 Oct 2021 17:30:26 +0100
+Date:   Mon, 04 Oct 2021 17:30:26 +0100
+Message-ID: <87wnmsrbvh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 1/3] kernel/irq: make irq_{enter,exit}() in handle_domain_irq() arch optional
+In-Reply-To: <20211001144406.7719-2-kernelfans@gmail.com>
+References: <20211001144406.7719-1-kernelfans@gmail.com>
+        <20211001144406.7719-2-kernelfans@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com, paulmck@kernel.org, catalin.marinas@arm.com, will@kernel.org, joey.gouly@arm.com, samitolvanen@google.com, julien.thierry@arm.com, tglx@linutronix.de, ito-yuichi@fujitsu.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 08:49:25AM +0000, Wei Yang wrote:
-> After commit 6e5c830770f9 ("cgroup: make cgroup subsystem masks u16"),
-> we limit the number of subsystem to be less then 16. This applies to
-> cgroup_subsys.depends_on too.
+On Fri, 01 Oct 2021 15:44:04 +0100,
+Pingfan Liu <kernelfans@gmail.com> wrote:
+> 
+> When an IRQ is taken, some accounting needs to be performed to enter and
+> exit IRQ context around the IRQ handler. Historically arch code would
+> leave this to the irqchip or core IRQ code, but these days we want this
+> to happen in exception entry code, and architectures such as arm64 do
+> this.
+> 
+> Currently handle_domain_irq() performs this entry/exit accounting, and
+> if used on an architecture where the entry code also does this, the
+> entry/exit accounting will be performed twice per IRQ. This is
+> problematic as core RCU code such as rcu_is_cpu_rrupt_from_idle()
+> depends on this happening once per IRQ, and will not detect quescent
+> periods correctly, leading to stall warnings.
+> 
+> As irqchip drivers which use handle_domain_irq() need to work on
+> architectures with or without their own entry/exit accounting, this
+> patch makes handle_domain_irq() conditionally perform the entry
+> accounting depending on a new HAVE_ARCH_IRQENTRY Kconfig symbol that
+> architectures can select if they perform this entry accounting
+> themselves.
+> 
+> For architectures which do not select the symbol. there should be no
+> functional change as a result of this patch.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joey Gouly <joey.gouly@arm.com>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Julien Thierry <julien.thierry@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Yuichi Ito <ito-yuichi@fujitsu.com>
+> Cc: linux-kernel@vger.kernel.org
+> To: linux-arm-kernel@lists.infradead.org
 
-None of the patches seems meaningful enough. I'm gonna ignore this series.
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-Thanks.
+	M.
 
 -- 
-tejun
+Without deviation from the norm, progress is not possible.
