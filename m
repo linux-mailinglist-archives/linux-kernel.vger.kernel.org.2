@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32CC420916
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD47542091D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhJDKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 06:12:50 -0400
-Received: from mout-p-102.mailbox.org ([80.241.56.152]:60732 "EHLO
-        mout-p-102.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJDKMs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 06:12:48 -0400
-X-Greylist: delayed 3742 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 06:12:48 EDT
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HNGh303SZzQkBK;
-        Mon,  4 Oct 2021 12:10:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:references:in-reply-to:message-id:from:from
-        :date:date:received; s=mail20150812; t=1633342256; bh=eS2EPe4eHl
-        2N1wDjzplFdaJCLfRzATCMbKor42NuLwQ=; b=E5gsHViEF9b6Qz9kxmyyixgv63
-        kgOfreOt975wyzF4qnLA2hTIqdcoBa6zprAKzC7UN8NqIyAveBotnzd+GFVX+PfP
-        VDd7q3wkmW+pvIaTlZJhU9asm/yJkqZSUJm7q/ii1UVv1gfA9wjvrSSYeF76j3s4
-        98tCJbElMG2Jw0Jq6IBILOrC1JOV1mJMMG0hCxM997GDW3JDayTrGSvITetvgTBa
-        trBUEvv5iPUe/kAa6CRzc4ZPyK352eHuMuXfNrP7dYRkVN2WZQat2OGb8yx8F1TP
-        3Hid3uLhVNoYn2lr/ZGbicG6EBqV8OuU8i+4Gkb4DFkCaKZYnYSofJaiwdgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1633342257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zP6aY9O1wW8f739eGeU+KeGXD/SGH19xgBt/Oo3Iwx8=;
-        b=X+A/g8xWEi631k+mYpNmmMPDPuTcV9ftD+BsgNIoMqmOSUSFoILCzqjftRpMzGneEQ8PjR
-        lL6UYvywXHAciMZ2qSJxr2p5Xzh1FRRo+wGdoPAeKB1Cqgpp6u0bLsxedHz4ZWvNNLp59U
-        hitOCjveWwngbocwdfcOUqmUQPBh2b1YmMXCd1QrVGh9KFPqX1mUwZfIaN2zjREwGnVR7J
-        jIJlZOJsfV7ZxItfzPC5ILIkWuLFcJA4/Fd9gtaxbWiuQYLAmG5tQK+/yzOH4BlNNlGsYo
-        z52jIWktVJuJkVKp+DiPIVtoSlWSfCqaqdOa0iIcxdRBBfIpInSo6aeg7kPKBQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Date:   Mon, 4 Oct 2021 12:10:55 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "nathan@kernel.org" <nathan@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>
-Message-ID: <1723492337.161319.1633342255263@office.mailbox.org>
-In-Reply-To: <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
-References: <1446878298.170497.1633338512925@office.mailbox.org>
- <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
- <936688112.157288.1633339838738@office.mailbox.org>
- <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
-Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
- clang-14
+        id S232181AbhJDKNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 06:13:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhJDKNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 06:13:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 181846128A;
+        Mon,  4 Oct 2021 10:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633342288;
+        bh=1FSxfpr/+AzmR56G+WHMLcUMmcad+HJ+4J+awlrJc74=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y59mMT+RPi9DqLc0Wka7wXw2M2M21GlY/CeMGz8rg8M9pqDaIDFlGZ91Xpd3GgLuI
+         syQGEASbts46K9fNVmHs/WuNNQ98A+RVkYfl6mUYBWleNkBj+BV4TTMFvbwDIHp8Zf
+         GwI0cVaQ2qM+akXGUBRqlbW+Qs/Bd1TrpFfv7fd8=
+Date:   Mon, 4 Oct 2021 12:11:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Leon Yu <leoyu@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        Miles Chen <miles.chen@mediatek.com>,
+        Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] net: stmmac: don't attach interface until resume finishes
+Message-ID: <YVrTSLuCJaqKqmb0@kroah.com>
+References: <YVLJGT7JAVc7rnBx@kroah.com>
+ <20210928083620.29090-1-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: 02CE317FC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928083620.29090-1-macpaul.lin@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 28, 2021 at 04:36:20PM +0800, Macpaul Lin wrote:
+> From: Leon Yu <leoyu@nvidia.com>
+> 
+> commit 31096c3e8b1163c6e966bf4d1f36d8b699008f84 upstream.
+> 
+> Commit 14b41a2959fb ("net: stmmac: Delete txtimer in suspend()") was the
+> first attempt to fix a race between mod_timer() and setup_timer()
+> during stmmac_resume(). However the issue still exists as the commit
+> only addressed half of the issue.
+> 
+> Same race can still happen as stmmac_resume() re-attaches interface
+> way too early - even before hardware is fully initialized.  Worse,
+> doing so allows network traffic to restart and stmmac_tx_timer_arm()
+> being called in the middle of stmmac_resume(), which re-init tx timers
+> in stmmac_init_coalesce().  timer_list will be corrupted and system
+> crashes as a result of race between mod_timer() and setup_timer().
+> 
+>   systemd--1995    2.... 552950018us : stmmac_suspend: 4994
+>   ksoftirq-9       0..s2 553123133us : stmmac_tx_timer_arm: 2276
+>   systemd--1995    0.... 553127896us : stmmac_resume: 5101
+>   systemd--320     7...2 553132752us : stmmac_tx_timer_arm: 2276
+>   (sd-exec-1999    5...2 553135204us : stmmac_tx_timer_arm: 2276
+>   ---------------------------------
+>   pc : run_timer_softirq+0x468/0x5e0
+>   lr : run_timer_softirq+0x570/0x5e0
+>   Call trace:
+>    run_timer_softirq+0x468/0x5e0
+>    __do_softirq+0x124/0x398
+>    irq_exit+0xd8/0xe0
+>    __handle_domain_irq+0x6c/0xc0
+>    gic_handle_irq+0x60/0xb0
+>    el1_irq+0xb8/0x180
+>    arch_cpu_idle+0x38/0x230
+>    default_idle_call+0x24/0x3c
+>    do_idle+0x1e0/0x2b8
+>    cpu_startup_entry+0x28/0x48
+>    secondary_start_kernel+0x1b4/0x208
+> 
+> Fix this by deferring netif_device_attach() to the end of
+> stmmac_resume().
+> 
+> Signed-off-by: Leon Yu <leoyu@nvidia.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
 
-> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:49 geschrieben:
-> 
->  
-> On 04/10/21 11:30, torvic9@mailbox.org wrote:
-> > 
-> >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
-> >>
-> >>   
-> >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
-> >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
-> >>>
-> >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
-> >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
-> >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>>                                                    ||
-> >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
-> >>
-> >> The warning is wrong, as mentioned in the line right above:
-> > 
-> > So it's an issue with clang-14 then?
-> > (I add Nick and Nathan)
-> 
-> My clang here doesn't have the option, so I'm going to ask---are you 
-> using W=1?  I can see why clang is warning for KVM's code, but in my 
-> opinion such a check should only be in -Wextra.
+Whenever you forward on a patch, you should add yourself to the
+signed-off-by chain.
 
-I don't use any options (not that I'm aware of).
-Clang version 14.0.0 5f7a5353301b776ffb0e5fb048992898507bf7ee
+I'll just add you to the cc: to let us know who asked for this patch.
 
-> 
-> Paolo
-> 
-> >>
-> >>           /*
-> >>            * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
-> >>            * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
-> >>            * (this is extremely unlikely to be short-circuited as true).
-> >>            */
-> >>
-> >> Paolo
-> >
+thanks,
+
+greg k-h
