@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ED442186A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C2242186E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhJDUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhJDUcE (ORCPT
+        id S236324AbhJDUdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:33:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46554 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233934AbhJDUdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:32:04 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B054C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:30:15 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 5so9300841iov.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=hxMugFlrhkWFOyvUUoClqgASfxacPxvOevTMxO7yAo4=;
-        b=ESwse+jDKIu6q5BR2jgOUg7zAxbfsr1XtHvgSUxbYc/LXkGpmEz1LvIHWbJ8O9TsNG
-         vBNECy0wh4oawiUIHXGqEIxyQlPfzIgaIDE1iDvqbTek+LEs03kEAWcnFWLUfJDCoLx4
-         hn3ZVR0PDOBVrwD0zI5bz3JD++x/NkBzVtChiK+3JxzjaC3bQgVuZ2l1EAh66jn8HTb5
-         fa5E+v6fOG0qU+JD/2L7ZqsIGsAqxkY/ZuI92EoXox5U6poOA2F6zsaQ7bB1HSx3eL71
-         t2sPHd8kf/7C+PXKfwS3Q6sV9vfyl231mnU3yD0OtbxG2NIGMRXBrlB+6VnbPHnAIah3
-         UeLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hxMugFlrhkWFOyvUUoClqgASfxacPxvOevTMxO7yAo4=;
-        b=g9KbOPeu+WTuCkxkweYQPDtVEWkDC2Vlq392GpM//gqRdBE5jxJmoCfT0OhogpruZ4
-         wzg29gl+7vUF+rWi2daY3Bd6XLXlo/WgYj4uR8ztW6MxBic0CTLTjZN9DesP7rQAC67j
-         mlRfa/6mWJfVNiCo87zjlFHZtnJ2ebqkfv69agF+63lJZbqjuVFz2vlD01ZMp7fL3W6i
-         o1JTG1zX8vxK+pqm59bY1K/GoEbf1aG6RioZFnwqoJexj5+jWYP5AkA7zbTFHjneF6PP
-         VFCMXI1SmsDJ60pijdRU9KlLwjR9JpcSS4nDU+uJJSmbM48jjD8a6BzefckEBdZNxaVo
-         pHew==
-X-Gm-Message-State: AOAM530Wt15BxKuTcTnQi83WdJ/sRjyDKOeD1i8epUwI/UQAxNjc0Po0
-        TXxwjK7YbZf62Etd3gaFqaYnAv8vvUNuap2La7Y=
-X-Google-Smtp-Source: ABdhPJyVHL6uANaYYRdy8It3v68z5LTEyqAY14i50vAHAEOQ5vQ0id1O7tvsYvmN2Tk0fG0UX7qLIw==
-X-Received: by 2002:a5e:9810:: with SMTP id s16mr11308615ioj.171.1633379414192;
-        Mon, 04 Oct 2021 13:30:14 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id e9sm9481130iob.52.2021.10.04.13.30.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 13:30:13 -0700 (PDT)
-Subject: Re: [PATCH V3 6/9] io_uring: switch to kernel_worker
-To:     Mike Christie <michael.christie@oracle.com>, geert@linux-m68k.org,
-        vverma@digitalocean.com, hdanton@sina.com, hch@infradead.org,
-        stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
-        christian.brauner@ubuntu.com, linux-kernel@vger.kernel.org
-References: <20211004192128.381453-1-michael.christie@oracle.com>
- <20211004192128.381453-7-michael.christie@oracle.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6882df86-9dcd-26ac-af85-9b11d37ba598@kernel.dk>
-Date:   Mon, 4 Oct 2021 14:30:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 4 Oct 2021 16:33:45 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194K27hl002892;
+        Mon, 4 Oct 2021 16:31:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=YSKuInWCPUB4cRcl9zVFp9tJjrcN0o3rJYA57zQkw9Y=;
+ b=jwQP6WwQs5/IHcOpT6T6FNiZtkwDaelmqrYi5iR/Qxu2CnNjGuPdp3FAM8/Ee1uxngtU
+ 0c+qV8HmJgLf0I9NxYsAXNpX4e79LKFuPje8N3RWB5ejDdOVYoRHUl16KOKIbBO8/OLo
+ FnHRlJ7o+UxR5DNbKQuhQURqLRpUmGnJ5WyVUhOJE7R8HFPzW6qNKmlCaR+3b1nMn679
+ h1js+OnyXhNN7qIYmTGhFJzzT8wfdJqcgzVQ0VVZj+QUbuMmdBy0QorrjhgxeUqxO3N+
+ oIdScdM4iLzh/z9KvEzUNatqTFgrBTiFo2lyTHutWXo04CC1tLo+pBTjNxrAtoWYHCLC NA== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bg89y8gfa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 16:31:54 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194KSWAe014348;
+        Mon, 4 Oct 2021 20:31:52 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 3bef29sp3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 20:31:52 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194KVmmt64553404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 20:31:48 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FDC9A4060;
+        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59C78A405C;
+        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
+Received: from osiris (unknown [9.145.70.99])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
+Date:   Mon, 4 Oct 2021 22:31:46 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
+ variant
+Message-ID: <YVtksmjj1eGqw5GY@osiris>
+References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004192128.381453-7-michael.christie@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SYvjJX6cks5LzrErIhpAa5Ruz3EB_7-2
+X-Proofpoint-GUID: SYvjJX6cks5LzrErIhpAa5Ruz3EB_7-2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 clxscore=1011 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 1:21 PM, Mike Christie wrote:
-> Convert io_uring and io-wq to use kernel_worker.
+On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
+> Use string_upper() from string helper module instead of open coded variant.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  arch/s390/mm/cmm.c    | 11 ++++-------
+>  arch/s390/mm/extmem.c | 21 ++++++++++++---------
+>  2 files changed, 16 insertions(+), 16 deletions(-)
+...
+>  static void
+>  dcss_mkname(char *name, char *dcss_name)
+>  {
+> +	/* Segment name is limited by 8 characters + NUL */
+> +	char tmp[8 + 1];
+>  	int i;
+>  
+> -	for (i = 0; i < 8; i++) {
+> -		if (name[i] == '\0')
+> -			break;
+> -		dcss_name[i] = toupper(name[i]);
+> -	}
+> -	for (; i < 8; i++)
+> -		dcss_name[i] = ' ';
+> +	/*
+> +	 * This snprintf() call does two things:
+> +	 * - makes a NUL-terminated copy of the input string
+> +	 * - pads it with spaces
+> +	 */
+> +	snprintf(tmp, sizeof(tmp), "%s        ", name);
 
-Looks good to me:
+I can't say I like code where I have to count spaces in order to
+verify if the code is actually correct.
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> +	string_upper(dcss_name, tmp);
+...
+>  static struct dcss_segment *
+>  segment_by_name (char *name)
+>  {
+> -	char dcss_name[9];
+> +	char dcss_name[8];
 
--- 
-Jens Axboe
-
+string_upper will copy the terminating NUL-byte. By reducing the size
+of dcss_name to 8 bytes this will result in stack corruption.
