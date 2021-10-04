@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B77420C04
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF518420E47
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhJDNCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60266 "EHLO mail.kernel.org"
+        id S235773AbhJDNYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234331AbhJDNA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE00613C8;
-        Mon,  4 Oct 2021 12:57:58 +0000 (UTC)
+        id S236105AbhJDNVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:21:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0EA61AF0;
+        Mon,  4 Oct 2021 13:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352278;
-        bh=ZMFTrj+G1zzL9POirBeOmm9akaZ2DUSRVUlKBDsS6DA=;
+        s=korg; t=1633352947;
+        bh=w2/tw0MJQbGX+kPmlBFrpr+57ztRKyEJicKJas5Rlys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BsYlObfSfRiizy6oOuZSGcJZXs62bL6ogMfJLxFBchyXz+873iLrsdWNNkylUHlY1
-         xAjE01tuzt6xfAAgMJdDUhTBfl3ltVM637nnLUftRDlqjf7g2pvQhZgej2J3Bjbyi+
-         xsPBnzKHuF+/cEusPsK0ImX3O2FzTwe/QFbISb4U=
+        b=J9RWd0/yD0JchX1AkcOVd76HhvwJK1A0VgIoeVJYjQPEtR0aVAA0FIxryeriVxawO
+         nGJtJD63T9U2jRDTFKtVPeC9fK90AONuqFEZvfoca74Vqq+MjIfZyNbsSPo+ccMB5w
+         +dy71/LYrKoJiXrh1RokGwi/larYHJFIFiR1zriU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 44/57] ipack: ipoctal: fix missing allocation-failure check
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 30/93] hwmon: (mlxreg-fan) Return non-zero value when fan current state is enforced from sysfs
 Date:   Mon,  4 Oct 2021 14:52:28 +0200
-Message-Id: <20211004125030.347305488@linuxfoundation.org>
+Message-Id: <20211004125035.567334606@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-commit 445c8132727728dc297492a7d9fc074af3e94ba3 upstream.
+[ Upstream commit e6fab7af6ba1bc77c78713a83876f60ca7a4a064 ]
 
-Add the missing error handling when allocating the transmit buffer to
-avoid dereferencing a NULL pointer in write() should the allocation
-ever fail.
+Fan speed minimum can be enforced from sysfs. For example, setting
+current fan speed to 20 is used to enforce fan speed to be at 100%
+speed, 19 - to be not below 90% speed, etcetera. This feature provides
+ability to limit fan speed according to some system wise
+considerations, like absence of some replaceable units or high system
+ambient temperature.
 
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-5-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Request for changing fan minimum speed is configuration request and can
+be set only through 'sysfs' write procedure. In this situation value of
+argument 'state' is above nominal fan speed maximum.
+
+Return non-zero code in this case to avoid
+thermal_cooling_device_stats_update() call, because in this case
+statistics update violates thermal statistics table range.
+The issues is observed in case kernel is configured with option
+CONFIG_THERMAL_STATISTICS.
+
+Here is the trace from KASAN:
+[  159.506659] BUG: KASAN: slab-out-of-bounds in thermal_cooling_device_stats_update+0x7d/0xb0
+[  159.516016] Read of size 4 at addr ffff888116163840 by task hw-management.s/7444
+[  159.545625] Call Trace:
+[  159.548366]  dump_stack+0x92/0xc1
+[  159.552084]  ? thermal_cooling_device_stats_update+0x7d/0xb0
+[  159.635869]  thermal_zone_device_update+0x345/0x780
+[  159.688711]  thermal_zone_device_set_mode+0x7d/0xc0
+[  159.694174]  mlxsw_thermal_modules_init+0x48f/0x590 [mlxsw_core]
+[  159.700972]  ? mlxsw_thermal_set_cur_state+0x5a0/0x5a0 [mlxsw_core]
+[  159.731827]  mlxsw_thermal_init+0x763/0x880 [mlxsw_core]
+[  160.070233] RIP: 0033:0x7fd995909970
+[  160.074239] Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ..
+[  160.095242] RSP: 002b:00007fff54f5d938 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[  160.103722] RAX: ffffffffffffffda RBX: 0000000000000013 RCX: 00007fd995909970
+[  160.111710] RDX: 0000000000000013 RSI: 0000000001906008 RDI: 0000000000000001
+[  160.119699] RBP: 0000000001906008 R08: 00007fd995bc9760 R09: 00007fd996210700
+[  160.127687] R10: 0000000000000073 R11: 0000000000000246 R12: 0000000000000013
+[  160.135673] R13: 0000000000000001 R14: 00007fd995bc8600 R15: 0000000000000013
+[  160.143671]
+[  160.145338] Allocated by task 2924:
+[  160.149242]  kasan_save_stack+0x19/0x40
+[  160.153541]  __kasan_kmalloc+0x7f/0xa0
+[  160.157743]  __kmalloc+0x1a2/0x2b0
+[  160.161552]  thermal_cooling_device_setup_sysfs+0xf9/0x1a0
+[  160.167687]  __thermal_cooling_device_register+0x1b5/0x500
+[  160.173833]  devm_thermal_of_cooling_device_register+0x60/0xa0
+[  160.180356]  mlxreg_fan_probe+0x474/0x5e0 [mlxreg_fan]
+[  160.248140]
+[  160.249807] The buggy address belongs to the object at ffff888116163400
+[  160.249807]  which belongs to the cache kmalloc-1k of size 1024
+[  160.263814] The buggy address is located 64 bytes to the right of
+[  160.263814]  1024-byte region [ffff888116163400, ffff888116163800)
+[  160.277536] The buggy address belongs to the page:
+[  160.282898] page:0000000012275840 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888116167000 pfn:0x116160
+[  160.294872] head:0000000012275840 order:3 compound_mapcount:0 compound_pincount:0
+[  160.303251] flags: 0x200000000010200(slab|head|node=0|zone=2)
+[  160.309694] raw: 0200000000010200 ffffea00046f7208 ffffea0004928208 ffff88810004dbc0
+[  160.318367] raw: ffff888116167000 00000000000a0006 00000001ffffffff 0000000000000000
+[  160.327033] page dumped because: kasan: bad access detected
+[  160.333270]
+[  160.334937] Memory state around the buggy address:
+[  160.356469] >ffff888116163800: fc ..
+
+Fixes: 65afb4c8e7e4 ("hwmon: (mlxreg-fan) Add support for Mellanox FAN driver")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20210916183151.869427-1-vadimp@nvidia.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hwmon/mlxreg-fan.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -391,7 +391,9 @@ static int ipoctal_inst_slot(struct ipoc
+diff --git a/drivers/hwmon/mlxreg-fan.c b/drivers/hwmon/mlxreg-fan.c
+index ed8d59d4eecb..bd8f5a3aaad9 100644
+--- a/drivers/hwmon/mlxreg-fan.c
++++ b/drivers/hwmon/mlxreg-fan.c
+@@ -291,8 +291,8 @@ static int mlxreg_fan_set_cur_state(struct thermal_cooling_device *cdev,
+ {
+ 	struct mlxreg_fan *fan = cdev->devdata;
+ 	unsigned long cur_state;
++	int i, config = 0;
+ 	u32 regval;
+-	int i;
+ 	int err;
  
- 		channel = &ipoctal->channel[i];
- 		tty_port_init(&channel->tty_port);
--		tty_port_alloc_xmit_buf(&channel->tty_port);
-+		res = tty_port_alloc_xmit_buf(&channel->tty_port);
-+		if (res)
-+			continue;
- 		channel->tty_port.ops = &ipoctal_tty_port_ops;
+ 	/*
+@@ -305,6 +305,12 @@ static int mlxreg_fan_set_cur_state(struct thermal_cooling_device *cdev,
+ 	 * overwritten.
+ 	 */
+ 	if (state >= MLXREG_FAN_SPEED_MIN && state <= MLXREG_FAN_SPEED_MAX) {
++		/*
++		 * This is configuration change, which is only supported through sysfs.
++		 * For configuration non-zero value is to be returned to avoid thermal
++		 * statistics update.
++		 */
++		config = 1;
+ 		state -= MLXREG_FAN_MAX_STATE;
+ 		for (i = 0; i < state; i++)
+ 			fan->cooling_levels[i] = state;
+@@ -319,7 +325,7 @@ static int mlxreg_fan_set_cur_state(struct thermal_cooling_device *cdev,
  
- 		ipoctal_reset_stats(&channel->stats);
+ 		cur_state = MLXREG_FAN_PWM_DUTY2STATE(regval);
+ 		if (state < cur_state)
+-			return 0;
++			return config;
+ 
+ 		state = cur_state;
+ 	}
+@@ -335,7 +341,7 @@ static int mlxreg_fan_set_cur_state(struct thermal_cooling_device *cdev,
+ 		dev_err(fan->dev, "Failed to write PWM duty\n");
+ 		return err;
+ 	}
+-	return 0;
++	return config;
+ }
+ 
+ static const struct thermal_cooling_device_ops mlxreg_fan_cooling_ops = {
+-- 
+2.33.0
+
 
 
