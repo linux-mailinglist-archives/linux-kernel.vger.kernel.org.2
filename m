@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF96420D09
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00FC420CAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhJDNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S234702AbhJDNJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235636AbhJDNIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C41CC61B5F;
-        Mon,  4 Oct 2021 13:02:48 +0000 (UTC)
+        id S233374AbhJDNGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:06:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1DFD61A05;
+        Mon,  4 Oct 2021 13:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352569;
-        bh=+wYsI52atHo2ux8D6F65OaFgCER6I/1TSchdi9T/f8Y=;
+        s=korg; t=1633352475;
+        bh=EOG2kZvEI5ckZIJa9N57ESkbEfDW/dj9up0d2lJ6vt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aS74nfGzfS2mptASNjuzS5jbkS9NWjSUxQBqLSxi/YMKo+Xwai7Pw2dYQDyD8S/GG
-         M8XQdLk7wDSOzwc5Um0CIqOhBhpksnJEJVKwcRjCWQa15K66GiZiaKjHZmzWnQDGzy
-         pFCEIEAPVSql4pWgFrbHrqHVtKLFAayA9hbJqKjw=
+        b=hsWo2078gUUKX+O1KqPkRbf0AOhljj/CqeAnibLrt6FoZiTxjZEtzwS/CLhVIcC10
+         ld16s2mAl0BaKPZu/W4zqTX8Ds0FkplAjH5MT6RlWB732A9IOIeL0hFsmH1Qzfi2zA
+         6c0RVwc46JyMYfdIwBJ+eGvqUAZyW17iVhMAX7c0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 38/95] compiler.h: Introduce absolute_pointer macro
-Date:   Mon,  4 Oct 2021 14:52:08 +0200
-Message-Id: <20211004125034.819040728@linuxfoundation.org>
+Subject: [PATCH 4.14 34/75] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+Date:   Mon,  4 Oct 2021 14:52:09 +0200
+Message-Id: <20211004125032.656821079@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +43,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit f6b5f1a56987de837f8e25cd560847106b8632a8 ]
+[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
 
-absolute_pointer() disassociates a pointer from its originating symbol
-type and context. Use it to prevent compiler warnings/errors such as
+Some drivers pass a pointer to volatile data to virt_to_bus() and
+virt_to_phys(), and that works fine.  One exception is alpha.  This
+results in a number of compile errors such as
 
-  drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
-  arch/m68k/include/asm/string.h:72:25: error:
-	'__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
+  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Such warnings may be reported by gcc 11.x for string and memory
-operations on fixed addresses.
+  drivers/atm/ambassador.c: In function 'do_loader_command':
+  drivers/atm/ambassador.c:1747:58: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Declare the parameter of virt_to_phys and virt_to_bus as pointer to
+volatile to fix the problem.
+
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/compiler.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/alpha/include/asm/io.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 6a53300cbd1e..ab9dfb14f486 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -228,6 +228,8 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-     (typeof(ptr)) (__ptr + (off)); })
- #endif
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 9995bed6e92e..204c4fb69ee1 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
+  * Change virtual addresses to physical addresses and vv.
+  */
+ #ifdef USE_48_BIT_KSEG
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+ 	return (unsigned long)address - IDENT_ADDR;
+ }
+@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
+ 	return (void *) (address + IDENT_ADDR);
+ }
+ #else
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+         unsigned long phys = (unsigned long)address;
  
-+#define absolute_pointer(val)	RELOC_HIDE((void *)(val), 0)
-+
- #ifndef OPTIMIZER_HIDE_VAR
- /* Make the optimizer believe the variable can be manipulated arbitrarily. */
- #define OPTIMIZER_HIDE_VAR(var)						\
+@@ -112,7 +112,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
+ extern unsigned long __direct_map_base;
+ extern unsigned long __direct_map_size;
+ 
+-static inline unsigned long __deprecated virt_to_bus(void *address)
++static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+ {
+ 	unsigned long phys = virt_to_phys(address);
+ 	unsigned long bus = phys + __direct_map_base;
 -- 
 2.33.0
 
