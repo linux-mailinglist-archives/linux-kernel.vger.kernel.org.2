@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDC0420A1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D73420A1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhJDLay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:30:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35990 "EHLO mail.kernel.org"
+        id S233005AbhJDLdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhJDLax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:30:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4ED61354;
-        Mon,  4 Oct 2021 11:29:03 +0000 (UTC)
-Subject: Re: [PATCH] m68knommu: Remove MCPU32 config symbol
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20211004070231.2943362-1-geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <41cd6008-75c8-1fa7-dfc3-3bf843707db3@linux-m68k.org>
-Date:   Mon, 4 Oct 2021 21:29:01 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232978AbhJDLdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 07:33:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 389166126A;
+        Mon,  4 Oct 2021 11:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633347087;
+        bh=9eIlIsfHP4knhIwYLjRza2zeq4D4+bTC9yyALw6VTm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jhFX7IxCrBvKVHXdciM4UfP5k4cacZRr1l06EUPGJXrcOuYunFNiT4xMiLyuZCT42
+         KDxOue4JEnyYteWXJmd0fWgHOj9NdG+vEp/JiJn9DVWVmvSQf+gEnpGN8TdRwYmEtZ
+         K/Gw5H5WxgrKuM1LBoIj8H/j+0alUyW4rbigV0ZMFx+s66MgILJQ/bT9xf7oeItxeh
+         81Ix7t4dclBKnzEmOPGgs+HZT6BHPhVefzfHy+Q+JuobaPA/wy2AiRq7o8EyE2YYiD
+         0RDRy2AA046P+g1nby14u6nUPJSMLI2ovH/0SnWjPj8nxB1hsPIpW33g7nChVl2zWA
+         p6lOfMXB3P2wQ==
+Date:   Mon, 4 Oct 2021 12:31:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     joro@8bytes.org, mst@redhat.com, jasowang@redhat.com,
+        robin.murphy@arm.com, xieyongji@bytedance.com,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, linuxarm@huawei.com,
+        thunder.leizhen@huawei.com, baolu.lu@linux.intel.com
+Subject: Re: [PATCH 1/5] iova: Move fast alloc size roundup into
+ alloc_iova_fast()
+Message-ID: <20211004113121.GA27373@willie-the-truck>
+References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
+ <1632477717-5254-2-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004070231.2943362-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632477717-5254-2-git-send-email-john.garry@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 5:02 pm, Geert Uytterhoeven wrote:
-> As of commit a3595962d82495f5 ("m68knommu: remove obsolete 68360
-> support"), nothing selects MCPU32 anymore.
+On Fri, Sep 24, 2021 at 06:01:53PM +0800, John Garry wrote:
+> It really is a property of the IOVA rcache code that we need to alloc a
+> power-of-2 size, so relocate the functionality to resize into
+> alloc_iova_fast(), rather than the callsites.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  drivers/iommu/dma-iommu.c            | 8 --------
+>  drivers/iommu/iova.c                 | 9 +++++++++
+>  drivers/vdpa/vdpa_user/iova_domain.c | 8 --------
+>  3 files changed, 9 insertions(+), 16 deletions(-)
 
-Thanks Geert. I'll push it into the m68knommu git tree.
+Acked-by: Will Deacon <will@kernel.org>
 
-Regards
-Greg
-
-
->   arch/m68k/Kconfig.cpu          | 11 -----------
->   arch/m68k/include/asm/bitops.h |  2 +-
->   2 files changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 277d61a094637ce3..0d00ef5117dceed9 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -53,17 +53,6 @@ config M68000
->   	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
->   	  a paging MMU.
->   
-> -config MCPU32
-> -	bool
-> -	select CPU_HAS_NO_BITFIELDS
-> -	select CPU_HAS_NO_CAS
-> -	select CPU_HAS_NO_UNALIGNED
-> -	select CPU_NO_EFFICIENT_FFS
-> -	help
-> -	  The Freescale (was then Motorola) CPU32 is a CPU core that is
-> -	  based on the 68020 processor. For the most part it is used in
-> -	  System-On-Chip parts, and does not contain a paging MMU.
-> -
->   config M68020
->   	bool "68020 support"
->   	depends on MMU
-> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-> index 7b414099e5fc20fa..7b93e1fd8ffa902f 100644
-> --- a/arch/m68k/include/asm/bitops.h
-> +++ b/arch/m68k/include/asm/bitops.h
-> @@ -451,7 +451,7 @@ static inline unsigned long ffz(unsigned long word)
->    *	generic functions for those.
->    */
->   #if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
-> -	!defined(CONFIG_M68000) && !defined(CONFIG_MCPU32)
-> +	!defined(CONFIG_M68000)
->   static inline unsigned long __ffs(unsigned long x)
->   {
->   	__asm__ __volatile__ ("bitrev %0; ff1 %0"
-> 
-
+Will
