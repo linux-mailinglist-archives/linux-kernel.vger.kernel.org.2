@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9E8421A3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEE6421A3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbhJDWqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:46:46 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:35587 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbhJDWqp (ORCPT
+        id S236774AbhJDWrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233501AbhJDWrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:46:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNbPy0Y1Fz4xbX;
-        Tue,  5 Oct 2021 09:44:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633387494;
-        bh=lDVTxhqxgT0B9k7XKWS8R+TkKhGIoWG2QL/9lQoz8j8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=C7mK48f3ppvuEpF9ec8TkoOkht82NgimXmKku5j1tl+yB3MN4ilSnSo3wWFesBQDF
-         pkM+nMzXkkFTxU0mEGh3AorARjn2zuOS+sJ3yI48WJGJousExjtLeA3RiVGHm5AGRC
-         tE/rtyePPq/9jkIk4PTRwqr+agZzi9/enNODewVHALwFTvX5goUHXGwuvdNpJImYvT
-         6bpYsh4jO1cxF6HNXcFg6gZpomkiwExmfKIhaslIJngEc8crab6rID4D6SXwmkL1Wp
-         KWeDUSSabgKbt8xT0qfEBOPvQilikPtp2ergkVb2LkPHFAEapxb4f3zJjSWtLxbkER
-         2676xmhReMeJQ==
-Date:   Tue, 5 Oct 2021 09:44:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the bluetooth tree
-Message-ID: <20211005094452.73d35d97@canb.auug.org.au>
+        Mon, 4 Oct 2021 18:47:09 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74526C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 15:45:19 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so77443276lfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 15:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2fTrk1dW8VO/fRgbo8lmAbv0WNCdJdQpjahpQhXw3cY=;
+        b=Szce5aG+lkjTfx8P23BIkknnmzUBy0ojGErEWMGW0tLncAEngrdCMSfDdDLu4Js5TP
+         akObS7LCrpIMi1UbExMI5aq+/Ma4Dznc1+Tf51tdADhbJnqm1u/znDKiM1/oW+LIMVfo
+         36z9DtIuy+ilb8fW6l+oIUjeYZUL0+Vr5ZUDQPOOs4DKdDn09V8R5+FJXokKU6gsrwlh
+         LzBKMKiTC+5fSlKXkMiKyTb+lyeAL0wY/UV8YkdSJqZZ6BwFAIKcsrxHMYQnHc4uwccd
+         eh1MtOKFCzTM2EdViSoh9lf0eVU6WmLAfJL1iJOqWe3MLUCCx4yBtYJlVjferbRagmKu
+         peMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2fTrk1dW8VO/fRgbo8lmAbv0WNCdJdQpjahpQhXw3cY=;
+        b=oKSlEOuUmJPJEHSohtCJodE6PJxWXnPftIfsY1e8YDC/yKb0C56qMyJ66QmG5C+wEo
+         G/iaXNawF4AtEy3pUQ3qytV+SkPe/UMjLA7oo0njL4ak2i0nLlEEHlOs3DYE4/cy718t
+         lCLOidsA/U16OkglG98zgmacjE20BrOcPDV1Ur7G9AFoyoxSEK1NX/WvfaZbGNwIpBht
+         +qViLH8cfBdZOHdvgsw9l++FmXoEXCE7JmUx5wQ+noKyvJWnZGD4QwlK1LVVXLO9bdkD
+         Lkl05KuZD51EOibVdEuudzJ1ijYjOuyVIgMuCzmkMH3vRH+pPKfLpoXGq2QEs1FN+91S
+         Rbzw==
+X-Gm-Message-State: AOAM530c3V0Hg0DQwNA8wiTgaLkC8iOnavrJ7EphZPnso+voeeDpdh6x
+        MGNDhc48vLoM1qjIBCoti1M=
+X-Google-Smtp-Source: ABdhPJw/eo3ZUEJXOWiwbikfAkOgWmD2T/BAhSqeKEUiKOpHOs3rl+0zJ5FkzWbKzTuFipjeGLkp+w==
+X-Received: by 2002:a2e:b162:: with SMTP id a2mr1133204ljm.330.1633387517889;
+        Mon, 04 Oct 2021 15:45:17 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id d4sm1747360ljl.98.2021.10.04.15.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 15:45:17 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] ASoC: amd: acp-rt5645: Constify static snd_soc_ops
+Date:   Tue,  5 Oct 2021 00:45:14 +0200
+Message-Id: <20211004224514.8783-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ATpaOxfn/+aWAabf8fub55S";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ATpaOxfn/+aWAabf8fub55S
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The struct cz_aif1_ops is only assigned to the ops field in the
+snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+Make it const to allow the compiler to put it in read-only memory.
 
-Hi all,
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ sound/soc/amd/acp-rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Commits
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index d6ba94677ac2..6d5c547a32de 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -91,7 +91,7 @@ static int cz_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops cz_aif1_ops = {
++static const struct snd_soc_ops cz_aif1_ops = {
+ 	.hw_params = cz_aif1_hw_params,
+ };
+ 
+-- 
+2.33.0
 
-  a30e5800589b ("Bluetooth: btrtl: Ask ic_info to drop firmware")
-  b5e6639b07c0 ("Bluetooth: btusb: Add support for TP-Link UB500 Adapter")
-  7eb342375a96 ("Bluetooth: btrsi: remove superfluous header files from btr=
-si.c")
-  69b299a7280f ("Bbluetooth: btusb: Add another Bluetooth part for Realtek =
-8852AE")
-  4dd2968805ac ("Bluetooth: btrtl: enable Realtek 8822C/8852A to support AO=
-SP extension")
-  0ab353c21be1 ("Bluetooth: hci_qca: enable Qualcomm WCN399x for AOSP exten=
-sion")
-  1e2273d93549 ("Bluetooth: Fix wrong opcode when LL privacy enabled")
-  1418965a0768 ("Bluetooth: Fix Advertisement Monitor Suspend/Resume")
-  b0504d6e5f5c ("Bluetooth: hci_h5: directly return hci_uart_register_devic=
-e() ret-val")
-  fd2c7321aa13 ("Bluetooth: hci_h5: Fix (runtime)suspend issues on RTL8723B=
-S HCIs")
-  1e1f7fc73cb2 ("Bluetooth: btmtkuart: fix a memleak in mtk_hci_wmt_sync")
-  6c61fc02a8e5 ("Bluetooth: hci_ldisc: require CAP_NET_ADMIN to attach N_HC=
-I ldisc")
-  e319ae6b127d ("Bluetooth: btusb: Add gpio reset way for qca btsoc in cmd_=
-timeout")
-  58a65fcc82f8 ("Bluetooth: hci_uart: fix GPF in h5_recv")
-  c3ab3f140bb3 ("Bluetooth: btintel: Fix incorrect out of memory check")
-  941337964231 ("Bluetooth: Keep MSFT ext info throughout a hci_dev's life =
-cycle")
-  e6ce3bd0ce27 ("Bluetooth: btusb: Add support for IMC Networks Mediatek Ch=
-ip(MT7921)")
-  0484e117b6ed ("Bluetooth: btusb: Add the new support ID for Realtek RTL88=
-52A")
-  cd2aba0b470e ("Bluetooth: btusb: Add protocol for MediaTek bluetooth devi=
-ces(MT7922)")
-  eb73ede91649 ("Bluetooth: btusb: Support public address configuration for=
- MediaTek Chip.")
-  5b30aeb2baae ("Bluetooth: btintel: Read boot address irrespective of cont=
-roller mode")
-  097012512953 ("Bluetooth: btintel: Fix boot address")
-  e2d1eef236d5 ("Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_ms=
-g()")
-  927ac8da35db ("Bluetooth: set quality report callback for Intel")
-  ae7d925b5c04 ("Bluetooth: Support the quality report events")
-  93fb70bc112e ("Bluetooth: refactor set_exp_feature with a feature table")
-  76a56bbd810d ("Bluetooth: btintel: support link statistics telemetry even=
-ts")
-  0331b8e990ed ("Bluetooth: btusb: disable Intel link statistics telemetry =
-events")
-  81218cbee980 ("Bluetooth: mgmt: Disallow legacy MGMT_OP_READ_LOCAL_OOB_EX=
-T_DATA")
-  0b59e272f932 ("Bluetooth: reorganize functions from hci_sock_sendmsg()")
-
-are missing a Signed-off-by from their committers.
-
-One of the hazards of rebasing ...
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ATpaOxfn/+aWAabf8fub55S
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbg+QACgkQAVBC80lX
-0GwR3Af/eGPrbh+v6G8WJa4rVzJSVgy7/1F1yJDOzyUTj8Lkek3uICvaHPlY/Fgu
-4CsMg/01eTX4ZbVOEQok6FuiS4qb976quBkXk4VK/BwFdgEJHO1A/JmBHY6Q4w73
-r5RmKdmdl7uqcECUzN+xWqgxpwCcUuTGywVCxPdkJI2eNhn8DQ74lEzxdLF82KFJ
-WqkcyhsUzmbWl4nvKVglrViPuxJqxkqLVoCSNOGNCCgLbPxewAMn5kym6WkgEKdS
-E7RoM81zu4paS7eIPUNFs9SsvFuLO8RNWcgotbr49V/W9wF4SqyJnHEd5gVEyqfE
-L5XyxfJG/EsqfLkLgiwMRO0PQ8XkNw==
-=bY8Y
------END PGP SIGNATURE-----
-
---Sig_/ATpaOxfn/+aWAabf8fub55S--
