@@ -2,112 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468C74210BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECB1420F6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238430AbhJDNw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237210AbhJDNwy (ORCPT
+        id S237679AbhJDNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:34:44 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3911 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237741AbhJDNcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:52:54 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BCAC09E7CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:28:01 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id c20so15808719qtb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6DU7gsbiNP9sjcVSmyhc3kWa3WRl9w7+FTLOGs4ZFN4=;
-        b=iDoHZmkGlGlOGmyIALhCRv5d0FGVqcyqzKnkCSrwDERdEycsj9nKdyI4CDCY7dUkfu
-         xidxgyjRN5kfHIRBmzvXWUYCVWONcmsNAfVlEJPerQ36OixcgdNf6z6xIX+i983wIGxX
-         Fm+2zsmQUKlte1RY1Yvt03JDL8dJLW8PrakA/6MUOUbzXeejqw51g5Eeeoks+5BR2RWt
-         8H1t/KDZUmwt+6LpGInv6V0CGPBr9+/eJziRGIauTdgjFf1nuaO3lqEPw168Nple9yyR
-         oLcnT0bAheHnXc8spN7mnErr+Hx9iaPz3jI3W/1sr1SvZCmQMtgwq+8Jx3uPm4zXeBnI
-         0JOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6DU7gsbiNP9sjcVSmyhc3kWa3WRl9w7+FTLOGs4ZFN4=;
-        b=pWoBSIMnS6CTxcnCExtvht+38NCg3Eb036Htn/7imaIQc/yIdJ3/J6zhE2Jhvpx6S4
-         OWFsQ1yoD5SA/aCaxRdTrUh2nVGR02ygEkHr/4OcoTLYOREetAg13vT/unwi+fM2hqSc
-         rAhArasyt8I61scDrUT4ES9J/NnIpj056rvTfGHvHPPib7/Z3BBfofJkoOznLbdzCgMT
-         4ZHh+x53sNxz2L4Qxo+4QNcoNafDdxmlieDWXZ4l3qFv7Fd1iIzXojrIjoOasej8utH8
-         yakTwe9fhyQv8w0smdy0CfOEzSA7yqyEIIUvmHrSCWk7KpQ/wiG6NOpse2+jzYnLxOVk
-         LDow==
-X-Gm-Message-State: AOAM532lL04ZWiXBQ/xfPGWEikAfkLX2k0JmllUoohFPzYoUEwtXkwGc
-        V7Zp55pI2VLkXroDeYqW3oz0vA==
-X-Google-Smtp-Source: ABdhPJxtUT/KaZLX4EROxMBuImUPAmVtvIoSFGbrT35tFwl+26IbFnsgo9cxZTq9rMwrEpHPo9O3KQ==
-X-Received: by 2002:ac8:564d:: with SMTP id 13mr13726534qtt.228.1633354080469;
-        Mon, 04 Oct 2021 06:28:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id 205sm7652317qkf.19.2021.10.04.06.27.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 06:28:00 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mXO0d-00ATnh-F3; Mon, 04 Oct 2021 10:27:59 -0300
-Date:   Mon, 4 Oct 2021 10:27:59 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20211004132759.GX3544071@ziepe.ca>
-References: <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
- <20210929233540.GF3544071@ziepe.ca>
- <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
- <20210930003652.GH3544071@ziepe.ca>
- <20211001134856.GN3544071@ziepe.ca>
- <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
- <20211001174511.GQ3544071@ziepe.ca>
- <809be72b-efb2-752c-31a6-702c8a307ce7@amd.com>
- <20211004131102.GU3544071@ziepe.ca>
- <1e219386-7547-4f42-d090-2afd62a268d7@amd.com>
+        Mon, 4 Oct 2021 09:32:41 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNM2k6pySz67b2m;
+        Mon,  4 Oct 2021 21:27:26 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 4 Oct 2021 15:30:50 +0200
+Received: from [10.47.27.199] (10.47.27.199) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 4 Oct 2021
+ 14:30:49 +0100
+Subject: Re: [PATCH 5/5] iommu/iova: Avoid double-negatives in magazine
+ helpers
+To:     Will Deacon <will@kernel.org>
+CC:     <joro@8bytes.org>, <mst@redhat.com>, <jasowang@redhat.com>,
+        <robin.murphy@arm.com>, <xieyongji@bytedance.com>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <virtualization@lists.linux-foundation.org>, <linuxarm@huawei.com>,
+        <thunder.leizhen@huawei.com>, <baolu.lu@linux.intel.com>
+References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
+ <1632477717-5254-6-git-send-email-john.garry@huawei.com>
+ <20211004113836.GB27373@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <743a089c-6b5f-ed3f-d0bd-23b891c03a66@huawei.com>
+Date:   Mon, 4 Oct 2021 14:33:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1e219386-7547-4f42-d090-2afd62a268d7@amd.com>
+In-Reply-To: <20211004113836.GB27373@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.199]
+X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:22:22PM +0200, Christian König wrote:
+On 04/10/2021 12:38, Will Deacon wrote:
 
-> That use case is completely unrelated to GUP and when this doesn't work we
-> have quite a problem.
+Hi Will,
 
-My read is that unmap_mapping_range() guarentees the physical TLB
-hardware is serialized across all CPUs upon return.
+>> To avoid this, stop using double-negatives, like !iova_magazine_full() and
+>> !iova_magazine_empty(), and use positive tests, like
+>> iova_magazine_has_space() and iova_magazine_has_pfns(), respectively; these
+>> can safely deal with cpu_rcache->{loaded, prev} = NULL.
+> I don't understand why you're saying that things like !iova_magazine_empty()
+> are double-negatives. What about e.g. !list_empty() elsewhre in the kernel?
 
-It also guarentees GUP slow is serialized due to the page table
-spinlocks.
+IMO, a check for an empty magazine is a negative check, as opposed to a 
+check for availability.
 
-Jason
+But I'm not saying that patterns like !list_empty() are a bad practice. 
+I'm just saying that they are not NULL safe, and that matters in this 
+case as we can potentially pass a NULL pointer.
+
+> 
+> The crux of the fix seems to be:
+> 
+>> @@ -783,8 +787,9 @@ static bool __iova_rcache_insert(struct iova_caching_domain *rcached,
+>>   		if (new_mag) {
+>>   			spin_lock(&rcache->lock);
+>>   			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+>> -				rcache->depot[rcache->depot_size++] =
+>> -						cpu_rcache->loaded;
+>> +				if (cpu_rcache->loaded)
+>> +					rcache->depot[rcache->depot_size++] =
+>> +							cpu_rcache->loaded;
+> Which could be independent of the renaming?
+
+If cpu_rcache->loaded was NULL, then we crash before we reach this code.
+
+Anyway, since I earlier reworked init_iova_rcaches() to properly handle 
+failed mem allocations for rcache->cpu_rcaches, I can rework further to 
+fail the init for failed mem allocations for cpu_rcaches->loaded, so we 
+don't need this change.
+
+Thanks,
+John
