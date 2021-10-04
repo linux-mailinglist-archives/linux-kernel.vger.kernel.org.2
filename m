@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EB2420E6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775E7420CB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbhJDNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:25:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37062 "EHLO mail.kernel.org"
+        id S235729AbhJDNJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:09:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236843AbhJDNXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F258661BF5;
-        Mon,  4 Oct 2021 13:10:06 +0000 (UTC)
+        id S235320AbhJDNGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:06:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0290761B43;
+        Mon,  4 Oct 2021 13:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353007;
-        bh=qJ9lhhn04jBi8L3e0Q5wmv8IRUQA0TvXcJUX+Ff7azk=;
+        s=korg; t=1633352488;
+        bh=uDLJDp9yUihenuoK/bIyDwV9Lhn6uzUYTPONN3ZEqRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ola53muYqF0NHrcw39QDcs/3MerVeP6TJ3jNL5JJDqpgrntApDK4kKKez2R3MbM22
-         rVHAQbWAEPxhWnfRJ8km+v85zpZKd/YhbFbV+e0UEPBQUNXaJoljsU7KzA7mRyPs7J
-         cD9sC/DQBoAnp7g+ZeELlTIeestB74akSPukA60Q=
+        b=sKhNSNJgChr9+JqLtBnqoF+IAntSxIjWOeIcCPVY0D1iykqCU+FclfnAl8vX/YhDD
+         AKQL7xwQdTZ7VCGC5BRwg9xw5iB5pwgygCc70XYwDPp2M5pnzQ1YXws7UbhiR0LodW
+         5NPj50J1DSlSRe/URUS+LqPaUC9xxD1TnC+7IPzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 51/93] selftests, bpf: test_lwt_ip_encap: Really disable rp_filter
-Date:   Mon,  4 Oct 2021 14:52:49 +0200
-Message-Id: <20211004125036.260211093@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 75/75] net: mdiobus: Fix memory leak in __mdiobus_register
+Date:   Mon,  4 Oct 2021 14:52:50 +0200
+Message-Id: <20211004125034.049109987@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Benc <jbenc@redhat.com>
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-[ Upstream commit 79e2c306667542b8ee2d9a9d947eadc7039f0a3c ]
+commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
 
-It's not enough to set net.ipv4.conf.all.rp_filter=0, that does not override
-a greater rp_filter value on the individual interfaces. We also need to set
-net.ipv4.conf.default.rp_filter=0 before creating the interfaces. That way,
-they'll also get their own rp_filter value of zero.
+Once device_register() failed, we should call put_device() to
+decrement reference count for cleanup. Or it will cause memory
+leak.
 
-Fixes: 0fde56e4385b0 ("selftests: bpf: add test_lwt_ip_encap selftest")
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BUG: memory leak
+unreferenced object 0xffff888114032e00 (size 256):
+  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+  backtrace:
+    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+
+BUG: memory leak
+unreferenced object 0xffff888116f06900 (size 32):
+  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+  hex dump (first 32 bytes):
+    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+
+Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_lwt_ip_encap.sh | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/phy/mdio_bus.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-index 59ea56945e6c..b497bb85b667 100755
---- a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-+++ b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-@@ -112,6 +112,14 @@ setup()
- 	ip netns add "${NS2}"
- 	ip netns add "${NS3}"
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -347,6 +347,7 @@ int __mdiobus_register(struct mii_bus *b
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
++		put_device(&bus->dev);
+ 		return -EINVAL;
+ 	}
  
-+	# rp_filter gets confused by what these tests are doing, so disable it
-+	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.default.rp_filter=0
-+	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.default.rp_filter=0
-+	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.default.rp_filter=0
-+
- 	ip link add veth1 type veth peer name veth2
- 	ip link add veth3 type veth peer name veth4
- 	ip link add veth5 type veth peer name veth6
-@@ -236,11 +244,6 @@ setup()
- 	ip -netns ${NS1} -6 route add ${IPv6_GRE}/128 dev veth5 via ${IPv6_6} ${VRF}
- 	ip -netns ${NS2} -6 route add ${IPv6_GRE}/128 dev veth7 via ${IPv6_8} ${VRF}
- 
--	# rp_filter gets confused by what these tests are doing, so disable it
--	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
--	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
--	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
--
- 	TMPFILE=$(mktemp /tmp/test_lwt_ip_encap.XXXXXX)
- 
- 	sleep 1  # reduce flakiness
--- 
-2.33.0
-
 
 
