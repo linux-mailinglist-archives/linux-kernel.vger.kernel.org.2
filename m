@@ -2,207 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C37421475
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F728421478
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbhJDQzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237561AbhJDQzi (ORCPT
+        id S237638AbhJDQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:56:03 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:60401 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237561AbhJDQ4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:55:38 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77277C061745;
-        Mon,  4 Oct 2021 09:53:49 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id u18so74569974lfd.12;
-        Mon, 04 Oct 2021 09:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IYufgetYgN5Af3F6AhLYRvvGvd8Al8WSTlIRzeXPu0g=;
-        b=JeHQkQq/Os+wSi3VIhwtQHsNkq70w4aypJssTJfOH7uiHIzknRJm6p7vlNgxhHiHVM
-         L2sq+5wEzhL5wTXCHiksHfwkyRHohWAcFKxWlAIyJL4nf4nfyPk8piwIa5E9DpF7Hdun
-         A35ZKfelovtMmW9DRfCtfeVIpDUfGOzLHF2pv3t2Dj5jQMEvhsAY2h8Tr/4y5K7LXoiV
-         cIL8LshcmkWbnKXRNF/3IBsfJYVB8JPsFIArJgLivdWzGDK5FS8ecxZtYpO0DdK03Uyx
-         v5pSAFG4NJRh3lTzSnH4Ln81jtgCzx/LPYlrnejePJKefTilCE0dp5STVKdJ59viNDjx
-         di6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IYufgetYgN5Af3F6AhLYRvvGvd8Al8WSTlIRzeXPu0g=;
-        b=BaOHjNOZSbSu3fmw+RfJJ1m1nJ+sUPI3PmlxOZGXnhiN3FzhKvQ67BOJH5gDDLp3lu
-         glqGBuky3r1z423XAv0MYTg6LF9ShcshSjMdhE1OFzGjCKWlu8GVWqWf1Hj7Dfw6I6Pl
-         u37qtzkJljtdJzMafuIX0AdZF5zQDbJoCF6wD4dgBv1SP63uj7XEDiO00JZtihlH52V7
-         SVqdpnP7dtyBRXAphrVMKS/EcAefl0FEc6bGj39vibyTrTJS3bkklUakrq17/n3kzCwC
-         VGeW/XbBQ8lSE+OIpemElQZaflkLu2yyRUx24XmfpJ3HsG2bBQ12WOo60Yc36Ynguqzg
-         cu3g==
-X-Gm-Message-State: AOAM530DBKSDNLsGC0EH6879dNSYHbM2jJMm9XDwdBivbTusBLmeMh+I
-        dh9t9h9Mj9kYs31fXOD5omsdVGxi8Q4=
-X-Google-Smtp-Source: ABdhPJxOTFCOmQNL8mjcH8NLzqqutpPUD0DMa5F0kUegHty3/J6WKxvKqISCs2YBdyMxDamFLJl7ZA==
-X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr15610379lfu.469.1633366427564;
-        Mon, 04 Oct 2021 09:53:47 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id c3sm1405934ljh.58.2021.10.04.09.53.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 09:53:47 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] dt-bindings: memory: Add LPDDR2 binding
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211003013235.2357-1-digetx@gmail.com>
- <20211003013235.2357-2-digetx@gmail.com>
- <4c5643de-d39d-2b1a-12ae-ec5247fe2976@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4ad137c0-1199-56bc-f77e-0ea8dcc4ba9c@gmail.com>
-Date:   Mon, 4 Oct 2021 19:53:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 4 Oct 2021 12:56:01 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6E75B580B5C;
+        Mon,  4 Oct 2021 12:54:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 04 Oct 2021 12:54:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JIxAuX
+        sS3WOdJAM05+0WBlHZHKSubxopXu0GVR1buSk=; b=QB4Fe61LHoLh0sc9SvUpMz
+        iW5D5+aAj7kIFd/iwTLGY4tzvI56+h3cH4GY/8STVdwBhQpOVgiUSDjXK/X5/6t4
+        t0YoK2zOtFf2zRto/OXMTVzAcjJgft2dAsjRMUwdAXeGgQekDxUCmCd/aasTRfIT
+        8ncAlf6Nusj+DWEYe1SuS22bZa+Kckxy0fOVUFjj0SvWuLYhdkMnzt8XwvVXemY3
+        CJ+lOGOjXw8SQVHRtZdoAWHENzPPIXmLntGnZfsU9IQL8QcbJaPGfnbZUHphJynv
+        OQxVtE4/f//0YZQSk+fWQtSoYzxnxf+Zfeumdjm3shpVQMVxA1PJkHhyQ3T+bhKA
+        ==
+X-ME-Sender: <xms:szFbYQLdsrzcgKNnmRexgm8L6tLWX5d6JtztEYogH2E96wl8nDGO9A>
+    <xme:szFbYQIChsxSavGZ8NWxdUrqisFeMs4bnVC-nYdTGW5Az-8RPnKL0i8zGnMZjIEHq
+    _wFArndHEJ1dss>
+X-ME-Received: <xmr:szFbYQv_FAi8Bg2VLAnSc_Pjnj2x34Kttdv-VfyMu3pdsP8Efcs9drLn48engdVY4vr1Ho5bUd9U6qiY5v9P7lNd8zYH1w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelvddguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
+    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:szFbYdblGzsrgC7dGsv88f2LYdYZTQjX1MMw481fRGD0buTK3ph5VA>
+    <xmx:szFbYXbk6uzinz5-5AE0F550BJeGorzPvDZJLpVg-bIrH6iE9a8agg>
+    <xmx:szFbYZDm81owxYr4Zi0SRRmrL0CzLEJH2_DQA0CeoZUyZ8OpP7s73Q>
+    <xmx:tDFbYdxjfw5OuBwdI7cV8Myr1M0jvGSkbVE-WaYjVbOeUVPhABm4XA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Oct 2021 12:54:10 -0400 (EDT)
+Date:   Mon, 4 Oct 2021 19:54:02 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
+ interface
+Message-ID: <YVsxqsEGkV0A5lvO@shredder>
+References: <cover.1633284302.git.leonro@nvidia.com>
+ <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
+ <YVsNfLzhGULiifw2@shredder>
+ <YVshg3a9OpotmOQg@unreal>
 MIME-Version: 1.0
-In-Reply-To: <4c5643de-d39d-2b1a-12ae-ec5247fe2976@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVshg3a9OpotmOQg@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.10.2021 10:42, Krzysztof Kozlowski пишет:
-> On 03/10/2021 03:32, Dmitry Osipenko wrote:
->> Add binding for standard LPDDR2 memory chip properties.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  .../memory-controllers/jedec,lpddr2.yaml      | 80 +++++++++++++++++++
->>  include/dt-bindings/memory/lpddr2.h           | 25 ++++++
+On Mon, Oct 04, 2021 at 06:45:07PM +0300, Leon Romanovsky wrote:
+> On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
+> > On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > After changes to allow dynamically set the reload_up/_down callbacks,
+> > > we ensure that properly supported devlink ops are not accessible before
+> > > devlink_register, which is last command in the initialization sequence.
+> > > 
+> > > It makes devlink_reload_enable/_disable not relevant anymore and can be
+> > > safely deleted.
+> > > 
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > [...]
+> > 
+> > > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+> > > index cb6645012a30..09e48fb232a9 100644
+> > > --- a/drivers/net/netdevsim/dev.c
+> > > +++ b/drivers/net/netdevsim/dev.c
+> > > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
+> > >  
+> > >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
+> > >  	devlink_register(devlink);
+> > > -	devlink_reload_enable(devlink);
+> > >  	return 0;
+> > >  
+> > >  err_psample_exit:
+> > > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
+> > >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
+> > >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
+> > >  
+> > > -	devlink_reload_disable(devlink);
+> > >  	devlink_unregister(devlink);
+> > > -
+> > >  	nsim_dev_reload_destroy(nsim_dev);
+> > >  
+> > >  	nsim_bpf_dev_exit(nsim_dev);
+> > 
+> > I didn't remember why devlink_reload_{enable,disable}() were added in
+> > the first place so it was not clear to me from the commit message why
+> > they can be removed. It is described in commit a0c76345e3d3 ("devlink:
+> > disallow reload operation during device cleanup") with a reproducer.
 > 
-> Hi Dmitry,
-> 
-> Thanks for doing this. I think I should be slightly more descriptive in
-> my previous comment. What I meant, is to use existing DDR bindings
-> (which might include or require converting them to YAML):
-> Documentation/devicetree/bindings/ddr/
-> 
-> The bindings are already used:
-> arch/arm/boot/dts/elpida_ecb240abacn.dtsi
-> arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-> drivers/memory/samsung/exynos5422-dmc.c
+> It was added because devlink ops were accessible by the user space very
+> early in the driver lifetime. All my latest devlink patches are the
+> attempt to fix this arch/design/implementation issue.
 
-Thanks! I missed that there is ddr/ subdir.
+The reproducer in the commit message executed the reload after the
+device was fully initialized. IIRC, the problem there was that nothing
+prevented these two tasks from racing:
 
-> You can remove the Documentation/devicetree/bindings/ddr/lpddr2.txt
-> after full conversion, so also including AC timings and AC timing
-> parameters. The timing parameters could be a separate YAML, if you want
-> to convert everything. You can also skip it, because it is not necessary
-> for your work.
-> 
-> 
-> Rob,
-> Any advice from your side where to put LPDDR2 dtschema bindings? The
-> existing location was bindings/ddr/ but maybe this should be part of
-> memory-controllers (although it is not actually a controller but rather
-> used by the controller)?
+devlink dev reload netdevsim/netdevsim10
+echo 10 > /sys/bus/netdevsim/del_device
 
-+1 for having it inside of memory-controllers/
+The title also talks about forbidding reload during device cleanup.
 
->>  2 files changed, 105 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
->>  create mode 100644 include/dt-bindings/memory/lpddr2.h
->>
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml b/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
->> new file mode 100644
->> index 000000000000..ef227eba1e4a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/memory-controllers/jedec,lpddr2.yaml
->> @@ -0,0 +1,80 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/memory-controllers/jedec,lpddr2.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: JEDEC LPDDR2 SDRAM
->> +
->> +maintainers:
->> +  - Krzysztof Kozlowski <krzk@kernel.org>
->> +
->> +properties:
 > 
-> You need compatible (see lpddr2.txt)
+> > 
+> > Tried the reproducer with this series and I cannot reproduce the issue.
+> > Wasn't quite sure why, but it does not seem to be related to "changes to
+> > allow dynamically set the reload_up/_down callbacks", as this seems to
+> > be specific to mlx5.
 > 
->> +  jedec,lpddr2-manufacturer-id:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 255
->> +    description: |
->> +      Unique manufacturer ID of SDRAM chip. See MR5 description in JESD209-2.
-> 
-> Plus:
-> "See include/dt-bindings/memory/lpddr2.h for known manufactured IDs."
-> 
-> However I wonder whether we need it. It should be taken from the vendor
-> part of compatible.
+> You didn't reproduce because of my series that moved
+> devlink_register()/devlink_unregister() to be last/first commands in
+> .probe()/.remove() flows.
 
-It shouldn't be needed if compatible is used.
+Agree, that is what I wrote in the next paragraph of my reply.
 
->> +
->> +  jedec,lpddr2-revision-id1:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 255
->> +    description: |
->> +      Revision 1 value of SDRAM chip.
->> +      See MR6 description in chip vendor specification.
->> +
->> +  jedec,lpddr2-revision-id2:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 255
->> +    description: |
->> +      Revision 2 value of SDRAM chip.
->> +      See MR7 description in chip vendor specification.
->> +
->> +  jedec,lpddr2-density-mbits:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      Density in megabits of SDRAM chip. See MR8 description in JESD209-2.
->> +    enum:
->> +      - 64
->> +      - 128
->> +      - 256
->> +      - 512
->> +      - 1024
->> +      - 2048
->> +      - 4096
->> +      - 8192
->> +      - 16384
->> +      - 32768
->> +
->> +  jedec,lpddr2-io-width-bits:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      IO bus width in bits of SDRAM chip. See MR8 description in JESD209-2.
->> +    enum:
->> +      - 32
->> +      - 16
->> +      - 8
->> +
->> +  jedec,lpddr2-type:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: |
->> +      LPDDR type which corresponds to a number of words SDRAM pre-fetches
->> +      per column request. See MR8 description in JESD209-2.
->> +    enum:
->> +      - 0 # S4 (4 words prefetch architecture)
->> +      - 1 # S2 (2 words prefetch architecture)
->> +      - 2 # NVM (Non-volatile memory)
 > 
-> Type should not be needed but instead taken from compatible. Unless Rob
-> has here preference and maybe change the DDR bindings?
+> Patch to allow dynamically set ops was needed because mlx5 had logic
+> like this:
+>  if(something)
+>     devlink_reload_enable()
 > 
-> requiredProperties for compatible, density, io-width.
+> And I needed a way to keep this if ... condition.
+> 
+> > 
+> > IIUC, the reason that the race described in above mentioned commit can
+> > no longer happen is related to the fact that devlink_unregister() is
+> > called first in the device dismantle path, after your previous patches.
+> > Since both the reload operation and devlink_unregister() hold
+> > 'devlink_mutex', it is not possible for the reload operation to race
+> > with device dismantle.
+> > 
+> > Agree? If so, I think it would be good to explain this in the commit
+> > message unless it's clear to everyone else.
+> 
+> I don't agree for very simple reason that devlink_mutex is going to be
+> removed very soon and it is really not a reason why devlink reload is
+> safer now when before.
+> 
+> The reload can't race due to:
+> 1. devlink_unregister(), which works as a barrier to stop accesses
+> from the user space.
+> 2. reference counting that ensures that all in-flight commands are counted.
+> 3. wait_for_completion that blocks till all commands are done.
 
-Alright
+So the wait_for_completion() is what prevents the race, not
+'devlink_mutex' that is taken later. This needs to be explained in the
+commit message to make it clear why the removal is safe.
+
+Thanks
