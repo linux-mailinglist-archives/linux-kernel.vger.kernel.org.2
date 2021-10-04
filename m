@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A82420CC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2501B420C54
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhJDNJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39448 "EHLO mail.kernel.org"
+        id S234979AbhJDNEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhJDNHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:07:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B295461251;
-        Mon,  4 Oct 2021 13:01:41 +0000 (UTC)
+        id S234870AbhJDNDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C036613D5;
+        Mon,  4 Oct 2021 12:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352502;
-        bh=ZFeCRxW0V8QfMMha9wGmHmpRCO+ITUAUgxke5fW27ps=;
+        s=korg; t=1633352378;
+        bh=mzdbePaieiHmIvDiCquG0lPil8zrri334tBIs2xTySk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yYxbJeA8fuvqFAaauHf7YvfCJjxLCBtr7iMB0T9+VbcU040mNf8Nst7/CMEOETPSM
-         xilAZDE1jR33Q5esJ/QIhxfgzhdmlCzjbSIlwtRg28MYwjHDl9AXwTdVUp19WvQM8k
-         VGPGBCa99vBqx6PdI/rXhXgm8KoyLKm23T2S0DQg=
+        b=Z4wnS9erMdeJEiNdeQyDlXE85lp8+T4yiGNaJ5FxpsQUcbvDJWbsHsWb1YDi6HMNf
+         btZFy9vkCnt5+9ddnOgDJtAxPGKUGLo5eLu0N50a+af5fQPKP4N93JAKviQZ6kQe0k
+         jKz0D/K1Mob78h+t8HqJ3z+zOANYBHGs6aZeHGF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Uwe Brandt <uwe.brandt@gmail.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 12/95] USB: serial: mos7840: remove duplicated 0xac24 device ID
+Subject: [PATCH 4.14 07/75] USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
 Date:   Mon,  4 Oct 2021 14:51:42 +0200
-Message-Id: <20211004125033.967578700@linuxfoundation.org>
+Message-Id: <20211004125031.770596089@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Uwe Brandt <uwe.brandt@gmail.com>
 
-commit 211f323768a25b30c106fd38f15a0f62c7c2b5f4 upstream.
+commit 3bd18ba7d859eb1fbef3beb1e80c24f6f7d7596c upstream.
 
-0xac24 device ID is already defined and used via
-BANDB_DEVICE_ID_USO9ML2_4.  Remove the duplicate from the list.
+Add the USB serial device ID for the GW Instek GDM-834x Digital Multimeter.
 
-Fixes: 27f1281d5f72 ("USB: serial: Extra device/vendor ID for mos7840 driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Uwe Brandt <uwe.brandt@gmail.com>
+Link: https://lore.kernel.org/r/YUxFl3YUCPGJZd8Y@hovoldconsulting.com
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/mos7840.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/mos7840.c
-+++ b/drivers/usb/serial/mos7840.c
-@@ -113,7 +113,6 @@
- #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
- #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
- #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
--#define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
- 
- /* This driver also supports
-  * ATEN UC2324 device using Moschip MCS7840
-@@ -194,7 +193,6 @@ static const struct usb_device_id id_tab
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
--	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
- 	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -237,6 +237,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1FB9, 0x0602) }, /* Lake Shore Model 648 Magnet Power Supply */
+ 	{ USB_DEVICE(0x1FB9, 0x0700) }, /* Lake Shore Model 737 VSM Controller */
+ 	{ USB_DEVICE(0x1FB9, 0x0701) }, /* Lake Shore Model 776 Hall Matrix */
++	{ USB_DEVICE(0x2184, 0x0030) }, /* GW Instek GDM-834x Digital Multimeter */
+ 	{ USB_DEVICE(0x2626, 0xEA60) }, /* Aruba Networks 7xxx USB Serial Console */
+ 	{ USB_DEVICE(0x3195, 0xF190) }, /* Link Instruments MSO-19 */
+ 	{ USB_DEVICE(0x3195, 0xF280) }, /* Link Instruments MSO-28 */
 
 
