@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D042F42182A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFB542182E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235648AbhJDUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S235800AbhJDUJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhJDUId (ORCPT
+        with ESMTP id S229945AbhJDUJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:08:33 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEC0C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:06:44 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id t17-20020a4ac891000000b002b612d6d5e9so5050219ooq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=66dX0OvQYrrj3UairmmHI6a5MNBzAVnr6VxC1SQ5QfI=;
-        b=hvEooSDKadJeMyTNjVqfQodNlOhWjjHiswUVR7NbCKMyO19iSeUcZbOHrUjmjbK3oO
-         1ta52VaFo6NnyhIASZDZhNfGySCPzL0Z2TroxcJUGKcl6tYDFENjGp+7scdQ8w0fFm45
-         Db+FFa9sDxTUCKuZi8fy0A2eGPOz9a8RrepwQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=66dX0OvQYrrj3UairmmHI6a5MNBzAVnr6VxC1SQ5QfI=;
-        b=hnO3ypaRCwfAMwZjwxrBD0VWCxF2YMWhtPf+EL/V1GaGUDp06dIaVcYmSz9LFzDu7s
-         8XsIChPafCbYHuddBU7/GCsmhaRcDP0U+BTDSJ1JgTXwn8kWz3ZF15j62x6SzaT8H3fD
-         0FDZGImNC2SStXcDQbHLRsJ1lqtfujHESasaJPBodRm26GQZuskBaAh77fDIf/8wHP/x
-         2o2DhRKMIV4EDbQODJTJ0TCB6wQRu5L19R4XgQaTFPZarLiCETnnhjCl/G9lkwToJ4ap
-         AD+Z2q8EVTYB/rKLa7h1FopUcXldXvjkEA28CdBpsaCJdTjZGfTj1N4HPhrelFyX9/7J
-         fxuw==
-X-Gm-Message-State: AOAM5302D3KDgdpsCiUwcIChH3QNNev9X0XT8rw5mWj40lDjfVZwLWcr
-        rPQPfJp0VzecwOIpU5gpQMp/zQ==
-X-Google-Smtp-Source: ABdhPJx2saE+pGtwu/Iro6kkqVG924H8S/kYPTHwf52PCKYl3E66oJ+Kn3xmvP+nZXyiDYjnVM38sA==
-X-Received: by 2002:a4a:7059:: with SMTP id b25mr10598983oof.54.1633378003899;
-        Mon, 04 Oct 2021 13:06:43 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e12sm3123842otq.4.2021.10.04.13.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 13:06:43 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     agk@redhat.com, snitzer@redhat.com
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dm: change dm_get_target_type() to check for module load error
-Date:   Mon,  4 Oct 2021 14:06:41 -0600
-Message-Id: <20211004200641.378496-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 4 Oct 2021 16:09:53 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04F7C061745;
+        Mon,  4 Oct 2021 13:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=6NiXQi8FxQNfm2NDse7N8BfGltA2mCF/JILct9+dz5A=; b=IvWFtcK7h4k7Vmy6dpdXujm7yI
+        mQdPZ4B0HaT3PYtufSwlwh/xglhOMcG20bRkm4jBUJQYB3Hf4XdzG4M6rBO9U849TDLp/JhD659kY
+        Gwoa0rfBOy/GIu172JyiyMUTDyuT3hn2rcmMjll/B6GqhzAjsQzbsLDfn/S+9Ec+kEjxivzW4uv3T
+        de5BndTeYo4ENzV5OrgNTTxSOa6Ykw7bI0wRpm1pt6ML40YSFf0RPjXn9D2Nm2L9jYOfeb6a3JA51
+        7ET4f8Q4lVKxtAtW8Gbbx+16A5+s9b/UfkceikvMhe297oYqr1qDTh2rGJFcp+8VNQzki9cqP+dGh
+        HNpp933g==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXUFm-007wSC-Qt; Mon, 04 Oct 2021 20:08:02 +0000
+Subject: Re: [PATCH V0 4/7] usb: common: eud: Added the driver support for
+ Embedded USB Debugger(EUD)
+To:     Souradeep Chowdhury <schowdhu@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <greg@kroah.com>
+Cc:     linux-kernel@vger.kernel.org, ckadabi@codeaurora.org,
+        tsoni@codeaurora.org, bryanh@codeaurora.org,
+        psodagud@codeaurora.org, satyap@codeaurora.org,
+        pheragu@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+ <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <73c1eb4f-6870-1c30-9b23-d991b8c8b35d@infradead.org>
+Date:   Mon, 4 Oct 2021 13:08:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dm_get_target_type() doesn't check error return from request_module().
-Change to check for error and return NULL instead of trying to get
-target type again which would fail.
+On 10/4/21 4:16 AM, Souradeep Chowdhury wrote:
+> Add support for control peripheral of EUD (Embedded USB Debugger) to
+> listen to events such as USB attach/detach, pet EUD to indicate software
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- drivers/md/dm-target.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+   I don't quite understand: what pets the EUD? how does it do that?
 
-diff --git a/drivers/md/dm-target.c b/drivers/md/dm-target.c
-index 64dd0b34fcf4..0789e9f91d3a 100644
---- a/drivers/md/dm-target.c
-+++ b/drivers/md/dm-target.c
-@@ -41,17 +41,22 @@ static struct target_type *get_target_type(const char *name)
- 	return tt;
- }
- 
--static void load_module(const char *name)
-+static int load_module(const char *name)
- {
--	request_module("dm-%s", name);
-+	return request_module("dm-%s", name);
- }
- 
- struct target_type *dm_get_target_type(const char *name)
- {
- 	struct target_type *tt = get_target_type(name);
-+	int ret;
- 
- 	if (!tt) {
--		load_module(name);
-+		ret = load_module(name);
-+		if (ret < 0) {
-+			pr_err("Module %s load failed %d\n", name, ret);
-+			return NULL;
-+		}
- 		tt = get_target_type(name);
- 	}
- 
+> is functional.Reusing the platform device kobj, sysfs entry 'enable' is
+
+      functional. Reusing
+
+> created to enable or disable EUD.
+> 
+> To enable the eud the following needs to be done
+> echo 1 >/sys/bus/platform/.../enable
+> 
+> To disable eud, following is the command
+> echo 0 >/sys/bus/platform/.../enable
+> 
+> Signed-off-by: Souradeep Chowdhury<schowdhu@codeaurora.org>
+> ---
+>   Documentation/ABI/testing/sysfs-driver-eud |   7 +
+>   drivers/usb/common/Kconfig                 |   9 +
+>   drivers/usb/common/Makefile                |   1 +
+>   drivers/usb/common/qcom_eud.c              | 256 +++++++++++++++++++++++++++++
+>   4 files changed, 273 insertions(+)
+>   create mode 100644 Documentation/ABI/testing/sysfs-driver-eud
+>   create mode 100644 drivers/usb/common/qcom_eud.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-eud b/Documentation/ABI/testing/sysfs-driver-eud
+> new file mode 100644
+> index 0000000..14a02da
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-eud
+> @@ -0,0 +1,7 @@
+> +What:		/sys/bus/platform/.../enable
+> +Date:           October 2021
+> +Contact:        Souradeep Chowdhury<schowdhu@codeaurora.org>
+> +Description:
+> +		The Enable/Disable sysfs interface for Embedded
+> +		USB Debugger(EUD).This enables and disables the
+
+		    Debugger (EUD). This enables
+
+> +		EUD based on a 1 or a 0 value.
+
+
 -- 
-2.30.2
-
+~Randy
