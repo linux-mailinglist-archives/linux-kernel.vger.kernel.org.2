@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92842051D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 05:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C1B42051F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 05:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhJDDuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 23:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhJDDuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 23:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F17B611C2;
-        Mon,  4 Oct 2021 03:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633319301;
-        bh=aU5ALILGWNnuMRsq51D5OEKIBLqWVkxkH+BrRSI/PIc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OsgqILalkDVrcrBo+KTQEBUzvm6JqeaRE6YlJGEbK07W85m8AlQX45zjKqSwCusuK
-         mWqgqfJLmlBBzcJ38zQ9av9QpCLL2AMxiq9vthtFSbQuwKTiA3rEjXj0yFU2+Avk43
-         WViJtVYPDou5rusk3UTcPcEyaO6fHjkhRUeDs9bUM6dr5UZdDYaU/+PU/Xr9P5S6U4
-         UyjCFgSXb8AdIcpUInZzkuovsAwy4G+lmSOn3GLqCu6TMGC8NajyE9LzadCuLjEZfU
-         dSb10LlBqKk9BJgmGeFsin7UvC4K38IeKAj6yonyH418w1RnqNmIbiHE99mnYFncJ0
-         vfzEGGcBat49w==
-Date:   Mon, 4 Oct 2021 11:48:16 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>
-Subject: Re: [PATCH devicetree 1/2] dt-bindings: arm: fsl: document the
- LX2160A BlueBox 3 boards
-Message-ID: <20211004034815.GC15650@dragon>
-References: <20210827202722.2567687-1-vladimir.oltean@nxp.com>
+        id S232364AbhJDDzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 23:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhJDDzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Oct 2021 23:55:51 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49FCC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 20:54:02 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id b8so24911023edk.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 20:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=V08KH7c7Zm4ftwGYWSjVqELi77KWFRR2G0NwTulFNiA=;
+        b=KzTr5zjgADsiUdfIHrSg4PgtCE1N7WN81ub/1MRCIlBpALILkw4qhzlIlGkBx0Q29q
+         3W2nOclcRPqBYCDfaTuUNIeyE7fVgEZPWCcUWcaEwnhtHXH5pZGGemq8GUSNto+RT3O0
+         oqU4cWwSZ7jbiqXxBaOC2IFZ8fOPExONOoIfHGr0c0aILyUSmnCGScWDtJltN67NVGsP
+         BVkw1q04JsDufrRH4EFOpHqpXC24fG2rBDo9YKpUmr3JyjXHRYQGreYWAzuDfr4z4v8x
+         8y+MP1iOl4nGpSpbazR0r28IKD9a9gVLcCLW23F+0FKgRBHJlTPoVY2OSumgFFqAkNM6
+         sIrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=V08KH7c7Zm4ftwGYWSjVqELi77KWFRR2G0NwTulFNiA=;
+        b=cUl8FEbXPltiXRZ/f2KLGGuOubtHX7R3OXR6xLpVBoRECR8HRdHyjsHGGGaAX8z5U5
+         XRWg5kHFVhkTxjYQhlh8uRBj7r3l76JswAqxdnbGhjDC/yKfdkD7WGJSyAf2z0TpxoSS
+         YmxCSXgaYyK6k1/Eq20iZGxq9n8apyYuz71T0VJ+w+hs1JcrkmSIOArAbUrH91l+UsAS
+         JhPjE0TT+JjjCn93nEPyVZWtaLvJK7XhPNRkQi4GdRAw5KAnboo5pCBo7f2uAuRoKh3S
+         MtEiP5hXMSw7v8oPD9AfjnlNz57iw66Xqm3P/ZMdYwfB3TIIQj5pEAkD45fBc7HBEZTK
+         hAmw==
+X-Gm-Message-State: AOAM532ACH1BCGeNiLDyDA1fn8OdwxvC+nloprng3wK9nhvFGkqUKBhm
+        HaBcOAU9+EUX9JJDdrhD3f3q25FOOyqxvpy2c2I=
+X-Google-Smtp-Source: ABdhPJyfRm/L3IY2tR5VnFl0SnpXqS7lGnmfjOn+oJ70rCnVsoGthhwXNG/0ElZVx7SNqnXIAh73wGzAmRGV/9oxvwE=
+X-Received: by 2002:a05:6402:709:: with SMTP id w9mr15510959edx.345.1633319641371;
+ Sun, 03 Oct 2021 20:54:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827202722.2567687-1-vladimir.oltean@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a05:6402:44a:0:0:0:0 with HTTP; Sun, 3 Oct 2021 20:54:00
+ -0700 (PDT)
+From:   Amanda Williamson <shynne728@gmail.com>
+Date:   Mon, 4 Oct 2021 03:54:00 +0000
+Message-ID: <CAG+MEd7ndAnvehOjSmYh90RHacgK7-5HAexrmLh+4QUbXqzw2Q@mail.gmail.com>
+Subject: good morning
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:27:21PM +0300, Vladimir Oltean wrote:
-> Document the compatible string for the LX2160A system that is part of
-> the BlueBox 3. Also add a separate compatible string for Rev A, since
-> technically it uses a different device tree.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 60f4862ba15e..d31464df987d 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -979,6 +979,8 @@ properties:
->            - enum:
->                - fsl,lx2160a-qds
->                - fsl,lx2160a-rdb
-> +              - fsl,lx2160a-bluebox3
-> +              - fsl,lx2160a-bluebox3-rev-a
-
-It would be nice to keep them alphabetically sorted.  I fixed it up and
-applied the patch.
-
-Shawn
-
->                - fsl,lx2162a-qds
->            - const: fsl,lx2160a
->  
-> -- 
-> 2.25.1
-> 
+-- 
+Hello
+Can i talk to you please?
+Amanda
