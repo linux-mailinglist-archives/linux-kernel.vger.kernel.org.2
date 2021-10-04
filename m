@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5E0420FF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7486420EBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237886AbhJDNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:39:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
+        id S236992AbhJDN1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238243AbhJDNhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:37:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9591061409;
-        Mon,  4 Oct 2021 13:17:10 +0000 (UTC)
+        id S236974AbhJDNZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:25:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FB5F61B00;
+        Mon,  4 Oct 2021 13:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353431;
-        bh=R5uxxn9DzDyPVVxSyA7s65e0PfvERh2ByqkcVG7xAJ4=;
+        s=korg; t=1633353083;
+        bh=yuqo054ZUEgcZ4czkQOXmi4eJq2jz1HMI8CjAhDrs5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KgtBpwHLyOljWUl3zu58BxQ94FJmn1ZU6Wyg2htOcLX8l+wTvBO0QFpBPS+LLMSx2
-         LrISrYrICGXeVmI2U0iG6nEJHiBmldHf0KsTidO8sY98ssH+q9BVqRf0pHt7tRT+PY
-         ri7uYeS2DxqjfXUNuA/9Tn4QGVz0xOdOGI4XFLi4=
+        b=hMUUFYRKp7nlOtdAsh4aB+OmyrCyHEZtKqwfA7TVZ+iO4uBrEVquvKM1kBmEqiBd1
+         v/f76ljC/y2CtdsFuCzFPbjN6xd7ZxIYCS/AoxdJcGDrIfF9Y+/1+QfFwk3Yw94RXw
+         nvupKTDzlIFgDAflUnZ1VP6JMUXeXEClSOBCYVmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 124/172] net: hns3: do not allow call hns3_nic_net_open repeatedly
+Subject: [PATCH 5.10 56/93] net: hns3: do not allow call hns3_nic_net_open repeatedly
 Date:   Mon,  4 Oct 2021 14:52:54 +0200
-Message-Id: <20211004125048.980281126@linuxfoundation.org>
+Message-Id: <20211004125036.422158837@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -102,10 +102,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 9faa3712ea5b..b24ad9bc8e1b 100644
+index 936b9cfe1a62..4777db2623cf 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -776,6 +776,11 @@ static int hns3_nic_net_open(struct net_device *netdev)
+@@ -444,6 +444,11 @@ static int hns3_nic_net_open(struct net_device *netdev)
  	if (hns3_nic_resetting(netdev))
  		return -EBUSY;
  
