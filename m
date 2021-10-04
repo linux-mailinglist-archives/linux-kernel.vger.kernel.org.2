@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE392420D06
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC1F420BBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhJDNLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
+        id S234162AbhJDM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235616AbhJDNIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4713761B54;
-        Mon,  4 Oct 2021 13:02:46 +0000 (UTC)
+        id S234202AbhJDM6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98D7D613D5;
+        Mon,  4 Oct 2021 12:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352566;
-        bh=yuX+e6YYWhK0Lp73BJCvI1l5EPpImW/knaNjanDA4W8=;
+        s=korg; t=1633352186;
+        bh=58RFKXXViAzwwCwE5+5j36GGL2p24I8CoD7yBiR3tKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxmF+C16Y9LJwwhjPKd443jMTNeXQI57kdWxnmS82Ss2ww5o3aO5XD30YGP6JmlkD
-         UWHUMp9LOqB2GgZ+UNHIcQ6B623t4BTmcPxtOfUEjznTea++fCqk7tRsba8Zu/lFm1
-         vJZ5YhDNi6KM7DQdAWRPNJ8bOJ78mP8bXzisSKRY=
+        b=jpRaHrEb8ZvPCl08tXCxADPv+GhkFq+TRG1TxS0HKmtqsFHriCnooctWvzsp231+b
+         KPWGyGKtmpOyOVnnI1ShZgQlcqjEt10utbgGKCftTo6UXIpU5y/pV3XJWGmsmPBGxw
+         XnkeG8EwINLKinA4lx/4wJ69k8XIPIqek0nouJUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/95] nvme-multipath: fix ANA state updates when a namespace is not present
+Subject: [PATCH 4.9 23/57] sparc: avoid stringop-overread errors
 Date:   Mon,  4 Oct 2021 14:52:07 +0200
-Message-Id: <20211004125034.785229040@linuxfoundation.org>
+Message-Id: <20211004125029.669554088@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Eidelman <anton.eidelman@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 79f528afa93918519574773ea49a444c104bc1bd ]
+[ Upstream commit fc7c028dcdbfe981bca75d2a7b95f363eb691ef3 ]
 
-nvme_update_ana_state() has a deficiency that results in a failure to
-properly update the ana state for a namespace in the following case:
+The sparc mdesc code does pointer games with 'struct mdesc_hdr', but
+didn't describe to the compiler how that header is then followed by the
+data that the header describes.
 
-  NSIDs in ctrl->namespaces:	1, 3,    4
-  NSIDs in desc->nsids:		1, 2, 3, 4
+As a result, gcc is now unhappy since it does stricter pointer range
+tracking, and doesn't understand about how these things work.  This
+results in various errors like:
 
-Loop iteration 0:
-    ns index = 0, n = 0, ns->head->ns_id = 1, nsid = 1, MATCH.
-Loop iteration 1:
-    ns index = 1, n = 1, ns->head->ns_id = 3, nsid = 2, NO MATCH.
-Loop iteration 2:
-    ns index = 2, n = 2, ns->head->ns_id = 4, nsid = 4, MATCH.
+    arch/sparc/kernel/mdesc.c: In function ‘mdesc_node_by_name’:
+    arch/sparc/kernel/mdesc.c:647:22: error: ‘strcmp’ reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+      647 |                 if (!strcmp(names + ep[ret].name_offset, name))
+          |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Where the update to the ANA state of NSID 3 is missed.  To fix this
-increment n and retry the update with the same ns when ns->head->ns_id is
-higher than nsid,
+which are easily avoided by just describing 'struct mdesc_hdr' better,
+and making the node_block() helper function look into that unsized
+data[] that follows the header.
 
-Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+This makes the sparc64 build happy again at least for my cross-compiler
+version (gcc version 11.2.1).
+
+Link: https://lore.kernel.org/lkml/CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com/
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/sparc/kernel/mdesc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 64f699a1afd7..022e03643dac 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -398,14 +398,17 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
+diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
+index 8a6982dfd733..5aa33bf7139e 100644
+--- a/arch/sparc/kernel/mdesc.c
++++ b/arch/sparc/kernel/mdesc.c
+@@ -37,6 +37,7 @@ struct mdesc_hdr {
+ 	u32	node_sz; /* node block size */
+ 	u32	name_sz; /* name block size */
+ 	u32	data_sz; /* data block size */
++	char	data[];
+ } __attribute__((aligned(16)));
  
- 	down_read(&ctrl->namespaces_rwsem);
- 	list_for_each_entry(ns, &ctrl->namespaces, list) {
--		unsigned nsid = le32_to_cpu(desc->nsids[n]);
--
-+		unsigned nsid;
-+again:
-+		nsid = le32_to_cpu(desc->nsids[n]);
- 		if (ns->head->ns_id < nsid)
- 			continue;
- 		if (ns->head->ns_id == nsid)
- 			nvme_update_ns_ana_state(desc, ns);
- 		if (++n == nr_nsids)
- 			break;
-+		if (ns->head->ns_id > nsid)
-+			goto again;
- 	}
- 	up_read(&ctrl->namespaces_rwsem);
- 	return 0;
+ struct mdesc_elem {
+@@ -369,7 +370,7 @@ out:
+ 
+ static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
+ {
+-	return (struct mdesc_elem *) (mdesc + 1);
++	return (struct mdesc_elem *) mdesc->data;
+ }
+ 
+ static void *name_block(struct mdesc_hdr *mdesc)
 -- 
 2.33.0
 
