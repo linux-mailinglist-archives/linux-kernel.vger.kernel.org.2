@@ -2,293 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DDF421616
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EE1421618
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237215AbhJDSJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45862 "EHLO
+        id S237536AbhJDSJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237204AbhJDSJi (ORCPT
+        with ESMTP id S237434AbhJDSJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:09:38 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FC0C061749;
-        Mon,  4 Oct 2021 11:07:48 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id o13so4759355qvm.4;
-        Mon, 04 Oct 2021 11:07:48 -0700 (PDT)
+        Mon, 4 Oct 2021 14:09:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA34C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:07:58 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id y23so35946817lfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C3QLRBnlfCqX2LvH6/cwNoAHr59KmaOODAsySygeibY=;
-        b=OJ8PLEunSwPZKORkMuOpeW6CX38s1RDmYRB6ek1VKG291XcUuTsJqFT295cKpMsdhj
-         QrDa6XDEjyk04XCU5ZXTFOsex++fngtsQ6EH8Fd4SwYVzfikiQ0YWsKXM1tYLyAbpYi5
-         WOdVAl7Nlbl0xpI5GEy19TGFw1bzXGn1tSNmVbnjSd50/I5ZELMGwFKCRP19hM3rEPEa
-         IemVyP2JrC9cZBg59gj3uJzy1GmsS3zNvCTPwsEjE9hOiRQ8Kr0LgXGgMbcDjGa4MFsw
-         o6nBqXeOnKvTPvUc931G9rXZ7StBqvS9suaXK4ZlWlUtV4881q7Po9SjvQ2lkxaLhk2b
-         vphw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wD6uuf3ru6YVNe7+4jEAmC2naccUsJPrRjEclRtsE7k=;
+        b=ay567YeX+xvQosVRiRU+umrEP8Dfr/v0GOPuimkdV+SH13Kr5erX7ASGE7cibqmECp
+         ey6exYQnFbUcRE1FQYpqaATUQPWZ8lOCy8w2kg2OznxoEVJUociUrntfZqHwTYXRjfk3
+         ztjnw7OKKSOhPVODNyjj6gwan7EqdlVeXHgBUwMiMIGhjI/jXl/ZV31Y8Xh5TMJDyTa4
+         eG7amjqFkoL3vGXo5P/UoueH7Mhhov2pn0NMg0MLjxEP8lAy98+ZjFJ/N9z2G7ytAKVL
+         w/D48MG83NvxCGzXK6TtUUdXRDKy8ieLL/unqgmBFCFBVVG8LoKWdA9H1tXcEwOcQYQD
+         ZPKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C3QLRBnlfCqX2LvH6/cwNoAHr59KmaOODAsySygeibY=;
-        b=rvskgCKdSjs+AzT39NIgG821bQYB6RHA1ewKPOaw0OyK+vDTglyu2WX3dqlxW0bb4j
-         P1Vw/PPGTf1f/Vch9noKWOAGoBs5QBuBrmciUZEMwcL1J//0gA7fU1I+PjLa2TF+aTC3
-         szQbsJuiRMwD2ieUfMsW/oAeSA8OebW5gLk9PIaXdsjwEaYgzX2kXBSn7/BXINf58Ke/
-         DV6+uECyjDEk9Vp59Yy2qJtIBBItdhvn4FTBd1uQ58aJE4i4Px5l9SBMjF0ot7D7XdSJ
-         9nYxfZE2PvLGnV0wm0RoCREfVoaBMgGBlBzLM1wg81hsqrBDxcY6VSwVwsedI+6wsPPH
-         /bvA==
-X-Gm-Message-State: AOAM531Gve2rs8G6N1DPN0YxNXcoLcNntAAz/27gByF2tGBak6eqwUP4
-        2iX74yipTzoH8NQnBw1Vyok=
-X-Google-Smtp-Source: ABdhPJwO7oUt//DyPGqhlw9Lv00Xp7novD3HSD8VKbiVvYnYmTQVNqVoUmTr3zJfo+NxkRTHaDCN9A==
-X-Received: by 2002:ad4:4652:: with SMTP id y18mr24318380qvv.2.1633370867406;
-        Mon, 04 Oct 2021 11:07:47 -0700 (PDT)
-Received: from localhost.localdomain (pool-72-82-21-11.prvdri.fios.verizon.net. [72.82.21.11])
-        by smtp.gmail.com with ESMTPSA id h2sm8078853qkk.10.2021.10.04.11.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:07:46 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>
-Subject: [PATCH] Bluetooth: fix deadlock for RFCOMM sk state change
-Date:   Mon,  4 Oct 2021 14:07:34 -0400
-Message-Id: <20211004180734.434511-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wD6uuf3ru6YVNe7+4jEAmC2naccUsJPrRjEclRtsE7k=;
+        b=oND167fZkPsVKvogQ8ckzgX02rRoN7z2NnCo/wm92Khjm5lJhayXvL+/hQDsFaH+rl
+         iI/RYAKoObZeo7osD0OokV1FfEuqL4Nd1rcvFe5a1wCHB6uXu0LQ5E+XKmsgR3UOS1rC
+         CPJxyVJ2EomhDs8GNotPD3bEsyE0yMpcJKlSr0xrfhMyrTAZN8rsrvt58CGyj8W23YDW
+         AfMpbtIcDk2NZtMgIYxjLCkPtuvYmtdcrlwZtXgm2VuXtr69vq5Rv6u6HvTLqiehQ6ka
+         yTiKz2Y8LV/RfEoU2SZCad0QZG+6W7G6yHlUZCfNPAuyfZls5DxSmvW9I88H/EjBUB1T
+         8ifQ==
+X-Gm-Message-State: AOAM530+iQH/3OKkivJ+t8ZR5I+MK4dXgrgWpwV3AsPrxZ4ffB2g1RIP
+        xpWFHCcWAsyVpFhJl3eE8k1tC3OaXTsrc4atDtVJXg==
+X-Google-Smtp-Source: ABdhPJzykszutLekTSW+ycZIO/NYRuePsBzhxhWoCWntFLWMioYbroQE3kMa1bjhN/tYQ1S80G3lkbxbIGP2YTgoBE8=
+X-Received: by 2002:a05:6512:2211:: with SMTP id h17mr15941482lfu.494.1633370876646;
+ Mon, 04 Oct 2021 11:07:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210929235936.2859271-1-shakeelb@google.com> <YVszNI97NAAYpHpm@slm.duckdns.org>
+ <CALvZod5OKz=7pFpxCt1CONPyJO4wR5t+PH0nzdbFBT1SYpjrsg@mail.gmail.com> <YVs9eJnNJYwF/3f3@slm.duckdns.org>
+In-Reply-To: <YVs9eJnNJYwF/3f3@slm.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 4 Oct 2021 11:07:45 -0700
+Message-ID: <CALvZod47r=9j_MhZz9ngWv_JE4oqF1CrXTOQ2GpSSNFftZAsVA@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: rstat: optimize flush through speculative test
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reports the following task hang [1]:
+On Mon, Oct 4, 2021 at 10:44 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Mon, Oct 04, 2021 at 10:25:12AM -0700, Shakeel Butt wrote:
+> > > > To evaluate the impact of this patch, an 8 GiB tmpfs file is created on
+> > > > a system with swap-on-zram and the file was pushed to swap through
+> > > > memory.force_empty interface. On reading the whole file, the memcg stat
+> > > > flush in the refault code path is triggered. With this patch, we
+> > > > observed 38% reduction in the read time of 8 GiB file.
+> > >
+> > > The patch looks fine to me but that's a lot of reduction in read time. Can
+> > > you elaborate a bit on why this makes such a huge difference? Who's hitting
+> > > on that lock so hard?
+> >
+> > It was actually due to machine size. I ran a single threaded workload
+> > without any interference on a 112 cpus machine. So, most of the time
+> > the flush was acquiring and releasing the per-cpu rstat lock for empty
+> > trees.
+>
+> Sorry for being so slow but can you point to the exact call path which gets
+> slowed down so significantly?
 
-INFO: task syz-executor255:8499 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc7-syzkaller #0
+This is the mem_cgroup_flush_stats() inside workingset_refault() in
+mm/workingset.c.
 
-Call Trace:
- context_switch kernel/sched/core.c:4681 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
- schedule+0xd3/0x270 kernel/sched/core.c:6017
- __lock_sock+0x13d/0x260 net/core/sock.c:2644
- lock_sock_nested+0xf6/0x120 net/core/sock.c:3185
- lock_sock include/net/sock.h:1612 [inline]
- rfcomm_sk_state_change+0xb4/0x390 net/bluetooth/rfcomm/sock.c:73
- __rfcomm_dlc_close+0x1b6/0x8a0 net/bluetooth/rfcomm/core.c:489
- rfcomm_dlc_close+0x1ea/0x240 net/bluetooth/rfcomm/core.c:520
- __rfcomm_sock_close+0xac/0x260 net/bluetooth/rfcomm/sock.c:220
- rfcomm_sock_shutdown+0xe9/0x210 net/bluetooth/rfcomm/sock.c:931
- rfcomm_sock_release+0x5f/0x140 net/bluetooth/rfcomm/sock.c:951
- __sock_release+0xcd/0x280 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1314
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbd4/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+> I'm mostly wondering whether we need some sort
+> of time-batched flushes because even with lock avoidance the flush path
+> really isn't great when called frequently. We can mitigate it further if
+> necessary - e.g. by adding an "updated" bitmap so that the flusher doesn't
+> have to go around touching the cachelines for all the cpus.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/1653:
- #0: ffffffff8b97c280 (rcu_read_lock){....}-{1:2}, at:
- debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by krfcommd/4781:
- #0: ffffffff8d306528 (rfcomm_mutex){+.+.}-{3:3}, at:
- rfcomm_process_sessions net/bluetooth/rfcomm/core.c:1979 [inline]
- #0: ffffffff8d306528 (rfcomm_mutex){+.+.}-{3:3}, at:
- rfcomm_run+0x2ed/0x4a20 net/bluetooth/rfcomm/core.c:2086
-2 locks held by in:imklog/8206:
- #0: ffff8880182ce5f0 (&f->f_pos_lock){+.+.}-{3:3}, at:
- __fdget_pos+0xe9/0x100 fs/file.c:974
- #1: ffff8880b9c51a58 (&rq->__lock){-.-.}-{2:2}, at:
- raw_spin_rq_lock_nested kernel/sched/core.c:460 [inline]
- #1: ffff8880b9c51a58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock
- kernel/sched/sched.h:1307 [inline]
- #1: ffff8880b9c51a58 (&rq->__lock){-.-.}-{2:2}, at: rq_lock
- kernel/sched/sched.h:1610 [inline]
- #1: ffff8880b9c51a58 (&rq->__lock){-.-.}-{2:2}, at:
- __schedule+0x233/0x26f0 kernel/sched/core.c:5852
-4 locks held by syz-executor255/8499:
- #0: ffff888039a83690 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at:
- inode_lock include/linux/fs.h:774 [inline]
- #0: ffff888039a83690 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at:
- __sock_release+0x86/0x280 net/socket.c:648
- #1:
- ffff88802fa31120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0},
- at: lock_sock include/net/sock.h:1612 [inline]
- #1:
- ffff88802fa31120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0},
- at: rfcomm_sock_shutdown+0x54/0x210 net/bluetooth/rfcomm/sock.c:928
- #2: ffffffff8d306528 (rfcomm_mutex){+.+.}-{3:3}, at:
- rfcomm_dlc_close+0x34/0x240 net/bluetooth/rfcomm/core.c:507
- #3: ffff888141bd6d28 (&d->lock){+.+.}-{3:3}, at:
- __rfcomm_dlc_close+0x162/0x8a0 net/bluetooth/rfcomm/core.c:487
-==================================================================
+For the memcg stats, I already proposed a batched flush at [1].
 
-The task hangs because of a deadlock that occurs when lock_sock() is
-called in rfcomm_sk_state_change(). One such call stack is:
+I actually did perform the same experiment with the proposed patch
+along with [1] and it improves around just 1%. More specifically for
+memcg stats [1] is good enough but that is memcg specific and this
+patch has merits on its own.
 
-  rfcomm_sock_shutdown():
-    lock_sock();
-    __rfcomm_sock_close():
-      rfcomm_dlc_close():
-        __rfcomm_dlc_close():
-          rfcomm_dlc_lock();
-          rfcomm_sk_state_change():
-            lock_sock();
+[1] https://lkml.kernel.org/r/20210930044711.2892660-1-shakeelb@google.com
 
-lock_sock() has to be called when the sk state is changed because the
-lock is not always held when rfcomm_sk_state_change() is
-called. However, besides the recursive deadlock, there is also an
-issue of a lock hierarchy inversion between rfcomm_dlc_lock() and
-lock_sock() if the socket is locked in rfcomm_sk_state_change().
+>
+> Thanks.
 
-To avoid these issues, we can instead schedule the sk state change in
-the global workqueue. This is already the implicit assumption about
-how sk state changes happen. For example, in rfcomm_sock_shutdown(),
-the call to __rfcomm_sock_close() is followed by
-bt_sock_wait_state().
-
-Additionally, the call to rfcomm_sock_kill() inside
-rfcomm_sk_state_change() should be removed. The socket shouldn't be
-killed here because only rfcomm_sock_release() calls sock_orphan(),
-which it already follows up with a call to rfcomm_sock_kill().
-
-Fixes: b7ce436a5d79 ("Bluetooth: switch to lock_sock in RFCOMM")
-Link: https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d [1]
-Reported-by: syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com
-Tested-by: syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc: Hillf Danton <hdanton@sina.com>
----
- include/net/bluetooth/rfcomm.h |  3 +++
- net/bluetooth/rfcomm/core.c    |  2 ++
- net/bluetooth/rfcomm/sock.c    | 34 ++++++++++++++++++++++------------
- 3 files changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/include/net/bluetooth/rfcomm.h b/include/net/bluetooth/rfcomm.h
-index 99d26879b02a..a92799fc5e74 100644
---- a/include/net/bluetooth/rfcomm.h
-+++ b/include/net/bluetooth/rfcomm.h
-@@ -171,6 +171,7 @@ struct rfcomm_dlc {
- 	struct rfcomm_session *session;
- 	struct sk_buff_head   tx_queue;
- 	struct timer_list     timer;
-+	struct work_struct    state_change_work;
- 
- 	struct mutex  lock;
- 	unsigned long state;
-@@ -186,6 +187,7 @@ struct rfcomm_dlc {
- 	u8            sec_level;
- 	u8            role_switch;
- 	u32           defer_setup;
-+	int           err;
- 
- 	uint          mtu;
- 	uint          cfc;
-@@ -310,6 +312,7 @@ struct rfcomm_pinfo {
- 	u8     role_switch;
- };
- 
-+void __rfcomm_sk_state_change(struct work_struct *work);
- int  rfcomm_init_sockets(void);
- void rfcomm_cleanup_sockets(void);
- 
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 7324764384b6..c6494e85cd68 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -289,6 +289,7 @@ static void rfcomm_dlc_clear_state(struct rfcomm_dlc *d)
- 	d->flags      = 0;
- 	d->mscex      = 0;
- 	d->sec_level  = BT_SECURITY_LOW;
-+	d->err        = 0;
- 	d->mtu        = RFCOMM_DEFAULT_MTU;
- 	d->v24_sig    = RFCOMM_V24_RTC | RFCOMM_V24_RTR | RFCOMM_V24_DV;
- 
-@@ -306,6 +307,7 @@ struct rfcomm_dlc *rfcomm_dlc_alloc(gfp_t prio)
- 	timer_setup(&d->timer, rfcomm_dlc_timeout, 0);
- 
- 	skb_queue_head_init(&d->tx_queue);
-+	INIT_WORK(&d->state_change_work, __rfcomm_sk_state_change);
- 	mutex_init(&d->lock);
- 	refcount_set(&d->refcnt, 1);
- 
-diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
-index 4bf4ea6cbb5e..4850dafbaa05 100644
---- a/net/bluetooth/rfcomm/sock.c
-+++ b/net/bluetooth/rfcomm/sock.c
-@@ -61,19 +61,22 @@ static void rfcomm_sk_data_ready(struct rfcomm_dlc *d, struct sk_buff *skb)
- 		rfcomm_dlc_throttle(d);
- }
- 
--static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
-+void __rfcomm_sk_state_change(struct work_struct *work)
- {
-+	struct rfcomm_dlc *d = container_of(work, struct rfcomm_dlc,
-+					    state_change_work);
- 	struct sock *sk = d->owner, *parent;
- 
- 	if (!sk)
- 		return;
- 
--	BT_DBG("dlc %p state %ld err %d", d, d->state, err);
--
- 	lock_sock(sk);
-+	rfcomm_dlc_lock(d);
- 
--	if (err)
--		sk->sk_err = err;
-+	BT_DBG("dlc %p state %ld err %d", d, d->state, d->err);
-+
-+	if (d->err)
-+		sk->sk_err = d->err;
- 
- 	sk->sk_state = d->state;
- 
-@@ -91,15 +94,22 @@ static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
- 		sk->sk_state_change(sk);
- 	}
- 
-+	rfcomm_dlc_unlock(d);
- 	release_sock(sk);
-+	sock_put(sk);
-+}
- 
--	if (parent && sock_flag(sk, SOCK_ZAPPED)) {
--		/* We have to drop DLC lock here, otherwise
--		 * rfcomm_sock_destruct() will dead lock. */
--		rfcomm_dlc_unlock(d);
--		rfcomm_sock_kill(sk);
--		rfcomm_dlc_lock(d);
--	}
-+static void rfcomm_sk_state_change(struct rfcomm_dlc *d, int err)
-+{
-+	struct sock *sk = d->owner;
-+
-+	if (!sk)
-+		return;
-+
-+	d->err = err;
-+	sock_hold(sk);
-+	if (!schedule_work(&d->state_change_work))
-+		sock_put(sk);
- }
- 
- /* ---- Socket functions ---- */
--- 
-2.25.1
-
+>
+> --
+> tejun
