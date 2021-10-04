@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB1A4207B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9F84207C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhJDJDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbhJDJDR (ORCPT
+        id S231555AbhJDJFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:05:39 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58688 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229716AbhJDJFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:03:17 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DD1C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:01:29 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id p11so8888609edy.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q3MZIqZDXegBSXIvBEMS5cUbXEk8VGglzQRc4EcONxg=;
-        b=GewnubD5UIDtsgS/vO3SqD3Lp1e1ujOByHgoXS2PNKFieGqx6QwbKixv+gyOKCDZWs
-         TbhBUq8u2fwjw8WzOAeUdZztsoK+mCew/UcQnRw19fM1rCgXMl9p9NXpg6t5McKXUMn6
-         p3Ib4GmbJrEOcqzUf+13xIIv+J/2auic2TgcXYM3/fqy0TjML4pksBSodXuTbVYzZ+YF
-         6uakSZoO1rygm8iAZGDa4BFYMaRUydMpndQFZ2kJeOoAR99tftbsMVf1zwxG2cgDk0ql
-         7JX3rAGO6PMWAKwmm2p8PhHkQVKSCDHSRYqkQNdEY+nfU7OKBbl59CuF41xKk0Keu59X
-         YDbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q3MZIqZDXegBSXIvBEMS5cUbXEk8VGglzQRc4EcONxg=;
-        b=0AEKWDhGb1MVYsRXoBjFHzPt6E9zrA3BVstiVHQ2v8AKMhvZoNcIQNyMB+gBR8QNW3
-         uNOTtm0bm2De731ANhZRHDiF0209NZD82J7IN0U7sqv0HWWqAF93EPcoQfoqd8FRJ7xp
-         xNAeCQuHO/phmOMgkGjgk1LGgpJ0Oo2p+S7y/AD8igdoMzYpGQP9gSitBdS/oD3h9s/L
-         p/PDdkplfXAiTb6aMa1tg4oapforj9zm7H6ktqNfvi9SnMYwHQTypxb/1vXT2E5L4jRx
-         PUPSLxfm/sQAkh0Hau09dOjYTCyGWAaqftCb8R/Gen1i09y2YPjBZ/pYwALu2R3kUtgg
-         ALWg==
-X-Gm-Message-State: AOAM532s1FBxBx1SpwstXKy2Jgkx7WcYqkzxajChc+0f1MNzBfoFcaz0
-        L0PVDV6XtG3T0jGAp5ZNGpc5LA==
-X-Google-Smtp-Source: ABdhPJzQp7/tTml8Hy4AY7ZI0ADwKQ5HYvKR7HzlJDYAuJQcyUPufcn7tceWa6w1lMFK0BvE6l6mNw==
-X-Received: by 2002:a05:6402:1b8a:: with SMTP id cc10mr16295980edb.313.1633338087640;
-        Mon, 04 Oct 2021 02:01:27 -0700 (PDT)
-Received: from [192.168.1.15] ([84.238.208.199])
-        by smtp.googlemail.com with ESMTPSA id lb20sm6248548ejc.40.2021.10.04.02.01.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 02:01:27 -0700 (PDT)
-Subject: Re: [PATCH v5] dt-bindings: media: venus: Add sc7280 dt schema
-To:     Dikshita Agarwal <dikshita@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org, mchehab@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1632817373-25755-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <b7ebd135-6bf9-b6de-d6fe-eb348c54c2bd@linaro.org>
-Date:   Mon, 4 Oct 2021 12:01:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 4 Oct 2021 05:05:37 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19493Sph008959;
+        Mon, 4 Oct 2021 11:03:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=nJpxX9PGQq7OHBwCh6Km3sL4rv9XksaSXEVrd4QAuFc=;
+ b=tbkpxkKvj+VO404KHISL2TMnk3AZxb9hxVqanjJmg9RYtbQtdg8f+mxmouc34wx3Yet7
+ rr8Xj2xjL9LzMVWJl4Ule6Ha7TLsGnSjOABmrwdurCjSu9ZMUX9CkO3X9dpoWYHGwtvz
+ QOWqnpWik14IEOPXpGI+nZtomNTk9vf4CVGTNJwEA5klfEc08erfdGWnCrChGNFil4lv
+ 0Cv7dse3+QDbu97rlKPdrU2UVssG72jgPXQsp/8ujvpoXyhZK8v5uerAPPORFm6fyAHW
+ FVQn1xS6gLW9xEwj20ceAbMn87q7ZO3rnjLOnpLaO6BPn49frOqMpyOPNAxo398SRDRD 6g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bfxn7800u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 11:03:34 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F3592100040;
+        Mon,  4 Oct 2021 11:03:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D09B822FA2E;
+        Mon,  4 Oct 2021 11:03:32 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 4 Oct 2021 11:03:32
+ +0200
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Marek Vasut <marex@denx.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>
+Subject: [PATCH v2] ARM: dts: stm32: fix AV96 board SAI2 pin muxing on stm32mp15
+Date:   Mon, 4 Oct 2021 11:03:04 +0200
+Message-ID: <20211004090304.8984-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1632817373-25755-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_02,2021-10-01_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix SAI2A and SAI2B pin muxings for AV96 board on STM32MP15.
+Change sai2a-4 & sai2a-5 to sai2a-2 & sai2a-2.
+Change sai2a-4 & sai2a-sleep-5 to sai2b-2 & sai2b-sleep-2
 
-Thanks for the patch!
+Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
 
-On 9/28/21 11:22 AM, Dikshita Agarwal wrote:
-> Add a schema description for the venus video encoder/decoder on the sc7280.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
-> changes since v4:
->     fixed missing dependencies.
-> 
->  .../bindings/media/qcom,sc7280-venus.yaml          | 162 +++++++++++++++++++++
->  1 file changed, 162 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I will push this through linux-media tree with Rob's reviewed-by tag.
-
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+index 5b60ecbd718f..2ebafe27a865 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -1179,7 +1179,7 @@
+ 		};
+ 	};
+ 
+-	sai2a_pins_c: sai2a-4 {
++	sai2a_pins_c: sai2a-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
+ 				 <STM32_PINMUX('D', 11, AF10)>, /* SAI2_SD_A */
+@@ -1190,7 +1190,7 @@
+ 		};
+ 	};
+ 
+-	sai2a_sleep_pins_c: sai2a-5 {
++	sai2a_sleep_pins_c: sai2a-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
+ 				 <STM32_PINMUX('D', 11, ANALOG)>, /* SAI2_SD_A */
+@@ -1235,14 +1235,14 @@
+ 		};
+ 	};
+ 
+-	sai2b_pins_c: sai2a-4 {
++	sai2b_pins_c: sai2b-2 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
+ 			bias-disable;
+ 		};
+ 	};
+ 
+-	sai2b_sleep_pins_c: sai2a-sleep-5 {
++	sai2b_sleep_pins_c: sai2b-sleep-2 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
+ 		};
 -- 
-regards,
-Stan
+2.17.1
+
