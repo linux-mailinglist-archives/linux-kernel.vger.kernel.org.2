@@ -2,147 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341D4212AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10324212AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhJDPbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:31:12 -0400
-Received: from mail-eopbgr140044.outbound.protection.outlook.com ([40.107.14.44]:21563
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235189AbhJDPbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:31:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YC5bcpUO/PqApLu9Tdy8HlS1F/acpuIir+OnjCM5FHdDTR+G2iQspRCihg05mre+l0nbKxh2eioBulmuo8XHyhQQ4F+2vjC3oeMBSocHiGhc6p4BegxwbKXwLL+h3gMfIPh2Kt8PkrGH5fQt6QxA5gVtcK05uixzSCanMliTIOykG+a1o0UMsTc7lMRuYXV/DJQFDPgnUf3jXW9ZUMJ8GvJV5IuX3/vU0ZrGjviJ2M4trP2CiYXmrRauIxozB2jQT29855meMqSvwmTxKMtgDDWhnbGPbqNCClLO2LldpQmkpUOJa0X4eJgFiJxmd97a6UroWzoPBPG3kAAHIBblhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7pG339ZjapXWB19Z+ZaVAI4nBIvw+o2sArSvFX7pqjI=;
- b=ff8pOixpaOmr29i4hof9FN9eJ2PGL0nadwtrbdJka3RMPVhVYb6MiUYE10XmJIUX33ziZzHs03pMd8iYR+6dAB/740AcVnWFlUh7m6out4OiJ4QP2A0b0cxekoWhn4DXCQdg/7kAtYFYbjLbPa0S47/j5SRfwArzksy9pepbk72LIwP8TRnuu/emk0hY/MhVPI/mNB6ttdXfAbjwbhNoda1DDryus9VlfYJowDPjw7czjb1iCHP9K4E7iasaJbCMeXff0Z1HiG3a53WTkkyE5wCoZKqITYqWK381Sj1oTcwj6B24NvoxoZWNo17abb2gXnbhCvjKnnOrG3sicUN/mQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
+        id S235189AbhJDPbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234917AbhJDPbP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:31:15 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22E6C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:29:26 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id a3so21993487oid.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:29:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7pG339ZjapXWB19Z+ZaVAI4nBIvw+o2sArSvFX7pqjI=;
- b=IHIptgiguO4usE1U7wYQZLYdPWdvnNPQq0FruhtHSVNgf5rv6h3No4UfZRuIvBGDKxrUPtcYfL2F2Ps4AKhFaujddzNj18OpO4S3SeA5NDHRDBwz2ut5HI8ZpMXPaCLf3LI8hqPXorsQ42sViJUgyOoC/XQh9qxzdPLf3qnX/Pc=
-Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
- by DB8PR10MB3593.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:140::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.21; Mon, 4 Oct
- 2021 15:29:16 +0000
-Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::dc0f:9e52:6dbb:1144]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::dc0f:9e52:6dbb:1144%5]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 15:29:16 +0000
-From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-CC:     Support Opensource <Support.Opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
-Thread-Topic: [PATCH] drivers: mfd: da9063: Add restart notifier
- implementation
-Thread-Index: AQHXrqpI0LoFC+MHc0+B+6k9QHIUIauzTVswgAAUm4CAB616wIABVcUAgAahx9A=
-Date:   Mon, 4 Oct 2021 15:29:16 +0000
-Message-ID: <DB9PR10MB46520380861FA72192C0740080AE9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
- <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
- <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCv8tExoZx309qRMe6KCZ=-AC+nCOV7qivJWE5gCqrd2MA@mail.gmail.com>
-In-Reply-To: <CA+zEjCv8tExoZx309qRMe6KCZ=-AC+nCOV7qivJWE5gCqrd2MA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ee42a420-e37d-4cd5-aab0-08d9874bb9fe
-x-ms-traffictypediagnostic: DB8PR10MB3593:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR10MB359398B59E453959FBFBE13CA7AE9@DB8PR10MB3593.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JVEPKYExSc1mQVPX8g5VpzEBrLo0iWfj2blPC4Mxg20Af0Vp0IOxvZNrts3qh/vagUXO6kwScZO3vz/K/y76NrJEVE+a7Vb+i5PzXPFsWDsk5AW2CORc8HOfU0/E/1m816NxyeLMqxNUfQKH0/z7B64zjsnGQaX6gPWvJ3ekZYRmlNBsWTALq6phq6WANItD0PybArjAWXPMUAAWp5DANJy/j3q0JlnwixJRynMh/TRYVOztN9HPzXhlhIbxccJMSUNlK2mFLzY6K7JWfsum8EtmeN6QShZRa//PtHFJbzaqBI3rhAkaYAEETPEUYiLWkw7x0tseMALxO06FtS0zcisiuBKAZ5SOTGMNLOw9/qtgvaPsPwt4bMxaNtX6fYLrbon7VjTfoZOSsMfctjQzvVluie4T+BY96kgRMYhoSKL4gT7KQeeLnHF8w9+pyJ7JTlO2Xo8ArEmHAqAopx9+zxGz7cYckv47fjP5ZD3iUJuzd4p+eJI1p/OGLkFmLy14Ds+4+4jFsuKj7BdW5Aq10/5BXGU8LAZ8FnFGMLgAmdincPIXod3SIc8FOfEI8WDr+8pssjtb0BOtureH3u6ISJnzjTLmdwnczBUiNA6d0u4opkAjf0wJDrzWElOxG0QWL+uPRy/r9MLlLRENWkIHnon2KlNqQpk4huaYmLJtrV1Y/S8xKE3MfHpjb5uqpGwn+3P/nkeZdXr0MsmWLbtp9A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(86362001)(54906003)(110136005)(52536014)(71200400001)(508600001)(5660300002)(66946007)(55236004)(7696005)(66476007)(8936002)(26005)(66556008)(64756008)(66446008)(53546011)(6506007)(76116006)(9686003)(33656002)(186003)(38100700002)(55016002)(2906002)(8676002)(122000001)(316002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZVJFd3ZnT2p4cExndC9HNjlBMlZvZ1lWd3FiZ0hiSFM3b1o5dWg0VWVZMXlM?=
- =?utf-8?B?eTdjMVRxRUVhSzN5SFJLV3NzYms4SUs1MUtHT2ZKeHo2WWFsa1Rrci9EMWN6?=
- =?utf-8?B?THN2UmdpdnVhUHNGdjZVRUFybHE1enI0TEJSZlM2QVhqTDg3dkZreGxMNnlk?=
- =?utf-8?B?ckRBcVcrdkw5L2pDWUFRNUxob0dhRkJ0TGgwaXd4WkhwVUVMTzJUQm9mbUxm?=
- =?utf-8?B?RUsrV3Y2ZW1OWEl1V29yRVJmem1UcDBvYXU2a2o3VWZOSytxODZlQjdYa05q?=
- =?utf-8?B?dm5VRkJDT05hV0NMTWcvdUpid0hKR0pjbHZocVp4NVNqOWpKa2liQlVJbjlS?=
- =?utf-8?B?NWdhNU5HbWhTMXROaThocE1qMFV5UXBYZWQ4aUk4S1hUTENDWFpIZlZucU1I?=
- =?utf-8?B?a1lYNFA0eG13ZWozU2xLcVVvMCtKL1JkeUloSnFXWldFVWs3NXAzd0JGc25H?=
- =?utf-8?B?My9zOS9IVHVWbjFjUGh4S3JBdnVvSFJCQ1dtK2R2dHlCVWVxeE8vdThDdEdo?=
- =?utf-8?B?akZpOXRXTWR6M0dZcjg4Wmc4YzRLMXdCckU1d1BJL01yT25aTFNNZEVlZTda?=
- =?utf-8?B?NkxFeGdpU1J6UWNaL3dCTXUzR1duenlhb1pvcjFYbVNqaXdvS1JCNzk1Mktt?=
- =?utf-8?B?YmFsbkpZNk9xVnkxWFR6a2hSVGVVV1BGTmwyb1oxTGVaMDlpTmQ5SEtJRGp2?=
- =?utf-8?B?T2s2YlZXVXJsdjlhWUphcGJDMHEwLzkwSDJtTGNKNGVsV3BFTFAxaTRUdEtR?=
- =?utf-8?B?UEQzV1hnL3lzUTBlNGs1Zzd0TGI2QXQ4TDlGSEVueXRHVnBHb3d0TGJ4UDN5?=
- =?utf-8?B?WDF4S3ZCcnJaQ1JUUHl6YTY3MC9OYzZjUGhCWnV4R1RDYng1ajZ2NVRIeE9u?=
- =?utf-8?B?YlpwNGs5eFA1VG9wY081QlFFU1owcXk4aFZ4Y0V5ZmtmTjQ0ZXc0NVh2TzZv?=
- =?utf-8?B?MVZsRE9xVlFTUk96elVnWXQ1eXlMY0RHZFFNNDA4am5TTkdaSWRJSXlVK21r?=
- =?utf-8?B?Y3R3RE1NbHlwdWkzM0NQL0ZCVGp2aE9rR3Y4VktUTmhoKzhSTUttT0FqcDVw?=
- =?utf-8?B?WkNvRk9zcDFSZTBoU0ZTaDcwUDk2bTZEV25QZDNoN3lkR3hKRlhta0tKS2Zj?=
- =?utf-8?B?akNqdTU1WWNKWDdERDEveFplVHJmMm9oZHpCZ3gvR2xVdllJS0FiYTRFUUtJ?=
- =?utf-8?B?VjJPN0VWS0FmVlp1Mk15cEg1VzBzblBpK2ltM3l4RlcxeFQyL2dRVmUxS0xu?=
- =?utf-8?B?MkwvMFo2WklLR0t1L2xsNEx3K0lkc29IcE1jb2pDY2V3N0hIQ2VrYnpIdTFv?=
- =?utf-8?B?L3gzZDA3VG9ud04vZTZsY2xJcE8yZTZVNTlIZ2FwNnNlckJrV0NVMk45RUhy?=
- =?utf-8?B?VUcydk5hZEJnd3hEOWsyckZDMklydWQvUDRtb3g4QThpSk15SHFtdVNrSUp2?=
- =?utf-8?B?M3VpUTNoV0xIMGxkWWtXV3d4OWxBbzlIcXVIM2IvV1RzR3JTY2xUV1NLbU0y?=
- =?utf-8?B?TE0zS2ZRYkZtRm00cEpkcTBzZTNtTkorbWlmWkpIQVIyZk9nMTJ3aXZmS0kz?=
- =?utf-8?B?N2VZbnBkbGNVUWtkWTE5bksrK3ByamFsb3UrSUduUFVVSjV2THM1NThQZUJn?=
- =?utf-8?B?MUovTG00MkZxcWx4NVpKcTVYcEJNTnJGdzNVRWROdllOcUtVbW40bUNOWWRQ?=
- =?utf-8?B?dERheFVuQS9VUXkxUFJ1S2JDcEhIN1VhcXdaWjk4UHE1bUV1RHFWWC9kdG5K?=
- =?utf-8?Q?FT7rjHsW/zk9W31JGjTi8xiJyk0NkZDYz9PcFjf?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x1TkdRhXE1OhS3zsW88GeP150p3334b2oH7aPa/m0z4=;
+        b=xemhKd/SbPHSjPX1U6V90DwOPnxlcaKvb3HpBTkZbV4FBdcD6Re7u185LsEBsAffi9
+         RW08AAszqJk3iWp5vKVaeuLAZ6ogOpB2DnxDJ0IylXQbb4vGIULYoxHm6s8i9B8bk7Yq
+         znkx0HAICYZQgxVtDOnX54KJLhOuh0HPXxebzcP6E5+rFTLH9bkxCe+5Qf8udiZPo73S
+         qd+EJXTILe4PSik0clI4wQ+RGrmoJK/pJoX1yHLGrKlcrBAA0n+4SCIm1dlunBv9PG8y
+         wRWwHcxiYfftn3PW3PBFobRCOSJG5fnF2nk8AbQS9yaqw3HCeStVkeu89ragGgwEHIBx
+         LwBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x1TkdRhXE1OhS3zsW88GeP150p3334b2oH7aPa/m0z4=;
+        b=52K8nt9Nq+Emc9ovtdyjj3grWrtykxGHYuXIabMwdXkOEdcIxEP53U5irglIDiYlyv
+         1+9D+qeIs71siBlpG84QJrZkvICdexRvIv4ULYu0UarLjZI2SJngNdPA/qzpoO8vMXGy
+         9P/Oq/gSkJYm7PbU/SPrIhPmAEfdk6DKBg6FdedskI5D7GPNiSjmQ7OWapjJdwMpqtD5
+         +lIsvJ5l5UzMnTFYyHJXqnnEgw4Nc8p79EumeBUuHHSPoDP7dTe/qozjJBqVKlnuSfJY
+         zRcMuooMuoakIhwvJb3FIAl+NRWco2pd16jGTVdlA2u+Vfw5VfUcB/Aa6KNg5w6p6V1O
+         S+2A==
+X-Gm-Message-State: AOAM533Wu6fAuSHVp3iDLqcNZtikhGrwEn5qu943DMS4UQGpVNZDjcVY
+        Lmg1RcfVM953lgmdB31F+nVNPQ==
+X-Google-Smtp-Source: ABdhPJxneT4Pp6jiVBF+zczoSU9cWco3ZjIN290elEVMPQxrWCDCI3lxJ5gCL9qyUl8qxz6NtyaWeA==
+X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr14003060oib.18.1633361366313;
+        Mon, 04 Oct 2021 08:29:26 -0700 (PDT)
+Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
+        by smtp.gmail.com with ESMTPSA id o8sm2809465oiw.39.2021.10.04.08.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 08:29:25 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 10:29:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        robh+dt@kernel.org, p.zabel@pengutronix.de, sibis@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for sc7280
+ WPSS
+Message-ID: <YVsd1Mt1iRyU2v8i@builder.lan>
+References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org>
+ <1615361290-19238-3-git-send-email-pillair@codeaurora.org>
+ <YEj3emYBinvkfaby@builder.lan>
+ <000001d71993$ded6e070$9c84a150$@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee42a420-e37d-4cd5-aab0-08d9874bb9fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2021 15:29:16.1511
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4avOgBv6ZERNQb1sxPMiSSjUSV2Nj38Mt3RrfwEOKULzUtTKfx1ExnnV5AjqoGz+xXnnIMXOETMmHt09S0yPIdH4GlQmH59Ww/F70nYKDm8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3593
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000001d71993$ded6e070$9c84a150$@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMzAgU2VwdGVtYmVyIDIwMjEgMTA6NTUsIEFsZXhhbmRyZSBHaGl0aSB3cm90ZToNCg0KPiA+
-IFNvIEkndmUgZGlzY3Vzc2VkIHRoaXMgaW50ZXJuYWxseSBhbmQgc28gZmFyIGl0J3Mgbm90IGNv
-bXBsZXRlbHkgY2xlYXIgaG93IHRoZQ0KPiA+IHNlcXVlbmNlIHlvdSBwcm92aWRlZCBhY3R1YWxs
-eSBwZXJmb3JtcyB0aGUgcmVzZXQgYXMgeW91IHN1Z2dlc3QuIEl0IGNlcnRhaW5seQ0KPiA+IGRv
-ZXNuJ3QgbG9vayBsaWtlIGl0IHNob3VsZCwgc28gbWF5YmUgdGhpcyByZWxhdGVzIHRvIGFuIGV4
-dGVybmFsIHBpbiBzb21laG93DQo+ID4gdHJpZ2dlcmluZyB0aGUgcmVzdGFydCBpbiB0aGlzIHBh
-cnRpY3VsYXIgc2NlbmFyaW8/IEknZCBiZSBpbnRlcmVzdGVkIHRvDQo+ID4gdW5kZXJzdGFuZCB3
-aGljaCBldmVudCBiaXRzIGFyZSBzZXQgd2hlbiB0aGUgYm9hcmQgZG9lcyByZXN0YXJ0IHRvDQo+
-IHVuZGVyc3RhbmQNCj4gPiB3aGF0IGRpZCBhY3R1YWxseSB0cmlnZ2VyIHRoZSBib290LXVwLg0K
-Pg0KPiBBZnRlciBjbGVhcmluZyBhbGwgdGhvc2UgcmVnaXN0ZXJzIGFuZCBhIHJlc2V0IGFzIGRv
-bmUgaW4gdGhpcyBwYXRjaCwNCj4gSSBnZXQgdGhlIGZvbGxvd2luZyB2YWx1ZXM6DQo+DQo+IEZB
-VUxUX0xPRzogMHgwMA0KPiBFVkVOVF9BOiAweDEwID0+IEFzIHBlciB0aGUgZGF0YXNoZWV0LCAi
-U2VxdWVuY2VyIHJlYWNoZWQgZmluYWwNCj4gcG9zaXRpb24gY2F1c2VkIGV2ZW50IiA/DQo+IEVW
-RU5UX0I6IDB4MDANCj4gRVZFTlRfQzogMHgwMA0KPiBFVkVOVF9EOiAweDAwDQo+DQo+IERvIHlv
-dSBuZWVkIGFueSBvdGhlciBpbmZvPw0KDQpTYWRseSB0aGF0IGRpZG4ndCBzaG93IGFueXRoaW5n
-IHVzZWZ1bC4gVGhlICdTZXF1ZW5jZXInIGV2ZW50IHdpbGwgaGFwcGVuIG9uDQp2YXJpb3VzIHBv
-d2VyIHRyYW5zaXRpb25zIHNvIGRvZXNuJ3QgZ2l2ZSB1cyBhbnkgY2x1ZSBhcyB0byB0aGUgdHJp
-Z2dlciBoZXJlLg0KVGhpbmsgdGhlIG5leHQgc3RlcCB3b3VsZCBiZSB0byBwcm9iZSB0aGUgdmFy
-aW91cyB3YWtlIHJlbGF0ZWQgcGlucyBvZiBEQTkwNjMNCnRvIHNlZSB0aGVpciBzdGF0ZXMgZHVy
-aW5nIHRoaXMgcHJvY2VzcyBqdXN0IGluIGNhc2UgdGhlcmUncyBhbnl0aGluZyB1c2VmdWwNCnRo
-ZXJlLCBhbHRob3VnaCBJJ2QgZXhwZWN0IHRoZSBldmVudCBiaXRzIHRvIG1pcnJvciB3aGF0IHdh
-cyBoYXBwZW5pbmcuDQo=
+On Mon 15 Mar 07:08 CDT 2021, Rakesh Pillai wrote:
+
+> 
+> 
+> > -----Original Message-----
+> > From: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Sent: Wednesday, March 10, 2021 10:15 PM
+> > To: Rakesh Pillai <pillair@codeaurora.org>
+> > Cc: agross@kernel.org; ohad@wizery.com; mathieu.poirier@linaro.org;
+> > robh+dt@kernel.org; p.zabel@pengutronix.de; sibis@codeaurora.org; linux-
+> > arm-msm@vger.kernel.org; linux-remoteproc@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for
+> > sc7280 WPSS
+> > 
+> > On Wed 10 Mar 01:28 CST 2021, Rakesh Pillai wrote:
+> > 
+> > > Add support for PIL loading of WPSS processor for SC7280
+> > > WPSS boot will be requested by the wifi driver and hence
+> > > disable auto-boot for WPSS. Also add a separate shutdown
+> > > sequence handler for WPSS.
+> > >
+> > > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > > ---
+> > >  drivers/remoteproc/qcom_q6v5_adsp.c | 77
+> > ++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 76 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
+> > b/drivers/remoteproc/qcom_q6v5_adsp.c
+> > > index e024502..dc6b91d 100644
+> > > --- a/drivers/remoteproc/qcom_q6v5_adsp.c
+> > > +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+> > > @@ -58,6 +58,8 @@ struct adsp_pil_data {
+> > >  	const char *ssr_name;
+> > >  	const char *sysmon_name;
+> > >  	int ssctl_id;
+> > > +	bool is_wpss;
+> > > +	bool auto_boot;
+> > >
+> > >  	const char **clk_ids;
+> > >  	int num_clks;
+> > > @@ -96,8 +98,54 @@ struct qcom_adsp {
+> > >  	struct qcom_rproc_glink glink_subdev;
+> > >  	struct qcom_rproc_ssr ssr_subdev;
+> > >  	struct qcom_sysmon *sysmon;
+> > > +
+> > > +	int (*shutdown)(struct qcom_adsp *adsp);
+> > >  };
+> > >
+> > > +static int qcom_wpss_shutdown(struct qcom_adsp *adsp)
+> > > +{
+> > > +	unsigned long timeout;
+> > > +	unsigned int val;
+> > > +	int ret;
+> > > +
+> > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
+> > LPASS_HALTREQ_REG, 1);
+> > > +
+> > > +	/* Wait for halt ACK from QDSP6 */
+> > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
+> > > +	for (;;) {
+> > > +		ret = regmap_read(adsp->halt_map,
+> > > +				  adsp->halt_lpass + LPASS_HALTACK_REG,
+> > &val);
+> > > +		if (ret || val || time_after(jiffies, timeout))
+> > > +			break;
+> > > +
+> > > +		usleep_range(1000, 1100);
+> > > +	}
+> > > +
+> > > +	/* Place the WPSS processor into reset */
+> > > +	reset_control_assert(adsp->restart);
+> > > +	/* wait after asserting subsystem restart from AOSS */
+> > > +	usleep_range(100, 105);
+> > > +	/* Remove the WPSS reset */
+> > > +	reset_control_deassert(adsp->restart);
+> > > +
+> > > +	usleep_range(100, 105);
+> > > +
+> > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
+> > LPASS_HALTREQ_REG, 0);
+> > > +
+> > > +	/* Wait for halt ACK from QDSP6 */
+> > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
+> > > +	for (;;) {
+> > > +		ret = regmap_read(adsp->halt_map,
+> > > +				  adsp->halt_lpass + LPASS_HALTACK_REG,
+> > &val);
+> > > +		if (ret || !val || time_after(jiffies, timeout))
+> > > +			break;
+> > > +
+> > > +		usleep_range(1000, 1100);
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static int qcom_adsp_shutdown(struct qcom_adsp *adsp)
+> > >  {
+> > >  	unsigned long timeout;
+> > > @@ -270,7 +318,7 @@ static int adsp_stop(struct rproc *rproc)
+> > >  	if (ret == -ETIMEDOUT)
+> > >  		dev_err(adsp->dev, "timed out on wait\n");
+> > >
+> > > -	ret = qcom_adsp_shutdown(adsp);
+> > > +	ret = adsp->shutdown(adsp);
+> > >  	if (ret)
+> > >  		dev_err(adsp->dev, "failed to shutdown: %d\n", ret);
+> > >
+> > > @@ -439,6 +487,8 @@ static int adsp_probe(struct platform_device
+> > *pdev)
+> > >  		dev_err(&pdev->dev, "unable to allocate remoteproc\n");
+> > >  		return -ENOMEM;
+> > >  	}
+> > > +
+> > > +	rproc->auto_boot = desc->auto_boot;
+> > >  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
+> > >
+> > >  	adsp = (struct qcom_adsp *)rproc->priv;
+> > > @@ -447,6 +497,11 @@ static int adsp_probe(struct platform_device
+> > *pdev)
+> > >  	adsp->info_name = desc->sysmon_name;
+> > >  	platform_set_drvdata(pdev, adsp);
+> > >
+> > > +	if (desc->is_wpss)
+> > > +		adsp->shutdown = qcom_wpss_shutdown;
+> > > +	else
+> > > +		adsp->shutdown = qcom_adsp_shutdown;
+> > > +
+> > >  	ret = adsp_alloc_memory_region(adsp);
+> > >  	if (ret)
+> > >  		goto free_rproc;
+> > > @@ -515,6 +570,8 @@ static const struct adsp_pil_data adsp_resource_init
+> > = {
+> > >  	.ssr_name = "lpass",
+> > >  	.sysmon_name = "adsp",
+> > >  	.ssctl_id = 0x14,
+> > > +	.is_wpss = false,
+> > > +	.auto_boot = true;
+> > >  	.clk_ids = (const char*[]) {
+> > >  		"sway_cbcr", "lpass_ahbs_aon_cbcr",
+> > "lpass_ahbm_aon_cbcr",
+> > >  		"qdsp6ss_xo", "qdsp6ss_sleep", "qdsp6ss_core", NULL
+> > > @@ -528,6 +585,8 @@ static const struct adsp_pil_data cdsp_resource_init
+> > = {
+> > >  	.ssr_name = "cdsp",
+> > >  	.sysmon_name = "cdsp",
+> > >  	.ssctl_id = 0x17,
+> > > +	.is_wpss = false,
+> > > +	.auto_boot = true;
+> > >  	.clk_ids = (const char*[]) {
+> > >  		"sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
+> > "q6ss_master",
+> > >  		"q6_axim", NULL
+> > > @@ -535,7 +594,23 @@ static const struct adsp_pil_data
+> > cdsp_resource_init = {
+> > >  	.num_clks = 7,
+> > >  };
+> > >
+> > > +static const struct adsp_pil_data wpss_resource_init = {
+> > > +	.crash_reason_smem = 626,
+> > > +	.firmware_name = "wpss.mdt",
+> > > +	.ssr_name = "wpss",
+> > > +	.sysmon_name = "wpss",
+> > > +	.ssctl_id = 0x19,
+> > > +	.is_wpss = true,
+> > > +	.auto_boot = false;
+> > 
+> > Why is auto_boot false for the WPSS?
+> 
+> Wifi driver will start the remote processor when it comes up. We do not want
+> to load it at the start.
+> 
+
+Can you please explain this further?
+
+We've had several cases in the past where functional drivers controls
+a remoteproc instance and makes assumptions about when the remoteproc is
+up or not. I would like to ensure that we don't design ourselves into
+such corner (even though I see that the ath11k code for this was merged
+a long time ago)
+
+Regards,
+Bjorn
+
+> > 
+> > > +	.clk_ids = (const char*[]) {
+> > > +		"gcc_wpss_ahb_bdg_mst_clk", "gcc_wpss_ahb_clk",
+> > > +		"gcc_wpss_rscp_clk", NULL
+> > > +	},
+> > > +	.num_clks = 3,
+> > > +};
+> > > +
+> > >  static const struct of_device_id adsp_of_match[] = {
+> > > +	{ .compatible = "qcom,sc7280-wpss-pil", .data = &wpss_resource_init
+> > },
+> > 
+> > Nit. Please keep things like this sorted alphabetically.
+> 
+> Will fix this in the next patchset.
+> 
+> Thanks,
+> Rakesh
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > >  	{ .compatible = "qcom,qcs404-cdsp-pil", .data = &cdsp_resource_init
+> > },
+> > >  	{ .compatible = "qcom,sdm845-adsp-pil", .data =
+> > &adsp_resource_init },
+> > >  	{ },
+> > > --
+> > > 2.7.4
+> > >
+> 
