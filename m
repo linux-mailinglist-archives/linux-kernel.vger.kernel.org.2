@@ -2,339 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D69742119C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E434211E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhJDOmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:42:53 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44852 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhJDOmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:42:52 -0400
-Received: by mail-oi1-f179.google.com with SMTP id e24so21769938oig.11;
-        Mon, 04 Oct 2021 07:41:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZG8iaXegU3CYz3ffGQN34dJt360ed6JXnQKEGpH3pTw=;
-        b=luNPo5VHVB199soVD9eD1Q4Yt8SNb6RfiZ1WG1zom/pLNdvoDopAFNZKgIa/R1mDzB
-         0Pny7viVGu3vF7VLNJVHlJlhxGxYRFnr+xnh/sYuIipjWyPHWjWrG6xUxrAakDMHVtrC
-         LBwyJNKO5Wn0xj8i9iSebeX8/zrrz5LKAwFwma61Q6O/mpBcp0aifeGyJ+aWRO9SFup5
-         8XI5gIbkBqInY05Qdc4AvCe4BYOtNfRrOdknUUYN6o+/Y1JBf7FKpEflgwo3kBhWDtQN
-         IRvROkbSxzgD/7fiiHwqZCT4b3tGgp33H6Qk2nOcENUVgMHF9ujmMM/mte0auS439lJz
-         dXkg==
-X-Gm-Message-State: AOAM531ZG1SPl51rLN/GmfRyhlRIuY9Oey3eioxMrnO5aOhhhAA812Ac
-        4K/XxUMXi+GB78a5kYxE1g==
-X-Google-Smtp-Source: ABdhPJyjkqTZp9Yi3C463UquFWlE0F6JkV4G420TSvLih4TJV6SsuIPerMb71DizjPlWqvjgJCG1Vw==
-X-Received: by 2002:aca:6108:: with SMTP id v8mr14010901oib.139.1633358462807;
-        Mon, 04 Oct 2021 07:41:02 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s29sm2920303otg.60.2021.10.04.07.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 07:41:02 -0700 (PDT)
-Received: (nullmailer pid 1261850 invoked by uid 1000);
-        Mon, 04 Oct 2021 14:41:01 -0000
-Date:   Mon, 4 Oct 2021 09:41:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 06/10] regulator: dt-bindings: samsung,s5m8767:
- convert to dtschema
-Message-ID: <YVsSfSBeAZ8DFYfH@robh.at.kernel.org>
-References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
- <20211001094106.52412-7-krzysztof.kozlowski@canonical.com>
+        id S235078AbhJDOtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:49:08 -0400
+Received: from mga01.intel.com ([192.55.52.88]:17170 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234744AbhJDOtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 10:49:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="248715217"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="248715217"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 07:41:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="713430012"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Oct 2021 07:41:22 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B7472170; Mon,  4 Oct 2021 17:41:28 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/2] usb: gadget: udc: core: Use pr_fmt() to prefix messages
+Date:   Mon,  4 Oct 2021 17:41:25 +0300
+Message-Id: <20211004144126.49154-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001094106.52412-7-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 11:41:02AM +0200, Krzysztof Kozlowski wrote:
-> Convert the regulators of Samsung S5M8767 PMIC to DT schema format.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../bindings/regulator/samsung,s5m8767.txt    | 140 ------------------
->  .../bindings/regulator/samsung,s5m8767.yaml   |  83 +++++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 84 insertions(+), 141 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-> deleted file mode 100644
-> index 6cd83d920155..000000000000
-> --- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-> +++ /dev/null
-> @@ -1,140 +0,0 @@
-> -Binding for Samsung S5M8767 regulator block
-> -===========================================
-> -
-> -This is a part of device tree bindings for S5M family multi-function devices.
-> -More information can be found in bindings/mfd/sec-core.txt file.
-> -
-> -The S5M8767 device provide buck and LDO regulators.
-> -
-> -To register these with regulator framework instantiate under main device node
-> -a sub-node named "regulators" with more sub-nodes for each regulator using the
-> -common regulator binding documented in:
-> - - Documentation/devicetree/bindings/regulator/regulator.txt
-> -
-> -
-> -Required properties of the main device node (the parent!):
-> - - s5m8767,pmic-buck-ds-gpios: GPIO specifiers for three host gpio's used
-> -   for selecting GPIO DVS lines. It is one-to-one mapped to dvs gpio lines.
-> -
-> - [1] If either of the 's5m8767,pmic-buck[2/3/4]-uses-gpio-dvs' optional
-> -     property is specified, then all the eight voltage values for the
-> -     's5m8767,pmic-buck[2/3/4]-dvs-voltage' should be specified.
-> -
-> -Optional properties of the main device node (the parent!):
-> - - s5m8767,pmic-buck2-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
-> -   units for buck2 when changing voltage using gpio dvs. Refer to [1] below
-> -   for additional information.
-> -
-> - - s5m8767,pmic-buck3-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
-> -   units for buck3 when changing voltage using gpio dvs. Refer to [1] below
-> -   for additional information.
-> -
-> - - s5m8767,pmic-buck4-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
-> -   units for buck4 when changing voltage using gpio dvs. Refer to [1] below
-> -   for additional information.
-> -
-> - - s5m8767,pmic-buck2-uses-gpio-dvs: 'buck2' can be controlled by gpio dvs.
-> - - s5m8767,pmic-buck3-uses-gpio-dvs: 'buck3' can be controlled by gpio dvs.
-> - - s5m8767,pmic-buck4-uses-gpio-dvs: 'buck4' can be controlled by gpio dvs.
-> -
-> -Additional properties required if either of the optional properties are used:
-> -
-> - - s5m8767,pmic-buck-default-dvs-idx: Default voltage setting selected from
-> -   the possible 8 options selectable by the dvs gpios. The value of this
-> -   property should be between 0 and 7. If not specified or if out of range, the
-> -   default value of this property is set to 0.
-> -
-> - - s5m8767,pmic-buck-dvs-gpios: GPIO specifiers for three host gpio's used
-> -   for dvs. The format of the gpio specifier depends in the gpio controller.
-> -
-> -
-> -Names of regulators supported by S5M8767 device:
-> -	- LDOn
-> -		  - valid values for n are 1 to 28
-> -		  - Example: LDO1, LDO2, LDO28
-> -	- BUCKn
-> -		  - valid values for n are 1 to 9.
-> -		  - Example: BUCK1, BUCK2, BUCK9
-> -Note: The 'n' in LDOn and BUCKn represents the LDO or BUCK number
-> -as per the datasheet of device.
-> -
-> -
-> -Optional properties of the nodes under "regulators" sub-node:
-> - - op_mode: describes the different operating modes of the LDO's with
-> -            power mode change in SOC. The different possible values are,
-> -             0 - always off mode
-> -             1 - on in normal mode
-> -             2 - low power mode
-> -             3 - suspend mode
-> - - s5m8767,pmic-ext-control-gpios: (optional) GPIO specifier for one
-> -                                   GPIO controlling this regulator
-> -                                   (enable/disable); This is valid only
-> -                                   for buck9.
-> -
-> -Example:
-> -
-> -	s5m8767_pmic@66 {
-> -		compatible = "samsung,s5m8767-pmic";
-> -		reg = <0x66>;
-> -
-> -		s5m8767,pmic-buck2-uses-gpio-dvs;
-> -		s5m8767,pmic-buck3-uses-gpio-dvs;
-> -		s5m8767,pmic-buck4-uses-gpio-dvs;
-> -
-> -		s5m8767,pmic-buck-default-dvs-idx = <0>;
-> -
-> -		s5m8767,pmic-buck-dvs-gpios = <&gpx0 0 0>, /* DVS1 */
-> -						 <&gpx0 1 0>, /* DVS2 */
-> -						 <&gpx0 2 0>; /* DVS3 */
-> -
-> -		s5m8767,pmic-buck-ds-gpios = <&gpx2 3 0>, /* SET1 */
-> -						<&gpx2 4 0>, /* SET2 */
-> -						<&gpx2 5 0>; /* SET3 */
-> -
-> -		s5m8767,pmic-buck2-dvs-voltage = <1350000>, <1300000>,
-> -						 <1250000>, <1200000>,
-> -						 <1150000>, <1100000>,
-> -						 <1000000>, <950000>;
-> -
-> -		s5m8767,pmic-buck3-dvs-voltage = <1100000>, <1100000>,
-> -						 <1100000>, <1100000>,
-> -						 <1000000>, <1000000>,
-> -						 <1000000>, <1000000>;
-> -
-> -		s5m8767,pmic-buck4-dvs-voltage = <1200000>, <1200000>,
-> -						 <1200000>, <1200000>,
-> -						 <1200000>, <1200000>,
-> -						 <1200000>, <1200000>;
-> -
-> -		regulators {
-> -			ldo1_reg: LDO1 {
-> -				regulator-name = "VDD_ABB_3.3V";
-> -				regulator-min-microvolt = <3300000>;
-> -				regulator-max-microvolt = <3300000>;
-> -				op_mode = <1>; /* Normal Mode */
-> -			};
-> -
-> -			ldo2_reg: LDO2 {
-> -				regulator-name = "VDD_ALIVE_1.1V";
-> -				regulator-min-microvolt = <1100000>;
-> -				regulator-max-microvolt = <1100000>;
-> -				regulator-always-on;
-> -			};
-> -
-> -			buck1_reg: BUCK1 {
-> -				regulator-name = "VDD_MIF_1.2V";
-> -				regulator-min-microvolt = <950000>;
-> -				regulator-max-microvolt = <1350000>;
-> -				regulator-always-on;
-> -				regulator-boot-on;
-> -			};
-> -
-> -			vemmc_reg: BUCK9 {
-> -				regulator-name = "VMEM_VDD_2.8V";
-> -				regulator-min-microvolt = <2800000>;
-> -				regulator-max-microvolt = <2800000>;
-> -				op_mode = <3>; /* Standby Mode */
-> -				s5m8767,pmic-ext-control-gpios = <&gpk0 2 0>;
-> -			};
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
-> new file mode 100644
-> index 000000000000..3192a06b5ef9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
-> @@ -0,0 +1,83 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/samsung,s5m8767.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung S5M8767 Power Management IC regulators
-> +
-> +maintainers:
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +
-> +description: |
-> +  This is a part of device tree bindings for S2M and S5M family of Power
-> +  Management IC (PMIC).
-> +
-> +  The S5M8767 provides buck and LDO regulators.
-> +
-> +  See also Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml for
-> +  additional information and example.
-> +
-> +patternProperties:
-> +  # 28 LDOs
-> +  "^LDO([1-9]|1[0-9]|2[0-8])$":
-> +    type: object
-> +    $ref: regulator.yaml#
-> +    description:
-> +      Properties for single LDO regulator.
-> +
-> +    properties:
-> +      regulator-name: true
+Instead of duplicating, use pr_fmt() to prefix pr_*() messages.
 
-This is fine, but technically it is not needed. There's not any 
-requirement that items in 'required' be listed under 'properties'.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/usb/gadget/udc/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +
-> +      op_mode:
+diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+index 14fdf918ecfe..f66ac6f8011e 100644
+--- a/drivers/usb/gadget/udc/core.c
++++ b/drivers/usb/gadget/udc/core.c
+@@ -6,6 +6,8 @@
+  * Author: Felipe Balbi <balbi@ti.com>
+  */
+ 
++#define pr_fmt(fmt)	"UDC core: " fmt
++
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+@@ -1555,14 +1557,14 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver)
+ 
+ 	if (!driver->match_existing_only) {
+ 		list_add_tail(&driver->pending, &gadget_driver_pending_list);
+-		pr_info("udc-core: couldn't find an available UDC - added [%s] to list of pending drivers\n",
++		pr_info("couldn't find an available UDC - added [%s] to list of pending drivers\n",
+ 			driver->function);
+ 		ret = 0;
+ 	}
+ 
+ 	mutex_unlock(&udc_lock);
+ 	if (ret)
+-		pr_warn("udc-core: couldn't find an available UDC or it's busy\n");
++		pr_warn("couldn't find an available UDC or it's busy\n");
+ 	return ret;
+ found:
+ 	ret = udc_bind_to_driver(udc, driver);
+-- 
+2.33.0
 
-Needs a type reference.
-
-> +        enum: [0, 1, 2, 3]
-> +        default: 1
-> +        description: |
-> +          Describes the different operating modes of the LDO's with power mode
-> +          change in SOC. The different possible values are:
-> +            0 - always off mode
-> +            1 - on in normal mode
-> +            2 - low power mode
-> +            3 - suspend mode
-> +
-> +    required:
-> +      - regulator-name
-> +
-> +    unevaluatedProperties: false
-
-On child nodes, I think it's better to place this up with the $ref and 
-'type: object' since the indentation can be hard to follow. 
-
-> +
-> +  # 8 bucks
-> +  "^BUCK[1-8]$":
-> +    type: object
-> +    $ref: regulator.yaml#
-> +    description:
-> +      Properties for single BUCK regulator.
-> +
-> +    properties:
-> +      regulator-name: true
-> +
-> +    required:
-> +      - regulator-name
-> +
-> +    unevaluatedProperties: false
-> +
-> +  # 9 buck
-> +  "^BUCK9$":
-> +    type: object
-> +    $ref: regulator.yaml#
-> +    description:
-> +      Properties for single BUCK regulator.
-> +
-> +    properties:
-> +      regulator-name: true
-> +
-> +      s5m8767,pmic-ext-control-gpios:
-> +        maxItems: 1
-> +        description: |
-> +          GPIO specifier for one GPIO controlling this regulator on/off.
-> +
-> +    required:
-> +      - regulator-name
-> +
-> +    unevaluatedProperties: false
-> +
-> +additionalProperties: false
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ee486357cf45..5a7cb990b182 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16602,7 +16602,7 @@ S:	Supported
->  F:	Documentation/devicetree/bindings/clock/samsung,s2mps11.yaml
->  F:	Documentation/devicetree/bindings/mfd/samsung,sec-core.txt
->  F:	Documentation/devicetree/bindings/regulator/samsung,s2m*.yaml
-> -F:	Documentation/devicetree/bindings/regulator/samsung,s5m*.txt
-> +F:	Documentation/devicetree/bindings/regulator/samsung,s5m*.yaml
->  F:	drivers/clk/clk-s2mps11.c
->  F:	drivers/mfd/sec*.c
->  F:	drivers/regulator/s2m*.c
-> -- 
-> 2.30.2
-> 
-> 
