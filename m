@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F49F420C8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B98420D3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbhJDNGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
+        id S235407AbhJDNNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235080AbhJDNFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:05:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51CE0619E7;
-        Mon,  4 Oct 2021 13:00:40 +0000 (UTC)
+        id S235693AbhJDNKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:10:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B2AF61B67;
+        Mon,  4 Oct 2021 13:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352440;
-        bh=xvb0BHosjtP7JTAoWsTComR2+BIC2m1Uxu0qABGC6IQ=;
+        s=korg; t=1633352649;
+        bh=QuXpwwCZCD0+JXZ/EslISovqVogyWiZrT7bIPmdxQmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GOfCUPfdhlgeZEIp5nTeHXrDmANYJY4JfD3iIPI+90SIF8D8fBxhwYX7gT3LVyR7H
-         1H+tKuziZKfpUPWyXPpqw2K9xkTAbFO99+D/0NuXRdqdVf00kUy8LeAHQlkk0RQBG6
-         SGpwZUxZozXw/pQXRz7KG8xHdSyUMNUEaMrlBnxw=
+        b=mnGBwW4FU/rwVy95kjDsGcA8TNbWPlVGz2lIHXnO7VtYyZ4TxeYHRAzRSqQcgJMbF
+         WFnTjKZaKl8AlhiLEavJil7ODUuCm8bIQenqdtyyQbblpK4QZmH/fHg8Yo4Iy8ZtI3
+         BsfGfP7fcDL3vofRcolnqRH/bQf5nC4TUjbEFCO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.14 63/75] ARM: 9077/1: PLT: Move struct plt_entries definition to header
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 68/95] hwmon: (tmp421) report /PVLD condition as fault
 Date:   Mon,  4 Oct 2021 14:52:38 +0200
-Message-Id: <20211004125033.654982153@linuxfoundation.org>
+Message-Id: <20211004125035.792060503@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Paul Fertser <fercerpav@gmail.com>
 
-commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream
+[ Upstream commit 540effa7f283d25bcc13c0940d808002fee340b8 ]
 
-No functional change, later it will be re-used in several files.
+For both local and remote sensors all the supported ICs can report an
+"undervoltage lockout" condition which means the conversion wasn't
+properly performed due to insufficient power supply voltage and so the
+measurement results can't be trusted.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+Link: https://lore.kernel.org/r/20210924093011.26083-2-fercerpav@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/module.h |    9 +++++++++
- arch/arm/kernel/module-plts.c |    9 ---------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/hwmon/tmp421.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -19,6 +19,15 @@ enum {
- };
- #endif
- 
-+#define PLT_ENT_STRIDE		L1_CACHE_BYTES
-+#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
-+#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
-+
-+struct plt_entries {
-+	u32	ldr[PLT_ENT_COUNT];
-+	u32	lit[PLT_ENT_COUNT];
-+};
-+
- struct mod_plt_sec {
- 	struct elf32_shdr	*plt;
- 	int			plt_count;
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -14,10 +14,6 @@
- #include <asm/cache.h>
- #include <asm/opcodes.h>
- 
--#define PLT_ENT_STRIDE		L1_CACHE_BYTES
--#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
--#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
--
- #ifdef CONFIG_THUMB2_KERNEL
- #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
- 							(PLT_ENT_STRIDE - 4))
-@@ -26,11 +22,6 @@
- 						    (PLT_ENT_STRIDE - 8))
- #endif
- 
--struct plt_entries {
--	u32	ldr[PLT_ENT_COUNT];
--	u32	lit[PLT_ENT_COUNT];
--};
--
- static bool in_init(const struct module *mod, unsigned long loc)
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index 06826a78c0f4..c2113c00b635 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -169,10 +169,10 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+ 		return 0;
+ 	case hwmon_temp_fault:
+ 		/*
+-		 * The OPEN bit signals a fault. This is bit 0 of the temperature
+-		 * register (low byte).
++		 * Any of OPEN or /PVLD bits indicate a hardware mulfunction
++		 * and the conversion result may be incorrect
+ 		 */
+-		*val = tmp421->temp[channel] & 0x01;
++		*val = !!(tmp421->temp[channel] & 0x03);
+ 		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -185,9 +185,6 @@ static umode_t tmp421_is_visible(const void *data, enum hwmon_sensor_types type,
  {
- 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
+ 	switch (attr) {
+ 	case hwmon_temp_fault:
+-		if (channel == 0)
+-			return 0;
+-		return 0444;
+ 	case hwmon_temp_input:
+ 		return 0444;
+ 	default:
+-- 
+2.33.0
+
 
 
