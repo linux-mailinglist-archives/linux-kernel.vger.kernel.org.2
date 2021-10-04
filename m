@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0344C420C95
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B622C420C92
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhJDNHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39234 "EHLO mail.kernel.org"
+        id S233615AbhJDNHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:07:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234931AbhJDNE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234934AbhJDNE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 09:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A54561B3E;
-        Mon,  4 Oct 2021 13:00:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B44866137D;
+        Mon,  4 Oct 2021 13:00:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352433;
-        bh=P/zQYXm+06K1vzZ7gvVC5dAhT7RjWeH0TGmexw8zeR4=;
+        s=korg; t=1633352436;
+        bh=I4twkpA9yWUE5pIM4QzxI3aYM2GteOuhlVOrWPQ8iKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MnKUB1Va65p/tk0yKNeTQy4Zoj2rya9I7/DXouOZh+iAexOYexPoN3NxHy2BzbIWS
-         iNgAt+Zcm+QRDPYI67SvcXoHwPsgWWaso6PWq/C872Ns+MzpRKunYkTWcfOEDc1PjH
-         gw2g/wOgDa5pmETdcvBPcz+fKO6qv9ejd6sIMTGA=
+        b=sfa4rSJ8ch3I4KIxP4k8OywEDkGwjiAxVoo1z6CMIHYY/+OnMBxTOfx44xo4dVD40
+         xLtYcyfese0HmbopJb2LSvSYtjz/cZMV6avTlj+WuQzm9RqBEkHyW+fGrrNFHOuISN
+         SZtwQ3CazfDzj4UigiOTxP4XrKpNToSyd3lo3nH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 60/75] ext4: fix potential infinite loop in ext4_dx_readdir()
-Date:   Mon,  4 Oct 2021 14:52:35 +0200
-Message-Id: <20211004125033.545224393@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 61/75] net: udp: annotate data race around udp_sk(sk)->corkflag
+Date:   Mon,  4 Oct 2021 14:52:36 +0200
+Message-Id: <20211004125033.575737377@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
 References: <20211004125031.530773667@linuxfoundation.org>
@@ -40,68 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 42cb447410d024e9d54139ae9c21ea132a8c384c upstream.
+commit a9f5970767d11eadc805d5283f202612c7ba1f59 upstream.
 
-When ext4_htree_fill_tree() fails, ext4_dx_readdir() can run into an
-infinite loop since if info->last_pos != ctx->pos this will reset the
-directory scan and reread the failing entry.  For example:
+up->corkflag field can be read or written without any lock.
+Annotate accesses to avoid possible syzbot/KCSAN reports.
 
-1. a dx_dir which has 3 block, block 0 as dx_root block, block 1/2 as
-   leaf block which own the ext4_dir_entry_2
-2. block 1 read ok and call_filldir which will fill the dirent and update
-   the ctx->pos
-3. block 2 read fail, but we has already fill some dirent, so we will
-   return back to userspace will a positive return val(see ksys_getdents64)
-4. the second ext4_dx_readdir will reset the world since info->last_pos
-   != ctx->pos, and will also init the curr_hash which pos to block 1
-5. So we will read block1 too, and once block2 still read fail, we can
-   only fill one dirent because the hash of the entry in block1(besides
-   the last one) won't greater than curr_hash
-6. this time, we forget update last_pos too since the read for block2
-   will fail, and since we has got the one entry, ksys_getdents64 can
-   return success
-7. Latter we will trapped in a loop with step 4~6
-
-Cc: stable@kernel.org
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20210914111415.3921954-1-yangerkun@huawei.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/dir.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/ipv4/udp.c |   10 +++++-----
+ net/ipv6/udp.c |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -532,7 +532,7 @@ static int ext4_dx_readdir(struct file *
- 	struct dir_private_info *info = file->private_data;
- 	struct inode *inode = file_inode(file);
- 	struct fname *fname;
--	int	ret;
-+	int ret = 0;
- 
- 	if (!info) {
- 		info = ext4_htree_create_dir_info(file, ctx->pos);
-@@ -580,7 +580,7 @@ static int ext4_dx_readdir(struct file *
- 						   info->curr_minor_hash,
- 						   &info->next_hash);
- 			if (ret < 0)
--				return ret;
-+				goto finished;
- 			if (ret == 0) {
- 				ctx->pos = ext4_get_htree_eof(file);
- 				break;
-@@ -611,7 +611,7 @@ static int ext4_dx_readdir(struct file *
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -882,7 +882,7 @@ int udp_sendmsg(struct sock *sk, struct
+ 	__be16 dport;
+ 	u8  tos;
+ 	int err, is_udplite = IS_UDPLITE(sk);
+-	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
++	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+ 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
+ 	struct sk_buff *skb;
+ 	struct ip_options_data opt_copy;
+@@ -1165,7 +1165,7 @@ int udp_sendpage(struct sock *sk, struct
  	}
- finished:
- 	info->last_pos = ctx->pos;
--	return 0;
-+	return ret < 0 ? ret : 0;
- }
  
- static int ext4_dir_open(struct inode * inode, struct file * filp)
+ 	up->len += size;
+-	if (!(up->corkflag || (flags&MSG_MORE)))
++	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
+ 		ret = udp_push_pending_frames(sk);
+ 	if (!ret)
+ 		ret = size;
+@@ -2373,9 +2373,9 @@ int udp_lib_setsockopt(struct sock *sk,
+ 	switch (optname) {
+ 	case UDP_CORK:
+ 		if (val != 0) {
+-			up->corkflag = 1;
++			WRITE_ONCE(up->corkflag, 1);
+ 		} else {
+-			up->corkflag = 0;
++			WRITE_ONCE(up->corkflag, 0);
+ 			lock_sock(sk);
+ 			push_pending_frames(sk);
+ 			release_sock(sk);
+@@ -2482,7 +2482,7 @@ int udp_lib_getsockopt(struct sock *sk,
+ 
+ 	switch (optname) {
+ 	case UDP_CORK:
+-		val = up->corkflag;
++		val = READ_ONCE(up->corkflag);
+ 		break;
+ 
+ 	case UDP_ENCAP:
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1135,7 +1135,7 @@ int udpv6_sendmsg(struct sock *sk, struc
+ 	struct ipcm6_cookie ipc6;
+ 	int addr_len = msg->msg_namelen;
+ 	int ulen = len;
+-	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
++	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+ 	int err;
+ 	int connected = 0;
+ 	int is_udplite = IS_UDPLITE(sk);
 
 
