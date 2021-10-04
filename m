@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23169420CE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D545E420F99
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhJDNKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
+        id S237427AbhJDNgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234764AbhJDNGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:06:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AA961B29;
-        Mon,  4 Oct 2021 13:01:09 +0000 (UTC)
+        id S236269AbhJDNdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C136961AAC;
+        Mon,  4 Oct 2021 13:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352470;
-        bh=676gQ5WGzDzM5kEVF/NdaXRkrR2WYJaSPaZg6ZhxM0U=;
+        s=korg; t=1633353333;
+        bh=mOgugXgcLv2VxWNy/hGeUqDkIQm2ezwHnXM9Shl0ZrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MnYhcN3FO9db3M52+/luNOE/ANhE+CkIpzeFqzfWI5Iw/P3EKneI0VC6iIxnYcNrf
-         onCM8Fw9k7R082VEpAK1+Eu1xpjCimbgb4HgGFHd/CGANo53A/QNNKu+lAfiAeCzK5
-         XxFifaoMe5UaBAIjN7sC9JaP0TqDxLe6hKdcoN5c=
+        b=2dmHcVDYfonHoPKtAnoNtluPiUgRqKyr8MuPRt6D5Y8rKAlJ+qvlxNiROh/rjnaee
+         NhOA8azJsNHO3P5RA6VOXWteIaQB1c7ZjU8SOE/U4X0LoSmNm3PIjzTs5brGkRLiLU
+         bIRnQe43ho7L51uMRbXyZ/3dYlXU627iZv94jweo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
-        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 42/75] tty: Fix out-of-bound vmalloc access in imageblit
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH 5.14 087/172] netfilter: log: work around missing softdep backend module
 Date:   Mon,  4 Oct 2021 14:52:17 +0200
-Message-Id: <20211004125032.928978910@linuxfoundation.org>
+Message-Id: <20211004125047.798905253@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 3b0c406124719b625b1aba431659f5cdc24a982c ]
+[ Upstream commit b53deef054e58fe4f37c66211b8ece9f8fc1aa13 ]
 
-This issue happens when a userspace program does an ioctl
-FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
-containing only the fields xres, yres, and bits_per_pixel
-with values.
+iptables/nftables has two types of log modules:
 
-If this struct is the same as the previous ioctl, the
-vc_resize() detects it and doesn't call the resize_screen(),
-leaving the fb_var_screeninfo incomplete. And this leads to
-the updatescrollmode() calculates a wrong value to
-fbcon_display->vrows, which makes the real_y() return a
-wrong value of y, and that value, eventually, causes
-the imageblit to access an out-of-bound address value.
+1. backend, e.g. nf_log_syslog, which implement the functionality
+2. frontend, e.g. xt_LOG or nft_log, which call the functionality
+   provided by backend based on nf_tables or xtables rule set.
 
-To solve this issue I made the resize_screen() be called
-even if the screen does not need any resizing, so it will
-"fix and fill" the fb_var_screeninfo independently.
+Problem is that the request_module() call to load the backed in
+nf_logger_find_get() might happen with nftables transaction mutex held
+in case the call path is via nf_tables/nft_compat.
 
-Cc: stable <stable@vger.kernel.org> # after 5.15-rc2 is out, give it time to bake
-Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Link: https://lore.kernel.org/r/20210628134509.15895-1-igormtorrente@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This can cause deadlocks (see 'Fixes' tags for details).
+
+The chosen solution as to let modprobe deal with this by adding 'pre: '
+soft dep tag to xt_LOG (to load the syslog backend) and xt_NFLOG (to
+load nflog backend).
+
+Eric reports that this breaks on systems with older modprobe that
+doesn't support softdeps.
+
+Another, similar issue occurs when someone either insmods xt_(NF)LOG
+directly or unloads the backend module (possible if no log frontend
+is in use): because the frontend module is already loaded, modprobe is
+not invoked again so the softdep isn't evaluated.
+
+Add a workaround: If nf_logger_find_get() returns -ENOENT and call
+is not via nft_compat, load the backend explicitly and try again.
+
+Else, let nft_compat ask for deferred request_module via nf_tables
+infra.
+
+Softdeps are kept in-place, so with newer modprobe the dependencies
+are resolved from userspace.
+
+Fixes: cefa31a9d461 ("netfilter: nft_log: perform module load from nf_tables")
+Fixes: a38b5b56d6f4 ("netfilter: nf_log: add module softdeps")
+Reported-and-tested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/vt.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ net/netfilter/nft_compat.c | 17 ++++++++++++++++-
+ net/netfilter/xt_LOG.c     | 10 +++++++++-
+ net/netfilter/xt_NFLOG.c   | 10 +++++++++-
+ 3 files changed, 34 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index d497208b43f4..f4ac5ec5dc02 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -883,8 +883,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	new_row_size = new_cols << 1;
- 	new_screen_size = new_row_size * new_rows;
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index 272bcdb1392d..f69cc73c5813 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -19,6 +19,7 @@
+ #include <linux/netfilter_bridge/ebtables.h>
+ #include <linux/netfilter_arp/arp_tables.h>
+ #include <net/netfilter/nf_tables.h>
++#include <net/netfilter/nf_log.h>
  
--	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
--		return 0;
-+	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
-+		/*
-+		 * This function is being called here to cover the case
-+		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
-+		 * passing the same fb_var_screeninfo containing the fields
-+		 * yres/xres equal to a number non-multiple of vc_font.height
-+		 * and yres_virtual/xres_virtual equal to number lesser than the
-+		 * vc_font.height and yres/xres.
-+		 * In the second call, the struct fb_var_screeninfo isn't
-+		 * being modified by the underlying driver because of the
-+		 * if above, and this causes the fbcon_display->vrows to become
-+		 * negative and it eventually leads to out-of-bound
-+		 * access by the imageblit function.
-+		 * To give the correct values to the struct and to not have
-+		 * to deal with possible errors from the code below, we call
-+		 * the resize_screen here as well.
-+		 */
-+		return resize_screen(vc, new_cols, new_rows, user);
+ /* Used for matches where *info is larger than X byte */
+ #define NFT_MATCH_LARGE_THRESH	192
+@@ -257,8 +258,22 @@ nft_target_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	nft_compat_wait_for_destructors();
+ 
+ 	ret = xt_check_target(&par, size, proto, inv);
+-	if (ret < 0)
++	if (ret < 0) {
++		if (ret == -ENOENT) {
++			const char *modname = NULL;
++
++			if (strcmp(target->name, "LOG") == 0)
++				modname = "nf_log_syslog";
++			else if (strcmp(target->name, "NFLOG") == 0)
++				modname = "nfnetlink_log";
++
++			if (modname &&
++			    nft_request_module(ctx->net, "%s", modname) == -EAGAIN)
++				return -EAGAIN;
++		}
++
+ 		return ret;
 +	}
  
- 	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
+ 	/* The standard target cannot be used */
+ 	if (!target->target)
+diff --git a/net/netfilter/xt_LOG.c b/net/netfilter/xt_LOG.c
+index 2ff75f7637b0..f39244f9c0ed 100644
+--- a/net/netfilter/xt_LOG.c
++++ b/net/netfilter/xt_LOG.c
+@@ -44,6 +44,7 @@ log_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ static int log_tg_check(const struct xt_tgchk_param *par)
+ {
+ 	const struct xt_log_info *loginfo = par->targinfo;
++	int ret;
+ 
+ 	if (par->family != NFPROTO_IPV4 && par->family != NFPROTO_IPV6)
  		return -EINVAL;
+@@ -58,7 +59,14 @@ static int log_tg_check(const struct xt_tgchk_param *par)
+ 		return -EINVAL;
+ 	}
+ 
+-	return nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
++	ret = nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
++	if (ret != 0 && !par->nft_compat) {
++		request_module("%s", "nf_log_syslog");
++
++		ret = nf_logger_find_get(par->family, NF_LOG_TYPE_LOG);
++	}
++
++	return ret;
+ }
+ 
+ static void log_tg_destroy(const struct xt_tgdtor_param *par)
+diff --git a/net/netfilter/xt_NFLOG.c b/net/netfilter/xt_NFLOG.c
+index fb5793208059..e660c3710a10 100644
+--- a/net/netfilter/xt_NFLOG.c
++++ b/net/netfilter/xt_NFLOG.c
+@@ -42,13 +42,21 @@ nflog_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ static int nflog_tg_check(const struct xt_tgchk_param *par)
+ {
+ 	const struct xt_nflog_info *info = par->targinfo;
++	int ret;
+ 
+ 	if (info->flags & ~XT_NFLOG_MASK)
+ 		return -EINVAL;
+ 	if (info->prefix[sizeof(info->prefix) - 1] != '\0')
+ 		return -EINVAL;
+ 
+-	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
++	ret = nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
++	if (ret != 0 && !par->nft_compat) {
++		request_module("%s", "nfnetlink_log");
++
++		ret = nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
++	}
++
++	return ret;
+ }
+ 
+ static void nflog_tg_destroy(const struct xt_tgdtor_param *par)
 -- 
 2.33.0
 
