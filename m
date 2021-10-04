@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DB24214C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAFF4214C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbhJDRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbhJDRHH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:07:07 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC52C061745;
-        Mon,  4 Oct 2021 10:05:17 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id y15so8800584lfk.7;
-        Mon, 04 Oct 2021 10:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hjjZdeUEp0/4fUr63QkE2TTYbTpb7SXPyJvyoceinIg=;
-        b=AnMkcDTsrywKhl4y+oppPWcYZcIKQ63v3gS35gx0/IvVoLEprhHDnA4uvm95SaYYhA
-         W5VXBFqElv/CKGKZS+FUuJdiR3+96LkR7BxPjhNva3Kh9AVfrIOXmfCAln9++FD9crKO
-         mBLaM5mpfYJ9+djgbhbxgT3irK7tFMBEiEo5FYI2+8hVhQDK5E14AjWHCCrJaxPZPfJh
-         mCFvXbb/JsE0VVAZsRRKL5IubO5tcUzS5gzmlwHcH/f+yRoqTZcYHegiKRPl0l11GrrI
-         yOu3gITcCuQUnQlKH+TnifKIj3altWR+Kv0e1zVHOCfjjzqy0Cfel/JQpNHCKW8M2K0H
-         iNUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hjjZdeUEp0/4fUr63QkE2TTYbTpb7SXPyJvyoceinIg=;
-        b=ohUPi/VrV+oLFnUdULY5aW06fkGIVCtMMdLRMwyRe8Ny4dCqUtKinBKFQ5L44jLsRx
-         u4+4yjp8dB7nZaG3NwNB0CObx+mDpArp0udWQHIxgQZ6Spiou89kbSIrMtv3sm6W1EYR
-         ES/fXreSmJ2VYM2rwxPPpZtJe3D35J1aSUPHEV6fkXF9CiyaUEDGUpKu60DRMt88dWyV
-         9d1vMPWi7kuLoIHUIK6LwjK2lNHQgbq93QS8dsF7lJyYTnsDFvfyYjVjRHKunYMthMID
-         0t2Gq1aZdbLWy+b/8Jv87UxOx705kFIY6NJmWLL/YNvCdb8wPfv/vmPgZ714xcl6BmkH
-         szKA==
-X-Gm-Message-State: AOAM530VighfvqdVIujMNq85EK8hfJr1+L1MR/INUm+4HfsjQn/LcAZv
-        osxPcrTF06HzxkWg1XFYj35+1DG5Hck=
-X-Google-Smtp-Source: ABdhPJxKoUyZO6u3SJQhLjYW/+mnS1pgFUV5IK5hg0dLyXSHlpeXAAVlxm4bUXQ7O0iQyC6gIRP8Fg==
-X-Received: by 2002:a2e:814d:: with SMTP id t13mr17592208ljg.237.1633367115986;
-        Mon, 04 Oct 2021 10:05:15 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id j20sm1481798lfu.304.2021.10.04.10.05.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 10:05:15 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] memory: tegra20-emc: Support matching timings by
- LPDDR2 configuration
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211003013235.2357-1-digetx@gmail.com>
- <20211003013235.2357-5-digetx@gmail.com>
- <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e41c944e-1b01-ef09-78a9-8dab7f97b054@gmail.com>
-Date:   Mon, 4 Oct 2021 20:05:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238116AbhJDRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:07:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233646AbhJDRHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 493E761381;
+        Mon,  4 Oct 2021 17:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633367128;
+        bh=G5hoHCsSs0ocXoe0zEsFa7YLsrviOjikiHQe2cZPcIE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aL9kWvE1Mens/W4k9TQo8SiASeBohIf/YABW8S9d2KgBDnq2gn7OsqcPipRjhsCTS
+         2VkaeQQ3TaUsRuhV/2uAEYKWHUFYowik4xbwsa1/MQ9L5ddqVp7dl246dlBnkkR1jt
+         W1FLyxpyIZsgrbCMr6824mGbbOhW2dII3LNfzAa1Y4DpztRwVOK5QF1iFZKZOy8f6g
+         58MI61+D5CTGmMGg0pNyui91yfmHRJAIbhvuLn1gdJChc72MEI2u2W3f0dqsX/dxqa
+         zny2xK7iCM1GM59RD7PsTs/GvptLm8lNvz3ogKlFhTnB2TagMzmyGzmgQ5g1KhLERB
+         AlaRsf1xeVdAA==
+Date:   Mon, 4 Oct 2021 18:05:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+Message-ID: <YVs0Vk9TJqHt8R4K@sirena.org.uk>
+References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
+ <20211001175422.GA53652@sirena.org.uk>
+ <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+ <YVr4USeiIoQJ0Pqh@sirena.org.uk>
+ <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk>
+ <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
+ <20211004165127.GZ3544071@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="omXKEcphJO0A+Ruq"
+Content-Disposition: inline
+In-Reply-To: <20211004165127.GZ3544071@ziepe.ca>
+X-Cookie: If it heals good, say it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.10.2021 12:09, Krzysztof Kozlowski пишет:
->>  static int emc_setup_hw(struct tegra_emc *emc)
->>  {
->> +	u32 emc_cfg, emc_dbg, emc_fbio, emc_adr_cfg;
->>  	u32 intmask = EMC_REFRESH_OVERFLOW_INT;
->> -	u32 emc_cfg, emc_dbg, emc_fbio;
->> +	static bool print_sdram_info_once;
-> How about moving print_sdram_info_once to emc_read_lpddr_sdram_info()?
-> Less code here.
-> 
 
-The SDRAM info is printed out for each attached SDRAM chip. There are
-two prints if two chips are attached to memory controller. Hence this
-print_once flag should cover both prints.
+--omXKEcphJO0A+Ruq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 04, 2021 at 01:51:27PM -0300, Jason Gunthorpe wrote:
+> On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
+
+> > No please don't, I should have arguably justified the reasons why
+> > better, but the main reason is that one of the platforms on which this
+> > driver is used has received extensive power management analysis and
+> > changes, and shutting down every bit of hardware, including something as
+> > small as a SPI controller, and its clock (and its PLL) helped meet
+> > stringent power targets.
+
+> Huh? for device shutdown? What would this matter if the next step is
+> reboot or power off?
+
+On some embedded systems, especially ultra low cost ones, the system
+power off state might not actually involve removing all the physical
+power supplies for the all the chips in the system so any residual
+leakages or active functions will continue to consume power.
+
+Ideally the system power on/off will be triggered by a PMIC which is
+able to physically remove power to most other parts of the system which
+avoids this issue (much like the PSU in a server) but that's not always
+the case.
+
+--omXKEcphJO0A+Ruq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFbNFUACgkQJNaLcl1U
+h9Dx9Af8DCQRph1eyeLpiMS1kEOVvwEqf8tRrtBApuuXS5tWm7zMTg5AE2lDlds0
+RTtPA3rlUwtFQ81V1DRG7dRsogvl+OVWoHNa+UCqj2U4sovq6zEVKhMmerSCZhBN
+hfZZ80XagCRjQWzpMciVWGE5tzgVPF1Z9hkM/jYc7x1WrHa5q0CWjfu/uWSuYQWw
+KNyIdjh0Xgf0sMxWZLJt5mrcsYfb8wMWn+0XQy7ZXaUIC7NAKZxwmxb1LtUN5KQQ
+nsQJ/lUeKzEcOW0tLmXy2EU7AqlLe2L+iDbezKDjKz8UvOAvmZRuWUKmzChRUZtl
+DRB0HyviDdShhrRF/2ViT9Moqu5uaw==
+=WGIQ
+-----END PGP SIGNATURE-----
+
+--omXKEcphJO0A+Ruq--
