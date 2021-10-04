@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4554420E1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B7B420C8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhJDNVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
+        id S234521AbhJDNHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235176AbhJDNT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:19:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E29461BB4;
-        Mon,  4 Oct 2021 13:08:25 +0000 (UTC)
+        id S235018AbhJDNFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:05:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9EDF619E9;
+        Mon,  4 Oct 2021 13:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352905;
-        bh=LgmcMSkTSwcv4p1NplrD8Mju0sljwNQnbuNZC9W459Q=;
+        s=korg; t=1633352443;
+        bh=m5g8pHrcOarWNrs9l5je+BWEigSOH/iE0hdKrktRD8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zc9mMwBkgf5/bxGC33b9i9T/4VlFEGJzB/VaJqaK7vMrpshRlRMlg+VLJrppydRhH
-         fe4G5dARrEv5dUJzcLihujcjuDp/nOIYBDM2BXJh0UmyGi0TlD+ixQiuZaJRbt0FNK
-         Am45L69gEDEIXA4zQz+gbbvfIdQ6iGek4+CR9J2g=
+        b=RtTbpj54N9/c0QFOrfrVx9XYwGdaprUDVRzJW7x80KS8fIO42Qo+WHUg6FQs75ZuS
+         rUUy4+UBj4jTtANVXiG90uHCGDCb1GtZbhabaA/LaLlUnzQ7jDEgTyp1dYFH4Tx9Qr
+         uVEHxiCxYDpnS7ZnVvEmJMmFVoYLLF5blNFgABKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jonathan Hsu <jonathan.hsu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 14/93] scsi: ufs: Fix illegal offset in UPIU event trace
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 4.14 37/75] arm64: dts: marvell: armada-37xx: Extend PCIe MEM space
 Date:   Mon,  4 Oct 2021 14:52:12 +0200
-Message-Id: <20211004125035.044011344@linuxfoundation.org>
+Message-Id: <20211004125032.762503330@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Hsu <jonathan.hsu@mediatek.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit e8c2da7e329ce004fee748b921e4c765dc2fa338 upstream.
+commit 514ef1e62d6521c2199d192b1c71b79d2aa21d5a upstream.
 
-Fix incorrect index for UTMRD reference in ufshcd_add_tm_upiu_trace().
+Current PCIe MEM space of size 16 MB is not enough for some combination
+of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
+Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
+so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
+allocate more PCIe BARs for more PCIe cards.
 
-Link: https://lore.kernel.org/r/20210924085848.25500-1-jonathan.hsu@mediatek.com
-Fixes: 4b42d557a8ad ("scsi: ufs: core: Fix wrong Task Tag used in task management request UPIUs")
-Cc: stable@vger.kernel.org
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jonathan Hsu <jonathan.hsu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Without this change some combination of PCIe cards cannot be used and
+kernel show error messages in dmesg during initialization:
+
+    pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
+    pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
+    pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
+    pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
+    pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
+    pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
+    pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+
+Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
+kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
+crashes during loading of kernel DTB file. This bug is present only in
+U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
+affected by this bug. Bug is fixed in U-Boot version 2021.07.
+
+To not break booting new kernels on existing versions of U-Boot on Turris
+Mox, use first 16 MB range for IO and second range with rest of PCIe window
+for MEM.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/scsi/ufs/ufshcd.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -318,8 +318,7 @@ static void ufshcd_add_query_upiu_trace(
- static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 		const char *str)
- {
--	int off = (int)tag - hba->nutrs;
--	struct utp_task_req_desc *descp = &hba->utmrdl_base_addr[off];
-+	struct utp_task_req_desc *descp = &hba->utmrdl_base_addr[tag];
- 
- 	trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->req_header,
- 			&descp->input_param1);
+---
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -347,8 +347,15 @@
+ 			#interrupt-cells = <1>;
+ 			msi-parent = <&pcie0>;
+ 			msi-controller;
+-			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
+-				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
++			/*
++			 * The 128 MiB address range [0xe8000000-0xf0000000] is
++			 * dedicated for PCIe and can be assigned to 8 windows
++			 * with size a power of two. Use one 64 KiB window for
++			 * IO at the end and the remaining seven windows
++			 * (totaling 127 MiB) for MEM.
++			 */
++			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
++				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+ 			interrupt-map-mask = <0 0 0 7>;
+ 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
+ 					<0 0 0 2 &pcie_intc 1>,
 
 
