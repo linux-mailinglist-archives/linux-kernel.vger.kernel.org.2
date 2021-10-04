@@ -2,172 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6DD421AE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EA0421AEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhJDX4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S229948AbhJEAAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJDX4f (ORCPT
+        with ESMTP id S229689AbhJEAAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:56:35 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10708C061745;
-        Mon,  4 Oct 2021 16:54:46 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id u18so78672221lfd.12;
-        Mon, 04 Oct 2021 16:54:45 -0700 (PDT)
+        Mon, 4 Oct 2021 20:00:15 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB655C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 16:58:25 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id r4-20020a7bc084000000b0030d6fc48bd2so827491wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 16:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GVLNEuznYXl4qyfikIVqD3Z4gsOX+ZYDeAnVRaE3myk=;
-        b=LywrXSBEvj6oMjXcR7dtfkX5UYR4/5ZsAKAAsjaK699+wCMh3PeVdOOa3eXscQIDaK
-         JpS/25Sh/9dumCC9WIQ8V1vBow0Sna+v6NI3HycyprkSA4cvw1y+6rfxn9oRBtiToAFk
-         CIffZ0BhNCkz0chPK+yvdtiWYONrIA4lp0XBtOy4+WzFPBObJL5HYieK5YxLvwCfC0IE
-         Co2LtTjEusxu+RVvGFTXvTdko0aUBYD/yxHpOgif98oT0pV6hgUqQjNsYaEvXp7ooJ+C
-         6hGHAwFKKPA0ksX//+TD7yVE+N5yLmEO9og4u1KwDhqJkcp6ih38ODTJxEKmge63iLqp
-         QRbQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rsWJsu1U3WogN0P9g+gXmXQK07b7ls6fejOZ6zUv9kQ=;
+        b=LEt34vv5Gu2E1SCygovMAhN2I34b/oqDrMq+uuZD0JpF4dPQxKj3CxLeThCTU7eNZH
+         Vy7/nY+fe2pzuoGJNeJjeYiEtn1BOWwBGcbkOzAYmK1LkI3kDFeEnxwBg7Fpc66xXnz8
+         QAtC8FYW19qTXQWAKQzw68hqy1VLh55OUs1cCWeveClfH7pkK2y+plLM+z5Yb5MuiEJS
+         ozAJ008fqbzPHPZrAC436kt5AmU84Zd1UA6V27+VWryMNPWlJu6F/j9dakWyfJSyz/WE
+         LrSZJDocxj/gPn9SWD7E3TMmTr4vt5tIdvq9UDIH1ojuljpX/vqVDKabPsmrQINam3Cx
+         iTBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GVLNEuznYXl4qyfikIVqD3Z4gsOX+ZYDeAnVRaE3myk=;
-        b=nz2OvmjZRbEA1JhyM/gsJIK5wSVHq/eZ0CpcjWXC78iMGn8qWFlrX3s2UBbB2F01dQ
-         0aMNWc3vQp4IdmJ2nCSLZq9FGSDPSF6Zxie4yB9ARq07qoO3GskhvuarN2rADVfqJmS2
-         6ubIOuXervxFKV325T0+jWDbyHpq4FGUWo1YVvRPOtKLR0ZrybtlrAo4A/WANP4QGBLl
-         XGp7g+u1cRwI7sg2KqDU3TGBRIYvsHr+Y/OgcCQs0kNAlvYbuCI2pE/TxQmq5nCammP+
-         NOj/URW78Vle6E/accXABucVlywOMMW6M4oer3xdK9WvYJReKkwfoSv8fhDktgLvH3mX
-         Co5Q==
-X-Gm-Message-State: AOAM533BkfAmAA/wOC8c0gcsX8CfGVuhcNAo6VJH8QY6v6dW+WsOaE9n
-        UGke4+40WP6RkCtzsdnJYlvLE8J+6Yw=
-X-Google-Smtp-Source: ABdhPJynkg8k3DWk+NW0Stxn6uy0Nnft7LRXmwg03tSsGGdeFP1eeAo49lhV8SjnY7EtpfAm+fHsvw==
-X-Received: by 2002:a2e:bba6:: with SMTP id y38mr513695lje.265.1633391684013;
-        Mon, 04 Oct 2021 16:54:44 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id d19sm1737478lfv.74.2021.10.04.16.54.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 16:54:43 -0700 (PDT)
-Subject: Re: linux-next: build failure after merge of the tegra tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Cross <ccross@android.com>,
-        Olof Johansson <olof@lixom.net>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211005103952.0914094d@canb.auug.org.au>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <445e6daa-f210-74c5-cf8d-4aa138136b7e@gmail.com>
-Date:   Tue, 5 Oct 2021 02:54:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rsWJsu1U3WogN0P9g+gXmXQK07b7ls6fejOZ6zUv9kQ=;
+        b=oyyYLMYi/7YVGa1U5lfVhM7JSOJmpLM7sk+x+MJDPGRG7BEciRNk2Y2b+8KlaLacRC
+         g3NiNXTT7+7Liv53Vv+fCZ4vhSrKLQQU5tcr8uQLbO59fxl4fscHjgaj9e6BW74X14fI
+         u5shkLJonwNFXusc2N13fDMqL803xqUk+FQkRF0qQp1xda/u7TDcIOquHqNF/TLiRdDS
+         MJuG7Bew9Nij57eWWcHgZhxwJFyiq14uKjgW2dENLHQpw1/pwnW7SS0h2cjrZOBfqaM0
+         QWS5HrXjXPBKttA+P6I3ZGTSJ7uItFDigBq42hkhlFyeANHgTRBr6iK2VzYKXGNX58D9
+         vBqQ==
+X-Gm-Message-State: AOAM532Ut3w5gr2IH3fulC/Y4MTiw43O8otIHMe5uz3gTAEDXxqz3n5f
+        gphMzjes5RuVd9MgcPHUCzdopNeexa3a/Zj6/YSlRQ==
+X-Google-Smtp-Source: ABdhPJxn1XPvXTBnpP4KU+7dFeW8pb2Np7MzcKfpGAocyuzB49Qd4B0BcCFlM+Oo0exOAMZEjhRCWXFt8FoIi9fwZTE=
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr5519wmi.7.1633391903992; Mon,
+ 04 Oct 2021 16:58:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211005103952.0914094d@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211004170102.2522514-1-dlatypov@google.com> <CABVgOS=LsVTvX-RnsfE775fnq4aGQt7SUCeRpBpEd03My99NTQ@mail.gmail.com>
+ <CAGS_qxpzB0r1piC9S1z9vWy-2Dz=frfN0uK-UAar6i+zvtjdjg@mail.gmail.com>
+In-Reply-To: <CAGS_qxpzB0r1piC9S1z9vWy-2Dz=frfN0uK-UAar6i+zvtjdjg@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 5 Oct 2021 07:58:11 +0800
+Message-ID: <CABVgOS==C7r+9JAV5+NcCqgCdqdYy+Yyr8ht7RUVwrpAmqR1vg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: yield output from run_kernel in real time
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.10.2021 02:39, Stephen Rothwell пишет:
-> Hi all,
-> 
-> After merging the tegra tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> In file included from arch/x86/include/asm/bug.h:84,
->                  from include/linux/bug.h:5,
->                  from arch/x86/include/asm/paravirt.h:15,
->                  from arch/x86/include/asm/irqflags.h:63,
->                  from include/linux/irqflags.h:16,
->                  from include/linux/rcupdate.h:26,
->                  from include/linux/rculist.h:11,
->                  from include/linux/pid.h:5,
->                  from include/linux/sched.h:14,
->                  from include/linux/ratelimit.h:6,
->                  from include/linux/dev_printk.h:16,
->                  from include/linux/device.h:15,
->                  from include/linux/of_reserved_mem.h:5,
->                  from drivers/memory/tegra/tegra210-emc-table.c:6:
-> include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
-> include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h:112:15: note: each undeclared identifier is reported only once for each function it appears in
->   112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
-> include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
-> include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> In file included from arch/x86/include/asm/bug.h:84,
->                  from include/linux/bug.h:5,
->                  from include/linux/cpumask.h:14,
->                  from arch/x86/include/asm/cpumask.h:5,
->                  from arch/x86/include/asm/msr.h:11,
->                  from arch/x86/include/asm/processor.h:22,
->                  from arch/x86/include/asm/timex.h:5,
->                  from include/linux/timex.h:65,
->                  from include/linux/time32.h:13,
->                  from include/linux/time.h:60,
->                  from include/linux/stat.h:19,
->                  from include/linux/module.h:13,
->                  from drivers/media/cec/platform/tegra/tegra_cec.c:14:
-> include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
-> include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h:112:15: note: each undeclared identifier is reported only once for each function it appears in
->   112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
-> include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
-> include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (first use in this function)
->   128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
->       |               ^~~~~~~~~~~~~~~~~
-> include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
->   121 |  int __ret_warn_on = !!(condition);    \
->       |                         ^~~~~~~~~
-> 
-> Presumably caused by commit
-> 
->   bbe30ae68d14 ("cpuidle: tegra: Enable compile testing")
-> 
-> I have used the tegra tree from next-20211001 for today.
-> 
+On Tue, Oct 5, 2021 at 7:46 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Mon, Oct 4, 2021 at 4:34 PM 'David Gow' via KUnit Development
+> <kunit-dev@googlegroups.com> wrote:
+> >
+> > On Tue, Oct 5, 2021 at 1:01 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > Currently, `run_kernel()` dumps all the kernel output to a file
+> > > (.kunit/test.log) and then opens the file and yields it to callers.
+> > > This made it easier to respect the requested timeout, if any.
+> > >
+> > > But it means that we can't yield the results in real time, either to the
+> > > parser or to stdout (if --raw_output is set).
+> > >
+> > > This change spins up a background thread to enforce the timeout, which
+> > > allows us to yield the kernel output in real time, while also copying it
+> > > to the .kunit/test.log file.
+> > > It's also careful to ensure that the .kunit/test.log file is complete,
+> > > even in the kunit_parser throws an exception/otherwise doesn't consume
+> > > every line, see the new `finally` block and unit test.
+> > >
+> > > For example:
+> > >
+> > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
+> > > <configure + build steps>
+> > > ...
+> > > <can now see output from QEMU in real time>
+> > >
+> > > This does not currently have a visible effect when --raw_output is not
+> > > passed, as kunit_parser.py currently only outputs everything at the end.
+> > > But that could change, and this patch is a necessary step towards
+> > > showing parsed test results in real time.
+> > >
+> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > ---
+> > >  tools/testing/kunit/kunit_kernel.py    | 73 +++++++++++++++-----------
+> > >  tools/testing/kunit/kunit_tool_test.py | 17 ++++++
+> > >  2 files changed, 60 insertions(+), 30 deletions(-)
+> > >
+> > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> > > index 2c6f916ccbaf..b8cba8123aa3 100644
+> > > --- a/tools/testing/kunit/kunit_kernel.py
+> > > +++ b/tools/testing/kunit/kunit_kernel.py
+> > > @@ -12,7 +12,8 @@ import subprocess
+> > >  import os
+> > >  import shutil
+> > >  import signal
+> > > -from typing import Iterator, Optional, Tuple
+> > > +import threading
+> > > +from typing import Iterator, List, Optional, Tuple
+> > >
+> > >  from contextlib import ExitStack
+> > >
+> > > @@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
+> > >                 if stderr:  # likely only due to build warnings
+> > >                         print(stderr.decode())
+> > >
+> > > -       def run(self, params, timeout, build_dir, outfile) -> None:
+> > > -               pass
+> > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > +               raise RuntimeError('not implemented!')
+> > >
+> > >
+> > >  class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > @@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > >                 kconfig.parse_from_string(self._kconfig)
+> > >                 base_kunitconfig.merge_in_entries(kconfig)
+> > >
+> > > -       def run(self, params, timeout, build_dir, outfile):
+> > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > >                 kernel_path = os.path.join(build_dir, self._kernel_path)
+> > >                 qemu_command = ['qemu-system-' + self._qemu_arch,
+> > >                                 '-nodefaults',
+> > > @@ -134,18 +135,10 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > >                                 '-nographic',
+> > >                                 '-serial stdio'] + self._extra_qemu_params
+> > >                 print('Running tests with:\n$', ' '.join(qemu_command))
+> > > -               with open(outfile, 'w') as output:
+> > > -                       process = subprocess.Popen(' '.join(qemu_command),
+> > > -                                                  stdin=subprocess.PIPE,
+> > > -                                                  stdout=output,
+> > > -                                                  stderr=subprocess.STDOUT,
+> > > -                                                  text=True, shell=True)
+> > > -               try:
+> > > -                       process.wait(timeout=timeout)
+> > > -               except Exception as e:
+> > > -                       print(e)
+> > > -                       process.terminate()
+> > > -               return process
+> > > +               return subprocess.Popen(' '.join(qemu_command),
+> > > +                                          stdout=subprocess.PIPE,
+> > > +                                          stderr=subprocess.STDOUT,
+> > > +                                          text=True, shell=True)
+> > >
+> > >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > >         """An abstraction over command line operations performed on a source tree."""
+> > > @@ -175,17 +168,13 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > >                 kunit_parser.print_with_timestamp(
+> > >                         'Starting Kernel with all configs takes a few minutes...')
+> > >
+> > > -       def run(self, params, timeout, build_dir, outfile):
+> > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > >                 """Runs the Linux UML binary. Must be named 'linux'."""
+> > >                 linux_bin = get_file_path(build_dir, 'linux')
+> > > -               outfile = get_outfile_path(build_dir)
+> > > -               with open(outfile, 'w') as output:
+> > > -                       process = subprocess.Popen([linux_bin] + params,
+> > > -                                                  stdin=subprocess.PIPE,
+> >
+> > This breaks --raw_output under UML for me. Including the
+> > stdin=subprocess.PIPE again seems to fix it.
+>
+> Can you give an example of what it does?
+>
+> I don't see any issues with --raw_output under UML with the patch as-is.
+> I was mainly testing this with UML, and I must have ran it some 10s of
+> times, so I'm a bit surprised.
+>
+> On an earlier version, I saw some mangling of --raw_output (\n was
+> missing), but that went away after some revisions.
+>
 
-Stephen, thank you. Now I recall what was the actual reason for my
-version of the patch [1]. Thierry, please use my original patch, thanks.
+Yeah, that's the sort of thing I'm seeing: \n being treated as just a
+new line (without the carriage return).
+It happens pretty consistently, though sometimes the text wraps and
+sometimes (well, once) everything gets forced into the last column of
+the terminal. I've not been able to get it to work at all without
+having stdin be subprocess.PIPE.
 
-[1]
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20210912202907.28471-5-digetx@gmail.com/
+It occurs both under tmux and not, and under Konsole and xterm, so it
+doesn't appear to be specific to any given terminal implementation.
+Still occurs even after running 'reset', and with a clean build.
+QEMU-based --raw_output works fine.
+
+
+> >
+> > > -                                                  stdout=output,
+> > > -                                                  stderr=subprocess.STDOUT,
+> > > -                                                  text=True)
+> > > -                       process.wait(timeout)
+> > > +               return subprocess.Popen([linux_bin] + params,
+> > > +                                          stdout=subprocess.PIPE,
+> > > +                                          stderr=subprocess.STDOUT,
+> > > +                                          text=True)
+> > >
+> > >  def get_kconfig_path(build_dir) -> str:
+> > >         return get_file_path(build_dir, KCONFIG_PATH)
+> > > @@ -330,12 +319,36 @@ class LinuxSourceTree(object):
+> > >                 args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
+> > >                 if filter_glob:
+> > >                         args.append('kunit.filter_glob='+filter_glob)
+> > > -               outfile = get_outfile_path(build_dir)
+> > > -               self._ops.run(args, timeout, build_dir, outfile)
+> > > -               subprocess.call(['stty', 'sane'])
+> > > -               with open(outfile, 'r') as file:
+> > > -                       for line in file:
+> > > +
+> > > +               process = self._ops.start(args, build_dir)
+> > > +               assert process.stdout is not None  # tell mypy it's set
+> > > +
+> > > +               # Enforce the timeout in a background thread.
+> > > +               def _wait_proc():
+> > > +                       try:
+> > > +                               process.wait(timeout=timeout)
+> > > +                       except Exception as e:
+> > > +                               print(e)
+> > > +                               process.terminate()
+> > > +                               process.wait()
+> > > +               waiter = threading.Thread(target=_wait_proc)
+> > > +               waiter.start()
+> > > +
+> > > +               output = open(get_outfile_path(build_dir), 'w')
+> > > +               try:
+> > > +                       # Tee the output to the file and to our caller in real time.
+> > > +                       for line in process.stdout:
+> > > +                               output.write(line)
+> > >                                 yield line
+> > > +               # This runs even if our caller doesn't consume every line.
+> > > +               finally:
+> > > +                       # Flush any leftover output to the file
+> > > +                       output.write(process.stdout.read())
+> > > +                       output.close()
+> > > +                       process.stdout.close()
+> > > +
+> > > +                       waiter.join()
+> > > +                       subprocess.call(['stty', 'sane'])
+> > >
+> > >         def signal_handler(self, sig, frame) -> None:
+> > >                 logging.error('Build interruption occurred. Cleaning console.')
+> > > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> > > index 619c4554cbff..f9a7398a9584 100755
+> > > --- a/tools/testing/kunit/kunit_tool_test.py
+> > > +++ b/tools/testing/kunit/kunit_tool_test.py
+> > > @@ -14,6 +14,7 @@ import tempfile, shutil # Handling test_tmpdir
+> > >  import itertools
+> > >  import json
+> > >  import signal
+> > > +import subprocess
+> > >  import os
+> > >
+> > >  import kunit_config
+> > > @@ -291,6 +292,22 @@ class LinuxSourceTreeTest(unittest.TestCase):
+> > >                                 pass
+> > >                         tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
+> > >
+> > > +       def test_run_kernel_hits_exception(self):
+> > > +               def fake_start(unused_args, unused_build_dir):
+> > > +                       return subprocess.Popen(['echo "hi\nbye"'], shell=True, text=True, stdout=subprocess.PIPE)
+> > > +
+> > > +               with tempfile.TemporaryDirectory('') as build_dir:
+> > > +                       tree = kunit_kernel.LinuxSourceTree(build_dir, load_config=False)
+> > > +                       mock.patch.object(tree._ops, 'start', side_effect=fake_start).start()
+> > > +
+> > > +                       with self.assertRaises(ValueError):
+> > > +                               for line in tree.run_kernel(build_dir=build_dir):
+> > > +                                       self.assertEqual(line, 'hi\n')
+> > > +                                       raise ValueError('uh oh, did not read all output')
+> > > +
+> > > +                       with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
+> > > +                               self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
+> > > +
+> > >         # TODO: add more test cases.
+> > >
+> > >
+> > >
+> > > base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
+> > > --
+> > > 2.33.0.800.g4c38ced690-goog
+> > >
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/CABVgOS%3DLsVTvX-RnsfE775fnq4aGQt7SUCeRpBpEd03My99NTQ%40mail.gmail.com.
