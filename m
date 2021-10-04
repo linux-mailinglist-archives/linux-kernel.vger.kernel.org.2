@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB37742125A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1DA42125D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhJDPLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbhJDPLU (ORCPT
+        id S234391AbhJDPNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:13:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233403AbhJDPNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:11:20 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B42C061745;
-        Mon,  4 Oct 2021 08:09:31 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s11so16807040pgr.11;
-        Mon, 04 Oct 2021 08:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4WT++irZDfN01BalrLCtvvHYwTrUf+YL/bgNyWjc3v0=;
-        b=E5OvtnIbeg650BaF6Hg+xcg00UoT67oerz+JsUrDVBfrPzwqAy7NH2lD37qeLN1KxB
-         n1qUxPeVcXN2gvNyGvCntpvDMAzxqJcHNSNt41Pg3X1UJCWv2MltoJVaTh8JOs6C5fMI
-         IIJ57zt1VC52AqjVMyWu3W9gAYWFy2Xv/eMp0uPkDCY+bk/1g2KGYM6ICVjHn74x0Pv/
-         GZHMMU272Vtfumld/PctFVnoi//XobppLkTy+esHMaOgLQVTEq+yCJmV7UCCkb0DhFyZ
-         GzhAALQFyys+zxBHVt1njPlBs63ZsgD2nWoYceo05/4hrf1fBJGJvWcxS8OrbZZoPIZJ
-         vLPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4WT++irZDfN01BalrLCtvvHYwTrUf+YL/bgNyWjc3v0=;
-        b=tfiVWGOoU+EEwvLjmmEI+bJTiBWLNrEwAWFYOmwFo3PUV5MmLiAZ4PVSmetaBdTfDO
-         sh3PRkA6bsLuMuk3fBkiFCIXeN0N+4giNyMfCrw57bcFo0u8pzKkrjuvbizwxabRMGt3
-         jbWU2VnxIWJGicV97gnrqfPmM6gLe4lwnH4lbjMcLMwxh/i/H1qxFcH2D4Mq8JC8Yz9c
-         acO9pGeG2dWepD8KS1ZubkovWUIv9tPTifOop3VsAZ+G+suquEfX++/KBL8B/t74HzmE
-         +qhhcGpaTtcGbVKa+0M1rLcU6fyZUK8hG1/8OgGwZEt9i9mAmxCt5VUDvwmzxNAXbtjx
-         iDBg==
-X-Gm-Message-State: AOAM533yTlPkVOAWdqNFXAOVEUTTu+bVdjXRC00boDg67+oKEMzUg1CQ
-        J9VzTGV+8mLwpREFb4DwXHd9A+Di5bI=
-X-Google-Smtp-Source: ABdhPJydcUOr9uzsulpwFheZhE3wBfBrTBg57es9nQYryrxesZZxzB+cW06Oq7ejHfHNW0UKD75YBQ==
-X-Received: by 2002:a05:6a00:15ca:b0:44c:767e:5850 with SMTP id o10-20020a056a0015ca00b0044c767e5850mr63306pfu.7.1633360170940;
-        Mon, 04 Oct 2021 08:09:30 -0700 (PDT)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id e17sm4727150pjh.17.2021.10.04.08.09.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 08:09:30 -0700 (PDT)
-Subject: Re: [PATCH] drm/i915/guc, docs: Fix pdfdocs build error by removing
- nested grid
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <4a227569-074f-c501-58bb-d0d8f60a8ae9@gmail.com>
- <87czozba5c.fsf@intel.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <3ec7d7c5-301f-ad34-fd40-844e81e1cdb9@gmail.com>
-Date:   Tue, 5 Oct 2021 00:09:28 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 4 Oct 2021 11:13:43 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194EslAb013231;
+        Mon, 4 Oct 2021 11:11:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=/pED2LQC9LqzPJIxtOTF67GmisCBvq2p2EFye0bxS+g=;
+ b=dOHSy1ErN0zyIJDbW/JODWeaoLyGqrVeXVe/bgBll9a599vaxXAP73RFBxGabeoIbQud
+ N+1GC3wAvj5ZXbBzkqsU6o1KMYGm2i6j+FxTCCIHqUF5i63UPCgzPAtIdaICwbEpSx/l
+ AQbPJJralGVaxgLq8PmhrjplqpOkihxFyME1QFjODf2CjRWqZ9wyOEwLRZif4Smk0xF6
+ 9MRQ7HScU1nXpmZ0aS0TGC3ohNCYGnq0mTyuP5d7P8TJjxUUKwWLvmyL2DHSZme7kHz+
+ sKkd2Ffj1evPqV2VgYhgd8jSQNgNCsHCu8L/d5+ONtTLrAfUQ4uCydDqD0KruDc9kJIE aw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bg35qhra3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 11:11:50 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194F962A004392;
+        Mon, 4 Oct 2021 15:11:48 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bef29rq9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 15:11:48 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194FBin83539496
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 15:11:44 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC65211C04C;
+        Mon,  4 Oct 2021 15:11:44 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1729B11C07A;
+        Mon,  4 Oct 2021 15:11:43 +0000 (GMT)
+Received: from sjain014.ibmuc.com (unknown [9.43.74.5])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Oct 2021 15:11:42 +0000 (GMT)
+From:   Sourabh Jain <sourabhjain@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     hbathini@linux.ibm.com, mahesh@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        aneesh.kumar@linux.ibm.com
+Subject: [PATCH 0/3] Update crashkernel offset to allow kernel to boot on large config LPARs
+Date:   Mon,  4 Oct 2021 20:41:39 +0530
+Message-Id: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <87czozba5c.fsf@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iNvzv-4BJDcjOxbAUGQX5Q8cRZgEYe-D
+X-Proofpoint-ORIG-GUID: iNvzv-4BJDcjOxbAUGQX5Q8cRZgEYe-D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_04,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ priorityscore=1501 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 adultscore=0 phishscore=0 suspectscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sep 2021 18:10:23 +0300, Jani Nikula wrote:
-> On Mon, 20 Sep 2021, Akira Yokosawa <akiyks@gmail.com> wrote:
->> Nested grids in grid-table cells are not specified as proper ReST
->> constructs.
->> Commit 572f2a5cd974 ("drm/i915/guc: Update firmware to v62.0.0")
->> added a couple of kerneldoc tables of the form:
->>
->>   +---+-------+------------------------------------------------------+
->>   | 1 |  31:0 |  +------------------------------------------------+  |
->>   +---+-------+  |                                                |  |
->>   |...|       |  |  Embedded `HXG Message`_                       |  |
->>   +---+-------+  |                                                |  |
->>   | n |  31:0 |  +------------------------------------------------+  |
->>   +---+-------+------------------------------------------------------+
->>
->> For "make htmldocs", they happen to work as one might expect,
->> but they are incompatible with "make latexdocs" and "make pdfdocs",
->> and cause the generated gpu.tex file to become incomplete and
->> unbuildable by xelatex.
->>
->> Restore the compatibility by removing those nested grids in the tables.
->>
->> Size comparison of generated gpu.tex:
->>
->>                   Sphinx 2.4.4  Sphinx 4.2.0
->>   v5.14:               3238686       3841631
->>   v5.15-rc1:            376270        432729
->>   with this fix:       3377846       3998095
->>
->> Fixes: 572f2a5cd974 ("drm/i915/guc: Update firmware to v62.0.0")
->> Cc: John Harrison <John.C.Harrison@Intel.com>
->> Cc: Michal Wajdeczko <michal.wajdeczko@intel.com>
->> Cc: Matthew Brost <matthew.brost@intel.com>
->> Cc: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
->> Cc: Matt Roper <matthew.d.roper@intel.com>
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> 
-> Pushed to drm-intel-gt-next, thanks for the patch.
-> 
-> This makes the HTML output arguably worse, but there were no comments
-> from anyone and the pdf build needs to work.
+As the crashkernel reserve memory at 128MB offset in the first memory
+block, it leaves less than 128MB memory to accommodate other essential
+system resources that need memory reservation in the same block. This
+creates kernel boot failure on large config LPARs having core count
+greater than 192.
 
-[Dropped most CCs]
+Setting the crashkernel to mid of RMA size which can be 512MB or more
+instead of capping it to 128MB by default leaves enough space to allocate
+memory to another system resource in the first memory block.
 
-Hi Jani,
+Now keeping the crashkernel at mid of RMA size works fine for the primary
+kernel but creates boot failure for the kdump kernel when the crashekernel
+reservation start offset crosses 256MB. The reason is, in the early boot
+MMU feature of 1T segments support is not detected which restricts the paca
+allocation for boot CPU below 256MB. When the crashkernel itself is
+starting at 256MB offset, attempt to allocate paca below 256MB leads to the
+kdump kernel boot failure.
 
-Thank you for taking care of this patch.
+Moving the detection of segment sizes before identifying the boot CPU
+removes the restriction of 256MB limit for boot CPU paca allocation
+which allows the kdump kernel to successfully boot and capture vmcore.
 
-Jon, as this has reached upstream, can you back-merge v5.15-rc4
-into docs-next so that "make pdfdocs" can complete?
+While allocating paca for boot CPU we found that there is a small window
+during kernel boot where early_radix_enabled returns True even though
+the radix is disabled using command-line. This leads to an invalid bolated
+size calculation on which paca limit of boot CPU is dependent. Patch 0001
+closes that window that by fixing the radix bit in mmu_feature.
 
-I tried the back-merge without seeing any conflict.
-"make pdfdocs" finishes successfully now.
+Mahesh Salgaonkar (2):
+  fixup mmu_features immediately after getting cpu pa features.
+  Remove 256MB limit restriction for boot cpu paca allocation
 
-        Thanks, Akira
+Sourabh Jain (1):
+  powerpc: Set crashkernel offset to mid of RMA region
 
-> 
-> BR,
-> Jani.
-> 
-> 
-> 
->> ---
-[...]
+ arch/powerpc/include/asm/book3s/64/mmu.h |  2 ++
+ arch/powerpc/include/asm/mmu.h           |  1 +
+ arch/powerpc/kernel/prom.c               |  5 +++++
+ arch/powerpc/kernel/rtas.c               |  3 +++
+ arch/powerpc/kexec/core.c                | 13 +++++++++----
+ arch/powerpc/mm/book3s64/hash_utils.c    |  5 ++++-
+ arch/powerpc/mm/init_64.c                |  5 ++++-
+ 7 files changed, 28 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
+
