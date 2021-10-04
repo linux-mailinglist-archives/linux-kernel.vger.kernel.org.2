@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEE2420E0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D08420FE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbhJDNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55678 "EHLO mail.kernel.org"
+        id S237653AbhJDNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236616AbhJDNSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B07FE61A35;
-        Mon,  4 Oct 2021 13:07:56 +0000 (UTC)
+        id S238160AbhJDNhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAFC6126A;
+        Mon,  4 Oct 2021 13:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352877;
-        bh=OyGqaTa1kulYmx4lOFjn1cD9afRll1fWrtNOz6y2yFI=;
+        s=korg; t=1633353410;
+        bh=qJ9lhhn04jBi8L3e0Q5wmv8IRUQA0TvXcJUX+Ff7azk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yIl4uQGiqgPxhdJbguXWxFyg9NGc6nZAOtTPfLpQXzvSefqrhAf4SMjzUC5PKGhAe
-         dKcdWpXAG0cqVhIfILZlkFWdBxKtLDNg8nhngTaFSJK2qR/zGruFa35ft7UdYwb3Te
-         k4pUEsbu3yHxqEN6dHXznp3LdHPRTDU6Xz6xRoNM=
+        b=lN3IUjpPF0NQp0Pv0J2YwhZ2CKdys8uFU40qGHmtLBDAji81xsl3fKipzrgPCq6/R
+         qTh0F4zpbqFqUD28jqFPFmGWUG65ek27UHPM7la4Ji7K/LXabuIFTrkO3m0RLz9f3f
+         HodXqAEVNqFrrEutzj/kzKFkW9PZ8IP9B4Dhfuxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 27/56] scsi: csiostor: Add module softdep on cxgb4
+Subject: [PATCH 5.14 117/172] selftests, bpf: test_lwt_ip_encap: Really disable rp_filter
 Date:   Mon,  4 Oct 2021 14:52:47 +0200
-Message-Id: <20211004125030.857983001@linuxfoundation.org>
+Message-Id: <20211004125048.759890007@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+From: Jiri Benc <jbenc@redhat.com>
 
-[ Upstream commit 79a7482249a7353bc86aff8127954d5febf02472 ]
+[ Upstream commit 79e2c306667542b8ee2d9a9d947eadc7039f0a3c ]
 
-Both cxgb4 and csiostor drivers run on their own independent Physical
-Function. But when cxgb4 and csiostor are both being loaded in parallel via
-modprobe, there is a race when firmware upgrade is attempted by both the
-drivers.
+It's not enough to set net.ipv4.conf.all.rp_filter=0, that does not override
+a greater rp_filter value on the individual interfaces. We also need to set
+net.ipv4.conf.default.rp_filter=0 before creating the interfaces. That way,
+they'll also get their own rp_filter value of zero.
 
-When the cxgb4 driver initiates the firmware upgrade, it halts the firmware
-and the chip until upgrade is complete. When the csiostor driver is coming
-up in parallel, the firmware mailbox communication fails with timeouts and
-the csiostor driver probe fails.
-
-Add a module soft dependency on cxgb4 driver to ensure loading csiostor
-triggers cxgb4 to load first when available to avoid the firmware upgrade
-race.
-
-Link: https://lore.kernel.org/r/1632759248-15382-1-git-send-email-rahul.lakkireddy@chelsio.com
-Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 0fde56e4385b0 ("selftests: bpf: add test_lwt_ip_encap selftest")
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_init.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/bpf/test_lwt_ip_encap.sh | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/csiostor/csio_init.c b/drivers/scsi/csiostor/csio_init.c
-index a6dd704d7f2d..1b8ccadc7cf6 100644
---- a/drivers/scsi/csiostor/csio_init.c
-+++ b/drivers/scsi/csiostor/csio_init.c
-@@ -1257,3 +1257,4 @@ MODULE_DEVICE_TABLE(pci, csio_pci_tbl);
- MODULE_VERSION(CSIO_DRV_VERSION);
- MODULE_FIRMWARE(FW_FNAME_T5);
- MODULE_FIRMWARE(FW_FNAME_T6);
-+MODULE_SOFTDEP("pre: cxgb4");
+diff --git a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
+index 59ea56945e6c..b497bb85b667 100755
+--- a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
++++ b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
+@@ -112,6 +112,14 @@ setup()
+ 	ip netns add "${NS2}"
+ 	ip netns add "${NS3}"
+ 
++	# rp_filter gets confused by what these tests are doing, so disable it
++	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
++	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.default.rp_filter=0
++	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.default.rp_filter=0
++	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.default.rp_filter=0
++
+ 	ip link add veth1 type veth peer name veth2
+ 	ip link add veth3 type veth peer name veth4
+ 	ip link add veth5 type veth peer name veth6
+@@ -236,11 +244,6 @@ setup()
+ 	ip -netns ${NS1} -6 route add ${IPv6_GRE}/128 dev veth5 via ${IPv6_6} ${VRF}
+ 	ip -netns ${NS2} -6 route add ${IPv6_GRE}/128 dev veth7 via ${IPv6_8} ${VRF}
+ 
+-	# rp_filter gets confused by what these tests are doing, so disable it
+-	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
+-
+ 	TMPFILE=$(mktemp /tmp/test_lwt_ip_encap.XXXXXX)
+ 
+ 	sleep 1  # reduce flakiness
 -- 
 2.33.0
 
