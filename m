@@ -2,180 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14CD420C34
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A6A420C4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234512AbhJDNDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:03:51 -0400
-Received: from relay.sw.ru ([185.231.240.75]:60072 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234010AbhJDNCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:02:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=NXXBfgE0TSkMoIe3yY7lZ8NYjYOprC0AaP84Hxvq3jU=; b=EAY640bekynyJmgRFI0
-        d5Sooeh+TadYX1ZAHSM1FrY4cvgzntLy32GyQLcORbCZmC7yrj47kMydYacoXN3ada4PRlgFP4zPL
-        We4DgN8sI807hnGlhQSw1dWelFajgl7HwiVPL608vA/t1bKXyfk8wlHPfQGLYFSXnwJT4ZZ6byk=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mXNZe-004uHs-Me; Mon, 04 Oct 2021 16:00:06 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH net v9] skb_expand_head() adjust skb->truesize incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <45b3cb13-8c6e-25a3-f568-921ab6f1ca8f@virtuozzo.com>
-Message-ID: <2bd9c638-3038-5aba-1dae-ad939e13c0c4@virtuozzo.com>
-Date:   Mon, 4 Oct 2021 16:00:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234826AbhJDNEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43104 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234829AbhJDNCw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:52 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 319A91FDE4;
+        Mon,  4 Oct 2021 13:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633352462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OUdZ/nUYlMda2qgf/QTNrmYQhSZjUvD2BVvzV1p93qg=;
+        b=PlAvfOCalzYQ013C27JLg5Vy+Z/vf/uiwSxm/Bu7hjNt8wwEbE5U/Zfb4Q5zNo6sYv8ILY
+        C2BPI/WuFfsZ0g92iMgEb9/0NuTXgirsFWkBAwQenu8AN1XMDIFExA7ukjd7YB3pRyXBVb
+        CsCEXhrrDH6uOD1RH2MPnr7KI2MyyQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633352462;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OUdZ/nUYlMda2qgf/QTNrmYQhSZjUvD2BVvzV1p93qg=;
+        b=j7d7WR2b8JODNDoPphHnSSXZWwz4S5Hp3n8mb1sh/dtyIw6HKEitN96ypyum4uBT9GH0X3
+        OIkN4WfZ7Tn5WBBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5136313CEE;
+        Mon,  4 Oct 2021 13:01:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wPEiDw37WmGKPAAAMHmgww
+        (envelope-from <osalvador@suse.de>); Mon, 04 Oct 2021 13:01:01 +0000
+Date:   Mon, 4 Oct 2021 15:00:59 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 1/5] hugetlb: add demote hugetlb page sysfs interfaces
+Message-ID: <YVr7C8ek1g9hKz4C@localhost.localdomain>
+References: <20211001175210.45968-1-mike.kravetz@oracle.com>
+ <20211001175210.45968-2-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <45b3cb13-8c6e-25a3-f568-921ab6f1ca8f@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001175210.45968-2-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This may happen because of two reasons:
-- skb_set_owner_w() for newly cloned skb is called too early,
-before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-- pskb_expand_head() does not adjust truesize in (skb->sk) case.
-In this case sk->sk_wmem_alloc should be adjusted too.
+On Fri, Oct 01, 2021 at 10:52:06AM -0700, Mike Kravetz wrote:
+> -which function as described above for the default huge page-sized case.
+> +The demote interfaces provide the ability to split a huge page into
+> +smaller huge pages.  For example, the x86 architecture supports both
+> +1GB and 2MB huge pages sizes.  A 1GB huge page can be split into 512
+> +2MB huge pages.  Demote interfaces are not available for the smallest
+> +huge page size.  The demote interfaces are:
+> +
+> +demote_size
+> +        is the size of demoted pages.  When a page is demoted a corresponding
+> +        number of huge pages of demote_size will be created.  By default,
+> +        demote_size is set to the next smaller huge page size.  If there are
+> +        multiple smaller huge page sizes, demote_size can be set to any of
+> +        these smaller sizes.  Only huge page sizes less then the current huge
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+s/then/than ?
 
-Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
-v9: restored sock_edemux check
-v8: clone non-wmem skb
-v7 (from kuba@):
-    shift more magic into helpers,
-    follow Eric's advice and don't inherit non-wmem skbs for now
-v6: fixed delta,
-    improved comments
-v5: fixed else condition, thanks to Eric
-    reworked update of expanded skb,
-    added corresponding comments
-v4: decided to use is_skb_wmem() after pskb_expand_head() call
-    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
-v3: removed __pskb_expand_head(),
-    added is_skb_wmem() helper for skb with wmem-compatible destructors
-    there are 2 ways to use it:
-     - before pskb_expand_head(), to create skb clones
-     - after successfull pskb_expand_head() to change owner on extended
-       skb.
-v2: based on patch version from Eric Dumazet,
-    added __pskb_expand_head() function, which can be forced
-    to adjust skb->truesize and sk->sk_wmem_alloc.
----
- include/net/sock.h |  1 +
- net/core/skbuff.c  | 35 ++++++++++++++++++++++-------------
- net/core/sock.c    |  8 ++++++++
- 3 files changed, 31 insertions(+), 13 deletions(-)
+>  static void __init hugetlb_init_hstates(void)
+>  {
+> -	struct hstate *h;
+> +	struct hstate *h, *h2;
+>  
+>  	for_each_hstate(h) {
+>  		if (minimum_order > huge_page_order(h))
+> @@ -2995,6 +2995,23 @@ static void __init hugetlb_init_hstates(void)
+>  		/* oversize hugepages were init'ed in early boot */
+>  		if (!hstate_is_gigantic(h))
+>  			hugetlb_hstate_alloc_pages(h);
+> +
+> +		/*
+> +		 * Set demote order for each hstate.  Note that
+> +		 * h->demote_order is initially 0.
+> +		 * - We can not demote gigantic pages if runtime freeing
+> +		 *   is not supported.
+> +		 */
+> +		if (!hstate_is_gigantic(h) ||
+> +		    gigantic_page_runtime_supported()) {
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 66a9a90f9558..a547651d46a7 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
- 			     gfp_t priority);
- void __sock_wfree(struct sk_buff *skb);
- void sock_wfree(struct sk_buff *skb);
-+bool is_skb_wmem(const struct sk_buff *skb);
- struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
- 			     gfp_t priority);
- void skb_orphan_partial(struct sk_buff *skb);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 2170bea2c7de..8cb6d360cda5 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1804,30 +1804,39 @@ EXPORT_SYMBOL(skb_realloc_headroom);
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
- 	int delta = headroom - skb_headroom(skb);
-+	int osize = skb_end_offset(skb);
-+	struct sock *sk = skb->sk;
- 
- 	if (WARN_ONCE(delta <= 0,
- 		      "%s is expecting an increase in the headroom", __func__))
- 		return skb;
- 
--	/* pskb_expand_head() might crash, if skb is shared */
--	if (skb_shared(skb)) {
-+	delta = SKB_DATA_ALIGN(delta);
-+	/* pskb_expand_head() might crash, if skb is shared. */
-+	if (skb_shared(skb) || !is_skb_wmem(skb)) {
- 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
- 
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
--			kfree_skb(skb);
--		}
-+		if (unlikely(!nskb))
-+			goto fail;
-+
-+		if (sk)
-+			skb_set_owner_w(nskb, sk);
-+		consume_skb(skb);
- 		skb = nskb;
- 	}
--	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
--		kfree_skb(skb);
--		skb = NULL;
-+	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC))
-+		goto fail;
-+
-+	if (sk && skb->destructor != sock_edemux) {
-+		delta = skb_end_offset(skb) - osize;
-+		refcount_add(delta, &sk->sk_wmem_alloc);
-+		skb->truesize += delta;
- 	}
- 	return skb;
-+
-+fail:
-+	kfree_skb(skb);
-+	return NULL;
- }
- EXPORT_SYMBOL(skb_expand_head);
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 62627e868e03..1932755ae9ba 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL(skb_set_owner_w);
- 
-+bool is_skb_wmem(const struct sk_buff *skb)
-+{
-+	return skb->destructor == sock_wfree ||
-+	       skb->destructor == __sock_wfree ||
-+	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
-+}
-+EXPORT_SYMBOL(is_skb_wmem);
-+
- static bool can_skb_orphan_partial(const struct sk_buff *skb)
- {
- #ifdef CONFIG_TLS_DEVICE
+Based on the comment, I think that making the condition explicit looks
+better from my point of view.
+
+if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+    continue;
+
+> +			for_each_hstate(h2) {
+> +				if (h2 == h)
+> +					continue;
+> +				if (h2->order < h->order &&
+> +				    h2->order > h->demote_order)
+> +					h->demote_order = h2->order;
+> +			}
+> +		}
+>  	}
+>  	VM_BUG_ON(minimum_order == UINT_MAX);
+>  }
+> @@ -3235,9 +3252,29 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	return 0;
+>  }
+>  
+
 -- 
-2.31.1
-
+Oscar Salvador
+SUSE L3
