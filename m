@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DDC420BDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332DF420C70
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhJDNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
+        id S235175AbhJDNFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233943AbhJDM7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B06B615A4;
-        Mon,  4 Oct 2021 12:57:15 +0000 (UTC)
+        id S235088AbhJDNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D0E66187D;
+        Mon,  4 Oct 2021 13:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352236;
-        bh=L241wpkUh0bWgSPDGbsmy1HluiZHT2lvYcQZyy8xsko=;
+        s=korg; t=1633352404;
+        bh=ggqInwVKEz0wwFwt85FRlsV2GgUMnVleSDtjTL7l9RY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDzY9vLWfu08nJF3bA6cCzN5xRgohG7RxDIDy5mto8T3HkuXZPCVb+BSyHQo4evYl
-         gYQ1e+runFTLI/ANdyn73+bmZYWNbEIigjTaP9CRR+mxbX42eEkaAvC1DXvNIUllZN
-         RjzmJFyDb7SnCaFoGC3jzIQ37kySzL0zAVdE2TDA=
+        b=DOc05ZyrjTZmzDQGw97OlGbddnK5bGfQwRiI8vQpRekvIj2QcpP97H0JEYdaZMXFc
+         k5w+vMLvo0BoA5eYMMR/Xn8NEs/LfQLGHTeaGGthH5ghtW8cBt/QijiAKzctwuelU7
+         a0RTUv08wjAuuQ3ev3XDW60bOZg9mI7vOW6URYDk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 40/57] e100: fix buffer overrun in e100_get_regs
+Subject: [PATCH 4.14 49/75] sctp: break out if skb_header_pointer returns NULL in sctp_rcv_ootb
 Date:   Mon,  4 Oct 2021 14:52:24 +0200
-Message-Id: <20211004125030.212671311@linuxfoundation.org>
+Message-Id: <20211004125033.172419193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 51032e6f17ce990d06123ad7307f258c50d25aa7 ]
+[ Upstream commit f7e745f8e94492a8ac0b0a26e25f2b19d342918f ]
 
-The e100_get_regs function is used to implement a simple register dump
-for the e100 device. The data is broken into a couple of MAC control
-registers, and then a series of PHY registers, followed by a memory dump
-buffer.
+We should always check if skb_header_pointer's return is NULL before
+using it, otherwise it may cause null-ptr-deref, as syzbot reported:
 
-The total length of the register dump is defined as (1 + E100_PHY_REGS)
-* sizeof(u32) + sizeof(nic->mem->dump_buf).
+  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+  RIP: 0010:sctp_rcv_ootb net/sctp/input.c:705 [inline]
+  RIP: 0010:sctp_rcv+0x1d84/0x3220 net/sctp/input.c:196
+  Call Trace:
+  <IRQ>
+   sctp6_rcv+0x38/0x60 net/sctp/ipv6.c:1109
+   ip6_protocol_deliver_rcu+0x2e9/0x1ca0 net/ipv6/ip6_input.c:422
+   ip6_input_finish+0x62/0x170 net/ipv6/ip6_input.c:463
+   NF_HOOK include/linux/netfilter.h:307 [inline]
+   NF_HOOK include/linux/netfilter.h:301 [inline]
+   ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:472
+   dst_input include/net/dst.h:460 [inline]
+   ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
+   NF_HOOK include/linux/netfilter.h:307 [inline]
+   NF_HOOK include/linux/netfilter.h:301 [inline]
+   ipv6_rcv+0x28c/0x3c0 net/ipv6/ip6_input.c:297
 
-The logic for filling in the PHY registers uses a convoluted inverted
-count for loop which counts from E100_PHY_REGS (0x1C) down to 0, and
-assigns the slots 1 + E100_PHY_REGS - i. The first loop iteration will
-fill in [1] and the final loop iteration will fill in [1 + 0x1C]. This
-is actually one more than the supposed number of PHY registers.
-
-The memory dump buffer is then filled into the space at
-[2 + E100_PHY_REGS] which will cause that memcpy to assign 4 bytes past
-the total size.
-
-The end result is that we overrun the total buffer size allocated by the
-kernel, which could lead to a panic or other issues due to memory
-corruption.
-
-It is difficult to determine the actual total number of registers
-here. The only 8255x datasheet I could find indicates there are 28 total
-MDI registers. However, we're reading 29 here, and reading them in
-reverse!
-
-In addition, the ethtool e100 register dump interface appears to read
-the first PHY register to determine if the device is in MDI or MDIx
-mode. This doesn't appear to be documented anywhere within the 8255x
-datasheet. I can only assume it must be in register 28 (the extra
-register we're reading here).
-
-Lets not change any of the intended meaning of what we copy here. Just
-extend the space by 4 bytes to account for the extra register and
-continue copying the data out in the same order.
-
-Change the E100_PHY_REGS value to be the correct total (29) so that the
-total register dump size is calculated properly. Fix the offset for
-where we copy the dump buffer so that it doesn't overrun the total size.
-
-Re-write the for loop to use counting up instead of the convoluted
-down-counting. Correct the mdio_read offset to use the 0-based register
-offsets, but maintain the bizarre reverse ordering so that we have the
-ABI expected by applications like ethtool. This requires and additional
-subtraction of 1. It seems a bit odd but it makes the flow of assignment
-into the register buffer easier to follow.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 3acb50c18d8d ("sctp: delay as much as possible skb_linearize")
+Reported-by: syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ net/sctp/input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index abb65ed9492b..aa556e4f9051 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2462,7 +2462,7 @@ static void e100_get_drvinfo(struct net_device *netdev,
- 		sizeof(info->bus_info));
- }
+diff --git a/net/sctp/input.c b/net/sctp/input.c
+index 89a24de23086..b20a1fbea8bf 100644
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -679,7 +679,7 @@ static int sctp_rcv_ootb(struct sk_buff *skb)
+ 		ch = skb_header_pointer(skb, offset, sizeof(*ch), &_ch);
  
--#define E100_PHY_REGS 0x1C
-+#define E100_PHY_REGS 0x1D
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
-@@ -2484,14 +2484,18 @@ static void e100_get_regs(struct net_device *netdev,
- 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
- 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
- 		ioread16(&nic->csr->scb.status);
--	for (i = E100_PHY_REGS; i >= 0; i--)
--		buff[1 + E100_PHY_REGS - i] =
--			mdio_read(netdev, nic->mii.phy_id, i);
-+	for (i = 0; i < E100_PHY_REGS; i++)
-+		/* Note that we read the registers in reverse order. This
-+		 * ordering is the ABI apparently used by ethtool and other
-+		 * applications.
-+		 */
-+		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
-+					E100_PHY_REGS - 1 - i);
- 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
- 	e100_exec_cb(nic, NULL, e100_dump);
- 	msleep(10);
--	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
--		sizeof(nic->mem->dump_buf));
-+	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
-+	       sizeof(nic->mem->dump_buf));
- }
+ 		/* Break out if chunk length is less then minimal. */
+-		if (ntohs(ch->length) < sizeof(_ch))
++		if (!ch || ntohs(ch->length) < sizeof(_ch))
+ 			break;
  
- static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ 		ch_end = offset + SCTP_PAD4(ntohs(ch->length));
 -- 
 2.33.0
 
