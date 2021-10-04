@@ -2,45 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D68D420CE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC560420F33
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhJDNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:10:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
+        id S237416AbhJDNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235068AbhJDNGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:06:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD0361872;
-        Mon,  4 Oct 2021 13:01:33 +0000 (UTC)
+        id S237709AbhJDNaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:30:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73ACD619E7;
+        Mon,  4 Oct 2021 13:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352493;
-        bh=NyFMYCzP/njaYLqkUnVofVzRiNAEPH/TJlT32fw67QY=;
+        s=korg; t=1633353218;
+        bh=Xbkdq9uOlq0W0ojR4ntt1ytqvtNWxvxwStH9xYAxCXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CoVSUEETccN1bJ66FKmKFuIr6H4LwS79lMh/ICZCMHu2fEG6sbFJ2S03WMRCX+qFD
-         QybM5pLHCewqmWI66EN1xQmQgBRL1vvOS9hcfvlYSPT/wiYu2X78wZYYejI3cFs+lk
-         oPoPAJjERHgNTr0QZSVV4fzOOqXYXU08qWbok954=
+        b=ga8TcGlhZiKuqBEz4FDhnq8Kv7GJS/gIXNl0uKu5PnFIV29RCuz2ZZpZbzvmLcB6K
+         oWNlSynQDncPMbvx8mVRUswG3OPVmumLiBsWb0MxWP7fOtuGDODTHSIDzyEDTi8tEv
+         uAounb+rHohfjCv8tPCKR+pjOkqJdvss49KyeSm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 01/95] ocfs2: drop acl cache for directories too
-Date:   Mon,  4 Oct 2021 14:51:31 +0200
-Message-Id: <20211004125033.621261194@linuxfoundation.org>
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.14 042/172] hwmon: (w83792d) Fix NULL pointer dereference by removing unnecessary structure field
+Date:   Mon,  4 Oct 2021 14:51:32 +0200
+Message-Id: <20211004125046.346776512@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,64 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wengang Wang <wen.gang.wang@oracle.com>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-commit 9c0f0a03e386f4e1df33db676401547e1b7800c6 upstream.
+commit 0f36b88173f028e372668ae040ab1a496834d278 upstream.
 
-ocfs2_data_convert_worker() is currently dropping any cached acl info
-for FILE before down-converting meta lock.  It should also drop for
-DIRECTORY.  Otherwise the second acl lookup returns the cached one (from
-VFS layer) which could be already stale.
+If driver read val value sufficient for
+(val & 0x08) && (!(val & 0x80)) && ((val & 0x7) == ((val >> 4) & 0x7))
+from device then Null pointer dereference occurs.
+(It is possible if tmp = 0b0xyz1xyz, where same literals mean same numbers)
+Also lm75[] does not serve a purpose anymore after switching to
+devm_i2c_new_dummy_device() in w83791d_detect_subclients().
 
-The problem we are seeing is that the acl changes on one node doesn't
-get refreshed on other nodes in the following case:
+The patch fixes possible NULL pointer dereference by removing lm75[].
 
-  Node 1                    Node 2
-  --------------            ----------------
-  getfacl dir1
+Found by Linux Driver Verification project (linuxtesting.org).
 
-                            getfacl dir1    <-- this is OK
-
-  setfacl -m u:user1:rwX dir1
-  getfacl dir1   <-- see the change for user1
-
-                            getfacl dir1    <-- can't see change for user1
-
-Link: https://lkml.kernel.org/r/20210903012631.6099-1-wen.gang.wang@oracle.com
-Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Link: https://lore.kernel.org/r/20210921155153.28098-2-lutovinova@ispras.ru
+[groeck: Dropped unnecessary continuation lines, fixed multipline alignment]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/dlmglue.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/hwmon/w83792d.c |   28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
---- a/fs/ocfs2/dlmglue.c
-+++ b/fs/ocfs2/dlmglue.c
-@@ -3907,7 +3907,7 @@ static int ocfs2_data_convert_worker(str
- 		oi = OCFS2_I(inode);
- 		oi->ip_dir_lock_gen++;
- 		mlog(0, "generation: %u\n", oi->ip_dir_lock_gen);
--		goto out;
-+		goto out_forget;
+--- a/drivers/hwmon/w83792d.c
++++ b/drivers/hwmon/w83792d.c
+@@ -264,9 +264,6 @@ struct w83792d_data {
+ 	char valid;		/* !=0 if following fields are valid */
+ 	unsigned long last_updated;	/* In jiffies */
+ 
+-	/* array of 2 pointers to subclients */
+-	struct i2c_client *lm75[2];
+-
+ 	u8 in[9];		/* Register value */
+ 	u8 in_max[9];		/* Register value */
+ 	u8 in_min[9];		/* Register value */
+@@ -927,7 +924,6 @@ w83792d_detect_subclients(struct i2c_cli
+ 	int address = new_client->addr;
+ 	u8 val;
+ 	struct i2c_adapter *adapter = new_client->adapter;
+-	struct w83792d_data *data = i2c_get_clientdata(new_client);
+ 
+ 	id = i2c_adapter_id(adapter);
+ 	if (force_subclients[0] == id && force_subclients[1] == address) {
+@@ -946,21 +942,19 @@ w83792d_detect_subclients(struct i2c_cli
  	}
  
- 	if (!S_ISREG(inode->i_mode))
-@@ -3938,6 +3938,7 @@ static int ocfs2_data_convert_worker(str
- 		filemap_fdatawait(mapping);
+ 	val = w83792d_read_value(new_client, W83792D_REG_I2C_SUBADDR);
+-	if (!(val & 0x08))
+-		data->lm75[0] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+-							  0x48 + (val & 0x7));
+-	if (!(val & 0x80)) {
+-		if (!IS_ERR(data->lm75[0]) &&
+-			((val & 0x7) == ((val >> 4) & 0x7))) {
+-			dev_err(&new_client->dev,
+-				"duplicate addresses 0x%x, use force_subclient\n",
+-				data->lm75[0]->addr);
+-			return -ENODEV;
+-		}
+-		data->lm75[1] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+-							  0x48 + ((val >> 4) & 0x7));
++
++	if (!(val & 0x88) && (val & 0x7) == ((val >> 4) & 0x7)) {
++		dev_err(&new_client->dev,
++			"duplicate addresses 0x%x, use force_subclient\n", 0x48 + (val & 0x7));
++		return -ENODEV;
  	}
  
-+out_forget:
- 	forget_all_cached_acls(inode);
++	if (!(val & 0x08))
++		devm_i2c_new_dummy_device(&new_client->dev, adapter, 0x48 + (val & 0x7));
++
++	if (!(val & 0x80))
++		devm_i2c_new_dummy_device(&new_client->dev, adapter, 0x48 + ((val >> 4) & 0x7));
++
+ 	return 0;
+ }
  
- out:
 
 
