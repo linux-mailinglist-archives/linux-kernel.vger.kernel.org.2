@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC13420FB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500A8420C2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237630AbhJDNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
+        id S234291AbhJDNDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237433AbhJDNfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A88A63234;
-        Mon,  4 Oct 2021 13:15:53 +0000 (UTC)
+        id S234285AbhJDNBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:01:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8BCF613AC;
+        Mon,  4 Oct 2021 12:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353353;
-        bh=32F6x39IuP+xV2Coi3AfhZCg5iYWqEXEbn+cTJ3EV5g=;
+        s=korg; t=1633352325;
+        bh=PBVVK79ooKUE4V8L3T9Jy/0e6bfZkg6+rTnhNGvYZIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J2BolHZSQ7qK2DDVsQVttqSOAv0BvFfZ7qQvvXol8VKySpB5LbDjg3C8VktYZrzRl
-         r6iC6g0gxtD/w1pA+CHP74dWNdbWrKt/SGjWUbDLRC3YHsUkQbtgV7bgTQiOMVedaW
-         gYiIBwYmYmA3XnQBTqWg+8/0IhUfkSBCNWm74DAE=
+        b=cW3/oeJhwWNv8AaaXDXl6STTH5dGuLdEg57cnxkaB6H6ps2Jx+fcSKdikXy9L1beb
+         qhE958Y0dJcV2qa0bd8XDhTbadf5Bl3H0R9TkbpPAT82u7Robvt1hd671Lm/wcr3YI
+         icvMnW6ib0+btEA+stAGIZ9d52E9dCGsdyGDp1Gs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.14 063/172] media: ir_toy: prevent device from hanging during transmit
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 18/75] net/mlx4_en: Dont allow aRFS for encapsulated packets
 Date:   Mon,  4 Oct 2021 14:51:53 +0200
-Message-Id: <20211004125047.025237923@linuxfoundation.org>
+Message-Id: <20211004125032.137805853@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Aya Levin <ayal@nvidia.com>
 
-commit f0c15b360fb65ee39849afe987c16eb3d0175d0d upstream.
+[ Upstream commit fdbccea419dc782079ce5881d2705cc9e3881480 ]
 
-If the IR Toy is receiving IR while a transmit is done, it may end up
-hanging. We can prevent this from happening by re-entering sample mode
-just before issuing the transmit command.
+Driver doesn't support aRFS for encapsulated packets, return early error
+in such a case.
 
-Link: https://github.com/bengtmartensson/HarcHardware/discussions/25
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1eb8c695bda9 ("net/mlx4_en: Add accelerated RFS support")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/ir_toy.c |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/media/rc/ir_toy.c
-+++ b/drivers/media/rc/ir_toy.c
-@@ -24,6 +24,7 @@ static const u8 COMMAND_VERSION[] = { 'v
- // End transmit and repeat reset command so we exit sump mode
- static const u8 COMMAND_RESET[] = { 0xff, 0xff, 0, 0, 0, 0, 0 };
- static const u8 COMMAND_SMODE_ENTER[] = { 's' };
-+static const u8 COMMAND_SMODE_EXIT[] = { 0 };
- static const u8 COMMAND_TXSTART[] = { 0x26, 0x24, 0x25, 0x03 };
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+index f191a0d042b9..879f2beface5 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -363,6 +363,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
+ 	int nhoff = skb_network_offset(skb);
+ 	int ret = 0;
  
- #define REPLY_XMITCOUNT 't'
-@@ -309,12 +310,30 @@ static int irtoy_tx(struct rc_dev *rc, u
- 		buf[i] = cpu_to_be16(v);
- 	}
- 
--	buf[count] = cpu_to_be16(0xffff);
-+	buf[count] = 0xffff;
- 
- 	irtoy->tx_buf = buf;
- 	irtoy->tx_len = size;
- 	irtoy->emitted = 0;
- 
-+	// There is an issue where if the unit is receiving IR while the
-+	// first TXSTART command is sent, the device might end up hanging
-+	// with its led on. It does not respond to any command when this
-+	// happens. To work around this, re-enter sample mode.
-+	err = irtoy_command(irtoy, COMMAND_SMODE_EXIT,
-+			    sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
-+	if (err) {
-+		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
-+		return err;
-+	}
++	if (skb->encapsulation)
++		return -EPROTONOSUPPORT;
 +
-+	err = irtoy_command(irtoy, COMMAND_SMODE_ENTER,
-+			    sizeof(COMMAND_SMODE_ENTER), STATE_COMMAND);
-+	if (err) {
-+		dev_err(irtoy->dev, "enter sample mode: %d\n", err);
-+		return err;
-+	}
-+
- 	err = irtoy_command(irtoy, COMMAND_TXSTART, sizeof(COMMAND_TXSTART),
- 			    STATE_TX);
- 	kfree(buf);
+ 	if (skb->protocol != htons(ETH_P_IP))
+ 		return -EPROTONOSUPPORT;
+ 
+-- 
+2.33.0
+
 
 
