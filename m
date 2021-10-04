@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905BF420BE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77434420B76
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhJDNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
+        id S233692AbhJDM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233656AbhJDM7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2E3A61409;
-        Mon,  4 Oct 2021 12:57:18 +0000 (UTC)
+        id S233583AbhJDM4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44D3261381;
+        Mon,  4 Oct 2021 12:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352239;
-        bh=r3o2RCWkW/45aVMhlbCjcIRd4LXHGCu7gTCngs+oZPw=;
+        s=korg; t=1633352105;
+        bh=3VLZ/WICwSTMSN9p38AsSX12mzwis0ijWCrv7INjS3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bm6QRRq6tlB0s42wHWJtvJC5E3GdwzDf07DiyOKG1ExsAlKizvqgQwgwA5qH0FTGy
-         L4Fot/YtA1Pl5a6nGFA8ut/jJYqvhZpwAYV+Jh629e8kRtVtjTJ6FYpGhD+6UiG4F0
-         Wik+gun3H05LwAsSdwAQxz+eBa+1t6gfdH+l0LXA=
+        b=UUQDYqNiCFuB7/nPTqlgs1yKEiGopP+D+QoAfw34LHJOU1olXgfRoROyGQvBCbO13
+         LcSCBPWlaHiDw0VtZO07SlcbE5hoG1TuXSXJ5R2bOK+AA6A1GM+6HFBwCQml5qK+kH
+         VqkyI66QW5fA57ioEfd8xzbyy5QgKayoO2ixluH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
         Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 41/57] ipack: ipoctal: fix stack information leak
+Subject: [PATCH 4.4 34/41] ipack: ipoctal: fix module reference leak
 Date:   Mon,  4 Oct 2021 14:52:25 +0200
-Message-Id: <20211004125030.251460890@linuxfoundation.org>
+Message-Id: <20211004125027.660794110@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +42,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit a89936cce87d60766a75732a9e7e25c51164f47c upstream.
+commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
 
-The tty driver name is used also after registering the driver and must
-specifically not be allocated on the stack to avoid leaking information
-to user space (or triggering an oops).
+A reference to the carrier module was taken on every open but was only
+released once when the final reference to the tty struct was dropped.
 
-Drivers should not try to encode topology information in the tty device
-name but this one snuck in through staging without anyone noticing and
-another driver has since copied this malpractice.
+Fix this by taking the module reference and initialising the tty driver
+data when installing the tty.
 
-Fixing the ABI is a separate issue, but this at least plugs the security
-hole.
-
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
+Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Federico Vaga <federico.vaga@cern.ch>
 Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-2-johan@kernel.org
+Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |   19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
 --- a/drivers/ipack/devices/ipoctal.c
 +++ b/drivers/ipack/devices/ipoctal.c
-@@ -269,7 +269,6 @@ static int ipoctal_inst_slot(struct ipoc
- 	int res;
- 	int i;
- 	struct tty_driver *tty;
--	char name[20];
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -360,8 +359,11 @@ static int ipoctal_inst_slot(struct ipoc
- 	/* Fill struct tty_driver with ipoctal data */
- 	tty->owner = THIS_MODULE;
- 	tty->driver_name = KBUILD_MODNAME;
--	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	tty->name = name;
-+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!tty->name) {
-+		res = -ENOMEM;
-+		goto err_put_driver;
-+	}
- 	tty->major = 0;
- 
- 	tty->minor_start = 0;
-@@ -377,8 +379,7 @@ static int ipoctal_inst_slot(struct ipoc
- 	res = tty_register_driver(tty);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
--		put_tty_driver(tty);
--		return res;
-+		goto err_free_name;
- 	}
- 
- 	/* Save struct tty_driver for use it when uninstalling the device */
-@@ -415,6 +416,13 @@ static int ipoctal_inst_slot(struct ipoc
- 				       ipoctal_irq_handler, ipoctal);
- 
+@@ -87,22 +87,34 @@ static int ipoctal_port_activate(struct
  	return 0;
+ }
+ 
+-static int ipoctal_open(struct tty_struct *tty, struct file *file)
++static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
+ {
+ 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
+ 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
+-	int err;
+-
+-	tty->driver_data = channel;
++	int res;
+ 
+ 	if (!ipack_get_carrier(ipoctal->dev))
+ 		return -EBUSY;
+ 
+-	err = tty_port_open(&channel->tty_port, tty, file);
+-	if (err)
+-		ipack_put_carrier(ipoctal->dev);
++	res = tty_standard_install(driver, tty);
++	if (res)
++		goto err_put_carrier;
 +
-+err_free_name:
-+	kfree(tty->name);
-+err_put_driver:
-+	put_tty_driver(tty);
++	tty->driver_data = channel;
++
++	return 0;
++
++err_put_carrier:
++	ipack_put_carrier(ipoctal->dev);
 +
 +	return res;
++}
++
++static int ipoctal_open(struct tty_struct *tty, struct file *file)
++{
++	struct ipoctal_channel *channel = tty->driver_data;
+ 
+-	return err;
++	return tty_port_open(&channel->tty_port, tty, file);
  }
  
- static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-@@ -703,6 +711,7 @@ static void __ipoctal_remove(struct ipoc
- 	}
+ static void ipoctal_reset_stats(struct ipoctal_stats *stats)
+@@ -669,6 +681,7 @@ static void ipoctal_cleanup(struct tty_s
  
- 	tty_unregister_driver(ipoctal->tty_drv);
-+	kfree(ipoctal->tty_drv->name);
- 	put_tty_driver(ipoctal->tty_drv);
- 	kfree(ipoctal);
- }
+ static const struct tty_operations ipoctal_fops = {
+ 	.ioctl =		NULL,
++	.install =		ipoctal_install,
+ 	.open =			ipoctal_open,
+ 	.close =		ipoctal_close,
+ 	.write =		ipoctal_write_tty,
 
 
