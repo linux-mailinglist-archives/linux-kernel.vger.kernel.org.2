@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C579420B82
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E8F421014
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhJDM5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58952 "EHLO mail.kernel.org"
+        id S238445AbhJDNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233806AbhJDM5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE6B06124C;
-        Mon,  4 Oct 2021 12:55:19 +0000 (UTC)
+        id S238475AbhJDNif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC7663250;
+        Mon,  4 Oct 2021 13:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352120;
-        bh=KXnMig1+1jNUcDKDIWgFR3AO2q8KWmvyo3DPJs9IbLU=;
+        s=korg; t=1633353453;
+        bh=+C11mEzkqjtrmwWudTr03u0W/xZCZCn7y9Qbghxw7qY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frP95+tvTE0Co2cp6wkide9OTqu03sknPaXgwUQrjcRJdHKxgTcQXz1ECa0oAbirr
-         FOM7MYh04QfB+wW5dyal7oMKeeIHoaUNWUVeuJDu4ndZXrd9W9zAV0jr4lBDYI/pzw
-         dK1kfvh+xuOSsze/HYPNho59uwZsx0SIDBYkzkRk=
+        b=KlxshnYOpojoaMQZKBMXuHVSb0XocBEzVMwaWFcDCJOTSCA2sQCQ8e4JQ7YT/GgjW
+         jYM2mHz9SL4H5XhOfhFzUOkah+lTCVFj3n72DWW3lTS5vJ8KmakmWBHzFDRYLCF/WV
+         /412b95xlUY0RhhpHq3xeTlQ6GDANtuUQxKa1vGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.4 40/41] HID: usbhid: free raw_report buffers in usbhid_stop
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 101/172] net: enetc: fix the incorrect clearing of IF_MODE bits
 Date:   Mon,  4 Oct 2021 14:52:31 +0200
-Message-Id: <20211004125027.854859487@linuxfoundation.org>
+Message-Id: <20211004125048.245955940@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit f7744fa16b96da57187dc8e5634152d3b63d72de upstream.
+[ Upstream commit 325fd36ae76a6d089983b2d2eccb41237d35b221 ]
 
-Free the unsent raw_report buffers when the device is removed.
+The enetc phylink .mac_config handler intends to clear the IFMODE field
+(bits 1:0) of the PM0_IF_MODE register, but incorrectly clears all the
+other fields instead.
 
-Fixes a memory leak reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
+For normal operation, the bug was inconsequential, due to the fact that
+we write the PM0_IF_MODE register in two stages, first in
+phylink .mac_config (which incorrectly cleared out a bunch of stuff),
+then we update the speed and duplex to the correct values in
+phylink .mac_link_up.
 
-Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Judging by the code (not tested), it looks like maybe loopback mode was
+broken, since this is one of the settings in PM0_IF_MODE which is
+incorrectly cleared.
+
+Fixes: c76a97218dcb ("net: enetc: force the RGMII speed and duplex instead of operating in inband mode")
+Reported-by: Pavel Machek (CIP) <pavel@denx.de>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/usbhid/hid-core.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -500,7 +500,7 @@ static void hid_ctrl(struct urb *urb)
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index c84f6c226743..cf00709caea4 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -541,8 +541,7 @@ static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
  
- 	if (unplug) {
- 		usbhid->ctrltail = usbhid->ctrlhead;
--	} else {
-+	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
- 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
- 
- 		if (usbhid->ctrlhead != usbhid->ctrltail &&
-@@ -1185,9 +1185,20 @@ static void usbhid_stop(struct hid_devic
- 		usbhid->intf->needs_remote_wakeup = 0;
- 
- 	clear_bit(HID_STARTED, &usbhid->iofl);
-+
- 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
- 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
-+	while (usbhid->ctrltail != usbhid->ctrlhead) {
-+		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
-+			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
-+			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
-+		}
-+
-+		usbhid->ctrltail = (usbhid->ctrltail + 1) &
-+			(HID_CONTROL_FIFO_SIZE - 1);
-+	}
- 	spin_unlock_irq(&usbhid->lock);
-+
- 	usb_kill_urb(usbhid->urbin);
- 	usb_kill_urb(usbhid->urbout);
- 	usb_kill_urb(usbhid->urbctrl);
+ 	if (phy_interface_mode_is_rgmii(phy_mode)) {
+ 		val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
+-		val &= ~ENETC_PM0_IFM_EN_AUTO;
+-		val &= ENETC_PM0_IFM_IFMODE_MASK;
++		val &= ~(ENETC_PM0_IFM_EN_AUTO | ENETC_PM0_IFM_IFMODE_MASK);
+ 		val |= ENETC_PM0_IFM_IFMODE_GMII | ENETC_PM0_IFM_RG;
+ 		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
+ 	}
+-- 
+2.33.0
+
 
 
