@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626E2420D52
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5C4420FE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhJDNOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:14:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
+        id S237772AbhJDNjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:39:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235878AbhJDNLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:11:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2610661B71;
-        Mon,  4 Oct 2021 13:04:32 +0000 (UTC)
+        id S237396AbhJDNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:37:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B581961371;
+        Mon,  4 Oct 2021 13:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352673;
-        bh=r3o2RCWkW/45aVMhlbCjcIRd4LXHGCu7gTCngs+oZPw=;
+        s=korg; t=1633353408;
+        bh=ICQ9giKx1yX1KNC8hrc8Dh7/P4Nbzd8yq/uN1thGmYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2MG4WNF07tpGs1lVI3JC4ff/bvIzxR3l1HZx70wSoBLB9Nn3KwWr3S10Y1gzbZ6nB
-         1KIwCMp4apW6PK87k1Fxdyv3hB+LfHZd044kXxKNCKBjyB9yySbh2cLtijSrZOvZAn
-         DJ6D7vRESHhUQ1slGdcST2Jtk4vaJ6Ym0YnGvh30=
+        b=upP7ctRV2UgT/psxmJF3oS97ki7Z94sppTXoLvIePzIZjE0q+rE0ywsNov2R9cRgt
+         XshK6O/vrc52n7/jRST3zF9kJ1s8TAWuaQovxm77H59olPnyH3Q1D8lBEXH70Rq2+X
+         gxnghF8LDmB4zisA4sn983OZn0HTS9U9jZM4zKPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 76/95] ipack: ipoctal: fix stack information leak
+        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 116/172] selftests, bpf: Fix makefile dependencies on libbpf
 Date:   Mon,  4 Oct 2021 14:52:46 +0200
-Message-Id: <20211004125036.061004958@linuxfoundation.org>
+Message-Id: <20211004125048.730812023@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jiri Benc <jbenc@redhat.com>
 
-commit a89936cce87d60766a75732a9e7e25c51164f47c upstream.
+[ Upstream commit d888eaac4fb1df30320bb1305a8f78efe86524c6 ]
 
-The tty driver name is used also after registering the driver and must
-specifically not be allocated on the stack to avoid leaking information
-to user space (or triggering an oops).
+When building bpf selftest with make -j, I'm randomly getting build failures
+such as this one:
 
-Drivers should not try to encode topology information in the tty device
-name but this one snuck in through staging without anyone noticing and
-another driver has since copied this malpractice.
+  In file included from progs/bpf_flow.c:19:
+  [...]/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:11:10: fatal error: 'bpf_helper_defs.h' file not found
+  #include "bpf_helper_defs.h"
+           ^~~~~~~~~~~~~~~~~~~
 
-Fixing the ABI is a separate issue, but this at least plugs the security
-hole.
+The file that fails the build varies between runs but it's always in the
+progs/ subdir.
 
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-2-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The reason is a missing make dependency on libbpf for the .o files in
+progs/. There was a dependency before commit 3ac2e20fba07e but that commit
+removed it to prevent unneeded rebuilds. However, that only works if libbpf
+has been built already; the 'wildcard' prerequisite does not trigger when
+there's no bpf_helper_defs.h generated yet.
+
+Keep the libbpf as an order-only prerequisite to satisfy both goals. It is
+always built before the progs/ objects but it does not trigger unnecessary
+rebuilds by itself.
+
+Fixes: 3ac2e20fba07e ("selftests/bpf: BPF object files should depend only on libbpf headers")
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/ee84ab66436fba05a197f952af23c98d90eb6243.1632758415.git.jbenc@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |   19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -269,7 +269,6 @@ static int ipoctal_inst_slot(struct ipoc
- 	int res;
- 	int i;
- 	struct tty_driver *tty;
--	char name[20];
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -360,8 +359,11 @@ static int ipoctal_inst_slot(struct ipoc
- 	/* Fill struct tty_driver with ipoctal data */
- 	tty->owner = THIS_MODULE;
- 	tty->driver_name = KBUILD_MODNAME;
--	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	tty->name = name;
-+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!tty->name) {
-+		res = -ENOMEM;
-+		goto err_put_driver;
-+	}
- 	tty->major = 0;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f405b20c1e6c..93f1f124ef89 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -374,7 +374,8 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
+ 		     $(TRUNNER_BPF_PROGS_DIR)/%.c			\
+ 		     $(TRUNNER_BPF_PROGS_DIR)/*.h			\
+ 		     $$(INCLUDE_DIR)/vmlinux.h				\
+-		     $(wildcard $(BPFDIR)/bpf_*.h) | $(TRUNNER_OUTPUT)
++		     $(wildcard $(BPFDIR)/bpf_*.h)			\
++		     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+ 	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
+ 					  $(TRUNNER_BPF_CFLAGS))
  
- 	tty->minor_start = 0;
-@@ -377,8 +379,7 @@ static int ipoctal_inst_slot(struct ipoc
- 	res = tty_register_driver(tty);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
--		put_tty_driver(tty);
--		return res;
-+		goto err_free_name;
- 	}
- 
- 	/* Save struct tty_driver for use it when uninstalling the device */
-@@ -415,6 +416,13 @@ static int ipoctal_inst_slot(struct ipoc
- 				       ipoctal_irq_handler, ipoctal);
- 
- 	return 0;
-+
-+err_free_name:
-+	kfree(tty->name);
-+err_put_driver:
-+	put_tty_driver(tty);
-+
-+	return res;
- }
- 
- static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-@@ -703,6 +711,7 @@ static void __ipoctal_remove(struct ipoc
- 	}
- 
- 	tty_unregister_driver(ipoctal->tty_drv);
-+	kfree(ipoctal->tty_drv->name);
- 	put_tty_driver(ipoctal->tty_drv);
- 	kfree(ipoctal);
- }
+-- 
+2.33.0
+
 
 
