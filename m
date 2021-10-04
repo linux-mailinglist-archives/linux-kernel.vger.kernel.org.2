@@ -2,236 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C9E420583
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BBB420589
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhJDFDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 01:03:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25288 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhJDFC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 01:02:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633323671; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=md+WhcXo9Co1RVUTL3+oTqB7noJAW/K8AXFDsva3XTE=;
- b=HhyuHB2BYJOkCGGynxm+fAUgjFEjO8oJJS/DhPn5ahWc625HcdHpjL5GRGNO+vcr0eBuf4Mw
- Ra+d2NEhan5DvBQBF1vDAJLNc/0xbSsnRq2+2e5l19TzhS+F8defs/cjkzKDoNcnYZJM/Jhv
- IdCHlOKkZEFiOii9l2aanlgKNNw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 615a8a91a5a9bab6e8985eec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 05:01:05
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 028B3C4360D; Mon,  4 Oct 2021 05:01:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7C5FC4338F;
-        Mon,  4 Oct 2021 05:01:03 +0000 (UTC)
+        id S232524AbhJDFSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 01:18:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:17601 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232388AbhJDFSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 01:18:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="206099171"
+X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
+   d="scan'208";a="206099171"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 22:16:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
+   d="scan'208";a="566826043"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 22:16:39 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 04 Oct 2021 08:16:36 +0300
+Date:   Mon, 4 Oct 2021 08:16:36 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+Message-ID: <YVqONA0vhl0/H3QE@lahna>
+References: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
+ <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
+ <YVXWaF73gcrlvpnf@kroah.com>
+ <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
+ <YVaywQLAboZ6b36V@kroah.com>
+ <CAPcyv4gqs=KuGyxFR61QWqF6HKrRg851roCGUqrq585+s2Cm=w@mail.gmail.com>
+ <20211001164533.GC505557@rowland.harvard.edu>
+ <CAPcyv4i__reKFRP1KjWUov_W5jBQN9_vbUbKRL_V7KMM3oPuuQ@mail.gmail.com>
+ <20211001190048.GA512418@rowland.harvard.edu>
+ <CAPcyv4hYL51DcBuSuyMRFo5Jcc=zLd=Ugo+H_2saELcZ5AJBeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 04 Oct 2021 10:31:03 +0530
-From:   schowdhu@codeaurora.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-Subject: Re: [PATCH V6 0/7] Add driver support for Data Capture and Compare
- Engine(DCC) for SM8150,SC7280,SC7180,SDM845
-In-Reply-To: <cover.1628617260.git.schowdhu@codeaurora.org>
-References: <cover.1628617260.git.schowdhu@codeaurora.org>
-Message-ID: <d1344b04dc3f39c17f8df594769da269@codeaurora.org>
-X-Sender: schowdhu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hYL51DcBuSuyMRFo5Jcc=zLd=Ugo+H_2saELcZ5AJBeQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-10 23:24, Souradeep Chowdhury wrote:
-> DCC(Data Capture and Compare) is a DMA engine designed for debugging
-> purposes.In case of a system
-> crash or manual software triggers by the user the DCC hardware stores
-> the value at the register
-> addresses which can be used for debugging purposes.The DCC driver
-> provides the user with sysfs
-> interface to configure the register addresses.The options that the DCC
-> hardware provides include
-> reading from registers,writing to registers,first reading and then
-> writing to registers and looping
-> through the values of the same register.
-> 
-> In certain cases a register write needs to be executed for accessing
-> the rest of the registers,
-> also the user might want to record the changing values of a register
-> with time for which he has the
-> option to use the loop feature.
-> 
-> The options mentioned above are exposed to the user by sysfs files
-> once the driver is probed.The
-> details and usage of this sysfs files are documented in
-> Documentation/ABI/testing/sysfs-driver-dcc.
-> 
-> As an example let us consider a couple of debug scenarios where DCC
-> has been proved to be effective
-> for debugging purposes:-
-> 
-> i)TimeStamp Related Issue
-> 
-> On SC7180, there was a coresight timestamp issue where it would
-> occasionally be all 0 instead of proper
-> timestamp values.
-> 
-> Proper timestamp:
-> Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val =
-> 0x13004d8f5b7aa; CC=0x9e
-> 
-> Zero timestamp:
-> Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
-> 
-> Now this is a non-fatal issue and doesn't need a system reset, but 
-> still needs
-> to be rootcaused and fixed for those who do care about coresight etm 
-> traces.
-> Since this is a timestamp issue, we would be looking for any timestamp 
-> related
-> clocks and such.
-> 
-> o we get all the clk register details from IP documentation and 
-> configure it
-> via DCC config syfs node. Before that we set the current linked list.
-> 
-> /* Set the current linked list */
-> echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
-> 
-> /* Program the linked list with the addresses */
-> echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
-> echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
-> echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
-> echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
-> ..... and so on for other timestamp related clk registers
-> 
-> /* Other way of specifying is in "addr len" pair, in below case it
-> specifies to capture 4 words starting 0x10C004 */
-> 
-> echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
-> 
-> /* Enable DCC */
-> echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
-> 
-> /* Run the timestamp test for working case */
-> 
-> /* Send SW trigger */
-> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
-> 
-> /* Read SRAM */
-> cat /dev/dcc_sram > dcc_sram1.bin
-> 
-> /* Run the timestamp test for non-working case */
-> 
-> /* Send SW trigger */
-> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
-> 
-> /* Read SRAM */
-> cat /dev/dcc_sram > dcc_sram2.bin
-> 
-> Get the parser from [1] and checkout the latest branch.
-> 
-> /* Parse the SRAM bin */
-> python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
-> python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
-> 
-> Sample parsed output of dcc_sram1.bin:
-> 
-> <hwioDump version="1">
->         <timestamp>03/14/21</timestamp>
->             <generator>Linux DCC Parser</generator>
->                 <chip name="None" version="None">
->                 <register address="0x0010c004" value="0x80000000" />
->                 <register address="0x0010c008" value="0x00000008" />
->                 <register address="0x0010c00c" value="0x80004220" />
->                 <register address="0x0010c010" value="0x80000000" />
->             </chip>
->     <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
-> </hwioDump>
-> 
-> ii)NOC register errors
-> 
-> A particular class of registers called NOC which are functional
-> registers was reporting
-> errors while logging the values.To trace these errors the DCC has been
-> used effectively.
-> The steps followed were similar to the ones mentioned above.
-> In addition to NOC registers a few other dependent registers were
-> configured in DCC to
-> monitor it's values during a crash. A look at the dependent register
-> values revealed that
-> the crash was happening due to a secured access to one of these
-> dependent registers.
-> All these debugging activity and finding the root cause was achieved 
-> using DCC.
-> 
-> DCC parser is available at the following open source location
-> 
-> https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
-> 
-> Changes in v6:
-> 
-> *Added support in the dcc driver to handle multiple Qualcomm SoCs
-> including SC7180,SC7280,SDM845
->  along with existing SM8150.
-> 
-> *Added the support node in the respective device tree files for
-> SC7180,SC7280,SDM845.
-> 
-> Souradeep Chowdhury (7):
->   dt-bindings: Added the yaml bindings for DCC
->   soc: qcom: dcc:Add driver support for Data Capture and Compare
->     unit(DCC)
->   MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
->     support
->   arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
->     node
->   arm64: dts: qcom: sc7280: Add Data Capture and Compare(DCC) support
->     node
->   arm64: dts: qcom: sc7180: Add Data Capture and Compare(DCC) support
->     node
->   arm64: dts: qcom: sdm845: Add Data Capture and Compare(DCC) support
->     node
-> 
->  Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
->  .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   43 +
->  MAINTAINERS                                        |    8 +
->  arch/arm64/boot/dts/qcom/sc7180.dtsi               |    6 +
->  arch/arm64/boot/dts/qcom/sc7280.dtsi               |    6 +
->  arch/arm64/boot/dts/qcom/sdm845.dtsi               |    6 +
->  arch/arm64/boot/dts/qcom/sm8150.dtsi               |    6 +
->  drivers/soc/qcom/Kconfig                           |    8 +
->  drivers/soc/qcom/Makefile                          |    1 +
->  drivers/soc/qcom/dcc.c                             | 1549 
-> ++++++++++++++++++++
->  10 files changed, 1747 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
->  create mode 100644 
-> Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
->  create mode 100644 drivers/soc/qcom/dcc.c
+Hi,
 
-Gentle ping
+On Fri, Oct 01, 2021 at 12:57:18PM -0700, Dan Williams wrote:
+> > > Ah, so are you saying that it would be sufficient for USB if the
+> > > generic authorized implementation did something like:
+> > >
+> > > dev->authorized = 1;
+> > > device_attach(dev);
+> > >
+> > > ...for the authorize case, and:
+> > >
+> > > dev->authorize = 0;
+> > > device_release_driver(dev);
+> > >
+> > > ...for the deauthorize case?
+> >
+> > Yes, I think so.  But I haven't tried making this change to test and
+> > see what really happens.
+> 
+> Sounds like a useful path for this effort to explore. Especially as
+> Greg seems to want the proposed "has_probe_authorization" flag in the
+> bus_type to disappear and make this all generic. It just seems that
+> Thunderbolt would need deeper surgery to move what it does in the
+> authorization toggle path into the probe and remove paths.
+> 
+> Mika, do you see a path for Thunderbolt to align its authorization
+> paths behind bus ->probe() ->remove() events similar to what USB might
+> be able to support for a generic authorization path?
+
+In Thunderbolt "authorization" actually means whether there is a PCIe
+tunnel to the device or not. There is no driver bind/unbind happening
+when authorization toggles (well on Thunderbolt bus, there can be on PCI
+bus after the tunnel is established) so I'm not entirely sure how we
+could use the bus ->probe() or ->remove for that to be honest.
