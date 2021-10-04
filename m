@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81742420B91
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC96420BD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhJDM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59346 "EHLO mail.kernel.org"
+        id S234533AbhJDNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233700AbhJDM5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5930861501;
-        Mon,  4 Oct 2021 12:55:35 +0000 (UTC)
+        id S234322AbhJDM65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 654C861528;
+        Mon,  4 Oct 2021 12:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352135;
-        bh=L241wpkUh0bWgSPDGbsmy1HluiZHT2lvYcQZyy8xsko=;
+        s=korg; t=1633352224;
+        bh=cQ437j9YlDPbyfDJ+Y6O1r8KFdlHsj9wdaD8pTFJ6fs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X6WySviV7Z9WsQWwV7TKkbbxCWkOBjkHkSmwVXJkD+1zNDU00ptWzImMV2nQnSMn4
-         hFC11J91U1T1tvwVB7GDGMn+QD8ah8vO425Vva/eveOclLS7f1EdkcF9PRzu6e473S
-         YZVwvMpcfB8R5EmeaPAinSwoq6W/dY1o4EhsFc9c=
+        b=EvBr9yksP6cTav0HdSQjXH3D9pZ7eMsGm+LDy5DzxAFn9RvH+1GU+Gdm011ZbKwhD
+         rDAgiPhSa5MV4h3+TRjfqh2tnmZ0sp8AJpHrv8BfzGPN9Pdqu0JhmeLEfCi0RO1xGd
+         s9diU4Am52oEp5efDirJY8E8xuMHxTB2YaXZo5+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Yi Chen <yiche@redhat.com>,
+        Andrea Claudi <aclaudi@redhat.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 29/41] e100: fix buffer overrun in e100_get_regs
+Subject: [PATCH 4.9 36/57] ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
 Date:   Mon,  4 Oct 2021 14:52:20 +0200
-Message-Id: <20211004125027.500694420@linuxfoundation.org>
+Message-Id: <20211004125030.079051316@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Andrea Claudi <aclaudi@redhat.com>
 
-[ Upstream commit 51032e6f17ce990d06123ad7307f258c50d25aa7 ]
+[ Upstream commit 69e73dbfda14fbfe748d3812da1244cce2928dcb ]
 
-The e100_get_regs function is used to implement a simple register dump
-for the e100 device. The data is broken into a couple of MAC control
-registers, and then a series of PHY registers, followed by a memory dump
-buffer.
+ip_vs_conn_tab_bits may be provided by the user through the
+conn_tab_bits module parameter. If this value is greater than 31, or
+less than 0, the shift operator used to derive tab_size causes undefined
+behaviour.
 
-The total length of the register dump is defined as (1 + E100_PHY_REGS)
-* sizeof(u32) + sizeof(nic->mem->dump_buf).
+Fix this checking ip_vs_conn_tab_bits value to be in the range specified
+in ipvs Kconfig. If not, simply use default value.
 
-The logic for filling in the PHY registers uses a convoluted inverted
-count for loop which counts from E100_PHY_REGS (0x1C) down to 0, and
-assigns the slots 1 + E100_PHY_REGS - i. The first loop iteration will
-fill in [1] and the final loop iteration will fill in [1 + 0x1C]. This
-is actually one more than the supposed number of PHY registers.
-
-The memory dump buffer is then filled into the space at
-[2 + E100_PHY_REGS] which will cause that memcpy to assign 4 bytes past
-the total size.
-
-The end result is that we overrun the total buffer size allocated by the
-kernel, which could lead to a panic or other issues due to memory
-corruption.
-
-It is difficult to determine the actual total number of registers
-here. The only 8255x datasheet I could find indicates there are 28 total
-MDI registers. However, we're reading 29 here, and reading them in
-reverse!
-
-In addition, the ethtool e100 register dump interface appears to read
-the first PHY register to determine if the device is in MDI or MDIx
-mode. This doesn't appear to be documented anywhere within the 8255x
-datasheet. I can only assume it must be in register 28 (the extra
-register we're reading here).
-
-Lets not change any of the intended meaning of what we copy here. Just
-extend the space by 4 bytes to account for the extra register and
-continue copying the data out in the same order.
-
-Change the E100_PHY_REGS value to be the correct total (29) so that the
-total register dump size is calculated properly. Fix the offset for
-where we copy the dump buffer so that it doesn't overrun the total size.
-
-Re-write the for loop to use counting up instead of the convoluted
-down-counting. Correct the mdio_read offset to use the 0-based register
-offsets, but maintain the bizarre reverse ordering so that we have the
-ABI expected by applications like ethtool. This requires and additional
-subtraction of 1. It seems a bit odd but it makes the flow of assignment
-into the register buffer easier to follow.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 6f7edb4881bf ("IPVS: Allow boot time change of hash size")
+Reported-by: Yi Chen <yiche@redhat.com>
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Acked-by: Simon Horman <horms@verge.net.au>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index abb65ed9492b..aa556e4f9051 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2462,7 +2462,7 @@ static void e100_get_drvinfo(struct net_device *netdev,
- 		sizeof(info->bus_info));
- }
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 096a45103f14..ecde2102d1ad 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1406,6 +1406,10 @@ int __init ip_vs_conn_init(void)
+ 	int idx;
  
--#define E100_PHY_REGS 0x1C
-+#define E100_PHY_REGS 0x1D
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
-@@ -2484,14 +2484,18 @@ static void e100_get_regs(struct net_device *netdev,
- 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
- 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
- 		ioread16(&nic->csr->scb.status);
--	for (i = E100_PHY_REGS; i >= 0; i--)
--		buff[1 + E100_PHY_REGS - i] =
--			mdio_read(netdev, nic->mii.phy_id, i);
-+	for (i = 0; i < E100_PHY_REGS; i++)
-+		/* Note that we read the registers in reverse order. This
-+		 * ordering is the ABI apparently used by ethtool and other
-+		 * applications.
-+		 */
-+		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
-+					E100_PHY_REGS - 1 - i);
- 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
- 	e100_exec_cb(nic, NULL, e100_dump);
- 	msleep(10);
--	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
--		sizeof(nic->mem->dump_buf));
-+	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
-+	       sizeof(nic->mem->dump_buf));
- }
+ 	/* Compute size and mask */
++	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
++		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
++		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
++	}
+ 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
+ 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
  
- static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
 -- 
 2.33.0
 
