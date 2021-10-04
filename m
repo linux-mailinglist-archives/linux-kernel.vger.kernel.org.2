@@ -2,177 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70C7421841
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD1B42185A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhJDUPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235912AbhJDUPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:15:33 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58881C06174E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:13:44 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id z11so23218861oih.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zOyi2S95uxdbFdCGOc7m3K4Adp+itmzmW8gzb/ESD2A=;
-        b=NHcT5M3mp7sXlQg/hJy4HQmFI4Ixa+1mArVErtOuxeYthCkG0IflqNJ/vr9/va2C/R
-         vMtejRNBeHnf4z7M3fn+9rVBrsLQxmwiEnroet1ZokIGN27QHSMcLyKYVLS7gHO16r4C
-         lrvB/VqjSugs30zuuNtHbfHjZOB3VXgBslVUO7alXhs1I9njL90EVQGFYy1lmUZR4LMc
-         DLKnlYwrW3HjtS6ClV31364qZD4dUvxBJLOEcSnqGVRmrWNTV/on8w2bqtnzpI0tO6VE
-         MLn4lq3Ajh8LxlsXqaqKreIVh/Wim+AxRy5V+wOQ+aAgkEbl3amzJiKA6Z+/HXnNFDDr
-         bZfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zOyi2S95uxdbFdCGOc7m3K4Adp+itmzmW8gzb/ESD2A=;
-        b=6vVItT/4+pqHFhvB/EQR5enxMN+5apa+vROQgrs592AvmNtdcgOuERv3qeyk9Fv+aQ
-         4nquceAiKBAA4qCj++VOA7QNmPzig970+cEqs7BtCeXctMPET0PicdGzZESu2yAO/WD/
-         ZovAyLogZVsFzLfdBdhHkklKew6CJ0S3EbsnG+9VSDjm6oAw1ry26fcc0QV/d9hC2MNP
-         C6RGaGjR/ZN3Oyp/yfGVj1AHLZlAJqCREpJCN/Ehz0ual5ZBiAqIeYBYhZ/SR9VBKRp6
-         K2h/jviUlIq0XfecW1WOqxEpIqlyU+W6tDZv11yPDgJB11EJW4dpLg278U6+X4Yp70MC
-         7ulQ==
-X-Gm-Message-State: AOAM5307tku8BpxgH4qYxZhERnilVhdbbXQoay7Pr/JoNPbKOB12s4nF
-        1pIDroi/I6WPVYuGs5wPV9r7pw==
-X-Google-Smtp-Source: ABdhPJwZYp6jBuxmxXIgtPCA5/ZWf29iADPg6Bjiibxne53m0r1ddxNDFt0NNc+s8iNXD2sqzb7o/w==
-X-Received: by 2002:a05:6808:8d4:: with SMTP id k20mr4026876oij.116.1633378423736;
-        Mon, 04 Oct 2021 13:13:43 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id s13sm1249546oou.11.2021.10.04.13.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 13:13:43 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 13:15:26 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels
- and thermal zones
-Message-ID: <YVtg3lcR1HMqVdAJ@ripper>
-References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
- <20210923212311.2877048-5-bjorn.andersson@linaro.org>
- <YVSzJZ8G43CLml3L@google.com>
+        id S236006AbhJDUZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:25:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:35948 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233952AbhJDUY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 16:24:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99E6B1FB;
+        Mon,  4 Oct 2021 13:23:09 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B322A3F70D;
+        Mon,  4 Oct 2021 13:23:07 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     vincenzo.frascino@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH v2 0/5] arm64: ARMv8.7-A: MTE: Add asymm in-kernel support
+Date:   Mon,  4 Oct 2021 21:22:48 +0100
+Message-Id: <20211004202253.27857-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVSzJZ8G43CLml3L@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Sep 11:40 PDT 2021, Matthias Kaehlcke wrote:
+This series implements the in-kernel asymmetric mode support for
+ARMv8.7-A Memory Tagging Extension (MTE), which is a debugging feature
+that allows to detect with the help of the architecture the C and C++
+programmatic memory errors like buffer overflow, use-after-free,
+use-after-return, etc.
 
-> On Thu, Sep 23, 2021 at 02:23:11PM -0700, Bjorn Andersson wrote:
-> > Downstream defines four ADC channels related to thermal sensors external
-> > to the PM8998 and two channels for internal voltage measurements.
-> > 
-> > Add these to the upstream SDM845 MTP, describe the thermal monitor
-> > channels and add thermal_zones for these.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
-> > 
-> > Changes since v1:
-> > - Enable the pm8998_adc_tm and describe the ADC channels
-> > - Add thermal-zones for the new channels
-> > 
-> >  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
-> >  1 file changed, 128 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-[..]
-> > +&pm8998_adc {
-> > +	adc-chan@4c {
-> > +		reg = <ADC5_XO_THERM_100K_PU>;
-> > +		label = "xo_therm";
-> > +	};
-> > +
-> > +	adc-chan@4d {
-> > +		reg = <ADC5_AMUX_THM1_100K_PU>;
-> > +		label = "msm_therm";
-> > +	};
-> > +
-> > +	adc-chan@4f {
-> > +		reg = <ADC5_AMUX_THM3_100K_PU>;
-> > +		label = "pa_therm1";
-> > +	};
-> > +
-> > +	adc-chan@51 {
-> > +		reg = <ADC5_AMUX_THM5_100K_PU>;
-> > +		label = "quiet_therm";
-> > +	};
-> > +
-> > +	adc-chan@83 {
-> > +		reg = <ADC5_VPH_PWR>;
-> > +		label = "vph_pwr";
-> > +	};
-> > +
-> > +	adc-chan@85 {
-> > +		reg = <ADC5_VCOIN>;
-> > +		label = "vcoin";
-> > +	};
-> > +};
-> > +
-> > +&pm8998_adc_tm {
-> > +	status = "okay";
-> > +
-> > +	xo-thermistor@1 {
-> > +		reg = <1>;
-> > +		io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
-> > +		qcom,ratiometric;
-> > +		qcom,hw-settle-time-us = <200>;
-> > +	};
-> > +
-> > +	msm-thermistor@2 {
-> > +		reg = <2>;
-> > +		io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
-> > +		qcom,ratiometric;
-> > +		qcom,hw-settle-time-us = <200>;
-> > +	};
-> > +
-> > +	pa-thermistor@3 {
-> > +		reg = <3>;
-> > +		io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
-> > +		qcom,ratiometric;
-> > +		qcom,hw-settle-time-us = <200>;
-> > +	};
-> > +
-> > +	quiet-thermistor@4 {
-> > +		reg = <4>;
-> > +		io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
-> > +		qcom,ratiometric;
-> > +		qcom,hw-settle-time-us = <200>;
-> > +	};
-> > +};
-> > +
-> 
-> The example in the 'qcom,spmi-adc-tm5' binding specifies 'qcom,ratiometric'
-> and 'qcom,hw-settle-time-us' for both the ADC and the thermal monitor, so do
-> several board files (e.g. sm8250-mtp.dts and qrb5165-rb5.dts). This apparent
-> redundancy bothered me earlier, it's not really clear to me whether it's
-> needed/recommended or not. Do you happen to have any insights on this?
+MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+(Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+subset of its address space that is multiple of a 16 bytes granule. MTE
+is based on a lock-key mechanism where the lock is the tag associated to
+the physical memory and the key is the tag associated to the virtual
+address.
 
-Hmm, you're right and I missed this in defining my channels. I've not
-looked at this detail, just got reasonable readings from my thermal
-zones and was happy about that.
+When MTE is enabled and tags are set for ranges of address space of a task,
+the PE will compare the tag related to the physical memory with the tag
+related to the virtual address (tag check operation). Access to the memory
+is granted only if the two tags match. In case of mismatch the PE will raise
+an exception.
 
-Dmitry, do you have any further insights why these properties are
-supposed to be duplicated between the adc channel and the thermal zones?
+When asymmetric mode is present, the CPU triggers a fault on a tag mismatch
+during a load operation and asynchronously updates a register when a tag
+mismatch is detected during a store operation.
 
-Thanks,
-Bjorn
+Note: The userspace support will be sent with a future patch series.
+
+The series is based on linux-v5.15-rc4.
+
+To simplify the testing a tree with the new patches on top has been made
+available at [1].
+
+[1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v2.asymm
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Vincenzo Frascino (5):
+  kasan: Remove duplicate of kasan_flag_async
+  arm64: mte: Bitfield definitions for Asymm MTE
+  arm64: mte: CPU feature detection for Asymm MTE
+  arm64: mte: Add asymmetric mode support
+  kasan: Extend KASAN mode kernel parameter
+
+ Documentation/dev-tools/kasan.rst  |  7 +++++--
+ arch/arm64/include/asm/memory.h    |  1 +
+ arch/arm64/include/asm/mte-kasan.h |  5 +++++
+ arch/arm64/include/asm/sysreg.h    |  3 +++
+ arch/arm64/kernel/cpufeature.c     | 10 +++++++++
+ arch/arm64/kernel/mte.c            | 33 +++++++++++++++++++++++++++++-
+ arch/arm64/tools/cpucaps           |  1 +
+ lib/test_kasan.c                   |  2 +-
+ mm/kasan/hw_tags.c                 | 27 +++++++++++++++++++-----
+ mm/kasan/kasan.h                   | 24 +++++++++++++++++-----
+ mm/kasan/report.c                  |  2 +-
+ 11 files changed, 100 insertions(+), 15 deletions(-)
+
+-- 
+2.33.0
+
