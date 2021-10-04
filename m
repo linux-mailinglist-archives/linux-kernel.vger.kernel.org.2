@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCC5420FBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF69420C25
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237938AbhJDNhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48662 "EHLO mail.kernel.org"
+        id S234460AbhJDNC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237885AbhJDNfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3B461BAA;
-        Mon,  4 Oct 2021 13:16:05 +0000 (UTC)
+        id S234434AbhJDNBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:01:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A9C619E5;
+        Mon,  4 Oct 2021 12:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353366;
-        bh=HSo0HeoTq6932krhI7dspLP/+JlyL66tOuDir8PxY7w=;
+        s=korg; t=1633352314;
+        bh=Rs3Vcciiab+UuXssMClhbU/oEVDVBzV1cge3WXf6soM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XO4t4BjCqebfSnyNCwtvPA42rP4Pvi+m4OnhCAkddvLXF4YuLKkLBvoaX05K3oM+F
-         SRC70qkdBOOlDBxTl5TPoDXhkn8826GbQsSILsFh35+SJUm9PObUQ7fAszdZiVLB+3
-         UvLoOxwc2Qx3shlJwn2eAhEy0f0WJ412LH2SVllo=
+        b=QgjBKJoLMtirPvn37bRDpDd33fOwPWI7REPKGT3Kgpt5cVu/kif/oKX10iPB+P4xb
+         idBDZpmPAkh4E0SYrxplS99azrTP99WchBnYahWlHIQLW/Dw524bYMZK949Cx3UMy9
+         KpMgRcr6KBbAfg+jQknxUEt9xAvo1CODA9pVo+Cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Nathan Tempelman <natet@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, kvm@vger.kernel.org
-Subject: [PATCH 5.14 058/172] KVM: SEV: Allow some commands for mirror VM
-Date:   Mon,  4 Oct 2021 14:51:48 +0200
-Message-Id: <20211004125046.868220573@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH 4.14 14/75] mcb: fix error handling in mcb_alloc_bus()
+Date:   Mon,  4 Oct 2021 14:51:49 +0200
+Message-Id: <20211004125032.012617483@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Gonda <pgonda@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 5b92b6ca92b65bef811048c481e4446f4828500a upstream.
+commit 25a1433216489de4abc889910f744e952cb6dbae upstream.
 
-A mirrored SEV-ES VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
-setup its vCPUs and have them measured, and their VMSAs encrypted. Without
-this change, it is impossible to have mirror VMs as part of SEV-ES VMs.
+There are two bugs:
+1) If ida_simple_get() fails then this code calls put_device(carrier)
+   but we haven't yet called get_device(carrier) and probably that
+   leads to a use after free.
+2) After device_initialize() then we need to use put_device() to
+   release the bus.  This will free the internal resources tied to the
+   device and call mcb_free_bus() which will free the rest.
 
-Also allow the guest status check and debugging commands since they do
-not change any guest state.
-
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Nathan Tempelman <natet@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Steve Rutherford <srutherford@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Fixes: 5d9e2ab9fea4 ("mcb: Implement bus->dev.release callback")
+Fixes: 18d288198099 ("mcb: Correctly initialize the bus's device")
 Cc: stable@vger.kernel.org
-Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context", 2021-04-21)
-Message-Id: <20210921150345.2221634-3-pgonda@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Johannes Thumshirn <jth@kernel.org>
+Link: https://lore.kernel.org/r/32e160cf6864ce77f9d62948338e24db9fd8ead9.1630931319.git.johannes.thumshirn@wdc.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |   19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/mcb/mcb-core.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1509,6 +1509,20 @@ static int sev_receive_finish(struct kvm
- 	return sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, &data, &argp->error);
- }
+--- a/drivers/mcb/mcb-core.c
++++ b/drivers/mcb/mcb-core.c
+@@ -280,8 +280,8 @@ struct mcb_bus *mcb_alloc_bus(struct dev
  
-+static bool cmd_allowed_from_miror(u32 cmd_id)
-+{
-+	/*
-+	 * Allow mirrors VM to call KVM_SEV_LAUNCH_UPDATE_VMSA to enable SEV-ES
-+	 * active mirror VMs. Also allow the debugging and status commands.
-+	 */
-+	if (cmd_id == KVM_SEV_LAUNCH_UPDATE_VMSA ||
-+	    cmd_id == KVM_SEV_GUEST_STATUS || cmd_id == KVM_SEV_DBG_DECRYPT ||
-+	    cmd_id == KVM_SEV_DBG_ENCRYPT)
-+		return true;
-+
-+	return false;
-+}
-+
- int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- {
- 	struct kvm_sev_cmd sev_cmd;
-@@ -1525,8 +1539,9 @@ int svm_mem_enc_op(struct kvm *kvm, void
- 
- 	mutex_lock(&kvm->lock);
- 
--	/* enc_context_owner handles all memory enc operations */
--	if (is_mirroring_enc_context(kvm)) {
-+	/* Only the enc_context_owner handles some memory enc operations. */
-+	if (is_mirroring_enc_context(kvm) &&
-+	    !cmd_allowed_from_miror(sev_cmd.id)) {
- 		r = -EINVAL;
- 		goto out;
+ 	bus_nr = ida_simple_get(&mcb_ida, 0, 0, GFP_KERNEL);
+ 	if (bus_nr < 0) {
+-		rc = bus_nr;
+-		goto err_free;
++		kfree(bus);
++		return ERR_PTR(bus_nr);
  	}
+ 
+ 	bus->bus_nr = bus_nr;
+@@ -296,12 +296,12 @@ struct mcb_bus *mcb_alloc_bus(struct dev
+ 	dev_set_name(&bus->dev, "mcb:%d", bus_nr);
+ 	rc = device_add(&bus->dev);
+ 	if (rc)
+-		goto err_free;
++		goto err_put;
+ 
+ 	return bus;
+-err_free:
+-	put_device(carrier);
+-	kfree(bus);
++
++err_put:
++	put_device(&bus->dev);
+ 	return ERR_PTR(rc);
+ }
+ EXPORT_SYMBOL_GPL(mcb_alloc_bus);
 
 
