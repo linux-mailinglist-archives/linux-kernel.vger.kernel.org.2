@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E22642193D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4564B421946
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhJDV1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:27:30 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:49117 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235594AbhJDV13 (ORCPT
+        id S235995AbhJDVae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235329AbhJDVad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:27:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNYfV5tf2z4xbQ;
-        Tue,  5 Oct 2021 08:25:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633382738;
-        bh=IuG+gfnOExVL8+7l3OPMHkc5cerG2YazXy5EYdgv1hY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XrHXi5bCO6Br2aaGZv9AaKGSO9ET9w/gKE835sUsB/ZGn3cf690B6p7C1ZVexzP3S
-         mqPp+mhyGqAxJRZ97ac4SguZt/pE/eqlpGDstt3ddaLABtovBgxmRZkJn8z8xqfCif
-         cXgH7RFDWOBqHKOrA0vNlK4OYokLEzT2eFvX3kt/S0DOp3VXOENzDXZUX//RUhfxuZ
-         lnIDYuRy/mpgtJ/GKZZ9poJ30PKAjsCA0tRURve+2Rw2HxJRg9D8Nzf/sz05vsSIKo
-         GQ8BTPbK5BgsdZPfVIuVbS5FzUXy2yzYdOmTszxSQQEvbA5JS1e4It5Q9gTnSpl0Cb
-         ibzUo/XctvgjQ==
-Date:   Tue, 5 Oct 2021 08:25:38 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20211005082538.6c375d42@canb.auug.org.au>
+        Mon, 4 Oct 2021 17:30:33 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C12C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:28:44 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id y15so11721211lfk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 14:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=uxlGjvSKFaC5Vo6lc42whqKjkld+tZYZPLWj/3pXKqs=;
+        b=PmbBwvAApldLvayNGFSCgbmIWPnpNBrgYiEutqQz8fLz3zqE+Vv0GtleiWl5tsJpOn
+         gmaaJvu72jbRy+jd815Kce1UIWFb5izD1i2Wi6a+sln3q/J8T2ns+QO5Y1xhi78Jdmp2
+         QTm12sIyx0M86NowLAyt25mWgibz+wdM2v/w4KN7aa20h+Yr6JaYD1yCcGSGhXxD64m4
+         L4B8ic0qlF9wUJrJLrjJQg36iRKwV96hSkC9Dty6G5eUangDJlV3Fll13koQ/m3TL+/7
+         il4XsUIWeMf2DQLNRAlVRAkl1MxYEIhEz1i5b5yQHLYMgbbqzGBd7EVscYT9ge7Pjey4
+         luKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=uxlGjvSKFaC5Vo6lc42whqKjkld+tZYZPLWj/3pXKqs=;
+        b=o0YyOUB37StqKq+GMewjkznR41ysJQClzFResi01RKg0LE/9GtoduOvBnB4gKo5DBq
+         +HMTpPcZaHcmdaqqqhmSGLwDjPi16/pGHCwFy8/oMzTk4jaSxMoxfc029IBvK/rm3IQW
+         MzTFq37O4DRKGtXmRsIriGiIhqkmyWRaJ5qOC8bQiO8+N1Uq7PlI9njOFbI3tad+2GST
+         lK2GRlDWMezoOZGjdnZ4jOla1+uVEKEhAAyVRmPbJlfRDhEVubFubDDk3zIB8jioVYQ+
+         zFEYIEKmmDBJTv2XXyYxOPCdZziUrJB6A6kHofBluuagKmy4Hw3xCVw1NMR+b5xPhGjl
+         hSLA==
+X-Gm-Message-State: AOAM533VZIL2acbwm4dglVIkFroL/OuCFIPcTMZArrM5Em+/zkLqUFuQ
+        Kw6Qma5VOEhTnDAUKmrhk258cGI6t5KW4nXd/xc=
+X-Google-Smtp-Source: ABdhPJzh74xhP/r060Mj9YBovbgtzBm7djoYEkk5dEreZl8NqAMOuPXHfDjYd+Uk+nmOpvIhuY6IofHbDW7Fpc9f1qs=
+X-Received: by 2002:a2e:7c0c:: with SMTP id x12mr18888778ljc.186.1633382921997;
+ Mon, 04 Oct 2021 14:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T/1eggeLMaaS=rnIdvXinVg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: by 2002:a9a:48f:0:b0:139:179e:5d98 with HTTP; Mon, 4 Oct 2021
+ 14:28:41 -0700 (PDT)
+Reply-To: Mrs_Bill.Chantal.Lawrence@email.com
+From:   Mrs bill Chantal <chantalmrsbill@gmail.com>
+Date:   Mon, 4 Oct 2021 14:28:41 -0700
+Message-ID: <CADQHf_wDwihCxY=n3OHKP+iy6HvD80eDjYDf4rBV=dT1Ohk-qw@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T/1eggeLMaaS=rnIdvXinVg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-Fixes tag
-
-  Fixes: 86c2a0f000c1 drm/msm: ("Small submitqueue creation cleanup")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/T/1eggeLMaaS=rnIdvXinVg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbcVIACgkQAVBC80lX
-0GywVAf9HjgoGMDX3rfTtxS8PUiPQrYNwKBMDGBYJIfvOhzawHg+d4/ye5cocwmM
-fRKSV6bLnNXtU63ZNnL6lUC6QVt7z7eBKAiEnVyyW35flVXAB7vCXQKd5HEvSeQT
-fKVO5W4V4Efesh2GPxSksvN2QMjdrldwTQshQQ7oOYMOpYUfk+J6bZcO2wFA/Xbz
-N+2NLuY6Xmw6RChmZxTxRTqUxuQZ7aLGtpj8IPN9d8aDJrXAnd/sKzeTVgGGbtbd
-F4P4QeJ64Iu4+ksEvKcax3M6vUaG0oE3TyxkhYiyYb96Bnfruw4xAlSpBU+xXbEV
-woWG5966P/8/itVFc6MUCwAyAtg3kA==
-=RZXA
------END PGP SIGNATURE-----
-
---Sig_/T/1eggeLMaaS=rnIdvXinVg--
+ Dear Friend
+You have been compensated with the sum of 4.4 million dollars in this
+united nation the payment will be Issue into ATM visa card and send to
+you from the bank  we need your address passport and your Whatsapp
+Number.
+Thanks
+Mrs. Bill Chantal
