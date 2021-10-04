@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB1D420FB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53776420D21
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238180AbhJDNhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
+        id S235931AbhJDNMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237479AbhJDNfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D32D961BA7;
-        Mon,  4 Oct 2021 13:15:55 +0000 (UTC)
+        id S235809AbhJDNJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:09:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 659FB60F9C;
+        Mon,  4 Oct 2021 13:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353356;
-        bh=bpu1ckal/4m+hGMfx5xAtXUdPJDSYvzVAWrIWpxoXBA=;
+        s=korg; t=1633352621;
+        bh=+vmliVF3h7whJ63pel0fd0qaw8JqRC3leYCvfM2RWus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16YVeMeIb9bCzew2QbX8ZnMvLn2L+5VU7pPhBFbS7C/q6vS2PfNSO/KvDngmweEl6
-         s0E26+IHNJDuruIa9OOKsi02iwKvayjGeUDShJVd2E/bT2JowoiCMHCmfipp35s94k
-         HrOMzuVJ/x2AyDytU1jf2yHWaAmObmRCwZ63W+T8=
+        b=J50Qa1LZz25StZNb5RsA9bxrGgP4VuAq9KhSIqrfnvtUH7wZafeMRqYWa/tWHirsF
+         gUlf6Wo+5uhX7YZDcTLAR4XylzhLMj6n244233MrKIAc+J1X1g0SPvz9zVtGaB/pX7
+         qS0FFeYvGeAFBVFw0ryOg3v3A/Fmx4uFxNQFA7NM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com,
-        Hao Sun <sunhao.th@gmail.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.14 064/172] RDMA/cma: Do not change route.addr.src_addr.ss_family
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 24/95] tty: synclink_gt, drop unneeded forward declarations
 Date:   Mon,  4 Oct 2021 14:51:54 +0200
-Message-Id: <20211004125047.055660686@linuxfoundation.org>
+Message-Id: <20211004125034.345938066@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +39,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-commit bc0bdc5afaa740d782fbf936aaeebd65e5c2921d upstream.
+[ Upstream commit b9b90fe655c0bd816847ac1bcbf179cfa2981ecb ]
 
-If the state is not idle then rdma_bind_addr() will immediately fail and
-no change to global state should happen.
+Forward declarations make the code larger and rewrites harder. Harder as
+they are often omitted from global changes. Remove forward declarations
+which are not really needed, i.e. the definition of the function is
+before its first use.
 
-For instance if the state is already RDMA_CM_LISTEN then this will corrupt
-the src_addr and would cause the test in cma_cancel_operation():
-
-		if (cma_any_addr(cma_src_addr(id_priv)) && !id_priv->cma_dev)
-
-To view a mangled src_addr, eg with a IPv6 loopback address but an IPv4
-family, failing the test.
-
-This would manifest as this trace from syzkaller:
-
-  BUG: KASAN: use-after-free in __list_add_valid+0x93/0xa0 lib/list_debug.c:26
-  Read of size 8 at addr ffff8881546491e0 by task syz-executor.1/32204
-
-  CPU: 1 PID: 32204 Comm: syz-executor.1 Not tainted 5.12.0-rc8-syzkaller #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Call Trace:
-   __dump_stack lib/dump_stack.c:79 [inline]
-   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
-   print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
-   __kasan_report mm/kasan/report.c:399 [inline]
-   kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
-   __list_add_valid+0x93/0xa0 lib/list_debug.c:26
-   __list_add include/linux/list.h:67 [inline]
-   list_add_tail include/linux/list.h:100 [inline]
-   cma_listen_on_all drivers/infiniband/core/cma.c:2557 [inline]
-   rdma_listen+0x787/0xe00 drivers/infiniband/core/cma.c:3751
-   ucma_listen+0x16a/0x210 drivers/infiniband/core/ucma.c:1102
-   ucma_write+0x259/0x350 drivers/infiniband/core/ucma.c:1732
-   vfs_write+0x28e/0xa30 fs/read_write.c:603
-   ksys_write+0x1ee/0x250 fs/read_write.c:658
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Which is indicating that an rdma_id_private was destroyed without doing
-cma_cancel_listens().
-
-Instead of trying to re-use the src_addr memory to indirectly create an
-any address build one explicitly on the stack and bind to that as any
-other normal flow would do.
-
-Link: https://lore.kernel.org/r/0-v1-9fbb33f5e201+2a-cma_listen_jgg@nvidia.com
-Cc: stable@vger.kernel.org
-Fixes: 732d41c545bb ("RDMA/cma: Make the locking for automatic state transition more clear")
-Reported-by: syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com
-Tested-by: Hao Sun <sunhao.th@gmail.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210302062214.29627-39-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/tty/synclink_gt.c | 57 +--------------------------------------
+ 1 file changed, 1 insertion(+), 56 deletions(-)
 
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3768,9 +3768,13 @@ int rdma_listen(struct rdma_cm_id *id, i
- 	int ret;
+diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
+index e9779b03ee56..503836be5fe2 100644
+--- a/drivers/tty/synclink_gt.c
++++ b/drivers/tty/synclink_gt.c
+@@ -137,37 +137,14 @@ MODULE_PARM_DESC(maxframe, "Maximum frame size used by device (4096 to 65535)");
+  */
+ static struct tty_driver *serial_driver;
  
- 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN)) {
-+		struct sockaddr_in any_in = {
-+			.sin_family = AF_INET,
-+			.sin_addr.s_addr = htonl(INADDR_ANY),
-+		};
-+
- 		/* For a well behaved ULP state will be RDMA_CM_IDLE */
--		id->route.addr.src_addr.ss_family = AF_INET;
--		ret = rdma_bind_addr(id, cma_src_addr(id_priv));
-+		ret = rdma_bind_addr(id, (struct sockaddr *)&any_in);
- 		if (ret)
- 			return ret;
- 		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
+-static int  open(struct tty_struct *tty, struct file * filp);
+-static void close(struct tty_struct *tty, struct file * filp);
+-static void hangup(struct tty_struct *tty);
+-static void set_termios(struct tty_struct *tty, struct ktermios *old_termios);
+-
+-static int  write(struct tty_struct *tty, const unsigned char *buf, int count);
+-static int put_char(struct tty_struct *tty, unsigned char ch);
+-static void send_xchar(struct tty_struct *tty, char ch);
+ static void wait_until_sent(struct tty_struct *tty, int timeout);
+-static int  write_room(struct tty_struct *tty);
+-static void flush_chars(struct tty_struct *tty);
+ static void flush_buffer(struct tty_struct *tty);
+-static void tx_hold(struct tty_struct *tty);
+ static void tx_release(struct tty_struct *tty);
+ 
+-static int  ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg);
+-static int  chars_in_buffer(struct tty_struct *tty);
+-static void throttle(struct tty_struct * tty);
+-static void unthrottle(struct tty_struct * tty);
+-static int set_break(struct tty_struct *tty, int break_state);
+-
+ /*
+- * generic HDLC support and callbacks
++ * generic HDLC support
+  */
+-#if SYNCLINK_GENERIC_HDLC
+ #define dev_to_port(D) (dev_to_hdlc(D)->priv)
+-static void hdlcdev_tx_done(struct slgt_info *info);
+-static void hdlcdev_rx(struct slgt_info *info, char *buf, int size);
+-static int  hdlcdev_init(struct slgt_info *info);
+-static void hdlcdev_exit(struct slgt_info *info);
+-#endif
+ 
+ 
+ /*
+@@ -186,9 +163,6 @@ struct cond_wait {
+ 	wait_queue_entry_t wait;
+ 	unsigned int data;
+ };
+-static void init_cond_wait(struct cond_wait *w, unsigned int data);
+-static void add_cond_wait(struct cond_wait **head, struct cond_wait *w);
+-static void remove_cond_wait(struct cond_wait **head, struct cond_wait *w);
+ static void flush_cond_wait(struct cond_wait **head);
+ 
+ /*
+@@ -443,12 +417,8 @@ static void shutdown(struct slgt_info *info);
+ static void program_hw(struct slgt_info *info);
+ static void change_params(struct slgt_info *info);
+ 
+-static int  register_test(struct slgt_info *info);
+-static int  irq_test(struct slgt_info *info);
+-static int  loopback_test(struct slgt_info *info);
+ static int  adapter_test(struct slgt_info *info);
+ 
+-static void reset_adapter(struct slgt_info *info);
+ static void reset_port(struct slgt_info *info);
+ static void async_mode(struct slgt_info *info);
+ static void sync_mode(struct slgt_info *info);
+@@ -457,14 +427,12 @@ static void rx_stop(struct slgt_info *info);
+ static void rx_start(struct slgt_info *info);
+ static void reset_rbufs(struct slgt_info *info);
+ static void free_rbufs(struct slgt_info *info, unsigned int first, unsigned int last);
+-static void rdma_reset(struct slgt_info *info);
+ static bool rx_get_frame(struct slgt_info *info);
+ static bool rx_get_buf(struct slgt_info *info);
+ 
+ static void tx_start(struct slgt_info *info);
+ static void tx_stop(struct slgt_info *info);
+ static void tx_set_idle(struct slgt_info *info);
+-static unsigned int free_tbuf_count(struct slgt_info *info);
+ static unsigned int tbuf_bytes(struct slgt_info *info);
+ static void reset_tbufs(struct slgt_info *info);
+ static void tdma_reset(struct slgt_info *info);
+@@ -472,26 +440,10 @@ static bool tx_load(struct slgt_info *info, const char *buf, unsigned int count)
+ 
+ static void get_signals(struct slgt_info *info);
+ static void set_signals(struct slgt_info *info);
+-static void enable_loopback(struct slgt_info *info);
+ static void set_rate(struct slgt_info *info, u32 data_rate);
+ 
+-static int  bh_action(struct slgt_info *info);
+-static void bh_handler(struct work_struct *work);
+ static void bh_transmit(struct slgt_info *info);
+-static void isr_serial(struct slgt_info *info);
+-static void isr_rdma(struct slgt_info *info);
+ static void isr_txeom(struct slgt_info *info, unsigned short status);
+-static void isr_tdma(struct slgt_info *info);
+-
+-static int  alloc_dma_bufs(struct slgt_info *info);
+-static void free_dma_bufs(struct slgt_info *info);
+-static int  alloc_desc(struct slgt_info *info);
+-static void free_desc(struct slgt_info *info);
+-static int  alloc_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
+-static void free_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
+-
+-static int  alloc_tmp_rbuf(struct slgt_info *info);
+-static void free_tmp_rbuf(struct slgt_info *info);
+ 
+ static void tx_timeout(struct timer_list *t);
+ static void rx_timeout(struct timer_list *t);
+@@ -509,10 +461,6 @@ static int  tx_abort(struct slgt_info *info);
+ static int  rx_enable(struct slgt_info *info, int enable);
+ static int  modem_input_wait(struct slgt_info *info,int arg);
+ static int  wait_mgsl_event(struct slgt_info *info, int __user *mask_ptr);
+-static int  tiocmget(struct tty_struct *tty);
+-static int  tiocmset(struct tty_struct *tty,
+-				unsigned int set, unsigned int clear);
+-static int set_break(struct tty_struct *tty, int break_state);
+ static int  get_interface(struct slgt_info *info, int __user *if_mode);
+ static int  set_interface(struct slgt_info *info, int if_mode);
+ static int  set_gpio(struct slgt_info *info, struct gpio_desc __user *gpio);
+@@ -526,9 +474,6 @@ static int  set_xctrl(struct slgt_info *info, int if_mode);
+ /*
+  * driver functions
+  */
+-static void add_device(struct slgt_info *info);
+-static void device_init(int adapter_num, struct pci_dev *pdev);
+-static int  claim_resources(struct slgt_info *info);
+ static void release_resources(struct slgt_info *info);
+ 
+ /*
+-- 
+2.33.0
+
 
 
