@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF522421075
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D2D420EDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238007AbhJDNn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
+        id S236771AbhJDN3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238133AbhJDNls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:41:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6276325A;
-        Mon,  4 Oct 2021 13:19:05 +0000 (UTC)
+        id S236804AbhJDN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BFEF61222;
+        Mon,  4 Oct 2021 13:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353546;
-        bh=iuahFfrueehs8WkNktgbVzPeNcysH7AZ3/TkcmtLNns=;
+        s=korg; t=1633353113;
+        bh=azXybXZHbpy+XsP8n9p+uIXt2pHz7ey1Me2sReFsKrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1HMT6SaV1NQjJrKxjRl10y0MojpxYLd2h1drfg4iwS/xg/IfteR9zQk1YB24f8MWR
-         +rM5r3gjpgy9spTNFigGVUrF0/prKvWCRbjWGo+7cB0tAYp29jTUIHlOgq5RB6Xk/L
-         4P2jNpInD3L3u7b9shDBYvU6A1Euiy0YW+N5mJaI=
+        b=o7cgZ0Bo0pBR1o2aY2eGhxe75eGBvqv7ZQ7e16azVsZ20F3hbanMYOI463kiRNgGZ
+         1uaEH0bv0adNkpA2z0jpBFZaiSChpUo7Ss1HV1P2Tl6XGBiUCgz3NiJRCKGk/eDNqp
+         mXWpL5Rd32EVc5yhNMJs59JbeCbGEUfO5XpUuhTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 129/172] net: hns3: reconstruct function hns3_self_test
+Subject: [PATCH 5.10 61/93] net: hns3: reconstruct function hns3_self_test
 Date:   Mon,  4 Oct 2021 14:52:59 +0200
-Message-Id: <20211004125049.134050630@linuxfoundation.org>
+Message-Id: <20211004125036.581079585@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,10 +57,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 64 insertions(+), 37 deletions(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 82061ab6930f..69b253424da8 100644
+index 0aee100902ff..436d777cce06 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -312,33 +312,8 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
+@@ -300,33 +300,8 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
  	return ret_val;
  }
  
@@ -95,7 +95,7 @@ index 82061ab6930f..69b253424da8 100644
  	st_param[HNAE3_LOOP_APP][0] = HNAE3_LOOP_APP;
  	st_param[HNAE3_LOOP_APP][1] =
  			h->flags & HNAE3_SUPPORT_APP_LOOPBACK;
-@@ -355,6 +330,18 @@ static void hns3_self_test(struct net_device *ndev,
+@@ -343,6 +318,18 @@ static void hns3_self_test(struct net_device *ndev,
  	st_param[HNAE3_LOOP_PHY][0] = HNAE3_LOOP_PHY;
  	st_param[HNAE3_LOOP_PHY][1] =
  			h->flags & HNAE3_SUPPORT_PHY_LOOPBACK;
@@ -114,7 +114,7 @@ index 82061ab6930f..69b253424da8 100644
  
  	if (if_running)
  		ndev->netdev_ops->ndo_stop(ndev);
-@@ -373,6 +360,35 @@ static void hns3_self_test(struct net_device *ndev,
+@@ -361,6 +348,35 @@ static void hns3_self_test(struct net_device *ndev,
  		h->ae_algo->ops->halt_autoneg(h, true);
  
  	set_bit(HNS3_NIC_STATE_TESTING, &priv->state);
@@ -150,7 +150,7 @@ index 82061ab6930f..69b253424da8 100644
  
  	for (i = 0; i < HNS3_SELF_TEST_TYPE_NUM; i++) {
  		enum hnae3_loop loop_type = (enum hnae3_loop)st_param[i][0];
-@@ -391,21 +407,32 @@ static void hns3_self_test(struct net_device *ndev,
+@@ -379,21 +395,32 @@ static void hns3_self_test(struct net_device *ndev,
  
  		test_index++;
  	}
@@ -193,7 +193,7 @@ index 82061ab6930f..69b253424da8 100644
 +	hns3_selftest_restore(ndev, if_running);
  }
  
- static void hns3_update_limit_promisc_mode(struct net_device *netdev,
+ static int hns3_get_sset_count(struct net_device *netdev, int stringset)
 -- 
 2.33.0
 
