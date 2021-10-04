@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BC94205E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9544205E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbhJDGcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 02:32:46 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:43209 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbhJDGcp (ORCPT
+        id S232743AbhJDGjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 02:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232536AbhJDGjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 02:32:45 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1946Uj0J2014914, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1946Uj0J2014914
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 4 Oct 2021 14:30:45 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 4 Oct 2021 14:30:45 +0800
-Received: from fc34.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 4 Oct 2021
- 14:30:44 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <jason-ch.chen@mediatek.com>, <kuba@kernel.org>,
-        <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>
-Subject: [PATCH net] r8152: avoid to resubmit rx immediately
-Date:   Mon, 4 Oct 2021 14:28:58 +0800
-Message-ID: <20211004062858.1679-381-nic_swsd@realtek.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+        Mon, 4 Oct 2021 02:39:06 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0879C061746
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 23:37:17 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 145so13614972pfz.11
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 23:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bo1AfZo2B0G6Qf7w5hIV2g2F/2qOqHeUUj32w/8pRyc=;
+        b=J3FCPjvQ91Zm759hElGSstImuWo8dJLPQDskX+6fCdq3JReSGPzaXKZXpW3MNeqWKX
+         16MDjPnmnbrgXjqL/fV39uX8nNjZ+UTYivCHqN0/2e2fXYC0YLiphn0Mb+eM+nRoWBW0
+         /bUNr/naX+9Fwm2wqSRwg3bppRTkGdPjl534m7oTPeAvljymvWRUKWNDjK0g0ZD9AamN
+         Z0rQ3+Gwahr0TY32w0/VpP3EcpnghufANXZ8IGhyjX4uCskP7buX//DwX8cPD9k8O9Cd
+         9cfsBrPXeGAtXX1m6acV0+nXxcLM5ZRB/vXjfUF0F4sNbxUfJB6Mq+vC54JKfXmGRfbR
+         W93w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bo1AfZo2B0G6Qf7w5hIV2g2F/2qOqHeUUj32w/8pRyc=;
+        b=Qruo/xLpW0rmXA+QwZKRTFtQaK/PS7PSJNbxfSqucitZL9Hx/Lzwqd+mtG4W+prgAY
+         7y7/4v3cfVMtjgYT7rbPNIOVq+Nokmv+kAAgE3SLAvk8UBrfWbigDOdnDEzfo4AzxgJ8
+         aFAPX+4l6kVQhS7l3QfSZrfKbN/sRKS+Eyx3pWGIostYMrvcZCkoaEocXtRWmBTNcr/2
+         XtAfi4N8rhVkzKj17Y40gi/gPUhvd+ENYL+YKhXVwtwxJ9OD+c3xn3fYTOo23hxEy6V8
+         BLmtHvRY9I0a38129XOB/BuMAck6YyciiKmyOBd5JA2+VdY+dc93Yr3jtAojF1aTkJW7
+         pxlA==
+X-Gm-Message-State: AOAM5306JiUKcmIiqFlZ6dWEZZlUezbhvTF9hHFmQlLVgKDDmnqxuo+n
+        LMvAyjI0Wl6dPPJ2U5nDlVWUIA==
+X-Google-Smtp-Source: ABdhPJy2PwdNkXBTM1trCwQuWiBzmQKtgRp85HM5DKtIzNpf5iMj9DZTHKHrtExQWgDfVT9U3l1Dfg==
+X-Received: by 2002:aa7:914d:0:b0:44c:61e3:99b9 with SMTP id 13-20020aa7914d000000b0044c61e399b9mr3417268pfi.65.1633329437232;
+        Sun, 03 Oct 2021 23:37:17 -0700 (PDT)
+Received: from localhost ([122.171.247.18])
+        by smtp.gmail.com with ESMTPSA id n9sm13233203pjk.3.2021.10.03.23.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 23:37:16 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 12:07:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     rafael@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        krzysztof.kozlowski@canonical.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, kw@linux.com, p.zabel@pengutronix.de,
+        rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/5] cpufreq: tegra186/tegra194: Handle errors in BPMP
+ response
+Message-ID: <20211004063714.5bux4hwv3lchibnn@vireshk-i7>
+References: <20210915085517.1669675-1-mperttunen@nvidia.com>
+ <20210915085517.1669675-4-mperttunen@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.177.102]
-X-ClientProxiedBy: RTEXH36503.realtek.com.tw (172.21.6.25) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/04/2021 06:21:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzEwLzQgpFekyCAwNDo1MTowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/04/2021 06:17:40
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166474 [Oct 04 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/04/2021 06:21:00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915085517.1669675-4-mperttunen@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the situation that the disconnect event comes very late when the
-device is unplugged, the driver would resubmit the RX bulk transfer
-after getting the callback with -EPROTO immediately and continually.
-Finally, soft lockup occurs.
+On 15-09-21, 11:55, Mikko Perttunen wrote:
+> The return value from tegra_bpmp_transfer indicates the success or
+> failure of the IPC transaction with BPMP. If the transaction
+> succeeded, we also need to check the actual command's result code.
+> Add code to do this.
+> 
+> While at it, explicitly handle missing CPU clusters, which can
+> occur on floorswept chips. This worked before as well, but
+> possibly only by accident.
+> 
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> ---
+>  drivers/cpufreq/tegra186-cpufreq.c | 4 ++++
+>  drivers/cpufreq/tegra194-cpufreq.c | 8 +++++++-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
 
-This patch avoids to resubmit RX immediately. It uses a workqueue to
-schedule the RX NAPI. And the NAPI would resubmit the RX. It let the
-disconnect event have opportunity to stop the submission before soft
-lockup.
+Should I apply it alone ?
 
-Reported-by: Jason-ch Chen <jason-ch.chen@mediatek.com>
-Tested-by: Jason-ch Chen <jason-ch.chen@mediatek.com>
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
----
- drivers/net/usb/r8152.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 60ba9b734055..f329e39100a7 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -767,6 +767,7 @@ enum rtl8152_flags {
- 	PHY_RESET,
- 	SCHEDULE_TASKLET,
- 	GREEN_ETHERNET,
-+	RX_EPROTO,
- };
- 
- #define DEVICE_ID_THINKPAD_THUNDERBOLT3_DOCK_GEN2	0x3082
-@@ -1770,6 +1771,14 @@ static void read_bulk_callback(struct urb *urb)
- 		rtl_set_unplug(tp);
- 		netif_device_detach(tp->netdev);
- 		return;
-+	case -EPROTO:
-+		urb->actual_length = 0;
-+		spin_lock_irqsave(&tp->rx_lock, flags);
-+		list_add_tail(&agg->list, &tp->rx_done);
-+		spin_unlock_irqrestore(&tp->rx_lock, flags);
-+		set_bit(RX_EPROTO, &tp->flags);
-+		schedule_delayed_work(&tp->schedule, 1);
-+		return;
- 	case -ENOENT:
- 		return;	/* the urb is in unlink state */
- 	case -ETIME:
-@@ -2425,6 +2434,7 @@ static int rx_bottom(struct r8152 *tp, int budget)
- 	if (list_empty(&tp->rx_done))
- 		goto out1;
- 
-+	clear_bit(RX_EPROTO, &tp->flags);
- 	INIT_LIST_HEAD(&rx_queue);
- 	spin_lock_irqsave(&tp->rx_lock, flags);
- 	list_splice_init(&tp->rx_done, &rx_queue);
-@@ -2441,7 +2451,7 @@ static int rx_bottom(struct r8152 *tp, int budget)
- 
- 		agg = list_entry(cursor, struct rx_agg, list);
- 		urb = agg->urb;
--		if (urb->actual_length < ETH_ZLEN)
-+		if (urb->status != 0 || urb->actual_length < ETH_ZLEN)
- 			goto submit;
- 
- 		agg_free = rtl_get_free_rx(tp, GFP_ATOMIC);
-@@ -6643,6 +6653,10 @@ static void rtl_work_func_t(struct work_struct *work)
- 	    netif_carrier_ok(tp->netdev))
- 		tasklet_schedule(&tp->tx_tl);
- 
-+	if (test_and_clear_bit(RX_EPROTO, &tp->flags) &&
-+	    !list_empty(&tp->rx_done))
-+		napi_schedule(&tp->napi);
-+
- 	mutex_unlock(&tp->control);
- 
- out1:
 -- 
-2.31.1
-
+viresh
