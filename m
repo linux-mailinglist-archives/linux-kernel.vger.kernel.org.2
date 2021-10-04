@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2A2420DFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1114942101A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbhJDNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
+        id S238537AbhJDNkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235201AbhJDNSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B592E61425;
-        Mon,  4 Oct 2021 13:07:27 +0000 (UTC)
+        id S238530AbhJDNim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A436561B40;
+        Mon,  4 Oct 2021 13:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352848;
-        bh=QPTD52r05LEXHXfXCXnX0W7tGc8lI7KPp44MgR8bN20=;
+        s=korg; t=1633353464;
+        bh=oUY6r6g2zJSANNMIJWvWggTv5+RsvlHHqu1DztCnh3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eh5PoAwAcnDqaXFy6ydcscutylr6d6zi4mjTAfA9o+brB0EVmwOT0KiOgxidnZ7d/
-         DIrQ+kw4AxdQJ1/iWmBhz1XifggcdM3IMmhNBwExndB6IwDF5BZ10ueQCDk9k1IRhX
-         YsVL2qRgFdKHl6PyHptmwStq+Kw6kpuiGowGDAs0=
+        b=cc1DJP/b6mIXIlyKrCCLxxKkAuMjulDjln/dcVw4JEQnaNxFZnEEOOe2od7lobwxd
+         DXrkS6JTe2PS+uHpALqSD4JqMhmKENFpfB4oWifAOOcG2Oa4Is6uD3jl+vPnS7S6zy
+         LQYj1CW1/keE8rzUk5WCFVe8nkfAWHNW04szf2Wk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, sumiyawang <sumiyawang@tencent.com>,
-        yongduan <yongduan@tencent.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: [PATCH 5.4 48/56] libnvdimm/pmem: Fix crash triggered when I/O in-flight during unbind
-Date:   Mon,  4 Oct 2021 14:53:08 +0200
-Message-Id: <20211004125031.514923910@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Odin Ugedal <odin@uged.al>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 139/172] sched/fair: Add ancestors of unthrottled undecayed cfs_rq
+Date:   Mon,  4 Oct 2021 14:53:09 +0200
+Message-Id: <20211004125049.457079331@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: sumiyawang <sumiyawang@tencent.com>
+From: Michal Koutný <mkoutny@suse.com>
 
-commit 32b2397c1e56f33b0b1881def965bb89bd12f448 upstream.
+[ Upstream commit 2630cde26711dab0d0b56a8be1616475be646d13 ]
 
-There is a use after free crash when the pmem driver tears down its
-mapping while I/O is still inbound.
+Since commit a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to
+list on unthrottle") we add cfs_rqs with no runnable tasks but not fully
+decayed into the load (leaf) list. We may ignore adding some ancestors
+and therefore breaking tmp_alone_branch invariant. This broke LTP test
+cfs_bandwidth01 and it was partially fixed in commit fdaba61ef8a2
+("sched/fair: Ensure that the CFS parent is added after unthrottling").
 
-This is triggered by driver unbind, "ndctl destroy-namespace", while I/O
-is in flight.
+I noticed the named test still fails even with the fix (but with low
+probability, 1 in ~1000 executions of the test). The reason is when
+bailing out of unthrottle_cfs_rq early, we may miss adding ancestors of
+the unthrottled cfs_rq, thus, not joining tmp_alone_branch properly.
 
-Fix the sequence of blk_cleanup_queue() vs memunmap().
+Fix this by adding ancestors if we notice the unthrottled cfs_rq was
+added to the load list.
 
-The crash signature is of the form:
-
- BUG: unable to handle page fault for address: ffffc90080200000
- CPU: 36 PID: 9606 Comm: systemd-udevd
- Call Trace:
-  ? pmem_do_bvec+0xf9/0x3a0
-  ? xas_alloc+0x55/0xd0
-  pmem_rw_page+0x4b/0x80
-  bdev_read_page+0x86/0xb0
-  do_mpage_readpage+0x5d4/0x7a0
-  ? lru_cache_add+0xe/0x10
-  mpage_readpages+0xf9/0x1c0
-  ? bd_link_disk_holder+0x1a0/0x1a0
-  blkdev_readpages+0x1d/0x20
-  read_pages+0x67/0x1a0
-
-  ndctl Call Trace in vmcore:
-  PID: 23473  TASK: ffff88c4fbbe8000  CPU: 1   COMMAND: "ndctl"
-  __schedule
-  schedule
-  blk_mq_freeze_queue_wait
-  blk_freeze_queue
-  blk_cleanup_queue
-  pmem_release_queue
-  devm_action_release
-  release_nodes
-  devres_release_all
-  device_release_driver_internal
-  device_driver_detach
-  unbind_store
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: sumiyawang <sumiyawang@tencent.com>
-Reviewed-by: yongduan <yongduan@tencent.com>
-Link: https://lore.kernel.org/r/1629632949-14749-1-git-send-email-sumiyawang@tencent.com
-Fixes: 50f44ee7248a ("mm/devm_memremap_pages: fix final page put race")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-[tyhicks: Minor contextual change in pmem_attach_disk() due to the
- transition to 'struct range' not yet taking place. Preserve the
- memcpy() call rather than initializing the range struct. That change
- was introduced in v5.10 with commit a4574f63edc6 ("mm/memremap_pages:
- convert to 'struct range'")]
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Odin Ugedal <odin@uged.al>
+Link: https://lore.kernel.org/r/20210917153037.11176-1-mkoutny@suse.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvdimm/pmem.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -423,11 +423,11 @@ static int pmem_attach_disk(struct devic
- 		pmem->pfn_flags |= PFN_MAP;
- 		memcpy(&bb_res, &pmem->pgmap.res, sizeof(bb_res));
- 	} else {
-+		addr = devm_memremap(dev, pmem->phys_addr,
-+				pmem->size, ARCH_MEMREMAP_PMEM);
- 		if (devm_add_action_or_reset(dev, pmem_release_queue,
- 					&pmem->pgmap))
- 			return -ENOMEM;
--		addr = devm_memremap(dev, pmem->phys_addr,
--				pmem->size, ARCH_MEMREMAP_PMEM);
- 		memcpy(&bb_res, &nsio->res, sizeof(bb_res));
- 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 30a6984a58f7..423ec671a306 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4898,8 +4898,12 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	/* update hierarchical throttle state */
+ 	walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)rq);
  
+-	if (!cfs_rq->load.weight)
++	/* Nothing to run but something to decay (on_list)? Complete the branch */
++	if (!cfs_rq->load.weight) {
++		if (cfs_rq->on_list)
++			goto unthrottle_throttle;
+ 		return;
++	}
+ 
+ 	task_delta = cfs_rq->h_nr_running;
+ 	idle_task_delta = cfs_rq->idle_h_nr_running;
+-- 
+2.33.0
+
 
 
