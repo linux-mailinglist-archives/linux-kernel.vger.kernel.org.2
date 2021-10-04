@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B4F42164F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF815421652
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238313AbhJDSZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        id S238063AbhJDSZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238063AbhJDSZK (ORCPT
+        with ESMTP id S238336AbhJDSZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:25:10 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE37C061745;
-        Mon,  4 Oct 2021 11:23:20 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id h4so4903767uaw.1;
-        Mon, 04 Oct 2021 11:23:20 -0700 (PDT)
+        Mon, 4 Oct 2021 14:25:25 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24534C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:23:36 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id g6so22704460ybb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:23:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hK4OhSiTNsNfjE6KJ9kkf4rjTqcI5urGy7xo3IPDC3A=;
-        b=Q69CYp0o33+bNhPhgJw6tfQEU2jevmksNOnLa45BJW4J860ZLdd5As8XnBiijsgNxl
-         9fPQdXYUniDiNOBhPJuO7PUM16sHw4NDcviTLntp3swnZ8DAJywhF/lmbmrUSWqIZJNF
-         XMvzN8O0geUzG58BQFhfCMZPNXjRXZRTnOV/NM9zVAApRYCNrGV131CpOlTlfvfeMS9J
-         8S7/QdGD9jwNWl1W00hdv/q3B/EkrS3gIYF/3V7iUf6zDtjARM979ySKNfJT12HngGKU
-         Lf0IGu5hOQ6HwLNVwR+MLbt5KKe/IRnx2UJIAxZgrmmy4U/Mjkvep7lhg00ICW5yijUa
-         NZuQ==
+        bh=BFKM7U3UDEJ55Ej869376prtCofZCVdDub7v4Xo/Buo=;
+        b=jPaiEO68fCD9c6m0PyHUFtUdWd2HM024YbBjs8TME+hIf+piF7+5VAIiq+zs8Vzl45
+         J4j4CYBHEt/FR6TmTuiy1T7z58//v7+afg0bY2a4sut/NvU3ophdU1Rlrw0e+7vdqWIQ
+         Sz+ZA6lMkIBKN4xxiLRBDlw/FkWvgLMy6P1THW1kal1aqrq1bStbTzwQ5gacHB5rqjch
+         pGTnW1djIrAQIcMyEi6AMSCn72+6D9QYFNxPp5NtltoAkWdb+muid/3/Q678/vvn59rC
+         wk02LQwP5PBzi2WwLdmdHvaR2WE59PqJza8JQfjZt04WBFyLfLeF1wAZNuHe6iy1sVX0
+         vl5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hK4OhSiTNsNfjE6KJ9kkf4rjTqcI5urGy7xo3IPDC3A=;
-        b=uTLaTA4t1W6xCNeimQhFW8PyM3W4jh4OP4vxmsRhDHzDPRyhBBpeVya3/3tbuJQf8+
-         pxqaNkDUweVeTb8KV0Wj2SrVzsZC4zoqlVl2LxaUIDHKiAc2sF2cSMN10A6E3ahQxZ4c
-         e0bKWiunJ4IgeSZR+a6GJvDfgBHbgJK7rhvnFinjs+8dnViTGaJmqxqPtblh/HDq9sfM
-         yCST1ovI5ZO3wXAxiekTggR+uFLHOsDqMxf4JgMgSx9Dkp5LeImq8IyhET8wl/jFAmg9
-         YmUgFS4gV/HsveRPrqNLY/oIJNGbksXzpB3ZYPfiYyskDQsAn7sCwQEW2GZmJ5gvAOIm
-         3Niw==
-X-Gm-Message-State: AOAM532TS1rvdR2BG/GgNU8pA/cO8PHmplnHfFLdNo+UHX9rBDA+9DQz
-        KFMrQCz5MtR5CikEgsLid2azUyw0IsA8031Hf5I=
-X-Google-Smtp-Source: ABdhPJwnjNUHh5SCs2J6EKDd+0hWKi+8Yf7wGYGlpYeVF/BzjvF24T+BLeEgDVKFumFPqVNBHKKdnwmMLny4AzCRO9A=
-X-Received: by 2002:ab0:5548:: with SMTP id u8mr8021640uaa.0.1633371799913;
- Mon, 04 Oct 2021 11:23:19 -0700 (PDT)
+        bh=BFKM7U3UDEJ55Ej869376prtCofZCVdDub7v4Xo/Buo=;
+        b=tbd886NxO313bZ6ssF8mFbDkmjXEU16Z9a7Bn4QUvtw/rHh7Ohi98BSHZqWEZjO+AI
+         t4RXHm81HdBJ+Xf1a1Z99p+vWhvXgCdd+2TgrLvUtILMkKsZVuKFnVj0q1Wo5WAf9Qvs
+         HSNGPqL31MzRI4QDBojbCPwTCml+DUAKVi/SZ66zqEt6J4wvdFLw4R1nQCKG9Yfet/Hn
+         +X7kutoWvzb8C0nGYyaSBjmb41MSWT14lcO/kRyaiPMYkazyo8IZKL2yquOy4reIqvvW
+         5w5Qh0ShWbGA42UhHuZshqHul7yRlWCq0OSwvcoDucbhwlOD+stVGb13JRywkz0tkB56
+         FKww==
+X-Gm-Message-State: AOAM533ayu3gEzpd4PCsqtndWQOMbo2SJeKCoMngmH311liP7WBWqEz0
+        n1yLnLTo+jHV03/24HTmunY65QC0DYMr3MSYvaNz/Q==
+X-Google-Smtp-Source: ABdhPJxY3TE/jiifKSp9sVvDhnfPt509VcHgkIJv6dDJItL4Wj6IeZVwTsaqflKieQJelqqbgwTG9z9Tb8IjBjfJQzI=
+X-Received: by 2002:a25:6557:: with SMTP id z84mr17297165ybb.243.1633371815123;
+ Mon, 04 Oct 2021 11:23:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
- <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
-In-Reply-To: <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Mon, 4 Oct 2021 20:23:08 +0200
-Message-ID: <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
- binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210914223114.435273-1-rananta@google.com> <20210914223114.435273-16-rananta@google.com>
+ <61419b8f-4da9-955e-b8e3-1d401d91ab1a@huawei.com>
+In-Reply-To: <61419b8f-4da9-955e-b8e3-1d401d91ab1a@huawei.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 4 Oct 2021 11:23:24 -0700
+Message-ID: <CAJHc60yXia60BL6_NddvqsjhXJ19bHrnyQKiPNMqEjjQuHXedw@mail.gmail.com>
+Subject: Re: [PATCH v7 15/15] KVM: arm64: selftests: arch_timer: Support vCPU migration
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
+On Thu, Sep 30, 2021 at 2:41 AM Zenghui Yu <yuzenghui@huawei.com> wrote:
 >
-> On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
-> > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
-> >  1 file changed, 39 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > new file mode 100644
-> > index 000000000000..88eddeb4ee45
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > @@ -0,0 +1,39 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> On 2021/9/15 6:31, Raghavendra Rao Ananta wrote:
+> >  static void test_run(struct kvm_vm *vm)
+> >  {
+> >       int i, ret;
+> > +     pthread_t pt_vcpu_migration;
 > > +
-> > +title: Ralink RT2880 Reset Controller Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > +
-> > +description: |
-> > +  Ralink RT2880 reset controller driver which supports the SoC
-> > +  system controller supplied reset registers for the various peripherals
-> > +  of the SoC.
-> > +
-> > +  See also:
-> > +  - dt-bindings/reset/ralink-rt2880.h
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: ralink,rt2880-reset
-> > +
-> > +  '#reset-cells':
-> > +    const: 1
-> > +
-> > +required:
-> > +  - '#reset-cells'
-> > +  - compatible
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/reset/ralink-rt2880.h>
-> > +    rstctrl: reset-controller {
-> > +      compatible = "ralink,rt2880-reset";
-> > +      #reset-cells = <1>;
+> > +     pthread_mutex_init(&vcpu_done_map_lock, NULL);
+> > +     vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
 >
-> How is this h/w controlled? If this is part of a system controller, then
-> it needs to be documented as such. IOW, you need to document the binding
-> for the whole block.
+> This one fails to build.
 >
-> Do you really need a child node here? All you need to make a system
-> controller a reset provider is add '#reset-cells' to it.
+> aarch64/arch_timer.c: In function 'test_run':
+> aarch64/arch_timer.c:321:18: warning: implicit declaration of function
+> 'bitmap_alloc'; did you mean 'bitmap_zalloc'?
+> [-Wimplicit-function-declaration]
+>    vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
+>                    ^~~~~~~~~~~~
+>                    bitmap_zalloc
+> aarch64/arch_timer.c:321:16: warning: assignment makes pointer from
+> integer without a cast [-Wint-conversion]
+>    vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
+>                  ^
 
-I am just documenting what is already mainlined (see [0]) in order to
-get mt7621-dts out of staging at some point of my life. What am I
-supposed to do? Should I rewrite all already mainlined code? Because
-if that is the case we need to rewrite tons of things from the ralink
-platform...
+bitmap_alloc() is defined as an inline function in
+tools/include/linux/bitmap.h (since 4.8), which is included as a part
+of this patch. Do you mind double-checking if you have it in the
+header file?
+Also, the function is referenced by other tests such as
+dirty_log_[perf_]]test.c. Do you see the same warnings when you
+compile them too?
 
-I'd also like to know what we should do with those nodes already added
-to the dtsi file that have not got associated compatible driver
-mainlined. Can we just get rid of them?
-
-Thanks in advance for clarification.
-
-Best regards,
-    Sergio Paracuellos
-
-[0]: https://elixir.bootlin.com/linux/latest/source/arch/mips/ralink/reset.c
-
->
-> Rob
+Regards,
+Raghavendra
