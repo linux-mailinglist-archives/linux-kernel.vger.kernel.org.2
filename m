@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FA342101D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A165420EA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238580AbhJDNkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S235318AbhJDN06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238558AbhJDNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:38:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 930DF6323D;
-        Mon,  4 Oct 2021 13:17:48 +0000 (UTC)
+        id S236808AbhJDNZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:25:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEC261B66;
+        Mon,  4 Oct 2021 13:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353469;
-        bh=HAXHvd38nLZh1//qgjGynSrYXsQ4pGRzDCFaDW+elBs=;
+        s=korg; t=1633353059;
+        bh=wZMgo4gl+2tQup07NRFHpMI01h3M95+MqkaaMPs4i2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uyn5Qn/pSaAt6jH0SlhOCk5wK+hu4X6gEdJGSEOlZ8KoRDFvPIskokWHLB56o6dYy
-         4EoVO5LQT53mUfL87phqfMhnDUDzyNkTTd/nPpadG3prD9WHW+dmuij/e9T5KIt5Pa
-         D4nFEI49/5GQSKi+W0t8Rg8ZYCtDJI5sKG3sOWq8=
+        b=EFUNErpSyx6wI6pUcQ91ZUxYEfVAokLsdUX2WlHvaeNOPX1iYgPzCEx5qffj7/UHY
+         //cdbotwTamip+7gG/OQq0KbYEVLA8hcJJrY/65tfObQ/r2KZEmQQfZtgHq2I46Hak
+         1x3cwvw9aTGyvPZm7mX1QHijh2xyaPnzlg+GVNxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 141/172] hwmon: (occ) Fix P10 VRM temp sensors
+        stable@vger.kernel.org,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 73/93] ipack: ipoctal: fix tty-registration error handling
 Date:   Mon,  4 Oct 2021 14:53:11 +0200
-Message-Id: <20211004125049.523260646@linuxfoundation.org>
+Message-Id: <20211004125036.992468394@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit ffa2600044979aff4bd6238edb9af815a47d7c32 ]
+commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
 
-The P10 (temp sensor version 0x10) doesn't do the same VRM status
-reporting that was used on P9. It just reports the temperature, so
-drop the check for VRM fru type in the sysfs show function, and don't
-set the name to "alarm".
+Registration of the ipoctal tty devices is unlikely to fail, but if it
+ever does, make sure not to deregister a never registered tty device
+(and dereference a NULL pointer) when the driver is later unbound.
 
-Fixes: db4919ec86 ("hwmon: (occ) Add new temperature sensor type")
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210929153604.14968-1-eajames@linux.ibm.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
+Cc: stable@vger.kernel.org      # 3.7
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/occ/common.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ drivers/ipack/devices/ipoctal.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
-index 0d68a78be980..ae664613289c 100644
---- a/drivers/hwmon/occ/common.c
-+++ b/drivers/hwmon/occ/common.c
-@@ -340,18 +340,11 @@ static ssize_t occ_show_temp_10(struct device *dev,
- 		if (val == OCC_TEMP_SENSOR_FAULT)
- 			return -EREMOTEIO;
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -35,6 +35,7 @@ struct ipoctal_channel {
+ 	unsigned int			pointer_read;
+ 	unsigned int			pointer_write;
+ 	struct tty_port			tty_port;
++	bool				tty_registered;
+ 	union scc2698_channel __iomem	*regs;
+ 	union scc2698_block __iomem	*block_regs;
+ 	unsigned int			board_id;
+@@ -399,9 +400,11 @@ static int ipoctal_inst_slot(struct ipoc
+ 							i, NULL, channel, NULL);
+ 		if (IS_ERR(tty_dev)) {
+ 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
++			tty_port_free_xmit_buf(&channel->tty_port);
+ 			tty_port_destroy(&channel->tty_port);
+ 			continue;
+ 		}
++		channel->tty_registered = true;
+ 	}
  
--		/*
--		 * VRM doesn't return temperature, only alarm bit. This
--		 * attribute maps to tempX_alarm instead of tempX_input for
--		 * VRM
--		 */
--		if (temp->fru_type != OCC_FRU_TYPE_VRM) {
--			/* sensor not ready */
--			if (val == 0)
--				return -EAGAIN;
-+		/* sensor not ready */
-+		if (val == 0)
-+			return -EAGAIN;
+ 	/*
+@@ -702,6 +705,10 @@ static void __ipoctal_remove(struct ipoc
  
--			val *= 1000;
--		}
-+		val *= 1000;
- 		break;
- 	case 2:
- 		val = temp->fru_type;
-@@ -886,7 +879,7 @@ static int occ_setup_sensor_attrs(struct occ *occ)
- 					     0, i);
- 		attr++;
- 
--		if (sensors->temp.version > 1 &&
-+		if (sensors->temp.version == 2 &&
- 		    temp->fru_type == OCC_FRU_TYPE_VRM) {
- 			snprintf(attr->name, sizeof(attr->name),
- 				 "temp%d_alarm", s);
--- 
-2.33.0
-
+ 	for (i = 0; i < NR_CHANNELS; i++) {
+ 		struct ipoctal_channel *channel = &ipoctal->channel[i];
++
++		if (!channel->tty_registered)
++			continue;
++
+ 		tty_unregister_device(ipoctal->tty_drv, i);
+ 		tty_port_free_xmit_buf(&channel->tty_port);
+ 		tty_port_destroy(&channel->tty_port);
 
 
