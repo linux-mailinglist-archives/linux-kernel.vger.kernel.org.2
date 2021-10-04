@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A61420670
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2230D420674
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhJDHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhJDHKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:10:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53EBC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:08:48 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXI5P-00049J-Ll; Mon, 04 Oct 2021 09:08:31 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXI5K-0007tv-Nw; Mon, 04 Oct 2021 09:08:26 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXI5K-0007Hj-Mf; Mon, 04 Oct 2021 09:08:26 +0200
-Date:   Mon, 4 Oct 2021 09:08:26 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [v12 2/2] pwm: Add Aspeed ast2600 PWM support
-Message-ID: <20211004070826.on5tg42dvjh7bayt@pengutronix.de>
-References: <20210906024339.21124-1-billy_tsai@aspeedtech.com>
- <20210906024339.21124-3-billy_tsai@aspeedtech.com>
- <012AEBBE-9FFC-48B5-8794-00A577C3C87A@aspeedtech.com>
+        id S229720AbhJDHM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhJDHM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 03:12:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B6126124D;
+        Mon,  4 Oct 2021 07:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633331438;
+        bh=wxQMgh47EITAIUhAsP0hL+YuY3VdMgjXAZPx4dZXs/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gsfN3cobrt55Lq7+W4abDXGNrYMXTDWaW97vyAt0bwKFTpi1MbVGD8rK5tLcR5P5t
+         p3MUlmtdldOGo37jvwx/46u6VqXgnHhtygxp6DEu4qWn+/VE/i0NBMp5kAuPmtTkHt
+         psdFPQMjGfSvZf8WjJPFS+PEQ+3TQg8StP9BGqSg=
+Date:   Mon, 4 Oct 2021 09:10:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <YVqo64vS4ox9P9hk@kroah.com>
+References: <20211001133057.5287f150@thinkpad>
+ <YVb/HSLqcOM6drr1@lunn.ch>
+ <20211001144053.3952474a@thinkpad>
+ <20211003225338.76092ec3@thinkpad>
+ <YVqhMeuDI0IZL/zY@kroah.com>
+ <20211004090438.588a8a89@thinkpad>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5t4m3yzkgi5tqy6e"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <012AEBBE-9FFC-48B5-8794-00A577C3C87A@aspeedtech.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004090438.588a8a89@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 04, 2021 at 09:04:38AM +0200, Marek Behún wrote:
+> Hi Greg,
+> 
+> On Mon, 4 Oct 2021 08:37:37 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Sun, Oct 03, 2021 at 10:53:38PM +0200, Marek Behún wrote:
+> > > Hello Greg,
+> > > 
+> > > could you give your opinion on this discussion?  
+> > 
+> > What discussion?  Top posting ruins that :(
+> 
+> Sorry, the discussion is here
+> https://lore.kernel.org/linux-leds/20211001144053.3952474a@thinkpad/T/
+> But the basic question is below, so you don't need to read the
+> discussion.
+> 
+> > > Are device names (as returned by dev_name() function) also part of
+> > > sysfs ABI? Should these names be stable across reboots / kernel
+> > > upgrades?  
+> > 
+> > Stable in what exact way?
+> 
+> Example:
+> - Board has an ethernet PHYs that is described in DT, and therefore
+>   has stable sysfs path (derived from DT path), something like
+>     /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01
 
---5t4m3yzkgi5tqy6e
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+None of the numbers there are "stable", right?
 
-Hello Billy,
+> - The PHY has a subnode describing a LED.
+>   The LED subsystem has a different naming scheme (it uses DT node name
+>   as a last resort). When everything is okay, the dev_name() of the LED
+>   will be something like
+>     ethphy42:green:link
 
-On Mon, Oct 04, 2021 at 02:54:00AM +0000, Billy Tsai wrote:
-> Does anyone have any comments about this patch?
+Wonderful, but the "42" means nothing.
 
-It's on my list of todos, the problem is there are so many thing on that
-list. I'll try to review your patch set this week.
+> - Now suppose that the PHY driver is unloaded and loaded again. The PHY
+>   sysfs path is unchanged, but the LED will now be named
+>     ethphy43:green:link
+> 
+> Is this OK?
 
-Best regards
-Uwe
+Yup!
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+The "link" should point to the device it is associated with, right?  You
+need to have some way to refer to the device.
 
---5t4m3yzkgi5tqy6e
-Content-Type: application/pgp-signature; name="signature.asc"
+> > Numbering of devices (where a dynamic value is part of a name, like the
+> > "42" in "usb42"), is never guaranteed to be stable, but the non-number
+> > part of the name (like "usb" is in "usb42") is stable, as that is what
+> > you have properly documented in the Documentation/ABI/ files defining
+> > the bus and class devices, right?
+> 
+> It does make sense for removable devices like USB. What I am asking
+> is whether it is also OK for devices that have stable DT nodes.
 
------BEGIN PGP SIGNATURE-----
+Any device can be "removed" from the system and added back thanks to the
+joy of the driver model :)
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFaqGcACgkQwfwUeK3K
-7AnGAgf9G336UWwO/gwlaZ/cj2wpcF8RfEe28nz+ZdOLKOTExHGoTFA/i4jisAN3
-QCtLRrKdUQb+133ZMFwKdfUH+MVgtDC2TyScXhsHH9x8/8flyZTkP1fxeQp4u3Qw
-MJIF2oiz18CGU01qck3evudKGeWKiD9yHl2TbvCT+dlcSIIGpleviEyynnOB7OKi
-sMNE7wJcz8i+EYiB7N0NxdTIWhix17lE3QSYyy9yBRrfUpmT8QEj15mUxuAzsI+x
-EZHk9bv43TRShMy6QFNfwcqdC5L6mSKFKgwSSJmYGQSunmzcRxpZLM9upJy3Jj/Z
-Y6+cqlD/ohXtKbi9Znc4XYXPg0ug3A==
-=lJ1t
------END PGP SIGNATURE-----
+Also, what prevents your DT from renumbering things in an update to it
+in the future?  The kernel doesn't care, and userspace should be able to
+handle it.
 
---5t4m3yzkgi5tqy6e--
+Again, any numbering scheme is NEVER stable, just because it feels like
+it is at the moment for your device, you should NEVER rely on that, but
+instead rely on the attributes of the device to determine what it is and
+where it is in the device hierarchy (serial number, position location,
+partition name, etc.) in order to know what it associated with.
+
+And again, this is 1/2 of the whole reason _why_ we created the unified
+driver model in the kernel.  Don't try to go back to the nightmare that
+we had in the 2.4 and earlier kernel days please.
+
+thanks,
+
+greg k-h
