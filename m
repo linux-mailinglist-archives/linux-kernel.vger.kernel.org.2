@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A42B420E27
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A650420F75
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbhJDNWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55628 "EHLO mail.kernel.org"
+        id S237857AbhJDNfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236300AbhJDNUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:20:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1741361B53;
-        Mon,  4 Oct 2021 13:08:37 +0000 (UTC)
+        id S237172AbhJDNdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E2E61BA5;
+        Mon,  4 Oct 2021 13:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352918;
-        bh=1MSdX/7T85dYSahuEBGLAHfRw5oKIFE15uxVa3Nitjo=;
+        s=korg; t=1633353291;
+        bh=6EsxzmryHjfkatAodB7A/kelLMtV/Zo6OI6kY/nZSi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HyEZHjDYyp9SF1cDrGF7AwVaVshw+ejz1b1pXdewbybbiS8O8YZcF8YBnqyDvPDEu
-         NUtDSoLsBXrOVBQe3VQ6d59ldtzi+ikP/6EojQ96w/cx6UpTJh4vSe+4J/wqcaRtGZ
-         bsRZyc0btVzZ7WuwODDubPjWtN+pwBI5X2QuAlEY=
+        b=ZNv2O6/Zt7dG2h3jxrIA8saJNIeSwwmdfFtXRKF+jkvSRyx2w+zAYA7w8uMjRWe1Y
+         YyIipcZY0XEvTbY5OOmRv+ueKrR+AmSA1sRjP37+9dxwhuP3owjKnqKxgmqPDix2Tv
+         UIvtX+17cNI0axvzcrj9U0V4rGALwFFumNocr0G8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 03/93] scsi: qla2xxx: Changes to support kdump kernel for NVMe BFS
+        stable@vger.kernel.org, Simon Ser <contact@emersion.fr>,
+        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Harry Wentland <hwentlan@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Subject: [PATCH 5.14 071/172] drm/amdgpu: check tiling flags when creating FB on GFX8-
 Date:   Mon,  4 Oct 2021 14:52:01 +0200
-Message-Id: <20211004125034.697111153@linuxfoundation.org>
+Message-Id: <20211004125047.289306191@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,132 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurav Kashyap <skashyap@marvell.com>
+From: Simon Ser <contact@emersion.fr>
 
-[ Upstream commit 4a0a542fe5e4273baf9228459ef3f75c29490cba ]
+commit 98122e63a7ecc08c4172a17d97a06ef5536eb268 upstream.
 
-The MSI-X and MSI calls fails in kdump kernel. Because of this
-qla2xxx_create_qpair() fails leading to .create_queue callback failure.
-The fix is to return existing qpair instead of allocating new one and
-allocate a single hw queue.
+On GFX9+, format modifiers are always enabled and ensure the
+frame-buffers can be scanned out at ADDFB2 time.
 
-[   19.975838] qla2xxx [0000:d8:00.1]-00c7:11: MSI-X: Failed to enable support,
-giving   up -- 16/-28.
-[   19.984885] qla2xxx [0000:d8:00.1]-0037:11: Falling back-to MSI mode --
-ret=-28.
-[   19.992278] qla2xxx [0000:d8:00.1]-0039:11: Falling back-to INTa mode --
-ret=-28.
-..
-..
-..
-[   21.141518] qla2xxx [0000:d8:00.0]-2104:2: qla_nvme_alloc_queue: handle
-00000000e7ee499d, idx =1, qsize 32
-[   21.151166] qla2xxx [0000:d8:00.0]-0181:2: FW/Driver is not multi-queue capable.
-[   21.158558] qla2xxx [0000:d8:00.0]-2122:2: Failed to allocate qpair
-[   21.164824] nvme nvme0: NVME-FC{0}: reset: Reconnect attempt failed (-22)
-[   21.171612] nvme nvme0: NVME-FC{0}: Reconnect attempt in 2 seconds
+On GFX8-, format modifiers are not supported and no other check
+is performed. This means ADDFB2 IOCTLs will succeed even if the
+tiling isn't supported for scan-out, and will result in garbage
+displayed on screen [1].
 
-Link: https://lore.kernel.org/r/20210810043720.1137-13-njavali@marvell.com
+Fix this by adding a check for tiling flags for GFX8 and older.
+The check is taken from radeonsi in Mesa (see how is_displayable
+is populated in gfx6_compute_surface).
+
+Changes in v2: use drm_WARN_ONCE instead of drm_WARN (Michel)
+
+[1]: https://github.com/swaywm/wlroots/issues/3185
+
+Signed-off-by: Simon Ser <contact@emersion.fr>
+Acked-by: Michel Dänzer <mdaenzer@redhat.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Harry Wentland <hwentlan@amd.com>
+Cc: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Cc: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_def.h  |  1 -
- drivers/scsi/qla2xxx/qla_isr.c  |  2 ++
- drivers/scsi/qla2xxx/qla_nvme.c | 40 +++++++++++++++------------------
- 3 files changed, 20 insertions(+), 23 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c |   31 ++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_def.h b/drivers/scsi/qla2xxx/qla_def.h
-index 4f0486fe30dd..e1fd91a58120 100644
---- a/drivers/scsi/qla2xxx/qla_def.h
-+++ b/drivers/scsi/qla2xxx/qla_def.h
-@@ -3913,7 +3913,6 @@ struct qla_hw_data {
- 		uint32_t	scm_supported_f:1;
- 				/* Enabled in Driver */
- 		uint32_t	scm_enabled:1;
--		uint32_t	max_req_queue_warned:1;
- 		uint32_t	plogi_template_valid:1;
- 	} flags;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -837,6 +837,28 @@ static int convert_tiling_flags_to_modif
+ 	return 0;
+ }
  
-diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
-index a24b82de4aab..5e040b6debc8 100644
---- a/drivers/scsi/qla2xxx/qla_isr.c
-+++ b/drivers/scsi/qla2xxx/qla_isr.c
-@@ -4158,6 +4158,8 @@ skip_msi:
- 		ql_dbg(ql_dbg_init, vha, 0x0125,
- 		    "INTa mode: Enabled.\n");
- 		ha->flags.mr_intr_valid = 1;
-+		/* Set max_qpair to 0, as MSI-X and MSI in not enabled */
-+		ha->max_qpairs = 0;
- 	}
++/* Mirrors the is_displayable check in radeonsi's gfx6_compute_surface */
++static int check_tiling_flags_gfx6(struct amdgpu_framebuffer *afb)
++{
++	u64 micro_tile_mode;
++
++	/* Zero swizzle mode means linear */
++	if (AMDGPU_TILING_GET(afb->tiling_flags, SWIZZLE_MODE) == 0)
++		return 0;
++
++	micro_tile_mode = AMDGPU_TILING_GET(afb->tiling_flags, MICRO_TILE_MODE);
++	switch (micro_tile_mode) {
++	case 0: /* DISPLAY */
++	case 3: /* RENDER */
++		return 0;
++	default:
++		drm_dbg_kms(afb->base.dev,
++			    "Micro tile mode %llu not supported for scanout\n",
++			    micro_tile_mode);
++		return -EINVAL;
++	}
++}
++
+ static void get_block_dimensions(unsigned int block_log2, unsigned int cpp,
+ 				 unsigned int *width, unsigned int *height)
+ {
+@@ -1103,6 +1125,7 @@ int amdgpu_display_framebuffer_init(stru
+ 				    const struct drm_mode_fb_cmd2 *mode_cmd,
+ 				    struct drm_gem_object *obj)
+ {
++	struct amdgpu_device *adev = drm_to_adev(dev);
+ 	int ret, i;
  
- clear_risc_ints:
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-index f6c76a063294..5acee3c798d4 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
-@@ -109,19 +109,24 @@ static int qla_nvme_alloc_queue(struct nvme_fc_local_port *lport,
- 		return -EINVAL;
- 	}
+ 	/*
+@@ -1122,6 +1145,14 @@ int amdgpu_display_framebuffer_init(stru
+ 	if (ret)
+ 		return ret;
  
--	if (ha->queue_pair_map[qidx]) {
--		*handle = ha->queue_pair_map[qidx];
--		ql_log(ql_log_info, vha, 0x2121,
--		    "Returning existing qpair of %p for idx=%x\n",
--		    *handle, qidx);
--		return 0;
--	}
-+	/* Use base qpair if max_qpairs is 0 */
-+	if (!ha->max_qpairs) {
-+		qpair = ha->base_qpair;
-+	} else {
-+		if (ha->queue_pair_map[qidx]) {
-+			*handle = ha->queue_pair_map[qidx];
-+			ql_log(ql_log_info, vha, 0x2121,
-+			       "Returning existing qpair of %p for idx=%x\n",
-+			       *handle, qidx);
-+			return 0;
-+		}
- 
--	qpair = qla2xxx_create_qpair(vha, 5, vha->vp_idx, true);
--	if (qpair == NULL) {
--		ql_log(ql_log_warn, vha, 0x2122,
--		    "Failed to allocate qpair\n");
--		return -EINVAL;
-+		qpair = qla2xxx_create_qpair(vha, 5, vha->vp_idx, true);
-+		if (!qpair) {
-+			ql_log(ql_log_warn, vha, 0x2122,
-+			       "Failed to allocate qpair\n");
-+			return -EINVAL;
-+		}
- 	}
- 	*handle = qpair;
- 
-@@ -715,18 +720,9 @@ int qla_nvme_register_hba(struct scsi_qla_host *vha)
- 
- 	WARN_ON(vha->nvme_local_port);
- 
--	if (ha->max_req_queues < 3) {
--		if (!ha->flags.max_req_queue_warned)
--			ql_log(ql_log_info, vha, 0x2120,
--			       "%s: Disabling FC-NVME due to lack of free queue pairs (%d).\n",
--			       __func__, ha->max_req_queues);
--		ha->flags.max_req_queue_warned = 1;
--		return ret;
--	}
--
- 	qla_nvme_fc_transport.max_hw_queues =
- 	    min((uint8_t)(qla_nvme_fc_transport.max_hw_queues),
--		(uint8_t)(ha->max_req_queues - 2));
-+		(uint8_t)(ha->max_qpairs ? ha->max_qpairs : 1));
- 
- 	pinfo.node_name = wwn_to_u64(vha->node_name);
- 	pinfo.port_name = wwn_to_u64(vha->port_name);
--- 
-2.33.0
-
++	if (!dev->mode_config.allow_fb_modifiers) {
++		drm_WARN_ONCE(dev, adev->family >= AMDGPU_FAMILY_AI,
++			      "GFX9+ requires FB check based on format modifier\n");
++		ret = check_tiling_flags_gfx6(rfb);
++		if (ret)
++			return ret;
++	}
++
+ 	if (dev->mode_config.allow_fb_modifiers &&
+ 	    !(rfb->base.flags & DRM_MODE_FB_MODIFIERS)) {
+ 		ret = convert_tiling_flags_to_modifier(rfb);
 
 
