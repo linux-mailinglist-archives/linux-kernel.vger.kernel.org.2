@@ -2,157 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B27420AD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4AF420AD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhJDMX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:23:28 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:40645 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhJDMXU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:23:20 -0400
-Received: by mail-oi1-f174.google.com with SMTP id t189so21287400oie.7;
-        Mon, 04 Oct 2021 05:21:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=qS2akTv9YqsMuUb53B7mFgtOnLLKGm85YgY9TacMqmY=;
-        b=OA9hKiJa20/+5uy2tZR1OY0CN4GqZYlO9q+VBn6zlwwRFuxXINI307nT4k0N2Oz77U
-         gYOfgarCQfaZTzscd7ZIDNIy/I6nHr8vQ5ta8PwysxbaBIDE5wxIWpjid45Op70q6OKa
-         qn7vp5R9kSVTckXlPa99NQggA+KuGpVTPDh/SaAWYKTAhSYeV4cunQiIfg2gjCZwEcQD
-         qrap5lI9czjVs6itjppb8SZO0vyobGv4e9U8u1nS4cpfz+7pYhChCh33S8AnNRxk8v0c
-         5FYsdMjlZRKOczN2a0LbAooadlWUo6XbDjUTosvTmWv8VnaHmX7dQ/CUgqaTp3cB5vNE
-         c7+g==
-X-Gm-Message-State: AOAM530hg19p7M1hv/m9UlDg59OLud+msLwnaXUJ5vcLd/gkkrgqdH6F
-        VF+iaV2N+cZ9yY77X/RkDg==
-X-Google-Smtp-Source: ABdhPJzdnf2EwPxql4AYBhnzBsgk6qkV3+X2Uxf8FueJAo4KwgFZRmGtkLyaP4ruJo+LENqN8yIKHw==
-X-Received: by 2002:a05:6808:43:: with SMTP id v3mr13704443oic.115.1633350091397;
-        Mon, 04 Oct 2021 05:21:31 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w1sm2895408ote.41.2021.10.04.05.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 05:21:30 -0700 (PDT)
-Received: (nullmailer pid 1051510 invoked by uid 1000);
-        Mon, 04 Oct 2021 12:21:26 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     mathieu.poirier@linaro.org, swboyd@chromium.org,
-        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, sibis@codeaurora.org, kuabhs@chromium.org,
-        agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        mpubbise@codeaurora.org
-In-Reply-To: <1633330133-29617-3-git-send-email-pillair@codeaurora.org>
-References: <1633330133-29617-1-git-send-email-pillair@codeaurora.org> <1633330133-29617-3-git-send-email-pillair@codeaurora.org>
-Subject: Re: [PATCH v6 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
-Date:   Mon, 04 Oct 2021 07:21:26 -0500
-Message-Id: <1633350086.759437.1051509.nullmailer@robh.at.kernel.org>
+        id S232729AbhJDMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:25:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230337AbhJDMZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:25:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A736124C;
+        Mon,  4 Oct 2021 12:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633350211;
+        bh=ej7aJ0FW65oKsNtQjiH6FThlyKBsKax9Z2ffsEWdqTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z8To3342g6UJ4vhD+OEmlMItibW536UAqAdbB+SVo6NVWWujgoLiFCBu3+FhKRHrq
+         E2vD0eLdJXx+jZgCn9e+gmN+3aTBM7jUb8N/iUZH52RqRZfCFPp6r+uSOKC5+VTbVO
+         h26tTuiC6+iTaaAfa0LyDzG90xPS/Ic88ckVvr4uxZz+sV06mwDvW5bb8MRfw1pTIH
+         1kxRoZluNAVqZ5XIi2Bp4LGXjNgavrWtuvv6IigN6UgKStxSoqy6ifWvGNkyIGA+El
+         7GDGK6r3NyAq5yX8EjpqzPAp8CkFEM0hercTJK15B81dfXmr6dzgVTcMCmB0jyn6oM
+         Yrdceo7T4tL6g==
+Date:   Mon, 4 Oct 2021 13:23:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-amlogic@lists.infradead.org, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
+ questions and issues
+Message-ID: <YVryQb3myHBVcIAx@sirena.org.uk>
+References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+ <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+ <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/+Vq12Du1ArhJUSc"
+Content-Disposition: inline
+In-Reply-To: <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
+X-Cookie: If it heals good, say it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021 12:18:52 +0530, Rakesh Pillai wrote:
-> Add WPSS PIL loading support for SC7280 SoCs.
-> 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
->  .../bindings/remoteproc/qcom,sc7280-wpss-pil.yaml  | 196 +++++++++++++++++++++
->  1 file changed, 196 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+--/+Vq12Du1ArhJUSc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-yamllint warnings/errors:
+On Sun, Oct 03, 2021 at 09:17:39PM +0200, Martin Blumenstingl wrote:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:interrupts: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'Watchdog interrupt'}, {'description': 'Fatal interrupt'}, {'description': 'Ready interrupt'}, {'description': 'Handover interrupt'}, {'description': 'Stop acknowledge interrupt'}, {'description': 'Shutdown acknowledge interrupt'}] is too long
-	[{'description': 'Watchdog interrupt'}, {'description': 'Fatal interrupt'}, {'description': 'Ready interrupt'}, {'description': 'Handover interrupt'}, {'description': 'Stop acknowledge interrupt'}, {'description': 'Shutdown acknowledge interrupt'}] is too short
-	False schema does not allow 6
-	1 was expected
-	6 is greater than the maximum of 2
-	6 is greater than the maximum of 3
-	6 is greater than the maximum of 4
-	6 is greater than the maximum of 5
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:interrupt-names: 'oneOf' conditional failed, one must be fixed:
-	[{'const': 'wdog'}, {'const': 'fatal'}, {'const': 'ready'}, {'const': 'handover'}, {'const': 'stop-ack'}, {'const': 'shutdown-ack'}] is too long
-	[{'const': 'wdog'}, {'const': 'fatal'}, {'const': 'ready'}, {'const': 'handover'}, {'const': 'stop-ack'}, {'const': 'shutdown-ack'}] is too short
-	False schema does not allow 6
-	1 was expected
-	6 is greater than the maximum of 2
-	6 is greater than the maximum of 3
-	6 is greater than the maximum of 4
-	6 is greater than the maximum of 5
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:clocks: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'GCC WPSS AHB BDG Master clock'}, {'description': 'GCC WPSS AHB clock'}, {'description': 'GCC WPSS RSCP clock'}, {'description': 'XO clock'}] is too long
-	[{'description': 'GCC WPSS AHB BDG Master clock'}, {'description': 'GCC WPSS AHB clock'}, {'description': 'GCC WPSS RSCP clock'}, {'description': 'XO clock'}] is too short
-	False schema does not allow 4
-	1 was expected
-	4 is greater than the maximum of 2
-	4 is greater than the maximum of 3
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:clock-names: 'oneOf' conditional failed, one must be fixed:
-	[{'const': 'ahb_bdg'}, {'const': 'ahb'}, {'const': 'rscp'}, {'const': 'xo'}] is too long
-	[{'const': 'ahb_bdg'}, {'const': 'ahb'}, {'const': 'rscp'}, {'const': 'xo'}] is too short
-	False schema does not allow 4
-	1 was expected
-	4 is greater than the maximum of 2
-	4 is greater than the maximum of 3
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:power-domains: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'CX power domain'}, {'description': 'MX power domain'}] is too long
-	[{'description': 'CX power domain'}, {'description': 'MX power domain'}] is too short
-	False schema does not allow 2
-	1 was expected
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:power-domain-names: 'oneOf' conditional failed, one must be fixed:
-	[{'const': 'cx'}, {'const': 'mx'}] is too long
-	[{'const': 'cx'}, {'const': 'mx'}] is too short
-	False schema does not allow 2
-	1 was expected
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:resets: 'oneOf' conditional failed, one must be fixed:
-	[{'description': 'AOSS restart'}, {'description': 'PDC SYNC'}] is too long
-	[{'description': 'AOSS restart'}, {'description': 'PDC SYNC'}] is too short
-	False schema does not allow 2
-	1 was expected
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: properties:reset-names: 'oneOf' conditional failed, one must be fixed:
-	[{'const': 'restart'}, {'const': 'pdc_sync'}] is too long
-	[{'const': 'restart'}, {'const': 'pdc_sync'}] is too short
-	False schema does not allow 2
-	1 was expected
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml: ignoring, error in schema: properties: interrupts
-warning: no schema found in file: ./Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
-Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.example.dt.yaml:0:0: /example-0/remoteproc@8a00000: failed to match any schema with compatible: ['qcom,sc7280-wpss-pil']
+> old 32-bit u-boot sources from the Endless Mini do have some
+> documentation on AIU_I2S_SYNC [0]:
+> // 8'b0_000_1_1_10
+> // A write to this register will cause the interface to repeat the current
+> // sample. Can be used to regain synchronization.
+> // A read from this register indicates that the next sample to be sent
+> // out of the interface should go into the _left_ channel of the dac.
 
-doc reference errors (make refcheckdocs):
+> There's also a note about AIU_I2S_MISC stating:
+> // Bit 4 if true, force each audio data to left or right according to
+> the bit attached with the audio data
+> // This bit should be used with Register AIU_i2s_sync(0x511) together
 
-See https://patchwork.ozlabs.org/patch/1535950
+> To be honest: to me this is not helpful since I don't understand
+> how/why the left channel is of importance.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+The left channel is important because for most (I think all?) audio
+formats the first channel sent after each frame sync is the left
+channel, if you're trying to resync it's useful to know when a left
+frame is going to be sent.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+>=20
+> > At the time, It was completely new driver. Even if was not rock solid,
+> > it was still progress and I opted to upstream it with an imperfect 8ch
+> > support so people could help debug it. This was mentioned in the
+> > original submission.
+> >
+> > The other solution is to restrict to 2ch mode and remove
+> > AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
+> > anymore.
+> I think Christian (Hewitt) agrees on this point as he mentioned that
+> your earlier versions of the AIU code (before it got upstream) were
+> not affected by the "machine gun noise" issue.
+> Does the documentation from above give you any new ideas (assuming
+> that it's correct since it's the best we have)? Should I try playing
+> with AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC to see if I can make a
+> difference?
+>=20
+> [...]
+> > Here you describe a DAI link (think of it as wires) between the SPDIF
+> > encoder (output) and AIU_HDMI input PCM. This is not what the HW is and
+> > it is not possible.
+> >
+> > Let's start from the HDMI controller.
+> > The designware (on amlogic SoC) has 2 interface for audio input.
+> > 1) PCM/I2S: a classic interface 2 clocks and N data line
+> > 2) SPDIF: The Sony Philips 1 wire interface
+> The Transwitch HDMI TX controller supports these two inputs so even
+> though the IP is different the basic functionality (which we'll
+> discuss below) is the same.
+>=20
+> > Whatever comes up on 1) has to be some sort of i2s signal. So SPDIF
+> > won't fly there.
+> I agree with this
+>=20
+> > AIU_HDMI output is Hardwired to 1). It is just just a digital mux,
+> > implemented as an ASoC codec which allows to seleted one of 2 audio
+> > sources:
+> > A) the i2s output implemented as part of the AIU
+> > B) the PCM output, part the AUDIN (yes, an output in AUDIN) block. This
+> > is not implemented ATM.
+> This is some interesting information, I thought that PCM was used
+> because PCM audio can be transmitted over SPDIF.
+>=20
+> For A) my understanding is different though:
+> - for AIU_HDMI_CLK_DATA_CTRL[5:4] (HDMI_DATA_SEL) your description
+> matches my understanding. For me it makes sense that SPDIF data cannot
+> be selected with this register since it's a one-wire protocol (and
+> doesn't have separate data/clock lines). Value 0x2 selects the I2S
+> data interface
+> - for AIU_HDMI_CLK_DATA_CTRL[1:0] (HDMI_DATA_CLK_SEL) however I have a
+> different understanding: 0x0 disables the clock signal to the HDMI TX
+> controller, 0x1 selects the PCM clock (which now I have learned is
+> related to the AUDIN block) and 0x2 selects the "AIU clock" (see
+> below)
+> - my understanding is that "AIU clock" comes from AIU_CLK_CTRL_MORE[6]
+> (HDMITX_SEL_AOCLKX2) where 0x0 selects "cts_i958 as AIU clk to
+> hdmi_tx_audio_master_clk" (SPDIF clock) and 0x1 selects
+> "cts_aoclkx2_int as AIU clk to hdmi_tx_audio_master_clk" (I2S clock)
+>=20
+> So to me this means that there's three different muxes:
+> - data mux to choose between 0x0 (all zeros), 0x1 (PCM) and 0x2 (I2S)
+> - clock mux to choose between 0x0 (disabled), 0x1 (PCM) and 0x2
+> (hdmi_tx_audio_master_clk)
+> - hdmi_tx_audio_master_clk clock mux to choose between 0x0 (cts_i958)
+> and 0x1 (cts_aoclkx2_int)
+>=20
+> Based on that I think that it's not possible to have AIU output the
+> I2S and SPDIF signals at the same time to the HDMI TX controller and
+> then letting the HDMI TX controller choose which one to use.
+> Based on whichever signal (I2S or SPDIF) we want to use for HDMI we
+> need to configure AIU accordingly (data and clock).
+>=20
+> [...]
+> > It is not meant to. The dai_link and the endpoint are i2s.
+> > Your HDMI controller should have 2 inputs and should have a way to
+> > select one or the other. The format at each of the (internal) input does
+> > not change
+> ah, that makes sense.
+> Let's say AIU has some internal muxing for the HDMI output then AIU
+> would have two outputs as well (let's call them HDMI_OUT_I2S and
+> HDMI_OUT_SPDIF).
+> Then I'd wire up each of these to their corresponding inputs on the
+> HDMI TX controller.
+>=20
+>=20
+> Best regards,
+> Martin
 
-pip3 install dtschema --upgrade
+--/+Vq12Du1ArhJUSc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please check and re-submit.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa8kAACgkQJNaLcl1U
+h9BMJwf/d07nv9RvNZHG5kWNU/JXFm14eDZ04SF4RdZ8I320a4C5dlJmNPw/jxwL
+XXW9FK3/+o/D7tqAdZhXu+Jo1gng9/SzqhyEntA4mXZSit/QhFkbAtAFCHZe0fPa
+X3/0ed3NpFqQ/kxXXrOKqT58xgd9YmzayJsOmphoqyg5CuwfjXQscOXEDpmmIqAV
+Sa2lMR72R8hQM6LawLuRCctfrGzz27DHwmQU+y0le8rTzwtVY8irYYVRkK+w8R2a
+grsSNGqLupzt5trqsX2vnfD4zaPkAiLlTVFrItxUSVKd/bGu4ibJDUb4l0Qlmwnu
+uAkefotjbjTiYRhE46CruMibys76yQ==
+=X6z2
+-----END PGP SIGNATURE-----
+
+--/+Vq12Du1ArhJUSc--
