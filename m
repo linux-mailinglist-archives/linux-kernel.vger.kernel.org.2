@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65F042074F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2995E420753
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhJDI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:29:31 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:35538 "EHLO honk.sigxcpu.org"
+        id S231329AbhJDIas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:30:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230448AbhJDI3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:29:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 6A4E6FB03;
-        Mon,  4 Oct 2021 10:27:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yGsjUS830b5p; Mon,  4 Oct 2021 10:27:38 +0200 (CEST)
-Date:   Mon, 4 Oct 2021 10:27:27 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Ondrej Jirman <megous@megous.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/5] drm: mxsfb: Set proper default bus format when
- using a bridge
-Message-ID: <YVq67wkOXUcqHJFz@qwark.sigxcpu.org>
-References: <cover.1633332399.git.agx@sigxcpu.org>
- <15afbcb04dea432867bb9f8b0e47205decd4bd6e.1633332399.git.agx@sigxcpu.org>
- <3b557e62ad8f313d8fdfb352730cb9a0c5c2eb57.camel@pengutronix.de>
+        id S230448AbhJDIar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:30:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F026124D;
+        Mon,  4 Oct 2021 08:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633336138;
+        bh=eI9K+FdEUc770AAGxrZZk//bSz1Abgk9hrD65ZUmRds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lxbasZykJadj3uTomyBc9nHrTnV3nez6vl1UjbODrERf/EGPG0VKZQA3jXr8OmjBv
+         xeRZd88cBHoxsQ18qUJf/LP6CAy3MPoh9l7iIjGwh6EZBexhtss+1C3ardTw8zFcIA
+         jmgMQLQs8kLMTa2qgE/oLo5vik5mS3WfdQPu1m8E=
+Date:   Mon, 4 Oct 2021 10:28:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [git pull] habanalabs fixes for 5.15-rc4
+Message-ID: <YVq7SF3QRlPTKRIe@kroah.com>
+References: <20210929093039.GA108003@ogabbay-vm2.habana-labs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3b557e62ad8f313d8fdfb352730cb9a0c5c2eb57.camel@pengutronix.de>
+In-Reply-To: <20210929093039.GA108003@ogabbay-vm2.habana-labs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Mon, Oct 04, 2021 at 09:58:37AM +0200, Lucas Stach wrote:
-> Am Montag, dem 04.10.2021 um 09:27 +0200 schrieb Guido Günther:
-> > If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
-> > returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
-> > that case.
-> > 
-> > This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
-> > 
-> > Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
-> > 
-> I don't think this qualifies for stable, so I would drop this tag, as
-> the stable maintainers are quite trigger happy to pull in patches with
-> a fixes tag. Also the subject isn't quite correct, this isn't setting a
-> "proper" bus format, but rather adds a fallback. Other than that:
+On Wed, Sep 29, 2021 at 12:30:39PM +0300, Oded Gabbay wrote:
+> Hi Greg,
+> 
+> One important fix for the habanalabs driver for 5.15.
+> It fixes an issue where we return -EINTR in the IOCTL that waits
+> on command submission completion, and the user-space will try
+> to immediately call that IOCTL again with the same
+> arguments structure it used in the previous call. More details
+> in the commit itself.
+> 
+> Thanks,
+> Oded
+> 
+> The following changes since commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27:
+> 
+>   ipack: ipoctal: fix module reference leak (2021-09-27 17:38:49 +0200)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-09-29
 
-Adjusted for v3 (which I'll hold off a bit in case there are more
-comments) and dropped the Fixes: tag which is on the nwl driver
-only now. thanks!
- -- Guido
+Pulled and pushed out, thanks.
 
-> 
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-> 
-> Regards,
-> Lucas
-> 
-> > Reported-by: Martin Kepplinger <martink@posteo.de>
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> 
-> > ---
-> >  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> > index d6abd2077114..e3fbb8b58d5d 100644
-> > --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> > +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-> > @@ -369,6 +369,12 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
-> >  			drm_atomic_get_new_bridge_state(state,
-> >  							mxsfb->bridge);
-> >  		bus_format = bridge_state->input_bus_cfg.format;
-> > +		if (bus_format == MEDIA_BUS_FMT_FIXED) {
-> > +			dev_warn_once(drm->dev,
-> > +				      "Bridge does not provide bus format, assuming MEDIA_BUS_FMT_RGB888_1X24.\n"
-> > +				      "Please fix bridge driver by handling atomic_get_input_bus_fmts.\n");
-> > +			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-> > +		}
-> >  	}
-> >  
-> >  	/* If there is no bridge, use bus format from connector */
-> 
-> 
+greg k-h
