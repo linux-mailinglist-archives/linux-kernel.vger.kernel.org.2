@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D118A420B7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C4442100B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhJDM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
+        id S238378AbhJDNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233624AbhJDM5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3267613AC;
-        Mon,  4 Oct 2021 12:55:14 +0000 (UTC)
+        id S238449AbhJDNid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1933861401;
+        Mon,  4 Oct 2021 13:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352115;
-        bh=8PiVwGkXWJD5okVWy9HY50VjTZ6cNLUcjQvgfdQ5A/k=;
+        s=korg; t=1633353448;
+        bh=A6OAFOoeE0GJwtRZrzNpPaX6O+RvyS3RqmRz6D0YbV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QJasmgqmWRb+m30OxiYH8RYlO88FRA6FgESnkKh6pnBW8B1IcROIkLTr7+d7u/054
-         xZ9kN4BtWYGWUHHkpC8RGeMlffHs8Cy+6tC2LPWT2fmnySB7RNLiJihuJ+bxmu1ObH
-         oYjNRTkvk4umlTNSoqjL4Ehgp7XvZtKYTu6KkFI8=
+        b=qe86y17SCmnOSg16KXaPdiEpbLNoJZI9wdiBTFbCBZ8gA2bkB27/KbTipBc2Pj/w4
+         xGTxlA+8HjUznpUGg27joj23kO3agSgTvwizoBpXrWZNnI9H2M4ArleyurU5moZH3R
+         wLXiN1o4I5rcP7PbYWL4c0bmb1gS/DcRfofSJRgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com,
-        "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.4 38/41] HID: betop: fix slab-out-of-bounds Write in betop_probe
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 099/172] hwmon: (tmp421) report /PVLD condition as fault
 Date:   Mon,  4 Oct 2021 14:52:29 +0200
-Message-Id: <20211004125027.795710426@linuxfoundation.org>
+Message-Id: <20211004125048.180041613@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: F.A.Sulaiman <asha.16@itfac.mrt.ac.lk>
+From: Paul Fertser <fercerpav@gmail.com>
 
-commit 1e4ce418b1cb1a810256b5fb3fd33d22d1325993 upstream.
+[ Upstream commit 540effa7f283d25bcc13c0940d808002fee340b8 ]
 
-Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
-The problem is the driver assumes the device must have an input report but
-some malicious devices violate this assumption.
+For both local and remote sensors all the supported ICs can report an
+"undervoltage lockout" condition which means the conversion wasn't
+properly performed due to insufficient power supply voltage and so the
+measurement results can't be trusted.
 
-So this patch checks hid_device's input is non empty before it's been used.
-
-Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
-Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
-Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+Link: https://lore.kernel.org/r/20210924093011.26083-2-fercerpav@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-betopff.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/hwmon/tmp421.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/hid/hid-betopff.c
-+++ b/drivers/hid/hid-betopff.c
-@@ -59,15 +59,22 @@ static int betopff_init(struct hid_devic
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index 8fd8c3a94dfe..c9ef83627bb7 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -179,10 +179,10 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+ 		return 0;
+ 	case hwmon_temp_fault:
+ 		/*
+-		 * The OPEN bit signals a fault. This is bit 0 of the temperature
+-		 * register (low byte).
++		 * Any of OPEN or /PVLD bits indicate a hardware mulfunction
++		 * and the conversion result may be incorrect
+ 		 */
+-		*val = tmp421->temp[channel] & 0x01;
++		*val = !!(tmp421->temp[channel] & 0x03);
+ 		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -195,9 +195,6 @@ static umode_t tmp421_is_visible(const void *data, enum hwmon_sensor_types type,
  {
- 	struct betopff_device *betopff;
- 	struct hid_report *report;
--	struct hid_input *hidinput =
--			list_first_entry(&hid->inputs, struct hid_input, list);
-+	struct hid_input *hidinput;
- 	struct list_head *report_list =
- 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
--	struct input_dev *dev = hidinput->input;
-+	struct input_dev *dev;
- 	int field_count = 0;
- 	int error;
- 	int i, j;
- 
-+	if (list_empty(&hid->inputs)) {
-+		hid_err(hid, "no inputs found\n");
-+		return -ENODEV;
-+	}
-+
-+	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
-+	dev = hidinput->input;
-+
- 	if (list_empty(report_list)) {
- 		hid_err(hid, "no output reports found\n");
- 		return -ENODEV;
+ 	switch (attr) {
+ 	case hwmon_temp_fault:
+-		if (channel == 0)
+-			return 0;
+-		return 0444;
+ 	case hwmon_temp_input:
+ 		return 0444;
+ 	default:
+-- 
+2.33.0
+
 
 
