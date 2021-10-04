@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC11420661
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DC4420664
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhJDHFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:05:34 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:34098 "EHLO mx1.emlix.com"
+        id S229617AbhJDHGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:06:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhJDHFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:05:33 -0400
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 7C8BF63E34;
-        Mon,  4 Oct 2021 09:03:43 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     akpm@linux-foundation.org, Suren Baghdasaryan <surenb@google.com>
-Cc:     ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com,
-        dave.hansen@intel.com, keescook@chromium.org, willy@infradead.org,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
-        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
-        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
-        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
-        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
-        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
-        legion@kernel.org, gorcunov@gmail.com, pavel@ucw.cz,
-        songmuchun@bytedance.com, viresh.kumar@linaro.org,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com, surenb@google.com,
-        Pekka Enberg <penberg@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jan Glauber <jan.glauber@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Rob Landley <rob@landley.net>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        "Serge E. Hallyn" <serge.hallyn@ubuntu.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@suse.de>, Shaohua Li <shli@fusionio.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v10 1/3] mm: rearrange madvise code to allow for reuse
-Date:   Mon, 04 Oct 2021 09:03:39 +0200
-Message-ID: <5358242.RVGM2oBbkg@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20211001205657.815551-1-surenb@google.com>
-References: <20211001205657.815551-1-surenb@google.com>
+        id S229478AbhJDHGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 03:06:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 914AD6124B;
+        Mon,  4 Oct 2021 07:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633331084;
+        bh=OKUSOF07/n/y2dR8v/yi4VOQ4OUU4NE2UhFRomwTx8M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EUKNpgPPtM8094X8SmAIm2hT42fGK7yvuuLUN2I7mUlTrTytOmm/JiTQsvn8Bez/r
+         kip6LBYCLpo49T4v6ldE2J6wGHQNm39BuhBJHUdXzPh3HhTa5WgRaynN83CxESTRW5
+         LdkH8tgDXHe/wK3VycEIQJ+sVvM8votJGkbB0I6UgteFAqGFDgP6UsYvgbyFd+0Px1
+         87ObU0NfiS6xX3Qd5nxVrqiaqCzWgjm34NbsiNaCGL/uTfOwImN/ZYtE07kV9ZAKGl
+         +qRhd7AQ4FE6qhbSREdnpBbUTmpoF1b5ZMwNJNOqW/rJcy8CJXWxraKmSFvQVLr7nI
+         oxFA4VXdKh3UQ==
+Date:   Mon, 4 Oct 2021 09:04:38 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <20211004090438.588a8a89@thinkpad>
+In-Reply-To: <YVqhMeuDI0IZL/zY@kroah.com>
+References: <20211001133057.5287f150@thinkpad>
+        <YVb/HSLqcOM6drr1@lunn.ch>
+        <20211001144053.3952474a@thinkpad>
+        <20211003225338.76092ec3@thinkpad>
+        <YVqhMeuDI0IZL/zY@kroah.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2567157.CJKnFOJxUo"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2567157.CJKnFOJxUo
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: akpm@linux-foundation.org, Suren Baghdasaryan <surenb@google.com>
-Cc: ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com, keescook@chromium.org, willy@infradead.org, kirill.shutemov@linux.intel.com, vbabka@suse.cz, hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk, rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com, rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com, vincenzo.frascino@arm.com, chinwen.chang@mediatek.com, axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com, apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com, will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com, hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com, tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com, pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk, legion@kernel.org, gorcunov@gmail.com, pavel@ucw.cz, songmuchun@bytedance.com, viresh.kumar@linaro.org, thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes
- .dk, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com, surenb@google.com, Pekka Enberg <penberg@kernel.org>, Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Jan Glauber <jan.glauber@gmail.com>, John Stultz <john.stultz@linaro.org>, Rob Landley <rob@landley.net>, Cyrill Gorcunov <gorcunov@openvz.org>, "Serge E. Hallyn" <serge.hallyn@ubuntu.com>, David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, Shaohua Li <shli@fusionio.com>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v10 1/3] mm: rearrange madvise code to allow for reuse
-Date: Mon, 04 Oct 2021 09:03:39 +0200
-Message-ID: <5358242.RVGM2oBbkg@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20211001205657.815551-1-surenb@google.com>
-References: <20211001205657.815551-1-surenb@google.com>
+Hi Greg,
 
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -63,76 +63,20 @@ static int madvise_need_mmap_write(int behavior)
->  }
+On Mon, 4 Oct 2021 08:37:37 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> On Sun, Oct 03, 2021 at 10:53:38PM +0200, Marek Beh=C3=BAn wrote:
+> > Hello Greg,
+> >=20
+> > could you give your opinion on this discussion? =20
 >=20
->  /*
-> - * We can potentially split a vm area into separate
-> - * areas, each area with its own behavior.
-> + * Update the vm_flags on regiion of a vma, splitting it or merging it as
-                                ^^
+> What discussion?  Top posting ruins that :(
 
-Eike
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
+Sorry, the discussion is here
+https://lore.kernel.org/linux-leds/20211001144053.3952474a@thinkpad/T/
+But the basic question is below, so you don't need to read the
+discussion.
 
-emlix - smart embedded open source
+> > Are device names (as returned by dev_name() function) also part of
+> > sysfs ABI? Should these names be stable across reboots / kernel
+> > upgrades? =20
+>=20
+> Stable in what exact way?
 
---nextPart2567157.CJKnFOJxUo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Example:
+- Board has an ethernet PHYs that is described in DT, and therefore
+  has stable sysfs path (derived from DT path), something like
+    /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01
 
------BEGIN PGP SIGNATURE-----
+- The PHY has a subnode describing a LED.
+  The LED subsystem has a different naming scheme (it uses DT node name
+  as a last resort). When everything is okay, the dev_name() of the LED
+  will be something like
+    ethphy42:green:link
 
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYVqnSwAKCRCr5FH7Xu2t
-/DXAA/45e3inTpV9UvYBfqbI5whOue50TJ20vKPlUYD4NSr0VIn+CQk0EaGTSNFk
-16kBYCh9FnV2uZZNTxekIao1ry3QEnGWE09+1ogyaoA/+WdhQ8fSF5cgW4HFUKXu
-q6RdIWyfG+bJhFGd49SOdhQR9MSKqels7Os+nsqIrl6EO3NaTw==
-=L487
------END PGP SIGNATURE-----
+- Now suppose that the PHY driver is unloaded and loaded again. The PHY
+  sysfs path is unchanged, but the LED will now be named
+    ethphy43:green:link
 
---nextPart2567157.CJKnFOJxUo--
+Is this OK?
 
+> Numbering of devices (where a dynamic value is part of a name, like the
+> "42" in "usb42"), is never guaranteed to be stable, but the non-number
+> part of the name (like "usb" is in "usb42") is stable, as that is what
+> you have properly documented in the Documentation/ABI/ files defining
+> the bus and class devices, right?
 
+It does make sense for removable devices like USB. What I am asking
+is whether it is also OK for devices that have stable DT nodes.
 
+Marek
