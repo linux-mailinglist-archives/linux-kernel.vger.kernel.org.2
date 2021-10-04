@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF91420D71
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF522421075
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235594AbhJDNPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
+        id S238007AbhJDNn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236106AbhJDNNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:13:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B01F613AD;
-        Mon,  4 Oct 2021 13:05:09 +0000 (UTC)
+        id S238133AbhJDNls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:41:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6276325A;
+        Mon,  4 Oct 2021 13:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352709;
-        bh=37JB5mJq/88yxp7APQHDIJjZmrQ7C57EiZ4jhmsTl98=;
+        s=korg; t=1633353546;
+        bh=iuahFfrueehs8WkNktgbVzPeNcysH7AZ3/TkcmtLNns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ycEWZo4C6bvZtMFk/tMvBz5bTGml69AcdbD+310jxMutBMEwoGUeFWtl4rWZ9R0yA
-         gXfyxeYcwjllBVo88qqIHWUOKnoIqfl/qX6Y8vJgAQG9AAocwqgKbraqlKFGNDCfV7
-         VFllqjsK6TnmpuKl7JpNViHK81GOQv9K2JyCRK/E=
+        b=1HMT6SaV1NQjJrKxjRl10y0MojpxYLd2h1drfg4iwS/xg/IfteR9zQk1YB24f8MWR
+         +rM5r3gjpgy9spTNFigGVUrF0/prKvWCRbjWGo+7cB0tAYp29jTUIHlOgq5RB6Xk/L
+         4P2jNpInD3L3u7b9shDBYvU6A1Euiy0YW+N5mJaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
+        stable@vger.kernel.org, Peng Li <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 89/95] usb: hso: fix error handling code of hso_create_net_device
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 129/172] net: hns3: reconstruct function hns3_self_test
 Date:   Mon,  4 Oct 2021 14:52:59 +0200
-Message-Id: <20211004125036.486316319@linuxfoundation.org>
+Message-Id: <20211004125049.134050630@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +41,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Peng Li <lipeng321@huawei.com>
 
-commit a6ecfb39ba9d7316057cea823b196b734f6b18ca upstream.
+[ Upstream commit 4c8dab1c709c5a715bce14efdb8f4e889d86aa04 ]
 
-The current error handling code of hso_create_net_device is
-hso_free_net_device, no matter which errors lead to. For example,
-WARNING in hso_free_net_device [1].
+This patch reconstructs function hns3_self_test to reduce the code
+cycle complexity and make code more concise.
 
-Fix this by refactoring the error handling code of
-hso_create_net_device by handling different errors by different code.
-
-[1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
-
-Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
-Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Peng Li <lipeng321@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ .../ethernet/hisilicon/hns3/hns3_ethtool.c    | 101 +++++++++++-------
+ 1 file changed, 64 insertions(+), 37 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2511,7 +2511,7 @@ static struct hso_device *hso_create_net
- 			   hso_net_init);
- 	if (!net) {
- 		dev_err(&interface->dev, "Unable to create ethernet device\n");
--		goto exit;
-+		goto err_hso_dev;
- 	}
- 
- 	hso_net = netdev_priv(net);
-@@ -2524,13 +2524,13 @@ static struct hso_device *hso_create_net
- 				      USB_DIR_IN);
- 	if (!hso_net->in_endp) {
- 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
- 				       USB_DIR_OUT);
- 	if (!hso_net->out_endp) {
- 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
-@@ -2539,18 +2539,18 @@ static struct hso_device *hso_create_net
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_urb_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
- 							   GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_buf_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 	}
- 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_urb)
--		goto exit;
-+		goto err_mux_bulk_rx;
- 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_buf)
--		goto exit;
-+		goto err_free_tx_urb;
- 
- 	add_net_device(hso_dev);
- 
-@@ -2558,7 +2558,7 @@ static struct hso_device *hso_create_net
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
-+		goto err_free_tx_buf;
- 	}
- 
- 	hso_log_port(hso_dev);
-@@ -2566,8 +2566,21 @@ static struct hso_device *hso_create_net
- 	hso_create_rfkill(hso_dev, interface);
- 
- 	return hso_dev;
--exit:
--	hso_free_net_device(hso_dev, true);
-+
-+err_free_tx_buf:
-+	remove_net_device(hso_dev);
-+	kfree(hso_net->mux_bulk_tx_buf);
-+err_free_tx_urb:
-+	usb_free_urb(hso_net->mux_bulk_tx_urb);
-+err_mux_bulk_rx:
-+	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
-+		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
-+		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
-+	}
-+err_net:
-+	free_netdev(net);
-+err_hso_dev:
-+	kfree(hso_dev);
- 	return NULL;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index 82061ab6930f..69b253424da8 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -312,33 +312,8 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
+ 	return ret_val;
  }
  
+-/**
+- * hns3_self_test - self test
+- * @ndev: net device
+- * @eth_test: test cmd
+- * @data: test result
+- */
+-static void hns3_self_test(struct net_device *ndev,
+-			   struct ethtool_test *eth_test, u64 *data)
++static void hns3_set_selftest_param(struct hnae3_handle *h, int (*st_param)[2])
+ {
+-	struct hns3_nic_priv *priv = netdev_priv(ndev);
+-	struct hnae3_handle *h = priv->ae_handle;
+-	int st_param[HNS3_SELF_TEST_TYPE_NUM][2];
+-	bool if_running = netif_running(ndev);
+-	int test_index = 0;
+-	u32 i;
+-
+-	if (hns3_nic_resetting(ndev)) {
+-		netdev_err(ndev, "dev resetting!");
+-		return;
+-	}
+-
+-	/* Only do offline selftest, or pass by default */
+-	if (eth_test->flags != ETH_TEST_FL_OFFLINE)
+-		return;
+-
+-	netif_dbg(h, drv, ndev, "self test start");
+-
+ 	st_param[HNAE3_LOOP_APP][0] = HNAE3_LOOP_APP;
+ 	st_param[HNAE3_LOOP_APP][1] =
+ 			h->flags & HNAE3_SUPPORT_APP_LOOPBACK;
+@@ -355,6 +330,18 @@ static void hns3_self_test(struct net_device *ndev,
+ 	st_param[HNAE3_LOOP_PHY][0] = HNAE3_LOOP_PHY;
+ 	st_param[HNAE3_LOOP_PHY][1] =
+ 			h->flags & HNAE3_SUPPORT_PHY_LOOPBACK;
++}
++
++static void hns3_selftest_prepare(struct net_device *ndev,
++				  bool if_running, int (*st_param)[2])
++{
++	struct hns3_nic_priv *priv = netdev_priv(ndev);
++	struct hnae3_handle *h = priv->ae_handle;
++
++	if (netif_msg_ifdown(h))
++		netdev_info(ndev, "self test start\n");
++
++	hns3_set_selftest_param(h, st_param);
+ 
+ 	if (if_running)
+ 		ndev->netdev_ops->ndo_stop(ndev);
+@@ -373,6 +360,35 @@ static void hns3_self_test(struct net_device *ndev,
+ 		h->ae_algo->ops->halt_autoneg(h, true);
+ 
+ 	set_bit(HNS3_NIC_STATE_TESTING, &priv->state);
++}
++
++static void hns3_selftest_restore(struct net_device *ndev, bool if_running)
++{
++	struct hns3_nic_priv *priv = netdev_priv(ndev);
++	struct hnae3_handle *h = priv->ae_handle;
++
++	clear_bit(HNS3_NIC_STATE_TESTING, &priv->state);
++
++	if (h->ae_algo->ops->halt_autoneg)
++		h->ae_algo->ops->halt_autoneg(h, false);
++
++#if IS_ENABLED(CONFIG_VLAN_8021Q)
++	if (h->ae_algo->ops->enable_vlan_filter)
++		h->ae_algo->ops->enable_vlan_filter(h, true);
++#endif
++
++	if (if_running)
++		ndev->netdev_ops->ndo_open(ndev);
++
++	if (netif_msg_ifdown(h))
++		netdev_info(ndev, "self test end\n");
++}
++
++static void hns3_do_selftest(struct net_device *ndev, int (*st_param)[2],
++			     struct ethtool_test *eth_test, u64 *data)
++{
++	int test_index = 0;
++	u32 i;
+ 
+ 	for (i = 0; i < HNS3_SELF_TEST_TYPE_NUM; i++) {
+ 		enum hnae3_loop loop_type = (enum hnae3_loop)st_param[i][0];
+@@ -391,21 +407,32 @@ static void hns3_self_test(struct net_device *ndev,
+ 
+ 		test_index++;
+ 	}
++}
+ 
+-	clear_bit(HNS3_NIC_STATE_TESTING, &priv->state);
+-
+-	if (h->ae_algo->ops->halt_autoneg)
+-		h->ae_algo->ops->halt_autoneg(h, false);
++/**
++ * hns3_nic_self_test - self test
++ * @ndev: net device
++ * @eth_test: test cmd
++ * @data: test result
++ */
++static void hns3_self_test(struct net_device *ndev,
++			   struct ethtool_test *eth_test, u64 *data)
++{
++	int st_param[HNS3_SELF_TEST_TYPE_NUM][2];
++	bool if_running = netif_running(ndev);
+ 
+-#if IS_ENABLED(CONFIG_VLAN_8021Q)
+-	if (h->ae_algo->ops->enable_vlan_filter)
+-		h->ae_algo->ops->enable_vlan_filter(h, true);
+-#endif
++	if (hns3_nic_resetting(ndev)) {
++		netdev_err(ndev, "dev resetting!");
++		return;
++	}
+ 
+-	if (if_running)
+-		ndev->netdev_ops->ndo_open(ndev);
++	/* Only do offline selftest, or pass by default */
++	if (eth_test->flags != ETH_TEST_FL_OFFLINE)
++		return;
+ 
+-	netif_dbg(h, drv, ndev, "self test end\n");
++	hns3_selftest_prepare(ndev, if_running, st_param);
++	hns3_do_selftest(ndev, st_param, eth_test, data);
++	hns3_selftest_restore(ndev, if_running);
+ }
+ 
+ static void hns3_update_limit_promisc_mode(struct net_device *netdev,
+-- 
+2.33.0
+
 
 
