@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A54420EED
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FCB420D67
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236156AbhJDN33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43146 "EHLO mail.kernel.org"
+        id S235946AbhJDNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236647AbhJDN0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 261C2613C8;
-        Mon,  4 Oct 2021 13:11:47 +0000 (UTC)
+        id S236028AbhJDNMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:12:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9099061AFC;
+        Mon,  4 Oct 2021 13:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353108;
-        bh=hahfcwO5kcYVs0Ptkk/Xktmlk1HmHgPpHIZRwG5j89A=;
+        s=korg; t=1633352705;
+        bh=kecqeoEY1ApU2mMIuYtqh1Ysyhtgb9SGG7Gj0G8KGCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rgg2UKInHBd4hOfYO4v3EhliCxmNYpcRYR9KGBzNqPuENMMjZBfd64Sw+91uWiICX
-         s9Y9Q6QwtJ+W++lp/GN3eMo17KHLotcTpyPOb6uqYsnhmtnUxRKKQ83rZL0F/dDxpz
-         jqUFpdaGM3I0E7krY4YglE+uY6rgtVHWM5VvkyLs=
+        b=dqbhssvD/anTSEX9XuSHPcXqQ7PDvASg6qls22C9a2JgbpAtyxQYEAOqDxCvvQl5B
+         8j5hVLyfExvJN316+sjHcZxU+puIrVaA14NBIxsHRWjiqPlsDGGa443Lu//DRsjAjP
+         Cy2uOf4WpbefDm4hrtInxg86C9WjokjgWcFVkn8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 59/93] net: hns3: fix show wrong state when add existing uc mac address
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.19 87/95] ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
 Date:   Mon,  4 Oct 2021 14:52:57 +0200
-Message-Id: <20211004125036.511843942@linuxfoundation.org>
+Message-Id: <20211004125036.425772409@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-[ Upstream commit 108b3c7810e14892c4a1819b1d268a2c785c087c ]
+commit 6fa630bf473827aee48cbf0efbbdf6f03134e890 upstream
 
-Currently, if function adds an existing unicast mac address, eventhough
-driver will not add this address into hardware, but it will return 0 in
-function hclge_add_uc_addr_common(). It will cause the state of this
-unicast mac address is ACTIVE in driver, but it should be in TO-ADD state.
+FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
+latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
+enough for MCOUNT_ADDR).
 
-To fix this problem, function hclge_add_uc_addr_common() returns -EEXIST
-if mac address is existing, and delete two error log to avoid printing
-them all the time after this modification.
+Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
 
-Fixes: 72110b567479 ("net: hns3: return 0 and print warning when hit duplicate MAC")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../hisilicon/hns3/hns3pf/hclge_main.c        | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ arch/arm/kernel/module-plts.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 24357e907155..0e869f449f12 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -7581,15 +7581,8 @@ int hclge_add_uc_addr_common(struct hclge_vport *vport,
- 	}
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -24,7 +24,7 @@
+ #endif
  
- 	/* check if we just hit the duplicate */
--	if (!ret) {
--		dev_warn(&hdev->pdev->dev, "VF %u mac(%pM) exists\n",
--			 vport->vport_id, addr);
--		return 0;
--	}
--
--	dev_err(&hdev->pdev->dev,
--		"PF failed to add unicast entry(%pM) in the MAC table\n",
--		addr);
-+	if (!ret)
-+		return -EEXIST;
- 
- 	return ret;
- }
-@@ -7743,7 +7736,13 @@ static void hclge_sync_vport_mac_list(struct hclge_vport *vport,
- 		} else {
- 			set_bit(HCLGE_VPORT_STATE_MAC_TBL_CHANGE,
- 				&vport->state);
--			break;
-+
-+			/* If one unicast mac address is existing in hardware,
-+			 * we need to try whether other unicast mac addresses
-+			 * are new addresses that can be added.
-+			 */
-+			if (ret != -EEXIST)
-+				break;
- 		}
- 	}
- }
--- 
-2.33.0
-
+ static const u32 fixed_plts[] = {
+-#ifdef CONFIG_FUNCTION_TRACER
++#ifdef CONFIG_DYNAMIC_FTRACE
+ 	FTRACE_ADDR,
+ 	MCOUNT_ADDR,
+ #endif
 
 
