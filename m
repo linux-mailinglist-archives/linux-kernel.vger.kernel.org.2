@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FB8420BDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A53B420D20
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhJDNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
+        id S235186AbhJDNMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234369AbhJDM7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20DC76136F;
-        Mon,  4 Oct 2021 12:57:10 +0000 (UTC)
+        id S235797AbhJDNJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8BA61B4A;
+        Mon,  4 Oct 2021 13:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352231;
-        bh=p4MW1yMPGbukPI9CZBWfFnmZXKKaAISODnQxVRfHXWc=;
+        s=korg; t=1633352612;
+        bh=Y2LPHQeOAlRpPu6UrmPSDGtATkA8zLCHugewhlxOzFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lakjYqp7cRKsh1WThKNcvAHZjCHqnzhx31luQauqc3ey3/PEV8IG8OIrYXdWX9qoA
-         RucDbId6xHhC1hVoT7+tVfI21Yxixi1vJUtbRKkRLQrpS+x+xJI8r0UIBLJLcK88Lg
-         c9Rd5j9emcYJfU61Gu5I4piUIOp5cZ/yU8tRmNaM=
+        b=p3e7sd540EvLbd054fLvxy9jtakDugrqnouiIH51yw9KsxZY4kGKCSIWKjqNpqkwR
+         SRlcvwSGNKum1XF0zJXgyI5yl73R6zPe0QHUQTe5MnjdV1J4IKPCVMLOuLFYX6jdjk
+         nFzF5EilkwoDkY8Ikd6P4L5oPHZUs5UefitYi0TI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 38/57] hwmon: (tmp421) fix rounding for negative values
+        stable@vger.kernel.org, Yuchung Cheng <ycheng@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Subject: [PATCH 4.19 52/95] tcp: create a helper to model exponential backoff
 Date:   Mon,  4 Oct 2021 14:52:22 +0200
-Message-Id: <20211004125030.143735285@linuxfoundation.org>
+Message-Id: <20211004125035.273941481@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Fertser <fercerpav@gmail.com>
+From: Yuchung Cheng <ycheng@google.com>
 
-[ Upstream commit 724e8af85854c4d3401313b6dd7d79cf792d8990 ]
+commit 01a523b071618abbc634d1958229fe3bd2dfa5fa upstream.
 
-Old code produces -24999 for 0b1110011100000000 input in standard format due to
-always rounding up rather than "away from zero".
+Create a helper to model TCP exponential backoff for the next patch.
+This is pure refactor w no behavior change.
 
-Use the common macro for division, unify and simplify the conversion code along
-the way.
-
-Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-Link: https://lore.kernel.org/r/20210924093011.26083-3-fercerpav@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Yuchung Cheng <ycheng@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+Reviewed-by: Soheil Hassas Yeganeh <soheil@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/tmp421.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ net/ipv4/tcp_timer.c |   27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
-index bfb98b96c781..324e7aaeb0b1 100644
---- a/drivers/hwmon/tmp421.c
-+++ b/drivers/hwmon/tmp421.c
-@@ -83,23 +83,17 @@ struct tmp421_data {
- 	s16 temp[4];
- };
- 
--static int temp_from_s16(s16 reg)
-+static int temp_from_raw(u16 reg, bool extended)
- {
- 	/* Mask out status bits */
- 	int temp = reg & ~0xf;
- 
--	return (temp * 1000 + 128) / 256;
--}
--
--static int temp_from_u16(u16 reg)
--{
--	/* Mask out status bits */
--	int temp = reg & ~0xf;
--
--	/* Add offset for extended temperature range. */
--	temp -= 64 * 256;
-+	if (extended)
-+		temp = temp - 64 * 256;
-+	else
-+		temp = (s16)temp;
- 
--	return (temp * 1000 + 128) / 256;
-+	return DIV_ROUND_CLOSEST(temp * 1000, 256);
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -160,7 +160,20 @@ static void tcp_mtu_probing(struct inet_
+ 	tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
  }
  
- static struct tmp421_data *tmp421_update_device(struct device *dev)
-@@ -136,10 +130,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
++static unsigned int tcp_model_timeout(struct sock *sk,
++				      unsigned int boundary,
++				      unsigned int rto_base)
++{
++	unsigned int linear_backoff_thresh, timeout;
  
- 	switch (attr) {
- 	case hwmon_temp_input:
--		if (tmp421->config & TMP421_CONFIG_RANGE)
--			*val = temp_from_u16(tmp421->temp[channel]);
++	linear_backoff_thresh = ilog2(TCP_RTO_MAX / rto_base);
++	if (boundary <= linear_backoff_thresh)
++		timeout = ((2 << boundary) - 1) * rto_base;
++	else
++		timeout = ((2 << linear_backoff_thresh) - 1) * rto_base +
++			(boundary - linear_backoff_thresh) * TCP_RTO_MAX;
++	return jiffies_to_msecs(timeout);
++}
+ /**
+  *  retransmits_timed_out() - returns true if this connection has timed out
+  *  @sk:       The current socket
+@@ -178,23 +191,15 @@ static bool retransmits_timed_out(struct
+ 				  unsigned int boundary,
+ 				  unsigned int timeout)
+ {
+-	const unsigned int rto_base = TCP_RTO_MIN;
+-	unsigned int linear_backoff_thresh, start_ts;
++	unsigned int start_ts;
+ 
+ 	if (!inet_csk(sk)->icsk_retransmits)
+ 		return false;
+ 
+ 	start_ts = tcp_sk(sk)->retrans_stamp;
+-	if (likely(timeout == 0)) {
+-		linear_backoff_thresh = ilog2(TCP_RTO_MAX/rto_base);
++	if (likely(timeout == 0))
++		timeout = tcp_model_timeout(sk, boundary, TCP_RTO_MIN);
+ 
+-		if (boundary <= linear_backoff_thresh)
+-			timeout = ((2 << boundary) - 1) * rto_base;
 -		else
--			*val = temp_from_s16(tmp421->temp[channel]);
-+		*val = temp_from_raw(tmp421->temp[channel],
-+				     tmp421->config & TMP421_CONFIG_RANGE);
- 		return 0;
- 	case hwmon_temp_fault:
- 		/*
--- 
-2.33.0
-
+-			timeout = ((2 << linear_backoff_thresh) - 1) * rto_base +
+-				(boundary - linear_backoff_thresh) * TCP_RTO_MAX;
+-		timeout = jiffies_to_msecs(timeout);
+-	}
+ 	return (s32)(tcp_time_stamp(tcp_sk(sk)) - start_ts - timeout) >= 0;
+ }
+ 
 
 
