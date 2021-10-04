@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9544205E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FC04205E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhJDGjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 02:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbhJDGjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 02:39:06 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0879C061746
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 23:37:17 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 145so13614972pfz.11
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 23:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bo1AfZo2B0G6Qf7w5hIV2g2F/2qOqHeUUj32w/8pRyc=;
-        b=J3FCPjvQ91Zm759hElGSstImuWo8dJLPQDskX+6fCdq3JReSGPzaXKZXpW3MNeqWKX
-         16MDjPnmnbrgXjqL/fV39uX8nNjZ+UTYivCHqN0/2e2fXYC0YLiphn0Mb+eM+nRoWBW0
-         /bUNr/naX+9Fwm2wqSRwg3bppRTkGdPjl534m7oTPeAvljymvWRUKWNDjK0g0ZD9AamN
-         Z0rQ3+Gwahr0TY32w0/VpP3EcpnghufANXZ8IGhyjX4uCskP7buX//DwX8cPD9k8O9Cd
-         9cfsBrPXeGAtXX1m6acV0+nXxcLM5ZRB/vXjfUF0F4sNbxUfJB6Mq+vC54JKfXmGRfbR
-         W93w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bo1AfZo2B0G6Qf7w5hIV2g2F/2qOqHeUUj32w/8pRyc=;
-        b=Qruo/xLpW0rmXA+QwZKRTFtQaK/PS7PSJNbxfSqucitZL9Hx/Lzwqd+mtG4W+prgAY
-         7y7/4v3cfVMtjgYT7rbPNIOVq+Nokmv+kAAgE3SLAvk8UBrfWbigDOdnDEzfo4AzxgJ8
-         aFAPX+4l6kVQhS7l3QfSZrfKbN/sRKS+Eyx3pWGIostYMrvcZCkoaEocXtRWmBTNcr/2
-         XtAfi4N8rhVkzKj17Y40gi/gPUhvd+ENYL+YKhXVwtwxJ9OD+c3xn3fYTOo23hxEy6V8
-         BLmtHvRY9I0a38129XOB/BuMAck6YyciiKmyOBd5JA2+VdY+dc93Yr3jtAojF1aTkJW7
-         pxlA==
-X-Gm-Message-State: AOAM5306JiUKcmIiqFlZ6dWEZZlUezbhvTF9hHFmQlLVgKDDmnqxuo+n
-        LMvAyjI0Wl6dPPJ2U5nDlVWUIA==
-X-Google-Smtp-Source: ABdhPJy2PwdNkXBTM1trCwQuWiBzmQKtgRp85HM5DKtIzNpf5iMj9DZTHKHrtExQWgDfVT9U3l1Dfg==
-X-Received: by 2002:aa7:914d:0:b0:44c:61e3:99b9 with SMTP id 13-20020aa7914d000000b0044c61e399b9mr3417268pfi.65.1633329437232;
-        Sun, 03 Oct 2021 23:37:17 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id n9sm13233203pjk.3.2021.10.03.23.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 23:37:16 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 12:07:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     rafael@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        krzysztof.kozlowski@canonical.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, kw@linux.com, p.zabel@pengutronix.de,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/5] cpufreq: tegra186/tegra194: Handle errors in BPMP
- response
-Message-ID: <20211004063714.5bux4hwv3lchibnn@vireshk-i7>
-References: <20210915085517.1669675-1-mperttunen@nvidia.com>
- <20210915085517.1669675-4-mperttunen@nvidia.com>
+        id S232795AbhJDGjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 02:39:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232536AbhJDGja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 02:39:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E126B6120F;
+        Mon,  4 Oct 2021 06:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633329461;
+        bh=nUn5+lxliX8C9iNQcew76Wqvp8zRRWbU1gAS2vMx6Tw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RY8bUxVwd24wkuMiaf5/1WwFCQALhuUE8dk7ypc+K2sBhVV7IdS1YCq+drJTSSbDY
+         HRj1RzMqaXdRQcbqv0PhJI5L67gtuzDjpx9NyDv0bBjeaSZGBXODwE4bsUftvAV4pl
+         qvl3vWo4ZOYQ+LEs3CEzf8PQDiHYBV3uJKb38kio=
+Date:   Mon, 4 Oct 2021 08:37:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <YVqhMeuDI0IZL/zY@kroah.com>
+References: <20211001133057.5287f150@thinkpad>
+ <YVb/HSLqcOM6drr1@lunn.ch>
+ <20211001144053.3952474a@thinkpad>
+ <20211003225338.76092ec3@thinkpad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210915085517.1669675-4-mperttunen@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211003225338.76092ec3@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-09-21, 11:55, Mikko Perttunen wrote:
-> The return value from tegra_bpmp_transfer indicates the success or
-> failure of the IPC transaction with BPMP. If the transaction
-> succeeded, we also need to check the actual command's result code.
-> Add code to do this.
+On Sun, Oct 03, 2021 at 10:53:38PM +0200, Marek Behún wrote:
+> Hello Greg,
 > 
-> While at it, explicitly handle missing CPU clusters, which can
-> occur on floorswept chips. This worked before as well, but
-> possibly only by accident.
-> 
-> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-> ---
->  drivers/cpufreq/tegra186-cpufreq.c | 4 ++++
->  drivers/cpufreq/tegra194-cpufreq.c | 8 +++++++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
+> could you give your opinion on this discussion?
 
-Should I apply it alone ?
+What discussion?  Top posting ruins that :(
 
--- 
-viresh
+> Are device names (as returned by dev_name() function) also part of
+> sysfs ABI? Should these names be stable across reboots / kernel
+> upgrades?
+
+Stable in what exact way?
+
+Numbering of devices (where a dynamic value is part of a name, like the
+"42" in "usb42"), is never guaranteed to be stable, but the non-number
+part of the name (like "usb" is in "usb42") is stable, as that is what
+you have properly documented in the Documentation/ABI/ files defining
+the bus and class devices, right?
+
+The very reason we export all of this information to userspace is so
+that userspace can figure it all out in ways it wants to, if it wants
+to, and no naming scheme that has to be static and deterministic is
+forced into the kernel, where it does NOT belong.
+
+That is 1/2 of the reason why we created the whole "unified
+device/driver model" in the kernel in the first place all those years
+ago.
+
+Does that help?  I can't figure out what the "problem" is here...
+
+thanks,
+
+greg k-h
