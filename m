@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472D74218DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8694218E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhJDVAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhJDVAI (ORCPT
+        id S233913AbhJDVAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:00:18 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:29735 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233763AbhJDVAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:00:08 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AF7C061745;
-        Mon,  4 Oct 2021 13:58:18 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id m26so2318233pff.3;
-        Mon, 04 Oct 2021 13:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fYKYnOB8eWX1FiGjloaLnrlnefMtOtSdd7NJtILGyco=;
-        b=C853Tx89yfcySPNqnvWJUUspBQsHrNlVdaWx40wDNpiyGaqX66YzY6OIV9LpWeHroj
-         Tzn3kN19LDzPdtZhFrS8v+y2MZJaaMIBhPkS0tUAKusmD2/1lmghxjmbAnqkIL+kH89f
-         ZgjxlhzOy9DwqVhSgnb3GAbM4sPEEMluqvJObWlQGQW08975rLdEn+4KgMs2Cm4glwOh
-         RJnrWOF5zaF4glrUSybhq/FcpQsSTKlS27S0cFWcAEWFzsLEVND9hTVLKQYmHh1Z+pCu
-         mboSNpeH0I3aGQ6HYvbOxonQwcskp17QsmcANLHr3TNMD8eX/4veW7UVvUOWPHZaJJ/d
-         YpTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fYKYnOB8eWX1FiGjloaLnrlnefMtOtSdd7NJtILGyco=;
-        b=6qMKdPbYbVsQu/bhWOudsrBepioIB4wWj0U3K7XvE9nl+/FI5yJ+Olri6M+cJJupkV
-         p9u1NIex6Jj1S7ScB+NiLCvW1sfuaPCwN8hqC9wDqU7Gd9986/5dYgxhrM6ADwR5WcWp
-         XuAsziXLuDDzhZXbwEiUCbDQIXk4a1rey8q5ULrxKPMQi+lUofDaFqYA4UX6u40GIibG
-         ojvITiyaxgkwH91em4rtQ6aNtE/fB3g/aEhHcXHlb/0hyhgNU7ouVs0oBm9vVuask8c6
-         Iwjx+DwojZ3umybwjsnsyJfQSLKk1WRxUcWi+wBP4dvY90LYbkUr4/mCZGuc6Jhuk2Y0
-         K+Sg==
-X-Gm-Message-State: AOAM530el4id5ekDUt6TAolNO2XjwApHE/KUHjbCIcjvVDyWFkp7sD7M
-        fkEzLbDQCoHl0sH/GPJFbVo=
-X-Google-Smtp-Source: ABdhPJwx06KLZhNYOn84KbuSaDXLkt+qrtkepn9nPBW3w8b4a2bXyeTlO1qxtwcLYnsGxJvm6Z/qGw==
-X-Received: by 2002:a63:e00b:: with SMTP id e11mr12767854pgh.190.1633381098393;
-        Mon, 04 Oct 2021 13:58:18 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id r8sm13482765pfg.91.2021.10.04.13.58.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 13:58:17 -0700 (PDT)
-Subject: Re: [PATCH 5.10 90/93] net: mdiobus: Fix memory leak in
- __mdiobus_register
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20211004125034.579439135@linuxfoundation.org>
- <20211004125037.569805106@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f806f7c8-f7c4-2c70-4dec-be8794fdb2a7@gmail.com>
-Date:   Mon, 4 Oct 2021 13:58:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 4 Oct 2021 17:00:17 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6FA6B240002;
+        Mon,  4 Oct 2021 20:58:25 +0000 (UTC)
+Date:   Mon, 4 Oct 2021 22:58:25 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        ludovic.desroches@microchip.com, robh+dt@kernel.org,
+        corbet@lwn.net, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, Manohar.Puri@microchip.com
+Subject: Re: [PATCH 0/4] Add lan966 documentation and remove lan966x.c file
+Message-ID: <YVtq8Qeb4RbenhTG@piout.net>
+References: <20211004105926.5696-1-kavyasree.kotagiri@microchip.com>
+ <YVrgzWLReFS5FgWd@piout.net>
+ <09645199-50af-0373-c5bb-e0d745543e5b@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004125037.569805106@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09645199-50af-0373-c5bb-e0d745543e5b@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 5:53 AM, Greg Kroah-Hartman wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+On 04/10/2021 14:55:29+0200, Nicolas Ferre wrote:
+> On 04/10/2021 at 13:09, Alexandre Belloni wrote:
+> > On 04/10/2021 16:29:22+0530, Kavyasree Kotagiri wrote:
+> > > This patch series modifies Kconfig entry, adds documentation for
+> > > lan966 family and removes lan966x setup code file as it is not
+> > > required.
+> > > 
+> > > These patches are generated from at91/linux.git
+> > > I had agreement with Nicolas Ferre that he will merge these changes
+> > > into existing patch.
+> > > 
+> > 
+> > Seems good to me, for the whole series:
+> > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 > 
-> commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
+> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com> for the whole series,
+> added to at91-soc and merged with previous patch.
 > 
-> Once device_register() failed, we should call put_device() to
-> decrement reference count for cleanup. Or it will cause memory
-> leak.
+> Please have a look at the resulting tree or at91-next branch for
+> double-checking.
+> 
 
-Also needs to be dropped.
+That's way better, no code at all is the best code to maintain ;)
+Thanks for your efforts Kavya
+
 -- 
-Florian
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
