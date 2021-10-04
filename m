@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616FF420D95
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A97420D77
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235652AbhJDNQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:16:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54104 "EHLO mail.kernel.org"
+        id S235995AbhJDNP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235489AbhJDNO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:14:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B37861A03;
-        Mon,  4 Oct 2021 13:05:46 +0000 (UTC)
+        id S236172AbhJDNNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:13:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17BAD61B3E;
+        Mon,  4 Oct 2021 13:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352746;
-        bh=9DB9ESAOJ1QB5v+g5UT2LVVrpoNPdfYcg2nLYbholQA=;
+        s=korg; t=1633352714;
+        bh=cXgnBP+vUWeCWYi2Pza35xjs8y6lEZ4xs4PTc/6Z69s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yqIoKuofJQsyTMZ51Z7YXeSmOLyMtD50PiycbBzlARdxeOB+yhHavXByT5M+TBsP8
-         /fFlo8hwLn/wEyqz3x5rAcEKZx0y6EBqj/Rf0Pep/xHRMoXSNisKzuHq+iSR1JDelp
-         nE161aU9wnxVFaAlLFXGRZJ4hA22l9jGKViNvM40=
+        b=bAvMt5yphjJSAG9KHzrnxa/X7Sd/hPKuGHUF8LR5ONO239zXkrTlF4NEICqogBOHo
+         2xxItbkdC57iF3ZnUN/htkhKV+M19zfCt9X4Uwo+RCFtXj6bbBMLTuYEZVI1STENGw
+         ttnGveqFaNga2+hb2hXDRJ+DlmLiOduyKUk/xlwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 10/56] mac80211: fix use-after-free in CCMP/GCMP RX
+        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.19 60/95] x86/kvmclock: Move this_cpu_pvti into kvmclock.h
 Date:   Mon,  4 Oct 2021 14:52:30 +0200
-Message-Id: <20211004125030.337411814@linuxfoundation.org>
+Message-Id: <20211004125035.538640579@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,54 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Zelin Deng <zelin.deng@linux.alibaba.com>
 
-commit 94513069eb549737bcfc3d988d6ed4da948a2de8 upstream.
+commit ad9af930680bb396c87582edc172b3a7cf2a3fbf upstream.
 
-When PN checking is done in mac80211, for fragmentation we need
-to copy the PN to the RX struct so we can later use it to do a
-comparison, since commit bf30ca922a0c ("mac80211: check defrag
-PN against current frame").
+There're other modules might use hv_clock_per_cpu variable like ptp_kvm,
+so move it into kvmclock.h and export the symbol to make it visiable to
+other modules.
 
-Unfortunately, in that commit I used the 'hdr' variable without
-it being necessarily valid, so use-after-free could occur if it
-was necessary to reallocate (parts of) the frame.
-
-Fix this by reloading the variable after the code that results
-in the reallocations, if any.
-
-This fixes https://bugzilla.kernel.org/show_bug.cgi?id=214401.
-
-Cc: stable@vger.kernel.org
-Fixes: bf30ca922a0c ("mac80211: check defrag PN against current frame")
-Link: https://lore.kernel.org/r/20210927115838.12b9ac6bb233.I1d066acd5408a662c3b6e828122cd314fcb28cdb@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Cc: <stable@vger.kernel.org>
+Message-Id: <1632892429-101194-2-git-send-email-zelin.deng@linux.alibaba.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/wpa.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/include/asm/kvmclock.h |   14 ++++++++++++++
+ arch/x86/kernel/kvmclock.c      |   13 ++-----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
 
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -520,6 +520,9 @@ ieee80211_crypto_ccmp_decrypt(struct iee
- 			return RX_DROP_UNUSABLE;
- 	}
+--- a/arch/x86/include/asm/kvmclock.h
++++ b/arch/x86/include/asm/kvmclock.h
+@@ -2,6 +2,20 @@
+ #ifndef _ASM_X86_KVM_CLOCK_H
+ #define _ASM_X86_KVM_CLOCK_H
  
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
++#include <linux/percpu.h>
 +
- 	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
-@@ -749,6 +752,9 @@ ieee80211_crypto_gcmp_decrypt(struct iee
- 			return RX_DROP_UNUSABLE;
- 	}
+ extern struct clocksource kvm_clock;
  
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
++DECLARE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
 +
- 	data_len = skb->len - hdrlen - IEEE80211_GCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
++static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
++{
++	return &this_cpu_read(hv_clock_per_cpu)->pvti;
++}
++
++static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
++{
++	return this_cpu_read(hv_clock_per_cpu);
++}
++
+ #endif /* _ASM_X86_KVM_CLOCK_H */
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -64,18 +64,9 @@ early_param("no-kvmclock-vsyscall", pars
+ static struct pvclock_vsyscall_time_info
+ 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
+ static struct pvclock_wall_clock wall_clock __bss_decrypted;
+-static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
+ static struct pvclock_vsyscall_time_info *hvclock_mem;
+-
+-static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
+-{
+-	return &this_cpu_read(hv_clock_per_cpu)->pvti;
+-}
+-
+-static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
+-{
+-	return this_cpu_read(hv_clock_per_cpu);
+-}
++DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
++EXPORT_PER_CPU_SYMBOL_GPL(hv_clock_per_cpu);
+ 
+ /*
+  * The wallclock is the time of day when we booted. Since then, some time may
 
 
