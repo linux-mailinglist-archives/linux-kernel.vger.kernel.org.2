@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43C4420E59
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44221420D32
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhJDNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38132 "EHLO mail.kernel.org"
+        id S236025AbhJDNMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236310AbhJDNWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 606A861BE2;
-        Mon,  4 Oct 2021 13:09:32 +0000 (UTC)
+        id S235224AbhJDNKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:10:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE39C61B66;
+        Mon,  4 Oct 2021 13:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352972;
-        bh=IjMMtgtM0oVf+t9/3xXFyfrH5reLdafwa1rTsgl+j78=;
+        s=korg; t=1633352647;
+        bh=UqOg3YG077MWEAKuhTpg7+Z+tjJ+USplDtgNYF88NJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5et2OKnRmgz69y7M6aepnUYJtVmfraGJH6cHXanJVm6NRt27hNRCJaNwVKM5JCZJ
-         +4bdRDSImYlUR45FOFwK5r78/muC1xoJhvQYZpC4DskMtPBA+yFQJpx5mPg2dWxWT+
-         Q8giP5k+9qdWojOg1X03tcKojoH9sPBwpCX0Ns0E=
+        b=zh3v3JpTrOl1maIzOJ+0ALZHOkpczb/092OIbykTMuwUspm+MrZl10QmVPBVWArkR
+         A1ZAai0MSKsABvC7pNbkc5Ziwn5WOh/t4/+KIBUpHgOvcGeXceXXzeuwd7v95kCnQ8
+         Wj5EMUVCNjw0x0H4KtVz9qU0JvMnVmIdeprgj4WM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 39/93] net: enetc: fix the incorrect clearing of IF_MODE bits
+Subject: [PATCH 4.19 67/95] hwmon: (tmp421) Replace S_<PERMS> with octal values
 Date:   Mon,  4 Oct 2021 14:52:37 +0200
-Message-Id: <20211004125035.855516921@linuxfoundation.org>
+Message-Id: <20211004125035.756246221@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 325fd36ae76a6d089983b2d2eccb41237d35b221 ]
+[ Upstream commit b626eb22f9e17fcca4e262a8274e93690068557f ]
 
-The enetc phylink .mac_config handler intends to clear the IFMODE field
-(bits 1:0) of the PM0_IF_MODE register, but incorrectly clears all the
-other fields instead.
+Replace S_<PERMS> with octal values.
 
-For normal operation, the bug was inconsequential, due to the fact that
-we write the PM0_IF_MODE register in two stages, first in
-phylink .mac_config (which incorrectly cleared out a bunch of stuff),
-then we update the speed and duplex to the correct values in
-phylink .mac_link_up.
+The conversion was done automatically with coccinelle. The semantic patches
+and the scripts used to generate this commit log are available at
+https://github.com/groeck/coccinelle-patches/hwmon/.
 
-Judging by the code (not tested), it looks like maybe loopback mode was
-broken, since this is one of the settings in PM0_IF_MODE which is
-incorrectly cleared.
+This patch does not introduce functional changes. It was verified by
+compiling the old and new files and comparing text and data sizes.
 
-Fixes: c76a97218dcb ("net: enetc: force the RGMII speed and duplex instead of operating in inband mode")
-Reported-by: Pavel Machek (CIP) <pavel@denx.de>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_pf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/hwmon/tmp421.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index 68133563a40c..716b396bf094 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -504,8 +504,7 @@ static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
- 
- 	if (phy_interface_mode_is_rgmii(phy_mode)) {
- 		val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
--		val &= ~ENETC_PM0_IFM_EN_AUTO;
--		val &= ENETC_PM0_IFM_IFMODE_MASK;
-+		val &= ~(ENETC_PM0_IFM_EN_AUTO | ENETC_PM0_IFM_IFMODE_MASK);
- 		val |= ENETC_PM0_IFM_IFMODE_GMII | ENETC_PM0_IFM_RG;
- 		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index ceb3db6f3fdd..06826a78c0f4 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -187,9 +187,9 @@ static umode_t tmp421_is_visible(const void *data, enum hwmon_sensor_types type,
+ 	case hwmon_temp_fault:
+ 		if (channel == 0)
+ 			return 0;
+-		return S_IRUGO;
++		return 0444;
+ 	case hwmon_temp_input:
+-		return S_IRUGO;
++		return 0444;
+ 	default:
+ 		return 0;
  	}
 -- 
 2.33.0
