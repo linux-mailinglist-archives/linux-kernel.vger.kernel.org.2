@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83586420AE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E63420AE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhJDM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhJDM3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:29:19 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF24C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:27:31 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id n2so10955418plk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 05:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=seqv46vapK3LYSUO+3R1zuCP1rybYVvrFT5pZqlDw1A=;
-        b=B9th5UxPPKH4IGJzAy4GbFFVV9wEb9q8pYukvEGqowKB/vV/l4UpjJGJxuTbaoHg78
-         P4NiaoBGoOFxqlL0UNnjgC5fCNf64+LIK7RDQyDYplmsBwZnz/23MGV4Va31cqrB4+Wa
-         Ffgtj4gp3UnvQcsgDLmIKLmyIBzXcBqq3aI1hVE8un2jvArUCE+O+wW3fa3zRijAO539
-         0VrjxTo80cRcLs12HoHBba8Z23DkdeNiNrQq2Y/KyZsVjLoLzpbNTDp7JVMuIV/Xu8xJ
-         GmTuBmqDI+tjQujcjTfiUd+06nxInO6B49btOoTnfGuRFWX1t8cQ3sWU6U7mxaAOEm0O
-         h+nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=seqv46vapK3LYSUO+3R1zuCP1rybYVvrFT5pZqlDw1A=;
-        b=Iy5azMbpi0g+3lw7EBWx09nrLGn7syHX8AI9pyImKUxwTpvLPIjDkW9b3LEq9Kz/AB
-         gAt8USCFWvYt7lItLamlN1I1VLldAaARnXWMCh161MKHbBlJN6NpPc3In9rt5VihiNIk
-         mddVGk8Zrg8FMlgITMejdL+uoTAX3eGg1YDkcstmJ13ynl6CFC1WGr8fWPj4l09MZ4nY
-         XbemvOvPyTq04h5QvzJT/ezcXWzO4hb312Mqew0kA7Bde8yTzmaDV8O8YyoSBkVpu8nL
-         pnZVZOiXXV//Egq43rRcFO0guepAjqD+n3RRX7KF//GSWLU1e555XnHI0pELAZiZHenI
-         Sgkw==
-X-Gm-Message-State: AOAM532XPZHX0XTfkgJXF/8xzmE0vkqOWbbC/FTF726Pd7DgRyo599NP
-        V6UqiuS8Gpz3T2Cs9pASq+m8iQ==
-X-Google-Smtp-Source: ABdhPJxMgsnpiosCKhuEpLJjE3CB+I+h06iBCRwJEbbQ+Z59Ytp3hnFa5B/efn+C3/yQFI4hUws3Ig==
-X-Received: by 2002:a17:90a:f0c4:: with SMTP id fa4mr2614890pjb.245.1633350450588;
-        Mon, 04 Oct 2021 05:27:30 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([204.124.181.210])
-        by smtp.gmail.com with ESMTPSA id a10sm14423232pgd.91.2021.10.04.05.27.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 05:27:30 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 20:27:24 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-Message-ID: <20211004122724.GC174271@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+        id S230337AbhJDMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:32:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:41089 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229486AbhJDMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:32:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="224171074"
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="224171074"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 05:30:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="622120668"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 04 Oct 2021 05:30:44 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 04 Oct 2021 15:30:43 +0300
+Date:   Mon, 4 Oct 2021 15:30:43 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
+Message-ID: <YVrz86m3+7wDSYlh@kuha.fi.intel.com>
+References: <20211004093416.GA2513199@sol>
+ <YVrM8VdLKZUt0i8R@kroah.com>
+ <20211004121942.GA3343713@sol>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+In-Reply-To: <20211004121942.GA3343713@sol>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi German,
+On Mon, Oct 04, 2021 at 08:19:42PM +0800, Kent Gibson wrote:
+> On Mon, Oct 04, 2021 at 11:44:17AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 04, 2021 at 05:34:16PM +0800, Kent Gibson wrote:
+> > > Hi,
+> > > 
+> > > I'm seeing a refcount underflow when I unload the gpio-mockup module on
+> > > Linux v5.15-rc4 (and going back to v5.15-rc1):
+> > > 
+> > > # modprobe gpio-mockup gpio_mockup_ranges=-1,4,-1,10
+> > > # rmmod gpio-mockup
+> > > ------------[ cut here ]------------
+> > > refcount_t: underflow; use-after-free.
+> > > WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
+> > > Modules linked in: gpio_mockup(-)
+> > > CPU: 0 PID: 103 Comm: rmmod Not tainted 5.15.0-rc4 #1
+> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> > > EIP: refcount_warn_saturate+0xd1/0x120
+> > > Code: e8 a2 b0 3b 00 0f 0b eb 83 80 3d db 2a 8c c1 00 0f 85 76 ff ff ff c7 04 24 88 85 78 c1 b1 01 88 0d db 2a 8c c1 e8 7d b0 3b 00 <0f> 0b e9 5b ff ff ff 80 3d d9 2a 8c c1 00 0f 85 4e ff ff ff c7 04
+> > > EAX: 00000026 EBX: c250b100 ECX: f5fe8c28 EDX: 00000000
+> > > ESI: c244860c EDI: c250b100 EBP: c245be84 ESP: c245be80
+> > > DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00000296
+> > > CR0: 80050033 CR2: b7e3c3e1 CR3: 024ba000 CR4: 00000690
+> > > Call Trace:
+> > >  kobject_put+0xdc/0xf0
+> > >  software_node_notify_remove+0xa8/0xc0
+> > >  device_del+0x15a/0x3e0
+> > >  ? kfree_const+0xf/0x30
+> > >  ? kobject_put+0xa6/0xf0
+> > >  ? module_remove_driver+0x73/0xa0
+> > >  platform_device_del.part.0+0xf/0x80
+> > >  platform_device_unregister+0x19/0x40
+> > >  gpio_mockup_unregister_pdevs+0x13/0x1b [gpio_mockup]
+> > >  gpio_mockup_exit+0x1c/0x68c [gpio_mockup]
+> > >  __ia32_sys_delete_module+0x137/0x1e0
+> > >  ? task_work_run+0x61/0x90
+> > >  ? exit_to_user_mode_prepare+0x1b5/0x1c0
+> > >  __do_fast_syscall_32+0x50/0xc0
+> > >  do_fast_syscall_32+0x32/0x70
+> > >  do_SYSENTER_32+0x15/0x20
+> > >  entry_SYSENTER_32+0x98/0xe7
+> > > EIP: 0xb7eda549
+> > > Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
+> > > EAX: ffffffda EBX: 0045a19c ECX: 00000800 EDX: 0045a160
+> > > ESI: fffffffe EDI: 0045a160 EBP: bff19d08 ESP: bff19cc8
+> > > DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000202
+> > > ---[ end trace 3d71387f54bc2d06 ]---
+> > > 
+> > > I suspect this is related to the recent changes to swnode.c or
+> > > platform.c, as gpio-mockup hasn't changed, but haven't had the
+> > > chance to debug further.
+> > 
+> > Any chance you can run 'git bisect' for this?
+> > 
+> 
+> That results in:
+> 
+> bd1e336aa8535a99f339e2d66a611984262221ce is the first bad commit
+> commit bd1e336aa8535a99f339e2d66a611984262221ce
+> Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Date:   Tue Aug 17 13:24:49 2021 +0300
+> 
+>     driver core: platform: Remove platform_device_add_properties()
 
-On Thu, Sep 30, 2021 at 01:26:15PM +0100, German Gomez wrote:
+Can you test does this patch help:
+https://lore.kernel.org/all/20210930121246.22833-3-heikki.krogerus@linux.intel.com/
 
-[...]
+thanks,
 
-> The patch is indeed based on that commit. The reason behind it is that the
-> values for *head are being wrapped in the driver side (see the macro
-> PERF_IDX2OFF which is used at various points in
-> /drivers/perf/arm_spe_pmu.c).
-
-Yes, I noted that Arm SPE driver doesn't use monotonical increasing
-for AUX head.
-
-> If this callback is not to be added, I believe the driver needs to be
-> updated > first so that the head pointer monotonically increases like in cs-etm. Do
-> you think this makes sense for SPE?
-
-Please note, there have two cases should be handled for snapshot mode:
-- Wrap-around case, somehow function __auxtrace_mmap__read() has
-  handled this case, see [1];
-- It's possible that there have overrun case for snapshot mode, e.g.
-  the kernel space receives multiple signals and take snapshot to save
-  Arm SPE trace data into AUX buffer for multiple times, but the
-  userspace tool cannot catch up to save AUX data into perf.data file.
-  Thus the AUX head might be wrapped around for multiple times, for
-  this case, I think monotonically increasing AUX head is the right
-  solution to handle overrun issue.
-
-So simply say, I think the head pointer monotonically increasing is
-the right thing to do in Arm SPE driver.
-
-> (note that the patch will skip the wrap-around detection if this is the
-> case,
-> in order to handle both cases in the userspace perf tool).
-
-Almost agree, I read multiple times but have no idea what's the
-"both cases" in the last sentence.
-
-Please let me know if anything is not clear.
-
-Thanks,
-Leo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/auxtrace.c#n1804
+-- 
+heikki
