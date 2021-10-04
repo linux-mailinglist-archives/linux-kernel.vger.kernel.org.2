@@ -2,137 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3F74218CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D4F4218D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236821AbhJDU4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S233497AbhJDU6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhJDU4q (ORCPT
+        with ESMTP id S229486AbhJDU6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:56:46 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F69CC061745;
-        Mon,  4 Oct 2021 13:54:57 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id k23-20020a17090a591700b001976d2db364so803199pji.2;
-        Mon, 04 Oct 2021 13:54:57 -0700 (PDT)
+        Mon, 4 Oct 2021 16:58:13 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70BAC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:56:23 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id r1so17187888qta.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:56:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kZJWM4F6Z6unu/rs+8fm9uleDQhYGGgncRQjKQf/aDk=;
-        b=VWSK07yHbpdJGE2T9j6a20cM1d6NclHBP9VWgpxpQVBKyrqPP+X9QuK0NWKLKwBFZP
-         hIzkqSNpOh88uOkBFgCQh5FDc0tPCOiJZpU7XbluN9peyZ90NjAu+9M6+96g+BGlybbX
-         fHAB8cuFj0j4eOL7GjaQkNtxDiRJ5dghYWoxFhGMU33+jQkyreqHyG6dmMTvIfaYu8lY
-         RbVRFQO80ucTXL2Vlu3n96jeQfwtj4sLcuJb0oKO7xr4MIYuN7hRYSAHbpWHFFYwc2U7
-         kV7RQPl06tqo+8wljn+b6zD3aO55ziRIXg8+TTnrSch8bq0dfYC7S/3/5lkL3FwO9I98
-         9XXA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1eQiWMZ4lymZhXSohlx4RiHi1Znkn0XwFspzyAQ+6Iw=;
+        b=yAj0KI/Q4RAtOOwCLsC+i6W48grzLyHT6dYmBvRQ80kX4+c6EJhAiV63SRn7d7PMCp
+         IomeYeocu716ENOjAmxvDgQwOYqr+OmL5Mf3fm8h9RlXpNfecoRWuiloIIV9hzPQfA/Q
+         t6LdNbGcfFB0Sfn/SF7S+dbscHu1phxbLpYSE907d54wt7MbORsLhRkoZ527iRDjP1Mg
+         QVZlPS+BJvEO9b3jyje9Lnu2yF9F02ne+U/1skn8S+jyeVmFo0I5XW0IM8coNfwwTjOX
+         Tx0j8OJ2Mx3fqYk66PX2Hbr5UDe30WRM12n1GR6gpejN2iW83OpVHuQ/D1KxC7v8jXIt
+         QVdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=kZJWM4F6Z6unu/rs+8fm9uleDQhYGGgncRQjKQf/aDk=;
-        b=pFpn8MtIKOSDhsByuHiLcaVjXt3wIIB27rBPH9VuGaBWWrtN6Ck+dmafZ6Bi6gSEej
-         WElrolo8LDttB38jn6SaONXjodHuzuoILuLvgOSPsSLLfRhxZO6aWNhZg+tnZQX8HyBK
-         GRHewGRuPAnyDJ9RRrczdMlhLMnr1RZWj2SCcslAwZ6eFWUGblLA6ZohqdtJ70+oXq0H
-         eOCuRMFyfxG85rnrqQMFOYoVD5xsI3xZuW2t1rGlyYndjkAwIy0txJvgtVslYt+EPTfU
-         k1nHw+f9zpXUujn81xG79uznL0Ihnyo7mNrLhMroI8O25Acf5TS5n1EKm/M8XudUUz5C
-         vHJg==
-X-Gm-Message-State: AOAM531965giF2VQW+4JtTgIJgT4dZocMo/GPob1YnT7PF/JfUfo4GYT
-        3mt/4AaIXSvD1rev7/TU7UlSTcPcB8Q=
-X-Google-Smtp-Source: ABdhPJyhKXQQOv4O2I8Q2nIpCs8vrjSKNrTVCZHyKhMRjpWm+JvPOdgiWJEm9Z0ToGlZ1m0MjdP8gw==
-X-Received: by 2002:a17:902:6b01:b0:13e:50bb:790f with SMTP id o1-20020a1709026b0100b0013e50bb790fmr1626001plk.42.1633380896502;
-        Mon, 04 Oct 2021 13:54:56 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:db55:938c:e15a:4670])
-        by smtp.gmail.com with ESMTPSA id d60sm11539860pjk.49.2021.10.04.13.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 13:54:56 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 4 Oct 2021 13:54:54 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
-Message-ID: <YVtqHv+p3uYkbu5E@google.com>
-References: <20211001181627.394921-1-bgeffon@google.com>
- <YVtH60zyzq9AhUv2@google.com>
- <CADyq12xk-2Fhnf_rJQ70oC1_98OEBJqwxOt6z=PpJa5V=X3dFQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1eQiWMZ4lymZhXSohlx4RiHi1Znkn0XwFspzyAQ+6Iw=;
+        b=p9fvUNH4NA4sZUCTTACNq3u/iGa4OYmyBZ0zQlE6EM42a7Ve70jMiNplI8O8Vp6KM8
+         j3CfRL5+ErPcZzmLqL8AHgAifbehTvddmtefpC2SKdeyI0btp5GzXB4aluDxjH42KyqB
+         XF/1av4BaxTII+6Y4pE/W0EEOHXWFeNFazkx+okHsw8fiwlevzAFdgfHlWkGsAqvAdqr
+         yBeFo+fYfHpu77qjPV4aAtVPKvzWbNbm/CyJK4QadiDrmni3qGlwwakGS+zMOSLZHQjv
+         E8zbLOB7hMbjBl32uqBkII8bH+nswX+WuLlD9yaaGxftWuEV0dYEZuJO5w7kJJXnQpWy
+         3MnA==
+X-Gm-Message-State: AOAM530Cq2f7iGiMhge2e5avKkl9QS4sSxanqJz6943OUOqgSaXvjZI5
+        Ww0v/SMdVPycdpl7kkpxdZ4d8XbXHUH60FiF7jT4OA==
+X-Google-Smtp-Source: ABdhPJzTTTgb2VURiv0i9cfBWf1L2Z4r4TEETUlviwbAf6zzaXeUYI6x+ysMDBZNIHCcQYpLwm0LwzHbahxq5Onevlo=
+X-Received: by 2002:ac8:1011:: with SMTP id z17mr15928369qti.388.1633380982877;
+ Mon, 04 Oct 2021 13:56:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADyq12xk-2Fhnf_rJQ70oC1_98OEBJqwxOt6z=PpJa5V=X3dFQ@mail.gmail.com>
+References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
+ <20210923212311.2877048-5-bjorn.andersson@linaro.org> <YVSzJZ8G43CLml3L@google.com>
+ <YVtg3lcR1HMqVdAJ@ripper>
+In-Reply-To: <YVtg3lcR1HMqVdAJ@ripper>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 4 Oct 2021 23:56:11 +0300
+Message-ID: <CAA8EJprYij6pWD1A17yr1+5-n5fKPW=YDA_-2+f8h6JnEh4myw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels
+ and thermal zones
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 02:40:52PM -0400, Brian Geffon wrote:
-> On Mon, Oct 4, 2021 at 2:29 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Fri, Oct 01, 2021 at 11:16:27AM -0700, Brian Geffon wrote:
-> > > There does not appear to be a technical reason to not
-> > > allow the zram backing device to be assigned after the
-> > > zram device is initialized.
+On Mon, 4 Oct 2021 at 23:13, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+>
+> On Wed 29 Sep 11:40 PDT 2021, Matthias Kaehlcke wrote:
+>
+> > On Thu, Sep 23, 2021 at 02:23:11PM -0700, Bjorn Andersson wrote:
+> > > Downstream defines four ADC channels related to thermal sensors external
+> > > to the PM8998 and two channels for internal voltage measurements.
 > > >
-> > > This change will allow for the backing device to be assigned
-> > > as long as no backing device is already assigned. In that
-> > > event backing_dev would return -EEXIST.
+> > > Add these to the upstream SDM845 MTP, describe the thermal monitor
+> > > channels and add thermal_zones for these.
 > > >
-> > > Signed-off-by: Brian Geffon <bgeffon@google.com>
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > > > ---
-> > >  drivers/block/zram/zram_drv.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
 > > >
-> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > index fcaf2750f68f..12b4555ee079 100644
-> > > --- a/drivers/block/zram/zram_drv.c
-> > > +++ b/drivers/block/zram/zram_drv.c
-> > > @@ -462,9 +462,9 @@ static ssize_t backing_dev_store(struct device *dev,
-> > >               return -ENOMEM;
+> > > In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
 > > >
-> > >       down_write(&zram->init_lock);
-> > > -     if (init_done(zram)) {
-> > > -             pr_info("Can't setup backing device for initialized device\n");
-> > > -             err = -EBUSY;
-> > > +     if (zram->backing_dev) {
-> > > +             pr_info("Backing device is already assigned\n");
-> > > +             err = -EEXIST;
-> > >               goto out;
+> > > Changes since v1:
+> > > - Enable the pm8998_adc_tm and describe the ADC channels
+> > > - Add thermal-zones for the new channels
+> > >
+> > >  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
+> > >  1 file changed, 128 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> [..]
+> > > +&pm8998_adc {
+> > > +   adc-chan@4c {
+> > > +           reg = <ADC5_XO_THERM_100K_PU>;
+> > > +           label = "xo_therm";
+> > > +   };
+> > > +
+> > > +   adc-chan@4d {
+> > > +           reg = <ADC5_AMUX_THM1_100K_PU>;
+> > > +           label = "msm_therm";
+> > > +   };
+> > > +
+> > > +   adc-chan@4f {
+> > > +           reg = <ADC5_AMUX_THM3_100K_PU>;
+> > > +           label = "pa_therm1";
+> > > +   };
+> > > +
+> > > +   adc-chan@51 {
+> > > +           reg = <ADC5_AMUX_THM5_100K_PU>;
+> > > +           label = "quiet_therm";
+> > > +   };
+> > > +
+> > > +   adc-chan@83 {
+> > > +           reg = <ADC5_VPH_PWR>;
+> > > +           label = "vph_pwr";
+> > > +   };
+> > > +
+> > > +   adc-chan@85 {
+> > > +           reg = <ADC5_VCOIN>;
+> > > +           label = "vcoin";
+> > > +   };
+> > > +};
+> > > +
+> > > +&pm8998_adc_tm {
+> > > +   status = "okay";
+> > > +
+> > > +   xo-thermistor@1 {
+> > > +           reg = <1>;
+> > > +           io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
+> > > +           qcom,ratiometric;
+> > > +           qcom,hw-settle-time-us = <200>;
+> > > +   };
+> > > +
+> > > +   msm-thermistor@2 {
+> > > +           reg = <2>;
+> > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
+> > > +           qcom,ratiometric;
+> > > +           qcom,hw-settle-time-us = <200>;
+> > > +   };
+> > > +
+> > > +   pa-thermistor@3 {
+> > > +           reg = <3>;
+> > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
+> > > +           qcom,ratiometric;
+> > > +           qcom,hw-settle-time-us = <200>;
+> > > +   };
+> > > +
+> > > +   quiet-thermistor@4 {
+> > > +           reg = <4>;
+> > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
+> > > +           qcom,ratiometric;
+> > > +           qcom,hw-settle-time-us = <200>;
+> > > +   };
+> > > +};
+> > > +
 > >
-> > Hi Brian,
-> >
-> 
-> Hi Minchan,
-> 
-> > I am worry about the inconsistency with other interface of current zram
-> > set up. They were supposed to set it up before zram disksize setting
-> > because it makes code more simple/maintainalbe in that we don't need
-> > to check some feature on the fly.
-> >
-> > Let's think about when zram extends the writeback of incompressible
-> > page on demand. The write path will need the backing_dev under
-> > down_read(&zarm->init_lock) or other conditional variable to check
-> > whether the feature is enabled or not on the fly.
-> 
-> I don't follow what you mean by that, writeback_store already holds
-> down_read(&zarm->init_lock).
+> > The example in the 'qcom,spmi-adc-tm5' binding specifies 'qcom,ratiometric'
+> > and 'qcom,hw-settle-time-us' for both the ADC and the thermal monitor, so do
+> > several board files (e.g. sm8250-mtp.dts and qrb5165-rb5.dts). This apparent
+> > redundancy bothered me earlier, it's not really clear to me whether it's
+> > needed/recommended or not. Do you happen to have any insights on this?
+>
+> Hmm, you're right and I missed this in defining my channels. I've not
+> looked at this detail, just got reasonable readings from my thermal
+> zones and was happy about that.
+>
+> Dmitry, do you have any further insights why these properties are
+> supposed to be duplicated between the adc channel and the thermal zones?
 
-I should have explained a bit more. Sorry about that.
-I am thinking about a feature to deal with incompressible page.
-Let's have an example to handle incompressible page for that.
+Because both ADC channel and thermal zone registers should be
+programmed accordingly.
 
-zram_bvec_rw
-  zram_bvec_write
-    if (comp_len >= huge_class)
-        zs_page_writeback
-            down_read(&zram->init_lock) or some other way
+One not-so-perfect approach would be to use io-channels property to
+locate the adc's adc-chan node and to parse it. However this way
+thermal driver would have to know the exact structure of adc's device
+tree nodes.
+Another (even worse) solution would be to introduce qcom-specific API
+to query these properties from the IIO channel.
 
-It's just idea for incompressible page but we might intorduce
-the way for other compresible pages, too at some condition.
+Selecting between these two options I decided to follow the downstream
+path and just to duplicate these few properties.
+
+-- 
+With best wishes
+Dmitry
