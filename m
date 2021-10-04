@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB7F420D46
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDE9420C9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhJDNOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
+        id S235066AbhJDNHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235453AbhJDNLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:11:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88B2261B03;
-        Mon,  4 Oct 2021 13:04:20 +0000 (UTC)
+        id S235079AbhJDNFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:05:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECFAD619F5;
+        Mon,  4 Oct 2021 13:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352661;
-        bh=1ghMdtphKXKe1KwNpRdVfyD26RNIR5e27bdtHbqO+24=;
+        s=korg; t=1633352453;
+        bh=IbeZ8mVVQ84qrPawrREJrENXt9DzouTpVHru1cM/LMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=13CrINBWTfLM0iAgUZ27gXGDczGiXcos0h0vhEflfM/XzqgmefqglyaoE0d2Ebue9
-         2nbOTiITNLufWhuoD3yQMap5Bjn61bARU9bC/RUTElSp4VTLsdCK5bZh8PT0XrD+i/
-         8XJPi5MeN7f77eqGZZB8+tCSi/fUAZ9PDu1u2aJU=
+        b=iNQC3GO0L4xOn92XY7fseJkBPHvoQZXsks5iZotzeAdW16fquNljp8aAeXJ7N22cR
+         gSckYyQAB/EQXPWhzdl8PA0fV0biMwh8x2vTwJu/mcsvMzsww9S1Dt7tIKOkP0s2JK
+         7TpdzmQlSlU94q8Kzwl6toRTJSuFPSYxaxeEIz9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 72/95] Revert "block, bfq: honor already-setup queue merges"
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Nanyong Sun <sunnanyong@huawei.com>
+Subject: [PATCH 4.14 67/75] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
 Date:   Mon,  4 Oct 2021 14:52:42 +0200
-Message-Id: <20211004125035.932083278@linuxfoundation.org>
+Message-Id: <20211004125033.785412302@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,68 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-[ Upstream commit ebc69e897e17373fbe1daaff1debaa77583a5284 ]
+commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
 
-This reverts commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b.
+The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
+we apply the work around for r0p0 - r1p0. Unfortunately this
+won't be fixed for the future revisions for the CPU. Thus
+extend the work around for all versions of A55, to cover
+for r2p0 and any future revisions.
 
-We have had several folks complain that this causes hangs for them, which
-is especially problematic as the commit has also hit stable already.
+Cc: stable@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
+[will: Update Kconfig help text]
+Signed-off-by: Will Deacon <will@kernel.org>
+[Nanyon: adjust for stable version below v4.16, which set TCR_HD earlier
+in assembly code]
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-As no resolution seems to be forthcoming right now, revert the patch.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214503
-Fixes: 2d52c58b9c9b ("block, bfq: honor already-setup queue merges")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ arch/arm64/Kconfig   |    2 +-
+ arch/arm64/mm/proc.S |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index c8c94e8e0f72..b2bad345c523 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2137,15 +2137,6 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
- 	 * are likely to increase the throughput.
- 	 */
- 	bfqq->new_bfqq = new_bfqq;
--	/*
--	 * The above assignment schedules the following redirections:
--	 * each time some I/O for bfqq arrives, the process that
--	 * generated that I/O is disassociated from bfqq and
--	 * associated with new_bfqq. Here we increases new_bfqq->ref
--	 * in advance, adding the number of processes that are
--	 * expected to be associated with new_bfqq as they happen to
--	 * issue I/O.
--	 */
- 	new_bfqq->ref += process_refs;
- 	return new_bfqq;
- }
-@@ -2205,10 +2196,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- {
- 	struct bfq_queue *in_service_bfqq, *new_bfqq;
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -450,7 +450,7 @@ config ARM64_ERRATUM_1024718
+ 	help
+ 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
  
--	/* if a merge has already been setup, then proceed with that first */
--	if (bfqq->new_bfqq)
--		return bfqq->new_bfqq;
--
- 	/*
- 	 * Prevent bfqq from being merged if it has been created too
- 	 * long ago. The idea is that true cooperating processes, and
-@@ -2223,6 +2210,9 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 	if (bfq_too_late_for_merging(bfqq))
- 		return NULL;
- 
-+	if (bfqq->new_bfqq)
-+		return bfqq->new_bfqq;
-+
- 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
- 		return NULL;
- 
--- 
-2.33.0
-
+-	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
++	  Affected Cortex-A55 cores (all revisions) could cause incorrect
+ 	  update of the hardware dirty bit when the DBM/AP bits are updated
+ 	  without a break-before-make. The work around is to disable the usage
+ 	  of hardware DBM locally on the affected cores. CPUs not affected by
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -455,8 +455,8 @@ ENTRY(__cpu_setup)
+ 	cmp	x9, #2
+ 	b.lt	1f
+ #ifdef CONFIG_ARM64_ERRATUM_1024718
+-	/* Disable hardware DBM on Cortex-A55 r0p0, r0p1 & r1p0 */
+-	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(1, 0), x1, x2, x3, x4
++	/* Disable hardware DBM on Cortex-A55 all versions */
++	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(0xf, 0xf), x1, x2, x3, x4
+ 	cbnz	x1, 1f
+ #endif
+ 	orr	x10, x10, #TCR_HD		// hardware Dirty flag update
 
 
