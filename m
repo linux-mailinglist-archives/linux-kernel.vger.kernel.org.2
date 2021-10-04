@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6555420FA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF9D420B89
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhJDNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:36:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S234084AbhJDM55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236582AbhJDNex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:34:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B06761881;
-        Mon,  4 Oct 2021 13:15:37 +0000 (UTC)
+        id S233850AbhJDM5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3378661381;
+        Mon,  4 Oct 2021 12:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353338;
-        bh=RtU55DnzmwifvM70zL20eJG7d1lJfdM7W4xWz2HvvjQ=;
+        s=korg; t=1633352130;
+        bh=8ScA0uS0vFuGSImXk7+KqIkAdMK68VnB/O0JcZX7frY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJ7vL7TGCvFTS0nHP0QBRloy/6+OFemugSEZPQhpyMH3YzS8Q3XfvZ737CIX05pLA
-         hr0f5/V3GIp+k2CqdU+y6n21t9+Bms2VectdBHqAy8NQeLzhpdbFtJE58+ZPRLg8RW
-         kFA4v75RCYEwhpIK5t4kGnVIl61GVw+BdHLvSGLE=
+        b=T7hKFE/KFfxE/dmW9v6UbJ8+R/xKOWGn00GTgHZDynl5/2hoPkGz+Ygx/CN+SckuJ
+         6TZS/imcevo/hPxCU5T4LjQQa0wcy2so9dtRdCdptOrBVBq6jOCZxBJcPq2RBK/HqZ
+         hP/CoRc/R4CtGa244wnDF94pfG5F5qGsfjFU1pj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Yi Chen <yiche@redhat.com>,
+        Andrea Claudi <aclaudi@redhat.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 088/172] Revert "mac80211: do not use low data rates for data frames with no ack flag"
+Subject: [PATCH 4.4 27/41] ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
 Date:   Mon,  4 Oct 2021 14:52:18 +0200
-Message-Id: <20211004125047.836891379@linuxfoundation.org>
+Message-Id: <20211004125027.441460139@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Andrea Claudi <aclaudi@redhat.com>
 
-[ Upstream commit 98d46b021f6ee246c7a73f9d490d4cddb4511a3b ]
+[ Upstream commit 69e73dbfda14fbfe748d3812da1244cce2928dcb ]
 
-This reverts commit d333322361e7 ("mac80211: do not use low data rates for
-data frames with no ack flag").
+ip_vs_conn_tab_bits may be provided by the user through the
+conn_tab_bits module parameter. If this value is greater than 31, or
+less than 0, the shift operator used to derive tab_size causes undefined
+behaviour.
 
-Returning false early in rate_control_send_low breaks sending broadcast
-packets, since rate control will not select a rate for it.
+Fix this checking ip_vs_conn_tab_bits value to be in the range specified
+in ipvs Kconfig. If not, simply use default value.
 
-Before re-introducing a fixed version of this patch, we should probably also
-make some changes to rate control to be more conservative in selecting rates
-for no-ack packets and also prevent using probing rates on them, since we won't
-get any feedback.
-
-Fixes: d333322361e7 ("mac80211: do not use low data rates for data frames with no ack flag")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210906083559.9109-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 6f7edb4881bf ("IPVS: Allow boot time change of hash size")
+Reported-by: Yi Chen <yiche@redhat.com>
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Acked-by: Simon Horman <horms@verge.net.au>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rate.c | 4 ----
- 1 file changed, 4 deletions(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/mac80211/rate.c b/net/mac80211/rate.c
-index e5935e3d7a07..8c6416129d5b 100644
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -392,10 +392,6 @@ static bool rate_control_send_low(struct ieee80211_sta *pubsta,
- 	int mcast_rate;
- 	bool use_basicrate = false;
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 85ca189bdc3d..de196dd95dcd 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1368,6 +1368,10 @@ int __init ip_vs_conn_init(void)
+ 	int idx;
  
--	if (ieee80211_is_tx_data(txrc->skb) &&
--	    info->flags & IEEE80211_TX_CTL_NO_ACK)
--		return false;
--
- 	if (!pubsta || rc_no_data_or_no_ack_use_min(txrc)) {
- 		__rate_control_send_low(txrc->hw, sband, pubsta, info,
- 					txrc->rate_idx_mask);
+ 	/* Compute size and mask */
++	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
++		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
++		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
++	}
+ 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
+ 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
+ 
 -- 
 2.33.0
 
