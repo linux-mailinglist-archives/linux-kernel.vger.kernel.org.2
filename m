@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE37C420E8C
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB72420E8B
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbhJDN0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
+        id S237080AbhJDNZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237035AbhJDNXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6C662F90;
-        Mon,  4 Oct 2021 13:10:31 +0000 (UTC)
+        id S237070AbhJDNXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:23:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D7F61AF9;
+        Mon,  4 Oct 2021 13:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353032;
-        bh=tE+ZNtAM287sbHbJHJVb9sslrkZ9UnTiPPEYOlWSGF8=;
+        s=korg; t=1633353034;
+        bh=pgOHYUY9kurolCCrMXkmrX1mwwlvJSIW8MmFNz81mR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BMN8xSfpfYjcKTqXKMqwPjap5xhPHUwhPWuyGrQqzdisLSZnkRVFMl94f5i/RhXrw
-         tsKnTZH2WxIbO53AI7PfvrlkqJe8HuyChFX5tdAvm8bSGhiZoTslzc6TZ1JPTCviIO
-         kr3wsiCBiXaIbqVbM0zmup50Rwfs/GEZx0iVZFVA=
+        b=X5xyddJmGaEFcaVUhoHslcep9zOmABzeY5iPqyL7kFk7iFoLPJa9Xr7CveX7mfyy+
+         1uWOguPqGPwnfEBEhagTPFv/nWc+BiPGDPkjMB8uUwXaRFM33wkY60H4k7+RaoXvVf
+         xU4YmOQRus5kYBERgKzvqG9ROquM60bn477Jcm9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <cong.wang@bytedance.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 63/93] net: phy: bcm7xxx: Fixed indirect MMD operations
-Date:   Mon,  4 Oct 2021 14:53:01 +0200
-Message-Id: <20211004125036.643561601@linuxfoundation.org>
+Subject: [PATCH 5.10 64/93] net: sched: flower: protect fl_walk() with rcu
+Date:   Mon,  4 Oct 2021 14:53:02 +0200
+Message-Id: <20211004125036.680749142@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
 References: <20211004125034.579439135@linuxfoundation.org>
@@ -40,191 +41,210 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Vlad Buslov <vladbu@nvidia.com>
 
-[ Upstream commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb ]
+[ Upstream commit d5ef190693a7d76c5c192d108e8dec48307b46ee ]
 
-When EEE support was added to the 28nm EPHY it was assumed that it would
-be able to support the standard clause 45 over clause 22 register access
-method. It turns out that the PHY does not support that, which is the
-very reason for using the indirect shadow mode 2 bank 3 access method.
+Patch that refactored fl_walk() to use idr_for_each_entry_continue_ul()
+also removed rcu protection of individual filters which causes following
+use-after-free when filter is deleted concurrently. Fix fl_walk() to obtain
+rcu read lock while iterating and taking the filter reference and temporary
+release the lock while calling arg->fn() callback that can sleep.
 
-Implement {read,write}_mmd to allow the standard PHY library routines
-pertaining to EEE querying and configuration to work correctly on these
-PHYs. This forces us to implement a __phy_set_clr_bits() function that
-does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
-functions are always called with that lock held.
+KASAN trace:
 
-Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+[  352.773640] ==================================================================
+[  352.775041] BUG: KASAN: use-after-free in fl_walk+0x159/0x240 [cls_flower]
+[  352.776304] Read of size 4 at addr ffff8881c8251480 by task tc/2987
+
+[  352.777862] CPU: 3 PID: 2987 Comm: tc Not tainted 5.15.0-rc2+ #2
+[  352.778980] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+[  352.781022] Call Trace:
+[  352.781573]  dump_stack_lvl+0x46/0x5a
+[  352.782332]  print_address_description.constprop.0+0x1f/0x140
+[  352.783400]  ? fl_walk+0x159/0x240 [cls_flower]
+[  352.784292]  ? fl_walk+0x159/0x240 [cls_flower]
+[  352.785138]  kasan_report.cold+0x83/0xdf
+[  352.785851]  ? fl_walk+0x159/0x240 [cls_flower]
+[  352.786587]  kasan_check_range+0x145/0x1a0
+[  352.787337]  fl_walk+0x159/0x240 [cls_flower]
+[  352.788163]  ? fl_put+0x10/0x10 [cls_flower]
+[  352.789007]  ? __mutex_unlock_slowpath.constprop.0+0x220/0x220
+[  352.790102]  tcf_chain_dump+0x231/0x450
+[  352.790878]  ? tcf_chain_tp_delete_empty+0x170/0x170
+[  352.791833]  ? __might_sleep+0x2e/0xc0
+[  352.792594]  ? tfilter_notify+0x170/0x170
+[  352.793400]  ? __mutex_unlock_slowpath.constprop.0+0x220/0x220
+[  352.794477]  tc_dump_tfilter+0x385/0x4b0
+[  352.795262]  ? tc_new_tfilter+0x1180/0x1180
+[  352.796103]  ? __mod_node_page_state+0x1f/0xc0
+[  352.796974]  ? __build_skb_around+0x10e/0x130
+[  352.797826]  netlink_dump+0x2c0/0x560
+[  352.798563]  ? netlink_getsockopt+0x430/0x430
+[  352.799433]  ? __mutex_unlock_slowpath.constprop.0+0x220/0x220
+[  352.800542]  __netlink_dump_start+0x356/0x440
+[  352.801397]  rtnetlink_rcv_msg+0x3ff/0x550
+[  352.802190]  ? tc_new_tfilter+0x1180/0x1180
+[  352.802872]  ? rtnl_calcit.isra.0+0x1f0/0x1f0
+[  352.803668]  ? tc_new_tfilter+0x1180/0x1180
+[  352.804344]  ? _copy_from_iter_nocache+0x800/0x800
+[  352.805202]  ? kasan_set_track+0x1c/0x30
+[  352.805900]  netlink_rcv_skb+0xc6/0x1f0
+[  352.806587]  ? rht_deferred_worker+0x6b0/0x6b0
+[  352.807455]  ? rtnl_calcit.isra.0+0x1f0/0x1f0
+[  352.808324]  ? netlink_ack+0x4d0/0x4d0
+[  352.809086]  ? netlink_deliver_tap+0x62/0x3d0
+[  352.809951]  netlink_unicast+0x353/0x480
+[  352.810744]  ? netlink_attachskb+0x430/0x430
+[  352.811586]  ? __alloc_skb+0xd7/0x200
+[  352.812349]  netlink_sendmsg+0x396/0x680
+[  352.813132]  ? netlink_unicast+0x480/0x480
+[  352.813952]  ? __import_iovec+0x192/0x210
+[  352.814759]  ? netlink_unicast+0x480/0x480
+[  352.815580]  sock_sendmsg+0x6c/0x80
+[  352.816299]  ____sys_sendmsg+0x3a5/0x3c0
+[  352.817096]  ? kernel_sendmsg+0x30/0x30
+[  352.817873]  ? __ia32_sys_recvmmsg+0x150/0x150
+[  352.818753]  ___sys_sendmsg+0xd8/0x140
+[  352.819518]  ? sendmsg_copy_msghdr+0x110/0x110
+[  352.820402]  ? ___sys_recvmsg+0xf4/0x1a0
+[  352.821110]  ? __copy_msghdr_from_user+0x260/0x260
+[  352.821934]  ? _raw_spin_lock+0x81/0xd0
+[  352.822680]  ? __handle_mm_fault+0xef3/0x1b20
+[  352.823549]  ? rb_insert_color+0x2a/0x270
+[  352.824373]  ? copy_page_range+0x16b0/0x16b0
+[  352.825209]  ? perf_event_update_userpage+0x2d0/0x2d0
+[  352.826190]  ? __fget_light+0xd9/0xf0
+[  352.826941]  __sys_sendmsg+0xb3/0x130
+[  352.827613]  ? __sys_sendmsg_sock+0x20/0x20
+[  352.828377]  ? do_user_addr_fault+0x2c5/0x8a0
+[  352.829184]  ? fpregs_assert_state_consistent+0x52/0x60
+[  352.830001]  ? exit_to_user_mode_prepare+0x32/0x160
+[  352.830845]  do_syscall_64+0x35/0x80
+[  352.831445]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  352.832331] RIP: 0033:0x7f7bee973c17
+[  352.833078] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
+[  352.836202] RSP: 002b:00007ffcbb368e28 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+[  352.837524] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7bee973c17
+[  352.838715] RDX: 0000000000000000 RSI: 00007ffcbb368e50 RDI: 0000000000000003
+[  352.839838] RBP: 00007ffcbb36d090 R08: 00000000cea96d79 R09: 00007f7beea34a40
+[  352.841021] R10: 00000000004059bb R11: 0000000000000246 R12: 000000000046563f
+[  352.842208] R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffcbb36d088
+
+[  352.843784] Allocated by task 2960:
+[  352.844451]  kasan_save_stack+0x1b/0x40
+[  352.845173]  __kasan_kmalloc+0x7c/0x90
+[  352.845873]  fl_change+0x282/0x22db [cls_flower]
+[  352.846696]  tc_new_tfilter+0x6cf/0x1180
+[  352.847493]  rtnetlink_rcv_msg+0x471/0x550
+[  352.848323]  netlink_rcv_skb+0xc6/0x1f0
+[  352.849097]  netlink_unicast+0x353/0x480
+[  352.849886]  netlink_sendmsg+0x396/0x680
+[  352.850678]  sock_sendmsg+0x6c/0x80
+[  352.851398]  ____sys_sendmsg+0x3a5/0x3c0
+[  352.852202]  ___sys_sendmsg+0xd8/0x140
+[  352.852967]  __sys_sendmsg+0xb3/0x130
+[  352.853718]  do_syscall_64+0x35/0x80
+[  352.854457]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[  352.855830] Freed by task 7:
+[  352.856421]  kasan_save_stack+0x1b/0x40
+[  352.857139]  kasan_set_track+0x1c/0x30
+[  352.857854]  kasan_set_free_info+0x20/0x30
+[  352.858609]  __kasan_slab_free+0xed/0x130
+[  352.859348]  kfree+0xa7/0x3c0
+[  352.859951]  process_one_work+0x44d/0x780
+[  352.860685]  worker_thread+0x2e2/0x7e0
+[  352.861390]  kthread+0x1f4/0x220
+[  352.862022]  ret_from_fork+0x1f/0x30
+
+[  352.862955] Last potentially related work creation:
+[  352.863758]  kasan_save_stack+0x1b/0x40
+[  352.864378]  kasan_record_aux_stack+0xab/0xc0
+[  352.865028]  insert_work+0x30/0x160
+[  352.865617]  __queue_work+0x351/0x670
+[  352.866261]  rcu_work_rcufn+0x30/0x40
+[  352.866917]  rcu_core+0x3b2/0xdb0
+[  352.867561]  __do_softirq+0xf6/0x386
+
+[  352.868708] Second to last potentially related work creation:
+[  352.869779]  kasan_save_stack+0x1b/0x40
+[  352.870560]  kasan_record_aux_stack+0xab/0xc0
+[  352.871426]  call_rcu+0x5f/0x5c0
+[  352.872108]  queue_rcu_work+0x44/0x50
+[  352.872855]  __fl_put+0x17c/0x240 [cls_flower]
+[  352.873733]  fl_delete+0xc7/0x100 [cls_flower]
+[  352.874607]  tc_del_tfilter+0x510/0xb30
+[  352.886085]  rtnetlink_rcv_msg+0x471/0x550
+[  352.886875]  netlink_rcv_skb+0xc6/0x1f0
+[  352.887636]  netlink_unicast+0x353/0x480
+[  352.888285]  netlink_sendmsg+0x396/0x680
+[  352.888942]  sock_sendmsg+0x6c/0x80
+[  352.889583]  ____sys_sendmsg+0x3a5/0x3c0
+[  352.890311]  ___sys_sendmsg+0xd8/0x140
+[  352.891019]  __sys_sendmsg+0xb3/0x130
+[  352.891716]  do_syscall_64+0x35/0x80
+[  352.892395]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[  352.893666] The buggy address belongs to the object at ffff8881c8251000
+                which belongs to the cache kmalloc-2k of size 2048
+[  352.895696] The buggy address is located 1152 bytes inside of
+                2048-byte region [ffff8881c8251000, ffff8881c8251800)
+[  352.897640] The buggy address belongs to the page:
+[  352.898492] page:00000000213bac35 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1c8250
+[  352.900110] head:00000000213bac35 order:3 compound_mapcount:0 compound_pincount:0
+[  352.901541] flags: 0x2ffff800010200(slab|head|node=0|zone=2|lastcpupid=0x1ffff)
+[  352.902908] raw: 002ffff800010200 0000000000000000 dead000000000122 ffff888100042f00
+[  352.904391] raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+[  352.905861] page dumped because: kasan: bad access detected
+
+[  352.907323] Memory state around the buggy address:
+[  352.908218]  ffff8881c8251380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  352.909471]  ffff8881c8251400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  352.910735] >ffff8881c8251480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  352.912012]                    ^
+[  352.912642]  ffff8881c8251500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  352.913919]  ffff8881c8251580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[  352.915185] ==================================================================
+
+Fixes: d39d714969cd ("idr: introduce idr_for_each_entry_continue_ul()")
+Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
+Acked-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/bcm7xxx.c | 114 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 110 insertions(+), 4 deletions(-)
+ net/sched/cls_flower.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-index 15812001b3ff..115044e21c74 100644
---- a/drivers/net/phy/bcm7xxx.c
-+++ b/drivers/net/phy/bcm7xxx.c
-@@ -27,7 +27,12 @@
- #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
- #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
- #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
-+#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
-+#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
-+#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
- #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
-+#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
-+#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
- #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
- #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
- #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
-@@ -216,25 +221,37 @@ static int bcm7xxx_28nm_resume(struct phy_device *phydev)
- 	return genphy_config_aneg(phydev);
+diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+index a5212a3f86e2..8ff6945b9f8f 100644
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -2169,18 +2169,24 @@ static void fl_walk(struct tcf_proto *tp, struct tcf_walker *arg,
+ 
+ 	arg->count = arg->skip;
+ 
++	rcu_read_lock();
+ 	idr_for_each_entry_continue_ul(&head->handle_idr, f, tmp, id) {
+ 		/* don't return filters that are being deleted */
+ 		if (!refcount_inc_not_zero(&f->refcnt))
+ 			continue;
++		rcu_read_unlock();
++
+ 		if (arg->fn(tp, f, arg) < 0) {
+ 			__fl_put(f);
+ 			arg->stop = 1;
++			rcu_read_lock();
+ 			break;
+ 		}
+ 		__fl_put(f);
+ 		arg->count++;
++		rcu_read_lock();
+ 	}
++	rcu_read_unlock();
+ 	arg->cookie = id;
  }
  
--static int phy_set_clr_bits(struct phy_device *dev, int location,
--					int set_mask, int clr_mask)
-+static int __phy_set_clr_bits(struct phy_device *dev, int location,
-+			      int set_mask, int clr_mask)
- {
- 	int v, ret;
- 
--	v = phy_read(dev, location);
-+	v = __phy_read(dev, location);
- 	if (v < 0)
- 		return v;
- 
- 	v &= ~clr_mask;
- 	v |= set_mask;
- 
--	ret = phy_write(dev, location, v);
-+	ret = __phy_write(dev, location, v);
- 	if (ret < 0)
- 		return ret;
- 
- 	return v;
- }
- 
-+static int phy_set_clr_bits(struct phy_device *dev, int location,
-+			    int set_mask, int clr_mask)
-+{
-+	int ret;
-+
-+	mutex_lock(&dev->mdio.bus->mdio_lock);
-+	ret = __phy_set_clr_bits(dev, location, set_mask, clr_mask);
-+	mutex_unlock(&dev->mdio.bus->mdio_lock);
-+
-+	return ret;
-+}
-+
- static int bcm7xxx_28nm_ephy_01_afe_config_init(struct phy_device *phydev)
- {
- 	int ret;
-@@ -398,6 +415,93 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
- 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
- }
- 
-+#define MII_BCM7XXX_REG_INVALID	0xff
-+
-+static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
-+{
-+	switch (regnum) {
-+	case MDIO_CTRL1:
-+		return MII_BCM7XXX_SHD_3_PCS_CTRL;
-+	case MDIO_STAT1:
-+		return MII_BCM7XXX_SHD_3_PCS_STATUS;
-+	case MDIO_PCS_EEE_ABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_CAP;
-+	case MDIO_AN_EEE_ADV:
-+		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
-+	case MDIO_AN_EEE_LPABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_LP;
-+	case MDIO_PCS_EEE_WK_ERR:
-+		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
-+	default:
-+		return MII_BCM7XXX_REG_INVALID;
-+	}
-+}
-+
-+static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
-+{
-+	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
-+}
-+
-+static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
-+				      int devnum, u16 regnum)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	ret = __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+			   MII_BCM7XXX_SHD_MODE_2);
-+	return ret;
-+}
-+
-+static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
-+				       int devnum, u16 regnum, u16 val)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	/* Write the desired value in the shadow register */
-+	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+				  MII_BCM7XXX_SHD_MODE_2);
-+}
-+
- static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
- {
- 	int ret;
-@@ -595,6 +699,8 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
- 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
- 	.probe		= bcm7xxx_28nm_probe,				\
- 	.remove		= bcm7xxx_28nm_remove,				\
-+	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
-+	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
- }
- 
- #define BCM7XXX_40NM_EPHY(_oui, _name)					\
 -- 
 2.33.0
 
