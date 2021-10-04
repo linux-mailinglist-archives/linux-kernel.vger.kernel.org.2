@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4684A421595
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F21E421590
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbhJDRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhJDRyQ (ORCPT
+        id S234298AbhJDRyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:54:10 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:41898 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233597AbhJDRyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:54:16 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6176C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:52:26 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g10so8615105edj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SVy+42avAMDVs9YXx1N0MW72e1XqpRIo0we4Jey6TgQ=;
-        b=USZyRilZz6erOG49DFYjzZ7yWgjOF6KTPmH52T4Gemm+QUM3Fsk9hCPuO1ae+CsKMy
-         5cxbMWN0+QWJ7TNvMS+xMUWtoLMWb5t6Z7EiTWRxNQI0EeXpbmWGUY7HPhtaBMFPRnN1
-         tyqo3akeIm/LNXB/Hnk8xMZ2sGRkMTJTjJrVs=
+        Mon, 4 Oct 2021 13:54:08 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso22656284ota.8;
+        Mon, 04 Oct 2021 10:52:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SVy+42avAMDVs9YXx1N0MW72e1XqpRIo0we4Jey6TgQ=;
-        b=pHSHIKoRGb1DVjrDzusG9cAGwM/OzKx3pA4Hqn2pQLEJXyHNsyee/g629ib0MVF5oB
-         uMswaF2idTg/xGRiUH2ywrSEVFLFaBVpnYMIVMIMFm1xJYkCm9ukIMSanxTKLXRkziNj
-         bvLpKTAuwabdsHbqvC6/9+Yc8fNuOYL811a1FGEx7egUffSfyODW67lwvijG1r8/yxvH
-         4fOwfr9yxUkLVCEBYG3+CKeqxWUiaNaYSjtjYZmbDL0LwpKF2qi9LH5QiLO8yUA3fK1B
-         YDAvM8xK0blLBJ+gUr77y9Y83/Blfs8zcper2c/8HCCdqBnmQ/ijwVcileoml5v8uGK9
-         MUpw==
-X-Gm-Message-State: AOAM533BFFX1HfdTjB7CRTEE/YCPaNop32QOZQjLfBd5qyl3U8J93cxT
-        i22vEY7Cc/PNZ5Tm0DCJOf1bkb8xm+CCa0skQVldIA==
-X-Google-Smtp-Source: ABdhPJw473yRin1rcK/LShFHmhtAKymPp2Nzjft1z63Ov1VE3CPb6pN7T9mMOt0Y7yINQAzbdd9Z9LQmL/AJ4fFVqJE=
-X-Received: by 2002:a17:906:60c7:: with SMTP id f7mr18468620ejk.57.1633369942391;
- Mon, 04 Oct 2021 10:52:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pCk+WteoJ4Ql9iJLHdcU9i/mA+NmSdPVlxjxSYcSevE=;
+        b=vh7l0a7AosyMgtdnymeRUTZUV+mqL1pEZCjk7WYGErlDQm3ftcDdSBEM7np3CZQIob
+         Y3+tkurKX9Ma65c9lkM3CcYMIY8JC5v6cvKdEbfoNtA+uUp9j2e7QqF753cbZ150MvSR
+         SOr/HjFLfpoa/34/rFAWY8drnp6AIhrHZ9osWCGjfa265igaSQ9YjX5oDShtXUE7KNhw
+         SkzdjbxjOxM2syCDXpgqwr+TVh+789QBz/dy8AiXoxdVCWPOkR1ovNskzMipeoStOC3R
+         CpS6fdkiSXm/3tZXM2qwzOsLfX1Iat+/aM9dkFdjKLTv1UI5o7WbzulL78FAmCZW3bmw
+         jBlQ==
+X-Gm-Message-State: AOAM531WMqsCrkzzV60TrLYQCdf0LtUSJMBt36oZR+35LCHkMi8iAX6B
+        m0tj2Av6jN469gsnKeCmDQ==
+X-Google-Smtp-Source: ABdhPJx2MYqLCUXb7aPlehMQIvJmqPvcsMtr4caQZX8loQ7DUpvZ2wg0rkhYL8tgOH7tQzBTsze81w==
+X-Received: by 2002:a9d:6399:: with SMTP id w25mr10643277otk.53.1633369939222;
+        Mon, 04 Oct 2021 10:52:19 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d7sm2997419otl.19.2021.10.04.10.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 10:52:18 -0700 (PDT)
+Received: (nullmailer pid 1554740 invoked by uid 1000);
+        Mon, 04 Oct 2021 17:52:17 -0000
+Date:   Mon, 4 Oct 2021 12:52:17 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Suman Anna <s-anna@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sinthu Raja <sinthu.raja@ti.com>, linux-kernel@vger.kernel.org,
+        Hari Nagalla <hnagalla@ti.com>, Tero Kristo <kristo@kernel.org>
+Subject: Re: [PATCH V2 1/4] dt-bindings: arm: ti: Add missing compatibles for
+ j721e/j7200 evms
+Message-ID: <YVs/UTZjzwjypf1e@robh.at.kernel.org>
+References: <20210925201430.11678-1-nm@ti.com>
+ <20210925201430.11678-2-nm@ti.com>
 MIME-Version: 1.0
-References: <20210914114813.15404-1-verdre@v0yd.nl> <20210914114813.15404-3-verdre@v0yd.nl>
- <5f0b52be-8b9c-b015-6c5a-f2f470e37058@v0yd.nl>
-In-Reply-To: <5f0b52be-8b9c-b015-6c5a-f2f470e37058@v0yd.nl>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Mon, 4 Oct 2021 10:52:11 -0700
-Message-ID: <CAOFLbXbK5LmZbLcEs5e-0twoSkxkyKy8S6ZJVsz9Ap_a_iGZPA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mwifiex: Try waking the firmware until we get an interrupt
-To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "# 9798ac6d32c1 mfd : cros_ec : Add cros_ec_cmd_xfer_status helper" 
-        <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925201430.11678-2-nm@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, 25 Sep 2021 15:14:27 -0500, Nishanth Menon wrote:
+> Add compatibles for j721e and j7200 evms to allow for newer platforms
+> to distinguish themselves.
+> 
+> While doing this, maintain support for older style of description where
+> the board compatibility was not required.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+> 
+> Changes in V2:
+> * Modified such that legacy style of compatibles (of just SoC alone) is
+>   still valid
+> * Made the capability of providing a board specific compatible as an
+>   alternate scheme
+> * No longer dependent on rproc cleanup and platforms hosted in
+>   downstream trees remain compatible
+> 
+> V1: https://lore.kernel.org/all/20210915121937.27702-2-nm@ti.com/
+> 
+>  Documentation/devicetree/bindings/arm/ti/k3.yaml | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
 
-On Sun, Oct 3, 2021 at 2:18 AM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
-> So I think I have another solution that might be a lot more elegant, how
-> about this:
->
-> try_again:
->         n_tries++;
->
->         mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE);
->
->         if (wait_event_interruptible_timeout(adapter->card_wakeup_wait_q,
->                                              READ_ONCE(adapter->int_statu=
-s) !=3D 0,
->                                              WAKEUP_TRY_AGAIN_TIMEOUT) =
-=3D=3D 0 &&
->             n_tries < MAX_N_WAKEUP_TRIES) {
->                 goto try_again;
->         }
-
-Isn't wait_event_interruptible_timeout()'s timeout in jiffies, which
-is not necessarily that predictable, and also a lot more
-coarse-grained than we want? (As in, if HZ=3D100, we're looking at
-precision on the order of 10ms, whereas the expected wakeup latency is
-~6ms.) That would be OK for well-behaved PCI cases, where we never
-miss a write, but it could ~double your latency for your bad systems
-that will need more than one run of the loop.
-
-Also, feels like a do/while could be cleaner, but that's a lesser detail.
-
-> and then call wake_up_interruptible() in the mwifiex_interrupt_status()
-> interrupt handler.
->
-> This solution should make sure we always keep wakeup latency to a minimum
-> and can still retry the register write if things didn't work.
-
-Brian
+Acked-by: Rob Herring <robh@kernel.org>
