@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D3A420B78
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF250420C76
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233930AbhJDM52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
+        id S235216AbhJDNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233678AbhJDM45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 833D3611CA;
-        Mon,  4 Oct 2021 12:55:07 +0000 (UTC)
+        id S235112AbhJDNDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A4D61B03;
+        Mon,  4 Oct 2021 13:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352108;
-        bh=BigkEAdkVxM6YcciOXxV04jkWga7RUvuRqEDIXN71/w=;
+        s=korg; t=1633352409;
+        bh=KTWfOgBFlkIwENSSXqqs1/+ibOYxMx7CwI3CgEhNjZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CVj+NkNwKsgiXFMdRjngjIU1aAQGrGU4YjoplTX2Kgg2mUaVTC36sZrQ1ROPmaAqL
-         FN/DPwjixNRi6dyymBoH/1dXgMZ4HO+Tcx/YoPUx7GeE76ESTlWHPdjG9fg5mhv3GL
-         VXOPqpoQEDs6YU6c7mhVn7Aac+H1flicS2TKZPGs=
+        b=JoYP2T3/6ilN7Q0Kv5Rn97uiXeBrYJd82ocZKj8tUtI0VgEaJF4xz1P5M6RzIiZrj
+         Fm8yhyKo+08RzyFebDXQUe7SzzsPq6xqWtENBubGNOj1WPC30r4VGPFqQjx09XMseu
+         HGVPMn9Q/82h9ChKuHnvGRjlDKfxmf9UBbCK3QSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.4 35/41] ext4: fix potential infinite loop in ext4_dx_readdir()
+        stable@vger.kernel.org,
+        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 51/75] e100: fix length calculation in e100_get_regs_len
 Date:   Mon,  4 Oct 2021 14:52:26 +0200
-Message-Id: <20211004125027.692876362@linuxfoundation.org>
+Message-Id: <20211004125033.234387493@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-commit 42cb447410d024e9d54139ae9c21ea132a8c384c upstream.
+[ Upstream commit 4329c8dc110b25d5f04ed20c6821bb60deff279f ]
 
-When ext4_htree_fill_tree() fails, ext4_dx_readdir() can run into an
-infinite loop since if info->last_pos != ctx->pos this will reset the
-directory scan and reread the failing entry.  For example:
+commit abf9b902059f ("e100: cleanup unneeded math") tried to simplify
+e100_get_regs_len and remove a double 'divide and then multiply'
+calculation that the e100_reg_regs_len function did.
 
-1. a dx_dir which has 3 block, block 0 as dx_root block, block 1/2 as
-   leaf block which own the ext4_dir_entry_2
-2. block 1 read ok and call_filldir which will fill the dirent and update
-   the ctx->pos
-3. block 2 read fail, but we has already fill some dirent, so we will
-   return back to userspace will a positive return val(see ksys_getdents64)
-4. the second ext4_dx_readdir will reset the world since info->last_pos
-   != ctx->pos, and will also init the curr_hash which pos to block 1
-5. So we will read block1 too, and once block2 still read fail, we can
-   only fill one dirent because the hash of the entry in block1(besides
-   the last one) won't greater than curr_hash
-6. this time, we forget update last_pos too since the read for block2
-   will fail, and since we has got the one entry, ksys_getdents64 can
-   return success
-7. Latter we will trapped in a loop with step 4~6
+This change broke the size calculation entirely as it failed to account
+for the fact that the numbered registers are actually 4 bytes wide and
+not 1 byte. This resulted in a significant under allocation of the
+register buffer used by e100_get_regs.
 
-Cc: stable@kernel.org
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20210914111415.3921954-1-yangerkun@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by properly multiplying the register count by u32 first before
+adding the size of the dump buffer.
+
+Fixes: abf9b902059f ("e100: cleanup unneeded math")
+Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/dir.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/e100.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -521,7 +521,7 @@ static int ext4_dx_readdir(struct file *
- 	struct dir_private_info *info = file->private_data;
- 	struct inode *inode = file_inode(file);
- 	struct fname *fname;
--	int	ret;
-+	int ret = 0;
- 
- 	if (!info) {
- 		info = ext4_htree_create_dir_info(file, ctx->pos);
-@@ -569,7 +569,7 @@ static int ext4_dx_readdir(struct file *
- 						   info->curr_minor_hash,
- 						   &info->next_hash);
- 			if (ret < 0)
--				return ret;
-+				goto finished;
- 			if (ret == 0) {
- 				ctx->pos = ext4_get_htree_eof(file);
- 				break;
-@@ -600,7 +600,7 @@ static int ext4_dx_readdir(struct file *
- 	}
- finished:
- 	info->last_pos = ctx->pos;
--	return 0;
-+	return ret < 0 ? ret : 0;
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index a73102357bbd..ae967fa9e502 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -2463,7 +2463,11 @@ static void e100_get_drvinfo(struct net_device *netdev,
+ static int e100_get_regs_len(struct net_device *netdev)
+ {
+ 	struct nic *nic = netdev_priv(netdev);
+-	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
++
++	/* We know the number of registers, and the size of the dump buffer.
++	 * Calculate the total size in bytes.
++	 */
++	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
  }
  
- static int ext4_dir_open(struct inode * inode, struct file * filp)
+ static void e100_get_regs(struct net_device *netdev,
+-- 
+2.33.0
+
 
 
