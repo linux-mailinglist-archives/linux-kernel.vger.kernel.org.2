@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEE9420CD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EF7420F5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhJDNJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39478 "EHLO mail.kernel.org"
+        id S237163AbhJDNd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235075AbhJDNHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3B1661381;
-        Mon,  4 Oct 2021 13:01:46 +0000 (UTC)
+        id S236873AbhJDNbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:31:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67BA4619E9;
+        Mon,  4 Oct 2021 13:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352507;
-        bh=f91TnhFd8ef1ubRJrXJUlfDGZkPjpb5piUcuIZ7W6ho=;
+        s=korg; t=1633353256;
+        bh=NC8HZAlr1M0y90qa5JDrm8ws99TMSgsm6w3N1CJm7HY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOyb9HbhyG9boXyyAIHlZAGtso7o3Aj6yhn1jGVgFhhyNUUWZSByJngUOz7Z1186A
-         yiyjEheXUWBCdp8H52curNdjMRsojCHb9N5z5et459eW36zOIx8mixc9w7xgvcPgeB
-         HclsxcAJgLAOPePJtX2nywN08XTSi04TQ40URTX0=
+        b=AWeRcMqV1S4YXl7P0b24wKycC4hXtoHBX71SP5OTgYwH+PVVr+NXS4fBO9yG/aaCC
+         TKlQtxH4XoouLWVqNDZI8GCw87jFV8qrRw8D/l6ffIoI+NQrGIuBcVECVaEMDN7298
+         MQBxOnbKa3jtxt8DFzyy4mQmG1YzTMXke/Uhc7zM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 14/95] USB: serial: option: remove duplicate USB device ID
-Date:   Mon,  4 Oct 2021 14:51:44 +0200
-Message-Id: <20211004125034.025492491@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Nathan Tempelman <natet@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, kvm@vger.kernel.org
+Subject: [PATCH 5.14 055/172] KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES
+Date:   Mon,  4 Oct 2021 14:51:45 +0200
+Message-Id: <20211004125046.774748468@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,30 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Peter Gonda <pgonda@google.com>
 
-commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
+commit f43c887cb7cb5b66c4167d40a4209027f5fdb5ce upstream.
 
-The device ZTE 0x0094 is already on the list.
+For mirroring SEV-ES the mirror VM will need more then just the ASID.
+The FD and the handle are required to all the mirror to call psp
+commands. The mirror VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
+setup its vCPUs' VMSAs for SEV-ES.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Nathan Tempelman <natet@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Steve Rutherford <srutherford@google.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context", 2021-04-21)
+Message-Id: <20210921150345.2221634-2-pgonda@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kvm/svm/sev.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1658,7 +1658,6 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
--	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
- 	  .driver_info = RSVD(1) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1716,8 +1716,7 @@ int svm_vm_copy_asid_from(struct kvm *kv
+ {
+ 	struct file *source_kvm_file;
+ 	struct kvm *source_kvm;
+-	struct kvm_sev_info *mirror_sev;
+-	unsigned int asid;
++	struct kvm_sev_info source_sev, *mirror_sev;
+ 	int ret;
+ 
+ 	source_kvm_file = fget(source_fd);
+@@ -1740,7 +1739,8 @@ int svm_vm_copy_asid_from(struct kvm *kv
+ 		goto e_source_unlock;
+ 	}
+ 
+-	asid = to_kvm_svm(source_kvm)->sev_info.asid;
++	memcpy(&source_sev, &to_kvm_svm(source_kvm)->sev_info,
++	       sizeof(source_sev));
+ 
+ 	/*
+ 	 * The mirror kvm holds an enc_context_owner ref so its asid can't
+@@ -1760,8 +1760,16 @@ int svm_vm_copy_asid_from(struct kvm *kv
+ 	/* Set enc_context_owner and copy its encryption context over */
+ 	mirror_sev = &to_kvm_svm(kvm)->sev_info;
+ 	mirror_sev->enc_context_owner = source_kvm;
+-	mirror_sev->asid = asid;
+ 	mirror_sev->active = true;
++	mirror_sev->asid = source_sev.asid;
++	mirror_sev->fd = source_sev.fd;
++	mirror_sev->es_active = source_sev.es_active;
++	mirror_sev->handle = source_sev.handle;
++	/*
++	 * Do not copy ap_jump_table. Since the mirror does not share the same
++	 * KVM contexts as the original, and they may have different
++	 * memory-views.
++	 */
+ 
+ 	mutex_unlock(&kvm->lock);
+ 	return 0;
 
 
