@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF0B420E31
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC611420C4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhJDNW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:22:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32956 "EHLO mail.kernel.org"
+        id S233825AbhJDNEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236212AbhJDNUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB9361BA9;
-        Mon,  4 Oct 2021 13:08:51 +0000 (UTC)
+        id S233981AbhJDNCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1570161409;
+        Mon,  4 Oct 2021 12:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352931;
-        bh=YVM1qJLkAz9m9lgpqMLFHMDwbkB1ObpkKKX7R05J5t4=;
+        s=korg; t=1633352363;
+        bh=2x/8C7RGicmM784+vbWKsqQcHRNQFf3C1wuczzZL2ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xbjPEWOtzUZ/DiBFphdOtOX+bwz6nLtvnUPpjzhcSylUDY+fygr4TqzAZ2x7ls2dG
-         kecCrJhYzJGV5rRPN4w4kejjwhdHkadTlYU+Ggxn0+PXZzNTQFlziobPAsj2kkDTXZ
-         8Ih8IDza4FP6LyLMvXknZFHtILNghpRq+27dCFZ0=
+        b=TVhF6routJSrf398yRM5pP9kOo4yRUDMPkY6+/8hspilxeehbkqX6wH5wTMKb0Kub
+         0doToYL4vf+EUdeddGtzY9bpyI85Ri/Dm3qmq9EYDlSMxKSGy3kwbKFIkubQ027z/j
+         13RgwcQTPTb/njiVdAuft4durjMnmE9e7t7+kriQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Burkov <boris@bur.io>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 5.10 08/93] fs-verity: fix signed integer overflow with i_size near S64_MAX
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 31/75] qnx4: avoid stringop-overread errors
 Date:   Mon,  4 Oct 2021 14:52:06 +0200
-Message-Id: <20211004125034.863377904@linuxfoundation.org>
+Message-Id: <20211004125032.558921579@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 80f6e3080bfcf865062a926817b3ca6c4a137a57 upstream.
+[ Upstream commit b7213ffa0e585feb1aee3e7173e965e66ee0abaa ]
 
-If the file size is almost S64_MAX, the calculated number of Merkle tree
-levels exceeds FS_VERITY_MAX_LEVELS, causing FS_IOC_ENABLE_VERITY to
-fail.  This is unintentional, since as the comment above the definition
-of FS_VERITY_MAX_LEVELS states, it is enough for over U64_MAX bytes of
-data using SHA-256 and 4K blocks.  (Specifically, 4096*128**8 >= 2**64.)
+The qnx4 directory entries are 64-byte blocks that have different
+contents depending on the a status byte that is in the last byte of the
+block.
 
-The bug is actually that when the number of blocks in the first level is
-calculated from i_size, there is a signed integer overflow due to i_size
-being signed.  Fix this by treating i_size as unsigned.
+In particular, a directory entry can be either a "link info" entry with
+a 48-byte name and pointers to the real inode information, or an "inode
+entry" with a smaller 16-byte name and the full inode information.
 
-This was found by the new test "generic: test fs-verity EFBIG scenarios"
-(https://lkml.kernel.org/r/b1d116cd4d0ea74b9cd86f349c672021e005a75c.1631558495.git.boris@bur.io).
+But the code was written to always just treat the directory name as if
+it was part of that "inode entry", and just extend the name to the
+longer case if the status byte said it was a link entry.
 
-This didn't affect ext4 or f2fs since those have a smaller maximum file
-size, but it did affect btrfs which allows files up to S64_MAX bytes.
+That work just fine and gives the right results, but now that gcc is
+tracking data structure accesses much more, the code can trigger a
+compiler error about using up to 48 bytes (the long name) in a structure
+that only has that shorter name in it:
 
-Reported-by: Boris Burkov <boris@bur.io>
-Fixes: 3fda4c617e84 ("fs-verity: implement FS_IOC_ENABLE_VERITY ioctl")
-Fixes: fd2d1acfcadf ("fs-verity: add the hook for file ->open()")
-Cc: <stable@vger.kernel.org> # v5.4+
-Reviewed-by: Boris Burkov <boris@bur.io>
-Link: https://lore.kernel.org/r/20210916203424.113376-1-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+   fs/qnx4/dir.c: In function ‘qnx4_readdir’:
+   fs/qnx4/dir.c:51:32: error: ‘strnlen’ specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
+      51 |                         size = strnlen(de->di_fname, size);
+         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from fs/qnx4/qnx4.h:3,
+                    from fs/qnx4/dir.c:16:
+   include/uapi/linux/qnx4_fs.h:45:25: note: source object declared here
+      45 |         char            di_fname[QNX4_SHORT_NAME_MAX];
+         |                         ^~~~~~~~
+
+which is because the source code doesn't really make this whole "one of
+two different types" explicit.
+
+Fix this by introducing a very explicit union of the two types, and
+basically explaining to the compiler what is really going on.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/verity/enable.c |    2 +-
- fs/verity/open.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/qnx4/dir.c | 51 ++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 17 deletions(-)
 
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -177,7 +177,7 @@ static int build_merkle_tree(struct file
- 	 * (level 0) and ascending to the root node (level 'num_levels - 1').
- 	 * Then at the end (level 'num_levels'), calculate the root hash.
- 	 */
--	blocks = (inode->i_size + params->block_size - 1) >>
-+	blocks = ((u64)inode->i_size + params->block_size - 1) >>
- 		 params->log_blocksize;
- 	for (level = 0; level <= params->num_levels; level++) {
- 		err = build_merkle_tree_level(filp, level, blocks, params,
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -89,7 +89,7 @@ int fsverity_init_merkle_tree_params(str
- 	 */
+diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
+index a6ee23aadd28..2a66844b7ff8 100644
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -15,13 +15,27 @@
+ #include <linux/buffer_head.h>
+ #include "qnx4.h"
  
- 	/* Compute number of levels and the number of blocks in each level */
--	blocks = (inode->i_size + params->block_size - 1) >> log_blocksize;
-+	blocks = ((u64)inode->i_size + params->block_size - 1) >> log_blocksize;
- 	pr_debug("Data is %lld bytes (%llu blocks)\n", inode->i_size, blocks);
- 	while (blocks > 1) {
- 		if (params->num_levels >= FS_VERITY_MAX_LEVELS) {
++/*
++ * A qnx4 directory entry is an inode entry or link info
++ * depending on the status field in the last byte. The
++ * first byte is where the name start either way, and a
++ * zero means it's empty.
++ */
++union qnx4_directory_entry {
++	struct {
++		char de_name;
++		char de_pad[62];
++		char de_status;
++	};
++	struct qnx4_inode_entry inode;
++	struct qnx4_link_info link;
++};
++
+ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	unsigned int offset;
+ 	struct buffer_head *bh;
+-	struct qnx4_inode_entry *de;
+-	struct qnx4_link_info *le;
+ 	unsigned long blknum;
+ 	int ix, ino;
+ 	int size;
+@@ -38,27 +52,30 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ 		}
+ 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
+ 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
++			union qnx4_directory_entry *de;
++			const char *name;
++
+ 			offset = ix * QNX4_DIR_ENTRY_SIZE;
+-			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
+-			if (!de->di_fname[0])
++			de = (union qnx4_directory_entry *) (bh->b_data + offset);
++
++			if (!de->de_name)
+ 				continue;
+-			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
++			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+-			if (!(de->di_status & QNX4_FILE_LINK))
+-				size = QNX4_SHORT_NAME_MAX;
+-			else
+-				size = QNX4_NAME_MAX;
+-			size = strnlen(de->di_fname, size);
+-			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
+-			if (!(de->di_status & QNX4_FILE_LINK))
++			if (!(de->de_status & QNX4_FILE_LINK)) {
++				size = sizeof(de->inode.di_fname);
++				name = de->inode.di_fname;
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+-			else {
+-				le  = (struct qnx4_link_info*)de;
+-				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
++			} else {
++				size = sizeof(de->link.dl_fname);
++				name = de->link.dl_fname;
++				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+-					le->dl_inode_ndx;
++					de->link.dl_inode_ndx;
+ 			}
+-			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
++			size = strnlen(name, size);
++			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
++			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+ 			}
+-- 
+2.33.0
+
 
 
