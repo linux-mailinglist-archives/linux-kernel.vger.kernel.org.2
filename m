@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE4E4209BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD634209BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhJDLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:10:57 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:56927 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhJDLKz (ORCPT
+        id S232907AbhJDLLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:11:12 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:36887 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229825AbhJDLLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:10:55 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B381D2000F;
-        Mon,  4 Oct 2021 11:09:01 +0000 (UTC)
-Date:   Mon, 4 Oct 2021 13:09:01 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        robh+dt@kernel.org, corbet@lwn.net, linux@armlinux.org.uk,
+        Mon, 4 Oct 2021 07:11:11 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2914C580B12;
+        Mon,  4 Oct 2021 07:09:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 04 Oct 2021 07:09:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=lsyNJGlVJemF3bmuo/TeOw5FPZj
+        guP/ok8eqc5zK9Yo=; b=ofuOrwCeCMDj6KimNylXQnECJY02jw60zFkkIaXOSsy
+        dPiUqztj88DQh2ajS1MNQKHYE3syPMtRQD8M7G49AcuVvSQRN6vCKYY1mhxU4xWi
+        5SCHQ7KfoaanzH/RkiuGNWkn+GuRQFUA7qPEmDzLrV43LNfXp+4/51H5nxxt1XNO
+        2NWBhzWjk3kjsmM5JLETGPXw6fdRRH6DwjpCha5a3LjVnMX7ru8MxqhYS00c3Je7
+        N196yA/GS04yHdEPKPbhQBOkH23Y+CQc+vPmvoNUUnT3cgSrQyV70EZPl+3BzBvw
+        /wCSYe2HXleODrMF6PfbQGF4m8uhwzmRp1igM9fEfCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lsyNJG
+        lVJemF3bmuo/TeOw5FPZjguP/ok8eqc5zK9Yo=; b=KYLSd7g3/l1dZRbE1aWElm
+        0vn0jRtYZvxicTCI5D4h76hj9rMGULr6zZ+Z+AYYGER17DRlzw2XlaP/jyPmQTVL
+        7445ZLPB1rhVSftCUI7PiXu1Ra5w+f+zMpsK4NUUcJUvw1o5z5JNQbyDk2dZu1aH
+        uiaFSgpfxkrACyz/V1AIy3rWMR0OK4zO/H40mFsDg6BSNe8wlBws5PZ4C4SyT+R5
+        CNPG1aB+/yk8Oirfr3ESg6FYvGicHqWD6m47jNSBN64ynzPbe0LJ7xfQCmj+MZtg
+        RrfUntTHgAPuKhdo4AOhiACE56rCgxjsle5CEVcPOaWwqaHnX/76fpVeXk/pSgsQ
+        ==
+X-ME-Sender: <xms:3uBaYZzlVpRHrRAP_sBcRVbvdcdZOPVsTCVWX2ESpmtydyc2VYdqzw>
+    <xme:3uBaYZQHEHcqYa38XI6aoqdHgmd2hyli_-lK7qIxBElGgVJv9SykzS7us6CC6cOMu
+    ioPEiMeM-F_3Q>
+X-ME-Received: <xmr:3uBaYTWKcmSb6WgD2--2wlEZ6Iy94LpmZIRYWNQcZ4JSVQARgjPUPE_s7oHu1GFMPCtuQefZh5KAwiVQthiBYnc29uzp0VE7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelvddgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:3uBaYbjir1C_BhxEaZhK-yOF9msZNlAlX0RN-NTfoxpxv_h2g6W9NA>
+    <xmx:3uBaYbCceC7spgFqXvBFdm7bYtVfUEMTDMpgE4CEMInYPzYLmrDc1Q>
+    <xmx:3uBaYUJzR7mDW4Af8zYMj74TfmEcDPErtZ_WS_txF98i97fDESulrA>
+    <xmx:3-BaYdw2dZX9yntdKNRxt_84XQS9lx80XCc8d_IJHnTtB8xZPm4Nww>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Oct 2021 07:09:17 -0400 (EDT)
+Date:   Mon, 4 Oct 2021 13:09:14 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Nanyong Sun <sunnanyong@huawei.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, suzuki.poulose@arm.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        UNGLinuxDriver@microchip.com, Manohar.Puri@microchip.com
-Subject: Re: [PATCH 0/4] Add lan966 documentation and remove lan966x.c file
-Message-ID: <YVrgzWLReFS5FgWd@piout.net>
-References: <20211004105926.5696-1-kavyasree.kotagiri@microchip.com>
+        stable@vger.kernel.org, james.morse@arm.com,
+        hayashi.kunihiko@socionext.com
+Subject: Re: [PATCH v4.4 v4.9 v4.14] arm64: Extend workaround for erratum
+ 1024718 to all versions of Cortex-A55
+Message-ID: <YVrg2mXyaI/5D6mH@kroah.com>
+References: <20210929075210.819396-1-sunnanyong@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004105926.5696-1-kavyasree.kotagiri@microchip.com>
+In-Reply-To: <20210929075210.819396-1-sunnanyong@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 16:29:22+0530, Kavyasree Kotagiri wrote:
-> This patch series modifies Kconfig entry, adds documentation for
-> lan966 family and removes lan966x setup code file as it is not 
-> required. 
+On Wed, Sep 29, 2021 at 03:52:10PM +0800, Nanyong Sun wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
 > 
-> These patches are generated from at91/linux.git
-> I had agreement with Nicolas Ferre that he will merge these changes
-> into existing patch.
+> commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
 > 
+> The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
+> we apply the work around for r0p0 - r1p0. Unfortunately this
+> won't be fixed for the future revisions for the CPU. Thus
+> extend the work around for all versions of A55, to cover
+> for r2p0 and any future revisions.
+> 
+> Cc: stable@vger.kernel.org #v4.4 v4.9 v4.14
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
+> [will: Update Kconfig help text]
+> Signed-off-by: Will Deacon <will@kernel.org>
+> [Nanyon: adjust for stable version below v4.16, which set TCR_HD earlier
+> in assembly code]
+> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
 
-Seems good to me, for the whole series:
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Now queued up,t hanks.
 
-
-> Kavyasree Kotagiri (4):
->   ARM: at91: Kconfig: use only one name SOC_LAN966 and merge options
->   ARM: at91: Documentation: add lan966 family
->   dt-bindings: arm: at91: Document lan966 pcb8291 and pcb8290 boards
->   ARM: at91: remove lan966x file
-> 
->  Documentation/arm/microchip.rst               |  6 +++++
->  .../devicetree/bindings/arm/atmel-at91.yaml   | 12 +++++++++
->  arch/arm/mach-at91/Kconfig                    | 12 ++++-----
->  arch/arm/mach-at91/Makefile                   |  1 -
->  arch/arm/mach-at91/lan966x.c                  | 25 -------------------
->  5 files changed, 23 insertions(+), 33 deletions(-)
->  delete mode 100644 arch/arm/mach-at91/lan966x.c
-> 
-> -- 
-> 2.17.1
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+greg k-h
