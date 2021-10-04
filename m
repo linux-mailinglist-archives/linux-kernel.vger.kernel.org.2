@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D68420DFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A293421066
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhJDNUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53970 "EHLO mail.kernel.org"
+        id S239074AbhJDNny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235644AbhJDNSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46B5261401;
-        Mon,  4 Oct 2021 13:07:25 +0000 (UTC)
+        id S237975AbhJDNlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:41:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD68163252;
+        Mon,  4 Oct 2021 13:19:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352845;
-        bh=N2rJ718O84x0hLnlf6FP1msC88XuBpJqMlyEEtlJP6Q=;
+        s=korg; t=1633353541;
+        bh=B25abumW32O7lTrmIpy34XjvqDoCNMTEvWZxvNv9EUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/JL1bqUczEzim3ccGce9bKQhZ+qjElixbAiESehQrH2cueoDrMy++u4VU+6x2O/b
-         c34ze+zbLGyvjbQFxCLD04v7QQa1HrIy3qo75dMOal0rgYmTGio0da4EomFfOrglDE
-         LR91hlbwjGBzF4sH6IO4JmHkio97/GnR0C3ANAQM=
+        b=gflZZlTB46VRQx2Z29y4DS1tZ6BQ4cWstaiIV+1FuedYCCi1janK7wwMgPzlh5oUc
+         d/otdJfpNvim0k/JpqDvaiSKAGE12m9mhxSkts6LQ2S0Jb8U+xxMl8bifetAfQLbac
+         Z6gOTNPK0YOToYtvt/YfxI/BbUJn+1ibwD7CkqfY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: [PATCH 5.4 47/56] PCI: Fix pci_host_bridge struct device release/free handling
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 137/172] objtool: Teach get_alt_entry() about more relocation types
 Date:   Mon,  4 Oct 2021 14:53:07 +0200
-Message-Id: <20211004125031.486249023@linuxfoundation.org>
+Message-Id: <20211004125049.395677748@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,161 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 9885440b16b8fc1dd7275800fd28f56a92f60896 upstream.
+[ Upstream commit 24ff652573754fe4c03213ebd26b17e86842feb3 ]
 
-The PCI code has several paths where the struct pci_host_bridge is freed
-directly. This is wrong because it contains a struct device which is
-refcounted and should be freed using put_device(). This can result in
-use-after-free errors. I think this problem has existed since 2012 with
-commit 7b5436635800 ("PCI: add generic device into pci_host_bridge
-struct"). It generally hasn't mattered as most host bridge drivers are
-still built-in and can't unbind.
+Occasionally objtool encounters symbol (as opposed to section)
+relocations in .altinstructions. Typically they are the alternatives
+written by elf_add_alternative() as encountered on a noinstr
+validation run on vmlinux after having already ran objtool on the
+individual .o files.
 
-The problem is a struct device should never be freed directly once
-device_initialize() is called and a ref is held, but that doesn't happen
-until pci_register_host_bridge(). There's then a window between allocating
-the host bridge and pci_register_host_bridge() where kfree should be used.
-This is fragile and requires callers to do the right thing. To fix this, we
-need to split device_register() into device_initialize() and device_add()
-calls, so that the host bridge struct is always freed by using a
-put_device().
+Basically this is the counterpart of commit 44f6a7c0755d ("objtool:
+Fix seg fault with Clang non-section symbols"), because when these new
+assemblers (binutils now also does this) strip the section symbols,
+elf_add_reloc_to_insn() is forced to emit symbol based relocations.
 
-devm_pci_alloc_host_bridge() is using devm_kzalloc() to allocate struct
-pci_host_bridge which will be freed directly. Instead, we can use a custom
-devres action to call put_device().
+As such, teach get_alt_entry() about different relocation types.
 
-Link: https://lore.kernel.org/r/20200513223859.11295-2-robh@kernel.org
-Reported-by: Anders Roxell <anders.roxell@linaro.org>
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-[tyhicks: Minor contextual change in pci_init_host_bridge() due to the
- lack of a native_dpc member in the pci_host_bridge struct. It was added
- in v5.7 with commit ac1c8e35a326 ("PCI/DPC: Add Error Disconnect
- Recover (EDR) support")]
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/YVWUvknIEVNkPvnP@hirez.programming.kicks-ass.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/probe.c  |   36 +++++++++++++++++++-----------------
- drivers/pci/remove.c |    2 +-
- 2 files changed, 20 insertions(+), 18 deletions(-)
+ tools/objtool/special.c | 32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -564,7 +564,7 @@ static struct pci_bus *pci_alloc_bus(str
- 	return b;
- }
- 
--static void devm_pci_release_host_bridge_dev(struct device *dev)
-+static void pci_release_host_bridge_dev(struct device *dev)
+diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+index bc925cf19e2d..f58ecc50fb10 100644
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -58,6 +58,24 @@ void __weak arch_handle_alternative(unsigned short feature, struct special_alt *
  {
- 	struct pci_host_bridge *bridge = to_pci_host_bridge(dev);
- 
-@@ -573,12 +573,7 @@ static void devm_pci_release_host_bridge
- 
- 	pci_free_resource_list(&bridge->windows);
- 	pci_free_resource_list(&bridge->dma_ranges);
--}
--
--static void pci_release_host_bridge_dev(struct device *dev)
--{
--	devm_pci_release_host_bridge_dev(dev);
--	kfree(to_pci_host_bridge(dev));
-+	kfree(bridge);
  }
  
- static void pci_init_host_bridge(struct pci_host_bridge *bridge)
-@@ -597,6 +592,8 @@ static void pci_init_host_bridge(struct
- 	bridge->native_shpc_hotplug = 1;
- 	bridge->native_pme = 1;
- 	bridge->native_ltr = 1;
-+
-+	device_initialize(&bridge->dev);
- }
- 
- struct pci_host_bridge *pci_alloc_host_bridge(size_t priv)
-@@ -614,17 +611,25 @@ struct pci_host_bridge *pci_alloc_host_b
- }
- EXPORT_SYMBOL(pci_alloc_host_bridge);
- 
-+static void devm_pci_alloc_host_bridge_release(void *data)
++static bool reloc2sec_off(struct reloc *reloc, struct section **sec, unsigned long *off)
 +{
-+	pci_free_host_bridge(data);
++	switch (reloc->sym->type) {
++	case STT_FUNC:
++		*sec = reloc->sym->sec;
++		*off = reloc->sym->offset + reloc->addend;
++		return true;
++
++	case STT_SECTION:
++		*sec = reloc->sym->sec;
++		*off = reloc->addend;
++		return true;
++
++	default:
++		return false;
++	}
 +}
 +
- struct pci_host_bridge *devm_pci_alloc_host_bridge(struct device *dev,
- 						   size_t priv)
- {
-+	int ret;
- 	struct pci_host_bridge *bridge;
+ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 			 struct section *sec, int idx,
+ 			 struct special_alt *alt)
+@@ -91,15 +109,12 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 		WARN_FUNC("can't find orig reloc", sec, offset + entry->orig);
+ 		return -1;
+ 	}
+-	if (orig_reloc->sym->type != STT_SECTION) {
+-		WARN_FUNC("don't know how to handle non-section reloc symbol %s",
++	if (!reloc2sec_off(orig_reloc, &alt->orig_sec, &alt->orig_off)) {
++		WARN_FUNC("don't know how to handle reloc symbol type: %s",
+ 			   sec, offset + entry->orig, orig_reloc->sym->name);
+ 		return -1;
+ 	}
  
--	bridge = devm_kzalloc(dev, sizeof(*bridge) + priv, GFP_KERNEL);
-+	bridge = pci_alloc_host_bridge(priv);
- 	if (!bridge)
- 		return NULL;
- 
--	pci_init_host_bridge(bridge);
--	bridge->dev.release = devm_pci_release_host_bridge_dev;
-+	ret = devm_add_action_or_reset(dev, devm_pci_alloc_host_bridge_release,
-+				       bridge);
-+	if (ret)
-+		return NULL;
- 
- 	return bridge;
- }
-@@ -632,10 +637,7 @@ EXPORT_SYMBOL(devm_pci_alloc_host_bridge
- 
- void pci_free_host_bridge(struct pci_host_bridge *bridge)
- {
--	pci_free_resource_list(&bridge->windows);
--	pci_free_resource_list(&bridge->dma_ranges);
+-	alt->orig_sec = orig_reloc->sym->sec;
+-	alt->orig_off = orig_reloc->addend;
 -
--	kfree(bridge);
-+	put_device(&bridge->dev);
- }
- EXPORT_SYMBOL(pci_free_host_bridge);
+ 	if (!entry->group || alt->new_len) {
+ 		new_reloc = find_reloc_by_dest(elf, sec, offset + entry->new);
+ 		if (!new_reloc) {
+@@ -116,8 +131,11 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+ 		if (arch_is_retpoline(new_reloc->sym))
+ 			return 1;
  
-@@ -866,7 +868,7 @@ static int pci_register_host_bridge(stru
- 	if (err)
- 		goto free;
+-		alt->new_sec = new_reloc->sym->sec;
+-		alt->new_off = (unsigned int)new_reloc->addend;
++		if (!reloc2sec_off(new_reloc, &alt->new_sec, &alt->new_off)) {
++			WARN_FUNC("don't know how to handle reloc symbol type: %s",
++				  sec, offset + entry->new, new_reloc->sym->name);
++			return -1;
++		}
  
--	err = device_register(&bridge->dev);
-+	err = device_add(&bridge->dev);
- 	if (err) {
- 		put_device(&bridge->dev);
- 		goto free;
-@@ -933,7 +935,7 @@ static int pci_register_host_bridge(stru
- 
- unregister:
- 	put_device(&bridge->dev);
--	device_unregister(&bridge->dev);
-+	device_del(&bridge->dev);
- 
- free:
- 	kfree(bus);
-@@ -2945,7 +2947,7 @@ struct pci_bus *pci_create_root_bus(stru
- 	return bridge->bus;
- 
- err_out:
--	kfree(bridge);
-+	put_device(&bridge->dev);
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(pci_create_root_bus);
---- a/drivers/pci/remove.c
-+++ b/drivers/pci/remove.c
-@@ -160,6 +160,6 @@ void pci_remove_root_bus(struct pci_bus
- 	host_bridge->bus = NULL;
- 
- 	/* remove the host bridge */
--	device_unregister(&host_bridge->dev);
-+	device_del(&host_bridge->dev);
- }
- EXPORT_SYMBOL_GPL(pci_remove_root_bus);
+ 		/* _ASM_EXTABLE_EX hack */
+ 		if (alt->new_off >= 0x7ffffff0)
+-- 
+2.33.0
+
 
 
