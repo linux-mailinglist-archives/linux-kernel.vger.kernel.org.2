@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE73420D00
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100C6420E2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhJDNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39466 "EHLO mail.kernel.org"
+        id S235029AbhJDNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235596AbhJDNIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6461B4B;
-        Mon,  4 Oct 2021 13:02:32 +0000 (UTC)
+        id S236311AbhJDNUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:20:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C5961BB6;
+        Mon,  4 Oct 2021 13:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352553;
-        bh=7qWnpFmAnzTW4l7vSTzlUKn3nHLDhw+0A705Ollhg0Y=;
+        s=korg; t=1633352921;
+        bh=ZTne2VZLofEonIy43J/+zmPzCS+nJjaStaqiKJNj2kM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kRc5SHrIh78g8gigqdGdoqcrdPsmNAICnOOEmU9ptgiIykQVidhAX3SmNuaI/but1
-         gImX5HHqdMUUKan6bs4J5nwMZM3eUMKswm1uHPOn0JLXqmu2nTynFsPDbVZEc8chN5
-         7tirmMdx93deGsyBRsqsB9Zu3tV7EMU8wtJyMJOw=
+        b=Q0Ra1Ma7RmIVe22YSoQH1QUXn3QBDi865jSxKsJkQz9BiUEaGwdYocJhUiYSmmOFQ
+         tNhrklyVEKH1APRYdXSLWgYzjBstIjoD11I/5gnsCy2F7t0iIRuxK0OKHTdDGNVmL9
+         kuyg+y9wXeERXjiV2iXcUOUT48S+/96gRbo8IajU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 32/95] blktrace: Fix uaf in blk_trace access after removing by sysfs
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 04/93] cpufreq: schedutil: Destroy mutex before kobject_put() frees the memory
 Date:   Mon,  4 Oct 2021 14:52:02 +0200
-Message-Id: <20211004125034.614629743@linuxfoundation.org>
+Message-Id: <20211004125034.727523227@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: James Morse <james.morse@arm.com>
 
-[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
+[ Upstream commit cdef1196608892b9a46caa5f2b64095a7f0be60c ]
 
-There is an use-after-free problem triggered by following process:
+Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
+method to free sugov_tunables") kobject_put() has kfree()d the
+attr_set before gov_attr_set_put() returns.
 
-      P1(sda)				P2(sdb)
-			echo 0 > /sys/block/sdb/trace/enable
-			  blk_trace_remove_queue
-			    synchronize_rcu
-			    blk_trace_free
-			      relay_close
-rcu_read_lock
-__blk_add_trace
-  trace_note_tsk
-  (Iterate running_trace_list)
-			        relay_close_buf
-				  relay_destroy_buf
-				    kfree(buf)
-    trace_note(sdb's bt)
-      relay_reserve
-        buf->offset <- nullptr deference (use-after-free) !!!
-rcu_read_unlock
+kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
+the subsequent mutex_destroy() triggers a use-after-free:
+| BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
+| Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
+|
+| CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
+| Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
+| Platform, BIOS EDK II Jul 30 2018
+| Call trace:
+|  dump_backtrace+0x0/0x380
+|  show_stack+0x1c/0x30
+|  dump_stack_lvl+0x8c/0xb8
+|  print_address_description.constprop.0+0x74/0x2b8
+|  kasan_report+0x1f4/0x210
+|  kasan_check_range+0xfc/0x1a4
+|  __kasan_check_read+0x38/0x60
+|  mutex_is_locked+0x20/0x60
+|  mutex_destroy+0x80/0x100
+|  gov_attr_set_put+0xfc/0x150
+|  sugov_exit+0x78/0x190
+|  cpufreq_offline.isra.0+0x2c0/0x660
+|  cpuhp_cpufreq_offline+0x14/0x24
+|  cpuhp_invoke_callback+0x430/0x6d0
+|  cpuhp_thread_fun+0x1b0/0x624
+|  smpboot_thread_fn+0x5e0/0xa6c
+|  kthread+0x3a0/0x450
+|  ret_from_fork+0x10/0x20
 
-[  502.714379] BUG: kernel NULL pointer dereference, address:
-0000000000000010
-[  502.715260] #PF: supervisor read access in kernel mode
-[  502.715903] #PF: error_code(0x0000) - not-present page
-[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
-[  502.717252] Oops: 0000 [#1] SMP
-[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
-[  502.732872] Call Trace:
-[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
-[  502.733734]  blk_add_trace_rq+0x7b/0xd0
-[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
-[  502.734755]  blk_mq_start_request+0xde/0x1b0
-[  502.735287]  scsi_queue_rq+0x528/0x1140
-...
-[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
-[  502.747501]  sg_ioctl+0x466/0x1100
+Swap the order of the calls.
 
-Reproduce method:
-  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sda, BLKTRACESTART)
-  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
-  ioctl(/dev/sdb, BLKTRACESTART)
-
-  echo 0 > /sys/block/sdb/trace/enable &
-  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
-
-  ioctl$SG_IO(/dev/sda, SG_IO, ...)
-  // Enters trace_note_tsk() after blk_trace_free() returned
-  // Use mdelay in rcu region rather than msleep(which may schedule out)
-
-Remove blk_trace from running_list before calling blk_trace_free() by
-sysfs if blk_trace is at Blktrace_running state.
-
-Fixes: c71a896154119f ("blktrace: add ftrace plugin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
+Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 645048bb1e86..75ea1a5be31a 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1661,6 +1661,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
- 	if (bt == NULL)
- 		return -EINVAL;
+diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
+index 66b05a326910..a6f365b9cc1a 100644
+--- a/drivers/cpufreq/cpufreq_governor_attr_set.c
++++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
+@@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
+ 	if (count)
+ 		return count;
  
-+	if (bt->trace_state == Blktrace_running) {
-+		bt->trace_state = Blktrace_stopped;
-+		spin_lock_irq(&running_trace_lock);
-+		list_del_init(&bt->running_list);
-+		spin_unlock_irq(&running_trace_lock);
-+		relay_flush(bt->rchan);
-+	}
-+
- 	put_probe_ref();
- 	synchronize_rcu();
- 	blk_trace_free(bt);
+-	kobject_put(&attr_set->kobj);
+ 	mutex_destroy(&attr_set->update_lock);
++	kobject_put(&attr_set->kobj);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(gov_attr_set_put);
 -- 
 2.33.0
 
