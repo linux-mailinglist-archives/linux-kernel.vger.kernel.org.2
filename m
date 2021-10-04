@@ -2,175 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A5F4215D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8596E4215D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhJDSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:02:14 -0400
-Received: from mail-mw2nam12on2077.outbound.protection.outlook.com ([40.107.244.77]:32225
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234465AbhJDSCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:02:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S3de+X2UatLAyDIZ8Te8wf265ap34rqCaMuDBx0JwcVgi/sK+6ntgUEVxkvoXdyqKTN5pzJrlPuaNQmXbSbnL8F7dgW5ojoazadCrPq6jRroko1s4QSaTDzS1sUYmEIoeM5LtHOHbXLJh7IYt7zvIrVsINQqESsOkrnXHoYoFb00FWh/MywlU9CjzFf1UWdKiIGId3YkxbP3q71Dff1DxnftSOyu9Fo8AfROj/QiY4K469V0DfqVPtYitrh8Zl1O1EW+Ku05Qx85Jskp80u/ukRBWYD7Ay15VpirTMEIEoetHEZ2hyq4PYACHJ5Ji/Um7VUZ5FjvhiyNjbW/hTAjPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WtBg5p8PComzGqpQl88ODPxI9d4rR8kB9MG5bROgqhQ=;
- b=N5wc85OwfIQO4Uk1Ff4y7tPMlFf1+K6MRg7Uwd0oiVgmB7/Bir4J8sDfl91HagdKzwNJMGhAJ1uryDkr2Mw81TqhqhT1z1Gwmce8GwkksQinbSH8P7unt87v5LIEmM/niLL9S5c70XquDXXAi9VODz7uQ0uwegzbEz5IyY6TFTdHed6nY3RZLKjNny/vLqN/lUqoqMF5goX5VxpWYgyfdKMIDN8oxaa+HcNG45YoNqNlKRbNWkwZeZhfiTWSMbt7A6MGL/kaT/FhrA2wdRNITixn9Di1q68CxCvNP4/Z7S+30LWvg3aL90f0Esmk/gd5xHSwJeKuuZ4pMJeQ4im6iA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WtBg5p8PComzGqpQl88ODPxI9d4rR8kB9MG5bROgqhQ=;
- b=BPIIMsQyTypbF6yX8J/TdSzJdqbkn9NTWeRsZ5YK5wNEye3YczpB+nuF+0Ad5EELRZQ+hZorWccBeXKjYnBXixXkyy/rBKuZmtN1TuE1/J0mJ6/LFFxH65VGhaWqo3zizXvd/r+2DhTX6lJETLbrN01ivkTmJ28fVtC9FfGqBWCFgg27jV+ZVBDJFz3jbJ9c7HP9Mr+TNj9Q4izsEoYCWdiJRFzVFLr3WNnudfY8Tca3b4vDPISV/3nyIDUoLZy/8Kjxlf+KjzYAZ1PvE8vaj0WbmQNzOk1kO4FJNE2/Piz+wwkwdEdADdZZYHGK6ZwkMuShHVi3YMgCQWpKvt/KPQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5094.namprd12.prod.outlook.com (2603:10b6:208:312::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Mon, 4 Oct
- 2021 18:00:21 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 18:00:21 +0000
-Date:   Mon, 4 Oct 2021 15:00:20 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v2 05/13] RDMA/counter: Add an is_disabled
- field in struct rdma_hw_stats
-Message-ID: <20211004180020.GB2515663@nvidia.com>
-References: <cover.1632988543.git.leonro@nvidia.com>
- <1d49884d3e77273fe714cc49d688cc0c1bae2e80.1632988543.git.leonro@nvidia.com>
+        id S236123AbhJDSC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:02:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:44470 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236074AbhJDSC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 14:02:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7EBFD1FB;
+        Mon,  4 Oct 2021 11:00:38 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E454C3F766;
+        Mon,  4 Oct 2021 11:00:36 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 19:00:26 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        etienne.carriere@linaro.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
+ sync_cmds_atomic_replies transport flag
+Message-ID: <20211004180011.GA6376@e120937-lin>
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-12-cristian.marussi@arm.com>
+ <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
+ <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
+ <20210825184915.GI13160@e120937-lin>
+ <CA+-6iNwjQ1SogxdyrjwqEwLosscUyvrioqFKmesifM_nmCpJAw@mail.gmail.com>
+ <20210923150319.GC6510@e120937-lin>
+ <CA+-6iNxNipXk_JVfn_2W3sVhgPMVj87FKwrTDU4c4AkgD5CSpA@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d49884d3e77273fe714cc49d688cc0c1bae2e80.1632988543.git.leonro@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0241.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::6) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0241.namprd13.prod.outlook.com (2603:10b6:208:2ba::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.9 via Frontend Transport; Mon, 4 Oct 2021 18:00:21 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mXSGC-00AYXh-H5; Mon, 04 Oct 2021 15:00:20 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 78f12bc3-09b8-4b59-4e14-08d98760d529
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5094:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5094FFFB38C12305C44AE999C2AE9@BL1PR12MB5094.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Go3w5/4+RLZ015s9MxMJS6JilYTOauuy78OSYWovFYFgzwu9u0psIRWwhYxtMuIpL1XszHKP+vDRQyLokyHRegPYSgP8KQzY+Gxo6lmP1LA7PddukX3Xja2EnAs6T70xedvVhgXn220XZp28kZUqG9fV9zsCI+w12DdNnBl/FPNVN682zzCHcIuRitnx5mRmUzABfzDXalnYuKNxn9bP+f1EiDMoJfkYRzx7agNDjCZfU86qmKn4YDFQ0/r7lVgWPaCDDVxoekJ5HOU9Tw0AnyKDHQZIuUk2rmICdouTji4exYgRKO4e6EslBEj6CNKvOCj9i2UIuGRbsaylLq679x9K5aBNiqNLmlUpGWyNPbnIqEslYBtQkOA1ZtqNXSGaJItPWIZ1eYrMuOyZPhvgY5kiWVLix086S2dfweatTUv2d36Il47Rpt/H39jZXtj50A1lPriHBw8CvmLkUwB6G4K9jdiqqo6KSMjRHU1rEE6Q+mGadF2OQBKtO0dZSLcpgrgVGLM3xJkXUZEC3K7I7Iodf0EjcHJX8Pyq46dVVcdIolQuYoxG5BT6oryrwdIX0Kf/Q/NzqiwD9KpmKVituN6sdPinMCxq8mYisYFMIt9UvohBK90umTFnsS2rtQcMrT2QcRb5kh4Wbd8qsNReNA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(54906003)(5660300002)(4326008)(9786002)(26005)(186003)(33656002)(1076003)(9746002)(316002)(83380400001)(6916009)(2906002)(8936002)(36756003)(8676002)(426003)(508600001)(7416002)(66556008)(66946007)(66476007)(2616005)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TloE0pcXU2wCF4X2LAJefUyady79VrWJfs73GjzU/Z9lX/+Jp0A5qXOCdlWm?=
- =?us-ascii?Q?Dom3pS0IC/Rg9xoSFtntCuaJDhIqLtv+Hwk7NHyl0JsSmnv5hjyJ6+wODrC1?=
- =?us-ascii?Q?SPm1c3r0+DFED+wAOyaC6qfhMazUR4TATkzQyyd/gaFhuiWsbFIGV0VeNE/n?=
- =?us-ascii?Q?hEMsGjrTjBYtRK5xHgZX92zOZI/NMeG0M1Wf8rdNRiUWKJG5Xnih7dJuxoVX?=
- =?us-ascii?Q?QlH4eBGQH/P++1LQwybvtpfc0DT+AbTb/HOEWtcphm+JNNafHXVIaGtPveJO?=
- =?us-ascii?Q?1GyLrp9FpUbd7SxBbObjHe1bD3hdLUlABm+lHGgSuW6tsswvplMWZ04Fft/G?=
- =?us-ascii?Q?ji62kIIut9c6MIZKCA17dFxNioJPpaE7GUw1m6zQUOhftEVNsYDz9pbV1Fqe?=
- =?us-ascii?Q?J9HwoHBNibojjOL6dZfmiFO5K0DoHh2iUuvo9yXdaIrpJdlXlFC6SpkpCtdh?=
- =?us-ascii?Q?ErB9RnNATVN+u+OK2Tfw6rfOPKwgdw2huf1IJBErfpz10mvE9Qu7wzRBRp/i?=
- =?us-ascii?Q?mu0mEznQ4Ah9BH1q/4x6S+JvA0q565qnYH6HwfHQIGBusENHHyVMQaDpdhs1?=
- =?us-ascii?Q?POtRABt2fKTvvTIBldFIJjeJkEdwsyrlBuJJUwInzke9qIQKe8AQ9E56QokS?=
- =?us-ascii?Q?yuV8P3DwNINtAQnIQLeGZJb9X/OIaQ0pIbg7kpqS8KlNjGVgU3eak2kCoSSi?=
- =?us-ascii?Q?F0Nell6fenARAXecFwSzrOPNTK+mqkzveXVmK2BzJsfmwK78q+AmBFiKFZFB?=
- =?us-ascii?Q?o4hKbdT9DySQLsnkClF9qiD9Eh+on7YHqhoaZ1PuLeCdUknzRMjR63hNB79n?=
- =?us-ascii?Q?7Ap+IRu6NglMynjyqOcG4N5sK56aMmyl8booFCRBPThkKpTKgUsjLT4Xzuhf?=
- =?us-ascii?Q?k6SLjH8Vz+NctRxYxsgd8SX7hmU8ghjpL7Q4DWoZuMA2qfYO6x80TTiZYTo/?=
- =?us-ascii?Q?7mPj2ae0MeWtfTLit4MWft6NYtegeQ9eE/4B+P3HEF4pa9dvxQBl5nTWpdc7?=
- =?us-ascii?Q?oFhlIc811EkNlz0IWAlAOVaV+CUp/9MwnrQ53RbpVFoTGeLvPcumlj5jId+m?=
- =?us-ascii?Q?3EDmrc5YyOaJR1vWo+uUicPaCCeV287w79oUoBRio8zydVapD65z2MvtqOxG?=
- =?us-ascii?Q?hn5qFvoW6Uzc2ukx6brZYOWN4rJVKbvR52pNb4HnBRsCBC8E3/oTTQb9APyE?=
- =?us-ascii?Q?eRvXa7ARHVrHl51kbuGj2Mv9Gt2nx3UDELWgLVMGWmyMv8IHKgZCgqZ3IQCp?=
- =?us-ascii?Q?A9rNb+ZJUXWGABYUcu3ysNYt5SPrWUCjFYMgbmG2xqkMBWe2tZD2C2WXrQ4I?=
- =?us-ascii?Q?nnXWTVON2KYoBM2w5FHpq7RTWkqW04wJ1JmnsGomz/1ReA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78f12bc3-09b8-4b59-4e14-08d98760d529
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 18:00:21.5138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LhCID13bcF+9US/nfg83UfJhBMIAR6gu5QMe6djAoGYD3+8jBHvMelDWhIlQmFuI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5094
+In-Reply-To: <CA+-6iNxNipXk_JVfn_2W3sVhgPMVj87FKwrTDU4c4AkgD5CSpA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:02:21AM +0300, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> index 3f6b98a87566..67519730b1ac 100644
-> +++ b/drivers/infiniband/core/nldev.c
-> @@ -968,15 +968,21 @@ static int fill_stat_counter_hwcounters(struct sk_buff *msg,
->  	if (!table_attr)
->  		return -EMSGSIZE;
->  
-> -	for (i = 0; i < st->num_counters; i++)
-> +	mutex_lock(&st->lock);
-> +	for (i = 0; i < st->num_counters; i++) {
-> +		if (test_bit(i, st->is_disabled))
-> +			continue;
->  		if (rdma_nl_stat_hwcounter_entry(msg, st->descs[i].name,
->  						 st->value[i]))
->  			goto err;
-> +	}
-> +	mutex_unlock(&st->lock);
->  
->  	nla_nest_end(msg, table_attr);
->  	return 0;
->  
->  err:
-> +	mutex_unlock(&st->lock);
->  	nla_nest_cancel(msg, table_attr);
->  	return -EMSGSIZE;
->  }
-> @@ -2104,6 +2110,9 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
->  		goto err_stats;
->  	}
->  	for (i = 0; i < num_cnts; i++) {
-> +		if (test_bit(i, stats->is_disabled))
-> +			continue;
-> +
->  		v = stats->value[i] +
->  			rdma_counter_get_hwstat_value(device, port, i);
->  		if (rdma_nl_stat_hwcounter_entry(msg,
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index 71ece4b00234..890593d5100d 100644
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -2987,16 +2987,28 @@ struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
->  	if (!stats)
->  		return NULL;
->  
-> +	stats->is_disabled = kcalloc(BITS_TO_LONGS(num_counters),
-> +				     sizeof(long), GFP_KERNEL);
+On Mon, Oct 04, 2021 at 01:50:04PM -0400, Jim Quinlan wrote:
+> On Thu, Sep 23, 2021 at 11:03 AM Cristian Marussi
+> <cristian.marussi@arm.com> wrote:
+> >
+> > On Thu, Aug 26, 2021 at 02:29:21PM -0400, Jim Quinlan wrote:
+> > > On Wed, Aug 25, 2021 at 2:49 PM Cristian Marussi
+> > > <cristian.marussi@arm.com> wrote:
+> > > >
+> > > > On Wed, Aug 25, 2021 at 01:17:47PM -0400, Jim Quinlan wrote:
+> > > > > On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > >
+> > > >
+> > > > Hi Florian and Jim,
+> > > >
+> > > > > > On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> > > > > > > A flag is added to let the transport signal the core that its handling of
+> > > > > > > synchronous command messages implies that, after .send_message has returned
+> > > > > > > successfully, the requested command can be assumed to be fully and
+> > > > > > > completely executed on SCMI platform side so that any possible response
+> > > > > > > value is already immediately available to be retrieved by a .fetch_reponse:
+> > > > > > > in other words the polling phase can be skipped in such a case and the
+> > > > > > > response values accessed straight away.
+> > > > > > >
+> > > > > > > Note that all of the above applies only when polling mode of operation was
+> > > > > > > selected by the core: if instead a completion IRQ was found to be available
+> > > > > > > the normal response processing path based on completions will still be
+> > > > > > > followed.
+> > > > > >
+> > > > > > This might actually have to be settable on a per-message basis ideally
+> > > > > > since we may be transporting short lived SCMI messages for which the
+> > > > > > completion can be done at SMC time, and long lived SCMI messages (e.g.:
+> > > > > > involving a voltage change) for which we would prefer a completion
+> > > > > > interrupt. Jim, what do you think?
+> > > > > Even if the SCMI main driver could be configured this way in an
+> > > > > elegant manner, I'm not sure that there is a clean way of specifying
+> > > > > this  attribute on a per-message basis.  Certainly we could do this
+> > > > > with our own protocols, but  many of our "long lived" messages are the
+> > > > > Perf protocol's set_level command.  At any rate, let me give it some
+> > > > > thought.
+> > > > >
+> > > >
+> > > > The new flag .sync_cmds_atomic_replies applies only when polling mode
+> > > > has been selected for a specific cmd transaction, which means when no
+> > > > completion IRQ was found available OR if xfer.poll_completion was
+> > > > excplicitly set for a specific command.
+> > > >
+> > > > At the moment in this series (unknown bugs apart :D), if you have a
+> > > > channel configured with a completion IRQ and the .sync_cmds_atomic_replies
+> > > > set for the transport, this latter flag would be generally ignored and a
+> > > > wait_for_completion() will be normally used upon reception of the
+> > > > completionIRQ, UNLESS you specify that one specific command has to be
+> > > > polled using the per message xfer.poll_completion flag: so you should be
+> > > > already able to selectively use a polling which immediately returns after
+> > > > the smc by setting xfer.poll_completion for that specific short lived
+> > > > message (since sync_cmds_atomic_replies is set and applies to pollmode).
+> > > > On the other side any other LONG lived message will be naturally handled
+> > > > via completionIRQ + wait_for_completion. (at least that was the aim..)
+> > > >
+> > > > !!! NOTE that you'll have also to drop
+> > > >
+> > > >  [PATCH v4 10/12] [RFC] firmware: arm_scmi: Make smc transport atomic
+> > > >
+> > > > from this series for the wait_completion to happen as you wish.
+> > >
+> > > Hi Cristian,
+> > >
+> >
+> > Hi Jim,
+> >
+> > > I've tested all commits on our SMC-based system.  I also tested all commits
+> > > minus  "10/12 [RFC] firmware: arm_scmi: Make smc transport atomic".
+> > > This was a basic stress test, not a comprehensive one.  So
+> > >
+> > > Tested-by: Jim Quinlan <james.quinlan@broadcom.com>
+> > >
+> > > Of course I have a strong preference for omitting  "10/12 [RFC]" :-).
+> > > FWIW, if you are not planning on dropping this commit, perhaps there
+> > > could be a transport
+> > > node in the DT, and that could contain the  a bool  property
+> > > "smc-atomic-capable"?
+> > >
+> >
+> > I just posted V5 on this SCMI atomic transport series, where the atomic
+> > mode behaviour of a transport can be selected by a Kconfig which is defined
+> > as default N: so this new series should behave out-of-the-box like with the
+> > previous one when you had dropped as a whole the SMC atomic patch.
+> >
+> > Any feedback welcome.
+> 
+> Hi Christian,
+> 
 
-is_disabled is an unsigned long, not a long
+Hi Jim,
 
-This should just be sizeof(*stats->is_disabled)
+> This is very much appreciated, thanks!    No feedback except
+> 
+> Tested-by: Jim Quinlan <james.quinlan@broadcom.com>
+> 
 
-Jason
+Glad to hear that.
+I'll see if I can gather more feedback from other partners that were
+interested on using the atomic path (which was supposed to be the main
+feature of this series at the end :D...)
+
+Thanks for your testing.
+Cristian
+
+> Thanks again,
+> Jim
+> >
+> >
+> > Thanks,
+> > Cristian
+> >
+
+
