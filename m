@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A704217DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2394217DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhJDTqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:46:48 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40111 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233878AbhJDTqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:46:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="212694534"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="212694534"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 12:44:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="483301456"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga007.fm.intel.com with SMTP; 04 Oct 2021 12:44:51 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 04 Oct 2021 22:44:50 +0300
-Date:   Mon, 4 Oct 2021 22:44:50 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, geert@linux-m68k.org,
-        oliver.sang@intel.com, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, Jerry Zuo <Jerry.Zuo@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Subject: Re: [PATCH] drm/edid: Fix crash with zero/invalid EDID
-Message-ID: <YVtZstInQxXfPmsZ@intel.com>
-References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
+        id S234020AbhJDTrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233941AbhJDTrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:47:02 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0B4C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:45:13 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id e66-20020a9d2ac8000000b0054da8bdf2aeso20837094otb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JKd9BiPYYFvJySR1Ez4/0JZz+DNQpc9/XCSXc+UC0MU=;
+        b=KwIJzNoRNMYqwjX+9BO1ImaUaIgyBy+05c8cnJF7ws+euzNDPJav0cPwz2y4F2gsfY
+         THH7xM/f7l6XakEnsuzOwjW8jC/LiYhPiP/hV8zEvH6bSp08TYGQ6qmJdTPGtoG4C/ye
+         rLxRz0VTgpKw8kdBmdaBsVgoiqlRWb1LeJdsU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JKd9BiPYYFvJySR1Ez4/0JZz+DNQpc9/XCSXc+UC0MU=;
+        b=OWeXgXqPuqEnvUfI8jh3l2Wa1LXdWf5CGYjMkJ6gnYGj30IJROZ3txkoqHvf8f55Sr
+         YhW0yCG1yS6SoERoDw1Y1uAL5U+xN0jj8GCQ69oFX3HuNfmMGou1jRSK1NefxmIlcaQy
+         TeeXHFfMvkJ3f3/HxmpYASqVziymlIt9CRkC+feoFwJkU5CRk7L6p1yv+2tT0MvBqxC6
+         PVmdaKqCwjlPLLZPseFUGsBtBwf+QxcTrnYdTJWQNxdlrDk7LiIBU9r3bnDY2VMCZLWe
+         mjDGXlhrfsHJRP+UgdHquJ1ptA8Rn4phKDg5jIbYCTh1NVdr00P0pWUfYcwjWdwpkLg8
+         PgRA==
+X-Gm-Message-State: AOAM531V7O0hsEnTdnUhB7G9Vv5emQ+QFAYYwCN7kfIlUUaYHq9vxvmO
+        wvFQcGy1q2VaHFgSBQ+zu2o3Cg==
+X-Google-Smtp-Source: ABdhPJwY7YDbgvjq7CE3TiOcmcG4Ofrgy35eV+SLVP66X8DWGdx5t7Efwi9PxW+BzqlkKA1dN53rEQ==
+X-Received: by 2002:a05:6830:89:: with SMTP id a9mr11431919oto.121.1633376712456;
+        Mon, 04 Oct 2021 12:45:12 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id q20sm3015054ooc.29.2021.10.04.12.45.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 12:45:11 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <de79434e-af54-085f-78dc-95bc282f4743@linuxfoundation.org>
+Date:   Mon, 4 Oct 2021 13:45:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
-X-Patchwork-Hint: comment
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:21:27AM -0700, Douglas Anderson wrote:
-> In the commit bac9c2948224 ("drm/edid: Break out reading block 0 of
-> the EDID") I broke out reading the base block of the EDID to its own
-> function. Unfortunately, when I did that I messed up the handling when
-> drm_edid_is_zero() indicated that we had an EDID that was all 0x00 or
-> when we went through 4 loops and didn't get a valid EDID. Specifically
-> I needed to pass the broken EDID to connector_bad_edid() but now I was
-> passing an error-pointer.
+On 10/4/21 6:50 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.10 release.
+> There are 172 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Let's re-jigger things so we can pass the bad EDID in properly.
+> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
+> Anything received after that time might be too late.
 > 
-> Fixes: bac9c2948224 ("drm/edid: Break out reading block 0 of the EDID")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
->  drivers/gpu/drm/drm_edid.c | 27 +++++++++++----------------
->  1 file changed, 11 insertions(+), 16 deletions(-)
+> thanks,
 > 
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 9b19eee0e1b4..9c9463ec5465 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -1911,13 +1911,15 @@ int drm_add_override_edid_modes(struct drm_connector *connector)
->  }
->  EXPORT_SYMBOL(drm_add_override_edid_modes);
->  
-> -static struct edid *drm_do_get_edid_base_block(
-> +static struct edid *drm_do_get_edid_base_block(struct drm_connector *connector,
->  	int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
->  			      size_t len),
-> -	void *data, bool *edid_corrupt, int *null_edid_counter)
-> +	void *data)
->  {
-> -	int i;
-> +	int *null_edid_counter = connector ? &connector->null_edid_counter : NULL;
-> +	bool *edid_corrupt = connector ? &connector->edid_corrupt : NULL;
->  	void *edid;
-> +	int i;
->  
->  	edid = kmalloc(EDID_LENGTH, GFP_KERNEL);
->  	if (edid == NULL)
-> @@ -1941,9 +1943,8 @@ static struct edid *drm_do_get_edid_base_block(
->  	return edid;
->  
->  carp:
-> -	kfree(edid);
-> -	return ERR_PTR(-EINVAL);
-> -
-> +	if (connector)
-> +		connector_bad_edid(connector, edid, 1);
+> greg k-h
+> 
 
-BTW I believe connector_bad_edid() itself is broken since
-commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
-corruption test"). Before we've even allocated the memory for the
-extension blocks that code now assumes edid[0x7e] is to be 100%
-trusted and goes and calculates the checksum on a block based on
-that. So that's likely going to be pointing somewhere beyond the base
-block into memory we've not even allocated. So anyone who wanted
-could craft a bogus EDID and maybe get something interesting to
-happen.
+Compiled and booted on my test system. No dmesg regressions.
 
-Would be good if someone could fix that while at it. Or just revert
-the offending commit if there is no simple solution immediately in
-sight.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-The fact that we're parsing entirely untrustworthy crap in the kernel
-always worries me. Either we need super careful review of all relevant
-code, and/or we need to think about moving the parser out of the kernel.
-I was considering playing around with the usermode helper stuff. IIRC
-there is a way to embed the userspace binary into the kernel and just
-fire it up when needed. But so far it's been the usual -ENOTIME for
-me...
+thanks,
+-- Shuah
 
--- 
-Ville Syrjälä
-Intel
