@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C753420FDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB7F420D46
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237412AbhJDNjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51590 "EHLO mail.kernel.org"
+        id S234955AbhJDNOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237661AbhJDNgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:36:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF2D610E6;
-        Mon,  4 Oct 2021 13:16:30 +0000 (UTC)
+        id S235453AbhJDNLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:11:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88B2261B03;
+        Mon,  4 Oct 2021 13:04:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353391;
-        bh=ObyYr/T3LldMQWcSAsAnkg/1dktYyCdE4mCtWmOzInc=;
+        s=korg; t=1633352661;
+        bh=1ghMdtphKXKe1KwNpRdVfyD26RNIR5e27bdtHbqO+24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wx3EdizOTSJpyPxp53wEopIkxlTvCDX1p3t0qLNLcNmMzXnLnfkO2An/RaVxHqMay
-         GNWZldBhJ/kY2itf5UMvvc/HHe0vFonpxYGJ5qs0ArVumfeFe/LiGYYh9ddvpdX5iw
-         dUCv1GVr0ANOBcLWSQwOlF9eV+A91AcmDn/r7/YE=
+        b=13CrINBWTfLM0iAgUZ27gXGDczGiXcos0h0vhEflfM/XzqgmefqglyaoE0d2Ebue9
+         2nbOTiITNLufWhuoD3yQMap5Bjn61bARU9bC/RUTElSp4VTLsdCK5bZh8PT0XrD+i/
+         8XJPi5MeN7f77eqGZZB8+tCSi/fUAZ9PDu1u2aJU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 111/172] RDMA/hfi1: Fix kernel pointer leak
-Date:   Mon,  4 Oct 2021 14:52:41 +0200
-Message-Id: <20211004125048.569275138@linuxfoundation.org>
+Subject: [PATCH 4.19 72/95] Revert "block, bfq: honor already-setup queue merges"
+Date:   Mon,  4 Oct 2021 14:52:42 +0200
+Message-Id: <20211004125035.932083278@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 7d5cfafe8b4006a75b55c2f1fdfdb363f9a5cc98 ]
+[ Upstream commit ebc69e897e17373fbe1daaff1debaa77583a5284 ]
 
-Pointers should be printed with %p or %px rather than cast to 'unsigned
-long long' and printed with %llx.  Change %llx to %p to print the secured
-pointer.
+This reverts commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b.
 
-Fixes: 042a00f93aad ("IB/{ipoib,hfi1}: Add a timeout handler for rdma_netdev")
-Link: https://lore.kernel.org/r/20210922134857.619602-1-qtxuning1999@sjtu.edu.cn
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+We have had several folks complain that this causes hangs for them, which
+is especially problematic as the commit has also hit stable already.
+
+As no resolution seems to be forthcoming right now, revert the patch.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214503
+Fixes: 2d52c58b9c9b ("block, bfq: honor already-setup queue merges")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/ipoib_tx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ block/bfq-iosched.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 993f9838b6c8..e1fdeadda437 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -873,14 +873,14 @@ void hfi1_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
- 	struct hfi1_ipoib_txq *txq = &priv->txqs[q];
- 	u64 completed = atomic64_read(&txq->complete_txreqs);
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index c8c94e8e0f72..b2bad345c523 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2137,15 +2137,6 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
+ 	 * are likely to increase the throughput.
+ 	 */
+ 	bfqq->new_bfqq = new_bfqq;
+-	/*
+-	 * The above assignment schedules the following redirections:
+-	 * each time some I/O for bfqq arrives, the process that
+-	 * generated that I/O is disassociated from bfqq and
+-	 * associated with new_bfqq. Here we increases new_bfqq->ref
+-	 * in advance, adding the number of processes that are
+-	 * expected to be associated with new_bfqq as they happen to
+-	 * issue I/O.
+-	 */
+ 	new_bfqq->ref += process_refs;
+ 	return new_bfqq;
+ }
+@@ -2205,10 +2196,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ {
+ 	struct bfq_queue *in_service_bfqq, *new_bfqq;
  
--	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d no_desc %d ring_full %d\n",
--		    (unsigned long long)txq, q,
-+	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
-+		    txq, q,
- 		    __netif_subqueue_stopped(dev, txq->q_idx),
- 		    atomic_read(&txq->stops),
- 		    atomic_read(&txq->no_desc),
- 		    atomic_read(&txq->ring_full));
--	dd_dev_info(priv->dd, "sde %llx engine %u\n",
--		    (unsigned long long)txq->sde,
-+	dd_dev_info(priv->dd, "sde %p engine %u\n",
-+		    txq->sde,
- 		    txq->sde ? txq->sde->this_idx : 0);
- 	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
- 	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
+-	/* if a merge has already been setup, then proceed with that first */
+-	if (bfqq->new_bfqq)
+-		return bfqq->new_bfqq;
+-
+ 	/*
+ 	 * Prevent bfqq from being merged if it has been created too
+ 	 * long ago. The idea is that true cooperating processes, and
+@@ -2223,6 +2210,9 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	if (bfq_too_late_for_merging(bfqq))
+ 		return NULL;
+ 
++	if (bfqq->new_bfqq)
++		return bfqq->new_bfqq;
++
+ 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
+ 		return NULL;
+ 
 -- 
 2.33.0
 
