@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DE6420FC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEF9420C11
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238257AbhJDNhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48040 "EHLO mail.kernel.org"
+        id S234410AbhJDNCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237980AbhJDNfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0CB619E5;
-        Mon,  4 Oct 2021 13:16:13 +0000 (UTC)
+        id S234391AbhJDNA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D29B7619F5;
+        Mon,  4 Oct 2021 12:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353373;
-        bh=Y3zaoMuK9r5z71WMDMDg7pYrYJIYFgv8tbIWFfgPS7M=;
+        s=korg; t=1633352294;
+        bh=LgAT6PjosEgZCqCWEyLI6SLSxL0C0ouyJ+3XTClo3yI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a6tw3f3NAERHIokrWocDpI0FZmkxoAfamEe1MCpw+b90gVqUZ/ZzJWxaqLf1Qw5ry
-         1BBKbfzeA7urqND8Rn8FNmQsLINL/U7h0Edn/9G9pvEtBArnX0DgqHhpdjOew9z3dH
-         +eqFsdVxVFIhREoLfVjanGI9iOHYQN/twVQy2Wqs=
+        b=yS+IzbK5cFtbvubZdyarYbBjvtPGm8X8iX1a/YB8H+BNiHB8z7z5bTUth1dvUPhO7
+         oll7vEBprsaIe3K+taULgjZCGBtX8Fm0xG13JdZM23xri4/sHXvikqFvxz6l5F6h11
+         N+bPsli6zDv+lA/ttmu4+AsVOHgW9j1rh2EIqqLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
-        Michael Mason <michael.w.mason@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 104/172] drm/i915/request: fix early tracepoints
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.9 50/57] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
 Date:   Mon,  4 Oct 2021 14:52:34 +0200
-Message-Id: <20211004125048.339352055@linuxfoundation.org>
+Message-Id: <20211004125030.532339074@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,122 +41,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Auld <matthew.auld@intel.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-[ Upstream commit c83ff0186401169eb27ce5057d820b7a863455c3 ]
+commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
 
-Currently we blow up in trace_dma_fence_init, when calling into
-get_driver_name or get_timeline_name, since both the engine and context
-might be NULL(or contain some garbage address) in the case of newly
-allocated slab objects via the request ctor. Note that we also use
-SLAB_TYPESAFE_BY_RCU here, which allows requests to be immediately
-freed, but delay freeing the underlying page by an RCU grace period.
-With this scheme requests can be re-allocated, at the same time as they
-are also being read by some lockless RCU lookup mechanism.
+Will be used in the following patch. No functional change.
 
-In the ctor case, which is only called for new slab objects(i.e allocate
-new page and call the ctor for each object) it's safe to reset the
-context/engine prior to calling into dma_fence_init, since we can be
-certain that no one is doing an RCU lookup which might depend on peeking
-at the engine/context, like in active_engine(), since the object can't
-yet be externally visible.
-
-In the recycled case(which might also be externally visible) the request
-refcount always transitions from 0->1 after we set the context/engine
-etc, which should ensure it's valid to dereference the engine for
-example, when doing an RCU list-walk, so long as we can also increment
-the refcount first. If the refcount is already zero, then the request is
-considered complete/released.  If it's non-zero, then the request might
-be in the process of being re-allocated, or potentially still in flight,
-however after successfully incrementing the refcount, it's possible to
-carefully inspect the request state, to determine if the request is
-still what we were looking for. Note that all externally visible
-requests returned to the cache must have zero refcount.
-
-One possible fix then is to move dma_fence_init out from the request
-ctor. Originally this was how it was done, but it was moved in:
-
-commit 855e39e65cfc33a73724f1cc644ffc5754864a20
-Author: Chris Wilson <chris@chris-wilson.co.uk>
-Date:   Mon Feb 3 09:41:48 2020 +0000
-
-    drm/i915: Initialise basic fence before acquiring seqno
-
-where it looks like intel_timeline_get_seqno() relied on some of the
-rq->fence state, but that is no longer the case since:
-
-commit 12ca695d2c1ed26b2dcbb528b42813bd0f216cfc
-Author: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Date:   Tue Mar 23 16:49:50 2021 +0100
-
-    drm/i915: Do not share hwsp across contexts any more, v8.
-
-intel_timeline_get_seqno() could also be cleaned up slightly by dropping
-the request argument.
-
-Moving dma_fence_init back out of the ctor, should ensure we have enough
-of the request initialised in case of trace_dma_fence_init.
-Functionally this should be the same, and is effectively what we were
-already open coding before, except now we also assign the fence->lock
-and fence->ops, but since these are invariant for recycled
-requests(which might be externally visible), and will therefore already
-hold the same value, it shouldn't matter.
-
-An alternative fix, since we don't yet have a fully initialised request
-when in the ctor, is just setting the context/engine as NULL, but this
-does require adding some extra handling in get_driver_name etc.
-
-v2(Daniel):
-  - Try to make the commit message less confusing
-
-Fixes: 855e39e65cfc ("drm/i915: Initialise basic fence before acquiring seqno")
-Signed-off-by: Matthew Auld <matthew.auld@intel.com>
-Cc: Michael Mason <michael.w.mason@intel.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210921134202.3803151-1-matthew.auld@intel.com
-(cherry picked from commit be988eaee1cb208c4445db46bc3ceaf75f586f0b)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/i915_request.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ arch/arm/include/asm/insn.h |    8 ++++----
+ arch/arm/kernel/ftrace.c    |    2 +-
+ arch/arm/kernel/insn.c      |   19 ++++++++++---------
+ 3 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index 37aef1308573..7db972fa7024 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -914,8 +914,6 @@ static void __i915_request_ctor(void *arg)
- 	i915_sw_fence_init(&rq->submit, submit_notify);
- 	i915_sw_fence_init(&rq->semaphore, semaphore_notify);
+--- a/arch/arm/include/asm/insn.h
++++ b/arch/arm/include/asm/insn.h
+@@ -12,18 +12,18 @@ arm_gen_nop(void)
+ }
  
--	dma_fence_init(&rq->fence, &i915_fence_ops, &rq->lock, 0, 0);
--
- 	rq->capture_list = NULL;
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
  
- 	init_llist_head(&rq->execute_cb);
-@@ -978,17 +976,12 @@ __i915_request_create(struct intel_context *ce, gfp_t gfp)
- 	rq->ring = ce->ring;
- 	rq->execution_mask = ce->engine->mask;
+ static inline unsigned long
+ arm_gen_branch(unsigned long pc, unsigned long addr)
+ {
+-	return __arm_gen_branch(pc, addr, false);
++	return __arm_gen_branch(pc, addr, false, true);
+ }
  
--	kref_init(&rq->fence.refcount);
--	rq->fence.flags = 0;
--	rq->fence.error = 0;
--	INIT_LIST_HEAD(&rq->fence.cb_list);
--
- 	ret = intel_timeline_get_seqno(tl, rq, &seqno);
- 	if (ret)
- 		goto err_free;
+ static inline unsigned long
+-arm_gen_branch_link(unsigned long pc, unsigned long addr)
++arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
+ {
+-	return __arm_gen_branch(pc, addr, true);
++	return __arm_gen_branch(pc, addr, true, warn);
+ }
  
--	rq->fence.context = tl->fence_context;
--	rq->fence.seqno = seqno;
-+	dma_fence_init(&rq->fence, &i915_fence_ops, &rq->lock,
-+		       tl->fence_context, seqno);
+ #endif
+--- a/arch/arm/kernel/ftrace.c
++++ b/arch/arm/kernel/ftrace.c
+@@ -97,7 +97,7 @@ int ftrace_arch_code_modify_post_process
  
- 	RCU_INIT_POINTER(rq->timeline, tl);
- 	rq->hwsp_seqno = tl->hwsp_seqno;
--- 
-2.33.0
-
+ static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+ {
+-	return arm_gen_branch_link(pc, addr);
++	return arm_gen_branch_link(pc, addr, true);
+ }
+ 
+ static int ftrace_modify_code(unsigned long pc, unsigned long old,
+--- a/arch/arm/kernel/insn.c
++++ b/arch/arm/kernel/insn.c
+@@ -2,8 +2,9 @@
+ #include <linux/kernel.h>
+ #include <asm/opcodes.h>
+ 
+-static unsigned long
+-__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
++					     unsigned long addr, bool link,
++					     bool warn)
+ {
+ 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
+ 	unsigned long first, second;
+@@ -11,7 +12,7 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 
+ 	offset = (long)addr - (long)(pc + 4);
+ 	if (offset < -16777216 || offset > 16777214) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -32,8 +33,8 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 	return __opcode_thumb32_compose(first, second);
+ }
+ 
+-static unsigned long
+-__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
++					  bool link, bool warn)
+ {
+ 	unsigned long opcode = 0xea000000;
+ 	long offset;
+@@ -43,7 +44,7 @@ __arm_gen_branch_arm(unsigned long pc, u
+ 
+ 	offset = (long)addr - (long)(pc + 8);
+ 	if (unlikely(offset < -33554432 || offset > 33554428)) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -53,10 +54,10 @@ __arm_gen_branch_arm(unsigned long pc, u
+ }
+ 
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
+ {
+ 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
+-		return __arm_gen_branch_thumb2(pc, addr, link);
++		return __arm_gen_branch_thumb2(pc, addr, link, warn);
+ 	else
+-		return __arm_gen_branch_arm(pc, addr, link);
++		return __arm_gen_branch_arm(pc, addr, link, warn);
+ }
 
 
