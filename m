@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E6B420BDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A20420B97
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhJDNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:00:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
+        id S233602AbhJDM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhJDM7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A206139F;
-        Mon,  4 Oct 2021 12:57:13 +0000 (UTC)
+        id S233977AbhJDM5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE9E613C8;
+        Mon,  4 Oct 2021 12:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352234;
-        bh=N/YiuC8gDkYC3NlJtoU7QQS35Ya/8ant7MnCQhzfkfY=;
+        s=korg; t=1633352143;
+        bh=gHFMhGAaO10T6p9SaF6TCYykqJsnVasi791xcp+XVF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VlV8YMDhgUCfbIx0jYclY1fMi272PU8U+W8O7qplUDTxbOWa18pqmjVtmzEMrpsde
-         U3GUhwtaBdjfCN1EhgxnIq9i0HktyvtPsyHvaiZc4SeGBzf5ub7WIsycsvnCv0Elap
-         SXSJx3w227r1fcY9hT1jQ0kclm/aenpa10Xu0gZk=
+        b=Njbn300XQ68VM+2JJIq5SjG/V+WoZn9Wh7JAvX/reCxAuenJaz/NmXLyMJ6XGZ+UH
+         jkrNcKnCnmCTLjh3cmwpV9WBm5bxGdr3cVICq85iKyl69Xh/YHQ9uv+8jjFbUpUBdO
+         9nGSl5zf8vpAP7CTNBvtvdkfwmyUAXGTtxqiv0Ow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 39/57] e100: fix length calculation in e100_get_regs_len
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 32/41] ipack: ipoctal: fix tty-registration error handling
 Date:   Mon,  4 Oct 2021 14:52:23 +0200
-Message-Id: <20211004125030.173308166@linuxfoundation.org>
+Message-Id: <20211004125027.601017563@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 4329c8dc110b25d5f04ed20c6821bb60deff279f ]
+commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
 
-commit abf9b902059f ("e100: cleanup unneeded math") tried to simplify
-e100_get_regs_len and remove a double 'divide and then multiply'
-calculation that the e100_reg_regs_len function did.
+Registration of the ipoctal tty devices is unlikely to fail, but if it
+ever does, make sure not to deregister a never registered tty device
+(and dereference a NULL pointer) when the driver is later unbound.
 
-This change broke the size calculation entirely as it failed to account
-for the fact that the numbered registers are actually 4 bytes wide and
-not 1 byte. This resulted in a significant under allocation of the
-register buffer used by e100_get_regs.
-
-Fix this by properly multiplying the register count by u32 first before
-adding the size of the dump buffer.
-
-Fixes: abf9b902059f ("e100: cleanup unneeded math")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
+Cc: stable@vger.kernel.org      # 3.7
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/e100.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/ipack/devices/ipoctal.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 9035cb5fc70d..abb65ed9492b 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2466,7 +2466,11 @@ static void e100_get_drvinfo(struct net_device *netdev,
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
--	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
-+
-+	/* We know the number of registers, and the size of the dump buffer.
-+	 * Calculate the total size in bytes.
-+	 */
-+	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
- }
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -38,6 +38,7 @@ struct ipoctal_channel {
+ 	unsigned int			pointer_read;
+ 	unsigned int			pointer_write;
+ 	struct tty_port			tty_port;
++	bool				tty_registered;
+ 	union scc2698_channel __iomem	*regs;
+ 	union scc2698_block __iomem	*block_regs;
+ 	unsigned int			board_id;
+@@ -402,9 +403,11 @@ static int ipoctal_inst_slot(struct ipoc
+ 							i, NULL, channel, NULL);
+ 		if (IS_ERR(tty_dev)) {
+ 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
++			tty_port_free_xmit_buf(&channel->tty_port);
+ 			tty_port_destroy(&channel->tty_port);
+ 			continue;
+ 		}
++		channel->tty_registered = true;
+ 	}
  
- static void e100_get_regs(struct net_device *netdev,
--- 
-2.33.0
-
+ 	/*
+@@ -706,6 +709,10 @@ static void __ipoctal_remove(struct ipoc
+ 
+ 	for (i = 0; i < NR_CHANNELS; i++) {
+ 		struct ipoctal_channel *channel = &ipoctal->channel[i];
++
++		if (!channel->tty_registered)
++			continue;
++
+ 		tty_unregister_device(ipoctal->tty_drv, i);
+ 		tty_port_free_xmit_buf(&channel->tty_port);
+ 		tty_port_destroy(&channel->tty_port);
 
 
