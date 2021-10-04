@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFDE420E23
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA96420D13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhJDNVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55160 "EHLO mail.kernel.org"
+        id S235787AbhJDNLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236126AbhJDNTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:19:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E83B161507;
-        Mon,  4 Oct 2021 13:08:32 +0000 (UTC)
+        id S234842AbhJDNJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:09:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06B9F61A6E;
+        Mon,  4 Oct 2021 13:03:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352913;
-        bh=kEcqwp9mXAMYwj8cNUa25CVhfk4qG4FSVdvEhS3bt1Y=;
+        s=korg; t=1633352591;
+        bh=ywR63XgBpffWVRi38eU7M2igpbFWInfgO2qlcRgWcJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BmG+cHyyJQuqwIdiCnSOQjzQF/i06uFXxFP1DdLj9b1LC2oTlywXOVAqlx5LtBU0F
-         crLW51yhZEWl/0GINYJUlSGVPyZ8tfjaAB3c0NcebA3prY+aaiC7DqtATgoHALU7h1
-         QsuDmZjRhfNOky8hXhFFLQUM5+UjJNviAlI6kqKg=
+        b=j0rTVcIc6kzTGby5jjIDH9V/icAnl73aGQbVVYLOPi2vNK6+q3O/h5Al/2eFK7ICM
+         Og9tv+ta/qmcIL1lLgUNDTHBYldYvl9ecvqF7U9rRpId6/3zK986FHMQM13AwFem2k
+         YPB3bzW25lh7qcooC7lFRQ31DBXwACL8no02Z8ew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 17/93] KVM: x86: Fix stack-out-of-bounds memory access from ioapic_write_indirect()
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 45/95] net: 6pack: Fix tx timeout and slot time
 Date:   Mon,  4 Oct 2021 14:52:15 +0200
-Message-Id: <20211004125035.147989748@linuxfoundation.org>
+Message-Id: <20211004125035.053484120@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,91 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 2f9b68f57c6278c322793a06063181deded0ad69 upstream.
+[ Upstream commit 3c0d2a46c0141913dc6fd126c57d0615677d946e ]
 
-KASAN reports the following issue:
+tx timeout and slot time are currently specified in units of HZ.  On
+Alpha, HZ is defined as 1024.  When building alpha:allmodconfig, this
+results in the following error message.
 
- BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
- Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
+  drivers/net/hamradio/6pack.c: In function 'sixpack_open':
+  drivers/net/hamradio/6pack.c:71:41: error:
+  	unsigned conversion from 'int' to 'unsigned char'
+  	changes value from '256' to '0'
 
- CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
- Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
- Call Trace:
-  dump_stack+0xa5/0xe6
-  print_address_description.constprop.0+0x18/0x130
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  __kasan_report.cold+0x7f/0x114
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kasan_report+0x38/0x50
-  kasan_check_range+0xf5/0x1d0
-  kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
-  ? kvm_arch_exit+0x110/0x110 [kvm]
-  ? sched_clock+0x5/0x10
-  ioapic_write_indirect+0x59f/0x9e0 [kvm]
-  ? static_obj+0xc0/0xc0
-  ? __lock_acquired+0x1d2/0x8c0
-  ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
+In the 6PACK protocol, tx timeout is specified in units of 10 ms and
+transmitted over the wire:
 
-The problem appears to be that 'vcpu_bitmap' is allocated as a single long
-on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
-the lower 16 bits of it with bitmap_zero() for no particular reason (my
-guess would be that 'bitmap' and 'vcpu_bitmap' variables in
-kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
-16-bit long, the later should accommodate all possible vCPUs).
+    https://www.linux-ax25.org/wiki/6PACK
 
-Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
-Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
-Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210827092516.1027264-7-vkuznets@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Defining a value dependent on HZ doesn't really make sense, and
+presumably comes from the (very historical) situation where HZ was
+originally 100.
+
+Note that the SIXP_SLOTTIME use explicitly is about 10ms granularity:
+
+        mod_timer(&sp->tx_t, jiffies + ((when + 1) * HZ) / 100);
+
+and the SIXP_TXDELAY walue is sent as a byte over the wire.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/ioapic.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/hamradio/6pack.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -319,8 +319,8 @@ static void ioapic_write_indirect(struct
- 	unsigned index;
- 	bool mask_before, mask_after;
- 	union kvm_ioapic_redirect_entry *e;
--	unsigned long vcpu_bitmap;
- 	int old_remote_irr, old_delivery_status, old_dest_id, old_dest_mode;
-+	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index 1001e9a2edd4..af776d7be780 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -68,9 +68,9 @@
+ #define SIXP_DAMA_OFF		0
  
- 	switch (ioapic->ioregsel) {
- 	case IOAPIC_REG_VERSION:
-@@ -384,9 +384,9 @@ static void ioapic_write_indirect(struct
- 			irq.shorthand = APIC_DEST_NOSHORT;
- 			irq.dest_id = e->fields.dest_id;
- 			irq.msi_redir_hint = false;
--			bitmap_zero(&vcpu_bitmap, 16);
-+			bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
- 			kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--						 &vcpu_bitmap);
-+						 vcpu_bitmap);
- 			if (old_dest_mode != e->fields.dest_mode ||
- 			    old_dest_id != e->fields.dest_id) {
- 				/*
-@@ -399,10 +399,10 @@ static void ioapic_write_indirect(struct
- 				    kvm_lapic_irq_dest_mode(
- 					!!e->fields.dest_mode);
- 				kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--							 &vcpu_bitmap);
-+							 vcpu_bitmap);
- 			}
- 			kvm_make_scan_ioapic_request_mask(ioapic->kvm,
--							  &vcpu_bitmap);
-+							  vcpu_bitmap);
- 		} else {
- 			kvm_make_scan_ioapic_request(ioapic->kvm);
- 		}
+ /* default level 2 parameters */
+-#define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
++#define SIXP_TXDELAY			25	/* 250 ms */
+ #define SIXP_PERSIST			50	/* in 256ths */
+-#define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
++#define SIXP_SLOTTIME			10	/* 100 ms */
+ #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
+ #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
+ 
+-- 
+2.33.0
+
 
 
