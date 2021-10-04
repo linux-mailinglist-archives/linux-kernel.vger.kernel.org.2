@@ -2,198 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14414209CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506B14209D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhJDLRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:17:34 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:27097 "EHLO mx1.tq-group.com"
+        id S232879AbhJDLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:18:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58085 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232458AbhJDLRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:17:30 -0400
-X-IronPort-AV: E=Sophos;i="5.85,345,1624312800"; 
-   d="scan'208";a="19847139"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 04 Oct 2021 13:15:38 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 04 Oct 2021 13:15:38 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 04 Oct 2021 13:15:38 +0200
-X-IronPort-AV: E=Sophos;i="5.85,345,1624312800"; 
-   d="scan'208";a="19847138"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 04 Oct 2021 13:15:38 +0200
-Received: from steina-w.tq-net.de (unknown [10.123.49.12])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S230260AbhJDLSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 07:18:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633346206; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=dFJdz5wggW2QI/TWt9kk369Y/MZGXDdLuBGlDz/FLD0=; b=lGPvYvF316lDjRg5J35Q8tzjEbruYOmIOz/u6d4GhBIXPe3JkyBmuk6FLMpZ9/4Nk70efyaL
+ cdGpvy5u6m/AnZeBEOx+5drhTBgEGBDoHXuy//gVo9SaGPbUv7J/5T0vlcVXajkU2TE1HR4j
+ 0IVFOdP0rlMK+zNhauksCtTsfqo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 615ae29d8578ef11ed7d557d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 11:16:45
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F0EDBC43619; Mon,  4 Oct 2021 11:16:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 84C30280075;
-        Mon,  4 Oct 2021 13:15:38 +0200 (CEST)
-From:   Alexander Stein <Alexander.Stein@tq-systems.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Michael Walle <michael@walle.cc>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mtd: spi-nor: micron-st: Add support for output-driver-strength
-Date:   Mon,  4 Oct 2021 13:15:29 +0200
-Message-Id: <20211004111529.211089-2-Alexander.Stein@tq-systems.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211004111529.211089-1-Alexander.Stein@tq-systems.com>
-References: <20211004111529.211089-1-Alexander.Stein@tq-systems.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FE13C4338F;
+        Mon,  4 Oct 2021 11:16:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8FE13C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <greg@kroah.com>
+Cc:     linux-kernel@vger.kernel.org, ckadabi@codeaurora.org,
+        tsoni@codeaurora.org, bryanh@codeaurora.org,
+        psodagud@codeaurora.org, satyap@codeaurora.org,
+        pheragu@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Subject: [PATCH V0 0/7] Add Embedded USB Debugger (EUD) driver
+Date:   Mon,  4 Oct 2021 16:46:18 +0530
+Message-Id: <cover.1633343547.git.schowdhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+This is a series of patches that implements a driver for the control
+peripheral, EUD (Embedded USB Debugger). The EUD is a mini-USB hub
+implemented on chip to support the USB-based debug and trace capabilities.
+Apart from debug capabilities, EUD has a control peripheral. Control
+Peripheral is on when EUD is on and gets signals like USB attach, pet
+EUD etc.EUD driver listens to events like USB attach or detach and then
+informs the USB about these events via ROLE-SWITCH. At regular intervals,
+the EUD driver receives an interrupt to pet the driver indicating that
+the software is functional.
 
-Micron flashes support this by the Bits [2:0] in the Enhanced Volatile
-Configuration Register.
-Checked datasheets:
-- n25q_128mb_3v_65nm.pdf
-- mt25t-qljs-L512-xBA-xxT.pdf
+Souradeep Chowdhury (7):
+  dt-bindings: connector: Add property for eud type c connector
+  dt-bindings: usb: dwc3: Update dwc3 properties for EUD connector
+  usb: dwc3: drd: Register the eud connector child node for dwc3
+  usb: common: eud:Added the driver support for Embedded USB
+    Debugger(EUD)
+  arm64: dts: qcom: sc7280: Add EUD connector node
+  arm64: dts: qcom: sc7280: Set the default dr_mode for usb2
+  MAINTAINERS: Add maintainer entry for EUD
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
- drivers/mtd/spi-nor/micron-st.c | 109 ++++++++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
+ Documentation/ABI/testing/sysfs-driver-eud         |   7 +
+ .../bindings/connector/usb-connector.yaml          |  15 ++
+ .../devicetree/bindings/usb/snps,dwc3.yaml         |  15 ++
+ MAINTAINERS                                        |   7 +
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |   4 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  12 +
+ drivers/usb/common/Kconfig                         |   9 +
+ drivers/usb/common/Makefile                        |   1 +
+ drivers/usb/common/qcom_eud.c                      | 256 +++++++++++++++++++++
+ drivers/usb/dwc3/drd.c                             |  25 ++
+ 10 files changed, 351 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-eud
+ create mode 100644 drivers/usb/common/qcom_eud.c
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index c224e59820a1..5d5e7fbc24a2 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -16,6 +16,11 @@
- #define SPINOR_MT_OCT_DTR	0xe7	/* Enable Octal DTR. */
- #define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
- 
-+struct micron_drive_strength {
-+	u32 ohms;
-+	u8 val;
-+};
-+
- static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
- {
- 	struct spi_mem_op op;
-@@ -255,8 +260,112 @@ static void micron_st_default_init(struct spi_nor *nor)
- 	nor->params->set_4byte_addr_mode = st_micron_set_4byte_addr_mode;
- }
- 
-+
-+/*
-+ * Read Micron enhanced volatile configuration register
-+ * Return negative if error occurred or configuration register value
-+ */
-+static int micron_read_evcr(struct spi_nor *nor)
-+{
-+	int ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_EVCR, 1),
-+				   SPI_MEM_OP_NO_ADDR,
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RD_EVCR, nor->bouncebuf, 1);
-+	}
-+
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return ret;
-+	}
-+
-+	return nor->bouncebuf[0];
-+}
-+
-+/*
-+ * Write Micron enhanced volatile configuration register
-+ * Return negative if error occurred or configuration register value
-+ */
-+static int micron_write_evcr(struct spi_nor *nor, u8 evcr)
-+{
-+	nor->bouncebuf[0] = evcr;
-+
-+	spi_nor_write_enable(nor);
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WD_EVCR, 1),
-+				   SPI_MEM_OP_NO_ADDR,
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
-+
-+		return spi_mem_exec_op(nor->spimem, &op);
-+	}
-+
-+	return nor->controller_ops->write_reg(nor, SPINOR_OP_WD_EVCR, nor->bouncebuf, 1);
-+}
-+
-+/*
-+ * Supported values from Enahanced Volatile COnfiguration Register (Bits 2:0)
-+ */
-+static const struct micron_drive_strength drive_strength_data[] = {
-+	{ .ohms = 90, .val = 1 },
-+	{ .ohms = 45, .val = 3 },
-+	{ .ohms = 20, .val = 5 },
-+	{ .ohms = 30, .val = 7 },
-+};
-+
-+static struct micron_drive_strength const *micron_st_find_drive_strength_entry(u32 ohms)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(drive_strength_data); i++) {
-+		if (ohms == drive_strength_data[i].ohms)
-+			return &drive_strength_data[i];
-+	}
-+	return NULL;
-+}
-+
-+static void micron_st_post_sfdp(struct spi_nor *nor)
-+{
-+	struct device_node *np = spi_nor_get_flash_node(nor);
-+	u32 ohms;
-+
-+	if (!np)
-+		return;
-+
-+	if (!of_property_read_u32(np, "output-driver-strength", &ohms)) {
-+		struct micron_drive_strength const *entry =
-+			micron_st_find_drive_strength_entry(ohms);
-+
-+		if (entry) {
-+			int evcrr = micron_read_evcr(nor);
-+
-+			if (evcrr >= 0) {
-+				u8 evcr = (u8)(evcrr & 0xf8) | entry->val;
-+
-+				micron_write_evcr(nor, evcr);
-+				dev_dbg(nor->dev, "%s: EVCR 0x%x\n", __func__,
-+					(u32)micron_read_evcr(nor));
-+			}
-+		} else {
-+			dev_warn(nor->dev,
-+				"Invalid output-driver-strength property specified: %u",
-+				ohms);
-+		}
-+	}
-+}
-+
- static const struct spi_nor_fixups micron_st_fixups = {
- 	.default_init = micron_st_default_init,
-+	.post_sfdp = micron_st_post_sfdp,
- };
- 
- const struct spi_nor_manufacturer spi_nor_micron = {
--- 
-2.25.1
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
