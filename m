@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1EB420C13
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C68420C86
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhJDNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
+        id S234936AbhJDNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234183AbhJDNA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:00:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A105619E9;
-        Mon,  4 Oct 2021 12:58:11 +0000 (UTC)
+        id S234958AbhJDNEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:04:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 332E461B2B;
+        Mon,  4 Oct 2021 13:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352291;
-        bh=p9uIb9QCVQcCBcNyFClCCJZkqdtnv8Dp7Lhw/LDdsZo=;
+        s=korg; t=1633352428;
+        bh=ZMFTrj+G1zzL9POirBeOmm9akaZ2DUSRVUlKBDsS6DA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZ0lJzmXQtTaaaq+mwJqb2QRS2mIri74TWEnscmv5yEyJi6KeP3Nbbjr+xWURYCBv
-         qGQBf9/qtWxakxwIFDzV4xC91n9JwgNb+wTdFNHltwwW9CP7Ox3X9Mu5Qb3I7GCqV7
-         HkZWI++8oP8al3YTm/3o6vGSpeAfU+GZAaWlpFXc=
+        b=1tEcA2A9AbBQeVGyuedrx3G1OO/5WSUuHCJFPz5IULccLQ+2Pbqm89VlcRJWXTQBe
+         hqtwpS3zzZAb0efXz0YdNENV2O6+tokoDxgLll4FJw9Dzn79JVVsvE/OpcbuPtxYCF
+         zNL4GVXDLAu5MEowMqmIL/dcXvRLI+r1IMDg2Gco=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.9 49/57] ARM: 9077/1: PLT: Move struct plt_entries definition to header
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 58/75] ipack: ipoctal: fix missing allocation-failure check
 Date:   Mon,  4 Oct 2021 14:52:33 +0200
-Message-Id: <20211004125030.502926792@linuxfoundation.org>
+Message-Id: <20211004125033.475339845@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream
+commit 445c8132727728dc297492a7d9fc074af3e94ba3 upstream.
 
-No functional change, later it will be re-used in several files.
+Add the missing error handling when allocating the transmit buffer to
+avoid dereferencing a NULL pointer in write() should the allocation
+ever fail.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
+Cc: stable@vger.kernel.org      # 3.5
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/include/asm/module.h |    9 +++++++++
- arch/arm/kernel/module-plts.c |    9 ---------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/ipack/devices/ipoctal.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -18,6 +18,15 @@ enum {
- };
- #endif
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -391,7 +391,9 @@ static int ipoctal_inst_slot(struct ipoc
  
-+#define PLT_ENT_STRIDE		L1_CACHE_BYTES
-+#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
-+#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
-+
-+struct plt_entries {
-+	u32	ldr[PLT_ENT_COUNT];
-+	u32	lit[PLT_ENT_COUNT];
-+};
-+
- struct mod_plt_sec {
- 	struct elf32_shdr	*plt;
- 	int			plt_count;
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -14,10 +14,6 @@
- #include <asm/cache.h>
- #include <asm/opcodes.h>
+ 		channel = &ipoctal->channel[i];
+ 		tty_port_init(&channel->tty_port);
+-		tty_port_alloc_xmit_buf(&channel->tty_port);
++		res = tty_port_alloc_xmit_buf(&channel->tty_port);
++		if (res)
++			continue;
+ 		channel->tty_port.ops = &ipoctal_tty_port_ops;
  
--#define PLT_ENT_STRIDE		L1_CACHE_BYTES
--#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
--#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
--
- #ifdef CONFIG_THUMB2_KERNEL
- #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
- 							(PLT_ENT_STRIDE - 4))
-@@ -26,11 +22,6 @@
- 						    (PLT_ENT_STRIDE - 8))
- #endif
- 
--struct plt_entries {
--	u32	ldr[PLT_ENT_COUNT];
--	u32	lit[PLT_ENT_COUNT];
--};
--
- static bool in_init(const struct module *mod, unsigned long loc)
- {
- 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
+ 		ipoctal_reset_stats(&channel->stats);
 
 
