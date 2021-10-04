@@ -2,153 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948A44211F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1014211EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbhJDOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:51:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:60060 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235162AbhJDOva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:51:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="224225212"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="224225212"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 07:48:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="544323172"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Oct 2021 07:48:18 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 4 Oct 2021 07:48:18 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Mon, 4 Oct 2021 07:48:18 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Mon, 4 Oct 2021 07:48:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U2ZiSd/5CkbYgspvrhYBRRkPmTD1o+AAxBO+fph3w3jX28YUaSFbbbt7czaR4OD7i1EV658daYHea+cEUG041B/JCdVLJdZiz+1p0SS6MVQDkhCiO/UQfksPglkTvAx2w86racpdStxhraA1/CY/w8hhY3ypzaCwbs4uj6mZOd8OE89uYGwtoGgvUfWRkSZCPfb1I1WKXf2+ItT2FCmghkyIKEyFAnf9y+Ldc+lpx7IK8CZvHhHhPK6ggMVkC8YmGIc0JOUvSTOyNRbGREoAcMYFO8gAoIkNS9Z3DUssElxmp5UXwBvqT+WEBedWkQkCt+QNNvL8+K3Ft7Tz0qUNyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BIW6NMxJZKGHaRLqIfJxHVj3juAp0xw2/mqARki1A90=;
- b=iRewYy3bz6pFSNBaahmQ/N2CYmcSXZpD6A/76K8P/VwFZYH6cdaIVp+whnlPfjWJidrOTtYOeTk/y39Wl5OUQ+z83ZncUMMkzen3quWg0KDl1uMHwfl56PM3Sz0YBgKxGdEcgg+L5soeKDs4gMiP3peNUgxBw5gcympf1C/rXGciQhyEmCG15CDfNiEB5rlTcfuvyBfngoGpo/OnWknFhivSf9Ix06OMRsmjDH7o3BVQlRPZ4Nhsmkc4NAz8rqYRQDt1RUwU/dlP2W+QOm1aUAYemImJDq+4nViLTsWCbQOYp/ow9pUn2j3tY/QHLNiHFfy2y4kTsyq3Xnpa/DLARg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BIW6NMxJZKGHaRLqIfJxHVj3juAp0xw2/mqARki1A90=;
- b=t6GvsQtqsK2978Oyod7tO+xEkKqkTJEmaH/rPQB7zpf0Isn4UrdEI0gizN/0Yjpw1Iyp6HJGwWuchXBvJhwAfS4DzfVuxWex2wrJq0vPY+n+wQk1189KZO3do4V04MdJV3CICZUtqXL8E4jiSVxjIAz+ppexCJs39R1s3tzZflo=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB4904.namprd11.prod.outlook.com (2603:10b6:510:40::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16; Mon, 4 Oct
- 2021 14:47:52 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::b427:a68a:7cb6:1983]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::b427:a68a:7cb6:1983%3]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 14:47:52 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
-Thread-Topic: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
-Thread-Index: AQHXtxXjpXjC3Qk5Sky+qg9KSaDYk6vAQgwAgAAEuoCAApcLgIAAEZ4A
-Date:   Mon, 4 Oct 2021 14:47:52 +0000
-Message-ID: <AB9AF2D5-D53A-44D5-A5CF-B66F7C685387@intel.com>
-References: <20211001223728.9309-1-chang.seok.bae@intel.com>
- <87mtnrgkij.ffs@tglx> <5677A76F-82AA-458A-A910-C92E8B0C1061@intel.com>
- <8735pghpkg.ffs@tglx>
-In-Reply-To: <8735pghpkg.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.7)
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 648c5e63-f0b7-46fd-54c7-08d98745f1c6
-x-ms-traffictypediagnostic: PH0PR11MB4904:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB49042836D6D6900C01FE4047D8AE9@PH0PR11MB4904.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /NJV3hckxnZkTWRGjJ8GLpxqu7IcANU1zO5EOjfhqrVxiXBJhO30ou2t0hyPLetk4rfpWqaVc941V8a2pFSBP3rRgoSVJMMo67auGJ6+pObKziybTUjRmBKAt/6DpVfjF1mUMKsQS2SXrh3laD2Dt2XRNtPWTHwexCSzDuz3zEO4QT+ze8Lc1eq4oW3swAOTZmWju120wA2eno5xnrL3eKcNWpWDE4TdTtGwvsXdgcSu/KEf7iL3tChxKe9Z/3UVz/SrrYif+l4MvxDgPwHM5gvVri3nYifpJJB6/QazMeee066zX2uFXFInrOsRIShesrcXy54brFM4rg7RoS3bp9iirYkcpe0tAhAOx15v05oML/v4LsRER5q6BbFpYnn7JMHvFnV6Qbs8zWhhzsb8YqSP2S6u/4qpKMcIG3bsUh/hNKQfW16XrLzXXtQro4RcHpAWABzL4QfZujm9C16uEln1lT3cPH8rlMF1lwh/Ns8j/i377ztkv52ucxJuaMJtz5e+6C6EiVSQrxWPJmnvgYawi1LrgRwz/hJXpeu2T8d3EG/V730K0sITYYV3Ii/4vIG0ndqCbeEYHYKI4G5w2ELKjs22LtjfXst46HjV/eNNVt5rI5hn8Cm54yuh/mgi5j3CGtsF9vfOrpa5hHZD+FmlISpw3nc/OWlwbDCT+ZzuXBlMIMO/u+4wTzsWM3V2WbGzEioBaQm9WHc/SMJMO1zZOq6t5ZQoJn7E3hS+oH6kc9iPeFEaVHtgJnZ5h7b8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6506007)(5660300002)(6486002)(4744005)(508600001)(71200400001)(53546011)(2616005)(38100700002)(8936002)(6512007)(4326008)(122000001)(54906003)(66446008)(38070700005)(186003)(86362001)(6916009)(36756003)(26005)(8676002)(66476007)(33656002)(66556008)(76116006)(66946007)(316002)(64756008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?op7d0DMUSYt5FkKwy+QRyX9qzTaWN+awFL5lNZy3QadGnSWo0bx9Q+Xm9rgF?=
- =?us-ascii?Q?4ox5uiFmdD1Cg/JFCCDjPJof6SaJ4K1n6FSRDkhMahFjm0C/5JqM17BNg6Wc?=
- =?us-ascii?Q?C+aWqFhDWogqOS/aQD6/5o47GxykAxfm6a3tikQpKLLca7vSdE5KgKfewIBr?=
- =?us-ascii?Q?l3dThzRQhGp1XqfhRIqpQzbhke1z2iLKJ2w5+1QP0HJr5Z7uy1VOsmcfKIPP?=
- =?us-ascii?Q?PLe/TZlU24rnOftihrlPQrR27NV/3QTlajhXlGSdn1gqHyyxTECYFs7qbrCd?=
- =?us-ascii?Q?gqfuA1aHED6ydMPBChUSkRkH+txUfDToIchOYLMfpTk39SfS1trSkYto2ekW?=
- =?us-ascii?Q?2Xq1nRAmo7cBYebmV6Us+Ri6BEvaTP/ShdUi1rjm58cdRQRroznpCApT55JI?=
- =?us-ascii?Q?RO2MaUHRb1i/SFDoF6PZ/myMhT2FcL0Xbl4j7+cvGVM4h5crgFB4Px0EzGk2?=
- =?us-ascii?Q?6p1TXABvEKjAsCHu/LpVcP3crrHW5AQ6w+BBbbsovbjG8htCBaG1xdC+Q40h?=
- =?us-ascii?Q?1aM45j4yQewQq8GbArsYHvZsxfQksTZlggxo0Wj4J4cFvK5SABOxPasydEaI?=
- =?us-ascii?Q?HV72OD7/TtHw7Sgmu2tkQ87apu/vTC2yC5XnoJ2WpGi8LDSHE0x5r3/7U3NT?=
- =?us-ascii?Q?t5thcnI18gqP5oRgQiGUSSfzbpZ49mvPzO8i8GKm3KuTzErU9DvhTfHNmljp?=
- =?us-ascii?Q?TBh1MOR+wuXsquXC4iIlPqlDknyZLtvG2ddOMNRU/1DhVcPrTtTF7BMFvbD8?=
- =?us-ascii?Q?GrErWJJaEg5ZMn70LICTDeZGB1OhoOlphb6mk8aOcYmchuRTwuAvaXO+ZefA?=
- =?us-ascii?Q?jphFSCCxKFXZuKwznKenSJpku7/IruSLTEzzheMssd46vY45Enf/xLBqeBki?=
- =?us-ascii?Q?Oms/9t1liAeZtYEuqAR1iT4GD7bpBRXZa3+KTWXGQ7Rl6BXbapEhUwBqgBN9?=
- =?us-ascii?Q?aKu4TkFElir6Swtr7/8h6oFyjwZ1Jo99MUvBGEQdBfsQpIaKkVmK87RP9oay?=
- =?us-ascii?Q?QHTZU5RSrCxQbt00VkZ2Y3eO9PAdnBnhP77KB57zsi3nR1XfqBsbHDezQH/P?=
- =?us-ascii?Q?CRKB4D0zNdRoBWmQUISJl+ewtqqoBtidZ23o7Y9whfscrd6BAzBlQNsR6gbO?=
- =?us-ascii?Q?zXoA0W79e97PrchGJI+K8Z0JHsRhQZXL1FMfo3zWqysUXEdt5SgkZyT5uPNe?=
- =?us-ascii?Q?3CTlj5Vflfc/X52Xk48Y19kXc/iuFDenBTcgOEdvKLa04XkqWuZ01NO6vJ/x?=
- =?us-ascii?Q?PVlDkHjV43Mnv+tNGiVpaRF3+Li4gAPWApBzlgTbVHbfzgiUd1f9Ovg/Jq4d?=
- =?us-ascii?Q?bTdZXjwmLkciHSZvV9Qfv9b9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C282FDC7B221544EB59462AF7796CA43@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S235121AbhJDOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:50:38 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44288
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234899AbhJDOuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 10:50:32 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3BD0B4076F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633358922;
+        bh=w+sL+FQVIvgTC5iFf3ebFDfQJjEOqOG++9iuOMLzY6A=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=fJ7GuXJ8lAyvVdF5A55hEHArqvRi66LJ2zvwsfqpvuZ7gZgsNibKzP48zxDvo+6eh
+         m8BBb+DiE1B+tbEQHxyKN7vAzLBabI8XPLq57u4U13J+rChmD0u/EN2W4/vIrMWcgz
+         47RSDDhWd7iauj+bCiByafafUX4XUIyWMhGUNV4uu/MrJiqDuqssPkZoQbneCAvA/e
+         vvKk7df5/ZwFVOiR7qBuy9T8uZgBLvivSn5tJzyTOFjiTGkuIEinkrRaG4q+Pn4ZLE
+         nruIb/IbvvH+ftqtzFPMEb9bwW0OUaK7hTIIujzt/C+s7v2QfdUp5JKS5Jkjr0k/fj
+         fzKakLrbBeWBA==
+Received: by mail-lf1-f72.google.com with SMTP id f32-20020a0565123b2000b003fd19ba9acaso9361630lfv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 07:48:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w+sL+FQVIvgTC5iFf3ebFDfQJjEOqOG++9iuOMLzY6A=;
+        b=53O95uMhFw/o8mjPAvIL9gw8tmrxiYxq5McoTtETqmP56i9SOdx9CYrdhEZ4Bz+h13
+         NlpKQyNTE1ntE2T0JZWFPq191rKPqExvyHxDtU2Un3SlgstOe5OSQuFhgm6NjHtn9YiF
+         Kj+ADofTh87IpKcElbsOK3qwuVQHi1rGaNVbgODQKs7M09OvTgSb1ViSlD7ZVoGyyf83
+         iEglHWWkPe03E8OdMCiwiMgPGkAGHwZE2XPtfLt1prKrtxxi5bUWBaS3EPIzJ76aD/3w
+         LoZV2tYb76h+wY7wjTugVAuVF9cyQBhviNFLgKL8qNj+2rtQa/A2Ufzqgk9S19sfUGa2
+         luZg==
+X-Gm-Message-State: AOAM530v8haAjAo9k9cnj+C4pRzq4a5cv7XSp2cwG5NOtrxpCn7Rk8Va
+        ULADUByd0v5EfjUUWnQy8YKKyuTl3TlVrj+4Fi6i4IKERNYxmU+/ry8u+fazc05GMEBRlLqGylm
+        bGLrq/1jgMZKJEXITJztUeJf4IXM575O0V6Nn7RRgPw==
+X-Received: by 2002:a2e:b172:: with SMTP id a18mr16093360ljm.37.1633358921518;
+        Mon, 04 Oct 2021 07:48:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwb5tinkZwMu1evfFdL+ihYVyTUQWNnEDS58h7J+qMSOrzZ3mWX2bIzCYTinylCv1rYj7dysA==
+X-Received: by 2002:a2e:b172:: with SMTP id a18mr16093332ljm.37.1633358921266;
+        Mon, 04 Oct 2021 07:48:41 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id j20sm411976lfb.85.2021.10.04.07.48.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 07:48:40 -0700 (PDT)
+Subject: Re: [PATCH v2 06/10] regulator: dt-bindings: samsung,s5m8767: convert
+ to dtschema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <20211001094106.52412-7-krzysztof.kozlowski@canonical.com>
+ <YVsSfSBeAZ8DFYfH@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <cdcd4eda-a7a9-2aa2-1316-e7184ff30bf3@canonical.com>
+Date:   Mon, 4 Oct 2021 16:48:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 648c5e63-f0b7-46fd-54c7-08d98745f1c6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2021 14:47:52.7231
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Am+/CAQoTx0vz1rxpO/jsFnyGRi2mfsjxnaAdRu27a2rYBi8SFE7TKnd6NydpPo73Dtg15psDEckc5WveXSBWHtO4F7PpWeC2fVlR8lpcuo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4904
-X-OriginatorOrg: intel.com
+In-Reply-To: <YVsSfSBeAZ8DFYfH@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Oct 4, 2021, at 06:44, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
->=20
-> I know what a base commit is, but this still does not make it apply on
-> the tip tree which has already 10 patches against the FPU code applied
-> in the x86/fpu branch for 5.16. And that's the reference tree not some
-> arbitrary chosen base commit.
+On 04/10/2021 16:41, Rob Herring wrote:
+> On Fri, Oct 01, 2021 at 11:41:02AM +0200, Krzysztof Kozlowski wrote:
+>> Convert the regulators of Samsung S5M8767 PMIC to DT schema format.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>  .../bindings/regulator/samsung,s5m8767.txt    | 140 ------------------
+>>  .../bindings/regulator/samsung,s5m8767.yaml   |  83 +++++++++++
+>>  MAINTAINERS                                   |   2 +-
+>>  3 files changed, 84 insertions(+), 141 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+>>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+>> deleted file mode 100644
+>> index 6cd83d920155..000000000000
+>> --- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+>> +++ /dev/null
+>> @@ -1,140 +0,0 @@
+>> -Binding for Samsung S5M8767 regulator block
+>> -===========================================
+>> -
+>> -This is a part of device tree bindings for S5M family multi-function devices.
+>> -More information can be found in bindings/mfd/sec-core.txt file.
+>> -
+>> -The S5M8767 device provide buck and LDO regulators.
+>> -
+>> -To register these with regulator framework instantiate under main device node
+>> -a sub-node named "regulators" with more sub-nodes for each regulator using the
+>> -common regulator binding documented in:
+>> - - Documentation/devicetree/bindings/regulator/regulator.txt
+>> -
+>> -
+>> -Required properties of the main device node (the parent!):
+>> - - s5m8767,pmic-buck-ds-gpios: GPIO specifiers for three host gpio's used
+>> -   for selecting GPIO DVS lines. It is one-to-one mapped to dvs gpio lines.
+>> -
+>> - [1] If either of the 's5m8767,pmic-buck[2/3/4]-uses-gpio-dvs' optional
+>> -     property is specified, then all the eight voltage values for the
+>> -     's5m8767,pmic-buck[2/3/4]-dvs-voltage' should be specified.
+>> -
+>> -Optional properties of the main device node (the parent!):
+>> - - s5m8767,pmic-buck2-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
+>> -   units for buck2 when changing voltage using gpio dvs. Refer to [1] below
+>> -   for additional information.
+>> -
+>> - - s5m8767,pmic-buck3-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
+>> -   units for buck3 when changing voltage using gpio dvs. Refer to [1] below
+>> -   for additional information.
+>> -
+>> - - s5m8767,pmic-buck4-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
+>> -   units for buck4 when changing voltage using gpio dvs. Refer to [1] below
+>> -   for additional information.
+>> -
+>> - - s5m8767,pmic-buck2-uses-gpio-dvs: 'buck2' can be controlled by gpio dvs.
+>> - - s5m8767,pmic-buck3-uses-gpio-dvs: 'buck3' can be controlled by gpio dvs.
+>> - - s5m8767,pmic-buck4-uses-gpio-dvs: 'buck4' can be controlled by gpio dvs.
+>> -
+>> -Additional properties required if either of the optional properties are used:
+>> -
+>> - - s5m8767,pmic-buck-default-dvs-idx: Default voltage setting selected from
+>> -   the possible 8 options selectable by the dvs gpios. The value of this
+>> -   property should be between 0 and 7. If not specified or if out of range, the
+>> -   default value of this property is set to 0.
+>> -
+>> - - s5m8767,pmic-buck-dvs-gpios: GPIO specifiers for three host gpio's used
+>> -   for dvs. The format of the gpio specifier depends in the gpio controller.
+>> -
+>> -
+>> -Names of regulators supported by S5M8767 device:
+>> -	- LDOn
+>> -		  - valid values for n are 1 to 28
+>> -		  - Example: LDO1, LDO2, LDO28
+>> -	- BUCKn
+>> -		  - valid values for n are 1 to 9.
+>> -		  - Example: BUCK1, BUCK2, BUCK9
+>> -Note: The 'n' in LDOn and BUCKn represents the LDO or BUCK number
+>> -as per the datasheet of device.
+>> -
+>> -
+>> -Optional properties of the nodes under "regulators" sub-node:
+>> - - op_mode: describes the different operating modes of the LDO's with
+>> -            power mode change in SOC. The different possible values are,
+>> -             0 - always off mode
+>> -             1 - on in normal mode
+>> -             2 - low power mode
+>> -             3 - suspend mode
+>> - - s5m8767,pmic-ext-control-gpios: (optional) GPIO specifier for one
+>> -                                   GPIO controlling this regulator
+>> -                                   (enable/disable); This is valid only
+>> -                                   for buck9.
+>> -
+>> -Example:
+>> -
+>> -	s5m8767_pmic@66 {
+>> -		compatible = "samsung,s5m8767-pmic";
+>> -		reg = <0x66>;
+>> -
+>> -		s5m8767,pmic-buck2-uses-gpio-dvs;
+>> -		s5m8767,pmic-buck3-uses-gpio-dvs;
+>> -		s5m8767,pmic-buck4-uses-gpio-dvs;
+>> -
+>> -		s5m8767,pmic-buck-default-dvs-idx = <0>;
+>> -
+>> -		s5m8767,pmic-buck-dvs-gpios = <&gpx0 0 0>, /* DVS1 */
+>> -						 <&gpx0 1 0>, /* DVS2 */
+>> -						 <&gpx0 2 0>; /* DVS3 */
+>> -
+>> -		s5m8767,pmic-buck-ds-gpios = <&gpx2 3 0>, /* SET1 */
+>> -						<&gpx2 4 0>, /* SET2 */
+>> -						<&gpx2 5 0>; /* SET3 */
+>> -
+>> -		s5m8767,pmic-buck2-dvs-voltage = <1350000>, <1300000>,
+>> -						 <1250000>, <1200000>,
+>> -						 <1150000>, <1100000>,
+>> -						 <1000000>, <950000>;
+>> -
+>> -		s5m8767,pmic-buck3-dvs-voltage = <1100000>, <1100000>,
+>> -						 <1100000>, <1100000>,
+>> -						 <1000000>, <1000000>,
+>> -						 <1000000>, <1000000>;
+>> -
+>> -		s5m8767,pmic-buck4-dvs-voltage = <1200000>, <1200000>,
+>> -						 <1200000>, <1200000>,
+>> -						 <1200000>, <1200000>,
+>> -						 <1200000>, <1200000>;
+>> -
+>> -		regulators {
+>> -			ldo1_reg: LDO1 {
+>> -				regulator-name = "VDD_ABB_3.3V";
+>> -				regulator-min-microvolt = <3300000>;
+>> -				regulator-max-microvolt = <3300000>;
+>> -				op_mode = <1>; /* Normal Mode */
+>> -			};
+>> -
+>> -			ldo2_reg: LDO2 {
+>> -				regulator-name = "VDD_ALIVE_1.1V";
+>> -				regulator-min-microvolt = <1100000>;
+>> -				regulator-max-microvolt = <1100000>;
+>> -				regulator-always-on;
+>> -			};
+>> -
+>> -			buck1_reg: BUCK1 {
+>> -				regulator-name = "VDD_MIF_1.2V";
+>> -				regulator-min-microvolt = <950000>;
+>> -				regulator-max-microvolt = <1350000>;
+>> -				regulator-always-on;
+>> -				regulator-boot-on;
+>> -			};
+>> -
+>> -			vemmc_reg: BUCK9 {
+>> -				regulator-name = "VMEM_VDD_2.8V";
+>> -				regulator-min-microvolt = <2800000>;
+>> -				regulator-max-microvolt = <2800000>;
+>> -				op_mode = <3>; /* Standby Mode */
+>> -				s5m8767,pmic-ext-control-gpios = <&gpk0 2 0>;
+>> -			};
+>> -		};
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+>> new file mode 100644
+>> index 000000000000..3192a06b5ef9
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+>> @@ -0,0 +1,83 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/regulator/samsung,s5m8767.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Samsung S5M8767 Power Management IC regulators
+>> +
+>> +maintainers:
+>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> +
+>> +description: |
+>> +  This is a part of device tree bindings for S2M and S5M family of Power
+>> +  Management IC (PMIC).
+>> +
+>> +  The S5M8767 provides buck and LDO regulators.
+>> +
+>> +  See also Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml for
+>> +  additional information and example.
+>> +
+>> +patternProperties:
+>> +  # 28 LDOs
+>> +  "^LDO([1-9]|1[0-9]|2[0-8])$":
+>> +    type: object
+>> +    $ref: regulator.yaml#
+>> +    description:
+>> +      Properties for single LDO regulator.
+>> +
+>> +    properties:
+>> +      regulator-name: true
+> 
+> This is fine, but technically it is not needed. There's not any 
+> requirement that items in 'required' be listed under 'properties'.
 
-Sorry, will always make sure the series based on top of the tip tree.
+I'll skip it here and in further patches - smaller bindings.
 
-Thanks,
-Chang
+> 
+>> +
+>> +      op_mode:
+> 
+> Needs a type reference.
+
+Indeed, thanks.
+
+> 
+>> +        enum: [0, 1, 2, 3]
+>> +        default: 1
+>> +        description: |
+>> +          Describes the different operating modes of the LDO's with power mode
+>> +          change in SOC. The different possible values are:
+>> +            0 - always off mode
+>> +            1 - on in normal mode
+>> +            2 - low power mode
+>> +            3 - suspend mode
+>> +
+>> +    required:
+>> +      - regulator-name
+>> +
+>> +    unevaluatedProperties: false
+> 
+> On child nodes, I think it's better to place this up with the $ref and 
+> 'type: object' since the indentation can be hard to follow. 
+
+OK.
+
+
+Best regards,
+Krzysztof
