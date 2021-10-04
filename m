@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8654206DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1CF4206E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhJDH6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S229771AbhJDIAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhJDH56 (ORCPT
+        with ESMTP id S229618AbhJDIAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:57:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D188C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=sEM3BPdzVY3/dR2zcinwoXa/ww1WSluj3d/TakcR2J4=; b=WfWtrFvRHlsqao5fP4ENEPXYjD
-        zzXOSJ5850uW0KOcDbeOdzPvIJtU9g4MGLFMVLA9SBFWlRGHmby1sKnBk05IkaP1VTtLwuAMBnEXS
-        g2sFXgfSkH7WE9Xh0qQHwu6ncE9j7RmHdIK0gegMskrZQFlOivZWFr1d8ruWLPMhX6k1vSzgJjGAQ
-        ZkD6H+NAbdscLMQ1feCeVth32OgFYz+uef+MG6tCnZBcqsqm6rexooHvvIKaNdZLBRq6Wlv2b9Bk+
-        U0v/xTfJQPtSEGJGuWSdoPjRNuDFi/0oGCBZKFcfuH/tOrfc7g/CQdWFEIHQNeziXRRbcax5qxddf
-        96v2VHew==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXIpV-005YAx-Mz; Mon, 04 Oct 2021 07:56:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Dinh Nguyen <dinguyen@kernel.org>
-Subject: [RFC PATCH] NIOS2: irqflags: rename a redefined register name
-Date:   Mon,  4 Oct 2021 00:56:06 -0700
-Message-Id: <20211004075606.6229-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 4 Oct 2021 04:00:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD86FC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:59:03 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mXIrv-0001ht-O5; Mon, 04 Oct 2021 09:58:39 +0200
+Message-ID: <3b557e62ad8f313d8fdfb352730cb9a0c5c2eb57.camel@pengutronix.de>
+Subject: Re: [PATCH v2 5/5] drm: mxsfb: Set proper default bus format when
+ using a bridge
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Ondrej Jirman <megous@megous.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 04 Oct 2021 09:58:37 +0200
+In-Reply-To: <15afbcb04dea432867bb9f8b0e47205decd4bd6e.1633332399.git.agx@sigxcpu.org>
+References: <cover.1633332399.git.agx@sigxcpu.org>
+         <15afbcb04dea432867bb9f8b0e47205decd4bd6e.1633332399.git.agx@sigxcpu.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both arch/nios2/ and drivers/mmc/host/tmio_mmc.c define a macro
-with the name "CTL_STATUS". Change the one in arch/nios2/ to be
-"CTL_FSTATUS" (flags status) to eliminate the build warning.
+Am Montag, dem 04.10.2021 um 09:27 +0200 schrieb Guido Günther:
+> If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
+> returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
+> that case.
+> 
+> This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
+> 
+> Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
+> 
+I don't think this qualifies for stable, so I would drop this tag, as
+the stable maintainers are quite trigger happy to pull in patches with
+a fixes tag. Also the subject isn't quite correct, this isn't setting a
+"proper" bus format, but rather adds a fallback. Other than that:
 
-In file included from ../drivers/mmc/host/tmio_mmc.c:22:
-drivers/mmc/host/tmio_mmc.h:31: warning: "CTL_STATUS" redefined
-   31 | #define CTL_STATUS 0x1c
-arch/nios2/include/asm/registers.h:14: note: this is the location of the previous definition
-   14 | #define CTL_STATUS      0
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
 
-Fixes: b31ebd8055ea ("nios2: Nios2 registers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
----
- arch/nios2/include/asm/irqflags.h  |    4 ++--
- arch/nios2/include/asm/registers.h |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Regards,
+Lucas
 
---- linux-next-20211001.orig/arch/nios2/include/asm/irqflags.h
-+++ linux-next-20211001/arch/nios2/include/asm/irqflags.h
-@@ -9,7 +9,7 @@
- 
- static inline unsigned long arch_local_save_flags(void)
- {
--	return RDCTL(CTL_STATUS);
-+	return RDCTL(CTL_FSTATUS);
- }
- 
- /*
-@@ -18,7 +18,7 @@ static inline unsigned long arch_local_s
-  */
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	WRCTL(CTL_STATUS, flags);
-+	WRCTL(CTL_FSTATUS, flags);
- }
- 
- static inline void arch_local_irq_disable(void)
---- linux-next-20211001.orig/arch/nios2/include/asm/registers.h
-+++ linux-next-20211001/arch/nios2/include/asm/registers.h
-@@ -11,7 +11,7 @@
- #endif
- 
- /* control register numbers */
--#define CTL_STATUS	0
-+#define CTL_FSTATUS	0
- #define CTL_ESTATUS	1
- #define CTL_BSTATUS	2
- #define CTL_IENABLE	3
+> Reported-by: Martin Kepplinger <martink@posteo.de>
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+
+> ---
+>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> index d6abd2077114..e3fbb8b58d5d 100644
+> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> @@ -369,6 +369,12 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
+>  			drm_atomic_get_new_bridge_state(state,
+>  							mxsfb->bridge);
+>  		bus_format = bridge_state->input_bus_cfg.format;
+> +		if (bus_format == MEDIA_BUS_FMT_FIXED) {
+> +			dev_warn_once(drm->dev,
+> +				      "Bridge does not provide bus format, assuming MEDIA_BUS_FMT_RGB888_1X24.\n"
+> +				      "Please fix bridge driver by handling atomic_get_input_bus_fmts.\n");
+> +			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+> +		}
+>  	}
+>  
+>  	/* If there is no bridge, use bus format from connector */
+
+
