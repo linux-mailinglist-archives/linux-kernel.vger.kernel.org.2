@@ -2,168 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B16420A2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D5A420A2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhJDLkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:40:25 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38164 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232193AbhJDLkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:40:24 -0400
-X-UUID: 1a16d0b360ca4f439959f8290e5fee06-20211004
-X-UUID: 1a16d0b360ca4f439959f8290e5fee06-20211004
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <chien-yu.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 676627194; Mon, 04 Oct 2021 19:38:23 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 4 Oct 2021 19:38:22 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 4 Oct
- 2021 19:38:22 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Oct 2021 19:38:22 +0800
-Message-ID: <a6336289dcf0009f2fc900c74f480b3c5fc0e8be.camel@mediatek.com>
-Subject: Re: [PATCH] ASoc: fix ASoC driver to support ops to register
- get_time_info
-From:   Chien-Yu Lin <Chien-Yu.Lin@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <yichin.huang@mediatek.com>,
-        <hungjung.hsu@mediatek.com>, <allen-hw.hsu@mediatek.com>
-Date:   Mon, 4 Oct 2021 19:38:22 +0800
-In-Reply-To: <20210820130210.3321-1-chien-yu.lin@mediatek.com>
-References: <20210820130210.3321-1-chien-yu.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S233013AbhJDLkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232985AbhJDLk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 07:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 185306137C;
+        Mon,  4 Oct 2021 11:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633347521;
+        bh=o+Rpfn1IC4KVCQeTsymhJ0z7e32ceLwRcmHzK/wEniw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JM7d+iCbONZJRHYECgQ7zEA8E1YeS49mlMARkiWTW2oHFWsR0XdokiJ8JsPmk2UdI
+         lq5YCIUihsVteM9TUim+0enXwG3P1q1AGeGhaEKX54VX1Rt1e7aJKx/eJ4bklJHxF+
+         OIq2Yo8wBz+Oy4QuNDqQxuXYa3hRVqmDtto1x/hykJtKSLqcHzxi4RXajnmjCG6bI+
+         +OjPDxuuQ6/h+61b/nFdUx1h/FhCo7sfLhYTlek/0cHneRmIpJq6LPwozd5oKCZ/kx
+         uOBWtYECYGew0RnNNwJVG3dXfG4Z3Nt3d0viebhL7Djwy191cuBUEPGUKxqUgc3aT/
+         vq050GFtZjXwg==
+Received: by mail-wr1-f49.google.com with SMTP id v17so30210071wrv.9;
+        Mon, 04 Oct 2021 04:38:41 -0700 (PDT)
+X-Gm-Message-State: AOAM533m7+SJ71g26xVRZz8wgp1D2x7OOQL0s/ejmP7irSf/6cd1PNvk
+        g9P0/odblypgTl6OHVu+4LvOajnMvPAwPB2JI8I=
+X-Google-Smtp-Source: ABdhPJxv9OQzgkYLcrhTEoNwZKjERfe5+BmhLWHHuHXPpk8ez+hpUBxHKKihnnuZMc6vtUQnuufmrxm2EI/4F5RzHJw=
+X-Received: by 2002:a5d:564f:: with SMTP id j15mr13449053wrw.336.1633347519578;
+ Mon, 04 Oct 2021 04:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+References: <20210927122024.941874-1-arnd@kernel.org> <ea4cbdd2-3f78-7bc6-d378-b9edb14ce80d@xs4all.nl>
+In-Reply-To: <ea4cbdd2-3f78-7bc6-d378-b9edb14ce80d@xs4all.nl>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 4 Oct 2021 13:38:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0ZOO-1QHAQbhPqFe9URX77bXORCybemLyd8DNQC-wVQw@mail.gmail.com>
+Message-ID: <CAK8P3a0ZOO-1QHAQbhPqFe9URX77bXORCybemLyd8DNQC-wVQw@mail.gmail.com>
+Subject: Re: [PATCH] media: gspca/gl860-mi1320: avoid -Wstring-concatenation warning
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Olivier Lorin <o.lorin@laposte.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir,
+On Mon, Oct 4, 2021 at 12:55 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> Hi Arnd,
+>
+> On 27/09/2021 14:20, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Newer clang versions are suspicious of definitions that mix concatenated
+> > strings with comma-separated arrays of strings, this has found real bugs
+> > elsewhere, but this seems to be a false positive:
+> >
+> > drivers/media/usb/gspca/gl860/gl860-mi1320.c:62:37: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
+> >         "\xd3\x02\xd4\x28\xd5\x01\xd0\x02" "\xd1\x18\xd2\xc1"
+> >                                            ^
+> >                                           ,
+> > drivers/media/usb/gspca/gl860/gl860-mi1320.c:62:2: note: place parentheses around the string literal to silence warning
+> >         "\xd3\x02\xd4\x28\xd5\x01\xd0\x02" "\xd1\x18\xd2\xc1"
+> >
+> > Use the extra parentheses as suggested in the warning message.
+>
+> I noticed that gl860-ov9655.c uses the same construct, doesn't that produce the
+> same warning?
 
-Sorry for bothering you.
+Curiously, it does not. I tried reproducing this in godbolt.org,
+see https://godbolt.org/z/W6K69qcz3
 
-Does it have any status updated, please?
+For some reason, clang only warns about some of those, and it appears to
+depend on the ratio between string concatenations and array elements.
 
-Thank you.
+> Also, does clang only warn about 'static u8 *tbl[]' initializers, or also
+> for 'static u8 *tbl' initializers (i.e. not a pointer array) with the same
+> string concatenation?
 
-Best Regards,
-Chien-Yu.Lin
+When there is only one element rather than an array, it does not warn,
+because it's not a mix of concatenation and array elements.
 
-On Fri, 2021-08-20 at 21:02 +0800, Chien-Yu Lin wrote:
-> From: "chien-yu.lin" <chien-yu.lin@mediatek.com>
-> 
-> Because ASoC soc_new_pcm() function didn't register
-> .get_time_info() ops and cause snd_pcm_update_hw_ptr0() can not find
-> substream->ops->get_time_info, it will not be called due to ASoC
-> driver which register in HW device driver.
-> 
-> Add .get_time_info() ops in ASoC soc_new_pcm() and
-> register by snd_pcm_set_ops() function.
-> If HW device driver want to implment timestamp by itself,
-> ASoC should register .get_time_info function.
-> 
-> Signed-off-by: chien-yu.lin <chien-yu.lin@mediatek.com>
-> ---
->  include/sound/soc-component.h |  4 ++++
->  sound/soc/soc-component.c     | 21 +++++++++++++++++++++
->  sound/soc/soc-pcm.c           |  2 ++
->  3 files changed, 27 insertions(+)
-> 
-> diff --git a/include/sound/soc-component.h b/include/sound/soc-
-> component.h
-> index 8c4d6830597f..52b5228b7a8d 100644
-> --- a/include/sound/soc-component.h
-> +++ b/include/sound/soc-component.h
-> @@ -484,6 +484,10 @@ int snd_soc_pcm_component_sync_stop(struct
-> snd_pcm_substream *substream);
->  int snd_soc_pcm_component_copy_user(struct snd_pcm_substream
-> *substream,
->  				    int channel, unsigned long pos,
->  				    void __user *buf, unsigned long
-> bytes);
-> +int snd_soc_pcm_component_get_time_info(struct snd_pcm_substream
-> *substream,
-> +					struct timespec64 *system_ts,
-> struct timespec64 *audio_ts,
-> +					struct
-> snd_pcm_audio_tstamp_config *audio_tstamp_config,
-> +					struct
-> snd_pcm_audio_tstamp_report *audio_tstamp_report);
->  struct page *snd_soc_pcm_component_page(struct snd_pcm_substream
-> *substream,
->  					unsigned long offset);
->  int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
-> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-> index 3a5e84e16a87..56caec7ec00b 100644
-> --- a/sound/soc/soc-component.c
-> +++ b/sound/soc/soc-component.c
-> @@ -1000,6 +1000,27 @@ int snd_soc_pcm_component_copy_user(struct
-> snd_pcm_substream *substream,
->  	return -EINVAL;
->  }
->  
-> +int snd_soc_pcm_component_get_time_info(struct snd_pcm_substream
-> *substream,
-> +					struct timespec64 *system_ts,
-> struct timespec64 *audio_ts,
-> +					struct
-> snd_pcm_audio_tstamp_config *audio_tstamp_config,
-> +					struct
-> snd_pcm_audio_tstamp_report *audio_tstamp_report)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd =
-> asoc_substream_to_rtd(substream);
-> +	struct snd_soc_component *component;
-> +	int i;
-> +
-> +	/* FIXME. it returns 1st get_time_info now */
-> +	for_each_rtd_components(rtd, i, component) {
-> +		if (component->driver->get_time_info)
-> +			return soc_component_ret(component,
-> +				component->driver-
-> >get_time_info(component,
-> +				substream, system_ts, audio_ts,
-> +				audio_tstamp_config,
-> audio_tstamp_report));
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
->  struct page *snd_soc_pcm_component_page(struct snd_pcm_substream
-> *substream,
->  					unsigned long offset)
->  {
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index d1c570ca21ea..cff7025027a6 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2786,6 +2786,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime
-> *rtd, int num)
->  			rtd->ops.mmap		=
-> snd_soc_pcm_component_mmap;
->  		if (drv->ack)
->  			rtd->ops.ack            =
-> snd_soc_pcm_component_ack;
-> +		if (drv->get_time_info)
-> +			rtd->ops.get_time_info	=
-> snd_soc_pcm_component_get_time_info;
->  	}
->  
->  	if (playback)
+> I made a patch that replaces these ugly hex strings with compound initializers:
+>
+> static u8 *tbl_640[] = {
+>         (u8[]){
+>                 0x0d, 0x80, 0xf1, 0x08, 0x03, 0x04, 0xf1, 0x04,
+>                 0x04, 0x05, 0xf1, 0x02, 0x07, 0x01, 0xf1, 0x7c,
+>                 0x08, 0x00, 0xf1, 0x0e, 0x21, 0x80, 0xf1, 0x00,
+>                 0x0d, 0x00, 0xf1, 0x08, 0xf0, 0x00, 0xf1, 0x01,
+>                 0x34, 0x10, 0xf1, 0x10, 0x3a, 0x43, 0xf1, 0x00,
+>                 0xa6, 0x05, 0xf1, 0x02, 0xa9, 0x04, 0xf1, 0x04,
+>                 0xa7, 0x02, 0xf1, 0x81, 0xaa, 0x01, 0xf1, 0xe2,
+>                 0xae, 0x0c, 0xf1, 0x09
+>         }, (u8[]){
+>                 0xf0, 0x00, 0xf1, 0x02, 0x39, 0x03, 0xf1, 0xfc,
+>                 0x3b, 0x04, 0xf1, 0x04, 0x57, 0x01, 0xf1, 0xb6,
+>                 0x58, 0x02, 0xf1, 0x0d, 0x5c, 0x1f, 0xf1, 0x19,
+>                 0x5d, 0x24, 0xf1, 0x1e, 0x64, 0x5e, 0xf1, 0x1c,
+>                 0xd2, 0x00, 0xf1, 0x00, 0xcb, 0x00, 0xf1, 0x01
+>         }, (u8[]){
+>                 0xd3, 0x02, 0xd4, 0x10, 0xd5, 0x81, 0xd0, 0x02,
+>                 0xd1, 0x08, 0xd2, 0xe1
+>         }
+> };
+>
+> but it clang also warns about 'static u8 *tbl' multi-string initializers,
+> then it would make sense to replace all these hex-strings. It's rather
+> ugly.
 
+This seems fine.
+
+       Arnd
