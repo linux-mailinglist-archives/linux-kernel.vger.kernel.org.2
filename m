@@ -2,86 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A090420669
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA78542066A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbhJDHHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhJDHHW (ORCPT
+        id S229574AbhJDHIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:08:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229486AbhJDHI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:07:22 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F68C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:05:34 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so3794668pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:05:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RPoe9yQ/p8JX2xrTYhiPsh6nCIk1jjrxqKzdQqWJyog=;
-        b=Ka8y1AQQmTEFx8/r768QmfjGxG53lXA8UbkO6mDVZsaX+DQI8NaaDAcF3mBu9G9Xyd
-         HUE6S7nv1P+pTi2De6WqhQC1deOIQ0Ke7YEYeLR5tuKrC1A05ShCiDTNwoLZxoOHW7Qx
-         bLehQMyfGNeG/PjVcgu1gqrCRf40HaVU6o9scklcvA0BTypLghbyv8B43pyb5mChkEAb
-         VEzNnd2+e72sLNEonol5rLBSnumCUUFEGUNO971Qi0B2/2tqyqMQuAZnSTlOkLLe1CiB
-         WP04FkeCobT53WYfu4kl2vy9e9Wvbkyst6XAjIzAZb0kkWMLzU86rtsCf2FeqQqCZina
-         efew==
+        Mon, 4 Oct 2021 03:08:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633331200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J8lCksJRtX0u+VbcUh0hKrD32i6xYPDyS9k9I9FVhxU=;
+        b=d0nlEguyJJ89t+fxyR9Fm4P7pN7yHVXwtdrYk89FLu2orn7gVttu2ODDT2+UfZLI+kDy7H
+        Nq/FYnJ6QPmMw9Py4lY6yoDHUqSdZFWEBNr+BeKI8NNS+9u1Uan0h8VXy9RSYCzR87OTY/
+        mC0yuBc6sHmc1SSvV4eSWN7OVu9KZOQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-WH7C2K8IPH-Be6Nfx4Pr7A-1; Mon, 04 Oct 2021 03:06:39 -0400
+X-MC-Unique: WH7C2K8IPH-Be6Nfx4Pr7A-1
+Received: by mail-wr1-f69.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso4277635wrb.20
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:06:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RPoe9yQ/p8JX2xrTYhiPsh6nCIk1jjrxqKzdQqWJyog=;
-        b=0uJt1p//rItKCuiDfcTocbqpJ0LLLvDWbSAPljxQEO5jYCkDv6mLJRe0aTDiYmXY5D
-         fnaODRb+9yjsKsk1omm+vg+9/Agi/X2J7J2PJeu32pZYCVhIRWSPj4ZAcDTuzw38LT8B
-         xGlKkvO990qWfngrlxcpZQTCUsqQ5esUrLjo80RaPwArs6euN8ucr9ziOMnPLju/LyQP
-         cqN8JfBCt+z1ZQaCKTWBYBAg3YLM7au7INQkoL/Q0Bamhumk926fZKrprcqZLf0xghKw
-         cadpxQJVyk9xYX29f6oHphchfBYmIbXsJkMU7Ii7ygMsGvHHGrEh722KiJ1lmlWWE1yl
-         75IQ==
-X-Gm-Message-State: AOAM533l++EWAkldCJ1C2nR4LnrnmBHaep2ZfHmCDyLRdbM/N9IyIwb8
-        KzcyPEDvLZEN8JHQ1K1/3JrdPg==
-X-Google-Smtp-Source: ABdhPJyA+/zycYXtCrPiIKuHwWlHal7yChVygfvWDZI2GL/gExSMeDtDqVqRw5UZIxqD9vYgxtfCug==
-X-Received: by 2002:a17:90b:4b49:: with SMTP id mi9mr36027415pjb.79.1633331133955;
-        Mon, 04 Oct 2021 00:05:33 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id y15sm6631075pfa.64.2021.10.04.00.05.32
+         :mime-version:content-disposition:in-reply-to;
+        bh=J8lCksJRtX0u+VbcUh0hKrD32i6xYPDyS9k9I9FVhxU=;
+        b=MHnbzeRMKTOhCBCnBXmiB+9oEYuIcBp0sJ2303EqsHdedSsdp6hkhir5o2A9XAin39
+         Sxryi4Na941cJb5hFercTGEotahCOOnBMuLM9xY70/sOuqpn3/YJWIZYCiYLlu+aNEVS
+         m5qjSubDo1cQE7UY1ojNBhotd3dIobvGjHUDD2BGiPyV1lacDaVUgUov2Gz95MHHJQHO
+         QSiYauTwwtylq7EkdaeVWcscdimrKxZqHvlvQLTJFZ+r6u70WB3+wQeUO6hbyorqd2VD
+         qOlxz5pKffthydjT4tIKGbs3kUNxY3QeEjJGmMW4NmYzOtkIsgAgEmvAiLA4O8cX++Xc
+         ClaA==
+X-Gm-Message-State: AOAM530wCP8I6xCaa3cts8f9Ugujpa52Q3rGASH4/D2+OqyFc1v7STq4
+        nnV3BmhmbQpi4b6Hu7/OKwRB3irkNohWpjun6mzDQreYYyzhYqfEp2oRDayXE3TV9lQOfxSY1g5
+        rHhFiJ3GV076Hd+8DNV1FSOyz
+X-Received: by 2002:adf:fa0d:: with SMTP id m13mr12440265wrr.418.1633331198607;
+        Mon, 04 Oct 2021 00:06:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyDwZqY8dudcifEv67bXO534NI07bAtFg3nwbODq1J0657xqcQ3hj8M+0Gb6cf5QcBwzR/IvA==
+X-Received: by 2002:adf:fa0d:: with SMTP id m13mr12440232wrr.418.1633331198304;
+        Mon, 04 Oct 2021 00:06:38 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id y8sm10013022wrr.21.2021.10.04.00.06.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 00:05:33 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 12:35:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
- bindings
-Message-ID: <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
-References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+        Mon, 04 Oct 2021 00:06:37 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 09:06:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH] perf report: Output non-zero offset for decompressed
+ records
+Message-ID: <YVqn/FZ544RAV6Mq@krava>
+References: <20210929091445.18274-1-alexey.v.bayduraev@linux.intel.com>
+ <YVqiS0lzxuVlblrN@krava>
+ <6ab9dd72-ccac-4ce1-6456-ef7786911639@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <6ab9dd72-ccac-4ce1-6456-ef7786911639@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
-> Convert Qualcomm cpufreq devicetree binding to YAML.
+On Mon, Oct 04, 2021 at 10:00:52AM +0300, Bayduraev, Alexey V wrote:
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> On 04.10.2021 9:42, Jiri Olsa wrote:
+> > On Wed, Sep 29, 2021 at 12:14:45PM +0300, Alexey Bayduraev wrote:
+> >> Print offset of PERF_RECORD_COMPRESSED record instead of zero for
+> >> decompressed records in raw trace dump (-D option of perf-report):
+> >>
+> >> 0x17cf08 [0x28]: event: 9
+> >>
+> >> instead of:
+> >>
+> >> 0 [0x28]: event: 9
+> >>
+> >> The fix is not critical, because currently file_pos for compressed
+> >> events is used in perf_session__process_event only to show offsets
+> >> in the raw dump.
+> > 
+> > hi,
+> > I don't mind the change just curious, because I see also:
+> > 
+> >   perf_session__process_event
+> >     perf_session__process_user_event
+> >       lseek(fd, file_offset, ...
+> > 
+> > which is not raw dump as the comment suggests
+> 
+> Hi,
+> 
+> Yes, but this "lseek" only works for user events, whereas the 
+> PERF_RECORD_COMPRESSED record shouln't contain such events.
+> Currently, the PERF_RECORD_COMPRESSED container can only pack
+> kernel events. 
 
-I am not sure if Rob ever gave this.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+thanks,
+jirka
 
-Why double signed off ?
+> 
+> Regards,
+> Alexey
+> 
+> > 
+> > thanks,
+> > jirka
+> > 
+> >>
+> >> This patch was separated from patchset:
+> >> https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+> >> and was already rewieved.
+> >>
+> >> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> >> Acked-by: Andi Kleen <ak@linux.intel.com>
+> >> Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
+> >> Tested-by: Riccardo Mancini <rickyman7@gmail.com>
+> >> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> >> ---
+> >>  tools/perf/util/session.c | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> >> index 069c2cfdd3be..352f16076e01 100644
+> >> --- a/tools/perf/util/session.c
+> >> +++ b/tools/perf/util/session.c
+> >> @@ -2116,7 +2116,7 @@ fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
+> >>  static int __perf_session__process_decomp_events(struct perf_session *session)
+> >>  {
+> >>  	s64 skip;
+> >> -	u64 size, file_pos = 0;
+> >> +	u64 size;
+> >>  	struct decomp *decomp = session->decomp_last;
+> >>  
+> >>  	if (!decomp)
+> >> @@ -2132,7 +2132,7 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+> >>  		size = event->header.size;
+> >>  
+> >>  		if (size < sizeof(struct perf_event_header) ||
+> >> -		    (skip = perf_session__process_event(session, event, file_pos)) < 0) {
+> >> +		    (skip = perf_session__process_event(session, event, decomp->file_pos)) < 0) {
+> >>  			pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
+> >>  				decomp->file_pos + decomp->head, event->header.size, event->header.type);
+> >>  			return -EINVAL;
+> >> -- 
+> >> 2.19.0
+> >>
+> > 
+> 
 
--- 
-viresh
