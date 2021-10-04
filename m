@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39DD42198D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD547421993
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhJDWDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:03:14 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48470 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233487AbhJDWDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:03:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=fYPXulzv7ga+wDX0AJs+dfD7EVy3GhoMVPr0FyDWXag=; b=Y6R/ODLBIr3hAQNIvwmZ35HU7e
-        OROrBLiHkVpnQfAwubq5F5KC8nOJCAzlTOc2JgxhWqJOwy8jDxFPyF8jOs604QoVXtmkfpiAAIcuy
-        U/FD2eZaehURkNja7xEVKRcpn2PNW/jbWj7hH9oSsHEbplTbxG4e0oykvgjEIuOauR60=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mXW1O-009bkw-46; Tue, 05 Oct 2021 00:01:18 +0200
-Date:   Tue, 5 Oct 2021 00:01:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [RFC net-next PATCH 16/16] net: sfp: Add quirk to ignore PHYs
-Message-ID: <YVt5rpEl3HkIkAfB@lunn.ch>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-17-sean.anderson@seco.com>
+        id S234904AbhJDWIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:08:02 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:49998 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233722AbhJDWIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 18:08:01 -0400
+X-Greylist: delayed 11201 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 18:08:01 EDT
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 194IxKOD016034;
+        Mon, 4 Oct 2021 13:59:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633373960;
+        bh=NyH+MlctXadiJnC7SYn/Gt47lxm/Xz6ld3yGSQ1HTGg=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jTJbyv0ubhZXyDEQDp/ZodowX7TfPHvMWg2wKpAlvmadQ3knVoodjd3fxpjQTKgfe
+         hEYQu1NgK7QZbwRqbROvOn4qChzZ1ka3ADgA9ALyFeOSBrP1GEVMGg4d31j781HM53
+         sUbCPrM2IFuqNmKPLexrSP+ShIQm6L4mOitv4lbM=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 194IxKwq002483
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Oct 2021 13:59:20 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 4
+ Oct 2021 13:59:20 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 4 Oct 2021 13:59:20 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 194IxKO3049783;
+        Mon, 4 Oct 2021 13:59:20 -0500
+Date:   Mon, 4 Oct 2021 13:59:20 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Suman Anna <s-anna@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Subject: Re: [PATCH V2 2/4] dt-bindings: arm: ti: am642/am654: Allow for SoC
+ only compatibles
+Message-ID: <20211004185920.26iyyq3xz7vjam5i@gentile>
+References: <20210925201430.11678-1-nm@ti.com>
+ <20210925201430.11678-3-nm@ti.com>
+ <YVs/v7g8wwLq/ujb@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-17-sean.anderson@seco.com>
+In-Reply-To: <YVs/v7g8wwLq/ujb@robh.at.kernel.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:27PM -0400, Sean Anderson wrote:
-> Some modules have something at SFP_PHY_ADDR which isn't a PHY. If we try to
-> probe it, we might attach genphy anyway if addresses 2 and 3 return
-> something other than all 1s. To avoid this, add a quirk for these modules
-> so that we do not probe their PHY.
+On 12:54-20211004, Rob Herring wrote:
+> On Sat, Sep 25, 2021 at 03:14:28PM -0500, Nishanth Menon wrote:
+> > Maintain consistency in K3 SoCs by allowing AM654 and AM642 platforms
+> > just state SoC compatibles without specific board specific compatibles
+> > aligned with what we have done for J721E/J7200 platforms as well.
 > 
-> The particular module in this case is a Finisar SFP-GB-GE-T. This module is
-> also worked around in xgbe_phy_finisar_phy_quirks() by setting the support
-> manually. However, I do not believe that it has a PHY in the first place:
-> 
-> $ i2cdump -y -r 0-31 $BUS 0x56 w
->      0,8  1,9  2,a  3,b  4,c  5,d  6,e  7,f
-> 00: ff01 ff01 ff01 c20c 010c 01c0 0f00 0120
-> 08: fc48 000e ff78 0000 0000 0000 0000 00f0
-> 10: 7800 00bc 0000 401c 680c 0300 0000 0000
-> 18: ff41 0000 0a00 8890 0000 0000 0000 0000
-> 
-> The first several addresses contain the same value, which should almost
-> never be the case for a proper phy. In addition, the "OUI" 00-7F-C3 does
-> not match Finisar's OUI of 00-90-65 (or any other OUI for that matter).
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> This is the wrong direction IMO. Why do you want this other than 
+> alignment?
 
-Hi Sean
+Many downstream boards tend not to have an specific compatible at least
+during initial phase and I would like folks to start using checks to
+make sure that the easy to catch issues via match against bindings are
+already handled.
 
-This does not really have anything to do with PCS. I would send it on
-its own.
+I am curious as to why you think this is wrong - because we permit an
+alternative option that allows the board files to be less specific?
 
-    Andrew
+[...]
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
