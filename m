@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F0B4208D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D334208D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhJDJ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53280 "EHLO mail.kernel.org"
+        id S232563AbhJDJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232117AbhJDJ5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28450610A2;
-        Mon,  4 Oct 2021 09:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633341314;
-        bh=YFCi2y5We01CO4jWthApcileUf1E68BaLX3HsCWtl4g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HiukkA2c94NU48TdEzLg8LZww7TRptX/ah4YMnIYPeRxf3NmkhissA/Zc3/wOXQJI
-         pVJSjAzNHxbRN6YV/OCJNcDnqpAw3dgH24DfzlEmPIiupYstfw/K/DKleugtzY0Bps
-         kqDgqs4M04+9SSJ52oOkU4Iz4T5tTGDk4npv4E3lAcQSNAUAEC6RgyQk7ybH1kC7SF
-         6uXD4GFixHgvMpFGn2QgIpa9IHTbEivmQeXb+klw4nNn6jdi07tIXR1qTPwA8GxEGY
-         NaPqsewByR+1pj7ZrxA9OX+8AYPTNqB92a9ek8N8iNTvQBaiKB0dRrLkaZ291mfZ7s
-         2RtwJ2BJUXWPg==
-Date:   Mon, 4 Oct 2021 11:55:11 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christian Zigotzky <chzigotzky@xenosoft.de>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        "R.T.Dickinson" <rtd@a-eon.com>
-Subject: Re: Add Apple M1 support to PASemi i2c driver
-Message-ID: <YVrPf4yVFm184LEG@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Sven Peter <sven@svenpeter.dev>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>, Hector Martin <marcan@marcan.st>,
-        mohamed.mediouni@caramail.com, Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        Matthew Leaman <matthew@a-eon.biz>, "R.T.Dickinson" <rtd@a-eon.com>
-References: <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
- <1B71F6A3-6467-46EF-858F-82E93D54365D@xenosoft.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZuPCIRixoUsFfcCu"
-Content-Disposition: inline
-In-Reply-To: <1B71F6A3-6467-46EF-858F-82E93D54365D@xenosoft.de>
+        id S232487AbhJDJ5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 05:57:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBA336128A;
+        Mon,  4 Oct 2021 09:55:15 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mXKgj-00EaLM-Na; Mon, 04 Oct 2021 10:55:13 +0100
+Date:   Mon, 04 Oct 2021 10:55:13 +0100
+Message-ID: <87bl45ru66.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 1/2] KVM: arm64: Fix host stage-2 PGD refcount
+In-Reply-To: <20211004090328.540941-2-qperret@google.com>
+References: <20211004090328.540941-1-qperret@google.com>
+        <20211004090328.540941-2-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, tabba@google.com, dbrazdil@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Quentin,
 
---ZuPCIRixoUsFfcCu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, 04 Oct 2021 10:03:13 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> The KVM page-table library refcounts the pages of concatenated stage-2
+> PGDs individually. However, the host's stage-2 PGD is currently managed
+> by EL2 as a single high-order compound page, which can cause the
+> refcount of the tail pages to reach 0 when they really shouldn't, hence
+> corrupting the page-table.
 
+nit: this comment only applies to the protected mode, right? As far as
+I can tell, 'classic' KVM is just fine.
 
-> i2c-8	i2c       	PA Semi SMBus adapter at 0x(____ptrval____)	I2C adapter
-> i2c-9	i2c       	PA Semi SMBus adapter at 0x(____ptrval____)	I2C adapter
-> i2c-10	i2c       	PA Semi SMBus adapter at 0x(____ptrval____)	I2C adapter
+> 
+> Fix this by introducing a new hyp_split_page() helper in the EL2 page
+> allocator (matching EL1's split_page() function), and make use of it
 
-As Sven correctly switched from %lx to %p, this is intended behaviour.
-Run 'i2cdetect' as root to see the values again.
+uber nit: split_page() is not an EL1 function. more of a standard
+kernel function.
 
+> from host_s2_zalloc_page().
+> 
+> Fixes: 1025c8c0c6ac ("KVM: arm64: Wrap the host with a stage 2")
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/gfp.h |  1 +
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c |  6 +++++-
+>  arch/arm64/kvm/hyp/nvhe/page_alloc.c  | 14 ++++++++++++++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> index fb0f523d1492..0a048dc06a7d 100644
+> --- a/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> @@ -24,6 +24,7 @@ struct hyp_pool {
+>  
+>  /* Allocation */
+>  void *hyp_alloc_pages(struct hyp_pool *pool, unsigned short order);
+> +void hyp_split_page(struct hyp_page *page);
+>  void hyp_get_page(struct hyp_pool *pool, void *addr);
+>  void hyp_put_page(struct hyp_pool *pool, void *addr);
+>  
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index bacd493a4eac..93a79736c283 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -35,7 +35,11 @@ const u8 pkvm_hyp_id = 1;
+>  
+>  static void *host_s2_zalloc_pages_exact(size_t size)
+>  {
+> -	return hyp_alloc_pages(&host_s2_pool, get_order(size));
+> +	void *addr = hyp_alloc_pages(&host_s2_pool, get_order(size));
+> +
+> +	hyp_split_page(hyp_virt_to_page(addr));
 
---ZuPCIRixoUsFfcCu
-Content-Type: application/pgp-signature; name="signature.asc"
+The only reason this doesn't lead to a subsequent memory leak is that
+concatenated page tables are always a power of two, right?
 
------BEGIN PGP SIGNATURE-----
+If so, that deserves a comment, because I don't think this works in
+the general case unless you actively free the pages that are between
+size and (1 << order).
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFaz38ACgkQFA3kzBSg
-KbbRJw//SKg3woVJNLP5I2QTmOHwRjX94iyEpd1AYK4npUv2H1H2YFfpN91e3rt8
-I3315rsWg3EABiiMS2ssAv3lNfSIXZcGTaGpFAb6mWYtXr42otvLDhl71AlXxRIZ
-QnvyJziR6z7jgWMIxLIW2Wo8dAw9GxTd1UKEQOFSldRIQ1mQ3FXeGjjqWTFyQWGH
-8R8ntfHWURCH8+BdZ4UnSPi7RkaTBiVDn3IkmSUZmkleD2in0U998vl0AZ8zJ2of
-8iTbqX8Lbrah6p8pEu9zxzvhOQB/BR28LhFEpaDuaq2ikBxmR1uY7GG+PHlhwBHD
-YjxMWsm9nZiYWbmrW1c/pBvNwsgpc/VbB04X2JlujXTacsVQmIPqPei3GMRpHWiY
-3KhyfByT0tSy48s/Nly59uimegO/dVYmCK90T17POjga6srqkAYHU7yM336bMgwO
-hayW1aWjCKyx+AwI0169BKOlo2ODPmDldBqm7jOb/a89jg/28fvqmP8i+B2h4ckc
-09b4HHvLt4lC8xNPIS5nxqoTKuHVe5SwJpeirKW8Af02yL40ypnSxiyjBG/BGeOd
-xGdX1clp0VpJZvHw1IMDWVj0T3yo6Y8MrLDLEX6hHakpcgixl08s46qOpDcGwUdX
-0sJ3EkOqDTCraHZak/wJTI1AIipKxJ0MurcmUYLx+ArrgtjalVQ=
-=PnxX
------END PGP SIGNATURE-----
+> +
+> +	return addr;
+>  }
+>  
+>  static void *host_s2_zalloc_page(void *pool)
+> diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> index 41fc25bdfb34..a6e874e61a40 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> @@ -193,6 +193,20 @@ void hyp_get_page(struct hyp_pool *pool, void *addr)
+>  	hyp_spin_unlock(&pool->lock);
+>  }
+>  
+> +void hyp_split_page(struct hyp_page *p)
+> +{
+> +	unsigned short order = p->order;
+> +	unsigned int i;
+> +
+> +	p->order = 0;
+> +	for (i = 1; i < (1 << order); i++) {
+> +		struct hyp_page *tail = p + i;
+> +
+> +		tail->order = 0;
+> +		hyp_set_page_refcounted(tail);
+> +	}
+> +}
+> +
+>  void *hyp_alloc_pages(struct hyp_pool *pool, unsigned short order)
+>  {
+>  	unsigned short i = order;
 
---ZuPCIRixoUsFfcCu--
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
