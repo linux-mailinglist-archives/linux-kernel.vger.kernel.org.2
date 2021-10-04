@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A37421523
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964BE421529
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhJDR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:28:45 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41313 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234027AbhJDR2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:28:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UqagJ8d_1633368411;
-Received: from 30.25.232.32(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UqagJ8d_1633368411)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 05 Oct 2021 01:26:52 +0800
-Message-ID: <8d8fb192-bd8d-8a08-498d-ca7204d4a716@linux.alibaba.com>
-Date:   Tue, 5 Oct 2021 01:26:50 +0800
+        id S234533AbhJDR3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:29:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234027AbhJDR3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:29:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1106F61407;
+        Mon,  4 Oct 2021 17:27:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633368451;
+        bh=dJcTojdyTEwddc1tq3Mz5/yx6tuByGJte5YbwxOJ/qE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u38j+M9Z0NMyTSe/vkk5YR+NuuIOq2/cDqp7pa+47ihZpEHk9bQKf//Sk0b9TSFkh
+         wX7bFjVWFsYAn0tokHPxZ9WnMys59Pqs4izW0l33ueQ6pQMtM58hRBIM8MTQ0fYoIH
+         xnQ6aujAjtcPVvHFwHpa+7Y6fh0UEXx/1uMnvW39K+l8ZHpAcwWmtdBQWVdTI0SSw6
+         H2fZcWOL99uBzPdjt/ZnHr7/UEY62dwPXxDYMBGVj5ZBs7XMdH+oq/SRK2zn+1v2+q
+         s5gQc22UyPe+WkL653WAONpaABIGREEMv+sa7dFHBu5Z8/J886UvUXODvVcLQsPxsA
+         SnfuuWLD20P9g==
+Date:   Mon, 4 Oct 2021 18:27:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+Message-ID: <YVs5gT1rj9HiAW5p@sirena.org.uk>
+References: <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+ <YVr4USeiIoQJ0Pqh@sirena.org.uk>
+ <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk>
+ <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
+ <20211004165127.GZ3544071@ziepe.ca>
+ <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
+ <20211004171301.GA3544071@ziepe.ca>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>
-References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
- <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
- <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
- <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
- <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org>
- <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
- <YVT+KWFA8hfSKU+m@casper.infradead.org>
- <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OBXRwq2dYySOzdLn"
+Content-Disposition: inline
+In-Reply-To: <20211004171301.GA3544071@ziepe.ca>
+X-Cookie: If it heals good, say it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-I have run our cases these two days to stress test new Patch #1. The new 
-Patch #1 mainly add filemap_invalidate_{un}lock before and after 
-truncate_pagecache(), basing on original Patch #1. And the crash has not 
-happened.
 
-Now, I keep the original Patch #1, then adding the code below which 
-suggested by liu song (I'm not sure which one I should add in the next 
-version, Suggested-by or Signed-off-by? If you know, please remind me).
+--OBXRwq2dYySOzdLn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--               if (filemap_nr_thps(inode->i_mapping))
-+               if (filemap_nr_thps(inode->i_mapping)) {
-+                       filemap_invalidate_lock(inode->i_mapping);
-                         truncate_pagecache(inode, 0);
-+                       filemap_invalidate_unlock(inode->i_mapping);
-+               }
+On Mon, Oct 04, 2021 at 02:13:01PM -0300, Jason Gunthorpe wrote:
 
-And the reason for keeping the original Patch #1 is mainly to fix the 
-race between collapse_file and truncate_pagecache. It seems necessary. 
-Despite the two-day test, I did not reproduce this race any more.
+> I'm kind of surprised a scheme like this didn't involve a FW call
+> after Linux is done with the CPUs to quiet all the HW and let it
+> sleep, I've built things that way before at least.
 
-In addition, I also test the below method:
+That's a *lot* of code to put in firmware if you can't physically power
+most of the system down.
 
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 3f47190f98a8..33604e4ce60a 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -210,8 +210,6 @@ invalidate_complete_page(struct address_space 
-*mapping, struct page *page)
+--OBXRwq2dYySOzdLn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  int truncate_inode_page(struct address_space *mapping, struct page *page)
-  {
--       VM_BUG_ON_PAGE(PageTail(page), page);
--
-         if (page->mapping != mapping)
-                 return -EIO;
+-----BEGIN PGP SIGNATURE-----
 
-I am not very sure this VM_BUG_ON_PAGE(PageTail) is what Hugh means. And
-the test results show that only removing this VM_BUG_ON_PAGE(PageTail) 
-has no effect. So, I still keep the original Patch #1 to fix one race.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFbOYAACgkQJNaLcl1U
+h9BBOgf/cS+47jW34sQ7ZOwD7+zAxLV9SSEFG1hnk4nASvAyLh6auA2lINf4TVaX
+e6o249sP3XJY3GoHcVGJePFR5Ocrchw/JbeGwu4//rhoHQtKpvnt9DHiqkzLlKXC
+OltBTHIF7Yg+lSG9bQsVXKN8hXP/KHV26P20aS1srEqk6DqSd/AHvtbZ6kSQowoV
+z6aVUeI2bUll0phJOzpmdhtISswUKJxeK3eOqGZgqnXIyunBuz1s5eVpFxNcPAZW
+x/PF7XQtncpM8lPcaEVDV9p12WN7dUeqY8iPoeL5bVTOrktO45sOPM/ASx9QUyZT
+OeIJEqCS3C0E5oIj0eiYDqGUmRB6mw==
+=QdhR
+-----END PGP SIGNATURE-----
 
-I plan to send Patch v3 after receiving your reply.
-
-Thanks!
-
-On 9/30/21 8:41 AM, Song Liu wrote:
-> On Wed, Sep 29, 2021 at 5:02 PM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Wed, Sep 29, 2021 at 04:41:48PM -0700, Song Liu wrote:
->>> The issue is NOT caused by concurrent khugepaged:collapse_file() and
->>> truncate_pagecache(inode, 0). With some printks, we can see a clear
->>> time gap (>2 second )  between collapse_file() finishes, and
->>> truncate_pagecache() (which crashes soon). Therefore, my earlier
->>> suggestion that adds deny_write_access() to collapse_file() does NOT
->>> work.
->>>
->>> The crash is actually caused by concurrent truncate_pagecache(inode, 0).
->>> If I change the number of write thread in stress_madvise_dso.c to one,
->>> (IOW, one thread_read and one thread_write), I cannot reproduce the
->>> crash anymore.
->>>
->>> I think this means we cannot fix this issue in collapse_file(), because it
->>> finishes long before the crash.
->>
->> Ah!  So are we missing one or more of these locks:
->>
->>          inode_lock(inode);
->>          filemap_invalidate_lock(mapping);
->>
->> in the open path?
-> 
-> The following fixes the crash in my test. But I am not sure whether this is the
-> best fix.
-> 
-> Rongwei, could you please run more tests on it?
-> 
-> Thanks,
-> Song
-> 
-> 
-> diff --git i/fs/open.c w/fs/open.c
-> index daa324606a41f..d13c4668b2e53 100644
-> --- i/fs/open.c
-> +++ w/fs/open.c
-> @@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f,
->                   * of THPs into the page cache will fail.
->                   */
->                  smp_mb();
-> -               if (filemap_nr_thps(inode->i_mapping))
-> +               if (filemap_nr_thps(inode->i_mapping)) {
-> +                       filemap_invalidate_lock(inode->i_mapping);
->                          truncate_pagecache(inode, 0);
-> +                       filemap_invalidate_unlock(inode->i_mapping);
-> +               }
->          }
-> 
->          return 0;
-> 
+--OBXRwq2dYySOzdLn--
