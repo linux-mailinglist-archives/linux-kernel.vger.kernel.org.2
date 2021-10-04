@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A540B420D1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C11420FA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235053AbhJDNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
+        id S237750AbhJDNgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235789AbhJDNJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09CB661AEC;
-        Mon,  4 Oct 2021 13:03:26 +0000 (UTC)
+        id S237790AbhJDNe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:34:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D06AB61B94;
+        Mon,  4 Oct 2021 13:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352607;
-        bh=OSRvumG2QaN5I2Fyok2rb7aYzcqO2eo/PN0ovzWbOJU=;
+        s=korg; t=1633353343;
+        bh=Ngzd6vnYAgy7Jn4kK3/xn3EoxOXbL2tA7BSMXCQYXfw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQ6rgjg8rPKtvoV4rD2duR4PU0aVmJTLXyRRe1C0KTza8AYP3E6XSC50VWY0smyX2
-         ukVOv5RSCWA2tqPKYt7cWaf+el1O9YKuX6C4LVts22FfejQGIuMfKmbp5wbiKlza6G
-         jftx3NF9Q18Luu5e+tMIYo+xtYoPlPfoD0m8+hH4=
+        b=W6mwLD/KbPK11tpRVh8a/O4KFWPFz3nfv45HF1cV2blrNLEeVFKM+Q5PyTWFFSlkX
+         qwCmuiod5Yz6pzlHjmB9XV1ua/er7UlypnLZ6uEUWWw/MVlJX52fg93cHwutOhPPiu
+         vioNnNEQU55CiD63C6qpp4Frh7hB7Ap/SquedUy8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Qiumiao Zhang <zhangqiumiao1@huawei.com>
-Subject: [PATCH 4.19 50/95] tcp: address problems caused by EDT misshaps
+        stable@vger.kernel.org,
+        syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 090/172] mac80211: limit injected vht mcs/nss in ieee80211_parse_tx_radiotap
 Date:   Mon,  4 Oct 2021 14:52:20 +0200
-Message-Id: <20211004125035.212480377@linuxfoundation.org>
+Message-Id: <20211004125047.901183239@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,95 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-commit 9efdda4e3abed13f0903b7b6e4d4c2102019440a upstream.
+[ Upstream commit 13cb6d826e0ac0d144b0d48191ff1a111d32f0c6 ]
 
-When a qdisc setup including pacing FQ is dismantled and recreated,
-some TCP packets are sent earlier than instructed by TCP stack.
+Limit max values for vht mcs and nss in ieee80211_parse_tx_radiotap
+routine in order to fix the following warning reported by syzbot:
 
-TCP can be fooled when ACK comes back, because the following
-operation can return a negative value.
+WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
+WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
+Modules linked in:
+CPU: 0 PID: 10717 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
+RIP: 0010:ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
+RSP: 0018:ffffc9000186f3e8 EFLAGS: 00010216
+RAX: 0000000000000618 RBX: ffff88804ef76500 RCX: ffffc900143a5000
+RDX: 0000000000040000 RSI: ffffffff888f478e RDI: 0000000000000003
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000100
+R10: ffffffff888f46f9 R11: 0000000000000000 R12: 00000000fffffff8
+R13: ffff88804ef7653c R14: 0000000000000001 R15: 0000000000000004
+FS:  00007fbf5718f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2de23000 CR3: 000000006a671000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ ieee80211_monitor_select_queue+0xa6/0x250 net/mac80211/iface.c:740
+ netdev_core_pick_tx+0x169/0x2e0 net/core/dev.c:4089
+ __dev_queue_xmit+0x6f9/0x3710 net/core/dev.c:4165
+ __bpf_tx_skb net/core/filter.c:2114 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2139 [inline]
+ __bpf_redirect+0x5ba/0xd20 net/core/filter.c:2162
+ ____bpf_clone_redirect net/core/filter.c:2429 [inline]
+ bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2401
+ bpf_prog_eeb6f53a69e5c6a2+0x59/0x234
+ bpf_dispatcher_nop_func include/linux/bpf.h:717 [inline]
+ __bpf_prog_run include/linux/filter.h:624 [inline]
+ bpf_prog_run include/linux/filter.h:631 [inline]
+ bpf_test_run+0x381/0xa30 net/bpf/test_run.c:119
+ bpf_prog_test_run_skb+0xb84/0x1ee0 net/bpf/test_run.c:663
+ bpf_prog_test_run kernel/bpf/syscall.c:3307 [inline]
+ __sys_bpf+0x2137/0x5df0 kernel/bpf/syscall.c:4605
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
 
-    tcp_time_stamp(tp) - tp->rx_opt.rcv_tsecr;
-
-Some paths in TCP stack were not dealing properly with this,
-this patch addresses four of them.
-
-Fixes: ab408b6dc744 ("tcp: switch tcp and sch_fq to new earliest departure time model")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com
+Fixes: 646e76bb5daf4 ("mac80211: parse VHT info in injected frames")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Link: https://lore.kernel.org/r/c26c3f02dcb38ab63b2f2534cb463d95ee81bb13.1632141760.git.lorenzo@kernel.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_input.c |   16 ++++++++++------
- net/ipv4/tcp_timer.c |   10 ++++++----
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ net/mac80211/tx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -581,10 +581,12 @@ static inline void tcp_rcv_rtt_measure_t
- 		u32 delta = tcp_time_stamp(tp) - tp->rx_opt.rcv_tsecr;
- 		u32 delta_us;
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 0208f68af394..751e601c4623 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2209,7 +2209,11 @@ bool ieee80211_parse_tx_radiotap(struct sk_buff *skb,
+ 			}
  
--		if (!delta)
--			delta = 1;
--		delta_us = delta * (USEC_PER_SEC / TCP_TS_HZ);
--		tcp_rcv_rtt_update(tp, delta_us, 0);
-+		if (likely(delta < INT_MAX / (USEC_PER_SEC / TCP_TS_HZ))) {
-+			if (!delta)
-+				delta = 1;
-+			delta_us = delta * (USEC_PER_SEC / TCP_TS_HZ);
-+			tcp_rcv_rtt_update(tp, delta_us, 0);
-+		}
- 	}
- }
+ 			vht_mcs = iterator.this_arg[4] >> 4;
++			if (vht_mcs > 11)
++				vht_mcs = 0;
+ 			vht_nss = iterator.this_arg[4] & 0xF;
++			if (!vht_nss || vht_nss > 8)
++				vht_nss = 1;
+ 			break;
  
-@@ -2931,9 +2933,11 @@ static bool tcp_ack_update_rtt(struct so
- 	if (seq_rtt_us < 0 && tp->rx_opt.saw_tstamp && tp->rx_opt.rcv_tsecr &&
- 	    flag & FLAG_ACKED) {
- 		u32 delta = tcp_time_stamp(tp) - tp->rx_opt.rcv_tsecr;
--		u32 delta_us = delta * (USEC_PER_SEC / TCP_TS_HZ);
- 
--		seq_rtt_us = ca_rtt_us = delta_us;
-+		if (likely(delta < INT_MAX / (USEC_PER_SEC / TCP_TS_HZ))) {
-+			seq_rtt_us = delta * (USEC_PER_SEC / TCP_TS_HZ);
-+			ca_rtt_us = seq_rtt_us;
-+		}
- 	}
- 	rs->rtt_us = ca_rtt_us; /* RTT of last (S)ACKed packet (or -1) */
- 	if (seq_rtt_us < 0)
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -40,15 +40,17 @@ static u32 tcp_clamp_rto_to_user_timeout
- {
- 	struct inet_connection_sock *icsk = inet_csk(sk);
- 	u32 elapsed, start_ts;
-+	s32 remaining;
- 
- 	start_ts = tcp_retransmit_stamp(sk);
- 	if (!icsk->icsk_user_timeout || !start_ts)
- 		return icsk->icsk_rto;
- 	elapsed = tcp_time_stamp(tcp_sk(sk)) - start_ts;
--	if (elapsed >= icsk->icsk_user_timeout)
-+	remaining = icsk->icsk_user_timeout - elapsed;
-+	if (remaining <= 0)
- 		return 1; /* user timeout has passed; fire ASAP */
--	else
--		return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(icsk->icsk_user_timeout - elapsed));
-+
-+	return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(remaining));
- }
- 
- /**
-@@ -210,7 +212,7 @@ static bool retransmits_timed_out(struct
- 				(boundary - linear_backoff_thresh) * TCP_RTO_MAX;
- 		timeout = jiffies_to_msecs(timeout);
- 	}
--	return (tcp_time_stamp(tcp_sk(sk)) - start_ts) >= timeout;
-+	return (s32)(tcp_time_stamp(tcp_sk(sk)) - start_ts - timeout) >= 0;
- }
- 
- /* A write timeout has occurred. Process the after effects. */
+ 		/*
+-- 
+2.33.0
+
 
 
