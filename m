@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6D2420AFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F51420AFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJDMlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:41:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhJDMlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:41:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E27F61373;
-        Mon,  4 Oct 2021 12:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633351164;
-        bh=Ur9SkBk9je7Okn5k0c3Z6yj9QWGp3a5zcr3bughsSmo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fEG77MXZRr+rZN9X/Pg/OIa4mxK/bU40dtmCVwoz6idUce4uTpqE5l/xZURIfjwVy
-         Que54cCg/h55nx4f6z8YdwcBDFIOVh07EmG/jEM4IkFXmLRV44kyNDfXqgVuhqokKU
-         qDZzzWUiYcMiEp2nwdl+AWqoezmbcxGUD/OGFDDrTG5JYI914GBlczbAn0v0KVodzg
-         cU2SL2Gj2PQyV/NGDPTkUKYi2AURK+2pl3Ljn3GIWuXiSwyiZoS/+r5SRGwqzg8MBi
-         3grXo4Vu8DUlXSSNW890iQ/ALlCVOP+83JKP2RqupS4Xia5/Jzn5YVs7IuVOV//YX7
-         BYpTPnGDVnyzQ==
-Date:   Mon, 4 Oct 2021 20:39:18 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: Re: [PATCH] arm64: dts: imx8mm-kontron-n801x-som: do not allow to
- switch off buck2
-Message-ID: <20211004123917.GH15650@dragon>
-References: <20210915120325.20248-1-heiko.thiery@gmail.com>
+        id S232577AbhJDMlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhJDMlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:41:21 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81FAC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:39:32 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so4385338pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 05:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O5PG0hNVQuZSE12+d9FlPhmW1OMlHH2PE3/HV0fc7js=;
+        b=zCa4dJaDImMk57hpwlY9GYF+yCSBgkEg0Nfxc2802Dc7xtNm9hz7ulY7yZThQqqME1
+         Bnt3L0bltsch7KTWHr6gTC/KLnF3cu/km6Z+KrK5k4LUoI394XgsRCGDY0dJ5N436Xkv
+         8Lhc2OzBnQpn0ongyLpmY0L+L+c+eqQ+XCWBL0j+dZzjTrvcIbizkm4iqjgFolrTd2nY
+         xpSuDFkEhZGGLjImKUxaMIhxaJO2TvR2pawcxX7xSV18ysxJOfv8jcrG2rJ9K6XZdjKs
+         o8R8e/OD3bJu+65CFky6liCc48GBwVIklaM3DEgm29tPPxWNBPpoHRNwL2vOphVbCBLn
+         Qv7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O5PG0hNVQuZSE12+d9FlPhmW1OMlHH2PE3/HV0fc7js=;
+        b=xWV0Tw57ZiYMqCrCvfC1oDNU730+lNeqjPv0k9Z3wryX4Q/o4AmDEBWxvk/YK/Cnan
+         27K/w/uEkZOYXhiC/aPMXmQqhUJ9OhBty7JZnqkKcW8IksJ8H3HMNRN/ULzzrz0+gQAJ
+         UfIm9Q5Eq+S/AJ8WGCbIbu63it4aS322vi3Bwqyd32VlRfcPXaQ5l9aTCbNDOMCq+/67
+         us4ca1YDazlS5XgrYU27JIHiNajkxQUhAqlzH18aFiOh1IZswSL4eWDMF/PSESM/W651
+         qPzcANtavu4mmd2Pf+9wHFtS/Nw8K5LpA+jW8M44YTGhWnC1pRpadR0nFsy/x3pb8U46
+         hbsw==
+X-Gm-Message-State: AOAM530bgkoLnqdJ7butINUwiq7mmvaFXsgNOJfZMA5NrfAvsuoYR/Gc
+        kbTp44yVYefytxr6WReYYtgS
+X-Google-Smtp-Source: ABdhPJyR0xmWPPEnJxvOpWnT5V1wOjU5KDQKOy3+IjK6Qes2PM2DjbcIn94b5dR4UkHCgqvwfXJaMw==
+X-Received: by 2002:a17:902:6545:b0:13e:51ef:3ba with SMTP id d5-20020a170902654500b0013e51ef03bamr23252391pln.61.1633351172153;
+        Mon, 04 Oct 2021 05:39:32 -0700 (PDT)
+Received: from localhost.localdomain ([120.138.13.170])
+        by smtp.gmail.com with ESMTPSA id b15sm14103036pgs.13.2021.10.04.05.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 05:39:31 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] MAINTAINERS: Add entry for Qualcomm NAND controller driver
+Date:   Mon,  4 Oct 2021 18:09:26 +0530
+Message-Id: <20211004123926.53462-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915120325.20248-1-heiko.thiery@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 02:03:26PM +0200, Heiko Thiery wrote:
-> The buck2 output of the PMIC is the VDD core voltage of the cpu.
-> Switching off this will poweroff the CPU. Add the 'regulator-always-on'
-> property to avoid this.
-> 
-> Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+Since I maintain the dt-binding for this controller, I'm stepping
+forward to maintain the driver also.
 
-Applied, thanks!
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2c9165e4e816..8cfd8ae9e69e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15580,6 +15580,14 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
+ F:	drivers/regulator/vqmmc-ipq4019-regulator.c
+ 
++QUALCOMM NAND CONTROLLER DRIVER
++M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++L:	linux-mtd@lists.infradead.org
++L:	linux-arm-msm@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
++F:	drivers/mtd/nand/raw/qcom_nandc.c
++
+ QUALCOMM RMNET DRIVER
+ M:	Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+ M:	Sean Tranchetti <stranche@codeaurora.org>
+-- 
+2.25.1
+
