@@ -2,133 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D75421497
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B17B421494
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237863AbhJDQ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237561AbhJDQ7U (ORCPT
+        id S237857AbhJDQ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:59:22 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:46848 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235803AbhJDQ7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 12:59:20 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9784EC061745;
-        Mon,  4 Oct 2021 09:57:31 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id s55so13983978pfw.4;
+Received: by mail-ot1-f41.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so22361944ota.13;
         Mon, 04 Oct 2021 09:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HEf/I/hk3U5Zpvreh8jDOQt8rMtCGugDMTgqZTR6bsc=;
-        b=KBTZl0ZBXlVWC9XlsrU/j2wITUAo0PIQZ4fM0JOwdglV7xjyheU43HwGaZyyFyAzSw
-         qICRLCHkiXTZ6IU+EzC0XKuFb8BX0iB84jKtmMO9buOdUrU7Oz4FZCp9Twqh8Kc0VHxB
-         Cvzhwhg4oDgo+bxJfipsf1PhypV4J1pOi7B/TbcAJ8encQBK71JtygnSLXIh1Iu8snwa
-         YO+lR13hVX2EhTx7+qEBzr0OG9Fq/zS8wRv12sbKserX//H8cDi9HDZk/GW0SRK5/4u1
-         C31Zlp8RhOGgbvdB2a5yjGzFKe4XLdShtWP7HLiEGbJ/jCJiDXkVwvzyXfiSL+vyMPQu
-         LCAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HEf/I/hk3U5Zpvreh8jDOQt8rMtCGugDMTgqZTR6bsc=;
-        b=OKy+LmtV/8EZC4uhjOxSXO1ZWjp1h6w9vodWTf9O1ebgO/LjwxqHTB/zBRC7YRNH23
-         QF8/Cznh/Bfm9zMOEtVdxFxXERxohdMCXKJOUAx164LOlY74Gqm5kao9c+YgzjwHc1x+
-         EDmmJ+KDqdGh/rUAOiWT2yMXtNRe480KFHnURn0APkF+XVZHhUUi6mAEG/j8Kiq4DiEU
-         bUKgPmzgruaiLoB22j9CLXyw8aPK8OG8NGoedHwVNAdfyICKJRNLfF8G/N+rnsRbMaRM
-         4x3n7DULWO9Quoir0sSUikhoVgUd6G/JRcrUdp8XCJLMPuRjg1Xk4b2wQ57nIJrYTDKe
-         9ssQ==
-X-Gm-Message-State: AOAM5335clmmA8gvgUoLrNyMrAiUNytuRo+xsrgvt8DwvI98CXPhihSl
-        0bkedDZSg0kiPpsX9wW1eSDhdlr7fIQ=
-X-Google-Smtp-Source: ABdhPJxXwVUsaeGBCQzqf8eS8c0cXt3lJpG5zqMzeMai5/73q4QPOURHKtVKoIpLjmlYleiZB/rdAQ==
-X-Received: by 2002:a63:a03:: with SMTP id 3mr11839165pgk.326.1633366650702;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ih10pMBW5lUPCC/x9rLmG7kgKn8xGXvYQdK5s5DKY/o=;
+        b=2yGafm1w/euuEn1ECHFDM2Ek44RvNwe4VK6ZzBlrmCr/0f4+anjd85j0tjJXVLEc7+
+         e8FI/xbkiVmD9N5CBDBHH39ojIuLt1RhQoOc0IjaBmTqUYYn6m+44reXyrYQl8RoQ61I
+         qE2xEdrVB+LGSsN+HxucQHL2h1qMFlzCJxqeoyuYyxWo2sE2nD+U2Mfhvh7XSWZXLc7A
+         1jWTvJCAOM8ib3Z+gdKJTuuRb4h0PxM6fH2kKoj2CAtkaT+Uq6lj4DPpu8FKy7VeYfEm
+         HwcNXx7vHQ4DhSasl09JdrfsI/O8OQ/d9O9osS1KOt/1lT0I5BiTba6PI8dMOXYirozD
+         H0mA==
+X-Gm-Message-State: AOAM5310/UdPXGMPFvohzcMTCPbn1qSLMLgigM2LR+lvcbYg8iS5tdxY
+        HizTOZNO0uG//LMiW6uqKg==
+X-Google-Smtp-Source: ABdhPJwNC9tnHciX03F9NzQzjfCfZ8I0KRSJ7pyztQajIKv6PxnNqi55xufKjBxiyphYX0bFvE61uA==
+X-Received: by 2002:a9d:8a7:: with SMTP id 36mr10021321otf.263.1633366651128;
+        Mon, 04 Oct 2021 09:57:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s7sm2720818oiw.27.2021.10.04.09.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 04 Oct 2021 09:57:30 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w185sm12075224pfd.113.2021.10.04.09.57.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 09:57:30 -0700 (PDT)
-Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
- handler
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        nsaenz@kernel.org, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
- <20211001175422.GA53652@sirena.org.uk>
- <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
- <YVr4USeiIoQJ0Pqh@sirena.org.uk> <20211004131756.GW3544071@ziepe.ca>
- <YVsLxHMCdXf4vS+i@sirena.org.uk> <20211004154436.GY3544071@ziepe.ca>
- <YVssWYaxuQDi8jI5@sirena.org.uk>
- <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
- <YVsxNiyZ3CuZTXqE@sirena.org.uk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <72d8920c-ccf2-50bf-36fd-1585f3932fd6@gmail.com>
-Date:   Mon, 4 Oct 2021 09:57:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Received: (nullmailer pid 1469674 invoked by uid 1000);
+        Mon, 04 Oct 2021 16:57:27 -0000
+Date:   Mon, 4 Oct 2021 11:57:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Olivier Moysan <olivier.moysan@foss.st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v3 1/7] dt-bindings: iio: stm32-adc: add generic channel
+ binding
+Message-ID: <YVsyd+O08h62NVwi@robh.at.kernel.org>
+References: <20210924083410.12332-1-olivier.moysan@foss.st.com>
+ <20210924083410.12332-2-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <YVsxNiyZ3CuZTXqE@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924083410.12332-2-olivier.moysan@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 9:52 AM, Mark Brown wrote:
-> On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
->> On 10/4/21 9:31 AM, Mark Brown wrote:
+On Fri, Sep 24, 2021 at 10:34:04AM +0200, Olivier Moysan wrote:
+> Add ADC generic channel binding. This binding should
+> be used as an alternate to legacy channel properties
+> whenever possible.
+> ADC generic channel binding allows to identify supported
+> internal channels through the following reserved label names:
+> "vddcore", "vrefint" and "vbat".
+> This binding also allows to set a different sampling time
+> for each channel.
 > 
->>> an issue, someone could press a button or whatever.  Frankly for SPI the
->>> quiescing part doesn't seem like logic that should be implemented in
->>> drivers, it's a subsystem level thing since there's nothing driver
->>> specific about it.
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> ---
+>  .../bindings/iio/adc/st,stm32-adc.yaml        | 100 ++++++++++++++++--
+>  1 file changed, 93 insertions(+), 7 deletions(-)
 > 
->> Surely the SPI subsystem can help avoid queuing new transfers towards
->> the SPI controller while the controller can shut down the resources that
->> only it knows about.
-> 
-> Yes, that's what I was saying.
-> 
->>> In the case of this specific driver I'm still not clear that the best
->>> thing isn't just to delete the shutdown callback and let any ongoing
->>> transfers complete, though I guess there'd be issues in kexec cases with
->>> long enough tansfers.
-> 
->> No please don't, I should have arguably justified the reasons why
->> better, but the main reason is that one of the platforms on which this
->> driver is used has received extensive power management analysis and
->> changes, and shutting down every bit of hardware, including something as
->> small as a SPI controller, and its clock (and its PLL) helped meet
->> stringent power targets.
-> 
-> OK, so it's similar to a lot of the other embedded cases where it's for
-> a power down that doesn't cut as much power as would be desirable -
-> that's reasonable.  Like you say you didn't mention it at all in the
-> changelog.  Ideally the hardware would just cut all power to the SoC in
-> shutdown but then IIRC those boards don't have a PMIC so...  
+> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+> index a58334c3bb76..1c13921b0556 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+> @@ -222,6 +222,12 @@ patternProperties:
+>        '#io-channel-cells':
+>          const: 1
+>  
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+>        interrupts:
+>          description: |
+>            IRQ Line for the ADC instance. Valid values are:
+> @@ -256,6 +262,7 @@ patternProperties:
+>              - 20 channels, numbered from 0 to 19 (for in0..in19) on stm32h7 and
+>                stm32mp1.
+>          $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        deprecated: true
+>  
+>        st,adc-diff-channels:
+>          description: |
+> @@ -265,7 +272,9 @@ patternProperties:
+>            <vinp vinn>, <vinp vinn>,... vinp and vinn are numbered from 0 to 19.
+>  
+>            Note: At least one of "st,adc-channels" or "st,adc-diff-channels" is
+> -          required. Both properties can be used together. Some channels can be
+> +          required if no adc generic channel is defined. These legacy channel
+> +          properties are exclusive with adc generic channel bindings.
+> +          Both properties can be used together. Some channels can be
+>            used as single-ended and some other ones as differential (mixed). But
+>            channels can't be configured both as single-ended and differential.
+>          $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> @@ -279,6 +288,7 @@ patternProperties:
+>                  "vinn" indicates negative input number
+>                minimum: 0
+>                maximum: 19
+> +        deprecated: true
+>  
+>        st,min-sample-time-nsecs:
+>          description:
+> @@ -289,6 +299,42 @@ patternProperties:
+>            list, to set sample time resp. for all channels, or independently for
+>            each channel.
+>          $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        deprecated: true
+> +
+> +    patternProperties:
+> +      "^channel@([0-9]|1[0-9])$":
+> +        type: object
+> +        $ref: "adc.yaml"
 
-Yes, that's is what we do on other types of SoCs, this particular one
-however only has a single power domain and so software must come to the
-rescue to shut down as much as it can. Newer boards do have a PMIC that
-can help us with that, but not with everything, still.
+You need 'additionalProperties: false' here. Or unevaluatedProperties if 
+there are properties used and defined in adc.yaml, but not here.
 
-> 
->> TBH, I still wonder why we have .shutdown() and we simply don't use
->> .remove() which would reduce the amount of work that people have to do
->> validate that the hardware is put in a low power state and would also
->> reduce the amount of burden on the various subsystems.
-> 
-> Yeah, it does seem a bit odd - I'd figured it was for speed reasons.
-> 
+> +        description: |
 
+Don't need '|' unless you need to maintain formatting (line breaks).
 
--- 
-Florian
+> +          Represents the external channels which are connected to the ADC.
+> +
+> +        properties:
+> +          reg:
+> +            items:
+> +              minimum: 0
+> +              maximum: 19
+> +
+> +          label:
+> +            description: |
+> +              Unique name to identify which channel this is.
+> +              Reserved label names "vddcore", "vrefint" and "vbat"
+> +              are used to identify internal channels with matching names.
+> +
+> +          diff-channels:
+> +            $ref: /schemas/types.yaml#/definitions/uint32-array
+> +            items:
+> +              minimum: 0
+> +              maximum: 19
+> +
+> +          st,min-sample-time-nsecs:
+
+Use standard unit suffix (-ns).
+
+> +            $ref: /schemas/types.yaml#/definitions/uint32
+
+And then drop this.
+
+> +            description: |
+> +              Minimum sampling time in nanoseconds. Depending on hardware (board)
+> +              e.g. high/low analog input source impedance, fine tune of ADC
+> +              sampling time may be recommended.
+> +
+> +        required:
+> +          - reg
+>  
+>      allOf:
+>        - if:
+> @@ -369,12 +415,6 @@ patternProperties:
+>  
+>      additionalProperties: false
+>  
+> -    anyOf:
+> -      - required:
+> -          - st,adc-channels
+> -      - required:
+> -          - st,adc-diff-channels
+> -
+>      required:
+>        - compatible
+>        - reg
+> @@ -451,4 +491,50 @@ examples:
+>          // other adc child node follow...
+>        };
+>  
+> +  - |
+> +    // Example 3: with stm32mp157c to setup ADC2 with:
+> +    // - internal channels 13, 14, 15.
+> +      #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +      #include <dt-bindings/clock/stm32mp1-clks.h>
+> +      adc122: adc@48003000 {
+> +        compatible = "st,stm32mp1-adc-core";
+> +        reg = <0x48003000 0x400>;
+> +        interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&rcc ADC12>, <&rcc ADC12_K>;
+> +        clock-names = "bus", "adc";
+> +        booster-supply = <&booster>;
+> +        vdd-supply = <&vdd>;
+> +        vdda-supply = <&vdda>;
+> +        vref-supply = <&vref>;
+> +        st,syscfg = <&syscfg>;
+> +        interrupt-controller;
+> +        #interrupt-cells = <1>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        adc@100 {
+> +          compatible = "st,stm32mp1-adc";
+> +          #io-channel-cells = <1>;
+> +          reg = <0x100>;
+> +          interrupts = <1>;
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          channel@13 {
+> +            reg = <13>;
+> +            label = "vrefint";
+> +            st,min-sample-time-nsecs = <9000>;
+> +          };
+> +          channel@14 {
+> +            reg = <14>;
+> +            label = "vddcore";
+> +            st,min-sample-time-nsecs = <9000>;
+> +          };
+> +          channel@15 {
+> +            reg = <15>;
+> +            label = "vbat";
+> +            st,min-sample-time-nsecs = <9000>;
+> +          };
+> +        };
+> +      };
+> +
+>  ...
+> -- 
+> 2.17.1
+> 
+> 
