@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52DB420B63
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A792420B8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhJDM5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44062 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbhJDM4j (ORCPT
+        id S234094AbhJDM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:57:59 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:36268 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233672AbhJDM5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:39 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633352089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=62OmEZ5vBf0VS7xxv6zBKLiA9bAGxIWLY0YLtcYhdkM=;
-        b=BZIffpy133/yzNOScRB4BBhPtTdvlG4VHFT6aZjnljPIqh/ysKiOm/7OZTD02DYnvI1SjN
-        i5F6qCN5rZi8Lji1arf7u3RrZH2KIErZc4bmy5vPlHFwEVENtUOZdqm3mbxE6nTnxhhkq4
-        xTvT33qc49lnNJVQTh8fAv07ImjxpKjibNatVEQ2wiMhNIg00fL+r55nQOHjPRPeh1LogB
-        P8dgTC4XTJtvDgj9FoXg8cG0tS4aZ5SBtY1QxCQ2QalO8zIyPLd/mJ8UCImKbGl7mK+aPV
-        IKAtOQXaNKqaGDk/PxLqPsVt/UxGE0yWrsQfX4V0Q7dYjsfiRu56ka2q6+z9ww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633352089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=62OmEZ5vBf0VS7xxv6zBKLiA9bAGxIWLY0YLtcYhdkM=;
-        b=R77QosgLqt29Za3iflfHfOxMjgQ94okqHVkr0qsGCn66EWopBVj/iq/XR5cY7/mkL8PALl
-        mKs0DkwF20nYcrCA==
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v10 04/28] x86/fpu/xstate: Modify address finders to
- handle both static and dynamic buffers
-In-Reply-To: <B7F1A300-3E61-4CB4-8BCA-316FE68B7222@intel.com>
-References: <20210825155413.19673-1-chang.seok.bae@intel.com>
- <20210825155413.19673-5-chang.seok.bae@intel.com> <87ee946g45.ffs@tglx>
- <B7F1A300-3E61-4CB4-8BCA-316FE68B7222@intel.com>
-Date:   Mon, 04 Oct 2021 14:54:48 +0200
-Message-ID: <878rz9gdbb.ffs@tglx>
+        Mon, 4 Oct 2021 08:57:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633352133; x=1664888133;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=JccWlpUp/or4JMcaKBhLvGhBaLkD9fbtO9eKKoI3YkA=;
+  b=uHfOZ2zHMzpiZuohcU6+DXt/5n7AWgSlePsHpm/pstmTdNvC3hoHuHFr
+   uVrWAwQy47LxeYBhgCWf4BdfAGd04kUJa6dHVn5ZHhqEmEu1c8swx67LE
+   QKiW0uekpbwaV+uo6WSDMWAug/Q23WDAkDJebIJJZrPDr2sSN7rJGyYIk
+   qIVYGuyKdC1AS0Gqb7JAKSJyOcxJAMRR6H8OvYIcXiMDecZ6/4z04V+bu
+   8o0Zj7wYxKb/lyoWWr9HHY/qE3LrixYHdPYCk4kTgmeS0/dn69S8R1peh
+   4+/cwbTiEs4T/1WUW65yCC/6ACXimhXMXzmsZc+YXfOitGt8m857J0cFV
+   Q==;
+IronPort-SDR: zyaE9nC/36+n7dYKUTIUlsupvphOvcygjjT6DyF49geXMLjpLB5vrOGkom88OMSa9Q+fxuIlBa
+ fykR7itjtkWgPBbM3Q+wYDUKrwTmeWZlBzOhwszfdPGnZpHu66Ghbl5fcw6U8XlFEZSxXTm16Y
+ vglL3eSPsFml1WVm7KYNfTmAHJbD87TnKGtMgRuMMpJJiK+vN6gSUFWqSFemlZra+mdXxEuMft
+ WS+lcQvYj75rEvKrXzspYLcfT55oyort9BkQJOpmfjzeHdRvc8+UENTHc8H7QK8hyo2coSfS1h
+ CvigYaCiskW7m5iUHfXBfU0E
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="138365305"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Oct 2021 05:55:32 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 4 Oct 2021 05:55:32 -0700
+Received: from [10.12.73.58] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Mon, 4 Oct 2021 05:55:29 -0700
+Subject: Re: [PATCH 0/4] Add lan966 documentation and remove lan966x.c file
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+CC:     <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <corbet@lwn.net>, <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <Manohar.Puri@microchip.com>
+References: <20211004105926.5696-1-kavyasree.kotagiri@microchip.com>
+ <YVrgzWLReFS5FgWd@piout.net>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <09645199-50af-0373-c5bb-e0d745543e5b@microchip.com>
+Date:   Mon, 4 Oct 2021 14:55:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YVrgzWLReFS5FgWd@piout.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03 2021 at 22:35, Chang Seok Bae wrote:
-> On Oct 1, 2021, at 06:15, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Okay, a NULL pointer is odd and it as an argument should be avoided. Defining
-> a separate struct fpu for the initial state can make every function expect a
-> valid struct fpu pointer.
->
-> I think that the patch set will have such order (once [1] is dropped out) of,
->     - patch1 (new): a cleanup patch for fpstate_init_xstate() in patch1
->     - patch2 (new): the above init_fpu goes into this, and 
->     - patch3-5: changes arguments to fpu,
+On 04/10/2021 at 13:09, Alexandre Belloni wrote:
+> On 04/10/2021 16:29:22+0530, Kavyasree Kotagiri wrote:
+>> This patch series modifies Kconfig entry, adds documentation for
+>> lan966 family and removes lan966x setup code file as it is not
+>> required.
+>>
+>> These patches are generated from at91/linux.git
+>> I had agreement with Nicolas Ferre that he will merge these changes
+>> into existing patch.
+>>
+> 
+> Seems good to me, for the whole series:
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-So actually I sat down over the weekend and looked at that again. Adding this
-to struct fpu is wrong. The size and features information belongs into
-something like this:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com> for the whole 
+series, added to at91-soc and merged with previous patch.
 
-struct fpstate {
-	unsigned int		size;
-        u64			xfeatures;
+Please have a look at the resulting tree or at91-next branch for 
+double-checking.
 
-        union fpregs_state	regs;
-};
+Thanks, best regards,
+   Nicolas
 
-Why? Simply because fpstate is the container for the dynamically sized
-regs and that's where it semantically belongs.
+>> Kavyasree Kotagiri (4):
+>>    ARM: at91: Kconfig: use only one name SOC_LAN966 and merge options
+>>    ARM: at91: Documentation: add lan966 family
+>>    dt-bindings: arm: at91: Document lan966 pcb8291 and pcb8290 boards
+>>    ARM: at91: remove lan966x file
+>>
+>>   Documentation/arm/microchip.rst               |  6 +++++
+>>   .../devicetree/bindings/arm/atmel-at91.yaml   | 12 +++++++++
+>>   arch/arm/mach-at91/Kconfig                    | 12 ++++-----
+>>   arch/arm/mach-at91/Makefile                   |  1 -
+>>   arch/arm/mach-at91/lan966x.c                  | 25 -------------------
+>>   5 files changed, 23 insertions(+), 33 deletions(-)
+>>   delete mode 100644 arch/arm/mach-at91/lan966x.c
+>>
+>> --
+>> 2.17.1
+>>
+> 
+> --
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
+> 
 
-While staring at that I just started to cleanup stuff all over the place
-to make the integration of this simpler.
 
-The patches are completely untested and have no changelogs yet, but if
-you want a preview, I've uploaded a patch series to:
-
-    https://tglx.de/~tglx/patches.tar
-
-I'm still staring at some of the dynamic feature integrations, but this
-is roughly where this should be heading.
-
-Thanks,
-
-        tglx
+-- 
+Nicolas Ferre
