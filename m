@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EB4420B68
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49025420BAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbhJDM5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57878 "EHLO mail.kernel.org"
+        id S234358AbhJDM7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233429AbhJDM4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 003516124C;
-        Mon,  4 Oct 2021 12:54:54 +0000 (UTC)
+        id S234106AbhJDM6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0935611CA;
+        Mon,  4 Oct 2021 12:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352095;
-        bh=KrSXW3FpQTDxChH/rMxa29cVXPURILQ5fIyu0FFd3Cs=;
+        s=korg; t=1633352173;
+        bh=KvL2Z9eUIJwjp1Sie+wWDmU7tm014BGRpi+uE3aOItI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07uKIH5UQ6Pdhlhq7eA0i9oEuSyaLr1RIRvnLp/DtkutfJ5TqfZoQb2J5WIxxL+2b
-         87+X6/yMutco36bUF0vVyjD2c52Yvbq4mZvYo13jteu+Z8qsAMIEEbms6rw0cWc4Rw
-         F2Lt+8kmr+UHZxl9cspcfUXZvK9zilaGn27G4AQk=
+        b=O/Zxyq9pV0Gr6BoKlN6JT2CWe3MwIOfQVNO8P3Rq4MQDccv8C2og53uk86Hb8fnrU
+         YTSl0dDPhbdyQk3fZVrtgtffv37SUFfpXH8xaGxZY34Y+yg8PYXbvRiB6tItTdwVUv
+         jWoCPA++EWAzWoeoB6fNgdrhyzgrN4KrqVLskFjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 11/41] net/mlx4_en: Dont allow aRFS for encapsulated packets
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 18/57] blktrace: Fix uaf in blk_trace access after removing by sysfs
 Date:   Mon,  4 Oct 2021 14:52:02 +0200
-Message-Id: <20211004125026.949384510@linuxfoundation.org>
+Message-Id: <20211004125029.519838179@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit fdbccea419dc782079ce5881d2705cc9e3881480 ]
+[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
 
-Driver doesn't support aRFS for encapsulated packets, return early error
-in such a case.
+There is an use-after-free problem triggered by following process:
 
-Fixes: 1eb8c695bda9 ("net/mlx4_en: Add accelerated RFS support")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+      P1(sda)				P2(sdb)
+			echo 0 > /sys/block/sdb/trace/enable
+			  blk_trace_remove_queue
+			    synchronize_rcu
+			    blk_trace_free
+			      relay_close
+rcu_read_lock
+__blk_add_trace
+  trace_note_tsk
+  (Iterate running_trace_list)
+			        relay_close_buf
+				  relay_destroy_buf
+				    kfree(buf)
+    trace_note(sdb's bt)
+      relay_reserve
+        buf->offset <- nullptr deference (use-after-free) !!!
+rcu_read_unlock
+
+[  502.714379] BUG: kernel NULL pointer dereference, address:
+0000000000000010
+[  502.715260] #PF: supervisor read access in kernel mode
+[  502.715903] #PF: error_code(0x0000) - not-present page
+[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
+[  502.717252] Oops: 0000 [#1] SMP
+[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
+[  502.732872] Call Trace:
+[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
+[  502.733734]  blk_add_trace_rq+0x7b/0xd0
+[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
+[  502.734755]  blk_mq_start_request+0xde/0x1b0
+[  502.735287]  scsi_queue_rq+0x528/0x1140
+...
+[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
+[  502.747501]  sg_ioctl+0x466/0x1100
+
+Reproduce method:
+  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sda, BLKTRACESTART)
+  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sdb, BLKTRACESTART)
+
+  echo 0 > /sys/block/sdb/trace/enable &
+  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
+
+  ioctl$SG_IO(/dev/sda, SG_IO, ...)
+  // Enters trace_note_tsk() after blk_trace_free() returned
+  // Use mdelay in rcu region rather than msleep(which may schedule out)
+
+Remove blk_trace from running_list before calling blk_trace_free() by
+sysfs if blk_trace is at Blktrace_running state.
+
+Fixes: c71a896154119f ("blktrace: add ftrace plugin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/trace/blktrace.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index 9dd081715c1e..c9be239c6ec0 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -311,6 +311,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
- 	int nhoff = skb_network_offset(skb);
- 	int ret = 0;
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 88eb9261c7b5..056107787f4a 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1584,6 +1584,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
+ 	if (bt == NULL)
+ 		return -EINVAL;
  
-+	if (skb->encapsulation)
-+		return -EPROTONOSUPPORT;
++	if (bt->trace_state == Blktrace_running) {
++		bt->trace_state = Blktrace_stopped;
++		spin_lock_irq(&running_trace_lock);
++		list_del_init(&bt->running_list);
++		spin_unlock_irq(&running_trace_lock);
++		relay_flush(bt->rchan);
++	}
 +
- 	if (skb->protocol != htons(ETH_P_IP))
- 		return -EPROTONOSUPPORT;
- 
+ 	put_probe_ref();
+ 	synchronize_rcu();
+ 	blk_trace_free(bt);
 -- 
 2.33.0
 
