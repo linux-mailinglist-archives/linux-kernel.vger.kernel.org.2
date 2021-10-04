@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E4C420C80
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF3F420C0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbhJDNGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:06:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
+        id S234386AbhJDNCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234781AbhJDNET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D8856124C;
-        Mon,  4 Oct 2021 13:00:21 +0000 (UTC)
+        id S234349AbhJDNAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FFE5619E0;
+        Mon,  4 Oct 2021 12:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352421;
-        bh=r3o2RCWkW/45aVMhlbCjcIRd4LXHGCu7gTCngs+oZPw=;
+        s=korg; t=1633352286;
+        bh=BAhXpSwggi0J61WmN1OM8YTkcYS8ocwts3H4b6YBGMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=boix/k0iJlHvmuwQgI1RM2KbBdgQzRebLRUimDrRGVX21ZyFZ5Y0G0LwKkK2mvwR+
-         WGbJvlkcxTJBQwOFbz0zGMnPbuDbNxMUer+8Ukl6Qn7xRasIQVOs1+HQuYqB2NGh0P
-         iXbxcF1XNB7tmUcn5RWq6n56QIMj/PIjC5ebRikw=
+        b=O8oDDLb2SJPQJ3DTMevxrgasmvFddK3naZlAmrpr+GWBghaLQfPvLardrFnprR8/L
+         ZGOidFq6BZrKjF8iGrYWMZ1kHd4XIn6nmWjsHXbtUr6BQYCp1B2CrgWyuo9JJnfLxW
+         POOkOMzK39IrXUP1//lfl6yysfhQGf0MJhU5ENNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 55/75] ipack: ipoctal: fix stack information leak
-Date:   Mon,  4 Oct 2021 14:52:30 +0200
-Message-Id: <20211004125033.370705127@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 47/57] net: udp: annotate data race around udp_sk(sk)->corkflag
+Date:   Mon,  4 Oct 2021 14:52:31 +0200
+Message-Id: <20211004125030.442431450@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
 
-commit a89936cce87d60766a75732a9e7e25c51164f47c upstream.
+commit a9f5970767d11eadc805d5283f202612c7ba1f59 upstream.
 
-The tty driver name is used also after registering the driver and must
-specifically not be allocated on the stack to avoid leaking information
-to user space (or triggering an oops).
+up->corkflag field can be read or written without any lock.
+Annotate accesses to avoid possible syzbot/KCSAN reports.
 
-Drivers should not try to encode topology information in the tty device
-name but this one snuck in through staging without anyone noticing and
-another driver has since copied this malpractice.
-
-Fixing the ABI is a separate issue, but this at least plugs the security
-hole.
-
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-2-johan@kernel.org
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |   19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ net/ipv4/udp.c |   10 +++++-----
+ net/ipv6/udp.c |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -269,7 +269,6 @@ static int ipoctal_inst_slot(struct ipoc
- 	int res;
- 	int i;
- 	struct tty_driver *tty;
--	char name[20];
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -360,8 +359,11 @@ static int ipoctal_inst_slot(struct ipoc
- 	/* Fill struct tty_driver with ipoctal data */
- 	tty->owner = THIS_MODULE;
- 	tty->driver_name = KBUILD_MODNAME;
--	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	tty->name = name;
-+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!tty->name) {
-+		res = -ENOMEM;
-+		goto err_put_driver;
-+	}
- 	tty->major = 0;
- 
- 	tty->minor_start = 0;
-@@ -377,8 +379,7 @@ static int ipoctal_inst_slot(struct ipoc
- 	res = tty_register_driver(tty);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
--		put_tty_driver(tty);
--		return res;
-+		goto err_free_name;
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -886,7 +886,7 @@ int udp_sendmsg(struct sock *sk, struct
+ 	__be16 dport;
+ 	u8  tos;
+ 	int err, is_udplite = IS_UDPLITE(sk);
+-	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
++	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+ 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
+ 	struct sk_buff *skb;
+ 	struct ip_options_data opt_copy;
+@@ -1167,7 +1167,7 @@ int udp_sendpage(struct sock *sk, struct
  	}
  
- 	/* Save struct tty_driver for use it when uninstalling the device */
-@@ -415,6 +416,13 @@ static int ipoctal_inst_slot(struct ipoc
- 				       ipoctal_irq_handler, ipoctal);
+ 	up->len += size;
+-	if (!(up->corkflag || (flags&MSG_MORE)))
++	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
+ 		ret = udp_push_pending_frames(sk);
+ 	if (!ret)
+ 		ret = size;
+@@ -2034,9 +2034,9 @@ int udp_lib_setsockopt(struct sock *sk,
+ 	switch (optname) {
+ 	case UDP_CORK:
+ 		if (val != 0) {
+-			up->corkflag = 1;
++			WRITE_ONCE(up->corkflag, 1);
+ 		} else {
+-			up->corkflag = 0;
++			WRITE_ONCE(up->corkflag, 0);
+ 			lock_sock(sk);
+ 			push_pending_frames(sk);
+ 			release_sock(sk);
+@@ -2143,7 +2143,7 @@ int udp_lib_getsockopt(struct sock *sk,
  
- 	return 0;
-+
-+err_free_name:
-+	kfree(tty->name);
-+err_put_driver:
-+	put_tty_driver(tty);
-+
-+	return res;
- }
+ 	switch (optname) {
+ 	case UDP_CORK:
+-		val = up->corkflag;
++		val = READ_ONCE(up->corkflag);
+ 		break;
  
- static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-@@ -703,6 +711,7 @@ static void __ipoctal_remove(struct ipoc
- 	}
- 
- 	tty_unregister_driver(ipoctal->tty_drv);
-+	kfree(ipoctal->tty_drv->name);
- 	put_tty_driver(ipoctal->tty_drv);
- 	kfree(ipoctal);
- }
+ 	case UDP_ENCAP:
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1028,7 +1028,7 @@ int udpv6_sendmsg(struct sock *sk, struc
+ 	struct ipcm6_cookie ipc6;
+ 	int addr_len = msg->msg_namelen;
+ 	int ulen = len;
+-	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
++	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+ 	int err;
+ 	int connected = 0;
+ 	int is_udplite = IS_UDPLITE(sk);
 
 
