@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DD9420CC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5664C420D58
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbhJDNJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39234 "EHLO mail.kernel.org"
+        id S234833AbhJDNOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235301AbhJDNGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:06:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9937D61B40;
-        Mon,  4 Oct 2021 13:01:22 +0000 (UTC)
+        id S235969AbhJDNMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:12:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D77261B7C;
+        Mon,  4 Oct 2021 13:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352483;
-        bh=vqWyOeURbVSKl5y9uVz/VN+k2c77rNz1w9AaZ81FS7o=;
+        s=korg; t=1633352681;
+        bh=ZMFTrj+G1zzL9POirBeOmm9akaZ2DUSRVUlKBDsS6DA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=szTZrn82o0OH2lGrdKrWXDw9oxFW8WWi+bk75mlTXf9m5LvwPhD05vuMgk3Z3sT+9
-         AkhVa1uHthW4VEOnO+lyuBHjfboHjEyuHidypWI2e9YptrqmctzDh9KCcJmBwPY/lt
-         LI2IdaE8qK3I0AZyYL71RGpzUi1hG36gthda+aKc=
+        b=txksjmrcaGbzV9MkigQlKxDZLbGIy7Bye70jSibtWsQjMyaubAkRDe9e9C1b9xTfP
+         HSYpPRhjpFk598YkS510HnMMHLFAGLJbWqxniEkXLjIltN2ldeIlQwbImCsNIOjRTA
+         87zLMBo45I9s0k8Wf3zedlCeoJCsRcDd6bmlGpts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com,
-        syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com,
-        syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.14 73/75] netfilter: ipset: Fix oversized kvmalloc() calls
-Date:   Mon,  4 Oct 2021 14:52:48 +0200
-Message-Id: <20211004125033.979324818@linuxfoundation.org>
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 79/95] ipack: ipoctal: fix missing allocation-failure check
+Date:   Mon,  4 Oct 2021 14:52:49 +0200
+Message-Id: <20211004125036.159612333@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit 7bbc3d385bd813077acaf0e6fdb2a86a901f5382 upstream.
+commit 445c8132727728dc297492a7d9fc074af3e94ba3 upstream.
 
-The commit
+Add the missing error handling when allocating the transmit buffer to
+avoid dereferencing a NULL pointer in write() should the allocation
+ever fail.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 09:45:49 2021 -0700
-
-    mm: don't allow oversized kvmalloc() calls
-
-limits the max allocatable memory via kvmalloc() to MAX_INT. Apply the
-same limit in ipset.
-
-Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
-Reported-by: syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com
-Reported-by: syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
+Cc: stable@vger.kernel.org      # 3.5
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-5-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/ipack/devices/ipoctal.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -104,11 +104,11 @@ htable_size(u8 hbits)
- {
- 	size_t hsize;
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -391,7 +391,9 @@ static int ipoctal_inst_slot(struct ipoc
  
--	/* We must fit both into u32 in jhash and size_t */
-+	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
- 	if (hbits > 31)
- 		return 0;
- 	hsize = jhash_size(hbits);
--	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
-+	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
- 	    < hsize)
- 		return 0;
+ 		channel = &ipoctal->channel[i];
+ 		tty_port_init(&channel->tty_port);
+-		tty_port_alloc_xmit_buf(&channel->tty_port);
++		res = tty_port_alloc_xmit_buf(&channel->tty_port);
++		if (res)
++			continue;
+ 		channel->tty_port.ops = &ipoctal_tty_port_ops;
  
+ 		ipoctal_reset_stats(&channel->stats);
 
 
