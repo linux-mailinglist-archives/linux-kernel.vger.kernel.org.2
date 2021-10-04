@@ -2,112 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C47C4214FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFFD421502
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238270AbhJDRQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S238262AbhJDRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233529AbhJDRQv (ORCPT
+        with ESMTP id S233455AbhJDRRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:16:51 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBA4C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:15:01 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id j10-20020a1c230a000000b0030d523b6693so9766158wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:15:01 -0700 (PDT)
+        Mon, 4 Oct 2021 13:17:20 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314C8C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:15:31 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id b8so33048455edk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:15:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=aWNgdEQ5NXz8/X3gCLTaSqlLeaCuTU3P623+R5va664=;
-        b=W7ij8q9sI+ezViXcO5udMlsRgIVZpBczZVaWQwIpy4cCnNrWuOQ7hCc/GOuN6myvjZ
-         tHGI7KvKEMLmqAWf8i/kb2L/CthzRbsO9DTvKGtbHxBC97IbRGc7jwfd2c6Rsf+clg3Z
-         daYFBBENvrwgPGufPz5kPbB4rnVTOv3ciLiGsmsM5pUUAUrGPdVCRpWd59c+H+vOLe5d
-         ygwHi7E5ZmhHCi61Xkzzl1+BEl5zAOqH2K3Mf+19UIUuFOuzSahiPAbJ2YUMIlDUzzB/
-         tGSLsXUaphqI0I7NWW2ThMwXMAKVg9Hc3yx2QkhUYqdqNED5k7g5L0qk7XBkBqaDaIYJ
-         mjnQ==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JCMAyY7Zq7LI1hSn5nCf7+6dW+zdCzKjbNAz5L5GbsQ=;
+        b=XXVBC+Syf5JtEJtV8diPsrILQ3WalnFuR+1l1EQ5kffJv+dMhM4Uo5HxxnOkSYaOy6
+         ZsAnFgQGVdwj4/S+rd5QvgEPGs6UEBm+VVm83kzMwIqx9jDrY0dVx3ecW1J5jrfvUdqZ
+         5I5QkMwyah9NQM+G4RCZG5HhJRPYIU15jGZWSmJiXbFcpxqIO+EpnAGYg+4yn5Kwz9DI
+         cuG+kP9xAFgGQXYCuJ+3eQZ8qXQkISZnxZlIW7AL+jPEZimJ8v8pIS5MYa4GsVs9dQ4r
+         8QPP3l+JbmdacFkwYyLLgP0aDkEGfNnzcFgVOrz6xoe4sW0MKT0d19I8jOpFfr2npx+s
+         rZHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=aWNgdEQ5NXz8/X3gCLTaSqlLeaCuTU3P623+R5va664=;
-        b=T+KziwJJSD/2hm1W2Aj+8FOQwM1y6DmYvw4P0XthSKEMpEmZ4PjIIQp/ITHkEkbj5Q
-         gtjdRhJ8m0bwLegqRpAcnZC41xALUftz/tPCvsdX9IDDv6L0Bf+A06ZkMX9ptMOPYv6I
-         ldrRMs2DBuQh3yr5HvEzX8uzfDNU+L9HcPgvORZZPkM9DeHKYtWy3A4ibSqbWO6QSanc
-         U2vyvxQ+Hr5W+Sv/xO54vrZ6bvb079Ac66/mrqStn5r5Os9wif9sNFQUvQWVFse24MMP
-         Q8Y9b7m6QsDaQuwKE2eYIF6hCkFkZZ1QJt1cM1JUkNQnwhncSzpmU40MZ7o+YvkSqCVZ
-         r+dw==
-X-Gm-Message-State: AOAM531fxr7hsrjfK8e7VjZdXfgmpAigP05q/WYoc/4vz7V7kBAYSzV4
-        ZGpBazBVxn8LHbgvSKKpnfA4tg==
-X-Google-Smtp-Source: ABdhPJztY2P7NWgOb7tY2LNh75DKmgZQxuKOlfxB1x/tM6KZlozDDDOnOrcq3ESp9ziZhGptw2cz0w==
-X-Received: by 2002:a7b:c4c2:: with SMTP id g2mr20264374wmk.134.1633367700397;
-        Mon, 04 Oct 2021 10:15:00 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:9c40:6a4a:bd46:e324])
-        by smtp.gmail.com with ESMTPSA id g25sm14833116wrc.88.2021.10.04.10.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 10:15:00 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        tim.c.chen@linux.intel.com
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 2/2] sched/fair: Skip update_blocked_averages if we are defering load balance
-Date:   Mon,  4 Oct 2021 19:14:51 +0200
-Message-Id: <20211004171451.24090-3-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211004171451.24090-1-vincent.guittot@linaro.org>
-References: <20211004171451.24090-1-vincent.guittot@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JCMAyY7Zq7LI1hSn5nCf7+6dW+zdCzKjbNAz5L5GbsQ=;
+        b=L3p/f/kMu4jyJRH0meTl/hyk0vzPsVsDAeG8Q+g7ybF8J2SOJUkm0UFZTPj3JB2lCj
+         C5ak9YpeWicCFB4rxmRVewF+ShbgTfk2s2/IJefSRtOyKBBif8NsBc4Th5KmZzY+/zix
+         L8lSk8rdJWh0O3SSL+zJfVR22Z2xT08LjW8NOMtjIbveBJ07MKC1Yh3eZ3u/vX3zv3e6
+         VMZiiQLnQ0nnTt+1LHpNUGqpq3OeEZpNUg+y8ryHbAZvggv+YLT8C86hRsdf3lNdjp4e
+         EZN4Dpz8tqyPRE7WNSMTBK7DoxQx6pcBpv1ge614cPVuNXZudw0hub/kHhip36k92fwE
+         uISg==
+X-Gm-Message-State: AOAM532ZpEEhplmUxJLwAxznQu3NxieqmQLT749/vETLJebKAdLpJC4j
+        TFAXFHVJErjEs/dIWu+hfkxxi0zfXxmCaaVASsreyQ==
+X-Google-Smtp-Source: ABdhPJyUipKA5I1jT46xgWhTErCJBp8N844sgLKRu+eDQ4mywKuLwzL8DVo57J1RiveoEzryDzw0V+ypqvlnOdcHS88=
+X-Received: by 2002:a17:906:a018:: with SMTP id p24mr18099480ejy.349.1633367729713;
+ Mon, 04 Oct 2021 10:15:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210922084733.5547-1-brgl@bgdev.pl>
+In-Reply-To: <20210922084733.5547-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 4 Oct 2021 19:15:19 +0200
+Message-ID: <CAMRc=McbVHoNxn=hx_qSVk0ygLGQomtSy1+QrqnvxgXHtt8b6g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/8] gpio: implement the configfs testing module
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In newidle_balance(), the scheduler skips load balance to the new idle cpu
-when the 1st sd of this_rq is:
+On Wed, Sep 22, 2021 at 10:47 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> I'm respinning this series now because I noticed that I need to start writing
+> tests for my work on the new libgpiod v2 code to make sense (it's just becoming
+> too complicated to make even remotely functional without test coverage). At the
+> same time I don't want to rewrite the tests using gpio-mockup if the goal is to
+> replace it with gpio-sim anyway.
+>
+> I fixed issues pointed out by Al Viro and made sure that references are
+> correctly counted (including error paths) and that memory allocated for the
+> pending and live groups gets freed.
+>
+> ===
+>
+> Cc'ing Viresh too.
+>
+> Viresh: while there's still a long way to go before the libgpio v2.0 release,
+> in order to merge the Rust bindings, we'll need a test-suite similar to what
+> we have now for C++ and Python bindings, except that it will have to be based
+> on the gpio-sim module when it makes its way into mainline.
+>
+> ===
+>
+> This series adds a new GPIO testing module based on configfs committable items
+> and sysfs. The goal is to provide a testing driver that will be configurable
+> at runtime (won't need module reload) and easily extensible. The control over
+> the attributes is also much more fine-grained than in gpio-mockup.
+>
+> This series also contains a respin of the patches I sent separately to the
+> configfs maintainers - these patches implement the concept of committable
+> items that was well defined for a long time but never actually completed.
+>
+> Apart from the new driver itself, its selftests and the configfs patches, this
+> series contains some changes to the bitmap API - most importantly: it adds
+> devres managed variants of bitmap_alloc() and bitmap_zalloc().
+>
+> v1 -> v2:
+> - add selftests for gpio-sim
+> - add helper programs for selftests
+> - update the configfs rename callback to work with the new API introduced in
+>   v5.11
+> - fix a missing quote in the documentation
+> - use !! whenever using bits operation that are required to return 0 or 1
+> - use provided bitmap API instead of reimplementing copy or fill operations
+> - fix a deadlock in gpio_sim_direction_output()
+> - add new read-only configfs attributes for mapping of configfs items to GPIO
+>   device names
+> - and address other minor issues pointed out in reviews of v1
+>
+> v2 -> v3:
+> - use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+>   the bitmap with 1s
+> - drop the patch exporting device_is_bound()
+> - don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+>   a string indicating that the device is not available yet ('n/a')
+> - fix indentation where it makes sense
+> - don't protect IDA functions which use their own locking and where it's not
+>   needed
+> - use kmemdup() instead of kzalloc() + memcpy()
+> - collected review tags
+> - minor coding style fixes
+>
+> v3 -> v4:
+> - return 'none' instead of 'n/a' from dev_name and chip_name before the device
+>   is registered
+> - use sysfs_emit() instead of s*printf()
+> - drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
+>   fine to hardcode the value
+>
+> v4 -> v5:
+> - drop lib patches that are already upstream
+> - use BIT() instead of (1UL << bit) for flags
+> - fix refcounting for the configfs_dirent in rename()
+> - drop d_move() from the rename() callback
+> - free memory allocated for the live and pending groups in configfs_d_iput()
+>   and not in detach_groups()
+> - make sure that if a group of some name is in the live directory, a new group
+>   with the same name cannot be created in the pending directory
+>
+> v5 -> v6:
+> - go back to using (1UL << bit) instead of BIT()
+> - if the live group dentry doesn't exist for whatever reason at the time when
+>   mkdir() in the pending group is called (would be a BUG()), return -ENOENT
+>   instead of -EEXIST which should only be returned if given subsystem already
+>   exists in either live or pending group
+>
+> Bartosz Golaszewski (8):
+>   configfs: increase the item name length
+>   configfs: use (1UL << bit) for internal flags
+>   configfs: implement committable items
+>   samples: configfs: add a committable group
+>   gpio: sim: new testing module
+>   selftests: gpio: provide a helper for reading chip info
+>   selftests: gpio: add a helper for reading GPIO line names
+>   selftests: gpio: add test cases for gpio-sim
+>
+>  Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+>  Documentation/filesystems/configfs.rst        |   6 +-
+>  drivers/gpio/Kconfig                          |   8 +
+>  drivers/gpio/Makefile                         |   1 +
+>  drivers/gpio/gpio-sim.c                       | 877 ++++++++++++++++++
+>  fs/configfs/configfs_internal.h               |  22 +-
+>  fs/configfs/dir.c                             | 276 +++++-
+>  include/linux/configfs.h                      |   3 +-
+>  samples/configfs/configfs_sample.c            | 153 +++
+>  tools/testing/selftests/gpio/.gitignore       |   2 +
+>  tools/testing/selftests/gpio/Makefile         |   4 +-
+>  tools/testing/selftests/gpio/config           |   1 +
+>  tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+>  tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+>  tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+>  15 files changed, 1743 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+>  create mode 100644 drivers/gpio/gpio-sim.c
+>  create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+>  create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+>  create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+>
+> --
+> 2.30.1
+>
 
-   this_rq->avg_idle < sd->max_newidle_lb_cost
+Gentle ping for the entire series.
 
-Doing a costly call to update_blocked_averages() will not be useful and
-simply adds overhead when this condition is true.
-
-Check the condition early in newidle_balance() to skip
-update_blocked_averages() when possible.
-
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- kernel/sched/fair.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1f78b2e3b71c..1294b78503d9 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10841,17 +10841,20 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	 */
- 	rq_unpin_lock(this_rq, rf);
- 
-+	rcu_read_lock();
-+	sd = rcu_dereference_check_sched_domain(this_rq->sd);
-+
- 	if (this_rq->avg_idle < sysctl_sched_migration_cost ||
--	    !READ_ONCE(this_rq->rd->overload)) {
-+		!READ_ONCE(this_rq->rd->overload) ||
-+		(sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
- 
--		rcu_read_lock();
--		sd = rcu_dereference_check_sched_domain(this_rq->sd);
- 		if (sd)
- 			update_next_balance(sd, &next_balance);
- 		rcu_read_unlock();
- 
- 		goto out;
- 	}
-+	rcu_read_unlock();
- 
- 	raw_spin_rq_unlock(this_rq);
- 
--- 
-2.17.1
-
+Bart
