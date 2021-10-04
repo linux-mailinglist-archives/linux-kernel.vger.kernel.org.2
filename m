@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594CA420AB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA94420AB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhJDMPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:15:44 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:6568 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhJDMPn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:15:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633349634; x=1664885634;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XzV/xaAshOgxQMr9vTLfv0mRfWvzB1eZ9Rf95BaVOlQ=;
-  b=sNNFQN0Hdyt1ZBoZv/0kEKDDwE/5N5NZyy7Q++b7XFKQQwdD9oahgWne
-   bOUu70j2ZdRiA1xpromn8/fKuMDBdhydwGd2Sdn47E70jAy9Y0CLQNzng
-   y8cQXo25FyeFFv/ALsvqXCmwo42USig1eXwSZ+kABkbgt5P2d+IPDaFd6
-   mUJP8pWMfs61Z7LHWd56G00C1XEwZG+EumqMv/85hn1bPCzPMDdcL4BKk
-   piidcfzMcxwq2L22W7kVM4NGfA8GB6MFA0YRKLSS/LGGaDE6VZuF2c30q
-   4hNM5kIdCYHxq2nwBPRh1dwDzGa9eSrl2UDMrV3TOqRH7OzTeBsef6Utc
-   g==;
-IronPort-SDR: TT6vvSjQfqJOd3f553TLFNlxsnQs27D8nUmPQo+pAJhjCY0qE+yLlEDJZxI/iq2QR7mE70V8aM
- 4lwrgJyRLyk5S3M/Mx7lgYvFk0z1Kdlu/vLnz9hdoZ7laOLW3lwPP2BZ5h3TIb8k5naVhT0AEt
- ObHIqG1lG3h8/UqcZjk7FEnBvDp2BgSpXhNDqqvxs2SOwV5DXBG5bSWWA9XypTgtILOzhXPHU6
- ODCmyScLeg6D4h6f8/M5TWhAT3jxD577aj8GWcpVu6SJzHTjjRFk46bvFUp/SSoCM0jpwPMsJB
- QnLR+kK4fNfm/O3O8dLl2sOd
-X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
-   d="scan'208";a="138945570"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Oct 2021 05:13:53 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 4 Oct 2021 05:13:52 -0700
-Received: from ness.home (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Mon, 4 Oct 2021 05:13:51 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH] ARM: at91: Documentation: add sama7g5 family
-Date:   Mon, 4 Oct 2021 14:13:45 +0200
-Message-ID: <20211004121345.22761-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.32.0
+        id S233190AbhJDMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:16:02 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47352 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229778AbhJDMQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:16:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=y9gJFRgNrteitCd4kkOXtex5hLsUmIyfQnurIve3L0k=; b=W86s9xhZTbrqNDQ/5PEYGx3y6M
+        brNvSwel+cHOSYVQ8n49TrO6WfrJLpScgYjbQC473yfhbn6GloWh77tiJCRwiZUDLgce8QMWjyi/S
+        giUCTYFtIfH965Fq330ejem1rdPQv+Eat25tCbwA6JQSDXcWwp2sUgBo+D+Q/Ycx0Rmg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXMr7-009XEZ-QU; Mon, 04 Oct 2021 14:14:05 +0200
+Date:   Mon, 4 Oct 2021 14:14:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <YVrwDbZYqs05d1wu@lunn.ch>
+References: <20211001133057.5287f150@thinkpad>
+ <YVb/HSLqcOM6drr1@lunn.ch>
+ <20211001144053.3952474a@thinkpad>
+ <20211003225338.76092ec3@thinkpad>
+ <YVqhMeuDI0IZL/zY@kroah.com>
+ <20211004090438.588a8a89@thinkpad>
+ <YVqo64vS4ox9P9hk@kroah.com>
+ <20211004073841.GA20163@amd>
+ <YVq7oTTv5URYKVJb@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVq7oTTv5URYKVJb@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Mon, Oct 04, 2021 at 10:30:25AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Oct 04, 2021 at 09:38:41AM +0200, Pavel Machek wrote:
+> > Hi!
+> > 
+> > > > > > Are device names (as returned by dev_name() function) also part of
+> > > > > > sysfs ABI? Should these names be stable across reboots / kernel
+> > > > > > upgrades?  
+> > > > > 
+> > > > > Stable in what exact way?
+> > > > 
+> > > > Example:
+> > > > - Board has an ethernet PHYs that is described in DT, and therefore
+> > > >   has stable sysfs path (derived from DT path), something like
+> > > >     /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01
+> > > 
+> > > None of the numbers there are "stable", right?
+> > 
+> > At least f1072004 part is stable (and probably whole path). DT has
+> > advantages here, and we should provide stable paths when we can.
+> 
+> The kernel should enumerate the devices as best that it can, but it
+> never has the requirement of always enumerating them in the same way
+> each time as many busses are not deterministic.
 
-Add the new SAMA7G5 ARMv7 based SoC family from Microchip to the AT91
-documentation.
+And for this particular SoC, it is possible to map the memory mapped
+IO at a different address range. It is the bootloader which determines
+this. There are some Marvell uboot's which use 0xd0000000, not
+0xf0000000.  So strictly speaking, f1072004 is not stable, it is not
+hard wired in the silicon.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- Documentation/arm/microchip.rst | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/Documentation/arm/microchip.rst b/Documentation/arm/microchip.rst
-index 9c013299fd3b..388f69998844 100644
---- a/Documentation/arm/microchip.rst
-+++ b/Documentation/arm/microchip.rst
-@@ -137,6 +137,18 @@ the Microchip website: http://www.microchip.com.
- 
-           http://ww1.microchip.com/downloads/en/DeviceDoc/DS60001476B.pdf
- 
-+    * ARM Cortex-A7 based SoCs
-+      - sama7g5 family
-+
-+        - sama7g51
-+        - sama7g52
-+        - sama7g53
-+        - sama7g54 (device superset)
-+
-+          * Datasheet
-+
-+          Coming soon
-+
-     * ARM Cortex-M7 MCUs
-       - sams70 family
- 
--- 
-2.32.0
-
+   Andrew
