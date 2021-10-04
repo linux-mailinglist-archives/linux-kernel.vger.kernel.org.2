@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB10C4212C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A0D4212CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbhJDPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:39:08 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:45241 "EHLO smtp1.axis.com"
+        id S234992AbhJDPkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:40:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:52738 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235677AbhJDPid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:38:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1633361805;
-  x=1664897805;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5fRSpChnXs0jk1pUSgAuePYOIFm55P/7nqa8whji5Bc=;
-  b=cEPtAEGzTOUnH6DrttAVczOxVz4hbr4P1o8e3ZpD2LrrE4a+wzVEWL2S
-   /zKG8ttbzggCCirlu/nQ+FcSRhcS8PW5iePSEShpQNb0dgqNsV8wAKoTd
-   CmkWldctlnoVoLbbnjVcxzhvESYCr+0dr4nePHTIxpEhRxditSMpL+iWF
-   NqDzLLOywtZt8OkUEsRyXUwEflKWLUhwyF22kmKD1/TaDRI4wV9xBbC4D
-   dXv6uDcKTDYUJVPWvo7pvAHaVvEdqhf97/9F29nGQCgZ2QnzqZ8e/a1k/
-   ZLu82JXVqkK2nyktkT+70xtqKuAGOtp5BESc3r0mW6PehjmPOB/QTkEIY
-   w==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     <peda@axentia.se>, <devicetree@vger.kernel.org>
-CC:     <kernel@axis.com>, <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH 2/2] mux: gpio: Support settle-time-us property
-Date:   Mon, 4 Oct 2021 17:36:40 +0200
-Message-ID: <20211004153640.20650-3-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211004153640.20650-1-vincent.whitchurch@axis.com>
-References: <20211004153640.20650-1-vincent.whitchurch@axis.com>
+        id S233881AbhJDPkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:40:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87568D6E;
+        Mon,  4 Oct 2021 08:39:02 -0700 (PDT)
+Received: from [10.57.53.1] (unknown [10.57.53.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 061213F70D;
+        Mon,  4 Oct 2021 08:38:59 -0700 (PDT)
+Subject: Re: [PATCH 4/5] arm64: mte: Add asymmetric mode support
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
+ <20210913081424.48613-5-vincenzo.frascino@arm.com>
+ <CA+fCnZeW35+ZmvM6SxZSb_NAMqsK42Ds_ADVKeVkfs9MT=Aovg@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <cd011cc0-5d3d-b642-55c3-fa2107f7f826@arm.com>
+Date:   Mon, 4 Oct 2021 17:39:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <CA+fCnZeW35+ZmvM6SxZSb_NAMqsK42Ds_ADVKeVkfs9MT=Aovg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the devicetree specifies that the hardware requires a settle time,
-add an appropriate delay after the mux GPIOs are set.
+Hi Andrey,
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/mux/gpio.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On 10/3/21 7:15 PM, Andrey Konovalov wrote:
+> This part is confusing: mte_async_mode gets enabled for the asymm
+> mode, which contradicts the comment next to the mte_async_mode
+> definition.
 
-diff --git a/drivers/mux/gpio.c b/drivers/mux/gpio.c
-index cc5f2c1861d4..17d7e03e39f0 100644
---- a/drivers/mux/gpio.c
-+++ b/drivers/mux/gpio.c
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/bitmap.h>
-+#include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/gpio/consumer.h>
- #include <linux/mod_devicetable.h>
-@@ -18,12 +19,14 @@
- 
- struct mux_gpio {
- 	struct gpio_descs *gpios;
-+	u32 delay;
- };
- 
- static int mux_gpio_set(struct mux_control *mux, int state)
- {
- 	struct mux_gpio *mux_gpio = mux_chip_priv(mux->chip);
- 	DECLARE_BITMAP(values, BITS_PER_TYPE(state));
-+	u32 delay = mux_gpio->delay;
- 	u32 value = state;
- 
- 	bitmap_from_arr32(values, &value, BITS_PER_TYPE(value));
-@@ -32,6 +35,9 @@ static int mux_gpio_set(struct mux_control *mux, int state)
- 				       mux_gpio->gpios->desc,
- 				       mux_gpio->gpios->info, values);
- 
-+	if (delay)
-+		fsleep(delay);
-+
- 	return 0;
- }
- 
-@@ -72,6 +78,9 @@ static int mux_gpio_probe(struct platform_device *pdev)
- 	WARN_ON(pins != mux_gpio->gpios->ndescs);
- 	mux_chip->mux->states = BIT(pins);
- 
-+	mux_gpio->delay = 0;
-+	device_property_read_u32(dev, "settle-time-us", &mux_gpio->delay);
-+
- 	ret = device_property_read_u32(dev, "idle-state", (u32 *)&idle_state);
- 	if (ret >= 0 && idle_state != MUX_IDLE_AS_IS) {
- 		if (idle_state < 0 || idle_state >= mux_chip->mux->states) {
+Good point I will fix the comment near by the mte_async_mode definition.
+
+Thanks!
+
 -- 
-2.28.0
-
+Regards,
+Vincenzo
