@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFDA420B9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6B6420BA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhJDM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58886 "EHLO mail.kernel.org"
+        id S233513AbhJDM6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234024AbhJDM5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52BF661409;
-        Mon,  4 Oct 2021 12:55:54 +0000 (UTC)
+        id S234043AbhJDM5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C116D6124C;
+        Mon,  4 Oct 2021 12:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352154;
-        bh=tg/LdSw7r3e908Zm42bDYSimlqnlchmK7sNUofOb8Yo=;
+        s=korg; t=1633352157;
+        bh=jirSGGxbiscZSHgD5MFsdLiD7l3r0LhG03dI8D7OAZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BOHp1nFVjfm1/6+PagyccoNwPtsL3j4SOASKFuHj+DwgdQ4JJn6Qe50NWmT5S8tgv
-         9uFVizkpbzy1dAqFOayqEE4KyiChYkczbVMbQJ9E3HGhcD8arny8Z7chG/VeLYWD9y
-         tcLgZu3ObwPbnU3un7qwuoDYvlG9DB5fArIoGxAQ=
+        b=RUbkuUV6Jp8iDIdk/4ZXW3weQ5SYlbV+9WhBCu4nQSZo0IzpyotKNZq0tyOxEf7LC
+         LGWpZXZhTRzHXdORmWs9t8mdGQbS5Fx0nouhWikCQkX992tHAu6k02Qt6pNox//mKE
+         mJ0oPhY0sWlE3Wrt1ZUUIpXGuTwQaT8HEtlollYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.9 03/57] usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
-Date:   Mon,  4 Oct 2021 14:51:47 +0200
-Message-Id: <20211004125029.049392775@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.9 04/57] cifs: fix incorrect check for null pointer in header_assemble
+Date:   Mon,  4 Oct 2021 14:51:48 +0200
+Message-Id: <20211004125029.079829669@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
 References: <20211004125028.940212411@linuxfoundation.org>
@@ -38,32 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Steve French <stfrench@microsoft.com>
 
-commit 517c7bf99bad3d6b9360558414aae634b7472d80 upstream.
+commit 9ed38fd4a15417cac83967360cf20b853bfab9b6 upstream.
 
-This is writing to the first 1 - 3 bytes of "val" and then writing all
-four bytes to musb_writel().  The last byte is always going to be
-garbage.  Zero out the last bytes instead.
+Although very unlikely that the tlink pointer would be null in this case,
+get_next_mid function can in theory return null (but not an error)
+so need to check for null (not for IS_ERR, which can not be returned
+here).
 
-Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210916135737.GI25094@kili
+Address warning:
+
+        fs/smbfs_client/connect.c:2392 cifs_match_super()
+        warn: 'tlink' isn't an ERR_PTR
+
+Pointed out by Dan Carpenter via smatch code analysis tool
+
+CC: stable@vger.kernel.org
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/tusb6010.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/cifs/connect.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -193,6 +193,7 @@ tusb_fifo_write_unaligned(void __iomem *
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -2960,9 +2960,10 @@ cifs_match_super(struct super_block *sb,
+ 	spin_lock(&cifs_tcp_ses_lock);
+ 	cifs_sb = CIFS_SB(sb);
+ 	tlink = cifs_get_tlink(cifs_sb_master_tlink(cifs_sb));
+-	if (IS_ERR(tlink)) {
++	if (tlink == NULL) {
++		/* can not match superblock if tlink were ever null */
+ 		spin_unlock(&cifs_tcp_ses_lock);
+-		return rc;
++		return 0;
  	}
- 	if (len > 0) {
- 		/* Write the rest 1 - 3 bytes to FIFO */
-+		val = 0;
- 		memcpy(&val, buf, len);
- 		musb_writel(fifo, 0, val);
- 	}
+ 	tcon = tlink_tcon(tlink);
+ 	ses = tcon->ses;
 
 
