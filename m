@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A95420F43
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A119420CF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237733AbhJDNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43772 "EHLO mail.kernel.org"
+        id S235673AbhJDNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237779AbhJDNae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B2B61B98;
-        Mon,  4 Oct 2021 13:13:53 +0000 (UTC)
+        id S235455AbhJDNI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:08:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0352061A54;
+        Mon,  4 Oct 2021 13:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353233;
-        bh=2iwA1Qy+a765qThMzGVroZ6eJPLsSgRAlizBSs5Cjn4=;
+        s=korg; t=1633352535;
+        bh=FuBLvPZOaNDqtLiQ6Jkd1Gd1oxqwHc0IZGNzQGqzgOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SHqJTP5vdzL50RhXGMKR9/FAE3+k/3gYWt26c3Z3mRpX/EPjq+6Kn/rGNHoTVlHPV
-         UHI+AWTyA7eiH9Zx9fEsGZ7TnZh5lKLlRUEgl5FFQbqgpY7NToIqOUu9g6oZGgdrqX
-         6GCOHvRVEo2uaU+xnh29X2uad9Up0SeQH1fE5hU0=
+        b=nyoro2H7H/4eT6SZZ2PL/0xJWsK8FW0i6xzfNsctpOEeNIF2EXaRmxvlTrcUjECuy
+         21A/b5U4wxhwyVV/u4iKBToCh5rdFNv4vwIA9zWr6nnL/CCOvvbWT+1KakfnsIN3l/
+         psWT+Iwx9MAqUmTL174H35Fvf+Y1KQ67+b8MBxms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Gurtzick <magic@wizardtales.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH 5.14 047/172] platform/x86/intel: hid: Add DMI switches allow list
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Ondrej Zary <linux@zary.sk>
+Subject: [PATCH 4.19 07/95] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
 Date:   Mon,  4 Oct 2021 14:51:37 +0200
-Message-Id: <20211004125046.509981455@linuxfoundation.org>
+Message-Id: <20211004125033.807699489@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: José Expósito <jose.exposito89@gmail.com>
+From: Ondrej Zary <linux@zary.sk>
 
-commit b201cb0ebe87b209e252d85668e517ac1929e250 upstream.
+commit b55d37ef6b7db3eda9b4495a8d9b0a944ee8c67d upstream.
 
-Some devices, even non convertible ones, can send incorrect
-SW_TABLET_MODE reports.
+ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
+broken tag handling, preventing the device from working at all:
+usb 1-1: new full-speed USB device number 2 using uhci_hcd
+usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
+usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
+usb 1-1: Product: USB Device
+usb 1-1: Manufacturer: USB Device
+usb-storage 1-1:1.0: USB Mass Storage device detected
+scsi host2: usb-storage 1-1:1.0
+usbcore: registered new interface driver usb-storage
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
 
-Add an allow list and accept such reports only from devices in it.
+Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
 
-Bug reported for Dell XPS 17 9710 on:
-https://gitlab.freedesktop.org/libinput/libinput/-/issues/662
+2.6c is the only firmware that claims Linux compatibility.
+The firmware can be upgraded using ezotgdbg utility:
+https://github.com/asciilifeform/ezotgdbg
 
-Reported-by: Tobias Gurtzick <magic@wizardtales.com>
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
-Tested-by: Tobias Gurtzick <magic@wizardtales.com>
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
-Link: https://lore.kernel.org/r/20210920160312.9787-1-jose.exposito89@gmail.com
-[hdegoede@redhat.com: Check dmi_switches_auto_add_allow_list only once]
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Ondrej Zary <linux@zary.sk>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210913210106.12717-1-linux@zary.sk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/x86/intel-hid.c |   27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ drivers/usb/storage/unusual_devs.h |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -118,12 +118,30 @@ static const struct dmi_system_id dmi_vg
- 	{ }
- };
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x
+ 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
  
-+/*
-+ * Some devices, even non convertible ones, can send incorrect SW_TABLET_MODE
-+ * reports. Accept such reports only from devices in this list.
-+ */
-+static const struct dmi_system_id dmi_auto_add_switch[] = {
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "31" /* Convertible */),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "32" /* Detachable */),
-+		},
-+	},
-+	{} /* Array terminator */
-+};
-+
- struct intel_hid_priv {
- 	struct input_dev *input_dev;
- 	struct input_dev *array;
- 	struct input_dev *switches;
- 	bool wakeup_mode;
--	bool dual_accel;
-+	bool auto_add_switch;
- };
- 
- #define HID_EVENT_FILTER_UUID	"eeec56b3-4442-408f-a792-4edd4d758054"
-@@ -452,10 +470,8 @@ static void notify_handler(acpi_handle h
- 	 * Some convertible have unreliable VGBS return which could cause incorrect
- 	 * SW_TABLET_MODE report, in these cases we enable support when receiving
- 	 * the first event instead of during driver setup.
--	 *
--	 * See dual_accel_detect.h for more info on the dual_accel check.
- 	 */
--	if (!priv->switches && !priv->dual_accel && (event == 0xcc || event == 0xcd)) {
-+	if (!priv->switches && priv->auto_add_switch && (event == 0xcc || event == 0xcd)) {
- 		dev_info(&device->dev, "switch event received, enable switches supports\n");
- 		err = intel_hid_switches_setup(device);
- 		if (err)
-@@ -596,7 +612,8 @@ static int intel_hid_probe(struct platfo
- 		return -ENOMEM;
- 	dev_set_drvdata(&device->dev, priv);
- 
--	priv->dual_accel = dual_accel_detect();
-+	/* See dual_accel_detect.h for more info on the dual_accel check. */
-+	priv->auto_add_switch = dmi_check_system(dmi_auto_add_switch) && !dual_accel_detect();
- 
- 	err = intel_hid_input_setup(device);
- 	if (err) {
+ /*
+- * Reported by Ondrej Zary <linux@rainbow-software.org>
++ * Reported by Ondrej Zary <linux@zary.sk>
+  * The device reports one sector more and breaks when that sector is accessed
++ * Firmwares older than 2.6c (the latest one and the only that claims Linux
++ * support) have also broken tag handling
+  */
++UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
++		"ScanLogic",
++		"SL11R-IDE",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
+ UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
+ 		"ScanLogic",
+ 		"SL11R-IDE",
 
 
