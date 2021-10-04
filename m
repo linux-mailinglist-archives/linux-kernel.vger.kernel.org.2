@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E6F42169D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DF642169F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238753AbhJDShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        id S238772AbhJDSiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237863AbhJDShq (ORCPT
+        with ESMTP id S234437AbhJDSiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:37:46 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD79C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:35:57 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id x124so22811870oix.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:35:57 -0700 (PDT)
+        Mon, 4 Oct 2021 14:38:06 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F099C061745;
+        Mon,  4 Oct 2021 11:36:17 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so447539pjb.1;
+        Mon, 04 Oct 2021 11:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=hXHHXCyhxvnGT3QgfcApqG6moWz0bf7iL02kdOIh9PQ=;
-        b=HRBTgWhCYpNHFgX6gVtv0Fhea1PCx8OnfEDJAoF0JSHT4GU6PZiyevQlrJo8r1xGFd
-         hoL0zYqtr7NMbNr+wgjuJYA8sZJts5glM7htXHl07e8YUYWCf09mCXa+sH7n0GuV9TVz
-         aznweM1wvnoBQ3lS9t+S4gp7pHQ7lY/Czua8E=
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=5y2t/ZH+SX9ahuOyLaWvsDdmBwZwjaw92eWd0yfwnhk=;
+        b=jnsE7xk7HTOpM7530Pv1ds0IKNpkvzQ1GROQ23dREEuNh5rUhdg6/vFd/ldKod4vjP
+         ZMqjuqYEDRJdEz1ba2uwZN1i+7kacosh0Dt33HvNNLf/5jAu3SRl4BoEdCGCInOQL9MS
+         RpNlQSfh46rPJ9aSbWaN9g9AkV6ksqcE/UjeReVVFgc9DheVxlcWmeEN7KIegCxJcgBa
+         qElivXO6pE86lUevEkRh2kZYOys0ZCfbQkt5B0XfMSY4DaCtY0/rmwfZtLemiiVPnjaj
+         XIzDDxKxR7Xo0HzvNu7MqwateU3cmYjLv+hxd5Naiw5K3TeNV0MLymBH/2MqaK3HWQyT
+         CoyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=hXHHXCyhxvnGT3QgfcApqG6moWz0bf7iL02kdOIh9PQ=;
-        b=GMjWnfaQzy5HC2LXkahSDKBOetVeLsZ2Wveynz86yQ/eqNdrzJ+1TCP/R6LFpil14p
-         kL+5SUT1/Oxil7eZreI+/PPGyCJQcatVejKM3GzcUDR06rBNmh+Irs6Z2b3JH/DKNXNF
-         n9lfbV4lRaHOUOCqqxu4IWJUHW5dsH2YPfIVkb4Xt7dkQVYC8X1b/dyFGtbQe+JGRHY6
-         1kD+nNAJdTHzmUCtLBgT0s5uIf5Nf7lAIKRbYI4NV3bslUFrnauMSHWZu3LzWTMmPrvJ
-         f30sSPbl7TL3e9VcniiTN5yo1zo8787Pp0zN+PMUQEvIdferRnMb6hQ080l8Gu9oxYml
-         LKjw==
-X-Gm-Message-State: AOAM533D7VWIFlP2yU+U+Y5vs6RgHdwIMYB7RqRIwGuZOwufLoJgYVM+
-        Qaww4oV3dVcjDq8Zx3EHfd5SipQM+AZW1/4vThSoyQ==
-X-Google-Smtp-Source: ABdhPJyEaUIn4jKNa/faVuYQtFHfhH/wNnzeZuhXD9ZXzTI2+gVLl7lVZFKDzAY6df30uzyTknavPIhXv7wOs9lXFB4=
-X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr14513558oiw.164.1633372556918;
- Mon, 04 Oct 2021 11:35:56 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 4 Oct 2021 14:35:56 -0400
-MIME-Version: 1.0
-In-Reply-To: <1633330133-29617-4-git-send-email-pillair@codeaurora.org>
-References: <1633330133-29617-1-git-send-email-pillair@codeaurora.org> <1633330133-29617-4-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 4 Oct 2021 14:35:56 -0400
-Message-ID: <CAE-0n51cMX95kuuFUAusqhFOUUZeGsGfA_=5u+5O8w1C=toLzA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] remoteproc: qcom: q6v5_wpss: Add support for
- sc7280 WPSS
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=5y2t/ZH+SX9ahuOyLaWvsDdmBwZwjaw92eWd0yfwnhk=;
+        b=3tbZ4wnqTA9HRkiOkYR4yNtk9MpbZTM2Tk8swJa4i+ycFYGWP7oCFRpvM0EjT/StTy
+         6Wf6sRcbQOZLfbFl2SYbEOhGTAzOnfHBBiE3ysvrngTJHVmt7md16L0/YIRH9ddhoRRk
+         T5hXIVabV6MgpYqCGY0UOe77jiedJMQyvmox9FMtIEGPFD+8iZEccwsMB6nJ+VOHyvrQ
+         +VjZcCj0pfTr/4qulWnbGy44LuHdG522egVEtpLEdFVAB4Sp85hgcUnst6NNp/VpXamu
+         caPIYF3S6GeF1CdtRj5G4qNjBEO/COH9s+8eQiv5sD2ByENKxyso1MRmoSySfhx2K4Fn
+         +2jg==
+X-Gm-Message-State: AOAM531pCB+nmJXvgfISA8YLjdcoOYYZoS3yTz6rx68udy0bN+erq2Wf
+        yIFlV5DYKU3aMfKkbBjeV81IB3/yISoxpdOvShM=
+X-Google-Smtp-Source: ABdhPJzihWlBiJVArNdWVgsRWufLxdOM8jmxcyHyfHQzL/9PBQeHqpmUNm67k/9yLQZBak6AU0EcDQ==
+X-Received: by 2002:a17:902:7fcf:b0:13e:c994:ee67 with SMTP id t15-20020a1709027fcf00b0013ec994ee67mr1117355plb.12.1633372576307;
+        Mon, 04 Oct 2021 11:36:16 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id p16sm15518308pfq.95.2021.10.04.11.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 11:36:15 -0700 (PDT)
+Message-ID: <615b499f.1c69fb81.97f6b.d6a9@mx.google.com>
+Date:   Mon, 04 Oct 2021 11:36:15 -0700 (PDT)
+X-Google-Original-Date: Mon, 04 Oct 2021 18:36:14 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/172] 5.14.10-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-10-03 23:48:53)
-> Add support for PIL loading of WPSS processor for SC7280
-> - WPSS boot will be requested by the wifi driver and hence
->   disable auto-boot for WPSS.
-> - Add a separate shutdown sequence handler for WPSS.
-> - Add multiple power-domain voting support
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On Mon,  4 Oct 2021 14:50:50 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.10 release.
+> There are 172 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-This changed? Please don't keep reviewed-by if things changed
-significantly.
+5.14.10-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index 098362e6..b6d3c3d 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -531,15 +685,40 @@ static const struct adsp_pil_data cdsp_resource_init = {
->         .ssr_name = "cdsp",
->         .sysmon_name = "cdsp",
->         .ssctl_id = 0x17,
-> +       .is_wpss = false,
-> +       .auto_boot = true,
->         .clk_ids = (const char*[]) {
->                 "sway", "tbu", "bimc", "ahb_aon", "q6ss_slave", "q6ss_master",
->                 "q6_axim", NULL
->         },
->         .num_clks = 7,
-> +       .proxy_pd_names = (const char*[]) {
-> +               "cx", NULL
-> +       },
-> +};
-> +
-> +static const struct adsp_pil_data wpss_resource_init = {
-> +       .crash_reason_smem = 626,
-> +       .firmware_name = "wpss.mdt",
-> +       .ssr_name = "wpss",
-> +       .sysmon_name = "wpss",
-> +       .ssctl_id = 0x19,
-> +       .is_wpss = true,
-> +       .auto_boot = false,
-> +       .load_state = "wpss",
-> +       .clk_ids = (const char*[]) {
-> +               "gcc_wpss_ahb_bdg_mst_clk", "gcc_wpss_ahb_clk",
-> +               "gcc_wpss_rscp_clk", NULL
-
-Please remove "gcc_wpss_" prefix and "_clk" postfix. Does that make this
-match the binding?
-
-> +       },
-> +       .num_clks = 3,
-> +       .proxy_pd_names = (const char*[]) {
-> +               "cx", "mx", NULL
-> +       },
->  };
->
