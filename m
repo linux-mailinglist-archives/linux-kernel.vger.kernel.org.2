@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6744B420AE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48297420AF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhJDMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJDMdU (ORCPT
+        id S233024AbhJDMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:34:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37034 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhJDMek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:33:20 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D5DC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:31:31 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g8so64367971edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 05:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=j3+NTrKGFxPGR5lMV22TDnmiT6BfVPVV1SDrEBp3aXk=;
-        b=O6lUjgv5/RmkoDv75GKCiEFyuEGSKsFUCencENjUDqGrkgJQVkxIZtZjU8VnAdfwt6
-         gEyzSam26qVPlIwwtf1K2Ktx8bYDsaB7oFybuW8dtS3OOngk00UZ8MAKDs6oKGKgZ0pA
-         eY7mnh5tym7TIsoWXHX6zo8RKhK7g6aBiBpQs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=j3+NTrKGFxPGR5lMV22TDnmiT6BfVPVV1SDrEBp3aXk=;
-        b=cVCuKr0kyGHE/ClyPM5KGtJrPzfcIcfXC8/7a/T672QYs1dav6Cr6YBqdks0n0M8Za
-         UZD9fkNXe7JLETgTVLWjE2yy3rB92s/J/QV/r/t0yjMMDf2gPr1sj9/MOZ4cqXLlofV9
-         eSPotp5U9MAgk8y3c88ZxHQWp3GY2Yyj5KGUnGnPJPsYlhWrLzshSxaDi9DfK3jC+vht
-         sC8BDL2opJb/j18JFaihMq7wNV1xHXOTTuyjWrVF1CExe0NXkdbZ4MURfqMoNzEYNFjV
-         RSB6hOESZxv2OJm0wEZO4l30j+vTVBnpg9QRYLIIKjyGVDNl1CWZG7blJYw4lFV0iY5l
-         w7aQ==
-X-Gm-Message-State: AOAM5309/JOijQAzHFN914G8j3o06GxJtujR0mmfEBT4w41icUwmxX7X
-        2gt6wpLPPTqojgbcIKXv8XyqXw==
-X-Google-Smtp-Source: ABdhPJyCTMYab3bhdSRWmXA9IxDIE79OlIAQP4zIl/PVIgqhZErhowcR1kJRIn0y6/gf+MUY2jp7eQ==
-X-Received: by 2002:a50:da0a:: with SMTP id z10mr17910180edj.95.1633350687042;
-        Mon, 04 Oct 2021 05:31:27 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:d19e])
-        by smtp.gmail.com with ESMTPSA id s21sm4658614eji.3.2021.10.04.05.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 05:31:26 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 13:31:25 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        YueHaibing <yuehaibing@huawei.com>, Jessica Yu <jeyu@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] [v2] printk: avoid -Wsometimes-uninitialized warning
-Message-ID: <YVr0HRnfzttC/wqX@chrisdown.name>
-References: <20210928093456.2438109-1-arnd@kernel.org>
- <YVLrttKajDU+1ZvX@chrisdown.name>
- <YVrH5MUdS6uE/zDj@alley>
+        Mon, 4 Oct 2021 08:34:40 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D9CF01FFE8;
+        Mon,  4 Oct 2021 12:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633350770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XiD+afiiLyuhyLeHqpR6VFM9oAVsKc1mquERPqNQV1s=;
+        b=fUySvCnaU5OayYMjijzgKvZtS6YVpcj7fAqjvUviE8RPJUntQhxX9YTK/KdQ5S8KBPXEJf
+        +nBLN2SrYjAszjqUQz92phaXTgt3CogjM/g8iwfaINFeemWhiGiz0DP+s/rYSt4HLhEzMG
+        drvbNJqgdzfFBcC7sClw3lV57CAJIHE=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D2339A3B8A;
+        Mon,  4 Oct 2021 12:32:49 +0000 (UTC)
+Date:   Mon, 4 Oct 2021 14:32:47 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] kernel/watchdog_hld: clarify the condition in
+ hardlockup_detector_event_create()
+Message-ID: <YVr0bwfDZQFbBCFG@alley>
+References: <20210923140951.35902-1-kernelfans@gmail.com>
+ <20210923140951.35902-3-kernelfans@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVrH5MUdS6uE/zDj@alley>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <20210923140951.35902-3-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->On Tue 2021-09-28 11:17:26, Chris Down wrote:
->> Arnd Bergmann writes:
->> > From: Arnd Bergmann <arnd@arndb.de>
->> >
->> > clang notices that the pi_get_entry() function would use
->> > uninitialized data if it was called with a non-NULL module
->> > pointer on a kernel that does not support modules:
->> >
->> > kernel/printk/index.c:32:6: error: variable 'nr_entries' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
->> >        if (!mod) {
->> >            ^~~~
->> > kernel/printk/index.c:38:13: note: uninitialized use occurs here
->> >        if (pos >= nr_entries)
->> >                   ^~~~~~~~~~
->> > kernel/printk/index.c:32:2: note: remove the 'if' if its condition is always true
->> >        if (!mod) {
->> >
->> > Rework the condition to make it clear to the compiler that we are always
->> > in the second case. Unfortunately the #ifdef is still required as the
->> > definition of 'struct module' is hidden when modules are disabled.
->> >
->> > Fixes: 337015573718 ("printk: Userspace format indexing support")
->>
->> This changelog should make it clear that this is theoretical and will never
->> actually happen, which is salient information for people who are considering
->> whether it should go in stable or similar.
->
->IMHO, the sentence "Rework the condition to make it clear that this
->is theoretical and will never actually happen" is rather clear.
+On Thu 2021-09-23 22:09:49, Pingfan Liu wrote:
+> As for the context, there are two arguments to change
+> debug_smp_processor_id() to is_percpu_thread().
+> 
+>   -1. watchdog_ev is percpu, and migration will frustrate the attempt
+> which try to bind a watchdog_ev to a cpu by protecting this func inside
+> the pair of preempt_disable()/preempt_enable().
+> 
+>   -2. hardlockup_detector_event_create() indirectly calls
+> kmem_cache_alloc_node(), which is blockable.
+> 
+> So here, spelling out the really planned context "is_percpu_thread()".
 
-Sounds good to me, thanks!
+The description is pretty hard to understand. I would suggest
+something like:
 
-I guess it's unneeded at this point, but feel free to add:
+Subject: kernel/watchdog_hld: Ensure CPU-bound context when creating
+hardlockup detector event
 
-Acked-by: Chris Down <chris@chrisdown.name>
+hardlockup_detector_event_create() should create perf_event on the
+current CPU. Preemption could not get disabled because
+perf_event_create_kernel_counter() allocates memory. Instead,
+the CPU locality is achieved by processing the code in a per-CPU
+bound kthread.
 
->Well, I am not a native speaker.
->
->Anyway, I have pushed the patch into printk/linux.git, branch
->for-5.16.
->
->Best Regards,
->Petr
+Add a check to prevent mistakes when calling the code in another
+code path.
+
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Wang Qing <wangqing@vivo.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Santosh Sivaraj <santosh@fossix.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> To: linux-kernel@vger.kernel.org
+> ---
+>  kernel/watchdog_hld.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+> index 247bf0b1582c..df010df76576 100644
+> --- a/kernel/watchdog_hld.c
+> +++ b/kernel/watchdog_hld.c
+> @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
+>  
+>  static int hardlockup_detector_event_create(void)
+>  {
+> -	unsigned int cpu = smp_processor_id();
+> +	unsigned int cpu;
+>  	struct perf_event_attr *wd_attr;
+>  	struct perf_event *evt;
+>  
+> +	/* This function plans to execute in cpu bound kthread */
+
+This does not explain why it is needed. I suggest something like:
+
+	/*
+	 * Preemption is not disabled because memory will be allocated.
+	 * Ensure CPU-locality by calling this in per-CPU kthread.
+	 */
+
+
+> +	WARN_ON(!is_percpu_thread());
+> +	cpu = raw_smp_processor_id();
+>  	wd_attr = &wd_hw_attr;
+>  	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
+>  
+
+Othrewise the change looks good to me.
+
+Best Regards,
+Petr
