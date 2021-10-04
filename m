@@ -2,295 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4291742145E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B1A42145C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237398AbhJDQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        id S237360AbhJDQtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237352AbhJDQtP (ORCPT
+        with ESMTP id S237351AbhJDQtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 12:49:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C6DC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:47:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj4so67795263edb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:47:23 -0700 (PDT)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A29C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:47:24 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id m5so2286389pfk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eZ0v1u2tk23X5eUN5tNJiDFXAjN4+CmumgmY2tcIBG4=;
-        b=RpLKd5VUguSaG7sbGMc3WPh6mT0KzRNou9Sj/ADgtL4EheWkrgXurqmaMbVHdVITzW
-         KF+MR6qLNw8ZL60D81vZASo4gW6XTolLG/v+6dM4MKIdJGG7Ajp9/s1PFT8g+x7heccg
-         OEaB2OJoyU93X6ebMP4zaFkwPc4vwNXC/faIKZXdTGjz7UU8EjvNz72NfJheb/qKZPnW
-         +ZsSDcw/8UF9j5T7tn3AEbeGgsca6FECZr/HjPl1pm/68S3KpjDLVK1TyCQ3z+CKFgqD
-         8qlNDkbTfNj37JE9RRuvtleXTuWUZOuTEEmIGkQCcQLm2AJPFGVzkvOCJr1kVJxwI2SC
-         +4aw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=slTlsBUy0mVBR913Mb1fnT3NHvCMACe76jloyGr+bDY=;
+        b=UJGQovBfYopBHS+99kE9Xi/b28+8BNjGdZjXHnM7WmyhccSXsRZwz7yJipZH1aovZE
+         FYB48O9m2C3cz1mWvubgLUD4T1IsCBpm3l04hViYzt2VtsQOB0uz9Uqy6B3VDdQ3Tabz
+         qlWOadeZnofPFtK12ynpOATfXgnQbrnPiKXFos0Tsqd7nSoGh+i4ZIi+1VVmmENJ1X5h
+         rUor86lM3PuvEV0lxZ7jd31dQBeGFgVLqO0+kly7cI24LrnRU6/4EOt/m5q03zd34ViD
+         Bf/r6VVTsSj/L5BA0GeXMlfRUAqOiaUWD2tQHjGGxgePIUP68uAT2py+nRnOCEFFNyAJ
+         f24g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eZ0v1u2tk23X5eUN5tNJiDFXAjN4+CmumgmY2tcIBG4=;
-        b=uravDSnjgMZdJxS+j49b+SH/ao9xTZz8LzvENB+vf4zAVaqbhbLz4r0yZ2A2NkJrQA
-         j8rFeGTA3kiznmI86p4g+eh/xH+qjORtGW84qWrAFNL5Juj3H8ViNM9n6T+614ki251k
-         4nodYSrm5QqlZW4nEqHo7IOO9enOw8Fku6sEgiYAs9naz/tLfYDgt7mfK5fEJxZvZmNz
-         D9yxkBE1oO91UVvOCCIDmBqBYYZXn2BIiXe4jNo2Vw70rd0+qrPs70XkUdnnKw2PwWCG
-         27zjBrNu5R1Nlc5w0u2u2voUKYHAzTAjuHI0u9VfEjz4W+CU/HBOoJe/8jzLzubC/qrb
-         PKzw==
-X-Gm-Message-State: AOAM532cf+2jrXxTAKRFDvAGCMMAewu8af+m/LYoboQXLIrJI2R8b6je
-        6Ph7MJNc9tlaCRyQuTGVXHPjJZpMP4alvT3eaBLLpw==
-X-Google-Smtp-Source: ABdhPJzjVM4V14h8OdtJUWCc39edoN+MVZ7X+KSuNidkbdX/lWnwMxkr2+OCau6qpimILQv/4qAfa5xdI8gET8cJFXM=
-X-Received: by 2002:a50:9dca:: with SMTP id l10mr19480865edk.61.1633366000496;
- Mon, 04 Oct 2021 09:46:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=slTlsBUy0mVBR913Mb1fnT3NHvCMACe76jloyGr+bDY=;
+        b=fz4v/TW6y6HQG9VUkiiMKhnLO0bk3/CkIfkTMhgKP93O5Vg/FNhvAua08IBVFckplh
+         DfxwRzGPsdMjw8puynGVKLiQCHiP61xT0GdqUc9aLx6QvUbXj4OCsyMPF9/WohxgaEd1
+         owAtXOliNZ9pN6ya35AVkBl9ZOANIBQyqDZidP14rwqmH7NSe/NNnoQmXPDlc/dZf2RR
+         2S0cQNMem9AjlI/ZCwm37yHgfMfieXYFDVY7VbqcseBBgKabffse8qKGTQVVQqWM/Zfy
+         C77i0etUvTmaZLOLQ6BiASPXIdLW3ly5AYUY9hA3REseJ4a9VXpUcp75CuwtuOWC4lEP
+         5R+g==
+X-Gm-Message-State: AOAM532qKSo5PQvFVV5+dnLUdjVlykhP5JBvOHIOTib3GzwIPPtsbDs0
+        a7dR5WfC4VeZxx5q17cUqLnWZg==
+X-Google-Smtp-Source: ABdhPJzrOGjWLwk0uBwi0itShioeViqo7z9Z1okWJzCu45+EFK7jpx6U2hDg7jZRGTEYfLc/uoh0Mg==
+X-Received: by 2002:aa7:9542:0:b0:44c:6db9:f596 with SMTP id w2-20020aa79542000000b0044c6db9f596mr3021699pfq.21.1633366043634;
+        Mon, 04 Oct 2021 09:47:23 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p48sm14865428pfw.160.2021.10.04.09.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 09:47:22 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 10:47:19 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+Subject: Re: [PATCH v2 09/17] coresight: trbe: Workaround TRBE errata
+ overwrite in FILL mode
+Message-ID: <20211004164719.GA3263478@p14s>
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-10-suzuki.poulose@arm.com>
+ <20211001171522.GB3148492@p14s>
+ <085e398c-767c-1b9b-0780-bed830d936fb@arm.com>
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
- <20210304091025.ny52qjm7wbfvmjgl@mobilestation> <CACRpkdZroi+_oHqipS71MAGif190y7jWU5Myf55vz=_um4w5cQ@mail.gmail.com>
- <CAK9rFnzDZ4MNm68AJ75g7zegLD-7UMHyoVR-4ssitYTTEeQm5g@mail.gmail.com> <CACRpkdZEURRTe15HGf93SvyHej=_6qhfP9KWPSQbCM=SLUVKmA@mail.gmail.com>
-In-Reply-To: <CACRpkdZEURRTe15HGf93SvyHej=_6qhfP9KWPSQbCM=SLUVKmA@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 4 Oct 2021 09:46:28 -0700
-Message-ID: <CAK9rFnxuiAX2-5TFhfyTdpaY3BRysX_Q2sJkca4LhOLzapB83Q@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <085e398c-767c-1b9b-0780-bed830d936fb@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 2:09 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Mon, Aug 23, 2021 at 3:06 AM Brad Larson <brad@pensando.io> wrote:
->
-> > The gpio pins being used for the Elba SoC SPI CS are dedicated to this
-> > function.  Are you recommending that the code in
-> > drivers/gpio/gpio-elba-spics.c be integrated into
-> > drivers/spi/spi-dw-mmio.c?
->
-> That makes most sense does it not?
->
-> Special purpose pins should be managed by that special purpose
-> hardware driver, DW SPI in this case.
->
-> The compatible string etc should be enough to determine that we
-> need some extra GPIO control here, possibly specify extra registers
-> for the SPI host etc.
->
-> The struct spi_master has a special callback .set_cs() and you
-> should make this behave special for your special hardware.
-> In the case of the DW driver it appears that even subdrivers can
-> pass a custom version of this call in struct dw_spi.
->
-> Yours,
-> Linus Walleij
+Good morning,
 
-Yes that works, please see the diff below where the file
-gpio-elba-spics.c goes away.  The original implementation was
-motivated by gpio-spear-spics.c.
+On Mon, Oct 04, 2021 at 09:46:07AM +0100, Suzuki K Poulose wrote:
+> Hi Mathieu
+> 
+> On 01/10/2021 18:15, Mathieu Poirier wrote:
+> > On Tue, Sep 21, 2021 at 02:41:13PM +0100, Suzuki K Poulose wrote:
+> > > ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
+> > > an erratum, which when triggered, might cause the TRBE to overwrite
+> > > the trace data already collected in FILL mode, in the event of a WRAP.
+> > > i.e, the TRBE doesn't stop writing the data, instead wraps to the base
+> > > and could write upto 3 cache line size worth trace. Thus, this could
+> > > corrupt the trace at the "BASE" pointer.
+> > > 
+> > > The workaround is to program the write pointer 256bytes from the
+> > > base, such that if the erratum is triggered, it doesn't overwrite
+> > > the trace data that was captured. This skipped region could be
+> > > padded with ignore packets at the end of the session, so that
+> > > the decoder sees a continuous buffer with some padding at the
+> > > beginning. The trace data written at the base is considered
+> > > lost as the limit could have been in the middle of the perf
+> > > ring buffer, and jumping to the "base" is not acceptable.
+> > > We set the flags already to indicate that some amount of trace
+> > > was lost during the FILL event IRQ. So this is fine.
+> > > 
+> > > One important change with the work around is, we program the
+> > > TRBBASER_EL1 to current page where we are allowed to write.
+> > > Otherwise, it could overwrite a region that may be consumed
+> > > by the perf. Towards this, we always make sure that the
+> > > "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
+> > > so that we can set the BASE to the PAGE base and move the
+> > > TRBPTR to the 256bytes offset.
+> > > 
+> > > Cc: Mike Leach <mike.leach@linaro.org>
+> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > Cc: Leo Yan <leo.yan@linaro.org>
+> > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > ---
+> > > Change since v1:
+> > >   - Updated comment with ASCII art
+> > >   - Add _BYTES suffix for the space to skip for the work around.
+> > > ---
+> > >   drivers/hwtracing/coresight/coresight-trbe.c | 144 +++++++++++++++++--
+> > >   1 file changed, 132 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> > > index f569010c672b..983dd5039e52 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> > > @@ -16,6 +16,7 @@
+> > >   #define pr_fmt(fmt) DRVNAME ": " fmt
+> > >   #include <asm/barrier.h>
+> > > +#include <asm/cpufeature.h>
+> > >   #include <asm/cputype.h>
+> > >   #include "coresight-self-hosted-trace.h"
+> > > @@ -84,9 +85,17 @@ struct trbe_buf {
+> > >    * per TRBE instance, we keep track of the list of errata that
+> > >    * affects the given instance of the TRBE.
+> > >    */
+> > > -#define TRBE_ERRATA_MAX			0
+> > > +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
+> > > +#define TRBE_ERRATA_MAX				1
+> > > +
+> > > +/*
+> > > + * Safe limit for the number of bytes that may be overwritten
+> > > + * when the erratum is triggered.
+> > > + */
+> > > +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES	256
+> > >   static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+> > > +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
+> > >   };
+> > >   /*
+> > > @@ -519,10 +528,13 @@ static void trbe_enable_hw(struct trbe_buf *buf)
+> > >   	set_trbe_limit_pointer_enabled(buf->trbe_limit);
+> > >   }
+> > > -static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+> > > +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle,
+> > > +						 u64 trbsr)
+> > >   {
+> > >   	int ec = get_trbe_ec(trbsr);
+> > >   	int bsc = get_trbe_bsc(trbsr);
+> > > +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> > > +	struct trbe_cpudata *cpudata = buf->cpudata;
+> > >   	WARN_ON(is_trbe_running(trbsr));
+> > >   	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
+> > > @@ -531,10 +543,16 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+> > >   	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+> > >   		return TRBE_FAULT_ACT_FATAL;
+> > > -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+> > > -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
+> > > -			return TRBE_FAULT_ACT_WRAP;
+> > > -	}
+> > > +	/*
+> > > +	 * If the trbe is affected by TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
+> > > +	 * it might write data after a WRAP event in the fill mode.
+> > > +	 * Thus the check TRBPTR == TRBBASER will not be honored.
+> > > +	 */
+> > > +	if ((is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) &&
+> > > +	    (trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) ||
+> > > +	     get_trbe_write_pointer() == get_trbe_base_pointer()))
+> > > +		return TRBE_FAULT_ACT_WRAP;
+> > > +
+> > 
+> > I'm very perplexed by the trbe_has_erratum() infrastructure... Since this is a
+> > TRBE the code will always run on the CPU it is associated with, and if
+> > I'm correct here we could call this_cpu_has_cap() directly with the same
+> > outcome.  I doubt that all divers using the cpucaps subsystem carry a shadow
+> > structure to keep the same information.
+> 
+> Very valid question. Of course, we can use the this_cpu_has_cap()
+> helper. Unlike the cpus_have_*_cap() - which gives you the system
+> wide status of the erratum - the cpucap doesn't keep a cache of which
+> CPUs are affected by a given erratum. Thus this_cpu_has_cap() would
+> involve running the detection on the current CPU everytime we call it.
+> i.e, scanning the MIDR of the CPU through the list of affected MIDRs
+> for the given erratum. This is a bit of overhead.
 
-Best,
-Brad
+I've looked around in the kernel for other places where this_cpu_has_cap() is
+used.  In most instance it is part of some initialisation code where actions are
+taken based on the turn value of the function.  In our case we need to call this
+regularly so yes, I agree with your design.
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index d3b509e175e47..14751c7ccd1f4 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -240,11 +240,6 @@ config GPIO_EIC_SPRD
-  help
-   Say yes here to support Spreadtrum EIC device.
+> 
+> Given that we already have CPU specific information in trbe_cpudata, I
+> chose to cache the affected errata locally. This gives us quick access
+> to the erratum for individual TRBE instances. Of course this list is
+> initialised at TRBE probe and thus avoids us having to do the costly
+> check, each time we need it. I could make this clear in the patch
+> which introduces the framework.
 
--config GPIO_ELBA_SPICS
-- bool "Pensando Elba SoC SPI Chip Select as GPIO support"
-- depends on ARCH_PENSANDO_ELBA_SOC
-- def_bool y
--
- config GPIO_EM
-  tristate "Emma Mobile GPIO"
-  depends on (ARCH_EMEV2 || COMPILE_TEST) && OF_GPIO
+Yes please.
 
+Thanks,
+Mathieu
 
-diff --git a/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
-b/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
-index a59405dc5676d..17dfb0c91f84c 100644
---- a/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
-+++ b/arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
-@@ -66,8 +66,8 @@
-
- &spi0 {
-  num-cs = <4>;
-- cs-gpios = <&spics 0 GPIO_ACTIVE_LOW>, <&spics 1 GPIO_ACTIVE_LOW>,
--   <&porta 1 GPIO_ACTIVE_LOW>, <&porta 7 GPIO_ACTIVE_LOW>;
-+ cs-gpios = <0>, <0>,
-+ <&porta 1 GPIO_ACTIVE_LOW>, <&porta 7 GPIO_ACTIVE_LOW>;
-  status = "okay";
-  spi0_cs0@0 {
-  compatible = "pensando,cpld";
-
-
-diff --git a/arch/arm64/boot/dts/pensando/elba.dtsi
-b/arch/arm64/boot/dts/pensando/elba.dtsi
-index 029dd5f0045f3..3ff4c39815639 100644
---- a/arch/arm64/boot/dts/pensando/elba.dtsi
-+++ b/arch/arm64/boot/dts/pensando/elba.dtsi
-@@ -127,6 +127,7 @@
-  spi0: spi@2800 {
-  compatible = "pensando,elba-spi";
-  reg = <0x0 0x2800 0x0 0x100>;
-+ pensando,spics = <&mssoc 0x2468 0>;
-  clocks = <&ahb_clk>;
-  interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-  #address-cells = <1>;
-@@ -257,13 +258,6 @@
-  reg = <0x0 0x307c2080 0x0 0x4>;
-  };
-
-- spics: spics@307c2468 {
-- compatible = "pensando,elba-spics";
-- reg = <0x0 0x307c2468 0x0 0x4>;
-- gpio-controller;
-- #gpio-cells = <2>;
-- };
--
-  pcie@307c2480 {
-  compatible = "pensando,pcie";
-  reg = <0x0 0x307c2480 0x0 0x4 /* MS CFG_WDT */
-
-
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index 3379720cfcb8..64644bae8923 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/gpio.h>
- #include <linux/acpi.h>
- #include <linux/property.h>
- #include <linux/regmap.h>
-@@ -53,6 +54,24 @@ struct dw_spi_mscc {
-        void __iomem        *spi_mst; /* Not sparx5 */
- };
-
-+struct dw_spi_elba {
-+       struct regmap *regmap;
-+       unsigned int reg;
-+       unsigned int ctl;
-+};
-+
-+/*
-+ * ctl:              1               |               0
-+ * cs:       1               0       |       1               0
-+ * bit:  7-------6-------5-------4---|---3-------2-------1-------0
-+ *      cs1   cs1_ovr   cs0   cs0_ovr|  cs1   cs1_ovr   cs0   cs0_ovr
-+ *                  ssi1             |            ssi0
-+ */
-+#define ELBA_SPICS_SHIFT(ctl, cs)      (4 * (ctl) + 2 * (cs))
-+#define ELBA_SPICS_MASK(ctl, cs)       (0x3 << ELBA_SPICS_SHIFT(ctl, cs))
-+#define ELBA_SPICS_SET(ctl, cs, val)   \
-+                       ((((val) << 1) | 0x1) << ELBA_SPICS_SHIFT(ctl, cs))
-+
- /*
-  * The Designware SPI controller (referred to as master in the documentation)
-  * automatically deasserts chip select when the tx fifo is empty. The chip
-@@ -237,6 +256,74 @@ static int dw_spi_canaan_k210_init(struct
-platform_device *pdev,
-        return 0;
- }
-
-+static void elba_spics_set_cs(struct dw_spi_elba *dwselba, int cs, int enable)
-+{
-+       regmap_update_bits(dwselba->regmap, dwselba->reg,
-+                          ELBA_SPICS_MASK(dwselba->ctl, cs),
-+                          ELBA_SPICS_SET(dwselba->ctl, cs, enable));
-+}
-+
-+static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
-+{
-+       struct dw_spi *dws = spi_master_get_devdata(spi->master);
-+       struct dw_spi_mmio *dwsmmio = container_of(dws, struct
-dw_spi_mmio, dws);
-+       struct dw_spi_elba *dwselba = dwsmmio->priv;
-+       u8 cs = spi->chip_select;
-+
-+       if (cs < 2) {
-+               /* overridden native chip-select */
-+               elba_spics_set_cs(dwselba, spi->chip_select, enable);
-+       }
-+
-+       /*
-+        * The DW SPI controller needs a native CS bit selected to start
-+        * the serial engine, and we have fewer native CSs than we need, so
-+        * use CS0 always.
-+        */
-+       spi->chip_select = 0;
-+       dw_spi_set_cs(spi, enable);
-+       spi->chip_select = cs;
-+}
-+
-+static int dw_spi_elba_init(struct platform_device *pdev,
-+                           struct dw_spi_mmio *dwsmmio)
-+{
-+       struct of_phandle_args args;
-+       struct dw_spi_elba *dwselba;
-+       struct regmap *regmap;
-+       int rc;
-+
-+       rc = of_parse_phandle_with_fixed_args(pdev->dev.of_node,
-+                                             "pensando,spics", 2, 0, &args);
-+       if (rc) {
-+               dev_err(&pdev->dev, "could not find pensando,spics\n");
-+               return rc;
-+       }
-+
-+       regmap = syscon_node_to_regmap(args.np);
-+       if (IS_ERR(regmap)) {
-+               dev_err(&pdev->dev, "could not map pensando,spics\n");
-+               return PTR_ERR(regmap);
-+       }
-+
-+       dwselba = devm_kzalloc(&pdev->dev, sizeof(*dwselba), GFP_KERNEL);
-+       if (!dwselba)
-+               return -ENOMEM;
-+
-+       dwselba->regmap = regmap;
-+       dwselba->reg = args.args[0];
-+       dwselba->ctl = args.args[1];
-+
-+       /* deassert cs */
-+       elba_spics_set_cs(dwselba, 0, 1);
-+       elba_spics_set_cs(dwselba, 1, 1);
-+
-+       dwsmmio->priv = dwselba;
-+       dwsmmio->dws.set_cs = dw_spi_elba_set_cs;
-+
-+       return 0;
-+}
-+
- static int dw_spi_mmio_probe(struct platform_device *pdev)
- {
-        int (*init_func)(struct platform_device *pdev,
-@@ -351,6 +438,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
-        { .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
-        { .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
-        { .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
-+       { .compatible = "pensando,elba-spi", .data = dw_spi_elba_init},
-        { /* end of table */}
- };
- MODULE_DEVICE_TABLE(of, dw_spi_mmio_of_match);
+> 
+> 
+> Thanks for the review
+> 
+> Suzuki
+> 
+> > Thanks,
+> > Mathieu
