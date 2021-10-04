@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A294217D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8414217B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239041AbhJDToO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:44:14 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39917 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239039AbhJDToA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:44:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633376530; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=d5xC/Y7qVaeIithoWkfnK7rPsYX3oYEtL52pGdth/kQ=; b=XiH/gUfMZKyDPRd95d5IEDvsy2o0nJlKx5lxNB3iIT4nei+CH5hO7XvqxEg9wXxAr0ZyQaoZ
- 3kMpduTxN32g7huhVnV8FCWTdcVVdkZ3kaXyg/9x7FkrZKG7LpS3EnLm46FRGan20vYgIs8U
- hICNjHSj4xSSfxJASg7WKCdGrsc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 615b5912605ecf100b4961bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 19:42:10
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 73063C4361C; Mon,  4 Oct 2021 19:42:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2FA2AC43618;
-        Mon,  4 Oct 2021 19:42:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2FA2AC43618
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org,
-        Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v10 5/5] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
-Date:   Tue,  5 Oct 2021 01:11:28 +0530
-Message-Id: <1633376488-545-6-git-send-email-pmaliset@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633376488-545-1-git-send-email-pmaliset@codeaurora.org>
-References: <1633376488-545-1-git-send-email-pmaliset@codeaurora.org>
+        id S238875AbhJDTn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhJDTnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:43:23 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40CBC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:41:33 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j5so71282899lfg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=clBM85hi2nPrpIuibtB0vVd5Js3XVtOHksauv+P+ctM=;
+        b=jxWcVtu7TrORgQIl/RjTXyV44/DNSX+LYMplQe5tOJXv5wPsnsmfEI6MBhCr6G4YPj
+         lkOaeEFTh3O6AUHOO+AaTqHWccA1gBhKQ921YOG+8OqTJfP5GNGFHi17axgjiMLjkO9t
+         TemZEJb9tLOdRRmottrTRpfj6tFYg6DMMqRDyE653ZubnUXesJJcWumEGUmwJQ5sEfPe
+         H3i5oXMHaIcr/skshvDUMb46nEkahgBvMC/yOOVDoCGyPQNe4Dx/BfuJgMi6+IRfb5k7
+         42rOrvykgOksgmJADkx24ud4uWiqRiSx5gIuTviMr9S1A712132jLhM9ZOAz/XMRv8Sr
+         3u3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=clBM85hi2nPrpIuibtB0vVd5Js3XVtOHksauv+P+ctM=;
+        b=L+SRUusJT2qbZMVpKGk8gxt+aXDkj6xv4EWAKi0orldkjrr2UXbI1omqIcfr9I9rsx
+         lqPuYIzagAaO0fg4Z7PsDWCf4+Ehgd/aXs31wjjRIheFOyBJftOM4hN6pZAWjtMdd4W/
+         D8ZIePg3eKKDlbo9+n6D57loxg0wXN38dQS16RRGPEI6YVFmKPPkwn6uZgs5rZzfaV2x
+         MkXAt3S2QsprFCsxXF0ipiIxzSzDScSaNF3T7QP7d1575gtezH2pJ+tfqoYJN5CwmplJ
+         GfA30CAqy83Adq/fdGCUXAIcm6u8NtBtPSCf0ZWQPCNWfmYIkf5H76EfkJfhXqKghhcv
+         dDyg==
+X-Gm-Message-State: AOAM5308OCYQIZ4eegAvPLSSZaQHIqKMJZPkh9h5vHY9oHS/aoNaISb9
+        mBcaQmSx2WGcPrc90e4xiOHdxw==
+X-Google-Smtp-Source: ABdhPJy6FFdpfcesD4CmE1jQWn9C+4NfmErQ+iT1GUlXb9+KNEm6EVpow6mqZqYOo6iKAgmMhDVISA==
+X-Received: by 2002:a2e:a596:: with SMTP id m22mr18807866ljp.262.1633376492387;
+        Mon, 04 Oct 2021 12:41:32 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b15sm1685339lfp.221.2021.10.04.12.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 12:41:31 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id ECF9410306D; Mon,  4 Oct 2021 22:41:30 +0300 (+03)
+Date:   Mon, 4 Oct 2021 22:41:30 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+Message-ID: <20211004194130.6hdzanjl2e2np4we@box.shutemov.name>
+References: <20210930215311.240774-1-shy828301@gmail.com>
+ <20210930215311.240774-3-shy828301@gmail.com>
+ <20211004140637.qejvenbkmrulqdno@box.shutemov.name>
+ <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
-must be the TCXO while gdsc is enabled. After PHY init successful
-clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
+On Mon, Oct 04, 2021 at 11:17:29AM -0700, Yang Shi wrote:
+> On Mon, Oct 4, 2021 at 7:06 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> >
+> > On Thu, Sep 30, 2021 at 02:53:08PM -0700, Yang Shi wrote:
+> > > diff --git a/mm/filemap.c b/mm/filemap.c
+> > > index dae481293b5d..2acc2b977f66 100644
+> > > --- a/mm/filemap.c
+> > > +++ b/mm/filemap.c
+> > > @@ -3195,12 +3195,12 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+> > >       }
+> > >
+> > >       if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
+> > > -         vm_fault_t ret = do_set_pmd(vmf, page);
+> > > -         if (!ret) {
+> > > -                 /* The page is mapped successfully, reference consumed. */
+> > > -                 unlock_page(page);
+> > > -                 return true;
+> > > -         }
+> > > +             vm_fault_t ret = do_set_pmd(vmf, page);
+> > > +             if (!ret) {
+> > > +                     /* The page is mapped successfully, reference consumed. */
+> > > +                     unlock_page(page);
+> > > +                     return true;
+> > > +             }
+> > >       }
+> > >
+> > >       if (pmd_none(*vmf->pmd)) {
+> >
+> > Hm. Is it unrelated whitespace fix?
+> 
+> It is a coding style clean up. I thought it may be overkilling to have
+> a separate patch. Do you prefer separate one?
 
-Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Maybe. I tried to find what changed here. It's confusing.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 152451b..7896a86 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
- 	struct regulator_bulk_data supplies[2];
- 	struct reset_control *pci_reset;
- 	struct clk *pipe_clk;
-+	struct clk *pipe_clk_src;
-+	struct clk *phy_pipe_clk;
-+	struct clk *ref_clk_src;
- };
- 
- union qcom_pcie_resources {
-@@ -1173,6 +1176,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (pcie->pipe_clk_need_muxing) {
-+		res->pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-+		if (IS_ERR(res->pipe_clk_src))
-+			return PTR_ERR(res->pipe_clk_src);
-+
-+		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-+		if (IS_ERR(res->phy_pipe_clk))
-+			return PTR_ERR(res->phy_pipe_clk);
-+
-+		res->ref_clk_src = devm_clk_get(dev, "ref");
-+		if (IS_ERR(res->ref_clk_src))
-+			return PTR_ERR(res->ref_clk_src);
-+	}
-+
- 	res->pipe_clk = devm_clk_get(dev, "pipe");
- 	return PTR_ERR_OR_ZERO(res->pipe_clk);
- }
-@@ -1191,6 +1208,10 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
- 		return ret;
- 	}
- 
-+	/* Set TCXO as clock source for pcie_pipe_clk_src */
-+	if (pcie->pipe_clk_need_muxing)
-+		clk_set_parent(res->pipe_clk_src, res->ref_clk_src);
-+
- 	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
- 	if (ret < 0)
- 		goto err_disable_regulators;
-@@ -1262,6 +1283,10 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
- 
-+	/* Set pipe clock as clock source for pcie_pipe_clk_src */
-+	if (pcie->pipe_clk_need_muxing)
-+		clk_set_parent(res->pipe_clk_src, res->phy_pipe_clk);
-+
- 	return clk_prepare_enable(res->pipe_clk);
- }
- 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+ Kirill A. Shutemov
