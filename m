@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D627542170A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B151421710
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhJDTMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
+        id S235190AbhJDTQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235352AbhJDTMs (ORCPT
+        with ESMTP id S234120AbhJDTQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:12:48 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C42C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:10:59 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id n65so10338315ybb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:10:59 -0700 (PDT)
+        Mon, 4 Oct 2021 15:16:22 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E99CC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:14:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y1so580898plk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TX98aLvs0jm488r8l6cPv4x2o09VgHdP6nIV9yzsoR8=;
-        b=jrdny670eRSrixabawz8NM8mV1j3NcKBf3/5o2HmMYs5Pt/3jEDKejaagNLZuHD4eA
-         XsA7lnk5rlDb255PMmTfbkU01FmcbAxBIYEQtM94T1iMAclIOyb2sv35ZTukC2pwU2GG
-         ltnDtI/O33I3Ik/UGu+M8Yrc0A6fNj4jCPp0p3IE11EK9JyQmUG6php2mjyq7W1jvwzx
-         hm4UYlfHmBM4ZggOpSlbBQ2TH3Rh8u5TAQjTysy9vuPEMDgSJTBc8GQ46Bm7g/nowXkw
-         mNseks8sftxpTK7nsWq+M26M6JTRKKfc+IXpLEJJw6dXy7eJuoEmg5mbmgeSD8SJR7lw
-         RJxQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IZk9KcURE39bItBr2JToxRyweMkJ3IjYCdF9eyKRjvk=;
+        b=EEQ2L2aiO+nrZEAym3NhF53k7qNxmtpkp7nOwL+6KGkTEV5J4XK2IF8vJ9FOq7OCnu
+         gF8SDf5+yPIvLU9ZsRJGw5G/oD0fj5zSJe3J/ea5JN5q8DHgwrDAQQVWt6S9tQUbxD+g
+         BYtEP6BWb617WJIiIZWcycPZ8ZLLQmlV1Unms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TX98aLvs0jm488r8l6cPv4x2o09VgHdP6nIV9yzsoR8=;
-        b=7ov3rikhBFtJzIf2DuVbJbHyEBJWJQBy4Y9+sKxj+CmSvMhpIZJIjAQJr/kNTF7c0P
-         52RMJEqTQbapOVw1moHxrnf5NbW6rBE0v9pr9g2j30PCY1qJGOV3c7L9z/+IoZu+HpBH
-         CBKU5bkECiL2h1589K6ozVWcE1t3CXRp7wfMapZoniZJDLKnGHMUlZPzS+6MzQIO1RzF
-         ShJZv/jtIvB4SLsohPdTjqTqof23Nl4guaId+168y3rDrF6Ww6LEWntdHuhe/EYjVCB8
-         bFc0XUKBP0Eq0qf5hNEC+b3AjGxeZi+SbVk3c8zIEG2BOx5mxQf//YwH0sKWkoVQHlAN
-         OOXg==
-X-Gm-Message-State: AOAM531t7ITPB352Ufk5Y21rIZjJEtdNsOcBDX6h0r1bjdHQUVzo0lJt
-        jE0eV1DtgeVpGbkdm0Y8rvjiwR6Cyh81LJqlqnaoQQ==
-X-Google-Smtp-Source: ABdhPJyvignQgUWVGULEBdeVmUDF7c5rAhbNIgSFqFjfcL8Oh9L1Nm3LtbDC/MhhvQjpl759ZDx6OBAK3+tEv7om3q8=
-X-Received: by 2002:a25:aaec:: with SMTP id t99mr17333011ybi.456.1633374657849;
- Mon, 04 Oct 2021 12:10:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IZk9KcURE39bItBr2JToxRyweMkJ3IjYCdF9eyKRjvk=;
+        b=nXsXJt4A1hq3XWRTQbu7GJ2UgCwjjLNS5eRSxCbG+5SUefoSPSS84rEvRwe/6uTDBE
+         BDUljVjh9v6PtkeFF5d6VEGJ6lbOBqT3VPyRg3pP26F6mY0Y4RbnHHXGNe/HMHCaeDyi
+         8D+lLIJ/Jk2adk5X4aBm0hOA267lCCVaBnDKhw9ba50Huw7PuW4kw+JMgu9vc8fqH7+B
+         zmBdPgciCugPf+0QmmuvUK9PQxqMHfoePIjEyXkrE+3IbsKPSl8qwC2J+npbX/LHNQqV
+         188WsCI7HoUlkk5kl7/fBeIDfdYh0otFwXPt9C7q3vhykBpMAo9kznvGACc2h5k2EHXq
+         fpRQ==
+X-Gm-Message-State: AOAM533tG6EFpAKSSsM6gnkjEIPARqoD4rEUmbA1am6/65U/KLIhPXWi
+        D1fNHOsodlIPvXFP83zacARXIg==
+X-Google-Smtp-Source: ABdhPJww4GWrgQH04OALPBHlAyJO0Fe92Q5UeML6U9bLBjb1q3ZSyi2fj5J+OXoZ9XJxAqnGWVtyXQ==
+X-Received: by 2002:a17:902:d887:b0:13e:e77:7a21 with SMTP id b7-20020a170902d88700b0013e0e777a21mr1268205plz.66.1633374872817;
+        Mon, 04 Oct 2021 12:14:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w8sm9962911pfd.4.2021.10.04.12.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 12:14:32 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 12:14:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/1] x86: change default to
+ spec_store_bypass_disable=prctl spectre_v2_user=prctl
+Message-ID: <202110041214.564BF23@keescook>
+References: <202109111411.C3D58A18EC@keescook>
+ <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
+ <20211004175431.5myyh2wqnxbwqnwh@treble>
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-5-samitolvanen@google.com> <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 4 Oct 2021 12:10:46 -0700
-Message-ID: <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
-Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004175431.5myyh2wqnxbwqnwh@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Sep 30, 2021 at 11:05:20AM -0700, Sami Tolvanen wrote:
-> > This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
-> > which defines a stub function that immediately returns and when
-> > defined in the core kernel, always passes indirect call checking
-> > with CONFIG_CFI_CLANG. Note that this macro should only be used when
-> > a stub cannot be called using the correct function type.
->
-> > diff --git a/include/linux/cfi.h b/include/linux/cfi.h
-> > index 879744aaa6e0..19f74af8eac2 100644
-> > --- a/include/linux/cfi.h
-> > +++ b/include/linux/cfi.h
-> > @@ -20,6 +20,17 @@ extern void __cfi_check(uint64_t id, void *ptr, void *diag);
-> >  #define __CFI_ADDRESSABLE(fn, __attr) \
-> >       const void *__cfi_jt_ ## fn __visible __attr = (void *)&fn
-> >
-> > +/*
-> > + * Defines a stub function that returns immediately, and when defined and
-> > + * referenced in the core kernel, always passes CFI checking. This should
-> > + * be used only for stubs that cannot be called using the correct function
-> > + * pointer type, which should be rare.
-> > + */
-> > +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> > +     void fn(void) { return; } \
-> > +     const void *__cfi_excl_ ## fn __visible \
-> > +             __section(".cfi_excluded_stubs") = (void *)&fn
-> > +
-> >  #ifdef CONFIG_CFI_CLANG_SHADOW
-> >
-> >  extern void cfi_module_add(struct module *mod, unsigned long base_addr);
-> > @@ -35,6 +46,8 @@ static inline void cfi_module_remove(struct module *mod, unsigned long base_addr
-> >  #else /* !CONFIG_CFI_CLANG */
-> >
-> >  #define __CFI_ADDRESSABLE(fn, __attr)
-> > +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> > +     void fn(void) { return; }
-> >
-> >  #endif /* CONFIG_CFI_CLANG */
-> >
->
-> Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
-> stick on the relvant functions?
+On Mon, Oct 04, 2021 at 10:54:31AM -0700, Josh Poimboeuf wrote:
+> On Sat, Sep 11, 2021 at 07:01:40PM -0700, Josh Poimboeuf wrote:
+> > 
+> > 
+> > > On Sep 11, 2021, at 2:13 PM, Kees Cook <keescook@chromium.org> wrote:
+> > > 
+> > > ﻿On Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:
+> > >> Switch the kernel default of SSBD and STIBP to the ones with
+> > >> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
+> > >> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
+> > > 
+> > > Hello x86 maintainers!
+> > > 
+> > > I'd really like to get this landed, so I'll take this via the
+> > > seccomp-tree unless someone else speaks up. This keeps falling off
+> > > the edge of my TODO list. :)
+> > 
+> > Thanks!  You can add my
+> > 
+> > Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> 
+> Hi Kees,
+> 
+> Ping - I don't see this patch in linux-next.  Are you planning on grabbing this
+> for the next merge window?
 
-To avoid accidentally creating useful gadgets for attackers. For
-example, while excluding an empty stub isn't necessarily ideal,
-allowing calls to a function that always returns zero would be worse.
+Thanks for the reminder! I've pushed this to the seccomp next tree.
 
-> Because I've got at least one more variant for you :-) See
-> kernel/static_call.c:__static_call_return0
-
-Does __static_call_return0 ever get called indirectly on architectures
-that support static calls? If it's always patched into a direct call,
-the type mismatch isn't an issue.
-
-Sami
+-- 
+Kees Cook
