@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D4042147B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85AC421480
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237692AbhJDQ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:56:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237646AbhJDQ4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:56:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F74161381;
-        Mon,  4 Oct 2021 16:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633366472;
-        bh=TvvpjQdHQdhLT/lXbu5+Haobdd8e9Zwi1ru4E+zI7wI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QQZNB2sOslZIecnGF+eD4IyTpxYTRbfRMbD/U+SeJqOti2xoV+DA9fdiH85bcAKH8
-         csiv9beEQIu/f491XDdtQY997mWjReJ+R3fljw63ThoJv9akyTW8La2NTc6DBr73RM
-         2HxaJBPuMr6CohDFSI82HV+kLgfqz/WEoiQHcC/4JRFmgt5CBh9Q4fUuPmI41IIwzI
-         /cYLvWNP8ONCt7I6nuip/mx4BNtptQN8LC6REzXgRcG0Jhvt+pp3hz2qU+1/C3mW/Q
-         E00wf2b8E+hgVsreo78g1LWRXUm3Z2VOd+7cH2K2mhAWCzfd+CpyolrB+nr9r4Hg18
-         eQTfUVg0BSBuA==
-Date:   Mon, 4 Oct 2021 09:54:32 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Stephen <stephenackerman16@gmail.com>, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: kvm crash in 5.14.1?
-Message-ID: <20211004165432.GA24266@magnolia>
-References: <2b5ca6d3-fa7b-5e2f-c353-f07dcff993c1@gmail.com>
- <16c7a433-6e58-4213-bc00-5f6196fe22f5@gmail.com>
- <YVSEZTCbFZ+HD/f0@google.com>
- <20210930175957.GA10573@magnolia>
+        id S237721AbhJDQ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236479AbhJDQ5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:57:25 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76C2C061745;
+        Mon,  4 Oct 2021 09:55:35 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id j15so317379plh.7;
+        Mon, 04 Oct 2021 09:55:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U+IYaXIi0kevdp5VDl9CH/x102yc2TdcKtkx6wZCCI8=;
+        b=fAmWcBughkCFp8PjZC1ANlvrxWbWHcbidKFu5qpnkTfk0RQeOQsIsa0/6aF/WhaP8u
+         bfVWFsrGTObyWnDhiIinn8LE2+IyrAIf8g7tpJsV7BtsdRnGbhsVrrAoyLUpFbw/ICy9
+         PFpeG7RbYwRVtcAJaS2JLImKex1hmpA0Fp7YFHJBXzVBmHrzF2wnLeZh4c+YhJzoEQnw
+         6eouDhm1+g7JVn41R33DoWQh9lLw1/MVvVXX5UnaAtUtpMWhiFMyay8c3yWz0Vp+sVse
+         2kw+TdCW0ln0ncRYC/4S8q170M2CqMkc6ihq56DelJVOWEuoMl8lWvftzF8ZF6Hi6jQX
+         lA7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U+IYaXIi0kevdp5VDl9CH/x102yc2TdcKtkx6wZCCI8=;
+        b=hl11oCKTMCguxuh2YL6xe/Dfaw9HhOk/HvbB6GguAucrxS3PBrpt+KtqTvx3qd2Qwv
+         nEGW3KRCd/LJCiqCYXXgw4SmA022ALrPrakvL1bQzjMZe1xqJMqXo/yqw3/kQ7B7YrDz
+         Sn5p6n0mMxlLBfwJ/OO92mBpgzd+TaD8NuVeTu6mtVJIBTAqxVB1fxOPTCJFAbDoNoUU
+         +f2N+UhcsrEV3F91O00+DvOTW4iDC/6s6SSjxYwlVIHhnmiP8qWdfhRYzrAp4fPJ2Tdk
+         LSX5VAWvzmjDxFbWncK+bJs4evbpXVvq9sNvHRW6XsimzTFXmx9XWwUQPeFv9KBexSHg
+         AXMA==
+X-Gm-Message-State: AOAM532PXjCDEEksS2lkjeRD/2zrjA9leZCp/icFEcnZPVbcTznp4ulG
+        1EsFlS6BRqVINyPklYjVAQsxRThvfok=
+X-Google-Smtp-Source: ABdhPJz3jre+tCrbqpCLHc4fMU0v5RCM+YxSKIXkMlyTRYbyN0I6ZL/TOyE/x7UiHXAUi1zU8m+mhQ==
+X-Received: by 2002:a17:902:c204:b0:13e:6361:839 with SMTP id 4-20020a170902c20400b0013e63610839mr634508pll.57.1633366534945;
+        Mon, 04 Oct 2021 09:55:34 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id g3sm14592770pgj.66.2021.10.04.09.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 09:55:34 -0700 (PDT)
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
+ <20211001175422.GA53652@sirena.org.uk>
+ <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+ <YVr4USeiIoQJ0Pqh@sirena.org.uk> <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk> <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
+ <20211004165127.GZ3544071@ziepe.ca>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
+Date:   Mon, 4 Oct 2021 09:55:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210930175957.GA10573@magnolia>
+In-Reply-To: <20211004165127.GZ3544071@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:59:57AM -0700, Darrick J. Wong wrote:
-> On Wed, Sep 29, 2021 at 03:21:09PM +0000, Sean Christopherson wrote:
-> > On Tue, Sep 28, 2021, Stephen wrote:
-> > > Hello,
-> > > 
-> > > I got this crash again on 5.14.7 in the early morning of the 27th.
-> > > Things hung up shortly after I'd gone to bed. Uptime was 1 day 9 hours 9
-> > > minutes.
-> > 
-> > ...
-> > 
-> > > BUG: kernel NULL pointer dereference, address: 0000000000000068
-> > > #PF: supervisor read access in kernel mode
-> > > #PF: error_code(0x0000) - not-present page
-> > > PGD 0 P4D 0
-> > > Oops: 0000 [#1] SMP NOPTI
-> > > CPU: 21 PID: 8494 Comm: CPU 7/KVM Tainted: G            E     5.14.7 #32
-> > > Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS ELITE WIFI/X570
-> > > AORUS ELITE WIFI, BIOS F35 07/08/2021
-> > > RIP: 0010:internal_get_user_pages_fast+0x738/0xda0
-> > > Code: 84 24 a0 00 00 00 65 48 2b 04 25 28 00 00 00 0f 85 54 06 00 00 48
-> > > 81 c4 a8 00 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <48> 81 78
-> > > 68 a0 a3 >
-> > 
-> > I haven't reproduced the crash, but the code signature (CMP against an absolute
-> > address) is quite distinct, and is consistent across all three crashes.  I'm pretty
-> > sure the issue is that page_is_secretmem() doesn't check for a null page->mapping,
-> > e.g. if the page is truncated, which IIUC can happen in parallel since gup() doesn't
-> > hold the lock.
-> > 
-> > I think this should fix the problems?
-> > 
-> > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
-> > index 21c3771e6a56..988528b5da43 100644
-> > --- a/include/linux/secretmem.h
-> > +++ b/include/linux/secretmem.h
-> > @@ -23,7 +23,7 @@ static inline bool page_is_secretmem(struct page *page)
-> >         mapping = (struct address_space *)
-> >                 ((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
-> > 
-> > -       if (mapping != page->mapping)
-> > +       if (!mapping || mapping != page->mapping)
+On 10/4/21 9:51 AM, Jason Gunthorpe wrote:
+> On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
 > 
-> I'll roll this out on my vm host and try to re-run the mass fuzztest
-> overnight, though IT claims they're going to kill power to the whole
-> datacenter until Monday(!)...
+>> No please don't, I should have arguably justified the reasons why
+>> better, but the main reason is that one of the platforms on which this
+>> driver is used has received extensive power management analysis and
+>> changes, and shutting down every bit of hardware, including something as
+>> small as a SPI controller, and its clock (and its PLL) helped meet
+>> stringent power targets.
+> 
+> Huh? for device shutdown? What would this matter if the next step is
+> reboot or power off?
 
-...which they did, 30 minutes after I sent this email. :(
-
-I'll hopefully be able to report back to the list in a day or two.
-
---D
+Power off, the device is put into a low power state (equivalent to ACPI
+S5) and then a remote control key press, or a GPIO could wake-up the
+device again. While it is in that mode, it consumes less than 0.5W(AC).
+Imagine your stick/cast/broom behind your TV falling in that category.
 
 > 
-> --D
+>> TBH, I still wonder why we have .shutdown() and we simply don't use
+>> .remove() which would reduce the amount of work that people have to do
+>> validate that the hardware is put in a low power state and would also
+>> reduce the amount of burden on the various subsystems.
 > 
-> >                 return false;
-> > 
-> >         return mapping->a_ops == &secretmem_aops;
+> The difference between remove and shutdown really is that 'emergency'
+> sense that shutdown is something that must complete in bounded time
+> and thus only has to concern itself with quieting hardware to a safe
+> state for the next step in the shutdown/reboot/kexec/kdump sequence.
+
+I am fairly sure that no driver write knows about the being bound in
+time aspect.
+
+> 
+> Many remove handlers happily block until, eg all user files are closed
+> or something to allow a graceful module unload.
+
+Fair point.
+-- 
+Florian
