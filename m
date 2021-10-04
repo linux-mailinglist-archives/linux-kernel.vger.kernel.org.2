@@ -2,158 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E7A42192D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D50E421933
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235294AbhJDVYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
+        id S235372AbhJDVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234470AbhJDVYl (ORCPT
+        with ESMTP id S234470AbhJDVZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:24:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6898C061745;
-        Mon,  4 Oct 2021 14:22:51 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso1101457wme.1;
-        Mon, 04 Oct 2021 14:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aOu68f1QX/jrntnkf3FLWDymhn5DKxTIXT6hPkHKG/E=;
-        b=JOCEBXc3Pur4iBa/if9OTl/NcjM3JZyhbhclin4q8kkgiXjnXA9upibdyXhgBrR1/u
-         Vb5Nl5lBTWJk/xFkJwsl/pc0Waa+Kj6+9w+ADF9lWML6+h3bX8McCWbp+SOkJF+L0gHA
-         Dj+idttGAd2FwBjk0tMmOtD42a43lIvFpN7NNhjlvKAqd+OwoMHGeAq3gyDl+GS+4Yk5
-         cTNRkMkbp5p76utJZGidEghbBbd5Ta34YXAcESlhjGHe6vcM0/TUdcSssSV8i3ZArs5V
-         SGFbbr1417miyUqBm+pepsvf02Nc4YD8nZUmSo8+MVRts1BbcLT3UwkB++Wz5j0fyfa4
-         gTCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aOu68f1QX/jrntnkf3FLWDymhn5DKxTIXT6hPkHKG/E=;
-        b=IV/lH7+89lMzKIPhco4syn7zWfaCoWwQLArV/34+BxOxpdOA4hnDGJWrHGNpf9+evA
-         pB5e4/r4hQ1vsDVvrrOwZIBmR0n9uc8hrI+Mo1PhhJSeIcdk/cgumc69zO/zkdwVf2Wd
-         XqZigyCKZQ4xvSHniVWgN4ITog3qAdSiPNoqDCSgEPfwmRjjxG9+uEsyoSQ9P8koTyfL
-         y4BaknWaGmRwp7Eg4iobr3cYoGwFeGGrK5NcGWl+TP1s3jYUyO4QB9MCgysmjAhlWmuB
-         zWZdHie3HZ3V9AjBAjssrW07D++CMMsDst5oRcDukKHFWC0XxZLcyQcF+8jpa12mNtAh
-         9dtg==
-X-Gm-Message-State: AOAM531EwXOF0dPuJUX4bi8UWjwSsCQN/J8jX2PbMugck/ZOMXzNh4br
-        +txxvkq69c3+Rgo502jO/jE=
-X-Google-Smtp-Source: ABdhPJwdrjF/1DreMzVejMUrvBvcozcZvb0/EC7Hp99yU6JocUFjFK5jopJTrqjQ+Ok0sUi4x2Kdiw==
-X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr9728030wmj.194.1633382570544;
-        Mon, 04 Oct 2021 14:22:50 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id g12sm2070863wme.3.2021.10.04.14.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 14:22:49 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 23:22:48 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v7 4/7] usb: phy: tegra: Support OTG mode programming
-Message-ID: <YVtwqLlG8+S9cooU@orome.fritz.box>
-References: <20210912181718.1328-1-digetx@gmail.com>
- <20210912181718.1328-5-digetx@gmail.com>
- <29ae631d-cc8d-663e-3ce2-db00f3470365@gmail.com>
- <YVtslrGXStvdO2IS@orome.fritz.box>
- <94949858-6089-06df-1226-f7974a3ae6bf@gmail.com>
+        Mon, 4 Oct 2021 17:25:52 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D71C061745;
+        Mon,  4 Oct 2021 14:24:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNYcX5gf3z4xbY;
+        Tue,  5 Oct 2021 08:23:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633382636;
+        bh=cfNrQIlj6LBmTWN51NtyPxLZu5nlxr+E4c1SSMLcVHY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gqdVYrZJTObk5Zv5l0A8D+aDdLzZPZtc9roaLg+LUqD7VfoOYqIor9wzU21D8NOLs
+         USCLUdHRotyjYot6srYZ8tzfwV6AlZSD+Ja/tinPzc2wegKqu83ghQhREhYJH7G8po
+         kMNPCkUfyOymgIOKHENQY8p8S1XtPGDc3LWbNHitgkLYO+s+P9a0Oh0X1/fahuZ/J2
+         8XTdhFzESJWSzWnxS65w8+0TuW+wa9PNdEFhEtcamHo0/3VS3qxY71DJbp9WjbLLsZ
+         l9+qzjAggDZSVs5lMQeXiQUYNocsjGlN9Ycdo763L64rP5+Dc6h0Z4VJt9s1RYlcin
+         +BJqw/3SG4j3A==
+Date:   Tue, 5 Oct 2021 08:23:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the drm-msm tree
+Message-ID: <20211005082355.4adec5bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QrHWM9Xgt4I+yCs7"
-Content-Disposition: inline
-In-Reply-To: <94949858-6089-06df-1226-f7974a3ae6bf@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Type: multipart/signed; boundary="Sig_/p8Hrqnp8b8CF8uXwv6AXPL.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---QrHWM9Xgt4I+yCs7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--Sig_/p8Hrqnp8b8CF8uXwv6AXPL.
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 05, 2021 at 12:13:48AM +0300, Dmitry Osipenko wrote:
-> 05.10.2021 00:05, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Mon, Sep 27, 2021 at 07:36:52PM +0300, Dmitry Osipenko wrote:
-> >> 12.09.2021 21:17, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> Support programming USB PHY into OTG mode.
-> >>>
-> >>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >>> ---
-> >>>  drivers/usb/phy/phy-tegra-usb.c   | 198 ++++++++++++++++++++++++++++=
-+-
-> >>>  include/linux/usb/tegra_usb_phy.h |   5 +
-> >>>  2 files changed, 198 insertions(+), 5 deletions(-)
-> >>
-> >> Greg / Felipe, could you please ack this patch to allow Thierry to take
-> >> this series via the Tegra tree? It depends on the soc/tegra patch of
-> >> this patchset.
-> >=20
-> > Looking at the series, I don't think this necessarily needs to go
-> > through the Tegra tree. Given that you have backwards-compatibility with
-> > older device trees, applying this separately to the USB tree should work
-> > fine. Once the soc/tegra and DT bits and the USB bits get combined they
-> > should enable the new functionality, but nothing should break if things
-> > are applied separately.
-> >=20
-> > If so, I can just pick up the rest and let Felipe or Greg pick this one
-> > up.
-> >=20
-> > Dmitry, can you confirm that this patch should be applicable separately?
-> > If so:
-> >=20
-> > Acked-by: Thierry Reding <treding@nvidia.com>
-> >=20
->=20
-> This PHY patch has this hunk:
->=20
-> +	phy->pmc_regmap =3D dev_get_regmap(&pmc_pdev->dev, "usb_sleepwalk");
-> +	if (!phy->pmc_regmap)
-> +		return -EINVAL;
->=20
-> If this patch and the DT patches will be applied before the soc/tegra
-> patch, then USB PHY driver will fail to probe.
+Hi all,
 
-I had missed that. I was assuming that this other hunk took care of the
-backwards-compatibility:
+In commit
 
-+       /* older device-trees don't have PMC regmap */
-+       if (!phy->pmc_regmap)
-+               return 0;
+  16c0ec8f006d ("drm/msm/dp: only signal audio when disconnected detected a=
+t dp_pm_resume")
 
-but that's rather pointless given your check above, right? Why not just
-return 0 instead and let the remaining code skip sleepwalk configuration
-if the regmap doesn't exist?
+Fixes tag
 
-Thierry
+  Fixes: 078867ce04ed ("drm/msm/dp: signal audio plugged change at dp_pm_re=
+sume")
 
---QrHWM9Xgt4I+yCs7
-Content-Type: application/pgp-signature; name="signature.asc"
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: afc9b8b6bab8 ("drm/msm/dp: signal audio plugged change at dp_pm_resu=
+me")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/p8Hrqnp8b8CF8uXwv6AXPL.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFbcKgACgkQ3SOs138+
-s6EHIw//dsUnageoG8jJ29+4mn23IGoiXdvVW3fJy6EbavvX1KknsIq9kcmL+dph
-dkfa95/iIC8ohjB6u6zuMdRLs2TLdZoDRJ+xjSkwlAssvo+adGLjKnEeWAWAf29f
-cMqK55oIyczW1Ti4udHz8WikuIZSFIex8pu/u7O3bOqmpjKCLv2U/vRqaFOg5JlY
-JOdtLWl+OW4DJGGuqFM+pxra/xxGRuyMgjrSHLhDDZIQ88xzecmA62aE5H7CxTa4
-aX7AAeAK59xN7u/dY2tG+qyZuDPGl0DtEAI/EuETc6/yfJ9SytYnhlvh4DUEGKrw
-fChIvFPVbK8mJLjLNSq29V3QmheFuLeuU+aK0t8L+FARY50M7LA/bjDxPClWvtsw
-7SjxZCxy8iWybNtJi35dW/nKMTzqrGo630GGI7qN3mK0dgF4P2JrDtzZG3YRDotH
-RZe6vnssAkxoPcrQi+kiBzmhgBTVekeTJYINqeKNhrdoJXcEJ39Mo0W+WVvogvqn
-3HxFP8G5u5BRmEqAKpwWzcOPOgss7kbgFFn6Mg8EqJAMoS7AC/dSkCzuDSLQ9gzY
-F371DZW4O9kwriPohZkC3HNcSf9GuLO8s0uRB4Ne+LtmC9yEKwo5jtTxH2HiHTwp
-D57XYWwQcOkxByfmLavfInlWUUK72LFMRxNhG+c4JHLKTC7K+6c=
-=XcKw
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbcOsACgkQAVBC80lX
+0GxFfgf/bwdd76c8iqjAEj8tAGZaXIuXYjQyAlzwwMI8ypxZvewsGrpD09S9hs6B
+Gy77V3aXlz4jIDD/WIk04k1Te5rwv8LgQuvW06lSZoSPA6cp14Zn0bQlOn5SP6my
+a1jTd8kKwdZo6u5QOsuzIkdZQEZOuW6lD5rCf8kspme9kW9J7f5Ebf0x+k4UAyBP
+lf5vsepgiQXB43nnblaIyoE1eyNKaUjL+CMIg0epYNZeM9uMmDraM4rXXmznxBU+
+bthCqy9IIGASU/YrxCRn6lEq/LPHFbWXLfuc9lwAzf7baHOi+4f0Px3yP1ejalmh
+XcJMr1Ba1Z6Q3shOjB29a8GesH6Tcg==
+=QUT7
 -----END PGP SIGNATURE-----
 
---QrHWM9Xgt4I+yCs7--
+--Sig_/p8Hrqnp8b8CF8uXwv6AXPL.--
