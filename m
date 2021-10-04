@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EF8420EC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63EC421041
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237109AbhJDN2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42574 "EHLO mail.kernel.org"
+        id S238326AbhJDNmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237106AbhJDN0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:26:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD18F61C32;
-        Mon,  4 Oct 2021 13:11:27 +0000 (UTC)
+        id S238355AbhJDNkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:40:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ECC961A35;
+        Mon,  4 Oct 2021 13:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353088;
-        bh=139i+vU/Vrd6p109Ed/zuAP4DoRqWlAoxEoeuH58J94=;
+        s=korg; t=1633353501;
+        bh=n3VZaAq9PSuEzTDDy2q1lkPqT6ToTpRbCzrGvuW8MVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDdRax+NFFg+Wfr9KM0rbMiDEXlnT4rMKMrii7x/VOr7O2xSyzvv9EIgAREAEnZ4l
-         wiCEN8baY7CAj5J+tEBb+jJtQlmjaKN1aYXa3mkR5YPNQANtlCtcBhXbPkvptte1lp
-         Y8Xmqk6F9FMqbwxuLejNSK7XXZ1jm7yhs0Oy6Vlw=
+        b=0hSxxTAwwlHCaz5OKvZHk2tOW7/ZuLADihhqRgYlo2eRTT+umy3tYPpiJ6TWwUKrs
+         eqte2nu+kepRKT9UNv3uw2GjS4+dF7Ayb0RCD+Ox+H9djK/Q1wUXalWD1Ny/HKOrWb
+         xFITjTi54MGPXwyY6KLRhDgKhR84+s7YiwvvqvEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 5.10 84/93] usb: hso: remove the bailout parameter
-Date:   Mon,  4 Oct 2021 14:53:22 +0200
-Message-Id: <20211004125037.383513731@linuxfoundation.org>
+        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@kernel.org
+Subject: [PATCH 5.14 153/172] ext4: fix loff_t overflow in ext4_max_bitmap_size()
+Date:   Mon,  4 Oct 2021 14:53:23 +0200
+Message-Id: <20211004125049.912795259@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Ritesh Harjani <riteshh@linux.ibm.com>
 
-commit dcb713d53e2eadf42b878c12a471e74dc6ed3145 upstream.
+commit 75ca6ad408f459f00b09a64f04c774559848c097 upstream.
 
-There are two invocation sites of hso_free_net_device. After
-refactoring hso_create_net_device, this parameter is useless.
-Remove the bailout in the hso_free_net_device and change the invocation
-sites of this function.
+We should use unsigned long long rather than loff_t to avoid
+overflow in ext4_max_bitmap_size() for comparison before returning.
+w/o this patch sbi->s_bitmap_maxbytes was becoming a negative
+value due to overflow of upper_limit (with has_huge_files as true)
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[Backport this cleanup patch to 5.10 and 5.14 in order to keep the
-codebase consistent with the 4.14/4.19/5.4 patchseries]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Below is a quick test to trigger it on a 64KB pagesize system.
+
+sudo mkfs.ext4 -b 65536 -O ^has_extents,^64bit /dev/loop2
+sudo mount /dev/loop2 /mnt
+sudo echo "hello" > /mnt/hello 	-> This will error out with
+				"echo: write error: File too large"
+
+Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/594f409e2c543e90fd836b78188dfa5c575065ba.1622867594.git.riteshh@linux.ibm.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ext4/super.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2354,7 +2354,7 @@ static int remove_net_device(struct hso_
- }
- 
- /* Frees our network device */
--static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
-+static void hso_free_net_device(struct hso_device *hso_dev)
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3185,17 +3185,17 @@ static loff_t ext4_max_size(int blkbits,
+  */
+ static loff_t ext4_max_bitmap_size(int bits, int has_huge_files)
  {
- 	int i;
- 	struct hso_net *hso_net = dev2net(hso_dev);
-@@ -2377,7 +2377,7 @@ static void hso_free_net_device(struct h
- 	kfree(hso_net->mux_bulk_tx_buf);
- 	hso_net->mux_bulk_tx_buf = NULL;
+-	loff_t res = EXT4_NDIR_BLOCKS;
++	unsigned long long upper_limit, res = EXT4_NDIR_BLOCKS;
+ 	int meta_blocks;
+-	loff_t upper_limit;
+-	/* This is calculated to be the largest file size for a dense, block
++
++	/*
++	 * This is calculated to be the largest file size for a dense, block
+ 	 * mapped file such that the file's total number of 512-byte sectors,
+ 	 * including data and all indirect blocks, does not exceed (2^48 - 1).
+ 	 *
+ 	 * __u32 i_blocks_lo and _u16 i_blocks_high represent the total
+ 	 * number of 512-byte sectors of the file.
+ 	 */
+-
+ 	if (!has_huge_files) {
+ 		/*
+ 		 * !has_huge_files or implies that the inode i_block field
+@@ -3238,7 +3238,7 @@ static loff_t ext4_max_bitmap_size(int b
+ 	if (res > MAX_LFS_FILESIZE)
+ 		res = MAX_LFS_FILESIZE;
  
--	if (hso_net->net && !bailout)
-+	if (hso_net->net)
- 		free_netdev(hso_net->net);
- 
- 	kfree(hso_dev);
-@@ -3137,7 +3137,7 @@ static void hso_free_interface(struct us
- 				rfkill_unregister(rfk);
- 				rfkill_destroy(rfk);
- 			}
--			hso_free_net_device(network_table[i], false);
-+			hso_free_net_device(network_table[i]);
- 		}
- 	}
+-	return res;
++	return (loff_t)res;
  }
+ 
+ static ext4_fsblk_t descriptor_loc(struct super_block *sb,
 
 
