@@ -2,90 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEE542152C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC1242152E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234742AbhJDRaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:30:16 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47952 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhJDRaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:30:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=fBQQnjUYlNCeKO7JTfO5K7VB/ceVUGDzh7Do/3hwY1U=; b=UXjBkkLhygo6vRs86pDAFxoBnT
-        MWBRl5HHutT+Y0Xf0M+fXE6txx5VEoHBeLlB2kkxsh7bjLzuhwsrmmamOcNlJPftzsp4nteffr0hl
-        KcaoSa3Go05EBsopcZCPlgvWdNYtwkUz20SYpT8A/edEmYGb3BsK6eEV+E3B0TxzIEzE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mXRlD-009ZrX-PL; Mon, 04 Oct 2021 19:28:19 +0200
-Date:   Mon, 4 Oct 2021 19:28:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: lets settle the LED `function` property regarding the netdev
- trigger
-Message-ID: <YVs5sxd/dEBwBShm@lunn.ch>
-References: <20211001143601.5f57eb1a@thinkpad>
- <YVn815h7JBtVSfwZ@lunn.ch>
- <20211003212654.30fa43f5@thinkpad>
- <YVsUodiPoiIESrEE@lunn.ch>
- <20211004170847.3f92ef48@thinkpad>
+        id S234600AbhJDRcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhJDRcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:32:00 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8C6C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:30:10 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id bm13so17573357edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uRZ0kluIbaQGUSF6giV2hb1heaS0871QoCZ1Ehr1pUg=;
+        b=i7ceyLMc4pxpN/Zt2Quq8JjmaWLU9f+NZs0lDCxoTgMvKgMFVuRPSp0LWs06t9A+HW
+         duI+Odjkzm0HYU1G2dxSECYG3lVKVr5uBNIAxvd/PFvvGAsqez74QBtgLVaRjEjvEyZr
+         OSxWZ85eoPt9vqxZYZIrY/KjApVPPAYrsSJfSwHpP/TknWjLZ4zvSn8BJKpuG0EKMvxJ
+         GYqoJy2JWd+XM/Zoyz7/czdbcTvCeBE9UXgg7UgbvleYiQDECWdfzj1Uz3t9Bl1kVKPY
+         gdgWL4N9FF7cEO9PPuAj81WewHhAFA0edmRtHWQpALZEdlpHFpswKjjJuwwWKpzqIdrN
+         CdwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uRZ0kluIbaQGUSF6giV2hb1heaS0871QoCZ1Ehr1pUg=;
+        b=VbVaQJgVoIppCXmLSA7nem1i8r7KDNSOgPy/XdmZJHpt1TVkjjDKCANi7QIWpG3EpI
+         sAHrZBdX8x5VvihUIQYFVzYeICeDvNnbN6oML1vtpw/0ahVopgXAzRWPk9T4CFgok7a1
+         DgDfYbklgn4MCHbmYXJWfkC1WCO3DIKeKi1U8KXzSKXuDg3KuaIsLsQjih4Wf8WVjRTY
+         QmyBuM/LBX5vhOzVDV/V3/v2KE9FagVybvqheIAMQl+8BSnaRu/bzF9iVp03VnRozgd1
+         MI0bl2X/0Gh9RMsg76VWJSgEYOUx8m8q2bIBOYGqB0j1d0t9YWNryflIQPAHOpqg/KMZ
+         z+tA==
+X-Gm-Message-State: AOAM531I+IMRlqpP2ODySK87+jJs73rb8uoWsPTLG9r1PyWxTgAfRKp0
+        qcCCgKBd9A19RiYjLlhjgX0=
+X-Google-Smtp-Source: ABdhPJxk5wQ1uOcA8wh5ohIzlCCBxQPATxQBQpiTgcTke6I3l5bBxp8Qy230808OsuXVgzzMdjQuyA==
+X-Received: by 2002:a17:907:75e1:: with SMTP id jz1mr18915383ejc.439.1633368609369;
+        Mon, 04 Oct 2021 10:30:09 -0700 (PDT)
+Received: from tom-desktop (net-5-94-68-71.cust.vodafonedsl.it. [5.94.68.71])
+        by smtp.gmail.com with ESMTPSA id q18sm6882546ejc.84.2021.10.04.10.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 10:30:08 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 19:30:06 +0200
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Forest Bond <forest@alittletooquiet.net>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] staging: vt6655: fix camelcase in bShortSlotTime
+Message-ID: <20211004173006.GA13458@tom-desktop>
+References: <20210926162527.21462-1-tomm.merciai@gmail.com>
+ <20210926162527.21462-2-tomm.merciai@gmail.com>
+ <YVHilhCk3cgGhXrZ@kroah.com>
+ <20210927213515.GA6953@tom-desktop>
+ <YVKdVCaVwmPG7DVx@kroah.com>
+ <20210930214929.GB45822@tom-desktop>
+ <20211004102632.GT2048@kadam>
+ <20211004125806.GA140797@tom-ThinkBook-14-G2-ARE>
+ <20211004131525.GU2048@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004170847.3f92ef48@thinkpad>
+In-Reply-To: <20211004131525.GU2048@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > There are two different ways this can be implemented. There can be two
-> > independent LEDs within the same package. So you can generate three
-> > colours. Or there can be two cross connected LEDs within the
-> > package. Apply +ve you get one colour, apply -ve you get a different
-> > colour. Since you cannot apply both -ve and +ve at the same time, you
-> > cannot get both colours at once.
+On Mon, Oct 04, 2021 at 04:15:25PM +0300, Dan Carpenter wrote:
+> On Mon, Oct 04, 2021 at 02:58:06PM +0200, Tommaso Merciai wrote:
+> > On Mon, Oct 04, 2021 at 01:26:32PM +0300, Dan Carpenter wrote:
+> > > On Thu, Sep 30, 2021 at 11:49:29PM +0200, Tommaso Merciai wrote:
+> > > > On Tue, Sep 28, 2021 at 06:43:00AM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Mon, Sep 27, 2021 at 11:35:15PM +0200, Tommaso Merciai wrote:
+> > > > > > On Mon, Sep 27, 2021 at 05:26:14PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > On Sun, Sep 26, 2021 at 06:25:18PM +0200, Tommaso Merciai wrote:
+> > > > > > > > Replace camel case variable bShortSlotTime with snake case
+> > > > > > > > variable b_short_slot_time.
+> > > > > > > 
+> > > > > > > That is a very odd variable name.  Why did you pick that one?
+> > > > > > > 
+> > > > > > > What deos it mean?
+> > > > > > > 
+> > > > > > > You do understand where the original naming format came from here, and
+> > > > > > > what it was trying to represent, right?  If not, please go read up on
+> > > > > > > it:
+> > > > > > > 	https://en.wikipedia.org/wiki/Hungarian_notation
+> > > > > > > 
+> > > > > > > That style is not used in Linux, and so, when converting from it, do not
+> > > > > > > attempt to keep the same style present here, that is kind of pointless,
+> > > > > > > don't you agree?
+> > > > > > 
+> > > > > >   You are definitely right. What do you think about "short_slot_time"?
+> > > > > 
+> > > > > "time" implies that this will hold a value of time, right?
+> > > > > 
+> > > > > What exactly does this variable do?  That might help in naming it
+> > > > > better.
+> > > > 
+> > > >   Is a boolean variable, if true short slot time mode is enabled, false 
+> > > >   not right?
+> > > >   A good solution could be: "short_slot_mode"? What do you think about?
+> > > 
+> > > No.  That's a confusing name.  What is a short slot mode anyway?
+> > > 
+> > > regards,
+> > > dan carpenter
 > > 
-> > If you have two independent LEDs, I would define two LEDs in DT.
+> >   Hi Dan,
+> >   My bad sorry, "short_slot_time_en".
 > 
-> No, we have multicolor LED API which is meant for exactly this
-> situation: a multicolor LED.
-> (I am talking about something like the KJ2518D-262 from
->  http://www.rego.com.tw/product_detail.php?prdt_id=258
->  which has Green/Orange on left and Yellow on right side.
->  The left Green/Orange LED has 3 pins, and so it can mix the colors into
->  yellow.)
+> Ah, never mind.  It means something for the protocol.  I thought it was
+> driver specific.  Just use short_slot_mode like you original suggested.
+> The "_en" doesn't add anything.
+> 
+> In the commit message you out include the information from here so that
+> reviewers who don't know the wifi spec will understand the meaning.
 
-But here you are talking about the LED, not the controller in the
-PHY. The controller might control it as two independent LEDs. It has
-no idea it can get a third colour by enabling two LEDs at the same
-time. Or maybe the controller does know it can combine colours.
+  Thanks for the tip.
 
-So you need to know about both the controller and the LED. And the
-same controller can be used either way. Plus you need to think about
-the non DT case, when you have no idea about the LED connected to the
-controller.
+  Tommaso
 
-> I think the best solution here would be a subclass "enumcolor" (or
-> different name), where you can choose between several pre-defined colors.
-> In sysfs you could then do
->   echo 1 >brightness
->   echo green >color
->   echo yellow >color
-
-I'm not sure it is as simple as that. In the general case, you have no
-idea what the colours actually are. You only know the colours if you
-have DT and DT lists the colours. And you only know if LEDs are
-combined if you have DT. You need a basic sysfs API based on knowing
-the PHY can control X LEDs. You can then extend that API if you have
-additional information via DT, like colour and if LEDs are combined,
-that only LEDs numbered 2 and 3 are used, etc.
-
-	   Andrew
+> 
+> regards,
+> dan carpenter
+> 
