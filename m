@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7205A421A73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E37D4219FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhJDXIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:08:54 -0400
-Received: from finn.gateworks.com ([108.161.129.64]:51968 "EHLO
-        finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231273AbhJDXIx (ORCPT
+        id S235270AbhJDW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:28:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32727 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234861AbhJDW2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:08:53 -0400
-X-Greylist: delayed 2592 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 19:08:53 EDT
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1mXWN4-0078Ft-U2; Mon, 04 Oct 2021 22:23:43 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tim Harvey <tharvey@gateworks.com>, stable@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8m*-venice-gw7902: fix M2_RST# gpio
-Date:   Mon,  4 Oct 2021 15:23:41 -0700
-Message-Id: <20211004222341.27949-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 Oct 2021 18:28:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633386423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=go//iVwtY7zZIP/QH6T/mRZIb51VgkEaG2XcNzZciIo=;
+        b=A7ApVUJTu7MXBRX90hxsI1VAvPYTNG/l3lW2b/+DCsFbYcRPMFly+4ySRUfxTkADxm/7uA
+        VkHi3JtTil//fenHG3FxoeTgRqiBZmBbvlL4l1NfbVl7ISeT/JlYG4d79L8AXSbAWUJqML
+        hAH5qWechxVWdYmFRkwo7zubYpCTWc4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-bw0XuvdjPN2hgzVz5wjh_Q-1; Mon, 04 Oct 2021 18:27:02 -0400
+X-MC-Unique: bw0XuvdjPN2hgzVz5wjh_Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 268E28145E6;
+        Mon,  4 Oct 2021 22:27:01 +0000 (UTC)
+Received: from virtlab512.virt.lab.eng.bos.redhat.com (virtlab512.virt.lab.eng.bos.redhat.com [10.19.152.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4291618B5E;
+        Mon,  4 Oct 2021 22:27:00 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        mtosatti@redhat.com, tglx@linutronix.de, frederic@kernel.org,
+        mingo@kernel.org, nilal@redhat.com
+Subject: [PATCH v1] KVM: isolation: retain initial mask for kthread VM worker
+Date:   Mon,  4 Oct 2021 18:26:39 -0400
+Message-Id: <20211004222639.239209-1-nitesh@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix invalid M2_RST# gpio pinmux.
+From: Marcelo Tosatti <mtosatti@redhat.com>
 
-Fixes: ef484dfcf6f7 ("arm64: dts: imx: Add i.mx8mm/imx8mn Gateworks gw7902 dts support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+kvm_vm_worker_thread() creates a kthread VM worker and migrates it
+to the parent cgroup using cgroup_attach_task_all() based on its
+effective cpumask.
+
+In an environment that is booted with the nohz_full kernel option, cgroup's
+effective cpumask can also include CPUs running in nohz_full mode. These
+CPUs often run SCHED_FIFO tasks which may result in the starvation of the
+VM worker if it has been migrated to one of these CPUs.
+
+Since unbounded kernel threads allowed CPU mask already respects nohz_full
+CPUs at the time of their setup (because of 9cc5b8656892: "isolcpus: Affine
+unbound kernel threads to housekeeping cpus"), retain the initial CPU mask
+for the kthread by stopping its migration to the parent cgroup's effective
+CPUs.
+
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
- arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ virt/kvm/kvm_main.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-index b4c1b662fa79..05c3406c90f5 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-@@ -681,7 +681,7 @@
- 	pinctrl_hog: hoggrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_NAND_CE0_B_GPIO3_IO1	0x40000159 /* M2_GDIS# */
--			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x40000041 /* M2_RST# */
-+			MX8MM_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x40000041 /* M2_RST# */
- 			MX8MM_IOMUXC_NAND_DATA01_GPIO3_IO7	0x40000119 /* M2_OFF# */
- 			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x40000159 /* M2_WDIS# */
- 			MX8MM_IOMUXC_SAI1_TXD2_GPIO4_IO14	0x40000041 /* AMP GPIO1 */
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-index e77db4996e58..236f425e1570 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-@@ -633,7 +633,7 @@
- 	pinctrl_hog: hoggrp {
- 		fsl,pins = <
- 			MX8MN_IOMUXC_NAND_CE0_B_GPIO3_IO1	0x40000159 /* M2_GDIS# */
--			MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x40000041 /* M2_RST# */
-+			MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x40000041 /* M2_RST# */
- 			MX8MN_IOMUXC_NAND_DATA01_GPIO3_IO7	0x40000119 /* M2_OFF# */
- 			MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x40000159 /* M2_WDIS# */
- 			MX8MN_IOMUXC_SAI2_RXFS_GPIO4_IO21	0x40000041 /* APP GPIO1 */
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 7851f3a1b5f7..87bc193fd020 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -56,6 +56,7 @@
+ #include <asm/processor.h>
+ #include <asm/ioctl.h>
+ #include <linux/uaccess.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "coalesced_mmio.h"
+ #include "async_pf.h"
+@@ -5634,11 +5635,20 @@ static int kvm_vm_worker_thread(void *context)
+ 	if (err)
+ 		goto init_complete;
+ 
+-	err = cgroup_attach_task_all(init_context->parent, current);
+-	if (err) {
+-		kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
+-			__func__, err);
+-		goto init_complete;
++	/*
++	 * For nohz_full enabled environments, don't migrate the worker thread
++	 * to parent cgroup as its effective mask may have a CPU running in
++	 * nohz_full mode. nohz_full CPUs often run SCHED_FIFO task which could
++	 * result in starvation of the worker thread if it is pinned on the same
++	 * CPU.
++	 */
++	if (!housekeeping_enabled(HK_FLAG_KTHREAD)) {
++		err = cgroup_attach_task_all(init_context->parent, current);
++		if (err) {
++			kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
++				__func__, err);
++			goto init_complete;
++		}
+ 	}
+ 
+ 	set_user_nice(current, task_nice(init_context->parent));
 -- 
-2.17.1
+2.27.0
 
