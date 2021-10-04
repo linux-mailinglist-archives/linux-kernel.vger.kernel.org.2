@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64727420FEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD41420D5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237836AbhJDNjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48662 "EHLO mail.kernel.org"
+        id S235833AbhJDNO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238197AbhJDNha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:37:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF9D61251;
-        Mon,  4 Oct 2021 13:16:57 +0000 (UTC)
+        id S235988AbhJDNMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:12:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B229161B7E;
+        Mon,  4 Oct 2021 13:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353418;
-        bh=UMf1XOVsHv94e0KkW/FqHK4srx1noV6Jb9GwHgOc0lU=;
+        s=korg; t=1633352684;
+        bh=+qtUKd5kizwM0N/U5lMZOBwGId86ECVAwAF82u8+GJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zGupXx2HLjf4srTuzvbSerYJmq0IGB4lEah+ze1zKHzpR8W+F9E/HF2gf0sMbF7OZ
-         N35tJqMqd9V29EFStxZBZn5KZSjoUr50tdGbVAyRQjw6BMMBlf32kcP0VQkDMvrPZp
-         sASt2QkURNuOvlGFThSwRndYdZfB33h1XxoaxYeU=
+        b=F3I4dJqb18Y4rebDCHs9U0S8ERl02/zC20JyP0xknRsErZi2jZkX8/0ORB3BSs+tt
+         L9yECLkXdm1ziy3bnzJC8kpFqNhN7DW+99HqsDEWOBM2y/4xPb+AATHiiJxgzaxLzt
+         T+XnOIo0X6dpMFSnfd9AnwZm9mRLnAbuVGWe5vjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 120/172] ionic: fix gathering of debug stats
+        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 80/95] ipack: ipoctal: fix module reference leak
 Date:   Mon,  4 Oct 2021 14:52:50 +0200
-Message-Id: <20211004125048.857007252@linuxfoundation.org>
+Message-Id: <20211004125036.189737699@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <snelson@pensando.io>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit c23bb54f28d61a48008428e8cd320c947993919b ]
+commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
 
-Don't print stats for which we haven't reserved space as it can
-cause nasty memory bashing and related bad behaviors.
+A reference to the carrier module was taken on every open but was only
+released once when the final reference to the tty struct was dropped.
 
-Fixes: aa620993b1e5 ("ionic: pull per-q stats work out of queue loops")
-Signed-off-by: Shannon Nelson <snelson@pensando.io>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by taking the module reference and initialising the tty driver
+data when installing the tty.
+
+Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Federico Vaga <federico.vaga@cern.ch>
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/pensando/ionic/ionic_stats.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_stats.c b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-index 58a854666c62..c14de5fcedea 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-@@ -380,15 +380,6 @@ static void ionic_sw_stats_get_txq_values(struct ionic_lif *lif, u64 **buf,
- 					  &ionic_dbg_intr_stats_desc[i]);
- 		(*buf)++;
- 	}
--	for (i = 0; i < IONIC_NUM_DBG_NAPI_STATS; i++) {
--		**buf = IONIC_READ_STAT64(&txqcq->napi_stats,
--					  &ionic_dbg_napi_stats_desc[i]);
--		(*buf)++;
--	}
--	for (i = 0; i < IONIC_MAX_NUM_NAPI_CNTR; i++) {
--		**buf = txqcq->napi_stats.work_done_cntr[i];
--		(*buf)++;
--	}
- 	for (i = 0; i < IONIC_MAX_NUM_SG_CNTR; i++) {
- 		**buf = txstats->sg_cntr[i];
- 		(*buf)++;
--- 
-2.33.0
-
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -87,22 +87,34 @@ static int ipoctal_port_activate(struct
+ 	return 0;
+ }
+ 
+-static int ipoctal_open(struct tty_struct *tty, struct file *file)
++static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
+ {
+ 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
+ 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
+-	int err;
+-
+-	tty->driver_data = channel;
++	int res;
+ 
+ 	if (!ipack_get_carrier(ipoctal->dev))
+ 		return -EBUSY;
+ 
+-	err = tty_port_open(&channel->tty_port, tty, file);
+-	if (err)
+-		ipack_put_carrier(ipoctal->dev);
++	res = tty_standard_install(driver, tty);
++	if (res)
++		goto err_put_carrier;
++
++	tty->driver_data = channel;
++
++	return 0;
++
++err_put_carrier:
++	ipack_put_carrier(ipoctal->dev);
++
++	return res;
++}
++
++static int ipoctal_open(struct tty_struct *tty, struct file *file)
++{
++	struct ipoctal_channel *channel = tty->driver_data;
+ 
+-	return err;
++	return tty_port_open(&channel->tty_port, tty, file);
+ }
+ 
+ static void ipoctal_reset_stats(struct ipoctal_stats *stats)
+@@ -668,6 +680,7 @@ static void ipoctal_cleanup(struct tty_s
+ 
+ static const struct tty_operations ipoctal_fops = {
+ 	.ioctl =		NULL,
++	.install =		ipoctal_install,
+ 	.open =			ipoctal_open,
+ 	.close =		ipoctal_close,
+ 	.write =		ipoctal_write_tty,
 
 
