@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AAC420D5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4767420D61
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235572AbhJDNOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:14:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
+        id S235855AbhJDNOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236006AbhJDNMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:12:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B4961B68;
-        Mon,  4 Oct 2021 13:04:48 +0000 (UTC)
+        id S235446AbhJDNMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:12:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A96161B05;
+        Mon,  4 Oct 2021 13:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352689;
-        bh=IJ/xWMExeRjiEjLcaEn/r8Vwc9m2q6Ua5kPjkBc64LM=;
+        s=korg; t=1633352692;
+        bh=bofRQF8V4KZ0GU9jbM7DDLS1tyHH/1lOTOy5XoKg1+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=isQq44Is37NH53mTJNzu4iz16qvHBZqQ27xj+8KVqrZLa1XHN8H6vKobzPwPC/zPN
-         qGXdQDiUSqBFUM7AjbL4hNA4dvqwYc3pXlPv29Lul9/FPZ4RTidRSmk9xgpaWDZohD
-         pXOtHJBDZlth8JrZELV/mMbB6VVTd0PZIadDagcQ=
+        b=EmiPXJjpGjey8QKker5X1WJ2PsYdmHA3VEzfU5nsRHFyLq1wSwzCckR4k5CvnhTf4
+         3M8u9m1rX8EEXAd6WNV1DmfMLlOPLUymQ5xI4R8G7i7Np/1/pZ0HPbuD1aw8k6seyp
+         pmcQfUpews7iXRDiOBQj4nFAvQKpUPto5Cxz8Ulc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 82/95] net: udp: annotate data race around udp_sk(sk)->corkflag
-Date:   Mon,  4 Oct 2021 14:52:52 +0200
-Message-Id: <20211004125036.259497428@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.19 83/95] EDAC/synopsys: Fix wrong value type assignment for edac_mode
+Date:   Mon,  4 Oct 2021 14:52:53 +0200
+Message-Id: <20211004125036.294346929@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
 References: <20211004125033.572932188@linuxfoundation.org>
@@ -39,73 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
 
-commit a9f5970767d11eadc805d5283f202612c7ba1f59 upstream.
+commit 5297cfa6bdf93e3889f78f9b482e2a595a376083 upstream.
 
-up->corkflag field can be read or written without any lock.
-Annotate accesses to avoid possible syzbot/KCSAN reports.
+dimm->edac_mode contains values of type enum edac_type - not the
+corresponding capability flags. Fix that.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Issue caught by Coverity check "enumerated type mixed with another
+type."
+
+ [ bp: Rewrite commit message, add tags. ]
+
+Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
+Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210818072315.15149-1-shubhrajyoti.datta@xilinx.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/udp.c |   10 +++++-----
- net/ipv6/udp.c |    2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -935,7 +935,7 @@ int udp_sendmsg(struct sock *sk, struct
- 	__be16 dport;
- 	u8  tos;
- 	int err, is_udplite = IS_UDPLITE(sk);
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
- 	struct sk_buff *skb;
- 	struct ip_options_data opt_copy;
-@@ -1243,7 +1243,7 @@ int udp_sendpage(struct sock *sk, struct
- 	}
+---
+ drivers/edac/synopsys_edac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -371,7 +371,7 @@ static int synps_edac_init_csrows(struct
  
- 	up->len += size;
--	if (!(up->corkflag || (flags&MSG_MORE)))
-+	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
- 		ret = udp_push_pending_frames(sk);
- 	if (!ret)
- 		ret = size;
-@@ -2468,9 +2468,9 @@ int udp_lib_setsockopt(struct sock *sk,
- 	switch (optname) {
- 	case UDP_CORK:
- 		if (val != 0) {
--			up->corkflag = 1;
-+			WRITE_ONCE(up->corkflag, 1);
- 		} else {
--			up->corkflag = 0;
-+			WRITE_ONCE(up->corkflag, 0);
- 			lock_sock(sk);
- 			push_pending_frames(sk);
- 			release_sock(sk);
-@@ -2583,7 +2583,7 @@ int udp_lib_getsockopt(struct sock *sk,
- 
- 	switch (optname) {
- 	case UDP_CORK:
--		val = up->corkflag;
-+		val = READ_ONCE(up->corkflag);
- 		break;
- 
- 	case UDP_ENCAP:
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1169,7 +1169,7 @@ int udpv6_sendmsg(struct sock *sk, struc
- 	int addr_len = msg->msg_namelen;
- 	bool connected = false;
- 	int ulen = len;
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int err;
- 	int is_udplite = IS_UDPLITE(sk);
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
+ 		for (j = 0; j < csi->nr_channels; j++) {
+ 			dimm            = csi->channels[j]->dimm;
+-			dimm->edac_mode = EDAC_FLAG_SECDED;
++			dimm->edac_mode = EDAC_SECDED;
+ 			dimm->mtype     = synps_edac_get_mtype(priv->baseaddr);
+ 			dimm->nr_pages  = (size >> PAGE_SHIFT) / csi->nr_channels;
+ 			dimm->grain     = SYNPS_EDAC_ERR_GRAIN;
 
 
