@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722F24217EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EC34217F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhJDTwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhJDTwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:52:39 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65577C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:50:50 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 24so23173556oix.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l0YyUFW67xdcwjdhxWAF7I5vX+NfYoLuX7Xnchqhptc=;
-        b=Kfcs6aCvCVGKuRaBRYsUKU8ST17y0tK1hAkWzfCzjmE6duLZz9KSmc44l3aDCkgmpL
-         6aPcKaqm4PysXv1myHvbvOxD6eYdEpf1RPm0tGK/wr5xlvaTTU6oApj+qrV7AxtspdP+
-         Z8+fAxWrRvEY6Vld55NbQnRZRMr5XX2xHCECU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l0YyUFW67xdcwjdhxWAF7I5vX+NfYoLuX7Xnchqhptc=;
-        b=DtH8UQXl+i8e6rRJoKAdBURriKHPMRMxdojcSHKHVcG0sT8OTKc9Z3G1u69L1+6Fsz
-         Kz16Le8cZfdwsu2c6MoyxnrEP5s8jidWg7Ixa5Reswg64QtmZss7VVVH7j+kt7Q6yDto
-         OQKFKhv6qWjnH44qf2Hh8hGMMBttY72ZXz/ZbukNETOSJ1w+j+Cmtzdg7JRJLk3myTul
-         gGpiC/YzKTTO6zou1Qj1hLDVvIAZqie3zMMCvYmbutWsFHoX7p0rv5jXNFSaaYJpQmkd
-         GHjUeVUIRiBn/9KnNhUc4qlh62elNH4FDovHAPUsewlAPBvp2GLUYEpYwWUCXKiZ08dc
-         z7UA==
-X-Gm-Message-State: AOAM530FFQyNzLRNLFat7KlJHLMhvmHAuB5pOMLYqwhvW5je3gnE2Chp
-        w8ElQelLKhVHDyhlAA4I21N+LQ==
-X-Google-Smtp-Source: ABdhPJzQnebHJ+A82NT4H93ArZfrBUR3nbETl7AicwkgBatnhD11MmIyEiw7jv/hecz3Wy7uCYWI1g==
-X-Received: by 2002:aca:a852:: with SMTP id r79mr14389135oie.66.1633377049825;
-        Mon, 04 Oct 2021 12:50:49 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b19sm3082184otk.75.2021.10.04.12.50.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 12:50:49 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/41] 4.4.286-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d8db5caa-b51d-391d-1d63-986005c433e2@linuxfoundation.org>
-Date:   Mon, 4 Oct 2021 13:50:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234873AbhJDTxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234691AbhJDTxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:53:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79BF4610A5;
+        Mon,  4 Oct 2021 19:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633377115;
+        bh=ftIISwj5VomvNZxJNk+YRaZbhRwimc0N+dZ0U1M/kNM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JvNxsoxP0lBgAXvh4kDSdCWDVFWoqH3CZyIVwRdbN7aUKBCGwK7qvedJ1TbprIUUQ
+         9e2LPSbyQhdhMwzdvy58yqhrF29wamamie7tgj+7gVfOGNMZClu+Sv/99vbJDKuEu1
+         kCnTurgGjhCYj4/fl3VdxWRl9gUZmC3TGJj/w1U+C3JzL5Gyadwt/XoJ9L1Iqd9ZEv
+         HTgjjhAaxCbNiD7bpQyiSk/AtOyUOgMvrLPeyHtWlTB8ybVbh/qhvBTCfJRnOv56O7
+         hDD6u3Q6FfDaOBP+lSTJygSjbFTQhKX6reAE/WBze8Py/cG5+fLKY0TRvJmVkrKvyk
+         rKZP2qmbV2ZUw==
+Received: by mail-ed1-f49.google.com with SMTP id b8so34757224edk.2;
+        Mon, 04 Oct 2021 12:51:55 -0700 (PDT)
+X-Gm-Message-State: AOAM533mAr1R6PLSK+klJbK2lH6IHC4oAtROvH9D6g815cN0hi/EgK4b
+        6NUXVxDRntLjUBmlPlZElF0xR/ycz7LT6KZukw==
+X-Google-Smtp-Source: ABdhPJzSaN7S7ALG3yUJraf/vtQi93nFDytVl2mghUeFAx99vVF0KnNziH2QYzN9Y4g3zdY/aY6ClGPdGsHoEzYDI9c=
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr19125282ejk.466.1633377114021;
+ Mon, 04 Oct 2021 12:51:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210929163847.2807812-1-maz@kernel.org> <20211004083845.GA22336@lpieralisi>
+In-Reply-To: <20211004083845.GA22336@lpieralisi>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 4 Oct 2021 14:51:39 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+4FF9QYy87aYhJ-AS78qyHp0NkLrL492+WmdyWj-NKaw@mail.gmail.com>
+Message-ID: <CAL_Jsq+4FF9QYy87aYhJ-AS78qyHp0NkLrL492+WmdyWj-NKaw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/14] PCI: Add support for Apple M1
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 6:51 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.286 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.286-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Oct 4, 2021 at 3:38 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Wed, Sep 29, 2021 at 05:38:33PM +0100, Marc Zyngier wrote:
+> > This is v5 of the series adding PCIe support for the M1 SoC. Not a lot
+> > has changed this time around, and most of what I was saying in [1] is
+> > still valid.
+> >
+> > Very little has changed code wise (a couple of bug fixes). The series
+> > however now carries a bunch of DT updates so that people can actually
+> > make use of PCIe on an M1 box (OK, not quite, you will still need [2],
+> > or whatever version replaces it). The corresponding bindings are
+> > either already merged, or queued for 5.16 (this is the case for the
+> > PCI binding).
+> >
+> > It all should be in a state that makes it mergeable (yeah, I said that
+> > last time... I mean it this time! ;-).
+> >
+> > As always, comments welcome.
+> >
+> >       M.
+> >
+> > [1] https://lore.kernel.org/r/20210922205458.358517-1-maz@kernel.org
+> > [2] https://lore.kernel.org/r/20210921222956.40719-2-joey.gouly@arm.com
+> >
+> > Alyssa Rosenzweig (2):
+> >   PCI: apple: Add initial hardware bring-up
+> >   PCI: apple: Set up reference clocks when probing
+> >
+> > Marc Zyngier (10):
+> >   irqdomain: Make of_phandle_args_to_fwspec generally available
+> >   of/irq: Allow matching of an interrupt-map local to an interrupt
+> >     controller
+> >   PCI: of: Allow matching of an interrupt-map local to a PCI device
+> >   PCI: apple: Add INTx and per-port interrupt support
+> >   PCI: apple: Implement MSI support
+> >   iommu/dart: Exclude MSI doorbell from PCIe device IOVA range
+> >   PCI: apple: Configure RID to SID mapper on device addition
+> >   arm64: dts: apple: t8103: Add PCIe DARTs
+> >   arm64: dts: apple: t8103: Add root port interrupt routing
+> >   arm64: dts: apple: j274: Expose PCI node for the Ethernet MAC address
+> >
+> > Mark Kettenis (2):
+> >   arm64: apple: Add pinctrl nodes
+> >   arm64: apple: Add PCIe node
+> >
+> >  MAINTAINERS                              |   7 +
+> >  arch/arm64/boot/dts/apple/t8103-j274.dts |  23 +
+> >  arch/arm64/boot/dts/apple/t8103.dtsi     | 203 ++++++
+> >  drivers/iommu/apple-dart.c               |  27 +
+> >  drivers/of/irq.c                         |  17 +-
+> >  drivers/pci/controller/Kconfig           |  17 +
+> >  drivers/pci/controller/Makefile          |   1 +
+> >  drivers/pci/controller/pcie-apple.c      | 822 +++++++++++++++++++++++
+> >  drivers/pci/of.c                         |  10 +-
+> >  include/linux/irqdomain.h                |   4 +
+> >  kernel/irq/irqdomain.c                   |   6 +-
+> >  11 files changed, 1127 insertions(+), 10 deletions(-)
+> >  create mode 100644 drivers/pci/controller/pcie-apple.c
+>
+> I have applied (with very minor log changes) patches [1-9] to
+> pci/apple for v5.16, I expect the dts changes to go via the
+> arm-soc tree separately, please let me know if that works for you.
 
-Compiled and booted on my test system. No dmesg regressions.
+FYI, I pushed patches 1-3 to kernelCI and didn't see any regressions.
+I am a bit worried about changes to the DT interrupt parsing and
+ancient platforms (such as PowerMacs). Most likely there wouldn't be
+any report until -rc1 or months later on those old systems.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Rob
