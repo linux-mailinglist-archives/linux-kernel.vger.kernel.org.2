@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BCB420BAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC13420FB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233870AbhJDM65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
+        id S237630AbhJDNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:37:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233861AbhJDM54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8662B6139F;
-        Mon,  4 Oct 2021 12:56:07 +0000 (UTC)
+        id S237433AbhJDNfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:35:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A88A63234;
+        Mon,  4 Oct 2021 13:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352168;
-        bh=jm/bz3aY0eXr4qGNMnY9PrzQ0rSEqHPBJfUzku8CSJ0=;
+        s=korg; t=1633353353;
+        bh=32F6x39IuP+xV2Coi3AfhZCg5iYWqEXEbn+cTJ3EV5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xH7pxx5r+eW0Ym2IV74KCpoyEzNyeyGrk0ew3CdgDRR3Pn7D7hR6yVrdAauYKyRqe
-         0+VczZLQyKxrds61cQcrcIpGl65AJJwSvWo/fH7HTGYyrsIY8fjpN7y2upb10l7gt0
-         ddm6U4V/6vuKSF9H6VyHUrgD1gTl2i4mKEqUfSHQ=
+        b=J2BolHZSQ7qK2DDVsQVttqSOAv0BvFfZ7qQvvXol8VKySpB5LbDjg3C8VktYZrzRl
+         r6iC6g0gxtD/w1pA+CHP74dWNdbWrKt/SGjWUbDLRC3YHsUkQbtgV7bgTQiOMVedaW
+         gYiIBwYmYmA3XnQBTqWg+8/0IhUfkSBCNWm74DAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 08/57] staging: greybus: uart: fix tty use after free
-Date:   Mon,  4 Oct 2021 14:51:52 +0200
-Message-Id: <20211004125029.199595609@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.14 063/172] media: ir_toy: prevent device from hanging during transmit
+Date:   Mon,  4 Oct 2021 14:51:53 +0200
+Message-Id: <20211004125047.025237923@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,172 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sean Young <sean@mess.org>
 
-commit 92dc0b1f46e12cfabd28d709bb34f7a39431b44f upstream.
+commit f0c15b360fb65ee39849afe987c16eb3d0175d0d upstream.
 
-User space can hold a tty open indefinitely and tty drivers must not
-release the underlying structures until the last user is gone.
+If the IR Toy is receiving IR while a transmit is done, it may end up
+hanging. We can prevent this from happening by re-entering sample mode
+just before issuing the transmit command.
 
-Switch to using the tty-port reference counter to manage the life time
-of the greybus tty state to avoid use after free after a disconnect.
+Link: https://github.com/bengtmartensson/HarcHardware/discussions/25
 
-Fixes: a18e15175708 ("greybus: more uart work")
-Cc: stable@vger.kernel.org      # 4.9
-Reviewed-by: Alex Elder <elder@linaro.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210906124538.22358-1-johan@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/greybus/uart.c |   62 +++++++++++++++++++++--------------------
- 1 file changed, 32 insertions(+), 30 deletions(-)
+ drivers/media/rc/ir_toy.c |   21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -812,6 +812,17 @@ out:
- 	gbphy_runtime_put_autosuspend(gb_tty->gbphy_dev);
- }
+--- a/drivers/media/rc/ir_toy.c
++++ b/drivers/media/rc/ir_toy.c
+@@ -24,6 +24,7 @@ static const u8 COMMAND_VERSION[] = { 'v
+ // End transmit and repeat reset command so we exit sump mode
+ static const u8 COMMAND_RESET[] = { 0xff, 0xff, 0, 0, 0, 0, 0 };
+ static const u8 COMMAND_SMODE_ENTER[] = { 's' };
++static const u8 COMMAND_SMODE_EXIT[] = { 0 };
+ static const u8 COMMAND_TXSTART[] = { 0x26, 0x24, 0x25, 0x03 };
  
-+static void gb_tty_port_destruct(struct tty_port *port)
-+{
-+	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
-+
-+	if (gb_tty->minor != GB_NUM_MINORS)
-+		release_minor(gb_tty);
-+	kfifo_free(&gb_tty->write_fifo);
-+	kfree(gb_tty->buffer);
-+	kfree(gb_tty);
-+}
-+
- static const struct tty_operations gb_ops = {
- 	.install =		gb_tty_install,
- 	.open =			gb_tty_open,
-@@ -834,6 +845,7 @@ static struct tty_port_operations gb_por
- 	.dtr_rts =		gb_tty_dtr_rts,
- 	.activate =		gb_tty_port_activate,
- 	.shutdown =		gb_tty_port_shutdown,
-+	.destruct =		gb_tty_port_destruct,
- };
- 
- static int gb_uart_probe(struct gbphy_device *gbphy_dev,
-@@ -846,17 +858,11 @@ static int gb_uart_probe(struct gbphy_de
- 	int retval;
- 	int minor;
- 
--	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
--	if (!gb_tty)
--		return -ENOMEM;
--
- 	connection = gb_connection_create(gbphy_dev->bundle,
- 					  le16_to_cpu(gbphy_dev->cport_desc->id),
- 					  gb_uart_request_handler);
--	if (IS_ERR(connection)) {
--		retval = PTR_ERR(connection);
--		goto exit_tty_free;
--	}
-+	if (IS_ERR(connection))
-+		return PTR_ERR(connection);
- 
- 	max_payload = gb_operation_get_payload_size_max(connection);
- 	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
-@@ -864,13 +870,23 @@ static int gb_uart_probe(struct gbphy_de
- 		goto exit_connection_destroy;
+ #define REPLY_XMITCOUNT 't'
+@@ -309,12 +310,30 @@ static int irtoy_tx(struct rc_dev *rc, u
+ 		buf[i] = cpu_to_be16(v);
  	}
  
-+	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
-+	if (!gb_tty) {
-+		retval = -ENOMEM;
-+		goto exit_connection_destroy;
+-	buf[count] = cpu_to_be16(0xffff);
++	buf[count] = 0xffff;
+ 
+ 	irtoy->tx_buf = buf;
+ 	irtoy->tx_len = size;
+ 	irtoy->emitted = 0;
+ 
++	// There is an issue where if the unit is receiving IR while the
++	// first TXSTART command is sent, the device might end up hanging
++	// with its led on. It does not respond to any command when this
++	// happens. To work around this, re-enter sample mode.
++	err = irtoy_command(irtoy, COMMAND_SMODE_EXIT,
++			    sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
++	if (err) {
++		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
++		return err;
 +	}
 +
-+	tty_port_init(&gb_tty->port);
-+	gb_tty->port.ops = &gb_port_ops;
-+	gb_tty->minor = GB_NUM_MINORS;
++	err = irtoy_command(irtoy, COMMAND_SMODE_ENTER,
++			    sizeof(COMMAND_SMODE_ENTER), STATE_COMMAND);
++	if (err) {
++		dev_err(irtoy->dev, "enter sample mode: %d\n", err);
++		return err;
++	}
 +
- 	gb_tty->buffer_payload_max = max_payload -
- 			sizeof(struct gb_uart_send_data_request);
- 
- 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
- 	if (!gb_tty->buffer) {
- 		retval = -ENOMEM;
--		goto exit_connection_destroy;
-+		goto exit_put_port;
- 	}
- 
- 	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
-@@ -878,7 +894,7 @@ static int gb_uart_probe(struct gbphy_de
- 	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
- 			     GFP_KERNEL);
- 	if (retval)
--		goto exit_buf_free;
-+		goto exit_put_port;
- 
- 	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
- 	init_completion(&gb_tty->credits_complete);
-@@ -892,7 +908,7 @@ static int gb_uart_probe(struct gbphy_de
- 		} else {
- 			retval = minor;
- 		}
--		goto exit_kfifo_free;
-+		goto exit_put_port;
- 	}
- 
- 	gb_tty->minor = minor;
-@@ -901,9 +917,6 @@ static int gb_uart_probe(struct gbphy_de
- 	init_waitqueue_head(&gb_tty->wioctl);
- 	mutex_init(&gb_tty->mutex);
- 
--	tty_port_init(&gb_tty->port);
--	gb_tty->port.ops = &gb_port_ops;
--
- 	gb_tty->connection = connection;
- 	gb_tty->gbphy_dev = gbphy_dev;
- 	gb_connection_set_data(connection, gb_tty);
-@@ -911,7 +924,7 @@ static int gb_uart_probe(struct gbphy_de
- 
- 	retval = gb_connection_enable_tx(connection);
- 	if (retval)
--		goto exit_release_minor;
-+		goto exit_put_port;
- 
- 	send_control(gb_tty, gb_tty->ctrlout);
- 
-@@ -938,16 +951,10 @@ static int gb_uart_probe(struct gbphy_de
- 
- exit_connection_disable:
- 	gb_connection_disable(connection);
--exit_release_minor:
--	release_minor(gb_tty);
--exit_kfifo_free:
--	kfifo_free(&gb_tty->write_fifo);
--exit_buf_free:
--	kfree(gb_tty->buffer);
-+exit_put_port:
-+	tty_port_put(&gb_tty->port);
- exit_connection_destroy:
- 	gb_connection_destroy(connection);
--exit_tty_free:
--	kfree(gb_tty);
- 
- 	return retval;
- }
-@@ -978,15 +985,10 @@ static void gb_uart_remove(struct gbphy_
- 	gb_connection_disable_rx(connection);
- 	tty_unregister_device(gb_tty_driver, gb_tty->minor);
- 
--	/* FIXME - free transmit / receive buffers */
--
- 	gb_connection_disable(connection);
--	tty_port_destroy(&gb_tty->port);
- 	gb_connection_destroy(connection);
--	release_minor(gb_tty);
--	kfifo_free(&gb_tty->write_fifo);
--	kfree(gb_tty->buffer);
--	kfree(gb_tty);
-+
-+	tty_port_put(&gb_tty->port);
- }
- 
- static int gb_tty_init(void)
+ 	err = irtoy_command(irtoy, COMMAND_TXSTART, sizeof(COMMAND_TXSTART),
+ 			    STATE_TX);
+ 	kfree(buf);
 
 
