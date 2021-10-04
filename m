@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD4942118E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD8F421174
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234638AbhJDOhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhJDOhI (ORCPT
+        id S234477AbhJDOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:34:57 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:52019 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234383AbhJDOez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:37:08 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6319AC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 07:35:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id l7so42069081edq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 07:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DGtFGDUfMevqWirZ/ziCiuJVGFIHXAXrgxKQ7OAmNJA=;
-        b=gr2t1ZwAMDg23O/kbMJjckG7d6oZGGMr/690Lw+TK3EFwN0N3Hf9a9HJexGD0dmmts
-         IGAT4EAHFqHGCTF1IXyuaWjtnX/7e0mUTghTdVF10dCMIhAkbYc22MRt1NKx23mNQjy9
-         ekJ3dog9szhYoO7WRHwqjH4gnilnk1iuAwY0Ba3LtuYkvXg2E12dXTIlognKsxZQFgce
-         pqLO0ZP9EP02HRIEamCKhRX9Jk2i6I4djF16e98MvRvjSD9Lxfen17JrApSfpFK34RHW
-         aulhq3li0iD0HJS42bp64+3ZmYFExG4VpUEH1bRvJVLy9xDeXlYTid0wn3wovlLIT5E6
-         T1ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DGtFGDUfMevqWirZ/ziCiuJVGFIHXAXrgxKQ7OAmNJA=;
-        b=CTxwzU/zAv3veputVba5THORPMoFSPDuRuRKd4aH9o6bxgOzTpduSMt36YNfjtC4K+
-         Nhd7LXTSHMzomNX6gTFjDnotrwAHQcPRuvvf1NaHcvkLbjq+CAr0gKocFBAIojnESoeo
-         psKBKxm51Vgvak6qkChQiBAUCMjnDnBMMVC98lL8VAUVBUcqlRspmxTDDGusV4hYmDXW
-         RSA3tgMBOAT8sZm/oONJ/i7zJKAPgSXOldJ8U+VYx+hALIC0KN+ACq4WPFn4OymUKezU
-         p/Arw8DGV5stwicDgX303Azc4KIxAZSUPGUujTvnvZk2+1L9dLcr+LxRiku48Soxkx9t
-         tKwg==
-X-Gm-Message-State: AOAM5322Sl6KxJPH3E0aXlO/roRoSdK55i6q2nftoSB5NS3HEYRnpFRU
-        8qpwaert6A6UFfd10akP/SipcpCByVZqpyrgjyLAHSZa/Sh5wA==
-X-Google-Smtp-Source: ABdhPJwaWcqHUCHx20tHs9XuzZxMBOqv86kmZT12gZmuTNPTRvALwQ332GXGLjMEOjhTgz/k9oIcYW5n5jITJz+h54g=
-X-Received: by 2002:aa7:c911:: with SMTP id b17mr9274547edt.5.1633358017613;
- Mon, 04 Oct 2021 07:33:37 -0700 (PDT)
+        Mon, 4 Oct 2021 10:34:55 -0400
+Received: (qmail 584706 invoked by uid 1000); 4 Oct 2021 10:33:05 -0400
+Date:   Mon, 4 Oct 2021 10:33:05 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Hayes Wang <hayeswang@realtek.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "hsinyi@google.com" <hsinyi@google.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
+Message-ID: <20211004143305.GA583555@rowland.harvard.edu>
+References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
+ <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
+ <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
+ <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
+ <20210930151819.GC464826@rowland.harvard.edu>
+ <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
+ <5f56b21575dd4f64a3b46aac21151667@realtek.com>
+ <20211001152226.GA505557@rowland.harvard.edu>
+ <72573b91-11d7-55a0-0cd8-5afbc289b38c@suse.com>
 MIME-Version: 1.0
-References: <20211001181627.394921-1-bgeffon@google.com> <20211001162204.f8d20e62e8b528f5e2e5fa3e@linux-foundation.org>
-In-Reply-To: <20211001162204.f8d20e62e8b528f5e2e5fa3e@linux-foundation.org>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Mon, 4 Oct 2021 10:33:01 -0400
-Message-ID: <CADyq12yGoOHbYNF_9DOTS5jW0nDmT_UgY2ZGwmd5AidvVaG9RQ@mail.gmail.com>
-Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72573b91-11d7-55a0-0cd8-5afbc289b38c@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 7:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri,  1 Oct 2021 11:16:27 -0700 Brian Geffon <bgeffon@google.com> wrote:
->
-> > There does not appear to be a technical reason to not
-> > allow the zram backing device to be assigned after the
-> > zram device is initialized.
-> >
-> > This change will allow for the backing device to be assigned
-> > as long as no backing device is already assigned. In that
-> > event backing_dev would return -EEXIST.
->
-> Why is this useful?
+On Mon, Oct 04, 2021 at 01:44:54PM +0200, Oliver Neukum wrote:
+> 
+> On 01.10.21 17:22, Alan Stern wrote:
+> > On Fri, Oct 01, 2021 at 03:26:48AM +0000, Hayes Wang wrote:
+> >>> Alan Stern <stern@rowland.harvard.edu>
+> >>> [...]
+> >>>> There has been some discussion about this in the past.
+> >>>>
+> >>>> In general, -EPROTO is almost always a non-recoverable error.
+> >>> Excuse me. I am confused about the above description.
+> >>> I got -EPROTO before, when I debugged another issue.
+> >>> However, the bulk transfer still worked after I resubmitted
+> >>> the transfer. I didn't do anything to recover it. That is why
+> >>> I do resubmission for -EPROTO.
+> >> I check the Linux driver and the xHCI spec.
+> >> The driver gets -EPROTO for bulk transfer, when the host
+> >> returns COMP_USB_TRANSACTION_ERROR.
+> >> According to the spec of xHCI, USB TRANSACTION ERROR
+> >> means the host did not receive a valid response from the
+> >> device (Timeout, CRC, Bad PID, unexpected NYET, etc.).
+> > That's right.  If the device and cable are working properly, this 
+> > should never happen.  Or only extremely rarely (for example, caused 
+> > by external electromagnetic interference).
+> And the device. I am afraid the condition in your conditional statement
+> is not as likely to be true as would be desirable for quite a lot setups.
 
-Hi Andrew,
-In the case of ChromeOS we're backing zram with a loop device. For us,
-having the ability to size the backing file after the system has fully
-booted proves to be very useful. Also, doing so later allows us to
-place users in different experimental groups while we evaluate the
-performance of swapping to disk in the wild. Both of these things
-would be much harder if we did it early on when swap is first brought
-up or would require us to delay starting swap altogether.
+But if the device isn't working, a simple retry is most unlikely to fix 
+the problem.  Some form of active error recovery, such as a bus reset, 
+will be necessary.  For a non-working cable, even a reset won't help -- 
+the user would have to physically adjust or replace the cable.
 
-Brian
+> >> It seems to be reasonable why resubmission sometimes works.
+> > Did you ever track down the reason why you got the -EPROTO error 
+> > while debugging that other issue?  Can you reproduce it?
+> 
+> Is that really the issue though? We are seeing this issue with EPROTO.
+> But wouldn't we see it with any recoverable error?
+
+If you mean an error that can be fixed but only by doing something more 
+than a simple retry, then yes.  However, the vast majority of USB 
+drivers do not attempt anything more than a simple retry.  Relatively 
+few of them (including usbhid and mass-storage) are more sophisticated 
+in their error handling.
+
+> AFAICT we are running into a situation without progress because drivers
+> retry
+> 
+> * forever
+> * immediately
+> 
+> If we broke any of these conditions the system would proceed and the
+> hotplug event be eventually be processed. We may ask whether drivers should
+> retry forever, but I don't see that you can blame it on error codes.
+
+It's important to distinguish between:
+
+    1.	errors that are transient and will disappear very quickly,
+	meaning that a retry has a good chance of working, and
+
+    2.	errors that are effectively permanent (or at least, long-lived)
+	and therefore are highly unlikely to be fixed by retrying.
+
+My point is that there is no reason to retry in case 2, and -EPROTO 
+falls into this case (as do -EILSEQ and -ETIME).
+
+Converting drivers to keep track of their retries, to avoid retrying 
+forever, would be a fairly large change.  Even implementing delayed 
+retries requires some significant work (as you can see in Hayes's recent 
+patch -- and that was an easy case because the NAPI infrastructure was 
+already present).  It's much simpler to avoid retrying entirely in 
+situations where retries won't help.
+
+And it's even simpler if the USB core would automatically prevent 
+retries (by failing URB submissions after low-level protocol errors) in 
+these situations.
+
+Alan Stern
