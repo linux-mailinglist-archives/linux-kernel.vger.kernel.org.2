@@ -2,71 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C358420758
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C64420763
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJDIcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230469AbhJDIcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:32:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 639EC6124D;
-        Mon,  4 Oct 2021 08:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633336228;
-        bh=AGIgwoQNBBt0ACT2Oa703+VXilss9u/HArqWzTXe+jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xu8068laLv4h09QdbkgWqg1+Hsrt2pB2Y69WPnlP903fWNJN40bLPIgUB8fTcTLUC
-         x4BGct5hBdnnFcBypf8x7utNBSs6iaKRodKX5yHA39OhoKUatmYRx9HNOrxSXBJi2M
-         GnVRK9NTnZXWHkEyIDE4zSMdlENcN2Uc92Wr0amA=
-Date:   Mon, 4 Oct 2021 10:30:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
- LEDs under ethernet MAC / PHY)
-Message-ID: <YVq7oTTv5URYKVJb@kroah.com>
-References: <20211001133057.5287f150@thinkpad>
- <YVb/HSLqcOM6drr1@lunn.ch>
- <20211001144053.3952474a@thinkpad>
- <20211003225338.76092ec3@thinkpad>
- <YVqhMeuDI0IZL/zY@kroah.com>
- <20211004090438.588a8a89@thinkpad>
- <YVqo64vS4ox9P9hk@kroah.com>
- <20211004073841.GA20163@amd>
+        id S231526AbhJDIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:39:07 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:42626
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231491AbhJDIjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:39:05 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1DFB6402CC
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633336634;
+        bh=9ZwCtTzwSq1uVvj/tTRyEks425J4Fu+BkeRySbAum8A=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=QmSh3bJcje6+E4yzaOJmPDHZY/x8Ce94IkVHixBQK2o7E0In8I+hW4KUaGI6XstZi
+         auhX6cFnOFrAQfxskePlNmveNzc5+HnQXzNRLCNrgBpTL5ZJn/UD3IEQguhZ138jRZ
+         ShkK/CUIjx0+CXJeAouAaiaz/k6X9tLSc4AyXPbUzq2PlE9UUlavy6m7tbpijgPj5I
+         EeF4PvOx6P+jFCXJzWsBIeCBzahQCeJVCoyesAwkTR/I3rGjsZqQeeXkxp3cSi0VGV
+         9/ryMvhseyrn/4C/nGfltmqaBkCc2h25RmWJYt4z24iyPQEpNVmNflSVSqZIhRA/HE
+         bKlo/k1TVcT/w==
+Received: by mail-lf1-f69.google.com with SMTP id t14-20020ac24c0e000000b003fd392f9a5eso1040957lfq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:37:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9ZwCtTzwSq1uVvj/tTRyEks425J4Fu+BkeRySbAum8A=;
+        b=wkEQD1FtTTJUnCr/t5p/CwyuKcXcazKK/1eB1hPcWLlf8BGxTjEcsbKVY1ine6rmJv
+         12nTHQdEMlseZXgU2rZ+1HdAyZIX2VRoW3NPV+CYtJ3PJk1X78ZD9FC+XWjOiN/L+TF/
+         4E6+kGITchoFtj9ZZXjNS6HNj22ebVGmbm2/Rd0XaYVF4U5iR/UuSp9kiTuCP/rfpo6G
+         jVbWrHUHBRL1g1a1TRudhkKQdgle90GYWmAMkkMORMTWmpOTl83TqcNtDCAW75YDfxaG
+         KtRsiNSbfT5Rfytj/WInx05yazKlJmn7yK5yJ4gwCh7mEb/y3uS8IRI0Es38d79QszRn
+         KauQ==
+X-Gm-Message-State: AOAM530LzWt7VgAxxGrU7RL9UkIpanGc1ngKoSRq5gSAGBHlWz/ys5/r
+        T3qdQxqpIXNwbSPRIj3A+fdE8Q1UDuf3HmGx36fsYXjCIv25oUkKw9CtK43g53pqyUzsPFY4s6U
+        tZrf20q/DNHidxh+PcTmEMGi8cq9IZNyDXjkkg3g3/A==
+X-Received: by 2002:ac2:44a2:: with SMTP id c2mr4213103lfm.452.1633336633257;
+        Mon, 04 Oct 2021 01:37:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIpIoQvGRYSydgv8gO2smid6Br2zdF6PBc8gJBhHpLJls5rpiHdF7zMbh37bkAT9xl7GaGLQ==
+X-Received: by 2002:ac2:44a2:: with SMTP id c2mr4213083lfm.452.1633336633008;
+        Mon, 04 Oct 2021 01:37:13 -0700 (PDT)
+Received: from [192.168.0.197] ([193.178.187.25])
+        by smtp.gmail.com with ESMTPSA id a23sm1005122ljb.107.2021.10.04.01.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 01:37:12 -0700 (PDT)
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211003013235.2357-1-digetx@gmail.com>
+ <20211003013235.2357-3-digetx@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v3 2/4] dt-bindings: memory: tegra20: emc: Document new
+ LPDDR2 sub-node
+Message-ID: <a3713f62-0ece-5ab2-f55a-3d614ce01c00@canonical.com>
+Date:   Mon, 4 Oct 2021 10:37:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004073841.GA20163@amd>
+In-Reply-To: <20211003013235.2357-3-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:38:41AM +0200, Pavel Machek wrote:
-> Hi!
+On 03/10/2021 03:32, Dmitry Osipenko wrote:
+> Some Tegra20 boards don't have RAM code stored in NVMEM, which is used for
+> the memory chip identification and the identity information should be read
+> out from LPDDR2 chip in this case. Document new sub-node containing generic
+> LPDDR2 properties that will be used for the memory chip identification if
+> RAM code isn't available. The identification is done by reading out memory
+> configuration values from generic LPDDR2 mode registers of SDRAM chip and
+> comparing them with the values of device-tree sub-node's.
 > 
-> > > > > Are device names (as returned by dev_name() function) also part of
-> > > > > sysfs ABI? Should these names be stable across reboots / kernel
-> > > > > upgrades?  
-> > > > 
-> > > > Stable in what exact way?
-> > > 
-> > > Example:
-> > > - Board has an ethernet PHYs that is described in DT, and therefore
-> > >   has stable sysfs path (derived from DT path), something like
-> > >     /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01
-> > 
-> > None of the numbers there are "stable", right?
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../memory-controllers/nvidia,tegra20-emc.yaml  | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
 > 
-> At least f1072004 part is stable (and probably whole path). DT has
-> advantages here, and we should provide stable paths when we can.
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+> index cac6842dc8f1..65f7c3898ac4 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+> @@ -164,13 +164,14 @@ patternProperties:
+>        "#size-cells":
+>          const: 0
+>  
+> +      lpddr2-configuration:
 
-The kernel should enumerate the devices as best that it can, but it
-never has the requirement of always enumerating them in the same way
-each time as many busses are not deterministic.
+Nodes should be named generic, so just lpddr2?
+
+
+> +        $ref: "jedec,lpddr2.yaml#"
+> +        type: object
+> +
+>      patternProperties:
+>        "^emc-table@[0-9]+$":
+>          $ref: "#/$defs/emc-table"
+>  
+> -    required:
+> -      - nvidia,ram-code
+
+Isn't lpddr2-configuration required in such case? If not, probably you
+want either this or that (oneOf like in reserved-memory.yaml).
+
+> -
+>      additionalProperties: false
+>  
+>  required:
+> @@ -186,6 +187,8 @@ additionalProperties: false
+>  
+>  examples:
+>    - |
+> +    #include <dt-bindings/memory/lpddr2.h>
+> +
+>      external-memory-controller@7000f400 {
+>          compatible = "nvidia,tegra20-emc";
+>          reg = <0x7000f400 0x400>;
+> @@ -226,5 +229,13 @@ examples:
+>                          0x007fe010 0x00001414 0x00000000 0x00000000
+>                          0x00000000 0x00000000 0x00000000 0x00000000>;
+>              };
+> +
+> +            lpddr2-configuration {
+> +                jedec,lpddr2-manufacturer-id = <LPDDR2_MANID_ELPIDA>;
+> +                jedec,lpddr2-revision-id1 = <1>;
+> +                jedec,lpddr2-density-mbits = <2048>;
+> +                jedec,lpddr2-io-width-bits = <16>;
+> +                jedec,lpddr2-type = <LPDDR2_TYPE_S4>;
+> +            };
+>          };
+>      };
+> 
+
+
+Best regards,
+Krzysztof
