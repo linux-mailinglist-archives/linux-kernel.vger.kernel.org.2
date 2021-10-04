@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA7442104E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A62F420D84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238717AbhJDNmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52272 "EHLO mail.kernel.org"
+        id S236181AbhJDNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238429AbhJDNk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:40:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D13B61B4E;
-        Mon,  4 Oct 2021 13:18:36 +0000 (UTC)
+        id S236359AbhJDNNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:13:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 413E061B9F;
+        Mon,  4 Oct 2021 13:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353516;
-        bh=x2pvUxqOKptEVdjLWWkkly4p8ms1I51toKBAxrRhozU=;
+        s=korg; t=1633352731;
+        bh=8PiVwGkXWJD5okVWy9HY50VjTZ6cNLUcjQvgfdQ5A/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IumDyBLUtDHeBXoxYBXB8s3872FeQP58uq2csn1ethiEgBvzpmyv7DKsUbbVU6LcJ
-         6CdQnS6k2ImkbJqQft1hf+af+2wpQFsTD5exPmHoIR8uRqXdltFLtiT1GYHoxO/tBo
-         f6F9wHJ6FHRO5VJLqr6DBdIKgJGzXVwlDjmEmks8=
+        b=O6j3eDz+rsx9g8NGItgf0qYduRjS7LraD+MEBVhziHYDOx+L/nMNnc07aZe6zG+3R
+         X93s5R1tZkCWtanKCoiz7So2ZscogfehKyGIM9daroByNJcSe66tkp/mWuh8G9Ad9S
+         Mh8FugSxDcff3B2vkejAilaM58vHHyms1wpa0vpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 132/172] net: phy: bcm7xxx: Fixed indirect MMD operations
+        stable@vger.kernel.org,
+        syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com,
+        "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.19 92/95] HID: betop: fix slab-out-of-bounds Write in betop_probe
 Date:   Mon,  4 Oct 2021 14:53:02 +0200
-Message-Id: <20211004125049.225551879@linuxfoundation.org>
+Message-Id: <20211004125036.577537492@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,193 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: F.A.Sulaiman <asha.16@itfac.mrt.ac.lk>
 
-[ Upstream commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb ]
+commit 1e4ce418b1cb1a810256b5fb3fd33d22d1325993 upstream.
 
-When EEE support was added to the 28nm EPHY it was assumed that it would
-be able to support the standard clause 45 over clause 22 register access
-method. It turns out that the PHY does not support that, which is the
-very reason for using the indirect shadow mode 2 bank 3 access method.
+Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
+The problem is the driver assumes the device must have an input report but
+some malicious devices violate this assumption.
 
-Implement {read,write}_mmd to allow the standard PHY library routines
-pertaining to EEE querying and configuration to work correctly on these
-PHYs. This forces us to implement a __phy_set_clr_bits() function that
-does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
-functions are always called with that lock held.
+So this patch checks hid_device's input is non empty before it's been used.
 
-Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/bcm7xxx.c | 114 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 110 insertions(+), 4 deletions(-)
+ drivers/hid/hid-betopff.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-index e79297a4bae8..27b6a3f507ae 100644
---- a/drivers/net/phy/bcm7xxx.c
-+++ b/drivers/net/phy/bcm7xxx.c
-@@ -27,7 +27,12 @@
- #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
- #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
- #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
-+#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
-+#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
-+#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
- #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
-+#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
-+#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
- #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
- #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
- #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
-@@ -216,25 +221,37 @@ static int bcm7xxx_28nm_resume(struct phy_device *phydev)
- 	return genphy_config_aneg(phydev);
- }
- 
--static int phy_set_clr_bits(struct phy_device *dev, int location,
--					int set_mask, int clr_mask)
-+static int __phy_set_clr_bits(struct phy_device *dev, int location,
-+			      int set_mask, int clr_mask)
+--- a/drivers/hid/hid-betopff.c
++++ b/drivers/hid/hid-betopff.c
+@@ -59,15 +59,22 @@ static int betopff_init(struct hid_devic
  {
- 	int v, ret;
+ 	struct betopff_device *betopff;
+ 	struct hid_report *report;
+-	struct hid_input *hidinput =
+-			list_first_entry(&hid->inputs, struct hid_input, list);
++	struct hid_input *hidinput;
+ 	struct list_head *report_list =
+ 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
+-	struct input_dev *dev = hidinput->input;
++	struct input_dev *dev;
+ 	int field_count = 0;
+ 	int error;
+ 	int i, j;
  
--	v = phy_read(dev, location);
-+	v = __phy_read(dev, location);
- 	if (v < 0)
- 		return v;
- 
- 	v &= ~clr_mask;
- 	v |= set_mask;
- 
--	ret = phy_write(dev, location, v);
-+	ret = __phy_write(dev, location, v);
- 	if (ret < 0)
- 		return ret;
- 
- 	return v;
- }
- 
-+static int phy_set_clr_bits(struct phy_device *dev, int location,
-+			    int set_mask, int clr_mask)
-+{
-+	int ret;
-+
-+	mutex_lock(&dev->mdio.bus->mdio_lock);
-+	ret = __phy_set_clr_bits(dev, location, set_mask, clr_mask);
-+	mutex_unlock(&dev->mdio.bus->mdio_lock);
-+
-+	return ret;
-+}
-+
- static int bcm7xxx_28nm_ephy_01_afe_config_init(struct phy_device *phydev)
- {
- 	int ret;
-@@ -398,6 +415,93 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
- 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
- }
- 
-+#define MII_BCM7XXX_REG_INVALID	0xff
-+
-+static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
-+{
-+	switch (regnum) {
-+	case MDIO_CTRL1:
-+		return MII_BCM7XXX_SHD_3_PCS_CTRL;
-+	case MDIO_STAT1:
-+		return MII_BCM7XXX_SHD_3_PCS_STATUS;
-+	case MDIO_PCS_EEE_ABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_CAP;
-+	case MDIO_AN_EEE_ADV:
-+		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
-+	case MDIO_AN_EEE_LPABLE:
-+		return MII_BCM7XXX_SHD_3_EEE_LP;
-+	case MDIO_PCS_EEE_WK_ERR:
-+		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
-+	default:
-+		return MII_BCM7XXX_REG_INVALID;
++	if (list_empty(&hid->inputs)) {
++		hid_err(hid, "no inputs found\n");
++		return -ENODEV;
 +	}
-+}
 +
-+static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
-+{
-+	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
-+}
++	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
++	dev = hidinput->input;
 +
-+static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
-+				      int devnum, u16 regnum)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	ret = __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+			   MII_BCM7XXX_SHD_MODE_2);
-+	return ret;
-+}
-+
-+static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
-+				       int devnum, u16 regnum, u16 val)
-+{
-+	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
-+	int ret;
-+
-+	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
-+	    shd == MII_BCM7XXX_REG_INVALID)
-+		return -EOPNOTSUPP;
-+
-+	/* set shadow mode 2 */
-+	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
-+				 MII_BCM7XXX_SHD_MODE_2, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Access the desired shadow register address */
-+	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
-+	if (ret < 0)
-+		goto reset_shadow_mode;
-+
-+	/* Write the desired value in the shadow register */
-+	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
-+
-+reset_shadow_mode:
-+	/* reset shadow mode 2 */
-+	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
-+				  MII_BCM7XXX_SHD_MODE_2);
-+}
-+
- static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
- {
- 	int ret;
-@@ -595,6 +699,8 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
- 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
- 	.probe		= bcm7xxx_28nm_probe,				\
- 	.remove		= bcm7xxx_28nm_remove,				\
-+	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
-+	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
- }
- 
- #define BCM7XXX_40NM_EPHY(_oui, _name)					\
--- 
-2.33.0
-
+ 	if (list_empty(report_list)) {
+ 		hid_err(hid, "no output reports found\n");
+ 		return -ENODEV;
 
 
