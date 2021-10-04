@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6FB420E57
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B8E420DAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234846AbhJDNYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38148 "EHLO mail.kernel.org"
+        id S235812AbhJDNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:17:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236479AbhJDNWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:22:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0705861BD2;
-        Mon,  4 Oct 2021 13:09:34 +0000 (UTC)
+        id S235905AbhJDNP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:15:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3825961AAC;
+        Mon,  4 Oct 2021 13:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352975;
-        bh=SdjwD7Uy9flU8vFEpDopo0tZXR63B0bDZ1HgOybrmYE=;
+        s=korg; t=1633352766;
+        bh=RvA7bDhrihYWraeEEPp1LtI3X89eEYR+IOR0cbPg9+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XDu2GvwPV4oNQeTyAA2XSX4FWJGBTWfpLjO5nqg+vvUOczAIzEt9Gz1PgiFl8zW2E
-         JYwIZk1RvT7ngSwwXpYNSmbE20QFMqjK3FjDooFOo9rzOKKpemafbfnb3M/yfw0fBU
-         96w0F5DieK2rqzZJpMs38qc4A2RK0y+Qh2fD9rhY=
+        b=uqi9BpmpfxkkJOACWJ2T6ED3OO69vVNMvu0As+b/x6C/Qs1+eqcSTFNUJGPdbACNM
+         Yc/Y0Vp3PJArHvblzQBdWbpgignHdJaqpVt0itOi+C6KVU8O+FSmG0ADZziU8WavUY
+         JunT19goU/XASUhg8BN94AaKV1M+aIY+lCzFpGUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Liang <shaw.leon@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 40/93] net: ipv4: Fix rtnexthop len when RTA_FLOW is present
+Subject: [PATCH 5.4 18/56] mac80211-hwsim: fix late beacon hrtimer handling
 Date:   Mon,  4 Oct 2021 14:52:38 +0200
-Message-Id: <20211004125035.887392274@linuxfoundation.org>
+Message-Id: <20211004125030.582583434@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,113 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Liang <shaw.leon@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 597aa16c782496bf74c5dc3b45ff472ade6cee64 ]
+[ Upstream commit 313bbd1990b6ddfdaa7da098d0c56b098a833572 ]
 
-Multipath RTA_FLOW is embedded in nexthop. Dump it in fib_add_nexthop()
-to get the length of rtnexthop correct.
+Thomas explained in https://lore.kernel.org/r/87mtoeb4hb.ffs@tglx
+that our handling of the hrtimer here is wrong: If the timer fires
+late (e.g. due to vCPU scheduling, as reported by Dmitry/syzbot)
+then it tries to actually rearm the timer at the next deadline,
+which might be in the past already:
 
-Fixes: b0f60193632e ("ipv4: Refactor nexthop attributes in fib_dump_info")
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+ 1          2          3          N          N+1
+ |          |          |   ...    |          |
+
+ ^ intended to fire here (1)
+            ^ next deadline here (2)
+                                      ^ actually fired here
+
+The next time it fires, it's later, but will still try to schedule
+for the next deadline (now 3), etc. until it catches up with N,
+but that might take a long time, causing stalls etc.
+
+Now, all of this is simulation, so we just have to fix it, but
+note that the behaviour is wrong even per spec, since there's no
+value then in sending all those beacons unaligned - they should be
+aligned to the TBTT (1, 2, 3, ... in the picture), and if we're a
+bit (or a lot) late, then just resume at that point.
+
+Therefore, change the code to use hrtimer_forward_now() which will
+ensure that the next firing of the timer would be at N+1 (in the
+picture), i.e. the next interval point after the current time.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Reported-by: syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com
+Fixes: 01e59e467ecf ("mac80211_hwsim: hrtimer beacon")
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210915112936.544f383472eb.I3f9712009027aa09244b65399bf18bf482a8c4f1@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/ip_fib.h     |  2 +-
- include/net/nexthop.h    |  2 +-
- net/ipv4/fib_semantics.c | 16 +++++++++-------
- net/ipv6/route.c         |  5 +++--
- 4 files changed, 14 insertions(+), 11 deletions(-)
+ drivers/net/wireless/mac80211_hwsim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/ip_fib.h b/include/net/ip_fib.h
-index 2ec062aaa978..4d431d7b4415 100644
---- a/include/net/ip_fib.h
-+++ b/include/net/ip_fib.h
-@@ -553,5 +553,5 @@ int ip_valid_fib_dump_req(struct net *net, const struct nlmsghdr *nlh,
- int fib_nexthop_info(struct sk_buff *skb, const struct fib_nh_common *nh,
- 		     u8 rt_family, unsigned char *flags, bool skip_oif);
- int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nh,
--		    int nh_weight, u8 rt_family);
-+		    int nh_weight, u8 rt_family, u32 nh_tclassid);
- #endif  /* _NET_FIB_H */
-diff --git a/include/net/nexthop.h b/include/net/nexthop.h
-index 4c8c9fe9a3f0..fd87d727aa21 100644
---- a/include/net/nexthop.h
-+++ b/include/net/nexthop.h
-@@ -211,7 +211,7 @@ int nexthop_mpath_fill_node(struct sk_buff *skb, struct nexthop *nh,
- 		struct fib_nh_common *nhc = &nhi->fib_nhc;
- 		int weight = nhg->nh_entries[i].weight;
- 
--		if (fib_add_nexthop(skb, nhc, weight, rt_family) < 0)
-+		if (fib_add_nexthop(skb, nhc, weight, rt_family, 0) < 0)
- 			return -EMSGSIZE;
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index 1033513d3d9d..07b070b14d75 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -1603,8 +1603,8 @@ mac80211_hwsim_beacon(struct hrtimer *timer)
+ 		bcn_int -= data->bcn_delta;
+ 		data->bcn_delta = 0;
  	}
- 
-diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
-index 1f75dc686b6b..642503e89924 100644
---- a/net/ipv4/fib_semantics.c
-+++ b/net/ipv4/fib_semantics.c
-@@ -1663,7 +1663,7 @@ EXPORT_SYMBOL_GPL(fib_nexthop_info);
- 
- #if IS_ENABLED(CONFIG_IP_ROUTE_MULTIPATH) || IS_ENABLED(CONFIG_IPV6)
- int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nhc,
--		    int nh_weight, u8 rt_family)
-+		    int nh_weight, u8 rt_family, u32 nh_tclassid)
- {
- 	const struct net_device *dev = nhc->nhc_dev;
- 	struct rtnexthop *rtnh;
-@@ -1681,6 +1681,9 @@ int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nhc,
- 
- 	rtnh->rtnh_flags = flags;
- 
-+	if (nh_tclassid && nla_put_u32(skb, RTA_FLOW, nh_tclassid))
-+		goto nla_put_failure;
-+
- 	/* length of rtnetlink header + attributes */
- 	rtnh->rtnh_len = nlmsg_get_pos(skb) - (void *)rtnh;
- 
-@@ -1708,14 +1711,13 @@ static int fib_add_multipath(struct sk_buff *skb, struct fib_info *fi)
- 	}
- 
- 	for_nexthops(fi) {
--		if (fib_add_nexthop(skb, &nh->nh_common, nh->fib_nh_weight,
--				    AF_INET) < 0)
--			goto nla_put_failure;
-+		u32 nh_tclassid = 0;
- #ifdef CONFIG_IP_ROUTE_CLASSID
--		if (nh->nh_tclassid &&
--		    nla_put_u32(skb, RTA_FLOW, nh->nh_tclassid))
--			goto nla_put_failure;
-+		nh_tclassid = nh->nh_tclassid;
- #endif
-+		if (fib_add_nexthop(skb, &nh->nh_common, nh->fib_nh_weight,
-+				    AF_INET, nh_tclassid) < 0)
-+			goto nla_put_failure;
- 	} endfor_nexthops(fi);
- 
- mp_end:
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 168a7b4d957a..a68a7d7c0728 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -5566,14 +5566,15 @@ static int rt6_fill_node(struct net *net, struct sk_buff *skb,
- 			goto nla_put_failure;
- 
- 		if (fib_add_nexthop(skb, &rt->fib6_nh->nh_common,
--				    rt->fib6_nh->fib_nh_weight, AF_INET6) < 0)
-+				    rt->fib6_nh->fib_nh_weight, AF_INET6,
-+				    0) < 0)
- 			goto nla_put_failure;
- 
- 		list_for_each_entry_safe(sibling, next_sibling,
- 					 &rt->fib6_siblings, fib6_siblings) {
- 			if (fib_add_nexthop(skb, &sibling->fib6_nh->nh_common,
- 					    sibling->fib6_nh->fib_nh_weight,
--					    AF_INET6) < 0)
-+					    AF_INET6, 0) < 0)
- 				goto nla_put_failure;
- 		}
+-	hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+-			ns_to_ktime(bcn_int * NSEC_PER_USEC));
++	hrtimer_forward_now(&data->beacon_timer,
++			    ns_to_ktime(bcn_int * NSEC_PER_USEC));
+ 	return HRTIMER_RESTART;
+ }
  
 -- 
 2.33.0
