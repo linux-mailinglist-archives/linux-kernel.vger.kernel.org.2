@@ -2,209 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1503420EC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468C74210BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236390AbhJDN2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:28:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234692AbhJDN0E (ORCPT
+        id S238430AbhJDNw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237210AbhJDNwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:26:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633353855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JKmcry6fVTlDz66U0TCFhihO0+fUZfhzODGbILt2OaM=;
-        b=XTIOqP41yCehLTuD8N8dpGnxSF6fP/6DMImccOGXAFhjQP60zqCYklZSYHfZLiZkgSPHhz
-        /mAdY9HOftfbZ+ztJPPlmN9S6MrtWweubfMqz58dxIl0YyPLgLK4HkhwBTJ2zEpdCE/7Fi
-        yfq7S0i1EZuuGF3SJI3zuqOoRd5jn7g=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-601-xr-Emo3cOHqX02yMFSw9hA-1; Mon, 04 Oct 2021 09:24:14 -0400
-X-MC-Unique: xr-Emo3cOHqX02yMFSw9hA-1
-Received: by mail-wm1-f72.google.com with SMTP id m9-20020a05600c4f4900b003057c761567so9982748wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:24:13 -0700 (PDT)
+        Mon, 4 Oct 2021 09:52:54 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BCAC09E7CD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:28:01 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id c20so15808719qtb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6DU7gsbiNP9sjcVSmyhc3kWa3WRl9w7+FTLOGs4ZFN4=;
+        b=iDoHZmkGlGlOGmyIALhCRv5d0FGVqcyqzKnkCSrwDERdEycsj9nKdyI4CDCY7dUkfu
+         xidxgyjRN5kfHIRBmzvXWUYCVWONcmsNAfVlEJPerQ36OixcgdNf6z6xIX+i983wIGxX
+         Fm+2zsmQUKlte1RY1Yvt03JDL8dJLW8PrakA/6MUOUbzXeejqw51g5Eeeoks+5BR2RWt
+         8H1t/KDZUmwt+6LpGInv6V0CGPBr9+/eJziRGIauTdgjFf1nuaO3lqEPw168Nple9yyR
+         oLcnT0bAheHnXc8spN7mnErr+Hx9iaPz3jI3W/1sr1SvZCmQMtgwq+8Jx3uPm4zXeBnI
+         0JOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JKmcry6fVTlDz66U0TCFhihO0+fUZfhzODGbILt2OaM=;
-        b=cedvphQNtMrlNrM0rdrePzVOB9oHItwQoEypj93wi9c3LTAkAGBCjeLD+WuqlRlPtV
-         JLBzSsSO83P0Wx+NKbHCKPzn8ze54fzEhDMoQquRJXtpAzkODEYW+7/Ns9YD4uPPqAzM
-         sk2KCNMaoHi7UFeIlfjEMztQbNHDURJoKMEv+Aa5CEivLEmwqMzmRuLGjZTFgGm5p7rP
-         G/pUMMpv8hD5SdIFo6KiUPfDqRzbjcZynDW8WZXLkn3ErVq9jnWYZjGwsDY+zzAUUOUa
-         Maw420chJG0EF/kReOjZI8o/W/PkVvg7pfMQOIN7nr7Pe02A4b1262hRwrtmVHQnbO32
-         bK0w==
-X-Gm-Message-State: AOAM530me0HfbJyupzLssCXhj3GDiVUFzRK4/3Q65jfuipGERfs9k/rm
-        r4PKDO37VfGcRQKKU9CbR4czHp8GwWZ0lhJzjXxk5W+kUpEC9/q51FEE3qONCOSafSVVbsj3TIg
-        9glconEUwZ5OooEO9BQrxc0GJ
-X-Received: by 2002:a05:600c:21d6:: with SMTP id x22mr19031692wmj.121.1633353852890;
-        Mon, 04 Oct 2021 06:24:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzEuPqUum6oIiowRPZ0M+/txMByjMSdIdHUILY03hsMcIztwLCk9tRRdS+BSkVhkcNhn6bKg==
-X-Received: by 2002:a05:600c:21d6:: with SMTP id x22mr19031671wmj.121.1633353852733;
-        Mon, 04 Oct 2021 06:24:12 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id a2sm798475wru.82.2021.10.04.06.24.12
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6DU7gsbiNP9sjcVSmyhc3kWa3WRl9w7+FTLOGs4ZFN4=;
+        b=pWoBSIMnS6CTxcnCExtvht+38NCg3Eb036Htn/7imaIQc/yIdJ3/J6zhE2Jhvpx6S4
+         OWFsQ1yoD5SA/aCaxRdTrUh2nVGR02ygEkHr/4OcoTLYOREetAg13vT/unwi+fM2hqSc
+         rAhArasyt8I61scDrUT4ES9J/NnIpj056rvTfGHvHPPib7/Z3BBfofJkoOznLbdzCgMT
+         4ZHh+x53sNxz2L4Qxo+4QNcoNafDdxmlieDWXZ4l3qFv7Fd1iIzXojrIjoOasej8utH8
+         yakTwe9fhyQv8w0smdy0CfOEzSA7yqyEIIUvmHrSCWk7KpQ/wiG6NOpse2+jzYnLxOVk
+         LDow==
+X-Gm-Message-State: AOAM532lL04ZWiXBQ/xfPGWEikAfkLX2k0JmllUoohFPzYoUEwtXkwGc
+        V7Zp55pI2VLkXroDeYqW3oz0vA==
+X-Google-Smtp-Source: ABdhPJxtUT/KaZLX4EROxMBuImUPAmVtvIoSFGbrT35tFwl+26IbFnsgo9cxZTq9rMwrEpHPo9O3KQ==
+X-Received: by 2002:ac8:564d:: with SMTP id 13mr13726534qtt.228.1633354080469;
+        Mon, 04 Oct 2021 06:28:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id 205sm7652317qkf.19.2021.10.04.06.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 06:24:12 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 15:24:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH 5/6] perf session: Move map/unmap into reader__mmap
- function
-Message-ID: <YVsAejiXaMAfUHM+@krava>
-References: <cover.1632900802.git.alexey.v.bayduraev@linux.intel.com>
- <212fc917cbc0c26da042c3571c67bf0f4696aba8.1632900802.git.alexey.v.bayduraev@linux.intel.com>
+        Mon, 04 Oct 2021 06:28:00 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mXO0d-00ATnh-F3; Mon, 04 Oct 2021 10:27:59 -0300
+Date:   Mon, 4 Oct 2021 10:27:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Logan Gunthorpe <logang@deltatee.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
+Message-ID: <20211004132759.GX3544071@ziepe.ca>
+References: <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
+ <20210929233540.GF3544071@ziepe.ca>
+ <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
+ <20210930003652.GH3544071@ziepe.ca>
+ <20211001134856.GN3544071@ziepe.ca>
+ <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
+ <20211001174511.GQ3544071@ziepe.ca>
+ <809be72b-efb2-752c-31a6-702c8a307ce7@amd.com>
+ <20211004131102.GU3544071@ziepe.ca>
+ <1e219386-7547-4f42-d090-2afd62a268d7@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <212fc917cbc0c26da042c3571c67bf0f4696aba8.1632900802.git.alexey.v.bayduraev@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e219386-7547-4f42-d090-2afd62a268d7@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 11:41:53AM +0300, Alexey Bayduraev wrote:
-> Moving mapping and unmapping code into reader__mmap, so the mmap
-> code is located together. Moving head/file_offset computation into
-> reader__mmap function, so all the offset computation is located
-> together and in one place only.
-> 
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Acked-by: Namhyung Kim <namhyung@gmail.com>
-> Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
-> Tested-by: Riccardo Mancini <rickyman7@gmail.com>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 60 +++++++++++++++++++++++----------------
->  1 file changed, 35 insertions(+), 25 deletions(-)
-> 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 85142d2a9a5a..5e08def72b41 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -2206,12 +2206,9 @@ static int
->  reader__init(struct reader *rd, bool *one_mmap)
->  {
->  	struct reader_state *st = &rd->state;
-> -	u64 page_offset;
->  	char **mmaps = st->mmaps;
->  
-> -	page_offset = page_size * (rd->data_offset / page_size);
-> -	st->file_offset = page_offset;
-> -	st->head = rd->data_offset - page_offset;
-> +	st->head = rd->data_offset;
->  
+On Mon, Oct 04, 2021 at 03:22:22PM +0200, Christian König wrote:
 
-extra line, please remove
+> That use case is completely unrelated to GUP and when this doesn't work we
+> have quite a problem.
 
-jirka
+My read is that unmap_mapping_range() guarentees the physical TLB
+hardware is serialized across all CPUs upon return.
 
->  	st->data_size = rd->data_size + rd->data_offset;
->  
-> @@ -2238,15 +2235,12 @@ reader__exit(struct reader *rd)
->  }
->  
->  static int
-> -reader__process_events(struct reader *rd, struct perf_session *session,
-> -		       struct ui_progress *prog)
-> +reader__mmap(struct reader *rd, struct perf_session *session)
->  {
->  	struct reader_state *st = &rd->state;
-> -	u64 page_offset, size;
-> -	int err = 0, mmap_prot, mmap_flags;
-> +	int mmap_prot, mmap_flags;
->  	char *buf, **mmaps = st->mmaps;
-> -	union perf_event *event;
-> -	s64 skip;
-> +	u64 page_offset;
->  
->  	mmap_prot  = PROT_READ;
->  	mmap_flags = MAP_SHARED;
-> @@ -2257,20 +2251,45 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  		mmap_prot  |= PROT_WRITE;
->  		mmap_flags = MAP_PRIVATE;
->  	}
-> -remap:
-> +
-> +	if (mmaps[st->mmap_idx]) {
-> +		munmap(mmaps[st->mmap_idx], st->mmap_size);
-> +		mmaps[st->mmap_idx] = NULL;
-> +	}
-> +
-> +	page_offset = page_size * (st->head / page_size);
-> +	st->file_offset += page_offset;
-> +	st->head -= page_offset;
-> +
->  	buf = mmap(NULL, st->mmap_size, mmap_prot, mmap_flags, rd->fd,
->  		   st->file_offset);
->  	if (buf == MAP_FAILED) {
->  		pr_err("failed to mmap file\n");
-> -		err = -errno;
-> -		goto out;
-> +		return -errno;
->  	}
->  	mmaps[st->mmap_idx] = st->mmap_cur = buf;
->  	st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
->  	st->file_pos = st->file_offset + st->head;
-> +	return 0;
-> +}
-> +
-> +static int
-> +reader__process_events(struct reader *rd, struct perf_session *session,
-> +		       struct ui_progress *prog)
-> +{
-> +	struct reader_state *st = &rd->state;
-> +	u64 size;
-> +	int err = 0;
-> +	union perf_event *event;
-> +	s64 skip;
-> +
-> +remap:
-> +	err = reader__mmap(rd, session);
-> +	if (err)
-> +		goto out;
->  	if (session->one_mmap) {
-> -		session->one_mmap_addr = buf;
-> -		session->one_mmap_offset = st->file_offset;
-> +		session->one_mmap_addr   = rd->state.mmap_cur;
-> +		session->one_mmap_offset = rd->state.file_offset;
->  	}
->  
->  more:
-> @@ -2279,17 +2298,8 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  	if (IS_ERR(event))
->  		return PTR_ERR(event);
->  
-> -	if (!event) {
-> -		if (mmaps[st->mmap_idx]) {
-> -			munmap(mmaps[st->mmap_idx], st->mmap_size);
-> -			mmaps[st->mmap_idx] = NULL;
-> -		}
-> -
-> -		page_offset = page_size * (st->head / page_size);
-> -		st->file_offset += page_offset;
-> -		st->head -= page_offset;
-> +	if (!event)
->  		goto remap;
-> -	}
->  
->  	session->active_reader = rd;
->  	size = event->header.size;
-> -- 
-> 2.19.0
-> 
+It also guarentees GUP slow is serialized due to the page table
+spinlocks.
 
+Jason
