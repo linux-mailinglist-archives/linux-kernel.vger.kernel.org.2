@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7741420E14
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DA3420BEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236280AbhJDNV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        id S234622AbhJDNBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235501AbhJDNTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:19:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91B5D61B5F;
-        Mon,  4 Oct 2021 13:08:12 +0000 (UTC)
+        id S234232AbhJDM7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3B561425;
+        Mon,  4 Oct 2021 12:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352893;
-        bh=ulcV3j3PoqYVYo7rxSraAMbv8egXfBeNLQRkurbSSgo=;
+        s=korg; t=1633352252;
+        bh=oOiKDlFbuWZmdynbxMwkSVSJ3PrCJoVgN6O7BwsAt7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tj1ka45vDZb3znhOPImoUWodeItjUu9bbTgelYCM+y0cDRvcvAYedXjjF/fIXBnCv
-         fl7Y8gBw4yhYRNw1+7+5Z5Z1qQuDyCgJUxjn16e/lSXmaifr9WA5pXXTCNYdoVbStl
-         KiTp9SqrRJKChYKXULrL8fbj92tuuWJMIvc7tzSM=
+        b=DnkE0fo+PwhvwQixYa5ZUzCS214lVIsNYal/s0dXNWNimZvFUqwGG2Y1CZMvtn/vG
+         2cEVhT6K2XCBwcTC3P1Xswcp595iQ1Rp7VeK1KKyPKsBdDTdd/Tt7Gg/hmmZAhEDF9
+         IJCIHLf+4Kn2Or+WoqpufPUpGkbIAMf7Te+6PMJ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 01/93] tty: Fix out-of-bound vmalloc access in imageblit
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 15/57] net: hso: fix muxed tty registration
 Date:   Mon,  4 Oct 2021 14:51:59 +0200
-Message-Id: <20211004125034.635571621@linuxfoundation.org>
+Message-Id: <20211004125029.415102900@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,71 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 3b0c406124719b625b1aba431659f5cdc24a982c ]
+commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
 
-This issue happens when a userspace program does an ioctl
-FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
-containing only the fields xres, yres, and bits_per_pixel
-with values.
+If resource allocation and registration fail for a muxed tty device
+(e.g. if there are no more minor numbers) the driver should not try to
+deregister the never-registered (or already-deregistered) tty.
 
-If this struct is the same as the previous ioctl, the
-vc_resize() detects it and doesn't call the resize_screen(),
-leaving the fb_var_screeninfo incomplete. And this leads to
-the updatescrollmode() calculates a wrong value to
-fbcon_display->vrows, which makes the real_y() return a
-wrong value of y, and that value, eventually, causes
-the imageblit to access an out-of-bound address value.
+Fix up the error handling to avoid dereferencing a NULL pointer when
+attempting to remove the character device.
 
-To solve this issue I made the resize_screen() be called
-even if the screen does not need any resizing, so it will
-"fix and fill" the fb_var_screeninfo independently.
-
-Cc: stable <stable@vger.kernel.org> # after 5.15-rc2 is out, give it time to bake
-Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Link: https://lore.kernel.org/r/20210628134509.15895-1-igormtorrente@gmail.com
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Cc: stable@vger.kernel.org	# 2.6.27
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/vt.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/net/usb/hso.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index cea40ef090b7..a7ee1171eeb3 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1220,8 +1220,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	new_row_size = new_cols << 1;
- 	new_screen_size = new_row_size * new_rows;
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2715,14 +2715,14 @@ struct hso_device *hso_create_mux_serial
  
--	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
--		return 0;
-+	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
-+		/*
-+		 * This function is being called here to cover the case
-+		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
-+		 * passing the same fb_var_screeninfo containing the fields
-+		 * yres/xres equal to a number non-multiple of vc_font.height
-+		 * and yres_virtual/xres_virtual equal to number lesser than the
-+		 * vc_font.height and yres/xres.
-+		 * In the second call, the struct fb_var_screeninfo isn't
-+		 * being modified by the underlying driver because of the
-+		 * if above, and this causes the fbcon_display->vrows to become
-+		 * negative and it eventually leads to out-of-bound
-+		 * access by the imageblit function.
-+		 * To give the correct values to the struct and to not have
-+		 * to deal with possible errors from the code below, we call
-+		 * the resize_screen here as well.
-+		 */
-+		return resize_screen(vc, new_cols, new_rows, user);
-+	}
+ 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
+ 	if (!serial)
+-		goto exit;
++		goto err_free_dev;
  
- 	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
- 		return -EINVAL;
--- 
-2.33.0
-
+ 	hso_dev->port_data.dev_serial = serial;
+ 	serial->parent = hso_dev;
+ 
+ 	if (hso_serial_common_create
+ 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
+-		goto exit;
++		goto err_free_serial;
+ 
+ 	serial->tx_data_length--;
+ 	serial->write_data = hso_mux_serial_write_data;
+@@ -2738,11 +2738,9 @@ struct hso_device *hso_create_mux_serial
+ 	/* done, return it */
+ 	return hso_dev;
+ 
+-exit:
+-	if (serial) {
+-		tty_unregister_device(tty_drv, serial->minor);
+-		kfree(serial);
+-	}
++err_free_serial:
++	kfree(serial);
++err_free_dev:
+ 	kfree(hso_dev);
+ 	return NULL;
+ 
 
 
