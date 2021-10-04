@@ -2,193 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE72C420577
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7409A420580
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhJDEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 00:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbhJDEtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 00:49:15 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860D6C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 21:47:26 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e12so8226825wra.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 21:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f4tKoSTK3inceMY79QUe3y1d0IroqdLSv2OwkWk2/A8=;
-        b=vWWDVV47UEHkiIDoYrLU082WRdmSUQHbaJsK0RBGw+i4JyXd9rB/yX9KmIKfNBBgm9
-         kqVPd0C9LMEc2i+5pNaKXcDDCWbt46i9W7lxZynQakH4aNdjNBs5+ST9hEs9h+4IkF7k
-         zo4sMI9EwV/Y3h8sLXNIpcORk9a/qN4SlNmdlccZL2X0dIwAbpjEoYM6djVbFLGp+8ED
-         K1HvhLZiW4DXx8nY3M3tc9sPnV3RNHd/O60P33ye2tcuQbhTDTXzUesV//3fymsnY6TD
-         DM0GxD4TdxFNDbAXyFQateeN3vnqqyLU2JGij5IKaOn71GcK9c+QKQ36yjvCYBZwGFnR
-         1MaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f4tKoSTK3inceMY79QUe3y1d0IroqdLSv2OwkWk2/A8=;
-        b=Gb20w/NHPi8NzdOxNMDvQVqssNa7AFO9FU0dBNxxpSGYwUK/hWxm+xOcxUDRNuF4gV
-         Wo/6vjU+1RAmvSWfHCKItXD2/qf9nPc9mwP7OzdzacRybxuhBdFs6hUlkUn8W/wbxboy
-         G3511u/eGbtrFAVdBgVVE8W2AqNO2NaUN8hetMXtCiUQUoesECphSF2wqXdbYvIDd2wA
-         ZRvnx3s14otUV+xCou457baNWBC8Gz0PTkkZH1Utq+bTjL+vwNgbvtDZZf1U4cfGPT1z
-         tF+CF6TZgPCRMZR5gjyqGZ4WjYfFnw8SsV6k/CjMSTRPIxTSjLxCljIAC41WQvQ8AaqT
-         qxYw==
-X-Gm-Message-State: AOAM5327Ad/r6hImOrwdEV9e/MlJwuVd4fug/ZIjkwTB35Kes/iPaz7l
-        r32IL8PJudpBOqO6F7WiVTruq+NFFeYdAjKdIJVPXQ==
-X-Google-Smtp-Source: ABdhPJx37gv7S86waNUH+xL9Pa5+R4uyJSjSCccv/5SpnP1pbD+BHOOHyD+wYk5jf+xLYyO5QKxloQtS2nSz9VCP1U4=
-X-Received: by 2002:adf:ab57:: with SMTP id r23mr12045283wrc.199.1633322844751;
- Sun, 03 Oct 2021 21:47:24 -0700 (PDT)
+        id S232477AbhJDE4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 00:56:08 -0400
+Received: from mga17.intel.com ([192.55.52.151]:15776 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230193AbhJDE4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 00:56:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="206094986"
+X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
+   d="scan'208";a="206094986"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 21:54:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
+   d="scan'208";a="710932977"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Oct 2021 21:54:17 -0700
+Subject: Re: [PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004024935.15326-1-shawn.guo@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <539c416f-9706-ce1e-fcfa-ce265a47d144@intel.com>
+Date:   Mon, 4 Oct 2021 07:54:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210927114016.1089328-1-anup.patel@wdc.com> <CAAhSdy1yZ11L=A3g06GXM8tFtonBX0Cj5NDyGHQ1v44vJ8MqSA@mail.gmail.com>
- <CAFiDJ5_--KsNd3aH1gT_cgU32C+wzunzXeSKtn8HTNj_La7n5A@mail.gmail.com>
- <CAAhSdy1un6ab62LN-0ihV=oku8EH3fZ5YzbX1zzUFAEbatVAuQ@mail.gmail.com> <CAFiDJ5-Pew6311w7pS-_ADWQnP=H7gFEUUuU8MqhsMHEDrofdA@mail.gmail.com>
-In-Reply-To: <CAFiDJ5-Pew6311w7pS-_ADWQnP=H7gFEUUuU8MqhsMHEDrofdA@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 4 Oct 2021 10:17:13 +0530
-Message-ID: <CAAhSdy3a6MqR5bmgA3Znwsn7RXWYhpokWzSP308JV7MQJ0NmWg@mail.gmail.com>
-Subject: Re: [PATCH v20 00/17] KVM RISC-V Support
-To:     Ley Foon Tan <lftan.linux@gmail.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211004024935.15326-1-shawn.guo@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 7:58 AM Ley Foon Tan <lftan.linux@gmail.com> wrote:
->
-> On Fri, Oct 1, 2021 at 6:41 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Fri, Oct 1, 2021 at 2:33 PM Ley Foon Tan <lftan.linux@gmail.com> wrote:
-> > >
-> > > On Mon, Sep 27, 2021 at 8:01 PM Anup Patel <anup@brainfault.org> wrote:
-> > > >
-> > > > Hi Palmer, Hi Paolo,
-> > > >
-> > > > On Mon, Sep 27, 2021 at 5:10 PM Anup Patel <anup.patel@wdc.com> wrote:
-> > > > >
-> > > > > This series adds initial KVM RISC-V support. Currently, we are able to boot
-> > > > > Linux on RV64/RV32 Guest with multiple VCPUs.
-> > > > >
-> > > > > Key aspects of KVM RISC-V added by this series are:
-> > > > > 1. No RISC-V specific KVM IOCTL
-> > > > > 2. Loadable KVM RISC-V module supported
-> > > > > 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
-> > > > > 4. Both RV64 and RV32 host supported
-> > > > > 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
-> > > > > 6. KVM ONE_REG interface for VCPU register access from user-space
-> > > > > 7. PLIC emulation is done in user-space
-> > > > > 8. Timer and IPI emuation is done in-kernel
-> > > > > 9. Both Sv39x4 and Sv48x4 supported for RV64 host
-> > > > > 10. MMU notifiers supported
-> > > > > 11. Generic dirtylog supported
-> > > > > 12. FP lazy save/restore supported
-> > > > > 13. SBI v0.1 emulation for KVM Guest available
-> > > > > 14. Forward unhandled SBI calls to KVM userspace
-> > > > > 15. Hugepage support for Guest/VM
-> > > > > 16. IOEVENTFD support for Vhost
-> > > > >
-> > > > > Here's a brief TODO list which we will work upon after this series:
-> > > > > 1. KVM unit test support
-> > > > > 2. KVM selftest support
-> > > > > 3. SBI v0.3 emulation in-kernel
-> > > > > 4. In-kernel PMU virtualization
-> > > > > 5. In-kernel AIA irqchip support
-> > > > > 6. Nested virtualizaiton
-> > > > > 7. ..... and more .....
-> > > > >
-> > > > > This series can be found in riscv_kvm_v20 branch at:
-> > > > > https//github.com/avpatel/linux.git
-> > > > >
-> > > > > Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v9 branch
-> > > > > at: https//github.com/avpatel/kvmtool.git
-> > > > >
-> > > > > The QEMU RISC-V hypervisor emulation is done by Alistair and is available
-> > > > > in master branch at: https://git.qemu.org/git/qemu.git
-> > > > >
-> > > > > To play around with KVM RISC-V, refer KVM RISC-V wiki at:
-> > > > > https://github.com/kvm-riscv/howto/wiki
-> > > > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
-> > > > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
-> > > > >
+On 04/10/2021 05:49, Shawn Guo wrote:
+> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
+> which is being treated as an invalid value by sdhci_set_power_noreg().
+> And thus eMMC is totally broken on the platform.
+> 
+> [    1.436599] ------------[ cut here ]------------
+> [    1.436606] mmc0: Invalid vdd 0x17
+> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436655] Modules linked in:
+> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
+> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
+> [    1.436674] Workqueue: events_unbound async_run_entry_fn
+> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436703] sp : ffff800010803a60
+> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
+> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
+> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
+> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
+> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
+> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
+> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
+> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
+> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
+> [    1.436797] Call trace:
+> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
+> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
+> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
+> [    1.436818]  mmc_start_host+0xa0/0xb0
+> [    1.436824]  mmc_add_host+0x60/0x90
+> [    1.436830]  __sdhci_add_host+0x174/0x330
+> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
+> [    1.436842]  platform_probe+0x68/0xe0
+> [    1.436850]  really_probe.part.0+0x9c/0x31c
+> [    1.436857]  __driver_probe_device+0x98/0x144
+> [    1.436863]  driver_probe_device+0xc8/0x15c
+> [    1.436869]  __device_attach_driver+0xb4/0x120
+> [    1.436875]  bus_for_each_drv+0x78/0xd0
+> [    1.436881]  __device_attach_async_helper+0xac/0xd0
+> [    1.436888]  async_run_entry_fn+0x34/0x110
+> [    1.436895]  process_one_work+0x1d0/0x354
+> [    1.436903]  worker_thread+0x13c/0x470
+> [    1.436910]  kthread+0x150/0x160
+> [    1.436915]  ret_from_fork+0x10/0x20
+> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
+> 
+> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
+> SDHCI_POWER_330 as well.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
-<snip>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> Hi Anup
->
-> It is able to boot up to kvm guest OS after change to use
-> https://github.com/avpatel/qemu.git, riscv_aia_v2 branch.
-> Is there dependency to AIA hardware feature for KVM?
+> ---
+> Changes since RFC:
+> - Add a comment for 3.4 ~ 3.6V voltage range.
+> 
+>  drivers/mmc/host/sdhci.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 8eefa7d5fe85..2d80a04e11d8 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -2042,6 +2042,12 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+>  			break;
+>  		case MMC_VDD_32_33:
+>  		case MMC_VDD_33_34:
+> +		/*
+> +		 * 3.4 ~ 3.6V are valid only for those platforms where it's
+> +		 * known that the voltage range is supported by hardware.
+> +		 */
+> +		case MMC_VDD_34_35:
+> +		case MMC_VDD_35_36:
+>  			pwr = SDHCI_POWER_330;
+>  			break;
+>  		default:
+> 
 
-No, there is no dependency on AIA hardware and KVM RISC-V
-v20 series.
-
-I quickly tried the latest QEMU master with KVM RISC-V v20 and
-it worked perfectly fine for me.
-(QEMU master commit 30bd1db58b09c12b68c35f041f919014b885482d)
-
-Although, I did see that VS-mode interrupts were broken in the latest
-Spike due to some recent merge. I have sent fix PR to Spike for this.
-(Refer, https://github.com/riscv-software-src/riscv-isa-sim/pull/822)
-
-With Spike fix PR (above), the KVM RISC-V v20 series works fine
-on Spike as well.
-
->
->
-> Log:
->
-> [    6.212484] Run /virt/init as init process
-> Mounting...
-> [    7.202552] random: fast init done
-> / # cat /proc/cpuinfo
-> processor : 0
-> hart : 1
-> isa : rv64imafdcsu
-> mmu : sv48
->
-> processor : 1
-> hart : 0
-> isa : rv64imafdcsu
-> mmu : sv48
->
-> / # cat /proc/interrupts
->            CPU0       CPU1
->   1:        355          0  SiFive PLIC   5 Edge      virtio0
->   2:        212          0  SiFive PLIC   6 Edge      virtio1
->   3:         11          0  SiFive PLIC   7 Edge      virtio2
->   4:        155          0  SiFive PLIC   1 Edge      ttyS0
->   5:       1150        942  RISC-V INTC   5 Edge      riscv-timer
-> IPI0:        19          5  Rescheduling interrupts
-> IPI1:        50        565  Function call interrupts
-> IPI2:         0          0  CPU stop interrupts
-> IPI3:         0          0  IRQ work interrupts
-> IPI4:         0          0  Timer broadcast interrupts
->
->
-> Thanks.
->
-> Regards
-> Ley Foon
-
-Regards,
-Anup
