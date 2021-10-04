@@ -2,264 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43914421AB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFE4421AC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235354AbhJDXgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhJDXgT (ORCPT
+        id S235616AbhJDXjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:39:54 -0400
+Received: from sonic307-16.consmr.mail.ne1.yahoo.com ([66.163.190.39]:34458
+        "EHLO sonic307-16.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234888AbhJDXjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:36:19 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56708C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 16:34:29 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id k7so33589786wrd.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 16:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GaF0yvQdsG3W3nrNFgRsuLRuYdWaxLrSbDwPU7DPdi4=;
-        b=rTSGDUTw74N/zZ8ULakD8rZmWmDVW7ifOjLq8Q8eSh9DH9JO46as59m+JfEFLbSF1v
-         QOHRaAfXCcz5Dry7N4kJeg+iqnRcux4ncpuzbiZcMj1M+eTd4ODT7NFRFyjBfjnbKtuR
-         +gcK3q+Kjay6ksOTvQWYhk8/Qlqp3WJKsJc23X32rwqv5i8X48i8Ym287Uhk2amrfirS
-         R4URFYy3G4qrBKDwby91svUbIjmVYcK0a9ZpYWsKMXzv2xPjXbbkBAgXw8f2LL/wtFNx
-         lWmADpQv8brp2g/ddCIv3dDHcGyB9c8KwsuzI4e+Wd26ZG2qXpfRC5IobMCpxC0GkQkd
-         Pq+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GaF0yvQdsG3W3nrNFgRsuLRuYdWaxLrSbDwPU7DPdi4=;
-        b=3rv25kCO5WnvBiRHxX07oIY/N8DdgQ70eodtMUZEvOn1RdWwoNrtOcTfpzSioQ1BRH
-         1RUCL8WghiIhjvt6G87xJ4kFRwqEMUloVEwKRaV/immGPum7OYPzXVAna2hI+rGxoeOv
-         QW7v7RHRJKmfsoiIsvRRks1zOG6to8XMQfM96F6ju6hlX0UULncu9wL8zjPASv5o18DK
-         koLZmt4L6zijKprIXv48cQvBLdvY7aX7d9clxBm3fO4Kv6weuGwZW7YthPbikohj+1wR
-         MYrLp3L+96W9mveE3y1yZgqPPRK0Z0OVFoOvEkOrAHfRwLSyuidlRXWAivJkps+1hneR
-         tTHw==
-X-Gm-Message-State: AOAM530Vlu9i+e87s905J+VIXzn5+a0V3Zwbho44z3+hF2ptddRch5JK
-        nlEhPkv6XWULyC6YjhdF74gTwowiREwvWQ04ODe8hQ==
-X-Google-Smtp-Source: ABdhPJwIOEKw1Iem5EdLsnhDgkMw2BAMsBcjRbL9untIL4K5/EMNDYzZvJ/7G3JlzqwPLX50SqUOKSzRWs/r9l8FGb4=
-X-Received: by 2002:adf:f6c7:: with SMTP id y7mr17541861wrp.44.1633390467701;
- Mon, 04 Oct 2021 16:34:27 -0700 (PDT)
+        Mon, 4 Oct 2021 19:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633390683; bh=nZeXrjzRtK3UU5hiJ+Ec3aHGmGIKwTyAOQoux0JGTGQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=mDS0KZFIB2ewEkW8nmIKOIeqUPqAcqG+O3eiUw8pYW/YjYfenUW9/OZVmAHRzyS1CLVia86wgqm0ejEePkeDrjvvl7dQwbINnbnyzJECEKXO9KNCqcPnF8ju28VFncZ8aIgCy9PXcgs3vXRFrMSYoGGeBzzNL32CW/qHKiDESbDvyIp4Ed4oMkGjX9nojIWguulUMvgzJ1GX+WAbVwSIAPZNFyPrxvmMpJHppht2jt/FdApWsfbPkvBkr2b+tFik0zLTpZKH1EKjjzoWnPJoFgnb+lfpq2HeRrKRLfa7t+5mo5MPj6lgnHPz+iYI5yjUSM9oiN6d1Mesp8sjEHY17Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633390683; bh=0oa3TICGV+ypV8PZK9n/khhIyB2XNCAUnVDhvOLy/rW=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=lg5FdxIVN3+BYNu0dF6mO9GlV/xaf9wsOzASLQKoaKQx6rtQydaeTfnK4fWv5GnojdeuTRjIdo4K3i9JsNygpka45aHx5HGbzg5W4t076Z/CGZMt6JIFqGKFSKa5QFI+mzYr1QIv4/hiQxdx5kxvX18td5C1NKOjbdipqfl/rg8RdvVQYgPD6GO1PNR0g8D6tewOKOExL25B5SxupNGlU+t08f81JZpLqvyJpx88X0n3xIvZeQLAlz2qqKLt4O4ZSaF4I0e+tn2GunB9yvaZ2biRiEY4H9qyjMnEdIJUQI3pwcfan6fki5cwIdrOo1KvehvI1Tmee/btn6+SUiqq2g==
+X-YMail-OSG: xAyAB6MVM1kQjGFYeXYrFp9Y_h5jTAjOFz_uCnegniJoAQCswNBymxULtyBZIpZ
+ eDpIzi7i9v3wxt_N9kIJMIzjdL2m09QFvlEs_ITUXH6LPqXKWP9SmgpE218xzYzeUdak65M.R6DB
+ se5OGlDWh0Tb6KTA41J7NUzZcJXlieHLCwZ0t2lE8jFSspkZ26V4tpicv.bbb36jgTiE1UmXFJMd
+ fTy7GzZvNcgRPduoO8aiRoHajCfhRxvYrqJuNSG_Do2TIlAYX03w4kDOJEY2RfUPG8BtojPJSa3g
+ 0NKqXwZAEmy4jxSgOgAVaNfVx9kWL8Ka.u7cf83xBQrnzlgSRBPWFOoSOYf_WrOK_8_a2TJsgtq6
+ iYSPRrLLtELLIosX5_VIYsDr_edEXFPDEMJea5SQ9AscZLaXy.xXG.82RTY0dEMXR0GTrHYOz.kx
+ 7vvR5UuGuvmo7gfo3XwYve5xfKm7ZEq1tfEl7apjvExgInB3XhPQmhKla6n2xzNTcLoxT7m6W4Kn
+ c_hqmK6wRPo1Pt0AcxkPMr30np2YHVvQ8FcRFpKbXag7r_a2brQ6lXQ7Nk7AkmcQO.S2wSOt4CzQ
+ bgaqhKxA0dbvJZrMYyyGyUK3x55lsfoxDo2ZkQSw.RcKpr.e2EAmKr1yZrd3ANEBSkgEnpI6616_
+ .fS91fIyp.i5xDJDmLRyKPRvhpQTeLmrp0KGwSqaakbDAhraaFpQRhDzmLhiupE0m8YxwTLfMvGx
+ s45JK_2EL89wX.ahuL3b.TUjgitkCl5pcvRD0cKySm4pTpCCTgEZ3Fbn4C3.a5AE1jOrFjSxEWH1
+ .SmrqSLs2al7mwVLt1b4SNxHMaA1biqFuuiLRpH2nC8qwROOEa4.9dTmYaGlPdw9PAhMK59InFgo
+ 3QpbzUAOSKw1ed96jknhZJmv7xNfAbfQNcZg7i3hTTDCo0kC86b3fOnaks8mJghRWGsh0gGRJ6tS
+ Fbyigk8y5YQ5j7x7FtI3M4fr_vE0z4EpXQX1h5gD2Bjwh1kuVAE2PncMYnTOxRWmRidU3Oyf6fZY
+ sogo_JKQEKsLTcpHdnZjyhv3tA2ihebtpsyqKwHfoY6fglGhdYSn38eVCk_.x3k8zRUL1409pMx1
+ HXi8SQl6xiM.YN2kjWH6V21RDmUOxnBZ_6CChHoXfTKBzEhdXwjmXBQsAMJIPG04CK0jra.5lzp2
+ rEqY4Pq6xdyEsFSdgSe2YR23Oh5BSgj79cfKHjQxF6KyIJEQhJb1U9J5GRua2PrN9tHPZSDaHBeu
+ 4r7jdY7gLkbkNzLtQGHEECUoY9Y42GvQh_6FqinQ59bTegOGe0uJ1_H6e4YXNdT.4CS0EM4kGE6E
+ icN1S9Ij_XO0U1fAboebJFXjr4X9qcyVZ0K5QTAuyFmJjXKM9EayZzc9ZYti2lyanhYwGQeyhoKS
+ s9R4iTRahPqKWdR9IrB_k6o.WBUJB1v5sIbU7apYbBTetVaVHmt5HWoFJ5nLkcOx54gVHli12FN_
+ noEZLCSqf1_d.ML8nlESiuxOj1W372r8kGybvLY44XkYlY7hG4N07PMsZLha8bvSLkc98YfbjmOF
+ ZQj5n1kcGR9seZz9MeacX54_jbmSKSPElAcDE1C1Lwb9vL1C0VH28tjII3Xsy5K7FqHAMsJmbFYi
+ gHCtXolDXrqL51PVmIy2Ven7rgSYzuWZ_mTvWmpT5jJO9pwkYLgfLCNHnqWD1l5DqMbqGQAQbPeD
+ Dl2vOypFRITj9EBgJxSY.8Uulel14QUjBDPoJi_vld1_iycH9SgXURyVCCVyKotbPb.T7p7D4n22
+ 5KYAOelaqhPPFOXc5l1cevf.yJVBEVxK5hzEub7F8c7NbgcnTTEldpdVGpsXDVwWYjuz2WblNaBh
+ suDgLt3b5HzB6R0s8NRnXfKUwOo1ibojpkatpWwEVSsa7rtJRhujYkVZnDCLCdmaE4scNaojyKxm
+ _zVM88UKcFx1_YKy7lRgOtcgYAkRjW9E3Qd1sVrOQwo21JgrbuSoggwpAR1u8aIy7cVSUSHL9SUj
+ WVkUV4JS6yfNfBPAZNGE6xWHhAbkEdb5a5C3pEqD.tirAD4YPNFx7LXPftpF9NtMVngRiOOXySc7
+ YWaJTrGOmltPMOZAtLY_DEGInXaBHX3dt.XqcD3jXdC79meF3QH04yfgjiwFkAdEt5_hgKHrHZ3Y
+ YQEdu5a3it9_WQ0NsAZU.2sAah928oyAODcYQmoMCEf5VnWyA8iKphQyFfnAFLqD3lZ8o_WLx2_C
+ hXaGIPoakqlz_IbicejT8s_8vUbiMT6VlaoUN6sAI2JiEg7H5Izfre_xDZhwB3eNIlIAIfw8KTpR
+ p0l.gzD0-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Mon, 4 Oct 2021 23:38:03 +0000
+Received: by kubenode513.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6d7bcf93567d1f2ff56e26bd47a6512e;
+          Mon, 04 Oct 2021 23:37:59 +0000 (UTC)
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Jann Horn <jannh@google.com>
+Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20211001175521.3853257-1-tkjos@google.com>
+ <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+ <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
+ <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com>
+ <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
+ <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com>
+ <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com>
+Date:   Mon, 4 Oct 2021 16:37:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211004170102.2522514-1-dlatypov@google.com>
-In-Reply-To: <20211004170102.2522514-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 5 Oct 2021 07:34:16 +0800
-Message-ID: <CABVgOS=LsVTvX-RnsfE775fnq4aGQt7SUCeRpBpEd03My99NTQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: yield output from run_kernel in real time
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.19076 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:01 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Currently, `run_kernel()` dumps all the kernel output to a file
-> (.kunit/test.log) and then opens the file and yields it to callers.
-> This made it easier to respect the requested timeout, if any.
->
-> But it means that we can't yield the results in real time, either to the
-> parser or to stdout (if --raw_output is set).
->
-> This change spins up a background thread to enforce the timeout, which
-> allows us to yield the kernel output in real time, while also copying it
-> to the .kunit/test.log file.
-> It's also careful to ensure that the .kunit/test.log file is complete,
-> even in the kunit_parser throws an exception/otherwise doesn't consume
-> every line, see the new `finally` block and unit test.
->
-> For example:
->
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
-> <configure + build steps>
-> ...
-> <can now see output from QEMU in real time>
->
-> This does not currently have a visible effect when --raw_output is not
-> passed, as kunit_parser.py currently only outputs everything at the end.
-> But that could change, and this patch is a necessary step towards
-> showing parsed test results in real time.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
->  tools/testing/kunit/kunit_kernel.py    | 73 +++++++++++++++-----------
->  tools/testing/kunit/kunit_tool_test.py | 17 ++++++
->  2 files changed, 60 insertions(+), 30 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 2c6f916ccbaf..b8cba8123aa3 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -12,7 +12,8 @@ import subprocess
->  import os
->  import shutil
->  import signal
-> -from typing import Iterator, Optional, Tuple
-> +import threading
-> +from typing import Iterator, List, Optional, Tuple
->
->  from contextlib import ExitStack
->
-> @@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
->                 if stderr:  # likely only due to build warnings
->                         print(stderr.decode())
->
-> -       def run(self, params, timeout, build_dir, outfile) -> None:
-> -               pass
-> +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
-> +               raise RuntimeError('not implemented!')
->
->
->  class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-> @@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
->                 kconfig.parse_from_string(self._kconfig)
->                 base_kunitconfig.merge_in_entries(kconfig)
->
-> -       def run(self, params, timeout, build_dir, outfile):
-> +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
->                 kernel_path = os.path.join(build_dir, self._kernel_path)
->                 qemu_command = ['qemu-system-' + self._qemu_arch,
->                                 '-nodefaults',
-> @@ -134,18 +135,10 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
->                                 '-nographic',
->                                 '-serial stdio'] + self._extra_qemu_params
->                 print('Running tests with:\n$', ' '.join(qemu_command))
-> -               with open(outfile, 'w') as output:
-> -                       process = subprocess.Popen(' '.join(qemu_command),
-> -                                                  stdin=subprocess.PIPE,
-> -                                                  stdout=output,
-> -                                                  stderr=subprocess.STDOUT,
-> -                                                  text=True, shell=True)
-> -               try:
-> -                       process.wait(timeout=timeout)
-> -               except Exception as e:
-> -                       print(e)
-> -                       process.terminate()
-> -               return process
-> +               return subprocess.Popen(' '.join(qemu_command),
-> +                                          stdout=subprocess.PIPE,
-> +                                          stderr=subprocess.STDOUT,
-> +                                          text=True, shell=True)
->
->  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->         """An abstraction over command line operations performed on a source tree."""
-> @@ -175,17 +168,13 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->                 kunit_parser.print_with_timestamp(
->                         'Starting Kernel with all configs takes a few minutes...')
->
-> -       def run(self, params, timeout, build_dir, outfile):
-> +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
->                 """Runs the Linux UML binary. Must be named 'linux'."""
->                 linux_bin = get_file_path(build_dir, 'linux')
-> -               outfile = get_outfile_path(build_dir)
-> -               with open(outfile, 'w') as output:
-> -                       process = subprocess.Popen([linux_bin] + params,
-> -                                                  stdin=subprocess.PIPE,
+On 10/4/2021 3:28 PM, Jann Horn wrote:
+> On Mon, Oct 4, 2021 at 6:19 PM Casey Schaufler <casey@schaufler-ca.com>=
+ wrote:
+>> On 10/1/2021 3:58 PM, Jann Horn wrote:
+>>> On Fri, Oct 1, 2021 at 10:10 PM Casey Schaufler <casey@schaufler-ca.c=
+om> wrote:
+>>>> On 10/1/2021 12:50 PM, Jann Horn wrote:
+>>>>> On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
+>>>>>> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca=
+=2Ecom> wrote:
+>>>>>>> On 10/1/2021 10:55 AM, Todd Kjos wrote:
+>>>>>>>> Save the struct cred associated with a binder process
+>>>>>>>> at initial open to avoid potential race conditions
+>>>>>>>> when converting to a security ID.
+>>>>>>>>
+>>>>>>>> Since binder was integrated with selinux, it has passed
+>>>>>>>> 'struct task_struct' associated with the binder_proc
+>>>>>>>> to represent the source and target of transactions.
+>>>>>>>> The conversion of task to SID was then done in the hook
+>>>>>>>> implementations. It turns out that there are race conditions
+>>>>>>>> which can result in an incorrect security context being used.
+>>>>>>> In the LSM stacking patch set I've been posting for a while
+>>>>>>> (on version 29 now) I use information from the task structure
+>>>>>>> to ensure that the security information passed via the binder
+>>>>>>> interface is agreeable to both sides. Passing the cred will
+>>>>>>> make it impossible to do this check. The task information
+>>>>>>> required is not appropriate to have in the cred.
+>>>>>> Why not? Why can't you put the security identity of the task into =
+the creds?
+>>>>> Ah, I get it now, you're concerned about different processes wantin=
+g
+>>>>> to see security contexts formatted differently (e.g. printing the
+>>>>> SELinux label vs printing the AppArmor label), right?
+>>>> That is correct.
+>>>>
+>>>>> But still, I don't think you can pull that information from the
+>>>>> receiving task. Maybe the easiest solution would be to also store t=
+hat
+>>>>> in the creds? Or you'd have to manually grab that information when
+>>>>> /dev/binder is opened.
+>>>> I'm storing the information in the task security blob because that's=
 
-This breaks --raw_output under UML for me. Including the
-stdin=subprocess.PIPE again seems to fix it.
+>>>> the appropriate scope. Today the LSM hook is given both task_struct'=
+s.
+>>> Which is wrong, because you have no idea who the semantic "recipient
+>>> task" is - any task that has a mapping of the binder fd can
+>>> effectively receive transactions from it.
+>>>
+>>> (And the current "sender task" is also wrong, because binder looks at=
 
-> -                                                  stdout=output,
-> -                                                  stderr=subprocess.STDOUT,
-> -                                                  text=True)
-> -                       process.wait(timeout)
-> +               return subprocess.Popen([linux_bin] + params,
-> +                                          stdout=subprocess.PIPE,
-> +                                          stderr=subprocess.STDOUT,
-> +                                          text=True)
->
->  def get_kconfig_path(build_dir) -> str:
->         return get_file_path(build_dir, KCONFIG_PATH)
-> @@ -330,12 +319,36 @@ class LinuxSourceTree(object):
->                 args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
->                 if filter_glob:
->                         args.append('kunit.filter_glob='+filter_glob)
-> -               outfile = get_outfile_path(build_dir)
-> -               self._ops.run(args, timeout, build_dir, outfile)
-> -               subprocess.call(['stty', 'sane'])
-> -               with open(outfile, 'r') as file:
-> -                       for line in file:
-> +
-> +               process = self._ops.start(args, build_dir)
-> +               assert process.stdout is not None  # tell mypy it's set
-> +
-> +               # Enforce the timeout in a background thread.
-> +               def _wait_proc():
-> +                       try:
-> +                               process.wait(timeout=timeout)
-> +                       except Exception as e:
-> +                               print(e)
-> +                               process.terminate()
-> +                               process.wait()
-> +               waiter = threading.Thread(target=_wait_proc)
-> +               waiter.start()
-> +
-> +               output = open(get_outfile_path(build_dir), 'w')
-> +               try:
-> +                       # Tee the output to the file and to our caller in real time.
-> +                       for line in process.stdout:
-> +                               output.write(line)
->                                 yield line
-> +               # This runs even if our caller doesn't consume every line.
-> +               finally:
-> +                       # Flush any leftover output to the file
-> +                       output.write(process.stdout.read())
-> +                       output.close()
-> +                       process.stdout.close()
-> +
-> +                       waiter.join()
-> +                       subprocess.call(['stty', 'sane'])
->
->         def signal_handler(self, sig, frame) -> None:
->                 logging.error('Build interruption occurred. Cleaning console.')
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 619c4554cbff..f9a7398a9584 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -14,6 +14,7 @@ import tempfile, shutil # Handling test_tmpdir
->  import itertools
->  import json
->  import signal
-> +import subprocess
->  import os
->
->  import kunit_config
-> @@ -291,6 +292,22 @@ class LinuxSourceTreeTest(unittest.TestCase):
->                                 pass
->                         tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
->
-> +       def test_run_kernel_hits_exception(self):
-> +               def fake_start(unused_args, unused_build_dir):
-> +                       return subprocess.Popen(['echo "hi\nbye"'], shell=True, text=True, stdout=subprocess.PIPE)
-> +
-> +               with tempfile.TemporaryDirectory('') as build_dir:
-> +                       tree = kunit_kernel.LinuxSourceTree(build_dir, load_config=False)
-> +                       mock.patch.object(tree._ops, 'start', side_effect=fake_start).start()
-> +
-> +                       with self.assertRaises(ValueError):
-> +                               for line in tree.run_kernel(build_dir=build_dir):
-> +                                       self.assertEqual(line, 'hi\n')
-> +                                       raise ValueError('uh oh, did not read all output')
-> +
-> +                       with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
-> +                               self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
-> +
->         # TODO: add more test cases.
->
->
->
-> base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
-> --
-> 2.33.0.800.g4c38ced690-goog
->
+>>> the task that opened the binder device, not the task currently
+>>> performing the action.)
+>> I'm confused. Are you saying that the existing binder code is
+>> completely broken? Are you saying that neither "task" is correct?
+> Yeah, basically
+
+Well, hot biscuits and gravy!
+
+>  - but luckily the actual impact this has is limited by
+> the transitions that SELinux permits. If domain1 has no way to
+> transition to domain2, then it can't abuse this bug to pretend to be
+> domain2. I do have a reproducer that lets Android's "shell" domain
+> send a binder transaction that appears to come from "runas", but
+> luckily "runas" has no interesting privileges with regards to binder,
+> so that's not exploitable.
+
+You're counting on the peculiarities of the SELinux policy you're
+assuming is used to mask the fact that the hook isn't really doing
+what it is supposed to?  Ouch.
+
+>> How does passing the creds from the wrong tasks "fix" the problem?
+> This patch is not passing the creds from the "wrong" tasks at all. It
+> relies on the basic idea that when a security context opens a
+> resource, and then hands that resource to another context for
+> read/write operations, then you can effectively treat this as a
+> delegation of privileges from the original opener, and perform access
+> checks against the credentials using which the resource was opened.
+
+OK. I can understand that without endorsing it.
+
+> In particular, we already have those semantics in the core kernel for
+> ->read() and ->write() VFS operations - they are *not allowed* to look
+> at the credentials of the caller, and if they want to make security
+> checks, they have to instead check against file->f_cred, which are the
+> credentials using which the file was originally opened. (Yes, some
+> places still get that wrong.) Passing a file descriptor to another
+> task is a delegation of access, and the other task can then call
+> syscalls like read() / write() / mmap() on the file descriptor without
+> needing to have any access to the underlying file.
+
+A mechanism sufficiently entrenched.
+
+> You can't really attribute binder transactions to specific tasks that
+> are actually involved in the specific transaction, neither on the
+> sending side nor on the receiving side, because binder is built around
+> passing data through memory mappings. Memory mappings can be accessed
+> by multiple tasks, and even a task that does not currently have it
+> mapped could e.g. map it at a later time. And on top of that you have
+> the problem that the receiving task might also go through privileged
+> execve() transitions.
+
+OK. I'm curious now as to why the task_struct was being passed to the
+hook in the first place. And about where you are getting the cred from
+if not a task.
+
+>>>> It's easy to compare to make sure the tasks are compatible.
+>>> It would be, if you actually had a pair of tasks that accurately
+>>> represent the sender and the recipient.
+>>>
+>>>> Adding the
+>>>> information to the cred would be yet another case where the scope of=
+
+>>>> security information is wrong.
+>>> Can you elaborate on why you think that?
+>> The information identifies how the task is going to display
+>> the security "context". It isn't used in access checks.
+> But it is data that AFAICS needs to be preserved in the same places
+> where the creds need to be preserved, and it is also related to
+> security labels, so isn't "struct cred" a logical place to stuff it
+> anyway?
+
+I am probably the only person on the planet who dislikes shared creds.
+One of the things that made me happiest when I switched from UNIX
+development to Linux was that it didn't have shared creds and all the
+associated management. Oh well. Yes, it could go in the cred.
+
+But that raises another question. Where are the creds coming from?
+Is it even rational to make access decisions based on them? You've
+explained how SELinux ends up with an Uncle Bob, but that's doesn't
+leave me confident that another security module would be able to
+come up with something sensible.=20
+
+At this point I'm really looking for something that I can put in
+the change log explaining why creds work and task_structs don't.
+
+
