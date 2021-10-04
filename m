@@ -2,191 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DD8421744
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C20421756
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238926AbhJDTT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:19:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50274 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238833AbhJDTTd (ORCPT
+        id S232043AbhJDTYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:24:13 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:5770 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236730AbhJDTYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633375063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dnrMZKgYsa9zV3N6XQLhjXsAPJjau0Q+eDXogTmvyUM=;
-        b=Squ8rML2ZTCjJAOMJUlKXcvUjXP54EpzpV9lJUJXnWJMJVoTxC+vHm5pgju98l1Gl4WH7o
-        3tRltSyABv4LXiFP1ItvVnJUd8triGGn65GFTZszUAKLMFCzDBNVXckNuFHQBGVFUqTq3n
-        ggLzHXd89Y9oiS0q27/wor8ENSmRITk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-j53RWDA2N861bbPa8nk3gg-1; Mon, 04 Oct 2021 15:17:42 -0400
-X-MC-Unique: j53RWDA2N861bbPa8nk3gg-1
-Received: by mail-ed1-f70.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso18199562edw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:17:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dnrMZKgYsa9zV3N6XQLhjXsAPJjau0Q+eDXogTmvyUM=;
-        b=EFEg7dT9YthgfwLak0TvSPloA4LL3gjHXU5nqH8cZWhxEJdblZbO2zmwnS3TSgLR7s
-         2+AVggPbFqO8KhD8jhgeb4+3PmvnXifGgWCOu3GaOiajx6juLfV7f5vsQcsY0eWlcOjH
-         dxLCwlmDjqLyvqKxV7d9mpms3hYCHeliLuIwlcmUfsJfMrCo/91DaojeOdq54eQp1ed5
-         SxhDOU/sEGy+DV5Bvv2ttWGwQU1cSNwIVI2KcEukeCa6NtDtCmhBfbky143kBUqWnE1C
-         hlAi2aQVTMdO08k7o/T5+ExwZ6N85IKZUNuwzJuSkfra5VNjNoa8KPIkKR5XINC4BO9f
-         pqQw==
-X-Gm-Message-State: AOAM530jaCKBiiP0h8GSWJCMtOe3o1rSGz8BHzM/4BMTQGCj8bHaG7Xk
-        2oapdK0Q9gNfQ7dJLxDFGe8raWgCbC+8QNvilbA3rMBrNxYJ6o2D/hXkG1yv/C8C5SacfCTAhW5
-        xw+OtIMDq1a4Rbk8BL4ddXBu4
-X-Received: by 2002:a17:906:e2cf:: with SMTP id gr15mr19049425ejb.468.1633375060981;
-        Mon, 04 Oct 2021 12:17:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCcdDaBL4+0xApN30GKptZMox4I6k3d/U5sfhai9+VR+XWMkZ5SQ/aYkIFBgB630xlyuuMdg==
-X-Received: by 2002:a17:906:e2cf:: with SMTP id gr15mr19049399ejb.468.1633375060739;
-        Mon, 04 Oct 2021 12:17:40 -0700 (PDT)
-Received: from redhat.com ([2.55.147.134])
-        by smtp.gmail.com with ESMTPSA id t15sm5652453edq.93.2021.10.04.12.17.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 12:17:39 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 15:17:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
+        Mon, 4 Oct 2021 15:24:09 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194IHEfV019244;
+        Mon, 4 Oct 2021 19:21:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=BY+JfaVugOuhjzQ2Bqe0DhDyXCAWezfBK0nGMTluqaA=;
+ b=YuYfIHfQQYvEs5MQJJb7nBHCWdgNB4O70WCgjggOsTN7rbIUmRqlzdAQ1TVEouEHXUbt
+ 8Y38eQYu1w2A9R4ZwH8eee814LlUTWv0YCo1lFWprS2KgPoDBTk+C3T8yPiuEtkIS6gG
+ VQuvvF9WI3PBwY9aRhLvwm3Q2VrKgN96afG8bgNoXx7RKYEVtJxR5rytRcStqJwPZ7mu
+ WHfkXZeCU7QHzUNWfuWdKitlgcIUY41nytIhgKB8YCdlDgdFbcnM7IM509gMhbZicdds
+ WsvX69dc42NDEfoloj0vuhcGOgzGBld5YDR4txpx7H13GPxGk8T1PbVTzHh3+VBJuNfp 2Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bg3p5aat2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Oct 2021 19:21:41 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 194JAcLt132330;
+        Mon, 4 Oct 2021 19:21:39 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
+        by userp3020.oracle.com with ESMTP id 3bf16rwfhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Oct 2021 19:21:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eVXNSPNBa/zklBoyK5tjZ6V43aPDp6sLTirHqnZl3C/IqdNBYWFP0DSI+hqrAgm7ZVdLpnsnzzFpWZa6duP/zi+JGjvJFRrBwjRxVpatO7HhXJL9knriyeopVhESDPoJlVGYlE0ZgAO0nCT+gPEQ4rK2z170Pfardq9+DiDu/dZ2Cf0/15dxQl8f8hUl/Lkzd5LhsR6EAZlsNO/zd0zxCUt/xwuQcacF5VWnuWLssivgA1tSmbt4S3Cx5ahdVSO3fmcIC9sivW5VnmPsfnOz8Nke0pLZpgWX9mlNAtt/AxgcMnvEW8ucDQSqYXgUKibDNDQCbJFSrtRjq2sIz9on0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BY+JfaVugOuhjzQ2Bqe0DhDyXCAWezfBK0nGMTluqaA=;
+ b=NZFlo/Mgf+CxtStU9V/KdMLih380Bat4+ToqjAsQ8BEHXqQ+01t3M2gMXnF4VfDa35Den/6huIUa2kfjVOr8jYesfUuis/LRFl5JJnTzTHYqkvWE/QWsm+6pdbb7aTdY4rPPpTNNqoIZQVdrZLpq+2kUj050NbjQz5ixB8kX2fjot9UFOwEhY0lLUD8rfA4M3OFBa5QnRjdb4P4SjCg9D2k8a+BO+E9VZqAaNPelA5eztON29TZb1WK1FbW8zzrxJwXUfFbI1HEW3cmjOKP/SpS3jTri4PTXgC5UFuIOTHmYFy1Cw8vp7F/qjmznC9PA1BWvf1ceHLPde1h7gX/6hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BY+JfaVugOuhjzQ2Bqe0DhDyXCAWezfBK0nGMTluqaA=;
+ b=hvqgSBq3BBlNXkEfSLbv+PPgaNW2MNvBa8ks8MRkXOQU5xuyba6CBltkEAKARiuvbB+4m/xuG/7UgCZaUEhPd7O9VABANFpnRiNQKSoaHmAz5gCXpIXzIj9OHJsjN4N+avaokFJr8vzQ5DkMdKAhIOvSRijFOkpSSgncHlK6Eqc=
+Authentication-Results: linux-m68k.org; dkim=none (message not signed)
+ header.d=none;linux-m68k.org; dmarc=none action=none header.from=oracle.com;
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com (2603:10b6:3:b::7) by
+ DM6PR10MB3307.namprd10.prod.outlook.com (2603:10b6:5:1a1::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.15; Mon, 4 Oct 2021 19:21:37 +0000
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::195:7e6b:efcc:f531]) by DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::195:7e6b:efcc:f531%5]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
+ 19:21:37 +0000
+From:   Mike Christie <michael.christie@oracle.com>
+To:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
+        hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
+        mst@redhat.com, sgarzare@redhat.com,
         virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20211004151408-mutt-send-email-mst@kernel.org>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <20211001092125.64fef348.pasic@linux.ibm.com>
- <20211002055605-mutt-send-email-mst@kernel.org>
- <87bl452d90.fsf@redhat.com>
- <20211004090018-mutt-send-email-mst@kernel.org>
- <875yuc3ln2.fsf@redhat.com>
- <20211004110537-mutt-send-email-mst@kernel.org>
- <87wnms23hn.fsf@redhat.com>
+        christian.brauner@ubuntu.com, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/9] Use copy_process/create_io_thread in vhost layer
+Date:   Mon,  4 Oct 2021 14:21:19 -0500
+Message-Id: <20211004192128.381453-1-michael.christie@oracle.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR15CA0034.namprd15.prod.outlook.com
+ (2603:10b6:4:4b::20) To DM5PR10MB1466.namprd10.prod.outlook.com
+ (2603:10b6:3:b::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnms23hn.fsf@redhat.com>
+Received: from localhost.localdomain (73.88.28.6) by DM5PR15CA0034.namprd15.prod.outlook.com (2603:10b6:4:4b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Mon, 4 Oct 2021 19:21:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c883166e-3d45-42b4-d8a2-08d9876c2f48
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3307:
+X-Microsoft-Antispam-PRVS: <DM6PR10MB3307BD1B138CD6D804C18A1BF1AE9@DM6PR10MB3307.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Txvct5jgYZWIrj73qxjos+r5h5TKzmST3Q2wHZCLpulL4MiWoz4cZ/ykOQ40KQwF5U7S8PNDfsbs1AICrG9WJFRaJPzAEJTDjergh8cWSuQNP25/rj9RmNvlKwwHLUw8YoDjvTS3M5TVAAropaHgxI/jB5h9pB5+ZMbRw8bLvPVtvXx2lOwY0cqgjghvm8RZyjPAUCxE//iEOH1wCoDZqLzstDAyqo3uYHHchae9GdhUoqfp5xAYLV0FQ8dj120tEiquIk6AOz10/hSoGemKRBXJPqSWt60tdl/XBtO4boYOz26740tlukxE7tTBG3Y+YttWkHNGxgUuJ4TDSlH8Ve8HEEneqkveW8mBwIK5rRWDjcTrdHq+7Nt0TzBJBq/w5lfyXYSt6X7mFhz+ENRB7Gut2+cD6cUxE23as2CBqezogvYQA2Ok8sbssR007Ws3GhyRH6e3CESA2BHV7UDfIsIqVzMS19lUlNzu6h9rYh4gf7Pns1JQQax7IvcP9pty6MeVdDRRJZqazbuYYA1guWSeqyn5XzTOYbnM88drES3nz+aFz+/Wq+LCF5V09Y9efvNn8DQ1HUFu0X2l2zV7luRZGUeUDkTe7WM/9bLDhBEubkLI/kJ7myWa8GAW8KiBtRUbFWv+AaQTyQ5IsPNu7MjfzigP4nWVLc97LKmm6gdRAAKzyReB3pXpOV98X/Yl4dWpOXMWPWdY2oO91uY+2vbr0yAP2O47h6wGci+1yC+/jM1CSiRx91MAtcm0RjkEMHDa2bmh5ghSd/PKnvL4aqj8ChGNFUlHgLrAelqvdOmKnZITBymXnvQbb4SV87uB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(66476007)(66556008)(36756003)(1076003)(6512007)(52116002)(6506007)(83380400001)(2906002)(8676002)(8936002)(6486002)(26005)(6666004)(186003)(5660300002)(2616005)(7416002)(921005)(508600001)(316002)(966005)(956004)(86362001)(38350700002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9YdVZp/c4SO5vO1ddrLbxqjVGxvwuFwl+jbckYji3jhw7VskwglSnD3gb5uk?=
+ =?us-ascii?Q?3HPxp/MiRwutSo3weBy89eQiYemQhhi0O7QaSyy7d7ZtLzfTw5z/E2p2Y6Py?=
+ =?us-ascii?Q?MiF8yOZ35xAVShRyRhmTmrYVfH/rn+UDAp+GggHO1I+xc1tOQ3UnQTZBZjrk?=
+ =?us-ascii?Q?/+Hm8agW471TPODn21KBIWgsL1+usds2FRYiUQ3847bghmmRUQiAa4dfhvrN?=
+ =?us-ascii?Q?e+SHe0wB4RooGvdgCqI7N+dN8+E0IqJS9KOtYsTBoRw3VdD61VtumCa3eGiJ?=
+ =?us-ascii?Q?9WZLw+JVB/SDqGUf0wkGVgJk4xMQi8l3YchDYrw8vUKO7lUQ9EiW65EBrgKe?=
+ =?us-ascii?Q?k30yER0g4neQ3rU5cLWkdwIPjW4o2XRNboRRX7g8OSHK/wuSFVEURpU/VFry?=
+ =?us-ascii?Q?Hm/cCK2CVhANFF1e77Oi2SFjNJ7X/D6DQr1HA+R3oYib0YyLqFtwx4+7hhDV?=
+ =?us-ascii?Q?tv7tHZc9YHUHvo3MwaRVtuMv6Uo40uRR+n1bwi3jy7K/Pt8FeU9AY9UB6Sm7?=
+ =?us-ascii?Q?PHDuP746YTlMY6pavJu6Vy/Iz2v9GG+REkLdixCIgcsbARLHc4ya8kpKNIWe?=
+ =?us-ascii?Q?eP8qZ9n7Y1q+wS7nUhMjuArsW/DIvmOJGH/sKc2bOHEnjZDkQl6UvslFCfVh?=
+ =?us-ascii?Q?7NwcsQqS/kILBk41bfkJ8+LzPLQhkxcsVrO68WS/XTMxaUOX7DCI0GV6Ti4/?=
+ =?us-ascii?Q?yCaqwncEM56KTw9lKEfBHfmErQ4R8yHa7ZEa8Pz6T9kq80Ek4xEPj6mVdDrT?=
+ =?us-ascii?Q?m/uqd7mnpihKoEPCapkiNwp2JkoLIkDidi3D8JwI9SCkSWArVcjZK8a7gRlI?=
+ =?us-ascii?Q?u6lxupbAJJLo0Hs5w7PwnUkqCKvMy9AifmEquM/+hiZS1zxdJmR1+RsJffcV?=
+ =?us-ascii?Q?U7CTiqNN+xqeRZwxIOOxdjKRToEhmosnX1fms+l1Fz2zpp08REIfW9iUF4tL?=
+ =?us-ascii?Q?lHL74TdN0dsZWXAweMgG9Wo8VeQqSrNdIXMH4NFahWAdSD5JoIySrnwgMe+b?=
+ =?us-ascii?Q?5minH+VTm9oTR30aNOfdlDC1zEw4saYUWIk91Sdi85tCopu0mFGPjR6QD0L8?=
+ =?us-ascii?Q?yejJWGw8YcGnQZiXP19vFUQkK+DhadzVl0OCq2LmvS/2xgXoTdNoTmejkgkL?=
+ =?us-ascii?Q?8FzlZjDl7RKyRQFXqx21oDvC2qnYcl/zkh3N0RWPS6rQ3CyjfGbk5w4xRql8?=
+ =?us-ascii?Q?pCtv/8fh5Ufu6nGsRe7S6NABLfu2Re0SvHaavAIkIi+24L14li7TlncYIz5P?=
+ =?us-ascii?Q?f0DW6DiQ6Mu6Tbr1n1JNMEys+BQ0MND/quAkEan8mFo7mWQgaUpjLUnn+fci?=
+ =?us-ascii?Q?qldQP6wBBTGAZMsoPYrYCulh?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c883166e-3d45-42b4-d8a2-08d9876c2f48
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR10MB1466.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 19:21:37.0436
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7AKlLKrrrvjQ2bUj9/bhZEoZG/GDwZBS3GXIAMEoxwGN7kawv/ZKIN4ZfXMQRWoHnIdbBftUQie4lJBqxVSQqFHWC2cvEwRO8l9mwOwsRK8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3307
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10127 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=742 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040131
+X-Proofpoint-ORIG-GUID: iYXouoBwAWr0NiGn5bI0lpR5eOoiC33r
+X-Proofpoint-GUID: iYXouoBwAWr0NiGn5bI0lpR5eOoiC33r
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 05:50:44PM +0200, Cornelia Huck wrote:
-> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> 
-> > On Mon, Oct 04, 2021 at 04:33:21PM +0200, Cornelia Huck wrote:
-> >> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> >> 
-> >> > On Mon, Oct 04, 2021 at 02:19:55PM +0200, Cornelia Huck wrote:
-> >> >> 
-> >> >> [cc:qemu-devel]
-> >> >> 
-> >> >> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> >> >> 
-> >> >> > On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
-> >> >> >> On Thu, 30 Sep 2021 07:12:21 -0400
-> >> >> >> "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> >> >> >> 
-> >> >> >> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
-> >> >> >> > > This patch fixes a regression introduced by commit 82e89ea077b9
-> >> >> >> > > ("virtio-blk: Add validation for block size in config space") and
-> >> >> >> > > enables similar checks in verify() on big endian platforms.
-> >> >> >> > > 
-> >> >> >> > > The problem with checking multi-byte config fields in the verify
-> >> >> >> > > callback, on big endian platforms, and with a possibly transitional
-> >> >> >> > > device is the following. The verify() callback is called between
-> >> >> >> > > config->get_features() and virtio_finalize_features(). That we have a
-> >> >> >> > > device that offered F_VERSION_1 then we have the following options
-> >> >> >> > > either the device is transitional, and then it has to present the legacy
-> >> >> >> > > interface, i.e. a big endian config space until F_VERSION_1 is
-> >> >> >> > > negotiated, or we have a non-transitional device, which makes
-> >> >> >> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
-> >> >> >> > > thus presents a little endian config space. Because at this point we
-> >> >> >> > > can't know if the device is transitional or non-transitional, we can't
-> >> >> >> > > know do we need to byte swap or not.  
-> >> >> >> > 
-> >> >> >> > Hmm which transport does this refer to?
-> >> >> >> 
-> >> >> >> It is the same with virtio-ccw and virtio-pci. I see the same problem
-> >> >> >> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
-> >> >> >> yet (have to figure out how to do that with libvirt) for pci I used
-> >> >> >> virtio-blk-pci.
-> >> >> >> 
-> >> >> >> > Distinguishing between legacy and modern drivers is transport
-> >> >> >> > specific.  PCI presents
-> >> >> >> > legacy and modern at separate addresses so distinguishing
-> >> >> >> > between these two should be no trouble.
-> >> >> >> 
-> >> >> >> You mean the device id? Yes that is bolted down in the spec, but
-> >> >> >> currently we don't exploit that information. Furthermore there
-> >> >> >> is a fat chance that with QEMU even the allegedly non-transitional
-> >> >> >> devices only present a little endian config space after VERSION_1
-> >> >> >> was negotiated. Namely get_config for virtio-blk is implemented in
-> >> >> >> virtio_blk_update_config() which does virtio_stl_p(vdev,
-> >> >> >> &blkcfg.blk_size, blk_size) and in there we don't care
-> >> >> >> about transitional or not:
-> >> >> >> 
-> >> >> >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
-> >> >> >> {
-> >> >> >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
-> >> >> >>     return virtio_is_big_endian(vdev);
-> >> >> >> #elif defined(TARGET_WORDS_BIGENDIAN)
-> >> >> >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-> >> >> >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
-> >> >> >>         return false;
-> >> >> >>     }
-> >> >> >>     return true;
-> >> >> >> #else
-> >> >> >>     return false;
-> >> >> >> #endif
-> >> >> >> }
-> >> >> >> 
-> >> >> >
-> >> >> > ok so that's a QEMU bug. Any virtio 1.0 and up
-> >> >> > compatible device must use LE.
-> >> >> > It can also present a legacy config space where the
-> >> >> > endian depends on the guest.
-> >> >> 
-> >> >> So, how is the virtio core supposed to determine this? A
-> >> >> transport-specific callback?
-> >> >
-> >> > I'd say a field in VirtIODevice is easiest.
-> >> 
-> >> The transport needs to set this as soon as it has figured out whether
-> >> we're using legacy or not.
-> >
-> > Basically on each device config access?
-> 
-> Prior to the first one, I think. It should not change again, should it?
+The following patches were made over Linus's tree but also apply over
+Jens's for-next io_uring branch and Michaels' vhost/next branch.
 
-Well yes but we never prohibited someone from poking at both ..
-Doing it on each access means we don't have state to migrate.
+This is V3 of the patchset. It should handle all the review comments
+posted in V1 and V2. If I missed a comment, please let me know.
 
-> >
-> >> I guess we also need to fence off any
-> >> accesses respectively error out the device if the driver tries any
-> >> read/write operations that would depend on that knowledge?
-> >> 
-> >> And using a field in VirtIODevice would probably need some care when
-> >> migrating. Hm...
-> >
-> > It's just a shorthand to minimize changes. No need to migrate I think.
-> 
-> If we migrate in from an older QEMU, we don't know whether we are
-> dealing with legacy or not, until feature negotiation is already
-> done... don't we have to ask the transport?
+This patchset allows the vhost layer to do a copy_process on the thread
+that does the VHOST_SET_OWNER ioctl like how io_uring does a copy_process
+against its userspace app (Jens, the patches make create_io_thread more
+generic so that's why you are cc'd). This allows the vhost layer's worker
+threads to inherit cgroups, namespaces, address space, etc and this worker
+thread will also be accounted for against that owner/parent process's
+RLIMIT_NPROC limit.
 
-Right but the only thing that can happen is config access.
-Well and for legacy a kick I guess.
+If you are not familiar with qemu and vhost here is more detailed
+problem description:
 
--- 
-MST
+Qemu will create vhost devices in the kernel which perform network, SCSI,
+etc IO and management operations from worker threads created by the
+kthread API. Because the kthread API does a copy_process on the kthreadd
+thread, the vhost layer has to use kthread_use_mm to access the Qemu
+thread's memory and cgroup_attach_task_all to add itself to the Qemu
+thread's cgroups.
+
+The problem with this approach is that we then have to add new functions/
+args/functionality for every thing we want to inherit. I started doing
+that here:
+
+https://lkml.org/lkml/2021/6/23/1233
+
+for the RLIMIT_NPROC check, but it seems it might be easier to just
+inherit everything from the beginning, becuase I'd need to do something
+like that patch several times. For example, the current approach does not
+support cgroups v2 so commands like virsh emulatorpin do not work. The
+qemu process can go over its RLIMIT_NPROC. And for future vhost interfaces
+where we export the vhost thread pid we will want the namespace info.
+
+V3:
+- Add parentheses in p->flag and work_flags check in copy_thread.
+- Fix check in arm/arm64 and xtensa which were doing the reverse of other
+  archs in their check for PF_IO_WORKER.
+V2:
+- Rename kernel_copy_process to kernel_worker.
+- Instead of exporting functions, make kernel_worker() a proper
+  function/API that does common work for the caller.
+- Instead of adding new fields to kernel_clone_args for each option
+  make it flag based similar to CLONE_*.
+- Drop unused completion struct in vhost.
+- Fix compile warnings by merging vhost cgroup cleanup patch and
+  vhost conversion patch.
+
+
 
