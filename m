@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87304211B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDCA4211B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbhJDOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:44:31 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57220 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234703AbhJDOo3 (ORCPT
+        id S234882AbhJDOon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:44:43 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:40691 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234846AbhJDOom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:44:29 -0400
-X-UUID: 0d4150efbb86459abbfb466af4ba53d7-20211004
-X-UUID: 0d4150efbb86459abbfb466af4ba53d7-20211004
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1421367160; Mon, 04 Oct 2021 22:42:38 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Mon, 4 Oct 2021 22:42:37 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 4 Oct 2021 22:42:36 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hector.yuan@mediatek.com>
-Subject: [PATCH v1 1/1] cpufreq:Fix parameter in parse_perf_domain
-Date:   Mon, 4 Oct 2021 22:42:33 +0800
-Message-ID: <1633358553-2842-2-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1633358553-2842-1-git-send-email-hector.yuan@mediatek.com>
-References: <1633358553-2842-1-git-send-email-hector.yuan@mediatek.com>
+        Mon, 4 Oct 2021 10:44:42 -0400
+Received: by mail-oi1-f174.google.com with SMTP id t189so21810331oie.7;
+        Mon, 04 Oct 2021 07:42:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jLi+zvTcPBdSi3uAI5y27tr3d55lBMSMYRjbfwJHoK4=;
+        b=q/kIsz4Bd4X4OEUpGkDzUf+OWY7KkAK+6QNhvyuUh1T0b+mQo41mY/v1GyF0ds3HrC
+         4Ekmu+7mY2vy+cUArVk823FPvTuUQU/tW8i/GAD7IiJt3K0GCH532hCqMDQsmUkv4apJ
+         h/x8T42VboIj7QN2QuXpvwrcxnEZnVOKCMb/jxfnLjOwIcQZU4JQfoHLfxJPqc1Gw+Td
+         I3r1Thiiu64piTH1viCO3mAUhqXRH+1LlaUvUUAxtigE4YOQPMnBumJVhBRJ1XvlrNGH
+         aS6wIJKN2rOSQK6BNBWtYX645Tc0eztZCQNJJlncUjgedVadSr/Yyl2OFXgMWxiDlRLk
+         5RNw==
+X-Gm-Message-State: AOAM532jjnOPEtwBzl0r7s1wMIRTI/f6eYyPQYOEueoX/Iad+0ZKDOHu
+        +Ta/cXVPfgkeyMTpHrfbXQ==
+X-Google-Smtp-Source: ABdhPJwFVhVHZiT52Mp5NnkMkPwiAubk1K7QsnCTn/ftI+/c23Em+F3YbHdrtFtBTx0GwCi2/Onp+w==
+X-Received: by 2002:a05:6808:bcb:: with SMTP id o11mr13490894oik.168.1633358573014;
+        Mon, 04 Oct 2021 07:42:53 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 14sm2742983oiy.53.2021.10.04.07.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 07:42:52 -0700 (PDT)
+Received: (nullmailer pid 1264769 invoked by uid 1000);
+        Mon, 04 Oct 2021 14:42:51 -0000
+Date:   Mon, 4 Oct 2021 09:42:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-clk@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 07/10] dt-bindings: mfd: samsung,s2mps11: convert to
+ dtschema
+Message-ID: <YVsS60gb1ZuF42N8@robh.at.kernel.org>
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <20211001094106.52412-8-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001094106.52412-8-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Hector.Yuan" <hector.yuan@mediatek.com>
+On Fri, 01 Oct 2021 11:41:03 +0200, Krzysztof Kozlowski wrote:
+> Convert the MFD part of Samsung S2MPS11/S2MPS13/S2MPS14/S2MPS15/S2MPU02
+> family of PMICs to DT schema format.  Previously the bindings were
+> mostly in mfd/samsung,sec-core.txt.
+> 
+> The conversion copies parts of description from existing bindings
+> therefore the license is not changed from GPLv2.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/mfd/samsung,s2mps11.yaml         | 267 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 268 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mps11.yaml
+> 
 
-Should pass per-cpu id to map perf_domain for related_cpus
-rather than map policy_cpu several times.
-
-Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
----
- include/linux/cpufreq.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index ff88bb3..66a1f49 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -1041,7 +1041,7 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
- 		if (cpu == pcpu)
- 			continue;
- 
--		ret = parse_perf_domain(pcpu, list_name, cell_name);
-+		ret = parse_perf_domain(cpu, list_name, cell_name);
- 		if (ret < 0)
- 			continue;
- 
--- 
-1.7.9.5
-
+Reviewed-by: Rob Herring <robh@kernel.org>
