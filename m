@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E910420C3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42415420BE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbhJDNDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
+        id S234401AbhJDNBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234310AbhJDNBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:01:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 850DA61A10;
-        Mon,  4 Oct 2021 12:58:47 +0000 (UTC)
+        id S233817AbhJDM7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2904361401;
+        Mon,  4 Oct 2021 12:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352328;
-        bh=OGWx/km/u1oS9VJfkpvXoCZ8G0dGGhs78a0sEFwooAQ=;
+        s=korg; t=1633352241;
+        bh=IPcfNl2ejP4tASh88d7qhUQZkOs/+1oLKrRjIEv6kiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M0Q9kX+dZP2SES84F0/KQd5iLC8ZoFemKAts5Scz+rzUJlALKZHJkQdafoyEtUTjn
-         YHGvhNhpMd20AsCmJOXf/U8VzQ6KjApFPzT7eZ14VwZPN2tZ1eJi3vfkJrzOxlVvB4
-         0szMvvNoWayO3VNUwcf4w3lyUgXpm5asfX0tWGX4=
+        b=XLmGgkZZCtEGwNJbdZa42nuGgIy99mJ/ll/+eAWKZScAsphdkjsQftg9dG1VSJ0fE
+         5ZuTgNa2nXNUO5hO+U/LUBr4eiJ8KDkcJIK0IQQ629TaNFlrghLeeg1j35IINhdj03
+         ++sJQE6KMVjHTXwirxDOxsECnBVJn8UHxGDQ8sTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 19/75] scsi: iscsi: Adjust iface sysfs attr detection
-Date:   Mon,  4 Oct 2021 14:51:54 +0200
-Message-Id: <20211004125032.168399306@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 11/57] USB: serial: option: remove duplicate USB device ID
+Date:   Mon,  4 Oct 2021 14:51:55 +0200
+Message-Id: <20211004125029.291125910@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 4e28550829258f7dab97383acaa477bd724c0ff4 ]
+commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
 
-ISCSI_NET_PARAM_IFACE_ENABLE belongs to enum iscsi_net_param instead of
-iscsi_iface_param so move it to ISCSI_NET_PARAM. Otherwise, when we call
-into the driver, we might not match and return that we don't want attr
-visible in sysfs. Found in code review.
+The device ZTE 0x0094 is already on the list.
 
-Link: https://lore.kernel.org/r/20210901085336.2264295-1-libaokun1@huawei.com
-Fixes: e746f3451ec7 ("scsi: iscsi: Fix iface sysfs attr detection")
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/serial/option.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 064c941e5483..d276d84c0f7a 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -429,9 +429,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	struct iscsi_transport *t = iface->transport;
- 	int param = -1;
- 
--	if (attr == &dev_attr_iface_enabled.attr)
--		param = ISCSI_NET_PARAM_IFACE_ENABLE;
--	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
-+	if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
- 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
- 	else if (attr == &dev_attr_iface_header_digest.attr)
- 		param = ISCSI_IFACE_PARAM_HDRDGST_EN;
-@@ -471,7 +469,9 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	if (param != -1)
- 		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
- 
--	if (attr == &dev_attr_iface_vlan_id.attr)
-+	if (attr == &dev_attr_iface_enabled.attr)
-+		param = ISCSI_NET_PARAM_IFACE_ENABLE;
-+	else if (attr == &dev_attr_iface_vlan_id.attr)
- 		param = ISCSI_NET_PARAM_VLAN_ID;
- 	else if (attr == &dev_attr_iface_vlan_priority.attr)
- 		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
--- 
-2.33.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1640,7 +1640,6 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
+-	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
 
 
