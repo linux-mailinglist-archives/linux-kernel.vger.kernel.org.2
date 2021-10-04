@@ -2,133 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E080C420AC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B6E420ACA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhJDMVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhJDMVv (ORCPT
+        id S233265AbhJDMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:22:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46814 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233134AbhJDMWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:21:51 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56848C061745;
-        Mon,  4 Oct 2021 05:20:02 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id 187so9915684pfc.10;
-        Mon, 04 Oct 2021 05:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZEO7nDdq5Uxy2uV/IXvZEkXOvYwiVs0jEw95KwUv6SY=;
-        b=GyJ5juukWlYzDrN89CmRoU7xHEH3UIcQAwkVJLocP3WA2VX93z0gG2Tu+umrOxUFD2
-         WoBfjlD6CveVh61dH29DS1mlhluSi7SWGQVJ58Tc2rd9S4rKN1ZOl8toaNAinZDZzJFE
-         HnAOblQ9nJUksBqiGhDNZ5iO3Dz8f8jZNzycGtokdzvLkZFwUv08YWKf4cD8HMD0ui3I
-         JOe/YtB5+9QX2yThdYD3je7H3AOebkQv04m3gurusLB/PyJAlPJklniqIukWisbPx6gn
-         zoyB7YIQ7rNuYnCrYU+22Zp5QhPJ2z6CsG/Ol60znz+mAwrJFseE2z+Vz6zNNTYYzjOD
-         PUTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZEO7nDdq5Uxy2uV/IXvZEkXOvYwiVs0jEw95KwUv6SY=;
-        b=nWc0adsWBQBVSWMIfIptMTuojSHIsd7a+57QSADbP/0r3j8wPEB/+94T/qvnjP3sPY
-         gFJ0Zfx1IFhqeLxgT8Fuju898BhmjurznRRTeBLL/fUqAlXtpPJn8VykvvJu2X+puzpv
-         jR+7jRh2+Lq+Nya0JoSuRC9w3xahO7ETwrEUZM+71k9mhrwAh+NHzuJIA0rMrHBp7tpT
-         Y8JeRmjAWdij/9PuPHHKs8WLZ+J5E76VGyXa4CYZltTE8IgH1m5p387r5rxu9rQedjJc
-         9+Vb7ufOYJGDyp+YwGpZRRDCZFD5A9noS2IcuhiMiWLvKI7nx9B8BeDZ2PAyeTQTYWnk
-         9Egw==
-X-Gm-Message-State: AOAM532/w6BA3LLJxGDthhWw3aUzGNPIzM7ViWQThpsKYWamy2nXgyec
-        avgFQvgcAW77DX0IvVHc/NKZDwN0uNY=
-X-Google-Smtp-Source: ABdhPJyk8lEyJIdsLTBBoiJ2fVVr8AVaW3mVvFKxPVvopLX2RrchJbV9L2/D6blvRXXdHt89UTK4HA==
-X-Received: by 2002:aa7:8189:0:b0:44c:293a:31e4 with SMTP id g9-20020aa78189000000b0044c293a31e4mr12424881pfi.51.1633350001663;
-        Mon, 04 Oct 2021 05:20:01 -0700 (PDT)
-Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
-        by smtp.gmail.com with ESMTPSA id 16sm6909136pfu.169.2021.10.04.05.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 05:19:52 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 20:19:42 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
-Message-ID: <20211004121942.GA3343713@sol>
-References: <20211004093416.GA2513199@sol>
- <YVrM8VdLKZUt0i8R@kroah.com>
+        Mon, 4 Oct 2021 08:22:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633350013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aJu6krLDvMAphY668q2GSvY0ko+q3a0c3O9I720F8y0=;
+        b=YN/XJvIGv5SZnpIblenYldu7K+vICrPFskQpmiPdBduQfM2XVSZzUqpkZDdpE0dqraCZYZ
+        nwgBBfroqJeBqnViZ0ih9xPstWlducd2ywwhNqnw/9ziuER0qKo5zpUWVxBBiKgfTBVy2e
+        fC5cxTaGvZ2VoTeZnHowHwcyBB0vbAI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-79_ncwfOOJ-LN44xLHY6og-1; Mon, 04 Oct 2021 08:20:12 -0400
+X-MC-Unique: 79_ncwfOOJ-LN44xLHY6og-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5512CA40C0;
+        Mon,  4 Oct 2021 12:20:10 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8AA9960C81;
+        Mon,  4 Oct 2021 12:19:57 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+In-Reply-To: <20211002055605-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <20211001092125.64fef348.pasic@linux.ibm.com>
+ <20211002055605-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 04 Oct 2021 14:19:55 +0200
+Message-ID: <87bl452d90.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVrM8VdLKZUt0i8R@kroah.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 11:44:17AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 04, 2021 at 05:34:16PM +0800, Kent Gibson wrote:
-> > Hi,
-> > 
-> > I'm seeing a refcount underflow when I unload the gpio-mockup module on
-> > Linux v5.15-rc4 (and going back to v5.15-rc1):
-> > 
-> > # modprobe gpio-mockup gpio_mockup_ranges=-1,4,-1,10
-> > # rmmod gpio-mockup
-> > ------------[ cut here ]------------
-> > refcount_t: underflow; use-after-free.
-> > WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
-> > Modules linked in: gpio_mockup(-)
-> > CPU: 0 PID: 103 Comm: rmmod Not tainted 5.15.0-rc4 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> > EIP: refcount_warn_saturate+0xd1/0x120
-> > Code: e8 a2 b0 3b 00 0f 0b eb 83 80 3d db 2a 8c c1 00 0f 85 76 ff ff ff c7 04 24 88 85 78 c1 b1 01 88 0d db 2a 8c c1 e8 7d b0 3b 00 <0f> 0b e9 5b ff ff ff 80 3d d9 2a 8c c1 00 0f 85 4e ff ff ff c7 04
-> > EAX: 00000026 EBX: c250b100 ECX: f5fe8c28 EDX: 00000000
-> > ESI: c244860c EDI: c250b100 EBP: c245be84 ESP: c245be80
-> > DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00000296
-> > CR0: 80050033 CR2: b7e3c3e1 CR3: 024ba000 CR4: 00000690
-> > Call Trace:
-> >  kobject_put+0xdc/0xf0
-> >  software_node_notify_remove+0xa8/0xc0
-> >  device_del+0x15a/0x3e0
-> >  ? kfree_const+0xf/0x30
-> >  ? kobject_put+0xa6/0xf0
-> >  ? module_remove_driver+0x73/0xa0
-> >  platform_device_del.part.0+0xf/0x80
-> >  platform_device_unregister+0x19/0x40
-> >  gpio_mockup_unregister_pdevs+0x13/0x1b [gpio_mockup]
-> >  gpio_mockup_exit+0x1c/0x68c [gpio_mockup]
-> >  __ia32_sys_delete_module+0x137/0x1e0
-> >  ? task_work_run+0x61/0x90
-> >  ? exit_to_user_mode_prepare+0x1b5/0x1c0
-> >  __do_fast_syscall_32+0x50/0xc0
-> >  do_fast_syscall_32+0x32/0x70
-> >  do_SYSENTER_32+0x15/0x20
-> >  entry_SYSENTER_32+0x98/0xe7
-> > EIP: 0xb7eda549
-> > Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
-> > EAX: ffffffda EBX: 0045a19c ECX: 00000800 EDX: 0045a160
-> > ESI: fffffffe EDI: 0045a160 EBP: bff19d08 ESP: bff19cc8
-> > DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000202
-> > ---[ end trace 3d71387f54bc2d06 ]---
-> > 
-> > I suspect this is related to the recent changes to swnode.c or
-> > platform.c, as gpio-mockup hasn't changed, but haven't had the
-> > chance to debug further.
-> 
-> Any chance you can run 'git bisect' for this?
-> 
 
-That results in:
+[cc:qemu-devel]
 
-bd1e336aa8535a99f339e2d66a611984262221ce is the first bad commit
-commit bd1e336aa8535a99f339e2d66a611984262221ce
-Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Date:   Tue Aug 17 13:24:49 2021 +0300
+On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-    driver core: platform: Remove platform_device_add_properties()
+> On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
+>> On Thu, 30 Sep 2021 07:12:21 -0400
+>> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> 
+>> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
+>> > > This patch fixes a regression introduced by commit 82e89ea077b9
+>> > > ("virtio-blk: Add validation for block size in config space") and
+>> > > enables similar checks in verify() on big endian platforms.
+>> > > 
+>> > > The problem with checking multi-byte config fields in the verify
+>> > > callback, on big endian platforms, and with a possibly transitional
+>> > > device is the following. The verify() callback is called between
+>> > > config->get_features() and virtio_finalize_features(). That we have a
+>> > > device that offered F_VERSION_1 then we have the following options
+>> > > either the device is transitional, and then it has to present the legacy
+>> > > interface, i.e. a big endian config space until F_VERSION_1 is
+>> > > negotiated, or we have a non-transitional device, which makes
+>> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+>> > > thus presents a little endian config space. Because at this point we
+>> > > can't know if the device is transitional or non-transitional, we can't
+>> > > know do we need to byte swap or not.  
+>> > 
+>> > Hmm which transport does this refer to?
+>> 
+>> It is the same with virtio-ccw and virtio-pci. I see the same problem
+>> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
+>> yet (have to figure out how to do that with libvirt) for pci I used
+>> virtio-blk-pci.
+>> 
+>> > Distinguishing between legacy and modern drivers is transport
+>> > specific.  PCI presents
+>> > legacy and modern at separate addresses so distinguishing
+>> > between these two should be no trouble.
+>> 
+>> You mean the device id? Yes that is bolted down in the spec, but
+>> currently we don't exploit that information. Furthermore there
+>> is a fat chance that with QEMU even the allegedly non-transitional
+>> devices only present a little endian config space after VERSION_1
+>> was negotiated. Namely get_config for virtio-blk is implemented in
+>> virtio_blk_update_config() which does virtio_stl_p(vdev,
+>> &blkcfg.blk_size, blk_size) and in there we don't care
+>> about transitional or not:
+>> 
+>> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
+>> {
+>> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
+>>     return virtio_is_big_endian(vdev);
+>> #elif defined(TARGET_WORDS_BIGENDIAN)
+>>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
+>>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
+>>         return false;
+>>     }
+>>     return true;
+>> #else
+>>     return false;
+>> #endif
+>> }
+>> 
+>
+> ok so that's a QEMU bug. Any virtio 1.0 and up
+> compatible device must use LE.
+> It can also present a legacy config space where the
+> endian depends on the guest.
 
-Cheers,
-Kent.
+So, how is the virtio core supposed to determine this? A
+transport-specific callback?
+
+>
+>> > Channel i/o has versioning so same thing?
+>> >
+>> 
+>> Don't think so. Both a transitional and a non-transitional device
+>> would have to accept revisions higher than 0 if the driver tried to
+>> negotiate those (and we do in our case).
+>
+> Yes, the modern driver does. And that one is known to be LE.
+> legacy driver doesn't.
+>
+>> > > The virtio spec explicitly states that the driver MAY read config
+>> > > between reading and writing the features so saying that first accessing
+>> > > the config before feature negotiation is done is not an option. The
+>> > > specification ain't clear about setting the features multiple times
+>> > > before FEATURES_OK, so I guess that should be fine.
+>> > > 
+>> > > I don't consider this patch super clean, but frankly I don't think we
+>> > > have a ton of options. Another option that may or man not be cleaner,
+>> > > but is also IMHO much uglier is to figure out whether the device is
+>> > > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+>> > > according tho what we have figured out, hoping that the characteristics
+>> > > of the device didn't change.  
+>> > 
+>> > I am confused here. So is the problem at the device or at the driver level?
+>> 
+>> We have a driver regression. Since the 82e89ea077b9 ("virtio-blk: Add
+>> validation for block size in config space") virtio-blk is broken on
+>> s390.
+>
+> Because of a qemu bug. I agree. It's worth working around in the driver
+> since the qemu bug has been around for a very long time.
+
+Yes, since we introduced virtio 1 support, I guess...
+
+>
+>
+>> The deeper problem is in the spec. We stated that the driver may read
+>> config space before the feature negotiation is finalized, but we didn't
+>> think enough about what happens when native endiannes is not little
+>> endian in the different cases.
+>
+> Because the spec is very clear that endian-ness is LE.
+> I don't see a spec issue yet here, just an implementation issue.
+
+Maybe not really a bug in the spec, but probably an issue, as this seems
+to have been unclear to most people so far.
+
+>
+>> I believe, for non-transitional devices we have a problem in the host as
+>> well (i.e. in QEMU).
+>
+> Because QEMU ignores the spec and instead relies on the feature
+> negotiation.
+>
+>> 
+>> > I suspect it's actually the host that has the issue, not
+>> > the guest?
+>> 
+>> I tend to say we have a problem both in the host and in the guest. I'm
+>> more concerned about the problem in the guest, because that is a really
+>> nasty regression.
+>
+> The problem is in the guest. The bug is in the host ;)
+>
+>> For the host. I think for legacy we don't have a
+>> problem, because both sides would operate on the assumption no
+>> _F_VERSION_1, IMHO the implementation for the transitional devices is
+>> correct.
+>
+> Well no, the point of transitional is really to be 1.0 compliant
+> *and* also expose a legacy interface.
+
+Worth noting that PCI and CCW are a tad different here: PCI exposes an
+additional interface, while CCW uses a revision negotiation mechanism
+(for CCW, legacy and standard-compliant are much closer on the transport
+side as for PCI.) MMIO does not do transitional, if I'm not wrong.
+
+>
+>> For non-transitional flavor, it depends on the device. For
+>> example virtio-net and virtio-blk is broken, because we use primitives
+>> like virtio_stl_p() and those don't do the right thing before feature
+>> negotiation is completed. On the other hand virtio-crypto.c as a truly
+>> non-transitional device uses stl_le_p() and IMHO does the right thing.
+>> 
+>> Thanks for your comments! I hope I managed to answer your questions. I
+>> need some guidance on how do we want to move forward on this.
+>> 
+>> Regards,
+>> Halil
+>
+> OK so. I don't have a problem with the patch itself,
+> assuming it's enough to work around all buggy hosts.
+> I am especially worried about things like vhost/vhost-user,
+> I suspect they might have a bug like this too, and
+> I am not sure whether your work around is enough for these.
+> Can you check please?
+>
+> If not we'll have to move all validate code to after FEATURES_OK
+> is set.
+
+What is supposed to happen for validate after FEATURES_OK? The driver
+cannot change any features at that point in time, it can only fail to
+use the device.
+
+>
+> We do however want to document that this API can be called
+> multiple times since that was not the case
+> previously.
+>
+> Also, I would limit this to when
+> - the validate callback exists
+> - the guest endian-ness is not LE
+>
+> We also want to document the QEMU bug in a comment here,
+> e.g. 
+>
+> /*
+>  * QEMU before version 6.2 incorrectly uses driver features with guest
+>  * endian-ness to set endian-ness for config space instead of just using
+>  * LE for the modern interface as per spec.
+>  * This breaks reading config in the validate callback.
+>  * To work around that, when device is 1.0 (so supposed to be LE)
+>  * but guest is not LE, then send the features to device one extra
+>  * time before validation.
+>  */
+
+Do we need to consider migration, or do we not need to be bug-compatible
+in this case?
+
+>
+> Finally I'd like to see the QEMU bug fix before I merge this one,
+> since it will be harder to test with a fix.
+>
+>
+>
+>
+>> > 
+>> > 
+>> > > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+>> > > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+>> > > Reported-by: markver@us.ibm.com
+>> > > ---
+>> > >  drivers/virtio/virtio.c | 4 ++++
+>> > >  1 file changed, 4 insertions(+)
+>> > > 
+>> > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> > > index 0a5b54034d4b..9dc3cfa17b1c 100644
+>> > > --- a/drivers/virtio/virtio.c
+>> > > +++ b/drivers/virtio/virtio.c
+>> > > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
+>> > >  		if (device_features & (1ULL << i))
+>> > >  			__virtio_set_bit(dev, i);
+>> > >  
+>> > > +	/* Write back features before validate to know endianness */
+>> > > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>> > > +		dev->config->finalize_features(dev);
+>> > > +
+>> > >  	if (drv->validate) {
+>> > >  		err = drv->validate(dev);
+>> > >  		if (err)
+>> > > 
+>> > > base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+>> > > -- 
+>> > > 2.25.1  
+>> > 
+
