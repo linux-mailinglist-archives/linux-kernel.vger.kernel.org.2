@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52CA420E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2262B420C41
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhJDNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55624 "EHLO mail.kernel.org"
+        id S234746AbhJDNEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236409AbhJDNUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:20:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFA361BB3;
-        Mon,  4 Oct 2021 13:08:35 +0000 (UTC)
+        id S234787AbhJDNCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BBB361A38;
+        Mon,  4 Oct 2021 12:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352916;
-        bh=+yUVARZu29DRfXokr8TaH/t8DVBnSx1bQ6kmmymw/2Q=;
+        s=korg; t=1633352345;
+        bh=w5ogr/zSyMKWph6B9D0Netl4mD3mRBJTOI1QSFI1wso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQuAMmmC4JTrtQj0Jt+QMscCR27IIiGopbR8cLIsUMgcTMpPZAxT4IIhrZHfGHc3W
-         mhkJs5a4MxeHuskL2uiWQ/0aY9REbcXA23qDQJiZLft6Q57YjXK4uTfJiIGt9qBSMi
-         vjAi0PpQTNoUqMBLIHfKUhLScoUbBxe/B1cbhF0c=
+        b=FzIvq3QdpPdPNZmXDuOqc+tQMFKyL2zZH5yLzzlR8MZinjIma+6l1BYWNdwmaIGW4
+         Asno6srEbQ8/W6l/4xgfm++kjGB5/ydbuV463rtDZ+L7gfTPrtX/60N8jHkBmlqQUk
+         So/UtYPfVKovvVVim9gN3P9ecAGDOoKkVOobfq4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 02/93] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
+Subject: [PATCH 4.14 25/75] net: stmmac: allow CSR clock of 300MHz
 Date:   Mon,  4 Oct 2021 14:52:00 +0200
-Message-Id: <20211004125034.665736576@linuxfoundation.org>
+Message-Id: <20211004125032.348776228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,127 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hao <haokexin@gmail.com>
+From: Jesper Nilsson <jesper.nilsson@axis.com>
 
-[ Upstream commit e5c6b312ce3cc97e90ea159446e6bfa06645364d ]
+[ Upstream commit 08dad2f4d541fcfe5e7bfda72cc6314bbfd2802f ]
 
-The struct sugov_tunables is protected by the kobject, so we can't free
-it directly. Otherwise we would get a call trace like this:
-  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
-  WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
-  Modules linked in:
-  CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
-  Hardware name: Marvell OcteonTX CN96XX board (DT)
-  pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-  pc : debug_print_object+0xb8/0x100
-  lr : debug_print_object+0xb8/0x100
-  sp : ffff80001ecaf910
-  x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
-  x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
-  x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
-  x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
-  x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
-  x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
-  x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
-  x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
-  x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
-  x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
-  Call trace:
-   debug_print_object+0xb8/0x100
-   __debug_check_no_obj_freed+0x1c0/0x230
-   debug_check_no_obj_freed+0x20/0x88
-   slab_free_freelist_hook+0x154/0x1c8
-   kfree+0x114/0x5d0
-   sugov_exit+0xbc/0xc0
-   cpufreq_exit_governor+0x44/0x90
-   cpufreq_set_policy+0x268/0x4a8
-   store_scaling_governor+0xe0/0x128
-   store+0xc0/0xf0
-   sysfs_kf_write+0x54/0x80
-   kernfs_fop_write_iter+0x128/0x1c0
-   new_sync_write+0xf0/0x190
-   vfs_write+0x2d4/0x478
-   ksys_write+0x74/0x100
-   __arm64_sys_write+0x24/0x30
-   invoke_syscall.constprop.0+0x54/0xe0
-   do_el0_svc+0x64/0x158
-   el0_svc+0x2c/0xb0
-   el0t_64_sync_handler+0xb0/0xb8
-   el0t_64_sync+0x198/0x19c
-  irq event stamp: 5518
-  hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
-  hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
-  softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
-  softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+The Synopsys Ethernet IP uses the CSR clock as a base clock for MDC.
+The divisor used is set in the MAC_MDIO_Address register field CR
+(Clock Rate)
 
-So split the original sugov_tunables_free() into two functions,
-sugov_clear_global_tunables() is just used to clear the global_tunables
-and the new sugov_tunables_free() is used as kobj_type::release to
-release the sugov_tunables safely.
+The divisor is there to change the CSR clock into a clock that falls
+below the IEEE 802.3 specified max frequency of 2.5MHz.
 
-Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+If the CSR clock is 300MHz, the code falls back to using the reset
+value in the MAC_MDIO_Address register, as described in the comment
+above this code.
+
+However, 300MHz is actually an allowed value and the proper divider
+can be estimated quite easily (it's just 1Hz difference!)
+
+A CSR frequency of 300MHz with the maximum clock rate value of 0x5
+(STMMAC_CSR_250_300M, a divisor of 124) gives somewhere around
+~2.42MHz which is below the IEEE 802.3 specified maximum.
+
+For the ARTPEC-8 SoC, the CSR clock is this problematic 300MHz,
+and unfortunately, the reset-value of the MAC_MDIO_Address CR field
+is 0x0.
+
+This leads to a clock rate of zero and a divisor of 42, and gives an
+MDC frequency of ~7.14MHz.
+
+Allow CSR clock of 300MHz by making the comparison inclusive.
+
+Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/cpufreq_schedutil.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 97d318b0cd0c..5e39da0ae086 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -610,9 +610,17 @@ static struct attribute *sugov_attrs[] = {
- };
- ATTRIBUTE_GROUPS(sugov);
- 
-+static void sugov_tunables_free(struct kobject *kobj)
-+{
-+	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-+
-+	kfree(to_sugov_tunables(attr_set));
-+}
-+
- static struct kobj_type sugov_tunables_ktype = {
- 	.default_groups = sugov_groups,
- 	.sysfs_ops = &governor_sysfs_ops,
-+	.release = &sugov_tunables_free,
- };
- 
- /********************** cpufreq governor interface *********************/
-@@ -712,12 +720,10 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
- 	return tunables;
- }
- 
--static void sugov_tunables_free(struct sugov_tunables *tunables)
-+static void sugov_clear_global_tunables(void)
- {
- 	if (!have_governor_per_policy())
- 		global_tunables = NULL;
--
--	kfree(tunables);
- }
- 
- static int sugov_init(struct cpufreq_policy *policy)
-@@ -780,7 +786,7 @@ out:
- fail:
- 	kobject_put(&tunables->attr_set.kobj);
- 	policy->governor_data = NULL;
--	sugov_tunables_free(tunables);
-+	sugov_clear_global_tunables();
- 
- stop_kthread:
- 	sugov_kthread_stop(sg_policy);
-@@ -807,7 +813,7 @@ static void sugov_exit(struct cpufreq_policy *policy)
- 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
- 	policy->governor_data = NULL;
- 	if (!count)
--		sugov_tunables_free(tunables);
-+		sugov_clear_global_tunables();
- 
- 	mutex_unlock(&global_tunables_lock);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index a7b30f060536..2be2b3055904 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -232,7 +232,7 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
+ 			priv->clk_csr = STMMAC_CSR_100_150M;
+ 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
+ 			priv->clk_csr = STMMAC_CSR_150_250M;
+-		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
++		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
+ 			priv->clk_csr = STMMAC_CSR_250_300M;
+ 	}
  
 -- 
 2.33.0
