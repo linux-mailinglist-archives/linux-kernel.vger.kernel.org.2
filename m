@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665A6420E9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BE4420DFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbhJDN0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:26:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36964 "EHLO mail.kernel.org"
+        id S234911AbhJDNUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:20:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236699AbhJDNYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2740161BFC;
-        Mon,  4 Oct 2021 13:10:51 +0000 (UTC)
+        id S236400AbhJDNSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:18:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF1561A0C;
+        Mon,  4 Oct 2021 13:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353051;
-        bh=3bx9m+ut5LiGou6cSvjk+1Yn8D8lTwH54ke4s96q4w0=;
+        s=korg; t=1633352853;
+        bh=H/V/BK1OADXDtIVYSpcmx5JkuXA+3Dyb08c/OUVesKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04FyJ7P3Da8+h7znlX6Y2lZl8LCv4Ca8OL/hQHaC4oqc+VIU1LRernLo3uDc/Ccnt
-         61BCwSjdQpXJhbnhbvvC/rLdrfG9/zacuqjs6pUAKWQkPLDls04Pv/OVaNxjHyVNB/
-         8ZcGwOZslu/QY/lsz/siv9ga8iUL+iggmv6sP/OI=
+        b=xIMg7cDE4SUoddWAOZPL8CHFcJWPMc7rTSaxHT5ByQLj4LcYuC9QmzWwCXypeKhTx
+         UaB8avPSHFwIXh0pCLBzDVt/xBa3gAToI37ddHbwvjDdSk+/oJ360/2jINxtGdER30
+         yKq+t0vJG9K7+9SEQqBc9IM614KLTmSQzbNYjwd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 71/93] ipack: ipoctal: fix stack information leak
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 5.4 49/56] hso: fix bailout in error case of probe
 Date:   Mon,  4 Oct 2021 14:53:09 +0200
-Message-Id: <20211004125036.930154988@linuxfoundation.org>
+Message-Id: <20211004125031.545056527@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit a89936cce87d60766a75732a9e7e25c51164f47c upstream.
+commit 5fcfb6d0bfcda17f0d0656e4e5b3710af2bbaae5 upstream.
 
-The tty driver name is used also after registering the driver and must
-specifically not be allocated on the stack to avoid leaking information
-to user space (or triggering an oops).
+The driver tries to reuse code for disconnect in case
+of a failed probe.
+If resources need to be freed after an error in probe, the
+netdev must not be freed because it has never been registered.
+Fix it by telling the helper which path we are in.
 
-Drivers should not try to encode topology information in the tty device
-name but this one snuck in through staging without anyone noticing and
-another driver has since copied this malpractice.
-
-Fixing the ABI is a separate issue, but this at least plugs the security
-hole.
-
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-2-johan@kernel.org
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |   19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ drivers/net/usb/hso.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -266,7 +266,6 @@ static int ipoctal_inst_slot(struct ipoc
- 	int res;
- 	int i;
- 	struct tty_driver *tty;
--	char name[20];
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -357,8 +356,11 @@ static int ipoctal_inst_slot(struct ipoc
- 	/* Fill struct tty_driver with ipoctal data */
- 	tty->owner = THIS_MODULE;
- 	tty->driver_name = KBUILD_MODNAME;
--	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	tty->name = name;
-+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!tty->name) {
-+		res = -ENOMEM;
-+		goto err_put_driver;
-+	}
- 	tty->major = 0;
- 
- 	tty->minor_start = 0;
-@@ -374,8 +376,7 @@ static int ipoctal_inst_slot(struct ipoc
- 	res = tty_register_driver(tty);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
--		put_tty_driver(tty);
--		return res;
-+		goto err_free_name;
- 	}
- 
- 	/* Save struct tty_driver for use it when uninstalling the device */
-@@ -412,6 +413,13 @@ static int ipoctal_inst_slot(struct ipoc
- 				       ipoctal_irq_handler, ipoctal);
- 
- 	return 0;
-+
-+err_free_name:
-+	kfree(tty->name);
-+err_put_driver:
-+	put_tty_driver(tty);
-+
-+	return res;
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2354,7 +2354,7 @@ static int remove_net_device(struct hso_
  }
  
- static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-@@ -700,6 +708,7 @@ static void __ipoctal_remove(struct ipoc
- 	}
+ /* Frees our network device */
+-static void hso_free_net_device(struct hso_device *hso_dev)
++static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
+ {
+ 	int i;
+ 	struct hso_net *hso_net = dev2net(hso_dev);
+@@ -2377,7 +2377,7 @@ static void hso_free_net_device(struct h
+ 	kfree(hso_net->mux_bulk_tx_buf);
+ 	hso_net->mux_bulk_tx_buf = NULL;
  
- 	tty_unregister_driver(ipoctal->tty_drv);
-+	kfree(ipoctal->tty_drv->name);
- 	put_tty_driver(ipoctal->tty_drv);
- 	kfree(ipoctal);
+-	if (hso_net->net)
++	if (hso_net->net && !bailout)
+ 		free_netdev(hso_net->net);
+ 
+ 	kfree(hso_dev);
+@@ -2553,7 +2553,7 @@ static struct hso_device *hso_create_net
+ 
+ 	return hso_dev;
+ exit:
+-	hso_free_net_device(hso_dev);
++	hso_free_net_device(hso_dev, true);
+ 	return NULL;
+ }
+ 
+@@ -3120,7 +3120,7 @@ static void hso_free_interface(struct us
+ 				rfkill_unregister(rfk);
+ 				rfkill_destroy(rfk);
+ 			}
+-			hso_free_net_device(network_table[i]);
++			hso_free_net_device(network_table[i], false);
+ 		}
+ 	}
  }
 
 
