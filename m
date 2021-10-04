@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136A4421812
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA32042181A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhJDUB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbhJDUB6 (ORCPT
+        id S235619AbhJDUDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:03:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235674AbhJDUDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:01:58 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3926C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:00:08 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 133so17645082pgb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d6Gq2wxjvSc42T6HpCo3o9gtXEpVvUYCVOoy839gL24=;
-        b=Q29MVoEbK058uA4FsGGNoPe+IOo7qmxdWzqpwz6WQd9MZ9CL78KY7ipweYpC5KArK4
-         NbKLZGcLMUfO6LkqrmVXaVxPnMZIAjsmQ/AXuNQusOC9b3ycPTZAEnhLKqcrBDb2QcBR
-         6bgRBMdrZfDvxMDI0/0ObsuJjy6KM8sDJtXsY=
+        Mon, 4 Oct 2021 16:03:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633377681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KsdJcxDdgTF/zmQf/6TyWls50jhunD8gsTgc9KR7gmk=;
+        b=I5jPMqbV0kwAr7vgIY294MShGNApyLTO5OGdypc8T40AV3COJxjZpqsig53hGTreJ3Biw8
+        uNbPln8GF7WZuE0YF2NvMKNXYmziy+R1xf5KbuLNvbdoWiGy0htushFMYz/YfjBRt8LSqV
+        lPPT2kLYz10GUKjqrzE25VdQ6lOAzik=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-dXYKWs-3PeSLuHHb7ciOnQ-1; Mon, 04 Oct 2021 16:01:19 -0400
+X-MC-Unique: dXYKWs-3PeSLuHHb7ciOnQ-1
+Received: by mail-ed1-f70.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso5513574edf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:01:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=d6Gq2wxjvSc42T6HpCo3o9gtXEpVvUYCVOoy839gL24=;
-        b=i3N6pW4HSqMoL2bAfE+I22I++j1ybgc08HlG0UV5g0v6wT4UJUX093IFLD/gaPOawA
-         AgwQV3lhqv3XHzVrQn7nfW3bTPgGqZQSNmkTgD4R2KoBIhT2iJQRHqy5z80dZFqyp2bA
-         0iegLDsZVi7JlDDFf+19sHG7rWwWfLnbtcjcuwc6VnokgqjWwSI4eSGQIneym0IO4pMX
-         pu/m6lH83Vd+WvaXyD/VPX6jXDAYGKoRBWTu05Zs4U39DOqenu5P4/fgN8NrEWSacxk1
-         SbjYLJowLmK/ZiQ+FA2ZBsjSRuLtMow3SZjk+EUh883MT8V5kQQD7qu86u7neFwg8LNu
-         gjWQ==
-X-Gm-Message-State: AOAM531c6/Wou1Cp525VlvbEmGstszp6sTPydKNoO9qZoWmbqXwEbV8S
-        zW+f5P7c22ogPAxESHTOzKUeBg==
-X-Google-Smtp-Source: ABdhPJxM4cKpWgXOu7MUF6+yRe0HLC6gFmI/QTriTlRkZkD1E2+wved5jQO1AOrFrxegYpcStRBbpQ==
-X-Received: by 2002:a05:6a00:2d0:b0:446:d18c:9aac with SMTP id b16-20020a056a0002d000b00446d18c9aacmr26961304pft.16.1633377608295;
-        Mon, 04 Oct 2021 13:00:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t6sm15398944pfh.63.2021.10.04.13.00.07
+        bh=KsdJcxDdgTF/zmQf/6TyWls50jhunD8gsTgc9KR7gmk=;
+        b=jmt03cD8lh/evh8dOJ9BJdkXCTCgR5OiBZwVijLdw3CaQ6WLR9zcECYdSGfT/J8Pus
+         FLizZyTNPiqoXm+KJ94tadfYLlKKO33Pk0wgGtfBzpCxPAOhNFFkrjtOW2s9LM0rVXT4
+         2hHxcqyscEQJgLzAJAMJ2LbzC0cNeOfbHXZjo2DYTP/O6dWSKqs+IVcIjbZT4/i6/cFK
+         SaXf1XT5tgB2ky/TWEfxizwVQU+1/384FaiEKvjVVK7jCpIABN44AZwFNLdUkOR0ICat
+         1yNN3Vefkj2DCUsZk0mO84wTWZIko6GyT14EPHkJiCdqJda9OKntPQmJL+F8YPDBo026
+         3R0Q==
+X-Gm-Message-State: AOAM533iqIcf3NeQlC+FMfIcwcdg4ZeGOTHofYoUUymOlPYpErRKPELs
+        r6ElA/r34vfO1nvokI0ECKpG7lKHIK+d6b1mEZpmSwT73Ff426eQNu/VMxEKk2fNpqGzVlu4gba
+        X/Vtu523IXZHl0Wr4tef8yiiy
+X-Received: by 2002:a05:6402:2906:: with SMTP id ee6mr17966514edb.170.1633377678170;
+        Mon, 04 Oct 2021 13:01:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuHj3hrys0X5jcvBEKc8g2+iuDhizhWCRoVmy0jn4kkURJJbD11p6ILeMeXQvLwtLsevqp+A==
+X-Received: by 2002:a05:6402:2906:: with SMTP id ee6mr17966483edb.170.1633377677943;
+        Mon, 04 Oct 2021 13:01:17 -0700 (PDT)
+Received: from redhat.com ([2.55.147.134])
+        by smtp.gmail.com with ESMTPSA id z8sm6874865ejd.94.2021.10.04.13.01.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 13:00:07 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 13:00:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Chen Jingwen <chenjingwen6@huawei.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrei Vagin <avagin@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter
- mappings
-Message-ID: <202110041255.83A6616D9@keescook>
-References: <20210928125657.153293-1-chenjingwen6@huawei.com>
+        Mon, 04 Oct 2021 13:01:17 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 16:01:12 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
+ before verify
+Message-ID: <20211004160005-mutt-send-email-mst@kernel.org>
+References: <87fstm47no.fsf@redhat.com>
+ <20211002141351-mutt-send-email-mst@kernel.org>
+ <20211003070030.658fc94e.pasic@linux.ibm.com>
+ <20211003021027-mutt-send-email-mst@kernel.org>
+ <20211003032253-mutt-send-email-mst@kernel.org>
+ <87ee912e45.fsf@redhat.com>
+ <20211004083455-mutt-send-email-mst@kernel.org>
+ <878rz83lx0.fsf@redhat.com>
+ <20211004110152-mutt-send-email-mst@kernel.org>
+ <87zgro23r1.fsf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928125657.153293-1-chenjingwen6@huawei.com>
+In-Reply-To: <87zgro23r1.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:56:57PM +0800, Chen Jingwen wrote:
-> In commit b212921b13bd ("elf: don't use MAP_FIXED_NOREPLACE for elf executable mappings")
-> we still leave MAP_FIXED_NOREPLACE in place for load_elf_interp.
-> Unfortunately, this will cause kernel to fail to start with
+On Mon, Oct 04, 2021 at 05:45:06PM +0200, Cornelia Huck wrote:
+> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> [    2.384321] 1 (init): Uhuuh, elf segment at 00003ffff7ffd000 requested but the memory is mapped already
-> [    2.386240] Failed to execute /init (error -17)
+> > On Mon, Oct 04, 2021 at 04:27:23PM +0200, Cornelia Huck wrote:
+> >> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> >> 
+> >> > On Mon, Oct 04, 2021 at 02:01:14PM +0200, Cornelia Huck wrote:
+> >> >> On Sun, Oct 03 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> >> >> > @@ -160,6 +163,33 @@ \subsection{Legacy Interface: A Note on Feature
+> >> >> >  Specification text within these sections generally does not apply
+> >> >> >  to non-transitional devices.
+> >> >> >  
+> >> >> > +\begin{note}
+> >> >> > +The device offers different features when used through
+> >> >> > +the legacy interface and when operated in accordance with this
+> >> >> > +specification.
+> >> >> > +\end{note}
+> >> >> > +
+> >> >> > +Transitional drivers MUST use Devices only through the legacy interface
+> >> >> 
+> >> >> s/Devices only through the legacy interface/devices through the legacy
+> >> >> interface only/
+> >> >> 
+> >> >> ?
+> >> >
+> >> > Both versions are actually confused, since how do you
+> >> > find out that device does not offer VIRTIO_F_VERSION_1?
+> >> >
+> >> > I think what this should really say is
+> >> >
+> >> > Transitional drivers MUST NOT accept VIRTIO_F_VERSION_1 through
+> >> > the legacy interface.
+> >> 
+> >> Ok, that makes sense.
+> >> 
+> >> Would it make sense that transitional drivers MUST accept VERSION_1
+> >> through the non-legacy interface? Or is that redundant?
+> >
+> > We already have:
+> >
+> > A driver MUST accept VIRTIO_F_VERSION_1 if it is offered.
 > 
-
-I guess you mean "init" fails to start (but yes, same result).
-
-> The reason is that the elf interpreter (ld.so) has overlapping segments.
-
-Ewww. What toolchain generated this (and what caused it to just start
-happening)? (This was added in v4.17; it's been 3 years.)
-
+> Yep, so it is redundant.
 > 
-> readelf -l ld-2.31.so
-> Program Headers:
->   Type           Offset             VirtAddr           PhysAddr
->                  FileSiz            MemSiz              Flags  Align
->   LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
->                  0x000000000002c94c 0x000000000002c94c  R E    0x10000
->   LOAD           0x000000000002dae0 0x000000000003dae0 0x000000000003dae0
->                  0x00000000000021e8 0x0000000000002320  RW     0x10000
->   LOAD           0x000000000002fe00 0x000000000003fe00 0x000000000003fe00
->                  0x00000000000011ac 0x0000000000001328  RW     0x10000
+> >
+> >
+> >> >
+> >> >
+> >> > Does linux actually satisfy this? Will it accept VIRTIO_F_VERSION_1
+> >> > through the legacy interface if offered?
+> >> 
+> >> I think that the Linux drivers will not operate on feature bit 32+ if
+> >> they are in legacy mode?
+> >
+> >
+> > Well ... with PCI there's no *way* for host to set bit 32 through
+> > legacy. But it might be possible with MMIO/CCW. Can you tell me
+> > what happens then?
 > 
-> The reason for this problem is the same as described in
-> commit ad55eac74f20 ("elf: enforce MAP_FIXED on overlaying elf segments").
-> Not only executable binaries, elf interpreters (e.g. ld.so) can have
-> overlapping elf segments, so we better drop MAP_FIXED_NOREPLACE and go
-> back to MAP_FIXED in load_elf_interp.
-
-We could also just expand the logic that fixed[1] this for ELF, yes?
-
-Andrew, are you able to pick up [1], BTW? It seems to have fallen
-through the cracks.
-
-[1] https://lore.kernel.org/all/20210916215947.3993776-1-keescook@chromium.org/T/#u
-
+> ccw does not support accessing bit 32+, either. Not sure about mmio.
 > 
-> Fixes: 4ed28639519c ("fs, elf: drop MAP_FIXED usage from elf_map")
-> Cc: <stable@vger.kernel.org> # v4.19
-> Signed-off-by: Chen Jingwen <chenjingwen6@huawei.com>
-> ---
->  fs/binfmt_elf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> >
+> >> >> 
+> >> >> Generally, looks good to me.
+> >> >
+> >> > Do we want to also add explanation that features can be
+> >> > changed until FEATURES_OK?
+> >> 
+> >> I always considered that to be implict, as feature negotiation is not
+> >> over until we have FEATURES_OK. Not sure whether we need an extra note.
+> >
+> > Well Halil here says once you set a feature bit you can't clear it.
+> > So maybe not ...
 > 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 69d900a8473d..a813b70f594e 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -630,7 +630,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
->  
->  			vaddr = eppnt->p_vaddr;
->  			if (interp_elf_ex->e_type == ET_EXEC || load_addr_set)
-> -				elf_type |= MAP_FIXED_NOREPLACE;
-> +				elf_type |= MAP_FIXED;
->  			else if (no_base && interp_elf_ex->e_type == ET_DYN)
->  				load_addr = -vaddr;
+> Ok, so what about something like
+> 
+> "If FEATURES_OK is not set, the driver MAY change the set of features it
+> accepts."
+> 
+> in the device initialization section?
 
+Maybe "as long as". However Halil implied that some features are not
+turned off properly if that happens. Halil could you pls provide
+some examples?
 
 -- 
-Kees Cook
+MST
+
