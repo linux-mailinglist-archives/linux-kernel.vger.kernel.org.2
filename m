@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A518F4207AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF86D4207AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhJDJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:00:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41121 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229716AbhJDJAV (ORCPT
+        id S231303AbhJDJAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:00:42 -0400
+Received: from ssh248.corpemail.net ([210.51.61.248]:42054 "EHLO
+        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhJDJAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:00:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633337912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x988Ui+c+vfAAmLIqziJI6EexnnYwYLQ/x9zWNbOLdg=;
-        b=TwNXIYYtUWclrH3r8p9pnqA2TMyC3lFM2awpjYUTLsgysWotTzNgV87KHX/pF2bNBn81Ux
-        7jWHhIoiQsM85cHOUPaqTR5FvpkYn1rBenkt51AJ6TmjqgDhjUYCrO93HWo+KmylzotKwT
-        IydCflgSi6CBMmAB1+gSbTeDS3gDCvk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-RcIQZaKnOeyGTL3zY011ew-1; Mon, 04 Oct 2021 04:58:31 -0400
-X-MC-Unique: RcIQZaKnOeyGTL3zY011ew-1
-Received: by mail-ed1-f69.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so16597253edb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:58:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=x988Ui+c+vfAAmLIqziJI6EexnnYwYLQ/x9zWNbOLdg=;
-        b=uvp3nV7Djx+WWBM3ByLyUVH4qCoyMoeRXZ9GM9lTWzJ2mgArhELfDPgNmxGqytj+DG
-         UZxV5RMLsKVI//yHGVkHw5mBrNkHXU9lcUx1P8NvxnNwdNY4ihJlsrwp76T01YbrOOMB
-         Q0zj9LHj3rkI0xqeRLEFTefMbMvJCy+FEfhMUdIbjRj5OicHi0h14pc65JzUbAsXuKoD
-         AnK97vqedWzCfcn64Tm2pXtQUAQYK680Cbx7lZLLGjH/hAVtipnQrMKaYOnUAEPnThQa
-         Kq4lfTFiflXCyRe8poo72uJgS9hUL2lxFfFLbYTu/KLCENY9xOTN04Yfk5DGavYD1fBT
-         mEBw==
-X-Gm-Message-State: AOAM533g2d3EbgtmXKckRRwOaV6JLXikRHo7lCRNbo7cbOoIkDkLnP39
-        w9rmwxBEjfs/QGNmhshUW7t2+axj7eqg1K9nue4WIiTSrEs52pwyKTDgNA+Oc/ETr48ScHW0qK4
-        JEVyWCdG3WTFvRDtjR6oZr9Ae
-X-Received: by 2002:a50:ff14:: with SMTP id a20mr16824386edu.81.1633337910598;
-        Mon, 04 Oct 2021 01:58:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3qfHpLJuyjpb6MtwvFvqa3LKkfmelPlkrd/kMPhmqTdP8vX0VHFbEmy8mw+EaIFZUIu92UA==
-X-Received: by 2002:a50:ff14:: with SMTP id a20mr16824362edu.81.1633337910414;
-        Mon, 04 Oct 2021 01:58:30 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id s3sm6209175eja.87.2021.10.04.01.58.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 01:58:30 -0700 (PDT)
-Message-ID: <5cadb0b3-5e8f-110b-c6ed-4adaea033e58@redhat.com>
-Date:   Mon, 4 Oct 2021 10:58:28 +0200
+        Mon, 4 Oct 2021 05:00:41 -0400
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id YKL00145;
+        Mon, 04 Oct 2021 16:58:45 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
+ 15.1.2308.14; Mon, 4 Oct 2021 16:58:46 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <linuxppc-dev@lists.ozlabs.org>
+CC:     <oohall@gmail.com>, <paulus@samba.org>,
+        <linux-kernel@vger.kernel.org>, <dja@axtens.net>,
+        Kai Song <songkai01@inspur.com>
+Subject: [PATCH] powerpc/eeh:Fix docstrings in eeh
+Date:   Mon, 4 Oct 2021 16:58:42 +0800
+Message-ID: <20211004085842.255813-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v20 00/17] KVM RISC-V Support
-Content-Language: en-US
-To:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210927114016.1089328-1-anup.patel@wdc.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210927114016.1089328-1-anup.patel@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   202110041658463521b4e8b07959a647cec61b405cddca
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/21 13:39, Anup Patel wrote:
-> This series adds initial KVM RISC-V support. Currently, we are able to boot
-> Linux on RV64/RV32 Guest with multiple VCPUs.
-> 
-> Key aspects of KVM RISC-V added by this series are:
-> 1. No RISC-V specific KVM IOCTL
-> 2. Loadable KVM RISC-V module supported
-> 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
-> 4. Both RV64 and RV32 host supported
-> 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
-> 6. KVM ONE_REG interface for VCPU register access from user-space
-> 7. PLIC emulation is done in user-space
-> 8. Timer and IPI emuation is done in-kernel
-> 9. Both Sv39x4 and Sv48x4 supported for RV64 host
-> 10. MMU notifiers supported
-> 11. Generic dirtylog supported
-> 12. FP lazy save/restore supported
-> 13. SBI v0.1 emulation for KVM Guest available
-> 14. Forward unhandled SBI calls to KVM userspace
-> 15. Hugepage support for Guest/VM
-> 16. IOEVENTFD support for Vhost
-> 
-> Here's a brief TODO list which we will work upon after this series:
-> 1. KVM unit test support
-> 2. KVM selftest support
-> 3. SBI v0.3 emulation in-kernel
-> 4. In-kernel PMU virtualization
-> 5. In-kernel AIA irqchip support
-> 6. Nested virtualizaiton
-> 7. ..... and more .....
+We fix the following warnings when building kernel with W=1:
+arch/powerpc/kernel/eeh.c:598: warning: Function parameter or member 'function' not described in 'eeh_pci_enable'
+arch/powerpc/kernel/eeh.c:774: warning: Function parameter or member 'edev' not described in 'eeh_set_dev_freset'
+arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
+arch/powerpc/kernel/eeh.c:814: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset_full'
+arch/powerpc/kernel/eeh.c:944: warning: Function parameter or member 'ops' not described in 'eeh_init'
+arch/powerpc/kernel/eeh.c:1451: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset'
+arch/powerpc/kernel/eeh.c:1526: warning: Function parameter or member 'func' not described in 'eeh_pe_inject_err'
+arch/powerpc/kernel/eeh.c:1526: warning: Excess function parameter 'function' described in 'eeh_pe_inject_err'
 
-Looks good, I prepared a tag "for-riscv" at 
-https://git.kernel.org/pub/scm/virt/kvm/kvm.git.  Palmer can pull it and 
-you can use it to send me a pull request.
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ arch/powerpc/kernel/eeh.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-I look forward to the test support. :)  Would be nice to have selftest 
-support already in 5.16, since there are a few arch-independent 
-selftests that cover the hairy parts of the MMU.
-
-Paolo
+diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
+index e9b597ed423c..57a6868a41ab 100644
+--- a/arch/powerpc/kernel/eeh.c
++++ b/arch/powerpc/kernel/eeh.c
+@@ -589,6 +589,7 @@ EXPORT_SYMBOL(eeh_check_failure);
+ /**
+  * eeh_pci_enable - Enable MMIO or DMA transfers for this slot
+  * @pe: EEH PE
++ * @function : EEH function
+  *
+  * This routine should be called to reenable frozen MMIO or DMA
+  * so that it would work correctly again. It's useful while doing
+@@ -761,8 +762,8 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev, enum pcie_reset_state stat
+ }
+ 
+ /**
+- * eeh_set_pe_freset - Check the required reset for the indicated device
+- * @data: EEH device
++ * eeh_set_dev_freset - Check the required reset for the indicated device
++ * @edev: EEH device
+  * @flag: return value
+  *
+  * Each device might have its preferred reset type: fundamental or
+@@ -801,6 +802,7 @@ static void eeh_pe_refreeze_passed(struct eeh_pe *root)
+ /**
+  * eeh_pe_reset_full - Complete a full reset process on the indicated PE
+  * @pe: EEH PE
++ * @include_passed: include passed-through devices?
+  *
+  * This function executes a full reset procedure on a PE, including setting
+  * the appropriate flags, performing a fundamental or hot reset, and then
+@@ -937,6 +939,7 @@ static struct notifier_block eeh_device_nb = {
+ 
+ /**
+  * eeh_init - System wide EEH initialization
++ * @ops: struct to trace EEH operation callback functions
+  *
+  * It's the platform's job to call this from an arch_initcall().
+  */
+@@ -1442,6 +1445,7 @@ static int eeh_pe_reenable_devices(struct eeh_pe *pe, bool include_passed)
+  * eeh_pe_reset - Issue PE reset according to specified type
+  * @pe: EEH PE
+  * @option: reset type
++ * @include_passed: include passed-through devices?
+  *
+  * The routine is called to reset the specified PE with the
+  * indicated type, either fundamental reset or hot reset.
+@@ -1513,12 +1517,12 @@ EXPORT_SYMBOL_GPL(eeh_pe_configure);
+  * eeh_pe_inject_err - Injecting the specified PCI error to the indicated PE
+  * @pe: the indicated PE
+  * @type: error type
+- * @function: error function
++ * @func: error function
+  * @addr: address
+  * @mask: address mask
+  *
+  * The routine is called to inject the specified PCI error, which
+- * is determined by @type and @function, to the indicated PE for
++ * is determined by @type and @func, to the indicated PE for
+  * testing purpose.
+  */
+ int eeh_pe_inject_err(struct eeh_pe *pe, int type, int func,
+-- 
+2.27.0
 
