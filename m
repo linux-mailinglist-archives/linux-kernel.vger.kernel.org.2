@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184564212F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E8E4212FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhJDPq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235455AbhJDPq1 (ORCPT
+        id S235923AbhJDPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:47:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40848 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235911AbhJDPry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:46:27 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DEDC06174E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:44:38 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id d207so6296061qkg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0/aP63vy196i8qH5aGLzYmPHF4Nnb+LayDyFtr1MXMg=;
-        b=FrrVaLmatO49LvYV8N9t8dOdbGVBJR3uVBoq9V1WS6cSj2Cb1rm4irSPU637X3Eyv9
-         XYle6u16GK8tqSmcZsxSml+QoQhROr2ixOlYw/HLYJ0moUkyLT+ARSKEyFM4P2Vf2aVZ
-         bHQ5rlQcKN7lXDC26PuHAyymZGCME2n3eKQruQF7BGnnssj52apDsqZ47vaw7CneEVj0
-         FbmRF1DEjIiJ6n+vrG4P3iETCVLbIN9IA29e3wqYeJm8Q7sCRb8NuFBkaHIhfa0kgUe7
-         OTTt++eukDUH5MZyWsRhjylFCBO9ap9F9k0d6VFXYGnSLUhrgW/TGUYiQYgBmpTnuwrV
-         3xsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0/aP63vy196i8qH5aGLzYmPHF4Nnb+LayDyFtr1MXMg=;
-        b=N+yoV/Cj/4qoUDAUAt5lop3loKWeYsxPe5LeljU4IF1EZHedorU55XsT6vDQc0qLgQ
-         rW+MP1DhlZYU46xTRLawbrtoMF+rmSjnOgZuKaD6sidsLO7Gn97fnOVeR2PR7xbbKCkB
-         hbplg0yh8CcUyqiLzLORRlEMFk6Ph0seWfp+rLZK6Jwlurxcq3h0kctET7wS3zTHKZqo
-         g1sCTJoXLGG+n8+dlXv5VXGnUUZSNGFo1k6xe8P8+a6PYZrmx0Q4KCIqBocUnao02YDz
-         v5TUkRpdwzgSVSrorBd/kmP0kQUmIFu6Po60gizkKA0+BwH/YaHuAd+Y56jeBY4pf1hD
-         sXRA==
-X-Gm-Message-State: AOAM5313nROcuCJlwdw+8oRc6a2SxNdclyLmFHeZ5gW4JBAJUJPmMTbO
-        TtxhCxc6Vd+P0gxjOr084A2nRw==
-X-Google-Smtp-Source: ABdhPJzmrnxoimB1jf2ei4cUIinalbPGsZ26WCIenMwLucficq046xW8YP3iE+lNnoSolu8XpL/UpQ==
-X-Received: by 2002:a37:670d:: with SMTP id b13mr10467091qkc.420.1633362277573;
-        Mon, 04 Oct 2021 08:44:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id h66sm7850926qkc.5.2021.10.04.08.44.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 08:44:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mXQ8q-00AW43-2f; Mon, 04 Oct 2021 12:44:36 -0300
-Date:   Mon, 4 Oct 2021 12:44:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, nsaenz@kernel.org,
-        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
- handler
-Message-ID: <20211004154436.GY3544071@ziepe.ca>
-References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
- <20211001175422.GA53652@sirena.org.uk>
- <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
- <YVr4USeiIoQJ0Pqh@sirena.org.uk>
- <20211004131756.GW3544071@ziepe.ca>
- <YVsLxHMCdXf4vS+i@sirena.org.uk>
+        Mon, 4 Oct 2021 11:47:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633362365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/kgxHPxpLf6tZjNevWzK9k9Z43+ZiXIpJpi5hdMq0z0=;
+        b=XMRbuasuWMdRdkkTewCKD9xn++bEitVkX/DV/+ByfyKYchlmDfmeArCSWl4769uAIfAwjL
+        nRgiDnA7cnybwZM/n7XMN1fpeSttMSWi7kLMRXh2b1FS2hERcivK5jxM4k0y/neQLvdVWZ
+        pW7QZqXZkCeD/nVxHoo7W84KSfiSNtE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-x44U3w48N9KR2IkCHQKonA-1; Mon, 04 Oct 2021 11:46:02 -0400
+X-MC-Unique: x44U3w48N9KR2IkCHQKonA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 341D58F51C;
+        Mon,  4 Oct 2021 15:46:01 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21AE36B544;
+        Mon,  4 Oct 2021 15:45:08 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
+ before verify
+In-Reply-To: <20211004110152-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <87fstm47no.fsf@redhat.com>
+ <20211002141351-mutt-send-email-mst@kernel.org>
+ <20211003070030.658fc94e.pasic@linux.ibm.com>
+ <20211003021027-mutt-send-email-mst@kernel.org>
+ <20211003032253-mutt-send-email-mst@kernel.org>
+ <87ee912e45.fsf@redhat.com>
+ <20211004083455-mutt-send-email-mst@kernel.org>
+ <878rz83lx0.fsf@redhat.com>
+ <20211004110152-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 04 Oct 2021 17:45:06 +0200
+Message-ID: <87zgro23r1.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVsLxHMCdXf4vS+i@sirena.org.uk>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:12:20PM +0100, Mark Brown wrote:
-> On Mon, Oct 04, 2021 at 10:17:56AM -0300, Jason Gunthorpe wrote:
-> 
-> > Shutdown is supposed to quiet the HW so it is not doing DMAs any
-> > more. This is basically an 'emergency' kind of path, the HW should be
-> > violently stopped if available - ie clearing the bus master bits on
-> > PCI, for instance.
-> 
-> > When something like kexec happens we need the machine to be in a state
-> > where random DMA's are not corrupting memory.
-> 
-> That's all well and good but there's no point in implementing something
-> half baked that's opening up a whole bunch of opportunities to crash the
-> system if more work comes in after it's half broken the device setup.  
+On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-Well, that is up to the driver implementing this. It looks like device
-shutdown is called before the userspace is all nuked so yes,
-concurrency with userspace is a possible concern here.
+> On Mon, Oct 04, 2021 at 04:27:23PM +0200, Cornelia Huck wrote:
+>> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> 
+>> > On Mon, Oct 04, 2021 at 02:01:14PM +0200, Cornelia Huck wrote:
+>> >> On Sun, Oct 03 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> >> > @@ -160,6 +163,33 @@ \subsection{Legacy Interface: A Note on Feature
+>> >> >  Specification text within these sections generally does not apply
+>> >> >  to non-transitional devices.
+>> >> >  
+>> >> > +\begin{note}
+>> >> > +The device offers different features when used through
+>> >> > +the legacy interface and when operated in accordance with this
+>> >> > +specification.
+>> >> > +\end{note}
+>> >> > +
+>> >> > +Transitional drivers MUST use Devices only through the legacy interface
+>> >> 
+>> >> s/Devices only through the legacy interface/devices through the legacy
+>> >> interface only/
+>> >> 
+>> >> ?
+>> >
+>> > Both versions are actually confused, since how do you
+>> > find out that device does not offer VIRTIO_F_VERSION_1?
+>> >
+>> > I think what this should really say is
+>> >
+>> > Transitional drivers MUST NOT accept VIRTIO_F_VERSION_1 through
+>> > the legacy interface.
+>> 
+>> Ok, that makes sense.
+>> 
+>> Would it make sense that transitional drivers MUST accept VERSION_1
+>> through the non-legacy interface? Or is that redundant?
+>
+> We already have:
+>
+> A driver MUST accept VIRTIO_F_VERSION_1 if it is offered.
 
-> > Due to the emergency sort of nature it is not appropriate to do
-> > locking complicated sorts of things like struct device unregistrations
-> > here.
-> 
-> That's just not what's actually implemented in a bunch of places, nor
-> something one would infer from the documentation ("Called at shut-down
-> to quiesce the device", no mention of emergency cases which I'd guess
-> would just be kdump) - 
+Yep, so it is redundant.
 
-Drivers mis understanding stuff is not new..
+>
+>
+>> >
+>> >
+>> > Does linux actually satisfy this? Will it accept VIRTIO_F_VERSION_1
+>> > through the legacy interface if offered?
+>> 
+>> I think that the Linux drivers will not operate on feature bit 32+ if
+>> they are in legacy mode?
+>
+>
+> Well ... with PCI there's no *way* for host to set bit 32 through
+> legacy. But it might be possible with MMIO/CCW. Can you tell me
+> what happens then?
 
-> that's a different thing and definitely abusing the API.  I would guess
-> that a good proportion of people implementing it are more worried about
-> clean system shutdown than they are about kdump.
+ccw does not support accessing bit 32+, either. Not sure about mmio.
 
-The other important case is to get the device cleaned up enough to
-pass back to firmware for platforms that use a firmware
-shutdown/reboot path.
+>
+>
+>> >> 
+>> >> Generally, looks good to me.
+>> >
+>> > Do we want to also add explanation that features can be
+>> > changed until FEATURES_OK?
+>> 
+>> I always considered that to be implict, as feature negotiation is not
+>> over until we have FEATURES_OK. Not sure whether we need an extra note.
+>
+> Well Halil here says once you set a feature bit you can't clear it.
+> So maybe not ...
 
-Jason
+Ok, so what about something like
+
+"If FEATURES_OK is not set, the driver MAY change the set of features it
+accepts."
+
+in the device initialization section?
+
