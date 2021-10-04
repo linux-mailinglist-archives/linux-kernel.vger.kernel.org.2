@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A20420B97
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFEE420DB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhJDM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59554 "EHLO mail.kernel.org"
+        id S236003AbhJDNRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233977AbhJDM5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE9E613C8;
-        Mon,  4 Oct 2021 12:55:43 +0000 (UTC)
+        id S235949AbhJDNP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:15:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D63661BA7;
+        Mon,  4 Oct 2021 13:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352143;
-        bh=gHFMhGAaO10T6p9SaF6TCYykqJsnVasi791xcp+XVF8=;
+        s=korg; t=1633352771;
+        bh=ZTne2VZLofEonIy43J/+zmPzCS+nJjaStaqiKJNj2kM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Njbn300XQ68VM+2JJIq5SjG/V+WoZn9Wh7JAvX/reCxAuenJaz/NmXLyMJ6XGZ+UH
-         jkrNcKnCnmCTLjh3cmwpV9WBm5bxGdr3cVICq85iKyl69Xh/YHQ9uv+8jjFbUpUBdO
-         9nGSl5zf8vpAP7CTNBvtvdkfwmyUAXGTtxqiv0Ow=
+        b=V6b//5wzPfuTlFjeB21BJQqs4kFHUShYvmjSBchkV3uxoGFK620oSljwEmThDjrla
+         +mumIaBaRR0yYxBAt4+CgCYdzsngcnzr59jrPj2TbH6/XYlCpLtc13e4pBWXYbZpsE
+         bGOy4j3Cry1GyAqWjcesQTfir2HVbZhh08HYP5iA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 32/41] ipack: ipoctal: fix tty-registration error handling
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 03/56] cpufreq: schedutil: Destroy mutex before kobject_put() frees the memory
 Date:   Mon,  4 Oct 2021 14:52:23 +0200
-Message-Id: <20211004125027.601017563@linuxfoundation.org>
+Message-Id: <20211004125030.114945689@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: James Morse <james.morse@arm.com>
 
-commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
+[ Upstream commit cdef1196608892b9a46caa5f2b64095a7f0be60c ]
 
-Registration of the ipoctal tty devices is unlikely to fail, but if it
-ever does, make sure not to deregister a never registered tty device
-(and dereference a NULL pointer) when the driver is later unbound.
+Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
+method to free sugov_tunables") kobject_put() has kfree()d the
+attr_set before gov_attr_set_put() returns.
 
-Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
-Cc: stable@vger.kernel.org      # 3.7
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
+the subsequent mutex_destroy() triggers a use-after-free:
+| BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
+| Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
+|
+| CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
+| Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
+| Platform, BIOS EDK II Jul 30 2018
+| Call trace:
+|  dump_backtrace+0x0/0x380
+|  show_stack+0x1c/0x30
+|  dump_stack_lvl+0x8c/0xb8
+|  print_address_description.constprop.0+0x74/0x2b8
+|  kasan_report+0x1f4/0x210
+|  kasan_check_range+0xfc/0x1a4
+|  __kasan_check_read+0x38/0x60
+|  mutex_is_locked+0x20/0x60
+|  mutex_destroy+0x80/0x100
+|  gov_attr_set_put+0xfc/0x150
+|  sugov_exit+0x78/0x190
+|  cpufreq_offline.isra.0+0x2c0/0x660
+|  cpuhp_cpufreq_offline+0x14/0x24
+|  cpuhp_invoke_callback+0x430/0x6d0
+|  cpuhp_thread_fun+0x1b0/0x624
+|  smpboot_thread_fn+0x5e0/0xa6c
+|  kthread+0x3a0/0x450
+|  ret_from_fork+0x10/0x20
+
+Swap the order of the calls.
+
+Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
+Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -38,6 +38,7 @@ struct ipoctal_channel {
- 	unsigned int			pointer_read;
- 	unsigned int			pointer_write;
- 	struct tty_port			tty_port;
-+	bool				tty_registered;
- 	union scc2698_channel __iomem	*regs;
- 	union scc2698_block __iomem	*block_regs;
- 	unsigned int			board_id;
-@@ -402,9 +403,11 @@ static int ipoctal_inst_slot(struct ipoc
- 							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-+			tty_port_free_xmit_buf(&channel->tty_port);
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
-+		channel->tty_registered = true;
- 	}
+diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
+index 66b05a326910..a6f365b9cc1a 100644
+--- a/drivers/cpufreq/cpufreq_governor_attr_set.c
++++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
+@@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
+ 	if (count)
+ 		return count;
  
- 	/*
-@@ -706,6 +709,10 @@ static void __ipoctal_remove(struct ipoc
- 
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct ipoctal_channel *channel = &ipoctal->channel[i];
-+
-+		if (!channel->tty_registered)
-+			continue;
-+
- 		tty_unregister_device(ipoctal->tty_drv, i);
- 		tty_port_free_xmit_buf(&channel->tty_port);
- 		tty_port_destroy(&channel->tty_port);
+-	kobject_put(&attr_set->kobj);
+ 	mutex_destroy(&attr_set->update_lock);
++	kobject_put(&attr_set->kobj);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(gov_attr_set_put);
+-- 
+2.33.0
+
 
 
