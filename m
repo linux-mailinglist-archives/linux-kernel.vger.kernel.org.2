@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D362D4214B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EFE4214BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhJDREj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238098AbhJDREh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:04:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 847DC6120A;
-        Mon,  4 Oct 2021 17:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633366968;
-        bh=Gx/CYCFVJu84iQ/txzZ7rjGlD1I/Qy9L32fCT0MwsCQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=haCRp0q6vEu7267/hmBwEWWjTOY2l11CSxN7JJkNu7wTw9cdaY+SFa2Bxx3C8Rgx7
-         bPjpCj+mWk6uzY0LsKok54Fzi0cB+K3NVUf5E9v2NduyguTKRJVYwetLNdu6RbNz+W
-         ZX+Kb0RFA+9BsuqvAQO7kauy1vv40I2p3qjUxiMRAf2mC8TxeFdy8yf1x938/p2Xwr
-         1n4iZCxDG6j1fNUQ98HtGVdAH89FvDBM9iHDBNPgSTWoxgKEgG6s6om59U8OyW3njb
-         kHFz9e11D3KGiiS6dzKl+wz5WwcDpm4iDe3e4DxXD4SSVVuist4PjaZ90LDseUZxaO
-         gVd4vjfhSzFsw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dt-bindings: uniphier: Add description of each port number
-Date:   Mon,  4 Oct 2021 18:02:33 +0100
-Message-Id: <163336659968.3340210.15989674520560079639.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <1633313546-23258-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633313546-23258-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S238048AbhJDRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235119AbhJDRF7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:05:59 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E307C061745;
+        Mon,  4 Oct 2021 10:04:10 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k23so1136780pji.0;
+        Mon, 04 Oct 2021 10:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KSk5l7mdzrJfPwPq7PQoSfM6i1dcNInCldcD7w5Rhdg=;
+        b=HGFVHIsP+6R7wNek89B8ROjD5hstgjgoRRaOyjwS+rFGdiVJR4bVDZIr37pdCr1W/2
+         POTGQZZ0OE1qFVt3G6N3de0DusfCSq35asGHmPmheySNYkxSrFRNfUupa1kijPRGkIsL
+         0BIwWFutc383PQI5ZmLcpcUukuc02k0LRz8kEgkPvmvbwiujTAUxTGlLh4p/KS1mLhVk
+         HdV6amOFNGB0MyM6d5XGm8EVj3q9aGwMiYy1Cp4jYJxJRoJIlINOS4jIJFOFQVaXO5hW
+         IgzkVqPA74KQhS9n3EmSSQeDMO2dztCsucVj0nvr5IemLBOIa5CJQW/P6+N0o/86kYEU
+         05kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KSk5l7mdzrJfPwPq7PQoSfM6i1dcNInCldcD7w5Rhdg=;
+        b=1eb4+f0I30NQMY5nSfJmxrD2hvXehPCFLqZ/YU0mXH6HXCinTo1RGQmwll59AT6ycA
+         jQeNHlhN4BxMC4oVEUh9tjKoxj0VQIeiQ0HSLd3lpLq0uCSDpvlCjieh5IeJsUP16Z1c
+         XRl/jX6XhdVsj4iFV+3Q2GfQQ2XzRcTp7muo5/wX9hSceI1BTCDOLelVjUSbBFOb0B/9
+         m3nQFrlmPs5dpx2a/aUFfuNmbpDWfvusL4CWEy+8Ao+Uy6uvzXVl84xLuWsrKiDQMBIe
+         MdL14GSGCaWV1oCNXykJV1W24I6cCkKsjc5SkOMqrcuRNtDJgfNMpFiIGXlXX+V1L+K0
+         Rmeg==
+X-Gm-Message-State: AOAM530tn25GJhXXD+FnBiWgRf/IAdBDGb5FgrgboPCOzf/0UX3rvgBy
+        jgeJCqp2AcDmspfCx3efS67bukmjqe0=
+X-Google-Smtp-Source: ABdhPJyBBa5NckhrG5G/+VSSniHL/ROk9PH0Mj2W/GCzuQPGAcdVL4ZkZJerflFTZv1PzFVavFO87Q==
+X-Received: by 2002:a17:90a:86:: with SMTP id a6mr37401886pja.190.1633367049126;
+        Mon, 04 Oct 2021 10:04:09 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id z24sm15839126pgu.54.2021.10.04.10.04.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 10:04:08 -0700 (PDT)
+Subject: Re: [PATCH v3 00/14] Modular Broadcom irqchip drivers
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>
+References: <20210928182139.652896-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c49d51d0-bb17-8e0d-4181-1eb93a2ae787@gmail.com>
+Date:   Mon, 4 Oct 2021 10:03:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928182139.652896-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 11:12:26 +0900, Kunihiko Hayashi wrote:
-> To eliminate FIXME, add descriptions of what each port number is
-> associated with.
+On 9/28/21 11:21 AM, Florian Fainelli wrote:
+> Hi Thomas, Marc,
 > 
+> This patch series aims at allowing the 3 interrupt controller drivers
+> used on Broadcom STB platforms to be built as modules in order for those
+> to be shipped in a GKI enabled system (Android).
 > 
+> The irq-bcm7038-l1 requires us to export a number of symbols, which is
+> not great, but there are not obvious solutions other than adding
+> accessor functions to get the same information.
+> 
+> Assuming you are happy with the changes though, please do take the last
+> two changes as well through your tree.
+> 
+> Thanks!
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: uniphier: Add description of each port number
-      commit: 2a04151ff95a3c430150064b0c8beb1981f81187
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+I will be re-submitting a v4 with the Acked-by from Thomas on patch 1,
+and the Reviewed-by from Rob on patch 9 along with the update he
+proposed to the qcom-pdc driver. Finally, I will take Sergey's update as
+well on patch 14.
+-- 
+Florian
