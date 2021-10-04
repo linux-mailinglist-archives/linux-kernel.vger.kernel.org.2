@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB64B420FD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1CD420DDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237603AbhJDNiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S236292AbhJDNTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236540AbhJDNgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:36:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8E361244;
-        Mon,  4 Oct 2021 13:16:28 +0000 (UTC)
+        id S235615AbhJDNRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:17:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F58A6139E;
+        Mon,  4 Oct 2021 13:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353388;
-        bh=TntB1egtxX+cVgnbi3uAtTG3jLkqyUYeWXXsNEWXATk=;
+        s=korg; t=1633352821;
+        bh=G/4sdlisW0NuniVC32ToaOmzPxsCCI9jALnbcgsJU+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jE7c7LT+WQBS5UqavNLBoOm+3EHcIdncmQH2gzUBVzGE04eLTmLk337oqh3hEXNx+
-         ztDGbvEdT2N74GW7kevfpgZfDuTsfWbgk+xE5tQ798cGwX4cCFRTcELgBckm64iUh4
-         zX2sqquqAQQux0NoiKBBr+4ZYNPi37feb2mR/1Y4=
+        b=ALI5kMHMEyDjR+1CLAZgDTau3PwP6ak4KF6LsPVOMvdTyJ4iUIql9vZDsGZpRYYFy
+         jw65zDQ8ADTZENomH/hzAQTYIEJ38+3TVvCuqqjZQt1MACd5BW+5Lv9tBuGqW2VphU
+         wJ32VWfOQfRM4V780Innwqr5OQc1tPVzVxLCg7No=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 110/172] e100: fix buffer overrun in e100_get_regs
-Date:   Mon,  4 Oct 2021 14:52:40 +0200
-Message-Id: <20211004125048.530845087@linuxfoundation.org>
+Subject: [PATCH 5.4 21/56] hwmon: (tmp421) fix rounding for negative values
+Date:   Mon,  4 Oct 2021 14:52:41 +0200
+Message-Id: <20211004125030.671032220@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Paul Fertser <fercerpav@gmail.com>
 
-[ Upstream commit 51032e6f17ce990d06123ad7307f258c50d25aa7 ]
+[ Upstream commit 724e8af85854c4d3401313b6dd7d79cf792d8990 ]
 
-The e100_get_regs function is used to implement a simple register dump
-for the e100 device. The data is broken into a couple of MAC control
-registers, and then a series of PHY registers, followed by a memory dump
-buffer.
+Old code produces -24999 for 0b1110011100000000 input in standard format due to
+always rounding up rather than "away from zero".
 
-The total length of the register dump is defined as (1 + E100_PHY_REGS)
-* sizeof(u32) + sizeof(nic->mem->dump_buf).
+Use the common macro for division, unify and simplify the conversion code along
+the way.
 
-The logic for filling in the PHY registers uses a convoluted inverted
-count for loop which counts from E100_PHY_REGS (0x1C) down to 0, and
-assigns the slots 1 + E100_PHY_REGS - i. The first loop iteration will
-fill in [1] and the final loop iteration will fill in [1 + 0x1C]. This
-is actually one more than the supposed number of PHY registers.
-
-The memory dump buffer is then filled into the space at
-[2 + E100_PHY_REGS] which will cause that memcpy to assign 4 bytes past
-the total size.
-
-The end result is that we overrun the total buffer size allocated by the
-kernel, which could lead to a panic or other issues due to memory
-corruption.
-
-It is difficult to determine the actual total number of registers
-here. The only 8255x datasheet I could find indicates there are 28 total
-MDI registers. However, we're reading 29 here, and reading them in
-reverse!
-
-In addition, the ethtool e100 register dump interface appears to read
-the first PHY register to determine if the device is in MDI or MDIx
-mode. This doesn't appear to be documented anywhere within the 8255x
-datasheet. I can only assume it must be in register 28 (the extra
-register we're reading here).
-
-Lets not change any of the intended meaning of what we copy here. Just
-extend the space by 4 bytes to account for the extra register and
-continue copying the data out in the same order.
-
-Change the E100_PHY_REGS value to be the correct total (29) so that the
-total register dump size is calculated properly. Fix the offset for
-where we copy the dump buffer so that it doesn't overrun the total size.
-
-Re-write the for loop to use counting up instead of the convoluted
-down-counting. Correct the mdio_read offset to use the 0-based register
-offsets, but maintain the bizarre reverse ordering so that we have the
-ABI expected by applications like ethtool. This requires and additional
-subtraction of 1. It seems a bit odd but it makes the flow of assignment
-into the register buffer easier to follow.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+Link: https://lore.kernel.org/r/20210924093011.26083-3-fercerpav@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/hwmon/tmp421.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 71b9f0563b32..1fa68ebe9432 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2437,7 +2437,7 @@ static void e100_get_drvinfo(struct net_device *netdev,
- 		sizeof(info->bus_info));
- }
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index e245ae272f7d..876ccf77a825 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -100,23 +100,17 @@ struct tmp421_data {
+ 	s16 temp[4];
+ };
  
--#define E100_PHY_REGS 0x1C
-+#define E100_PHY_REGS 0x1D
- static int e100_get_regs_len(struct net_device *netdev)
+-static int temp_from_s16(s16 reg)
++static int temp_from_raw(u16 reg, bool extended)
  {
- 	struct nic *nic = netdev_priv(netdev);
-@@ -2459,14 +2459,18 @@ static void e100_get_regs(struct net_device *netdev,
- 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
- 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
- 		ioread16(&nic->csr->scb.status);
--	for (i = E100_PHY_REGS; i >= 0; i--)
--		buff[1 + E100_PHY_REGS - i] =
--			mdio_read(netdev, nic->mii.phy_id, i);
-+	for (i = 0; i < E100_PHY_REGS; i++)
-+		/* Note that we read the registers in reverse order. This
-+		 * ordering is the ABI apparently used by ethtool and other
-+		 * applications.
-+		 */
-+		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
-+					E100_PHY_REGS - 1 - i);
- 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
- 	e100_exec_cb(nic, NULL, e100_dump);
- 	msleep(10);
--	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
--		sizeof(nic->mem->dump_buf));
-+	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
-+	       sizeof(nic->mem->dump_buf));
+ 	/* Mask out status bits */
+ 	int temp = reg & ~0xf;
+ 
+-	return (temp * 1000 + 128) / 256;
+-}
+-
+-static int temp_from_u16(u16 reg)
+-{
+-	/* Mask out status bits */
+-	int temp = reg & ~0xf;
+-
+-	/* Add offset for extended temperature range. */
+-	temp -= 64 * 256;
++	if (extended)
++		temp = temp - 64 * 256;
++	else
++		temp = (s16)temp;
+ 
+-	return (temp * 1000 + 128) / 256;
++	return DIV_ROUND_CLOSEST(temp * 1000, 256);
  }
  
- static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ static struct tmp421_data *tmp421_update_device(struct device *dev)
+@@ -153,10 +147,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+-		if (tmp421->config & TMP421_CONFIG_RANGE)
+-			*val = temp_from_u16(tmp421->temp[channel]);
+-		else
+-			*val = temp_from_s16(tmp421->temp[channel]);
++		*val = temp_from_raw(tmp421->temp[channel],
++				     tmp421->config & TMP421_CONFIG_RANGE);
+ 		return 0;
+ 	case hwmon_temp_fault:
+ 		/*
 -- 
 2.33.0
 
