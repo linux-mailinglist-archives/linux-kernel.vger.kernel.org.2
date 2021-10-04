@@ -2,289 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10324212AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F54212BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbhJDPbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234917AbhJDPbP (ORCPT
+        id S235518AbhJDPfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:35:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16252 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233700AbhJDPfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:31:15 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22E6C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:29:26 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id a3so21993487oid.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:29:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x1TkdRhXE1OhS3zsW88GeP150p3334b2oH7aPa/m0z4=;
-        b=xemhKd/SbPHSjPX1U6V90DwOPnxlcaKvb3HpBTkZbV4FBdcD6Re7u185LsEBsAffi9
-         RW08AAszqJk3iWp5vKVaeuLAZ6ogOpB2DnxDJ0IylXQbb4vGIULYoxHm6s8i9B8bk7Yq
-         znkx0HAICYZQgxVtDOnX54KJLhOuh0HPXxebzcP6E5+rFTLH9bkxCe+5Qf8udiZPo73S
-         qd+EJXTILe4PSik0clI4wQ+RGrmoJK/pJoX1yHLGrKlcrBAA0n+4SCIm1dlunBv9PG8y
-         wRWwHcxiYfftn3PW3PBFobRCOSJG5fnF2nk8AbQS9yaqw3HCeStVkeu89ragGgwEHIBx
-         LwBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x1TkdRhXE1OhS3zsW88GeP150p3334b2oH7aPa/m0z4=;
-        b=52K8nt9Nq+Emc9ovtdyjj3grWrtykxGHYuXIabMwdXkOEdcIxEP53U5irglIDiYlyv
-         1+9D+qeIs71siBlpG84QJrZkvICdexRvIv4ULYu0UarLjZI2SJngNdPA/qzpoO8vMXGy
-         9P/Oq/gSkJYm7PbU/SPrIhPmAEfdk6DKBg6FdedskI5D7GPNiSjmQ7OWapjJdwMpqtD5
-         +lIsvJ5l5UzMnTFYyHJXqnnEgw4Nc8p79EumeBUuHHSPoDP7dTe/qozjJBqVKlnuSfJY
-         zRcMuooMuoakIhwvJb3FIAl+NRWco2pd16jGTVdlA2u+Vfw5VfUcB/Aa6KNg5w6p6V1O
-         S+2A==
-X-Gm-Message-State: AOAM533Wu6fAuSHVp3iDLqcNZtikhGrwEn5qu943DMS4UQGpVNZDjcVY
-        Lmg1RcfVM953lgmdB31F+nVNPQ==
-X-Google-Smtp-Source: ABdhPJxneT4Pp6jiVBF+zczoSU9cWco3ZjIN290elEVMPQxrWCDCI3lxJ5gCL9qyUl8qxz6NtyaWeA==
-X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr14003060oib.18.1633361366313;
-        Mon, 04 Oct 2021 08:29:26 -0700 (PDT)
-Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id o8sm2809465oiw.39.2021.10.04.08.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 08:29:25 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 10:29:24 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
-        robh+dt@kernel.org, p.zabel@pengutronix.de, sibis@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for sc7280
- WPSS
-Message-ID: <YVsd1Mt1iRyU2v8i@builder.lan>
-References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org>
- <1615361290-19238-3-git-send-email-pillair@codeaurora.org>
- <YEj3emYBinvkfaby@builder.lan>
- <000001d71993$ded6e070$9c84a150$@codeaurora.org>
+        Mon, 4 Oct 2021 11:35:32 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194F5MVN024037;
+        Mon, 4 Oct 2021 11:33:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aJqlE+8/C4VMY+Ry3x+jxYihFtrj+7/Dw+o9EM68K6I=;
+ b=gl32+U8r0A+9AIJ6AboIzsPMNNkcFmEr7da9k0ti5g9Kg1fTJrM/S5bC04KcY9yfNxJm
+ Fq/tHG6XpP+QIIuloKl71LfgkDVKx/bNDa9iHtdB1VcGR4Gu9/z9MhGx057w1rulTuC1
+ qK9pz0oMV3BV5R+jh+HiENORV5UpjNARpz2qg6267Sri0R4cDlFQb+UA/yVYIohtnMpd
+ tcI/4+ro1Nsurwpn8ZaeFaqjQlwEjVRlwM8ZuFytA6TNK6LPVmV89FheYfiq/eIymAnb
+ ZSG1VNDdxqPoGH2k6AClF5c0Nzjl8bnrfna92wEzsCeBGjgY9wUlJ8tex6uXa5+Oilzx sg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bg3xq0n6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 11:33:37 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194FMVfU013528;
+        Mon, 4 Oct 2021 15:32:28 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bef2agvr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 15:32:28 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194FWPt75177890
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 15:32:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5681FAE051;
+        Mon,  4 Oct 2021 15:32:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C3B9AE04D;
+        Mon,  4 Oct 2021 15:32:23 +0000 (GMT)
+Received: from [9.43.47.122] (unknown [9.43.47.122])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Oct 2021 15:32:22 +0000 (GMT)
+Message-ID: <e67acb9b-dd8e-767a-b57b-f12b3b0fd44d@linux.ibm.com>
+Date:   Mon, 4 Oct 2021 21:02:21 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000001d71993$ded6e070$9c84a150$@codeaurora.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 1/3] fixup mmu_features immediately after getting cpu pa
+ features.
+Content-Language: en-US
+To:     Sourabh Jain <sourabhjain@linux.ibm.com>, mpe@ellerman.id.au
+Cc:     hbathini@linux.ibm.com, mahesh@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        Abdul haleem <abdhalee@linux.vnet.ibm.com>
+References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
+ <20211004151142.256251-2-sourabhjain@linux.ibm.com>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+In-Reply-To: <20211004151142.256251-2-sourabhjain@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iwoamFN3_IxYtEa3cZaRJXXC9rqQHkzm
+X-Proofpoint-ORIG-GUID: iwoamFN3_IxYtEa3cZaRJXXC9rqQHkzm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0 clxscore=1011
+ spamscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15 Mar 07:08 CDT 2021, Rakesh Pillai wrote:
+On 10/4/21 20:41, Sourabh Jain wrote:
+> From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+> 
+> On system with radix support available, early_radix_enabled() starts
+> returning true for a small window (until mmu_early_init_devtree() is
+> called) even when radix mode disabled on kernel command line. This causes
+> ppc64_bolted_size() to return ULONG_MAX in HPT mode instead of supported
+> segment size, during boot cpu paca allocation.
+> 
+> With kernel command line = "... disable_radix":
+> 
+> early_init_devtree:			  <- early_radix_enabled() = false
+>    early_init_dt_scan_cpus:		  <- early_radix_enabled() = false
+>        ...
+>        check_cpu_pa_features:		  <- early_radix_enabled() = false
+>        ...				^ <- early_radix_enabled() = TRUE
+>        allocate_paca:			| <- early_radix_enabled() = TRUE
+>            ...                           |
+>            ppc64_bolted_size:		| <- early_radix_enabled() = TRUE
+>                if (early_radix_enabled())| <- early_radix_enabled() = TRUE
+>                    return ULONG_MAX;     |
+>        ...                               |
+>    ...					| <- early_radix_enabled() = TRUE
+>    ...					| <- early_radix_enabled() = TRUE
+>    mmu_early_init_devtree()              V
+>    ...					  <- early_radix_enabled() = false
+> 
+> So far we have not seen any issue because allocate_paca() takes minimum of
+> ppc64_bolted_size and rma_size while allocating paca. However it is better
+> to close this window by fixing up the mmu features as early as possible.
+> This fixes early_radix_enabled() and ppc64_bolted_size() to return valid
+> values in radix disable mode. This patch will help subsequent patch to
+> depend on early_radix_enabled() check while detecting supported segment
+> size in HPT mode.
+> 
+> Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+> Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+> Reported-and-tested-by: Abdul haleem <abdhalee@linux.vnet.ibm.com>
+> ---
+>   arch/powerpc/include/asm/book3s/64/mmu.h | 1 +
+>   arch/powerpc/include/asm/mmu.h           | 1 +
+>   arch/powerpc/kernel/prom.c               | 1 +
+>   arch/powerpc/mm/init_64.c                | 5 ++++-
+>   4 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/include/asm/book3s/64/mmu.h b/arch/powerpc/include/asm/book3s/64/mmu.h
+> index c02f42d1031e..69a89fa1330d 100644
+> --- a/arch/powerpc/include/asm/book3s/64/mmu.h
+> +++ b/arch/powerpc/include/asm/book3s/64/mmu.h
+> @@ -197,6 +197,7 @@ extern int mmu_vmemmap_psize;
+>   extern int mmu_io_psize;
+>   
+>   /* MMU initialization */
+> +void mmu_cpu_feature_fixup(void);
+>   void mmu_early_init_devtree(void);
+>   void hash__early_init_devtree(void);
+>   void radix__early_init_devtree(void);
+> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+> index 8abe8e42e045..c8eafd401fe9 100644
+> --- a/arch/powerpc/include/asm/mmu.h
+> +++ b/arch/powerpc/include/asm/mmu.h
+> @@ -401,6 +401,7 @@ extern void early_init_mmu(void);
+>   extern void early_init_mmu_secondary(void);
+>   extern void setup_initial_memory_limit(phys_addr_t first_memblock_base,
+>   				       phys_addr_t first_memblock_size);
+> +static inline void mmu_cpu_feature_fixup(void) { }
+>   static inline void mmu_early_init_devtree(void) { }
+>   
+>   static inline void pkey_early_init_devtree(void) {}
+> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> index 2e67588f6f6e..1727a3abe6c1 100644
+> --- a/arch/powerpc/kernel/prom.c
+> +++ b/arch/powerpc/kernel/prom.c
+> @@ -380,6 +380,7 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
+>   		check_cpu_pa_features(node);
+>   	}
+>   
+> +	mmu_cpu_feature_fixup();
 
-> 
-> 
-> > -----Original Message-----
-> > From: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Sent: Wednesday, March 10, 2021 10:15 PM
-> > To: Rakesh Pillai <pillair@codeaurora.org>
-> > Cc: agross@kernel.org; ohad@wizery.com; mathieu.poirier@linaro.org;
-> > robh+dt@kernel.org; p.zabel@pengutronix.de; sibis@codeaurora.org; linux-
-> > arm-msm@vger.kernel.org; linux-remoteproc@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for
-> > sc7280 WPSS
-> > 
-> > On Wed 10 Mar 01:28 CST 2021, Rakesh Pillai wrote:
-> > 
-> > > Add support for PIL loading of WPSS processor for SC7280
-> > > WPSS boot will be requested by the wifi driver and hence
-> > > disable auto-boot for WPSS. Also add a separate shutdown
-> > > sequence handler for WPSS.
-> > >
-> > > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> > > ---
-> > >  drivers/remoteproc/qcom_q6v5_adsp.c | 77
-> > ++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 76 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
-> > b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > index e024502..dc6b91d 100644
-> > > --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > @@ -58,6 +58,8 @@ struct adsp_pil_data {
-> > >  	const char *ssr_name;
-> > >  	const char *sysmon_name;
-> > >  	int ssctl_id;
-> > > +	bool is_wpss;
-> > > +	bool auto_boot;
-> > >
-> > >  	const char **clk_ids;
-> > >  	int num_clks;
-> > > @@ -96,8 +98,54 @@ struct qcom_adsp {
-> > >  	struct qcom_rproc_glink glink_subdev;
-> > >  	struct qcom_rproc_ssr ssr_subdev;
-> > >  	struct qcom_sysmon *sysmon;
-> > > +
-> > > +	int (*shutdown)(struct qcom_adsp *adsp);
-> > >  };
-> > >
-> > > +static int qcom_wpss_shutdown(struct qcom_adsp *adsp)
-> > > +{
-> > > +	unsigned long timeout;
-> > > +	unsigned int val;
-> > > +	int ret;
-> > > +
-> > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
-> > LPASS_HALTREQ_REG, 1);
-> > > +
-> > > +	/* Wait for halt ACK from QDSP6 */
-> > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
-> > > +	for (;;) {
-> > > +		ret = regmap_read(adsp->halt_map,
-> > > +				  adsp->halt_lpass + LPASS_HALTACK_REG,
-> > &val);
-> > > +		if (ret || val || time_after(jiffies, timeout))
-> > > +			break;
-> > > +
-> > > +		usleep_range(1000, 1100);
-> > > +	}
-> > > +
-> > > +	/* Place the WPSS processor into reset */
-> > > +	reset_control_assert(adsp->restart);
-> > > +	/* wait after asserting subsystem restart from AOSS */
-> > > +	usleep_range(100, 105);
-> > > +	/* Remove the WPSS reset */
-> > > +	reset_control_deassert(adsp->restart);
-> > > +
-> > > +	usleep_range(100, 105);
-> > > +
-> > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
-> > LPASS_HALTREQ_REG, 0);
-> > > +
-> > > +	/* Wait for halt ACK from QDSP6 */
-> > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
-> > > +	for (;;) {
-> > > +		ret = regmap_read(adsp->halt_map,
-> > > +				  adsp->halt_lpass + LPASS_HALTACK_REG,
-> > &val);
-> > > +		if (ret || !val || time_after(jiffies, timeout))
-> > > +			break;
-> > > +
-> > > +		usleep_range(1000, 1100);
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  static int qcom_adsp_shutdown(struct qcom_adsp *adsp)
-> > >  {
-> > >  	unsigned long timeout;
-> > > @@ -270,7 +318,7 @@ static int adsp_stop(struct rproc *rproc)
-> > >  	if (ret == -ETIMEDOUT)
-> > >  		dev_err(adsp->dev, "timed out on wait\n");
-> > >
-> > > -	ret = qcom_adsp_shutdown(adsp);
-> > > +	ret = adsp->shutdown(adsp);
-> > >  	if (ret)
-> > >  		dev_err(adsp->dev, "failed to shutdown: %d\n", ret);
-> > >
-> > > @@ -439,6 +487,8 @@ static int adsp_probe(struct platform_device
-> > *pdev)
-> > >  		dev_err(&pdev->dev, "unable to allocate remoteproc\n");
-> > >  		return -ENOMEM;
-> > >  	}
-> > > +
-> > > +	rproc->auto_boot = desc->auto_boot;
-> > >  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
-> > >
-> > >  	adsp = (struct qcom_adsp *)rproc->priv;
-> > > @@ -447,6 +497,11 @@ static int adsp_probe(struct platform_device
-> > *pdev)
-> > >  	adsp->info_name = desc->sysmon_name;
-> > >  	platform_set_drvdata(pdev, adsp);
-> > >
-> > > +	if (desc->is_wpss)
-> > > +		adsp->shutdown = qcom_wpss_shutdown;
-> > > +	else
-> > > +		adsp->shutdown = qcom_adsp_shutdown;
-> > > +
-> > >  	ret = adsp_alloc_memory_region(adsp);
-> > >  	if (ret)
-> > >  		goto free_rproc;
-> > > @@ -515,6 +570,8 @@ static const struct adsp_pil_data adsp_resource_init
-> > = {
-> > >  	.ssr_name = "lpass",
-> > >  	.sysmon_name = "adsp",
-> > >  	.ssctl_id = 0x14,
-> > > +	.is_wpss = false,
-> > > +	.auto_boot = true;
-> > >  	.clk_ids = (const char*[]) {
-> > >  		"sway_cbcr", "lpass_ahbs_aon_cbcr",
-> > "lpass_ahbm_aon_cbcr",
-> > >  		"qdsp6ss_xo", "qdsp6ss_sleep", "qdsp6ss_core", NULL
-> > > @@ -528,6 +585,8 @@ static const struct adsp_pil_data cdsp_resource_init
-> > = {
-> > >  	.ssr_name = "cdsp",
-> > >  	.sysmon_name = "cdsp",
-> > >  	.ssctl_id = 0x17,
-> > > +	.is_wpss = false,
-> > > +	.auto_boot = true;
-> > >  	.clk_ids = (const char*[]) {
-> > >  		"sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
-> > "q6ss_master",
-> > >  		"q6_axim", NULL
-> > > @@ -535,7 +594,23 @@ static const struct adsp_pil_data
-> > cdsp_resource_init = {
-> > >  	.num_clks = 7,
-> > >  };
-> > >
-> > > +static const struct adsp_pil_data wpss_resource_init = {
-> > > +	.crash_reason_smem = 626,
-> > > +	.firmware_name = "wpss.mdt",
-> > > +	.ssr_name = "wpss",
-> > > +	.sysmon_name = "wpss",
-> > > +	.ssctl_id = 0x19,
-> > > +	.is_wpss = true,
-> > > +	.auto_boot = false;
-> > 
-> > Why is auto_boot false for the WPSS?
-> 
-> Wifi driver will start the remote processor when it comes up. We do not want
-> to load it at the start.
+can you do that call inside check_cpu_pa_features? or is it because we 
+have the same issue with baremetal platforms?
+
+Can we also rename this to indicate we are sanitizing the feature flag 
+based on kernel command line.  Something like
+
+/* Update cpu features based on kernel command line */
+update_cpu_features();
+
+>   	identical_pvr_fixup(node);
+>   	init_mmu_slb_size(node);
+>   
+> diff --git a/arch/powerpc/mm/init_64.c b/arch/powerpc/mm/init_64.c
+> index 386be136026e..9ed452605a2c 100644
+> --- a/arch/powerpc/mm/init_64.c
+> +++ b/arch/powerpc/mm/init_64.c
+> @@ -437,12 +437,15 @@ static void __init early_check_vec5(void)
+>   	}
+>   }
+>   
+> -void __init mmu_early_init_devtree(void)
+> +void __init mmu_cpu_feature_fixup(void)
+>   {
+>   	/* Disable radix mode based on kernel command line. */
+>   	if (disable_radix)
+>   		cur_cpu_spec->mmu_features &= ~MMU_FTR_TYPE_RADIX;
+> +}
+>   
+> +void __init mmu_early_init_devtree(void)
+> +{
+>   	/*
+>   	 * Check /chosen/ibm,architecture-vec-5 if running as a guest.
+>   	 * When running bare-metal, we can use radix if we like
 > 
 
-Can you please explain this further?
-
-We've had several cases in the past where functional drivers controls
-a remoteproc instance and makes assumptions about when the remoteproc is
-up or not. I would like to ensure that we don't design ourselves into
-such corner (even though I see that the ath11k code for this was merged
-a long time ago)
-
-Regards,
-Bjorn
-
-> > 
-> > > +	.clk_ids = (const char*[]) {
-> > > +		"gcc_wpss_ahb_bdg_mst_clk", "gcc_wpss_ahb_clk",
-> > > +		"gcc_wpss_rscp_clk", NULL
-> > > +	},
-> > > +	.num_clks = 3,
-> > > +};
-> > > +
-> > >  static const struct of_device_id adsp_of_match[] = {
-> > > +	{ .compatible = "qcom,sc7280-wpss-pil", .data = &wpss_resource_init
-> > },
-> > 
-> > Nit. Please keep things like this sorted alphabetically.
-> 
-> Will fix this in the next patchset.
-> 
-> Thanks,
-> Rakesh
-> 
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > >  	{ .compatible = "qcom,qcs404-cdsp-pil", .data = &cdsp_resource_init
-> > },
-> > >  	{ .compatible = "qcom,sdm845-adsp-pil", .data =
-> > &adsp_resource_init },
-> > >  	{ },
-> > > --
-> > > 2.7.4
-> > >
-> 
