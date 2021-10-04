@@ -2,189 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB09421097
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B559420D69
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237800AbhJDNsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238744AbhJDNsa (ORCPT
+        id S235514AbhJDNO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46903 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235522AbhJDNNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:48:30 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5EDC019F74
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:11:04 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id t2so15737484qtx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=paHHKoo/ZYW/alWLfZ/j7TCYl/PNWAJKpM5YE1NlK5U=;
-        b=CiiZvoWKp3sR9ox9MwLe/aAoWn+zgVzIzoK5stQ+lLZ8DkbvPmGdAvlduR2gk+UfNV
-         1P2afMJH7vV6IAPbHYW+Rc1sS/roPklW+dTBpRVIRTDMTOlufRxRg1g/8y1JoQ+dMbuv
-         LGIfCJ9SBJ35Rx0zUSTT/N81gMCEGHaUh1bP29Efovspabd/frzknJ1uGremi9e7FwxS
-         GxHlxz3fbXPf+Zsfi7b0EtSOmVd90ItpDxGwUFntNisS3pwBHUIyI3Rc56o8RcowEZMy
-         Mw89sHmlOIvN3XWdOUkQFS1bSP5hsGSdPYoFBcbynXIPZSK0aKIKspXPBzoXODDrSrLW
-         RE3w==
+        Mon, 4 Oct 2021 09:13:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633353072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gJ8uD8KGtyPPl9fPzzKl5NSX78fI1kIzy833DRlhopA=;
+        b=hcsgdil9OhaRD3lGuTfJu1ExPahtgRnpvbqhwMnbkx3LPPuP48onRU5jXr77wSNt5la1a1
+        /PKTcZYqif+3eSxgRBpJqX+2ro8/0IwDra7Kndreu/HBbhZhXiNpROIp/qOYudeJBbrzEV
+        89OwLiWkJTIpfGQSNaYPMKApT8G+Vp0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-j6sOfvViO5-LDITnLNDNhQ-1; Mon, 04 Oct 2021 09:11:12 -0400
+X-MC-Unique: j6sOfvViO5-LDITnLNDNhQ-1
+Received: by mail-wm1-f70.google.com with SMTP id o22-20020a1c7516000000b0030d6f9c7f5fso874469wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:11:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=paHHKoo/ZYW/alWLfZ/j7TCYl/PNWAJKpM5YE1NlK5U=;
-        b=OZsnD1/HAsVHTY1wIvViDsrberpGkhXQHdP40XbizTJ36Qm2yR+5m6e/gUD/vkPY5Z
-         ho/eMMlW5yai+b1c76CmFmT5HFCHfeMpc3yyiKCa5uxidFy/iEslQJ45QgZSvEjWqXBS
-         1LzDOMEGNlwKbVSM9HCOToRMn91I0EEaqx42c7sTsbDGXh+24pnte2n5dY+fygTs5D8o
-         K8zlgnnqd1UtCFO/dRzpmzDUSvEc6TGtzk2iKklufsBy57EYe2JDihHOyjBwx/dNHYvz
-         dW+evgiCYqZRKcc5S3EOgOBns1hmIk/dabD1hBnn1wZyDggTzfvFtX3qyThVPmnxqOb9
-         wl5A==
-X-Gm-Message-State: AOAM530V3Vyxz8/HXBbBDhY6o/di2XThk5l12qRybgz4vhUSlmsoFOC6
-        65/efD9jTAiKwDivT4y2fvmuBQ==
-X-Google-Smtp-Source: ABdhPJxQOmTNv7SjQ0A/T+hfHtxMzsOyyvatzsxt2GOAUZRpJkhppd32O3vVCO/+XaAwlscFA5pPQw==
-X-Received: by 2002:ac8:7594:: with SMTP id s20mr12950198qtq.158.1633353063650;
-        Mon, 04 Oct 2021 06:11:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id t8sm7785072qkt.117.2021.10.04.06.11.02
+         :mime-version:content-disposition:in-reply-to;
+        bh=gJ8uD8KGtyPPl9fPzzKl5NSX78fI1kIzy833DRlhopA=;
+        b=Q77DzeMXdaJc6a2bpjMNjOAbVvR1X8gQR0QmsoMBwAw/A6TNUBuQNVVkahCFFHH5Ux
+         dMIBA3QfcZFM+zPB0B5z0L+RGVTUaBI3ZgT2UjgALdgz7Bo1ZuPx0+n60l2+oB47FKHF
+         jVznTIyVPgvtaIdDQcO0Wn4qRXfp9TXJpZ3q7RmnKjBzxsP1JsijU3IEi0yed545wTIu
+         HUzDulbxcCc49KE6assObbaeBbLNWZ7gCHEa2bXGtnkk2vT7W65y+lngqpTBjZ/U0fDY
+         JJp8yV/U1Z6JudtZxi4AQd5CTM2WOCtvvWd+7vIzwMYUHPHqma3/feBoC5urilAtOweJ
+         A6mw==
+X-Gm-Message-State: AOAM5318Sb4ysh07gvvp+HzIkB29gWfpZAOOfdunSGcHSUGYxMFszeas
+        tqTYxN3LwC5SMyYaO0FEAuq7ow250yOvmga0wQsyYD2bs1KegREel5ezdFxLSM36CdkZk8OXOqc
+        QKdfKhCjMzHhd4AE2web9U98N
+X-Received: by 2002:adf:b7c1:: with SMTP id t1mr13849601wre.387.1633353070653;
+        Mon, 04 Oct 2021 06:11:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZvYf+VMC4Tiq195Wdu1f4UR7aD4zUUtGSveBANC153CIfNm6xHmaKVfbT3y2gMzaLHqaWkw==
+X-Received: by 2002:adf:b7c1:: with SMTP id t1mr13849547wre.387.1633353070291;
+        Mon, 04 Oct 2021 06:11:10 -0700 (PDT)
+Received: from redhat.com ([2.55.134.94])
+        by smtp.gmail.com with ESMTPSA id p3sm7750728wmp.43.2021.10.04.06.11.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 06:11:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mXNkE-00ATWh-9x; Mon, 04 Oct 2021 10:11:02 -0300
-Date:   Mon, 4 Oct 2021 10:11:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
-Subject: Re: [PATCH v3 19/20] PCI/P2PDMA: introduce pci_mmap_p2pmem()
-Message-ID: <20211004131102.GU3544071@ziepe.ca>
-References: <8d386273-c721-c919-9749-fc0a7dc1ed8b@deltatee.com>
- <20210929230543.GB3544071@ziepe.ca>
- <32ce26d7-86e9-f8d5-f0cf-40497946efe9@deltatee.com>
- <20210929233540.GF3544071@ziepe.ca>
- <f9a83402-3d66-7437-ca47-77bac4108424@deltatee.com>
- <20210930003652.GH3544071@ziepe.ca>
- <20211001134856.GN3544071@ziepe.ca>
- <4fdd337b-fa35-a909-5eee-823bfd1e9dc4@deltatee.com>
- <20211001174511.GQ3544071@ziepe.ca>
- <809be72b-efb2-752c-31a6-702c8a307ce7@amd.com>
+        Mon, 04 Oct 2021 06:11:09 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 09:11:04 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211004090018-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <20211001092125.64fef348.pasic@linux.ibm.com>
+ <20211002055605-mutt-send-email-mst@kernel.org>
+ <87bl452d90.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <809be72b-efb2-752c-31a6-702c8a307ce7@amd.com>
+In-Reply-To: <87bl452d90.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 08:58:35AM +0200, Christian König wrote:
-> I'm not following this discussion to closely, but try to look into it from
-> time to time.
+On Mon, Oct 04, 2021 at 02:19:55PM +0200, Cornelia Huck wrote:
 > 
-> Am 01.10.21 um 19:45 schrieb Jason Gunthorpe:
-> > On Fri, Oct 01, 2021 at 11:01:49AM -0600, Logan Gunthorpe wrote:
-> > 
-> > > In device-dax, the refcount is only used to prevent the device, and
-> > > therefore the pages, from going away on device unbind. Pages cannot be
-> > > recycled, as you say, as they are mapped linearly within the device. The
-> > > address space invalidation is done only when the device is unbound.
-> > By address space invalidation I mean invalidation of the VMA that is
-> > pointing to those pages.
-> > 
-> > device-dax may not have a issue with use-after-VMA-invalidation by
-> > it's very nature since every PFN always points to the same
-> > thing. fsdax and this p2p stuff are different though.
-> > 
-> > > Before the invalidation, an active flag is cleared to ensure no new
-> > > mappings can be created while the unmap is proceeding.
-> > > unmap_mapping_range() should sequence itself with the TLB flush and
-> > AFIAK unmap_mapping_range() kicks off the TLB flush and then
-> > returns. It doesn't always wait for the flush to fully finish. Ie some
-> > cases use RCU to lock the page table against GUP fast and so the
-> > put_page() doesn't happen until the call_rcu completes - after a grace
-> > period. The unmap_mapping_range() does not wait for grace periods.
+> [cc:qemu-devel]
 > 
-> Wow, wait a second. That is quite a boomer. At least in all GEM/TTM based
-> graphics drivers that could potentially cause a lot of trouble.
+> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> I've just double checked and we certainly have the assumption that when
-> unmap_mapping_range() returns the pte is gone and the TLB flush completed in
-> quite a number of places.
+> > On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
+> >> On Thu, 30 Sep 2021 07:12:21 -0400
+> >> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> >> 
+> >> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
+> >> > > This patch fixes a regression introduced by commit 82e89ea077b9
+> >> > > ("virtio-blk: Add validation for block size in config space") and
+> >> > > enables similar checks in verify() on big endian platforms.
+> >> > > 
+> >> > > The problem with checking multi-byte config fields in the verify
+> >> > > callback, on big endian platforms, and with a possibly transitional
+> >> > > device is the following. The verify() callback is called between
+> >> > > config->get_features() and virtio_finalize_features(). That we have a
+> >> > > device that offered F_VERSION_1 then we have the following options
+> >> > > either the device is transitional, and then it has to present the legacy
+> >> > > interface, i.e. a big endian config space until F_VERSION_1 is
+> >> > > negotiated, or we have a non-transitional device, which makes
+> >> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+> >> > > thus presents a little endian config space. Because at this point we
+> >> > > can't know if the device is transitional or non-transitional, we can't
+> >> > > know do we need to byte swap or not.  
+> >> > 
+> >> > Hmm which transport does this refer to?
+> >> 
+> >> It is the same with virtio-ccw and virtio-pci. I see the same problem
+> >> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
+> >> yet (have to figure out how to do that with libvirt) for pci I used
+> >> virtio-blk-pci.
+> >> 
+> >> > Distinguishing between legacy and modern drivers is transport
+> >> > specific.  PCI presents
+> >> > legacy and modern at separate addresses so distinguishing
+> >> > between these two should be no trouble.
+> >> 
+> >> You mean the device id? Yes that is bolted down in the spec, but
+> >> currently we don't exploit that information. Furthermore there
+> >> is a fat chance that with QEMU even the allegedly non-transitional
+> >> devices only present a little endian config space after VERSION_1
+> >> was negotiated. Namely get_config for virtio-blk is implemented in
+> >> virtio_blk_update_config() which does virtio_stl_p(vdev,
+> >> &blkcfg.blk_size, blk_size) and in there we don't care
+> >> about transitional or not:
+> >> 
+> >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
+> >> {
+> >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
+> >>     return virtio_is_big_endian(vdev);
+> >> #elif defined(TARGET_WORDS_BIGENDIAN)
+> >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
+> >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
+> >>         return false;
+> >>     }
+> >>     return true;
+> >> #else
+> >>     return false;
+> >> #endif
+> >> }
+> >> 
+> >
+> > ok so that's a QEMU bug. Any virtio 1.0 and up
+> > compatible device must use LE.
+> > It can also present a legacy config space where the
+> > endian depends on the guest.
 > 
-> Do you have more information when and why that can happen?
+> So, how is the virtio core supposed to determine this? A
+> transport-specific callback?
 
-There are two things to keep in mind, flushing the PTEs from the HW
-and serializing against gup_fast.
+I'd say a field in VirtIODevice is easiest.
 
-If you start at unmap_mapping_range() the page is eventually
-discovered in zap_pte_range() and the PTE cleared. It is then passed
-into __tlb_remove_page() which puts it on the batch->pages list
+> >
+> >> > Channel i/o has versioning so same thing?
+> >> >
+> >> 
+> >> Don't think so. Both a transitional and a non-transitional device
+> >> would have to accept revisions higher than 0 if the driver tried to
+> >> negotiate those (and we do in our case).
+> >
+> > Yes, the modern driver does. And that one is known to be LE.
+> > legacy driver doesn't.
+> >
+> >> > > The virtio spec explicitly states that the driver MAY read config
+> >> > > between reading and writing the features so saying that first accessing
+> >> > > the config before feature negotiation is done is not an option. The
+> >> > > specification ain't clear about setting the features multiple times
+> >> > > before FEATURES_OK, so I guess that should be fine.
+> >> > > 
+> >> > > I don't consider this patch super clean, but frankly I don't think we
+> >> > > have a ton of options. Another option that may or man not be cleaner,
+> >> > > but is also IMHO much uglier is to figure out whether the device is
+> >> > > transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+> >> > > according tho what we have figured out, hoping that the characteristics
+> >> > > of the device didn't change.  
+> >> > 
+> >> > I am confused here. So is the problem at the device or at the driver level?
+> >> 
+> >> We have a driver regression. Since the 82e89ea077b9 ("virtio-blk: Add
+> >> validation for block size in config space") virtio-blk is broken on
+> >> s390.
+> >
+> > Because of a qemu bug. I agree. It's worth working around in the driver
+> > since the qemu bug has been around for a very long time.
+> 
+> Yes, since we introduced virtio 1 support, I guess...
+> 
+> >
+> >
+> >> The deeper problem is in the spec. We stated that the driver may read
+> >> config space before the feature negotiation is finalized, but we didn't
+> >> think enough about what happens when native endiannes is not little
+> >> endian in the different cases.
+> >
+> > Because the spec is very clear that endian-ness is LE.
+> > I don't see a spec issue yet here, just an implementation issue.
+> 
+> Maybe not really a bug in the spec, but probably an issue, as this seems
+> to have been unclear to most people so far.
+> 
+> >
+> >> I believe, for non-transitional devices we have a problem in the host as
+> >> well (i.e. in QEMU).
+> >
+> > Because QEMU ignores the spec and instead relies on the feature
+> > negotiation.
+> >
+> >> 
+> >> > I suspect it's actually the host that has the issue, not
+> >> > the guest?
+> >> 
+> >> I tend to say we have a problem both in the host and in the guest. I'm
+> >> more concerned about the problem in the guest, because that is a really
+> >> nasty regression.
+> >
+> > The problem is in the guest. The bug is in the host ;)
+> >
+> >> For the host. I think for legacy we don't have a
+> >> problem, because both sides would operate on the assumption no
+> >> _F_VERSION_1, IMHO the implementation for the transitional devices is
+> >> correct.
+> >
+> > Well no, the point of transitional is really to be 1.0 compliant
+> > *and* also expose a legacy interface.
+> 
+> Worth noting that PCI and CCW are a tad different here: PCI exposes an
+> additional interface, while CCW uses a revision negotiation mechanism
+> (for CCW, legacy and standard-compliant are much closer on the transport
+> side as for PCI.) MMIO does not do transitional, if I'm not wrong.
 
-The page free happens in tlb_batch_pages_flush() via
-free_pages_and_swap_cache()
+Right. It probably still uses VIRTIO_F_VERSION_1 and we need to
+fix that.
 
-The tlb_batch_pages_flush() happens via zap_page_range() ->
-tlb_finish_mmu(), presumably after the HW has wiped the TLB's on all
-CPUs. On x86 this is done with an IPI and also serializes gup fast, so
-OK
+> >
+> >> For non-transitional flavor, it depends on the device. For
+> >> example virtio-net and virtio-blk is broken, because we use primitives
+> >> like virtio_stl_p() and those don't do the right thing before feature
+> >> negotiation is completed. On the other hand virtio-crypto.c as a truly
+> >> non-transitional device uses stl_le_p() and IMHO does the right thing.
+> >> 
+> >> Thanks for your comments! I hope I managed to answer your questions. I
+> >> need some guidance on how do we want to move forward on this.
+> >> 
+> >> Regards,
+> >> Halil
+> >
+> > OK so. I don't have a problem with the patch itself,
+> > assuming it's enough to work around all buggy hosts.
+> > I am especially worried about things like vhost/vhost-user,
+> > I suspect they might have a bug like this too, and
+> > I am not sure whether your work around is enough for these.
+> > Can you check please?
+> >
+> > If not we'll have to move all validate code to after FEATURES_OK
+> > is set.
+> 
+> What is supposed to happen for validate after FEATURES_OK? The driver
+> cannot change any features at that point in time, it can only fail to
+> use the device.
 
-The interesting case is CONFIG_MMU_GATHER_RCU_TABLE_FREE which doesn't
-rely on IPIs anymore to synchronize with gup-fast.
+Fail to use the device. Need to tread carefully here of course,
+we don't want to break working setups.
 
-In this configuration it means when unmap_mapping_range() returns the
-TLB will have been flushed, but no serialization with GUP fast was
-done.
+> >
+> > We do however want to document that this API can be called
+> > multiple times since that was not the case
+> > previously.
+> >
+> > Also, I would limit this to when
+> > - the validate callback exists
+> > - the guest endian-ness is not LE
+> >
+> > We also want to document the QEMU bug in a comment here,
+> > e.g. 
+> >
+> > /*
+> >  * QEMU before version 6.2 incorrectly uses driver features with guest
+> >  * endian-ness to set endian-ness for config space instead of just using
+> >  * LE for the modern interface as per spec.
+> >  * This breaks reading config in the validate callback.
+> >  * To work around that, when device is 1.0 (so supposed to be LE)
+> >  * but guest is not LE, then send the features to device one extra
+> >  * time before validation.
+> >  */
+> 
+> Do we need to consider migration, or do we not need to be bug-compatible
+> in this case?
 
-This is OK if the GUP fast cannot return the page at all. I assume
-this generally describes the DRM caes?
+I suspect we don't need to be bug compatible, any driver
+accessing config before FEATURES_OK is already broken ...
 
-However, if the GUP fast can return the page then something,
-somewhere, needs to serialize the page free with the RCU as the GUP
-fast can be observing the old PTE before it was zap'd until the RCU
-grace expires.
+> >
+> > Finally I'd like to see the QEMU bug fix before I merge this one,
+> > since it will be harder to test with a fix.
+> >
+> >
+> >
+> >
+> >> > 
+> >> > 
+> >> > > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> >> > > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> >> > > Reported-by: markver@us.ibm.com
+> >> > > ---
+> >> > >  drivers/virtio/virtio.c | 4 ++++
+> >> > >  1 file changed, 4 insertions(+)
+> >> > > 
+> >> > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> >> > > index 0a5b54034d4b..9dc3cfa17b1c 100644
+> >> > > --- a/drivers/virtio/virtio.c
+> >> > > +++ b/drivers/virtio/virtio.c
+> >> > > @@ -249,6 +249,10 @@ static int virtio_dev_probe(struct device *_d)
+> >> > >  		if (device_features & (1ULL << i))
+> >> > >  			__virtio_set_bit(dev, i);
+> >> > >  
+> >> > > +	/* Write back features before validate to know endianness */
+> >> > > +	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+> >> > > +		dev->config->finalize_features(dev);
+> >> > > +
+> >> > >  	if (drv->validate) {
+> >> > >  		err = drv->validate(dev);
+> >> > >  		if (err)
+> >> > > 
+> >> > > base-commit: 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+> >> > > -- 
+> >> > > 2.25.1  
+> >> > 
 
-Relying on the page ref being !0 to protect GUP fast is not safe
-because the page ref can be incr'd immediately upon page re-use.
-
-Interestingly I looked around for this on PPC and I only found RCU
-delayed freeing of the page table level, not RCU delayed freeing of
-pages themselves.. I wonder if it was missed? 
-
-There is a path on PPC (tlb_remove_table_sync_one) that triggers an
-IPI but it looks like an exception, and we wouldn't need the RCU at
-all if we used IPI to serialize GUP fast...
-
-It makes logical sense if the RCU also frees the pages on
-CONFIG_MMU_GATHER_RCU_TABLE_FREE so anything returnable by GUP fast
-must be refcounted and freed by tlb_batch_pages_flush(), not by the
-caller of unmap_mapping_range().
-
-If we expect to allow the caller of unmap_mapping_range() to free then
-CONFIG_MMU_GATHER_RCU_TABLE_FREE can't really exist, we always need to
-trigger a serializing IPI during tlb_batch_pages_flush()
-
-AFAICT, at least
-
-Jason
