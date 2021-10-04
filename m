@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F685421661
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA4A421663
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238360AbhJDS2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:28:00 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:46954 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhJDS17 (ORCPT
+        id S238402AbhJDS2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238541AbhJDS2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:27:59 -0400
-Received: by mail-ot1-f54.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so22710794ota.13;
-        Mon, 04 Oct 2021 11:26:09 -0700 (PDT)
+        Mon, 4 Oct 2021 14:28:12 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605BFC061746;
+        Mon,  4 Oct 2021 11:26:23 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id y14so6777780vsm.9;
+        Mon, 04 Oct 2021 11:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6n/vts0PyHmoxi8oEBeOuVoVdH7tRF+8eeP06Mq4yWA=;
+        b=NuDtgVLsxGgAxPAHdWpFc8G6LW+l550GL9Nh06oO17X1ulv4GnhPCUdBjx+zU4LSyH
+         Lse4QOm89izzccTGHht3YRE4BXD12YPzgpcUFqqUG/Vu0p2LIJQKubFN4zmlqKNwdyG7
+         qNmTA1rh02vDf6WggG/IYDve1KWSYW+jM9Vc1U/CIfj7okQO7UbHnsgBNeoFw0WPom/k
+         /VwHya7SSczwtL1tixVNZaILyrKuFNAlS3P1BhwgqLhEANIuDYfTMZtKO62LU2jeXiK8
+         kWZdMMqClpOq1da2IhvLtAPlP8DAPFbIm7Hpu9fpeB7ubx5iLHYfkzBIBeS0lEkxVH5m
+         04ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o8bwhkN79EalIrTbnnOWRqEA3DSi10UHvsR2eJcQa94=;
-        b=VX2GazQ7k2Feaf7Yd9RSRX0VUasnGDpItuUIKSofp9cNqs88YA6MzlaKq19hoq0oso
-         faOpDuRAu3cHWXElrisTuOZTViDXYfzdiZWAP9cbRinnzueKbaibz5JoGgvo6V/OMGBR
-         Wn+5SJGTAm1787SAX4Q/7ag7zk3561LRQjS0+LKOH8A7+OMEnbGL9ghbE4Fer6KagZVs
-         hUzjIfFxQzlbRAKbTfEoX2ftQ7zBOj2O0emvu6lgWWuS9XXMZBEawm0CjkFjNLqCVZgc
-         HuTXdhi7UMf59Ni1pxKvivUQ6XLflfr/ay6w05nNEIPSukpHM3c2142kVM7GiDuTeWQN
-         jsuA==
-X-Gm-Message-State: AOAM533anNfDOkN5dGGVHuD+e5l2pIPa+LvLHfbi40ByIMRmCj4q5c/v
-        RHDI3o4KWNhU4G2Ronzyhg==
-X-Google-Smtp-Source: ABdhPJz2K7KCGZfqZNBbWPfWIgbCS+HZoWQP3+s7HnKACw+3nQsHcrlj9kQ5sRUN6acBuzNlHkKtng==
-X-Received: by 2002:a05:6830:1616:: with SMTP id g22mr10744306otr.79.1633371969600;
-        Mon, 04 Oct 2021 11:26:09 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j24sm2186115otq.72.2021.10.04.11.26.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:26:09 -0700 (PDT)
-Received: (nullmailer pid 1608195 invoked by uid 1000);
-        Mon, 04 Oct 2021 18:26:08 -0000
-Date:   Mon, 4 Oct 2021 13:26:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Maxime Ripard <mripard@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v2 1/9] dt-bindings: rtc: sun6i: Clean up repetition
-Message-ID: <YVtHQMMzPn00tLDw@robh.at.kernel.org>
-References: <20210928080335.36706-1-samuel@sholland.org>
- <20210928080335.36706-2-samuel@sholland.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6n/vts0PyHmoxi8oEBeOuVoVdH7tRF+8eeP06Mq4yWA=;
+        b=pJez7O6ZNiNhVG3XkKCx+YFkQnaNs0+uddMuRrna3VE1dsSK8X57STZ/SixdzKaQ62
+         lL3m+qaSE2qvQ+pTIAm5fmpz47MS5j7mmjnBcp/Va5EYbZEUekgbrWeeSbudOOZ90pxX
+         ccur+mtGJb7J8xJDiXPRrSANLv5jZxPHZ0F2zxBOoZTfBeewK4Su2uz0U1LYaXejZhWe
+         qqKTerpwGpr3C37grnfw2jg1GR9pS204fL00hTzMUfdMnIaOBpECHbvxF4/VTdocElTS
+         vxdgiTcNGVMbsR1LmkdT6/CuBhJNR/xpVrRm/hRnl3dlVemlB4cpSWn55L1G6TaFQPYA
+         0g1g==
+X-Gm-Message-State: AOAM532LBuQtTQANaqrsGj1bcYkILSdzmp71DBf2rLBVUK8TwTU3J+8e
+        mbWV+L8SX0DWasx0a5N3CMTmCqaxnEyXkvIYZNI=
+X-Google-Smtp-Source: ABdhPJyWkVxkzj24O9IbQ07+XhO2ovB+390tYNmw0/qcOFn04pnzmeGJsny1QYwPGB1Z3BUS7aR0Sa6NBsE2uQoC/w4=
+X-Received: by 2002:a67:d189:: with SMTP id w9mr14525515vsi.55.1633371982514;
+ Mon, 04 Oct 2021 11:26:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928080335.36706-2-samuel@sholland.org>
+References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
+ <20210926145931.14603-2-sergio.paracuellos@gmail.com> <YVtBsrmCDk/sLsRJ@robh.at.kernel.org>
+In-Reply-To: <YVtBsrmCDk/sLsRJ@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 4 Oct 2021 20:26:11 +0200
+Message-ID: <CAMhs-H_qBkQhzwvcVyFbegf412ecvweOBOYq8NW2hBNYUUCE-w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: reset: add dt binding header for ralink
+ RT2880 resets
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 03:03:27 -0500, Samuel Holland wrote:
-> - Use "enum" for compatibles instead of several "const" alternatives.
-> - Merge the H6 clock-output-names minItems/maxItems constraint into the
->   identical block above.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
-> Changes since v1:
->   - New patch.
-> 
->  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 28 ++++++-------------
->  1 file changed, 9 insertions(+), 19 deletions(-)
-> 
+On Mon, Oct 4, 2021 at 8:02 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Sep 26, 2021 at 04:59:29PM +0200, Sergio Paracuellos wrote:
+> > Adds dt binding header for 'ralink,rt2880-reset' resets.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  include/dt-bindings/reset/ralink-rt2880.h | 40 +++++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >  create mode 100644 include/dt-bindings/reset/ralink-rt2880.h
+> >
+> > diff --git a/include/dt-bindings/reset/ralink-rt2880.h b/include/dt-bindings/reset/ralink-rt2880.h
+> > new file mode 100644
+> > index 000000000000..266ef521a584
+> > --- /dev/null
+> > +++ b/include/dt-bindings/reset/ralink-rt2880.h
+> > @@ -0,0 +1,40 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+>
+> Dual license please.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Ah, ok. I thought the dual license was only for binding yaml files but
+not for headers since there are a lot of already mainlined files with
+only GPL-2.0. I will take into account from now that binding headers
+also need dual license.
+
+Thanks for the review and clarification.
+
+Best regards,
+    Sergio Paracuellos
