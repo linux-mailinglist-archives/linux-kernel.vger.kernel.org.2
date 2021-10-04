@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF86420B66
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF63C420F74
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhJDM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
+        id S237786AbhJDNe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233325AbhJDM4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 899CE61373;
-        Mon,  4 Oct 2021 12:54:52 +0000 (UTC)
+        id S237701AbhJDNdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C217263223;
+        Mon,  4 Oct 2021 13:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352093;
-        bh=YUrtutPTC3ST3y7U+wKU+QMHghzgDNjtzU5vVZQfyDA=;
+        s=korg; t=1633353294;
+        bh=vI/ThSmCYCnrsLHSHczvncB2LQJS+cvNs/OvwovcF64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZCmzsuKPeF49VXK4TbOI4oQ2I0c9gRfytj/OJ5lNHtw8cVQkVaQZ1Pp3swFZvQsi
-         tzCCq7QG8dJA2BI/fCtxFCS3C1k6Ch64otNR5ERPKb7dBZqZN7oQqYZSRecTSLaRpj
-         p7gM1FYAM3qEaCY7ScHTsDP0zNPBVqy7wLbmr1/I=
+        b=BTVFE4kNHx7VKmoyUMHqbQGCODYxHXaW3CYRN0IuPK92waN/MeNi3G/FywUqZewtY
+         uRCtNt2AQKFa55xkz90uzG/TKSgT0SH/hU/i9gdVKJZtnHk3Fd1ctwkdc6f72QUjTk
+         5kFwNN6h8Ui/+HZlgzdfjRNCStd8BzlMHSTkJRx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 10/41] net: hso: fix muxed tty registration
-Date:   Mon,  4 Oct 2021 14:52:01 +0200
-Message-Id: <20211004125026.915820500@linuxfoundation.org>
+        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Le Ma <Le.Ma@amd.com>, Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.14 072/172] drm/amdgpu: correct initial cp_hqd_quantum for gfx9
+Date:   Mon,  4 Oct 2021 14:52:02 +0200
+Message-Id: <20211004125047.321124595@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Hawking Zhang <Hawking.Zhang@amd.com>
 
-commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
+commit 9f52c25f59b504a29dda42d83ac1e24d2af535d4 upstream.
 
-If resource allocation and registration fail for a muxed tty device
-(e.g. if there are no more minor numbers) the driver should not try to
-deregister the never-registered (or already-deregistered) tty.
+didn't read the value of mmCP_HQD_QUANTUM from correct
+register offset
 
-Fix up the error handling to avoid dereferencing a NULL pointer when
-attempting to remove the character device.
-
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org	# 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Reviewed-by: Le Ma <Le.Ma@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2729,14 +2729,14 @@ struct hso_device *hso_create_mux_serial
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -3598,7 +3598,7 @@ static int gfx_v9_0_mqd_init(struct amdg
  
- 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
- 	if (!serial)
--		goto exit;
-+		goto err_free_dev;
+ 	/* set static priority for a queue/ring */
+ 	gfx_v9_0_mqd_set_priority(ring, mqd);
+-	mqd->cp_hqd_quantum = RREG32(mmCP_HQD_QUANTUM);
++	mqd->cp_hqd_quantum = RREG32_SOC15(GC, 0, mmCP_HQD_QUANTUM);
  
- 	hso_dev->port_data.dev_serial = serial;
- 	serial->parent = hso_dev;
- 
- 	if (hso_serial_common_create
- 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
--		goto exit;
-+		goto err_free_serial;
- 
- 	serial->tx_data_length--;
- 	serial->write_data = hso_mux_serial_write_data;
-@@ -2752,11 +2752,9 @@ struct hso_device *hso_create_mux_serial
- 	/* done, return it */
- 	return hso_dev;
- 
--exit:
--	if (serial) {
--		tty_unregister_device(tty_drv, serial->minor);
--		kfree(serial);
--	}
-+err_free_serial:
-+	kfree(serial);
-+err_free_dev:
- 	kfree(hso_dev);
- 	return NULL;
- 
+ 	/* map_queues packet doesn't need activate the queue,
+ 	 * so only kiq need set this field.
 
 
