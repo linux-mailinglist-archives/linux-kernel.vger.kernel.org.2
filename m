@@ -2,79 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9D44212A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2BC4212A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhJDPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S235168AbhJDPal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbhJDPaO (ORCPT
+        with ESMTP id S234888AbhJDPak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:30:14 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43462C061745;
-        Mon,  4 Oct 2021 08:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=s7NZ7E3PI4Zsi+Hk9Jgv2Mz0SRxrTaSZ+M7CVvLomVU=; b=It0zxgyKd+0NBpQv4BLdI65mV1
-        2Gs5Jz/qiIVNKX3J2SQTIMLdOiYY4t5FtfW/v49IexG2s7Rea+jK39G2FTn8VtYW985N21W8odFQ+
-        1dTWWBb7uBmH88jPcHf+W8zj3SgQ/JmKP8C7z5w4N1u6iAXBfmx4gIhG35sIkILIkVFBEn4o9IQNN
-        TF/zocH396jjjvrE39l3dQN6t0y83liFwQrXg4q6fFtD+X9gIxv/bEPOmmKi96qwXy0rIKQHekPEd
-        j2IdoydVOYOSrAruB4luX0isKTRx/iOxvDNr347Ol5Rwyi3p7zRtc5PT7/0ZfHuipzJQ/JPJCXQaw
-        YFFMs4oA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXPtA-006u0w-4p; Mon, 04 Oct 2021 15:28:24 +0000
-Subject: Re: [PATCH 2/2] power: supply: max77976: add Maxim MAX77976 charger
- driver
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-pm@vger.kernel.org
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211004130732.950512-1-luca@lucaceresoli.net>
- <20211004130732.950512-2-luca@lucaceresoli.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a6ea9a21-e9df-b596-eb80-4df4b8d8115e@infradead.org>
-Date:   Mon, 4 Oct 2021 08:28:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 4 Oct 2021 11:30:40 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBC9C061746;
+        Mon,  4 Oct 2021 08:28:51 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so226746pjb.3;
+        Mon, 04 Oct 2021 08:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tAWxpwl8doA0MMBNMY6fAunhMduG3WDPici+oeYzeOg=;
+        b=k3h6Yt6kJllNxWx4Ua7SlpDwoN4iNNDUJOCbBqOw3/ylPLnJkFD0ev/KHCfbLX2FPW
+         WDp8POMCKLwIxwzB50y5afICh4h1KA9ZZCW0+IaTltaAN0ItGuzNLPn882P4R5pUVN9O
+         DZ4eHW3jsfBlDNynjq0+ZdSSMzy1nkxcL6yHRCiARRpzPeJMMb45wnDmFHuXaVTq6Wq/
+         Ydy1pVQHuIGbovpUqlxqED5v/cEnYrBAhGEUHEbpmjyUQDUlVJRlsEDrBAzLYxjNH/Be
+         96aap1eCmIv7IZCgqTWhH7FOJEhzGgwzz0+yKs3tnzuxoNU+0qX+QpgBHXKUAKg8taHG
+         +1OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tAWxpwl8doA0MMBNMY6fAunhMduG3WDPici+oeYzeOg=;
+        b=Tyc6CGQWOK19NJGQKCU28TYPMzsHsiyvPLIeNxvcbRb7IrdeYv7eoQ4oNka6gxKRa2
+         Y/yCdpjbSjfSL6NWikH8VA2uWTSvc/KOo8Re4nJqIRzC32LzPb06XosOW21dYYkY6M1y
+         3PTP/YcCA/IJi3GqG7xywTIEyvE3aZD32Vwn7p/AOnsij5qQhu7z/VqFaxRGGf7p146V
+         i6fUV1BMksOCkMtvR4r1cGDmvcpyYkXUOx9JBdFPU1WNgoq3hOUu0+EhzgyZtpG2WeWm
+         ql/f89QRuQ4tmdb+eveGXQOZMyKRHUPFdobV+Fry0jZoq8ZhuYKeYzllcPtdD1jG6kGB
+         BSxQ==
+X-Gm-Message-State: AOAM530+J7u3o7zAs0MRhLdMxQGjuIJ6FY53zy9ah/y/qmfgYm8wz0b1
+        jx3yljhDA/Xmy38Gs4gxGaw=
+X-Google-Smtp-Source: ABdhPJzGNn2R0Ay4+On1xJhEeoNC3fTqEowaY5B+M+FEJ8CjEXgVHx1q7PF5Nv32i3y+BtX/7m1kcQ==
+X-Received: by 2002:a17:902:bf0a:b0:13d:f4b8:111 with SMTP id bi10-20020a170902bf0a00b0013df4b80111mr271185plb.35.1633361330474;
+        Mon, 04 Oct 2021 08:28:50 -0700 (PDT)
+Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
+        by smtp.gmail.com with ESMTPSA id f20sm8669029pga.12.2021.10.04.08.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 08:28:49 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 23:28:44 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
+Message-ID: <20211004152844.GA3825382@sol>
+References: <20211004093416.GA2513199@sol>
+ <YVrM8VdLKZUt0i8R@kroah.com>
+ <20211004121942.GA3343713@sol>
+ <YVrz86m3+7wDSYlh@kuha.fi.intel.com>
+ <20211004124701.GA3418302@sol>
+ <YVr/t7AbmP/h08GX@kuha.fi.intel.com>
+ <20211004141754.GA3510607@sol>
 MIME-Version: 1.0
-In-Reply-To: <20211004130732.950512-2-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004141754.GA3510607@sol>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 6:07 AM, Luca Ceresoli wrote:
-> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-> index ad93b3550d6d..622d690c883a 100644
-> --- a/drivers/power/supply/Kconfig
-> +++ b/drivers/power/supply/Kconfig
-> @@ -557,6 +557,17 @@ config CHARGER_MAX77693
->   	help
->   	  Say Y to enable support for the Maxim MAX77693 battery charger.
->   
-> +config CHARGER_MAX77976
-> +	tristate "Maxim MAX77976 battery charger driver"
-> +	depends on REGMAP_I2C
-> +	help
-> +	  The Maxim MAX77976 is a 19 Vin, 5.5A 1-Cell Li+ Battery Charger
-> +	  USB OTG support. It has an I2C interface for configuration.
-> +
-> +	  Say Y to enable support for the Maxim MAX77976 battery charger.
-> +	  This driver can also be built as a module. If so, the module will be
-> +	  called max77976_charger.
+On Mon, Oct 04, 2021 at 10:17:54PM +0800, Kent Gibson wrote:
+> On Mon, Oct 04, 2021 at 04:20:55PM +0300, Heikki Krogerus wrote:
+> > On Mon, Oct 04, 2021 at 08:47:01PM +0800, Kent Gibson wrote:
+> > > On Mon, Oct 04, 2021 at 03:30:43PM +0300, Heikki Krogerus wrote:
+> > > > On Mon, Oct 04, 2021 at 08:19:42PM +0800, Kent Gibson wrote:
+> > > > > On Mon, Oct 04, 2021 at 11:44:17AM +0200, Greg Kroah-Hartman wrote:
+> > > > > > On Mon, Oct 04, 2021 at 05:34:16PM +0800, Kent Gibson wrote:
+> > > > > > > Hi,
+> > > > > > > 
 
-REGMAP_I2C is not a user-settable config option, so drivers should not
-"depend on" it. This should be more like:
+[snip]
 
-	depends on I2C
-	select REGMAP_I2C
+> > > Looking at the offending patch, it effectively replaces a call to
+> > > device_add_properties() with one to
+> > > device_create_managed_software_node(), and those two functions appear
+> > > quite different - at least at first glance.
+> > > Is that correct?
+> > 
+> > The only real difference between the two functions is that
+> > device_create_managed_software_node() marks the software node it
+> > creates (and it does it exactly the same way as
+> > device_add_properties()) as "managed" with a specific flag.
+> > 
+> 
 
--- 
-~Randy
+That managed flag makes all the difference.
+
+I've tried to find a fix along the same lines as Laurentiu Tudor's
+5aeb05b27f8 software node: balance refcount for managed software nodes
+but haven't found anything that works.
+
+What does work for me is to revert the call to
+device_create_managed_software_node() to a call to
+device_add_properties():
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 652531f67135..2f30bdb94fab 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -826,8 +826,7 @@ struct platform_device *platform_device_register_full(
+                goto err;
+
+        if (pdevinfo->properties) {
+-               ret = device_create_managed_software_node(&pdev->dev,
+-                                                         pdevinfo->properties, NULL);
++               ret = device_add_properties(&pdev->dev, pdevinfo->properties);
+                if (ret)
+                        goto err;
+        }
+
+That obviously wont work with your latest series that removes
+device_add_properties(), but that is the simplest, and only, solution
+that I've found so far.
+
+Cheers,
+Kent.
