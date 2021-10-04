@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319C442148B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFF942148F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237807AbhJDQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
+        id S237827AbhJDQ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236888AbhJDQ6d (ORCPT
+        with ESMTP id S237561AbhJDQ7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:58:33 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD3DC061745;
-        Mon,  4 Oct 2021 09:56:44 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y26so74796670lfa.11;
-        Mon, 04 Oct 2021 09:56:44 -0700 (PDT)
+        Mon, 4 Oct 2021 12:59:08 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57335C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:57:19 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id d131so21972396ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:57:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cReZXvdMaLPxxkxwUTgOEpzK4V0huMHeXvJZLCF/y34=;
-        b=KMfb+TS0Y+2s0MvIHw2iH2i8+wp1dpTMJrVh+eVU8gOf88gDBk1QlHbBmdrTqqd+BZ
-         Ok2JS5yG87BTKUF7HJM/t5ULmU3xao83Vm3T5/Q4ct8m3YtdMbLlzkrXfTDmAgU/xeR5
-         wrpzXLv3efk9NTl9aHHs6eFSCCzjfKPmXn3fA2QiUKIJdiIV8G6H4N9zd3bYIBl1Rl9b
-         6bo6JwmFxV/rIdC2WjazvvZ+TMHqkNf9gmuQBlSPBIgggq1wn0X7DXKBw01N1GCFhToR
-         WYeXhyUQtNL++GrAn3WLH1JNO81094QVY7oxuE0s9IJv5If/7DGybE30sZCjztgvOMSX
-         RjNA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=25uBBIA1tJtjRBCrl2+9kZTZSoh3JSnwsuWmdRiH3hw=;
+        b=sMaFKtZMy7Lb9v6s8A+fwAAgVLAYKBFj8zIFXbpoSpe+u1jxti9e3ls2YLh1M81V2e
+         DxUta+jM+Eq0qo+mwhMsFbOi8O0IYr9vy0WFpgx4Gu3hmdkHsV1Wa4rNGtVUs3m4yzPX
+         G8UX9dKhmcywIZr+XjuRX9/jicCUTq5Hdl+vvxm/Ca01CcyAQukkssL9md+12MIz0Q+S
+         rb9jFkGZXowUv6BulYMFgzJpx6X8AU8hJv1Ipj7MQPom24gfewwUnA0oN0xOe9LIHimZ
+         fSen5G5BLL0QMQ1/taR3zAaqEWn80368BNU4vX87L3ru4KNPekwk5BsLaF6H7H1rKsWs
+         xRxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cReZXvdMaLPxxkxwUTgOEpzK4V0huMHeXvJZLCF/y34=;
-        b=rgHD2cPQ03Ahd8ZOdMKwF3oneMR/kM/SeZQGfb/G4YgquNZeQ1fHpNmg2nqmyqtZHJ
-         KoFbv8RNfymGPwY/Q8p6yCy7+2SrYFAxotljwUzc/w6NmmdJyBTopk9Z9o0dUcs47s1X
-         4zKQBSP8meHA/o5EAPm+jv1F7Bw++kyXam6vtwaNQryDzpJ5TTZHKxiXDvIfkZwtLK0O
-         itz0OypRAD0DJf/LytgPfaFWC7Ejf0lqvmCzLiL2JohACjHbG4kp4c4ezCGZVEbBQLrn
-         vbrP9+CxDydaQO+wFsZ16aVuwEQUirtu1bQc2VeEECLtWolXGnPQryOteYegkbrcDLrz
-         nHKg==
-X-Gm-Message-State: AOAM531NgYS4MVXDhd5FP0wxJli2jWrYu8DM535KKnwYsTOmGqWHrtWZ
-        N3dEQlUWszq7LJ+l/+7NrSYjAfMK1OI=
-X-Google-Smtp-Source: ABdhPJxWC2HN3ttLQ1P+heXRUCye01FLfaz3AROBpfjCTKhYBZjm3G6YsDsUwr5/CKUixmHiparpLA==
-X-Received: by 2002:a05:6512:12c6:: with SMTP id p6mr15386474lfg.271.1633366602778;
-        Mon, 04 Oct 2021 09:56:42 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id k2sm1621088ljo.69.2021.10.04.09.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 09:56:42 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] dt-bindings: memory: tegra20: emc: Document new
- LPDDR2 sub-node
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211003013235.2357-1-digetx@gmail.com>
- <20211003013235.2357-3-digetx@gmail.com>
- <a3713f62-0ece-5ab2-f55a-3d614ce01c00@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <184e4ce9-7beb-19ff-1562-453603eb7cce@gmail.com>
-Date:   Mon, 4 Oct 2021 19:56:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=25uBBIA1tJtjRBCrl2+9kZTZSoh3JSnwsuWmdRiH3hw=;
+        b=AzJV7KEIqYB8nVODZTNG3LaIehfb+NntJuER5LsoX3wsOkGvGNs9/lfppzZ82PvRXi
+         LhEJfb0dckYfKG1XFtkA24Yki0CymARzZPO08yyyCXE3acz/VYRka9N/iSkhkfKdrmoF
+         9yu9Zys96BEiS3M1qYKeTqAQCLnNZUDTe963lTTntozcdUCb0H5GYM/87mZP/dI99Uu1
+         kA+YffpauZ/DNL/vBW9HOdUDlIjW8WA73ttieimuDOc6zCa2/TtsV0Ide4FVz4KRHTxv
+         h4Z+x/LZFDKUoX/At18K3cLCCayeCor8FLhe8bsmA3h6Is0vpdYDFu7Mw5zL/+u5gAx3
+         dFhw==
+X-Gm-Message-State: AOAM532rIB4mrDOg4vt7s8HgQYlHrBT+qP4coNB2VNj9YqmPudhjpVH2
+        Vv0CAf2ocfg5zoy8ESL5n/atB+X2hPPO+uMKChxFyw==
+X-Google-Smtp-Source: ABdhPJzdbqAc9X4N6Bvy/Z1U+lNQQW8XeC7ZckqW+eVDjfVecolfqXv6w996lV2cxq+C2JJEp6ikL7VHTXtomNz0gr4=
+X-Received: by 2002:a05:6902:124f:: with SMTP id t15mr17915053ybu.161.1633366638338;
+ Mon, 04 Oct 2021 09:57:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a3713f62-0ece-5ab2-f55a-3d614ce01c00@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210617090941.340135-1-lee.jones@linaro.org> <YMs08Ij8PZ/gemLL@slm.duckdns.org>
+ <YMs5ssb50B208Aad@dell> <CAJuCfpHvRuapSMa2KMdF4_-8fKdqtx_gYVKyw5dYT6XjfRrDfg@mail.gmail.com>
+ <YVsuw+UBZDY6Rkzd@slm.duckdns.org>
+In-Reply-To: <YVsuw+UBZDY6Rkzd@slm.duckdns.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 4 Oct 2021 09:57:07 -0700
+Message-ID: <CAJuCfpHprdJWpR_HPSVm6DFEOJj4RWmWC10=ZdGYF_JFAvV+_g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup-v1: Grant CAP_SYS_NICE holders permission to
+ move tasks between cgroups
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        Wei Wang <wvw@google.com>, John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.10.2021 11:37, Krzysztof Kozlowski пишет:
-> On 03/10/2021 03:32, Dmitry Osipenko wrote:
->> Some Tegra20 boards don't have RAM code stored in NVMEM, which is used for
->> the memory chip identification and the identity information should be read
->> out from LPDDR2 chip in this case. Document new sub-node containing generic
->> LPDDR2 properties that will be used for the memory chip identification if
->> RAM code isn't available. The identification is done by reading out memory
->> configuration values from generic LPDDR2 mode registers of SDRAM chip and
->> comparing them with the values of device-tree sub-node's.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  .../memory-controllers/nvidia,tegra20-emc.yaml  | 17 ++++++++++++++---
->>  1 file changed, 14 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->> index cac6842dc8f1..65f7c3898ac4 100644
->> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
->> @@ -164,13 +164,14 @@ patternProperties:
->>        "#size-cells":
->>          const: 0
->>  
->> +      lpddr2-configuration:
-> 
-> Nodes should be named generic, so just lpddr2?
+On Mon, Oct 4, 2021 at 9:41 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Thu, Sep 30, 2021 at 02:20:53PM -0700, Suren Baghdasaryan wrote:
+> > Some of the controllers are moving to cgroup v2 but not all of them
+> > are there yet. For example, there are still some issues with moving
+> > the cpu controller to v2 which I believe were discussed during Android
+> > Microconference at LPC 2021.
+>
+> Care to provide a summary?
 
-Yes
+Unfortunately I could not be present at LPC this year but Wei I
+believe was the presenter (CC'ing him).
+Wei, could you please summarize the issues with moving the cpu
+controller to cgroups v2?
+Also CC'ing John, who I believe tried to upstream this patch before.
+Thanks,
+Suren.
 
->> +        $ref: "jedec,lpddr2.yaml#"
->> +        type: object
->> +
->>      patternProperties:
->>        "^emc-table@[0-9]+$":
->>          $ref: "#/$defs/emc-table"
->>  
->> -    required:
->> -      - nvidia,ram-code
-> 
-> Isn't lpddr2-configuration required in such case? If not, probably you
-> want either this or that (oneOf like in reserved-memory.yaml).
 
-Thanks, oneOf will work.
+>
+> Thanks.
+>
+> --
+> tejun
