@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AC5421991
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7205A421A73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbhJDWFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230517AbhJDWFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8B02261248;
-        Mon,  4 Oct 2021 22:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633385040;
-        bh=ptPjZamrSRz75pgEjsbsvW8bq613ATjRZtw+WHXkg6s=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=A4t+dqU6YbHzkyq82ovgnGv9BwpGyyRC7B88wqb9YIRg4857cQi7BVQo+aZsCbEgC
-         JLwSHJiifVxruUt15RGPqmgc7vsXUieSzbhlrk4fYkn5DPsEOmIgBK3eQmmpOIcSin
-         wAyDO+5VvCG//a1EUjOX2KZBzBSnPeAFlG0iT6PRyyIsDcfZnQnnkTjNaLFQdjQlJG
-         2Y8M2WYxpAvV8TuGbis7i+45MSAltIEvhnIqk+0SncV2NTnpsG58oZCZdUUMZqG90p
-         D5DX2q4Sswmolujzg2MTq5JuN5OoCCyVLaUWf1fBgUlJsCo9+lnSkdfCmFa3YKmzJI
-         +AFsqGT7MY+SA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 785F9609D8;
-        Mon,  4 Oct 2021 22:04:00 +0000 (UTC)
-Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.15-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
-References: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc5
-X-PR-Tracked-Commit-Id: 2f9602870886af74d97bac23ee6db5f5466d0a49
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f6274b06e326d8471cdfb52595f989a90f5e888f
-Message-Id: <163338504042.6107.2760751247423903309.pr-tracker-bot@kernel.org>
-Date:   Mon, 04 Oct 2021 22:04:00 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S234317AbhJDXIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:08:54 -0400
+Received: from finn.gateworks.com ([108.161.129.64]:51968 "EHLO
+        finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231273AbhJDXIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:08:53 -0400
+X-Greylist: delayed 2592 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 19:08:53 EDT
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by finn.localdomain with esmtp (Exim 4.93)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1mXWN4-0078Ft-U2; Mon, 04 Oct 2021 22:23:43 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tim Harvey <tharvey@gateworks.com>, stable@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8m*-venice-gw7902: fix M2_RST# gpio
+Date:   Mon,  4 Oct 2021 15:23:41 -0700
+Message-Id: <20211004222341.27949-1-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 4 Oct 2021 15:15:09 -0600:
+Fix invalid M2_RST# gpio pinmux.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc5
+Fixes: ef484dfcf6f7 ("arm64: dts: imx: Add i.mx8mm/imx8mn Gateworks gw7902 dts support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f6274b06e326d8471cdfb52595f989a90f5e888f
-
-Thank you!
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+index b4c1b662fa79..05c3406c90f5 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+@@ -681,7 +681,7 @@
+ 	pinctrl_hog: hoggrp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_NAND_CE0_B_GPIO3_IO1	0x40000159 /* M2_GDIS# */
+-			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x40000041 /* M2_RST# */
++			MX8MM_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x40000041 /* M2_RST# */
+ 			MX8MM_IOMUXC_NAND_DATA01_GPIO3_IO7	0x40000119 /* M2_OFF# */
+ 			MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x40000159 /* M2_WDIS# */
+ 			MX8MM_IOMUXC_SAI1_TXD2_GPIO4_IO14	0x40000041 /* AMP GPIO1 */
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+index e77db4996e58..236f425e1570 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+@@ -633,7 +633,7 @@
+ 	pinctrl_hog: hoggrp {
+ 		fsl,pins = <
+ 			MX8MN_IOMUXC_NAND_CE0_B_GPIO3_IO1	0x40000159 /* M2_GDIS# */
+-			MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x40000041 /* M2_RST# */
++			MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x40000041 /* M2_RST# */
+ 			MX8MN_IOMUXC_NAND_DATA01_GPIO3_IO7	0x40000119 /* M2_OFF# */
+ 			MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x40000159 /* M2_WDIS# */
+ 			MX8MN_IOMUXC_SAI2_RXFS_GPIO4_IO21	0x40000041 /* APP GPIO1 */
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
