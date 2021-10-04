@@ -2,187 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213D3420A59
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E20420A5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhJDLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhJDLsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:48:55 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B68C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 04:47:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DBF1C1F42A2D;
-        Mon,  4 Oct 2021 12:47:04 +0100 (BST)
-Date:   Mon, 4 Oct 2021 13:47:00 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211004134700.26327f6f@collabora.com>
-In-Reply-To: <20211004101246.kagtezizympxupat@skn-laptop>
-References: <20211004065608.3190348-1-sean@geanix.com>
-        <20211004104147.579f3b01@collabora.com>
-        <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
-        <20211004115817.18739936@collabora.com>
-        <20211004101246.kagtezizympxupat@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232875AbhJDLwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:52:43 -0400
+Received: from out1.migadu.com ([91.121.223.63]:60388 "EHLO out1.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229778AbhJDLwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 07:52:42 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1633348252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mRyXixtJ3RFnQyJNkqqmOeKF1zm9e3y/zEd/NLkN3uQ=;
+        b=bpN/HGzUizbXOG3/YXPD/zhc3hNq+E3ggFh0ruFSegG351Yyip+VZlirYIR6AHCTQpbHHd
+        M5XDK1M+NRBy/wm+BrSaYfITxwt4JTvgIPO3ZrnGO8RDHnjRTRM5UHzSHSkQS6n1UKKhSL
+        9+Vsss4LrU4g6L8swWuWLwqg36tx5xk=
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Bin Wang <wangbin224@huawei.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] mm, pagemap: expose hwpoison entry
+Date:   Mon,  4 Oct 2021 20:50:01 +0900
+Message-Id: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 12:12:46 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-> On Mon, Oct 04, 2021 at 11:58:17AM +0200, Boris Brezillon wrote:
-> > On Mon, 4 Oct 2021 10:55:09 +0200
-> > Sean Nyekjaer <sean@geanix.com> wrote:
-> >   
-> > > On Mon, Oct 04, 2021 at 10:41:47AM +0200, Boris Brezillon wrote:  
-> > > > On Mon,  4 Oct 2021 08:56:09 +0200
-> > > > Sean Nyekjaer <sean@geanix.com> wrote:
-> > > >     
-> > > > > This will prevent nand_get_device() from returning -EBUSY.
-> > > > > It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
-> > > > > access to the mtd device.
-> > > > > 
-> > > > > Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
-> > > > > that will in turn hard error on every error returened.
-> > > > > We have seen during ubifs tries to call mtd_write before the mtd device
-> > > > > is resumed.    
-> > > > 
-> > > > I think the problem is here. Why would UBIFS/UBI try to write something
-> > > > to a device that's not resumed yet (or has been suspended already, if
-> > > > you hit this in the suspend path).
-> > > >     
-> > > > > 
-> > > > > Exec_op[0] speed things up, so we see this race when the device is
-> > > > > resuming. But it's actually "mtd: rawnand: Simplify the locking" that
-> > > > > allows it to return -EBUSY, before that commit it would have waited for
-> > > > > the mtd device to resume.    
-> > > > 
-> > > > Uh, wait. If nand_resume() was called before any writes/reads this
-> > > > wouldn't happen. IMHO, the problem is not that we return -EBUSY without
-> > > > blocking, the problem is that someone issues a write/read before calling
-> > > > mtd_resume().
-> > > >     
-> > > 
-> > > The commit msg from "mtd: rawnand: Simplify the locking" states this clearly.
-> > > 
-> > > """
-> > > Last important change to mention: we now return -EBUSY when someone
-> > > tries to access a device that as been suspended, and propagate this
-> > > error to the upper layer.
-> > > """
-> > > 
-> > > IMHO "mtd: rawnand: Simplify the locking" should never had been merged
-> > > before the upper layers was fixed to handle -EBUSY. ;)
-> > > Which they still not are...  
-> > 
-> > That's not really the problem here. Upper layers should never get
-> > -EBUSY in the first place if the MTD device was resumed before the UBI
-> > device. Looks like we have a missing UBI -> MTD parenting link, which
-> > would explain why things don't get resumed in the right order. Can you
-> > try with the following diff applied?
-> > 
-> > ---
-> > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> > index f399edc82191..1981ce8f3a26 100644
-> > --- a/drivers/mtd/ubi/build.c
-> > +++ b/drivers/mtd/ubi/build.c
-> > @@ -905,6 +905,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int
-> > ubi_num, ubi->dev.release = dev_release;
-> >         ubi->dev.class = &ubi_class;
-> >         ubi->dev.groups = ubi_dev_groups;
-> > +       ubi->dev.parent = &mtd->dev;
-> >  
-> >         ubi->mtd = mtd;
-> >         ubi->ubi_num = ubi_num;
-> >   
-> 
-> No change:
-> [   71.739193] Filesystems sync: 34.212 seconds
-> [   71.755044] Freezing user space processes ... (elapsed 0.004 seconds) done.
-> [   71.767289] OOM killer disabled.
-> [   71.770552] Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
-> [   71.782182] printk: Suspending console(s) (use no_console_suspend to debug)
-> [   71.824391] nand_suspend
-> [   71.825177] gpmi_pm_suspend
-> [   71.825676] PM: suspend devices took 0.040 seconds
-> [   71.825971] nand_write_oob - nand_get_device() returned -EBUSY
-> [   71.825985] ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 986:65536, written 0 bytes
-> [   71.826029] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.15.0-rc3-dirty #43
-> [   71.826043] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
-> [   71.826054] Workqueue: writeback wb_workfn (flush-ubifs_0_8)
-> [   71.826094] [<c010da84>] (unwind_backtrace) from [<c010a1b4>] (show_stack+0x10/0x14)
-> [   71.826122] [<c010a1b4>] (show_stack) from [<c0989c30>] (dump_stack_lvl+0x40/0x4c)
-> [   71.826151] [<c0989c30>] (dump_stack_lvl) from [<c05ed690>] (ubi_io_write+0x510/0x6b0)
-> [   71.826178] [<c05ed690>] (ubi_io_write) from [<c05ea2f0>] (ubi_eba_write_leb+0xd0/0x968)
-> [   71.826204] [<c05ea2f0>] (ubi_eba_write_leb) from [<c05e8754>] (ubi_leb_write+0xd0/0xe8)
-> [   71.826232] [<c05e8754>] (ubi_leb_write) from [<c03d67bc>] (ubifs_leb_write+0x68/0x104)
-> [   71.826263] [<c03d67bc>] (ubifs_leb_write) from [<c03d79e8>] (ubifs_wbuf_write_nolock+0x28c/0x74c)
-> [   71.826291] [<c03d79e8>] (ubifs_wbuf_write_nolock) from [<c03ca18c>] (ubifs_jnl_write_data+0x1b8/0x2b4)
-> [   71.826319] [<c03ca18c>] (ubifs_jnl_write_data) from [<c03cd184>] (do_writepage+0x190/0x284)
-> [   71.826342] [<c03cd184>] (do_writepage) from [<c023083c>] (__writepage+0x14/0x68)
-> [   71.826367] [<c023083c>] (__writepage) from [<c0231748>] (write_cache_pages+0x1c8/0x3f0)
-> [   71.826390] [<c0231748>] (write_cache_pages) from [<c0233854>] (do_writepages+0xcc/0x1f4)
-> [   71.826413] [<c0233854>] (do_writepages) from [<c02d03dc>] (__writeback_single_inode+0x2c/0x1b4)
-> [   71.826440] [<c02d03dc>] (__writeback_single_inode) from [<c02d0a64>] (writeback_sb_inodes+0x200/0x470)
-> [   71.826466] [<c02d0a64>] (writeback_sb_inodes) from [<c02d0d10>] (__writeback_inodes_wb+0x3c/0xf4)
-> [   71.826493] [<c02d0d10>] (__writeback_inodes_wb) from [<c02d0f58>] (wb_writeback+0x190/0x1f0)
-> [   71.826520] [<c02d0f58>] (wb_writeback) from [<c02d21d8>] (wb_workfn+0x2c0/0x3d4)
-> [   71.826545] [<c02d21d8>] (wb_workfn) from [<c013ac04>] (process_one_work+0x1e0/0x440)
-> [   71.826574] [<c013ac04>] (process_one_work) from [<c013aeac>] (worker_thread+0x48/0x594)
-> [   71.826600] [<c013aeac>] (worker_thread) from [<c0142364>] (kthread+0x134/0x15c)
-> [   71.826625] [<c0142364>] (kthread) from [<c0100150>] (ret_from_fork+0x14/0x24)
+A hwpoison entry is a non-present page table entry to report
+memory error events to userspace. If we have an easy way to know
+which processes have hwpoison entries, that might be useful for
+user processes to take proper actions. But we don't have it now.
+So make pagemap interface expose hwpoison entries to userspace.
 
-I'm not entirely sure, but given the timing, it looks like this
-actually happens in the suspend path, not it the resume path. What I
-don't get is why we still have a kernel thread running at that point.
+Hwpoison entry for hugepage is also exposed by this patch. The below
+example shows how pagemap is visible in the case where a memory error
+hit a hugepage mapped to a process.
 
-> 
-> [...]
-> 
-> [   71.921673] gpmi_pm_resume
-> [   71.923319] nand_resume
-> [   71.936120] PM: resume devices took 0.100 seconds
-> [   72.314551] ci_hdrc ci_hdrc.0: freeing queued request
-> [   72.521656] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
-> [   75.006404] OOM killer enabled.
-> [   75.009562] Restarting tasks ...
-> [   75.074123] done.
-> [   75.095540] PM: suspend exit
-> 
-> With the RFC PATCH:
-> [ 3702.682122] Filesystems sync: 33.416 seconds
-> [ 3702.695350] Freezing user space processes ... (elapsed 0.001 seconds) done.
-> [ 3702.704218] OOM killer disabled.
-> [ 3702.707559] Freezing remaining freezable tasks ... (elapsed 0.003 seconds) done.
-> [ 3702.718696] printk: Suspending console(s) (use no_console_suspend to debug)
-> [ 3702.757660] nand_suspend
-> [ 3702.758577] gpmi_pm_suspend
-> [ 3702.759072] PM: suspend devices took 0.040 seconds
-> [ 3702.761618] Disabling non-boot CPUs ...
-> [ 3702.854985] gpmi_pm_resume
-> [ 3702.856623] nand_resume
-> [ 3702.867796] PM: resume devices took 0.110 seconds
-> [ 3702.895019] OOM killer enabled.
-> [ 3702.898291] Restarting tasks ... done.
-> [ 3702.950723] PM: suspend exit
+    $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
+    voffset offset  len     flags
+    700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
+    700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
+    700000200       12f800  1       __________B________X_______________f______w_
+    700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
+    700000202       12f802  1fe     __________B________X_______________f______w_
+
+The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
+flag) are considered as hwpoison entries.  So all pages in 2MB range
+are inaccessible from the process.  We can get actual error location
+by page-types in physical address mode.
+
+    $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
+    offset  len     flags
+    12f800  1       __________B_________________________________
+    12f801  1       ___________________X________________________
+    12f802  1fe     __________B_________________________________
+
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+ fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
+ include/linux/swapops.h | 13 +++++++++++++
+ tools/vm/page-types.c   |  7 ++++++-
+ 3 files changed, 51 insertions(+), 10 deletions(-)
+
+diff --git v5.15-rc3/fs/proc/task_mmu.c v5.15-rc3_patched/fs/proc/task_mmu.c
+index cf25be3e0321..bfc4772a58fb 100644
+--- v5.15-rc3/fs/proc/task_mmu.c
++++ v5.15-rc3_patched/fs/proc/task_mmu.c
+@@ -1298,6 +1298,7 @@ struct pagemapread {
+ #define PM_SOFT_DIRTY		BIT_ULL(55)
+ #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+ #define PM_UFFD_WP		BIT_ULL(57)
++#define PM_HWPOISON		BIT_ULL(60)
+ #define PM_FILE			BIT_ULL(61)
+ #define PM_SWAP			BIT_ULL(62)
+ #define PM_PRESENT		BIT_ULL(63)
+@@ -1386,6 +1387,10 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+ 		flags |= PM_SWAP;
+ 		if (is_pfn_swap_entry(entry))
+ 			page = pfn_swap_entry_to_page(entry);
++		if (is_hwpoison_entry(entry)) {
++			page = hwpoison_entry_to_page(entry);
++			flags |= PM_HWPOISON;
++		}
+ 	}
+ 
+ 	if (page && !PageAnon(page))
+@@ -1505,34 +1510,52 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
+ 	u64 flags = 0, frame = 0;
+ 	int err = 0;
+ 	pte_t pte;
++	struct page *page = NULL;
+ 
+ 	if (vma->vm_flags & VM_SOFTDIRTY)
+ 		flags |= PM_SOFT_DIRTY;
+ 
+ 	pte = huge_ptep_get(ptep);
+ 	if (pte_present(pte)) {
+-		struct page *page = pte_page(pte);
+-
+-		if (!PageAnon(page))
+-			flags |= PM_FILE;
+-
+-		if (page_mapcount(page) == 1)
+-			flags |= PM_MMAP_EXCLUSIVE;
++		page = pte_page(pte);
+ 
+ 		flags |= PM_PRESENT;
+ 		if (pm->show_pfn)
+ 			frame = pte_pfn(pte) +
+ 				((addr & ~hmask) >> PAGE_SHIFT);
++	} else if (is_swap_pte(pte)) {
++		swp_entry_t entry = pte_to_swp_entry(pte);
++		unsigned long offset;
++
++		if (pm->show_pfn) {
++			offset = swp_offset(entry) +
++				((addr & ~hmask) >> PAGE_SHIFT);
++			frame = swp_type(entry) |
++				(offset << MAX_SWAPFILES_SHIFT);
++		}
++		flags |= PM_SWAP;
++		if (is_migration_entry(entry))
++			page = compound_head(pfn_swap_entry_to_page(entry));
++		if (is_hwpoison_entry(entry))
++			flags |= PM_HWPOISON;
+ 	}
+ 
++	if (page && !PageAnon(page))
++		flags |= PM_FILE;
++	if (page && page_mapcount(page) == 1)
++		flags |= PM_MMAP_EXCLUSIVE;
++
+ 	for (; addr != end; addr += PAGE_SIZE) {
+ 		pagemap_entry_t pme = make_pme(frame, flags);
+ 
+ 		err = add_to_pagemap(addr, &pme, pm);
+ 		if (err)
+ 			return err;
+-		if (pm->show_pfn && (flags & PM_PRESENT))
+-			frame++;
++		if (pm->show_pfn)
++			if (flags & PM_PRESENT)
++				frame++;
++			else if (flags & PM_SWAP)
++				frame += (1 << MAX_SWAPFILES_SHIFT);
+ 	}
+ 
+ 	cond_resched();
+diff --git v5.15-rc3/include/linux/swapops.h v5.15-rc3_patched/include/linux/swapops.h
+index d356ab4047f7..bb6141e5c069 100644
+--- v5.15-rc3/include/linux/swapops.h
++++ v5.15-rc3_patched/include/linux/swapops.h
+@@ -360,6 +360,14 @@ static inline unsigned long hwpoison_entry_to_pfn(swp_entry_t entry)
+ 	return swp_offset(entry);
+ }
+ 
++static inline struct page *hwpoison_entry_to_page(swp_entry_t entry)
++{
++	struct page *p = pfn_to_page(swp_offset(entry));
++
++	WARN_ON(!PageHWPoison(p));
++	return p;
++}
++
+ static inline void num_poisoned_pages_inc(void)
+ {
+ 	atomic_long_inc(&num_poisoned_pages);
+@@ -382,6 +390,11 @@ static inline int is_hwpoison_entry(swp_entry_t swp)
+ 	return 0;
+ }
+ 
++static inline struct page *hwpoison_entry_to_page(swp_entry_t entry)
++{
++	return NULL;
++}
++
+ static inline void num_poisoned_pages_inc(void)
+ {
+ }
+diff --git v5.15-rc3/tools/vm/page-types.c v5.15-rc3_patched/tools/vm/page-types.c
+index b1ed76d9a979..483e417fda41 100644
+--- v5.15-rc3/tools/vm/page-types.c
++++ v5.15-rc3_patched/tools/vm/page-types.c
+@@ -53,6 +53,7 @@
+ #define PM_SWAP_OFFSET(x)	(((x) & PM_PFRAME_MASK) >> MAX_SWAPFILES_SHIFT)
+ #define PM_SOFT_DIRTY		(1ULL << 55)
+ #define PM_MMAP_EXCLUSIVE	(1ULL << 56)
++#define PM_HWPOISON		(1ULL << 60)
+ #define PM_FILE			(1ULL << 61)
+ #define PM_SWAP			(1ULL << 62)
+ #define PM_PRESENT		(1ULL << 63)
+@@ -311,6 +312,8 @@ static unsigned long pagemap_pfn(uint64_t val)
+ 
+ 	if (val & PM_PRESENT)
+ 		pfn = PM_PFRAME(val);
++	else if (val & PM_SWAP)
++		pfn = PM_SWAP_OFFSET(val);
+ 	else
+ 		pfn = 0;
+ 
+@@ -492,6 +495,8 @@ static uint64_t expand_overloaded_flags(uint64_t flags, uint64_t pme)
+ 		flags |= BIT(FILE);
+ 	if (pme & PM_SWAP)
+ 		flags |= BIT(SWAP);
++	if (pme & PM_HWPOISON)
++		flags |= BIT(HWPOISON);
+ 	if (pme & PM_MMAP_EXCLUSIVE)
+ 		flags |= BIT(MMAP_EXCLUSIVE);
+ 
+@@ -742,7 +747,7 @@ static void walk_vma(unsigned long index, unsigned long count)
+ 			pfn = pagemap_pfn(buf[i]);
+ 			if (pfn)
+ 				walk_pfn(index + i, pfn, 1, buf[i]);
+-			if (buf[i] & PM_SWAP)
++			else if (buf[i] & PM_SWAP)
+ 				walk_swap(index + i, buf[i]);
+ 		}
+ 
+-- 
+2.25.1
 
