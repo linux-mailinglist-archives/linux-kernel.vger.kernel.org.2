@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3094420713
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7542071C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhJDINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        id S231235AbhJDIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:15:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34847 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhJDINd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43AF061130;
-        Mon,  4 Oct 2021 08:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633335104;
-        bh=X+/eVDLqQ/v8O30Qd97NCA1wWkaSu4VjEg4Oj5YU8LU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YzZYTXA6E88DJoc1kd+I4DOQAsX5k8SpwmTG/Y8JBFs78Sw2vvSxCtY79anw4e/7J
-         YjbO68kAz7c56uSWrR7A8IrN5kOgFA60522coZNWbJC/iWokliNK1QjWDkTGP8iMIy
-         fN67nzZG65FutzFcf4Z19rvLc3iFHv4rvdiuAbzVRzfKumIowKQ30oBsktDLjPT/HZ
-         EHr77Ez9myBlhqZmH+wREImUsj3NYYtkUTQqEDyh1AqAgphfPZiD7IsYkMChtMwDW9
-         t9hS0A5U2XbBLCOCORyN0E+r14UvRU0IjWcHo11MSaIl/KvQViicuh4cy6XZo93r8w
-         MoWkzK1mP3KSw==
-Date:   Mon, 4 Oct 2021 16:11:37 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Chester Lin <clin@suse.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        s32@nxp.com, Li Yang <leoyang.li@nxp.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Radu Nicolae Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        ghennadi.procopciuc@nxp.com, "Ivan T . Ivanov" <iivanov@suse.de>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [PATCH v2 0/8] arm64: dts: initial NXP S32G2 support
-Message-ID: <20211004081136.GF15650@dragon>
-References: <20210908064528.922-1-clin@suse.com>
+        id S230185AbhJDIPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:15:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="206140460"
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="206140460"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 01:12:46 -0700
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="482815518"
+Received: from shearne-mobl.ger.corp.intel.com (HELO [10.213.208.122]) ([10.213.208.122])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 01:12:41 -0700
+Subject: Re: [RFC 1/6] sched: Add nice value change notifier
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20210930171552.501553-1-tvrtko.ursulin@linux.intel.com>
+ <20210930171552.501553-2-tvrtko.ursulin@linux.intel.com>
+ <20210930183316.GC4323@worktop.programming.kicks-ass.net>
+ <4aca656d-678f-4d61-38a4-d2e7a8fd89ab@linux.intel.com>
+ <5c71ec04-9148-0587-c495-11dbd8f77d67@linux.intel.com>
+ <YVct0D9kB1KtrwZ3@hirez.programming.kicks-ass.net>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <01a968c9-c427-f4c7-44d5-2f47f939f9eb@linux.intel.com>
+Date:   Mon, 4 Oct 2021 09:12:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908064528.922-1-clin@suse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YVct0D9kB1KtrwZ3@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 02:45:20PM +0800, Chester Lin wrote:
-> Hello,
-> 
-> Here I'd like to propose a patchset, which is initial upstream support for NXP
-> S32G2. S32G is a processor family developed by NXP for automotive solutions,
-> such as vehicle networking and automotive high-performance processing. This
-> series focuses on S32G2, which is the latest generation we can find at the
-> moment. As the first round to support S32G2, this patchset only enables basic
-> components and interfaces the SoC must have while kernel booting, which aims
-> to have minimum hardware enablement for these two boards, S32G-VNP-EVB and
-> S32G-VNP-RDB2. The concepts of how these boards work are originated from the
-> downstream kernel tree[1] developed by NXP, which provides lots of details
-> about the SoC S32G274A and its integrated boards. This series has been
-> verified with downstream ATF[2] & U-Boot[3] based on the ATF boot flow.
-> 
-> Thanks,
-> Chester
-> 
-> [1] https://source.codeaurora.org/external/autobsps32/linux/
-> [2] https://source.codeaurora.org/external/autobsps32/arm-trusted-firmware/
-> [3] https://source.codeaurora.org/external/autobsps32/u-boot/
-> 
-> Changes in v2:
-> - dt-bindings:
->   - Rename the compatible vendor string to "nxp," for s32g2.
->   - Drop the specific description "S32V234 SoC".
->   - Fill my name in the maintainer field. I tried to contact the authors
->     of fsl,s32-linflexuart.txt but got no response.
->   - Remove redundant minItems/maxItems from compatible properties.
->   - Remove the redundant example from fsl,s32-linflexuart.yaml.
-> - dtsi/dts:
->   - Add a SoC description in s32g2.dtsi.
->   - Add an interrupt-affinity to the pmu node.
->   - Move the psci node into the "/firmware" node.
->   - Remove the redundant properties and white lines in DT.
->   - Remove the wrong interrupt specifier from the gic node.
->   - Specify the range and cell-size of /soc [0 - 4 GiB].
->   - Correct the reserved size of GICR to 512Kbytes [0x80000].
->   - Add new Signed-off-by to the DT uart patch.
->   - Fix copyright strings.
->   - Revise reg properties based on new cell-size.
->   - Move the serial/uart aliases from the SoC .dtsi to board .dts files.
->   - Correct the model string of RDB2.
->   - Add comments for the uart markings on PCB.
->   - Adjust RAM size comments of memory nodes.
->   - Convert reg addresses of memory nodes into hex format.
-> - MAINTAINERS
->   - Add information of reviewers.
-> 
-> Chester Lin (8):
->   dt-bindings: arm: fsl: add NXP S32G2 boards
->   dt-bindings: serial: fsl-linflexuart: convert to json-schema format
->   dt-bindings: serial: fsl-linflexuart: add compatible for S32G2
->   arm64: dts: add NXP S32G2 support
->   arm64: dts: s32g2: add serial/uart support
->   arm64: dts: s32g2: add VNP-EVB and VNP-RDB2 support
->   arm64: dts: s32g2: add memory nodes for evb and rdb2
->   MAINTAINERS: add an entry for NXP S32G boards
 
-Applied all, thanks!
+On 01/10/2021 16:48, Peter Zijlstra wrote:
+> On Fri, Oct 01, 2021 at 11:32:16AM +0100, Tvrtko Ursulin wrote:
+>>
+>> On 01/10/2021 10:04, Tvrtko Ursulin wrote:
+>>>
+>>> Hi Peter,
+>>>
+>>> On 30/09/2021 19:33, Peter Zijlstra wrote:
+>>>> On Thu, Sep 30, 2021 at 06:15:47PM +0100, Tvrtko Ursulin wrote:
+>>>>>    void set_user_nice(struct task_struct *p, long nice)
+>>>>>    {
+>>>>>        bool queued, running;
+>>>>> -    int old_prio;
+>>>>> +    int old_prio, ret;
+>>>>>        struct rq_flags rf;
+>>>>>        struct rq *rq;
+>>>>> @@ -6913,6 +6945,9 @@ void set_user_nice(struct task_struct *p,
+>>>>> long nice)
+>>>>>         */
+>>>>>        p->sched_class->prio_changed(rq, p, old_prio);
+>>>>> +    ret = atomic_notifier_call_chain(&user_nice_notifier_list,
+>>>>> nice, p);
+>>>>> +    WARN_ON_ONCE(ret != NOTIFY_DONE);
+>>>>> +
+>>>>>    out_unlock:
+>>>>>        task_rq_unlock(rq, p, &rf);
+>>>>>    }
+>>>>
+>>>> No, we're not going to call out to exported, and potentially unbounded,
+>>>> functions under scheduler locks.
+>>>
+>>> Agreed, that's another good point why it is even more hairy, as I have
+>>> generally alluded in the cover letter.
+>>>
+>>> Do you have any immediate thoughts on possible alternatives?
+>>>
+>>> Like for instance if I did a queue_work from set_user_nice and then ran
+>>> a notifier chain async from a worker? I haven't looked at yet what
+>>> repercussion would that have in terms of having to cancel the pending
+>>> workers when tasks exit. I can try and prototype that and see how it
+>>> would look.
+>>
+>> Hm or I simply move calling the notifier chain to after task_rq_unlock? That
+>> would leave it run under the tasklist lock so probably still quite bad.
+> 
+> Hmm? That's for normalize_rt_tasks() only, right? Just don't have it
+> call the notifier in that special case (that's a magic sysrq thing
+> anyway).
+
+You mean my talk about tasklist_lock? No, it is also on the syscall part 
+I am interested in as well. Call chain looks like this:
+
+sys_setpriority()
+{
+   ...
+   rcu_read_lock();
+   read_lock(&tasklist_lock);
+   ...
+   set_one_prio()
+     set_user_nice()
+     {
+       ...
+       task_rq_lock();
+         -> my notifier from this RFC [1]
+       task_rq_unlock();
+         -> I can move the notifier here for _some_ improvement [2]
+     }
+   ...
+   read_unlock(&tasklist_lock);
+   rcu_read_unlock();
+}
+
+So this RFC had the notifier call chain at [1], which I understood was 
+the thing you initially pointed was horrible, being under a scheduler lock.
+
+I can trivially move it to [2] but that still leaves it under the 
+tasklist lock. I don't have a good feel how much better that would be. 
+If not good enough then I will look for a smarter solution with less 
+opportunity for global impact.
+
+Regards,
+
+Tvrtko
