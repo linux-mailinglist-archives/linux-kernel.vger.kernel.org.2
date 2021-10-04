@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A119420CF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D121420CF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbhJDNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
+        id S234828AbhJDNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235455AbhJDNI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0352061A54;
-        Mon,  4 Oct 2021 13:02:14 +0000 (UTC)
+        id S235461AbhJDNI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:08:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6DA6140A;
+        Mon,  4 Oct 2021 13:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352535;
-        bh=FuBLvPZOaNDqtLiQ6Jkd1Gd1oxqwHc0IZGNzQGqzgOw=;
+        s=korg; t=1633352538;
+        bh=C72L0qd1lWYmeIbKb1SF1oHr+Njtue+40NeeU9ErHgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyoro2H7H/4eT6SZZ2PL/0xJWsK8FW0i6xzfNsctpOEeNIF2EXaRmxvlTrcUjECuy
-         21A/b5U4wxhwyVV/u4iKBToCh5rdFNv4vwIA9zWr6nnL/CCOvvbWT+1KakfnsIN3l/
-         psWT+Iwx9MAqUmTL174H35Fvf+Y1KQ67+b8MBxms=
+        b=UhZzr8ytRzRqmnVQDW/dJWm8y4Wo9bOc7PLaGv57wvtPLSfE8NxaCfdO2c6nI6J9A
+         8hQxXWY3qONl4v816WNEIW2mtB/dXtLT0L7tEkkKHkEztz21eZf+f6v9fq//ShLkc3
+         XQqCCOrH0P+SpSpWZQ5UyV1pz8HXFaHxPJwAIYZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Ondrej Zary <linux@zary.sk>
-Subject: [PATCH 4.19 07/95] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
-Date:   Mon,  4 Oct 2021 14:51:37 +0200
-Message-Id: <20211004125033.807699489@linuxfoundation.org>
+        stable@vger.kernel.org, Uwe Brandt <uwe.brandt@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 08/95] USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
+Date:   Mon,  4 Oct 2021 14:51:38 +0200
+Message-Id: <20211004125033.838489390@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
 References: <20211004125033.572932188@linuxfoundation.org>
@@ -39,59 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Zary <linux@zary.sk>
+From: Uwe Brandt <uwe.brandt@gmail.com>
 
-commit b55d37ef6b7db3eda9b4495a8d9b0a944ee8c67d upstream.
+commit 3bd18ba7d859eb1fbef3beb1e80c24f6f7d7596c upstream.
 
-ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
-broken tag handling, preventing the device from working at all:
-usb 1-1: new full-speed USB device number 2 using uhci_hcd
-usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
-usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
-usb 1-1: Product: USB Device
-usb 1-1: Manufacturer: USB Device
-usb-storage 1-1:1.0: USB Mass Storage device detected
-scsi host2: usb-storage 1-1:1.0
-usbcore: registered new interface driver usb-storage
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+Add the USB serial device ID for the GW Instek GDM-834x Digital Multimeter.
 
-Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
-
-2.6c is the only firmware that claims Linux compatibility.
-The firmware can be upgraded using ezotgdbg utility:
-https://github.com/asciilifeform/ezotgdbg
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Ondrej Zary <linux@zary.sk>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210913210106.12717-1-linux@zary.sk
+Signed-off-by: Uwe Brandt <uwe.brandt@gmail.com>
+Link: https://lore.kernel.org/r/YUxFl3YUCPGJZd8Y@hovoldconsulting.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_devs.h |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x
- 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
- 
- /*
-- * Reported by Ondrej Zary <linux@rainbow-software.org>
-+ * Reported by Ondrej Zary <linux@zary.sk>
-  * The device reports one sector more and breaks when that sector is accessed
-+ * Firmwares older than 2.6c (the latest one and the only that claims Linux
-+ * support) have also broken tag handling
-  */
-+UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
-+		"ScanLogic",
-+		"SL11R-IDE",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
- UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
- 		"ScanLogic",
- 		"SL11R-IDE",
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -234,6 +234,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1FB9, 0x0602) }, /* Lake Shore Model 648 Magnet Power Supply */
+ 	{ USB_DEVICE(0x1FB9, 0x0700) }, /* Lake Shore Model 737 VSM Controller */
+ 	{ USB_DEVICE(0x1FB9, 0x0701) }, /* Lake Shore Model 776 Hall Matrix */
++	{ USB_DEVICE(0x2184, 0x0030) }, /* GW Instek GDM-834x Digital Multimeter */
+ 	{ USB_DEVICE(0x2626, 0xEA60) }, /* Aruba Networks 7xxx USB Serial Console */
+ 	{ USB_DEVICE(0x3195, 0xF190) }, /* Link Instruments MSO-19 */
+ 	{ USB_DEVICE(0x3195, 0xF280) }, /* Link Instruments MSO-28 */
 
 
