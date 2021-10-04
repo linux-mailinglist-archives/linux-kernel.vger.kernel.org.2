@@ -2,345 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82DB42070B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3094420713
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhJDING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhJDINA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:13:00 -0400
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB481C061745;
-        Mon,  4 Oct 2021 01:11:03 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id XJ3nmn8Ch3tiGXJ3qmgbxb; Mon, 04 Oct 2021 10:11:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1633335060; bh=bKjOBDJpshLMetjuil3udBnbogUC1cEVU3iYd0ovcNU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=U5mhqHA8NmLhpHMkM+KVrVRk3WJH3be49kQ4xZ+WMalOwBnxJmNG1Kie29gJHUtz9
-         uIuB2VOnHW+ccaV/HhLKM/eorrFAZ/W3POxfTZxLMtF+ZcUNeysQdsHUmedZEGqudu
-         grbbwztBfw+Gjsy1pg1Vwxp84qlanXOL/bMirQDKYu7HJ0HJgtXLAhLkmbQP4AIOSv
-         63XRuOFm824B9jM147+pQ5aRb87oQTT1z2JCxzlACD3a8i7L84ySg9EvrcDcvoW1tf
-         zyrjZ+ms0aQ+w6TX/5RfwUL16oSp8MGdkWQ75f72qNbIW8DMQo2Bwua+2iMZV6KcLK
-         q2ww92ooaasxA==
-Subject: Re: [PATCH] media: cedrus: Don't kernel map most buffers
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com
-Cc:     wens@csie.org, mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210912060812.222996-1-jernej.skrabec@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <0cb81145-16d9-fd28-832e-4010646e9512@xs4all.nl>
-Date:   Mon, 4 Oct 2021 10:10:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S231219AbhJDINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:13:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230479AbhJDINd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43AF061130;
+        Mon,  4 Oct 2021 08:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633335104;
+        bh=X+/eVDLqQ/v8O30Qd97NCA1wWkaSu4VjEg4Oj5YU8LU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YzZYTXA6E88DJoc1kd+I4DOQAsX5k8SpwmTG/Y8JBFs78Sw2vvSxCtY79anw4e/7J
+         YjbO68kAz7c56uSWrR7A8IrN5kOgFA60522coZNWbJC/iWokliNK1QjWDkTGP8iMIy
+         fN67nzZG65FutzFcf4Z19rvLc3iFHv4rvdiuAbzVRzfKumIowKQ30oBsktDLjPT/HZ
+         EHr77Ez9myBlhqZmH+wREImUsj3NYYtkUTQqEDyh1AqAgphfPZiD7IsYkMChtMwDW9
+         t9hS0A5U2XbBLCOCORyN0E+r14UvRU0IjWcHo11MSaIl/KvQViicuh4cy6XZo93r8w
+         MoWkzK1mP3KSw==
+Date:   Mon, 4 Oct 2021 16:11:37 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Chester Lin <clin@suse.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        s32@nxp.com, Li Yang <leoyang.li@nxp.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Radu Nicolae Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        ghennadi.procopciuc@nxp.com, "Ivan T . Ivanov" <iivanov@suse.de>,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH v2 0/8] arm64: dts: initial NXP S32G2 support
+Message-ID: <20211004081136.GF15650@dragon>
+References: <20210908064528.922-1-clin@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210912060812.222996-1-jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBMt3TknJanoRj5XaDGvKAbA5J/Kc0TpqWWzZwsBzxIw5qT5LVovXcL9S+TdvZWxi2Y23IlM9kaJvh8A/fHRh+FsMiprApVRDZS16anWExhy56qgjEzA
- xbZ0pUA46ok7+HdpN77jXyuRRWx1qZBPQUQBjMzWv7nM918pIOnjVWxY/R4j+1ywUtYbEQct8C1k6pRQzbvrXNsgKlaGp3XkDmvzCdVQai+xnMl+ZAFVgHqN
- 2ACyYq+6B4j68M6fEji2wXq0i4UyH4o5owpAjlXYJ262obS6srW9+G7f0BKOaulozzuLn17gfbUnCu37a49SHVdxNW/4DD7wjqRDq07XcFw6rgEhHBu5aH+Z
- MRehKXl+qpP9Q76R82LNaqmO+CozjOOrjnca8gal26j2omSljJT0W4wxFCXrsEpH7M4Grqd0Q2JMrZkAfpkTV5lJcdSQgziXdNkalvXNPPFQeMukFPSAkIzO
- 1Ul0UrxCLmFc8YcVuIUF2YQjQ0Xo9NHkGDkyAC26A+rIpZdW5sbUhiQ6oao16DjZ84Axk0E730nnOPKrSwebXvQfJSB/ChWvT6VhnApcF0brW3JeZUefqhzE
- Oik=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908064528.922-1-clin@suse.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
-
-Some comments below:
-
-On 12/09/2021 08:08, Jernej Skrabec wrote:
-> Except VP8 probability coefficients buffer, all other buffers are never
-
-Except -> Except for
-
-> accessed by CPU. That allows us to mark them with DMA_ATTR_NO_KERNEL_MAPPING
-> flag. This helps with decoding big (like 4k) videos on 32-bit ARM
-> platforms where default vmalloc size is relatively small - 240 MiB.
-> Since auxiliary buffer are not yet efficiently allocated, this can be
-> easily exceeded. Even if allocation is optimized, 4k videos will still
-> often exceed this limit.
+On Wed, Sep 08, 2021 at 02:45:20PM +0800, Chester Lin wrote:
+> Hello,
 > 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
->  .../staging/media/sunxi/cedrus/cedrus_h264.c  | 102 ++++++++++--------
->  .../staging/media/sunxi/cedrus/cedrus_h265.c  |  28 ++---
->  .../staging/media/sunxi/cedrus/cedrus_video.c |   2 +
->  3 files changed, 73 insertions(+), 59 deletions(-)
+> Here I'd like to propose a patchset, which is initial upstream support for NXP
+> S32G2. S32G is a processor family developed by NXP for automotive solutions,
+> such as vehicle networking and automotive high-performance processing. This
+> series focuses on S32G2, which is the latest generation we can find at the
+> moment. As the first round to support S32G2, this patchset only enables basic
+> components and interfaces the SoC must have while kernel booting, which aims
+> to have minimum hardware enablement for these two boards, S32G-VNP-EVB and
+> S32G-VNP-RDB2. The concepts of how these boards work are originated from the
+> downstream kernel tree[1] developed by NXP, which provides lots of details
+> about the SoC S32G274A and its integrated boards. This series has been
+> verified with downstream ATF[2] & U-Boot[3] based on the ATF boot flow.
 > 
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> index de7442d4834d..6e38b37d9fe1 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-> @@ -538,23 +538,23 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
->  
->  	ctx->codec.h264.pic_info_buf_size = pic_info_size;
->  	ctx->codec.h264.pic_info_buf =
-> -		dma_alloc_coherent(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> -				   &ctx->codec.h264.pic_info_buf_dma,
-> -				   GFP_KERNEL);
-> +		dma_alloc_attrs(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> +				&ctx->codec.h264.pic_info_buf_dma,
-> +				GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  	if (!ctx->codec.h264.pic_info_buf)
->  		return -ENOMEM;
->  
->  	/*
->  	 * That buffer is supposed to be 16kiB in size, and be aligned
-> -	 * on 16kiB as well. However, dma_alloc_coherent provides the
-> +	 * on 16kiB as well. However, dma_alloc_attrs provides the
->  	 * guarantee that we'll have a CPU and DMA address aligned on
-
-Does the 'CPU' part of this sentence still make sense since the CPU
-won't access the buffer?
-
->  	 * the smallest page order that is greater to the requested
->  	 * size, so we don't have to overallocate.
->  	 */
->  	ctx->codec.h264.neighbor_info_buf =
-> -		dma_alloc_coherent(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> -				   &ctx->codec.h264.neighbor_info_buf_dma,
-> -				   GFP_KERNEL);
-> +		dma_alloc_attrs(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> +				&ctx->codec.h264.neighbor_info_buf_dma,
-> +				GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
-
-I think it would be good to have a comment for all these dma_alloc_attrs
-calls where you note that these buffers are used by the HW only, and
-never by the CPU, hence the use of DMA_ATTR_NO_KERNEL_MAPPING.
-
->  	if (!ctx->codec.h264.neighbor_info_buf) {
->  		ret = -ENOMEM;
->  		goto err_pic_buf;
-> @@ -582,10 +582,11 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
->  
->  	mv_col_size = field_size * 2 * CEDRUS_H264_FRAME_NUM;
->  	ctx->codec.h264.mv_col_buf_size = mv_col_size;
-> -	ctx->codec.h264.mv_col_buf = dma_alloc_coherent(dev->dev,
-> -							ctx->codec.h264.mv_col_buf_size,
-> -							&ctx->codec.h264.mv_col_buf_dma,
-> -							GFP_KERNEL);
-> +	ctx->codec.h264.mv_col_buf =
-> +		dma_alloc_attrs(dev->dev,
-> +				ctx->codec.h264.mv_col_buf_size,
-> +				&ctx->codec.h264.mv_col_buf_dma,
-> +				GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  	if (!ctx->codec.h264.mv_col_buf) {
->  		ret = -ENOMEM;
->  		goto err_neighbor_buf;
-> @@ -600,10 +601,10 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
->  		ctx->codec.h264.deblk_buf_size =
->  			ALIGN(ctx->src_fmt.width, 32) * 12;
->  		ctx->codec.h264.deblk_buf =
-> -			dma_alloc_coherent(dev->dev,
-> -					   ctx->codec.h264.deblk_buf_size,
-> -					   &ctx->codec.h264.deblk_buf_dma,
-> -					   GFP_KERNEL);
-> +			dma_alloc_attrs(dev->dev,
-> +					ctx->codec.h264.deblk_buf_size,
-> +					&ctx->codec.h264.deblk_buf_dma,
-> +					GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  		if (!ctx->codec.h264.deblk_buf) {
->  			ret = -ENOMEM;
->  			goto err_mv_col_buf;
-> @@ -616,10 +617,10 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
->  		ctx->codec.h264.intra_pred_buf_size =
->  			ALIGN(ctx->src_fmt.width, 64) * 5 * 2;
->  		ctx->codec.h264.intra_pred_buf =
-> -			dma_alloc_coherent(dev->dev,
-> -					   ctx->codec.h264.intra_pred_buf_size,
-> -					   &ctx->codec.h264.intra_pred_buf_dma,
-> -					   GFP_KERNEL);
-> +			dma_alloc_attrs(dev->dev,
-> +					ctx->codec.h264.intra_pred_buf_size,
-> +					&ctx->codec.h264.intra_pred_buf_dma,
-> +					GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  		if (!ctx->codec.h264.intra_pred_buf) {
->  			ret = -ENOMEM;
->  			goto err_deblk_buf;
-> @@ -629,24 +630,28 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
->  	return 0;
->  
->  err_deblk_buf:
-> -	dma_free_coherent(dev->dev, ctx->codec.h264.deblk_buf_size,
-> -			  ctx->codec.h264.deblk_buf,
-> -			  ctx->codec.h264.deblk_buf_dma);
-> +	dma_free_attrs(dev->dev, ctx->codec.h264.deblk_buf_size,
-> +		       ctx->codec.h264.deblk_buf,
-> +		       ctx->codec.h264.deblk_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  
->  err_mv_col_buf:
-> -	dma_free_coherent(dev->dev, ctx->codec.h264.mv_col_buf_size,
-> -			  ctx->codec.h264.mv_col_buf,
-> -			  ctx->codec.h264.mv_col_buf_dma);
-> +	dma_free_attrs(dev->dev, ctx->codec.h264.mv_col_buf_size,
-> +		       ctx->codec.h264.mv_col_buf,
-> +		       ctx->codec.h264.mv_col_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  
->  err_neighbor_buf:
-> -	dma_free_coherent(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> -			  ctx->codec.h264.neighbor_info_buf,
-> -			  ctx->codec.h264.neighbor_info_buf_dma);
-> +	dma_free_attrs(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> +		       ctx->codec.h264.neighbor_info_buf,
-> +		       ctx->codec.h264.neighbor_info_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  
->  err_pic_buf:
-> -	dma_free_coherent(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> -			  ctx->codec.h264.pic_info_buf,
-> -			  ctx->codec.h264.pic_info_buf_dma);
-> +	dma_free_attrs(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> +		       ctx->codec.h264.pic_info_buf,
-> +		       ctx->codec.h264.pic_info_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  	return ret;
->  }
->  
-> @@ -654,23 +659,28 @@ static void cedrus_h264_stop(struct cedrus_ctx *ctx)
->  {
->  	struct cedrus_dev *dev = ctx->dev;
->  
-> -	dma_free_coherent(dev->dev, ctx->codec.h264.mv_col_buf_size,
-> -			  ctx->codec.h264.mv_col_buf,
-> -			  ctx->codec.h264.mv_col_buf_dma);
-> -	dma_free_coherent(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> -			  ctx->codec.h264.neighbor_info_buf,
-> -			  ctx->codec.h264.neighbor_info_buf_dma);
-> -	dma_free_coherent(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> -			  ctx->codec.h264.pic_info_buf,
-> -			  ctx->codec.h264.pic_info_buf_dma);
-> +	dma_free_attrs(dev->dev, ctx->codec.h264.mv_col_buf_size,
-> +		       ctx->codec.h264.mv_col_buf,
-> +		       ctx->codec.h264.mv_col_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
-> +	dma_free_attrs(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
-> +		       ctx->codec.h264.neighbor_info_buf,
-> +		       ctx->codec.h264.neighbor_info_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
-> +	dma_free_attrs(dev->dev, ctx->codec.h264.pic_info_buf_size,
-> +		       ctx->codec.h264.pic_info_buf,
-> +		       ctx->codec.h264.pic_info_buf_dma,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  	if (ctx->codec.h264.deblk_buf_size)
-> -		dma_free_coherent(dev->dev, ctx->codec.h264.deblk_buf_size,
-> -				  ctx->codec.h264.deblk_buf,
-> -				  ctx->codec.h264.deblk_buf_dma);
-> +		dma_free_attrs(dev->dev, ctx->codec.h264.deblk_buf_size,
-> +			       ctx->codec.h264.deblk_buf,
-> +			       ctx->codec.h264.deblk_buf_dma,
-> +			       DMA_ATTR_NO_KERNEL_MAPPING);
->  	if (ctx->codec.h264.intra_pred_buf_size)
-> -		dma_free_coherent(dev->dev, ctx->codec.h264.intra_pred_buf_size,
-> -				  ctx->codec.h264.intra_pred_buf,
-> -				  ctx->codec.h264.intra_pred_buf_dma);
-> +		dma_free_attrs(dev->dev, ctx->codec.h264.intra_pred_buf_size,
-> +			       ctx->codec.h264.intra_pred_buf,
-> +			       ctx->codec.h264.intra_pred_buf_dma,
-> +			       DMA_ATTR_NO_KERNEL_MAPPING);
->  }
->  
->  static void cedrus_h264_trigger(struct cedrus_ctx *ctx)
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-> index 3d9561d4aadb..bb7eb56106c5 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-> @@ -351,10 +351,10 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->  			ctx->codec.h265.mv_col_buf_unit_size;
->  
->  		ctx->codec.h265.mv_col_buf =
-> -			dma_alloc_coherent(dev->dev,
-> -					   ctx->codec.h265.mv_col_buf_size,
-> -					   &ctx->codec.h265.mv_col_buf_addr,
-> -					   GFP_KERNEL);
-> +			dma_alloc_attrs(dev->dev,
-> +					ctx->codec.h265.mv_col_buf_size,
-> +					&ctx->codec.h265.mv_col_buf_addr,
-> +					GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  		if (!ctx->codec.h265.mv_col_buf) {
->  			ctx->codec.h265.mv_col_buf_size = 0;
->  			// TODO: Abort the process here.
-> @@ -668,9 +668,9 @@ static int cedrus_h265_start(struct cedrus_ctx *ctx)
->  	ctx->codec.h265.mv_col_buf_size = 0;
->  
->  	ctx->codec.h265.neighbor_info_buf =
-> -		dma_alloc_coherent(dev->dev, CEDRUS_H265_NEIGHBOR_INFO_BUF_SIZE,
-> -				   &ctx->codec.h265.neighbor_info_buf_addr,
-> -				   GFP_KERNEL);
-> +		dma_alloc_attrs(dev->dev, CEDRUS_H265_NEIGHBOR_INFO_BUF_SIZE,
-> +				&ctx->codec.h265.neighbor_info_buf_addr,
-> +				GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
->  	if (!ctx->codec.h265.neighbor_info_buf)
->  		return -ENOMEM;
->  
-> @@ -682,16 +682,18 @@ static void cedrus_h265_stop(struct cedrus_ctx *ctx)
->  	struct cedrus_dev *dev = ctx->dev;
->  
->  	if (ctx->codec.h265.mv_col_buf_size > 0) {
-> -		dma_free_coherent(dev->dev, ctx->codec.h265.mv_col_buf_size,
-> -				  ctx->codec.h265.mv_col_buf,
-> -				  ctx->codec.h265.mv_col_buf_addr);
-> +		dma_free_attrs(dev->dev, ctx->codec.h265.mv_col_buf_size,
-> +			       ctx->codec.h265.mv_col_buf,
-> +			       ctx->codec.h265.mv_col_buf_addr,
-> +			       DMA_ATTR_NO_KERNEL_MAPPING);
->  
->  		ctx->codec.h265.mv_col_buf_size = 0;
->  	}
->  
-> -	dma_free_coherent(dev->dev, CEDRUS_H265_NEIGHBOR_INFO_BUF_SIZE,
-> -			  ctx->codec.h265.neighbor_info_buf,
-> -			  ctx->codec.h265.neighbor_info_buf_addr);
-> +	dma_free_attrs(dev->dev, CEDRUS_H265_NEIGHBOR_INFO_BUF_SIZE,
-> +		       ctx->codec.h265.neighbor_info_buf,
-> +		       ctx->codec.h265.neighbor_info_buf_addr,
-> +		       DMA_ATTR_NO_KERNEL_MAPPING);
->  }
->  
->  static void cedrus_h265_trigger(struct cedrus_ctx *ctx)
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> index 66714609b577..800ffa5382de 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> @@ -568,6 +568,7 @@ int cedrus_queue_init(void *priv, struct vb2_queue *src_vq,
->  
->  	src_vq->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
->  	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	src_vq->dma_attrs = DMA_ATTR_NO_KERNEL_MAPPING;
->  	src_vq->drv_priv = ctx;
->  	src_vq->buf_struct_size = sizeof(struct cedrus_buffer);
->  	src_vq->ops = &cedrus_qops;
-> @@ -584,6 +585,7 @@ int cedrus_queue_init(void *priv, struct vb2_queue *src_vq,
->  
->  	dst_vq->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
->  	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	src_vq->dma_attrs = DMA_ATTR_NO_KERNEL_MAPPING;
-
-This should be dst_vq!
-
-I'm also not quite sure that it is right to use this for the destination
-buffer. Could this cause problems if this buffer is exported to a dmabuf
-and another driver will be using it and requiring a kernel mapping.
-
-Regards,
-
-	Hans
-
->  	dst_vq->drv_priv = ctx;
->  	dst_vq->buf_struct_size = sizeof(struct cedrus_buffer);
->  	dst_vq->ops = &cedrus_qops;
+> Thanks,
+> Chester
 > 
+> [1] https://source.codeaurora.org/external/autobsps32/linux/
+> [2] https://source.codeaurora.org/external/autobsps32/arm-trusted-firmware/
+> [3] https://source.codeaurora.org/external/autobsps32/u-boot/
+> 
+> Changes in v2:
+> - dt-bindings:
+>   - Rename the compatible vendor string to "nxp," for s32g2.
+>   - Drop the specific description "S32V234 SoC".
+>   - Fill my name in the maintainer field. I tried to contact the authors
+>     of fsl,s32-linflexuart.txt but got no response.
+>   - Remove redundant minItems/maxItems from compatible properties.
+>   - Remove the redundant example from fsl,s32-linflexuart.yaml.
+> - dtsi/dts:
+>   - Add a SoC description in s32g2.dtsi.
+>   - Add an interrupt-affinity to the pmu node.
+>   - Move the psci node into the "/firmware" node.
+>   - Remove the redundant properties and white lines in DT.
+>   - Remove the wrong interrupt specifier from the gic node.
+>   - Specify the range and cell-size of /soc [0 - 4 GiB].
+>   - Correct the reserved size of GICR to 512Kbytes [0x80000].
+>   - Add new Signed-off-by to the DT uart patch.
+>   - Fix copyright strings.
+>   - Revise reg properties based on new cell-size.
+>   - Move the serial/uart aliases from the SoC .dtsi to board .dts files.
+>   - Correct the model string of RDB2.
+>   - Add comments for the uart markings on PCB.
+>   - Adjust RAM size comments of memory nodes.
+>   - Convert reg addresses of memory nodes into hex format.
+> - MAINTAINERS
+>   - Add information of reviewers.
+> 
+> Chester Lin (8):
+>   dt-bindings: arm: fsl: add NXP S32G2 boards
+>   dt-bindings: serial: fsl-linflexuart: convert to json-schema format
+>   dt-bindings: serial: fsl-linflexuart: add compatible for S32G2
+>   arm64: dts: add NXP S32G2 support
+>   arm64: dts: s32g2: add serial/uart support
+>   arm64: dts: s32g2: add VNP-EVB and VNP-RDB2 support
+>   arm64: dts: s32g2: add memory nodes for evb and rdb2
+>   MAINTAINERS: add an entry for NXP S32G boards
 
+Applied all, thanks!
