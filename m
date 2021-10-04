@@ -2,1080 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2CB42132C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A3C421333
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbhJDP5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S236118AbhJDP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236077AbhJDP5w (ORCPT
+        with ESMTP id S234809AbhJDP7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:57:52 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2E6C061745;
-        Mon,  4 Oct 2021 08:56:02 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so5499309oof.9;
-        Mon, 04 Oct 2021 08:56:02 -0700 (PDT)
+        Mon, 4 Oct 2021 11:59:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8EC061745;
+        Mon,  4 Oct 2021 08:57:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id e15so73647536lfr.10;
+        Mon, 04 Oct 2021 08:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wv1b9wTqxZMmzqA4wUXVfX3MLgx0LsXssOeW7bIebTI=;
-        b=o7/SQnDIQyk6A1kC5iy+qjCxfKvJWXJ+fwJruZRKIRyJgQPaJX1BYk2M2yPb/kNB9V
-         2+yzMK0xr0QR+6w2Tf/1aGn4YQTeKgQfGBWIMvE0KmocY+XRSXZv0uLTfZUb3rvxSxst
-         ud2n5UJ5Mh14ZexJ+Cs4HL8aB24lGj1WBK8yI7Ozk4S1ODpDCHgdD1D/ECW1vMZ0DcPi
-         tOyW7wgChh72QsMm3RR7Q8n7tjHBLjBCVqQ4XpJOxDIWyfS6D81+l3T4kuqvh2AObXI/
-         X7kZLdB5EkIkWYJuuF7ZNe6OJjtuNTKrSs2q81neAH/emK5lx1lTzG2wVq2Y8KTIfbG4
-         nkog==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oXxI7X/1bkoyfWLqsQl0b8N5L2M43qDxOhyRLjNgwgs=;
+        b=pH5gGGqkZlMuFnRyIJAXiewuWBbmrXc4nrj48Dzw+Xc6gukr3JlL4bc0XqPdYPe5DQ
+         NDB4vv+qA4gvKAo7lM0mnIDk8dHTj89Skv+bi+CnIwKoB0GbtflokeLFAGWMWBkGuUwO
+         vnV+cxSUarX4fvwMNp98YdWmdtdCmVfrq9kQiTD/iscLYeiALsQL/FGXMsD8gWDMtQgb
+         SdntlSYjQY8VC2aw+ENPn0LFmLD5mx6hdBsOFMb8vi+SpeKciwoN3fNZiNgmP/61OVVQ
+         wnD2qG3x98rXnlrsSFT8O6Xj/b7E6uaK2TJJmtNceUOe0ut/Z6O07eTqHqNZmJmGlly8
+         1zZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wv1b9wTqxZMmzqA4wUXVfX3MLgx0LsXssOeW7bIebTI=;
-        b=TdVhwChgUusgqKrsr+R+Rz4X2ml+xxkEXyCEWX8LFmUE0ChnzGPiyxJwvmiRiFElsr
-         +eckWGfV2mB6d4sS003PvwFohIKNZWFVEQMKccua17H+6QqowRyF7SyFcKGtMcJQM5WX
-         Nhw5OVyXd1ShFyYuS3GEdX+hDWpf4Hz6/ooTJZVU6ApEPiHid9NiwZQfu22a5S7ZOFS2
-         Q1AMaF6xs+B1XRfVk/2cedWAwpM06vSyFDk0QLWFh61Gfx42zhJkxsBfU3kpgfSBiXbQ
-         aUT7EVAhoruVOUYzEmtUc9VDdHik4XOequYXV1s95//FNHula84C4GauO9QztgZJkx5m
-         51+A==
-X-Gm-Message-State: AOAM533bf52vZYNU3x3thLK3g35OHtQJuBnw4buhf4QTSoRf6Xnr7lda
-        j2TkYXPGK1AaU3qTAkzhcCErpsOKy+77Dg==
-X-Google-Smtp-Source: ABdhPJznpdis7nBoUkSur7OTAPAsQO3DzwzJue/QuGTmUTaMLyisl9te+3aa1QmLaeMWyCNnBiJ1wA==
-X-Received: by 2002:a4a:cb02:: with SMTP id r2mr9731965ooq.95.1633362960694;
-        Mon, 04 Oct 2021 08:56:00 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id p18sm3046878otk.7.2021.10.04.08.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 08:56:00 -0700 (PDT)
-From:   Ian Pilcher <arequipeno@gmail.com>
-To:     pavel@ucw.cz
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, kabel@kernel.org, hch@infradead.org
-Subject: [RESEND PATCH v5 2/2] leds: trigger: Add block device LED trigger
-Date:   Mon,  4 Oct 2021 10:55:46 -0500
-Message-Id: <20211004155546.1120869-3-arequipeno@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211004155546.1120869-1-arequipeno@gmail.com>
-References: <20211004155546.1120869-1-arequipeno@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oXxI7X/1bkoyfWLqsQl0b8N5L2M43qDxOhyRLjNgwgs=;
+        b=QQ9WkcJSRIIDfAKEViFn8odN8m6sW2AcT33Ny0B7YDP5A4VQ81xIgQqxi4C6wDMXPR
+         uNmNAy/RH03b3YjBS31LpJ9OIpXzOG8p1dkPF3CbPnI1UxA03hcyqiiVyAUECWHidBP6
+         SBTmsKbCWrJV94tEBqMc9dERYhtnwTKo8074npB1WNZeZP5zsYAVOkIHNwrZmZr36BS0
+         7rsn5SQiYpJRQiPJUwT7Jz0NmMeIktq8LmsEaZ1jf2674GxgGYkzmyCjCA3H5Ce0Tsfm
+         /ZkyShA9tanplHheIECAepB97n3lQ8uNY+xtaBIHXcM4WmrkSTSxMn9pWkO3unBBOH0f
+         2aRg==
+X-Gm-Message-State: AOAM531WtDx9XxSj2lAy81T91jDuTqUOVELcm5PFwqxYmTwmzMvMcGFO
+        J3elyH6NxSZzGNZNv82xEow=
+X-Google-Smtp-Source: ABdhPJwVBnc7vV9bh5UvETfiXZp05qVUc3d2AIsNbe2sLzFhSwuNlbIJLQFDdKH2jbPpxZ0FciK83w==
+X-Received: by 2002:a05:6512:31c1:: with SMTP id j1mr15924982lfe.442.1633363033096;
+        Mon, 04 Oct 2021 08:57:13 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id l9sm886038lje.32.2021.10.04.08.57.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 08:57:12 -0700 (PDT)
+Subject: Re: [PATCH v13 13/35] drm/tegra: gr2d: Support generic power domain
+ and runtime PM
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-14-digetx@gmail.com>
+ <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com>
+ <aad7a508-7fb5-3418-f902-def80c365094@gmail.com>
+ <CAPDyKFppSuP6FfaBaGn3o+8WvTT=vJ8XMzZ47WPQ1JKiUYyEpw@mail.gmail.com>
+ <8d75436d-864a-7ce0-ba53-daa8b663035a@gmail.com>
+ <CAPDyKFpqs5gUcym4q+GuiJy13eXqjEnx-eFdUT4bQpcfPAOEYw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f5b5e06a-71ed-1250-f0ad-692062e00e01@gmail.com>
+Date:   Mon, 4 Oct 2021 18:57:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPDyKFpqs5gUcym4q+GuiJy13eXqjEnx-eFdUT4bQpcfPAOEYw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "blkdev" LED trigger to blink LEDs in response to block device
-activity.
+04.10.2021 14:01, Ulf Hansson пишет:
+> On Fri, 1 Oct 2021 at 21:00, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 01.10.2021 17:55, Ulf Hansson пишет:
+>>> On Fri, 1 Oct 2021 at 16:29, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>>
+>>>> 01.10.2021 16:39, Ulf Hansson пишет:
+>>>>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>>>>
+>>>>>> Add runtime power management and support generic power domains.
+>>>>>>
+>>>>>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>>>>>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+>>>>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>>>>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>>> ---
+>>>>>>  drivers/gpu/drm/tegra/gr2d.c | 155 +++++++++++++++++++++++++++++++++--
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>>  static int gr2d_remove(struct platform_device *pdev)
+>>>>>> @@ -259,15 +312,101 @@ static int gr2d_remove(struct platform_device *pdev)
+>>>>>>                 return err;
+>>>>>>         }
+>>>>>>
+>>>>>> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
+>>>>>> +       pm_runtime_disable(&pdev->dev);
+>>>>>
+>>>>> There is no guarantee that the ->runtime_suspend() has been invoked
+>>>>> here, which means that clock may be left prepared/enabled beyond this
+>>>>> point.
+>>>>>
+>>>>> I suggest you call pm_runtime_force_suspend(), instead of
+>>>>> pm_runtime_disable(), to make sure that gets done.
+>>>>
+>>>> The pm_runtime_disable() performs the final synchronization, please see [1].
+>>>>
+>>>> [1]
+>>>> https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/base/power/runtime.c#L1412
+>>>
+>>> pm_runtime_disable() end up calling _pm_runtime_barrier(), which calls
+>>> cancel_work_sync() if dev->power.request_pending has been set.
+>>>
+>>> If the work that was punted to the pm_wq in rpm_idle() has not been
+>>> started yet, we end up just canceling it. In other words, there are no
+>>> guarantees it runs to completion.
+>>
+>> You're right. Although, in a case of this particular patch, the syncing
+>> is actually implicitly done by pm_runtime_dont_use_autosuspend().
+>>
+>> But for drivers which don't use auto-suspend, there is no sync. This
+>> looks like a disaster, it's a very common pattern for drivers to
+>> 'put+disable'.
+>>
+>>> Moreover, use space may have bumped the usage count via sysfs for the
+>>> device (pm_runtime_forbid()) to keep the device runtime resumed.
+>>
+>> Right, this is also a disaster in a case of driver removal.
+>>
+>>>> Calling pm_runtime_force_suspend() isn't correct because each 'enable'
+>>>> must have the corresponding 'disable'. Hence there is no problem here.
+>>>
+>>> pm_runtime_force_suspend() calls pm_runtime_disable(), so I think that
+>>> should be fine. No?
+>>
+>> [adding Rafael]
+>>
+>> Rafael, could you please explain how drivers are supposed to properly
+>> suspend and disable RPM to cut off power and reset state that was
+>> altered by the driver's resume callback? What we're missing? Is Ulf's
+>> suggestion acceptable?
+>>
+>> The RPM state of a device is getting reset on driver's removal, hence
+>> all refcounts that were bumped by the rpm-resume callback of the device
+>> driver will be screwed up if device is kept resumed after removal. I
+>> just verified that it's true in practice.
+> 
+> Note that, what makes the Tegra drivers a bit special is that they are
+> always built with CONFIG_PM being set (selected from the "SoC"
+> Kconfig).
+> 
+> Therefore, pm_runtime_force_suspend() can work for some of these
+> cases. Using this, would potentially avoid the driver from having to
+> runtime resume the device in ->remove(), according to the below
+> generic sequence, which is used in many drivers.
+> 
+> pm_runtime_get_sync()
+> clk_disable_unprepare() (+ additional things to turn off the device)
+> pm_runtime_disable()
+> pm_runtime_put_noidle()
 
-Add LEDS_TRIGGER_BLKDEV (tristate) config option to control building of
-the trigger.
+It's not a problem to change this patchset. The problem is that if
+you'll grep mainline for 'pm_runtime_disable', you will find that there
+are a lot of drivers in a potential trouble.
 
-Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
----
- drivers/leds/trigger/Kconfig          |   9 +
- drivers/leds/trigger/Makefile         |   1 +
- drivers/leds/trigger/ledtrig-blkdev.c | 965 ++++++++++++++++++++++++++
- 3 files changed, 975 insertions(+)
- create mode 100644 drivers/leds/trigger/ledtrig-blkdev.c
+I'm proposing that we should change pm_runtime_disable() to perform the
+syncing with this oneliner:
 
-diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-index 1f1d57288085..219d15c046d7 100644
---- a/drivers/leds/trigger/Kconfig
-+++ b/drivers/leds/trigger/Kconfig
-@@ -153,4 +153,13 @@ config LEDS_TRIGGER_TTY
- 
- 	  When build as a module this driver will be called ledtrig-tty.
- 
-+config LEDS_TRIGGER_BLKDEV
-+	tristate "LED Trigger for block devices"
-+	depends on BLOCK
-+	help
-+	  The blkdev LED trigger allows LEDs to be controlled by block device
-+	  activity (reads and writes).
-+
-+	  See Documentation/leds/ledtrig-blkdev.rst.
-+
- endif # LEDS_TRIGGERS
-diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-index 25c4db97cdd4..d53bab5d93f1 100644
---- a/drivers/leds/trigger/Makefile
-+++ b/drivers/leds/trigger/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
- obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
- obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
- obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-+obj-$(CONFIG_LEDS_TRIGGER_BLKDEV)	+= ledtrig-blkdev.o
-diff --git a/drivers/leds/trigger/ledtrig-blkdev.c b/drivers/leds/trigger/ledtrig-blkdev.c
-new file mode 100644
-index 000000000000..feead76c2e9d
---- /dev/null
-+++ b/drivers/leds/trigger/ledtrig-blkdev.c
-@@ -0,0 +1,965 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ *	Block device LED trigger
-+ *
-+ *	Copyright 2021 Ian Pilcher <arequipeno@gmail.com>
-+ */
-+
-+#include <linux/blkdev.h>
-+#include <linux/leds.h>
-+#include <linux/module.h>
-+#include <linux/part_stat.h>
-+#include <linux/xarray.h>
-+
-+/* Default blink time & check interval (milliseconds) */
-+#define LED_BDEV_BLINK_MSEC	75
-+#define LED_BDEV_INTERVAL	100
-+
-+/* Minimum blink time & check interval (milliseconds) */
-+#define LED_BDEV_MIN_BLINK	10
-+#define LED_BDEV_MIN_INT	25
-+
-+/* Mode for blkdev_get_by_path() & blkdev_put() */
-+#define LED_BDEV_FMODE		0
-+
-+/* Device activity type that will make LED blink */
-+enum led_bdev_led_mode {
-+	LED_BDEV_MODE_RO	= 0,
-+	LED_BDEV_MODE_WO	= 1,
-+	LED_BDEV_MODE_RW	= 2
-+};
-+
-+/* When unlinking a block device from an LED, is the blkdev being released? */
-+enum led_bdev_unlink_mode {
-+	LED_BDEV_RELEASING,
-+	LED_BDEV_NOT_RELEASING
-+};
-+
-+/* An "LED block device" (LBD) - 1 per blkdev linked to at least 1 LED */
-+struct led_bdev_lbd {
-+	unsigned long		index;
-+	struct block_device	*bdev;
-+	struct xarray		linked_leds;
-+	unsigned long		read_ios;
-+	unsigned long		write_ios;
-+	unsigned int		generation;
-+	bool			read_act;
-+	bool			write_act;
-+};
-+
-+/* Every LED associated with the blkdev trigger gets one of these */
-+struct led_bdev_led {
-+	unsigned long		index;
-+	struct led_classdev	*led_cdev;
-+	unsigned int		blink_msec;
-+	struct xarray		linked_lbds;
-+	struct hlist_node	all_leds_node;
-+	enum led_bdev_led_mode	mode;
-+};
-+
-+/* Forward declarations to make this file compile in a more readable order */
-+static void led_bdev_process(struct work_struct *work);
-+static struct led_bdev_lbd *led_bdev_get_lbd(const char *buf, size_t size);
-+static struct block_device *led_bdev_get_bdev(const char *buf, size_t size,
-+					      fmode_t mode);
-+static int led_bdev_link(struct led_bdev_led *led, struct led_bdev_lbd *lbd);
-+static void led_bdev_put_lbd(struct led_bdev_lbd *lbd);
-+static void led_bdev_lbd_release(struct device *dev, void *res);
-+static void led_bdev_unlink(struct led_bdev_led *led,
-+			    struct led_bdev_lbd *lbd,
-+			    enum led_bdev_unlink_mode unlink_mode);
-+static void led_bdev_update_lbd(struct led_bdev_lbd *lbd);
-+static bool led_bdev_blink(const struct led_bdev_led *led,
-+			   const struct led_bdev_lbd *lbd);
-+
-+/* Index for next LBD or LED */
-+static unsigned long led_bdev_next_index;
-+
-+/* Protects everything except atomic sysfs attributes */
-+static DEFINE_MUTEX(led_bdev_mutex);
-+
-+/* All LEDs associated with the trigger */
-+static HLIST_HEAD(led_bdev_all_leds);
-+
-+/* sysfs class for "global" trigger attributes (interval) */
-+static struct class *led_bdev_class;
-+
-+/* Delayed work to periodically check for activity & blink LEDs */
-+static DECLARE_DELAYED_WORK(led_bdev_work, led_bdev_process);
-+
-+/* How often to run the delayed work - in jiffies */
-+static unsigned int led_bdev_interval;
-+
-+/* Incremented every time the delayed work runs */
-+static unsigned int led_bdev_generation;
-+
-+/* Total number of device-to-LED associations (links) */
-+static unsigned int led_bdev_link_count;
-+
-+/* Empty attribute list for the linked_leds & linked_devices "groups" */
-+static struct attribute *led_bdev_attrs_empty[] = { NULL };
-+
-+/* linked_leds sysfs directory for block devs linked to 1 or more LEDs */
-+static const struct attribute_group led_bdev_linked_leds = {
-+	.name	= "linked_leds",
-+	.attrs	= led_bdev_attrs_empty,
-+};
-+
-+/* linked_devices sysfs directory for each LED associated with the trigger */
-+static const struct attribute_group led_bdev_linked_devs = {
-+	.name	= "linked_devices",
-+	.attrs	= led_bdev_attrs_empty,
-+};
-+
-+/**
-+ * led_bdev_activate() - Called when an LED is associated with the trigger.
-+ * @led_cdev:	The LED
-+ *
-+ * Allocates & initializes the @led_bdev_led structure, adds it to the
-+ * @led_bdev_all_leds list, and sets the LED's trigger data.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ * Return:	``0`` on success, ``-errno`` on error.
-+ */
-+static int led_bdev_activate(struct led_classdev *const led_cdev)
-+{
-+	struct led_bdev_led *led;
-+	int ret;
-+
-+	if (led_bdev_next_index == ULONG_MAX) {
-+		ret = -EOVERFLOW;
-+		goto exit_return;
-+	}
-+
-+	led = kmalloc(sizeof(*led), GFP_KERNEL);
-+	if (led == NULL) {
-+		ret = -ENOMEM;
-+		goto exit_return;
-+	}
-+
-+	led->index = led_bdev_next_index++;
-+	led->led_cdev = led_cdev;
-+	led->blink_msec = LED_BDEV_BLINK_MSEC;
-+	led->mode = LED_BDEV_MODE_RW;
-+	xa_init(&led->linked_lbds);
-+
-+	ret = mutex_lock_interruptible(&led_bdev_mutex);
-+	if (ret != 0)
-+		goto exit_free;
-+
-+	hlist_add_head(&led->all_leds_node, &led_bdev_all_leds);
-+	led_set_trigger_data(led_cdev, led);
-+
-+	mutex_unlock(&led_bdev_mutex);
-+
-+exit_free:
-+	if (ret != 0)
-+		kfree(led);
-+exit_return:
-+	return ret;
-+}
-+
-+/**
-+ * link_device_store() - ``link_device`` device attribute store function.
-+ * @dev:	The LED device
-+ * @attr:	The ``link_device`` attribute (@dev_attr_link_device)
-+ * @buf:	The value written to the attribute, which should be the path to
-+ *		the special file that represents the block device to be linked
-+ *		to the LED (e.g. /dev/sda)
-+ * @count:	The number of characters in @buf
-+ *
-+ * Calls led_bdev_get_lbd() to find or create the LBD for the block device,
-+ * checks that the device isn't already linked to this LED, and calls
-+ * led_bdev_link() to create the link.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ * Return:	@count on success, ``-errno`` on error.
-+ */
-+static ssize_t link_device_store(struct device *const dev,
-+				 struct device_attribute *const attr,
-+				 const char *const buf, const size_t count)
-+{
-+	struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+	struct led_bdev_lbd *lbd;
-+	int ret;
-+
-+	ret = mutex_lock_interruptible(&led_bdev_mutex);
-+	if (ret != 0)
-+		goto exit_return;
-+
-+	lbd = led_bdev_get_lbd(buf, count);
-+	if (IS_ERR(lbd)) {
-+		ret = PTR_ERR(lbd);
-+		goto exit_unlock;
-+	}
-+
-+	if (xa_load(&lbd->linked_leds, led->index) != NULL) {
-+		ret = -EEXIST;
-+		goto exit_put_lbd;
-+	}
-+
-+	ret = led_bdev_link(led, lbd);
-+
-+exit_put_lbd:
-+	if (ret != 0)
-+		led_bdev_put_lbd(lbd);
-+exit_unlock:
-+	mutex_unlock(&led_bdev_mutex);
-+exit_return:
-+	return (ret == 0) ? count : ret;
-+}
-+
-+/**
-+ * led_bdev_get_lbd() - Find or create the LBD for a block device.
-+ * @buf:	The value written to the ``link_device`` attribute, which should
-+ *		be the path to a special file that represents a block device
-+ * @count:	The number of characters in @buf
-+ *
-+ * Calls led_bdev_get() to get the block device represented by the path in @buf.
-+ * If the device already has an LBD (because it is already linked to an LED),
-+ * simply returns the existing LBD.
-+ *
-+ * Otherwise, allocates a new LBD (as a device resource), creates the block
-+ * device's ``linked_leds`` directory (attribute group), calls
-+ * led_bdev_update_lbd() to set the LBD's activity counters, and adds the LBD
-+ * resource to the block device.
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ * Return:	Pointer to the LBD, error pointer on error.
-+ */
-+static struct led_bdev_lbd *led_bdev_get_lbd(const char *const buf,
-+					     const size_t count)
-+{
-+	struct block_device *bdev;
-+	struct led_bdev_lbd *lbd;
-+	int ret;
-+
-+	bdev = led_bdev_get_bdev(buf, count, LED_BDEV_FMODE);
-+	if (IS_ERR(bdev)) {
-+		ret = PTR_ERR(bdev);
-+		goto exit_return;
-+	}
-+
-+	lbd = devres_find(&bdev->bd_device, led_bdev_lbd_release, NULL, NULL);
-+	if (lbd != NULL) {
-+		ret = 0;
-+		goto exit_put_bdev;
-+	}
-+
-+	if (led_bdev_next_index == ULONG_MAX) {
-+		ret = -EOVERFLOW;
-+		goto exit_put_bdev;
-+	}
-+
-+	lbd = devres_alloc(led_bdev_lbd_release, sizeof(*lbd), GFP_KERNEL);
-+	if (lbd == NULL) {
-+		ret = -ENOMEM;
-+		goto exit_put_bdev;
-+	}
-+
-+	ret = sysfs_create_group(bdev_kobj(bdev), &led_bdev_linked_leds);
-+	if (ret != 0)
-+		goto exit_free_lbd;
-+
-+	lbd->index = led_bdev_next_index++;
-+	lbd->bdev = bdev;
-+	xa_init(&lbd->linked_leds);
-+
-+	/* Ensure that led_bdev_update_lbd() updates the LBD */
-+	lbd->generation = led_bdev_generation - 1;
-+	led_bdev_update_lbd(lbd);
-+	/* Don't blink for activity that may have happened long ago */
-+	lbd->read_act = false;
-+	lbd->write_act = false;
-+
-+	devres_add(&bdev->bd_device, lbd);
-+
-+exit_free_lbd:
-+	if (ret != 0)
-+		devres_free(lbd);
-+exit_put_bdev:
-+	blkdev_put(bdev, LED_BDEV_FMODE);  /* Allow the device to be released */
-+exit_return:
-+	return (ret == 0) ? lbd : ERR_PTR(ret);
-+}
-+
-+/**
-+ * led_bdev_get_bdev() - Get a block device by path.
-+ * @buf:	The value written to the ``link_device`` or ``unlink_device``
-+ *		attribute, which should be the path to a special file that
-+ *		represents a block device
-+ * @count:	The number of characters in @buf (not including its terminating
-+ *		null)
-+ *
-+ * Copies @buf to a writable buffer, trims the trailing newline (if any), and
-+ * calls blkdev_get_by_path() to resolve the block device.
-+ *
-+ * The caller must call blkdev_put() when finished with the device.
-+ *
-+ * Context:	Process context.
-+ * Return:	The block device, or an error pointer.
-+ */
-+static struct block_device *led_bdev_get_bdev(const char *const buf,
-+					      const size_t count,
-+					      const fmode_t mode)
-+{
-+	struct block_device *bdev;
-+	char *path;
-+
-+	path = kmemdup(buf, count + 1, GFP_KERNEL);  /* include null */
-+	if (path == NULL)
-+		return ERR_PTR(-ENOMEM);
-+
-+	if (path[count - 1] == '\n')
-+		path[count - 1] = 0;
-+
-+	bdev = blkdev_get_by_path(path, mode, THIS_MODULE);
-+	kfree(path);
-+	return bdev;
-+}
-+
-+/**
-+ * led_bdev_update_lbd() - Update an LBD's activity counters for the current
-+ *			   generation
-+ * @lbd:	The LBD
-+ *
-+ * Does nothing if the LBD has already been updated during this generation.
-+ *
-+ * Otherwise, updates the LBD's activity counters (@read_ios & @write_ios) and
-+ * @generation, and sets @read_act and/or @write_act if the corresponding
-+ * counters have changed.
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ */
-+static void led_bdev_update_lbd(struct led_bdev_lbd *const lbd)
-+{
-+	unsigned long read_ios, write_ios;
-+
-+	if (lbd->generation != led_bdev_generation) {
-+
-+		read_ios = part_stat_read(lbd->bdev, ios[STAT_READ]);
-+
-+		write_ios = part_stat_read(lbd->bdev, ios[STAT_WRITE])
-+				+ part_stat_read(lbd->bdev, ios[STAT_DISCARD])
-+				+ part_stat_read(lbd->bdev, ios[STAT_FLUSH]);
-+
-+		if (lbd->read_ios != read_ios) {
-+			lbd->read_act = true;
-+			lbd->read_ios = read_ios;
-+		} else {
-+			lbd->read_act = false;
-+		}
-+
-+		if (lbd->write_ios != write_ios) {
-+			lbd->write_act = true;
-+			lbd->write_ios = write_ios;
-+		} else {
-+			lbd->write_act = false;
-+		}
-+
-+		lbd->generation = led_bdev_generation;
-+	}
-+}
-+
-+/**
-+ * led_bdev_link() - "Link" a block device to an LED.
-+ * @led:	The LED
-+ * @lbd:	The block device
-+ *
-+ * Called from link_device_store() to create the link between an LED and a
-+ * block device.
-+ *
-+ *   * Adds block device symlink to LED's ``linked_devices`` directory.
-+ *   * Adds LED symlink to block devices's ``linked_leds`` directory.
-+ *   * Adds the LBD to the LED's @linked_lbds and adds the LED to the LBD's
-+ *     @linked_leds.
-+ *
-+ * If the new link is the only one (i.e. no other block device/LED links
-+ * already exist), schedule delayed work to periodically check for block
-+ * device activity and blink LEDs.
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ * Return:	0 on success, ``-errno`` on error.
-+ */
-+static int led_bdev_link(struct led_bdev_led *const led,
-+			 struct led_bdev_lbd *const lbd)
-+{
-+	unsigned long delay;
-+	int ret;
-+
-+	ret = xa_insert(&lbd->linked_leds, led->index, led, GFP_KERNEL);
-+	if (ret != 0)
-+		goto error_return;
-+
-+	ret = xa_insert(&led->linked_lbds, lbd->index, lbd, GFP_KERNEL);
-+	if (ret != 0)
-+		goto error_erase_led;
-+
-+	/* /sys/class/block/<bdev>/linked_leds/<led> */
-+	ret = sysfs_add_link_to_group(bdev_kobj(lbd->bdev),
-+				      led_bdev_linked_leds.name,
-+				      &led->led_cdev->dev->kobj,
-+				      led->led_cdev->name);
-+	if (ret != 0)
-+		goto error_erase_lbd;
-+
-+	/* /sys/class/leds/<led>/linked_devices/<bdev> */
-+	ret = sysfs_add_link_to_group(&led->led_cdev->dev->kobj,
-+				      led_bdev_linked_devs.name,
-+				      bdev_kobj(lbd->bdev),
-+				      dev_name(&lbd->bdev->bd_device));
-+	if (ret != 0)
-+		goto error_remove_symlink;
-+
-+	if (led_bdev_link_count == 0) {
-+		delay = READ_ONCE(led_bdev_interval);
-+		WARN_ON(!schedule_delayed_work(&led_bdev_work, delay));
-+	}
-+
-+	++led_bdev_link_count;
-+
-+	return 0;
-+
-+error_remove_symlink:
-+	sysfs_remove_link_from_group(bdev_kobj(lbd->bdev),
-+				     led_bdev_linked_leds.name,
-+				     led->led_cdev->name);
-+error_erase_lbd:
-+	xa_erase(&led->linked_lbds, lbd->index);
-+error_erase_led:
-+	xa_erase(&lbd->linked_leds, led->index);
-+error_return:
-+	return ret;
-+}
-+
-+/**
-+ * unlink_device_store() - ``unlink_device`` device attribute store function.
-+ * @dev:	The LED device
-+ * @attr:	The ``unlink_device`` attribute (@dev_attr_unlink_device)
-+ * @buf:	The value written to the attribute, which should be the path to
-+ *		the special file that represents the block device to be unlinked
-+ *		from the LED (e.g. /dev/sda)
-+ * @count:	The number of characters in @buf
-+ *
-+ * Block device name is written to the attribute to "unlink" the block device
-+ * from the LED.  I.e. the LED will no longer blink to show activity on that
-+ * block device.
-+ *
-+ * Calls led_bdev_get() to get the block device represented by the path in @buf.
-+ * If the device has an LBD, searches the LBD's list of LEDs for a link to this
-+ * LED and (if found) calls led_bdev_unlink() to destroy the link.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ * Return:	@count on success, ``-errno`` on error.
-+ */
-+static ssize_t unlink_device_store(struct device *const dev,
-+				   struct device_attribute *const attr,
-+				   const char *const buf, const size_t count)
-+{
-+	struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+	struct block_device *bdev;
-+	struct led_bdev_lbd *lbd;
-+	int ret;
-+
-+	bdev = led_bdev_get_bdev(buf, count, LED_BDEV_FMODE);
-+	if (IS_ERR(bdev)) {
-+		ret = PTR_ERR(bdev);
-+		goto exit_return;
-+	}
-+
-+	ret = mutex_lock_interruptible(&led_bdev_mutex);
-+	if (ret != 0)
-+		goto exit_put_bdev;
-+
-+	lbd = devres_find(&bdev->bd_device, led_bdev_lbd_release, NULL, NULL);
-+	if (lbd == NULL) {
-+		ret = -EUNATCH;  /* bdev isn't linked to any LED */
-+		goto exit_unlock;
-+	}
-+
-+	if (xa_load(&lbd->linked_leds, led->index) == NULL) {
-+		ret = -EUNATCH;  /* bdev isn't linked to this LED */
-+		goto exit_unlock;
-+	}
-+
-+	led_bdev_unlink(led, lbd, LED_BDEV_NOT_RELEASING);
-+
-+exit_unlock:
-+	mutex_unlock(&led_bdev_mutex);
-+exit_put_bdev:
-+	blkdev_put(bdev, LED_BDEV_FMODE);
-+exit_return:
-+	return (ret == 0) ? count : ret;
-+}
-+
-+/**
-+ * led_bdev_unlink() - "Unlink" a block device from an LED.
-+ * @led:		The LED
-+ * @lbd:		The block device
-+ * @unlink_mode:	Indicates whether the LBD is being released (because the
-+ *			block device has been removed)
-+ *
-+ * Removes the link between an LED and a block device.
-+ *
-+ *   * Removes the LBD from the LED's @linked_lbds and removes the LED from the
-+ *     LBD's @linked_leds.
-+ *   * Removes the block device symlink from the LED's ``linked_devices``
-+ *     directory.
-+ *
-+ * If the block device is **not** being released:
-+ *
-+ *   * Removes the LED symlink from the block device's ``linked_leds``
-+ *     directory.
-+ *   * Calls led_bdev_put_lbd() to clean up the LBD, if required.
-+ *
-+ * If the removed link was the only one (i.e. there are no existing block
-+ * device/LED links after its removal), cancels the periodic delayed work
-+ * which checks for device activity.
-+ *
-+ * This function is called from multiple locations.
-+ *
-+ *   * unlink_device_store() calls this function when a block device is unlinked
-+ *     from an LED via the ``unlink_device`` sysfs attribute.   (@unlink_mode ==
-+ *     ``LED_BDEV_NOT_RELEASING``)
-+ *   * led_bdev_deactivate() calls this function for each block device linked to
-+ *     an LED that is being deactivated (disassociated from the trigger).
-+ *     (@unlink_mode == ``LED_BDEV_NOT_RELEASING``).
-+ *   * led_bdev_lbd_release() calls this function for each LED linked to a block
-+ *     device that has been removed from the system.  (@unlink_mode ==
-+ *     ``LED_BDEV_RELEASING).
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ */
-+static void led_bdev_unlink(struct led_bdev_led *const led,
-+			    struct led_bdev_lbd *const lbd,
-+			    const enum led_bdev_unlink_mode unlink_mode)
-+{
-+	--led_bdev_link_count;
-+
-+	if (led_bdev_link_count == 0)
-+		WARN_ON(!cancel_delayed_work_sync(&led_bdev_work));
-+
-+	xa_erase(&lbd->linked_leds, led->index);
-+	xa_erase(&led->linked_lbds, lbd->index);
-+
-+	/* /sys/class/leds/<led>/linked_devices/<bdev> */
-+	sysfs_remove_link_from_group(&led->led_cdev->dev->kobj,
-+				     led_bdev_linked_devs.name,
-+				     dev_name(&lbd->bdev->bd_device));
-+
-+	/*
-+	 * If the LBD is being released, the device's attribute groups have
-+	 * already been removed, and the LBD will be freed automatically.
-+	 */
-+	if (unlink_mode == LED_BDEV_NOT_RELEASING) {
-+
-+		/* /sys/class/block/<bdev>/linked_leds/<led> */
-+		sysfs_remove_link_from_group(bdev_kobj(lbd->bdev),
-+					     led_bdev_linked_leds.name,
-+					     led->led_cdev->name);
-+		led_bdev_put_lbd(lbd);
-+	}
-+}
-+
-+/**
-+ * led_bdev_put_lbd() - Remove and free an LBD, if it is no longer needed.
-+ * @lbd:	The LBD
-+ *
-+ * Does nothing if the LBD (block device) is still linked to at least one LED.
-+ *
-+ * If the LBD is no longer linked to any LEDs, removes the block device's
-+ * ``linked_leds`` directory (attribute group), removes the LBD from the
-+ * block device's resource list, and frees the LBD.
-+ *
-+ * Called from led_bdev_unlink() (and in the link_device_store() error path).
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ */
-+static void led_bdev_put_lbd(struct led_bdev_lbd *const lbd)
-+{
-+	struct block_device *const bdev = lbd->bdev;
-+	int ret;
-+
-+	if (xa_empty(&lbd->linked_leds)) {
-+
-+		sysfs_remove_group(bdev_kobj(bdev), &led_bdev_linked_leds);
-+		ret = devres_destroy(&bdev->bd_device, led_bdev_lbd_release,
-+				     NULL, NULL);
-+		WARN_ON(ret != 0);
-+	}
-+}
-+
-+/**
-+ * led_bdev_deactivate() - Called when an LED is disassociated from the
-+ *			   trigger.
-+ * @led_cdev:	The LED
-+ *
-+ * Calls led_bdev_unlink() for each block device linked to the LED, removes
-+ * the LED from the @led_bdev_all_leds list, and frees the @led_bdev_led.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ */
-+static void led_bdev_deactivate(struct led_classdev *const led_cdev)
-+{
-+	struct led_bdev_led *const led = led_get_trigger_data(led_cdev);
-+	struct led_bdev_lbd *lbd;
-+	unsigned long index;
-+
-+	mutex_lock(&led_bdev_mutex);
-+
-+	xa_for_each (&led->linked_lbds, index, lbd)
-+		led_bdev_unlink(led, lbd, LED_BDEV_NOT_RELEASING);
-+
-+	hlist_del(&led->all_leds_node);
-+	kfree(led);
-+
-+	mutex_unlock(&led_bdev_mutex);
-+}
-+
-+/**
-+ * led_bdev_lbd_release() - LBD device resource release function.
-+ * @dev:	The block device
-+ * @res:	The LBD
-+ *
-+ * Called by the driver core when a block device with an LBD is removed from the
-+ * system.  Calls led_bdev_unlink() for each LED linked to the block device.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ */
-+static void led_bdev_lbd_release(struct device *const dev, void *const res)
-+{
-+	struct led_bdev_lbd *const lbd = res;
-+	struct led_bdev_led *led;
-+	unsigned long index;
-+
-+	mutex_lock(&led_bdev_mutex);
-+
-+	xa_for_each (&lbd->linked_leds, index, led)
-+		led_bdev_unlink(led, lbd, LED_BDEV_RELEASING);
-+
-+	mutex_unlock(&led_bdev_mutex);
-+}
-+
-+/**
-+ * led_bdev_process() - Check linked devices for activity and blink LEDs.
-+ * @work:	Delayed work (@led_bdev_work)
-+ *
-+ * Iterates through block devices linked to LEDs and calls led_bdev_update_lbd()
-+ * to update the LBD's activity counters.  If a particular LED hasn't already
-+ * been blinked, calls led_bdev_blink() to blink the LED if appropriate for that
-+ * device's activity.
-+ *
-+ * When finished, schedules itself to run again after @led_bdev_interval
-+ * jiffies.
-+ *
-+ * Context:	Process context.  Takes and releases @led_bdev_mutex.
-+ */
-+static void led_bdev_process(struct work_struct *const work)
-+{
-+	struct led_bdev_led *led;
-+	unsigned long delay;
-+
-+	if (!mutex_trylock(&led_bdev_mutex))
-+		goto exit_reschedule;
-+
-+	hlist_for_each_entry (led, &led_bdev_all_leds, all_leds_node) {
-+
-+		struct led_bdev_lbd *lbd;
-+		unsigned long index;
-+		bool blinked = false;
-+
-+		xa_for_each (&led->linked_lbds, index, lbd) {
-+
-+			led_bdev_update_lbd(lbd);
-+			if (!blinked)
-+				blinked = led_bdev_blink(led, lbd);
-+		}
-+	}
-+
-+	++led_bdev_generation;
-+
-+	mutex_unlock(&led_bdev_mutex);
-+
-+exit_reschedule:
-+	delay = READ_ONCE(led_bdev_interval);
-+	WARN_ON_ONCE(!schedule_delayed_work(&led_bdev_work, delay));
-+}
-+
-+/**
-+ * led_bdev_blink() - Blink an LED, if the correct type of activity has occurred
-+ *		      on the block device.
-+ * @led:	The LED
-+ * @lbd:	The block device
-+ *
-+ * Context:	Process context.  Caller must hold @led_bdev_mutex.
-+ * Return:	``true`` if the LED is blinked, ``false`` if not.
-+ */
-+static bool led_bdev_blink(const struct led_bdev_led *const led,
-+			   const struct led_bdev_lbd *const lbd)
-+{
-+	unsigned long delay_on, delay_off;
-+
-+	if ((lbd->read_act && led->mode != LED_BDEV_MODE_WO)
-+			|| (lbd->write_act && led->mode != LED_BDEV_MODE_RO)) {
-+
-+		delay_on = READ_ONCE(led->blink_msec);
-+		delay_off = 1;	/* 0 leaves LED turned on */
-+
-+		led_blink_set_oneshot(led->led_cdev, &delay_on, &delay_off, 0);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+/**
-+ * blink_time_show() - ``blink_time`` device attribute show function.
-+ * @dev:	The LED device
-+ * @attr:	The ``blink_time`` attribute (@dev_attr_blink_time)
-+ * @buf:	Output buffer
-+ *
-+ * Writes the current value of the LED's @blink_msec to @buf.
-+ *
-+ * Context:	Process context.
-+ * Return:	The number of characters written to @buf.
-+ */
-+static ssize_t blink_time_show(struct device *const dev,
-+			       struct device_attribute *const attr,
-+			       char *const buf)
-+{
-+	const struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+
-+	return sprintf(buf, "%u\n", READ_ONCE(led->blink_msec));
-+}
-+
-+/**
-+ * blink_time_store() - ``blink_time`` device attribute store function.
-+ * @dev:	The LED device
-+ * @attr:	The ``blink_time`` attribute (@dev_attr_blink_time)
-+ * @buf:	The new value (as written to the sysfs attribute)
-+ * @count:	The number of characters in @buf
-+ *
-+ * Sets the LED's @blink_msec (the duration in milliseconds of one blink).
-+ *
-+ * Context:	Process context.
-+ * Return:	@count on success, ``-errno`` on error.
-+ */
-+static ssize_t blink_time_store(struct device *const dev,
-+				struct device_attribute *const attr,
-+				const char *const buf, const size_t count)
-+{
-+	struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+	unsigned int value;
-+	int ret;
-+
-+	ret = kstrtouint(buf, 0, &value);
-+	if (ret != 0)
-+		return ret;
-+
-+	if (value < LED_BDEV_MIN_BLINK)
-+		return -ERANGE;
-+
-+	WRITE_ONCE(led->blink_msec, value);
-+	return count;
-+}
-+
-+/**
-+ * mode_show() - ``mode`` device attribute show function.
-+ * @dev:	The LED device
-+ * @attr:	The ``mode`` attribute (@dev_attr_mode)
-+ * @buf:	Output buffer
-+ *
-+ * Writes the current value of the LED's @mode to @buf.
-+ *
-+ * Context:	Process context.
-+ * Return:	The number of characters written to @buf.
-+ */
-+static ssize_t mode_show(struct device *const dev,
-+			 struct device_attribute *const attr, char *const buf)
-+{
-+	static const char modes[][sizeof("[read] write rw\n")] = {
-+		[LED_BDEV_MODE_RO] = "[read] write rw\n",
-+		[LED_BDEV_MODE_WO] = "read [write] rw\n",
-+		[LED_BDEV_MODE_RW] = "read write [rw]\n"
-+	};
-+
-+	const struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+
-+	return sprintf(buf, modes[READ_ONCE(led->mode)]);
-+}
-+
-+/**
-+ * mode_store() - ``mode`` device attribute store function.
-+ * @dev:	The LED device
-+ * @attr:	The ``mode`` attribute (@dev_attr_mode)
-+ * @buf:	The new value (as written to the sysfs attribute)
-+ * @count:	The number of characters in @buf
-+ *
-+ * Sets the LED's @mode (``read``, ``write``, or ``rw``).
-+ *
-+ * Context:	Process context.
-+ * Return:	@count on success, ``-errno`` on error.
-+ */
-+static ssize_t mode_store(struct device *const dev,
-+			  struct device_attribute *const attr,
-+			  const char *const buf, const size_t count)
-+{
-+	static const char modes[][sizeof("write")] = {
-+		[LED_BDEV_MODE_RO] = "read",
-+		[LED_BDEV_MODE_WO] = "write",  /* longest */
-+		[LED_BDEV_MODE_RW] = "rw"
-+	};
-+
-+	struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-+	enum led_bdev_led_mode mode;
-+
-+	for (mode = LED_BDEV_MODE_RO; mode <= LED_BDEV_MODE_RW; ++mode) {
-+
-+		if (sysfs_streq(modes[mode], buf)) {
-+			WRITE_ONCE(led->mode, mode);
-+			return count;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+/**
-+ * interval_show() - ``interval`` class attribute show function.
-+ * @class:	The ``ledtrig_blkdev`` class (@led_bdev_class)
-+ * @attr:	The ``interval`` attribute (@class_attr_interval)
-+ * @buf:	Output buffer
-+ *
-+ * Writes the current value of @led_bdev_interval to @buf.
-+ *
-+ * Context:	Process context.
-+ * Return:	The number of characters written to @buf.
-+ */
-+static ssize_t interval_show(struct class *const class,
-+			     struct class_attribute *const attr,
-+			     char *const buf)
-+{
-+	return sprintf(buf, "%u\n",
-+		       jiffies_to_msecs(READ_ONCE(led_bdev_interval)));
-+}
-+
-+/**
-+ * interval_store() - ``interval`` class attribute store function
-+ * @class:	The ``ledtrig_blkdev`` class (@led_bdev_class)
-+ * @attr:	The ``interval`` attribute (@class_attr_interval)
-+ * @buf:	The new value (as written to the sysfs attribute)
-+ * @count:	The number of characters in @buf
-+ *
-+ * Sets @led_bdev_interval (after converting to jiffies).
-+ *
-+ * Context:	Process context.
-+ * Return:	@count on success, ``-errno`` on error.
-+ */
-+static ssize_t interval_store(struct class *const class,
-+			      struct class_attribute *const attr,
-+			      const char *const buf, const size_t count)
-+{
-+	unsigned int value;
-+	int ret;
-+
-+	ret = kstrtouint(buf, 0, &value);
-+	if (ret != 0)
-+		return ret;
-+
-+	if (value < LED_BDEV_MIN_INT)
-+		return -ERANGE;
-+
-+	WRITE_ONCE(led_bdev_interval, msecs_to_jiffies(value));
-+
-+	return count;
-+}
-+
-+/* Device and class attributes */
-+static DEVICE_ATTR_WO(link_device);
-+static DEVICE_ATTR_WO(unlink_device);
-+static DEVICE_ATTR_RW(blink_time);
-+static DEVICE_ATTR_RW(mode);
-+static CLASS_ATTR_RW(interval);
-+
-+/* Device attributes in LED directory (/sys/class/leds/<led>/...) */
-+static struct attribute *led_bdev_attrs[] = {
-+	&dev_attr_link_device.attr,
-+	&dev_attr_unlink_device.attr,
-+	&dev_attr_blink_time.attr,
-+	&dev_attr_mode.attr,
-+	NULL
-+};
-+
-+/* Unnamed attribute group == no subdirectory */
-+static const struct attribute_group led_bdev_attr_group = {
-+	.attrs	= led_bdev_attrs,
-+};
-+
-+/* Attribute groups for the trigger */
-+static const struct attribute_group *led_bdev_attr_groups[] = {
-+	&led_bdev_attr_group,   /* /sys/class/leds/<led>/... */
-+	&led_bdev_linked_devs,  /* /sys/class/leds/<led>/linked_devices/ */
-+	NULL
-+};
-+
-+/* Trigger registration data */
-+static struct led_trigger led_bdev_trigger = {
-+	.name		= "blkdev",
-+	.activate	= led_bdev_activate,
-+	.deactivate	= led_bdev_deactivate,
-+	.groups		= led_bdev_attr_groups,
-+};
-+
-+/**
-+ * led_bdev_init() - Block device LED trigger initialization.
-+ *
-+ * Converts default @led_bdev_interval from milliseconds to jiffies, creates
-+ * the ``/sys/class/ledtrig_blkdev/interval`` attribute, and registers the LED
-+ * trigger.
-+ *
-+ * Return:	0 on success, ``-errno`` on failure.
-+ */
-+static int __init led_bdev_init(void)
-+{
-+	int ret;
-+
-+	WRITE_ONCE(led_bdev_interval,
-+		   msecs_to_jiffies(LED_BDEV_INTERVAL));
-+
-+	led_bdev_class = class_create(THIS_MODULE, "ledtrig_blkdev");
-+	if (IS_ERR(led_bdev_class)) {
-+		ret = PTR_ERR(led_bdev_class);
-+		goto exit_return;
-+	}
-+
-+	ret = class_create_file(led_bdev_class, &class_attr_interval);
-+	if (ret != 0)
-+		goto exit_destroy_class;
-+
-+	ret = led_trigger_register(&led_bdev_trigger);
-+
-+exit_destroy_class:
-+	if (ret != 0)
-+		class_destroy(led_bdev_class);  /* removes the attribute file */
-+exit_return:
-+	return ret;
-+}
-+module_init(led_bdev_init);
-+
-+/**
-+ * led_bdev_exit() - Block device LED trigger module exit.
-+ *
-+ * Unregisters the LED trigger and removes the
-+ * ``/sys/class/ledtrig_blkdev/interval`` attribute.
-+ */
-+static void __exit led_bdev_exit(void)
-+{
-+	led_trigger_unregister(&led_bdev_trigger);
-+	class_destroy(led_bdev_class);
-+}
-+module_exit(led_bdev_exit);
-+
-+MODULE_DESCRIPTION("Block device LED trigger");
-+MODULE_AUTHOR("Ian Pilcher <arequipeno@gmail.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.1
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index ec94049442b9..5c9f28165824 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -1380,6 +1380,8 @@ EXPORT_SYMBOL_GPL(pm_runtime_barrier);
+  */
+ void __pm_runtime_disable(struct device *dev, bool check_resume)
+ {
++	flush_work(&dev->power.work);
++
+ 	spin_lock_irq(&dev->power.lock);
 
+ 	if (dev->power.disable_depth > 0) {
+
+Objections?
+
+The sysfs rpm-forbid is a separate problem and it's less troublesome
+since it requires root privileges. It's also not something that
+userspace touches casually. For now I don't know what could be done
+about it.
