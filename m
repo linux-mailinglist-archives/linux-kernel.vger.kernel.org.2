@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D5E421408
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778DC421429
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbhJDQ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S236479AbhJDQes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235724AbhJDQ1r (ORCPT
+        with ESMTP id S234651AbhJDQer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:27:47 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E8FC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:25:58 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso5557601oom.4
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:25:58 -0700 (PDT)
+        Mon, 4 Oct 2021 12:34:47 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BCCC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:32:58 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id l20so6568448ilk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=mLc0Fek34odD1FMIzueqXa/78SBcfVgbP97vYrbJQc8=;
-        b=Und7ZT2O/QKy3PwHipvfFlrL0ZXnwp+KNFSVjJRK4dxcaDVmi+SV55EzF8r7LkEk6W
-         X63d2RnxGwTFTHWu6c9gqVTIQjfwxLOK4XTYlXFsZ841zkGIzqMbwV5QZ0ry2byFZNo0
-         WP20ZcFf1U0cZbpBV2ZxJW7oSXovwCWgpWSlmgQTo1VekaBNH//8UgX4HoIkaFtQxk+h
-         diIpg26bC56lO9sRUNv139RdyIVKDT0aNDEvKt/o3qu40zjcQ8m7bOXGv1l5XxiyH6s8
-         yOzos756ADqluoEIZZNMeJvjucoHbh+zk2slJ3wfIoaCK0VFaovdGdc7ebwPU73U7Gub
-         v1tg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zwhqowoXzJuFipJCtXxoOJgFbLCEZ6oYYj5nkHsrECU=;
+        b=MjEdSbK7Tf/fjpwb7Yk8F5uzjjTjzIGJNCAM0AEiXbPEAqmsbThEErq1rFhLkU0Pta
+         d5vOOgij05XSR2qDWiwkwKR3oszOUa03sJ7u/knuZOTnSnBXzQwUSxHHz65obtXMIARC
+         64mx8oYDuueywYKk07LC4kFvOT9gQI7XVr05I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=mLc0Fek34odD1FMIzueqXa/78SBcfVgbP97vYrbJQc8=;
-        b=Fx/D8tBLlEDGXf3KkxuHl+kWkCEeFU/a1YBKqX4pgkW4ncRvjgpi3nmHt7kbTZE1KQ
-         V5ZThB40WOixqkDaKNzLUAxv2VHTgjgDDzhCwVc4dItlmP8OUMJQCPRDn/lj6lpKg03Z
-         Fr5dDNHn1Ye4Ipy5+bALhrIHNvFECQuuQiwi9mjMwxK0CPDhF26K1LuUAUbO2fdzrmtg
-         KsZdL+oEp+EN6uAqlic4WQanVTmpEpeODdZJkdNyIQvRMzQImkgpNrqR3NInyTivVGYz
-         f7KVL7y50KNMPU99O5a5sGZpcNDM4g0zNXh8YzYTmYTamAmVEK05/o58Ok5611Se+UEr
-         VxXw==
-X-Gm-Message-State: AOAM5329eh8e21sVKvzaA/qGxt0/oxMhyjg9eJQwrPfEOcb9lOAyDjbz
-        VBhYs4F8MDDalEvWItlIy7gQPf+RsJVvrCUPPQ==
-X-Google-Smtp-Source: ABdhPJz0q2XRr1Qfp6FLOFJNKbFVVBsAZTooPNituDqLrLvOFORJozZLLRR3CNunNc+pVqvoT8U5LfQRUAJw3Lw/IX0=
-X-Received: by 2002:a4a:c80b:: with SMTP id s11mr9722036ooq.65.1633364753033;
- Mon, 04 Oct 2021 09:25:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zwhqowoXzJuFipJCtXxoOJgFbLCEZ6oYYj5nkHsrECU=;
+        b=5ZspTdN6XCZYdh6gQCfTCus73fhIzEpSXToXnSQrahxm/81OYw+fkgkwY37ihtr7KI
+         YJ8DfX2tpZyntnt61h+KrFy7ThHYt4wDR9WxS9w+euOBWc+ZRIxqNA0yDcwoYJwgQkFG
+         ADH831k7x/gtjqQqaoc7EB72/xeKKhf+gQUATARZkrdgmpHsUsYXeoH6SSw3371EPfWS
+         0LEBIMnYBGGjYPMrNp6EFgwUxgtDZFz+dAes85QT+qAqEoTZ1P5XWKoVQwH4LHXAZ8uM
+         CToDSEkKqFwYKWOv3wxhmQzPGnxXsKeb4pDw1w3udg06R1s/IT/NG5SGIxdoZ1RGcwNq
+         ZKGA==
+X-Gm-Message-State: AOAM532mZ7Tg9ufpw4Z5Wolky/YrD6/ygcGvIQ9Qeuccd+MHn7XHJLUD
+        oq9opRgOWIpl0TI5XtukjwqDLB/uZx2xFQ==
+X-Google-Smtp-Source: ABdhPJwS0PbUbVX7vUBE386W9JZL6xpt/Y+44cc8hkxFBqLMUyzZV2EUBBm+5o37bH2wik5Ngtd0Og==
+X-Received: by 2002:a92:d8ce:: with SMTP id l14mr5516445ilo.302.1633365177590;
+        Mon, 04 Oct 2021 09:32:57 -0700 (PDT)
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com. [209.85.166.178])
+        by smtp.gmail.com with ESMTPSA id b13sm8295768ioq.26.2021.10.04.09.32.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 09:32:57 -0700 (PDT)
+Received: by mail-il1-f178.google.com with SMTP id r9so18901849ile.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:32:57 -0700 (PDT)
+X-Received: by 2002:a6b:6a0c:: with SMTP id x12mr9867780iog.177.1633364778729;
+ Mon, 04 Oct 2021 09:26:18 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6808:2c4:0:0:0:0 with HTTP; Mon, 4 Oct 2021 09:25:52
- -0700 (PDT)
-Reply-To: robertskelvin20211@gmail.com
-From:   Roberts Kelvin <skyprince20211@gmail.com>
-Date:   Mon, 4 Oct 2021 16:25:52 +0000
-Message-ID: <CAGZW7rXHbEHPHPh8nAWR6TKqzs2q3JQasRhM2f7qDETk+_a9tA@mail.gmail.com>
-Subject: HI
-To:     undisclosed-recipients:;
+References: <20210914202202.1702601-1-dianders@chromium.org>
+ <20210914132020.v5.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid> <CAMuHMdWy+aASNevg8nc9LTvR9QNrGYZQnB3sYYLDRfEU1w_idg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWy+aASNevg8nc9LTvR9QNrGYZQnB3sYYLDRfEU1w_idg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 4 Oct 2021 09:26:06 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W07iZigvNaxv1WodhQZVm8hD-1NxTuBuapJYifi6ROng@mail.gmail.com>
+Message-ID: <CAD=FV=W07iZigvNaxv1WodhQZVm8hD-1NxTuBuapJYifi6ROng@mail.gmail.com>
+Subject: Re: [PATCH v5 02/15] drm/edid: Break out reading block 0 of the EDID
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-K=C3=A6ri herra/fr=C3=BA,
+Hi,
 
-Sk=C3=B3lastj=C3=B3rar m=C3=ADnir hafa n=C3=BA fengi=C3=B0 gjaldeyriskv=C3=
-=B3ta og sam=C3=BEykki
-=C3=BE.mt fj=C3=A1rmagn og undir reikninga, vi=C3=B0skiptapallur, fyrirt=C3=
-=A6kja
-reikninga og jafnvel einkareikninga.
+On Mon, Oct 4, 2021 at 8:42 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> > -       if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
+> > +       edid = (u8 *)drm_do_get_edid_base_block(get_edid_block, data,
+> > +                                               &connector->edid_corrupt,
+> > +                                               &connector->null_edid_counter);
+> > +       if (IS_ERR_OR_NULL(edid)) {
+> > +               if (IS_ERR(edid))
+>
+> So edid is an error code, not a valid pointer...
+>
+> > +                       connector_bad_edid(connector, edid, 1);
+>
+> ... while connector_bad_edid() expects edid to be a valid pointer,
+> causing a crash:
+>
+> Unable to handle kernel NULL pointer dereference at virtual address
 
-Ertu me=C3=B0 einhverja raunh=C3=A6fa vi=C3=B0skipta=C3=A1=C3=A6tlun sem =
-=C3=BEarfnast fj=C3=A1rmagns?
-=C3=9Ea=C3=B0 fer eftir
-vi=C3=B0skipta=C3=A1=C3=A6tlun/verkefni =C3=BEitt eru sk=C3=B3lastj=C3=B3ra=
-r okkar =C3=AD a=C3=B0st=C3=B6=C3=B0u til
-veita h=C3=B6fu=C3=B0borginni tilvalinn f=C3=A9lagi tilb=C3=BAinn til a=C3=
-=B0 vinna fyrir sameiginlega
-=C3=A1vinningi og fj=C3=A1rmagni=C3=B0 ver=C3=B0ur afhent =C3=BE=C3=A9r =C3=
-=A1n endurgjalds
-Fj=C3=A1rm=C3=A1lavettvangur.
+Sigh. Thanks for the report and analysis. I guess I don't have any
+displays reporting invalid EDIDs to test with. Hopefully this will
+help:
 
-=C3=9Ea=C3=B0 ver=C3=B0ur skylda m=C3=ADn a=C3=B0 lei=C3=B0beina =C3=BE=C3=
-=A9r um a=C3=B0 tryggja fars=C3=A6lt fyrirt=C3=A6ki l=C3=ADti=C3=B0
-e=C3=B0a st=C3=B3rfj=C3=A1rfesting e=C3=B0a aukning einkafj=C3=A1rmagns.
+https://lore.kernel.org/r/20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid/
 
-Fyrir frekari uppl=C3=BDsingar haf=C3=B0u samband vi=C3=B0 mig
-{robertskelvin20211@gmail.com}
-
-Kve=C3=B0ja,
-Roberts Kelvin
+-Doug
