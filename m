@@ -2,177 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E991F420929
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E62042094B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhJDKPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 06:15:09 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:37092 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbhJDKPD (ORCPT
+        id S231588AbhJDK0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 06:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhJDK0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 06:15:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633342395; x=1664878395;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ZRiPgFOwdB5HQVEmuLOGDb/uc8iQaPWmGWovZpGxIpw=;
-  b=NyyJH8tB3hnFpCVa11fnWchfaFrJmnieiIrEyRdOfIqK7CrZ5ElGBrG9
-   umylK/nsulPTA+b39/fuAlnheX7uygzDS0J5As1B4jGBm3EdxnxLJqDNu
-   R/L9jHBojqwgcyF/6dWuxpbB4/DMwVdcBoej8GVcWJuryKZ4BPAcUfGsG
-   yDLhIiNfyAFVabe202/n3SHJNJj8cI0A17ll8oyv5rc9tbpKxNcdDTH/p
-   0uQv+UWPP5W7NkoDd+CtQ88v89hff2XGaL6jzA/IRGnAM6N5UdBjrgmUI
-   +qZDFsOryzXOoE5634MCITrrHVNEVJ7gKb0pUaSWphSc6vbwl/hiayJFW
-   A==;
-IronPort-SDR: nWwVL5THIJKc1iCif3n1JInows5yrOx6wTAf/MURZXDOAnfjm5B/27ywqnscJV4999OXbUJbBq
- +QexuKMty7YcFi02ZL/pHd0VVwB4fdaMj7BZxf+DyVaE4tfmsNPISR6Z/ypOdLhSNa0bMQ+2Ld
- wsTcsMUdiaFo9L1wZ7wwDbtGkYt+3aMUvrgElmJjIBOZ/ZFmiGPltyXTk/JKXdD+lGtnzARDeS
- B6X+D3B97VPxoNw2EK6tIUL2+4MtDZtoDjtLCW6kxcZBPBkPUKGJHUU+kgET8pFhMLa73HV/lN
- 8kbOvaoHdIg0kgRsqbsYRe/s
-X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
-   d="scan'208";a="146651402"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Oct 2021 03:13:13 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 4 Oct 2021 03:13:13 -0700
-Received: from [10.12.73.58] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Mon, 4 Oct 2021 03:13:11 -0700
-Subject: Re: [PATCH v2 3/3] ARM: at91: pm: preload base address of controllers
- in tlb
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <robh+dt@kernel.org>, <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210930154219.2214051-1-claudiu.beznea@microchip.com>
- <20210930154219.2214051-4-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <ac27aa9b-255f-613e-6ea2-6f5915550685@microchip.com>
-Date:   Mon, 4 Oct 2021 12:13:11 +0200
+        Mon, 4 Oct 2021 06:26:13 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B8AC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 03:24:24 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id s24so13052150wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 03:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=qhMvue8MY09TlNhIY5O7l8PD+1ElyHRcW1aqF7WPAas=;
+        b=BEjN7xJ7aKe7IcVE8EAFasILY2HSxM1bvEYN3LzfUxM4lWH0ryxDghWKgTQoNr8C1M
+         dWB1K3KkMKtuN7nkyDiaL2zIzsfLApBMRDDKx0dYOGN5cEd9D30p7LazHlXI1QB6TWs7
+         drOdWux3ZxlXoalW8eMKWqxfeneFUZlyl7lnBjXuciVkMVkzlPs5OvcXy9lioFLNioY+
+         Ruz5Frc/yRTbqbUEtutMVin2B50ES7Yb3Zu4d83siGkQ05A/6EWrQG9FyedkScr0xES2
+         /APmM9KNnYegiUFfNBb5EDoquHfbXdh6BrWii8xs7sRJwAlgL15oCo251BxsZI3lB+IQ
+         OK7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qhMvue8MY09TlNhIY5O7l8PD+1ElyHRcW1aqF7WPAas=;
+        b=7VPY+2BMOpOLVXAidCQRzpOE3XAl2G8lj/mTN57ME74pPw3Nm2lDwtGB3vTZ7lO6Cu
+         u1JOuzAdNQ1vNWivPRT7FAJNX05ir+vxFoYbA+IQ8JNFapiNrJJx6lrvFrIGPCMW0FP0
+         dMCaW37ZRz1jSm6+MotKlca7qraNIfYke2DqUfYX/TxMAiDCf/wdtlyNFRPTFp/VTrvB
+         OFXWFfG0UNf+te8LfN/+TdvUaeu7KHhRq6CaV6W5RKk9oWaHj1NU+QUSXec6RRJPVUcc
+         bbbXlRN82sJZwV4e7vGCOJ1LowTlNY4KOkzei2P7+Jtj2ycaE0bqQ2IAEMCrgu/7H7RL
+         XNGw==
+X-Gm-Message-State: AOAM530fj5Pgo9vCZ7A/FdMtnIH05VB/UcXROQlI95h/37U992asPSuD
+        RQJAXNCfF75Rt6ZDC5nX528kUQ==
+X-Google-Smtp-Source: ABdhPJy7t/11I9x8pk5RAGuUz5/1RojADbVOJ366thVf9D6fKyfuGfH/AgNUXQjEsHaLloI6+yxZGQ==
+X-Received: by 2002:a1c:14b:: with SMTP id 72mr2524159wmb.188.1633343063146;
+        Mon, 04 Oct 2021 03:24:23 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id 2sm721952wmf.30.2021.10.04.03.24.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 03:24:22 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
+References: <20210917072732.611140-1-abailon@baylibre.com>
+ <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
+ <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
+ <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
+ <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
+ <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
+From:   Alexandre Bailon <abailon@baylibre.com>
+Message-ID: <4446577e-c7fa-daeb-e0fe-8a530633ef5d@baylibre.com>
+Date:   Mon, 4 Oct 2021 12:24:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210930154219.2214051-4-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+In-Reply-To: <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 at 17:42, Claudiu Beznea wrote:
-> In suspend/resume procedure for AT91 architecture different controllers
-> (PMC, SHDWC, RAM, RAM PHY, SFRBU) are accessed to do the proper settings
-> for power saving. Commit f0bbf17958e8 ("ARM: at91: pm: add self-refresh
-> support for sama7g5") introduced the access to RAMC PHY controller for
-> SAMA7G5. The access to this controller is done after RAMC ports are
-> closed, thus any TLB walk necessary for RAMC PHY virtual address will
-> fail. In the development branch this was not encountered. However, on
-> current kernel the issue is reproducible.
-> 
-> To solve the issue the previous mechanism of pre-loading the TLB with
-> the RAMC PHY virtual address has been used. However, only the addition
-> of this new pre-load breaks the functionality for ARMv5 based
-> devices (SAM9X60). This behavior has been encountered previously
-> while debugging this code and using the same mechanism for pre-loading
-> address for different controllers (e.g. pin controller, the assumption
-> being that other requested translations are replaced from TLB).
-> 
-> To solve this new issue the TLB flush + the extension of pre-loading
-> the rest of controllers to TLB (e.g. PMC, RAMC) has been added. The
-> rest of the controllers should have been pre-loaded previously, anyway.
-> 
-> Fixes: f0bbf17958e8 ("ARM: at91: pm: add self-refresh support for sama7g5")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
-> 
-> Hi Nicolas,
-> 
-> Please link this patch with the previous one in this series ("ARM: at91:
-> pm: group constants and addresses loading") with a Depends-on tag as this
-> will fail to apply if backported to older kernel versions.
 
-Done.
+On 9/22/21 10:10 AM, Daniel Lezcano wrote:
+> On 20/09/2021 15:12, Alexandre Bailon wrote:
+>> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
+>>> On 17/09/2021 15:33, Alexandre Bailon wrote:
+>>>> Hi Daniel,
+>>>>
+>>>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
+>>>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
+>>>>>> This series add a virtual thermal sensor.
+>>>>>> It could be used to get a temperature using some thermal sensors.
+>>>>>> Currently, the supported operations are max, min and avg.
+>>>>>> The virtual sensor could be easily extended to support others
+>>>>>> operations.
+>>>>>>
+>>>>>> Note:
+>>>>>> Currently, thermal drivers must explicitly register their sensors to
+>>>>>> make them
+>>>>>> available to the virtual sensor.
+>>>>>> This doesn't seem a good solution to me and I think it would be
+>>>>>> preferable to
+>>>>>> update the framework to register the list of each available sensors.
+>>>>> Why must the drivers do that ?
+>>>> Because there are no central place where thermal sensor are registered.
+>>>> The only other way I found was to update thermal_of.c,
+>>>> to register the thermal sensors and make them available later to the
+>>>> virtual thermal sensor.
+>>>>
+>>>> To work, the virtual thermal need to get the sensor_data the ops from
+>>>> the thermal sensor.
+>>>> And as far I know, this is only registered in thermal_of.c, in the
+>>>> thermal zone data
+>>>> but I can't access it directly from the virtual thermal sensor.
+>>>>
+>>>> How would you do it ?
+>>> Via the phandles when registering the virtual sensor ?
+>> As far I know, we can't get the ops or the sensor_data from the phandle
+>> of a thermal sensor.
+>> The closest solution I found so far would be to aggregate the thermal
+>> zones instead of thermal sensors.
+>> thermal_zone_device has the data needed and a thermal zone could be find
+>> easily using its name.
+> Yeah, the concept of the thermal zone and the sensor are very close.
+>
+> There is the function in thermal_core.h:
+>
+>   -> for_each_thermal_zone()
+>
+> You should be able for each 'slave' sensor, do a lookup to find the
+> corresponding thermal_zone_device_ops.
+>
+>> But, using a thermal_zone_device, I don't see how to handle module
+>> unloading.
+> I think try_module_get() / module_put() are adequate for this situation
+> as it is done on an external module and we can not rely on the exported
+> symbols.
+I don't see how it would be possible to use these functions.
+The thermal zone doesn't have the data required to use it.
 
-For whole series:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Maybe a more easier way is to use the thermal_zone_device mutex.
+If I get a lock before to use the thermal_zone_device ops, I have the 
+guaranty that module won't be unloaded.
 
-Whole series added to at91-fixes. To be sent as a second fixes tag to 
-arm-soc.
+When a "thermal of sensor" is unloaded, it calls 
+thermal_zone_of_sensor_unregister which takes a lock before
+update ops.
 
-Best regards,
-   Nicolas
+Thanks,
+Alexandre
 
-
->   arch/arm/mach-at91/pm_suspend.S | 25 ++++++++++++++++++++++++-
->   1 file changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-> index 34f251fdb743..fdb4f63ecde4 100644
-> --- a/arch/arm/mach-at91/pm_suspend.S
-> +++ b/arch/arm/mach-at91/pm_suspend.S
-> @@ -1014,6 +1014,10 @@ ENTRY(at91_pm_suspend_in_sram)
->   	mov	tmp1, #0
->   	mcr	p15, 0, tmp1, c7, c10, 4
->   
-> +	/* Flush tlb. */
-> +	mov	r4, #0
-> +	mcr	p15, 0, r4, c8, c7, 0
-> +
->   	ldr	tmp1, [r0, #PM_DATA_PMC_MCKR_OFFSET]
->   	str	tmp1, .mckr_offset
->   	ldr	tmp1, [r0, #PM_DATA_PMC_VERSION]
-> @@ -1023,23 +1027,42 @@ ENTRY(at91_pm_suspend_in_sram)
->   	ldr	tmp1, [r0, #PM_DATA_MODE]
->   	str	tmp1, .pm_mode
->   
-> +	/*
-> +	 * ldrne below are here to preload their address in the TLB as access
-> +	 * to RAM may be limited while in self-refresh.
-> +	 */
->   	ldr	tmp1, [r0, #PM_DATA_PMC]
->   	str	tmp1, .pmc_base
-> +	cmp	tmp1, #0
-> +	ldrne	tmp2, [tmp1, #0]
-> +
->   	ldr	tmp1, [r0, #PM_DATA_RAMC0]
->   	str	tmp1, .sramc_base
-> +	cmp	tmp1, #0
-> +	ldrne	tmp2, [tmp1, #0]
-> +
->   	ldr	tmp1, [r0, #PM_DATA_RAMC1]
->   	str	tmp1, .sramc1_base
-> +	cmp	tmp1, #0
-> +	ldrne	tmp2, [tmp1, #0]
-> +
-> +#ifndef CONFIG_SOC_SAM_V4_V5
-> +	/* ldrne below are here to preload their address in the TLB */
->   	ldr	tmp1, [r0, #PM_DATA_RAMC_PHY]
->   	str	tmp1, .sramc_phy_base
-> -	/* Both ldrne below are here to preload their address in the TLB */
-> +	cmp	tmp1, #0
-> +	ldrne	tmp2, [tmp1, #0]
-> +
->   	ldr	tmp1, [r0, #PM_DATA_SHDWC]
->   	str	tmp1, .shdwc
->   	cmp	tmp1, #0
->   	ldrne	tmp2, [tmp1, #0]
-> +
->   	ldr	tmp1, [r0, #PM_DATA_SFRBU]
->   	str	tmp1, .sfrbu
->   	cmp	tmp1, #0
->   	ldrne	tmp2, [tmp1, #0x10]
-> +#endif
->   
->   	/* Active the self-refresh mode */
->   	at91_sramc_self_refresh_ena
-> 
-
-
--- 
-Nicolas Ferre
+>
