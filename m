@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6808A420BF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56280420BAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhJDNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32776 "EHLO mail.kernel.org"
+        id S234335AbhJDM66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233795AbhJDM7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B560E6187D;
-        Mon,  4 Oct 2021 12:57:34 +0000 (UTC)
+        id S233887AbhJDM57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 188A261452;
+        Mon,  4 Oct 2021 12:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352255;
-        bh=Lc7Q0zUu6vqlUij3rlYfeXXPmyerIA5WnyUQL0WNRYQ=;
+        s=korg; t=1633352170;
+        bh=kIceB4XPA3afBxXKEal1a3xAMOlwJm2YMLgZlULoJWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dtq2gVElzmho0xs35G9YVPL1FWlRrEitdQlPzOvPcoaU0jTF/wUeX5IO8j30J0v5D
-         5+8a6tj0iGRg8WtaYW7TG6izBoBt3HO1cKpf/eNXnQioN2FaetDUGx3Ty/bvJ5TOAp
-         j8FOPLhDXvm00fXAns6hGzdHQqLn4cDsrne0ZFjI=
+        b=mGrKoPiRUqhRDGAflBCpu8/T3hQZaUghzl0l417fQglLboXAfcf4lVj9hDyier88o
+         S/RyZeUrlfjY9aT//+h/B4Gi5WGIF2H+gS92e1RMySnhhHWB6zS/QR9VvTE6D7rKIM
+         HTuQM1Z9AI2uBZdlMqBeEdHE+6jCf5PfX0kMtKVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 16/57] net/mlx4_en: Dont allow aRFS for encapsulated packets
-Date:   Mon,  4 Oct 2021 14:52:00 +0200
-Message-Id: <20211004125029.447900545@linuxfoundation.org>
+Subject: [PATCH 4.9 17/57] scsi: iscsi: Adjust iface sysfs attr detection
+Date:   Mon,  4 Oct 2021 14:52:01 +0200
+Message-Id: <20211004125029.480295015@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
 References: <20211004125028.940212411@linuxfoundation.org>
@@ -41,36 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit fdbccea419dc782079ce5881d2705cc9e3881480 ]
+[ Upstream commit 4e28550829258f7dab97383acaa477bd724c0ff4 ]
 
-Driver doesn't support aRFS for encapsulated packets, return early error
-in such a case.
+ISCSI_NET_PARAM_IFACE_ENABLE belongs to enum iscsi_net_param instead of
+iscsi_iface_param so move it to ISCSI_NET_PARAM. Otherwise, when we call
+into the driver, we might not match and return that we don't want attr
+visible in sysfs. Found in code review.
 
-Fixes: 1eb8c695bda9 ("net/mlx4_en: Add accelerated RFS support")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210901085336.2264295-1-libaokun1@huawei.com
+Fixes: e746f3451ec7 ("scsi: iscsi: Fix iface sysfs attr detection")
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/scsi_transport_iscsi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index 437e30a5a314..cb3e6db20088 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -309,6 +309,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
- 	int nhoff = skb_network_offset(skb);
- 	int ret = 0;
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index 8d10b35caed5..aed17f958448 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -429,9 +429,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	struct iscsi_transport *t = iface->transport;
+ 	int param = -1;
  
-+	if (skb->encapsulation)
-+		return -EPROTONOSUPPORT;
-+
- 	if (skb->protocol != htons(ETH_P_IP))
- 		return -EPROTONOSUPPORT;
+-	if (attr == &dev_attr_iface_enabled.attr)
+-		param = ISCSI_NET_PARAM_IFACE_ENABLE;
+-	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
++	if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
+ 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
+ 	else if (attr == &dev_attr_iface_header_digest.attr)
+ 		param = ISCSI_IFACE_PARAM_HDRDGST_EN;
+@@ -471,7 +469,9 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	if (param != -1)
+ 		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
  
+-	if (attr == &dev_attr_iface_vlan_id.attr)
++	if (attr == &dev_attr_iface_enabled.attr)
++		param = ISCSI_NET_PARAM_IFACE_ENABLE;
++	else if (attr == &dev_attr_iface_vlan_id.attr)
+ 		param = ISCSI_NET_PARAM_VLAN_ID;
+ 	else if (attr == &dev_attr_iface_vlan_priority.attr)
+ 		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
 -- 
 2.33.0
 
