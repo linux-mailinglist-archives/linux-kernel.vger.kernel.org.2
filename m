@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737AB4211C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B14211C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbhJDOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
+        id S234921AbhJDOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhJDOqE (ORCPT
+        with ESMTP id S234902AbhJDOqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:46:04 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248C4C061745;
-        Mon,  4 Oct 2021 07:44:15 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id h129so20580627iof.1;
-        Mon, 04 Oct 2021 07:44:15 -0700 (PDT)
+        Mon, 4 Oct 2021 10:46:13 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD60C061745;
+        Mon,  4 Oct 2021 07:44:24 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l20so6162152ilk.2;
+        Mon, 04 Oct 2021 07:44:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EFn5wnEKAEZb25y29QzIAy3UngZkq+Tr6QhUXIqoMzk=;
-        b=XAy6xseKyA85uWu1AcjgqVxdVMhk/76Z8hg+31lpt+87yEJMxXwBvO8mxmzXawd4wo
-         P6gWWRtvtpImu/vCTs46kGmuSkzGNRyRhJ52TpNNDRcT8aTJhb8F3DLdKqphel/4QWsD
-         g+RjodCdu7YYMvRxnHCz/PLtrDOMpCDsCfQ4F8CxnypEaYtFB3Z7h1/Ei4lP0da2cRpN
-         7fW+gn7WNtNfUu4XjWvQxrj8l0gjuEiMQP7YiVfKE4yVVtjFDnrt3ueGCcWgDznoUmn0
-         hH/3UuGZdwV5lJ9EtwqZv2/w9H9PWHdFZe4dKZy5oxzMJtQi+3EmBdtBjQ+ftkLg5aPy
-         etMw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=T7EvqN40ZsaJpmzmKI90qpoq8EiCU5xRqyhC9TLRD+0=;
+        b=bnpINp6npWGwJuvw9UmB8B647LD2eEkrKSk56Dn9bP/J+Jg1w4p4Pus3+Qmuyds5Mz
+         81uLXhL2ifxN5Vuhl0+Z6K38vYsAi+tVgVK2SGHo2gyXyP4T/li3Puulj2mCRXVWfv7q
+         IvojXX8bH9OiTZ7UZ8nBYWCHInxs/7ItgoOjS8ZDkQ/b7VObC4lCjweFNGWnlwf/CXkF
+         90F5OHbKLxf8lViRSbqVCXF638A/ZZfcadu0vjTJlMj/CLFOWs6aqFpYywlW03XrTbIT
+         VD0d8oS4zPJlEYpYrXeowzR3xSgwLlygI13jhQcZ7i974HLPOahq0M8NHJcpYB4WhxPz
+         sPSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EFn5wnEKAEZb25y29QzIAy3UngZkq+Tr6QhUXIqoMzk=;
-        b=CL4BDLL3a8esOQidNNj/1RSGOzvj/0KIL6Zqqi6G6SaDYzrQqNbxRbtFbqzAOWRgAo
-         mDuNtVIniYrCFajxFq9XDCDAMpkobGxAJNKkkei8X56WEhHpMm2j+VEsI9/7voO/2FIU
-         upI1IRemJfyjl+wWFkTp8bvwBa5I149qKIjuMbBCtdQ1fYkRxMQoPblxjHwU5qJls963
-         a9Ke8R0sZ2hRQBP+7W31qV8l0eleDh9LvjXcREeJmKoYki4/Q4aowsR1rLLQsHvtMqOc
-         hqYKcOHMlekKcnDRiIB51WCJJKZXIcnXfzvRwWHr/NUh0/nrHyjw7jJTWWaeppjaIXPY
-         ju9A==
-X-Gm-Message-State: AOAM533r5zbV34Ofwd3QMiVR9cL4K0OIeIuD7zEKoq3trPubPJiae+He
-        Kpmd7EXHqWHC+vhOALvEGHo=
-X-Google-Smtp-Source: ABdhPJwEK9aiS5cXI9Wt4cweO7upc9wAlSU/oP6P8LW313Ia3YpyQIuAlQjfAb77zbpDZBjB69QQAw==
-X-Received: by 2002:a6b:5a0c:: with SMTP id o12mr9781570iob.140.1633358653912;
-        Mon, 04 Oct 2021 07:44:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T7EvqN40ZsaJpmzmKI90qpoq8EiCU5xRqyhC9TLRD+0=;
+        b=KTa6VuI6TC3Y8r0yG+kee5+XQus6widbuxGi42pq04b4nMBfpz634jFsG/ztjtCD+s
+         0iaAIxeRCpwqLTaKy4qdVDdz3tdnCx15e0Axzo3ars/YlYeBGYb4DwNCL/PvsUBi5uaj
+         FyySbTwi7tb22l78q2hozg1lQCcaDA8M3Rv67RCRjxMhEKscEQD3jX/H9uLtWLlVjy5s
+         sLkphJ9gYKgd5HW819EeuCOHJvoldRBi7sFjEL7E2/ctxepDw5oEWZinA32Wa271p0od
+         o97wJ7iS6sYXS9jbLeTtg3/UUzZpO1kzqDIe51A+EAhFERCx/hFLdM63fOE6TcDyb6hT
+         4gHw==
+X-Gm-Message-State: AOAM532J295tlyUPYoYPn/jq1cicEnLeG0xXLCFCq4MngZw5PhKIp8WA
+        18Bfu83vn1chOfQrZ4NZsFo=
+X-Google-Smtp-Source: ABdhPJy6AOE/KMxXys6rH0bg3VLu7gyzjWJnK7GpWxYJzISlnn5gnuq7UmgP7BPV1NxOT6CVOi7Tng==
+X-Received: by 2002:a05:6e02:1445:: with SMTP id p5mr6807213ilo.11.1633358663794;
+        Mon, 04 Oct 2021 07:44:23 -0700 (PDT)
 Received: from fstone04p1.aus.stglabs.ibm.com ([129.41.86.7])
-        by smtp.gmail.com with ESMTPSA id b11sm3692382ile.12.2021.10.04.07.44.12
+        by smtp.gmail.com with ESMTPSA id b11sm3692382ile.12.2021.10.04.07.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 07:44:13 -0700 (PDT)
+        Mon, 04 Oct 2021 07:44:23 -0700 (PDT)
 From:   Brandon Wyman <bjwyman@gmail.com>
 To:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
         Guenter Roeck <linux@roeck-us.net>,
         Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
 Cc:     Brandon Wyman <bjwyman@gmail.com>
-Subject: [PATCH 1/2] hwmon: (pmbus/ibm-cffps) Add mfg_id debugfs entry
-Date:   Mon,  4 Oct 2021 14:43:38 +0000
-Message-Id: <20211004144339.2634330-1-bjwyman@gmail.com>
+Subject: [PATCH 2/2] hwmon: (pmbus/ibm-cffps) Use MFR_ID to choose version
+Date:   Mon,  4 Oct 2021 14:43:39 +0000
+Message-Id: <20211004144339.2634330-2-bjwyman@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211004144339.2634330-1-bjwyman@gmail.com>
+References: <20211004144339.2634330-1-bjwyman@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the manufacturer ID to the debugfs entries.
+There are multiple power supplies that will indicate
+CFFPS_CCIN_VERSION_1, use the manufacturer ID to determine if it should
+be treated as version cffps1 or version cffps2.
 
 Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
 ---
- drivers/hwmon/pmbus/ibm-cffps.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/hwmon/pmbus/ibm-cffps.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index df712ce4b164..2ee47cbbb665 100644
+index 2ee47cbbb665..292c87331f2b 100644
 --- a/drivers/hwmon/pmbus/ibm-cffps.c
 +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -18,6 +18,7 @@
+@@ -502,16 +502,29 @@ static int ibm_cffps_probe(struct i2c_client *client)
+ 		u16 ccin_revision = 0;
+ 		u16 ccin_version = CFFPS_CCIN_VERSION_1;
+ 		int ccin = i2c_smbus_read_word_swapped(client, CFFPS_CCIN_CMD);
++		char mfg_id[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
  
- #include "pmbus.h"
+ 		if (ccin > 0) {
+ 			ccin_revision = FIELD_GET(CFFPS_CCIN_REVISION, ccin);
+ 			ccin_version = FIELD_GET(CFFPS_CCIN_VERSION, ccin);
+ 		}
  
-+#define CFFPS_MFG_ID_CMD                        0x99
- #define CFFPS_FRU_CMD				0x9A
- #define CFFPS_PN_CMD				0x9B
- #define CFFPS_HEADER_CMD			0x9C
-@@ -34,7 +35,7 @@
- #define CFFPS_INPUT_HISTORY_SIZE		100
- 
- #define CFFPS_CCIN_REVISION			GENMASK(7, 0)
--#define  CFFPS_CCIN_REVISION_LEGACY		 0xde
-+#define CFFPS_CCIN_REVISION_LEGACY		 0xde
- #define CFFPS_CCIN_VERSION			GENMASK(15, 8)
- #define CFFPS_CCIN_VERSION_1			 0x2b
- #define CFFPS_CCIN_VERSION_2			 0x2e
-@@ -57,6 +58,7 @@
- 
- enum {
- 	CFFPS_DEBUGFS_INPUT_HISTORY = 0,
-+	CFFPS_DEBUGFS_MFG_ID,
- 	CFFPS_DEBUGFS_FRU,
- 	CFFPS_DEBUGFS_PN,
- 	CFFPS_DEBUGFS_HEADER,
-@@ -158,6 +160,9 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
- 	switch (idx) {
- 	case CFFPS_DEBUGFS_INPUT_HISTORY:
- 		return ibm_cffps_read_input_history(psu, buf, count, ppos);
-+	case CFFPS_DEBUGFS_MFG_ID:
-+		cmd = CFFPS_MFG_ID_CMD;
-+		break;
- 	case CFFPS_DEBUGFS_FRU:
- 		cmd = CFFPS_FRU_CMD;
- 		break;
-@@ -558,6 +563,9 @@ static int ibm_cffps_probe(struct i2c_client *client)
- 	debugfs_create_file("input_history", 0444, ibm_cffps_dir,
- 			    &psu->debugfs_entries[CFFPS_DEBUGFS_INPUT_HISTORY],
- 			    &ibm_cffps_fops);
-+	debugfs_create_file("mfg_id", 0444, ibm_cffps_dir,
-+			    &psu->debugfs_entries[CFFPS_DEBUGFS_MFG_ID],
-+			    &ibm_cffps_fops);
- 	debugfs_create_file("fru", 0444, ibm_cffps_dir,
- 			    &psu->debugfs_entries[CFFPS_DEBUGFS_FRU],
- 			    &ibm_cffps_fops);
++		rc = i2c_smbus_read_block_data(client, PMBUS_MFR_ID,
++				mfg_id);
++		if (rc < 0) {
++			dev_err(&client->dev,
++					"Failed to read Manufacturer ID\n");
++			return rc;
++		}
++
+ 		switch (ccin_version) {
+ 		default:
+ 		case CFFPS_CCIN_VERSION_1:
+-			vs = cffps1;
++			if ((strncmp(mfg_id, "ACBE", 4) == 0) ||
++					(strncmp(mfg_id, "ARTE", 4) == 0))
++				vs = cffps1;
++			else
++				vs = cffps2;
+ 			break;
+ 		case CFFPS_CCIN_VERSION_2:
+ 			vs = cffps2;
 -- 
 2.25.1
 
