@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A4A420FCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F49F420C8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238027AbhJDNh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48752 "EHLO mail.kernel.org"
+        id S235065AbhJDNGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237981AbhJDNfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF48E63236;
-        Mon,  4 Oct 2021 13:16:20 +0000 (UTC)
+        id S235080AbhJDNFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:05:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51CE0619E7;
+        Mon,  4 Oct 2021 13:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353381;
-        bh=tYr1UR5UVV9/l4UvwpgkGg2+Y55MDBz5RAQC9WXHaPU=;
+        s=korg; t=1633352440;
+        bh=xvb0BHosjtP7JTAoWsTComR2+BIC2m1Uxu0qABGC6IQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/UXXRg+Q5OPMxr1ew52G9uqBjneS30AMrvdhDMGeEdrjWqEPRSiK31J5feItLVWR
-         TgDrRWmlVWKKx95430w/fmxKX03HZa1Rkz3oUbLJbq8pYviMW32Ng7aUwX4N6VqaTy
-         JswZO/+cnW/Nk+7eho6JPmkwQg2hrGSIbzAOjeSA=
+        b=GOfCUPfdhlgeZEIp5nTeHXrDmANYJY4JfD3iIPI+90SIF8D8fBxhwYX7gT3LVyR7H
+         1H+tKuziZKfpUPWyXPpqw2K9xkTAbFO99+D/0NuXRdqdVf00kUy8LeAHQlkk0RQBG6
+         SGpwZUxZozXw/pQXRz7KG8xHdSyUMNUEaMrlBnxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 107/172] dsa: mv88e6xxx: Fix MTU definition
-Date:   Mon,  4 Oct 2021 14:52:37 +0200
-Message-Id: <20211004125048.440210951@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.14 63/75] ARM: 9077/1: PLT: Move struct plt_entries definition to header
+Date:   Mon,  4 Oct 2021 14:52:38 +0200
+Message-Id: <20211004125033.654982153@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Lunn <andrew@lunn.ch>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-[ Upstream commit b92ce2f54c0f0ff781e914ec189c25f7bf1b1ec2 ]
+commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream
 
-The MTU passed to the DSA driver is the payload size, typically 1500.
-However, the switch uses the frame size when applying restrictions.
-Adjust the MTU with the size of the Ethernet header and the frame
-checksum. The VLAN header also needs to be included when the frame
-size it per port, but not when it is global.
+No functional change, later it will be re-used in several files.
 
-Fixes: 1baf0fac10fb ("net: dsa: mv88e6xxx: Use chip-wide max frame size for MTU")
-Reported by: 曹煜 <cao88yu@gmail.com>
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c    | 12 ++++++------
- drivers/net/dsa/mv88e6xxx/global1.c |  2 ++
- drivers/net/dsa/mv88e6xxx/port.c    |  2 ++
- 3 files changed, 10 insertions(+), 6 deletions(-)
+ arch/arm/include/asm/module.h |    9 +++++++++
+ arch/arm/kernel/module-plts.c |    9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index f99f09c50722..014950a343f4 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -2775,8 +2775,8 @@ static int mv88e6xxx_setup_port(struct mv88e6xxx_chip *chip, int port)
- 	if (err)
- 		return err;
+--- a/arch/arm/include/asm/module.h
++++ b/arch/arm/include/asm/module.h
+@@ -19,6 +19,15 @@ enum {
+ };
+ #endif
  
--	/* Port Control 2: don't force a good FCS, set the maximum frame size to
--	 * 10240 bytes, disable 802.1q tags checking, don't discard tagged or
-+	/* Port Control 2: don't force a good FCS, set the MTU size to
-+	 * 10222 bytes, disable 802.1q tags checking, don't discard tagged or
- 	 * untagged frames on this port, do a destination address lookup on all
- 	 * received packets as usual, disable ARP mirroring and don't send a
- 	 * copy of all transmitted/received frames on this port to the CPU.
-@@ -2795,7 +2795,7 @@ static int mv88e6xxx_setup_port(struct mv88e6xxx_chip *chip, int port)
- 		return err;
- 
- 	if (chip->info->ops->port_set_jumbo_size) {
--		err = chip->info->ops->port_set_jumbo_size(chip, port, 10240);
-+		err = chip->info->ops->port_set_jumbo_size(chip, port, 10218);
- 		if (err)
- 			return err;
- 	}
-@@ -2885,10 +2885,10 @@ static int mv88e6xxx_get_max_mtu(struct dsa_switch *ds, int port)
- 	struct mv88e6xxx_chip *chip = ds->priv;
- 
- 	if (chip->info->ops->port_set_jumbo_size)
--		return 10240;
-+		return 10240 - VLAN_ETH_HLEN - ETH_FCS_LEN;
- 	else if (chip->info->ops->set_max_frame_size)
--		return 1632;
--	return 1522;
-+		return 1632 - VLAN_ETH_HLEN - ETH_FCS_LEN;
-+	return 1522 - VLAN_ETH_HLEN - ETH_FCS_LEN;
- }
- 
- static int mv88e6xxx_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
-diff --git a/drivers/net/dsa/mv88e6xxx/global1.c b/drivers/net/dsa/mv88e6xxx/global1.c
-index 815b0f681d69..5848112036b0 100644
---- a/drivers/net/dsa/mv88e6xxx/global1.c
-+++ b/drivers/net/dsa/mv88e6xxx/global1.c
-@@ -232,6 +232,8 @@ int mv88e6185_g1_set_max_frame_size(struct mv88e6xxx_chip *chip, int mtu)
- 	u16 val;
- 	int err;
- 
-+	mtu += ETH_HLEN + ETH_FCS_LEN;
++#define PLT_ENT_STRIDE		L1_CACHE_BYTES
++#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
++#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
 +
- 	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
- 	if (err)
- 		return err;
-diff --git a/drivers/net/dsa/mv88e6xxx/port.c b/drivers/net/dsa/mv88e6xxx/port.c
-index f77e2ee64a60..451028c57af8 100644
---- a/drivers/net/dsa/mv88e6xxx/port.c
-+++ b/drivers/net/dsa/mv88e6xxx/port.c
-@@ -1277,6 +1277,8 @@ int mv88e6165_port_set_jumbo_size(struct mv88e6xxx_chip *chip, int port,
- 	u16 reg;
- 	int err;
- 
-+	size += VLAN_ETH_HLEN + ETH_FCS_LEN;
++struct plt_entries {
++	u32	ldr[PLT_ENT_COUNT];
++	u32	lit[PLT_ENT_COUNT];
++};
 +
- 	err = mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_CTL2, &reg);
- 	if (err)
- 		return err;
--- 
-2.33.0
-
+ struct mod_plt_sec {
+ 	struct elf32_shdr	*plt;
+ 	int			plt_count;
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -14,10 +14,6 @@
+ #include <asm/cache.h>
+ #include <asm/opcodes.h>
+ 
+-#define PLT_ENT_STRIDE		L1_CACHE_BYTES
+-#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
+-#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
+-
+ #ifdef CONFIG_THUMB2_KERNEL
+ #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
+ 							(PLT_ENT_STRIDE - 4))
+@@ -26,11 +22,6 @@
+ 						    (PLT_ENT_STRIDE - 8))
+ #endif
+ 
+-struct plt_entries {
+-	u32	ldr[PLT_ENT_COUNT];
+-	u32	lit[PLT_ENT_COUNT];
+-};
+-
+ static bool in_init(const struct module *mod, unsigned long loc)
+ {
+ 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
 
 
