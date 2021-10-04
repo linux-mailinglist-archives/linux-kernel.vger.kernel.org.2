@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF86D4207AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756944207B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhJDJAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:00:42 -0400
-Received: from ssh248.corpemail.net ([210.51.61.248]:42054 "EHLO
-        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhJDJAl (ORCPT
+        id S231500AbhJDJBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhJDJBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:00:41 -0400
-Received: from ([60.208.111.195])
-        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id YKL00145;
-        Mon, 04 Oct 2021 16:58:45 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
- 15.1.2308.14; Mon, 4 Oct 2021 16:58:46 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <linuxppc-dev@lists.ozlabs.org>
-CC:     <oohall@gmail.com>, <paulus@samba.org>,
-        <linux-kernel@vger.kernel.org>, <dja@axtens.net>,
-        Kai Song <songkai01@inspur.com>
-Subject: [PATCH] powerpc/eeh:Fix docstrings in eeh
-Date:   Mon, 4 Oct 2021 16:58:42 +0800
-Message-ID: <20211004085842.255813-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 4 Oct 2021 05:01:43 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1156BC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 01:59:55 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s11so15872979pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xctOnjrfnqdPEoa3tip3/LlkAqa1IsoEyPkzXNFOgl4=;
+        b=vD0cU/s1vm+3nN3lc+qpbOlY1NZ1fr0ctroE7oqMauOwCiUPyYuFmJq2iHdj2yHSx9
+         EiHX3gnukAK5oNEdfYHdgNjabX0okaUXHKZV0xiX2RaGT2lLxg1fYfi//6zJGwUdt+SY
+         6BOCQO3a9i70wemWlftieZo7eGP2Wr3PQ1ffejuZ3hT7lGtrevzshVjLoXv7AcKUJpli
+         CGZSFFeFtfihedDziaakSFO46idMianbhp9G9y+bwfSdj8uOL7ppMkYEu7t8FlVnmkTn
+         P36E16bLWmXY5v5vwxtlsKffKjhKBwedcJx4nIH4iyzzaXuacMz9J59SzoxdFULOmpYF
+         QDMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xctOnjrfnqdPEoa3tip3/LlkAqa1IsoEyPkzXNFOgl4=;
+        b=jz/1qzQXoELXUqWYv/TiQiNkMmaJVSt9k5fvwd0AV4GS3c9Id6uWsKoAAnNqAo8xd3
+         t/uZGCh4d3+FjxD17WRzznzfUafrw1EwZwNip7c5gd4yI5nEt/+hbEfuBW2qTzsoPSO4
+         dVB2zkOu/dZfJnQFZOQdSdzRzCV8Yj1P/7bd8WRiIL3JrQ7iZedBJ6X2KotI0hg7v/Wp
+         R8PmzdoCc8Lg5kDcyHulMXDdQMRdTqJ71y0HOldvNRCrlVx9dapVePPiOYuW02VTw/3H
+         3GL8TGXNPyb0Mgbp542vez/SQLtAaZCrqJKZg9JPMNk9eLv4wt+yLVW+tg7Zc3HWmJkB
+         xDkA==
+X-Gm-Message-State: AOAM532I1L+X4k11NoyfHCMcn2TlsFakBPOt5NoHmt3hdWThREp4/yox
+        Y+0s5xo/hITQZhjLhk2QJHxstg==
+X-Google-Smtp-Source: ABdhPJwSNvRu3CTp59vBuvr4RaMFcbMupvPQgnOOoX2hPpfzNEnqMHeDbG4cz+HBTly8u85sYIveag==
+X-Received: by 2002:a63:a03:: with SMTP id 3mr9931268pgk.326.1633337994442;
+        Mon, 04 Oct 2021 01:59:54 -0700 (PDT)
+Received: from localhost ([122.171.247.18])
+        by smtp.gmail.com with ESMTPSA id d24sm13622896pgv.52.2021.10.04.01.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 01:59:53 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 14:29:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
+ bindings
+Message-ID: <20211004085952.3k7efa3lxlll3ivy@vireshk-i7>
+References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+ <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
+ <20211004072222.GE16442@workstation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   202110041658463521b4e8b07959a647cec61b405cddca
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004072222.GE16442@workstation>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We fix the following warnings when building kernel with W=1:
-arch/powerpc/kernel/eeh.c:598: warning: Function parameter or member 'function' not described in 'eeh_pci_enable'
-arch/powerpc/kernel/eeh.c:774: warning: Function parameter or member 'edev' not described in 'eeh_set_dev_freset'
-arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
-arch/powerpc/kernel/eeh.c:814: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset_full'
-arch/powerpc/kernel/eeh.c:944: warning: Function parameter or member 'ops' not described in 'eeh_init'
-arch/powerpc/kernel/eeh.c:1451: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset'
-arch/powerpc/kernel/eeh.c:1526: warning: Function parameter or member 'func' not described in 'eeh_pe_inject_err'
-arch/powerpc/kernel/eeh.c:1526: warning: Excess function parameter 'function' described in 'eeh_pe_inject_err'
+On 04-10-21, 12:52, Manivannan Sadhasivam wrote:
+> On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
+> > On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
+> > > Convert Qualcomm cpufreq devicetree binding to YAML.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > 
+> > I am not sure if Rob ever gave this.
+> > 
+> 
+> I'm not fooling you :)
+> https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
----
- arch/powerpc/kernel/eeh.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+I did read that email but somehow missed the RBY :)
 
-diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
-index e9b597ed423c..57a6868a41ab 100644
---- a/arch/powerpc/kernel/eeh.c
-+++ b/arch/powerpc/kernel/eeh.c
-@@ -589,6 +589,7 @@ EXPORT_SYMBOL(eeh_check_failure);
- /**
-  * eeh_pci_enable - Enable MMIO or DMA transfers for this slot
-  * @pe: EEH PE
-+ * @function : EEH function
-  *
-  * This routine should be called to reenable frozen MMIO or DMA
-  * so that it would work correctly again. It's useful while doing
-@@ -761,8 +762,8 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev, enum pcie_reset_state stat
- }
- 
- /**
-- * eeh_set_pe_freset - Check the required reset for the indicated device
-- * @data: EEH device
-+ * eeh_set_dev_freset - Check the required reset for the indicated device
-+ * @edev: EEH device
-  * @flag: return value
-  *
-  * Each device might have its preferred reset type: fundamental or
-@@ -801,6 +802,7 @@ static void eeh_pe_refreeze_passed(struct eeh_pe *root)
- /**
-  * eeh_pe_reset_full - Complete a full reset process on the indicated PE
-  * @pe: EEH PE
-+ * @include_passed: include passed-through devices?
-  *
-  * This function executes a full reset procedure on a PE, including setting
-  * the appropriate flags, performing a fundamental or hot reset, and then
-@@ -937,6 +939,7 @@ static struct notifier_block eeh_device_nb = {
- 
- /**
-  * eeh_init - System wide EEH initialization
-+ * @ops: struct to trace EEH operation callback functions
-  *
-  * It's the platform's job to call this from an arch_initcall().
-  */
-@@ -1442,6 +1445,7 @@ static int eeh_pe_reenable_devices(struct eeh_pe *pe, bool include_passed)
-  * eeh_pe_reset - Issue PE reset according to specified type
-  * @pe: EEH PE
-  * @option: reset type
-+ * @include_passed: include passed-through devices?
-  *
-  * The routine is called to reset the specified PE with the
-  * indicated type, either fundamental reset or hot reset.
-@@ -1513,12 +1517,12 @@ EXPORT_SYMBOL_GPL(eeh_pe_configure);
-  * eeh_pe_inject_err - Injecting the specified PCI error to the indicated PE
-  * @pe: the indicated PE
-  * @type: error type
-- * @function: error function
-+ * @func: error function
-  * @addr: address
-  * @mask: address mask
-  *
-  * The routine is called to inject the specified PCI error, which
-- * is determined by @type and @function, to the indicated PE for
-+ * is determined by @type and @func, to the indicated PE for
-  * testing purpose.
-  */
- int eeh_pe_inject_err(struct eeh_pe *pe, int type, int func,
 -- 
-2.27.0
-
+viresh
