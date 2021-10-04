@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621A5420B5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C0F420C3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhJDM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        id S234709AbhJDND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:03:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233551AbhJDM4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA514611CA;
-        Mon,  4 Oct 2021 12:54:41 +0000 (UTC)
+        id S234102AbhJDNCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A8946136F;
+        Mon,  4 Oct 2021 12:58:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352082;
-        bh=780dyysR3rOK5VjuRacIsg7c1xyCT69xdp13r16mHd4=;
+        s=korg; t=1633352338;
+        bh=TmY0Ggc7kznm0+HSGp0QLZ03YBiBeR1Q6935jrzMTBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TF6AdxM7zAXhE6oQOHKBY/xRiwTkE1Jmbpw5yGvri8K4bO+tVPqKpWe/jqIw5iYbc
-         6sgZgzTC29kvK/xSSaPs7GgeSJzHB7msMLDFT6vNIr/WrfGbBb0z9nuKieL5dhERD4
-         wWIKgy+4sXOL/8sIarUZwvEi9ylajPEufrQV87mM=
+        b=iZPmTwqPSeNY16K76iOmA4sUx2zP7rDoowcXL78qOV945u+66ekuEu0AhQI7ew+MV
+         9bThJ6v1rLmKuSdmXBchLK5HSm/LaxWIeCiDUq07lZ5Vb1b0kx5aTG0+lK2rjSmUoB
+         wf/qUb816tnEYIlUBpY1KwSJ1fUMiGGx+cvuRWBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 06/41] USB: serial: mos7840: remove duplicated 0xac24 device ID
+        syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com,
+        Christoph Hellwig <hch@lst.de>, NeilBrown <neilb@suse.de>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 22/75] md: fix a lock order reversal in md_alloc
 Date:   Mon,  4 Oct 2021 14:51:57 +0200
-Message-Id: <20211004125026.797987743@linuxfoundation.org>
+Message-Id: <20211004125032.258530117@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit 211f323768a25b30c106fd38f15a0f62c7c2b5f4 upstream.
+[ Upstream commit 7df835a32a8bedf7ce88efcfa7c9b245b52ff139 ]
 
-0xac24 device ID is already defined and used via
-BANDB_DEVICE_ID_USO9ML2_4.  Remove the duplicate from the list.
+Commit b0140891a8cea3 ("md: Fix race when creating a new md device.")
+not only moved assigning mddev->gendisk before calling add_disk, which
+fixes the races described in the commit log, but also added a
+mddev->open_mutex critical section over add_disk and creation of the
+md kobj.  Adding a kobject after add_disk is racy vs deleting the gendisk
+right after adding it, but md already prevents against that by holding
+a mddev->active reference.
 
-Fixes: 27f1281d5f72 ("USB: serial: Extra device/vendor ID for mos7840 driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On the other hand taking this lock added a lock order reversal with what
+is not disk->open_mutex (used to be bdev->bd_mutex when the commit was
+added) for partition devices, which need that lock for the internal open
+for the partition scan, and a recent commit also takes it for
+non-partitioned devices, leading to further lockdep splatter.
+
+Fixes: b0140891a8ce ("md: Fix race when creating a new md device.")
+Fixes: d62633873590 ("block: support delayed holder registration")
+Reported-by: syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Tested-by: syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com
+Reviewed-by: NeilBrown <neilb@suse.de>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/mos7840.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/md/md.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/usb/serial/mos7840.c
-+++ b/drivers/usb/serial/mos7840.c
-@@ -126,7 +126,6 @@
- #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
- #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
- #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
--#define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 0af9aa187ce5..5e8706a66c31 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -5375,10 +5375,6 @@ static int md_alloc(dev_t dev, char *name)
+ 	 */
+ 	disk->flags |= GENHD_FL_EXT_DEVT;
+ 	mddev->gendisk = disk;
+-	/* As soon as we call add_disk(), another thread could get
+-	 * through to md_open, so make sure it doesn't get too far
+-	 */
+-	mutex_lock(&mddev->open_mutex);
+ 	add_disk(disk);
  
- /* This driver also supports
-  * ATEN UC2324 device using Moschip MCS7840
-@@ -207,7 +206,6 @@ static const struct usb_device_id id_tab
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
--	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
- 	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
+ 	error = kobject_init_and_add(&mddev->kobj, &md_ktype,
+@@ -5394,7 +5390,6 @@ static int md_alloc(dev_t dev, char *name)
+ 	if (mddev->kobj.sd &&
+ 	    sysfs_create_group(&mddev->kobj, &md_bitmap_group))
+ 		pr_debug("pointless warning\n");
+-	mutex_unlock(&mddev->open_mutex);
+  abort:
+ 	mutex_unlock(&disks_mutex);
+ 	if (!error && mddev->kobj.sd) {
+-- 
+2.33.0
+
 
 
