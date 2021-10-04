@@ -2,120 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C2242186E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B7D421875
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 22:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbhJDUdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 16:33:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46554 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233934AbhJDUdp (ORCPT
+        id S236388AbhJDUgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 16:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235526AbhJDUgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 16:33:45 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194K27hl002892;
-        Mon, 4 Oct 2021 16:31:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=YSKuInWCPUB4cRcl9zVFp9tJjrcN0o3rJYA57zQkw9Y=;
- b=jwQP6WwQs5/IHcOpT6T6FNiZtkwDaelmqrYi5iR/Qxu2CnNjGuPdp3FAM8/Ee1uxngtU
- 0c+qV8HmJgLf0I9NxYsAXNpX4e79LKFuPje8N3RWB5ejDdOVYoRHUl16KOKIbBO8/OLo
- FnHRlJ7o+UxR5DNbKQuhQURqLRpUmGnJ5WyVUhOJE7R8HFPzW6qNKmlCaR+3b1nMn679
- h1js+OnyXhNN7qIYmTGhFJzzT8wfdJqcgzVQ0VVZj+QUbuMmdBy0QorrjhgxeUqxO3N+
- oIdScdM4iLzh/z9KvEzUNatqTFgrBTiFo2lyTHutWXo04CC1tLo+pBTjNxrAtoWYHCLC NA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bg89y8gfa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 16:31:54 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194KSWAe014348;
-        Mon, 4 Oct 2021 20:31:52 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3bef29sp3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 20:31:52 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194KVmmt64553404
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Oct 2021 20:31:48 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FDC9A4060;
-        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59C78A405C;
-        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
-Received: from osiris (unknown [9.145.70.99])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  4 Oct 2021 20:31:48 +0000 (GMT)
-Date:   Mon, 4 Oct 2021 22:31:46 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
- variant
-Message-ID: <YVtksmjj1eGqw5GY@osiris>
-References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
+        Mon, 4 Oct 2021 16:36:41 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E678C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 13:34:52 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id 5so9315445iov.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 13:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c0hwqs6p7Ru2CkxdNWAgix4idc1xYEonvtNVJOMJao0=;
+        b=ROnqbH3ApfRdwm045GfASwtFIN3fGzOP1qpYXoFJg5LT+LODJlJbWho8fNVopL+bCY
+         ONCasCj5CZNAQ3EU7x+6O5rVy/UMzIsPhB/EATs1fmaoX/vvhX7OKkG0RNqiEsXTM5+m
+         S60uDyWm51GQX8xSA14uOeK3U8W0tnxuHejic=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c0hwqs6p7Ru2CkxdNWAgix4idc1xYEonvtNVJOMJao0=;
+        b=SYGYV7mmtVWzvGtkn0AMNGr+ZOwv/M/TGABeo5kGWtDGN7My0VBL9XJV//wQpDUFcV
+         l2G/tL9wrckqYcnAQVtUx1A/2V62aoLKyDY3+DPo0dvjdGEL0J58odkk4db1y6ZdbiHO
+         Gum/Q2owMWORQYqM5i1sTLbcIE5RdNMStSvUH3SwmVL7tYJiqyT4EzsFI2RRlZmLt2NA
+         mZiTQGVTPQ+xlyaFffrjdXM9cZrFBfpmF9FPDu9Jxj0a+D5Sbe9/Zwb7L9I9xGDP7THw
+         erCXS4zzNEOaNfn49OcBHgXsPFxz8yT5QUq7Cl0DcrYvfszUMdKjdhHhmjeFLRM063to
+         iHkg==
+X-Gm-Message-State: AOAM533nDgrA/1jA8FkbKvsZLN0PewzwULmcqHb16mK9bFBk8/OLBEIP
+        3I5oznZsarytlWIbt6kmF/xAsA==
+X-Google-Smtp-Source: ABdhPJzhtmZYb3L3kzexCvpg44/FmdXYXLLWs3+jHNagrFBcW0HT9/ky8nw9XMC3cdz0pWwN+yWxEg==
+X-Received: by 2002:a02:caac:: with SMTP id e12mr12873268jap.16.1633379691949;
+        Mon, 04 Oct 2021 13:34:51 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l3sm9697379ilq.48.2021.10.04.13.34.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 13:34:51 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/95] 4.19.209-rc1 review
+To:     Eric Dumazet <edumazet@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Netdev <netdev@vger.kernel.org>, Jann Horn <jannh@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
+ <CA+G9fYtyzfpSnapCFEVgeWGD8ZwS2_Lv5KPwjX4hUwDAv52kFg@mail.gmail.com>
+ <CANn89iKPvyS1FB2z9XFr4Y1i8XXc34CTdbSAakjMC=NVYvwzXw@mail.gmail.com>
+ <576d46b9-644f-ece0-2cf0-8abbe8b85f4a@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <14314f54-57fa-fa89-ce4c-ce79116d3d80@linuxfoundation.org>
+Date:   Mon, 4 Oct 2021 14:34:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SYvjJX6cks5LzrErIhpAa5Ruz3EB_7-2
-X-Proofpoint-GUID: SYvjJX6cks5LzrErIhpAa5Ruz3EB_7-2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- spamscore=0 impostorscore=0 clxscore=1011 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110040138
+In-Reply-To: <576d46b9-644f-ece0-2cf0-8abbe8b85f4a@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
-> Use string_upper() from string helper module instead of open coded variant.
+On 10/4/21 1:49 PM, Shuah Khan wrote:
+> On 10/4/21 11:44 AM, Eric Dumazet wrote:
+>> On Mon, Oct 4, 2021 at 10:40 AM Naresh Kamboju
+>> <naresh.kamboju@linaro.org> wrote:
+>>>
+>>> On Mon, 4 Oct 2021 at 18:32, Greg Kroah-Hartman
+>>> <gregkh@linuxfoundation.org> wrote:
+>>>>
+>>>> This is the start of the stable review cycle for the 4.19.209 release.
+>>>> There are 95 patches in this series, all will be posted as a response
+>>>> to this one.  If anyone has any issues with these being applied, please
+>>>> let me know.
+>>>>
+>>>> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
+>>>> Anything received after that time might be too late.
+>>>>
+>>>> The whole patch series can be found in one patch at:
+>>>>          https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.209-rc1.gz
+>>>> or in the git tree and branch at:
+>>>>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+>>>> and the diffstat can be found below.
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>
+>>> Regression found on arm, arm64, i386 and x86.
+>>> following kernel crash reported on stable-rc linux-4.19.y.
+>>>
+>>
+>> Stable teams should backport cred: allow get_cred() and put_cred() to
+>> be given NULL.
+>>
+>> f06bc03339ad4c1baa964a5f0606247ac1c3c50b
+>>
+>> Or they should have tweaked my patch before backporting it.
+>>
+> Seeing the same problem on my test system as well.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/s390/mm/cmm.c    | 11 ++++-------
->  arch/s390/mm/extmem.c | 21 ++++++++++++---------
->  2 files changed, 16 insertions(+), 16 deletions(-)
-...
->  static void
->  dcss_mkname(char *name, char *dcss_name)
->  {
-> +	/* Segment name is limited by 8 characters + NUL */
-> +	char tmp[8 + 1];
->  	int i;
->  
-> -	for (i = 0; i < 8; i++) {
-> -		if (name[i] == '\0')
-> -			break;
-> -		dcss_name[i] = toupper(name[i]);
-> -	}
-> -	for (; i < 8; i++)
-> -		dcss_name[i] = ' ';
-> +	/*
-> +	 * This snprintf() call does two things:
-> +	 * - makes a NUL-terminated copy of the input string
-> +	 * - pads it with spaces
-> +	 */
-> +	snprintf(tmp, sizeof(tmp), "%s        ", name);
+> Patch applied with fuzz. Didn't need any tweaks. Compiling now.
+> Will let you know soon.
+> 
 
-I can't say I like code where I have to count spaces in order to
-verify if the code is actually correct.
+With f06bc03339ad4c1baa964a5f0606247ac1c3c50b
 
-> +	string_upper(dcss_name, tmp);
-...
->  static struct dcss_segment *
->  segment_by_name (char *name)
->  {
-> -	char dcss_name[9];
-> +	char dcss_name[8];
+Compiled and booted on my test system. No dmesg regressions.
 
-string_upper will copy the terminating NUL-byte. By reducing the size
-of dcss_name to 8 bytes this will result in stack corruption.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+-----------------------------------------------------------------------
+
+diff --git a/include/linux/cred.h b/include/linux/cred.h
+index 1dc351d8548b..4b081e4911c8 100644
+--- a/include/linux/cred.h
++++ b/include/linux/cred.h
+@@ -240,7 +240,7 @@ static inline struct cred *get_new_cred(struct cred *cred)
+   * @cred: The credentials to reference
+   *
+   * Get a reference on the specified set of credentials.  The caller must
+- * release the reference.
++ * release the reference.  If %NULL is passed, it is returned with no action.
+   *
+   * This is used to deal with a committed set of credentials.  Although the
+   * pointer is const, this will temporarily discard the const and increment the
+@@ -251,6 +251,8 @@ static inline struct cred *get_new_cred(struct cred *cred)
+  static inline const struct cred *get_cred(const struct cred *cred)
+  {
+         struct cred *nonconst_cred = (struct cred *) cred;
++       if (!cred)
++               return cred;
+         validate_creds(cred);
+         nonconst_cred->non_rcu = 0;
+         return get_new_cred(nonconst_cred);
+@@ -261,7 +263,7 @@ static inline const struct cred *get_cred(const struct cred *cred)
+   * @cred: The credentials to release
+   *
+   * Release a reference to a set of credentials, deleting them when the last ref
+- * is released.
++ * is released.  If %NULL is passed, nothing is done.
+   *
+   * This takes a const pointer to a set of credentials because the credentials
+   * on task_struct are attached by const pointers to prevent accidental
+@@ -271,9 +273,11 @@ static inline void put_cred(const struct cred *_cred)
+  {
+         struct cred *cred = (struct cred *) _cred;
+  
+-       validate_creds(cred);
+-       if (atomic_dec_and_test(&(cred)->usage))
+-               __put_cred(cred);
++       if (cred) {
++               validate_creds(cred);
++               if (atomic_dec_and_test(&(cred)->usage))
++                       __put_cred(cred);
++       }
+  }
+  
+  /**
+
+-----------------------------------------------------------------------
+
+thanks,
+-- Shuah
+
