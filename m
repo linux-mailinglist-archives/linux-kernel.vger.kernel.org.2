@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77434420B76
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06353420DB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhJDM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
+        id S236342AbhJDNRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233583AbhJDM4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44D3261381;
-        Mon,  4 Oct 2021 12:55:05 +0000 (UTC)
+        id S236049AbhJDNPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF33461A4F;
+        Mon,  4 Oct 2021 13:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352105;
-        bh=3VLZ/WICwSTMSN9p38AsSX12mzwis0ijWCrv7INjS3k=;
+        s=korg; t=1633352776;
+        bh=hS9Cv2GgpA22l9hSUJmgIrgptdAdxoBtyueF6qM0twM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUQDYqNiCFuB7/nPTqlgs1yKEiGopP+D+QoAfw34LHJOU1olXgfRoROyGQvBCbO13
-         LcSCBPWlaHiDw0VtZO07SlcbE5hoG1TuXSXJ5R2bOK+AA6A1GM+6HFBwCQml5qK+kH
-         VqkyI66QW5fA57ioEfd8xzbyy5QgKayoO2ixluH0=
+        b=RdfhxJ7p0FO1Uvw/KLIkeyUB9siM5zKNKfCUcVR2DuV6o7gsNcEiLMe0wq4YPuJth
+         5JkKEqrjWCGZoVb22Cu6f61rTEQqc+TFML52NZ63Stf6EO2CcoSEyCAOsbso+405XO
+         XDA0Nma0+vpKSRqHSlQ3FUDPJ7WT9l2r2/oM7wjE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 34/41] ipack: ipoctal: fix module reference leak
+        stable@vger.kernel.org, Boris Burkov <boris@bur.io>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.4 05/56] fs-verity: fix signed integer overflow with i_size near S64_MAX
 Date:   Mon,  4 Oct 2021 14:52:25 +0200
-Message-Id: <20211004125027.660794110@linuxfoundation.org>
+Message-Id: <20211004125030.183851324@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,79 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Eric Biggers <ebiggers@google.com>
 
-commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
+commit 80f6e3080bfcf865062a926817b3ca6c4a137a57 upstream.
 
-A reference to the carrier module was taken on every open but was only
-released once when the final reference to the tty struct was dropped.
+If the file size is almost S64_MAX, the calculated number of Merkle tree
+levels exceeds FS_VERITY_MAX_LEVELS, causing FS_IOC_ENABLE_VERITY to
+fail.  This is unintentional, since as the comment above the definition
+of FS_VERITY_MAX_LEVELS states, it is enough for over U64_MAX bytes of
+data using SHA-256 and 4K blocks.  (Specifically, 4096*128**8 >= 2**64.)
 
-Fix this by taking the module reference and initialising the tty driver
-data when installing the tty.
+The bug is actually that when the number of blocks in the first level is
+calculated from i_size, there is a signed integer overflow due to i_size
+being signed.  Fix this by treating i_size as unsigned.
 
-Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
-Cc: stable@vger.kernel.org      # 3.18
-Cc: Federico Vaga <federico.vaga@cern.ch>
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
+This was found by the new test "generic: test fs-verity EFBIG scenarios"
+(https://lkml.kernel.org/r/b1d116cd4d0ea74b9cd86f349c672021e005a75c.1631558495.git.boris@bur.io).
+
+This didn't affect ext4 or f2fs since those have a smaller maximum file
+size, but it did affect btrfs which allows files up to S64_MAX bytes.
+
+Reported-by: Boris Burkov <boris@bur.io>
+Fixes: 3fda4c617e84 ("fs-verity: implement FS_IOC_ENABLE_VERITY ioctl")
+Fixes: fd2d1acfcadf ("fs-verity: add the hook for file ->open()")
+Cc: <stable@vger.kernel.org> # v5.4+
+Reviewed-by: Boris Burkov <boris@bur.io>
+Link: https://lore.kernel.org/r/20210916203424.113376-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ fs/verity/enable.c |    2 +-
+ fs/verity/open.c   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -87,22 +87,34 @@ static int ipoctal_port_activate(struct
- 	return 0;
- }
+--- a/fs/verity/enable.c
++++ b/fs/verity/enable.c
+@@ -136,7 +136,7 @@ static int build_merkle_tree(struct inod
+ 	 * (level 0) and ascending to the root node (level 'num_levels - 1').
+ 	 * Then at the end (level 'num_levels'), calculate the root hash.
+ 	 */
+-	blocks = (inode->i_size + params->block_size - 1) >>
++	blocks = ((u64)inode->i_size + params->block_size - 1) >>
+ 		 params->log_blocksize;
+ 	for (level = 0; level <= params->num_levels; level++) {
+ 		err = build_merkle_tree_level(inode, level, blocks, params,
+--- a/fs/verity/open.c
++++ b/fs/verity/open.c
+@@ -89,7 +89,7 @@ int fsverity_init_merkle_tree_params(str
+ 	 */
  
--static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
- 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
--	int err;
--
--	tty->driver_data = channel;
-+	int res;
- 
- 	if (!ipack_get_carrier(ipoctal->dev))
- 		return -EBUSY;
- 
--	err = tty_port_open(&channel->tty_port, tty, file);
--	if (err)
--		ipack_put_carrier(ipoctal->dev);
-+	res = tty_standard_install(driver, tty);
-+	if (res)
-+		goto err_put_carrier;
-+
-+	tty->driver_data = channel;
-+
-+	return 0;
-+
-+err_put_carrier:
-+	ipack_put_carrier(ipoctal->dev);
-+
-+	return res;
-+}
-+
-+static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+{
-+	struct ipoctal_channel *channel = tty->driver_data;
- 
--	return err;
-+	return tty_port_open(&channel->tty_port, tty, file);
- }
- 
- static void ipoctal_reset_stats(struct ipoctal_stats *stats)
-@@ -669,6 +681,7 @@ static void ipoctal_cleanup(struct tty_s
- 
- static const struct tty_operations ipoctal_fops = {
- 	.ioctl =		NULL,
-+	.install =		ipoctal_install,
- 	.open =			ipoctal_open,
- 	.close =		ipoctal_close,
- 	.write =		ipoctal_write_tty,
+ 	/* Compute number of levels and the number of blocks in each level */
+-	blocks = (inode->i_size + params->block_size - 1) >> log_blocksize;
++	blocks = ((u64)inode->i_size + params->block_size - 1) >> log_blocksize;
+ 	pr_debug("Data is %lld bytes (%llu blocks)\n", inode->i_size, blocks);
+ 	while (blocks > 1) {
+ 		if (params->num_levels >= FS_VERITY_MAX_LEVELS) {
 
 
