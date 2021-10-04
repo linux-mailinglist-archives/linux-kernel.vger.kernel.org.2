@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB66420D0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9190D420E1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhJDNLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
+        id S236337AbhJDNVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235665AbhJDNIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E57761A56;
-        Mon,  4 Oct 2021 13:02:51 +0000 (UTC)
+        id S236339AbhJDNTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:19:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6482961BBE;
+        Mon,  4 Oct 2021 13:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352572;
-        bh=1VxuVWMkq+9y+Pxn9uk7IiZaHWUWMStZppI6flE8U7U=;
+        s=korg; t=1633352898;
+        bh=Xbkdq9uOlq0W0ojR4ntt1ytqvtNWxvxwStH9xYAxCXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DtK+/akP/thAcHRC8Q1WGFxvqZNbQnA+GR49+fQ4wqExJ5iCmdrlI4h1h/9H3avLj
-         UaMYlVQQHKrsKt5c/O8yI0t3T9SsjOIcP6q29pzR52lUtLHlnKeyomKC6Ad0sz0LAM
-         IOz64d/+L2jrPUobEI9ZeDzf5Db2aIdgqL+rGZ2E=
+        b=s5r8l4SFraB0OHPB9e9lAxzlffIgKwzuZEPT/tJOfkFIVivaH6v+Cocw1WtRoiQZl
+         nxVySlBRkhzlz0ZDwxi3Yvu+pTX+HKJ5cno85VFejgnYrX02exSNWSqzdmSfeC8IyI
+         flsaBv6Ltq0/vfC3QGOT5HjiPm09gaGdVIWQS7/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 39/95] net: i825xx: Use absolute_pointer for memcpy from fixed memory location
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.10 11/93] hwmon: (w83792d) Fix NULL pointer dereference by removing unnecessary structure field
 Date:   Mon,  4 Oct 2021 14:52:09 +0200
-Message-Id: <20211004125034.857241842@linuxfoundation.org>
+Message-Id: <20211004125034.954842315@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit dff2d13114f0beec448da9b3716204eb34b0cf41 ]
+commit 0f36b88173f028e372668ae040ab1a496834d278 upstream.
 
-gcc 11.x reports the following compiler warning/error.
+If driver read val value sufficient for
+(val & 0x08) && (!(val & 0x80)) && ((val & 0x7) == ((val >> 4) & 0x7))
+from device then Null pointer dereference occurs.
+(It is possible if tmp = 0b0xyz1xyz, where same literals mean same numbers)
+Also lm75[] does not serve a purpose anymore after switching to
+devm_i2c_new_dummy_device() in w83791d_detect_subclients().
 
-  drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
-  arch/m68k/include/asm/string.h:72:25: error:
-	'__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
+The patch fixes possible NULL pointer dereference by removing lm75[].
 
-Use absolute_pointer() to work around the problem.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Link: https://lore.kernel.org/r/20210921155153.28098-2-lutovinova@ispras.ru
+[groeck: Dropped unnecessary continuation lines, fixed multipline alignment]
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/i825xx/82596.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/w83792d.c |   28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/i825xx/82596.c b/drivers/net/ethernet/i825xx/82596.c
-index d719668a6684..8efcec305fc5 100644
---- a/drivers/net/ethernet/i825xx/82596.c
-+++ b/drivers/net/ethernet/i825xx/82596.c
-@@ -1155,7 +1155,7 @@ struct net_device * __init i82596_probe(int unit)
- 			err = -ENODEV;
- 			goto out;
- 		}
--		memcpy(eth_addr, (void *) 0xfffc1f2c, ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
-+		memcpy(eth_addr, absolute_pointer(0xfffc1f2c), ETH_ALEN); /* YUCK! Get addr from NOVRAM */
- 		dev->base_addr = MVME_I596_BASE;
- 		dev->irq = (unsigned) MVME16x_IRQ_I596;
- 		goto found;
--- 
-2.33.0
-
+--- a/drivers/hwmon/w83792d.c
++++ b/drivers/hwmon/w83792d.c
+@@ -264,9 +264,6 @@ struct w83792d_data {
+ 	char valid;		/* !=0 if following fields are valid */
+ 	unsigned long last_updated;	/* In jiffies */
+ 
+-	/* array of 2 pointers to subclients */
+-	struct i2c_client *lm75[2];
+-
+ 	u8 in[9];		/* Register value */
+ 	u8 in_max[9];		/* Register value */
+ 	u8 in_min[9];		/* Register value */
+@@ -927,7 +924,6 @@ w83792d_detect_subclients(struct i2c_cli
+ 	int address = new_client->addr;
+ 	u8 val;
+ 	struct i2c_adapter *adapter = new_client->adapter;
+-	struct w83792d_data *data = i2c_get_clientdata(new_client);
+ 
+ 	id = i2c_adapter_id(adapter);
+ 	if (force_subclients[0] == id && force_subclients[1] == address) {
+@@ -946,21 +942,19 @@ w83792d_detect_subclients(struct i2c_cli
+ 	}
+ 
+ 	val = w83792d_read_value(new_client, W83792D_REG_I2C_SUBADDR);
+-	if (!(val & 0x08))
+-		data->lm75[0] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+-							  0x48 + (val & 0x7));
+-	if (!(val & 0x80)) {
+-		if (!IS_ERR(data->lm75[0]) &&
+-			((val & 0x7) == ((val >> 4) & 0x7))) {
+-			dev_err(&new_client->dev,
+-				"duplicate addresses 0x%x, use force_subclient\n",
+-				data->lm75[0]->addr);
+-			return -ENODEV;
+-		}
+-		data->lm75[1] = devm_i2c_new_dummy_device(&new_client->dev, adapter,
+-							  0x48 + ((val >> 4) & 0x7));
++
++	if (!(val & 0x88) && (val & 0x7) == ((val >> 4) & 0x7)) {
++		dev_err(&new_client->dev,
++			"duplicate addresses 0x%x, use force_subclient\n", 0x48 + (val & 0x7));
++		return -ENODEV;
+ 	}
+ 
++	if (!(val & 0x08))
++		devm_i2c_new_dummy_device(&new_client->dev, adapter, 0x48 + (val & 0x7));
++
++	if (!(val & 0x80))
++		devm_i2c_new_dummy_device(&new_client->dev, adapter, 0x48 + ((val >> 4) & 0x7));
++
+ 	return 0;
+ }
+ 
 
 
