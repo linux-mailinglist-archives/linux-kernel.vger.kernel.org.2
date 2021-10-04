@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CD842133D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4CB42133F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbhJDQBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:01:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:55590 "EHLO foss.arm.com"
+        id S236127AbhJDQBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234175AbhJDQBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:01:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBF306D;
-        Mon,  4 Oct 2021 08:59:20 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26E2C3F70D;
-        Mon,  4 Oct 2021 08:59:20 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 16:59:15 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] irqdomain: Export __irq_domain_alloc_irqs() to modules
-Message-ID: <20211004155915.GA25619@lpieralisi>
-References: <20211004150552.3844830-1-maz@kernel.org>
+        id S236108AbhJDQBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:01:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F3C16139F;
+        Mon,  4 Oct 2021 15:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633363166;
+        bh=ruLqSZwcgsLzJUDP9aLVM7caarwMV4tsqPQF1fYxMTg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TiM7wY+xoMC75h/isvuOuCwbokDqzNaN19HWjXJ8CNYY7dTv7qft/ipb5ed45Kcyt
+         OzJNFqcfmBImKoGHQsWf2XVDs0RH5HGIDRie96dznWnX+jio038j7C1bjy2IvjIUdh
+         DA0kD6uDCYAwLu2k6IMTdgV4mGwOIkY46hJMQorQ4MLa9NX7wKhizeFYizOjXFUvmp
+         H6hcCOWbAJrlirxh27V1iVU2aaE+nZ8MlGyady0bB/IxOoxx9pDLjJgXn1xUDcHN5F
+         yPQm2OAIqrI+CX6KWky1mkPswsjGtwD4pJyBxgdkQXriY1v6hRB7eZquzLEbKrq2RQ
+         jpVEn07LXhNnw==
+Date:   Mon, 4 Oct 2021 17:59:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [GIT PULL for v5.15-rc5] media fixes
+Message-ID: <20211004175922.39809118@coco.lan>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004150552.3844830-1-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:05:52PM +0100, Marc Zyngier wrote:
-> The Apple PCIe controller driver allocates interrupts generated
-> by the PCIe ports, and uses irq_domain_alloc_irqs() for that.
-> THis is an inline function that uses __irq_domain_alloc_irqs()
-> as a backend.
-> 
-> Since the driver can be built as a module, __irq_domain_alloc_irqs()
-> must be exported.
-> 
-> Fixes: 201adeaa9d82 ("PCI: apple: Add INTx and per-port interrupt support")
+Hi Linus,
 
-I have squashed this patch into the commit it is fixing and pushed
-pci/apple out.
+Could you please pull from:
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.15-3
 
-I could have merged it as a standalone patch before the commit it is
-fixing but it would not make sense on its own I believe, happy to
-rectify the branch in case that's preferred.
+There's just one patch here, fixing a -Werror issue at staging/atomisp.
 
-Lorenzo
+Such patch is already at linux-next for quite a while, aiming 5.16, but
+almost every week we're receiving a new variant of it.
 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
-> 
-> Notes:
->     Since the offending code is only in the PCI tree so far,
->     it would make sense if Lorenzo could take this patch directly.
-> 
->  kernel/irq/irqdomain.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index 5a698c1f6cc6..40e85a46f913 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -1502,6 +1502,7 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
->  	irq_free_descs(virq, nr_irqs);
->  	return ret;
->  }
-> +EXPORT_SYMBOL_GPL(__irq_domain_alloc_irqs);
->  
->  /* The irq_data was moved, fix the revmap to refer to the new location */
->  static void irq_domain_fix_revmap(struct irq_data *d)
-> -- 
-> 2.30.2
-> 
+So, the better is to merge this one early.
+
+Regards,
+Mauro
+
+The following changes since commit f0c15b360fb65ee39849afe987c16eb3d0175d0d:
+
+  media: ir_toy: prevent device from hanging during transmit (2021-09-19 11:19:37 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.15-3
+
+for you to fetch changes up to 206704a1fe0bcaaa036d3e90358bb168fac8bea1:
+
+  media: atomisp: restore missing 'return' statement (2021-10-04 17:54:48 +0200)
+
+----------------------------------------------------------------
+media fixes for v5.15-rc5
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      media: atomisp: restore missing 'return' statement
+
+ .../staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c   | 2 ++
+ 1 file changed, 2 insertions(+)
+
