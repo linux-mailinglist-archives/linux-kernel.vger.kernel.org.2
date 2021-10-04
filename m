@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFBC420767
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7CC42076F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhJDIkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:40:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:49040 "EHLO foss.arm.com"
+        id S231698AbhJDIlZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Oct 2021 04:41:25 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47483 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhJDIkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:40:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66FA71FB;
-        Mon,  4 Oct 2021 01:38:52 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ABC93F66F;
-        Mon,  4 Oct 2021 01:38:50 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 09:38:45 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, kernel-team@android.com
-Subject: Re: [PATCH v5 00/14] PCI: Add support for Apple M1
-Message-ID: <20211004083845.GA22336@lpieralisi>
-References: <20210929163847.2807812-1-maz@kernel.org>
+        id S231566AbhJDIlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:41:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="205473733"
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="205473733"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 01:39:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="621779755"
+Received: from pmittal1-mobl.gar.corp.intel.com (HELO localhost) ([10.251.223.27])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 01:39:30 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Fernando Ramos <greenfoo@u92.eu>
+Cc:     Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2 00/17] drm: cleanup: Use DRM_MODESET_LOCK_ALL_* helpers where possible
+In-Reply-To: <YVq49SWuC3T7i1a6@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210924064324.229457-1-greenfoo@u92.eu> <20211001183655.GW2515@art_vandelay> <YVda4jNSGuQf50JV@intel.com> <20211001204815.GA2515@art_vandelay> <YVeGOyLzuhN7zzV7@intel.com> <YVfEWaLfYWdhezCa@intel.com> <YVgGklsHT5fkavDL@zacax395.localdomain> <YVjd7hLKtYG2bkY7@zacax395.localdomain> <YVq49SWuC3T7i1a6@intel.com>
+Date:   Mon, 04 Oct 2021 11:39:27 +0300
+Message-ID: <87ee912ngg.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929163847.2807812-1-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 05:38:33PM +0100, Marc Zyngier wrote:
-> This is v5 of the series adding PCIe support for the M1 SoC. Not a lot
-> has changed this time around, and most of what I was saying in [1] is
-> still valid.
-> 
-> Very little has changed code wise (a couple of bug fixes). The series
-> however now carries a bunch of DT updates so that people can actually
-> make use of PCIe on an M1 box (OK, not quite, you will still need [2],
-> or whatever version replaces it). The corresponding bindings are
-> either already merged, or queued for 5.16 (this is the case for the
-> PCI binding).
-> 
-> It all should be in a state that makes it mergeable (yeah, I said that
-> last time... I mean it this time! ;-).
-> 
-> As always, comments welcome.
-> 
-> 	M.
-> 
-> [1] https://lore.kernel.org/r/20210922205458.358517-1-maz@kernel.org
-> [2] https://lore.kernel.org/r/20210921222956.40719-2-joey.gouly@arm.com
-> 
-> Alyssa Rosenzweig (2):
->   PCI: apple: Add initial hardware bring-up
->   PCI: apple: Set up reference clocks when probing
-> 
-> Marc Zyngier (10):
->   irqdomain: Make of_phandle_args_to_fwspec generally available
->   of/irq: Allow matching of an interrupt-map local to an interrupt
->     controller
->   PCI: of: Allow matching of an interrupt-map local to a PCI device
->   PCI: apple: Add INTx and per-port interrupt support
->   PCI: apple: Implement MSI support
->   iommu/dart: Exclude MSI doorbell from PCIe device IOVA range
->   PCI: apple: Configure RID to SID mapper on device addition
->   arm64: dts: apple: t8103: Add PCIe DARTs
->   arm64: dts: apple: t8103: Add root port interrupt routing
->   arm64: dts: apple: j274: Expose PCI node for the Ethernet MAC address
-> 
-> Mark Kettenis (2):
->   arm64: apple: Add pinctrl nodes
->   arm64: apple: Add PCIe node
-> 
->  MAINTAINERS                              |   7 +
->  arch/arm64/boot/dts/apple/t8103-j274.dts |  23 +
->  arch/arm64/boot/dts/apple/t8103.dtsi     | 203 ++++++
->  drivers/iommu/apple-dart.c               |  27 +
->  drivers/of/irq.c                         |  17 +-
->  drivers/pci/controller/Kconfig           |  17 +
->  drivers/pci/controller/Makefile          |   1 +
->  drivers/pci/controller/pcie-apple.c      | 822 +++++++++++++++++++++++
->  drivers/pci/of.c                         |  10 +-
->  include/linux/irqdomain.h                |   4 +
->  kernel/irq/irqdomain.c                   |   6 +-
->  11 files changed, 1127 insertions(+), 10 deletions(-)
->  create mode 100644 drivers/pci/controller/pcie-apple.c
+On Mon, 04 Oct 2021, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+> On Sun, Oct 03, 2021 at 12:32:14AM +0200, Fernando Ramos wrote:
+>> On 21/10/02 09:13AM, Fernando Ramos wrote:
+>> > 
+>> > Sean, could you revert the whole patch series? I'll have a deeper look into the
+>> > patch set and come up with a v3 where all these issues will be addressed.
+>> > 
+>> 
+>> Hi Sean,
+>> 
+>> I now understand the nature of the issue that caused the problem with i915 and
+>> have proceed to remove the global context structure (which revealed a similar
+>> issue in the amdgpu driver).
+>> 
+>> I have prepared a V3 version of the patch set where these issues should
+>> hopefully be fixed for both the i915 and amdgpu drivers.
+>> 
+>> In order to prevent causing more disruption, could you tell me what the proper
+>> way to proceed would be? In particular:
+>> 
+>>   1. Is there any place where I can push my changes so that they are tested
+>>      on a i915 machine? (Some type of automated pool)
+>
+> cc:intel-gfx, which it looks like you did, _but_ your patches did
+> did not even apply against drm-tip so our CI rejected it. There was
+> a reply to the patches from CI indicating that. And that is one
+> reason I probably just ignored the whole thing. If it doesn't
+> even apply/build it's not worth my time to read.
+>
+>> 
+>>   2. I can test the amdgpu driver on my machine but, what about all the other
+>>      architectures? What is the standard procedure? Should I simply publish V3
+>>      and wait for feedback from the different vendors? (I would hate to cause a
+>>      simular situation again)
+>> 
+>>   3. Should I post V3 on top of drm-next or drm-misc-next?
+>
+> The normal rule is: always work on drm-tip. That is what gets
+> tested by our CI as well. Yes, it does mean a bit of extra hurdles
+> during development since drm-tip is a rebasing tree, but there are
+> tools like dim retip to help out here.
+>
+> As for where to merge them. I would generally recommed against merging
+> i915 patches through drm-misc unless there is a very compelling reason
+> to do so. i915 is a fast moving target and if there are significant
+> changes coming in via drm-misc they usually will cause conflicts for
+> people during drm-tip rebuild. Also I would expect to see an ack
+> requested from i915 maintainers for merging anything significant via
+> drm-misc, which I don't think happened in this case.
 
-I have applied (with very minor log changes) patches [1-9] to
-pci/apple for v5.16, I expect the dts changes to go via the
-arm-soc tree separately, please let me know if that works for you.
+Indeed. All other things aside, it looks like it has enough conflict
+potential to warrant merging via drm-intel anyway.
 
-Thanks,
-Lorenzo
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
