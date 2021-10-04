@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD39420D16
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBA6420B86
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhJDNLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46350 "EHLO mail.kernel.org"
+        id S233658AbhJDM5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233514AbhJDNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C7061A78;
-        Mon,  4 Oct 2021 13:03:13 +0000 (UTC)
+        id S233660AbhJDM5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFEE613AD;
+        Mon,  4 Oct 2021 12:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352594;
-        bh=Ym7S5GWBsBfmUHR/tjyysjCe9H2PnoZRxMomozdocJM=;
+        s=korg; t=1633352128;
+        bh=E5uNW/W1TJylXKExKRd5c7OfdBniKG9DMR5MgZ6Z8+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zSeT9vt0FkIC5wlCcTnZGWl8Txll7+DxnLHhRT0UdgV+hWKLUCJJxW+KxRWSP/vww
-         bIN3nhGU6zPjKtQ09YwcYC2TXbEm2j5yHxmWiINMZAHHoBpmCD0KRM5lyVpqMRFdt9
-         Z7+OdWklrwrjGr62qumxMvaKH2wFCqvuxf4cBkwM=
+        b=yxc60DMNlrz5sEOQSfJy7V8uK0TQROeE9hD28Pn/BvgVLfzMKRK93qRIUJx/ShZJ5
+         dQ1q+8PkysMaIJQ7Degaa0ZH53hIAM1NC/J8AcGg9GMOlv7MvPZusrI63MfrWNnQFI
+         9kBLDFxmTZlEXMkYyFDZiXS/iTRytDubPyu3V78c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 46/95] spi: Fix tegra20 build with CONFIG_PM=n
-Date:   Mon,  4 Oct 2021 14:52:16 +0200
-Message-Id: <20211004125035.083988424@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.4 26/41] mac80211: fix use-after-free in CCMP/GCMP RX
+Date:   Mon,  4 Oct 2021 14:52:17 +0200
+Message-Id: <20211004125027.411098505@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit efafec27c5658ed987e720130772f8933c685e87 ]
+commit 94513069eb549737bcfc3d988d6ed4da948a2de8 upstream.
 
-Without CONFIG_PM enabled, the SET_RUNTIME_PM_OPS() macro ends up being
-empty, and the only use of tegra_slink_runtime_{resume,suspend} goes
-away, resulting in
+When PN checking is done in mac80211, for fragmentation we need
+to copy the PN to the RX struct so we can later use it to do a
+comparison, since commit bf30ca922a0c ("mac80211: check defrag
+PN against current frame").
 
-  drivers/spi/spi-tegra20-slink.c:1200:12: error: ‘tegra_slink_runtime_resume’ defined but not used [-Werror=unused-function]
-   1200 | static int tegra_slink_runtime_resume(struct device *dev)
-        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  drivers/spi/spi-tegra20-slink.c:1188:12: error: ‘tegra_slink_runtime_suspend’ defined but not used [-Werror=unused-function]
-   1188 | static int tegra_slink_runtime_suspend(struct device *dev)
-        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unfortunately, in that commit I used the 'hdr' variable without
+it being necessarily valid, so use-after-free could occur if it
+was necessary to reallocate (parts of) the frame.
 
-mark the functions __maybe_unused to make the build happy.
+Fix this by reloading the variable after the code that results
+in the reallocations, if any.
 
-This hits the alpha allmodconfig build (and others).
+This fixes https://bugzilla.kernel.org/show_bug.cgi?id=214401.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: bf30ca922a0c ("mac80211: check defrag PN against current frame")
+Link: https://lore.kernel.org/r/20210927115838.12b9ac6bb233.I1d066acd5408a662c3b6e828122cd314fcb28cdb@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-tegra20-slink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/mac80211/wpa.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index c6b80a60951b..bc3097e5cc26 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -1210,7 +1210,7 @@ static int tegra_slink_resume(struct device *dev)
- }
- #endif
+--- a/net/mac80211/wpa.c
++++ b/net/mac80211/wpa.c
+@@ -519,6 +519,9 @@ ieee80211_crypto_ccmp_decrypt(struct iee
+ 			return RX_DROP_UNUSABLE;
+ 	}
  
--static int tegra_slink_runtime_suspend(struct device *dev)
-+static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
-@@ -1222,7 +1222,7 @@ static int tegra_slink_runtime_suspend(struct device *dev)
- 	return 0;
- }
++	/* reload hdr - skb might have been reallocated */
++	hdr = (void *)rx->skb->data;
++
+ 	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN - mic_len;
+ 	if (!rx->sta || data_len < 0)
+ 		return RX_DROP_UNUSABLE;
+@@ -751,6 +754,9 @@ ieee80211_crypto_gcmp_decrypt(struct iee
+ 			return RX_DROP_UNUSABLE;
+ 	}
  
--static int tegra_slink_runtime_resume(struct device *dev)
-+static int __maybe_unused tegra_slink_runtime_resume(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
--- 
-2.33.0
-
++	/* reload hdr - skb might have been reallocated */
++	hdr = (void *)rx->skb->data;
++
+ 	data_len = skb->len - hdrlen - IEEE80211_GCMP_HDR_LEN - mic_len;
+ 	if (!rx->sta || data_len < 0)
+ 		return RX_DROP_UNUSABLE;
 
 
