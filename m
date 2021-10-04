@@ -2,163 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFA64218ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEDE4218F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhJDVGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        id S233578AbhJDVHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhJDVGS (ORCPT
+        with ESMTP id S233373AbhJDVHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:06:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C659EC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:04:28 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id c29so5184323pfp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 14:04:28 -0700 (PDT)
+        Mon, 4 Oct 2021 17:07:19 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D50FC061745;
+        Mon,  4 Oct 2021 14:05:30 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id z2so14505923wmc.3;
+        Mon, 04 Oct 2021 14:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dTL71zCsO4wuS7DXxshZZRFAlW1Q/e6e78gucQODCPs=;
-        b=XmzdavWE+xPwKjOfD7fVZBYLqzsaZ82tzU8rY7LUQTZzp2u58uvRub2eqnWLAelR42
-         wLD6XtFTKQ+DXn86Rk1NjlffjspX7Z4xONQzcrRTl6WpCYAKGNigChzH1USP/+YHqV9S
-         vZc+p0UEL2hD82BqL0dO/uxnq3Mnqc8ctr4Gz/pURtRB4rk3jKWFsKsMSYSX2m2E8Azg
-         RvMWFiiLTiyyKXeTVFLm1BvWmS9VifSoG/e7OsLK26L+G/3Hp+Ihcr8dknzhk96b2FzO
-         e6oEQdoZCpclC6RmTbpgM9m3MeKwU3UAkXLsknw16zQ5X13Esxb3XHzrZsCcKkqqTG+H
-         anFw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1LNvuqaTqf1he+ZSpJwuB6W6zpGSi2WK3l3LXveSaoM=;
+        b=Gibq9uh1BSoup1XFTuvf2C5QjA7nLHeIssprX8h01fv1/Yt51ISxQPd0IEsUFzOywa
+         ROsz17D809VPA32kgZLX6AFYI3S64/5FegvuLicE+FwxRXPLtDdCeef4uygewBmXG47+
+         WyM6rsPIbEYJG2TCVHFZKyrNWkcKBGU6k7DDg0Cok1aySUPVAhPpAQ29/niGcNNyCEPw
+         nBJVqnO/cZk5Pken8nDtiaqj6+VOqzx6+Gz+1T/jcQIk6/7Krf6xLJkHCWGTenr4QOqB
+         jMTARbMUVFpNTDY9WSf2P9oQIpNR/ag09HwWggr5dW1puvbDLw7EIBrtrG+E8MTKk6h7
+         lCYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dTL71zCsO4wuS7DXxshZZRFAlW1Q/e6e78gucQODCPs=;
-        b=Y13k8+lB3sLMgp0Cf2Q+UUKCnSVWfCwNbRI8utSawXXKfW9Y8/QXPGIDeJ9gMZnlnn
-         hYOivf0tl0ZKZiaEGPsgDrim7OLF8nUt1NVC0UMf4fKQd9xBqjGg9VJM4LzfCywL/oB2
-         EBGkaTSf9ulwErvTnL5MayHdJ3NT+plre8+Xh5wKQyn30FSMG9ZhSJipgJ4JImKlLbv7
-         OHdob7TUUXu5trskUuenW9C0LilfQ8cPVI27YkDt03nwWLg5zF5DT18abuxRLOhdN5bP
-         Ly7dG4lc+hSt96zrJbTfWoecpNLtWzgu2HYigZXOwgrOE6agq8zYClDm9ux/imyWJlyS
-         ibbQ==
-X-Gm-Message-State: AOAM532ZnpgrEbocnMfwc5ENE4iIARdMLbYFiWijursKjQ+/kTltg9QO
-        SHV15Jyh0PKtIxN2MbpYkz6Ps9ebmzdtFYlOclrM6A==
-X-Google-Smtp-Source: ABdhPJwtA7a1u8MewgFOuQ4ODk6qNf/e8OOxKzSS55rulMOQukdTduuScadVjnccrxY46jGbRZAxi2Ttqu24INezDC8=
-X-Received: by 2002:a05:6a00:1a01:b0:44c:1ec3:364f with SMTP id
- g1-20020a056a001a0100b0044c1ec3364fmr19009668pfv.86.1633381468208; Mon, 04
- Oct 2021 14:04:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1LNvuqaTqf1he+ZSpJwuB6W6zpGSi2WK3l3LXveSaoM=;
+        b=KgHsdOQB6uZU72CTD9Cji5Ik4kmaqE+bFNBle+p7xJYvP1QeWrO30fdqyqKiIrdbgn
+         awdDDe38oyZXHXTc4WErecXHAqlr9X8KMFX7c3T0v9nu06fCZcweVr7BfwSSps7yXHAF
+         UGOASdQ0rjHf8e8HJ08MTorMyhOU4dNlH8OlMITRQzQTeVwcfcexJVntZRboQ3NxC8Yq
+         +yfw47mjE3t1eNELaXp1jxBhDKw1tAndBjsBkplTquVSGrfe5fJBX4Vw5kDIKxhDNb9Y
+         kmC7xJTSeiKIUHAVbOOti0nysybbeW+91+IydXUeTp88q4ZbAFGLzuC6cVWnhwivfxMt
+         hz3w==
+X-Gm-Message-State: AOAM533Gw2wqMcSAVHUI+8PK5o0xeo7+yh+3STX/Z6j1Xc1iZ0Yw14oZ
+        SvKWFZGVNkG8jXKJHWsTl6o=
+X-Google-Smtp-Source: ABdhPJz3IU9GVw3p2H/QS30wYJ+fOgVwCWkhLB39pEHXjwDeYQJK5a0vI7TTvofhGtjK0YZPdm1KEg==
+X-Received: by 2002:a1c:21c3:: with SMTP id h186mr17033968wmh.107.1633381528713;
+        Mon, 04 Oct 2021 14:05:28 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id e11sm3653175wro.4.2021.10.04.14.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 14:05:27 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 23:05:26 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH v7 4/7] usb: phy: tegra: Support OTG mode programming
+Message-ID: <YVtslrGXStvdO2IS@orome.fritz.box>
+References: <20210912181718.1328-1-digetx@gmail.com>
+ <20210912181718.1328-5-digetx@gmail.com>
+ <29ae631d-cc8d-663e-3ce2-db00f3470365@gmail.com>
 MIME-Version: 1.0
-References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210930065953-mutt-send-email-mst@kernel.org> <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com> <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com> <YVaywQLAboZ6b36V@kroah.com>
- <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com> <20211002070218-mutt-send-email-mst@kernel.org>
- <YVg/F10PCFNOtCnL@kroah.com> <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
-In-Reply-To: <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 4 Oct 2021 14:04:20 -0700
-Message-ID: <CAPcyv4jfdVTMtvhoUJ5B-ka596RgEH_0RLathfKL9aAi9+0apg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WX3qGWtIkQM7b37F"
+Content-Disposition: inline
+In-Reply-To: <29ae631d-cc8d-663e-3ce2-db00f3470365@gmail.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 7:20 AM Andi Kleen <ak@linux.intel.com> wrote:
->
->
-> On 10/2/2021 4:14 AM, Greg Kroah-Hartman wrote:
-> > On Sat, Oct 02, 2021 at 07:04:28AM -0400, Michael S. Tsirkin wrote:
-> >> On Fri, Oct 01, 2021 at 08:49:28AM -0700, Andi Kleen wrote:
-> >>>>    Do you have a list of specific drivers and kernel options that you
-> >>>> feel you now "trust"?
-> >>> For TDX it's currently only virtio net/block/console
-> >>>
-> >>> But we expect this list to grow slightly over time, but not at a high rate
-> >>> (so hopefully <10)
-> >> Well there are already >10 virtio drivers and I think it's reasonable
-> >> that all of these will be used with encrypted guests. The list will
-> >> grow.
-> > What is keeping "all" drivers from being on this list?
->
-> It would be too much work to harden them all, and it would be pointless
-> because all these drivers are never legitimately needed in a virtualized
-> environment which only virtualize a very small number of devices.
->
-> >   How exactly are
-> > you determining what should, and should not, be allowed?
->
-> Everything that has had reasonable effort at hardening can be added. But
-> if someone proposes to add a driver that should trigger additional
-> scrutiny in code review. We should also request them to do some fuzzing.
->
-> It's a bit similar to someone trying to add a new syscall interface.
-> That also triggers much additional scrutiny for good reasons and people
-> start fuzzing it.
->
->
-> >    How can
-> > drivers move on, or off, of it over time?
->
-> Adding something is submitting a patch to the allow list.
->
-> I'm not sure the "off" case would happen, unless the driver is
-> completely removed, or maybe it has some unfixable security problem. But
-> that is all rather unlikely.
->
->
-> >
-> > And why not just put all of that into userspace and have it pick and
-> > choose?  That should be the end-goal here, you don't want to encode
-> > policy like this in the kernel, right?
->
-> How would user space know what drivers have been hardened? This is
-> really something that the kernel needs to determine. I don't think we
-> can outsource it to anyone else.
 
-How it is outsourcing by moving that same allow list over the kernel /
-user boundary. It can be maintained by the same engineers and get
-deployed by something like:
+--WX3qGWtIkQM7b37F
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-dracut --authorize-device-list=confidential-computing-default $kernel-version
+On Mon, Sep 27, 2021 at 07:36:52PM +0300, Dmitry Osipenko wrote:
+> 12.09.2021 21:17, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Support programming USB PHY into OTG mode.
+> >=20
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  drivers/usb/phy/phy-tegra-usb.c   | 198 +++++++++++++++++++++++++++++-
+> >  include/linux/usb/tegra_usb_phy.h |   5 +
+> >  2 files changed, 198 insertions(+), 5 deletions(-)
+>=20
+> Greg / Felipe, could you please ack this patch to allow Thierry to take
+> this series via the Tegra tree? It depends on the soc/tegra patch of
+> this patchset.
 
-With that distributions can deploy kernel-specific authorizations and
-admins can deploy site-specific authorizations. Then the kernel
-implementation is minimized to authorize just enough drivers by
-default to let userspace take over the policy.
+Looking at the series, I don't think this necessarily needs to go
+through the Tegra tree. Given that you have backwards-compatibility with
+older device trees, applying this separately to the USB tree should work
+fine. Once the soc/tegra and DT bits and the USB bits get combined they
+should enable the new functionality, but nothing should break if things
+are applied separately.
 
-> Also BTW of course user space can still override it, but really the
-> defaults should be a kernel policy.
+If so, I can just pick up the rest and let Felipe or Greg pick this one
+up.
 
-The default is secure, trust nothing but bootstrap devices.
+Dmitry, can you confirm that this patch should be applicable separately?
+If so:
 
-> There's also the additional problem that one of the goals of
-> confidential guest is to just move existing guest virtual images into
-> them without much changes. So it's better for such a case if as much as
-> possible of the policy is in the kernel. But that's more a secondary
-> consideration, the first point is really the important part.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-The same image can be used on host and guest in this "do it in
-userspace" proposal.
+--WX3qGWtIkQM7b37F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFbbJYACgkQ3SOs138+
+s6Hujg//cgkH3qGoTXHFhGVLDBwdBjnku1VXcY51hJOE+7XgZhQG5INrlLZ53M8W
+J7xmJpYSb2fjVcuensnI/HeZ8PldLdZl0wQvo7qTbmsKzlcgwiI7S6xtSU1nVZI2
+ic/Dse/LCXrs8bTMOweGc7GnIdu6FpRghZVeMuvQkn2z5uyKYTGjUOU616YVW+eU
+BARFJJ3C8n7vJnzGlXhCez76GcxBQe48aOXpnJQ8Tvuep7K5RZFhqz6wEi4PCcaX
+6CUS+49CFQaJD0CgUXxkc3Uva7Teprw0G9guiLs7NvtUoRLlNdM4nE3LIZNIvD5L
+XldmLCk8qgZ3nG5eXCgSMm1JO3c9To4iNIqsbtCjrAld0Te1JyT2ak3zcFCViCV+
+2D+6aFPnpj4eV2owaqoDrotyjKRtLNSTMLM7F129rPxrg6rRcfE1lOoE04mT/Ooy
+g/3qKIodHpNuB1QolnV965JNgLO03ITXRMbZNCDoGMhC81zlJMTA2YuzJLzIXw0y
+3JtD51Qm0AEgpjMCQzBXnX4aEtz/onrwtU0uy7j9iCXm5/p0CbvkCAQZNcd5Qo0k
+dhjvFj+3Ss6uv3cIWe8ZJp0g8t0X10lbckLX/MVOQyHwhoAeKfjrOY0l1CYAqj5e
+otDIWujq9fMWgWYKfjmGHQef58Xx1OltO8LOUQrJA7uFHWHzE4A=
+=Cmwj
+-----END PGP SIGNATURE-----
+
+--WX3qGWtIkQM7b37F--
