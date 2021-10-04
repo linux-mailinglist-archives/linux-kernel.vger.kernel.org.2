@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F7E421A13
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC766421A16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhJDWdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:33:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27208 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235064AbhJDWdk (ORCPT
+        id S235915AbhJDWd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235064AbhJDWd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:33:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633386710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6a7Mk6masvQrG2jLXSsH1TBnPfgw5I+N+EIPzAog1I=;
-        b=crG0NxoGeVcWmRtSmTb1QRiu7LcsD2MGnTEisyaKBqEkWrtiyRIKONwBhnroSfJET9L8U9
-        2C9j2WZpn/GyHYM5xJ7P4vnalXhNqkNlhOteo5EjET6i3vgMusXNAror5jYqMnPA9LVFmn
-        fzzmbk8YMnOHHtSnMsNoUmJT0ChH4DA=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-hSbk-GvTOUq5ZFyUMDSY5w-1; Mon, 04 Oct 2021 18:31:49 -0400
-X-MC-Unique: hSbk-GvTOUq5ZFyUMDSY5w-1
-Received: by mail-il1-f198.google.com with SMTP id q18-20020a92d412000000b00258db97b539so2341683ilm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 15:31:49 -0700 (PDT)
+        Mon, 4 Oct 2021 18:33:57 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BFBC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 15:32:07 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id x7so68518434edd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 15:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Eng+Zc+HfX4OrCQY5S7dCIwJB13LaLzXgwv+0bs9o/I=;
+        b=QcolBkIEDg2+Lk6ufeObq+SQa+xNNRbFfNAF5IQmvN3OuuPF5KC4AMsAUI9Xr3hYn+
+         wQ14b1zBbUSEaT/m+/REbOFGQIuDjquakozT1Evc+c3XW8cJpoPrrZIFay/pv99L/UUO
+         X/Zh3nE7YSXOHC0Bp9jJ+ifzsbbp/NQIX4sKMjGVzjD9rD3ScgmDOSxHBzs7/QDSvdYj
+         QucZLg2GEuWbiD3A+An/Q1kjYoALJTOndXcKx/dwqSIQeyu5VuG4DYyj1VEGPpEDW+X5
+         /HkIRsFb6Qw0x/DG6uPHpFMzhL/fEkaAtjuZ6RJdbtulKR5U4Yi/GL/Dhp13gC2dEbC3
+         +vLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=k6a7Mk6masvQrG2jLXSsH1TBnPfgw5I+N+EIPzAog1I=;
-        b=Am1x0xVcYEf/QSu8p9deX2YdIwN/rCJS35M8NFAtCBUL1RhbQUffWeJGBzRXpwlNJq
-         LsrVPnCK/NP2H1yA1AiD+2niNqpbsZGrnm/gnqxhfhiIXQ7ggfYD1QaXv0aaqbveXNsA
-         0HhcDKTu7H58OGBxZVxBYKJc3CDyu2O3C1eGRpTUv48Xw/mYb1BjZ+d3hYe/qiuo6T2v
-         MsbiYVTylMhMyVa7IeV7TwLv2JUkBbsFujkXB886bKMLd/VJ1s0pbRbW2K8AsnZAcPrs
-         AvSTpxy/i9RxAUVwEDv2zjagCbcZQ/cS7YyNKpQhyQL8EsKeFyNUW9wC4K4hkY2MChJ4
-         epVg==
-X-Gm-Message-State: AOAM533j0Edtm08x0cGMxfT5NFnDNodoykljiiXyw7FaIkAczJuXQQj6
-        Nnj4Zcnw5eSFjsnWkkwk56gFfzmksdCSIhxUOpSC1L/HcKkmuEF4f5l1Bdxe3u05slSxlL8ntU2
-        JIEJEGdGdcBYwFTSLHITuXal+
-X-Received: by 2002:a05:6e02:8ad:: with SMTP id a13mr486967ilt.136.1633386708710;
-        Mon, 04 Oct 2021 15:31:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0L83MvMLkr/6+IdyIY0rPwtfBHAvQdPfMp3mBYCUa8IZHMaQLCDaoD7TjRxtwh23+H0xxUw==
-X-Received: by 2002:a05:6e02:8ad:: with SMTP id a13mr486960ilt.136.1633386708578;
-        Mon, 04 Oct 2021 15:31:48 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id l1sm9952807ilc.65.2021.10.04.15.31.47
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Eng+Zc+HfX4OrCQY5S7dCIwJB13LaLzXgwv+0bs9o/I=;
+        b=fMl+IqqQ55KPpHeLH3f919PdSGYajvtoBi0Lm44vsPLQH0uhprz8o8r89Ga5XLZiHS
+         Vt3Rl0Y/xwrKb7lFBNbu7zJKTN+0zY/8Gfv2dQfbLrSxtEozX+nUm4IGiebbTK6JlZ/P
+         fxM9Ksks6AdmOmoK0c8OH0B8Mn5AXLajxO70RZp5u2orzQe8xeE9AzPNHi+OWCBWdfJI
+         9YrAVc9xveyVXy2yhq0ke3l1KbUoTS/9blsiXOjQoFzmS+4KG2wVskG9shotN7N0lOd4
+         4J8rurAzeTlRNg2dPaaUHMmnWC3dBljic+4Kt8os8QwAr8gOeXkKKqMvqoRPbJIaoLYr
+         1WhA==
+X-Gm-Message-State: AOAM533EADGboEK/+413rPSYHJxFlavJKAdp32MFbg4n3/lw/oqP+pcH
+        hBnQMhWGo+xf2/pXb2zXBTY=
+X-Google-Smtp-Source: ABdhPJzXfMnM+C83Zh2R+7b6lODQPmv9RMYWH8ZtVXm9u7lxCYTzB8u1Ichz4xBTyxnfLGkK9voIdQ==
+X-Received: by 2002:a17:906:70c5:: with SMTP id g5mr20991222ejk.63.1633386726262;
+        Mon, 04 Oct 2021 15:32:06 -0700 (PDT)
+Received: from tom-desktop.station (net-2-42-54-217.cust.vodafonedsl.it. [2.42.54.217])
+        by smtp.gmail.com with ESMTPSA id dc8sm7780919edb.28.2021.10.04.15.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 15:31:48 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 16:31:46 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-Message-ID: <20211004163146.6b34936b.alex.williamson@redhat.com>
-In-Reply-To: <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
-        <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com>
-        <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 04 Oct 2021 15:32:05 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/3] staging: vt6655: replace camel case variables
+Date:   Tue,  5 Oct 2021 00:31:55 +0200
+Message-Id: <20211004223200.70524-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Oct 2021 22:48:24 +0530
-Ajay Garg <ajaygargnsit@gmail.com> wrote:
+This series replace the following camel case variables into
+equivalent snake case variable for vt6655 driver.
 
-> Thanks Lu for the reply.
-> 
-> >
-> > Isn't the domain should be switched from a default domain to an
-> > unmanaged domain when the device is assigned to the guest?
-> >
-> > Even you want to r-setup the same mappings, you need to un-map all
-> > existing mappings, right?
-> >  
-> 
-> Hmm, I guess that's a (design) decision the KVM/QEMU/VFIO communities
-> need to take.
-> May be the patch could suppress the flooding till then?
+bShortSlotTime -> short_slot_time
+ldBmThreshold -> dbm_threshold
+PortOffset -> port_offset
 
-No, this is wrong.  The pte values should not exist, it doesn't matter
-that they're the same.  Is the host driver failing to remove mappings
-and somehow they persist in the new vfio owned domain?  There's
-definitely a bug beyond logging going on here.  Thanks,
+Tommaso Merciai (3):
+  staging: vt6655: fix camelcase in bShortSlotTime
+  staging: vt6655: fix camelcase in ldBmThreshold
+  staging: vt6655: fix camelcase in PortOffset
 
-Alex
+ drivers/staging/vt6655/baseband.c    |  58 +++++------
+ drivers/staging/vt6655/card.c        |  90 ++++++++--------
+ drivers/staging/vt6655/channel.c     |  10 +-
+ drivers/staging/vt6655/device.h      |   4 +-
+ drivers/staging/vt6655/device_main.c | 150 +++++++++++++--------------
+ drivers/staging/vt6655/mac.c         |  46 ++++----
+ drivers/staging/vt6655/power.c       |  24 ++---
+ drivers/staging/vt6655/rf.c          |  12 +--
+ drivers/staging/vt6655/rxtx.c        |  12 +--
+ 9 files changed, 203 insertions(+), 203 deletions(-)
+
+-- 
+2.25.1
 
