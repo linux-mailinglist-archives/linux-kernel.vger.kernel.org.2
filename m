@@ -2,174 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD28421AC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782BD421ACE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhJDXlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhJDXlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:41:47 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2AFC061745;
-        Mon,  4 Oct 2021 16:39:57 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNcdQ1btDz4xbQ;
-        Tue,  5 Oct 2021 10:39:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633390794;
-        bh=aB8IhWK87FWexNccjwVQpSKQmkPZxtzJR0jnzym8MlQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fPbZTUtn+6mxB7FjW1/yoaJWXG9A/zaRsqpw7x3EAQNskufHy6GkDf41ogLA+5kqS
-         o+8Tg8FRk0xFNaLQlNefEtCm+Z+mrdEzVA5R2Ta2P2EwsRqsgKox5+se8dNazqG5wo
-         5kozGLRDsrW4Ylr+0jx5v/THk+HTcltPcsgZ+eL/jBk74nsYu90WImezpWFX0gIK/q
-         xFma1R7KCpRCfOA7XmEnal2/TnoSQ79nAl2BkfBwJy4dfrnNruBi95HTTKOH1tt9fp
-         yQYtJZO/6rC2LhVJtQk4oV86ocWWpTdiKC1m7O//100lYmJHOD9HqwXoWxWv/NN21a
-         DXoegpdlxwCEA==
-Date:   Tue, 5 Oct 2021 10:39:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Colin Cross <ccross@android.com>, Olof Johansson <olof@lixom.net>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tegra tree
-Message-ID: <20211005103952.0914094d@canb.auug.org.au>
+        id S233592AbhJDXno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:43:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229703AbhJDXnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:43:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D83610EA;
+        Mon,  4 Oct 2021 23:41:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633390914;
+        bh=WnectnZlCpcN61u4P637Y4VP+/XeYfu9evNmOwRjGE8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PedMieptOH3QAu5hrQRBKb2vz5y9jLhG0XoC4awDbq5B2EUhQnt+Xr54GzaMAXzvC
+         BB5MLnDCBBjRq5C1+RG9OM1CuGM6AiRxLsJC2yfvxq1A1COlDf7YJ6s/nTC1Sjv3Ul
+         jKBcydao/10vr1Ubv+vKMcgqObFE74d00M0AJoiAxAw2toVHbFNy52CHC+wTCQbWP0
+         2TsG//vFGyem/A1+MY/CuhtK9JJMvic+C6dN88k0JvBGz3qt7DutxVBiOkK8doUolU
+         jpcv7Fb5mwQnFNv18BRgtpfXCFRmeXyVM2iPzJJmZJ6r/+TfKhfojpAf+fp8b8Aaul
+         4CBT38HD2VlzA==
+Received: by mail-ed1-f42.google.com with SMTP id dj4so71702702edb.5;
+        Mon, 04 Oct 2021 16:41:53 -0700 (PDT)
+X-Gm-Message-State: AOAM531iqKJ/leeGluEdYXqlKiDe08Xx8vgDdAcZa++e6FFNttBSzB9S
+        ijviU4WSRbmqFx4WHaoz7F178lTdVJSTZIiZew==
+X-Google-Smtp-Source: ABdhPJytlz/j7z7RIkYICVtGXnlO4ZRu804S/63zkgVzKSKfZfB7OF+ECsWzuO7+wkBDJPSdAg9zzWDwhLAyYGrsbyY=
+X-Received: by 2002:a50:bf0f:: with SMTP id f15mr21400916edk.43.1633390912636;
+ Mon, 04 Oct 2021 16:41:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NRVJUM/wJFDNVy_FKET=KhO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210930131850.21202-1-yongqiang.niu@mediatek.com> <20210930131850.21202-2-yongqiang.niu@mediatek.com>
+In-Reply-To: <20210930131850.21202-2-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 5 Oct 2021 07:41:41 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_82OaLAz0o6BUcogQ=xgYTsFJSov=J72UzMwwq3YtkPdg@mail.gmail.com>
+Message-ID: <CAAOTY_82OaLAz0o6BUcogQ=xgYTsFJSov=J72UzMwwq3YtkPdg@mail.gmail.com>
+Subject: Re: [PATCH v2, 1/1] mailbox: cmdq: add instruction time-out interrupt support
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NRVJUM/wJFDNVy_FKET=KhO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi, Yongqiang:
 
-Hi all,
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8830=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:18=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> add time-out cycle setting to make sure time-out interrupt irq
+> will happened when instruction time-out for wait and poll
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index 64175a893312..197b03222f94 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -36,6 +36,7 @@
+>  #define CMDQ_THR_END_ADDR              0x24
+>  #define CMDQ_THR_WAIT_TOKEN            0x30
+>  #define CMDQ_THR_PRIORITY              0x40
+> +#define CMDQ_THR_INSTN_TIMEOUT_CYCLES  0x50
+>
+>  #define GCE_GCTL_VALUE                 0x48
+>
+> @@ -54,6 +55,15 @@
+>  #define CMDQ_JUMP_BY_OFFSET            0x10000000
+>  #define CMDQ_JUMP_BY_PA                        0x10000001
+>
+> +/*
+> + * instruction time-out
+> + * cycles to issue instruction time-out interrupt for wait and poll inst=
+ructions
+> + * GCE axi_clock 156MHz
+> + * 1 cycle =3D 6.41ns
+> + * instruction time out 2^22*2*6.41ns =3D 53ms
 
-After merging the tegra tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+For different clients, the timeout value would be different, and each
+client could use timer to detect timeout, so it's not necessary to
+enable timeout in cmdq driver.
 
-In file included from arch/x86/include/asm/bug.h:84,
-                 from include/linux/bug.h:5,
-                 from arch/x86/include/asm/paravirt.h:15,
-                 from arch/x86/include/asm/irqflags.h:63,
-                 from include/linux/irqflags.h:16,
-                 from include/linux/rcupdate.h:26,
-                 from include/linux/rculist.h:11,
-                 from include/linux/pid.h:5,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from include/linux/of_reserved_mem.h:5,
-                 from drivers/memory/tegra/tegra210-emc-table.c:6:
-include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
-include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h:112:15: note: each undeclared identifier is repor=
-ted only once for each function it appears in
-  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
-include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
-include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-In file included from arch/x86/include/asm/bug.h:84,
-                 from include/linux/bug.h:5,
-                 from include/linux/cpumask.h:14,
-                 from arch/x86/include/asm/cpumask.h:5,
-                 from arch/x86/include/asm/msr.h:11,
-                 from arch/x86/include/asm/processor.h:22,
-                 from arch/x86/include/asm/timex.h:5,
-                 from include/linux/timex.h:65,
-                 from include/linux/time32.h:13,
-                 from include/linux/time.h:60,
-                 from include/linux/stat.h:19,
-                 from include/linux/module.h:13,
-                 from drivers/media/cec/platform/tegra/tegra_cec.c:14:
-include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
-include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h:112:15: note: each undeclared identifier is repor=
-ted only once for each function it appears in
-  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
-include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
-include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
-include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (fi=
-rst use in this function)
-  128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
-      |               ^~~~~~~~~~~~~~~~~
-include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
-  121 |  int __ret_warn_on =3D !!(condition);    \
-      |                         ^~~~~~~~~
+Regards,
+Chun-Kuang.
 
-Presumably caused by commit
-
-  bbe30ae68d14 ("cpuidle: tegra: Enable compile testing")
-
-I have used the tegra tree from next-20211001 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NRVJUM/wJFDNVy_FKET=KhO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbkMgACgkQAVBC80lX
-0Gxt1gf/Xi25Ccipu9S6381vB5Rj5/YGf4iPXTWG1OuWTrTedw0h2jnr9SiQAaCF
-p+iuYkNRt3pfJqECXgyuEq+h4cg9XH5rI/312NQivNHbRPWyMOZzkacLPkiG072t
-Q3fvmgWWjuzgr8O+9snfCd+qMgFflsZUbumcQuKp8K9CiPNi3bDvcXQcm+5b74nO
-Roq9MwCeLvRbZxdybGYd91VCyinYH37qUfC3vlwaEoo14vPzSxRiaZySWnwtP5+9
-vlLdq7Bbpz/tmKC56yDkhrrjThAuVsq8lLdeau3O0I75pCrS2MZXYMcA7wJDvvry
-+rGx4PfNR3Hjp2aYPPLdVBRY639fFw==
-=mKWV
------END PGP SIGNATURE-----
-
---Sig_/NRVJUM/wJFDNVy_FKET=KhO--
+> + */
+> +#define CMDQ_INSTN_TIMEOUT_CYCLES      22
+> +
+>  struct cmdq_thread {
+>         struct mbox_chan        *chan;
+>         void __iomem            *base;
+> @@ -376,6 +386,7 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan=
+, void *data)
+>                 writel((task->pa_base + pkt->cmd_buf_size) >> cmdq->shift=
+_pa,
+>                        thread->base + CMDQ_THR_END_ADDR);
+>
+> +               writel(CMDQ_INSTN_TIMEOUT_CYCLES, thread->base + CMDQ_THR=
+_INSTN_TIMEOUT_CYCLES);
+>                 writel(thread->priority, thread->base + CMDQ_THR_PRIORITY=
+);
+>                 writel(CMDQ_THR_IRQ_EN, thread->base + CMDQ_THR_IRQ_ENABL=
+E);
+>                 writel(CMDQ_THR_ENABLED, thread->base + CMDQ_THR_ENABLE_T=
+ASK);
+> --
+> 2.25.1
+>
