@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445AC420F7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82E3420B42
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237831AbhJDNfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
+        id S233350AbhJDM4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:56:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237834AbhJDNdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:33:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AEA563220;
-        Mon,  4 Oct 2021 13:14:56 +0000 (UTC)
+        id S233340AbhJDM4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E4276124C;
+        Mon,  4 Oct 2021 12:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353296;
-        bh=mwrT3A4MSX4FPKmDvIrXw0wCmLdpaT9k1vmICzOY6mE=;
+        s=korg; t=1633352051;
+        bh=BvO/G+c7/2ViGYhMAqkPVGKTR/3WY0MCv2IX0iVIVLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oyajh23fW5W/iOjlkJc7rS7PiT4Mi4tz8IOobBG+0+7yxpaqo6lKn2WMcxD4yDDY
-         oimTwcAPO8uSfVhIT7QxXzQmDGZubRc3CH6XyoNtdeEwwWFgz9NCPHLhde5u2G27zi
-         cjxwQnIsJT38BUhD9hRxHxl8HjBjtTkINawkpPfs=
+        b=tEwsoQhEYtfMGZnjYiYWaaufXSvTntENSld7QJwbM9S+ko/kLceOl9ugySbcc/YFg
+         KOVE8B2qjzHETiNbOQrPS5PYXP1AWZPvHh1+CzAIvKnBSUkp2PotWgerSZwoHRZJlk
+         jVplkwlkymcSN9sdooMAtmvUC1plDFpolemSr9xI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 073/172] interconnect: qcom: sdm660: Fix id of slv_cnoc_mnoc_cfg
-Date:   Mon,  4 Oct 2021 14:52:03 +0200
-Message-Id: <20211004125047.354025989@linuxfoundation.org>
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/41] blktrace: Fix uaf in blk_trace access after removing by sysfs
+Date:   Mon,  4 Oct 2021 14:52:04 +0200
+Message-Id: <20211004125027.010673526@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,76 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit a06c2e5c048e5e07fac9daf3073bd0b6582913c7 ]
+[ Upstream commit 5afedf670caf30a2b5a52da96eb7eac7dee6a9c9 ]
 
-The id of slv_cnoc_mnoc_cfg node is mistakenly coded as id of
-slv_blsp_1.  It causes the following warning on slv_blsp_1 node adding.
-Correct the id of slv_cnoc_mnoc_cfg node.
+There is an use-after-free problem triggered by following process:
 
-[    1.948180] ------------[ cut here ]------------
-[    1.954122] WARNING: CPU: 2 PID: 7 at drivers/interconnect/core.c:962 icc_node_add+0xe4/0xf8
-[    1.958994] Modules linked in:
-[    1.967399] CPU: 2 PID: 7 Comm: kworker/u16:0 Not tainted 5.14.0-rc6-next-20210818 #21
-[    1.970275] Hardware name: Xiaomi Redmi Note 7 (DT)
-[    1.978169] Workqueue: events_unbound deferred_probe_work_func
-[    1.982945] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    1.988849] pc : icc_node_add+0xe4/0xf8
-[    1.995699] lr : qnoc_probe+0x350/0x438
-[    1.999519] sp : ffff80001008bb10
-[    2.003337] x29: ffff80001008bb10 x28: 000000000000001a x27: ffffb83ddc61ee28
-[    2.006818] x26: ffff2fe341d44080 x25: ffff2fe340f3aa80 x24: ffffb83ddc98f0e8
-[    2.013938] x23: 0000000000000024 x22: ffff2fe3408b7400 x21: 0000000000000000
-[    2.021054] x20: ffff2fe3408b7410 x19: ffff2fe341d44080 x18: 0000000000000010
-[    2.028173] x17: ffff2fe3bdd0aac0 x16: 0000000000000281 x15: ffff2fe3400f5528
-[    2.035290] x14: 000000000000013f x13: ffff2fe3400f5528 x12: 00000000ffffffea
-[    2.042410] x11: ffffb83ddc9109d0 x10: ffffb83ddc8f8990 x9 : ffffb83ddc8f89e8
-[    2.049527] x8 : 0000000000017fe8 x7 : c0000000ffffefff x6 : 0000000000000001
-[    2.056645] x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : ffffb83ddc9903b0
-[    2.063764] x2 : 1a1f6fde34d45500 x1 : ffff2fe340f3a880 x0 : ffff2fe340f3a880
-[    2.070882] Call trace:
-[    2.077989]  icc_node_add+0xe4/0xf8
-[    2.080247]  qnoc_probe+0x350/0x438
-[    2.083718]  platform_probe+0x68/0xd8
-[    2.087191]  really_probe+0xb8/0x300
-[    2.091011]  __driver_probe_device+0x78/0xe0
-[    2.094659]  driver_probe_device+0x80/0x110
-[    2.098911]  __device_attach_driver+0x90/0xe0
-[    2.102818]  bus_for_each_drv+0x78/0xc8
-[    2.107331]  __device_attach+0xf0/0x150
-[    2.110977]  device_initial_probe+0x14/0x20
-[    2.114796]  bus_probe_device+0x9c/0xa8
-[    2.118963]  deferred_probe_work_func+0x88/0xc0
-[    2.122784]  process_one_work+0x1a4/0x338
-[    2.127296]  worker_thread+0x1f8/0x420
-[    2.131464]  kthread+0x150/0x160
-[    2.135107]  ret_from_fork+0x10/0x20
-[    2.138495] ---[ end trace 5eea8768cb620e87 ]---
+      P1(sda)				P2(sdb)
+			echo 0 > /sys/block/sdb/trace/enable
+			  blk_trace_remove_queue
+			    synchronize_rcu
+			    blk_trace_free
+			      relay_close
+rcu_read_lock
+__blk_add_trace
+  trace_note_tsk
+  (Iterate running_trace_list)
+			        relay_close_buf
+				  relay_destroy_buf
+				    kfree(buf)
+    trace_note(sdb's bt)
+      relay_reserve
+        buf->offset <- nullptr deference (use-after-free) !!!
+rcu_read_unlock
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Fixes: f80a1d414328 ("interconnect: qcom: Add SDM660 interconnect provider driver")
-Link: https://lore.kernel.org/r/20210823014003.31391-1-shawn.guo@linaro.org
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
+[  502.714379] BUG: kernel NULL pointer dereference, address:
+0000000000000010
+[  502.715260] #PF: supervisor read access in kernel mode
+[  502.715903] #PF: error_code(0x0000) - not-present page
+[  502.716546] PGD 103984067 P4D 103984067 PUD 17592b067 PMD 0
+[  502.717252] Oops: 0000 [#1] SMP
+[  502.720308] RIP: 0010:trace_note.isra.0+0x86/0x360
+[  502.732872] Call Trace:
+[  502.733193]  __blk_add_trace.cold+0x137/0x1a3
+[  502.733734]  blk_add_trace_rq+0x7b/0xd0
+[  502.734207]  blk_add_trace_rq_issue+0x54/0xa0
+[  502.734755]  blk_mq_start_request+0xde/0x1b0
+[  502.735287]  scsi_queue_rq+0x528/0x1140
+...
+[  502.742704]  sg_new_write.isra.0+0x16e/0x3e0
+[  502.747501]  sg_ioctl+0x466/0x1100
+
+Reproduce method:
+  ioctl(/dev/sda, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sda, BLKTRACESTART)
+  ioctl(/dev/sdb, BLKTRACESETUP, blk_user_trace_setup[buf_size=127])
+  ioctl(/dev/sdb, BLKTRACESTART)
+
+  echo 0 > /sys/block/sdb/trace/enable &
+  // Add delay(mdelay/msleep) before kernel enters blk_trace_free()
+
+  ioctl$SG_IO(/dev/sda, SG_IO, ...)
+  // Enters trace_note_tsk() after blk_trace_free() returned
+  // Use mdelay in rcu region rather than msleep(which may schedule out)
+
+Remove blk_trace from running_list before calling blk_trace_free() by
+sysfs if blk_trace is at Blktrace_running state.
+
+Fixes: c71a896154119f ("blktrace: add ftrace plugin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Link: https://lore.kernel.org/r/20210923134921.109194-1-chengzhihao1@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/qcom/sdm660.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/blktrace.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
-index 632dbdd21915..ac13046537e8 100644
---- a/drivers/interconnect/qcom/sdm660.c
-+++ b/drivers/interconnect/qcom/sdm660.c
-@@ -307,7 +307,7 @@ DEFINE_QNODE(slv_bimc_cfg, SDM660_SLAVE_BIMC_CFG, 4, -1, 56, true, -1, 0, -1, 0)
- DEFINE_QNODE(slv_prng, SDM660_SLAVE_PRNG, 4, -1, 44, true, -1, 0, -1, 0);
- DEFINE_QNODE(slv_spdm, SDM660_SLAVE_SPDM, 4, -1, 60, true, -1, 0, -1, 0);
- DEFINE_QNODE(slv_qdss_cfg, SDM660_SLAVE_QDSS_CFG, 4, -1, 63, true, -1, 0, -1, 0);
--DEFINE_QNODE(slv_cnoc_mnoc_cfg, SDM660_SLAVE_BLSP_1, 4, -1, 66, true, -1, 0, -1, SDM660_MASTER_CNOC_MNOC_CFG);
-+DEFINE_QNODE(slv_cnoc_mnoc_cfg, SDM660_SLAVE_CNOC_MNOC_CFG, 4, -1, 66, true, -1, 0, -1, SDM660_MASTER_CNOC_MNOC_CFG);
- DEFINE_QNODE(slv_snoc_cfg, SDM660_SLAVE_SNOC_CFG, 4, -1, 70, true, -1, 0, -1, 0);
- DEFINE_QNODE(slv_qm_cfg, SDM660_SLAVE_QM_CFG, 4, -1, 212, true, -1, 0, -1, 0);
- DEFINE_QNODE(slv_clk_ctl, SDM660_SLAVE_CLK_CTL, 4, -1, 47, true, -1, 0, -1, 0);
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 8ac3663e0012..c142e100840e 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1581,6 +1581,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
+ 	if (bt == NULL)
+ 		return -EINVAL;
+ 
++	if (bt->trace_state == Blktrace_running) {
++		bt->trace_state = Blktrace_stopped;
++		spin_lock_irq(&running_trace_lock);
++		list_del_init(&bt->running_list);
++		spin_unlock_irq(&running_trace_lock);
++		relay_flush(bt->rchan);
++	}
++
+ 	put_probe_ref();
+ 	synchronize_rcu();
+ 	blk_trace_free(bt);
 -- 
 2.33.0
 
