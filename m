@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC66421558
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1F0421561
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235276AbhJDRtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:49:32 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:51603 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhJDRtb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:49:31 -0400
-Date:   Mon, 04 Oct 2021 17:47:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1633369659;
-        bh=yD2hgzbbiF1epuVx9Hsd1a+S8dzM0dhkyn+z5Mc27KY=;
-        h=Date:To:From:Reply-To:Subject:From;
-        b=THH5fbuU0De61uYJ+rJViu6Kq70WzzIpF70s6jmRgmXXOB6ba/sscz2V5RtfiWAto
-         taswYHtsZm2TZOvxqE53B5LfftQPA8krflRHjHofEhn7jjdjrBS/lv3YADBGt/hJff
-         reAY4cLmNZo+51ANT5IKxr3zvoJ5KUUJ/ps7M0kg=
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Ser Olmy <ser.olmy@protonmail.com>
-Reply-To: Ser Olmy <ser.olmy@protonmail.com>
-Subject: [x86] Kernel v5.14 series panic on Celeron Mendocino CPU
-Message-ID: <CPeoI7yf4421QpWLM-CbgeDR17BBmhlLoixeYI3mu2WbDkgrZItfgImOO6BZez7CXQXXO9liq-rmZzgRVB95TP5MN0xUA8-d7-fSQZdyIZE=@protonmail.com>
+        id S235427AbhJDRu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233473AbhJDRuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:50:50 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3F2F61154;
+        Mon,  4 Oct 2021 17:49:00 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mXS5C-00EhBv-PZ; Mon, 04 Oct 2021 18:48:59 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     will@kernel.org, qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v2 00/16]  KVM: arm64: MMIO guard PV services
+Date:   Mon,  4 Oct 2021 18:48:33 +0100
+Message-Id: <20211004174849.2831548-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org, qperret@google.com, dbrazdil@google.com, steven.price@arm.com, drjones@redhat.com, tabba@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting any 5.14 kernel on certain Celeron-based 32-bit machines results in=
- a panic:
+This is the second version of this series initially posted at [1] that
+aims at letting a guest express what it considers as MMIO, and only
+let this through to userspace. Together with the guest memory made
+(mostly) inaccessible to the host kernel and userspace, this allows an
+implementation of a hardened IO subsystem.
 
-[   22.546247] Run /init as init process
-[   22.610556] init[1] bad frame in sigreturn frame:(ptrval) ip:b7d46be6 sp=
-:bff3af30 orax:ffffffff in libc-2.33.so[b7c94000+156000]
-[   22.749531] Kernel panic - not syncing: Attempted to kill init! exitcode=
-=3D0x0000000b
-[   22.750240] CPU: 0 PID: 1 Comm: init Not tainted 5.14.9 #1
-[   22.750240] Hardware name: Hewlett-Packard HP PC/HP Board, BIOS  JD.00.0=
-6 12/06/2001
-[   22.750240] Call Trace:
-[   22.750240]  ? dump_stack_lvl+0x32/0x41
-[   22.750240]  ? dump_stack+0xa/0xc
-[   22.750240]  ? panic+0xa2/0x23f
-[   22.750240]  ? do_exit.cold+0x94/0x94
-[   22.750240]  ? do_group_exit+0x2a/0x80
-[   22.750240]  ? get_signal+0x142/0x7a0
-[   22.750240]  ? arch_do_signal_or_restart+0xb1/0x570
-[   22.750240]  ? force_sig_info_to_task+0x65/0xf0
-[   22.750240]  ? vprintk_emit+0x150/0x190
-[   22.750240]  ? exit_to_user_mode_prepare+0x145/0x1e0
-[   22.750240]  ? syscall_exit_to_user_mode+0x18/0x40
-[   22.750240]  ? do_int80_syscall_32+0x3d/0x80
-[   22.750240]  ? entry_INT80_32+0xf0/0xf0
+A lot has been fixed/revamped/improved since the initial posting,
+although I am still not pleased with the ioremap plugging on the guest
+side. I'll take any idea to get rid of it!
 
-I've bisected it to this commit:
+The series is based on 5.15-rc3.
 
-6f9866a166cd1ad3ebb2dcdb3874aa8fee8dea2f [x86/fpu/signal: Let xrstor handle=
- the features to init]
+[1] https://lore.kernel.org/kvmarm/20210715163159.1480168-1-maz@kernel.org
 
-Reverting it results in a working system.
+Marc Zyngier (16):
+  KVM: arm64: Generalise VM features into a set of flags
+  KVM: arm64: Check for PTE valitity when checking for
+    executable/cacheable
+  KVM: arm64: Turn kvm_pgtable_stage2_set_owner into
+    kvm_pgtable_stage2_annotate
+  KVM: arm64: Add MMIO checking infrastructure
+  KVM: arm64: Plumb MMIO checking into the fault handling
+  KVM: arm64: Force a full unmap on vpcu reinit
+  KVM: arm64: Wire MMIO guard hypercalls
+  KVM: arm64: Add tracepoint for failed MMIO guard check
+  KVM: arm64: Advertise a capability for MMIO guard
+  KVM: arm64: Add some documentation for the MMIO guard feature
+  firmware/smccc: Call arch-specific hook on discovering KVM services
+  mm/vmalloc: Add arch-specific callbacks to track io{remap,unmap}
+    physical pages
+  arm64: Implement ioremap/iounmap hooks calling into KVM's MMIO guard
+  arm64: Enroll into KVM's MMIO guard if required
+  arm64: Add a helper to retrieve the PTE of a fixmap
+  arm64: Register earlycon fixmap with the MMIO guard
 
-Regards,
+ .../admin-guide/kernel-parameters.txt         |   3 +
+ Documentation/virt/kvm/arm/index.rst          |   1 +
+ Documentation/virt/kvm/arm/mmio-guard.rst     |  74 ++++++++
+ arch/arm/include/asm/hypervisor.h             |   1 +
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/include/asm/fixmap.h               |   2 +
+ arch/arm64/include/asm/hypervisor.h           |   2 +
+ arch/arm64/include/asm/kvm_host.h             |  14 +-
+ arch/arm64/include/asm/kvm_mmu.h              |   5 +
+ arch/arm64/include/asm/kvm_pgtable.h          |  12 +-
+ arch/arm64/kernel/setup.c                     |   6 +
+ arch/arm64/kvm/arm.c                          |  30 ++--
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |   2 +-
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         |  11 +-
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  10 +-
+ arch/arm64/kvm/hyp/pgtable.c                  |  29 ++--
+ arch/arm64/kvm/hypercalls.c                   |  38 ++++
+ arch/arm64/kvm/mmio.c                         |  20 ++-
+ arch/arm64/kvm/mmu.c                          | 111 ++++++++++++
+ arch/arm64/kvm/psci.c                         |   8 +
+ arch/arm64/kvm/trace_arm.h                    |  17 ++
+ arch/arm64/mm/ioremap.c                       | 162 ++++++++++++++++++
+ arch/arm64/mm/mmu.c                           |  15 ++
+ drivers/firmware/smccc/kvm_guest.c            |   4 +
+ include/linux/arm-smccc.h                     |  28 +++
+ include/linux/io.h                            |   2 +
+ include/uapi/linux/kvm.h                      |   1 +
+ mm/Kconfig                                    |   5 +
+ mm/vmalloc.c                                  |  12 +-
+ 29 files changed, 575 insertions(+), 51 deletions(-)
+ create mode 100644 Documentation/virt/kvm/arm/mmio-guard.rst
 
-Olmy
+-- 
+2.30.2
+
