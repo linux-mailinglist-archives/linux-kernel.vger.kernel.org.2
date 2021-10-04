@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEF9420C11
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFDC420E76
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhJDNCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
+        id S236353AbhJDNZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234391AbhJDNA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:00:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D29B7619F5;
-        Mon,  4 Oct 2021 12:58:13 +0000 (UTC)
+        id S236715AbhJDNVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:21:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E794D61BD3;
+        Mon,  4 Oct 2021 13:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352294;
-        bh=LgAT6PjosEgZCqCWEyLI6SLSxL0C0ouyJ+3XTClo3yI=;
+        s=korg; t=1633352962;
+        bh=EjCfnqAWnMFokqKigJPVuMLN5GwCG4HWfjERYHK7E6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yS+IzbK5cFtbvubZdyarYbBjvtPGm8X8iX1a/YB8H+BNiHB8z7z5bTUth1dvUPhO7
-         oll7vEBprsaIe3K+taULgjZCGBtX8Fm0xG13JdZM23xri4/sHXvikqFvxz6l5F6h11
-         N+bPsli6zDv+lA/ttmu4+AsVOHgW9j1rh2EIqqLo=
+        b=sGdnvY1uc0Cb2yDCpnd734isbIH5tiHHVGBNSvloKG0E8aJF7VUcn0Y7S5E533fvI
+         DFpXnud8i+bU1dCjuLYQw9sGNrlmT1X2qyc0DZibZ16QAVoE77CU6nNmWWqoQTpMcy
+         EJXOZAju9IZ2cCBG1JJFyc71xlKoSmrqkbAWAkyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.9 50/57] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 36/93] mptcp: dont return sockets in foreign netns
 Date:   Mon,  4 Oct 2021 14:52:34 +0200
-Message-Id: <20211004125030.532339074@linuxfoundation.org>
+Message-Id: <20211004125035.758664043@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,114 +41,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Florian Westphal <fw@strlen.de>
 
-commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
+[ Upstream commit ea1300b9df7c8e8b65695a08b8f6aaf4b25fec9c ]
 
-Will be used in the following patch. No functional change.
+mptcp_token_get_sock() may return a mptcp socket that is in
+a different net namespace than the socket that received the token value.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The mptcp syncookie code path had an explicit check for this,
+this moves the test into mptcp_token_get_sock() function.
+
+Eventually token.c should be converted to pernet storage, but
+such change is not suitable for net tree.
+
+Fixes: 2c5ebd001d4f0 ("mptcp: refactor token container")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/insn.h |    8 ++++----
- arch/arm/kernel/ftrace.c    |    2 +-
- arch/arm/kernel/insn.c      |   19 ++++++++++---------
- 3 files changed, 15 insertions(+), 14 deletions(-)
+ net/mptcp/mptcp_diag.c |  2 +-
+ net/mptcp/protocol.h   |  2 +-
+ net/mptcp/subflow.c    |  2 +-
+ net/mptcp/syncookies.c | 13 +------------
+ net/mptcp/token.c      | 11 ++++++++---
+ net/mptcp/token_test.c | 14 ++++++++------
+ 6 files changed, 20 insertions(+), 24 deletions(-)
 
---- a/arch/arm/include/asm/insn.h
-+++ b/arch/arm/include/asm/insn.h
-@@ -12,18 +12,18 @@ arm_gen_nop(void)
- }
+diff --git a/net/mptcp/mptcp_diag.c b/net/mptcp/mptcp_diag.c
+index 5f390a97f556..f1af3f44875e 100644
+--- a/net/mptcp/mptcp_diag.c
++++ b/net/mptcp/mptcp_diag.c
+@@ -36,7 +36,7 @@ static int mptcp_diag_dump_one(struct netlink_callback *cb,
+ 	struct sock *sk;
  
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
+ 	net = sock_net(in_skb->sk);
+-	msk = mptcp_token_get_sock(req->id.idiag_cookie[0]);
++	msk = mptcp_token_get_sock(net, req->id.idiag_cookie[0]);
+ 	if (!msk)
+ 		goto out_nosk;
  
- static inline unsigned long
- arm_gen_branch(unsigned long pc, unsigned long addr)
- {
--	return __arm_gen_branch(pc, addr, false);
-+	return __arm_gen_branch(pc, addr, false, true);
- }
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index 13ab89dc1914..3e5af8397434 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -424,7 +424,7 @@ int mptcp_token_new_connect(struct sock *sk);
+ void mptcp_token_accept(struct mptcp_subflow_request_sock *r,
+ 			struct mptcp_sock *msk);
+ bool mptcp_token_exists(u32 token);
+-struct mptcp_sock *mptcp_token_get_sock(u32 token);
++struct mptcp_sock *mptcp_token_get_sock(struct net *net, u32 token);
+ struct mptcp_sock *mptcp_token_iter_next(const struct net *net, long *s_slot,
+ 					 long *s_num);
+ void mptcp_token_destroy(struct mptcp_sock *msk);
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index bba5696fee36..2e9238490924 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -69,7 +69,7 @@ static struct mptcp_sock *subflow_token_join_request(struct request_sock *req,
+ 	struct mptcp_sock *msk;
+ 	int local_id;
  
- static inline unsigned long
--arm_gen_branch_link(unsigned long pc, unsigned long addr)
-+arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
- {
--	return __arm_gen_branch(pc, addr, true);
-+	return __arm_gen_branch(pc, addr, true, warn);
- }
+-	msk = mptcp_token_get_sock(subflow_req->token);
++	msk = mptcp_token_get_sock(sock_net(req_to_sk(req)), subflow_req->token);
+ 	if (!msk) {
+ 		SUBFLOW_REQ_INC_STATS(req, MPTCP_MIB_JOINNOTOKEN);
+ 		return NULL;
+diff --git a/net/mptcp/syncookies.c b/net/mptcp/syncookies.c
+index 37127781aee9..7f22526346a7 100644
+--- a/net/mptcp/syncookies.c
++++ b/net/mptcp/syncookies.c
+@@ -108,18 +108,12 @@ bool mptcp_token_join_cookie_init_state(struct mptcp_subflow_request_sock *subfl
  
- #endif
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -97,7 +97,7 @@ int ftrace_arch_code_modify_post_process
+ 	e->valid = 0;
  
- static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
- {
--	return arm_gen_branch_link(pc, addr);
-+	return arm_gen_branch_link(pc, addr, true);
- }
- 
- static int ftrace_modify_code(unsigned long pc, unsigned long old,
---- a/arch/arm/kernel/insn.c
-+++ b/arch/arm/kernel/insn.c
-@@ -2,8 +2,9 @@
- #include <linux/kernel.h>
- #include <asm/opcodes.h>
- 
--static unsigned long
--__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
-+					     unsigned long addr, bool link,
-+					     bool warn)
- {
- 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
- 	unsigned long first, second;
-@@ -11,7 +12,7 @@ __arm_gen_branch_thumb2(unsigned long pc
- 
- 	offset = (long)addr - (long)(pc + 4);
- 	if (offset < -16777216 || offset > 16777214) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
+-	msk = mptcp_token_get_sock(e->token);
++	msk = mptcp_token_get_sock(net, e->token);
+ 	if (!msk) {
+ 		spin_unlock_bh(&join_entry_locks[i]);
+ 		return false;
  	}
  
-@@ -32,8 +33,8 @@ __arm_gen_branch_thumb2(unsigned long pc
- 	return __opcode_thumb32_compose(first, second);
+-	/* If this fails, the token got re-used in the mean time by another
+-	 * mptcp socket in a different netns, i.e. entry is outdated.
+-	 */
+-	if (!net_eq(sock_net((struct sock *)msk), net))
+-		goto err_put;
+-
+ 	subflow_req->remote_nonce = e->remote_nonce;
+ 	subflow_req->local_nonce = e->local_nonce;
+ 	subflow_req->backup = e->backup;
+@@ -128,11 +122,6 @@ bool mptcp_token_join_cookie_init_state(struct mptcp_subflow_request_sock *subfl
+ 	subflow_req->msk = msk;
+ 	spin_unlock_bh(&join_entry_locks[i]);
+ 	return true;
+-
+-err_put:
+-	spin_unlock_bh(&join_entry_locks[i]);
+-	sock_put((struct sock *)msk);
+-	return false;
  }
  
--static unsigned long
--__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
-+					  bool link, bool warn)
+ void __init mptcp_join_cookie_init(void)
+diff --git a/net/mptcp/token.c b/net/mptcp/token.c
+index 0691a4883f3a..f0d656bf27ad 100644
+--- a/net/mptcp/token.c
++++ b/net/mptcp/token.c
+@@ -232,6 +232,7 @@ bool mptcp_token_exists(u32 token)
+ 
+ /**
+  * mptcp_token_get_sock - retrieve mptcp connection sock using its token
++ * @net: restrict to this namespace
+  * @token: token of the mptcp connection to retrieve
+  *
+  * This function returns the mptcp connection structure with the given token.
+@@ -239,7 +240,7 @@ bool mptcp_token_exists(u32 token)
+  *
+  * returns NULL if no connection with the given token value exists.
+  */
+-struct mptcp_sock *mptcp_token_get_sock(u32 token)
++struct mptcp_sock *mptcp_token_get_sock(struct net *net, u32 token)
  {
- 	unsigned long opcode = 0xea000000;
- 	long offset;
-@@ -43,7 +44,7 @@ __arm_gen_branch_arm(unsigned long pc, u
- 
- 	offset = (long)addr - (long)(pc + 8);
- 	if (unlikely(offset < -33554432 || offset > 33554428)) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
- 	}
- 
-@@ -53,10 +54,10 @@ __arm_gen_branch_arm(unsigned long pc, u
+ 	struct hlist_nulls_node *pos;
+ 	struct token_bucket *bucket;
+@@ -252,11 +253,15 @@ struct mptcp_sock *mptcp_token_get_sock(u32 token)
+ again:
+ 	sk_nulls_for_each_rcu(sk, pos, &bucket->msk_chain) {
+ 		msk = mptcp_sk(sk);
+-		if (READ_ONCE(msk->token) != token)
++		if (READ_ONCE(msk->token) != token ||
++		    !net_eq(sock_net(sk), net))
+ 			continue;
++
+ 		if (!refcount_inc_not_zero(&sk->sk_refcnt))
+ 			goto not_found;
+-		if (READ_ONCE(msk->token) != token) {
++
++		if (READ_ONCE(msk->token) != token ||
++		    !net_eq(sock_net(sk), net)) {
+ 			sock_put(sk);
+ 			goto again;
+ 		}
+diff --git a/net/mptcp/token_test.c b/net/mptcp/token_test.c
+index e1bd6f0a0676..5d984bec1cd8 100644
+--- a/net/mptcp/token_test.c
++++ b/net/mptcp/token_test.c
+@@ -11,6 +11,7 @@ static struct mptcp_subflow_request_sock *build_req_sock(struct kunit *test)
+ 			    GFP_USER);
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, req);
+ 	mptcp_token_init_request((struct request_sock *)req);
++	sock_net_set((struct sock *)req, &init_net);
+ 	return req;
  }
  
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
- {
- 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
--		return __arm_gen_branch_thumb2(pc, addr, link);
-+		return __arm_gen_branch_thumb2(pc, addr, link, warn);
- 	else
--		return __arm_gen_branch_arm(pc, addr, link);
-+		return __arm_gen_branch_arm(pc, addr, link, warn);
+@@ -22,7 +23,7 @@ static void mptcp_token_test_req_basic(struct kunit *test)
+ 	KUNIT_ASSERT_EQ(test, 0,
+ 			mptcp_token_new_request((struct request_sock *)req));
+ 	KUNIT_EXPECT_NE(test, 0, (int)req->token);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(req->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, req->token));
+ 
+ 	/* cleanup */
+ 	mptcp_token_destroy_request((struct request_sock *)req);
+@@ -55,6 +56,7 @@ static struct mptcp_sock *build_msk(struct kunit *test)
+ 	msk = kunit_kzalloc(test, sizeof(struct mptcp_sock), GFP_USER);
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, msk);
+ 	refcount_set(&((struct sock *)msk)->sk_refcnt, 1);
++	sock_net_set((struct sock *)msk, &init_net);
+ 	return msk;
  }
+ 
+@@ -74,11 +76,11 @@ static void mptcp_token_test_msk_basic(struct kunit *test)
+ 			mptcp_token_new_connect((struct sock *)icsk));
+ 	KUNIT_EXPECT_NE(test, 0, (int)ctx->token);
+ 	KUNIT_EXPECT_EQ(test, ctx->token, msk->token);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(ctx->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, ctx->token));
+ 	KUNIT_EXPECT_EQ(test, 2, (int)refcount_read(&sk->sk_refcnt));
+ 
+ 	mptcp_token_destroy(msk);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(ctx->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, ctx->token));
+ }
+ 
+ static void mptcp_token_test_accept(struct kunit *test)
+@@ -90,11 +92,11 @@ static void mptcp_token_test_accept(struct kunit *test)
+ 			mptcp_token_new_request((struct request_sock *)req));
+ 	msk->token = req->token;
+ 	mptcp_token_accept(req, msk);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* this is now a no-op */
+ 	mptcp_token_destroy_request((struct request_sock *)req);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* cleanup */
+ 	mptcp_token_destroy(msk);
+@@ -116,7 +118,7 @@ static void mptcp_token_test_destroyed(struct kunit *test)
+ 
+ 	/* simulate race on removal */
+ 	refcount_set(&sk->sk_refcnt, 0);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* cleanup */
+ 	mptcp_token_destroy(msk);
+-- 
+2.33.0
+
 
 
