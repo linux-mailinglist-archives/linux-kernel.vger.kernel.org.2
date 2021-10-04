@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CE4420C97
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43C4420E59
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhJDNHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
+        id S235269AbhJDNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:24:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235007AbhJDNE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:04:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 099F561373;
-        Mon,  4 Oct 2021 13:00:37 +0000 (UTC)
+        id S236310AbhJDNWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:22:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 606A861BE2;
+        Mon,  4 Oct 2021 13:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352438;
-        bh=bofRQF8V4KZ0GU9jbM7DDLS1tyHH/1lOTOy5XoKg1+w=;
+        s=korg; t=1633352972;
+        bh=IjMMtgtM0oVf+t9/3xXFyfrH5reLdafwa1rTsgl+j78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FCMShRk5dp12Mk5oE4ZjIJrZpYKp0IFxG2x65dCHikUTLHJkgVjYP1Vsys9rexCE8
-         DC88bm5lX3t75uWnO2lv5dAdlmG7/GVI2a0GprfTgtbb2EWZgFI4o1/DYabk9MXsAz
-         X+WpEMtBeHsImckiIYmYbk8xfY1oaNWur96sKCPw=
+        b=k5et2OKnRmgz69y7M6aepnUYJtVmfraGJH6cHXanJVm6NRt27hNRCJaNwVKM5JCZJ
+         +4bdRDSImYlUR45FOFwK5r78/muC1xoJhvQYZpC4DskMtPBA+yFQJpx5mPg2dWxWT+
+         Q8giP5k+9qdWojOg1X03tcKojoH9sPBwpCX0Ns0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.14 62/75] EDAC/synopsys: Fix wrong value type assignment for edac_mode
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 39/93] net: enetc: fix the incorrect clearing of IF_MODE bits
 Date:   Mon,  4 Oct 2021 14:52:37 +0200
-Message-Id: <20211004125033.615719687@linuxfoundation.org>
+Message-Id: <20211004125035.855516921@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 5297cfa6bdf93e3889f78f9b482e2a595a376083 upstream.
+[ Upstream commit 325fd36ae76a6d089983b2d2eccb41237d35b221 ]
 
-dimm->edac_mode contains values of type enum edac_type - not the
-corresponding capability flags. Fix that.
+The enetc phylink .mac_config handler intends to clear the IFMODE field
+(bits 1:0) of the PM0_IF_MODE register, but incorrectly clears all the
+other fields instead.
 
-Issue caught by Coverity check "enumerated type mixed with another
-type."
+For normal operation, the bug was inconsequential, due to the fact that
+we write the PM0_IF_MODE register in two stages, first in
+phylink .mac_config (which incorrectly cleared out a bunch of stuff),
+then we update the speed and duplex to the correct values in
+phylink .mac_link_up.
 
- [ bp: Rewrite commit message, add tags. ]
+Judging by the code (not tested), it looks like maybe loopback mode was
+broken, since this is one of the settings in PM0_IF_MODE which is
+incorrectly cleared.
 
-Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
-Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210818072315.15149-1-shubhrajyoti.datta@xilinx.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: c76a97218dcb ("net: enetc: force the RGMII speed and duplex instead of operating in inband mode")
+Reported-by: Pavel Machek (CIP) <pavel@denx.de>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/synopsys_edac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -371,7 +371,7 @@ static int synps_edac_init_csrows(struct
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index 68133563a40c..716b396bf094 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -504,8 +504,7 @@ static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
  
- 		for (j = 0; j < csi->nr_channels; j++) {
- 			dimm            = csi->channels[j]->dimm;
--			dimm->edac_mode = EDAC_FLAG_SECDED;
-+			dimm->edac_mode = EDAC_SECDED;
- 			dimm->mtype     = synps_edac_get_mtype(priv->baseaddr);
- 			dimm->nr_pages  = (size >> PAGE_SHIFT) / csi->nr_channels;
- 			dimm->grain     = SYNPS_EDAC_ERR_GRAIN;
+ 	if (phy_interface_mode_is_rgmii(phy_mode)) {
+ 		val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
+-		val &= ~ENETC_PM0_IFM_EN_AUTO;
+-		val &= ENETC_PM0_IFM_IFMODE_MASK;
++		val &= ~(ENETC_PM0_IFM_EN_AUTO | ENETC_PM0_IFM_IFMODE_MASK);
+ 		val |= ENETC_PM0_IFM_IFMODE_GMII | ENETC_PM0_IFM_RG;
+ 		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
+ 	}
+-- 
+2.33.0
+
 
 
