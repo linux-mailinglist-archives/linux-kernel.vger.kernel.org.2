@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137744207C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BE94207C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhJDJFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S231500AbhJDJFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhJDJFC (ORCPT
+        with ESMTP id S229716AbhJDJFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:05:02 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798B2C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:03:13 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so3987639pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:03:13 -0700 (PDT)
+        Mon, 4 Oct 2021 05:05:30 -0400
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA92C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:03:41 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so16490496edy.14
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Lq895Nb4Ct+Ub9VR31k06exDUume1AHkepUF0n7GX6I=;
-        b=DoauARro51+RAFBcQnseSJBz3MSOSMh9B5dQ2DKxxGDyXK1Qy3KbaajVARZ5C5zHco
-         0+F31TdKV04Nc9fYfW1PzN24o6r857zFIy5crfaAieQfEf7xKQs+LwCdZGbCHKg49g1F
-         xzXRYqBi6OsTz6GkZmY4dmwwcf3HSowpdTs+Nskd0VnIdkV7UKtGGIxOy6YSSZF2hJiY
-         IDcaCGmSYWOrP6sjU9aTpKCRvRXAqSAJRmIOk35dzIsB9iqhfQf7kzE1HU1gc4OfNBB4
-         XpygESY0O2aUB5U41GChlGixCY1Pc3xHMfUSXqQtQfaI2N5qKZJ7GK3QZf14ZeHOxQJn
-         6xjw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=YjTsD/0+blx8dzSzzvYPEmIwxWymL2rSsPmT9WrblMQ=;
+        b=cDeVBbd8fmjR3GX4XwCizTRj0hWM50iHttru8PTyFUbxfI+Srq2N/f14A83cswDquw
+         OE9TAuHD7lC8c+ic+i+yiOl6IQ6FAVHQZxmdzAY67B5j4gFWr8hZMA+WN6zXBqBp6NTN
+         jgffafFQATGQHreUOq5eYQplEJ9eQJEWTkXjY37D/dAoaHfL9y81mvc9j/2KYhMfZYvq
+         RdaZVd1Kr3Cd1Kg1HvlNAfRBfG/lGsC3tDKyTZS9O4kJQFviWp6aWFtCosLSaivreQ82
+         eKsskutGnKtrjVhwwPVOhTRNgee+YZb0n732fTRei79zPf1IOd2rllBdb10/PIjLrgC6
+         sr5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Lq895Nb4Ct+Ub9VR31k06exDUume1AHkepUF0n7GX6I=;
-        b=vVJ0iCCrGHkGlV22dV2/tJjfWzUgQJXMJhicsR0mxzAuYb3/dufy5RWsUzwXC5qhtR
-         tNohrHmHuPdAWd1y7IkbbzG5oU7Tq39doEFIwXSMaEINGgZYRbweQcNLpoyKaVeR9U9e
-         6w3HDGegNpQ6Wx1G05tailzHIsjOICpYd5v6MYdablSbcDmbVnG2Lqr+mQPPsprhvcA+
-         Gpmm+APt3FI11kSTZbeWSa5t2nr27xOBBRPlt6w7E1EP+Kv6x12p3/zVKAl9yS39ZNyP
-         DPM4IU2OJJx3d4BItANC5/1NasnZK2R4vgHWgizIuLRPfW2gNL4lWcLF5wTnWrYKMMAN
-         6ALg==
-X-Gm-Message-State: AOAM531BDjh7ex22wohbS6XO3/ddBZqLqNqpbBpHSvD5oXsemP5gU8Ex
-        nM6yy2kbBWyZtojUIq7n8wvWukXZFpolXA==
-X-Google-Smtp-Source: ABdhPJxJcS0g7wFeeSHz3t6QcKZVb7PuQOGEmvH6cBs66mWGAKJyWwuW2FIhrKRi36aBWjXYf5WFog==
-X-Received: by 2002:a17:90b:4b89:: with SMTP id lr9mr3432892pjb.11.1633338192932;
-        Mon, 04 Oct 2021 02:03:12 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id k5sm15281374pfc.111.2021.10.04.02.03.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 02:03:12 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 14:33:10 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
- bindings
-Message-ID: <20211004090310.pwtsjpmwajivclxj@vireshk-i7>
-References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
- <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
- <20211004072222.GE16442@workstation>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004072222.GE16442@workstation>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=YjTsD/0+blx8dzSzzvYPEmIwxWymL2rSsPmT9WrblMQ=;
+        b=BHo3aS8quI1FvHw4kl+TnX1MuomuBoWJe8d2hG9xnudvr3pqGSLC6OzLExjBvFAy9S
+         NHTQEU6MjpnCSQ2E2DQEFXkteSrZ1Ovhh2I5e6gzQPZEymPSi4OUbX372Ar+66yPk2Wg
+         mIgJOdV2Hg90lhRWghbC1KDX+NKcCKcOfN0u4s7leq/jcc6Zd/WgfqkKulxNqJM4oxqm
+         b7qlRHmmCE+2f53hwHyDgULYLHWhpg83Atw1ElibNZFCNz1+c06fkpAn10YVXZpzCQCP
+         109vFtq3n3Vywfvznl2kIp12XtJjcs7O3nT+pt7l27y2N7pw1fptwXAqXGmVEf01dKOF
+         8JXg==
+X-Gm-Message-State: AOAM533omaGcayuMRiguVTBhVftbxkeaUoJ2a0Yx4dEBsbIgRC/o3gnw
+        hkInO5wn7z+LCUOHWRSdmq2uMgfFpa+X
+X-Google-Smtp-Source: ABdhPJwMBTgk+xzHhrOf7diiO6pKvFsFa+nBGQazRqVB1zzwDjDYGzDQkOsS9ibLYzZ2nicgVL/MVG58Ll6W
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:669b:5b16:60b7:a3d4])
+ (user=qperret job=sendgmr) by 2002:a17:906:8281:: with SMTP id
+ h1mr15169765ejx.352.1633338219898; Mon, 04 Oct 2021 02:03:39 -0700 (PDT)
+Date:   Mon,  4 Oct 2021 10:03:12 +0100
+Message-Id: <20211004090328.540941-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH 0/2] A couple of EL2 refcounts fixes
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-10-21, 12:52, Manivannan Sadhasivam wrote:
-> On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
-> > On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
-> > > Convert Qualcomm cpufreq devicetree binding to YAML.
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > 
-> > I am not sure if Rob ever gave this.
-> > 
-> 
-> I'm not fooling you :)
-> https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
+Hi all,
 
-Btw, I also wondered about this since we now have "performance-domain"
-bindings and was thinking if this should be moved to use those or not.
+This addresses a couple of issues Will has found with the refcounting of
+page-tables at EL2. Patch 01 fixes a nasty bug, and probably wants to go
+in -stable. Patch 02 fixes a small inconsistency which made it harder to
+find refcount-related bugs at EL2.
 
-Rob ?
+Feedback welcome !
+
+Thanks,
+Quentin
+
+Quentin Perret (2):
+  KVM: arm64: Fix host stage-2 PGD refcount
+  KVM: arm64: Report corrupted refcount at EL2
+
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h |  1 +
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c |  6 +++++-
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c  | 15 +++++++++++++++
+ 3 files changed, 21 insertions(+), 1 deletion(-)
 
 -- 
-viresh
+2.33.0.800.g4c38ced690-goog
+
