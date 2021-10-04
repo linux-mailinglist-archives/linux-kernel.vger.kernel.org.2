@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB583420DFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFF542101C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbhJDNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
+        id S238568AbhJDNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236420AbhJDNST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1113261B31;
-        Mon,  4 Oct 2021 13:07:34 +0000 (UTC)
+        id S238546AbhJDNin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E42063244;
+        Mon,  4 Oct 2021 13:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352855;
-        bh=32aN/eqTdk4dgveEM+dZliqIcbkPFl472w/zTFu7SGo=;
+        s=korg; t=1633353466;
+        bh=QP6nuaR1+mibQHUtOSz7uF/n+aPPer/THWb1NdvRCiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fRMKykXlBZX2RiZalK6FSl9NJOOgeRBb/4RR+ytVeVTWVLFMJnf3/T30q0u8RYw0e
-         GFM+qK+oYkpqnm7vlZLbAZlqaad9VrYRAjB8jyMOQgLwwZGsMoDxfFcPfG69tLh37Q
-         KHwXSXkkcZ2ygfd6vZaHoMn4Gtos5ScuiP5xJbTw=
+        b=GM28vPJidOfX97HBD3ina9Z+ClR39tWGoQJrbA7w0wP03O7T5QZ5UwvruPnoN7opw
+         nv93O0OORWh5PsW2k7g+Ki6JiI0yL3kM9h2Rvg16P6B9UEE/x62fLo43S//RMXOsy/
+         4uLpQFKwMAvhZAzA66DadHhJJ/OCDfQIlYKssFD8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 5.4 50/56] usb: hso: fix error handling code of hso_create_net_device
+        stable@vger.kernel.org, Mel Gorman <mgorman@techsingularity.net>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 140/172] sched/fair: Null terminate buffer when updating tunable_scaling
 Date:   Mon,  4 Oct 2021 14:53:10 +0200
-Message-Id: <20211004125031.576128936@linuxfoundation.org>
+Message-Id: <20211004125049.493620907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Mel Gorman <mgorman@techsingularity.net>
 
-commit a6ecfb39ba9d7316057cea823b196b734f6b18ca upstream.
+[ Upstream commit 703066188f63d66cc6b9d678e5b5ef1213c5938e ]
 
-The current error handling code of hso_create_net_device is
-hso_free_net_device, no matter which errors lead to. For example,
-WARNING in hso_free_net_device [1].
+This patch null-terminates the temporary buffer in sched_scaling_write()
+so kstrtouint() does not return failure and checks the value is valid.
 
-Fix this by refactoring the error handling code of
-hso_create_net_device by handling different errors by different code.
+Before:
+  $ cat /sys/kernel/debug/sched/tunable_scaling
+  1
+  $ echo 0 > /sys/kernel/debug/sched/tunable_scaling
+  -bash: echo: write error: Invalid argument
+  $ cat /sys/kernel/debug/sched/tunable_scaling
+  1
 
-[1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
+After:
+  $ cat /sys/kernel/debug/sched/tunable_scaling
+  1
+  $ echo 0 > /sys/kernel/debug/sched/tunable_scaling
+  $ cat /sys/kernel/debug/sched/tunable_scaling
+  0
+  $ echo 3 > /sys/kernel/debug/sched/tunable_scaling
+  -bash: echo: write error: Invalid argument
 
-Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
-Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/20210927114635.GH3959@techsingularity.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ kernel/sched/debug.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2497,7 +2497,7 @@ static struct hso_device *hso_create_net
- 			   hso_net_init);
- 	if (!net) {
- 		dev_err(&interface->dev, "Unable to create ethernet device\n");
--		goto exit;
-+		goto err_hso_dev;
- 	}
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 7e08e3d947c2..2c879cd02a5f 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -173,16 +173,22 @@ static ssize_t sched_scaling_write(struct file *filp, const char __user *ubuf,
+ 				   size_t cnt, loff_t *ppos)
+ {
+ 	char buf[16];
++	unsigned int scaling;
  
- 	hso_net = netdev_priv(net);
-@@ -2510,13 +2510,13 @@ static struct hso_device *hso_create_net
- 				      USB_DIR_IN);
- 	if (!hso_net->in_endp) {
- 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
- 				       USB_DIR_OUT);
- 	if (!hso_net->out_endp) {
- 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
-@@ -2525,18 +2525,18 @@ static struct hso_device *hso_create_net
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_urb_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
- 							   GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_buf_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 	}
- 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_urb)
--		goto exit;
-+		goto err_mux_bulk_rx;
- 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_buf)
--		goto exit;
-+		goto err_free_tx_urb;
+ 	if (cnt > 15)
+ 		cnt = 15;
  
- 	add_net_device(hso_dev);
+ 	if (copy_from_user(&buf, ubuf, cnt))
+ 		return -EFAULT;
++	buf[cnt] = '\0';
  
-@@ -2544,7 +2544,7 @@ static struct hso_device *hso_create_net
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
-+		goto err_free_tx_buf;
- 	}
+-	if (kstrtouint(buf, 10, &sysctl_sched_tunable_scaling))
++	if (kstrtouint(buf, 10, &scaling))
+ 		return -EINVAL;
  
- 	hso_log_port(hso_dev);
-@@ -2552,8 +2552,21 @@ static struct hso_device *hso_create_net
- 	hso_create_rfkill(hso_dev, interface);
- 
- 	return hso_dev;
--exit:
--	hso_free_net_device(hso_dev, true);
++	if (scaling >= SCHED_TUNABLESCALING_END)
++		return -EINVAL;
 +
-+err_free_tx_buf:
-+	remove_net_device(hso_dev);
-+	kfree(hso_net->mux_bulk_tx_buf);
-+err_free_tx_urb:
-+	usb_free_urb(hso_net->mux_bulk_tx_urb);
-+err_mux_bulk_rx:
-+	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
-+		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
-+		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
-+	}
-+err_net:
-+	free_netdev(net);
-+err_hso_dev:
-+	kfree(hso_dev);
- 	return NULL;
- }
++	sysctl_sched_tunable_scaling = scaling;
+ 	if (sched_update_scaling())
+ 		return -EINVAL;
  
+-- 
+2.33.0
+
 
 
