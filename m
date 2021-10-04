@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD203420C89
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D023A420D7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhJDNGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
+        id S236056AbhJDNPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234897AbhJDNEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:04:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBED061AFC;
-        Mon,  4 Oct 2021 13:00:30 +0000 (UTC)
+        id S236194AbhJDNNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B3461B96;
+        Mon,  4 Oct 2021 13:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352431;
-        bh=+qtUKd5kizwM0N/U5lMZOBwGId86ECVAwAF82u8+GJQ=;
+        s=korg; t=1633352724;
+        bh=a2+kG5sFOBIYP9dp9OMr88Vdq/6u3z9eqdVqNmIRAYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdaW3n53iuo9n3+gupsRpnNY0ipQO9f6hlp2sBUSP7fYEsJlLwoOMcDhwqmdJpflT
-         OQBhNEA5+nK79FWsvJVnpyqSfCgOHK/pO4pehPjWlWq9qGnQ5DjSf61wds20ToLXQt
-         C3vVnKbpMAb5QFy/4QDcMgXSUVznXX8FplNclleI=
+        b=MUAWf7MT5Y77U3VI68nfHtp/4EpgorjjkvRdl7HXhv0CXL06CoaXg12zZg9ydNjRc
+         Z/mCudqtVBGJXLR2/egqOc1xECS6WC59tOpts7eY8q0nsP05Co/0TIYOLegpMz0Td/
+         6Gq2OYAENvEYRaAbX1p/mSgVMK7hPHdT3LA36oHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 59/75] ipack: ipoctal: fix module reference leak
+        stable@vger.kernel.org, Chih-Kang Chang <gary.chang@realtek.com>,
+        Zong-Zhe Yang <kevin_yang@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 64/95] mac80211: Fix ieee80211_amsdu_aggregate frag_tail bug
 Date:   Mon,  4 Oct 2021 14:52:34 +0200
-Message-Id: <20211004125033.510141996@linuxfoundation.org>
+Message-Id: <20211004125035.660254796@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,79 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Chih-Kang Chang <gary.chang@realtek.com>
 
-commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
+[ Upstream commit fe94bac626d9c1c5bc98ab32707be8a9d7f8adba ]
 
-A reference to the carrier module was taken on every open but was only
-released once when the final reference to the tty struct was dropped.
+In ieee80211_amsdu_aggregate() set a pointer frag_tail point to the
+end of skb_shinfo(head)->frag_list, and use it to bind other skb in
+the end of this function. But when execute ieee80211_amsdu_aggregate()
+->ieee80211_amsdu_realloc_pad()->pskb_expand_head(), the address of
+skb_shinfo(head)->frag_list will be changed. However, the
+ieee80211_amsdu_aggregate() not update frag_tail after call
+pskb_expand_head(). That will cause the second skb can't bind to the
+head skb appropriately.So we update the address of frag_tail to fix it.
 
-Fix this by taking the module reference and initialising the tty driver
-data when installing the tty.
-
-Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
-Cc: stable@vger.kernel.org      # 3.18
-Cc: Federico Vaga <federico.vaga@cern.ch>
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 6e0456b54545 ("mac80211: add A-MSDU tx support")
+Signed-off-by: Chih-Kang Chang <gary.chang@realtek.com>
+Signed-off-by: Zong-Zhe Yang <kevin_yang@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Link: https://lore.kernel.org/r/20210830073240.12736-1-pkshih@realtek.com
+[reword comment]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ net/mac80211/tx.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -87,22 +87,34 @@ static int ipoctal_port_activate(struct
- 	return 0;
- }
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 5c5908127fcb..adeee760ab4c 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3264,6 +3264,14 @@ static bool ieee80211_amsdu_aggregate(struct ieee80211_sub_if_data *sdata,
+ 	if (!ieee80211_amsdu_prepare_head(sdata, fast_tx, head))
+ 		goto out;
  
--static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
- 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
--	int err;
--
--	tty->driver_data = channel;
-+	int res;
- 
- 	if (!ipack_get_carrier(ipoctal->dev))
- 		return -EBUSY;
- 
--	err = tty_port_open(&channel->tty_port, tty, file);
--	if (err)
--		ipack_put_carrier(ipoctal->dev);
-+	res = tty_standard_install(driver, tty);
-+	if (res)
-+		goto err_put_carrier;
++	/* If n == 2, the "while (*frag_tail)" loop above didn't execute
++	 * and  frag_tail should be &skb_shinfo(head)->frag_list.
++	 * However, ieee80211_amsdu_prepare_head() can reallocate it.
++	 * Reload frag_tail to have it pointing to the correct place.
++	 */
++	if (n == 2)
++		frag_tail = &skb_shinfo(head)->frag_list;
 +
-+	tty->driver_data = channel;
-+
-+	return 0;
-+
-+err_put_carrier:
-+	ipack_put_carrier(ipoctal->dev);
-+
-+	return res;
-+}
-+
-+static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+{
-+	struct ipoctal_channel *channel = tty->driver_data;
- 
--	return err;
-+	return tty_port_open(&channel->tty_port, tty, file);
- }
- 
- static void ipoctal_reset_stats(struct ipoctal_stats *stats)
-@@ -668,6 +680,7 @@ static void ipoctal_cleanup(struct tty_s
- 
- static const struct tty_operations ipoctal_fops = {
- 	.ioctl =		NULL,
-+	.install =		ipoctal_install,
- 	.open =			ipoctal_open,
- 	.close =		ipoctal_close,
- 	.write =		ipoctal_write_tty,
+ 	/*
+ 	 * Pad out the previous subframe to a multiple of 4 by adding the
+ 	 * padding to the next one, that's being added. Note that head->len
+-- 
+2.33.0
+
 
 
