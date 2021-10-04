@@ -2,61 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05BF42082E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EE0420834
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhJDJ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:26:25 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45384 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhJDJ0Y (ORCPT
+        id S231849AbhJDJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:27:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5292 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhJDJ12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:26:24 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C4A63220E5;
-        Mon,  4 Oct 2021 09:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633339474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kE6QqohlNijf2mZObcz+VaBZl/vt0O2YpBYiHRynMyo=;
-        b=UR+LZTchcxLLIkIUHxgvdvZKTttRjC5PS54jEDdsq/S/YsgFvkDGoX1X0BthIcPenz0rsd
-        s/FP1jqYPlLHlN4UAhp3XBQBuz1hl9kU7fXIdin7vQniL84acv5upJ3tG1UwDRAGEdbSnv
-        fJUbG3ITabrGXaZ+PPGv5R1Nr6wRHbs=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A9862A3B88;
-        Mon,  4 Oct 2021 09:24:34 +0000 (UTC)
-Date:   Mon, 4 Oct 2021 11:24:34 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH printk v1] printk: use gnu_printf format attribute for
- printk_sprint()
-Message-ID: <YVrIUsTl8SSpfyDZ@alley>
-References: <20210927142203.124730-1-john.ogness@linutronix.de>
+        Mon, 4 Oct 2021 05:27:28 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1949Ah0U001135;
+        Mon, 4 Oct 2021 05:25:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vT7qGkc73f3PD6OnZ7iIGB4BRYsxeKDvvH9yz1S3no8=;
+ b=HlViD0Py3eqjU2i7lAtCb4gWDrj8WrzE86g/KW8E68PvJLN+0XEGerwb5lUljQBn+t8n
+ nJGtbOuEt2GWsaJZehqT4jefa/T72yeNotNAumP989/62AtxjECdfB8jGDjWuxCpPqbn
+ WYPtK+hltZKbfBuVYWMwsrxr7l3qXKM9JhBX8v8NTvEn5faqJtCdZ8Fe/bXg3T8jo7mV
+ TXW6PohkE5uv9JudPtqYL72+deBqlMLhgRo4VMCQjrU5pf421SqPqwX1nw8/kH9cybYr
+ fWEssois8qryrlRrjScMxR1JzNVUrlseYGyBNXlj6eR10/SDBpDRpy/CjQ+/57ypiyxn nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfxdt8f4m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 05:25:37 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1949PbiW025706;
+        Mon, 4 Oct 2021 05:25:37 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfxdt8f3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 05:25:37 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1949CTXJ019358;
+        Mon, 4 Oct 2021 09:25:34 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3bef29krwb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 09:25:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1949KEII18547180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 09:20:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3EF5952052;
+        Mon,  4 Oct 2021 09:25:31 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 93E5952050;
+        Mon,  4 Oct 2021 09:25:30 +0000 (GMT)
+Date:   Mon, 4 Oct 2021 11:25:28 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211004112528.74442e52.pasic@linux.ibm.com>
+In-Reply-To: <87pmsl2rzd.fsf@redhat.com>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+        <87r1d64dl4.fsf@redhat.com>
+        <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+        <87ilyi47wn.fsf@redhat.com>
+        <20211001162213.18d7375e.pasic@linux.ibm.com>
+        <87v92g3h9l.fsf@redhat.com>
+        <20211002082128-mutt-send-email-mst@kernel.org>
+        <87pmsl2rzd.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927142203.124730-1-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iSY6NboaJgOAOYom2ahH_CQcl1msSaq2
+X-Proofpoint-ORIG-GUID: wcV1khcVsbws-U_qnZdOO6FoCTCcQvQO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_02,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ spamscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ clxscore=1015 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-09-27 16:28:03, John Ogness wrote:
-> Fix the following W=1 kernel build warning:
-> 
-> kernel/printk/printk.c: In function 'printk_sprint':
-> kernel/printk/printk.c:1913:9: warning: function 'printk_sprint' might be
-> a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On Mon, 04 Oct 2021 09:01:42 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-The patch has been committed into printk/linux.git, branch for-5.16.
+> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> 
+> > On Fri, Oct 01, 2021 at 05:18:46PM +0200, Cornelia Huck wrote:  
+> >> I'd say we need a hack here so that we assume little-endian config space
+> >> if VERSION_1 has been offered; if your patch here works, I assume QEMU
+> >> does what we expect (assmuming little-endian as well.) I'm mostly
+> >> wondering what happens if you use a different VMM; can we expect it to
+> >> work similar to QEMU?  
+> >
+> > Hard to say of course ... hopefully other VMMs are actually
+> > implementing the spec. E.g. IIUC rust vmm is modern only.  
+> 
+> Yes, I kind of hope they are simply doing LE config space accesses.
+> 
+> Are there any other VMMs that are actually supported on s390x (or other
+> BE architectures)?
+> 
 
-Best Regards,
-Petr
+I think zCX (z/OS Container Extensions) is relevant as it uses virtio.
+That is all I know about.
+
+Regards,
+Halil
