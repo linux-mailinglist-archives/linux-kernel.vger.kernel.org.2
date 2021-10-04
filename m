@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96E420E01
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BD6420EA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236449AbhJDNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        id S236691AbhJDN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:27:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236530AbhJDNSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6E661A0A;
-        Mon,  4 Oct 2021 13:07:40 +0000 (UTC)
+        id S236366AbhJDNZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BCE61C19;
+        Mon,  4 Oct 2021 13:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352860;
-        bh=QZPAyoVekpWpaI4IzSz6775G3bUhIgdbC558h4Om17g=;
+        s=korg; t=1633353064;
+        bh=Itv0J1EYF2CzXjbZSxrwwiaM1whyuIRT1DTTLmOn2WI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o40XC5cBKbZ/NqFN0HoL9MQcblctJ4PhIhOnAuzpVyPpqoKqWE3nlUuqhNyGVDnFU
-         ypl53deVpDYfs7PqHx1z3WZQwLM6DfQdA3icl0CjN5asp/o5Fo7zeZNxITynNDI5Mr
-         UvQIuY0feVx5+FjQlT6J66HiXEe/Z0RoVRu7ZL50=
+        b=lR6LJq8gOxEa2U3ogKXoA0J8sGC7vj93X0fGEYY9pW69eu8VRfi2oYi/ZgySRfx3k
+         h1nxm3WjG1al6060pcWwIse4MzEfgayiN+xZpx+tmKhBaon8jj2MuYDgFiPHienK16
+         nj84C39MV3cymcVLOuGJsilCHKYqfjS3+2sOuFyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?minihanshen ?= <minihanshen@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 52/56] crypto: ccp - fix resource leaks in ccp_run_aes_gcm_cmd()
-Date:   Mon,  4 Oct 2021 14:53:12 +0200
-Message-Id: <20211004125031.641296351@linuxfoundation.org>
+        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 75/93] ipack: ipoctal: fix module reference leak
+Date:   Mon,  4 Oct 2021 14:53:13 +0200
+Message-Id: <20211004125037.069713495@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,73 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 505d9dcb0f7ddf9d075e729523a33d38642ae680 upstream.
+commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
 
-There are three bugs in this code:
+A reference to the carrier module was taken on every open but was only
+released once when the final reference to the tty struct was dropped.
 
-1) If we ccp_init_data() fails for &src then we need to free aad.
-   Use goto e_aad instead of goto e_ctx.
-2) The label to free the &final_wa was named incorrectly as "e_tag" but
-   it should have been "e_final_wa".  One error path leaked &final_wa.
-3) The &tag was leaked on one error path.  In that case, I added a free
-   before the goto because the resource was local to that block.
+Fix this by taking the module reference and initialising the tty driver
+data when installing the tty.
 
-Fixes: 36cf515b9bbe ("crypto: ccp - Enable support for AES GCM on v5 CCPs")
-Reported-by: "minihanshen(沈明航)" <minihanshen@tencent.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: John Allen <john.allen@amd.com>
-Tested-by: John Allen <john.allen@amd.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Federico Vaga <federico.vaga@cern.ch>
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/ccp/ccp-ops.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
---- a/drivers/crypto/ccp/ccp-ops.c
-+++ b/drivers/crypto/ccp/ccp-ops.c
-@@ -778,7 +778,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
- 				    in_place ? DMA_BIDIRECTIONAL
- 					     : DMA_TO_DEVICE);
- 		if (ret)
--			goto e_ctx;
-+			goto e_aad;
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -84,22 +84,34 @@ static int ipoctal_port_activate(struct
+ 	return 0;
+ }
  
- 		if (in_place) {
- 			dst = src;
-@@ -863,7 +863,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
- 	op.u.aes.size = 0;
- 	ret = cmd_q->ccp->vdata->perform->aes(&op);
- 	if (ret)
--		goto e_dst;
-+		goto e_final_wa;
+-static int ipoctal_open(struct tty_struct *tty, struct file *file)
++static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
+ {
+ 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
+ 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
+-	int err;
+-
+-	tty->driver_data = channel;
++	int res;
  
- 	if (aes->action == CCP_AES_ACTION_ENCRYPT) {
- 		/* Put the ciphered tag after the ciphertext. */
-@@ -873,17 +873,19 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
- 		ret = ccp_init_dm_workarea(&tag, cmd_q, authsize,
- 					   DMA_BIDIRECTIONAL);
- 		if (ret)
--			goto e_tag;
-+			goto e_final_wa;
- 		ret = ccp_set_dm_area(&tag, 0, p_tag, 0, authsize);
--		if (ret)
--			goto e_tag;
-+		if (ret) {
-+			ccp_dm_free(&tag);
-+			goto e_final_wa;
-+		}
+ 	if (!ipack_get_carrier(ipoctal->dev))
+ 		return -EBUSY;
  
- 		ret = crypto_memneq(tag.address, final_wa.address,
- 				    authsize) ? -EBADMSG : 0;
- 		ccp_dm_free(&tag);
- 	}
+-	err = tty_port_open(&channel->tty_port, tty, file);
+-	if (err)
+-		ipack_put_carrier(ipoctal->dev);
++	res = tty_standard_install(driver, tty);
++	if (res)
++		goto err_put_carrier;
++
++	tty->driver_data = channel;
++
++	return 0;
++
++err_put_carrier:
++	ipack_put_carrier(ipoctal->dev);
++
++	return res;
++}
++
++static int ipoctal_open(struct tty_struct *tty, struct file *file)
++{
++	struct ipoctal_channel *channel = tty->driver_data;
  
--e_tag:
-+e_final_wa:
- 	ccp_dm_free(&final_wa);
+-	return err;
++	return tty_port_open(&channel->tty_port, tty, file);
+ }
  
- e_dst:
+ static void ipoctal_reset_stats(struct ipoctal_stats *stats)
+@@ -665,6 +677,7 @@ static void ipoctal_cleanup(struct tty_s
+ 
+ static const struct tty_operations ipoctal_fops = {
+ 	.ioctl =		NULL,
++	.install =		ipoctal_install,
+ 	.open =			ipoctal_open,
+ 	.close =		ipoctal_close,
+ 	.write =		ipoctal_write_tty,
 
 
