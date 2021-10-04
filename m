@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F18E420C43
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA749420B60
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhJDNEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
+        id S233703AbhJDM46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234786AbhJDNCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:02:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B02A61A35;
-        Mon,  4 Oct 2021 12:59:02 +0000 (UTC)
+        id S233465AbhJDM4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F04661381;
+        Mon,  4 Oct 2021 12:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352343;
-        bh=T+RJFP0DSxJst0qW7wvU2PBpr13mJPz/ZE3yRJR1riI=;
+        s=korg; t=1633352087;
+        bh=IPcfNl2ejP4tASh88d7qhUQZkOs/+1oLKrRjIEv6kiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zz8RkMM9gM+5RJvMvE+62uTvpx3VJTHbGeYrELt14v26M5o+TFLjRkxInMigNLZp1
-         mnW2IAAZ+Qkbn3TWtMcCluGm/b0PLYYah8qVkllKK3g/fdCFO30SEx9/xZcOYv8y7K
-         feG+x9em2VJmkkWIV64k/joKXxQead+yc8SdqGYg=
+        b=j20emtGSgAeywu16BbloLl3NKhoC4NwiUUVM8De3UxiM1OUv1kliA/EP+hMyNQyhM
+         0bH6U7r8rTM2IJBbmJEVA0fUeRA01nGMGz8yTUpe5QzavV+8uOu7heuaJYByCAv81U
+         fcZ5DY9BOdtbG8hvqEGzAYs7cn6ZK7rQiqboSuZk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/75] net: macb: fix use after free on rmmod
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 08/41] USB: serial: option: remove duplicate USB device ID
 Date:   Mon,  4 Oct 2021 14:51:59 +0200
-Message-Id: <20211004125032.319062998@linuxfoundation.org>
+Message-Id: <20211004125026.856201991@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit d82d5303c4c539db86588ffb5dc5b26c3f1513e8 ]
+commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
 
-plat_dev->dev->platform_data is released by platform_device_unregister(),
-use of pclk and hclk is a use-after-free. Since device unregister won't
-need a clk device we adjust the function call sequence to fix this issue.
+The device ZTE 0x0094 is already on the list.
 
-[   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
-[   31.275563] Freed by task 306:
-[   30.276782]  platform_device_release+0x25/0x80
-
-Suggested-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/cadence/macb_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
-index 248a8fc45069..f06fddf9919b 100644
---- a/drivers/net/ethernet/cadence/macb_pci.c
-+++ b/drivers/net/ethernet/cadence/macb_pci.c
-@@ -123,9 +123,9 @@ static void macb_remove(struct pci_dev *pdev)
- 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
- 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
- 
--	platform_device_unregister(plat_dev);
- 	clk_unregister(plat_data->pclk);
- 	clk_unregister(plat_data->hclk);
-+	platform_device_unregister(plat_dev);
- }
- 
- static const struct pci_device_id dev_id_table[] = {
--- 
-2.33.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1640,7 +1640,6 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
+-	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
 
 
