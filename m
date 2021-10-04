@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC671420E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B0D420FC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235651AbhJDNYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
+        id S237903AbhJDNhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:37:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236295AbhJDNWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:22:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5FBF61B26;
-        Mon,  4 Oct 2021 13:09:29 +0000 (UTC)
+        id S237929AbhJDNfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D8A163235;
+        Mon,  4 Oct 2021 13:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352970;
-        bh=/iEj+Dy6csfBsYnHFRL20+7jzqNMnO/aEswdmbKKV8I=;
+        s=korg; t=1633353378;
+        bh=I+zoxOHyrC8Sc9tP4I02hf6JFr5n+FniFXjBeVbVrxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EvervD2+g81jonbeTAwtjbHLB3jzlNPGT0d46S9KmK0duJ0Z8TmBdU1+RCPcvZew2
-         nvUWwOysh6mrPOQa2udZPDj/jDc56/Cq6q82zeAE/UwDG7HsR9XfyKh/66b0zd7U9A
-         QJmSnOs8gNp2hC6lKP4iXV75Zom0PBEQPmyd09Io=
+        b=zLdD+e7MxHm1AFSuYWZs7Zsrf7FEUL41L9dgIZbf0dWMdo3QmMxww4dbaurSEwrt3
+         N8an2bDcSiL4Mxk0HaUwmT4HWeufMlvJSPAwsYWsVD3r7mhHpQCjGmdNjcZiv//xS9
+         aBsA+xxWTFqaH26OsI76v4MZsm2WdUWuaD7Cbevc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 38/93] hwmon: (tmp421) fix rounding for negative values
+Subject: [PATCH 5.14 106/172] dsa: mv88e6xxx: 6161: Use chip wide MAX MTU
 Date:   Mon,  4 Oct 2021 14:52:36 +0200
-Message-Id: <20211004125035.824675340@linuxfoundation.org>
+Message-Id: <20211004125048.408605566@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Fertser <fercerpav@gmail.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-[ Upstream commit 724e8af85854c4d3401313b6dd7d79cf792d8990 ]
+[ Upstream commit fe23036192c95b66e60d019d2ec1814d0d561ffd ]
 
-Old code produces -24999 for 0b1110011100000000 input in standard format due to
-always rounding up rather than "away from zero".
+The datasheets suggests the 6161 uses a per port setting for jumbo
+frames. Testing has however shown this is not correct, it uses the old
+style chip wide MTU control. Change the ops in the 6161 structure to
+reflect this.
 
-Use the common macro for division, unify and simplify the conversion code along
-the way.
-
-Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-Link: https://lore.kernel.org/r/20210924093011.26083-3-fercerpav@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 1baf0fac10fb ("net: dsa: mv88e6xxx: Use chip-wide max frame size for MTU")
+Reported by: 曹煜 <cao88yu@gmail.com>
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/tmp421.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ drivers/net/dsa/mv88e6xxx/chip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
-index c9ef83627bb7..b963a369c5ab 100644
---- a/drivers/hwmon/tmp421.c
-+++ b/drivers/hwmon/tmp421.c
-@@ -100,23 +100,17 @@ struct tmp421_data {
- 	s16 temp[4];
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 1c122a1f2f97..f99f09c50722 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3657,7 +3657,6 @@ static const struct mv88e6xxx_ops mv88e6161_ops = {
+ 	.port_set_ucast_flood = mv88e6352_port_set_ucast_flood,
+ 	.port_set_mcast_flood = mv88e6352_port_set_mcast_flood,
+ 	.port_set_ether_type = mv88e6351_port_set_ether_type,
+-	.port_set_jumbo_size = mv88e6165_port_set_jumbo_size,
+ 	.port_egress_rate_limiting = mv88e6097_port_egress_rate_limiting,
+ 	.port_pause_limit = mv88e6097_port_pause_limit,
+ 	.port_disable_learn_limit = mv88e6xxx_port_disable_learn_limit,
+@@ -3682,6 +3681,7 @@ static const struct mv88e6xxx_ops mv88e6161_ops = {
+ 	.avb_ops = &mv88e6165_avb_ops,
+ 	.ptp_ops = &mv88e6165_ptp_ops,
+ 	.phylink_validate = mv88e6185_phylink_validate,
++	.set_max_frame_size = mv88e6185_g1_set_max_frame_size,
  };
  
--static int temp_from_s16(s16 reg)
-+static int temp_from_raw(u16 reg, bool extended)
- {
- 	/* Mask out status bits */
- 	int temp = reg & ~0xf;
- 
--	return (temp * 1000 + 128) / 256;
--}
--
--static int temp_from_u16(u16 reg)
--{
--	/* Mask out status bits */
--	int temp = reg & ~0xf;
--
--	/* Add offset for extended temperature range. */
--	temp -= 64 * 256;
-+	if (extended)
-+		temp = temp - 64 * 256;
-+	else
-+		temp = (s16)temp;
- 
--	return (temp * 1000 + 128) / 256;
-+	return DIV_ROUND_CLOSEST(temp * 1000, 256);
- }
- 
- static int tmp421_update_device(struct tmp421_data *data)
-@@ -172,10 +166,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
- 
- 	switch (attr) {
- 	case hwmon_temp_input:
--		if (tmp421->config & TMP421_CONFIG_RANGE)
--			*val = temp_from_u16(tmp421->temp[channel]);
--		else
--			*val = temp_from_s16(tmp421->temp[channel]);
-+		*val = temp_from_raw(tmp421->temp[channel],
-+				     tmp421->config & TMP421_CONFIG_RANGE);
- 		return 0;
- 	case hwmon_temp_fault:
- 		/*
+ static const struct mv88e6xxx_ops mv88e6165_ops = {
 -- 
 2.33.0
 
