@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FA8421508
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3140442150B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbhJDRSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:18:06 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:38880 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhJDRSE (ORCPT
+        id S233705AbhJDRTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:19:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32908 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233536AbhJDRTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:18:04 -0400
-Received: by mail-vs1-f44.google.com with SMTP id y141so4802845vsy.5;
-        Mon, 04 Oct 2021 10:16:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/cIKwqiiuLgobXDQ2FDfJfThXFQMEGwTN5ZwOTn9O4c=;
-        b=pQ4iaKDNP+C76ASPJ2mNlCnDlix1tg5tvrHS3GvszQjLs03q47lolUVyHOsEcux8pb
-         qTVmxfw+2rQIgYxAWauzoUgPFJ2+6k2aUDcApDf7D0P1KMsvxYAusx9oX/HnoHAIQojP
-         IMd3iv6wNA1iZPZWe0Z0s2RueHGBQTwAhV2GK0gpIEXgqD5JMNC3Ccsck0ksheTG3o2t
-         i4jNcFf/E3raLQNKNIqaCHoyUEkPMnUZlEzeVD7LfVi6CrnKLXtQp0VwshXmwGtzp/xX
-         B3r8cYKH98L8taa9sTz/QLQegdb4GWG85eRNs6/3naEDFpNfmb+P9adh1ogvR5G9GZLr
-         mQ4w==
-X-Gm-Message-State: AOAM533OFF1PJzZqhDPtV1AS6vCsilbXlb5xnkemZ2x63igvuRDiY6MF
-        V8hizUAykX+p9OtrDzU6FWhPeSc/x/x2XAN8mFA=
-X-Google-Smtp-Source: ABdhPJwNIZzHrryVaq03dDhlSZqDVIvNqhD8sTXheMyiIkrcLXtixi70I9evUxN+y2x4M+IJ+XLbx0Evor3VmO5CVqA=
-X-Received: by 2002:a67:c295:: with SMTP id k21mr11443962vsj.37.1633367774534;
- Mon, 04 Oct 2021 10:16:14 -0700 (PDT)
+        Mon, 4 Oct 2021 13:19:33 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194H9F86018107;
+        Mon, 4 Oct 2021 13:17:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/LzhN2nc0xTevZq3pJNKQOS2fL9eKp7W5kcCVhO3PtQ=;
+ b=KwqFRNvNdtWUGpisPTA1kiWL2o++QfFdYEyZT2dqwGvi7HOqT6M/1bxijD2eGo/b/2S0
+ xIKYEMaL7LuOIYf7RrxmmG7+h9DxshokTYmqCWJNBI/yp3iHxgOIzIYvmyW+CSrCrsUM
+ xKx63838L8V+dxhgsBucIXWI2uws9YkfrYKrwTE+nf13vZmmXmjBktUUzPwpFaDq1xWZ
+ 3ZqtY5jaTz8ZWEUi5/lzI48MFp8w92EWHB+sc2EJGpeimd9bgoSZOHr0A8Op05eqFsW/
+ 2MKYNec0eJzceGBcq+CAAuexqZBpOaYUJK57wGalDwAofb4cn6rfxl5btzV4fbzGqzu7 Mw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bg5rm046m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 13:17:40 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194HC2GF031066;
+        Mon, 4 Oct 2021 17:17:38 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3bef29gg5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 17:17:38 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194HHYuZ15466942
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 17:17:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74DD611C05B;
+        Mon,  4 Oct 2021 17:17:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9E5111C04A;
+        Mon,  4 Oct 2021 17:17:27 +0000 (GMT)
+Received: from [9.43.74.5] (unknown [9.43.74.5])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Oct 2021 17:17:27 +0000 (GMT)
+Message-ID: <496a0ddb-ec5d-e043-7045-779316cf9c56@linux.ibm.com>
+Date:   Mon, 4 Oct 2021 22:47:24 +0530
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CAHp75VcG9KajNpDbewDq7QzotB6t7MfwiGk15FaobX+cmMVSzg@mail.gmail.com>
- <CAK9rFnwrA=W2Vk5yFwG4N_WS=eBXXnhtexA+tqgAYb6xOAO4oQ@mail.gmail.com>
- <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com>
- <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com>
- <CAMuHMdUz4vUQzXBHA9AiT3w6L20yBpgd0emVZJb=v_qw70qiJQ@mail.gmail.com>
- <CAK9rFnw-j8whcsK-NQ4w4+sCdrumCk7Bb=J+KfsF9ZO2Tf5r5g@mail.gmail.com>
- <CAMuHMdW0s=x+DBZffeuEcyifDRfy8YM3c_wEAZscO7twR2wj3Q@mail.gmail.com> <CAK9rFnwCry1G7RqdWL9W1vq6Q3RV9tRxmDD6UErY=hQB6W-=_Q@mail.gmail.com>
-In-Reply-To: <CAK9rFnwCry1G7RqdWL9W1vq6Q3RV9tRxmDD6UErY=hQB6W-=_Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Oct 2021 19:16:03 +0200
-Message-ID: <CAMuHMdUCESsnrbsh981OeNfnuiGn7w49wbUctxc_FnsZyP8GZA@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Brad Larson <brad@pensando.io>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 3/3] powerpc: Set crashkernel offset to mid of RMA region
+Content-Language: en-US
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, mpe@ellerman.id.au
+Cc:     hbathini@linux.ibm.com, mahesh@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        Abdul haleem <abdhalee@linux.vnet.ibm.com>
+References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
+ <20211004151142.256251-4-sourabhjain@linux.ibm.com>
+ <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
+From:   Sourabh Jain <sourabhjain@linux.ibm.com>
+In-Reply-To: <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1kMUUUP74enlfqKdjWM-HOqkw46Cx7Fo
+X-Proofpoint-GUID: 1kMUUUP74enlfqKdjWM-HOqkw46Cx7Fo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ adultscore=0 phishscore=0 mlxscore=0 impostorscore=0 mlxlogscore=902
+ spamscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brad,
+Hello Aneesh,
 
-On Mon, Oct 4, 2021 at 7:14 PM Brad Larson <brad@pensando.io> wrote:
-> On Mon, Aug 23, 2021 at 1:11 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Mon, Aug 23, 2021 at 6:31 PM Brad Larson <brad@pensando.io> wrote:
-> > > On Mon, Aug 23, 2021 at 12:50 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > On Mon, Aug 23, 2021 at 3:14 AM Brad Larson <brad@pensando.io> wrote:
-> > > > > On Mon, Mar 29, 2021 at 3:40 AM Andy Shevchenko
-> > > [...]
-> > > > > Regarding the above module question and Kconfig definition, since I
-> > > > > first looked at this and reviewed the comments I realized I should be
-> > > > > using builtin.  The file gpio/Kconfig is currently this
-> > > > >
-> > > > > config GPIO_ELBA_SPICS
-> > > > >         def_bool y
-> > > > >         depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-> > > >
-> > > > That means the driver will default to yes by merely enabling
-> > > > COMPILE_TEST, which is a no-go.
-> > > >
-> > > >     config GPIO_ELBA_SPICS
-> > > >             bool "one-line summary"
-> > > >             depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-> > > >             default y if ARCH_PENSANDO_ELBA_SOC
-> > >
-> > > Thanks Geert, changed to this
-> > >
-> > > --- a/drivers/gpio/Kconfig
-> > > +++ b/drivers/gpio/Kconfig
-> > > @@ -241,8 +241,9 @@ config GPIO_EIC_SPRD
-> > >           Say yes here to support Spreadtrum EIC device.
-> > >
-> > >  config GPIO_ELBA_SPICS
-> > > +       bool "Pensando Elba SoC SPI Chip Select as GPIO support"
-> > > +       depends on ARCH_PENSANDO_ELBA_SOC
-> > >         def_bool y
-> > > -       depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-> >
-> > So we're losing the COMPILE_TEST ability again?
-> >
+@@ -1235,6 +1235,9 @@ int __init early_init_dt_scan_rtas(unsigned long 
+node,
+>>       entryp = of_get_flat_dt_prop(node, "linux,rtas-entry", NULL);
+>>       sizep  = of_get_flat_dt_prop(node, "rtas-size", NULL);
+>>   +    if (of_get_flat_dt_prop(node, "ibm,hypertas-functions", NULL))
+>> +        powerpc_firmware_features |= FW_FEATURE_LPAR;
+>> +
 >
-> Hi Geert,
+> The equivalent check that we currently do more than checking 
+> ibm,hypertas-functions.
 >
-> The gpio-elba-spics.c driver is being deleted with the spi chip-select
-> control integrated into spi-dw-mmio.c.  The GPIO_ELBA_SPICS config
-> option goes away and fixes my breakage of COMPILE_TEST.
+>     if (!strcmp(uname, "rtas") || !strcmp(uname, "rtas@0")) {
+>         prop = of_get_flat_dt_prop(node, "ibm,hypertas-functions",
+>                        &len);
+>         if (prop) {
+>             powerpc_firmware_features |= FW_FEATURE_LPAR;
+>             fw_hypertas_feature_init(prop, len);
+> }
+>
+If ibm,hypertas-functions prop has to be part of rtas or rtas@0 node to 
+decide we are on LPAR then how about splitting the probe_fw_features 
+functions into two functions, one to detect FW_FEATURE_LPAR and another 
+function to do the rest?
+>
+> also do we expect other firmware features to be set along with 
+> FW_FEATURE_LPAR?
 
-OK. Thanks for the follow-up.
 
-Gr{oetje,eeting}s,
+No only FW_FEATURE_LPAR feature so that kernel can decide the 
+crashkernel offset accordingly.
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks for the review.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+- Sourabh Jain
+
