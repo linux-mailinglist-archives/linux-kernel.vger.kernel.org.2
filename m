@@ -2,102 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AAA4205A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB504205A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhJDF5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 01:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhJDF5e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 01:57:34 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07B0C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 22:55:45 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id r2so15492134pgl.10
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 22:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y6xhZhYqkaIt6kM8b1wik0C1vHSYtAO2/WSvHpSpwxo=;
-        b=xEqOfwSJP2ARGibOhlAQUqUu6ybqEZUU2TXsicp4S8lbXEgQNTMINpdvuFROHHpUcG
-         bVrzk3kWmIzV8+96H8LI3RSqbUiFvzNvdo5IkGxO1K7XIMYGXXpsoRZwhdj1HPBfFDSZ
-         YWnOuqImvIMjl4P60MpHqu0q3fWpouxsXoQ1inlUOJbZp2HDu68qSMTayO3wJMKqUDJL
-         DtTit0XMrBjZY/etrIBdHwVjE0pDg6q5DwIzvDoQeXsJ0hB1utq58D2CcdONGeD5fToP
-         Wes2ir6J+rd4d9fFR8ijmu/r2AhJ1BuYPKMJJcu9KLyD8DztfZO8ckPCLGrJKJZUr+ON
-         NqAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y6xhZhYqkaIt6kM8b1wik0C1vHSYtAO2/WSvHpSpwxo=;
-        b=TONAsvMT3X2RA8+5Gk2Sy0DyWShcNpD0nZJ9lkElk2V+tTrTJUZOpoFVX/dtlBmrBt
-         rWeEzuJYS9UTpB7qrKxepvKFkkEy+2R9t0VfI8VAqf1Mllw1G6Ru6esfWK49J+BKR3W6
-         Faupal+o0BnHouPzjCnohXTdTRcieAk8VwmmKRnoJEh2e6IcEUkkNUEwHoxU0XSSiTwX
-         WeBLjLU1Yo04AWN4kRAm7pcUb9KkGaQYAdlmCmC+Oahd4irp+sWsTmrp4PPCE9ONW67t
-         +Mp0HjZb253pf/La6lJ67sZCK5GyXtinQgallB045y1db+/15bCdMUBOvCarOBkl1Ily
-         yvMw==
-X-Gm-Message-State: AOAM531TqaVnlseKtuYngsjY9BrjXtufeRG7lumjty5JJvsesFc4tcPP
-        TCSIcppCxSLapiiTZn2/VUXfKQ==
-X-Google-Smtp-Source: ABdhPJzaYRPC71fEdRVTXUmzOLhxANyV7+vPbQPRrd1RjOfI2Ii89+bfhJBE0Ew2bRbHbQ6IFm+vlQ==
-X-Received: by 2002:a63:392:: with SMTP id 140mr9572340pgd.189.1633326945316;
-        Sun, 03 Oct 2021 22:55:45 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id z10sm12398069pfn.70.2021.10.03.22.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 22:55:44 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 11:25:42 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] cpufreq: vexpress: Drop unused variable
-Message-ID: <20211004055542.kw7npqif5jfcdugt@vireshk-i7>
-References: <20210909184714.153068-1-linux@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909184714.153068-1-linux@roeck-us.net>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S232558AbhJDGAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 02:00:18 -0400
+Received: from mout.gmx.net ([212.227.17.22]:35283 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231935AbhJDGAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 02:00:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633327086;
+        bh=3yQaFDx3HteINXfvXksHTXMue8daiL/SfDc07itzYXc=;
+        h=X-UI-Sender-Class:From:To:CC:In-reply-to:Subject:Reply-to:
+         References:Date;
+        b=C34tpHZ63vLX2lWlplKZFtVaP6QSvYENnT6CFy2STHzNlqVz6XIbbCVYNpsVDRDFW
+         BvUgClE9pCVUUxYhMc1YPkYEkWqZf2PTkH9pwOmCoR9ymLNJywMEsPuMdMeYeZNjwq
+         N49SJynqauYZwpzibAWPNzLet2y4i1eho40ozId8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M3lYB-1mWzjq2m5T-000wlv; Mon, 04 Oct 2021 07:58:06 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+        id C52AD899CC4; Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
+From:   Stefan Schaeckeler <schaecsn@gmx.net>
+To:     richard@nod.at
+CC:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sschaeck@cisco.com
+In-reply-to: <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at> (message
+        from Richard Weinberger on Sun, 3 Oct 2021 21:58:25 +0200 (CEST))
+Subject: Re: [PATCH 1/1] ubifs: ubifs to export filesystem error counters
+Content-Type: text/plain
+Reply-to: schaecsn@gmx.net
+References: <20210907214034.11676-1-schaecsn@gmx.net> <20210907214034.11676-2-schaecsn@gmx.net> <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at>
+Message-Id: <20211004055758.C52AD899CC4@corona.crabdance.com>
+Date:   Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
+X-Provags-ID: V03:K1:Zg0mDQu0TezbLoYA8pDQR0+RMH3KAnGSWTLtVxSkc71qesyBOPr
+ JBAf+vDG++ICxoeTj8f3iQe3YwwWUAK9o9I2YEP0s9tsLe4jckW0gqoysT8GPpP31/HaS2y
+ c4dWeRxMxRVkqy+5NQEhJX/4pSLhLYFcGX35nT709N4wJxjXWKjPlOPlaapuoKzNcn+O2mx
+ WNnJxPshu06YrrT1JY4gQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mhArpKz+4UI=:iUQjTCYBLI/S7wj60DELtH
+ cFRnjvOicAMHcSqcHAjqmlh1flfDRg/Q7Y9EPM+bXDGJfgSiXeydoJ9VcRxi6EBQP03FYY/UC
+ RcUaNGJJXW21XPyjlrsHuHx4vGuHFXWegwYSuf7YchEWxq5QPwPXSFvs+HjasRwOnlyCzAjBn
+ 5UBKL21UnGjmQL/CowHbBfaIujmh3viWS393J1V7ng0MpXIu4MfZg7tp/t0Jy947x4wC+gDYU
+ o9FUCcgYbuG1xW60Bwcoj5rDsTPQQquoXG6nS3HiFlhn6iQmJSbBp+dLCQ9A4kEg9EhS6yXXf
+ Unhzo8KaIfp9yj+7dkkjTxVt/8HfawXXFVHv9coDRNWHX7RXqpOfgqTTnV47qxB45q5mmOlVR
+ wIiUKhLqP4Rf3mGfHhWh3wFFoiTj0JNxMlPJankhQDV/UhHag2A5GzUAvO/527s2zIK4GrJDc
+ nKZdImbMDQR21zU1yzYEsnzLefIZBLYvtPHrG8R2TDwBVkwGeG9FQ+iEwgkQHhSNxCwC6WDup
+ +eTh8y3h6qrPd0p53CeQ/VYTqmCvbE5UoxrY9WxqdN8hnB2DKYPiJp/pFwzAE8WhSyp4GIhZ9
+ WXXD1H/X07ugFbE5J+6OEgB1Ko4Oui2vjGKyDg+go9LF5xzripN8UqOa3INpXspyub/7TO7Ha
+ EsXVbsAU2glLfjXt6M1oKCsGl6ecsxX5FMUBE6S121+2yaz9y/AqGY7/0l/lnUYdsGwfDREhE
+ r7LE9vMsxk6xdY931+w/mOPs+6EnPG1sZSvPlY1fRvht89qiEkaCCRnEr91hdnwmcd/FBszEd
+ rznQuT1vQ88k683h8mjS/xNu7iGc0Y330c1pmbPt9IxCQ0Ea7yYoQ3Nt18foCxEOgQ79vPy6/
+ vD9NmCzaSdN/8zzaC3Rsn/SImmCLX3KMgbgXou61OyOWxFEz/W93Uuhsayn0ELAAablDcaOmm
+ 4uG168dmiSg7swjlleuEKcZH/Nz2FsIaJE10CKoZS+SiaP96a6uj+nwLi3ljhsnK56fwx2+0I
+ l68YVuMYw/95VPz4dnDlmoeKp7v0+4uThgCM6eY/Uw+w/o3cyRMzULmfBHkClzy65dwj2GhS0
+ VB5OrH7zIvP6cs=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-09-21, 11:47, Guenter Roeck wrote:
-> arm:allmodconfig fails to build with the following error.
-> 
-> drivers/cpufreq/vexpress-spc-cpufreq.c:454:13: error:
-> 					unused variable 'cur_cluster'
-> 
-> Remove the unused variable.
-> 
-> Fixes: bb8c26d9387f ("cpufreq: vexpress: Set CPUFREQ_IS_COOLING_DEV flag")
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  drivers/cpufreq/vexpress-spc-cpufreq.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> index 284b6bd040b1..d295f405c4bb 100644
-> --- a/drivers/cpufreq/vexpress-spc-cpufreq.c
-> +++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> @@ -451,7 +451,6 @@ static int ve_spc_cpufreq_init(struct cpufreq_policy *policy)
->  static int ve_spc_cpufreq_exit(struct cpufreq_policy *policy)
->  {
->  	struct device *cpu_dev;
-> -	int cur_cluster = cpu_to_cluster(policy->cpu);
->  
->  	cpu_dev = get_cpu_device(policy->cpu);
->  	if (!cpu_dev) {
+Hello Richard,
 
-Applied. Thanks.
+> > Not all ubifs filesystem errors are propagated to userspace.
+> >
+> > Export bad magic, bad node and crc errors via sysfs. This allows users=
+pace
+> > to notice filesystem errors:
+> >
+> > /sys/fs/ubifs/ubiX_Y/errors_magic
+> > /sys/fs/ubifs/ubiX_Y/errors_node
+> > /sys/fs/ubifs/ubiX_Y/errors_crc
+> >
+> > The counters are reset to 0 with a remount. Writing anything into the
+> > counters also clears them.
+>
+> I think this is a nice feature. Thanks for implementing it.
+> Please see some minor nits below.
+>
+> Is there a specific reason why you didn't implement it via UBIFS's debug=
+fs interface?
 
--- 
-viresh
+These error counters are not meant for aiding debugging but for userspace =
+to
+monitor the sanity of the filesystem. Also ext4 exports error counters via
+sysfs - it's probably a good idea to be consistent with them.
+
+$ dir /sys/fs/ext4/sdb2/*error*
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/errors_count
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_blo=
+ck
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_err=
+code
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_fun=
+c
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_ino
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_lin=
+e
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_tim=
+e
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_bloc=
+k
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_errc=
+ode
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_func
+-r--r--r-- 1 root root 4096 Oct  3 13:47 /sys/fs/ext4/sdb2/last_error_ino
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_line
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_time
+=2D-w------- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/trigger_fs_er=
+ror
+
+
+> sysfs is ABI, so we cannot change much anymore.
+
+Judging by the filesystem permissions above, ext4 does not seem to allow
+resetting error counters. If you worry about unchangable ABIs then we coul=
+d
+play it safe and don't support write callbacks for resetting the error cou=
+nters
+in an initial version of the ubifs sysfs. What do you think?
+
+When we are at it, in the current code, writing anything into a sysfs node
+resets the corresponding counter. One could fine-tune that to set the coun=
+ter
+to whatever non-negative integer is passed.
+
+
+> > +		if (c->stats)
+> > +			c->stats->magic_errors++;
+>
+> Please wrap this into a helper function.
+
+Ack.
+
+
+> > +		if (c->stats)
+> > +			c->stats->node_errors++;
+>
+> Same.
+
+Ack.
+
+
+> > +		if (c->stats)
+> > +			c->stats->crc_errors++;
+>
+> Same.
+
+Ack.
+
+
+> > +#define UBIFS_ATTR_FUNC(_name, _mode) UBIFS_ATTR(_name, _mode, _name)
+> > +
+> > +UBIFS_ATTR_FUNC(errors_magic, 0644);
+> > +UBIFS_ATTR_FUNC(errors_crc, 0644);
+> > +UBIFS_ATTR_FUNC(errors_node, 0644);
+>
+> I'm not sure whether everyone should be allowed to read these stats.
+> dmesg is also restricted these days. An unprivileged user should not see=
+ the
+> errors he can indirectly trigger.
+
+I don't mind 600, but having error counters world-readable is consistent w=
+ith
+ext4 (see dir above) and so I suggest to keep 644.
+
+
+> > +	case attr_errors_crc:
+> > +		return snprintf(buf, PAGE_SIZE, "%u\n",
+> > +				sbi->stats->crc_errors);
+>
+> Please use sysfs_emit().
+
+Ack.
+
+
+> > +	if (n =3D=3D UBIFS_DFS_DIR_LEN) {
+> > +		/* The array size is too small */
+> > +		ret =3D -EINVAL;
+> > +		goto out_last;
+>
+> Where is c->stats released in case of an error?
+
+My fault. Will be fixed.
+
+
+> > diff --git a/fs/ubifs/sysfs.h b/fs/ubifs/sysfs.h
+> > new file mode 100644
+> > index 000000000000..a10a82585af8
+> > --- /dev/null
+> > +++ b/fs/ubifs/sysfs.h
+>
+> Do we really need a new header file?
+> Usually most run-time stuff of UBIFS is part of ubifs.h.
+
+I wanted to be consistent with debugfs where fs/ubifs/debug.c comes with i=
+ts
+own header fs/ubifs/debug.h.
+
+
+I'll send out a new patch once we agree on all changes. To recap:
+
+- write callbacks: do we remove them? If not, do we keep them as is or do =
+we
+  fine-tine them by letting a non-negative integer set the counter?
+
+- 644 (world-readable) counters to be consistent with ext4?
+
+- keep sysfs.h to be consistent with debugfs?
+
+ Stefan
