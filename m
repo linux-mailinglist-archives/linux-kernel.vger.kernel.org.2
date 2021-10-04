@@ -2,93 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D50E421933
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61579421939
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhJDVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S235594AbhJDV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234470AbhJDVZw (ORCPT
+        with ESMTP id S234470AbhJDV03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:25:52 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D71C061745;
-        Mon,  4 Oct 2021 14:24:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNYcX5gf3z4xbY;
-        Tue,  5 Oct 2021 08:23:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633382636;
-        bh=cfNrQIlj6LBmTWN51NtyPxLZu5nlxr+E4c1SSMLcVHY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gqdVYrZJTObk5Zv5l0A8D+aDdLzZPZtc9roaLg+LUqD7VfoOYqIor9wzU21D8NOLs
-         USCLUdHRotyjYot6srYZ8tzfwV6AlZSD+Ja/tinPzc2wegKqu83ghQhREhYJH7G8po
-         kMNPCkUfyOymgIOKHENQY8p8S1XtPGDc3LWbNHitgkLYO+s+P9a0Oh0X1/fahuZ/J2
-         8XTdhFzESJWSzWnxS65w8+0TuW+wa9PNdEFhEtcamHo0/3VS3qxY71DJbp9WjbLLsZ
-         l9+qzjAggDZSVs5lMQeXiQUYNocsjGlN9Ycdo763L64rP5+Dc6h0Z4VJt9s1RYlcin
-         +BJqw/3SG4j3A==
-Date:   Tue, 5 Oct 2021 08:23:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20211005082355.4adec5bb@canb.auug.org.au>
+        Mon, 4 Oct 2021 17:26:29 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF06C061745;
+        Mon,  4 Oct 2021 14:24:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i4so78033362lfv.4;
+        Mon, 04 Oct 2021 14:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y6CKjic+MhbQXzMyBA7YrYpbPkbHTokGzRhmbnDC1pY=;
+        b=qnUpsdJkrMJsH2AGyxKNQpbqdA0VYA2pVdw7TTLVcg2QMCSHirIQ+ibrjV9OZsFz48
+         vG1lT3qWktk5AR7G9w35q30XNXQ5x54HosTa+iI4Q727zVTQnGEKz46V/z+gna8L7k9v
+         FvaYBlbaA2vh84bGHd2xGwNWU5T7XsakcIlvtjrs5bLoOsblpKJ9Ns02GZQHIyuoSIvX
+         GoHFb3jmmCwIwVJJWmxLvJJ98P+aLa0YU1w3BM36t5vcny5S8Qefe+/cm0TysjgRo7Ag
+         K8UjBFCG+nrhkEO6cIt1d2JAs3bLz7XVK8GwFMU3HcGsBY+xZXbIN4mkGbmafAdDQFzc
+         XAvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y6CKjic+MhbQXzMyBA7YrYpbPkbHTokGzRhmbnDC1pY=;
+        b=ctx/eu/9m77HAMdw43BqxoJJ0pNiFT2E4mmZetyK9Qd08vKBCxTriR9OcaH3KJWUAx
+         4+kUh/AGgNXCuZaJcp+jH1b6DlWKS6Taw2gRkdbVIupQAaN93e4JQscqq38vcAJSjbpS
+         +J6PPvCmQvr5HzKqEiqri1ZFHvpqWaDF6ZcwaNoc2+MgX+Zpwu/qSFz9WcRgwgzuK08J
+         bmxLbAZzlAHLzLPYksD3hmECI6nw51dxhyDGxpKPnqmHKJg5gzQRATAqP+6t1iUQyo5Y
+         ZTrf4T9NksJ2aDAFPZ8i2+FYXZtJrxjM4BhHI1W40tpa+s9aBRAFWtxVzC29ww+A9HSR
+         PfYg==
+X-Gm-Message-State: AOAM531zlmdgZGMVALhRBw53s0BGQrSNjWFVBjan9/Jop0w5rP0cavk1
+        4jj0NVAuEQtJZNCP5rHvLPQ=
+X-Google-Smtp-Source: ABdhPJzK69LA/qULZaH06vujyoxbpKODuoq/Rv0LBiW8dmbnx2FiTv4tCUpcbkXhYAzPq4Az2ZFrUQ==
+X-Received: by 2002:a2e:6e19:: with SMTP id j25mr18066041ljc.360.1633382678495;
+        Mon, 04 Oct 2021 14:24:38 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id d13sm1708555lfe.21.2021.10.04.14.24.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 14:24:38 -0700 (PDT)
+Subject: Re: [PATCH v7 4/7] usb: phy: tegra: Support OTG mode programming
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210912181718.1328-1-digetx@gmail.com>
+ <20210912181718.1328-5-digetx@gmail.com>
+ <29ae631d-cc8d-663e-3ce2-db00f3470365@gmail.com>
+ <YVtslrGXStvdO2IS@orome.fritz.box>
+ <94949858-6089-06df-1226-f7974a3ae6bf@gmail.com>
+ <YVtwqLlG8+S9cooU@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <99040137-64dd-2895-a90e-7b4478e97bec@gmail.com>
+Date:   Tue, 5 Oct 2021 00:24:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/p8Hrqnp8b8CF8uXwv6AXPL.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YVtwqLlG8+S9cooU@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/p8Hrqnp8b8CF8uXwv6AXPL.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+05.10.2021 00:22, Thierry Reding пишет:
+> On Tue, Oct 05, 2021 at 12:13:48AM +0300, Dmitry Osipenko wrote:
+>> 05.10.2021 00:05, Thierry Reding пишет:
+>>> On Mon, Sep 27, 2021 at 07:36:52PM +0300, Dmitry Osipenko wrote:
+>>>> 12.09.2021 21:17, Dmitry Osipenko пишет:
+>>>>> Support programming USB PHY into OTG mode.
+>>>>>
+>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>> ---
+>>>>>  drivers/usb/phy/phy-tegra-usb.c   | 198 +++++++++++++++++++++++++++++-
+>>>>>  include/linux/usb/tegra_usb_phy.h |   5 +
+>>>>>  2 files changed, 198 insertions(+), 5 deletions(-)
+>>>>
+>>>> Greg / Felipe, could you please ack this patch to allow Thierry to take
+>>>> this series via the Tegra tree? It depends on the soc/tegra patch of
+>>>> this patchset.
+>>>
+>>> Looking at the series, I don't think this necessarily needs to go
+>>> through the Tegra tree. Given that you have backwards-compatibility with
+>>> older device trees, applying this separately to the USB tree should work
+>>> fine. Once the soc/tegra and DT bits and the USB bits get combined they
+>>> should enable the new functionality, but nothing should break if things
+>>> are applied separately.
+>>>
+>>> If so, I can just pick up the rest and let Felipe or Greg pick this one
+>>> up.
+>>>
+>>> Dmitry, can you confirm that this patch should be applicable separately?
+>>> If so:
+>>>
+>>> Acked-by: Thierry Reding <treding@nvidia.com>
+>>>
+>>
+>> This PHY patch has this hunk:
+>>
+>> +	phy->pmc_regmap = dev_get_regmap(&pmc_pdev->dev, "usb_sleepwalk");
+>> +	if (!phy->pmc_regmap)
+>> +		return -EINVAL;
+>>
+>> If this patch and the DT patches will be applied before the soc/tegra
+>> patch, then USB PHY driver will fail to probe.
+> 
+> I had missed that. I was assuming that this other hunk took care of the
+> backwards-compatibility:
+> 
+> +       /* older device-trees don't have PMC regmap */
+> +       if (!phy->pmc_regmap)
+> +               return 0;
+> 
+> but that's rather pointless given your check above, right? Why not just
+> return 0 instead and let the remaining code skip sleepwalk configuration
+> if the regmap doesn't exist?
 
-Hi all,
-
-In commit
-
-  16c0ec8f006d ("drm/msm/dp: only signal audio when disconnected detected a=
-t dp_pm_resume")
-
-Fixes tag
-
-  Fixes: 078867ce04ed ("drm/msm/dp: signal audio plugged change at dp_pm_re=
-sume")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: afc9b8b6bab8 ("drm/msm/dp: signal audio plugged change at dp_pm_resu=
-me")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/p8Hrqnp8b8CF8uXwv6AXPL.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbcOsACgkQAVBC80lX
-0GxFfgf/bwdd76c8iqjAEj8tAGZaXIuXYjQyAlzwwMI8ypxZvewsGrpD09S9hs6B
-Gy77V3aXlz4jIDD/WIk04k1Te5rwv8LgQuvW06lSZoSPA6cp14Zn0bQlOn5SP6my
-a1jTd8kKwdZo6u5QOsuzIkdZQEZOuW6lD5rCf8kspme9kW9J7f5Ebf0x+k4UAyBP
-lf5vsepgiQXB43nnblaIyoE1eyNKaUjL+CMIg0epYNZeM9uMmDraM4rXXmznxBU+
-bthCqy9IIGASU/YrxCRn6lEq/LPHFbWXLfuc9lwAzf7baHOi+4f0Px3yP1ejalmh
-XcJMr1Ba1Z6Q3shOjB29a8GesH6Tcg==
-=QUT7
------END PGP SIGNATURE-----
-
---Sig_/p8Hrqnp8b8CF8uXwv6AXPL.--
+Because regmap must exists if node exists.
