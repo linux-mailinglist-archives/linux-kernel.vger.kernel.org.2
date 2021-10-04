@@ -2,149 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E8E4212FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124BC4212F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235923AbhJDPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:47:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235911AbhJDPry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:47:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633362365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/kgxHPxpLf6tZjNevWzK9k9Z43+ZiXIpJpi5hdMq0z0=;
-        b=XMRbuasuWMdRdkkTewCKD9xn++bEitVkX/DV/+ByfyKYchlmDfmeArCSWl4769uAIfAwjL
-        nRgiDnA7cnybwZM/n7XMN1fpeSttMSWi7kLMRXh2b1FS2hERcivK5jxM4k0y/neQLvdVWZ
-        pW7QZqXZkCeD/nVxHoo7W84KSfiSNtE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-x44U3w48N9KR2IkCHQKonA-1; Mon, 04 Oct 2021 11:46:02 -0400
-X-MC-Unique: x44U3w48N9KR2IkCHQKonA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 341D58F51C;
-        Mon,  4 Oct 2021 15:46:01 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 21AE36B544;
-        Mon,  4 Oct 2021 15:45:08 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
- before verify
-In-Reply-To: <20211004110152-mutt-send-email-mst@kernel.org>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <87fstm47no.fsf@redhat.com>
- <20211002141351-mutt-send-email-mst@kernel.org>
- <20211003070030.658fc94e.pasic@linux.ibm.com>
- <20211003021027-mutt-send-email-mst@kernel.org>
- <20211003032253-mutt-send-email-mst@kernel.org>
- <87ee912e45.fsf@redhat.com>
- <20211004083455-mutt-send-email-mst@kernel.org>
- <878rz83lx0.fsf@redhat.com>
- <20211004110152-mutt-send-email-mst@kernel.org>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Mon, 04 Oct 2021 17:45:06 +0200
-Message-ID: <87zgro23r1.fsf@redhat.com>
+        id S235895AbhJDPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235455AbhJDPrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:47:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 587BD61357;
+        Mon,  4 Oct 2021 15:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633362312;
+        bh=mZSKmWm8SAdamHTmkeSu5hd1hOJE1TChJtoljR5IALY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p6VQKvSbK5Fv4RhmL5ezqtWqHDcDmgjmDDkm0j5gmpAQhF8bM2ThQ8qbypujqJjxo
+         hopoE722L3U7l5n7VvF7hLEKtWJZUI4K47uMaSwbydJk06h56CaHYH9UHgeevGcVM8
+         +JncQaZwZ3Jho82E8G+i2eEMnXEVDLkaciD+IT6oruWCo1P+2X/GrBeOfdGkBhxA+K
+         24e1K1GRipdR8bYO4eowt36dQ1+4VywHPY+RZ8srzvROPRHbBpkAOa3n2DvAKiRz7r
+         fioGIJXXFo7Dqc6J9irHIlLoRxKEeyGNX12sLCOLOAId47nhaVPpm075ISBTwKKwe3
+         AGwf/2DhZt5OA==
+Date:   Mon, 4 Oct 2021 18:45:07 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
+ interface
+Message-ID: <YVshg3a9OpotmOQg@unreal>
+References: <cover.1633284302.git.leonro@nvidia.com>
+ <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
+ <YVsNfLzhGULiifw2@shredder>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVsNfLzhGULiifw2@shredder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
+> On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > After changes to allow dynamically set the reload_up/_down callbacks,
+> > we ensure that properly supported devlink ops are not accessible before
+> > devlink_register, which is last command in the initialization sequence.
+> > 
+> > It makes devlink_reload_enable/_disable not relevant anymore and can be
+> > safely deleted.
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> 
+> [...]
+> 
+> > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+> > index cb6645012a30..09e48fb232a9 100644
+> > --- a/drivers/net/netdevsim/dev.c
+> > +++ b/drivers/net/netdevsim/dev.c
+> > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
+> >  
+> >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
+> >  	devlink_register(devlink);
+> > -	devlink_reload_enable(devlink);
+> >  	return 0;
+> >  
+> >  err_psample_exit:
+> > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
+> >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
+> >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
+> >  
+> > -	devlink_reload_disable(devlink);
+> >  	devlink_unregister(devlink);
+> > -
+> >  	nsim_dev_reload_destroy(nsim_dev);
+> >  
+> >  	nsim_bpf_dev_exit(nsim_dev);
+> 
+> I didn't remember why devlink_reload_{enable,disable}() were added in
+> the first place so it was not clear to me from the commit message why
+> they can be removed. It is described in commit a0c76345e3d3 ("devlink:
+> disallow reload operation during device cleanup") with a reproducer.
 
-> On Mon, Oct 04, 2021 at 04:27:23PM +0200, Cornelia Huck wrote:
->> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> 
->> > On Mon, Oct 04, 2021 at 02:01:14PM +0200, Cornelia Huck wrote:
->> >> On Sun, Oct 03 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> >> > @@ -160,6 +163,33 @@ \subsection{Legacy Interface: A Note on Feature
->> >> >  Specification text within these sections generally does not apply
->> >> >  to non-transitional devices.
->> >> >  
->> >> > +\begin{note}
->> >> > +The device offers different features when used through
->> >> > +the legacy interface and when operated in accordance with this
->> >> > +specification.
->> >> > +\end{note}
->> >> > +
->> >> > +Transitional drivers MUST use Devices only through the legacy interface
->> >> 
->> >> s/Devices only through the legacy interface/devices through the legacy
->> >> interface only/
->> >> 
->> >> ?
->> >
->> > Both versions are actually confused, since how do you
->> > find out that device does not offer VIRTIO_F_VERSION_1?
->> >
->> > I think what this should really say is
->> >
->> > Transitional drivers MUST NOT accept VIRTIO_F_VERSION_1 through
->> > the legacy interface.
->> 
->> Ok, that makes sense.
->> 
->> Would it make sense that transitional drivers MUST accept VERSION_1
->> through the non-legacy interface? Or is that redundant?
->
-> We already have:
->
-> A driver MUST accept VIRTIO_F_VERSION_1 if it is offered.
+It was added because devlink ops were accessible by the user space very
+early in the driver lifetime. All my latest devlink patches are the
+attempt to fix this arch/design/implementation issue.
 
-Yep, so it is redundant.
+> 
+> Tried the reproducer with this series and I cannot reproduce the issue.
+> Wasn't quite sure why, but it does not seem to be related to "changes to
+> allow dynamically set the reload_up/_down callbacks", as this seems to
+> be specific to mlx5.
 
->
->
->> >
->> >
->> > Does linux actually satisfy this? Will it accept VIRTIO_F_VERSION_1
->> > through the legacy interface if offered?
->> 
->> I think that the Linux drivers will not operate on feature bit 32+ if
->> they are in legacy mode?
->
->
-> Well ... with PCI there's no *way* for host to set bit 32 through
-> legacy. But it might be possible with MMIO/CCW. Can you tell me
-> what happens then?
+You didn't reproduce because of my series that moved
+devlink_register()/devlink_unregister() to be last/first commands in
+.probe()/.remove() flows.
 
-ccw does not support accessing bit 32+, either. Not sure about mmio.
+Patch to allow dynamically set ops was needed because mlx5 had logic
+like this:
+ if(something)
+    devlink_reload_enable()
 
->
->
->> >> 
->> >> Generally, looks good to me.
->> >
->> > Do we want to also add explanation that features can be
->> > changed until FEATURES_OK?
->> 
->> I always considered that to be implict, as feature negotiation is not
->> over until we have FEATURES_OK. Not sure whether we need an extra note.
->
-> Well Halil here says once you set a feature bit you can't clear it.
-> So maybe not ...
+And I needed a way to keep this if ... condition.
 
-Ok, so what about something like
+> 
+> IIUC, the reason that the race described in above mentioned commit can
+> no longer happen is related to the fact that devlink_unregister() is
+> called first in the device dismantle path, after your previous patches.
+> Since both the reload operation and devlink_unregister() hold
+> 'devlink_mutex', it is not possible for the reload operation to race
+> with device dismantle.
+> 
+> Agree? If so, I think it would be good to explain this in the commit
+> message unless it's clear to everyone else.
 
-"If FEATURES_OK is not set, the driver MAY change the set of features it
-accepts."
+I don't agree for very simple reason that devlink_mutex is going to be
+removed very soon and it is really not a reason why devlink reload is
+safer now when before.
 
-in the device initialization section?
+The reload can't race due to:
+1. devlink_unregister(), which works as a barrier to stop accesses
+from the user space.
+2. reference counting that ensures that all in-flight commands are counted.
+3. wait_for_completion that blocks till all commands are done.
 
+Thanks
+
+> 
+> Thanks
