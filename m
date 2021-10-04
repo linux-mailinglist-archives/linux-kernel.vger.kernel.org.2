@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B08421675
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98199421678
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238638AbhJDSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S238662AbhJDSa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238617AbhJDSas (ORCPT
+        with ESMTP id S238633AbhJDSaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:30:48 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA6CC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:28:58 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g8so68559440edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:28:58 -0700 (PDT)
+        Mon, 4 Oct 2021 14:30:52 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CD1C061749;
+        Mon,  4 Oct 2021 11:29:02 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so565904pjb.1;
+        Mon, 04 Oct 2021 11:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M3olL4PCIPnsY+XsG6ODxFPkLeYPL3IXmw45N+fdrVs=;
-        b=ED7KbLk3Ph78YVcabHLJMRc846iOZ2dIMnZRnR0e6vJ6SPDEhonEpbqT45rC+8p5Ut
-         XVAKBqPSzdcfcuSk1x6uebAiWCa2qDhAoXKI2O0qQ4eGJmD70AVvl1Ykkol5hMNsc24D
-         9MfEvtlJaFfoct2c6/g7z2+rFYCBRR2moM+b8I51aXJU6AKxj/0V/yAgDx3XcvaAj08H
-         dVGjtX8QraZx4uew81Xi+V4Z+ClwKzncibSDMq6OanS1R3oSGB5l1ZIssPTEcr4uvsoR
-         jiAfJZAi4vGd8bK+fZaNi+FyiIz9XNjyeGOt6h+6a9/BpBhSINdXk1qQ//7ZRpyUqQ+u
-         J2YQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ksk0ituITPDur7VOi1jCXxieV8Du5TeIguFZkpAVdZs=;
+        b=iccVLZIu59DB5VPOrdxx0bcJFMS/iGHtuLWCAMdKR/gBUXElbZvJTn6B5bMYOsrHnZ
+         xuWo7RKx36K5p+IvSTKGNUw3YM2W1xLIucrR8Z1UrutBLiLzi5mgNGVjtJAz/QJxQ9Jt
+         kWB7Cmh5xaWcTrNSlXGdozrtBCeu5w5iY4y7aVE0DEwqyxChwAhcrolcXYIj1J5Uk3KC
+         f/UA+RvUyKkT8c+fWJ8zmNbTMufzlrrAoqu4C6y/oP0GxY1e6n3XlDOoZ2VTRNNNIq8i
+         piENPpRSmZV1YQLjeTi6b1SlzLg/LndQ8R8JQIR4+Oo7na8633EximFc9+QZ4+MIMb2t
+         RxeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M3olL4PCIPnsY+XsG6ODxFPkLeYPL3IXmw45N+fdrVs=;
-        b=N+vYsP/kNq9pfJhuHZPOwAnBfSZdWXAX2Qh7RmERV9OesLkTCHErHGgGEq8clKRKEB
-         Q9J5DgLpYEGmByAO5nUDxjIQRCYmIsTGkofTLJeBCubt6y9H6X113V+dU6GnBbZh/YpN
-         G1D0dRIfyO7b7fdD/TPPjjMLN8ANC1UBk0VGNvMqMqr3ugqxSBDfOVAXTWcVzkGQHq2g
-         kqDOTX/tAo5XCKiDsJb3z6QLPKB48VXL4NFmvChhnhbr9tDq4dyKbnVD5bXHVg5qzf6M
-         aR2WSIGrrXmpjI69o4vMhFLX8aZyjAQcvQG7jjTYLuQjwVALtF3ScFNtnkqxJJ2pWW1K
-         nR/Q==
-X-Gm-Message-State: AOAM530tOC8yJCrsg3+r0BBku9z59kMMuTwgwJKgFdJHGBmpbKRijBtn
-        HfV0WQyJehjLYLnmwnicnz7woZCimOkze1XRUce+IjMDKv4=
-X-Google-Smtp-Source: ABdhPJwKXPdOdSXdF4nkEob3263c0W+0zCyiiXlZN+Nj1BOEgtL2N6pRj+PERlK2r3mZ779LDmusd/VgET5Rl4TfoEw=
-X-Received: by 2002:a50:8d85:: with SMTP id r5mr19954555edh.312.1633372137470;
- Mon, 04 Oct 2021 11:28:57 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ksk0ituITPDur7VOi1jCXxieV8Du5TeIguFZkpAVdZs=;
+        b=2yZcF7Y2kT9E+r4MIx7oYk+h+ihA24voUKO80KxYQALro7N5AVKGjXHptP7c/Zz0xw
+         GCT4939HzIXCIVGtQEc3NT/+qkZbiUm2x9eg65Vpl0Rhcbc89rDAb9/30g1VVtIRaYAZ
+         u716kdm9MmTNXJXnMGLFOfD+NKc3QCOSokaaJxgLjM6Mimm+BvRlUks742lnCjwNa9yZ
+         vhC/4/F4MJt7Or2/uH9yR2WhqZeU37Ej5XGFDRSh5CQF3hmEJ3gb5Mr+/VGRuZI+Vudt
+         DJq8zPnd1swZDNKnjzYBCExQmwoYgPdHu10P18/tpQAZNhkF/osTMLiw8iYwrgW81wyX
+         47RA==
+X-Gm-Message-State: AOAM532NVNtN5PYQebiuJtmgag4RVsz1VTLqi+mFIomfVH6cWLWtUPgq
+        RzIuJ0zfzoz1uTdPRBcPtEI=
+X-Google-Smtp-Source: ABdhPJx6K9cY4Ez2SM0zDinX5vRHY+dnuuStKoVmdFQ59mUKuTYIX3wud8X0wgvomj/ZkUoS6lac+Q==
+X-Received: by 2002:a17:90a:5d01:: with SMTP id s1mr32191111pji.16.1633372142227;
+        Mon, 04 Oct 2021 11:29:02 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:db55:938c:e15a:4670])
+        by smtp.gmail.com with ESMTPSA id 17sm15888836pgr.10.2021.10.04.11.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 11:29:01 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 4 Oct 2021 11:28:59 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
+Message-ID: <YVtH60zyzq9AhUv2@google.com>
+References: <20211001181627.394921-1-bgeffon@google.com>
 MIME-Version: 1.0
-References: <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org> <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
- <67906bf5-4de9-8433-3d70-cc8fc5cc2347@linux.alibaba.com> <CAPhsuW4_-ju9QgB7J4imrhQvH6ZqoOkVtVOVX11Yk_ZRakwQ+A@mail.gmail.com>
- <3d264ed9-f8fd-60d4-7125-f9f745ebeb52@google.com> <YVXXq0ssvW6P525J@casper.infradead.org>
- <f889db88-7b7d-ddb0-a7ed-3eda85d3eb96@google.com> <CAHbLzkq7=FsXtp4YcjeruJwbYyhsRGCq+eC8uwC-Tg06JBTUUA@mail.gmail.com>
- <YViSGYhn+zTShwFP@casper.infradead.org>
-In-Reply-To: <YViSGYhn+zTShwFP@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 4 Oct 2021 11:28:45 -0700
-Message-ID: <CAHbLzkosZr_ugNAMbXreUumSyAUMH1hPhTaiXXXRUNx88J9Xsw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page cache
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, Song Liu <song@kernel.org>,
-        Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001181627.394921-1-bgeffon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 10:09 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Sep 30, 2021 at 10:39:14AM -0700, Yang Shi wrote:
-> > On Thu, Sep 30, 2021 at 9:49 AM Hugh Dickins <hughd@google.com> wrote:
-> > > I assume you're thinking of one of the fuzzer blkdev ones:
-> > > https://lore.kernel.org/linux-mm/CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com/
-> > > or
-> > > https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
-> > >
-> > > I haven't started on those ones yet: yes, I imagine one or both of those
-> > > will need a further fix (S_ISREG() check somewhere if we're lucky; but
-> > > could well be nastier); but for the bug in this thread, I expect
-> >
-> > Makes sense to me. We should be able to check S_ISREG() in khugepaged,
-> > if it is not a regular file, just bail out. Sounds not that nasty to
-> > me AFAIU.
->
-> I don't see why we should have an S_ISREG() check.  I agree it's not the
-> intended usecase, but it ought to work fine.  Unless there's something
-> I'm missing?
+On Fri, Oct 01, 2021 at 11:16:27AM -0700, Brian Geffon wrote:
+> There does not appear to be a technical reason to not
+> allow the zram backing device to be assigned after the
+> zram device is initialized.
+> 
+> This change will allow for the backing device to be assigned
+> as long as no backing device is already assigned. In that
+> event backing_dev would return -EEXIST.
+> 
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> ---
+>  drivers/block/zram/zram_drv.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index fcaf2750f68f..12b4555ee079 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -462,9 +462,9 @@ static ssize_t backing_dev_store(struct device *dev,
+>  		return -ENOMEM;
+>  
+>  	down_write(&zram->init_lock);
+> -	if (init_done(zram)) {
+> -		pr_info("Can't setup backing device for initialized device\n");
+> -		err = -EBUSY;
+> +	if (zram->backing_dev) {
+> +		pr_info("Backing device is already assigned\n");
+> +		err = -EEXIST;
+>  		goto out;
 
-Check out this bug report:
-https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
-and the patch from me:
-https://lore.kernel.org/linux-mm/20210917205731.262693-1-shy828301@gmail.com/
+Hi Brian,
 
-I don't think we handle buffers correctly for file THP, right? My
-patch is ad hoc, so I thought Hugh's suggestion makes some sense to
-me. Why do we have THP collapsed for unintended usecase in the first
-place?
+I am worry about the inconsistency with other interface of current zram
+set up. They were supposed to set it up before zram disksize setting
+because it makes code more simple/maintainalbe in that we don't need
+to check some feature on the fly.
+
+Let's think about when zram extends the writeback of incompressible
+page on demand. The write path will need the backing_dev under
+down_read(&zarm->init_lock) or other conditional variable to check
+whether the feature is enabled or not on the fly.
+It adds locking dependency as well as performance overhead(I don't
+think it's a good deal that scarfice hot path for rare event even
+though it's not that big).
