@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC68642107F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501CF4210C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbhJDNpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:45:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238453AbhJDNoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:44:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D129B61131;
-        Mon,  4 Oct 2021 13:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633354949;
-        bh=/8iZzTtmsHYUkmsxL8GSKc9qVHlbpx/Af92XUl8iCso=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pvoGvGQOTW9ULseoyvoIXaUUN8QFTb9gvg6l//174Uf4QuP6uP++UlBx7VlAAXELH
-         yCCfuA2ozOEq3blvhIXFebe6glcVw6uhQx4L0vdYzrtYEA3/4zGe+BMFwwUA+jDNFF
-         IwFy0NNxXf9GxpRk0zB4AC0bSFChKfbAfH2Iq3zNJqag3xNuT0CeDPogIpHnFt245l
-         Zm32c61wY6OTNrw6vZJqYmGF52XMjGnv2Wddv5imsWLJIhizqvTu+N8EIye2upxzhm
-         8AKQEy6O6rw+IVXIh1XjlgNmWHBk3DvE4cgJUwXDIKbP9Ws0qX5M5BLRoFkSdrQSfn
-         qc/pAFlvs0hZQ==
-Date:   Mon, 4 Oct 2021 15:42:27 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 08/11] rcu/nocb: Limit number of softirq callbacks only
- on softirq
-Message-ID: <20211004134227.GC273854@lothringen>
-References: <20210929221012.228270-1-frederic@kernel.org>
- <20210929221012.228270-9-frederic@kernel.org>
- <877dewmy5v.mognet@arm.com>
+        id S239039AbhJDN4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237790AbhJDN4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:56:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BAAC0612AD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:44:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633355087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UlqUi6UmtWoAEEnR2YBd8pYb9sadLQ39RmmUDRfncKA=;
+        b=eR3KdjDVjlNg0whEUqH/p1vITc5DhYyrJvehyOYvp9sJidx+eKdejjl+d1beGQfZkOKnpb
+        zFDXP+kOX3vNk/3h8Vbhlj8kUn6Nw8yRAxBpqPvezM1QNLYEQ267BtM9B9naSWVfQ31v3g
+        msOuWxmMi0q3wXb5m4H4CC4+ntHWB9idJC1LpBM6x7n8uiQXk/l9wII4V9PSYKaTfvg2sJ
+        wGuXm7lNb/jPhrlvxvaQL7g1gKgbkOH3AJQF0Pm76w8hhSgyoUT20Bloz8eqdK/f2fJ9Qi
+        fIAngpzR5JXoGytY00VnZzXImJlQQnyyuDynrushS5NUZK08CylzdNLWek/MjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633355087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UlqUi6UmtWoAEEnR2YBd8pYb9sadLQ39RmmUDRfncKA=;
+        b=5u1RacOiWDyEpT/UDCs/9R/yQM77nwW5Sff9LtEJtIYA4oqahAD9c9NKIScLwtiTnujBIq
+        Br2SWt2ij1k935Ag==
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 00/29] x86: Support Intel Advanced Matrix Extensions
+In-Reply-To: <5677A76F-82AA-458A-A910-C92E8B0C1061@intel.com>
+References: <20211001223728.9309-1-chang.seok.bae@intel.com>
+ <87mtnrgkij.ffs@tglx> <5677A76F-82AA-458A-A910-C92E8B0C1061@intel.com>
+Date:   Mon, 04 Oct 2021 15:44:47 +0200
+Message-ID: <8735pghpkg.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dewmy5v.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 06:51:08PM +0100, Valentin Schneider wrote:
-> On 30/09/21 00:10, Frederic Weisbecker wrote:
-> > The current condition to limit the number of callbacks executed in a
-> > row checks the offloaded state of the rdp. Not only is it volatile
-> > but it is also misleading: the rcu_core() may well be executing
-> > callbacks concurrently with NOCB kthreads, and the offloaded state
-> > would then be verified on both cases. As a result the limit would
-> > spuriously not apply anymore on softirq while in the middle of
-> > (de-)offloading process.
-> >
-> > Another issue with the condition is that rcu_is_callbacks_kthread()
-> > doesn't check if we are actually running callbacks from rcuc itself or
-> > from a softirq interrupting rcuc.
-> >
-> 
-> Doesn't rcutree.use_softirq imply rcuc is never woken, in which case
-> RCU_SOFTIRQ can't interrupt rcuc (e.g. while run atop an IRQ exit)?
-> I suppose during the (de)offload sequence we could have RCU_SOFTIRQ running
-> atop the NOCB CB kthread, but that's not something
-> rcu_is_callbacks_kthread() detects.
+On Sat, Oct 02 2021 at 22:11, Chang Seok Bae wrote:
+> On Oct 2, 2021, at 14:54, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Fri, Oct 01 2021 at 15:36, Chang S. Bae wrote:
+>>> The patches are built on top of the recent upstream x86 FPU changes [13=
+].
+>>=20
+>> which does not apply on:
+>>=20
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+>>=20
+>> because the relentless x86 folks changed the FPU code some more...
+>>=20
+>> You should know the drill by now.
+>
+> Oh, I=E2=80=99m sorry, that sentence was copied from the old cover letter=
+s.
+>
+> I should have fixed that by saying it is no top of the mainline 5.15-rc3 =
+as
+> shown on the bottom:
+>
+>> base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 
-Yes good point, I don't know if rcuc can be ever be interrupted by
-irq_exit() -> do_softirq() -> rcu_core() itself after all.
+I know what a base commit is, but this still does not make it apply on
+the tip tree which has already 10 patches against the FPU code applied
+in the x86/fpu branch for 5.16. And that's the reference tree not some
+arbitrary chosen base commit.
 
-Paul can probably confirm your point?
+Thanks,
 
-> 
-> Also, why is rcu_is_callbacks_kthread() hardcoded to false for
-> !CONFIG_RCU_BOOST? Isn't it relevant for do_rcu_batch() ratelimiting
-> regardless (at least before your patches)?
-
-I believe rcuc is only used on CONFIG_RCU_BOOST?
+        tglx
