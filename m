@@ -2,115 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902A94206FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810B74206FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhJDIGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:06:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38429 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229487AbhJDIGW (ORCPT
+        id S230428AbhJDIIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:08:00 -0400
+Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:58705 "EHLO
+        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230175AbhJDIHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:06:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633334673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b2znbHeTUtMfJ6z4tVBa0MoQXXesDQGCaycD18oxgNs=;
-        b=IU3SQmGzCG5b4xwYvLRLa6TcD9ZMvN1MunqclG9JzdneB9+Z0yRtLnSMKIyRL2XZF1y16G
-        4YGHRahW0KC+G5M8+1ZVtUmPvAJZNGgBBYy68ZhS+9wLpeP3110CqHya1qQ3oXVgnhXyMF
-        0PQ9EHDGEm/FkiAjx8l4xJo7XtSWgVo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-w5vr9xXnMOGD6mDtfZO1WA-1; Mon, 04 Oct 2021 04:04:32 -0400
-X-MC-Unique: w5vr9xXnMOGD6mDtfZO1WA-1
-Received: by mail-ed1-f72.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so16332508edy.14
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:04:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b2znbHeTUtMfJ6z4tVBa0MoQXXesDQGCaycD18oxgNs=;
-        b=W6zd8+qy0iFCeaH01N8Uy0TlhEQ6OxF2aSfG36N4Z3iUN7Quz+9Rv0dt8Dv6dpBSuc
-         L/3eWGsqWVgFtitCDNYKHc6//uRqsKYkr9JPYuz/CVCyMLEWCJp4zfAm0rtPiqp5kSyg
-         ISjXCEXmyzldMR8zWBC/+ZF1iFqm0DB6HOSTRH23kH/WN2Lwv8WiFwfaB3t9WT8IPsTv
-         RXDx4jYlwCvKrldiclEpY4hKhX2JUt4i+162vwngjSZpOe9Xfrzjuog7vGlOQla5JnME
-         AycYKtZ9FCalEdT1m4P/6w+ud4sUim54hePaM4y4AjyJFgX/a42LbQxx0q06JzJ7OD1t
-         7L9Q==
-X-Gm-Message-State: AOAM5307t9lS0OFewkwJPhyyY8GfiSk5rrpz3KsaVMz6+9RgnsXMmEre
-        wucnrj0Ua188RoB46K3/vVjZ9iqOwFoxISKQayumu3aFBXKgQAwkTsAu1RHi5rO2BWPZFJTpZju
-        tEp7zyzLgQT2IHxeMDWy3uyEu
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr17111299edw.379.1633334670831;
-        Mon, 04 Oct 2021 01:04:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHDDAKdXSAn82KOTUnDct9UjyTAsKHFkUha0zXYEjle2CuvhBgiNLZygCtsXzjOKucrZp2bQ==
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr17111274edw.379.1633334670642;
-        Mon, 04 Oct 2021 01:04:30 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id j14sm6935098edl.21.2021.10.04.01.04.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 01:04:30 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: core: remove reassignment of same
- value to variable
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YVnX1HIYoisW621x@user>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a110ec8f-0b80-1f44-b60f-e0ac62313832@redhat.com>
-Date:   Mon, 4 Oct 2021 10:04:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 4 Oct 2021 04:07:53 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id 18730FB413
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:05:49 +0100 (IST)
+Received: (qmail 2753 invoked from network); 4 Oct 2021 08:05:48 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Oct 2021 08:05:48 -0000
+Date:   Mon, 4 Oct 2021 09:05:47 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <20211004080547.GK3959@techsingularity.net>
+References: <20210922150457.GA3959@techsingularity.net>
+ <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+ <20210922173853.GB3959@techsingularity.net>
+ <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+ <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+ <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+ <50400427070018eff83b0782d2e26c0cc9ff4521.camel@gmx.de>
+ <CAKfTPtDHYtskM7wR0w=fDry+6JJae2_q8Lw7ETcW_gBJ+n4NBA@mail.gmail.com>
+ <20210927111730.GG3959@techsingularity.net>
+ <ae821481769c4cd82a1672f0aac427c52e0a1647.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <YVnX1HIYoisW621x@user>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ae821481769c4cd82a1672f0aac427c52e0a1647.camel@gmx.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/3/21 6:18 PM, Saurav Girepunje wrote:
-> Remove reassignment of same value to variable pstat->auth_seq.
-> On if (seq == 1) assigning the value 2. At the end of if statement
-> also assigning the value pstat->auth_seq = seq + 1 that is again
-> assigning the value 2.
+On Mon, Sep 27, 2021 at 04:17:25PM +0200, Mike Galbraith wrote:
+> On Mon, 2021-09-27 at 12:17 +0100, Mel Gorman wrote:
+> > On Thu, Sep 23, 2021 at 02:41:06PM +0200, Vincent Guittot wrote:
+> > > On Thu, 23 Sept 2021 at 11:22, Mike Galbraith <efault@gmx.de> wrote:
+> > > >
+> > > > On Thu, 2021-09-23 at 10:40 +0200, Vincent Guittot wrote:
+> > > > >
+> > > > > a 100us value should even be enough to fix Mel's problem without
+> > > > > impacting common wakeup preemption cases.
+> > > >
+> > > > It'd be nice if it turn out to be something that simple, but color me
+> > > > skeptical.  I've tried various preemption throttling schemes, and while
+> > >
+> > > Let's see what the results will show. I tend to agree that this will
+> > > not be enough to cover all use cases and I don't see any other way to
+> > > cover all cases than getting some inputs from the threads about their
+> > > latency fairness which bring us back to some kind of latency niceness
+> > > value
+> > >
+> >
+> > Unfortunately, I didn't get a complete set of results but enough to work
+> > with. The missing tests have been requeued. The figures below are based
+> > on a single-socket Skylake machine with 8 CPUs as it had the most set of
+> > results and is the basic case.
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 3ee4d35ca8d7..059cd85f4b03 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -808,7 +808,6 @@ unsigned int OnAuth(struct adapter *padapter, union recv_frame *precv_frame)
->  			pstat->state &= ~WIFI_FW_AUTH_NULL;
->  			pstat->state |= WIFI_FW_AUTH_STATE;
->  			pstat->authalg = algorithm;
-> -			pstat->auth_seq = 2;
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
->  		} else if (seq == 3) {
-> 
->  			p = rtw_get_ie(pframe + WLAN_HDR_A3_LEN + 4 + _AUTH_IE_OFFSET_, WLAN_EID_CHALLENGE, (int *)&ie_len,
-> --
-> 2.32.0
+> There's something missing, namely how does whatever load you measure
+> perform when facing dissimilar competition. Instead of only scaling
+> loads running solo from underutilized to heavily over-committed, give
+> them competition. eg something switch heavy, say tbench, TCP_RR et al
+> (latency bound load) pairs=CPUS vs something hefty like make -j CPUS or
+> such.
 > 
 
+Ok, that's an interesting test. I've been out intermittently and will be
+for the next few weeks but I managed to automate something that can test
+this. The test runs a kernel compile with -jNR_CPUS and TCP_RR running
+NR_CPUS pairs of clients/servers in the background with the default
+openSUSE Leap kernel config (CONFIG_PREEMPT_NONE) with the two patches
+and no tricks done with task priorities.  5 kernel compilations are run
+and TCP_RR is shutdown when the compilation finishes.
+
+This can be reproduced with the mmtests config
+config-multi-kernbench__netperf-tcp-rr-multipair using xfs as the
+filesystem for the kernel compilation.
+
+sched-scalewakegran-v2r5: my patch
+sched-moveforward-v1r1: Vincent's patch
+
+
+multi subtest kernbench
+                              5.15.0-rc1             5.15.0-rc1             5.15.0-rc1
+                                 vanillasched-scalewakegran-v2r5 sched-moveforward-v1r1
+Amean     user-80     1518.87 (   0.00%)     1520.34 (  -0.10%)     1518.93 (  -0.00%)
+Amean     syst-80      248.57 (   0.00%)      247.74 (   0.33%)      232.93 *   6.29%*
+Amean     elsp-80       48.76 (   0.00%)       48.51 (   0.52%)       48.70 (   0.14%)
+Stddev    user-80       10.15 (   0.00%)        9.17 (   9.70%)       10.25 (  -0.93%)
+Stddev    syst-80        2.83 (   0.00%)        3.02 (  -6.65%)        3.65 ( -28.83%)
+Stddev    elsp-80        3.54 (   0.00%)        3.28 (   7.28%)        2.40 (  32.13%)
+CoeffVar  user-80        0.67 (   0.00%)        0.60 (   9.79%)        0.67 (  -0.93%)
+CoeffVar  syst-80        1.14 (   0.00%)        1.22 (  -7.01%)        1.57 ( -37.48%)
+CoeffVar  elsp-80        7.26 (   0.00%)        6.76 (   6.79%)        4.93 (  32.04%)
+
+With either patch,  time to finish compilations is not affected with
+differences in elapsed time being well within the noise
+
+Meanwhile, netperf tcp-rr running with NR_CPUS pairs showed the
+following
+
+multi subtest netperf-tcp-rr
+                        5.15.0-rc1             5.15.0-rc1             5.15.0-rc1
+                           vanilla sched-scalewakegran-v2r5 sched-moveforward-v1r1
+Min       1    32388.28 (   0.00%)    32208.66 (  -0.55%)    31824.54 (  -1.74%)
+Hmean     1    39112.22 (   0.00%)    39364.10 (   0.64%)    39552.30 *   1.13%*
+Stddev    1     3471.61 (   0.00%)     3357.28 (   3.29%)     3713.97 (  -6.98%)
+CoeffVar  1        8.81 (   0.00%)        8.47 (   3.87%)        9.31 (  -5.67%)
+Max       1    53019.93 (   0.00%)    51263.38 (  -3.31%)    51263.04 (  -3.31%)
+
+This shows a slightly different picture with Vincent's patch having a small
+impact on netperf tcp-rr. It's noisy and may be subject to test-to-test
+variances but it's a mild concern. A greater concern is that across
+all machines, dbench was heavily affected by Vincent's patch even for
+relatively low thread counts which is surprising.
+
+For the same Cascadelake machine both resulst are from, dbench reports
+
+                          5.15.0-rc1             5.15.0-rc1             5.15.0-rc1
+                             vanillasched-scalewakegran-v2r5 sched-moveforward-v1r1
+Amean     1         15.99 (   0.00%)       16.20 *  -1.27%*       16.18 *  -1.16%*
+Amean     2         18.43 (   0.00%)       18.34 *   0.50%*       22.72 * -23.28%*
+Amean     4         22.32 (   0.00%)       22.06 *   1.14%*       45.86 *-105.52%*
+Amean     8         30.58 (   0.00%)       30.22 *   1.18%*       99.04 *-223.88%*
+Amean     16        41.79 (   0.00%)       41.68 *   0.25%*      161.09 *-285.52%*
+Amean     32        63.45 (   0.00%)       63.16 *   0.45%*      248.13 *-291.09%*
+Amean     64       127.81 (   0.00%)      128.50 *  -0.54%*      402.93 *-215.25%*
+Amean     128      330.42 (   0.00%)      336.06 *  -1.71%*      531.35 * -60.81%*
+
+That is an excessive impairment. While it varied across machines, there
+was some impact on all of them. For a 1-socket skylake machine to rule
+out NUMA artifacts, I get
+
+dbench4 Loadfile Execution Time
+                         5.15.0-rc1             5.15.0-rc1             5.15.0-rc1
+                            vanillasched-scalewakegran-v2r5 sched-moveforward-v1r1
+Amean     1        29.51 (   0.00%)       29.45 *   0.21%*       29.58 *  -0.22%*
+Amean     2        37.46 (   0.00%)       37.16 *   0.82%*       39.81 *  -6.26%*
+Amean     4        51.31 (   0.00%)       51.34 (  -0.04%)       57.14 * -11.35%*
+Amean     8        81.77 (   0.00%)       81.65 (   0.15%)       88.68 *  -8.44%*
+Amean     64      406.94 (   0.00%)      408.08 *  -0.28%*      433.64 *  -6.56%*
+Stddev    1         1.43 (   0.00%)        1.44 (  -0.79%)        1.54 (  -7.45%)
+
+Not as dramatic but indicates that we likely do not want to cut off
+wakeup_preempt too early a problem.
+
+The test was not profiling times to switch tasks as the overhead
+distorts resules.
+
+-- 
+Mel Gorman
+SUSE Labs
