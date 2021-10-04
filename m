@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF30420E22
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6168420BCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236453AbhJDNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        id S233604AbhJDNAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236463AbhJDNTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:19:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D41861A56;
-        Mon,  4 Oct 2021 13:08:30 +0000 (UTC)
+        id S234050AbhJDM6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18ED0613C8;
+        Mon,  4 Oct 2021 12:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352911;
-        bh=Q/vUP3Zmw8Yw1BXBMLQQwD4vLyUa1rkialpTJn41U54=;
+        s=korg; t=1633352210;
+        bh=9XXk2aRpKB6tXvQFgKMYVowWqxIjDz5YLOU2CpF/oEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+TJ5ge0gC4Lez2Zm06DCvK5mjQaZZDD60Y3fZsbos3z3jfwBZRMdWIUdSN/C2aHx
-         SOGecqtD/UpC6yleeds9Muh0a1VXPyGs3Nj+bPJ1CMhluJ26QYdRP5Kw670zduT/FC
-         w7DKnDP6YufmTLEtioR3MlECPkYB+LzVGw2Gx4so=
+        b=P2zeHnam7F65r7T1kOXgmsF1O45BamptETlM29J7uDFeK63lIXWZ3dB6GAuvbOPv0
+         Oz0Jlgpm0lS9kXSdhEChibUvjSChpIBfxv8STD2KXzBovhdtOdAOWv3iEMDnfzrxmv
+         pJ3T6j4GelhuVp+cdlMFoF/Ff+dUCfd4lU/5n+4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 16/93] x86/kvmclock: Move this_cpu_pvti into kvmclock.h
-Date:   Mon,  4 Oct 2021 14:52:14 +0200
-Message-Id: <20211004125035.109567155@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 4.9 31/57] qnx4: work around gcc false positive warning bug
+Date:   Mon,  4 Oct 2021 14:52:15 +0200
+Message-Id: <20211004125029.917304629@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zelin Deng <zelin.deng@linux.alibaba.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit ad9af930680bb396c87582edc172b3a7cf2a3fbf upstream.
+commit d5f6545934c47e97c0b48a645418e877b452a992 upstream.
 
-There're other modules might use hv_clock_per_cpu variable like ptp_kvm,
-so move it into kvmclock.h and export the symbol to make it visiable to
-other modules.
+In commit b7213ffa0e58 ("qnx4: avoid stringop-overread errors") I tried
+to teach gcc about how the directory entry structure can be two
+different things depending on a status flag.  It made the code clearer,
+and it seemed to make gcc happy.
 
-Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Cc: <stable@vger.kernel.org>
-Message-Id: <1632892429-101194-2-git-send-email-zelin.deng@linux.alibaba.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+However, Arnd points to a gcc bug, where despite using two different
+members of a union, gcc then gets confused, and uses the size of one of
+the members to decide if a string overrun happens.  And not necessarily
+the rigth one.
+
+End result: with some configurations, gcc-11 will still complain about
+the source buffer size being overread:
+
+  fs/qnx4/dir.c: In function 'qnx4_readdir':
+  fs/qnx4/dir.c:76:32: error: 'strnlen' specified bound [16, 48] exceeds source size 1 [-Werror=stringop-overread]
+     76 |                         size = strnlen(name, size);
+        |                                ^~~~~~~~~~~~~~~~~~~
+  fs/qnx4/dir.c:26:22: note: source object declared here
+     26 |                 char de_name;
+        |                      ^~~~~~~
+
+because gcc will get confused about which union member entry is actually
+getting accessed, even when the source code is very clear about it.  Gcc
+internally will have combined two "redundant" pointers (pointing to
+different union elements that are at the same offset), and takes the
+size checking from one or the other - not necessarily the right one.
+
+This is clearly a gcc bug, but we can work around it fairly easily.  The
+biggest thing here is the big honking comment about why we do what we
+do.
+
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
+Reported-and-tested-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/kvmclock.h |   14 ++++++++++++++
- arch/x86/kernel/kvmclock.c      |   13 ++-----------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ fs/qnx4/dir.c |   36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
---- a/arch/x86/include/asm/kvmclock.h
-+++ b/arch/x86/include/asm/kvmclock.h
-@@ -2,6 +2,20 @@
- #ifndef _ASM_X86_KVM_CLOCK_H
- #define _ASM_X86_KVM_CLOCK_H
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -19,12 +19,33 @@
+  * depending on the status field in the last byte. The
+  * first byte is where the name start either way, and a
+  * zero means it's empty.
++ *
++ * Also, due to a bug in gcc, we don't want to use the
++ * real (differently sized) name arrays in the inode and
++ * link entries, but always the 'de_name[]' one in the
++ * fake struct entry.
++ *
++ * See
++ *
++ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
++ *
++ * for details, but basically gcc will take the size of the
++ * 'name' array from one of the used union entries randomly.
++ *
++ * This use of 'de_name[]' (48 bytes) avoids the false positive
++ * warnings that would happen if gcc decides to use 'inode.di_name'
++ * (16 bytes) even when the pointer and size were to come from
++ * 'link.dl_name' (48 bytes).
++ *
++ * In all cases the actual name pointer itself is the same, it's
++ * only the gcc internal 'what is the size of this field' logic
++ * that can get confused.
+  */
+ union qnx4_directory_entry {
+ 	struct {
+-		char de_name;
+-		char de_pad[62];
+-		char de_status;
++		const char de_name[48];
++		u8 de_pad[15];
++		u8 de_status;
+ 	};
+ 	struct qnx4_inode_entry inode;
+ 	struct qnx4_link_info link;
+@@ -52,29 +73,26 @@ static int qnx4_readdir(struct file *fil
+ 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
+ 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
+ 			union qnx4_directory_entry *de;
+-			const char *name;
  
-+#include <linux/percpu.h>
-+
- extern struct clocksource kvm_clock;
+ 			offset = ix * QNX4_DIR_ENTRY_SIZE;
+ 			de = (union qnx4_directory_entry *) (bh->b_data + offset);
  
-+DECLARE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
-+
-+static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
-+{
-+	return &this_cpu_read(hv_clock_per_cpu)->pvti;
-+}
-+
-+static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
-+{
-+	return this_cpu_read(hv_clock_per_cpu);
-+}
-+
- #endif /* _ASM_X86_KVM_CLOCK_H */
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -50,18 +50,9 @@ early_param("no-kvmclock-vsyscall", pars
- static struct pvclock_vsyscall_time_info
- 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
- static struct pvclock_wall_clock wall_clock __bss_decrypted;
--static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
- static struct pvclock_vsyscall_time_info *hvclock_mem;
--
--static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
--{
--	return &this_cpu_read(hv_clock_per_cpu)->pvti;
--}
--
--static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
--{
--	return this_cpu_read(hv_clock_per_cpu);
--}
-+DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
-+EXPORT_PER_CPU_SYMBOL_GPL(hv_clock_per_cpu);
- 
- /*
-  * The wallclock is the time of day when we booted. Since then, some time may
+-			if (!de->de_name)
++			if (!de->de_name[0])
+ 				continue;
+ 			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+ 			if (!(de->de_status & QNX4_FILE_LINK)) {
+ 				size = sizeof(de->inode.di_fname);
+-				name = de->inode.di_fname;
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+ 			} else {
+ 				size = sizeof(de->link.dl_fname);
+-				name = de->link.dl_fname;
+ 				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+ 					de->link.dl_inode_ndx;
+ 			}
+-			size = strnlen(name, size);
++			size = strnlen(de->de_name, size);
+ 			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
+-			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
++			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+ 			}
 
 
