@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B8E420DAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAB9420BFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhJDNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55644 "EHLO mail.kernel.org"
+        id S234278AbhJDNBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235905AbhJDNP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:15:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3825961AAC;
-        Mon,  4 Oct 2021 13:06:06 +0000 (UTC)
+        id S233821AbhJDM77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D67F60E0C;
+        Mon,  4 Oct 2021 12:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352766;
-        bh=RvA7bDhrihYWraeEEPp1LtI3X89eEYR+IOR0cbPg9+Q=;
+        s=korg; t=1633352268;
+        bh=8PiVwGkXWJD5okVWy9HY50VjTZ6cNLUcjQvgfdQ5A/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqi9BpmpfxkkJOACWJ2T6ED3OO69vVNMvu0As+b/x6C/Qs1+eqcSTFNUJGPdbACNM
-         Yc/Y0Vp3PJArHvblzQBdWbpgignHdJaqpVt0itOi+C6KVU8O+FSmG0ADZziU8WavUY
-         JunT19goU/XASUhg8BN94AaKV1M+aIY+lCzFpGUA=
+        b=I9BjYU8ZLF4raCDbNMzwhLFdoclsZq8Jttnr54K6v6v9Nz2RME36TaIHBHeIa7xRA
+         CaAg5MvlOMMNaF6RkX0JyTv0HJx1wHbTEAfTAumbIB/1Goa7OyvncR7hhxbPggNSqo
+         0bZkAQ08gGoLH63heOoOBT+bOdcOq8pHsg9hp/fw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/56] mac80211-hwsim: fix late beacon hrtimer handling
+        stable@vger.kernel.org,
+        syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com,
+        "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.9 54/57] HID: betop: fix slab-out-of-bounds Write in betop_probe
 Date:   Mon,  4 Oct 2021 14:52:38 +0200
-Message-Id: <20211004125030.582583434@linuxfoundation.org>
+Message-Id: <20211004125030.653563435@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: F.A.Sulaiman <asha.16@itfac.mrt.ac.lk>
 
-[ Upstream commit 313bbd1990b6ddfdaa7da098d0c56b098a833572 ]
+commit 1e4ce418b1cb1a810256b5fb3fd33d22d1325993 upstream.
 
-Thomas explained in https://lore.kernel.org/r/87mtoeb4hb.ffs@tglx
-that our handling of the hrtimer here is wrong: If the timer fires
-late (e.g. due to vCPU scheduling, as reported by Dmitry/syzbot)
-then it tries to actually rearm the timer at the next deadline,
-which might be in the past already:
+Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
+The problem is the driver assumes the device must have an input report but
+some malicious devices violate this assumption.
 
- 1          2          3          N          N+1
- |          |          |   ...    |          |
+So this patch checks hid_device's input is non empty before it's been used.
 
- ^ intended to fire here (1)
-            ^ next deadline here (2)
-                                      ^ actually fired here
-
-The next time it fires, it's later, but will still try to schedule
-for the next deadline (now 3), etc. until it catches up with N,
-but that might take a long time, causing stalls etc.
-
-Now, all of this is simulation, so we just have to fix it, but
-note that the behaviour is wrong even per spec, since there's no
-value then in sending all those beacons unaligned - they should be
-aligned to the TBTT (1, 2, 3, ... in the picture), and if we're a
-bit (or a lot) late, then just resume at that point.
-
-Therefore, change the code to use hrtimer_forward_now() which will
-ensure that the next firing of the timer would be at N+1 (in the
-picture), i.e. the next interval point after the current time.
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com
-Fixes: 01e59e467ecf ("mac80211_hwsim: hrtimer beacon")
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210915112936.544f383472eb.I3f9712009027aa09244b65399bf18bf482a8c4f1@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
+Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/mac80211_hwsim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-betopff.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index 1033513d3d9d..07b070b14d75 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -1603,8 +1603,8 @@ mac80211_hwsim_beacon(struct hrtimer *timer)
- 		bcn_int -= data->bcn_delta;
- 		data->bcn_delta = 0;
- 	}
--	hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
--			ns_to_ktime(bcn_int * NSEC_PER_USEC));
-+	hrtimer_forward_now(&data->beacon_timer,
-+			    ns_to_ktime(bcn_int * NSEC_PER_USEC));
- 	return HRTIMER_RESTART;
- }
+--- a/drivers/hid/hid-betopff.c
++++ b/drivers/hid/hid-betopff.c
+@@ -59,15 +59,22 @@ static int betopff_init(struct hid_devic
+ {
+ 	struct betopff_device *betopff;
+ 	struct hid_report *report;
+-	struct hid_input *hidinput =
+-			list_first_entry(&hid->inputs, struct hid_input, list);
++	struct hid_input *hidinput;
+ 	struct list_head *report_list =
+ 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
+-	struct input_dev *dev = hidinput->input;
++	struct input_dev *dev;
+ 	int field_count = 0;
+ 	int error;
+ 	int i, j;
  
--- 
-2.33.0
-
++	if (list_empty(&hid->inputs)) {
++		hid_err(hid, "no inputs found\n");
++		return -ENODEV;
++	}
++
++	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
++	dev = hidinput->input;
++
+ 	if (list_empty(report_list)) {
+ 		hid_err(hid, "no output reports found\n");
+ 		return -ENODEV;
 
 
