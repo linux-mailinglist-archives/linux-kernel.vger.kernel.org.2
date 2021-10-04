@@ -2,197 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4F54212BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB224212BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbhJDPfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:35:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16252 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233700AbhJDPfc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:35:32 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 194F5MVN024037;
-        Mon, 4 Oct 2021 11:33:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=aJqlE+8/C4VMY+Ry3x+jxYihFtrj+7/Dw+o9EM68K6I=;
- b=gl32+U8r0A+9AIJ6AboIzsPMNNkcFmEr7da9k0ti5g9Kg1fTJrM/S5bC04KcY9yfNxJm
- Fq/tHG6XpP+QIIuloKl71LfgkDVKx/bNDa9iHtdB1VcGR4Gu9/z9MhGx057w1rulTuC1
- qK9pz0oMV3BV5R+jh+HiENORV5UpjNARpz2qg6267Sri0R4cDlFQb+UA/yVYIohtnMpd
- tcI/4+ro1Nsurwpn8ZaeFaqjQlwEjVRlwM8ZuFytA6TNK6LPVmV89FheYfiq/eIymAnb
- ZSG1VNDdxqPoGH2k6AClF5c0Nzjl8bnrfna92wEzsCeBGjgY9wUlJ8tex6uXa5+Oilzx sg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bg3xq0n6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 11:33:37 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 194FMVfU013528;
-        Mon, 4 Oct 2021 15:32:28 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bef2agvr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 15:32:28 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 194FWPt75177890
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Oct 2021 15:32:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5681FAE051;
-        Mon,  4 Oct 2021 15:32:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C3B9AE04D;
-        Mon,  4 Oct 2021 15:32:23 +0000 (GMT)
-Received: from [9.43.47.122] (unknown [9.43.47.122])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Oct 2021 15:32:22 +0000 (GMT)
-Message-ID: <e67acb9b-dd8e-767a-b57b-f12b3b0fd44d@linux.ibm.com>
-Date:   Mon, 4 Oct 2021 21:02:21 +0530
+        id S235563AbhJDPgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:36:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233700AbhJDPgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:36:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 559C361247;
+        Mon,  4 Oct 2021 15:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633361687;
+        bh=800Rt9HQy9AZ7cONHa2tYH5ltwrHkgDmC5YS8UR89QE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m1EXqTboBPigSdyEhZ6tETO8Ge/5zQlt3mha/7CjPXmIk5GN1vS4tQS/m6c0QJvYG
+         vrpEOj/arjdidOOh+XKH64jET7Gr8rjhtirhYZsnVEq2ZCxCZ9HhQ7cxGc3cs53VQT
+         LYPaKLTHy088J2nJSR3tjySd1BMlHwRb0VspQP6GmoCFuUjuhWf1hJCKkLMm0DZcR9
+         gA/pPFdEXRrjic2ynMLxpqgY9TtWx7g39nMG/NUV6HlRh74b28ZrBs882R7DP61rmW
+         t7iE/OKyKL7JjY5GGX9EMKYlHRo4FhYatb9IOccMwKxjHC2OxaRXz8y4tI2nDc1cHF
+         qPcl/arLg6oWw==
+From:   Will Deacon <will@kernel.org>
+To:     mark.rutland@arm.com, John Garry <john.garry@huawei.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RESEND 0/2] Improve build test coverage for perf drivers
+Date:   Mon,  4 Oct 2021 16:34:41 +0100
+Message-Id: <163334959188.2736276.883386184657235756.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1633085326-156653-1-git-send-email-john.garry@huawei.com>
+References: <1633085326-156653-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 1/3] fixup mmu_features immediately after getting cpu pa
- features.
-Content-Language: en-US
-To:     Sourabh Jain <sourabhjain@linux.ibm.com>, mpe@ellerman.id.au
-Cc:     hbathini@linux.ibm.com, mahesh@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>,
-        Abdul haleem <abdhalee@linux.vnet.ibm.com>
-References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
- <20211004151142.256251-2-sourabhjain@linux.ibm.com>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-In-Reply-To: <20211004151142.256251-2-sourabhjain@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iwoamFN3_IxYtEa3cZaRJXXC9rqQHkzm
-X-Proofpoint-ORIG-GUID: iwoamFN3_IxYtEa3cZaRJXXC9rqQHkzm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0 clxscore=1011
- spamscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110040106
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 20:41, Sourabh Jain wrote:
-> From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+On Fri, 1 Oct 2021 18:48:44 +0800, John Garry wrote:
+> Improve build test coverage by allowing some more drivers build under
+> COMPILE_TEST as appropriate.
 > 
-> On system with radix support available, early_radix_enabled() starts
-> returning true for a small window (until mmu_early_init_devtree() is
-> called) even when radix mode disabled on kernel command line. This causes
-> ppc64_bolted_size() to return ULONG_MAX in HPT mode instead of supported
-> segment size, during boot cpu paca allocation.
+> Baseline is v5.15-rc3
 > 
-> With kernel command line = "... disable_radix":
+> John Garry (2):
+>   drivers/perf: thunderx2_pmu: Change data in size
+>     tx2_uncore_event_update()
+>   drivers/perf: Improve build test coverage
 > 
-> early_init_devtree:			  <- early_radix_enabled() = false
->    early_init_dt_scan_cpus:		  <- early_radix_enabled() = false
->        ...
->        check_cpu_pa_features:		  <- early_radix_enabled() = false
->        ...				^ <- early_radix_enabled() = TRUE
->        allocate_paca:			| <- early_radix_enabled() = TRUE
->            ...                           |
->            ppc64_bolted_size:		| <- early_radix_enabled() = TRUE
->                if (early_radix_enabled())| <- early_radix_enabled() = TRUE
->                    return ULONG_MAX;     |
->        ...                               |
->    ...					| <- early_radix_enabled() = TRUE
->    ...					| <- early_radix_enabled() = TRUE
->    mmu_early_init_devtree()              V
->    ...					  <- early_radix_enabled() = false
-> 
-> So far we have not seen any issue because allocate_paca() takes minimum of
-> ppc64_bolted_size and rma_size while allocating paca. However it is better
-> to close this window by fixing up the mmu features as early as possible.
-> This fixes early_radix_enabled() and ppc64_bolted_size() to return valid
-> values in radix disable mode. This patch will help subsequent patch to
-> depend on early_radix_enabled() check while detecting supported segment
-> size in HPT mode.
-> 
-> Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
-> Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
-> Reported-and-tested-by: Abdul haleem <abdhalee@linux.vnet.ibm.com>
-> ---
->   arch/powerpc/include/asm/book3s/64/mmu.h | 1 +
->   arch/powerpc/include/asm/mmu.h           | 1 +
->   arch/powerpc/kernel/prom.c               | 1 +
->   arch/powerpc/mm/init_64.c                | 5 ++++-
->   4 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/include/asm/book3s/64/mmu.h b/arch/powerpc/include/asm/book3s/64/mmu.h
-> index c02f42d1031e..69a89fa1330d 100644
-> --- a/arch/powerpc/include/asm/book3s/64/mmu.h
-> +++ b/arch/powerpc/include/asm/book3s/64/mmu.h
-> @@ -197,6 +197,7 @@ extern int mmu_vmemmap_psize;
->   extern int mmu_io_psize;
->   
->   /* MMU initialization */
-> +void mmu_cpu_feature_fixup(void);
->   void mmu_early_init_devtree(void);
->   void hash__early_init_devtree(void);
->   void radix__early_init_devtree(void);
-> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
-> index 8abe8e42e045..c8eafd401fe9 100644
-> --- a/arch/powerpc/include/asm/mmu.h
-> +++ b/arch/powerpc/include/asm/mmu.h
-> @@ -401,6 +401,7 @@ extern void early_init_mmu(void);
->   extern void early_init_mmu_secondary(void);
->   extern void setup_initial_memory_limit(phys_addr_t first_memblock_base,
->   				       phys_addr_t first_memblock_size);
-> +static inline void mmu_cpu_feature_fixup(void) { }
->   static inline void mmu_early_init_devtree(void) { }
->   
->   static inline void pkey_early_init_devtree(void) {}
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index 2e67588f6f6e..1727a3abe6c1 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -380,6 +380,7 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
->   		check_cpu_pa_features(node);
->   	}
->   
-> +	mmu_cpu_feature_fixup();
+> [...]
 
-can you do that call inside check_cpu_pa_features? or is it because we 
-have the same issue with baremetal platforms?
+Applied to will (for-next/perf), thanks!
 
-Can we also rename this to indicate we are sanitizing the feature flag 
-based on kernel command line.  Something like
+[1/2] drivers/perf: thunderx2_pmu: Change data in size tx2_uncore_event_update()
+      https://git.kernel.org/will/c/78cac393b464
+[2/2] drivers/perf: Improve build test coverage
+      https://git.kernel.org/will/c/e656972b6986
 
-/* Update cpu features based on kernel command line */
-update_cpu_features();
+Cheers,
+-- 
+Will
 
->   	identical_pvr_fixup(node);
->   	init_mmu_slb_size(node);
->   
-> diff --git a/arch/powerpc/mm/init_64.c b/arch/powerpc/mm/init_64.c
-> index 386be136026e..9ed452605a2c 100644
-> --- a/arch/powerpc/mm/init_64.c
-> +++ b/arch/powerpc/mm/init_64.c
-> @@ -437,12 +437,15 @@ static void __init early_check_vec5(void)
->   	}
->   }
->   
-> -void __init mmu_early_init_devtree(void)
-> +void __init mmu_cpu_feature_fixup(void)
->   {
->   	/* Disable radix mode based on kernel command line. */
->   	if (disable_radix)
->   		cur_cpu_spec->mmu_features &= ~MMU_FTR_TYPE_RADIX;
-> +}
->   
-> +void __init mmu_early_init_devtree(void)
-> +{
->   	/*
->   	 * Check /chosen/ibm,architecture-vec-5 if running as a guest.
->   	 * When running bare-metal, we can use radix if we like
-> 
-
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
