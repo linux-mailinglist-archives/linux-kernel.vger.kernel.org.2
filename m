@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96C2420CA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D31E420F93
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhJDNHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39514 "EHLO mail.kernel.org"
+        id S237354AbhJDNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235197AbhJDNFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:05:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E8D261AAC;
-        Mon,  4 Oct 2021 13:00:59 +0000 (UTC)
+        id S237041AbhJDNds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4575563231;
+        Mon,  4 Oct 2021 13:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352460;
-        bh=pZQ6nHhK8fXhl4jZ0gDlpEHInjbfl/x94p91CmHxcjU=;
+        s=korg; t=1633353323;
+        bh=NjK0VONX59kuUgZNW4kpqcg7X7vcUvRcsgH3Cjz61CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x8ucwWliJj0/xQdEeJh8sBUrF+Yo0mFGNHRzXh0eCWM09EuR6IL6fzm2sAmvkm6p+
-         cTML9DwRYzUHz4mcqsj9IgsBNCvLlg+U8E0PO5q9dmQcOPfG0W3mzhhdyyXA14hYfp
-         Kx7DJLbeDyoU0CaF+9OyRH1z1F7DDYENPo8T+od4=
+        b=F2fgfIA0scHGnemZ6u+rV4kcj1jI/Gjwb73Jd4tC6hXZKNDngWMU+fcj63xtHHbAu
+         P0Sq+7kdRlkVkMStzgENptPhWj8arPL313jL2g/MBuCXjo/piF1w1F0jn+8lWpxzHg
+         c/dz9y8bXHi3e7WOBeuLxtXgAU5iWzkAqIxWwKHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 4.14 38/75] PCI: aardvark: Fix checking for PIO Non-posted Request
+        stable@vger.kernel.org, Sindhu Devale <sindhu.devale@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 083/172] RDMA/irdma: Validate number of CQ entries on create CQ
 Date:   Mon,  4 Oct 2021 14:52:13 +0200
-Message-Id: <20211004125032.793512800@linuxfoundation.org>
+Message-Id: <20211004125047.670577370@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Sindhu Devale <sindhu.devale@intel.com>
 
-commit 8ceeac307a79f68c0d0c72d6e48b82fa424204ec upstream.
+[ Upstream commit f4475f249445b3c1fb99919b0514a075b6d6b3d4 ]
 
-PIO_NON_POSTED_REQ for PIO_STAT register is incorrectly defined. Bit 10 in
-register PIO_STAT indicates the response is to a non-posted request.
+Add lower bound check for CQ entries at creation time.
 
-Link: https://lore.kernel.org/r/20210624213345.3617-2-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Link: https://lore.kernel.org/r/20210916191222.824-3-shiraz.saleem@intel.com
+Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/host/pci-aardvark.c |    2 +-
+ drivers/infiniband/hw/irdma/verbs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/host/pci-aardvark.c
-+++ b/drivers/pci/host/pci-aardvark.c
-@@ -55,7 +55,7 @@
- #define   PIO_COMPLETION_STATUS_UR		1
- #define   PIO_COMPLETION_STATUS_CRS		2
- #define   PIO_COMPLETION_STATUS_CA		4
--#define   PIO_NON_POSTED_REQ			BIT(0)
-+#define   PIO_NON_POSTED_REQ			BIT(10)
- #define PIO_ADDR_LS				(PIO_BASE_ADDR + 0x8)
- #define PIO_ADDR_MS				(PIO_BASE_ADDR + 0xc)
- #define PIO_WR_DATA				(PIO_BASE_ADDR + 0x10)
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 6107f37321d2..6c3d28f744cb 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2040,7 +2040,7 @@ static int irdma_create_cq(struct ib_cq *ibcq,
+ 		/* Kmode allocations */
+ 		int rsize;
+ 
+-		if (entries > rf->max_cqe) {
++		if (entries < 1 || entries > rf->max_cqe) {
+ 			err_code = -EINVAL;
+ 			goto cq_free_rsrc;
+ 		}
+-- 
+2.33.0
+
 
 
