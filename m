@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6218C420C9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA4420E80
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhJDNHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39448 "EHLO mail.kernel.org"
+        id S236942AbhJDNZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234564AbhJDNF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:05:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F3E561A03;
-        Mon,  4 Oct 2021 13:00:49 +0000 (UTC)
+        id S236208AbhJDNWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0FCB61BD0;
+        Mon,  4 Oct 2021 13:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352450;
-        bh=kecqeoEY1ApU2mMIuYtqh1Ysyhtgb9SGG7Gj0G8KGCM=;
+        s=korg; t=1633352983;
+        bh=Yu4vwiBlVup6oPD5+O9QT9oi8ktz9HtVZBL4lMXu19o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FiRTPM5Yosefbzm83v/TMBZJS4t2gOF/EYS+3sc6C0kamZy7k53gEduEwnThBFhAF
-         HqwR+38toXCfZg1FTNAVEfU0M5Pu/MjXcfoABYTyOzz1qR1oQtb6wT8Midn/7+O0Hm
-         DTwDt/RXoD5BSxnpGLbhxaVTsHl3/jResHym95PE=
+        b=2rFtJpIDSZrZx9gZjoQdH+wkHYIqEc8p6acyMmByN33cEO9eAI2b9NJsunzgKb6+p
+         OY1ZavwBr1avfHR8AJ82fuDhHCFOqyHmWbhExMErr5UY1CWXF2zWQ2rXeZhjxV20eF
+         TCayqDbptm/ZbnCSL7frDJ6gXCDqJKl7V4GAec+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.14 66/75] ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 43/93] dsa: mv88e6xxx: 6161: Use chip wide MAX MTU
 Date:   Mon,  4 Oct 2021 14:52:41 +0200
-Message-Id: <20211004125033.754662860@linuxfoundation.org>
+Message-Id: <20211004125035.986968682@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-commit 6fa630bf473827aee48cbf0efbbdf6f03134e890 upstream
+[ Upstream commit fe23036192c95b66e60d019d2ec1814d0d561ffd ]
 
-FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
-latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
-enough for MCOUNT_ADDR).
+The datasheets suggests the 6161 uses a per port setting for jumbo
+frames. Testing has however shown this is not correct, it uses the old
+style chip wide MTU control. Change the ops in the 6161 structure to
+reflect this.
 
-Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
-
-Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1baf0fac10fb ("net: dsa: mv88e6xxx: Use chip-wide max frame size for MTU")
+Reported by: 曹煜 <cao88yu@gmail.com>
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/module-plts.c |    2 +-
+ drivers/net/dsa/mv88e6xxx/chip.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -24,7 +24,7 @@
- #endif
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 184cbc93328c..caa3c4f30405 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3455,7 +3455,6 @@ static const struct mv88e6xxx_ops mv88e6161_ops = {
+ 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
+ 	.port_set_egress_floods = mv88e6352_port_set_egress_floods,
+ 	.port_set_ether_type = mv88e6351_port_set_ether_type,
+-	.port_set_jumbo_size = mv88e6165_port_set_jumbo_size,
+ 	.port_egress_rate_limiting = mv88e6097_port_egress_rate_limiting,
+ 	.port_pause_limit = mv88e6097_port_pause_limit,
+ 	.port_disable_learn_limit = mv88e6xxx_port_disable_learn_limit,
+@@ -3480,6 +3479,7 @@ static const struct mv88e6xxx_ops mv88e6161_ops = {
+ 	.avb_ops = &mv88e6165_avb_ops,
+ 	.ptp_ops = &mv88e6165_ptp_ops,
+ 	.phylink_validate = mv88e6185_phylink_validate,
++	.set_max_frame_size = mv88e6185_g1_set_max_frame_size,
+ };
  
- static const u32 fixed_plts[] = {
--#ifdef CONFIG_FUNCTION_TRACER
-+#ifdef CONFIG_DYNAMIC_FTRACE
- 	FTRACE_ADDR,
- 	MCOUNT_ADDR,
- #endif
+ static const struct mv88e6xxx_ops mv88e6165_ops = {
+-- 
+2.33.0
+
 
 
