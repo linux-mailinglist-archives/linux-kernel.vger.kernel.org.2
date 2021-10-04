@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C8A42121A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E910242121D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbhJDO6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:58:04 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:33328 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234270AbhJDO6D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:58:03 -0400
-Received: by mail-ot1-f41.google.com with SMTP id d12-20020a05683025cc00b0054d8486c6b8so21899479otu.0;
-        Mon, 04 Oct 2021 07:56:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UeUM07RhvrYbbVT4CwAvE71B5q6FutAaaYoosNs/OLU=;
-        b=gREl8FImZj+BjLKP6VHE26BVUmJ7lhTqnKTfWupCrtowfNjR7pouOxowvpXjlG5tCU
-         MmEpHky8tXV25XVjF6gRb3EtHa5D86SkAGw9kLazy6C6x2Bd+aHp3jWLe5BzUE/BwP+C
-         0iD9JsZ/I3DkmyttPV7qQ5NK8xQf3SMyZ6WVuMBMiSWWBoiaSnNJCdFkqc2rVWtTBXzF
-         DFeprGk8wqFMd3MHI8UleGyud++Gf6RJzUDE8jmLnfbCWwMQDsp82e6Zp2t99oMLVQhy
-         nHYe8zEffK+icIqEiLsNAd6D9DO4lJkeT+UYAglzA42BgBQSov2twzcqcnVZSeFwEKxG
-         kvEA==
-X-Gm-Message-State: AOAM531nNqrzmIUfp4URfM3BmPfIxDDCLfOh4fItCFKuPw6gMzQ87qmN
-        4a5yk1oxG+f/TgIRZv4m5A==
-X-Google-Smtp-Source: ABdhPJwTiPCJqeC94GsV+hyfmUppbS17ludrZGocAWa2w3O5UQ8A31nIxZVYFfsCsgGx6QuxxwA6UQ==
-X-Received: by 2002:a05:6830:922:: with SMTP id v34mr9365861ott.240.1633359374469;
-        Mon, 04 Oct 2021 07:56:14 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k15sm2899685otp.68.2021.10.04.07.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 07:56:13 -0700 (PDT)
-Received: (nullmailer pid 1285437 invoked by uid 1000);
-        Mon, 04 Oct 2021 14:56:13 -0000
-Date:   Mon, 4 Oct 2021 09:56:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        id S235435AbhJDO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:58:29 -0400
+Received: from vmi485042.contaboserver.net ([161.97.139.209]:57152 "EHLO
+        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234270AbhJDO60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 10:58:26 -0400
+Received: by gentwo.de (Postfix, from userid 1001)
+        id E033CB00424; Mon,  4 Oct 2021 16:56:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id DD8A4B00261;
+        Mon,  4 Oct 2021 16:56:36 +0200 (CEST)
+Date:   Mon, 4 Oct 2021 16:56:36 +0200 (CEST)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells
- dependency
-Message-ID: <YVsWDaC0TOSOrrxW@robh.at.kernel.org>
-References: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
+Subject: Re: Queueing is outside of SLUB nowdays
+In-Reply-To: <20211001003908.GA2657@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+Message-ID: <alpine.DEB.2.22.394.2110041648220.294708@gentwo.de>
+References: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal> <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz> <20211001003908.GA2657@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:23:46AM +0200, Krzysztof Kozlowski wrote:
-> The meta-schema already defines dependency between clock-cells and
+On Fri, 1 Oct 2021, Hyeonggon Yoo wrote:
 
-You mean the schema already does.
+> Looking at other layers, they implemented queuing layer outside of SLUB.
+> See commit 795bb1c00dd ("net: bulk free infrastructure for NAPI context,
+> use napi_consume_skb") for example. They made skb cache because SLUB is
+> not suitable for intensive alloc/free.
+>
+> And because the queue is outside of slab, it can go lockless
+> depending on it's context. (But it's not easy to do so in slab because
+> slab is general purpose allocator.)
 
-> clock-output-names.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> index 23abb7e8b9d8..dd70431df0b7 100644
-> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> @@ -158,10 +158,6 @@ properties:
->      description:
->        The MIO bank number in which the command and data lines are configured.
->  
-> -dependencies:
-> -  clock-output-names: [ '#clock-cells' ]
+The queuing within in SLUB/SLAB is lockless.
 
-The schema defines this.
+> So current approach on place where slab's performance is critical
+> is implementing queuing layer on top of slab.
 
-> -  '#clock-cells': [ clock-output-names ]
+If you have to use object specific characteristics to optimize then yes
+you can optimize further. However, the slab allocators implement each
+their own form of queuing that is generic.
 
-But not this. That's because in the common case, clock-output-names is 
-optional. But here it is required when '#clock-cells' is present.
+> Then new question arising:
+>     - Is that proper way to solve fundamental problem?
 
-Rob
+There is a problem?
+
+>       - why not use SLAB if they need queuing?
+
+SLAB is LIFO queuing whereas SLUB uses spatial considerations and queues
+within a page before going outside. Slab requires disabling interrupts,
+SLUB is optimized to rely on per cpu atomics and there are numerous other
+differences.
+
+>       - how does this approach work on SLAB?
+
+SLAB has a lockless layer that is only requiring disabling interrupts. It
+provides a generic queuing layer as well.
+
+See my talk on Slab allocators awhile back.
+
+https://www.youtube.com/watch?v=h0VMLXavx30
