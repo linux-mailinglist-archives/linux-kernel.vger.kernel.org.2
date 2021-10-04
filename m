@@ -2,115 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370774212E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7874212D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235796AbhJDPmn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Oct 2021 11:42:43 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:44033 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhJDPmm (ORCPT
+        id S235754AbhJDPlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235542AbhJDPlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:42:42 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id F40E9FF818;
-        Mon,  4 Oct 2021 15:40:49 +0000 (UTC)
-Date:   Mon, 4 Oct 2021 17:40:48 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Jan Hoffmann <jan@3e8.eu>,
-        Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Subject: Re: [PATCH 9/9] mtd: rawnand: xway: Keep the driver compatible with
- on-die ECC engines
-Message-ID: <20211004174048.608b07ef@xps13>
-In-Reply-To: <20210928222258.199726-10-miquel.raynal@bootlin.com>
-References: <20210928222258.199726-1-miquel.raynal@bootlin.com>
-        <20210928222258.199726-10-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 4 Oct 2021 11:41:18 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E579C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:39:29 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso5496810oom.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Us2MiqnVBXpIAHNmjS+4Uro6qLPvm37AM9FJM95DVqk=;
+        b=UvTBpMnnuGZzjffPYb1u5v3vOYcVC2caWUQcqnkd1SLnhHYh9HoUpsXWXuHV6CtF5c
+         qMZKrO/WVTD50NObgICfr6AIx2m7OqeFLWq38/Bojj2dfTst72YaiVDbAP4LRm84siko
+         W0POz+WpjQ8TkFq/mdfHoftPovhR7ea0POI0/jkT0FchYIXofqPaFVabSVDjA5naW9fH
+         LIoKCl5sVg/m3yswO6YL8mr13fQV3LxifZ6QaM3DnXbxNn69JDOXnrCy7PzY8roN46Hb
+         pCVL3TwbByCMm2KZ0bT/eSw3E/gI0K15dpImi2Cc9n2eyL1p0LiiYc+iuhX5Zq+vGJ5j
+         4IYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Us2MiqnVBXpIAHNmjS+4Uro6qLPvm37AM9FJM95DVqk=;
+        b=3PedWpl7bcf4NaKc9MGMNZKbLX5Z6d7cTsbsZ2YOOyLI6r4We6Zd32qXWl6QtzNnFz
+         2AG6VAV1NG4Pwpatq+J4f9ApedaSubg4ch1RA6ToNichfhP0KmH7pr3n1ou+46PKFqKj
+         dhtEQFFhNpa9T0E8LeFV3/HfkGf3zczcMGsNYA0XoVat77gJWp4G2R+iZg6Lhl8rB4R0
+         uSz2S1IWJ524rjw9Tff2lSnKXcdCWqq7DELDkrHLTTnbzC5PFNjgYLrReiuk5tvRPBZd
+         xrB9OWhJC5yYNkgkcQYOclVgLleMepmY4bjUuqKx5W1877vnTEpWOWOQKlNuwhmVlSKp
+         qL+Q==
+X-Gm-Message-State: AOAM533aLxOIGIwwpIXdClKyDwYed4Q/yYfScem0MWlFdSlsqLpk43cK
+        XijgVBRHgFVuCdso4IAde6F3iQ==
+X-Google-Smtp-Source: ABdhPJxxvMe3/BhpD1hlLw/7JNd8iujE5rqTGt73ELHYeygX/swn9CKzIPC4Wb4jnT2LvEpikdkp2w==
+X-Received: by 2002:a4a:dc1a:: with SMTP id p26mr9580113oov.6.1633361968417;
+        Mon, 04 Oct 2021 08:39:28 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id x28sm3127570ote.24.2021.10.04.08.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 08:39:28 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 08:41:11 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org
+Subject: Re: [PATCH v5] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+Message-ID: <YVsgl+EQr4aByTW5@ripper>
+References: <1633339945-1568-1-git-send-email-pillair@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633339945-1568-1-git-send-email-pillair@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
+On Mon 04 Oct 02:32 PDT 2021, Rakesh Pillai wrote:
 
-miquel.raynal@bootlin.com wrote on Wed, 29 Sep 2021 00:22:48 +0200:
+> Add the WPSS remoteproc node in dts for
+> PIL loading.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 
-> Following the introduction of the generic ECC engine infrastructure, it
-> was necessary to reorganize the code and move the ECC configuration in
-> the ->attach_chip() hook. Failing to do that properly lead to a first
-> series of fixes supposed to stabilize the situation. Unfortunately, this
-> only fixed the use of software ECC engines, preventing any other kind of
-> engine to be used, including on-die ones.
-> 
-> It is now time to (finally) fix the situation by ensuring that we still
-> provide a default (eg. software ECC) but will still support different
-> ECC engines such as on-die ECC engines if properly described in the
-> device tree.
-> 
-> There are no changes needed on the core side in order to do this, but we
-> just need to leverage the logic there which allows:
-> 1- a subsystem default (set to Host engines in the raw NAND world)
-> 2- a driver specific default (here set to software ECC engines)
-> 3- any type of engine requested by the user (ie. described in the DT)
-> 
-> As the raw NAND subsystem has not yet been fully converted to the ECC
-> engine infrastructure, in order to provide a default ECC engine for this
-> driver we need to set chip->ecc.engine_type *before* calling
-> nand_scan(). During the initialization step, the core will consider this
-> entry as the default engine for this driver. This value may of course
-> be overloaded by the user if the usual DT properties are provided.
-> 
-> Fixes: d525914b5bd8 ("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()")
-> Cc: stable@vger.kernel.org
-> Cc: Jan Hoffmann <jan@3e8.eu>
+qcom,sc7280-wpss-pil isn't a compatible that's documented or implemented
+upstream, so I can't do anything with this patch.
 
-I think you already tested this change and validated it, would you mind
-providing your Tested-by?
+I did go back an looked for the binding and driver and made a comment
+regarding auto_boot. My comment/question still stands, but I see I made
+that comment on v1, which is the last version you sent to the
+linux-remoteproc@ mailing list.
 
-> Cc: Kestrel seventyfour <kestrelseventyfour@gmail.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Unfortunately the dt binding in v6 seem to have some issues still.
+
+
+So based on that, I will have to ignore this patch until the binding has
+landed - please help me remember this forward dependency when that day
+comes.
+
+And please include linux-remoteproc@ if you want the binding & driver
+merged.
+
+Regards,
+Bjorn
+
 > ---
->  drivers/mtd/nand/raw/xway_nand.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 58 +++++++++++++++++++++++++++++++++
+>  2 files changed, 62 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-> index 26751976e502..236fd8c5a958 100644
-> --- a/drivers/mtd/nand/raw/xway_nand.c
-> +++ b/drivers/mtd/nand/raw/xway_nand.c
-> @@ -148,9 +148,8 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
->  
->  static int xway_attach_chip(struct nand_chip *chip)
->  {
-> -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-> -
-> -	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> +	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
-> +	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
->  		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
->  
->  	return 0;
-> @@ -219,6 +218,13 @@ static int xway_nand_probe(struct platform_device *pdev)
->  		    | NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
->  		    | cs_flag, EBU_NAND_CON);
->  
-> +	/*
-> +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-> +	 * Set ->engine_type before registering the NAND devices in order to
-> +	 * provide a driver specific default value.
-> +	 */
-> +	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 64fc22a..2b8bbcd 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -68,3 +68,7 @@
+>  		qcom,pre-scaling = <1 1>;
+>  	};
+>  };
 > +
->  	/* Scan to find existence of the device */
->  	err = nand_scan(&data->chip, 1);
->  	if (err)
-
-
-Thanks,
-Miquèl
+> +&remoteproc_wpss {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 39635da..edc7951 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -134,6 +134,11 @@
+>  			no-map;
+>  		};
+>  
+> +		wpss_mem: memory@9ae00000 {
+> +			no-map;
+> +			reg = <0x0 0x9ae00000 0x0 0x1900000>;
+> +		};
+> +
+>  		rmtfs_mem: memory@9c900000 {
+>  			compatible = "qcom,rmtfs-mem";
+>  			reg = <0x0 0x9c900000 0x0 0x280000>;
+> @@ -2588,6 +2593,59 @@
+>  			#power-domain-cells = <1>;
+>  		};
+>  
+> +		remoteproc_wpss: remoteproc@8a00000 {
+> +			compatible = "qcom,sc7280-wpss-pil";
+> +			reg = <0 0x08a00000 0 0x10000>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
+> +					      <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "wdog", "fatal", "ready", "handover",
+> +					  "stop-ack", "shutdown-ack";
+> +
+> +			clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
+> +				 <&gcc GCC_WPSS_AHB_CLK>,
+> +				 <&gcc GCC_WPSS_RSCP_CLK>,
+> +				 <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "gcc_wpss_ahb_bdg_mst_clk",
+> +				      "gcc_wpss_ahb_clk",
+> +				      "gcc_wpss_rscp_clk",
+> +				      "xo";
+> +
+> +			power-domains = <&rpmhpd SC7280_CX>,
+> +					<&rpmhpd SC7280_MX>;
+> +			power-domain-names = "cx", "mx";
+> +
+> +			memory-region = <&wpss_mem>;
+> +
+> +			qcom,qmp = <&aoss_qmp>;
+> +
+> +			qcom,smem-states = <&wpss_smp2p_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
+> +				 <&pdc_reset PDC_WPSS_SYNC_RESET>;
+> +			reset-names = "restart", "pdc_sync";
+> +
+> +			qcom,halt-regs = <&tcsr_mutex 0x37000>;
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
+> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
+> +							     IRQ_TYPE_EDGE_RISING>;
+> +				mboxes = <&ipcc IPCC_CLIENT_WPSS
+> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +				label = "wpss";
+> +				qcom,remote-pid = <13>;
+> +			};
+> +		};
+> +
+>  		pdc: interrupt-controller@b220000 {
+>  			compatible = "qcom,sc7280-pdc", "qcom,pdc";
+>  			reg = <0 0x0b220000 0 0x30000>;
+> -- 
+> 2.7.4
+> 
