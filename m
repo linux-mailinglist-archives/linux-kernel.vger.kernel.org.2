@@ -2,88 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C8C42056A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A7542056D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhJDEg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 00:36:58 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49943 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhJDEg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 00:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633322069;
-        bh=mfbOeHh48bvNKKVNLVixvoLyDk726M8pdwxjjJcaT4k=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=l2xc1PIHX/UGOU6ek+dBIUE8oQuLT9AUboOSMdsk1NTiWaOpfVQOwpNeDIio1Iy/H
-         1ywfltToPRcv9VC1NGsmxQ1HutFeFwEcm0sVy90uFFDO3v6YvCnJoiV50xTFyG2Wt3
-         wuKZoX4rngmZhUcJmTBMBDlcrD/jFOQfENgeUkF4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.50.159]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M59GA-1mYLbt05zg-001C2y; Mon, 04
- Oct 2021 06:34:29 +0200
-Message-ID: <f1b421f956fa044b4efa7f5fef015725b27223cf.camel@gmx.de>
-Subject: Re: wakeup_affine_weight() is b0rked - was Re: [PATCH 2/2]
- sched/fair: Scale wakeup granularity relative to nr_running
-From:   Mike Galbraith <efault@gmx.de>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 04 Oct 2021 06:34:26 +0200
-In-Reply-To: <CAGsJ_4xcRFcDMpuC7vrpHe=aRbDpAnRd1F64aqh2EEcNgmZxCg@mail.gmail.com>
-References: <20210920142614.4891-1-mgorman@techsingularity.net>
-         <20210920142614.4891-3-mgorman@techsingularity.net>
-         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
-         <20210921103621.GM3959@techsingularity.net>
-         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
-         <02c977d239c312de5e15c77803118dcf1e11f216.camel@gmx.de>
-         <CAGsJ_4xcRFcDMpuC7vrpHe=aRbDpAnRd1F64aqh2EEcNgmZxCg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S232470AbhJDEkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 00:40:04 -0400
+Received: from mail-dm6nam10on2079.outbound.protection.outlook.com ([40.107.93.79]:22113
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230193AbhJDEkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 00:40:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iD8B7JY1A3bZ+20t9hlVLTku7LNZFGVp32Y3i8RXiEL1JRM3/P97S3VlOr8fl8DtNpkv5UoZA0m/0Fqhlyosfhf6rxF8sNtnEZylUgPih4Tvfeh9feqVXSw5YAg4rrv/as2Q8FLJYnUn3mD8UOVh+Y2cMbUbHlGHZ65c2bZB6nAM+iGi9VTS9dQQvUgG3K0HjBqH3yk8ApeEwZBjyvicehEBnHBTZZp1IQ/w/tfQTpFIBGeWZYZs+exNzOpGFFo0oLeggQzUPYtafmXtLGl9+qXNr5oJtqkX+cyg9HPHHc94WpxhBF4ZHVMbdH4ig4M555tuU04xKjdIUDDQdjdEgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o00UeLM5clt/TA+X3EzsH8aAFezHinbMI4D7UWXkz3A=;
+ b=aTBK6LfdlD5yQcebCD9xgvmf4KDeAcL9IX3zvLbR5O+vFtriNDDPapE1IFvJO7ExiH1dfQpAAoTEIIINphSTy8GwIqdTrfY1lFoiOOmAPvz6g20vF4gFHfcvIVi2uS06Y0DkSt3UQ1sAQ5/yvHwy1d2Fe/Jx4KCYENO4dtZN0BWoRpKE1Vc/u2AfeIMaZh7wMxSgR9pSe0yfsNal/HySRz06ThDbQ3auNRYKAzSldCwP4p/iWpTkysQoGXHNPWmNe1sQ1/0Wswv2upwPWMEKcwjiZUQO9Z5RLmqWVTFQ5i80zMekOKAoXERc6cQnmM5xennrKI84Wo6joLZQ3scMtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o00UeLM5clt/TA+X3EzsH8aAFezHinbMI4D7UWXkz3A=;
+ b=UOzFCfu3KecqMElpIoH8obsedfQ0Y/nvYuiHms84Oc+5j3vY3RrfPnN7xlXIDUh0H+VWymu7Q1+gKUmsDE8iW1HFFqcYXIvCS5AMZ6e9rrYpBfKGvaLsEkii0Dhzv1K067cVhya0YBWccMCknmPCzCmYDWJ0vPiVpokBXEmiqlHQUrx9nDp9n4VDL2c3c2Z1CQlNC4VgPgImWJRoPlEHhS9MCtRvkd97qbS7z1eTWQptRtMm/aD2Ijz0+pS9SWUFNnJ9Ys917dHQBDHOxM9phHYD9wRyhVs8Lz64Hg5dvS8CaFbrhQFxiQxNpuPpqkfU8TzTx1D4W7kFvq7M/xPaPQ==
+Received: from MW4PR04CA0277.namprd04.prod.outlook.com (2603:10b6:303:89::12)
+ by CY4PR12MB1509.namprd12.prod.outlook.com (2603:10b6:910:8::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17; Mon, 4 Oct
+ 2021 04:38:12 +0000
+Received: from CO1NAM11FT043.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:89:cafe::ec) by MW4PR04CA0277.outlook.office365.com
+ (2603:10b6:303:89::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend
+ Transport; Mon, 4 Oct 2021 04:38:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT043.mail.protection.outlook.com (10.13.174.193) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Mon, 4 Oct 2021 04:38:11 +0000
+Received: from [10.25.99.17] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 4 Oct
+ 2021 04:38:05 +0000
+Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>
+CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-2-git-send-email-spujar@nvidia.com>
+ <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
+ <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
+ <40f098c8-b9e3-8da6-849a-eb9a39fefdb0@linux.intel.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <ce796f36-11df-7f9c-55aa-9c0833f28b93@nvidia.com>
+Date:   Mon, 4 Oct 2021 10:08:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bv1+/j0w6Rmu8lrkrj9iswEsvfmxTGOuiZlSdT1VcUD7swVzql5
- f4wh5MikpHPYlnvbOo2DtYa7VcEf9bg54xxgx7NKicqzNHXJCLcPOwSFUiYnPzezCfoGgGW
- VXzUWr5PuqaXZPFDKCBXs8ev7W/Otb+QDUbhHFE9OJYpkL8/viCCx57WZaUKYJWxo1RH92e
- vOKqbkMMOQZV/2MoeEhCg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TF5WtaWF8MQ=:upNBkGFiUZMTt03XZNu0pV
- +XY58JKUOIrkqV7dfwfDsWd5RdRrrnWkOujmmZ1IRDA6B44e8KMYPadf+gfrRemHgqDhsQ75W
- XH27Zx04PhJkPYdiCEMMMcHvBI6XI1qdtKzLc8i2mwRscYpdaUx0kOwEw9+SycSpHVGuwbZ+1
- K7aGZM1J/accn4xRYp8qybpoqORsM7uwcxuk1n3picrZEUr47B3nbi+X2AfxBe7atkL4hjgAd
- /aa0nTrtQ0po6WK88bPwTyH13wnHAnoe4Vy/tHLVd5vnd+2FIpT3JKeXs++YhlfcnmYGQoBLB
- Tk5NPyO+O25PT7zlGq7ckZUEuzPw0k6mTjC3e63gDRR4FZJULyEmpuXuGN7IMot41wNSP3CHq
- etYFl1/bTE5J711COyx4j37E2L0EH2XmLguMt6AKsw8LsQgTRYzQMx9bg8+5/6oN6mQx9TG7x
- 6R04x//xhPiKZ8mllcHIaYfB/GT9PBYkTTJLvmE/CNceE/Xhw6mx8MOuQWaS+cr7OsEMHxsoe
- 2rpOTIu6kuH2kaCA41TB3i1ImVVe5MnhX2B9LA+87/zDEm9r3JPrko8jVPrKSJ/XMscmuTydZ
- vq2Mvt8WB68TONBkPT0imiwY6XqK7zRYEUQaUmJw3eAHtvSaeZO05q7K7cLqFJF294p+byBca
- xdLZFevzueVtUmI2szAftDkNJsFrdc0OUe1k59/Av2uhEUskf+eTFiFoKLWf3TonJckZVghLD
- Sxzx7Mvf4v+rmY6Oj6eYEGfetK5bswqP7UE2QYUfe9YGN4G3sMyS8Om1QxbLfy5I5MO+alS3O
- SqX4T4bG/J3sv7qyd9YezOMpY3b3AD00lqAG6+YU5GM2hNI5cEhoouIM/k94UKDxEtLSRTOfs
- F7DuXnvrMJbIJLag/eveIDCSXa4kJdt01Ne6vKKrwVAZenfpuM7Bpp+FASyrYt0Z0hTXdfc5/
- 6DKj0qH0EB4pwhvy4dmhntSSvESbgDmrfLI/nJ5XsHdoKCNe+qkm6ATAeW8nOVQ9DXXLcG9Ry
- 3tcpbp7+10S9H0IIiivjXs9/lU43Y4tzBzE8Ld/nGveZ5saKMbZi5krtF0z5GUs1VjlYA8f3J
- yrRwPnkcLk70cU=
+In-Reply-To: <40f098c8-b9e3-8da6-849a-eb9a39fefdb0@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a99df673-8960-4e8c-a829-08d986f0c5c7
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1509:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB15097C2A48B44099FBB8FF7DA7AE9@CY4PR12MB1509.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LOq7SyReVsxVRDBFt9kpcm0evdEUGuxL3AwOnYfHPqMgDVSBMgraMRykKPQqrhJozrDFP7ffMHZ9hBIGIWKZf3y2KBcrKQeW+CBvl6gbIonMW6RqIRaU98uIPEUxfR5d71VMRRRvkGOtJ/94cKrK1bOlpRjSXNQJ+pqQSFWOzxtB+0H0+Dv+quFxtozjrHg4OkDG8h0IXKmYSaUDxLRe47EPeZnQa8+8PqGykk0rw1u+X3BUNIIrzR0Jk9wXYPURWrDz0jbpuLxG9etPsm700tzi+airxVAeZNxiMyH566BcKYoutha+G9XS/+nH0gOe7nABtgjjJeRZHEGVWHieBcFEVVqhM8PzMNy96Y14xcp4iK3sGcVzyS0AMd1x9khkFe6+SAOBXp1aQlfjAYg2/MUhyJ60xtQtPrGXjXulCKhd9yNLOgPvpfy1pX7f4MEQvyoCftKDDNNWUk2utl9AZbR0abgEwAyRKljP1zTMzoSwmTuBsGan00J0Af41HOSMLreNpBz0ncfombRMJKunYkFeHca3NuyweJFkhvNIIYoxXilR519DwadKdFdL3+3lqG2VyYKK7rnjyDQiwNjps8A+UK8jPSP7Z+uWZbA851rdpcn1ks1bNV6vCMiTqR3VI4HGa6Xm6durAMm1FasO9TC9+w6Vx6EoP06LE+8U2+4/w/WoZk3bzHpps1zzH/M78QkGLLuGXS7e9N8AvCimEkAMXpnFHJR4AraIe0t+wZQgny4YxDSN1v/lwJI7J1OI
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(31696002)(8936002)(426003)(2616005)(16576012)(336012)(186003)(86362001)(26005)(83380400001)(54906003)(2906002)(5660300002)(6666004)(8676002)(316002)(4326008)(110136005)(356005)(7636003)(16526019)(36756003)(53546011)(82310400003)(36860700001)(921005)(70206006)(7416002)(70586007)(47076005)(508600001)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 04:38:11.7077
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a99df673-8960-4e8c-a829-08d986f0c5c7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT043.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1509
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-10-03 at 20:34 +1300, Barry Song wrote:
+
+
+On 10/1/2021 12:30 AM, Pierre-Louis Bossart wrote:
+>> 1. The original issue at my end was not just a configuration redundancy.
+>> I realize now that with more stream addition following error print is seen.
+>>     "ASoC: too many users playback at open 4"
+>>
+>>     This is because the max DPCM users is capped at 8. Increasing this
+>> may help (need to see what number is better), but does not address the
+>> redundancy problem.
+> Going back to this DPCM_MAX_BE_USERS definition, it seems rather
+> arbitrary and not so useful indeed.
+
+>          /* first time the dpcm is open ? */
+>          if (be->dpcm[stream].users == DPCM_MAX_BE_USERS) {
+>                  dev_err(be->dev, "ASoC: too many users %s at open %d\n",
+>                          stream ? "capture" : "playback",
+>                          be->dpcm[stream].state);
+>                  continue;
+>          }
 >
-> I am wondering if this should be the responsibility of wake_wide()?
+> The comment is no longer aligned with the code, wondering if this is a
+> feature or a bug.
 
-Those event threads we stacked so high (which are kde minions btw),
-don't generally accrue _any_ wakee_flips, so when X wakes a slew of the
-things, wake_wide()'s heuristic rejects the lot.
+Looks like the comment is misplaced and the intention might have been to 
+place it like below?
 
-So yeah, the blame game for this issue is a target rich environment.
-Shoot either of 'em (or both), and you'll hit the bad guy.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e30cb5a..5cb5019 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1508,7 +1508,6 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime 
+*fe, int stream)
+                 if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+                         continue;
 
-	-Mike
+-               /* first time the dpcm is open ? */
+                 if (be->dpcm[stream].users == DPCM_MAX_BE_USERS) {
+                         dev_err(be->dev, "ASoC: too many users %s at 
+open %d\n",
+                                 stream ? "capture" : "playback",
+@@ -1516,6 +1515,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime 
+*fe, int stream)
+                         continue;
+                 }
+
++               /* first time the dpcm is open ? */
+                 if (be->dpcm[stream].users++ != 0)
+                         continue;
+
+>   There's no reason to arbitrarily restrict the number
+> of users of a BE, or the check would need to use platform-specific
+> information such as the number of inputs/outputs supported by a mixer/demux.
+>
+> Maybe Morimoto-san can comment since this was added in:
+>
+> 1db19c151819 ('ASoC: soc-pcm: fixup dpcm_be_dai_startup() user count')
+>
+> We're not done with soc-pcm.c cleanups :-)
+
