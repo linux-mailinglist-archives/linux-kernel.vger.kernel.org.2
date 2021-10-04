@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11300420D78
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4536E420C0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbhJDNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:15:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
+        id S234776AbhJDNCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236178AbhJDNNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A17961B80;
-        Mon,  4 Oct 2021 13:05:16 +0000 (UTC)
+        id S234370AbhJDNAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE66C619E7;
+        Mon,  4 Oct 2021 12:58:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352716;
-        bh=zuId3mR4mO8avS4gY7ly9zMtDOmU0UvhL4ALtRZ9A4k=;
+        s=korg; t=1633352289;
+        bh=bofRQF8V4KZ0GU9jbM7DDLS1tyHH/1lOTOy5XoKg1+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VrSz3y4TdQdSKjlrliM4p+RoQ3wLy62EzCa4cSCdsLX7biH64TsPw1NeMpUsBB5y1
-         5pUGoUIs3qSWvXshnKqMIxBBsuPh49p+5Vn7swFVDoTnCf7VjAyawHGJKzHeCkqmRT
-         tt+/or0VeGOuvW1x6zIA3ssNy9aEBOYuTzkouriY=
+        b=yZs/8hPtyNF7vQc1SrJJkRiCeQkIuu68aRpb+4UlBXablEdS4fznqcaRIh8AQdHDq
+         KMBrK+bxHMNAWfTpcTMp0l/WAewj02kGPjzOOd/3OqCLmEvKdS7hsjDma6jeojnPr8
+         FPWmE2XGOaXbknPNLVrXHxeyy/CghzoNlm/Mu2Yw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhan Liu <Zhan.Liu@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 61/95] drm/amd/display: Pass PCI deviceid into DC
-Date:   Mon,  4 Oct 2021 14:52:31 +0200
-Message-Id: <20211004125035.569084303@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.9 48/57] EDAC/synopsys: Fix wrong value type assignment for edac_mode
+Date:   Mon,  4 Oct 2021 14:52:32 +0200
+Message-Id: <20211004125030.472839416@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charlene Liu <Charlene.Liu@amd.com>
+From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
 
-commit d942856865c733ff60450de9691af796ad71d7bc upstream.
+commit 5297cfa6bdf93e3889f78f9b482e2a595a376083 upstream.
 
-[why]
-pci deviceid not passed to dal dc, without proper break,
-dcn2.x falls into dcn3.x code path
+dimm->edac_mode contains values of type enum edac_type - not the
+corresponding capability flags. Fix that.
 
-[how]
-pass in pci deviceid, and break once dal_version initialized.
+Issue caught by Coverity check "enumerated type mixed with another
+type."
 
-Reviewed-by: Zhan Liu <Zhan.Liu@amd.com>
-Acked-by: Anson Jacob <Anson.Jacob@amd.com>
-Signed-off-by: Charlene Liu <Charlene.Liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+ [ bp: Rewrite commit message, add tags. ]
+
+Fixes: ae9b56e3996d ("EDAC, synps: Add EDAC support for zynq ddr ecc controller")
+Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210818072315.15149-1-shubhrajyoti.datta@xilinx.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -412,6 +412,7 @@ static int amdgpu_dm_init(struct amdgpu_
+---
+ drivers/edac/synopsys_edac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -371,7 +371,7 @@ static int synps_edac_init_csrows(struct
  
- 	init_data.asic_id.pci_revision_id = adev->rev_id;
- 	init_data.asic_id.hw_internal_rev = adev->external_rev_id;
-+	init_data.asic_id.chip_id = adev->pdev->device;
- 
- 	init_data.asic_id.vram_width = adev->gmc.vram_width;
- 	/* TODO: initialize init_data.asic_id.vram_type here!!!! */
+ 		for (j = 0; j < csi->nr_channels; j++) {
+ 			dimm            = csi->channels[j]->dimm;
+-			dimm->edac_mode = EDAC_FLAG_SECDED;
++			dimm->edac_mode = EDAC_SECDED;
+ 			dimm->mtype     = synps_edac_get_mtype(priv->baseaddr);
+ 			dimm->nr_pages  = (size >> PAGE_SHIFT) / csi->nr_channels;
+ 			dimm->grain     = SYNPS_EDAC_ERR_GRAIN;
 
 
