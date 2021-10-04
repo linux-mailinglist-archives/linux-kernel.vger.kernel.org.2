@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA4A421663
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279BA421666
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238402AbhJDS2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        id S238530AbhJDS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238541AbhJDS2M (ORCPT
+        with ESMTP id S238408AbhJDS26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:28:12 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605BFC061746;
-        Mon,  4 Oct 2021 11:26:23 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id y14so6777780vsm.9;
-        Mon, 04 Oct 2021 11:26:23 -0700 (PDT)
+        Mon, 4 Oct 2021 14:28:58 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D321EC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:27:08 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id h2so39762017ybi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6n/vts0PyHmoxi8oEBeOuVoVdH7tRF+8eeP06Mq4yWA=;
-        b=NuDtgVLsxGgAxPAHdWpFc8G6LW+l550GL9Nh06oO17X1ulv4GnhPCUdBjx+zU4LSyH
-         Lse4QOm89izzccTGHht3YRE4BXD12YPzgpcUFqqUG/Vu0p2LIJQKubFN4zmlqKNwdyG7
-         qNmTA1rh02vDf6WggG/IYDve1KWSYW+jM9Vc1U/CIfj7okQO7UbHnsgBNeoFw0WPom/k
-         /VwHya7SSczwtL1tixVNZaILyrKuFNAlS3P1BhwgqLhEANIuDYfTMZtKO62LU2jeXiK8
-         kWZdMMqClpOq1da2IhvLtAPlP8DAPFbIm7Hpu9fpeB7ubx5iLHYfkzBIBeS0lEkxVH5m
-         04ng==
+        bh=PIqLRUwkpWrhqoIb+2LbHIi6YwYZzYCnePRyYQW7lLY=;
+        b=gjvD3+vx4+r4kREI+kJyLRqAt3T9ueCkkwyrIGXw4kVjsxk4B+g3/MppZhl7N6wTiV
+         PMJqtTnyCh8HPiYVaClZKX6vsiy/6Hky+sKMa3Lv0KbQMju9xs4Np2wLdKgAB0JjT9Od
+         WKQmaL+SK4LQ59q2qi8GLJ4pEsOTqRJWOl1nQNfc6qULxZIsXFlxrSF4fWxTsGlbaevw
+         2YN7Xw8DA2tlSfBVpAcffPslrlDJrVUOjvu3UqCLjaEuFPaWwtlUYBZRaMkFjY1QzZ/Z
+         uDOdzZ5anwcBpaqRWOz2jV0W6w/UdOifflY5/OMNNvn9JP/fumSBYvDtWLn74afG0khE
+         2vwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6n/vts0PyHmoxi8oEBeOuVoVdH7tRF+8eeP06Mq4yWA=;
-        b=pJez7O6ZNiNhVG3XkKCx+YFkQnaNs0+uddMuRrna3VE1dsSK8X57STZ/SixdzKaQ62
-         lL3m+qaSE2qvQ+pTIAm5fmpz47MS5j7mmjnBcp/Va5EYbZEUekgbrWeeSbudOOZ90pxX
-         ccur+mtGJb7J8xJDiXPRrSANLv5jZxPHZ0F2zxBOoZTfBeewK4Su2uz0U1LYaXejZhWe
-         qqKTerpwGpr3C37grnfw2jg1GR9pS204fL00hTzMUfdMnIaOBpECHbvxF4/VTdocElTS
-         vxdgiTcNGVMbsR1LmkdT6/CuBhJNR/xpVrRm/hRnl3dlVemlB4cpSWn55L1G6TaFQPYA
-         0g1g==
-X-Gm-Message-State: AOAM532LBuQtTQANaqrsGj1bcYkILSdzmp71DBf2rLBVUK8TwTU3J+8e
-        mbWV+L8SX0DWasx0a5N3CMTmCqaxnEyXkvIYZNI=
-X-Google-Smtp-Source: ABdhPJyWkVxkzj24O9IbQ07+XhO2ovB+390tYNmw0/qcOFn04pnzmeGJsny1QYwPGB1Z3BUS7aR0Sa6NBsE2uQoC/w4=
-X-Received: by 2002:a67:d189:: with SMTP id w9mr14525515vsi.55.1633371982514;
- Mon, 04 Oct 2021 11:26:22 -0700 (PDT)
+        bh=PIqLRUwkpWrhqoIb+2LbHIi6YwYZzYCnePRyYQW7lLY=;
+        b=l6DcOBEhmW0u1jThJe6zjPolrQcBzGi9jv+WM2lWNwmq3WBmLojHdrIval4ZzMldqk
+         z+Ir02wYWuGZVPgvtnO6VbfaeynXM/2PZuo0z9XzQeHX9WU21R0aP7oZAWBZNFMlEtd+
+         0LlXI5MjjgLXOhjWT3HYvVmmFk6mLsJwJqjpOz05YSxd3Yc2efVW7QCYoKCR6yfnERn1
+         k0Cs57PbpNwTiRCcxR1ZZ8ySwg7PFE8MnNV/38PYYC86HnR43nCYFDOQaRlxoU1jcpFx
+         8zgvD5areANoazzsJ1shX7EYFatQbtE8ySNW5EHm9e+ARuzBE/2FdS5oOOCuXQsc8PWa
+         PE1Q==
+X-Gm-Message-State: AOAM532WfYJ/9UcqBjnTRKfaA50+Syd/rATiTkblyJdAeoZeomcQj8Xh
+        ZXymMp+Ohjb34o/Utlic/PAValjogcbRESgWJw7rew==
+X-Google-Smtp-Source: ABdhPJwQO8pJHFNb8p9v0Uv+zTJOyZYyUBFOwoiGCzuPT59UynGevvRHp+VVKupk5VUaX29Kw8b7Zy4woqEdE6YhWDI=
+X-Received: by 2002:a5b:283:: with SMTP id x3mr16689301ybl.439.1633372027973;
+ Mon, 04 Oct 2021 11:27:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
- <20210926145931.14603-2-sergio.paracuellos@gmail.com> <YVtBsrmCDk/sLsRJ@robh.at.kernel.org>
-In-Reply-To: <YVtBsrmCDk/sLsRJ@robh.at.kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Mon, 4 Oct 2021 20:26:11 +0200
-Message-ID: <CAMhs-H_qBkQhzwvcVyFbegf412ecvweOBOYq8NW2hBNYUUCE-w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: reset: add dt binding header for ralink
- RT2880 resets
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210914223114.435273-1-rananta@google.com> <20210914223114.435273-13-rananta@google.com>
+ <ab2a7213-1857-6761-594d-958af864a23a@huawei.com>
+In-Reply-To: <ab2a7213-1857-6761-594d-958af864a23a@huawei.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 4 Oct 2021 11:26:57 -0700
+Message-ID: <CAJHc60yXKdCCpSejxwGpmqoTenm=3589+ahmzkLkSnmy89+YLQ@mail.gmail.com>
+Subject: Re: [PATCH v7 12/15] KVM: arm64: selftests: Add basic GICv3 support
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 8:02 PM Rob Herring <robh@kernel.org> wrote:
+On Thu, Sep 30, 2021 at 1:06 AM Zenghui Yu <yuzenghui@huawei.com> wrote:
 >
-> On Sun, Sep 26, 2021 at 04:59:29PM +0200, Sergio Paracuellos wrote:
-> > Adds dt binding header for 'ralink,rt2880-reset' resets.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  include/dt-bindings/reset/ralink-rt2880.h | 40 +++++++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >  create mode 100644 include/dt-bindings/reset/ralink-rt2880.h
-> >
-> > diff --git a/include/dt-bindings/reset/ralink-rt2880.h b/include/dt-bindings/reset/ralink-rt2880.h
-> > new file mode 100644
-> > index 000000000000..266ef521a584
-> > --- /dev/null
-> > +++ b/include/dt-bindings/reset/ralink-rt2880.h
-> > @@ -0,0 +1,40 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
+> On 2021/9/15 6:31, Raghavendra Rao Ananta wrote:
+> > +static inline void *gicr_base_gpa_cpu(void *redist_base, uint32_t cpu)
+> > +{
+> > +     /* Align all the redistributors sequentially */
+> > +     return redist_base + cpu * SZ_64K * 2;
+> > +}
+> > +
+> > +static void gicv3_cpu_init(unsigned int cpu, void *redist_base)
+> > +{
+> > +     void *sgi_base;
+> > +     unsigned int i;
+> > +     void *redist_base_cpu;
+> > +
+> > +     GUEST_ASSERT(cpu < gicv3_data.nr_cpus);
+> > +
+> > +     redist_base_cpu = gicr_base_gpa_cpu(redist_base, cpu);
 >
-> Dual license please.
+> This is not 'gpa' and I'd rather open-code it directly as there's
+> just a single caller.
+>
+> Zenghui
 
-Ah, ok. I thought the dual license was only for binding yaml files but
-not for headers since there are a lot of already mainlined files with
-only GPL-2.0. I will take into account from now that binding headers
-also need dual license.
+Thanks for catching this. I agree that mentioning 'gpa' oddballs this
+function, since it's called from a guest's point of view. If there are
+any other major changes in the series, I'll try to change this as
+well. Else, I will try to raise a separate patch to resolve this.
 
-Thanks for the review and clarification.
-
-Best regards,
-    Sergio Paracuellos
+Regards,
+Raghavendra
