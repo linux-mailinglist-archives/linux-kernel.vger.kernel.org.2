@@ -2,60 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C1B42051F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 05:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18DC420539
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhJDDzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 23:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhJDDzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 23:55:51 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49FCC0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 20:54:02 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id b8so24911023edk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 20:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=V08KH7c7Zm4ftwGYWSjVqELi77KWFRR2G0NwTulFNiA=;
-        b=KzTr5zjgADsiUdfIHrSg4PgtCE1N7WN81ub/1MRCIlBpALILkw4qhzlIlGkBx0Q29q
-         3W2nOclcRPqBYCDfaTuUNIeyE7fVgEZPWCcUWcaEwnhtHXH5pZGGemq8GUSNto+RT3O0
-         oqU4cWwSZ7jbiqXxBaOC2IFZ8fOPExONOoIfHGr0c0aILyUSmnCGScWDtJltN67NVGsP
-         BVkw1q04JsDufrRH4EFOpHqpXC24fG2rBDo9YKpUmr3JyjXHRYQGreYWAzuDfr4z4v8x
-         8y+MP1iOl4nGpSpbazR0r28IKD9a9gVLcCLW23F+0FKgRBHJlTPoVY2OSumgFFqAkNM6
-         sIrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=V08KH7c7Zm4ftwGYWSjVqELi77KWFRR2G0NwTulFNiA=;
-        b=cUl8FEbXPltiXRZ/f2KLGGuOubtHX7R3OXR6xLpVBoRECR8HRdHyjsHGGGaAX8z5U5
-         XRWg5kHFVhkTxjYQhlh8uRBj7r3l76JswAqxdnbGhjDC/yKfdkD7WGJSyAf2z0TpxoSS
-         YmxCSXgaYyK6k1/Eq20iZGxq9n8apyYuz71T0VJ+w+hs1JcrkmSIOArAbUrH91l+UsAS
-         JhPjE0TT+JjjCn93nEPyVZWtaLvJK7XhPNRkQi4GdRAw5KAnboo5pCBo7f2uAuRoKh3S
-         MtEiP5hXMSw7v8oPD9AfjnlNz57iw66Xqm3P/ZMdYwfB3TIIQj5pEAkD45fBc7HBEZTK
-         hAmw==
-X-Gm-Message-State: AOAM532ACH1BCGeNiLDyDA1fn8OdwxvC+nloprng3wK9nhvFGkqUKBhm
-        HaBcOAU9+EUX9JJDdrhD3f3q25FOOyqxvpy2c2I=
-X-Google-Smtp-Source: ABdhPJyfRm/L3IY2tR5VnFl0SnpXqS7lGnmfjOn+oJ70rCnVsoGthhwXNG/0ElZVx7SNqnXIAh73wGzAmRGV/9oxvwE=
-X-Received: by 2002:a05:6402:709:: with SMTP id w9mr15510959edx.345.1633319641371;
- Sun, 03 Oct 2021 20:54:01 -0700 (PDT)
+        id S232465AbhJDE0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 00:26:31 -0400
+Received: from mail1.ugh.no ([178.79.162.34]:58782 "EHLO mail1.ugh.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230193AbhJDE0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 00:26:30 -0400
+X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 00:26:30 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail1.ugh.no (Postfix) with ESMTP id 56DC02554CA;
+        Mon,  4 Oct 2021 06:15:59 +0200 (CEST)
+Received: from mail1.ugh.no ([127.0.0.1])
+        by localhost (catastrophix.ugh.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LwONpQ8GEa86; Mon,  4 Oct 2021 06:15:58 +0200 (CEST)
+Received: from [IPV6:2a0a:2780:4e89:40:96fb:1f70:94af:2f39] (unknown [IPv6:2a0a:2780:4e89:40:96fb:1f70:94af:2f39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: andre@tomt.net)
+        by mail.ugh.no (Postfix) with ESMTPSA id DE8C02554C4;
+        Mon,  4 Oct 2021 06:15:57 +0200 (CEST)
+Message-ID: <0599f364-c9cc-31af-e500-89778f0b566c@tomt.net>
+Date:   Mon, 4 Oct 2021 06:15:56 +0200
 MIME-Version: 1.0
-Received: by 2002:a05:6402:44a:0:0:0:0 with HTTP; Sun, 3 Oct 2021 20:54:00
- -0700 (PDT)
-From:   Amanda Williamson <shynne728@gmail.com>
-Date:   Mon, 4 Oct 2021 03:54:00 +0000
-Message-ID: <CAG+MEd7ndAnvehOjSmYh90RHacgK7-5HAexrmLh+4QUbXqzw2Q@mail.gmail.com>
-Subject: good morning
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 5.14 058/162] igc: fix build errors for PTP
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Ederson de Souza <ederson.desouza@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        intel-wired-lan@lists.osuosl.org, Sasha Levin <sashal@kernel.org>
+References: <20210927170233.453060397@linuxfoundation.org>
+ <20210927170235.491648102@linuxfoundation.org>
+From:   Andre Tomt <andre@tomt.net>
+In-Reply-To: <20210927170235.491648102@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello
-Can i talk to you please?
-Amanda
+On 27.09.2021 19:01, Greg Kroah-Hartman wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> [ Upstream commit 87758511075ec961486fe78d7548dd709b524433 ]
+> 
+> When IGC=y and PTP_1588_CLOCK=m, the ptp_*() interface family is
+> not available to the igc driver. Make this driver depend on
+> PTP_1588_CLOCK_OPTIONAL so that it will build without errors.
+> 
+> Various igc commits have used ptp_*() functions without checking
+> that PTP_1588_CLOCK is enabled. Fix all of these here.
+> 
+> Fixes these build errors:
+> 
+> ld: drivers/net/ethernet/intel/igc/igc_main.o: in function `igc_msix_other':
+> igc_main.c:(.text+0x6494): undefined reference to `ptp_clock_event'
+> ld: igc_main.c:(.text+0x64ef): undefined reference to `ptp_clock_event'
+> ld: igc_main.c:(.text+0x6559): undefined reference to `ptp_clock_event'
+> ld: drivers/net/ethernet/intel/igc/igc_ethtool.o: in function `igc_ethtool_get_ts_info':
+> igc_ethtool.c:(.text+0xc7a): undefined reference to `ptp_clock_index'
+> ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_feature_enable_i225':
+> igc_ptp.c:(.text+0x330): undefined reference to `ptp_find_pin'
+> ld: igc_ptp.c:(.text+0x36f): undefined reference to `ptp_find_pin'
+> ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_init':
+> igc_ptp.c:(.text+0x11cd): undefined reference to `ptp_clock_register'
+> ld: drivers/net/ethernet/intel/igc/igc_ptp.o: in function `igc_ptp_stop':
+> igc_ptp.c:(.text+0x12dd): undefined reference to `ptp_clock_unregister'
+> ld: drivers/platform/x86/dell/dell-wmi-privacy.o: in function `dell_privacy_wmi_probe':
+> 
+> Fixes: 64433e5bf40ab ("igc: Enable internal i225 PPS")
+> Fixes: 60dbede0c4f3d ("igc: Add support for ethtool GET_TS_INFO command")
+> Fixes: 87938851b6efb ("igc: enable auxiliary PHC functions for the i225")
+> Fixes: 5f2958052c582 ("igc: Add basic skeleton for PTP")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Ederson de Souza <ederson.desouza@intel.com>
+> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+> Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+> Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> Cc: intel-wired-lan@lists.osuosl.org
+> Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/net/ethernet/intel/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+> index 82744a7501c7..c11d974a62d8 100644
+> --- a/drivers/net/ethernet/intel/Kconfig
+> +++ b/drivers/net/ethernet/intel/Kconfig
+> @@ -335,6 +335,7 @@ config IGC
+>   	tristate "Intel(R) Ethernet Controller I225-LM/I225-V support"
+>   	default n
+>   	depends on PCI
+> +	depends on PTP_1588_CLOCK_OPTIONAL
+>   	help
+>   	  This driver supports Intel(R) Ethernet Controller I225-LM/I225-V
+>   	  family of adapters.
+> 
+
+PTP_1588_CLOCK_OPTIONAL does not exist in 5.14, so this effectively 
+disables the igc driver completely when applied to stable as-is.
