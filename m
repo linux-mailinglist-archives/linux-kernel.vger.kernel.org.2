@@ -2,65 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B828421AC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD28421AC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhJDXkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:40:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234995AbhJDXj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:39:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBA161131;
-        Mon,  4 Oct 2021 23:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633390689;
-        bh=7FQS12BJyVfLKwhmHhNpViQ6vnbzhOByhHXQRuhEDAw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=czVI7h9CjVBBLcioO417aQterEvQMv2y8n4apS/L+6qdf8SIZ6u4Nz/6uHWRBsif9
-         mYXIuuNprKHnMY7WfFqhRGbzQhUOG8w63Ao88tw449K8hQkJ7eF7JEsssh4xX4jvtY
-         NO78FsgvvBDfIoQgm5JAEnTy1BtrgRHKuc+gyoEBKD32aOQpFsiMuxFXwksDvmkYf7
-         yxqaDDhDR7r1QUftffK/a+UhWHD3XUoZV7l+b4hbI5g4wk+riiZaGuK870TGKuWp2f
-         i/lkH7Qr4CYdFeBuXJNAbfAHVUmgB2opyha4vLjDvFKe+1qq7uqeL4Li8L++U1XAi6
-         Q+7YfGr84SZCg==
-Date:   Mon, 4 Oct 2021 16:38:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 1/5] devlink: Reduce struct devlink exposure
-Message-ID: <20211004163808.437ea8f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <d21ebe6fde8139d5630ef4ebc9c5eb6ed18b0e3b.1633284302.git.leonro@nvidia.com>
-References: <cover.1633284302.git.leonro@nvidia.com>
-        <d21ebe6fde8139d5630ef4ebc9c5eb6ed18b0e3b.1633284302.git.leonro@nvidia.com>
+        id S233825AbhJDXlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhJDXlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:41:47 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2AFC061745;
+        Mon,  4 Oct 2021 16:39:57 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNcdQ1btDz4xbQ;
+        Tue,  5 Oct 2021 10:39:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633390794;
+        bh=aB8IhWK87FWexNccjwVQpSKQmkPZxtzJR0jnzym8MlQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fPbZTUtn+6mxB7FjW1/yoaJWXG9A/zaRsqpw7x3EAQNskufHy6GkDf41ogLA+5kqS
+         o+8Tg8FRk0xFNaLQlNefEtCm+Z+mrdEzVA5R2Ta2P2EwsRqsgKox5+se8dNazqG5wo
+         5kozGLRDsrW4Ylr+0jx5v/THk+HTcltPcsgZ+eL/jBk74nsYu90WImezpWFX0gIK/q
+         xFma1R7KCpRCfOA7XmEnal2/TnoSQ79nAl2BkfBwJy4dfrnNruBi95HTTKOH1tt9fp
+         yQYtJZO/6rC2LhVJtQk4oV86ocWWpTdiKC1m7O//100lYmJHOD9HqwXoWxWv/NN21a
+         DXoegpdlxwCEA==
+Date:   Tue, 5 Oct 2021 10:39:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Colin Cross <ccross@android.com>, Olof Johansson <olof@lixom.net>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the tegra tree
+Message-ID: <20211005103952.0914094d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/NRVJUM/wJFDNVy_FKET=KhO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Oct 2021 21:12:02 +0300 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> The declaration of struct devlink in general header provokes the
-> situation where internal fields can be accidentally used by the driver
-> authors. In order to reduce such possible situations, let's reduce the
-> namespace exposure of struct devlink.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+--Sig_/NRVJUM/wJFDNVy_FKET=KhO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-100% subjective but every time I decided to hide a structure definition
-like this I came to regret it later. The fact there is only one minor
-infraction in drivers poking at members seems to prove this is not in
-fact needed.
+Hi all,
+
+After merging the tegra tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+In file included from arch/x86/include/asm/bug.h:84,
+                 from include/linux/bug.h:5,
+                 from arch/x86/include/asm/paravirt.h:15,
+                 from arch/x86/include/asm/irqflags.h:63,
+                 from include/linux/irqflags.h:16,
+                 from include/linux/rcupdate.h:26,
+                 from include/linux/rculist.h:11,
+                 from include/linux/pid.h:5,
+                 from include/linux/sched.h:14,
+                 from include/linux/ratelimit.h:6,
+                 from include/linux/dev_printk.h:16,
+                 from include/linux/device.h:15,
+                 from include/linux/of_reserved_mem.h:5,
+                 from drivers/memory/tegra/tegra210-emc-table.c:6:
+include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
+include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h:112:15: note: each undeclared identifier is repor=
+ted only once for each function it appears in
+  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
+include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
+include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+In file included from arch/x86/include/asm/bug.h:84,
+                 from include/linux/bug.h:5,
+                 from include/linux/cpumask.h:14,
+                 from arch/x86/include/asm/cpumask.h:5,
+                 from arch/x86/include/asm/msr.h:11,
+                 from arch/x86/include/asm/processor.h:22,
+                 from arch/x86/include/asm/timex.h:5,
+                 from include/linux/timex.h:65,
+                 from include/linux/time32.h:13,
+                 from include/linux/time.h:60,
+                 from include/linux/stat.h:19,
+                 from include/linux/module.h:13,
+                 from drivers/media/cec/platform/tegra/tegra_cec.c:14:
+include/linux/clk/tegra.h: In function 'tegra_cpu_rail_off_ready':
+include/linux/clk/tegra.h:112:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h:112:15: note: each undeclared identifier is repor=
+ted only once for each function it appears in
+  112 |  if (WARN_ON(!tegra_cpu_car_ops->rail_off_ready))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h: In function 'tegra_cpu_clock_suspend':
+include/linux/clk/tegra.h:120:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  120 |  if (WARN_ON(!tegra_cpu_car_ops->suspend))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+include/linux/clk/tegra.h: In function 'tegra_cpu_clock_resume':
+include/linux/clk/tegra.h:128:15: error: 'tegra_cpu_car_ops' undeclared (fi=
+rst use in this function)
+  128 |  if (WARN_ON(!tegra_cpu_car_ops->resume))
+      |               ^~~~~~~~~~~~~~~~~
+include/asm-generic/bug.h:121:25: note: in definition of macro 'WARN_ON'
+  121 |  int __ret_warn_on =3D !!(condition);    \
+      |                         ^~~~~~~~~
+
+Presumably caused by commit
+
+  bbe30ae68d14 ("cpuidle: tegra: Enable compile testing")
+
+I have used the tegra tree from next-20211001 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/NRVJUM/wJFDNVy_FKET=KhO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbkMgACgkQAVBC80lX
+0Gxt1gf/Xi25Ccipu9S6381vB5Rj5/YGf4iPXTWG1OuWTrTedw0h2jnr9SiQAaCF
+p+iuYkNRt3pfJqECXgyuEq+h4cg9XH5rI/312NQivNHbRPWyMOZzkacLPkiG072t
+Q3fvmgWWjuzgr8O+9snfCd+qMgFflsZUbumcQuKp8K9CiPNi3bDvcXQcm+5b74nO
+Roq9MwCeLvRbZxdybGYd91VCyinYH37qUfC3vlwaEoo14vPzSxRiaZySWnwtP5+9
+vlLdq7Bbpz/tmKC56yDkhrrjThAuVsq8lLdeau3O0I75pCrS2MZXYMcA7wJDvvry
++rGx4PfNR3Hjp2aYPPLdVBRY639fFw==
+=mKWV
+-----END PGP SIGNATURE-----
+
+--Sig_/NRVJUM/wJFDNVy_FKET=KhO--
