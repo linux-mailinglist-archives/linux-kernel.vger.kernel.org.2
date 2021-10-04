@@ -2,179 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03594216E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212734216F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238825AbhJDTEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236871AbhJDTD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:03:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB08D610C9;
-        Mon,  4 Oct 2021 19:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633374130;
-        bh=ums4GQN0hZsGykpaXdF4ywDi56bYq6IogSUjYVxl8jc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tof7535P9szlEJzEUNXb1UiENraBp7dHy173RGKQSYjSVKAughXi6MSyz6Yf84XrH
-         gQt19jOUfXXFOigzu7xg7gRmSuJsOZyaCIEsToeXu61Z/QugRK3Ljj9oX2aldLC4wz
-         CFrLjxbXlB660i5C8nR/F6WrZUxHGWlP0+mHzGTC4V5Ts0PKpTRBvqfbsR1oneL3i4
-         e/mYDb/CTAw45EnUuYG3sreQk+wN1S4FrUkHWwx4JozS7oc6dgpaMawqPgfgjkaJxj
-         3RBgIvJX00wpDkcu4AOaOtBZOPLf1cS6s+el7sAP/Rlzio7H0XlQs6joEOcEeGC2xT
-         Dyqq9ZaoCqP8A==
-Date:   Mon, 4 Oct 2021 22:02:06 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
- interface
-Message-ID: <YVtPruw9kzOQvhZu@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
- <YVsNfLzhGULiifw2@shredder>
- <YVshg3a9OpotmOQg@unreal>
- <YVsxqsEGkV0A5lvO@shredder>
+        id S238854AbhJDTFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238855AbhJDTFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:05:50 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B239FC061749;
+        Mon,  4 Oct 2021 12:04:00 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0fe4009c23c25c98857304.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e400:9c23:c25c:9885:7304])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 774201EC03D2;
+        Mon,  4 Oct 2021 21:03:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633374238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0Nms4auAY3J/VUVtMgcFZcZpc069CLLUqzM+bdeYLVk=;
+        b=hB1AzTSsB1cgjjLDziTXH0QngoL3aO0oKRg7k+c5hPO68B1wguz1yl6+QrOaVKi3NLEbrh
+        joloXjbwL8oGdS5mMnbNgevjUzDOetUYM2ffcG/crFVIlxNq94ibITOrm89OrC30+oHyJW
+        th69nz+SBcfqNS7StlH4IeV54nrlyNI=
+Date:   Mon, 4 Oct 2021 21:03:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        x86@kernel.org, devicetree@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zev Weiss <zweiss@equinix.com>,
+        David Muller <d.mueller@elsoft.ch>
+Subject: Re: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
+ headers
+Message-ID: <YVtQG+idmwKn0qLe@zn.tnic>
+References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
+ <20210803113134.2262882-2-iwona.winiarska@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YVsxqsEGkV0A5lvO@shredder>
+In-Reply-To: <20210803113134.2262882-2-iwona.winiarska@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 07:54:02PM +0300, Ido Schimmel wrote:
-> On Mon, Oct 04, 2021 at 06:45:07PM +0300, Leon Romanovsky wrote:
-> > On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
-> > > On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > After changes to allow dynamically set the reload_up/_down callbacks,
-> > > > we ensure that properly supported devlink ops are not accessible before
-> > > > devlink_register, which is last command in the initialization sequence.
-> > > > 
-> > > > It makes devlink_reload_enable/_disable not relevant anymore and can be
-> > > > safely deleted.
-> > > > 
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > [...]
-> > > 
-> > > > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-> > > > index cb6645012a30..09e48fb232a9 100644
-> > > > --- a/drivers/net/netdevsim/dev.c
-> > > > +++ b/drivers/net/netdevsim/dev.c
-> > > > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
-> > > >  
-> > > >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
-> > > >  	devlink_register(devlink);
-> > > > -	devlink_reload_enable(devlink);
-> > > >  	return 0;
-> > > >  
-> > > >  err_psample_exit:
-> > > > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
-> > > >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
-> > > >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
-> > > >  
-> > > > -	devlink_reload_disable(devlink);
-> > > >  	devlink_unregister(devlink);
-> > > > -
-> > > >  	nsim_dev_reload_destroy(nsim_dev);
-> > > >  
-> > > >  	nsim_bpf_dev_exit(nsim_dev);
-> > > 
-> > > I didn't remember why devlink_reload_{enable,disable}() were added in
-> > > the first place so it was not clear to me from the commit message why
-> > > they can be removed. It is described in commit a0c76345e3d3 ("devlink:
-> > > disallow reload operation during device cleanup") with a reproducer.
-> > 
-> > It was added because devlink ops were accessible by the user space very
-> > early in the driver lifetime. All my latest devlink patches are the
-> > attempt to fix this arch/design/implementation issue.
+On Tue, Aug 03, 2021 at 01:31:20PM +0200, Iwona Winiarska wrote:
+> Baseboard management controllers (BMC) often run Linux but are usually
+> implemented with non-X86 processors. They can use PECI to access package
+> config space (PCS) registers on the host CPU and since some information,
+> e.g. figuring out the core count, can be obtained using different
+> registers on different CPU generations, they need to decode the family
+> and model.
 > 
-> The reproducer in the commit message executed the reload after the
-> device was fully initialized. IIRC, the problem there was that nothing
-> prevented these two tasks from racing:
+> Move the data from arch/x86/include/asm/intel-family.h into a new file
+> include/linux/x86/intel-family.h so that it can be used by other
+> architectures.
 > 
-> devlink dev reload netdevsim/netdevsim10
-> echo 10 > /sys/bus/netdevsim/del_device
-> 
-> The title also talks about forbidding reload during device cleanup.
+> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> To limit tree-wide changes and help people that were expecting
+> intel-family defines in arch/x86 to find it more easily without going
+> through git history, we're not removing the original header
+> completely, we're keeping it as a "stub" that includes the new one.
+> If there is a consensus that the tree-wide option is better,
+> we can choose this approach.
 
-It is incomplete title and reproducer. In our verification, we observed
-more than 40 bugs related to devlink reload flows and races around it.
+Why can't the linux/ namespace header include the x86 one so that
+nothing changes for arch/x86/?
 
-> 
-> > 
-> > > 
-> > > Tried the reproducer with this series and I cannot reproduce the issue.
-> > > Wasn't quite sure why, but it does not seem to be related to "changes to
-> > > allow dynamically set the reload_up/_down callbacks", as this seems to
-> > > be specific to mlx5.
-> > 
-> > You didn't reproduce because of my series that moved
-> > devlink_register()/devlink_unregister() to be last/first commands in
-> > .probe()/.remove() flows.
-> 
-> Agree, that is what I wrote in the next paragraph of my reply.
-> 
-> > 
-> > Patch to allow dynamically set ops was needed because mlx5 had logic
-> > like this:
-> >  if(something)
-> >     devlink_reload_enable()
-> > 
-> > And I needed a way to keep this if ... condition.
-> > 
-> > > 
-> > > IIUC, the reason that the race described in above mentioned commit can
-> > > no longer happen is related to the fact that devlink_unregister() is
-> > > called first in the device dismantle path, after your previous patches.
-> > > Since both the reload operation and devlink_unregister() hold
-> > > 'devlink_mutex', it is not possible for the reload operation to race
-> > > with device dismantle.
-> > > 
-> > > Agree? If so, I think it would be good to explain this in the commit
-> > > message unless it's clear to everyone else.
-> > 
-> > I don't agree for very simple reason that devlink_mutex is going to be
-> > removed very soon and it is really not a reason why devlink reload is
-> > safer now when before.
-> > 
-> > The reload can't race due to:
-> > 1. devlink_unregister(), which works as a barrier to stop accesses
-> > from the user space.
-> > 2. reference counting that ensures that all in-flight commands are counted.
-> > 3. wait_for_completion that blocks till all commands are done.
-> 
-> So the wait_for_completion() is what prevents the race, not
-> 'devlink_mutex' that is taken later. This needs to be explained in the
-> commit message to make it clear why the removal is safe.
+And if it is really only a handful of families you need, you might just
+as well copy them into the peci headers and slap a comment above it
+saying where they come from and save yourself all that churn...
 
-Can you please suggest what exactly should I write in the commit message
-to make it clear?
+-- 
+Regards/Gruss,
+    Boris.
 
-I'm too much into this delvink stuff already and for me this patch is
-trivial. IMHO, that change doesn't need an explanation at all because
-coding pattern of refcount + wait_for_completion is pretty common in the
-kernel. So I think that I explained good enough: move of
-devlink_register/devlink_unregister obsoletes the devlink_reload_* APIs.
-
-I have no problem to update the commit message, just help me with the
-message.
-
-Thanks
-
-> 
-> Thanks
+https://people.kernel.org/tglx/notes-about-netiquette
