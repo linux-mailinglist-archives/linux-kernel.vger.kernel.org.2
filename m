@@ -2,81 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DD4421A6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4335421A6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234021AbhJDXGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S231273AbhJDXG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbhJDXGO (ORCPT
+        with ESMTP id S231575AbhJDXGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:06:14 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65C3C061745;
-        Mon,  4 Oct 2021 16:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Hzftuv3PjPqJSiP37NDPAWqu7Juih7yGqoA9fFvnUQk=; b=sDgxro6akYfeWFAiiSGMq4F79X
-        nKsykoajwK4BAbwHVOzz9pLEYKMSK69CCNKfo14OUYuMcDdK7EDhfKI4YEqe3d0wgrFQKVo81A0JZ
-        8TEfuiBMC5ja/nmGK9FVRzgiw+UHtGL2C3c9gI61tmJoWjc0h39miLibrSZtxd2lps7FZVQBOULj2
-        XcYE4JPP64NPeqNa2uSMHRVcetuS94n2xVXXqcGRk+108Fky9vMpHBYeo8uH+qea8OBMMm7WPv/7C
-        tsp6BWUCFFgOk5rSOTAp3LlUqhMT5n10rr9LokPo3+hKAejdwSblmpii6t1dOF3LHzoQLo4iFTkIA
-        XX3zTyDQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54934)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXX0P-00086a-Dm; Tue, 05 Oct 2021 00:04:21 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXX0M-0007ti-Hi; Tue, 05 Oct 2021 00:04:18 +0100
-Date:   Tue, 5 Oct 2021 00:04:18 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [RFC net-next PATCH 08/16] net: macb: Clean up macb_validate
-Message-ID: <YVuIcqKjDgawNPG4@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-9-sean.anderson@seco.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-9-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Mon, 4 Oct 2021 19:06:23 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D368C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 16:04:34 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id u13-20020a17090a4bcd00b00198e965f8f4so348551pjl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 16:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bTLk6HK8OPa0GS0nwkteXIFrPCger7fzttlDtWpROA0=;
+        b=c7hzuuMzyoYAY62bnHYCb4jz0UQxRkbYpJlNKPaE2VoqWVXupCAi3XUmjS80dBi263
+         JaWw3FvLouaZ6pzUl2lWbA0Zz2ZRCTWpJEPHlB8TnBPoEaT/XBT3cJWFfoJcecVZ5pjs
+         hxJguuemEFPQJMLo1WUiIxtmjn0nzV5z0lEcdC3KQEP3WFkZdPDrnZwDjmeBxVE9vn7z
+         2zLgSb/sj/Tzem86uqi0gXEdH/rak84DMiAzqlFTDdSaRdG81OCuyG4CaRZmvmMLAQLo
+         qDaT+2Vz0KbPDooueSvObDJls4c3rYaQOYkrm2rJlbSeRGsSWBnx79AlUxGa8QtHXhID
+         iVtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bTLk6HK8OPa0GS0nwkteXIFrPCger7fzttlDtWpROA0=;
+        b=66RVw9imwkVVe0JSwo2dkvvxFiusK8/dStIUPICkxm8ZOqCebBOUyXxdDIEVP2KGPZ
+         /fRzoR8/92NXr2xqGou17fflm7cEDPQn7IylJyO1TKvaPaHbilAHoojAZY7jLjFMTe+8
+         F4Tp9iDih9xYC0rRQ6UDsFpnkWn3mcMM7PnwuLYRJ4W2tyry5kDYthh8lQxfa4sOgJLv
+         eN+YYJkYs4E8SyllToP5xNoMwP5iKheToAdZGTyj8NumXFRy2rOApCQMyIuYcJJh1NaM
+         /BBUy319PohkCqZgqRzUqLQ/EI8tsjaVnV8tJ8yp1dgHyuJqvYTVgk2lTDdlM4Degc0y
+         LOyw==
+X-Gm-Message-State: AOAM532/SK6l+bbVL0atMLcvSo1JOW+DfPXkkCDfGR6LiUXswJZaeB43
+        JStWpcQExXOoYrfy9eVL16Y1LIthgg==
+X-Google-Smtp-Source: ABdhPJywseErdtKgBHYp4/z7Yp1lUzOBtNo3+SaMbflHl1S90FluFR6TA2oQ9rQiDsXEZUqdtWNFybTS1g==
+X-Received: from adelg-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:d1f])
+ (user=adelg job=sendgmr) by 2002:a05:6a00:1901:b0:44b:e041:f07f with SMTP id
+ y1-20020a056a00190100b0044be041f07fmr27116737pfi.52.1633388673658; Mon, 04
+ Oct 2021 16:04:33 -0700 (PDT)
+Date:   Mon,  4 Oct 2021 23:04:31 +0000
+Message-Id: <20211004230431.2321009-1-adelg@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] selftests: Remove explicit headers for clang
+From:   Andrew Delgadilo <adelg@google.com>
+To:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>, gthelen@google.com,
+        Andrew Delgadillo <adelg@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:19PM -0400, Sean Anderson wrote:
-> As the number of interfaces grows, the number of if statements grows
-> ever more unweildy. Clean everything up a bit by using a switch
-> statement. No functional change intended.
+From: Andrew Delgadillo <adelg@google.com>
 
-This doesn't look right to me.
+GCC allows paths to header files to be passed on the command line while
+using -o, but clang does not:
 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index e2730b3e1a57..18afa544b623 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -510,32 +510,55 @@ static void macb_validate(struct phylink_config *config,
->  			  unsigned long *supported,
->  			  struct phylink_link_state *state)
->  {
-> +	bool one = state->interface == PHY_INTERFACE_MODE_NA;
+$ make -C tools/testing/selftests TARGETS=futex
 
-Shouldn't this be != ?
+$ make -C tools/testing/selftests TARGETS=futex LLVM=1
+clang -Wall   -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include \
+-I../../ -I../../../../../usr/include/ -I/kselftest/usr/include \
+futex_wait_timeout.c ../include/futextest.h ../include/atomic.h \
+../include/logging.h -lpthread -lrt -o \
+tools/testing/selftests/futex/functional/futex_wait_timeout
+clang: error: cannot specify -o when generating multiple output files
 
-Since PHY_INTERFACE_MODE_NA is supposed to return all capabilities.
+To fix this, remove explicit paths to headers from the commandline in
+lib.mk. We must explicitly remove them for x86 and binderfs as they are
+not filtered out by the change to lib.mk, but the compiler search paths
+for includes are already setup correctly, so the compiler finds the
+correct headers.
+
+Tested: selftests build with LLVM=1 now.
+Cc: stable@vger.kernel.org
+Signed-off-by: Andrew Delgadillo <adelg@google.com>
+---
+ tools/testing/selftests/filesystems/binderfs/Makefile | 2 +-
+ tools/testing/selftests/lib.mk                        | 2 +-
+ tools/testing/selftests/x86/Makefile                  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/filesystems/binderfs/Makefile b/tools/testing/selftests/filesystems/binderfs/Makefile
+index 8af25ae96049..58e41bd98200 100644
+--- a/tools/testing/selftests/filesystems/binderfs/Makefile
++++ b/tools/testing/selftests/filesystems/binderfs/Makefile
+@@ -3,6 +3,6 @@
+ CFLAGS += -I../../../../../usr/include/ -pthread
+ TEST_GEN_PROGS := binderfs_test
+ 
+-binderfs_test: binderfs_test.c ../../kselftest.h ../../kselftest_harness.h
++binderfs_test: binderfs_test.c
+ 
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index fa2ac0e56b43..fb152e20c86a 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -142,7 +142,7 @@ endif
+ ifeq ($(OVERRIDE_TARGETS),)
+ LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+ $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+-	$(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
++	$(LINK.c) $(filter-out %.h,$^) $(LDLIBS) -o $@
+ 
+ $(OUTPUT)/%.o:%.S
+ 	$(COMPILE.S) $^ -o $@
+diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
+index b4142cd1c5c2..68967006b3e9 100644
+--- a/tools/testing/selftests/x86/Makefile
++++ b/tools/testing/selftests/x86/Makefile
+@@ -72,10 +72,10 @@ all_64: $(BINARIES_64)
+ EXTRA_CLEAN := $(BINARIES_32) $(BINARIES_64)
+ 
+ $(BINARIES_32): $(OUTPUT)/%_32: %.c helpers.h
+-	$(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl -lm
++	$(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl -lm
+ 
+ $(BINARIES_64): $(OUTPUT)/%_64: %.c helpers.h
+-	$(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl
++	$(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl
+ 
+ # x86_64 users should be encouraged to install 32-bit libraries
+ ifeq ($(CAN_BUILD_I386)$(CAN_BUILD_X86_64),01)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.33.0.800.g4c38ced690-goog
+
