@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFE4420C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0F6420CDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhJDNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:02:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
+        id S235360AbhJDNJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:09:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234661AbhJDNBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:01:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DEBE61872;
-        Mon,  4 Oct 2021 12:58:31 +0000 (UTC)
+        id S233874AbhJDNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:07:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5AE6139F;
+        Mon,  4 Oct 2021 13:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352312;
-        bh=PET7HZ0UpCtVSueVdDh7OTv6gjFlQEU7lUc8ADdHlDc=;
+        s=korg; t=1633352518;
+        bh=ai6t8Io9YxNczUiR+Rh8jbyDH7qVOcOTOC9EGJBkAPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tnLh9q+DZsL8x4EYmH8h9nPrtyk/+lDBTdT8OX9D+S51dnsIOZi3gvGUvkh9KP6cq
-         m9cS/tho95p5ag8x77TCg97UbFZ1g9+J04yJSvcqAZsiRwusgb/RqToma0I7NdnbB1
-         yGi8He5OApHf1e6lH77N/JlJO3UtJIwEUtm1n4EU=
+        b=o5NSQ7Wc1RZD1zd58N4IhppMv9+GtqTGgtKEFkmP2wHABjU8Gfw27daoFUSfLECvO
+         ONzIV6uZ8bfE0hc0RTTNSZkn45ErL1byoEo9IwEFnEXsXTB7iJbUYRMEznQVbsaY5Z
+         w7TDi2rfzvLH28wM6t9J2O2VHmO5ULKiYhjGf0W0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Slark Xiao <slark_xiao@163.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 13/75] USB: serial: option: add device id for Foxconn T99W265
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 18/95] net: hso: fix muxed tty registration
 Date:   Mon,  4 Oct 2021 14:51:48 +0200
-Message-Id: <20211004125031.981373025@linuxfoundation.org>
+Message-Id: <20211004125034.148261499@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Slark Xiao <slark_xiao@163.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 9e3eed534f8235a4a596a9dae5b8a6425d81ea1a upstream.
+commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
 
-Adding support for Foxconn device T99W265 for enumeration with
-PID 0xe0db.
+If resource allocation and registration fail for a muxed tty device
+(e.g. if there are no more minor numbers) the driver should not try to
+deregister the never-registered (or already-deregistered) tty.
 
-usb-devices output for 0xe0db
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=0489 ProdID=e0db Rev=05.04
-S:  Manufacturer=Microsoft
-S:  Product=Generic Mobile Broadband Adapter
-S:  SerialNumber=6c50f452
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+Fix up the error handling to avoid dereferencing a NULL pointer when
+attempting to remove the character device.
 
-if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
-
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
-Link: https://lore.kernel.org/r/20210917110106.9852-1-slark_xiao@163.com
-[ johan: use USB_DEVICE_INTERFACE_CLASS(), amend comment ]
-Cc: stable@vger.kernel.org
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Cc: stable@vger.kernel.org	# 2.6.27
 Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/usb/hso.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2077,6 +2077,8 @@ static const struct usb_device_id option
- 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
- 	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
- 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x0489, 0xe0db, 0xff),			/* Foxconn T99W265 MBIM */
-+	  .driver_info = RSVD(3) },
- 	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
- 	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
- 	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2714,14 +2714,14 @@ struct hso_device *hso_create_mux_serial
+ 
+ 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
+ 	if (!serial)
+-		goto exit;
++		goto err_free_dev;
+ 
+ 	hso_dev->port_data.dev_serial = serial;
+ 	serial->parent = hso_dev;
+ 
+ 	if (hso_serial_common_create
+ 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
+-		goto exit;
++		goto err_free_serial;
+ 
+ 	serial->tx_data_length--;
+ 	serial->write_data = hso_mux_serial_write_data;
+@@ -2737,11 +2737,9 @@ struct hso_device *hso_create_mux_serial
+ 	/* done, return it */
+ 	return hso_dev;
+ 
+-exit:
+-	if (serial) {
+-		tty_unregister_device(tty_drv, serial->minor);
+-		kfree(serial);
+-	}
++err_free_serial:
++	kfree(serial);
++err_free_dev:
+ 	kfree(hso_dev);
+ 	return NULL;
+ 
 
 
