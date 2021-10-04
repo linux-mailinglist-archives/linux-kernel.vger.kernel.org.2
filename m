@@ -2,194 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6C04204E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C579D4204EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhJDCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 22:25:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39926 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229550AbhJDCZj (ORCPT
+        id S232288AbhJDC1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 22:27:53 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55183 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232250AbhJDC1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 22:25:39 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1942HAJn013952;
-        Sun, 3 Oct 2021 22:23:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=BtW7404GpwTKkqUTjmtVhCQlU8hAD4j8yFpxhidkv9E=;
- b=Scl5gXNsWoxA+9pclCDWadANOxwMTegy+ilhXb141GCCW0y6vT8DgNC0IqTJ53husE6x
- n5x6mqzCdiofe92xGUQlCSrxBY6S+SP/RS8gWlu56xWfUczEJ4WfAujSY7Q6vKpwXeBm
- hLHrOwIhwcseEa5XJkCSVE3v2eQQjd16T2wCIRdyr8pyHFSFI1kJ0bWRfV1NeoBqoHhQ
- NWPX7DNBFVmQvBiUSijIxJB+JmS7IZZLqxsz/RdUU+fE1+y+wDuwT6aG7OpRC3HpZyYH
- glgS+9eYP6yZrc3f9oYVqReHiz5p3OvMrFoWeYK+huDQ2zCAcjocz6VNXEy9E2N436k6 Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfrprr2et-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Oct 2021 22:23:48 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1942NmPB004228;
-        Sun, 3 Oct 2021 22:23:48 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfrprr2eb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Oct 2021 22:23:48 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1942MT84009622;
-        Mon, 4 Oct 2021 02:23:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3bef290aje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 02:23:45 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1942IQpa56492426
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Oct 2021 02:18:26 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5760A42045;
-        Mon,  4 Oct 2021 02:23:42 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE12342041;
-        Mon,  4 Oct 2021 02:23:41 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  4 Oct 2021 02:23:41 +0000 (GMT)
-Date:   Mon, 4 Oct 2021 04:23:23 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20211004042323.730c6a5e.pasic@linux.ibm.com>
-In-Reply-To: <20211002082128-mutt-send-email-mst@kernel.org>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
-        <87r1d64dl4.fsf@redhat.com>
-        <20210930130350.0cdc7c65.pasic@linux.ibm.com>
-        <87ilyi47wn.fsf@redhat.com>
-        <20211001162213.18d7375e.pasic@linux.ibm.com>
-        <87v92g3h9l.fsf@redhat.com>
-        <20211002082128-mutt-send-email-mst@kernel.org>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Sun, 3 Oct 2021 22:27:51 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id DB2372B01324;
+        Sun,  3 Oct 2021 22:26:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sun, 03 Oct 2021 22:26:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=P8qLSV2GqDj3YgUO4voN7NGbNN
+        WZHdeebQQ0qJmOTLc=; b=S2rmlSxkBEum+u5YcAVpfs381l/XKeGvPuzGuviRkP
+        fchYpYn3YnrRdJRW0qLXBIQLAWCMplSvw11O4sPRKDLq2B5Dhy2wYsregIWVDdIs
+        0QjHh2B/RpReomcWWxokMv0USMU7m3KqXZk/ffi2Qp0CGtH8gRP0yWfusrMvwy1T
+        t8io3BpFthgxyN8JyAMVlHrmacMO1Z4oQOs6c+7P1+WsB5ovXHemurDEfaQa48rb
+        NPN+9BAWeGJ238VzBl2DDG7O5dTFTd1F056Ba90vMCOv0j9JRgw5Ywdj83ac3ZTF
+        Fzz0u62izp8hWhCWWnAwaUPk4YzQkTqc42W7EbN2/ThQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=P8qLSV2GqDj3YgUO4
+        voN7NGbNNWZHdeebQQ0qJmOTLc=; b=oKOfFF3Ma/VCMkXqyr1IuroQ+g0C3tNkP
+        vBku8GUUv31ZuUEEDS8nQ6X1IsOAWfFt7JgP+bHrdjyHLs2NiMv9LYhP1Ap/kpQm
+        DBXdxWBh0IuKvrU2voyL3ceZTyoqRdvZSnf+I93h9pYcDyWmHWBhwOPVjmKxDFr2
+        hs2jVzF+Dok8pAgBUqwcqPNbFPRrNkfKFTnT2sotjN5lpyq5T+jnhEBa71saSVQg
+        oyg6wXTs2sXHM6X84/2/cRyjpSxGOzgD0NmW+jYE4NCKVuY9fgGDO66yhGOhCUSR
+        g1kkqZJ+LqEf/S9B5ty/+WW9TLcDGKuhmcig6mdid+NH/jxybgeuQ==
+X-ME-Sender: <xms:OmZaYdyhI8xKhMMhC54xv77p230TlRTdJpsTvEfV7SyJi_jlgZrfTQ>
+    <xme:OmZaYdSuXTUOtRAZXO0A799EVTviR0bVVB1JU1kTxLlYx4GHYakJi2StACvJiuSvx
+    8CoNrIaeG_LsP3u1A>
+X-ME-Received: <xmr:OmZaYXVAxt75JccfkpDneMN5BgLVagtHbcUhFGoXJvnVm6E5sPPlkFe8vFXVwCP3tegoerFKABdHRSRi2oTcXHxzWJJi4B7jtrwEwqa0UCd7tYd2XWwcKAaeT8e85j8q0IbBKA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeluddgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeegffdtvdevgfeljeduveefgfefffejhfdtudeiudejueehtdelgefgjeeu
+    ffduueenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhl
+    rghnugdrohhrgh
+X-ME-Proxy: <xmx:OmZaYfj7ER-PxuXqLw4TZC6-7Tq5f8lPiLmtIdDhYIUO0VbRtWUcoQ>
+    <xmx:OmZaYfDc7Pdsnr653yuNMc-ER0io54kRN0jOMdvqOjgKXXmzgQz18w>
+    <xmx:OmZaYYJOgKzrrOtDAjZiUNxG_plTpuHAQcvpJvxBn3Y5_CxbZApZKQ>
+    <xmx:OmZaYbsK_lC9qj3HN4CkuX5E5rKn_gCw34svr4iQEwOFFzdOcG_SGgs9v3s>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 3 Oct 2021 22:26:01 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v2 1/2] dt-bindings: leds: Add Allwinner R329/D1 LED controller
+Date:   Sun,  3 Oct 2021 21:26:00 -0500
+Message-Id: <20211004022601.10653-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Y7yW0o3qPlgrIsoRY6SAyO-846f8MTod
-X-Proofpoint-GUID: x2D0ejPsNex5tElS_xlaqVr8c-MW3FnQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-03_11,2021-10-01_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110040013
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Oct 2021 14:13:37 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+The Allwinner R329 and D1 SoCs contain an LED controller designed to
+drive a series of RGB LED pixels. It supports PIO and DMA transfers, and
+has configurable timing and pixel format.
 
-> > Anyone else have an idea? This is a nasty regression; we could revert the
-> > patch, which would remove the symptoms and give us some time, but that
-> > doesn't really feel right, I'd do that only as a last resort.  
-> 
-> Well we have Halil's hack (except I would limit it
-> to only apply to BE, only do devices with validate,
-> and only in modern mode), and we will fix QEMU to be spec compliant.
-> Between these why do we need any conditional compiles?
-
-We don't. As I stated before, this hack is flawed because it
-effectively breaks fencing features by the driver with QEMU. Some
-features can not be unset after once set, because we tend to try to
-enable the corresponding functionality whenever we see a write
-features operation with the feature bit set, and we don't disable, if a
-subsequent features write operation stores the feature bit as not set.
-But it looks like VIRTIO_1 is fine to get cleared afterwards. So my hack
-should actually look like posted below, modulo conditions.
-
-Regarding the conditions I guess checking that driver_features has
-F_VERSION_1 already satisfies "only modern mode", or? For now
-I've deliberately omitted the has verify and the is big endian
-conditions so we have a better chance to see if something breaks
-(i.e. the approach does not work). I can add in those extra conditions
-later.
-
---------------------------8<---------------------
-
-From: Halil Pasic <pasic@linux.ibm.com>
-Date: Thu, 30 Sep 2021 02:38:47 +0200
-Subject: [PATCH] virtio: write back feature VERSION_1 before verify
-
-This patch fixes a regression introduced by commit 82e89ea077b9
-("virtio-blk: Add validation for block size in config space") and
-enables similar checks in verify() on big endian platforms.
-
-The problem with checking multi-byte config fields in the verify
-callback, on big endian platforms, and with a possibly transitional
-device is the following. The verify() callback is called between
-config->get_features() and virtio_finalize_features(). That we have a
-device that offered F_VERSION_1 then we have the following options
-either the device is transitional, and then it has to present the legacy
-interface, i.e. a big endian config space until F_VERSION_1 is
-negotiated, or we have a non-transitional device, which makes
-F_VERSION_1 mandatory, and only implements the non-legacy interface and
-thus presents a little endian config space. Because at this point we
-can't know if the device is transitional or non-transitional, we can't
-know do we need to byte swap or not.
-
-The virtio spec explicitly states that the driver MAY read config
-between reading and writing the features so saying that first accessing
-the config before feature negotiation is done is not an option. The
-specification ain't clear about setting the features multiple times
-before FEATURES_OK, so I guess that should be fine to set F_VERSION_1
-since at this point we already know that we are about to negotiate
-F_VERSION_1.
-
-I don't consider this patch super clean, but frankly I don't think we
-have a ton of options. Another option that may or man not be cleaner,
-but is also IMHO much uglier is to figure out whether the device is
-transitional by rejecting _F_VERSION_1, then resetting it and proceeding
-according tho what we have figured out, hoping that the characteristics
-of the device didn't change.
-
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Reported-by: markver@us.ibm.com
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- drivers/virtio/virtio.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 0a5b54034d4b..2b9358f2e22a 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -239,6 +239,12 @@ static int virtio_dev_probe(struct device *_d)
- 		driver_features_legacy = driver_features;
- 	}
- 
-+	/* Write F_VERSION_1 feature to pin down endianness */
-+	if (device_features & (1ULL << VIRTIO_F_VERSION_1) & driver_features) {
-+		dev->features = (1ULL << VIRTIO_F_VERSION_1);
-+		dev->config->finalize_features(dev);
-+	}
+Changes from v1:
+ - Fixed typo leading to duplicate t1h-ns property
+ - Removed "items" layer in definition of dmas/dma-names
+ - Replaced uint32 type reference with maxItems in timing properties
+
+ .../leds/allwinner,sun50i-r329-ledc.yaml      | 140 ++++++++++++++++++
+ 1 file changed, 140 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+
+diff --git a/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml b/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+new file mode 100644
+index 000000000000..d70cb2393a2e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+@@ -0,0 +1,140 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/allwinner,sun50i-r329-ledc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
- 		dev->features = driver_features & device_features;
- 	else
++title: Allwinner R329 LED Controller Bindings
++
++maintainers:
++  - Samuel Holland <samuel@sholland.org>
++
++description:
++  The LED controller found in Allwinner sunxi SoCs uses a one-wire serial
++  interface to drive up to 1024 RGB LEDs.
++
++properties:
++  compatible:
++    oneOf:
++      - const: allwinner,sun50i-r329-ledc
++      - items:
++          - enum:
++              - allwinner,sun20i-d1-ledc
++          - const: allwinner,sun50i-r329-ledc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  clocks:
++    items:
++      - description: Bus clock
++      - description: Module clock
++
++  clock-names:
++    items:
++      - const: bus
++      - const: mod
++
++  resets:
++    maxItems: 1
++
++  dmas:
++    maxItems: 1
++    description: TX DMA channel
++
++  dma-names:
++    const: tx
++
++  interrupts:
++    maxItems: 1
++
++  vled-supply:
++    description: Regulator supplying power to external LEDs
++
++  format:
++    description: Pixel format (subpixel transmission order), default is "grb"
++    enum:
++      - "bgr"
++      - "brg"
++      - "gbr"
++      - "grb"
++      - "rbg"
++      - "rgb"
++
++  t0h-ns:
++    maxItems: 1
++    description: Length of high pulse when transmitting a "0" bit
++
++  t0l-ns:
++    maxItems: 1
++    description: Length of low pulse when transmitting a "0" bit
++
++  t1h-ns:
++    maxItems: 1
++    description: Length of high pulse when transmitting a "1" bit
++
++  t1l-ns:
++    maxItems: 1
++    description: Length of low pulse when transmitting a "1" bit
++
++  treset-ns:
++    maxItems: 1
++    description: Minimum delay between transmission frames
++
++patternProperties:
++  "^multi-led@[0-9a-f]+$":
++    type: object
++    $ref: leds-class-multicolor.yaml#
++    properties:
++      reg:
++        minimum: 0
++        maximum: 1023
++        description: Index of the LED in the series (must be contiguous)
++
++    required:
++      - reg
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - dmas
++  - dma-names
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/leds/common.h>
++
++    ledc: led-controller@2008000 {
++      compatible = "allwinner,sun20i-d1-ledc",
++                   "allwinner,sun50i-r329-ledc";
++      reg = <0x2008000 0x400>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++      clocks = <&ccu 12>, <&ccu 34>;
++      clock-names = "bus", "mod";
++      resets = <&ccu 12>;
++      dmas = <&dma 42>;
++      dma-names = "tx";
++      interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
++
++      multi-led@0 {
++        reg = <0x0>;
++        color = <LED_COLOR_ID_RGB>;
++        function = LED_FUNCTION_INDICATOR;
++      };
++    };
++
++...
 -- 
-2.31.1
+2.32.0
 
-
-
-
-
- 
