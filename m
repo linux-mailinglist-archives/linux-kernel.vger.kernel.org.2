@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C808421235
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020FF42122F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235443AbhJDPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:03:18 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59312
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235502AbhJDPBX (ORCPT
+        id S235529AbhJDPC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhJDPCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:01:23 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1BD9C402CF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633359574;
-        bh=mjXPISoqrzvv6T8eWckfoa+w/l3lHuMX4ztP7/j2C4I=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=krgPwlUMcgSwGlUiB12Zp99l3ylJhBuPOZcXfKGJhKv6FBX0T5wsQj03FXeMydFfG
-         fU0Ap4Cxz1/qbtKp6qAMAF2AdYS/USKX/yH39XNGXfdim+Ro9l2Vboni/KrCh+kfVe
-         dFbsCn7EwOQb+tr0mi0PiansBje8fuel8+dej03lOHu6yeE/A8MU2j9Dx9vp81wUx4
-         SgcBWX8FyyTK+6ku9XV8HO2nWZikf1YvnoXP0VEsVoQD/+ODsXfGsbkMK989wQwGkh
-         GtDVaoiDnc40pKhaBHNnF6IsEaASWF5Br72GqxKRDdI5VWP8A1cX3OS8qwRwN0udnO
-         G7rfvMGdkq3BA==
-Received: by mail-lf1-f70.google.com with SMTP id v2-20020ac25582000000b003fd1c161a31so8475577lfg.15
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 07:59:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mjXPISoqrzvv6T8eWckfoa+w/l3lHuMX4ztP7/j2C4I=;
-        b=W9Fbj6N0F8GCo5hkSVHSdnsXGByHTUCGKpOuzgT5hWV93371XpyXRYymeRhf2A8j6c
-         g+v+PyQ6XM56eT2Wei20h3cj5qAEQuvktn98Bd41IX35RupbgeGk9NFpJUkb+3OXHoHN
-         zK0p0VrkRM1BL/gnDEOC5vGsK2urBL83MafWAfEVjoszZKylPXBxLiBOMCfnO0nwUzGH
-         Vq+SZh7OWeuDLVFqvlicyYiKd5J6nOBzD9aiM/+DJNtYiCX4z6botozxl2XR4VDIpHXn
-         4Yb6lUPisY5P2txMuFmwTueGiqp+toofOZKb9cM0xtP8C8iN6oHJEcTmVx8wnlttcUir
-         pqzQ==
-X-Gm-Message-State: AOAM532suPn6JoIAwdorPo7jU6srSdwduIyVgQZzo3FygVf6feAYcRRy
-        vgLzTZgkeMb7C3y/ttTWDTyCjPd2wdut961nJyfd0qZId1w+db7SYh5diqIgR3v4NYW5xu+m0/d
-        +JhiGhBb5Wyf1pCWugEYLp9bFEJpvJOJkzqhS5d2Txg==
-X-Received: by 2002:a2e:575d:: with SMTP id r29mr16342112ljd.284.1633359573250;
-        Mon, 04 Oct 2021 07:59:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOo+lB6RcMLwBXgkySBQ4vL0Yv8gDCQD9CBhd0v3DB/P0euRpRs8FczKlBWRUn5Il77PI8dQ==
-X-Received: by 2002:a2e:575d:: with SMTP id r29mr16342096ljd.284.1633359573085;
-        Mon, 04 Oct 2021 07:59:33 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id h21sm817340lfc.30.2021.10.04.07.59.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 07:59:32 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells
- dependency
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210928082346.22398-1-krzysztof.kozlowski@canonical.com>
- <YVsWDaC0TOSOrrxW@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ba5cfb69-1d79-d1cf-5f15-46b4dca2fa9f@canonical.com>
-Date:   Mon, 4 Oct 2021 16:59:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 4 Oct 2021 11:02:24 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7999FC061745;
+        Mon,  4 Oct 2021 08:00:35 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mXPS9-0006bJ-Vx; Mon, 04 Oct 2021 17:00:30 +0200
+Date:   Mon, 4 Oct 2021 17:00:29 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+7b4a6fc3e452c67173e0@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johannes@sipsolutions.net,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [syzbot] INFO: task hung in reg_check_chans_work (3)
+Message-ID: <20211004150029.GN2935@breakpoint.cc>
+References: <000000000000035e6905cd5e1c91@google.com>
+ <20211004074157.1ba82e65@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <YVsWDaC0TOSOrrxW@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004074157.1ba82e65@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 16:56, Rob Herring wrote:
-> On Tue, Sep 28, 2021 at 10:23:46AM +0200, Krzysztof Kozlowski wrote:
->> The meta-schema already defines dependency between clock-cells and
-> 
-> You mean the schema already does.
+Jakub Kicinski <kuba@kernel.org> wrote:
+> netfilter... rtnl.. workqueue... let's CC Florian..
 
-Yes.
+Thanks.
 
-> 
->> clock-output-names.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 4 ----
->>  1 file changed, 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
->> index 23abb7e8b9d8..dd70431df0b7 100644
->> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
->> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
->> @@ -158,10 +158,6 @@ properties:
->>      description:
->>        The MIO bank number in which the command and data lines are configured.
->>  
->> -dependencies:
->> -  clock-output-names: [ '#clock-cells' ]
-> 
-> The schema defines this.
-> 
->> -  '#clock-cells': [ clock-output-names ]
-> 
-> But not this. That's because in the common case, clock-output-names is 
-> optional. But here it is required when '#clock-cells' is present.
+> > HEAD commit:    a4e6f95a891a Merge tag 'pinctrl-v5.15-2' of git://git.kern..
 
-You are right, somehow I missed that part...
+This HEAD doesn't include
 
+7970a19b71044bf4dc2c1becc200275bdf1884d4
+netfilter: nf_nat_masquerade: defer conntrack walk to work queue
 
-Best regards,
-Krzysztof
+so, with a bit of luck this is already resolved.
+
+> >  context_switch kernel/sched/core.c:4940 [inline]
+> >  __schedule+0x940/0x26f0 kernel/sched/core.c:6287
+> >  schedule+0xd3/0x270 kernel/sched/core.c:6366
+> >  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+> >  __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+> >  __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
+> >  reg_check_chans_work+0x83/0xe10 net/wireless/reg.c:2423
+> >  process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+
+workqueue tries to rtnl_lock()...
+
+> > task:syz-executor.0  state:D stack:27152 pid:17047 ppid: 13518 flags:0x00004004
+> > Call Trace:
+> >  context_switch kernel/sched/core.c:4940 [inline]
+> >  __schedule+0x940/0x26f0 kernel/sched/core.c:6287
+> >  schedule+0xd3/0x270 kernel/sched/core.c:6366
+> >  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+> >  __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+> >  __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
+> >  rtnl_lock net/core/rtnetlink.c:72 [inline]
+> >  rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
+
+... syz-executor as well ...
+
+> > task:syz-executor.4  state:D stack:27216 pid:17052 ppid:  6665 flags:0x00004004
+> > Call Trace:
+> >  context_switch kernel/sched/core.c:4940 [inline]
+> >  __schedule+0x940/0x26f0 kernel/sched/core.c:6287
+> >  schedule+0xd3/0x270 kernel/sched/core.c:6366
+> >  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+> >  __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+> >  __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
+> >  rtnl_lock net/core/rtnetlink.c:72 [inline]
+> >  rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5569
+> >  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+
+... and another syz-executor instance ...
+
+> >  __local_bh_enable_ip+0xcd/0x120 kernel/softirq.c:371
+> >  local_bh_enable include/linux/bottom_half.h:32 [inline]
+> >  get_next_corpse net/netfilter/nf_conntrack_core.c:2252 [inline]
+> >  nf_ct_iterate_cleanup+0x15a/0x450 net/netfilter/nf_conntrack_core.c:2275
+> >  nf_ct_iterate_cleanup_net net/netfilter/nf_conntrack_core.c:2363 [inline]
+> >  nf_ct_iterate_cleanup_net+0x236/0x400 net/netfilter/nf_conntrack_core.c:2347
+> >  masq_device_event+0xae/0xe0 net/netfilter/nf_nat_masquerade.c:88
+> >  notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+
+... and rtnl is held by notifier call chain.
+
+This is no longer the case in current net head,
+nf_ct_iterate_cleanup() runs from workqueue without rtnl locked.
