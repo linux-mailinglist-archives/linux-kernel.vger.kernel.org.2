@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775E7420CB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F48420DC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhJDNJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
+        id S235756AbhJDNTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235320AbhJDNGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:06:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0290761B43;
-        Mon,  4 Oct 2021 13:01:27 +0000 (UTC)
+        id S235823AbhJDNQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:16:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07C9960FC1;
+        Mon,  4 Oct 2021 13:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352488;
-        bh=uDLJDp9yUihenuoK/bIyDwV9Lhn6uzUYTPONN3ZEqRY=;
+        s=korg; t=1633352796;
+        bh=DtPARgZLa+U6xg/VhZ8xWi5MlRsO3NwGfIJkC4qSvp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sKhNSNJgChr9+JqLtBnqoF+IAntSxIjWOeIcCPVY0D1iykqCU+FclfnAl8vX/YhDD
-         AKQL7xwQdTZ7VCGC5BRwg9xw5iB5pwgygCc70XYwDPp2M5pnzQ1YXws7UbhiR0LodW
-         5NPj50J1DSlSRe/URUS+LqPaUC9xxD1TnC+7IPzE=
+        b=OLXMowXBMlfKt8SucMv3v6egLAPU132gqbNoAMfOlPvN6X5DkpxR2CPoZUYEECO+p
+         l5byT9sONr8BF5mYtBPSP1DvY9PBCl7Rkbb7l/Qft1c2RJc+f0sDtZB9maETWbagZ6
+         Er8E/SxLL6W3Bwk9kTPbcAVxr8UNU7IlEW58MqD0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 75/75] net: mdiobus: Fix memory leak in __mdiobus_register
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 30/56] net: phy: bcm7xxx: Fixed indirect MMD operations
 Date:   Mon,  4 Oct 2021 14:52:50 +0200
-Message-Id: <20211004125034.049109987@linuxfoundation.org>
+Message-Id: <20211004125030.946920592@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +40,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
+[ Upstream commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb ]
 
-Once device_register() failed, we should call put_device() to
-decrement reference count for cleanup. Or it will cause memory
-leak.
+When EEE support was added to the 28nm EPHY it was assumed that it would
+be able to support the standard clause 45 over clause 22 register access
+method. It turns out that the PHY does not support that, which is the
+very reason for using the indirect shadow mode 2 bank 3 access method.
 
-BUG: memory leak
-unreferenced object 0xffff888114032e00 (size 256):
-  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
-    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
-  backtrace:
-    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
-    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
-    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
-    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
-    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
-    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
-    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
-    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
-    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
-    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
-    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
-    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
-    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
-    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
-    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
-    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
-    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
-    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
-    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+Implement {read,write}_mmd to allow the standard PHY library routines
+pertaining to EEE querying and configuration to work correctly on these
+PHYs. This forces us to implement a __phy_set_clr_bits() function that
+does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
+functions are always called with that lock held.
 
-BUG: memory leak
-unreferenced object 0xffff888116f06900 (size 32):
-  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
-  hex dump (first 32 bytes):
-    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
-    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
-    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
-    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
-    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
-    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
-    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
-    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
-    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
-    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
-    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
-    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
-    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
-    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
-    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
-    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
-    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
-    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
-
-Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio_bus.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/bcm7xxx.c | 114 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 110 insertions(+), 4 deletions(-)
 
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -347,6 +347,7 @@ int __mdiobus_register(struct mii_bus *b
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
-+		put_device(&bus->dev);
- 		return -EINVAL;
- 	}
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index e68dd2e9443c..8686794148b8 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -27,7 +27,12 @@
+ #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
+ #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
+ #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
++#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
++#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
++#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
+ #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
++#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
++#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
+ #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
+ #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
+ #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
+@@ -212,25 +217,37 @@ static int bcm7xxx_28nm_resume(struct phy_device *phydev)
+ 	return genphy_config_aneg(phydev);
+ }
  
+-static int phy_set_clr_bits(struct phy_device *dev, int location,
+-					int set_mask, int clr_mask)
++static int __phy_set_clr_bits(struct phy_device *dev, int location,
++			      int set_mask, int clr_mask)
+ {
+ 	int v, ret;
+ 
+-	v = phy_read(dev, location);
++	v = __phy_read(dev, location);
+ 	if (v < 0)
+ 		return v;
+ 
+ 	v &= ~clr_mask;
+ 	v |= set_mask;
+ 
+-	ret = phy_write(dev, location, v);
++	ret = __phy_write(dev, location, v);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	return v;
+ }
+ 
++static int phy_set_clr_bits(struct phy_device *dev, int location,
++			    int set_mask, int clr_mask)
++{
++	int ret;
++
++	mutex_lock(&dev->mdio.bus->mdio_lock);
++	ret = __phy_set_clr_bits(dev, location, set_mask, clr_mask);
++	mutex_unlock(&dev->mdio.bus->mdio_lock);
++
++	return ret;
++}
++
+ static int bcm7xxx_28nm_ephy_01_afe_config_init(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -394,6 +411,93 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
+ 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+ }
+ 
++#define MII_BCM7XXX_REG_INVALID	0xff
++
++static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
++{
++	switch (regnum) {
++	case MDIO_CTRL1:
++		return MII_BCM7XXX_SHD_3_PCS_CTRL;
++	case MDIO_STAT1:
++		return MII_BCM7XXX_SHD_3_PCS_STATUS;
++	case MDIO_PCS_EEE_ABLE:
++		return MII_BCM7XXX_SHD_3_EEE_CAP;
++	case MDIO_AN_EEE_ADV:
++		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
++	case MDIO_AN_EEE_LPABLE:
++		return MII_BCM7XXX_SHD_3_EEE_LP;
++	case MDIO_PCS_EEE_WK_ERR:
++		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
++	default:
++		return MII_BCM7XXX_REG_INVALID;
++	}
++}
++
++static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
++{
++	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
++}
++
++static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
++				      int devnum, u16 regnum)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++				 MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	ret = __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++			   MII_BCM7XXX_SHD_MODE_2);
++	return ret;
++}
++
++static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
++				       int devnum, u16 regnum, u16 val)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++				 MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	/* Write the desired value in the shadow register */
++	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++				  MII_BCM7XXX_SHD_MODE_2);
++}
++
+ static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -591,6 +695,8 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
+ 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
+ 	.probe		= bcm7xxx_28nm_probe,				\
+ 	.remove		= bcm7xxx_28nm_remove,				\
++	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
++	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
+ }
+ 
+ #define BCM7XXX_40NM_EPHY(_oui, _name)					\
+-- 
+2.33.0
+
 
 
