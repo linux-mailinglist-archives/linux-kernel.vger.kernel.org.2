@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EEE420C84
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5158F420D9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhJDNGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:06:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
+        id S235494AbhJDNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:16:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233573AbhJDNEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D49E761B05;
-        Mon,  4 Oct 2021 13:00:25 +0000 (UTC)
+        id S235840AbhJDNOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E79D619F5;
+        Mon,  4 Oct 2021 13:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352426;
-        bh=nSTmr121dkjbPIH6jZrbKOssLMtUrK4KbeQ23eg16U8=;
+        s=korg; t=1633352751;
+        bh=6r8EHbHVPHME6qdWdTonUTcrWbCzaRndstbgk5E7s8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SwYnljGhDPicHOfffqQvlIMKDhpGL0GXAF1nEmXthT+JVuM7o71Z4na4K/hFwnQ++
-         iqXgIoO6PjFQ7Tij6chO0YreBRvRDu6jOF6jW8r6yv5Zjab5PGT3Dv8ix1HLwwIgjZ
-         KZgTEQukcUkUgJO5BQkJVjB0y4Mtz0joERbsbGdM=
+        b=hCL814179tZwyhnhOWulX1xy9Xow8w1hBpwz2nS29Y+y5nXfI9ealQ9nqrU7lsNsF
+         3OBMmwriTNndWOj+UYqBsA8hk9NnMWN6KAybRJPjdHkIzerDbKsNztpk7Tduug+lpz
+         xIxwVebvbXq48jv3TPUpvxMuJVPVfR0/clus6Y+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 57/75] ipack: ipoctal: fix tty-registration error handling
+        stable@vger.kernel.org, Zhan Liu <Zhan.Liu@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Charlene Liu <Charlene.Liu@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 12/56] drm/amd/display: Pass PCI deviceid into DC
 Date:   Mon,  4 Oct 2021 14:52:32 +0200
-Message-Id: <20211004125033.445066630@linuxfoundation.org>
+Message-Id: <20211004125030.396669154@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Charlene Liu <Charlene.Liu@amd.com>
 
-commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
+commit d942856865c733ff60450de9691af796ad71d7bc upstream.
 
-Registration of the ipoctal tty devices is unlikely to fail, but if it
-ever does, make sure not to deregister a never registered tty device
-(and dereference a NULL pointer) when the driver is later unbound.
+[why]
+pci deviceid not passed to dal dc, without proper break,
+dcn2.x falls into dcn3.x code path
 
-Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
-Cc: stable@vger.kernel.org      # 3.7
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
+[how]
+pass in pci deviceid, and break once dal_version initialized.
+
+Reviewed-by: Zhan Liu <Zhan.Liu@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Signed-off-by: Charlene Liu <Charlene.Liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -38,6 +38,7 @@ struct ipoctal_channel {
- 	unsigned int			pointer_read;
- 	unsigned int			pointer_write;
- 	struct tty_port			tty_port;
-+	bool				tty_registered;
- 	union scc2698_channel __iomem	*regs;
- 	union scc2698_block __iomem	*block_regs;
- 	unsigned int			board_id;
-@@ -402,9 +403,11 @@ static int ipoctal_inst_slot(struct ipoc
- 							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-+			tty_port_free_xmit_buf(&channel->tty_port);
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
-+		channel->tty_registered = true;
- 	}
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -664,6 +664,7 @@ static int amdgpu_dm_init(struct amdgpu_
  
- 	/*
-@@ -705,6 +708,10 @@ static void __ipoctal_remove(struct ipoc
+ 	init_data.asic_id.pci_revision_id = adev->rev_id;
+ 	init_data.asic_id.hw_internal_rev = adev->external_rev_id;
++	init_data.asic_id.chip_id = adev->pdev->device;
  
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct ipoctal_channel *channel = &ipoctal->channel[i];
-+
-+		if (!channel->tty_registered)
-+			continue;
-+
- 		tty_unregister_device(ipoctal->tty_drv, i);
- 		tty_port_free_xmit_buf(&channel->tty_port);
- 		tty_port_destroy(&channel->tty_port);
+ 	init_data.asic_id.vram_width = adev->gmc.vram_width;
+ 	/* TODO: initialize init_data.asic_id.vram_type here!!!! */
 
 
